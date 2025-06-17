@@ -18,7 +18,7 @@ import { Config } from '@backstage/config';
 import { TopLevelCondition } from 'json-rules-engine';
 import { Rule, TechInsightJsonRuleCheck } from '../types';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
-import { LoggerService } from '@backstage/backend-plugin-api/index';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 // copy of non-exported `ConditionProperties` from 'json-rules-engine'
 interface ConditionProperties {

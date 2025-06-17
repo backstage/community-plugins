@@ -76,6 +76,8 @@ Then to display the `README` file that belongs to each entity you would do this:
 dev.azure.com/readme-path: /<path-to>/<my-readme-file>.md
 ```
 
+> Note: this annotation does not support relative paths as the API we use from Azure DevOps to power this feature does not support relative paths. If you use something like this `dev.azure.com/readme-path: ./docs/index.md` the frontend will throw an error with details about why.
+
 #### Pipeline in different project to repo
 
 If your pipeline is in a different project to the source code, you will need to specify this in the project annotation.
@@ -143,6 +145,34 @@ dev.azure.com/host-org: server.company.com/yet-another-org
 ```
 
 **Note:** To save you time, effort, and confusion setting up these annotations manually you can use the `AzureDevOpsAnnotatorProcessor` processor which will add the `dev.azure.com/host-org` and `dev.azure.com/project-repo` annotations for you with the correct values. The Azure DevOps Annotator Processor backend module for the Catalog plugin has details on how to [add this processor](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor).
+
+#### Project Names and Repository Names with Spaces
+
+Regarding spaces in project names or repository names, though the author of this plugin often says "spaces are the devil", these have been tested with this plugin and will work as is in the annotations. They will also be added correctly for you when using the `AzureDevOpsAnnotatorProcessor`.
+
+Given a project name like "Has Spaces" and a repository name of "With Space" the `dev.azure.com/project-repo` annotation would look like this:
+
+```yaml
+dev.azure.com/project-repo: Has Spaces/With Space
+```
+
+Alternatively you can put quotes around the value which would work as well, like this:
+
+```yaml
+dev.azure.com/project-repo: 'Has Spaces/With Space'
+```
+
+the same would apply to the `dev.azure.com/project` annotation using "Has Spaces" as the project name would look like this:
+
+```yaml
+dev.azure.com/project: Has Spaces
+```
+
+Or using quotes, like this:
+
+```yaml
+dev.azure.com/project: 'Has Spaces'
+```
 
 ### Azure Pipelines Component
 
@@ -322,33 +352,16 @@ To get the README component working you'll need to do the following two steps:
 
 ## Permission Framework
 
-Azure DevOps plugin supports the permission framework for PRs, GitTags, Pipelines and Readme features.
+Azure DevOps plugin supports the permission framework for PRs, GitTags, Pipelines and Readme features. To use these permissions you'll need to add the `@backstage-community/plugin-azure-devops-common` to the same location as your [Permission Policy](https://backstage.io/docs/permissions/writing-a-policy). This example assumes that your Permission Policy lives in your `packages/backend`:
 
 ```bash
 # From your Backstage root directory
 yarn --cwd packages/backend add @backstage-community/plugin-azure-devops-common
 ```
 
-New Backend you can skip the below and proceed with [permission configuration](#configure-permission)
-
-To enable permissions for the legacy backend system in `packages/backend/src/plugins/azure-devops.ts` add the following.
-
-```diff
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  return createRouter({
-    logger: env.logger,
-    config: env.config,
-    reader: env.reader,
-+   permissions: env.permissions,
-  });
-}
-```
-
 ### Configure Permission
 
-To apply the permission rules add the following in `packages/backend/src/plugins/permissions.ts`.
+To apply the permission rules add the following in to your [Permission Policy](https://backstage.io/docs/permissions/writing-a-policy).
 
 > Note: the following is just an example of how you might want to setup permissions, as an Adopter you can configure this to fit your needs. Also all the permissions are Resource Permissions as they work with an Entity with the exception of `azureDevOpsPullRequestDashboardReadPermission`.
 

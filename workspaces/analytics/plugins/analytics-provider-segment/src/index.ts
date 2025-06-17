@@ -30,5 +30,5 @@ export const SegmentAnalyticsApi = createApiFactory({
   api: analyticsApiRef,
   deps: { configApi: configApiRef, identityApi: identityApiRef },
   factory: ({ configApi, identityApi }) =>
-    SegmentAnalytics.fromConfig(configApi, identityApi),
+    SegmentAnalytics.fromConfig(configApi, { identityApi }),
 });

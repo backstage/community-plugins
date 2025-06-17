@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 6.3.0
+
+### Minor Changes
+
+- a42945e: Introduce API to store additional plugin ID list
+- 3e3f346: Migrate rbac-backend to use permission registry service.
+
+### Patch Changes
+
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- Updated dependencies [a42945e]
+  - @backstage-community/plugin-rbac-common@1.17.0
+
 ## 6.2.6
 
 ### Patch Changes

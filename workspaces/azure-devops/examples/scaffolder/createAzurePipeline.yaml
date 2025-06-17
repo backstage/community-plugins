@@ -1,0 +1,68 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: create-pipeline-example
+  title: Create Azure Pipeline Example
+spec:
+  type: service
+  parameters:
+    - title: Choose a location
+      required:
+        - repoUrl
+        - pipelineYamlFile
+        - pipelineName
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - dev.azure.com
+        pipelineName:
+          title: Pipeline Name
+          type: string
+          description: The Id for the pipeline you want to create
+        pipelineFolder:
+          title: Pipeline Folder
+          type: string
+          default: /
+          description: The folder for the pipeline you want to create
+        pipelineYamlFile:
+          title: Pipeline YAML File
+          type: string
+          description: The path to the pipeline YAML file.
+        branch:
+          title: Branch
+          type: string
+          default: main
+          description: The branch of the pipeline's repository.
+        pipelineAgentPoolName:
+          title: Agent Pool Name
+          type: string
+          default: Azure Pipelines
+          description: The name of the agent pool to use for the pipeline.
+
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+    - id: createAzurePipeline
+      name: Create Pipeline
+      action: azure:pipeline:create
+      input:
+        organization: ${{ (parameters.repoUrl | parseRepoUrl)['organization'] }}
+        pipelineName: ${{ parameters.pipelineName }}
+        pipelineYamlFile: ${{ parameters.pipelineYamlFile }}
+        repository: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+        project: ${{ (parameters.repoUrl | parseRepoUrl)['project'] }}
+        branch: ${{ parameters.branch }}
+        pipelineAgentPoolName: ${{ parameters.pipelineAgentPoolName }}
+        isPipelineAgentPoolHosted: ${{ parameters.isPipelineAgentPoolHosted }}
+        pipelineFolder: ${{ parameters.pipelineFolder }}
+
+  output:
+    links:
+      - title: Open in DevOps
+        icon: catalog
+        url: ${{ steps['createAzurePipeline'].output.pipelineUrl }}

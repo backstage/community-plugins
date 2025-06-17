@@ -1,0 +1,2485 @@
+{
+  "nodes": [
+    {
+      "children": [
+        "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+        "e73d17c7ce69b6449aa320b78d088e1679f604d5ef299d5c7e4816193c90223d"
+      ],
+      "collapsed": false,
+      "data": {
+        "app": "details",
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [
+            {
+              "name": "details-v1",
+              "desiredReplicas": 1,
+              "currentReplicas": 1,
+              "availableReplicas": 1,
+              "syncedProxies": 1
+            }
+          ],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "details-v1: 1 / 1",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    }
+                  }
+                ]
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Outbound:No requests",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": null,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "isBox": "app",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "ee30ec3824c952c6a97c245cb381968595af81dfb3951299315770d4dc205841",
+        "nodeType": "box",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy",
+        "badge": "A"
+      },
+      "group": true,
+      "id": "ee30ec3824c952c6a97c245cb381968595af81dfb3951299315770d4dc205841",
+      "status": "success",
+      "style": {
+        "padding": [35, 35, 35, 35]
+      },
+      "type": "group",
+      "label": "details"
+    },
+    {
+      "children": [
+        "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+        "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343"
+      ],
+      "collapsed": false,
+      "data": {
+        "app": "productpage",
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [
+            {
+              "name": "productpage-v1",
+              "desiredReplicas": 1,
+              "currentReplicas": 1,
+              "availableReplicas": 1,
+              "syncedProxies": 1
+            }
+          ],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 2
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "productpage-v1: 1 / 1",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    }
+                  }
+                ]
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Outbound:0.00%",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 2
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": null,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "isBox": "app",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "15e753d164d02320b78b4db88c02828eb2802fc425916fe849f97a464c25df80",
+        "nodeType": "box",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy",
+        "badge": "A"
+      },
+      "group": true,
+      "id": "15e753d164d02320b78b4db88c02828eb2802fc425916fe849f97a464c25df80",
+      "status": "success",
+      "style": {
+        "padding": [35, 35, 35, 35]
+      },
+      "type": "group",
+      "label": "productpage"
+    },
+    {
+      "children": [
+        "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+        "055acd1ee48a90ba90aa90df8a0d789664810dc5036eaebc0bf19a19e0834abe"
+      ],
+      "collapsed": false,
+      "data": {
+        "app": "ratings",
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [
+            {
+              "name": "ratings-v1",
+              "desiredReplicas": 1,
+              "currentReplicas": 1,
+              "availableReplicas": 1,
+              "syncedProxies": 1
+            }
+          ],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "ratings-v1: 1 / 1",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    }
+                  }
+                ]
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Degraded",
+                  "color": "var(--pf-v5-global--warning-color--100)",
+                  "priority": 3,
+                  "class": "icon-degraded"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Degraded",
+                      "color": "var(--pf-v5-global--warning-color--100)",
+                      "priority": 3,
+                      "class": "icon-degraded"
+                    },
+                    "text": "Inbound:0.61%",
+                    "value": 0.6106870229007634
+                  },
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Outbound:No requests",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Degraded",
+                "color": "var(--pf-v5-global--warning-color--100)",
+                "priority": 3,
+                "class": "icon-degraded"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0.6106870229007634
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": null,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "isBox": "app",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "b7a3aed047b45436340c6f1207e95cb39c88368d012458b6ce9a04a52f72f20f",
+        "nodeType": "box",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Degraded",
+        "badge": "A"
+      },
+      "group": true,
+      "id": "b7a3aed047b45436340c6f1207e95cb39c88368d012458b6ce9a04a52f72f20f",
+      "status": "warning",
+      "style": {
+        "padding": [35, 35, 35, 35]
+      },
+      "type": "group",
+      "label": "ratings"
+    },
+    {
+      "children": [
+        "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+        "9a60fd88bb986e9cc15ba01934a9e967727c84861bec05158b59a85d04300c57",
+        "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+        "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6"
+      ],
+      "collapsed": false,
+      "data": {
+        "app": "reviews",
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [
+            {
+              "name": "reviews-v1",
+              "desiredReplicas": 1,
+              "currentReplicas": 1,
+              "availableReplicas": 1,
+              "syncedProxies": 1
+            },
+            {
+              "name": "reviews-v2",
+              "desiredReplicas": 1,
+              "currentReplicas": 1,
+              "availableReplicas": 1,
+              "syncedProxies": 1
+            },
+            {
+              "name": "reviews-v3",
+              "desiredReplicas": 1,
+              "currentReplicas": 1,
+              "availableReplicas": 1,
+              "syncedProxies": 1
+            }
+          ],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.349
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "reviews-v1: 1 / 1",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    }
+                  },
+                  {
+                    "text": "reviews-v2: 1 / 1",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    }
+                  },
+                  {
+                    "text": "reviews-v3: 1 / 1",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    }
+                  }
+                ]
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Outbound:No requests",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.349
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": null,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "isBox": "app",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "a7f0ea966626a632f524c63ca4d794ed666f3415f3544b989474d27aad08c694",
+        "nodeType": "box",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy",
+        "badge": "A"
+      },
+      "group": true,
+      "id": "a7f0ea966626a632f524c63ca4d794ed666f3415f3544b989474d27aad08c694",
+      "status": "success",
+      "style": {
+        "padding": [35, 35, 35, 35]
+      },
+      "type": "group",
+      "label": "reviews"
+    },
+    {
+      "data": {
+        "app": "details",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "details"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "Inbound: 0.00%",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 1,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 1,
+        "service": "details",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+        "parent": "ee30ec3824c952c6a97c245cb381968595af81dfb3951299315770d4dc205841",
+        "nodeType": "service",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+      "shape": "rhombus",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "details"
+    },
+    {
+      "data": {
+        "app": "details",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "details"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Outbound:No requests",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 1,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "v1",
+        "workload": "details-v1",
+        "id": "e73d17c7ce69b6449aa320b78d088e1679f604d5ef299d5c7e4816193c90223d",
+        "parent": "ee30ec3824c952c6a97c245cb381968595af81dfb3951299315770d4dc205841",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "e73d17c7ce69b6449aa320b78d088e1679f604d5ef299d5c7e4816193c90223d",
+      "shape": "rect",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "v1"
+    },
+    {
+      "data": {
+        "app": "kiali-traffic-generator",
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {},
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Inbound:No requests",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Outbound:0.00%",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {},
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": null,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 1,
+        "isRoot": true,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "latest",
+        "workload": "kiali-traffic-generator",
+        "id": "0d2eed710a9c76de480b9d24d064da9f69e416a52b72770044e4452a53ced5be",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "0d2eed710a9c76de480b9d24d064da9f69e416a52b72770044e4452a53ced5be",
+      "shape": "rect",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "kiali-traffic-generator"
+    },
+    {
+      "data": {
+        "app": "productpage",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "productpage"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "hasRequestRouting": true,
+        "hasVS": {
+          "hostnames": ["*"]
+        },
+        "healthData": {
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "Inbound: 0.00%",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 1,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 1,
+        "service": "productpage",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+        "parent": "15e753d164d02320b78b4db88c02828eb2802fc425916fe849f97a464c25df80",
+        "nodeType": "service",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+      "shape": "rhombus",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "productpage"
+    },
+    {
+      "data": {
+        "app": "productpage",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "productpage"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 2
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Outbound:0.00%",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 2
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 1,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 2,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "v1",
+        "workload": "productpage-v1",
+        "id": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+        "parent": "15e753d164d02320b78b4db88c02828eb2802fc425916fe849f97a464c25df80",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+      "shape": "rect",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "v1"
+    },
+    {
+      "data": {
+        "app": "ratings",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "ratings"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Degraded",
+                  "color": "var(--pf-v5-global--warning-color--100)",
+                  "priority": 3,
+                  "class": "icon-degraded"
+                },
+                "children": [
+                  {
+                    "text": "Inbound: 0.61%",
+                    "status": {
+                      "name": "Degraded",
+                      "color": "var(--pf-v5-global--warning-color--100)",
+                      "priority": 3,
+                      "class": "icon-degraded"
+                    },
+                    "value": 0.6106870229007634
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Degraded",
+                "color": "var(--pf-v5-global--warning-color--100)",
+                "priority": 3,
+                "class": "icon-degraded"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0.6106870229007634
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 0.66,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": 0.004,
+        "httpInNoResponse": null,
+        "httpOut": 0.66,
+        "service": "ratings",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+        "parent": "b7a3aed047b45436340c6f1207e95cb39c88368d012458b6ce9a04a52f72f20f",
+        "nodeType": "service",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Degraded"
+      },
+      "height": 50,
+      "id": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+      "shape": "rhombus",
+      "status": "warning",
+      "type": "node",
+      "width": 50,
+      "label": "ratings"
+    },
+    {
+      "data": {
+        "app": "ratings",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "ratings"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Degraded",
+                  "color": "var(--pf-v5-global--warning-color--100)",
+                  "priority": 3,
+                  "class": "icon-degraded"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Degraded",
+                      "color": "var(--pf-v5-global--warning-color--100)",
+                      "priority": 3,
+                      "class": "icon-degraded"
+                    },
+                    "text": "Inbound:0.61%",
+                    "value": 0.6106870229007634
+                  },
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Outbound:No requests",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Degraded",
+                "color": "var(--pf-v5-global--warning-color--100)",
+                "priority": 3,
+                "class": "icon-degraded"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0.6106870229007634
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.651,
+                "503": 0.004
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 0.66,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": 0.004,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "v1",
+        "workload": "ratings-v1",
+        "id": "055acd1ee48a90ba90aa90df8a0d789664810dc5036eaebc0bf19a19e0834abe",
+        "parent": "b7a3aed047b45436340c6f1207e95cb39c88368d012458b6ce9a04a52f72f20f",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Degraded"
+      },
+      "height": 50,
+      "id": "055acd1ee48a90ba90aa90df8a0d789664810dc5036eaebc0bf19a19e0834abe",
+      "shape": "rect",
+      "status": "warning",
+      "type": "node",
+      "width": 50,
+      "label": "v1"
+    },
+    {
+      "data": {
+        "app": "reviews",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "reviews"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "text": "Inbound: 0.00%",
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 1
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 1,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 1,
+        "service": "reviews",
+        "tcpIn": null,
+        "tcpOut": null,
+        "id": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+        "parent": "a7f0ea966626a632f524c63ca4d794ed666f3415f3544b989474d27aad08c694",
+        "nodeType": "service",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+      "shape": "rhombus",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "reviews"
+    },
+    {
+      "data": {
+        "app": "reviews",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "reviews"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.349
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "No health information",
+                      "color": "var(--pf-v5-global--Color--200)",
+                      "priority": 0,
+                      "class": "icon-na"
+                    },
+                    "text": "Outbound:No requests",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.349
+              }
+            },
+            "outbound": {},
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 0.35,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": null,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "v1",
+        "workload": "reviews-v1",
+        "id": "9a60fd88bb986e9cc15ba01934a9e967727c84861bec05158b59a85d04300c57",
+        "parent": "a7f0ea966626a632f524c63ca4d794ed666f3415f3544b989474d27aad08c694",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "9a60fd88bb986e9cc15ba01934a9e967727c84861bec05158b59a85d04300c57",
+      "shape": "rect",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "v1"
+    },
+    {
+      "data": {
+        "app": "reviews",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "reviews"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.328
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 0.326,
+                "503": 0.004
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Degraded",
+                  "color": "var(--pf-v5-global--warning-color--100)",
+                  "priority": 3,
+                  "class": "icon-degraded"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "Degraded",
+                      "color": "var(--pf-v5-global--warning-color--100)",
+                      "priority": 3,
+                      "class": "icon-degraded"
+                    },
+                    "text": "Outbound:1.21%",
+                    "value": 1.2121212121212122
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Degraded",
+                "color": "var(--pf-v5-global--warning-color--100)",
+                "priority": 3,
+                "class": "icon-degraded"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0.60790273556231
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.328
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 0.326,
+                "503": 0.004
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 0.33,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 0.33,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "v2",
+        "workload": "reviews-v2",
+        "id": "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+        "parent": "a7f0ea966626a632f524c63ca4d794ed666f3415f3544b989474d27aad08c694",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Degraded"
+      },
+      "height": 50,
+      "id": "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+      "shape": "rect",
+      "status": "warning",
+      "type": "node",
+      "width": 50,
+      "label": "v2"
+    },
+    {
+      "data": {
+        "app": "reviews",
+        "destServices": [
+          {
+            "cluster": "Kubernetes",
+            "namespace": "bookinfo",
+            "name": "reviews"
+          }
+        ],
+        "grpcIn": null,
+        "grpcInErr": null,
+        "grpcOut": null,
+        "healthData": {
+          "workloadStatuses": [],
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.323
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 0.325
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "health": {
+          "health": {
+            "items": [
+              {
+                "title": "Pod Status",
+                "status": {
+                  "name": "No health information",
+                  "color": "var(--pf-v5-global--Color--200)",
+                  "priority": 0,
+                  "class": "icon-na"
+                },
+                "children": []
+              },
+              {
+                "title": "Traffic Status (Last 10m)",
+                "status": {
+                  "name": "Healthy",
+                  "color": "var(--pf-v5-global--success-color--100)",
+                  "priority": 1,
+                  "class": "icon-healthy"
+                },
+                "children": [
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Inbound:0.00%",
+                    "value": 0
+                  },
+                  {
+                    "status": {
+                      "name": "Healthy",
+                      "color": "var(--pf-v5-global--success-color--100)",
+                      "priority": 1,
+                      "class": "icon-healthy"
+                    },
+                    "text": "Outbound:0.00%",
+                    "value": 0
+                  }
+                ]
+              }
+            ],
+            "statusConfig": {
+              "title": "Traffic Status (Last 10m)",
+              "status": {
+                "name": "Healthy",
+                "color": "var(--pf-v5-global--success-color--100)",
+                "priority": 1,
+                "class": "icon-healthy"
+              },
+              "threshold": {
+                "code": {},
+                "degraded": 0,
+                "failure": 10,
+                "protocol": {},
+                "direction": {}
+              },
+              "value": 0
+            }
+          },
+          "requests": {
+            "inbound": {
+              "http": {
+                "200": 0.323
+              }
+            },
+            "outbound": {
+              "http": {
+                "200": 0.325
+              }
+            },
+            "healthAnnotations": {}
+          }
+        },
+        "httpIn": 0.32,
+        "httpIn3xx": null,
+        "httpIn4xx": null,
+        "httpIn5xx": null,
+        "httpInNoResponse": null,
+        "httpOut": 0.33,
+        "tcpIn": null,
+        "tcpOut": null,
+        "version": "v3",
+        "workload": "reviews-v3",
+        "id": "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6",
+        "parent": "a7f0ea966626a632f524c63ca4d794ed666f3415f3544b989474d27aad08c694",
+        "nodeType": "app",
+        "cluster": "Kubernetes",
+        "namespace": "bookinfo",
+        "healthStatus": "Healthy"
+      },
+      "height": 50,
+      "id": "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6",
+      "shape": "rect",
+      "status": "success",
+      "type": "node",
+      "width": 50,
+      "label": "v3"
+    }
+  ],
+  "edges": [
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 1,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 100,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "productpage.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "e8d8b5b675d24521f91705859c590bb5e2df2217c46d91077cedae96da787da7",
+        "source": "0d2eed710a9c76de480b9d24d064da9f69e416a52b72770044e4452a53ced5be",
+        "target": "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "1rps",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "e8d8b5b675d24521f91705859c590bb5e2df2217c46d91077cedae96da787da7",
+      "source": "0d2eed710a9c76de480b9d24d064da9f69e416a52b72770044e4452a53ced5be",
+      "target": "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 1,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 100,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "productpage.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "c7d55f74489a0a50489cf9de929602d1f6e3d0ac15fdb3bb6259949600e0b633",
+        "source": "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+        "target": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "1rps",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "c7d55f74489a0a50489cf9de929602d1f6e3d0ac15fdb3bb6259949600e0b633",
+      "source": "67b0759a08c2dad027cefe1e1d7dfa26c04ed16e5d99ce76e0fb76dfb6ea29e7",
+      "target": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 0.66,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0.004,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0.6,
+        "httpPercentReq": 100,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "99.4"
+            },
+            "hosts": {
+              "ratings.bookinfo.svc.cluster.local": "99.4"
+            }
+          },
+          "503": {
+            "flags": {
+              "-": "0.3",
+              "UC": "0.3"
+            },
+            "hosts": {
+              "ratings.bookinfo.svc.cluster.local": "0.6"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "a36fb73dd568fce8e83acf2f6f8e471c7210acc596ab4c9ffbb03fd97483d270",
+        "source": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+        "target": "055acd1ee48a90ba90aa90df8a0d789664810dc5036eaebc0bf19a19e0834abe",
+        "isMtls": null,
+        "healthStatus": "Degraded",
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--warning-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "0.66rps\n0.6%err",
+        "tagStatus": "warning"
+      },
+      "edgeStyle": "solid",
+      "id": "a36fb73dd568fce8e83acf2f6f8e471c7210acc596ab4c9ffbb03fd97483d270",
+      "source": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+      "target": "055acd1ee48a90ba90aa90df8a0d789664810dc5036eaebc0bf19a19e0834abe",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 0.35,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 34.9,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "reviews.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "ad5e102260107b6a502176ef47f7ca4fe8349c0c50f4eab375c092ba688712db",
+        "source": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+        "target": "9a60fd88bb986e9cc15ba01934a9e967727c84861bec05158b59a85d04300c57",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "0.35rps\n34.9%",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "ad5e102260107b6a502176ef47f7ca4fe8349c0c50f4eab375c092ba688712db",
+      "source": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+      "target": "9a60fd88bb986e9cc15ba01934a9e967727c84861bec05158b59a85d04300c57",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 0.32,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 32.3,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "reviews.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "79db8b374993e1e06463d7a842cba32adf003418fd139e798f21b1b81b75339c",
+        "source": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+        "target": "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "0.32rps\n32.3%",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "79db8b374993e1e06463d7a842cba32adf003418fd139e798f21b1b81b75339c",
+      "source": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+      "target": "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 0.33,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 32.8,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "reviews.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "c1a7fe654f99cfada03a25ea6cdedf194a1ce06b7f960e3b28a2af9902105059",
+        "source": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+        "target": "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "0.33rps\n32.8%",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "c1a7fe654f99cfada03a25ea6cdedf194a1ce06b7f960e3b28a2af9902105059",
+      "source": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+      "target": "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 1,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 100,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "details.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "1cbe0f4da9e5693eb7bba37afdb1dd18ad21ff06605fc8e1ef933ef1af5dd2a8",
+        "source": "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+        "target": "e73d17c7ce69b6449aa320b78d088e1679f604d5ef299d5c7e4816193c90223d",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "1rps",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "1cbe0f4da9e5693eb7bba37afdb1dd18ad21ff06605fc8e1ef933ef1af5dd2a8",
+      "source": "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+      "target": "e73d17c7ce69b6449aa320b78d088e1679f604d5ef299d5c7e4816193c90223d",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 0.33,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 100,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "ratings.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "218dd394d8d76154ff23aadeeb338ae2374d05c60079f172a3aea1f9f89d35e7",
+        "source": "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6",
+        "target": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "0.33rps",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "218dd394d8d76154ff23aadeeb338ae2374d05c60079f172a3aea1f9f89d35e7",
+      "source": "e31fea265aa898ba3a63d30e31913960a2a45fa3f589b8a2fcf2ff0747a46bc6",
+      "target": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 1,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 50,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "reviews.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "673255c47e882ff8cdee898df528b00cb875e0ff71337d537d0816a1856df238",
+        "source": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+        "target": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "1rps\n50%",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "673255c47e882ff8cdee898df528b00cb875e0ff71337d537d0816a1856df238",
+      "source": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+      "target": "bc40873761174888869f91912758eaa77cbd8ff835000d16dcde347442b17a10",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 1,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0,
+        "httpNoResponse": 0,
+        "httpPercentErr": 0,
+        "httpPercentReq": 50,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "100.0"
+            },
+            "hosts": {
+              "details.bookinfo.svc.cluster.local": "100.0"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "c7f35cc32f3dd74f75051c1265dbf4c660947a973aed332acee4db0c5da15af9",
+        "source": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+        "target": "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+        "isMtls": null,
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--success-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "1rps\n50%",
+        "tagStatus": "success"
+      },
+      "edgeStyle": "solid",
+      "id": "c7f35cc32f3dd74f75051c1265dbf4c660947a973aed332acee4db0c5da15af9",
+      "source": "efcc2ed361215b3c82e67fd0d0cb09899b9ee1e18dee32e8e828b487a7cb9343",
+      "target": "bf3790a7d4ebc316387250389da94818b402ecc9e7cfe6b39f89c40d5e7370b8",
+      "type": "edge"
+    },
+    {
+      "animationSpeed": "none",
+      "data": {
+        "grpc": null,
+        "grpcErr": null,
+        "grpcPercentErr": null,
+        "grpcPercentReq": null,
+        "hasTraffic": true,
+        "http": 0.33,
+        "http3xx": 0,
+        "http4xx": 0,
+        "http5xx": 0.004,
+        "httpNoResponse": 0,
+        "httpPercentErr": 1.2,
+        "httpPercentReq": 100,
+        "isMTLS": -1,
+        "protocol": "http",
+        "responses": {
+          "200": {
+            "flags": {
+              "-": "98.8"
+            },
+            "hosts": {
+              "ratings.bookinfo.svc.cluster.local": "98.8"
+            }
+          },
+          "503": {
+            "flags": {
+              "-": "0.6",
+              "UC": "0.6"
+            },
+            "hosts": {
+              "ratings.bookinfo.svc.cluster.local": "1.2"
+            }
+          }
+        },
+        "responseTime": null,
+        "tcp": null,
+        "throughput": null,
+        "id": "3c2b3bd5a5424269e76186e16382eff51cd383ccc360154478782059a2aa7a80",
+        "source": "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+        "target": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+        "isMtls": null,
+        "healthStatus": "Degraded",
+        "endTerminalType": "directional",
+        "pathStyle": {
+          "stroke": "var(--pf-v5-global--warning-color--100)",
+          "strokeWidth": 3
+        },
+        "tag": "0.33rps\n1%err",
+        "tagStatus": "warning"
+      },
+      "edgeStyle": "solid",
+      "id": "3c2b3bd5a5424269e76186e16382eff51cd383ccc360154478782059a2aa7a80",
+      "source": "f891bcc76364f5421f0b36378f076a925fa460f7408d4cd36e17e68cc2fcd162",
+      "target": "82d72a9fde4cd0cd9da011281f8564a9c795864018e37dcf801a65a419ff3413",
+      "type": "edge"
+    }
+  ],
+  "graph": {
+    "id": "g1",
+    "type": "graph",
+    "layout": "Dagre"
+  }
+}

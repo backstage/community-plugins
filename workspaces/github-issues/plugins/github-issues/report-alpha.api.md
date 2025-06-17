@@ -8,7 +8,7 @@
 import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -23,7 +23,7 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'api:github-issues': ExtensionDefinition<{
+    [x: `api:${string}`]: ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -38,7 +38,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:github-issues/overview': ExtensionDefinition<{
+    [x: `entity-card:${string}/overview`]: ExtensionDefinition<{
       kind: 'entity-card';
       name: 'overview';
       config: {
@@ -79,7 +79,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:github-issues/entity': ExtensionDefinition<{
+    [x: `entity-content:${string}/entity`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {

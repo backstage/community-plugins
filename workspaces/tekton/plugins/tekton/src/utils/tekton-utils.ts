@@ -18,7 +18,6 @@ import {
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
 
-import { pluralize } from '@patternfly/react-core';
 import { get } from 'lodash';
 
 import {
@@ -41,6 +40,8 @@ import {
   PipelineRunScanResults,
   TektonResponseData,
 } from '../types/types';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../translation';
 
 export const getClusters = (k8sObjects: ObjectsByEntityResponse) => {
   const clusters: string[] = k8sObjects.items.map(
@@ -147,9 +148,13 @@ export const getTaskStatusOfPLR = (
   return taskStatus;
 };
 
-export const getDuration = (seconds: number, long?: boolean): string => {
+export const getDuration = (
+  t: TranslationFunction<typeof tektonTranslationRef.T>,
+  seconds: number,
+  long?: boolean,
+): string => {
   if (seconds === 0) {
-    return 'less than a sec';
+    return t('pipelineRunDuration.lessThanSec');
   }
   let sec = Math.round(seconds);
   let min = 0;
@@ -164,15 +169,19 @@ export const getDuration = (seconds: number, long?: boolean): string => {
     min %= 60;
   }
   if (hr > 0) {
-    duration += long ? pluralize(hr, 'hour', 'hours') : `${hr}h`;
+    duration += long ? t('pipelineRunDuration.hour', { count: hr }) : `${hr}h`;
     duration += ' ';
   }
   if (min > 0) {
-    duration += long ? pluralize(min, 'minute', 'minutes') : `${min}m`;
+    duration += long
+      ? t('pipelineRunDuration.minute', { count: min })
+      : `${min}m`;
     duration += ' ';
   }
   if (sec > 0) {
-    duration += long ? pluralize(sec, 'second', 'seconds') : `${sec}s`;
+    duration += long
+      ? t('pipelineRunDuration.second', { count: sec })
+      : `${sec}s`;
   }
 
   return duration.trim();
@@ -283,15 +292,19 @@ export const getComparator = (
 };
 
 export const calculateDuration = (
+  t: TranslationFunction<typeof tektonTranslationRef.T>,
   startTime: string,
   endTime?: string,
   long?: boolean,
 ) => {
   const durationInSeconds = calculateDurationInSeconds(startTime, endTime);
-  return getDuration(durationInSeconds, long);
+  return getDuration(t, durationInSeconds, long);
 };
 
-export const pipelineRunDuration = (run: PipelineRunKind): string => {
+export const pipelineRunDuration = (
+  run: PipelineRunKind,
+  t: TranslationFunction<typeof tektonTranslationRef.T>,
+): string => {
   if (!run || Object.keys(run).length === 0) {
     return '-';
   }
@@ -302,5 +315,5 @@ export const pipelineRunDuration = (run: PipelineRunKind): string => {
   if (!startTime || (!completionTime && pipelineRunStatus(run) !== 'Running')) {
     return '-';
   }
-  return calculateDuration(startTime, completionTime, true);
+  return calculateDuration(t, startTime, completionTime, true);
 };

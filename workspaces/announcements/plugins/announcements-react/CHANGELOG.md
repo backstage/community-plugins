@@ -1,5 +1,29 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.6.0
+
+### Minor Changes
+
+- 7e38fa0: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- dc57fe9: Optimize query by filtering only entries with `kind: group`. Add `displayName` to the "On behalf of" dropdown for easier group identification and selection.
+- Updated dependencies [7e38fa0]
+  - @backstage-community/plugin-announcements-common@0.5.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 9c94358: Added support for submitting announcements on behalf of a team the user is a member of.
+  This field is optional. if not specified, the announcement will be submitted using the current publisher user.
+
+### Patch Changes
+
+- Updated dependencies [9c94358]
+  - @backstage-community/plugin-announcements-common@0.4.0
+
 ## 0.4.4
 
 ### Patch Changes

@@ -1,5 +1,33 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- a6a149c: Bump backstage version to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [a6a149c]
+  - @backstage-community/plugin-redhat-argocd-common@1.6.0
+
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [6cb63d0]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.2
+
+## 0.7.0
+
+### Minor Changes
+
+- 90b54c9: allow appNamespace and project to be used with appName
+
+### Patch Changes
+
+- 9c78a8d: Fix issue where backend does not return instance url in the metadata
+
 ## 0.6.1
 
 ### Patch Changes

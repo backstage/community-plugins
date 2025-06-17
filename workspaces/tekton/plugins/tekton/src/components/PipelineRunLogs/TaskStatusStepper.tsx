@@ -70,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StepTimeTicker = ({ step }: { step: TaskStep }) => {
   const [time, setTime] = useState('');
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   useInterval(() => {
     if (!step.startedAt) {
@@ -77,7 +78,7 @@ const StepTimeTicker = ({ step }: { step: TaskStep }) => {
       return;
     }
 
-    setTime(calculateDuration(step.startedAt, step.endedAt));
+    setTime(calculateDuration(t, step.startedAt, step.endedAt));
   }, 1000);
 
   return <Typography variant="caption">{time}</Typography>;

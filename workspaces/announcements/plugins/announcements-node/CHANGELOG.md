@@ -1,5 +1,23 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.4.0
+
+### Minor Changes
+
+- 7e38fa0: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [7e38fa0]
+  - @backstage-community/plugin-announcements-common@0.5.0
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [9c94358]
+  - @backstage-community/plugin-announcements-common@0.4.0
+
 ## 0.3.3
 
 ### Patch Changes

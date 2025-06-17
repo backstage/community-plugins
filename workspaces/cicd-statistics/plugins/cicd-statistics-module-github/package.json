@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cicd-statistics-module-github",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "CI/CD Statistics plugin module; Github CICD",
   "backstage": {
     "role": "frontend-plugin-module",
@@ -54,19 +54,19 @@
   },
   "dependencies": {
     "@backstage-community/plugin-cicd-statistics": "workspace:^",
-    "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-plugin-api": "^1.10.6",
-    "@backstage/frontend-plugin-api": "^0.10.1",
-    "@backstage/integration": "^1.16.3",
+    "@backstage/catalog-model": "^1.7.4",
+    "@backstage/core-plugin-api": "^1.10.7",
+    "@backstage/frontend-plugin-api": "^0.10.2",
+    "@backstage/integration": "^1.17.0",
     "@octokit/rest": "^21.1.1",
     "p-limit": "^3.1.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.0",
-    "@backstage/dev-utils": "^1.1.9",
-    "@backstage/integration": "^1.16.3",
-    "@backstage/plugin-catalog": "^1.29.0",
-    "@backstage/plugin-catalog-react": "^1.17.0",
+    "@backstage/cli": "^0.32.1",
+    "@backstage/dev-utils": "^1.1.10",
+    "@backstage/integration": "^1.17.0",
+    "@backstage/plugin-catalog": "^1.30.0",
+    "@backstage/plugin-catalog-react": "^1.18.0",
     "@types/react": "^16.13.1 || ^17.0.0",
     "@types/react-dom": "^18.2.19",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

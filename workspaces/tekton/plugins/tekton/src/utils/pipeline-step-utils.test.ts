@@ -23,6 +23,31 @@ import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { createStepStatus } from './pipeline-step-utils';
 import { getTaskStatus } from './pipelineRun-utils';
 
+const mockFunctionT: any = (key: string, options?: { count: number }) => {
+  if (key === 'pipelineRunDuration.lessThanSec') {
+    return 'less than a sec';
+  }
+  if (key === 'pipelineRunDuration.second') {
+    if (options?.count === 1) {
+      return '1 second';
+    }
+    return `${options?.count} seconds`;
+  }
+  if (key === 'pipelineRunDuration.minute') {
+    if (options?.count === 1) {
+      return '1 minute';
+    }
+    return `${options?.count} minutes`;
+  }
+  if (key === 'pipelineRunDuration.hour') {
+    if (options?.count === 1) {
+      return '1 hour';
+    }
+    return `${options?.count} hours`;
+  }
+  return key;
+};
+
 describe('createStepStatus', () => {
   it('should return the task step status', () => {
     const computedTask: PipelineTaskWithStatus = {
@@ -86,7 +111,7 @@ describe('createStepStatus', () => {
       mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind,
       computedTask,
     );
-    const stepStatus = createStepStatus(step, taskStatus);
+    const stepStatus = createStepStatus(step, taskStatus, mockFunctionT);
     expect(stepStatus).toEqual({
       duration: '1s',
       name: 'oc',
@@ -98,6 +123,7 @@ describe('createStepStatus', () => {
     const stepStatus = createStepStatus(
       { name: '' },
       { reason: ComputedStatus.Other },
+      mockFunctionT,
     );
     expect(stepStatus).toEqual({
       duration: undefined,

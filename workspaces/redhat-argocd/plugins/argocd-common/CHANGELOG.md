@@ -1,5 +1,17 @@
 # @backstage-community/plugin-redhat-argocd-common
 
+## 1.6.0
+
+### Minor Changes
+
+- a6a149c: Bump backstage version to v1.39.1
+
+## 1.5.2
+
+### Patch Changes
+
+- 6cb63d0: Resolve 'React not defined error' due to misconfigured plugin level tsconfig
+
 ## 1.5.1
 
 ### Patch Changes

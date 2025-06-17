@@ -115,8 +115,7 @@ When defining the radar entries you can see the available properties on the file
 
 ### Sample
 
-This is a sample on how the JSON file could look like.
-The TS example can be found [here](src/sample.ts).
+This is a sample on how the JSON file could look like. A more detailed example can be found in the [sampleTechRadarResponse.json](../tech-radar-common/src/sampleTechRadarResponse.json) file.
 
 ```JSON
 {

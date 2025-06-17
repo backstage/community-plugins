@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-common [1.8.2](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-common@1.8.1...@backstage-community/plugin-rbac-common@1.8.2) (2024-08-06)
 
+## 1.17.0
+
+### Minor Changes
+
+- a42945e: Introduce a type that defines an additional list of plugin IDs.
+
 ## 1.16.1
 
 ### Patch Changes

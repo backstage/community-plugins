@@ -1,5 +1,34 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.21.0
+
+### Minor Changes
+
+- a6a149c: Bump backstage version to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [a6a149c]
+  - @backstage-community/plugin-redhat-argocd-common@1.6.0
+
+## 1.20.1
+
+### Patch Changes
+
+- 6cb63d0: Resolve 'React not defined error' due to misconfigured plugin level tsconfig
+- Updated dependencies [6cb63d0]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.2
+
+## 1.20.0
+
+### Minor Changes
+
+- 90b54c9: allow appNamespace and project to be used with appName
+
+### Patch Changes
+
+- 9c78a8d: Fix issue where backend does not return instance url in the metadata
+
 ## 1.19.2
 
 ### Patch Changes

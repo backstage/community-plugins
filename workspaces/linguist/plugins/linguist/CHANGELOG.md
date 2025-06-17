@@ -1,5 +1,22 @@
 # @backstage-community/plugin-linguist
 
+## 0.8.1
+
+### Patch Changes
+
+- 226bccb: Updated the `createFrontendPlugin` call to use `pluginId` instead of the deprecated `id`
+
+## 0.8.0
+
+### Minor Changes
+
+- adc3ea9: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [adc3ea9]
+  - @backstage-community/plugin-linguist-common@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes

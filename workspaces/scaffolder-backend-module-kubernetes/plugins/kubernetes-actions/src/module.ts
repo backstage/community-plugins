@@ -22,6 +22,9 @@ import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-no
 
 import { createKubernetesNamespaceAction } from './actions';
 
+/**
+ * @public
+ */
 export const scaffolderModuleKubernetesAction = createBackendModule({
   moduleId: 'scaffolder-backend-kubernetes',
   pluginId: 'scaffolder',

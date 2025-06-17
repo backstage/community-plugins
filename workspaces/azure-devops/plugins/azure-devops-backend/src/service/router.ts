@@ -115,6 +115,9 @@ export async function createRouter(
     res.status(200).json(buildList);
   });
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   router.get('/repo-builds/:projectName/:repoName', async (req, res) => {
     const { projectName, repoName } = req.params;
 
@@ -266,6 +269,9 @@ export async function createRouter(
     res.status(200).json(allTeams);
   });
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   router.get(
     '/build-definitions/:projectName/:definitionName',
     async (req, res) => {
