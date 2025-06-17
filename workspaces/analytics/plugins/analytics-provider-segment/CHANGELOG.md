@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.16.0
+
+### Minor Changes
+
+- e86934c: Updated the SegmentAnalytics class .fromConfig signature to better conform with Backstage recommended API
+- 4ed9028: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+
 ## 1.15.0
 
 ### Minor Changes
