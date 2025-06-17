@@ -38,7 +38,6 @@ interface ChatFeedbackProps {
 
 function ChatFeedback({
   handleMessageSubmit,
-  chatbotApi,
   messages,
   feedback,
   isTyping,

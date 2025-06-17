@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable react/react-in-jsx-scope*/
+
 import ChatFeedback from './ChatFeedback';
 import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
@@ -32,7 +35,6 @@ import { ChatbotApi } from '../apis';
 import { useObservable } from 'react-use';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import React from 'react';
 
 interface IChatFeedback {
   [key: number]: Feedback;

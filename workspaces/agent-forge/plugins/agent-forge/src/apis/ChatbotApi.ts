@@ -16,7 +16,12 @@
 
 import { A2AClient } from '../a2a/client'; // Import necessary types
 import { v4 as uuidv4 } from 'uuid'; // Example for generating task IDs
-import { MessageSendParams } from '../a2a/schema';
+import {
+  MessageSendParams,
+  SendMessageResponse,
+  Task,
+  TextPart,
+} from '../a2a/schema';
 
 export interface IChatbotApiOptions {}
 
@@ -51,20 +56,27 @@ export class ChatbotApi {
         sendParams.message.contextId = this.contextId;
       }
       // Method now returns Task | null directly
-      const taskResult: Task | null = await this.client?.sendMessage(
-        sendParams,
-      );
-      this.contextId = taskResult.result.contextId;
-      const status = taskResult.result.status.state;
-      let result = '';
+      const taskResult: SendMessageResponse | undefined =
+        await this.client?.sendMessage(sendParams);
+
+      const task: Task = taskResult?.result as Task;
+
+      this.contextId = task.contextId;
+      const status = task.status.state;
+      let result: string | undefined = '';
       if (status === 'completed') {
-        result = taskResult.result.artifacts[0].parts[0].text;
+        if (task.artifacts) {
+          const part = task.artifacts[0].parts[0] as TextPart;
+          result = part.text;
+        }
       } else {
-        result = taskResult.result.status.message.parts[0].text;
+        const part = task.status.message?.parts[0] as TextPart;
+        result = part.text;
       }
 
       return result;
     } catch (error) {
+      // console.log(error)
       return 'Error connecting to agent';
     }
   }
