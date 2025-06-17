@@ -74,6 +74,7 @@ import {
   EntityAzurePullRequestsContent,
   EntityAzureReadmeCard,
   isAzureDevOpsAvailable,
+  isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
 
 const techdocsContent = (
@@ -88,7 +89,7 @@ const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
   // You can for example enforce that all components of type 'service' should use Azure DevOps Pipelines
   <EntitySwitch>
-    <EntitySwitch.Case if={isAzureDevOpsAvailable}>
+    <EntitySwitch.Case if={isAzurePipelinesAvailable || isAzureDevOpsAvailable}>
       <EntityAzurePipelinesContent defaultLimit={25} />
     </EntitySwitch.Case>
 

@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.41.6
+
+### Patch Changes
+
+- 6c4ee27: Replaced `getTitleCase` from `shared-react` with the `capitalizeFirstLetter` utility from the RBAC plugin as part of sunsetting the `shared-react` package.
+- e141237: Improve `useRoles` hook to support paginated role condition fetching using `Promise.allSettled`, ensuring partial data availability even if individual condition fetch fails.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+- Updated dependencies [a42945e]
+  - @backstage-community/plugin-rbac-common@1.17.0
+
 ## 1.41.5
 
 ### Patch Changes

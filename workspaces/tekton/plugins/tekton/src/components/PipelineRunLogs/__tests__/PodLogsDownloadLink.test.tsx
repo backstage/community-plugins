@@ -15,10 +15,9 @@
  */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
-import { downloadLogFile } from '@janus-idp/shared-react';
-
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import { getPodLogs } from '../../../utils/log-downloader-utils';
+import { downloadLogFile } from '../../../utils/download-log-file-utils';
 import PodLogsDownloadLink from '../PodLogsDownloadLink';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { kubernetesProxyApiRef } from '../../../types/types';
@@ -27,8 +26,7 @@ jest.mock('../../../utils/log-downloader-utils', () => ({
   getPodLogs: jest.fn(),
 }));
 
-jest.mock('@janus-idp/shared-react', () => ({
-  ...jest.requireActual('@janus-idp/shared-react'),
+jest.mock('../../../utils/download-log-file-utils', () => ({
   downloadLogFile: jest.fn(),
 }));
 

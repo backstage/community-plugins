@@ -5,7 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { InfoCardVariants } from '@backstage/core-components';
@@ -119,7 +119,6 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gatePassed': 'Gate passed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gateFailed': 'Gate failed';
-    readonly 'sonarQubeTable.entityLinkTitle': 'View Component details';
     readonly 'sonarQubeTable.columnsTitle.component': 'Component';
     readonly 'sonarQubeTable.columnsTitle.vulnerabilities': 'Vulnerabilities';
     readonly 'sonarQubeTable.columnsTitle.bugs': 'Bugs';

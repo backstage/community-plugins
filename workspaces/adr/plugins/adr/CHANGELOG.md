@@ -1,5 +1,16 @@
 # @backstage-community/plugin-adr
 
+## 0.11.0
+
+### Minor Changes
+
+- fc4fa2c: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [fc4fa2c]
+  - @backstage-community/plugin-adr-common@0.8.0
+
 ## 0.10.0
 
 ### Minor Changes

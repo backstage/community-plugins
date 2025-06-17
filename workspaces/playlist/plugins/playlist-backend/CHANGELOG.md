@@ -1,5 +1,17 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- 79ebcc3: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- a52f5c1: Heavily improved the speed of querying entities for a playlist
+- Updated dependencies [79ebcc3]
+  - @backstage-community/plugin-playlist-common@0.6.0
+
 ## 0.8.0
 
 ### Minor Changes

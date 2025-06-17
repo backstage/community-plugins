@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Link, TableColumn } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components';
 import {
   EntityPeekAheadPopover,
   EntityRefLink,
 } from '@backstage/plugin-catalog-react';
-import IconButton from '@material-ui/core/IconButton';
-import LinkIcon from '@material-ui/icons/Link';
-import Typography from '@material-ui/core/Typography';
 import {
   BugReportRatingCard,
   CodeSmellsRatingCard,
@@ -32,53 +29,9 @@ import {
   QualityBadge,
   VulnerabilitiesRatingCard,
 } from '../SonarQubeCard/MetricInsights';
-import { EntityLinkProps, SonarQubeTableRow } from './types';
+import { SonarQubeTableRow } from './types';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { sonarqubeTranslationRef } from '../../translation';
-
-const EntityLink = ({
-  entityRef,
-  title,
-  url,
-  kind,
-  namespace,
-}: EntityLinkProps) => {
-  return (
-    <Typography
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0',
-        margin: '0',
-      }}
-    >
-      <EntityPeekAheadPopover entityRef={entityRef}>
-        <EntityRefLink
-          entityRef={{
-            kind: kind,
-            namespace: namespace,
-            name: entityRef.split('/')[1],
-          }}
-        />
-      </EntityPeekAheadPopover>
-      <Link to={url} title={title} target="_blank">
-        <IconButton
-          aria-label="link"
-          color="inherit"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0',
-            paddingLeft: '10px',
-            margin: '0',
-          }}
-        >
-          <LinkIcon />
-        </IconButton>
-      </Link>
-    </Typography>
-  );
-};
 
 export const getColumns = (
   t: TranslationFunction<typeof sonarqubeTranslationRef.T>,
@@ -99,19 +52,12 @@ export const getColumns = (
         if (!resolved?.name) {
           return null;
         }
-        const scoreCardComponentUrl = `/catalog/default/component/${
-          resolved?.name
-        }/${resolved?.isSonarQubeAnnotationEnabled ? 'scorecard' : ''}`;
+        const entityRef =
+          resolved.entityRef || `component:default/${resolved.name}`;
         return (
-          <>
-            <EntityLink
-              entityRef={`component:default/${resolved?.name}`}
-              title={t('sonarQubeTable.entityLinkTitle')}
-              url={scoreCardComponentUrl}
-              kind="component"
-              namespace="default"
-            />
-          </>
+          <EntityPeekAheadPopover entityRef={entityRef}>
+            <EntityRefLink entityRef={entityRef} />
+          </EntityPeekAheadPopover>
         );
       },
     },

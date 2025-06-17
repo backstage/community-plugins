@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 3.26.1
+
+### Patch Changes
+
+- 87918c8: PipelineRun list status and duration support i18n
+- 65f826d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
+## 3.26.0
+
+### Minor Changes
+
+- 40d7a3b: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [40d7a3b]
+  - @backstage-community/plugin-tekton-common@1.10.0
+
+## 3.25.3
+
+### Patch Changes
+
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+
 ## 3.25.2
 
 ### Patch Changes

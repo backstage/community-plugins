@@ -47,6 +47,8 @@ import './PipelineRunRow.css';
 import classNames from 'classnames';
 
 import SignedBadgeIcon from '../Icons/SignedBadge';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) => ({
   plrRow: {
@@ -119,6 +121,7 @@ export const PipelineRunRow = ({
 }: PipelineRunRowProps) => {
   const classes = useStyles();
   const uid = row.metadata?.uid;
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   useEffect(() => {
     return setOpen((val: OpenRowStatus) => {
@@ -174,7 +177,7 @@ export const PipelineRunRow = ({
             '-'
           )}
         </TableCell>
-        <TableCell align="left">{pipelineRunDuration(row)}</TableCell>
+        <TableCell align="left">{pipelineRunDuration(row, t)}</TableCell>
         <TableCell align="left">
           <PipelineRunRowActions pipelineRun={row} />
         </TableCell>

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-azure-devops-common
 
+## 0.11.1
+
+### Patch Changes
+
+- ae70011: Moved `getAnnotationValuesFromEntity` to the common package and deprecated the current location. This will be removed in a future version.
+
+## 0.11.0
+
+### Minor Changes
+
+- dd67a17: Backstage version bump to v1.39.0
+
 ## 0.10.0
 
 ### Minor Changes

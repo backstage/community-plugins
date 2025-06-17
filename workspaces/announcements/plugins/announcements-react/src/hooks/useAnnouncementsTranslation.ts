@@ -23,6 +23,6 @@ import { announcementsTranslationRef } from '../translation';
  *
  * @public
  */
-export const useAnnouncementsTranslation = () => {
+export const useAnnouncementsTranslation: () => any = () => {
   return useTranslationRef(announcementsTranslationRef);
 };

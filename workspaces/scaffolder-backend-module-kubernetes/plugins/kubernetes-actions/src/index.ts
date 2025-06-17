@@ -15,7 +15,7 @@
  */
 
 /**
- * The kubernetes module for @backstage/plugin-scaffolder-backend.
+ * The kubernetes module for \@backstage/plugin-scaffolder-backend.
  *
  * @packageDocumentation
  */

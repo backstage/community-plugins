@@ -19,6 +19,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
+import { azureDevOpsPermissions } from '@backstage-community/plugin-azure-devops-common';
 
 /**
  * Azure DevOps backend plugin
@@ -36,6 +37,7 @@ export const azureDevOpsPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
+        permissionsRegistry: coreServices.permissionsRegistry,
       },
       async init({
         config,
@@ -44,6 +46,7 @@ export const azureDevOpsPlugin = createBackendPlugin({
         permissions,
         httpRouter,
         httpAuth,
+        permissionsRegistry,
       }) {
         httpRouter.use(
           await createRouter({
@@ -58,6 +61,7 @@ export const azureDevOpsPlugin = createBackendPlugin({
           path: '/health',
           allow: 'unauthenticated',
         });
+        permissionsRegistry.addPermissions(azureDevOpsPermissions);
       },
     });
   },

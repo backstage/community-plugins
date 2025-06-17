@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.0
+
+### Minor Changes
+
+- f734003: Bump to backstage version 1.39.1
+
 ## 2.1.0
 
 ### Minor Changes

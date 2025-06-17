@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 2.9.0
+
+### Minor Changes
+
+- 279c9ba: Backstage version bump to v1.39.1
+
+## 2.8.0
+
+### Minor Changes
+
+- 4dfe2ff: Add examples
+
 ## 2.7.1
 
 ### Patch Changes
