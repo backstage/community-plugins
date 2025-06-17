@@ -2,11 +2,4 @@
 
 ![NPM Downloads](https://img.shields.io/npm/d18m/%40backstage-community%2Fplugin-acs)
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-To start the app, run:
-
-```sh
-yarn install
-yarn dev
-```
+Refer to this [README](https://github.com/backstage/community-plugins/blob/main/workspaces/acs/plugins/acs/README.md) for instructions to install the plugin in your own Backstage instance and for local development.
