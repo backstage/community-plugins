@@ -1,5 +1,5 @@
 {
-  "name": "@internal/backstage-plugin-agent-forge",
+  "name": "@backstage-community/plugin-agent-forge",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -9,8 +9,17 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/agent-forge/plugins/agent-forge"
+  },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "agent-forge",
+    "pluginPackages": [
+      "@backstage-community/plugin-agent-forge"
+    ]
   },
   "configSchema": "config.d.ts",
   "sideEffects": false,
