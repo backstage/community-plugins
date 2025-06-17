@@ -32,7 +32,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { createTimestamp, delay, makeLinksClickable } from '../utils';
 import { ChatbotApi } from '../apis';
-import { useObservable } from 'react-use';
+import useObservable from 'react-use/esm/useObservable';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 

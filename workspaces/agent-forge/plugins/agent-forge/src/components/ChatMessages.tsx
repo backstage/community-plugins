@@ -27,7 +27,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
-import { useAsync } from 'react-use';
+import useAsync from 'react-use/esm/useAsync';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { isProviderField, isModelField } from '../utils/helpers';
 
