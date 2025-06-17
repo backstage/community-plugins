@@ -13,5 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export { scaffolderBackendModuleJenkins as default } from './module';
+export { buildJob } from './build';
+export { copyJob } from './copy';
+export { createJob } from './create';
+export { destroyJob } from './destroy';
+export { disableJob } from './disable';
+export { enableJob } from './enable';
