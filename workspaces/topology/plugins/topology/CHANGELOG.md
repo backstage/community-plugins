@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.1
+
+### Patch Changes
+
+- 6fb7a4d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
 ## 2.2.0
 
 ### Minor Changes
