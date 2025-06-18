@@ -13,7 +13,6 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "^1.28.4",
     "pluginId": "rbac",
     "pluginPackages": [
       "@backstage-community/plugin-rbac",
@@ -54,8 +53,6 @@
     "directory": "workspaces/rbac/plugins/rbac-common"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

@@ -10,7 +10,6 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "supported-versions": "1.32.5",
     "pluginId": "scaffolder",
     "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },
@@ -69,8 +68,6 @@
     "directory": "workspaces/scaffolder-backend-module-servicenow/plugins/scaffolder-backend-module-servicenow"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "backend-plugin-module"
   ],

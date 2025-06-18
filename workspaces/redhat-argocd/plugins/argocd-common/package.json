@@ -12,7 +12,6 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.39.1",
     "pluginId": "redhat-argocd-common",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-common",
     "pluginPackages": [
@@ -45,8 +44,6 @@
     "directory": "workspaces/redhat-argocd/plugins/argocd-common"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

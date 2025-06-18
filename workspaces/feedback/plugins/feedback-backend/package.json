@@ -9,7 +9,6 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.29.2",
     "pluginId": "feedback",
     "pluginPackages": [
       "@backstage-community/plugin-feedback",
@@ -82,8 +81,6 @@
     "directory": "workspaces/feedback/plugins/feedback-backend"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

@@ -9,7 +9,6 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.31.3",
     "pluginId": "kiali",
     "pluginPackages": [
       "@backstage-community/plugin-kiali",
@@ -81,9 +80,5 @@
     "@aljesusg"
   ],
   "author": "The Backstage Community",
-  "bugs": "https://github.com/backstage/community-plugins/issues",
-  "keywords": [
-    "support:tech-preview",
-    "lifecycle:active"
-  ]
+  "bugs": "https://github.com/backstage/community-plugins/issues"
 }
