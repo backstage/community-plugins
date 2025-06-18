@@ -2536,6 +2536,7 @@ __metadata:
     "@backstage/backend-test-utils": "npm:^1.5.0"
     "@backstage/cli": "npm:^0.32.1"
     "@backstage/plugin-scaffolder-node": "npm:^0.8.2"
+    "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.2.2"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/lodash": "npm:^4.17.13"
     fs-extra: "npm:^11.2.0"
@@ -2706,18 +2707,6 @@ __metadata:
     cross-fetch: "npm:^4.0.0"
     uri-template: "npm:^2.0.0"
   checksum: 10/565512931ef340c272ebbffcac7c5f54348ed67a73be80cdecb8768c547a1da41c72b02c0830f3036a06edbc8c77b9720ee5f1f498b2308f799fd409bb4bbbe1
-  languageName: node
-  linkType: hard
-
-"@backstage/catalog-model@npm:^1.7.4":
-  version: 1.7.4
-  resolution: "@backstage/catalog-model@npm:1.7.4"
-  dependencies:
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.1"
-    ajv: "npm:^8.10.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/48c2db2a8144e891319879cec6cae1980088165a910a757b8ebc07dc337b4d8d5c743fbaa3fa916cdd1b5e06635b3a3edbd1e7d8519ac135824f1ba37c5e3ce2
   languageName: node
   linkType: hard
 
@@ -2915,29 +2904,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config-loader@npm:^1.10.1":
-  version: 1.10.1
-  resolution: "@backstage/config-loader@npm:1.10.1"
-  dependencies:
-    "@backstage/cli-common": "npm:^0.1.15"
-    "@backstage/config": "npm:^1.3.2"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.1"
-    "@types/json-schema": "npm:^7.0.6"
-    ajv: "npm:^8.10.0"
-    chokidar: "npm:^3.5.2"
-    fs-extra: "npm:^11.2.0"
-    json-schema: "npm:^0.4.0"
-    json-schema-merge-allof: "npm:^0.8.1"
-    json-schema-traverse: "npm:^1.0.0"
-    lodash: "npm:^4.17.21"
-    minimist: "npm:^1.2.5"
-    typescript-json-schema: "npm:^0.65.0"
-    yaml: "npm:^2.0.0"
-  checksum: 10/61f66e65bf747b07f72c3475a3875c5409442087ca541c749a1ecff6668cb0564294f6b760a2e76e135871bdaf61f2b8bcb2e62d4786d12693400c57422f3b85
-  languageName: node
-  linkType: hard
-
 "@backstage/config@npm:^1.3.2":
   version: 1.3.2
   resolution: "@backstage/config@npm:1.3.2"
@@ -3098,6 +3064,28 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.0"
     "@backstage/types": "npm:^1.2.1"
   checksum: 10/fbd167442f63a1161cd877ddae152c1bdfb5ef1f39cacf04fa0149f8abf6bb8d6d6ffb086dbd618e3533cab2fd51467c36670fd53e2cba9f5fd26ed5d7d8fbfb
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-scaffolder-node-test-utils@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@backstage/plugin-scaffolder-node-test-utils@npm:0.2.2"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.3.1"
+    "@backstage/backend-test-utils": "npm:^1.5.0"
+    "@backstage/plugin-scaffolder-node": "npm:^0.8.2"
+    "@backstage/types": "npm:^1.2.1"
+    winston: "npm:^3.2.1"
+    winston-transport: "npm:^4.7.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/59136f337d85e6df0456d988cd478c2bb0f297b90b713e8cedcc7454bb673cf8d17a5b60c7bed4d71c42b6a37d9f22a48118f87945b4ee9c7939bd9f44190323
   languageName: node
   linkType: hard
 
