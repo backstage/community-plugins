@@ -35,6 +35,13 @@ export interface Config {
          * @visibility frontend
          */
         identity?: 'disabled' | 'optional' | 'required';
+
+        /**
+         * Controls if the encryption of userId should be disabled
+         *
+         * @visibility frontend
+         */
+        disableEncryption?: boolean;
       };
     };
   };
