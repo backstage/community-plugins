@@ -2832,6 +2832,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-azure-devops-common@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "@backstage-community/plugin-azure-devops-common@npm:0.11.1"
+  dependencies:
+    "@backstage/catalog-model": "npm:^1.7.4"
+    "@backstage/plugin-catalog-common": "npm:^1.1.4"
+    "@backstage/plugin-permission-common": "npm:^0.9.0"
+  checksum: 10/86944176c7bd36dfe1ed975beae7f178d702dd33c61e170973de2e576eb2adad42f030c182e408eac035fbeb0452f6a02f718cf1abfa458a1f62c13e5a506d1a
+  languageName: node
+  linkType: hard
+
 "@backstage-community/plugin-azure-devops@npm:^0.14.0":
   version: 0.14.0
   resolution: "@backstage-community/plugin-azure-devops@npm:0.14.0"
@@ -2856,6 +2867,33 @@ __metadata:
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
   checksum: 10/5437313fa125b1d03bffffce6ca2be11e2236c738196094e1685f842104a04d2e4402ddb1c343e2cb3eb7eb6f2ef4bb12866821c596ed41fed2e4f7850a62b0a
+  languageName: node
+  linkType: hard
+
+"@backstage-community/plugin-azure-devops@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "@backstage-community/plugin-azure-devops@npm:0.16.1"
+  dependencies:
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.11.1"
+    "@backstage/catalog-model": "npm:^1.7.4"
+    "@backstage/core-compat-api": "npm:^0.4.2"
+    "@backstage/core-components": "npm:^0.17.2"
+    "@backstage/core-plugin-api": "npm:^1.10.7"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/frontend-plugin-api": "npm:^0.10.2"
+    "@backstage/plugin-catalog-react": "npm:^1.18.0"
+    "@backstage/plugin-permission-react": "npm:^0.4.34"
+    "@material-ui/core": "npm:^4.12.2"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    humanize-duration: "npm:^3.27.0"
+    luxon: "npm:^3.0.0"
+    react-use: "npm:^17.2.4"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  checksum: 10/62c9540da62fb9b6184d870261a02e57ec10198a04eb87f8aaaa3bbedf18f7aee952e521d13e66e265a5051fed8e4d7077be2224de0f3fc8d459d99f0d109698
   languageName: node
   linkType: hard
 
@@ -2970,8 +3008,8 @@ __metadata:
   resolution: "@backstage-community/plugin-multi-source-security-viewer@workspace:plugins/multi-source-security-viewer"
   dependencies:
     "@aonic-ui/pipelines": "npm:^3.1.1"
-    "@backstage-community/plugin-azure-devops": "npm:^0.14.0"
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.10.0"
+    "@backstage-community/plugin-azure-devops": "npm:^0.16.1"
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.11.1"
     "@backstage-community/plugin-github-actions": "npm:^0.10.0"
     "@backstage-community/plugin-jenkins": "npm:^0.19.0"
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^"
