@@ -1,5 +1,15 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.17.1
+
+### Patch Changes
+
+- 3622b13: Deprecated `getRepoBuilds` on the frontend and backend along with related code. The are no usages of this method as it was replaced by `getBuildRuns` well over a year ago. This will be removed in a future release.
+- aa1889f: Deprecated `getBuildDefinitions` on the backend and related code. The are no usages of this method as it was replaced by `getBuildRuns` well over a year ago. This will be removed in a future release.
+- d813cec: Removed the usage of `permissionIntegrationRouter` in favor of using the new `coreServices.permissionsRegistry`
+- Updated dependencies [ae70011]
+  - @backstage-community/plugin-azure-devops-common@0.11.1
+
 ## 0.17.0
 
 ### Minor Changes

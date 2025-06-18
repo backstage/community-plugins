@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-import { createBackend } from '@backstage/backend-defaults';
-import { catalogModule3ScaleEntityProvider } from '../src/module';
-
-const backend = createBackend();
-
-backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(catalogModule3ScaleEntityProvider);
-
-backend.start();
+/**
+ * Triggers a download of the given string data as a file with the specified filename.
+ *
+ * @param data - The content to download
+ * @param filename - The name of the file to save as
+ */
+export const downloadLogFile = (data: string, filename: string) => {
+  const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+};
