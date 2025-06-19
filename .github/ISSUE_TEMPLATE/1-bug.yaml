@@ -17,6 +17,7 @@ body:
         - acr
         - acs
         - adr
+        - agent-forge
         - airbrake
         - allure
         - amplication

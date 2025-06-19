@@ -10,6 +10,9 @@ workspace/acs:
 workspace/adr:
   - "Workspace\\s*adr"
 
+workspace/agent-forge:
+  - "Workspace\\s*agent-forge"
+
 workspace/airbrake:
   - "Workspace\\s*airbrake"
 
