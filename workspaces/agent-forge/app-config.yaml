@@ -6,8 +6,7 @@ organization:
   name: Cisco
 
 agentForge:
-  baseUrl: http://127.0.0.1:8000
-  showOptions: true
+  baseUrl: http://0.0.0.0:8000
 
 backend:
   baseUrl: http://localhost:7007
