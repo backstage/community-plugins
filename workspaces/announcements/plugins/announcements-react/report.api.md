@@ -239,7 +239,6 @@ export const useCatalogEntities: (
   refs: string[],
   searchTerm?: string,
   limit?: number,
-  offset?: number,
   kind?: string | undefined,
 ) => {
   entities: Entity[];

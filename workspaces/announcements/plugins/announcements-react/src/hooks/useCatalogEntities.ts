@@ -15,7 +15,7 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { parseEntityRef } from '@backstage/catalog-model';
+import { Entity, parseEntityRef } from '@backstage/catalog-model';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
 /**
@@ -23,8 +23,7 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
  *
  * @param refs - An array of entity reference strings.
  * @param searchTerm - A string to filter entities by a search term.
- * @param limit - The maximum number of entities to fetch.
- * @param offset - The number of entities to skip before starting to fetch.
+ * @param limit - The maximum number of entities to fetch per page.
  * @param kind - The kind of entities to fetch.
  * @returns An object containing the fetched entities, total items count, loading state, error, and a retry function.
  *
@@ -33,8 +32,7 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 export const useCatalogEntities = (
   refs: string[],
   searchTerm: string = '',
-  limit: number = 10,
-  offset: number = 0,
+  limit: number = 25,
   kind: string | undefined = undefined,
 ) => {
   const catalogApi = useApi(catalogApiRef);
@@ -52,7 +50,6 @@ export const useCatalogEntities = (
     const queryOptions: any = {
       filter: kind ? filterArray.map(f => ({ ...f, kind })) : filterArray,
       limit,
-      offset,
       orderFields: { field: 'metadata.name', order: 'asc' },
     };
 
@@ -68,8 +65,23 @@ export const useCatalogEntities = (
       };
     }
 
-    const response = await catalogApi.queryEntities(queryOptions);
-    return { items: response.items, totalItems: response.totalItems };
+    const items: Entity[] = [];
+    let response = await catalogApi.queryEntities(queryOptions);
+    items.push(...response.items);
+    const totalItems = response.totalItems;
+
+    while (response.pageInfo?.nextCursor) {
+      response = await catalogApi.queryEntities({
+        ...queryOptions,
+        cursor: response.pageInfo.nextCursor,
+      });
+      items.push(...response.items);
+    }
+
+    return {
+      items,
+      totalItems,
+    };
   };
 
   const {
@@ -77,14 +89,7 @@ export const useCatalogEntities = (
     loading,
     error,
     retry,
-  } = useAsyncRetry(fetchEntities, [
-    catalogApi,
-    refs,
-    searchTerm,
-    limit,
-    offset,
-    kind,
-  ]);
+  } = useAsyncRetry(fetchEntities, [catalogApi, refs, searchTerm, limit, kind]);
 
   return {
     entities: entities?.items ?? [],
