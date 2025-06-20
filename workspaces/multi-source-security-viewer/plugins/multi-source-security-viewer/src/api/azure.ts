@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 import { createApiRef } from '@backstage/core-plugin-api';
-import {
-  AzureDevOpsApi,
-  getAnnotationValuesFromEntity,
-} from '@backstage-community/plugin-azure-devops';
+import { AzureDevOpsApi } from '@backstage-community/plugin-azure-devops';
+import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import {
   BuildResult,
   BuildStatus,
