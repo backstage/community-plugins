@@ -13,5 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { blackduckPlugin, BlackDuckPage, RiskCard } from './plugin';
+export {
+  blackduckPlugin,
+  BlackDuckPage,
+  BlackDuckAllVersionPage,
+  RiskCard,
+} from './plugin';
 export { isBlackDuckAvailable } from './utils/commonUtil';

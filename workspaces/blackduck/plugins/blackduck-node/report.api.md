@@ -111,11 +111,13 @@ export class BlackDuckRestApi {
     projectVersion: string,
   ): Promise<any>;
   // (undocumented)
+  getProjectVersions(projectName: string): Promise<BD_VERSIONS_API_RESPONSE>;
+  // (undocumented)
   getRiskProfile(projectName: string, projectVersion: string): Promise<any>;
   // (undocumented)
   getVersions(
     projectUrl: string,
-    versionName: string,
+    versionName?: string,
   ): Promise<BD_VERSIONS_API_RESPONSE>;
   // (undocumented)
   getVulnerableComponents(

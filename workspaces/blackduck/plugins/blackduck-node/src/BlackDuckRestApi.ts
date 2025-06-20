@@ -74,23 +74,48 @@ export class BlackDuckRestApi {
 
   public async getVersions(
     projectUrl: string,
-    versionName: string,
+    versionName?: string,
   ): Promise<BD_VERSIONS_API_RESPONSE> {
-    const versions = await fetch(
-      `${projectUrl}/versions?limit=999&q=${encodeURIComponent(
-        `versionName:${versionName}`,
-      )}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this._bearer}`,
-          Accept: 'application/vnd.blackducksoftware.project-detail-5+json',
-          'Content-Type': 'application/json',
-        },
+    const url =
+      versionName && versionName.trim() !== ''
+        ? `${projectUrl}/versions?limit=999&q=${encodeURIComponent(
+            `versionName:${versionName}`,
+          )}`
+        : `${projectUrl}/versions?limit=999`;
+
+    const versions = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this._bearer}`,
+        Accept: 'application/vnd.blackducksoftware.project-detail-5+json',
+        'Content-Type': 'application/json',
       },
-    );
+    });
     this.logger.debug('Retrieved Versions!!');
     return versions.json();
+  }
+
+  public async getProjectVersions(
+    projectName: string,
+  ): Promise<BD_VERSIONS_API_RESPONSE> {
+    const projects: BD_PROJECTS_API_RESPONSE = await this.getProjects(
+      projectName,
+    );
+    let projectDetail: BD_PROJECT_DETAIL | any;
+    projects.items.forEach((item: any) => {
+      if (item.name === projectName) {
+        projectDetail = item;
+      }
+    });
+    if (projectDetail === undefined) {
+      this.logger.error('Provide full project name');
+    }
+    const versions: BD_VERSIONS_API_RESPONSE = await this.getVersions(
+      projectDetail._meta.href,
+    );
+    this.logger.debug(`Fetched Project : ${projectName} versions`);
+    this.logger.debug(`Versions count: ${versions.totalCount}`);
+    return versions;
   }
 
   public async getProjectVersionDetails(
