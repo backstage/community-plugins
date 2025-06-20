@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.21.1
+
+### Patch Changes
+
+- 4258454: Add namespace to Deployment Summary header link, if specified
+
 ## 1.21.0
 
 ### Minor Changes
