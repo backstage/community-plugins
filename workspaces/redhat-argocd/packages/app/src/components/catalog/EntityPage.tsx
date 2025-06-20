@@ -69,6 +69,7 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 
 import {
   ArgocdDeploymentLifecycle,
+  ArgocdDeploymentSummary,
   isArgocdConfigured,
 } from '@backstage-community/plugin-redhat-argocd';
 import Button from '@mui/material/Button';
@@ -89,6 +90,10 @@ const cdContent = (
     <EntitySwitch.Case if={e => Boolean(isArgocdConfigured(e))}>
       <Grid item sm={12}>
         <ArgocdDeploymentLifecycle />
+      </Grid>
+      <br />
+      <Grid item sm={12}>
+        <ArgocdDeploymentSummary />
       </Grid>
     </EntitySwitch.Case>
     <EntitySwitch.Case>
