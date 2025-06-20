@@ -193,7 +193,7 @@ describe('BackstageRoleManager', () => {
     //
     //     Hierarchy:
     //
-    // group:default/team-x
+    // group:default/team-b
     //         |
     // user:default/mike
     //
