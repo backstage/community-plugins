@@ -1,5 +1,12 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.5.1
+
+### Patch Changes
+
+- c8e1803: Use getAnnotationValuesFromEntity from azure-devops-common
+- 5ac4c60: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
 ## 0.5.0
 
 ### Minor Changes
