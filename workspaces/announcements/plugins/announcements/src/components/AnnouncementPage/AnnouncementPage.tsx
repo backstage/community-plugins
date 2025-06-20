@@ -21,7 +21,6 @@ import {
   Page,
   Header,
   Content,
-  MarkdownContent,
   InfoCard,
 } from '@backstage/core-components';
 import {
@@ -38,11 +37,14 @@ import { announcementsApiRef } from '@backstage-community/plugin-announcements-r
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import { MarkdownRenderer, MarkdownRendererType } from '../MarkdownRenderer';
 
 const AnnouncementDetails = ({
   announcement,
+  markdownRenderer,
 }: {
   announcement: Announcement;
+  markdownRenderer?: MarkdownRendererType;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
@@ -70,7 +72,10 @@ const AnnouncementDetails = ({
       subheader={subHeader}
       deepLink={deepLink}
     >
-      <MarkdownContent content={announcement.body} />
+      <MarkdownRenderer
+        content={announcement.body}
+        rendererType={markdownRenderer}
+      />
     </InfoCard>
   );
 };
@@ -79,6 +84,7 @@ type AnnouncementPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
+  markdownRenderer?: MarkdownRendererType;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
@@ -98,7 +104,12 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
     content = <Alert severity="error">{error.message}</Alert>;
   } else {
     title = `${value!.title} – ${title}`;
-    content = <AnnouncementDetails announcement={value!} />;
+    content = (
+      <AnnouncementDetails
+        announcement={value!}
+        markdownRenderer={props.markdownRenderer}
+      />
+    );
 
     const lastSeen = announcementsApi.lastSeenDate();
     const announcementCreatedAt = DateTime.fromISO(value!.created_at);
