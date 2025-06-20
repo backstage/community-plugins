@@ -55,6 +55,7 @@ export const Router = (props: RouterProps) => {
     title: 'Announcements',
     hideInactive: false,
     hideStartAt: false,
+    markdownRenderer: 'md-editor', // TODO: Play with this props to see which renderer works best
     ...props,
   };
 
