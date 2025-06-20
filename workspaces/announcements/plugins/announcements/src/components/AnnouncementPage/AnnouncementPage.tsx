@@ -37,10 +37,7 @@ import { announcementsApiRef } from '@backstage-community/plugin-announcements-r
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import {
-  MarkdownRenderer,
-  MarkdownRendererType,
-} from '../MarkdownRenderer/MarkdownRenderer';
+import { MarkdownRenderer, MarkdownRendererType } from '../MarkdownRenderer';
 
 const AnnouncementDetails = ({
   announcement,

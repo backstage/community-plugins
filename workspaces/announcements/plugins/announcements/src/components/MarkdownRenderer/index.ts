@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { MarkdownRenderer } from './MarkdownRenderer';
+export type { MarkdownRendererType } from './MarkdownRenderer';
