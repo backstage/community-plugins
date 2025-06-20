@@ -28,8 +28,7 @@ const useStyles = makeStyles(theme => ({
 const ApplicationDetails = () => {
   const classes = useStyles();
   const entity = useEntity();
-  const application = entity?.entity?.metadata
-    .application as unknown as Application;
+  const application = entity?.entity?.metadata.application as unknown as Application;
   const annotations = entity?.entity?.metadata?.annotations || {};
   const viewUrl = annotations['issues-url'] || '';
 
@@ -74,11 +73,7 @@ const ApplicationDetails = () => {
           <ListItem className={classes.listItem}>
             <ListItemText
               primary="Effort"
-              secondary={
-                application.effort === 0
-                  ? 'No effort calculated'
-                  : application.effort
-              }
+              secondary={application.effort === 0 ? 'No effort calculated' : application.effort}
               className={classes.listItemText}
             />
           </ListItem>

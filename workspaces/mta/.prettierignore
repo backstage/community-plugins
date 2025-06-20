@@ -6,3 +6,6 @@ coverage
 api-report.md
 report.api.md
 **report**
+plugins/mta-backend/CHANGELOG.md
+plugins/mta-frontend/CHANGELOG.md
+CHANGELOG.md
