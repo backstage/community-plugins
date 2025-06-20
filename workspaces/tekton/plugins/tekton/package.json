@@ -11,7 +11,6 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "1.39.1",
     "pluginId": "tekton",
     "pluginPackage": "@backstage-community/plugin-tekton",
     "pluginPackages": [
@@ -95,8 +94,6 @@
     "directory": "workspaces/tekton/plugins/tekton"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "kubernetes",
     "tekton",
     "backstage",

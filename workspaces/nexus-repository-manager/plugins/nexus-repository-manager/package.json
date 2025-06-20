@@ -11,7 +11,6 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "1.28.4",
     "pluginId": "nexus-repository-manager",
     "pluginPackage": "@backstage-community/plugin-nexus-repository-manager",
     "pluginPackages": [
@@ -68,7 +67,6 @@
     "react-router-dom": "^6.0.0"
   },
   "files": [
-    "app-config.dynamic.yaml",
     "app-config.example.yaml",
     "config.d.ts",
     "dist"
@@ -80,8 +78,6 @@
     "directory": "workspaces/nexus-repository-manager/plugins/nexus-repository-manager"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

@@ -10,7 +10,6 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "supported-versions": "1.39.1",
     "pluginId": "scaffolder",
     "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },
@@ -60,9 +59,5 @@
     "christoph-jerolimov"
   ],
   "author": "Red Hat",
-  "bugs": "https://github.com/backstage/community-plugins/issues",
-  "keywords": [
-    "support:production",
-    "lifecycle:active"
-  ]
+  "bugs": "https://github.com/backstage/community-plugins/issues"
 }

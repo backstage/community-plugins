@@ -11,7 +11,6 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "1.38.0",
     "pluginId": "topology",
     "pluginPackages": [
       "@backstage-community/plugin-topology"
@@ -97,8 +96,6 @@
     "directory": "workspaces/topology/plugins/topology"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

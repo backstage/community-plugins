@@ -12,7 +12,6 @@
   },
   "backstage": {
     "role": "node-library",
-    "supported-versions": "^1.28.4",
     "pluginId": "rbac",
     "pluginPackages": [
       "@backstage-community/plugin-rbac",
@@ -52,10 +51,6 @@
   ],
   "author": "Red Hat",
   "bugs": "https://github.com/backstage/community-plugins/issues",
-  "keywords": [
-    "support:production",
-    "lifecycle:active"
-  ],
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [

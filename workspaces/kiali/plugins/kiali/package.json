@@ -11,7 +11,6 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "1.32.5",
     "pluginId": "kiali",
     "pluginPackages": [
       "@backstage-community/plugin-kiali",
@@ -108,8 +107,6 @@
     "directory": "workspaces/kiali/plugins/kiali"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

@@ -9,7 +9,6 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.32.4",
     "pluginId": "ocm",
     "pluginPackages": [
       "@backstage-community/plugin-ocm",
@@ -80,8 +79,6 @@
     "directory": "workspaces/ocm/plugins/ocm-backend"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

@@ -9,7 +9,6 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "supported-versions": "1.28.4",
     "pluginId": "3scale",
     "pluginPackage": "@backstage-community/plugin-3scale-backend"
   },
@@ -63,8 +62,6 @@
     "directory": "workspaces/3scale/plugins/3scale-backend"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],
