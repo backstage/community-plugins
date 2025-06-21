@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 export type {
-  Owners,
-  OwnersAndEntities,
-  ManageProvider,
-  ManageApi,
-} from './ManageApi';
+  OwnedEntitiesService,
+  OwnedEntitiesProvider,
+} from './owned-entities';
+export { ownedEntitesExtensionRef } from './owned-entities';
 
-export type { ManageModuleApi, ManageModuleApiRef } from './types';
-
-export type { DefaultManageApiOptions } from './DefaultManageApi';
-export { DefaultManageApi } from './DefaultManageApi';
-
-export type { ApiFactoryOptions } from './api';
-export { manageApiRef, createManageApiFactory } from './api';
+export { ownershipExtensionRef } from './ownership';
+export type { OwnershipService, OwnershipProvider } from './ownership';
