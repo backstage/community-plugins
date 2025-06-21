@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getCurrentTimestamp } from '../../utils/getCurrentTimestamp';
 import { createAnnotatorAction } from '../annotator/annotator';
-import { examples } from './createTimestampAction.examples';
+import { examples } from './createVersionAction.examples';
 
-export const createTimestampAction = () => {
+export const createVersionAction = () => {
   return createAnnotatorAction(
-    'catalog:timestamping',
-    'Creates a new `catalog:timestamping` Scaffolder action to annotate scaffolded entities with creation timestamp.',
-    'Annotating catalog-info.yaml with current timestamp',
+    'catalog:template:version',
+    'Creates a new `catalog:template:version` scaffolder action to update a catalog-info.yaml with the versioning information from the scaffolder template',
+    'Annotating catalog-info.yaml with the version of the scaffolder template',
     () => {
       return {
-        annotations: { 'backstage.io/createdAt': getCurrentTimestamp() },
+        annotations: {
+          'backstage.io/template-version': {
+            readFromContext: 'templateInfo.entity.metadata.annotations',
+          },
+        },
       };
     },
     examples,
