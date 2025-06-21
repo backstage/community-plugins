@@ -285,6 +285,7 @@ export class JsonRulesEngineFactChecker
             `Failed to determine tech insight check with id ${result.name}. Discrepancy between ran rule engine and configured checks.`,
           );
         }
+
         const factResponse = await this.constructFactInformationResponse(
           facts,
           techInsightCheck,
@@ -347,13 +348,17 @@ export class JsonRulesEngineFactChecker
       .filter(factContainer =>
         techInsightCheck.factIds.includes(factContainer.id),
       )
-      .reduce(
-        (acc, factContainer) => ({
+      .reduce((acc, factContainer) => {
+        const factWithTimestamp = {
+          ...factContainer.facts,
+          timestamp: factContainer.timestamp,
+        };
+
+        return {
           ...acc,
-          ...pick(factContainer.facts, individualFacts),
-        }),
-        {},
-      );
+          ...pick(factWithTimestamp, individualFacts),
+        };
+      }, {});
     return Object.entries(factValues).reduce((acc, [key, value]) => {
       return {
         ...acc,
