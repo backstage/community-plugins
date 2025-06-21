@@ -15,7 +15,6 @@
  */
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
-import type { Entity } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import {
   AuthorizeResult,
@@ -52,32 +51,13 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { mockAuditorService } from '../../__fixtures__/mock-utils';
+import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLogForPermission,
 } from '../../__fixtures__/auditor-test-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
-};
 
 const conditionalStorageMock: ConditionalStorage = {
   filterConditions: jest.fn().mockImplementation(() => []),
@@ -171,8 +151,6 @@ describe('RBACPermissionPolicy Tests', () => {
       const adapter = await newAdapter(config);
       enfDelegate = await newEnforcerDelegate(adapter, config);
       policy = await newPermissionPolicy(config, enfDelegate);
-
-      catalogApiMock.getEntities.mockReturnValue({ items: [] });
     });
 
     // case1
@@ -295,8 +273,6 @@ describe('RBACPermissionPolicy Tests', () => {
 
       config = newConfig();
       adapter = await newAdapter(config);
-
-      catalogApiMock.getEntities.mockReturnValue({ items: [] });
     });
 
     it('should cleanup old group policies and metadata after re-attach policy file', async () => {
@@ -638,8 +614,6 @@ describe('RBACPermissionPolicy Tests', () => {
         enfDelegate,
         roleMetadataStorageTest,
       );
-
-      catalogApiMock.getEntities.mockReturnValue({ items: [] });
     });
     // +-------+------+------------------------------------+
     // | allow | deny |         result                 |   |
@@ -973,8 +947,6 @@ describe('RBACPermissionPolicy Tests', () => {
     const superUser = new Array<{ name: string }>();
     superUser.push({ name: 'user:default/super_user' });
 
-    catalogApiMock.getEntities.mockReturnValue({ items: [] });
-
     beforeEach(async () => {
       roleMetadataStorageMock.findRoleMetadata = jest
         .fn()
@@ -1112,8 +1084,6 @@ describe('Policy checks for resourced permissions defined by name', () => {
   });
 
   it('should allow access to resourced permission assigned by name', async () => {
-    catalogApiMock.getEntities.mockReturnValue({ items: [] });
-
     await enfDelegate.addGroupingPolicy(
       ['user:default/tor', 'role:default/catalog_reader'],
       {
@@ -1141,8 +1111,6 @@ describe('Policy checks for resourced permissions defined by name', () => {
   });
 
   it('should allow access to resourced permission assigned by name, because it has higher priority then permission for the same resource assigned by resource type', async () => {
-    catalogApiMock.getEntities.mockReturnValue({ items: [] });
-
     await enfDelegate.addGroupingPolicy(
       ['user:default/tor', 'role:default/catalog_reader'],
       {
@@ -1168,8 +1136,6 @@ describe('Policy checks for resourced permissions defined by name', () => {
   });
 
   it('should deny access to resourced permission assigned by name, because it has higher priority then permission for the same resource assigned by resource type', async () => {
-    catalogApiMock.getEntities.mockReturnValue({ items: [] });
-
     await enfDelegate.addGroupingPolicy(
       ['user:default/tor', 'role:default/catalog_reader'],
       {
@@ -1203,21 +1169,6 @@ describe('Policy checks for resourced permissions defined by name', () => {
   });
 
   it('should allow access to resourced permission assigned by name, but user inherits policy from his group', async () => {
-    const groupEntityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'team-a',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['tor'],
-      },
-    };
-    catalogApiMock.getEntities.mockImplementation(_arg => {
-      return { items: [groupEntityMock] };
-    });
-
     await enfDelegate.addGroupingPolicy(
       ['group:default/team-a', 'role:default/catalog_user'],
       {
@@ -1250,23 +1201,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
   });
 
   it('should allow access to resourced permission assigned by name, but user inherits policy from uppercase group', async () => {
-    const name = 'team-A';
-
-    const groupEntityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: name,
-        namespace: 'default',
-      },
-      spec: {
-        members: ['tor'],
-      },
-    };
-    catalogApiMock.getEntities.mockImplementation(_arg => {
-      return { items: [groupEntityMock] };
-    });
-
+    const name = 'team-C';
     await enfDelegate.addGroupingPolicy(
       [
         `group:default/${name.toLocaleLowerCase('en-US')}`,
@@ -1302,32 +1237,8 @@ describe('Policy checks for resourced permissions defined by name', () => {
   });
 
   it('should allow access to resourced permission assigned by name, but user inherits policy from few groups', async () => {
-    const groupEntityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'team-a',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['tor'],
-        parent: 'team-b',
-      },
-    };
-    const groupParentMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'team-b',
-        namespace: 'default',
-      },
-    };
-    catalogApiMock.getEntities.mockImplementation(_arg => {
-      return { items: [groupParentMock, groupEntityMock] };
-    });
-
     await enfDelegate.addGroupingPolicy(
-      ['group:default/team-b', 'role:default/catalog_user'],
+      ['group:default/team-a', 'role:default/catalog_user'],
       {
         source: 'csv-file',
         roleEntityRef: 'role:default/catalog_user',
@@ -1335,7 +1246,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
       },
     );
     await enfDelegate.addGroupingPolicy(
-      ['group:default/team-a', 'group:default/team-b'],
+      ['group:default/team-a', 'group:default/team-c'],
       {
         source: 'csv-file',
         roleEntityRef: 'role:default/catalog_user',
@@ -1380,8 +1291,6 @@ describe('Policy checks for users and groups', () => {
     const enfDelegate = await newEnforcerDelegate(adapter, config);
 
     policy = await newPermissionPolicy(config, enfDelegate);
-
-    catalogApiMock.getEntities.mockReset();
   });
 
   // User inherits permissions from groups and their parent groups.
@@ -1404,19 +1313,6 @@ describe('Policy checks for users and groups', () => {
 
   // case1
   it('should deny access to basic permission for user Alice with "allow" "use" action, when her group "deny" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['alice'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
-
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource'),
       newPolicyQueryUser('user:default/alice'),
@@ -1433,18 +1329,6 @@ describe('Policy checks for users and groups', () => {
 
   // case2
   it('should deny access to basic permission for user Akira without("-") "use" action definition, when his group "deny" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['akira'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource'),
       newPolicyQueryUser('user:default/akira'),
@@ -1461,18 +1345,6 @@ describe('Policy checks for users and groups', () => {
 
   // case3
   it('should deny access to basic permission for user Antey with "deny" "use" action definition, when his group "deny" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['antey'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource'),
       newPolicyQueryUser('user:default/antey'),
@@ -1489,16 +1361,6 @@ describe('Policy checks for users and groups', () => {
 
   // case4
   it('should allow access to basic permission for user Julia with "allow" "use" action, when her group "allow" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
-
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource'),
       newPolicyQueryUser('user:default/julia'),
@@ -1515,18 +1377,6 @@ describe('Policy checks for users and groups', () => {
 
   // case5
   it('should allow access to basic permission for user Mike without("-") "use" action definition, when his group "allow" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource'),
       newPolicyQueryUser('user:default/mike'),
@@ -1543,18 +1393,6 @@ describe('Policy checks for users and groups', () => {
 
   // case6
   it('should deny access to basic permission for user Tom with "deny" "use" action definition, when his group "allow" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['tom'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource'),
       newPolicyQueryUser('user:default/tom'),
@@ -1571,32 +1409,6 @@ describe('Policy checks for users and groups', () => {
 
   // inheritance case
   it('should allow access to basic permission to test.resource.2 for user Mike with "-" "use" action definition, when parent group of his group "allow" this action', async () => {
-    const groupMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-        parent: 'data_parent_admin',
-      },
-    };
-
-    const groupParentMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_parent_admin',
-        namespace: 'default',
-      },
-    };
-
-    catalogApiMock.getEntities.mockImplementation(_arg => {
-      return { items: [groupMock, groupParentMock] };
-    });
-
     const decision = await policy.handle(
       newPolicyQueryWithBasicPermission('test.resource.2'),
       newPolicyQueryUser('user:default/mike'),
@@ -1615,19 +1427,6 @@ describe('Policy checks for users and groups', () => {
 
   // case1
   it('should deny access to basic permission for user Alice with "allow" "read" action, when her group "deny" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['alice'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
-
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.read',
@@ -1648,15 +1447,6 @@ describe('Policy checks for users and groups', () => {
 
   // case2
   it('should deny access to basic permission for user Akira without("-") "read" action definition, when his group "deny" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_admin',
-        namespace: 'default',
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.read',
@@ -1677,15 +1467,6 @@ describe('Policy checks for users and groups', () => {
 
   // case3
   it('should deny access to basic permission for user Antey with "deny" "read" action definition, when his group "deny" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_admin',
-        namespace: 'default',
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.read',
@@ -1706,16 +1487,6 @@ describe('Policy checks for users and groups', () => {
 
   // case4
   it('should allow access to basic permission for user Julia with "allow" "read" action, when her group "allow" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
-
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.read',
@@ -1736,18 +1507,6 @@ describe('Policy checks for users and groups', () => {
 
   // case5
   it('should allow access to basic permission for user Mike without("-") "read" action definition, when his group "allow" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.read',
@@ -1768,18 +1527,6 @@ describe('Policy checks for users and groups', () => {
 
   // case6
   it('should deny access to basic permission for user Tom with "deny" "read" action definition, when his group "allow" this action', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['tom'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.read',
@@ -1800,32 +1547,6 @@ describe('Policy checks for users and groups', () => {
 
   // inheritance case
   it('should allow access to resource permission to test-resource for user Mike with "-" "write" action definition, when parent group of his group "allow" this action', async () => {
-    const groupMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_read_admin',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-        parent: 'data_parent_admin',
-      },
-    };
-
-    const groupParentMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'data_parent_admin',
-        namespace: 'default',
-      },
-    };
-
-    catalogApiMock.getEntities.mockImplementation(_arg => {
-      return { items: [groupParentMock, groupMock] };
-    });
-
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
         'test.resource.create',
@@ -1881,23 +1602,9 @@ describe('Policy checks for conditional policies', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockAuthService,
     );
-
-    catalogApiMock.getEntities.mockReset();
   });
 
   it('should execute condition policy', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'test-group',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     (conditionalStorageMock.filterConditions as jest.Mock).mockReturnValueOnce([
       {
         id: 1,
@@ -1943,18 +1650,6 @@ describe('Policy checks for conditional policies', () => {
   });
 
   it('should execute condition policy with current user alias', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'test-group',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     (conditionalStorageMock.filterConditions as jest.Mock).mockReturnValueOnce([
       {
         id: 1,
@@ -2003,31 +1698,6 @@ describe('Policy checks for conditional policies', () => {
   });
 
   it('should merge condition policies for user assigned to few roles', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'test-group',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    const qaGroupMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'qa',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({
-      items: [entityMock, qaGroupMock],
-    });
     (conditionalStorageMock.filterConditions as jest.Mock)
       .mockReturnValueOnce([
         {
@@ -2093,18 +1763,6 @@ describe('Policy checks for conditional policies', () => {
   });
 
   it('should deny condition policy caused collision', async () => {
-    const entityMock: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name: 'test-group',
-        namespace: 'default',
-      },
-      spec: {
-        members: ['mike'],
-      },
-    };
-    catalogApiMock.getEntities.mockReturnValue({ items: [entityMock] });
     (conditionalStorageMock.filterConditions as jest.Mock).mockReturnValueOnce([
       {
         id: 1,
@@ -2259,7 +1917,7 @@ async function createEnforcer(
   const enf = await newEnforcer(theModel, adapter);
 
   const rm = new BackstageRoleManager(
-    catalogApiMock,
+    catalogMock,
     logger,
     catalogDBClient,
     rbacDBClient,

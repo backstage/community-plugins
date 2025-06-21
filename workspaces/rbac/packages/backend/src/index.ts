@@ -29,6 +29,7 @@ backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 // See https://backstage.io/docs/auth/guest/provider
 backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
+backend.add(import('@backstage/plugin-auth-backend-module-oidc-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
@@ -40,6 +41,7 @@ backend.add(
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
+backend.add(import('@backstage/plugin-permission-backend'));
 backend.add(import('@backstage-community/plugin-rbac-backend'));
 
 // search plugin

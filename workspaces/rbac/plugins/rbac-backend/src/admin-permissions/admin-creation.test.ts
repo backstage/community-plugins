@@ -22,7 +22,6 @@ import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 
 import {
   mockAuditorService,
-  catalogApiMock,
   csvPermFile,
   mockClientKnex,
   roleMetadataStorageMock,
@@ -76,8 +75,6 @@ describe('Admin Creation', () => {
     admins.push({ name: 'user:default/test_admin' });
     const superUser = new Array<{ name: string }>();
     superUser.push({ name: 'user:default/super_user' });
-
-    catalogApiMock.getEntities.mockReturnValue({ items: [] });
 
     beforeEach(async () => {
       roleMetadataStorageMock.findRoleMetadata = jest

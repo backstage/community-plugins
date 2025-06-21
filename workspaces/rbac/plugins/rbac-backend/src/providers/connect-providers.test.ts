@@ -40,7 +40,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
-import { mockAuditorService } from '../../__fixtures__/mock-utils';
+import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLog,
@@ -105,25 +105,6 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
-};
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
 };
 
 const mockAuthService = mockServices.auth();
@@ -566,7 +547,7 @@ async function createEnforcer(
   const enf = await newEnforcer(theModel, adapter);
 
   const rm = new BackstageRoleManager(
-    catalogApiMock,
+    catalogMock,
     logger,
     catalogDBClient,
     rbacDBClient,

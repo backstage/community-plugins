@@ -28,6 +28,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import {
+  catalogMock,
   conditionalStorageMock,
   mockAuditorService,
 } from '../../__fixtures__/mock-utils';
@@ -36,25 +37,6 @@ import {
   PermissionInfo,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
-};
 
 const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
@@ -176,7 +158,7 @@ describe('EnforcerDelegate', () => {
     enfAddPoliciesSpy = jest.spyOn(enf, 'addPolicies');
 
     const rm = new BackstageRoleManager(
-      catalogApiMock,
+      catalogMock,
       logger,
       catalogDBClient,
       rbacDBClient,
