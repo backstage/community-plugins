@@ -107,3 +107,4 @@ spec:
           
           - Pipeline ID: ${{ steps.createAzurePipeline.output.pipelineId }}
           - Resource Authorized: ${{ parameters.resourceType }} (${{ parameters.serviceConnection }})
+          

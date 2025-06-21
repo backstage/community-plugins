@@ -125,7 +125,7 @@ export function createAzureDevopsPermitPipelineAction(options: {
       };
 
       // See the Azure DevOps documentation for more information about the REST API:
-      // https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/pipeline-permissions/update-pipeline-permisions-for-resource?view=azure-devops-rest-7.1&tabs=HTTP#resourcepipelinepermissions
+      // https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/pipeline-permissions/update-pipeline-permisions-for-resource?view=azure-devops-rest-7.1&viewFallbackFrom=azure-devops-rest-6.0&tabs=HTTP
       const requestUrl = `${project}/_apis/pipelines/pipelinepermissions/${resourceType}/${resourceId}?api-version=${apiVersion}`;
       const response = await client.patch(
         requestUrl,
@@ -140,14 +140,11 @@ export function createAzureDevopsPermitPipelineAction(options: {
         response.message.statusCode !== 200 &&
         response.message.statusCode !== 204
       ) {
-        ctx.logger.error('', {
+        ctx.logger.error('Failed to authorize pipeline', {
           message: `Failed to authorize pipeline: ${response.message.statusMessage}`,
           requestUrl,
           requestBody: JSON.stringify(authorizeOptions),
         });
-        throw new Error(
-          `Failed to authorize pipeline: ${response.message.statusMessage}`,
-        );
       }
       ctx.logger.info(
         `Pipeline ${pipelineId} in project ${project} has been ${
