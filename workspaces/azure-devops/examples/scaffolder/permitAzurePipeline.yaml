@@ -83,9 +83,9 @@ spec:
         repositoryUrl: ${{ parameters.repoUrl }}
         branch: ${{ parameters.branch }}
 
-    - id: authorizeAzurePipeline
-      name: Authorize Pipeline
-      action: azure:pipeline:authorize
+    - id: permitAzurePipeline
+      name: permit Pipeline
+      action: azure:pipeline:permit
       input:
         organization: ${{ parameters.organization }}
         project: ${{ parameters.project }}
@@ -100,14 +100,10 @@ spec:
       - title: Open Pipeline in DevOps
         icon: catalog
         url: ${{ steps.createAzurePipeline.output.pipelineUrl }}
-      - title: Manage Pipeline Permissions
-        icon: permission
-        url: ${{ steps.authorizeAzurePipeline.output.pipelinePermissionUrl }}
     text:
       - title: Pipeline Details
         content: |
           **Pipeline Created Successfully!**
           
           - Pipeline ID: ${{ steps.createAzurePipeline.output.pipelineId }}
-          - Authorization Status: ${{ steps.authorizeAzurePipeline.output.authorizationStatus }}
           - Resource Authorized: ${{ parameters.resourceType }} (${{ parameters.serviceConnection }})

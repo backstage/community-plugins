@@ -19,18 +19,17 @@ import yaml from 'yaml';
 
 export const examples: TemplateExample[] = [
   {
-    description: 'Authorize Azure Pipeline',
+    description: 'Permit Azure Pipeline',
     example: yaml.stringify({
       steps: [
         {
-          id: 'authorizeAzurePipeline',
-          action: 'azure:pipeline:authorize',
-          name: 'Authorize Azure Devops Pipeline',
+          id: 'permitAzurePipeline',
+          action: 'azure:pipeline:permit',
+          name: 'Permit Azure Devops Pipeline',
           input: {
             organization: 'org',
             repository: 'repo',
             pipelineName: 'pipeline',
-            pipelineYamlFile: 'pipeline.yaml',
             project: 'project',
             resourceId: '1234',
             resourceType: 'endpoint',

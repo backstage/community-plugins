@@ -20,13 +20,13 @@ jest.mock('azure-devops-node-api', () => ({
   getBearerHandler: jest.fn().mockReturnValue(() => {}),
 }));
 
-import { createAzureDevopsAuthorizePipelineAction } from './devopsAuthorizePipeline';
+import { createAzureDevopsPermitPipelineAction } from './devopsPermitPipeline';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 import { WebApi } from 'azure-devops-node-api';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
-describe('azure:pipeline:authorize', () => {
+describe('azure:pipeline:permit', () => {
   const config = new ConfigReader({
     integrations: {
       azure: [
@@ -40,13 +40,15 @@ describe('azure:pipeline:authorize', () => {
   });
 
   const integrations = ScmIntegrations.fromConfig(config);
-  const action = createAzureDevopsAuthorizePipelineAction({ integrations });
+  const action = createAzureDevopsPermitPipelineAction({ integrations });
 
   const mockRestClient = {
     client: {
-      request: jest.fn().mockResolvedValue({
-        message: JSON.stringify({ success: true, pipelines: [] }),
-        statusCode: 200,
+      patch: jest.fn().mockResolvedValue({
+        message: {
+          statusCode: 200,
+          statusMessage: 'OK',
+        },
       }),
     },
   };
@@ -67,7 +69,6 @@ describe('azure:pipeline:authorize', () => {
         host: 'azure.com',
         organization: 'org',
         project: 'project',
-        repository: 'repo',
         pipelineId: '123',
         authorized: true,
         resourceType: 'endpoint',
@@ -84,7 +85,6 @@ describe('azure:pipeline:authorize', () => {
     const mockContext = createMockActionContext({
       input: {
         project: 'project',
-        repository: 'repo',
         pipelineId: '123',
         token: 'test-token',
         authorized: true,
@@ -103,7 +103,6 @@ describe('azure:pipeline:authorize', () => {
     const mockContext = createMockActionContext({
       input: {
         organization: 'org',
-        repository: 'repo',
         pipelineId: '123',
         token: 'test-token',
         authorized: true,
@@ -115,25 +114,6 @@ describe('azure:pipeline:authorize', () => {
 
     await expect(action.handler(mockContext)).rejects.toThrow(
       /project is required/,
-    );
-  });
-
-  it('should throw if repository is missing', async () => {
-    const mockContext = createMockActionContext({
-      input: {
-        organization: 'org',
-        project: 'project',
-        pipelineId: '123',
-        token: 'test-token',
-        authorized: true,
-        resourceType: 'endpoint',
-        resourceId: '123',
-        repository: '',
-      },
-    });
-
-    await expect(action.handler(mockContext)).rejects.toThrow(
-      /repository is required/,
     );
   });
 
@@ -159,8 +139,7 @@ describe('azure:pipeline:authorize', () => {
       expect.any(Function),
     );
 
-    expect(mockRestClient.client.request).toHaveBeenCalledWith(
-      'PATCH',
+    expect(mockRestClient.client.patch).toHaveBeenCalledWith(
       'testproject/_apis/pipelines/pipelinepermissions/endpoint/456?api-version=7.1-preview.1',
       JSON.stringify({
         pipelines: [
@@ -193,8 +172,7 @@ describe('azure:pipeline:authorize', () => {
 
     await action.handler(mockContext);
 
-    expect(mockRestClient.client.request).toHaveBeenCalledWith(
-      'PATCH',
+    expect(mockRestClient.client.patch).toHaveBeenCalledWith(
       'testproject/_apis/pipelines/pipelinepermissions/repository/789?api-version=7.1-preview.1',
       JSON.stringify({
         pipelines: [
@@ -225,9 +203,7 @@ describe('azure:pipeline:authorize', () => {
       },
     });
 
-    mockRestClient.client.request.mockRejectedValue(
-      new Error('Request failed'),
-    );
+    mockRestClient.client.patch.mockRejectedValue(new Error('Request failed'));
 
     await expect(action.handler(mockContext)).rejects.toThrow(/Request failed/);
   });

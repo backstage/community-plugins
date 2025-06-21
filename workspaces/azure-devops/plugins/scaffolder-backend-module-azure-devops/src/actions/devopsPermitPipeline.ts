@@ -35,14 +35,14 @@ import {
  *
  * @public
  */
-export function createAzureDevopsAuthorizePipelineAction(options: {
+export function createAzureDevopsPermitPipelineAction(options: {
   integrations: ScmIntegrationRegistry;
 }) {
   const { integrations } = options;
 
   return createTemplateAction({
-    id: 'azure:pipeline:authorize',
-    description: 'Authorizes a pipeline in Azure DevOps to Run.',
+    id: 'azure:pipeline:permit',
+    description: 'Permits a pipeline in Azure DevOps to Run.',
     examples,
     schema: {
       input: {
@@ -62,7 +62,6 @@ export function createAzureDevopsAuthorizePipelineAction(options: {
             )
             .default('7.1-preview.1')
             .optional(),
-        repository: d => d.string().describe('The repository of the pipeline.'),
         authorized: d =>
           d
             .boolean()
@@ -71,14 +70,13 @@ export function createAzureDevopsAuthorizePipelineAction(options: {
         pipelineId: d => d.string().describe('The ID of the pipeline.'),
         resourceId: d => d.string().describe('The ID of the resource.'),
         resourceType: d =>
-          d.string().describe('The type of the resource (e.g. endpoint)'),
+          d
+            .string()
+            .describe('The type of the resource (e.g. endpoint)')
+            .default('endpoint'),
         token: d =>
           d.string().describe('Token to use for Ado REST API.').optional(),
       },
-      //   output: {
-      //     pipelineUrl: d => d.string().describe('Url of the pipeline'),
-      //     pipelineId: d => d.string().describe('The pipeline ID.'),
-      //   },
     },
     async handler(ctx) {
       const {
@@ -86,10 +84,9 @@ export function createAzureDevopsAuthorizePipelineAction(options: {
         organization,
         pipelineId,
         project,
-        repository,
         authorized,
         resourceId,
-        resourceType = 'endpoint',
+        resourceType,
         apiVersion = '7.1-preview.1',
       } = ctx.input;
 
@@ -108,9 +105,6 @@ export function createAzureDevopsAuthorizePipelineAction(options: {
       }
       if (!project) {
         throw new InputError('project is required');
-      }
-      if (!repository) {
-        throw new InputError('repository is required');
       }
 
       const authHandler =
@@ -133,8 +127,7 @@ export function createAzureDevopsAuthorizePipelineAction(options: {
       // See the Azure DevOps documentation for more information about the REST API:
       // https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/pipeline-permissions/update-pipeline-permisions-for-resource?view=azure-devops-rest-7.1&tabs=HTTP#resourcepipelinepermissions
       const requestUrl = `${project}/_apis/pipelines/pipelinepermissions/${resourceType}/${resourceId}?api-version=${apiVersion}`;
-      const response = await client.request(
-        'PATCH',
+      const response = await client.patch(
         requestUrl,
         JSON.stringify(authorizeOptions),
         {
@@ -143,13 +136,24 @@ export function createAzureDevopsAuthorizePipelineAction(options: {
         },
       );
 
-      // Log the pipeline object in a readable format
-      ctx.logger.debug('Pipeline object:', {
-        pipeline: JSON.stringify(response, null, 2),
-      });
-
-      //   ctx.output('pipelineUrl', pipeline.);
-      //   ctx.output('pipelineId', pipeline.id!.toString());
+      if (
+        response.message.statusCode !== 200 &&
+        response.message.statusCode !== 204
+      ) {
+        ctx.logger.error('', {
+          message: `Failed to authorize pipeline: ${response.message.statusMessage}`,
+          requestUrl,
+          requestBody: JSON.stringify(authorizeOptions),
+        });
+        throw new Error(
+          `Failed to authorize pipeline: ${response.message.statusMessage}`,
+        );
+      }
+      ctx.logger.info(
+        `Pipeline ${pipelineId} in project ${project} has been ${
+          authorized ? 'authorized' : 'unauthorized'
+        } for resource ${resourceId} of type ${resourceType}.`,
+      );
     },
   });
 }
