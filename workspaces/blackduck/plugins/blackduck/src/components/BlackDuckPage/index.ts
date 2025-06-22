@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { BlackDuckPageComponent } from './BlackDuckPage';
+export { BlackDuckAllVersionPageComponent } from './BlackDuckAllVersionPage';
