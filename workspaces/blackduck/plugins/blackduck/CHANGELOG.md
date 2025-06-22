@@ -1,5 +1,13 @@
 # @backstage-community/plugin-blackduck
 
+## 0.5.1
+
+### Patch Changes
+
+- 25fa4bf: Implemented BlackDuckAllVersionPage to support multiple versions in Blackduck page
+- Updated dependencies [25fa4bf]
+  - @backstage-community/plugin-blackduck-node@0.2.1
+
 ## 0.5.0
 
 ### Minor Changes

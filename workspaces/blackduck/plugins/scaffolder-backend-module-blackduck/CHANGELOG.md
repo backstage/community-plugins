@@ -1,5 +1,12 @@
 # @backstage-community/plugin-scaffolder-backend-module-blackduck
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [25fa4bf]
+  - @backstage-community/plugin-blackduck-node@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
