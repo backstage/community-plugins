@@ -3,6 +3,7 @@
 The SonarQube Plugin displays code statistics from [SonarCloud](https://sonarcloud.io) or [SonarQube](https://sonarqube.com).
 
 ![Sonar Card](./docs/sonar-card.png)
+![Sonar Related Entities Overview](./docs/sonar-related-entities.png)
 
 ## Getting Started
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ReactNode } from 'react';
-import Box from '@material-ui/core/Box';
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { getColumns } from './Columns';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
@@ -44,22 +43,26 @@ export const SonarQubeTable = ({
   if (!tableContent) {
     return <ErrorPanel error={Error('Table could not be rendered')} />;
   }
+  const pageSize = options?.pageSize || 20;
+  const showPagination = tableContent?.length > pageSize;
   return (
-    <Box
-      sx={{
-        overflow: 'auto',
+    <Table
+      title={
+        <div>{`${title ?? t('sonarQubeCard.title')} (${
+          tableContent.length
+        })`}</div>
+      }
+      options={{
+        padding: 'dense',
+        paging: showPagination,
+        pageSize: pageSize,
+        pageSizeOptions: [10, 20, 50, 100],
+        ...options,
       }}
-    >
-      <div>
-        <Table
-          title={<div>{`(${tableContent.length}) ${title}`}</div>}
-          options={options}
-          data={tableContent || []}
-          columns={getColumns(t)}
-          emptyContent={emptyContent}
-          localization={localization}
-        />
-      </div>
-    </Box>
+      data={tableContent || []}
+      columns={getColumns(t)}
+      emptyContent={emptyContent}
+      localization={localization}
+    />
   );
 };
