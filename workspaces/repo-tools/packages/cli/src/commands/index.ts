@@ -32,10 +32,16 @@ export function lazy<TModule extends object>(
   return async (...args: any[]) => {
     try {
       const mod = await moduleLoader();
-      const actualModule = (
-        mod as unknown as { default: ActionExports<TModule> }
-      ).default;
-      const actionFunc = actualModule[exportName] as ActionFunc;
+      const actualModule = (mod as any).default || mod;
+      const actionFunc =
+        exportName === 'default'
+          ? actualModule
+          : (actualModule[exportName] as ActionFunc);
+
+      if (typeof actionFunc !== 'function') {
+        throw new Error(`Export '${String(exportName)}' is not a function`);
+      }
+
       await actionFunc(...args);
 
       process.exit(0);
