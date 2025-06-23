@@ -13,7 +13,6 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.32.4",
     "pluginId": "ocm",
     "pluginPackages": [
       "@backstage-community/plugin-ocm",
@@ -47,8 +46,6 @@
     "directory": "workspaces/ocm/plugins/ocm-common"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

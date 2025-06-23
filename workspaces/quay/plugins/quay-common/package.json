@@ -12,7 +12,6 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.39.1",
     "pluginId": "quay",
     "pluginPackage": "@backstage-community/plugin-quay-common",
     "pluginPackages": [
@@ -27,8 +26,6 @@
     "@karthikjeeyar"
   ],
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "plugin"
   ],

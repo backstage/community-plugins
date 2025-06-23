@@ -10,7 +10,6 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "^1.28.4",
     "pluginId": "acr",
     "pluginPackage": "@backstage-community/plugin-acr",
     "pluginPackages": [
@@ -74,7 +73,6 @@
     "react-router-dom": "^6.26.2"
   },
   "files": [
-    "app-config.dynamic.yaml",
     "app-config.yaml",
     "dist"
   ],
@@ -84,8 +82,6 @@
     "directory": "workspaces/acr/plugins/acr"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "plugin",
     "acr",

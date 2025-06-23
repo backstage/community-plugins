@@ -61,9 +61,5 @@
     "@riginoommen"
   ],
   "author": "The Backstage Community",
-  "bugs": "https://github.com/backstage/community-plugins/issues",
-  "keywords": [
-    "support:tech-preview",
-    "lifecycle:active"
-  ]
+  "bugs": "https://github.com/backstage/community-plugins/issues"
 }
