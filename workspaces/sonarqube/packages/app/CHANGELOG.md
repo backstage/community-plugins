@@ -1,5 +1,14 @@
 # app
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [df41249]
+- Updated dependencies [f032786]
+- Updated dependencies [3cdf95b]
+  - @backstage-community/plugin-sonarqube@0.14.0
+
 ## 0.0.18
 
 ### Patch Changes
