@@ -28,6 +28,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import AdjustIcon from '@material-ui/icons/Adjust';
 
+import { MarkdownContent } from '@backstage/core-components';
 import { MovedState } from '@backstage-community/plugin-tech-radar-common';
 
 export type Props = {
@@ -86,7 +87,14 @@ const RadarTimeline = (props: Props): JSX.Element => {
                     : ''}
                 </TableCell>
                 <TableCell align="left">
-                  {timeEntry.description ? timeEntry.description : ''}
+                  {timeEntry.description ? (
+                    <MarkdownContent
+                      linkTarget="_blank"
+                      content={timeEntry.description}
+                    />
+                  ) : (
+                    ''
+                  )}
                 </TableCell>
               </TableRow>
             ))}
