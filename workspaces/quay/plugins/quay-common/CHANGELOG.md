@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-common
 
+## 1.9.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 1.9.0
 
 ### Minor Changes
