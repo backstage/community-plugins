@@ -40,7 +40,10 @@ export const PipelineRunSBOMLink: FC<PipelineRunSBOMLinkProps> = ({ pr }) => {
   const classes = useStyles();
   const [openSBOMLogs, setOpenSBOMLogs] = useState(false);
   const step = useMemo(
-    () => pr.steps.findIndex(s => s.name === 'show-sbom-rhdh'),
+    () =>
+      pr.steps.findIndex(
+        s => s.name?.trim().toLowerCase() === 'show-sbom-rhdh',
+      ),
     [pr.steps],
   );
 
