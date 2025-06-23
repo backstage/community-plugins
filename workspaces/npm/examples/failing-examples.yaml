@@ -1,0 +1,24 @@
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: no-npm-package-annotation
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: npm-package-not-found
+  annotations:
+    npm/package: npm-package-not-found
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage
