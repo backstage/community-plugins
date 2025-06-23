@@ -1,5 +1,13 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.8.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-redhat-argocd-common@1.6.1
+
 ## 0.8.0
 
 ### Minor Changes
