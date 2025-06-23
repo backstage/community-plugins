@@ -1,5 +1,19 @@
 ## @janus-idp/backstage-scaffolder-backend-module-annotator [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-scaffolder-backend-module-annotator@1.2.1...@janus-idp/backstage-scaffolder-backend-module-annotator@1.3.0) (2024-07-25)
 
+## 2.8.0
+
+### Minor Changes
+
+- 68a0e98: Adds a new scaffolder action to the scaffolder-backend-module-annotator to faciliate better lifecycle management when used alongside the `catalog:scaffolded-from` scaffolder action.
+
+  The `catalog:template:version` scaffolder action can be used to annotate the entities that a template generates using the annotation `backstage.io/template-version`. The versioning information can either come from the template itself (as an annotation) or be passed as input to the new action.
+
+  Also included in the changes are template examples for all scaffolder actions included in the scaffolder-backend-module-annotator plugin.
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 2.7.0
 
 ### Minor Changes
