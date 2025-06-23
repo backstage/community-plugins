@@ -111,7 +111,7 @@ To annotate the entity file, add your custom action to your template file after 
 
 ## Software Template Versioning
 
-This section explains how to version your software templates using the preloaded custom actions `catalog:scaffolded-from` and `catalog:template:version` within the scaffolder backend module. But using the actions together, you can both track the version of your scaffolder template and the corresponding version of the entities created from it, facilitating better lifecycle management.
+This section explains how to version your software templates using the preloaded custom actions `catalog:scaffolded-from` and `catalog:template:version` within the scaffolder backend module. By using the actions together, you can both track the version of your scaffolder template and the corresponding version of the entities created from it, facilitating better lifecycle management.
 
 ### catalog:scaffolded-from action
 
