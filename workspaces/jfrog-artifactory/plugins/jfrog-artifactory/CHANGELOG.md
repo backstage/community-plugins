@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.15.3
+
+### Patch Changes
+
+- 66718a0: remove unused devDependencies
+
 ## 1.15.2
 
 ### Patch Changes
