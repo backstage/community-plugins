@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 2.7.0
 
 ### Minor Changes
