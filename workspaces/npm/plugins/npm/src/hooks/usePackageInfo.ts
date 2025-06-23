@@ -45,7 +45,7 @@ export const usePackageInfo = () => {
     value: packageInfo,
     loading,
     error,
-  } = useAsync(() => {
+  } = useAsync(async () => {
     if (!packageName) {
       throw new NotFoundError(
         `No package name found for entity ref '${entityRef}'`,
