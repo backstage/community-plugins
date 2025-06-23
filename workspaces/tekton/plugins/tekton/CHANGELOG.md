@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 3.26.2
+
+### Patch Changes
+
+- 8fa8ece: Updated dependency `@types/lodash` to `4.17.17`.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-tekton-common@1.10.1
+
 ## 3.26.1
 
 ### Patch Changes
