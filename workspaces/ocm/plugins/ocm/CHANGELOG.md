@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.5.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-ocm-common@3.9.1
+
 ## 5.5.0
 
 ### Minor Changes
