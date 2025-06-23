@@ -61,14 +61,35 @@ The "Read more" link that shows in the MissingAnnotationEmptyState is also confi
  );
 ```
 
-3. Run the following commands in the root folder of the project to install and compile the changes.
+3. Add the `SonarQubeRelatedEntitiesOverview` to the EntityPage:
+
+```diff
+  // packages/app/src/components/catalog/EntityPage.tsx
++ import { SonarQubeRelatedEntitiesOverview } from '@backstage-community/plugin-sonarqube';
+
+ ...
+
+ const systemPage = (
+   <EntityLayout>
+
+ ...
+
++    <EntityLayout.Route path="/sonarqube" title="Code Quality">
++      <SonarQubeRelatedEntitiesOverview relationType={RELATION_HAS_PART} entityKind="component" />
++    </EntityLayout.Route>
++
+   </EntityLayout>
+ );
+```
+
+4. Run the following commands in the root folder of the project to install and compile the changes.
 
 ```yaml
 yarn install
 yarn tsc
 ```
 
-4. Add the `sonarqube.org/project-key` annotation to the `catalog-info.yaml` file of the target repo for which code quality analysis is needed.
+5. Add the `sonarqube.org/project-key` annotation to the `catalog-info.yaml` file of the target repo for which code quality analysis is needed.
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
