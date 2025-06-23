@@ -1,5 +1,11 @@
 # @backstage-community/plugin-npm
 
+## 1.6.1
+
+### Patch Changes
+
+- c33ba27: Improve error handling when the npm plugin is used without the existing `isNpmAvailable` condition for catalog entities and without the `npm/package` annotation. A generic error was shown instead of the expected missing annotation component (`MissingAnnotationEmptyState`).
+
 ## 1.6.0
 
 ### Minor Changes
