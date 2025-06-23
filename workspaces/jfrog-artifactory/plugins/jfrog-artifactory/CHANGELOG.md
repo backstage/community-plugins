@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.15.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 1.15.1
 
 ### Patch Changes
