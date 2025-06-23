@@ -55,6 +55,7 @@ export const Router = (props: RouterProps) => {
     title: 'Announcements',
     hideInactive: false,
     hideStartAt: false,
+    markdownRenderer: 'backstage',
     ...props,
   };
 

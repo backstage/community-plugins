@@ -70,6 +70,7 @@ import {
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
 import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
+import { MarkdownRendererType } from '../MarkdownRenderer/MarkdownRenderer';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -369,6 +370,7 @@ export type AnnouncementsPageProps = {
   hideContextMenu?: boolean;
   hideInactive?: boolean;
   hideStartAt?: boolean;
+  markdownRenderer?: MarkdownRendererType;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };

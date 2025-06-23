@@ -132,6 +132,24 @@ It is possible to specify the text for the "New announcement" button rendered on
 }
 ```
 
+### Markdown rendering
+
+The plugin supports two different markdown rendering options:
+
+1. **backstage** (default): Uses Backstage's built-in `MarkdownContent` component. This ensures compatibility with Backstage theming but may support a more limited set of markdown features.
+
+2. **md-editor**: Uses `MDEditor.Markdown` which provides more complete markdown rendering with WYSIWYG-like results. However, it might not render correctly if your Backstage instance has custom theming applied.
+
+You can select the markdown renderer when using the AnnouncementsPage component:
+
+```tsx
+<AnnouncementsPage markdownRenderer="backstage" /> // Default option
+// or
+<AnnouncementsPage markdownRenderer="md-editor" /> // Full markdown support
+```
+
+Select the renderer that best fits your needs based on whether theme consistency or markdown feature completeness is more important for your use case.
+
 ## Development
 
 ### Getting started
