@@ -1,5 +1,16 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.14.0
+
+### Minor Changes
+
+- f032786: Make the tabular view more compact and sortable by gateway/last analyzed, improve translations
+- 3cdf95b: Added `SonarQubeRelatedEntitiesOverview` to show SonarQube results for related entites
+
+### Patch Changes
+
+- df41249: Support all entity kinds in the tabular view
+
 ## 0.13.0
 
 ### Minor Changes
