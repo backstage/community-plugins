@@ -1,5 +1,11 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.10.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 1.10.0
 
 ### Minor Changes
