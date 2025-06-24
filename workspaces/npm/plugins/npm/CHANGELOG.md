@@ -1,5 +1,16 @@
 # @backstage-community/plugin-npm
 
+## 1.7.0
+
+### Minor Changes
+
+- c42ca51: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [c42ca51]
+  - @backstage-community/plugin-npm-common@1.7.0
+
 ## 1.6.1
 
 ### Patch Changes
