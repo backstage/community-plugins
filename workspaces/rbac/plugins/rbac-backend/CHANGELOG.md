@@ -1,5 +1,33 @@
 ### Dependencies
 
+## 7.0.0
+
+### Major Changes
+
+- 2e732e8: **BREAKING**: Removal of the deprecated createRouter from @backstage/plugin-permission-backend. This results in a new requirement of having the permission plugin installed alongside the RBAC backend plugin.
+
+  Recent changes to the @backstage/plugin-permission-backend resulted in the deprecating and removal of `createRouter` which was primarily used as a way to start both the permission backend plugin and the RBAC backend plugin at the same time. This removal now results in the requirement of having the permission backend plugin installed separately to ensure that the RBAC backend plugin works accordingly.
+
+  Changes required to `packages/backend/src/index.ts`
+
+  ```diff
+  // permission plugin
+  + backend.add(import('@backstage/plugin-permission-backend'));
+  backend.add(import('@backstage-community/plugin-rbac-backend'));
+  ```
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+  - @backstage-community/plugin-rbac-node@1.12.0
+
 ## 6.3.0
 
 ### Minor Changes
