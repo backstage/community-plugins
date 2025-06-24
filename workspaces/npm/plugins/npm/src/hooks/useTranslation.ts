@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import {
+  TranslationFunction,
+  useTranslationRef,
+} from '@backstage/core-plugin-api/alpha';
 
 import { npmTranslationRef } from '../translations';
 
-export const useTranslation = () => useTranslationRef(npmTranslationRef);
+// Workaround to avoid circular dependency issue after upgrading to Backstage 1.39.1.
+// This could hopefully be removed in the future.
+// Interessting issue you might want to follow:
+// https://github.com/backstage/backstage/pull/30186
+type T = TranslationFunction<typeof npmTranslationRef.T>;
+
+export const useTranslation: () => { t: T } = () =>
+  useTranslationRef(npmTranslationRef);
