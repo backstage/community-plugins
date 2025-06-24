@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.6.1
+
+### Patch Changes
+
+- b5402a7: Fix pagination issue when fetching groups. This resolves the issue where the "On-Behalf" team dropdown always displayed only 10 groups.
+
 ## 0.6.0
 
 ### Minor Changes

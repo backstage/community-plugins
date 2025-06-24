@@ -1,5 +1,14 @@
 # @backstage-community/plugin-announcements
 
+## 0.7.1
+
+### Patch Changes
+
+- 6a14453: Add support for configurable markdown rendering with two options: "backstage" (default, theme-consistent) and "md-editor" (WYSIWYG-like rendering with richer markdown support)
+- b5402a7: Fix pagination issue when fetching groups. This resolves the issue where the "On-Behalf" team dropdown always displayed only 10 groups.
+- Updated dependencies [b5402a7]
+  - @backstage-community/plugin-announcements-react@0.6.1
+
 ## 0.7.0
 
 ### Minor Changes
