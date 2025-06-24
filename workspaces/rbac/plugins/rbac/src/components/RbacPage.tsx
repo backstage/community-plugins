@@ -15,13 +15,12 @@
  */
 import { Content, Header, Page, Progress } from '@backstage/core-components';
 
-import { DeleteDialogContextProvider } from '@janus-idp/shared-react';
-
 import { RolesList } from './RolesList/RolesList';
 import { useApi } from '@backstage/core-plugin-api';
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { useAsync } from 'react-use';
 import { ErrorPage } from '@backstage/core-components';
+import { DeleteDialogContextProvider } from './DeleteDialogContext';
 
 export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
   const rbacApi = useApi(rbacApiRef);
