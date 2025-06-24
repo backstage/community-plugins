@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.7.1
+
+### Patch Changes
+
+- 701ce81: Wrapped timeline entry description in MarkdownContent to support markdown content
+
 ## 1.7.0
 
 ### Minor Changes
