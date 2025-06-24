@@ -90,7 +90,7 @@
     "@backstage/integration-react": "1.2.7",
     "@backstage/release-manifests": "0.0.13",
     "@backstage/repo-tools": "0.13.4",
-    "@techdocs/cli": "1.9.3",
+    "@techdocs/cli": "1.9.4",
     "@backstage/test-utils": "1.7.8",
     "@backstage/theme": "0.6.6",
     "@backstage/types": "1.2.1",
