@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
 kind: Template
 metadata:
-  name: create-pipeline-example
-  title: Create Azure Pipeline Example
+  name: create-and-permit-pipeline-example
+  title: Create and permit Azure Pipeline Example
 spec:
   type: service
   parameters:

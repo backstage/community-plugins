@@ -18,7 +18,7 @@ import {
   DefaultAzureDevOpsCredentialsProvider,
   ScmIntegrationRegistry,
 } from '@backstage/integration';
-import { examples } from './devopsRunPipeline.examples';
+import { examples } from './devopsPermitPipeline.examples';
 
 import { InputError } from '@backstage/errors';
 import {
@@ -72,7 +72,9 @@ export function createAzureDevopsPermitPipelineAction(options: {
         resourceType: d =>
           d
             .string()
-            .describe('The type of the resource (e.g. endpoint)')
+            .describe(
+              'The type of the resource (e.g. endpoint, variableGroup, repository, etc.)',
+            )
             .default('endpoint'),
         token: d =>
           d.string().describe('Token to use for Ado REST API.').optional(),
@@ -125,7 +127,7 @@ export function createAzureDevopsPermitPipelineAction(options: {
       };
 
       // See the Azure DevOps documentation for more information about the REST API:
-      // https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/pipeline-permissions/update-pipeline-permisions-for-resource?view=azure-devops-rest-7.1&viewFallbackFrom=azure-devops-rest-6.0&tabs=HTTP
+      // https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/pipeline-permissions/update-pipeline-permisions-for-resource?view=azure-devops-rest-7.1&tabs=HTTP#resourcepipelinepermissions
       const requestUrl = `${project}/_apis/pipelines/pipelinepermissions/${resourceType}/${resourceId}?api-version=${apiVersion}`;
       const response = await client.patch(
         requestUrl,
@@ -140,11 +142,14 @@ export function createAzureDevopsPermitPipelineAction(options: {
         response.message.statusCode !== 200 &&
         response.message.statusCode !== 204
       ) {
-        ctx.logger.error('Failed to authorize pipeline', {
+        ctx.logger.error('', {
           message: `Failed to authorize pipeline: ${response.message.statusMessage}`,
           requestUrl,
           requestBody: JSON.stringify(authorizeOptions),
         });
+        throw new Error(
+          `Failed to authorize pipeline: ${response.message.statusMessage}`,
+        );
       }
       ctx.logger.info(
         `Pipeline ${pipelineId} in project ${project} has been ${
