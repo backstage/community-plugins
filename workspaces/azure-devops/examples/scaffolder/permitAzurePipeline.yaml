@@ -104,7 +104,6 @@ spec:
       - title: Pipeline Details
         content: |
           **Pipeline Created Successfully!**
-          
+
           - Pipeline ID: ${{ steps.createAzurePipeline.output.pipelineId }}
           - Resource Authorized: ${{ parameters.resourceType }} (${{ parameters.serviceConnection }})
-          
