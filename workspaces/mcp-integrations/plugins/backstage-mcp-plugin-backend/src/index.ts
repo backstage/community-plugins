@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { backstageMcpPluginPlugin as default } from './plugin';
+export { backstageMcpPlugin as default } from './plugin';
