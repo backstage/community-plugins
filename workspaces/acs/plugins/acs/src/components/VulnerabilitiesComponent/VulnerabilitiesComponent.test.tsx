@@ -26,9 +26,9 @@ jest.mock('../../common/useFetchACSData', () => ({
 describe('VulnerabilitiesComponent', () => {
   test('displays loading state initially', () => {
     (useFetchACSData as jest.Mock).mockReturnValue({
-      result: null,
-      loaded: false,
-      error: null,
+      result: { jsonData: [] },
+      isLoading: true,
+      error: false,
     });
 
     render(<VulnerabilitiesComponent deploymentName="Test" />);
@@ -38,9 +38,9 @@ describe('VulnerabilitiesComponent', () => {
 
   test('displays error message when data fetch fails', () => {
     (useFetchACSData as jest.Mock).mockReturnValue({
-      result: null,
-      loaded: true,
-      error: new Error('Test error'),
+      result: { jsonData: [] },
+      isLoading: false,
+      error: true,
     });
 
     render(<VulnerabilitiesComponent deploymentName="Test" />);

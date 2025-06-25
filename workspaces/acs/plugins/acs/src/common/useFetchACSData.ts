@@ -20,51 +20,53 @@ import {
   discoveryApiRef,
 } from '@backstage/core-plugin-api';
 
+// @TODO: This is a temporary solution. We should define the types for the data more clearly.
+export type ACSDataResult = {
+  jsonData: {
+    result: {
+      deployment: any;
+      images: any[];
+      livePods: number;
+    }[];
+  }[];
+};
+
+// @TODO: Consider calling this something more descriptive like useFetchWorkloadsByDeployments.
+// @TODO: Consider renaming deploymentName to deploymentNamesCsv or deploymentNamesString to be more correct.
 export const useFetchACSData = (deploymentName: string) => {
-  /* eslint-disable consistent-return */
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState<ACSDataResult>({ jsonData: [] });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   // Retrieve proxy url from api
   const discoveryApi = useApi(discoveryApiRef);
-
   const fetchApi = useApi(fetchApiRef);
 
-  const convertDeploymentNameStringToArray = () => {
-    return deploymentName.split(',');
-  };
-
   const getACSData = async () => {
-    const deploymentNameArr = convertDeploymentNameStringToArray();
-    const backendUrl = await discoveryApi.getBaseUrl('proxy');
+    try {
+      setIsLoading(true);
+      setError(false);
 
-    deploymentNameArr.forEach((name: string) => {
-      fetchApi
+      const backendUrl = await discoveryApi.getBaseUrl('proxy');
+
+      const results = await fetchApi
         .fetch(
-          `${backendUrl}/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${name}`,
+          `${backendUrl}/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${deploymentName}`,
         )
         .then(response => response.text())
         .then(text => {
-          const lines = text.split('\n');
-
-          const jsonData = lines.map(line => {
-            if (line.trim()) {
-              // Skip empty lines
-              return JSON.parse(line);
-            }
-          });
-
-          jsonData.pop();
-
-          setIsLoading(true);
-          setResult(prevResult => ({ ...prevResult, jsonData }));
-        })
-        .catch(_error => {
-          setError(true);
-          throw new Error(`Error fetching ACS data`);
+          const lines = text.split('\n').filter(line => line.trim() !== '');
+          const jsonData = lines.map(line => JSON.parse(line));
+          return jsonData;
         });
-    });
+
+      setResult({ jsonData: results });
+    } catch (err) {
+      // @TODO: Add more optimal error handling. Consider passing the error message and displaying it in the UI.
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
