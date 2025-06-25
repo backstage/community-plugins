@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 5.7.0
+
+### Minor Changes
+
+- f0a6ba7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f0a6ba7]
+  - @backstage-community/plugin-ocm-common@3.10.0
+
 ## 5.6.1
 
 ### Patch Changes
