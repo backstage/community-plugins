@@ -1,5 +1,16 @@
 # @backstage-community/plugin-npm
 
+## 1.8.0
+
+### Minor Changes
+
+- 4bfc2ec: Backstage version bump to v1.40.1
+
+### Patch Changes
+
+- Updated dependencies [4bfc2ec]
+  - @backstage-community/plugin-npm-common@1.8.0
+
 ## 1.7.0
 
 ### Minor Changes
