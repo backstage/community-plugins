@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-module-tech-insights
 
+## 0.1.5
+
+### Patch Changes
+
+- 8d55059: Updated dependency `@backstage-community/plugin-tech-insights-common` to `^0.7.0`.
+
 ## 0.1.4
 
 ### Patch Changes
