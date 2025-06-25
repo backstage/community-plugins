@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- c42ca51: Backstage version bump to v1.39.0
+- c42ca51: Backstage version bump to v1.39.1
 
 ## 1.6.0
 
