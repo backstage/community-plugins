@@ -32,6 +32,7 @@ import { CreateAnnouncementPage } from './CreateAnnouncementPage';
 import { EditAnnouncementPage } from './EditAnnouncementPage';
 import { CategoriesPage } from './CategoriesPage';
 import { AdminPortal } from './Admin';
+import { MarkdownRendererTypeProps } from './MarkdownRenderer';
 
 type RouterProps = {
   themeId?: string;
@@ -47,6 +48,7 @@ type RouterProps = {
   };
   hideInactive?: boolean;
   hideStartAt?: boolean;
+  markdownRenderer?: MarkdownRendererTypeProps;
 };
 
 export const Router = (props: RouterProps) => {

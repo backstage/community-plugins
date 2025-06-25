@@ -37,14 +37,17 @@ import { announcementsApiRef } from '@backstage-community/plugin-announcements-r
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { MarkdownRenderer, MarkdownRendererType } from '../MarkdownRenderer';
+import {
+  MarkdownRenderer,
+  MarkdownRendererTypeProps,
+} from '../MarkdownRenderer';
 
 const AnnouncementDetails = ({
   announcement,
   markdownRenderer,
 }: {
   announcement: Announcement;
-  markdownRenderer?: MarkdownRendererType;
+  markdownRenderer?: MarkdownRendererTypeProps;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
@@ -84,7 +87,7 @@ type AnnouncementPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
-  markdownRenderer?: MarkdownRendererType;
+  markdownRenderer?: MarkdownRendererTypeProps;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
