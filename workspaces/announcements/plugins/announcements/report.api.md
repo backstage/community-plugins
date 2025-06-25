@@ -79,6 +79,7 @@ export const AnnouncementsPage: (props: {
     | undefined;
   hideInactive?: boolean | undefined;
   hideStartAt?: boolean | undefined;
+  markdownRenderer?: MarkdownRendererTypeProps | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -109,6 +110,9 @@ export type AnnouncementsTimelineProps = {
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
+
+// @public
+export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
 
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {

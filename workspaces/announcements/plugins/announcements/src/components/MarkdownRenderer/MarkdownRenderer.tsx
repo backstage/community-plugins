@@ -17,11 +17,19 @@ import { MarkdownContent } from '@backstage/core-components';
 import MDEditor from '@uiw/react-md-editor';
 import { makeStyles, useTheme } from '@material-ui/core';
 
-export type MarkdownRendererType = 'backstage' | 'md-editor';
+/**
+ * @public
+ * Use this props to specify which rendering mode the MarkdownRenderer should operate in.
+ *
+ * - `'backstage'`: Indicates that the renderer should use the Backstage built-in style.
+ * - `'md-editor'`: Indicates that the renderer should use the Markdown Editor (WYSIWYG) style.
+ *
+ */
+export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
 
 export interface MarkdownRendererProps {
   content: string;
-  rendererType?: MarkdownRendererType;
+  rendererType?: MarkdownRendererTypeProps;
 }
 
 // Custom styles for the MDEditor to match Backstage MUI theme
