@@ -70,6 +70,6 @@ catalog:
         - allow: [Template]
       # Local example scaffolder action
     - type: file
-      target: ../../examples/scaffolder/authorizeAzurePipeline.yaml
+      target: ../../examples/scaffolder/permitAzurePipeline.yaml
       rules:
         - allow: [Template]
