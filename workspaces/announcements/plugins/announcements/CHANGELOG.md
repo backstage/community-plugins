@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.7.2
+
+### Patch Changes
+
+- 822489e: Fixed missing markdownRenderer prop in router that prevented setting the Markdown renderer `backstage` or `md-editor`.
+
 ## 0.7.1
 
 ### Patch Changes
