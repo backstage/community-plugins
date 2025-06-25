@@ -81,42 +81,6 @@ describe('azure:pipeline:permit', () => {
     );
   });
 
-  it('should throw if organization is missing', async () => {
-    const mockContext = createMockActionContext({
-      input: {
-        project: 'project',
-        pipelineId: '123',
-        token: 'test-token',
-        authorized: true,
-        resourceType: 'endpoint',
-        resourceId: '123',
-        organization: '',
-      },
-    });
-
-    await expect(action.handler(mockContext)).rejects.toThrow(
-      /organization is required/,
-    );
-  });
-
-  it('should throw if project is missing', async () => {
-    const mockContext = createMockActionContext({
-      input: {
-        organization: 'org',
-        pipelineId: '123',
-        token: 'test-token',
-        authorized: true,
-        resourceType: 'endpoint',
-        resourceId: '123',
-        project: '',
-      },
-    });
-
-    await expect(action.handler(mockContext)).rejects.toThrow(
-      /project is required/,
-    );
-  });
-
   it('should authorize pipeline with token from input', async () => {
     const mockContext = createMockActionContext({
       input: {
