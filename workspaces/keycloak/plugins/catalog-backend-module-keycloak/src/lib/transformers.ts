@@ -49,3 +49,30 @@ export const sanitizeEmailTransformer: UserTransformer = async (
   entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9]/g, '-');
   return entity;
 };
+
+/**
+ * @public
+ * User transformer that sanitizes .metadata.name from invalid Backstage object name to a valid name
+ */
+export const sanitizeUserNameTransformer: UserTransformer = async (
+  entity,
+  _user,
+  _realm,
+  _groups,
+) => {
+  entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9\-_.]/g, '-');
+  return entity;
+};
+
+/**
+ * @public
+ * Group transformer that sanitizes .metadata.name from invalid Backstage object name to a valid name
+ */
+export const sanitizeGroupNameTransformer: GroupTransformer = async (
+  entity,
+  _user,
+  _realm,
+) => {
+  entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9\-_.]/g, '-');
+  return entity;
+};
