@@ -22,17 +22,24 @@ import {
   Task,
   TextPart,
 } from '../a2a/schema';
+import { IdentityApi } from '@backstage/core-plugin-api';
 
 export interface IChatbotApiOptions {}
 
 export class ChatbotApi {
   private client: A2AClient | null = null;
   private contextId: string;
-  constructor(private apiBaseUrl: string, _?: IChatbotApiOptions) {
+  private identityApi: IdentityApi;
+  constructor(
+    private apiBaseUrl: string,
+    options: { identityApi: IdentityApi },
+    _?: IChatbotApiOptions,
+  ) {
     this.contextId = '';
     if (!this.apiBaseUrl) {
       throw new Error('Agent URL is not provided');
     }
+    this.identityApi = options.identityApi;
     try {
       this.client = new A2AClient(this.apiBaseUrl);
     } catch (error) {
@@ -42,8 +49,9 @@ export class ChatbotApi {
 
   public async submitA2ATask(newContext: boolean, msg: string) {
     try {
-      // Send a simple task (pass only params)
       const msgId = uuidv4();
+      const { token } = await this.identityApi.getCredentials();
+
       const sendParams: MessageSendParams = {
         message: {
           messageId: msgId,
@@ -57,7 +65,7 @@ export class ChatbotApi {
       }
       // Method now returns Task | null directly
       const taskResult: SendMessageResponse | undefined =
-        await this.client?.sendMessage(sendParams);
+        await this.client?.sendMessage(sendParams, token);
 
       const task: Task = taskResult?.result as Task;
 

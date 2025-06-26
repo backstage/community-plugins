@@ -28,6 +28,7 @@ import { Message, Feedback, UserResponse } from '../types';
 import {
   appThemeApiRef,
   configApiRef,
+  identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import { createTimestamp, delay, makeLinksClickable } from '../utils';
@@ -75,9 +76,10 @@ function ChatAssistantApp() {
       )}`,
     );
   }
+  const identityApi = useApi(identityApiRef);
 
   const chatbotApi = useMemo(
-    () => new ChatbotApi(backendUrl),
+    () => new ChatbotApi(backendUrl, { identityApi }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [backendUrl],
   );

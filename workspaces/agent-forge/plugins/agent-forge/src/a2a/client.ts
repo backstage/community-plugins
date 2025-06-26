@@ -96,7 +96,6 @@ export class A2AClient {
         );
       }
       const agentCard: AgentCard = await response.json();
-      console.log(agentCard);
       if (!agentCard.url) {
         throw new Error(
           "Fetched Agent Card does not contain a valid 'url' for the service endpoint.",
@@ -166,7 +165,7 @@ export class A2AClient {
   private async _postRpcRequest<
     TParams,
     TResponse extends JSONRPCResult<any> | JSONRPCErrorResponse,
-  >(method: string, params: TParams): Promise<TResponse> {
+  >(method: string, params: TParams, authToken?: string): Promise<TResponse> {
     const endpoint = await this._getServiceEndpoint();
     const requestId = this.requestIdCounter++;
     const rpcRequest: JSONRPCRequest = {
@@ -179,6 +178,7 @@ export class A2AClient {
     const httpResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
+        Authorization: 'Bearer ' + authToken,
         'Content-Type': 'application/json',
         Accept: 'application/json', // Expect JSON response for non-streaming requests
       },
@@ -244,10 +244,12 @@ export class A2AClient {
    */
   public async sendMessage(
     params: MessageSendParams,
+    authToken?: string,
   ): Promise<SendMessageResponse> {
     return this._postRpcRequest<MessageSendParams, SendMessageResponse>(
       'message/send',
       params,
+      authToken,
     );
   }
 
