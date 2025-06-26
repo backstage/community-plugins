@@ -55,7 +55,6 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

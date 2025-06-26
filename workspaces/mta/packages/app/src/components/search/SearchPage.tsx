@@ -2,10 +2,7 @@ import React from 'react';
 import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
-import {
-  catalogApiRef,
-  CATALOG_FILTER_EXISTS,
-} from '@backstage/plugin-catalog-react';
+import { catalogApiRef, CATALOG_FILTER_EXISTS } from '@backstage/plugin-catalog-react';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 
 import { SearchType } from '@backstage/plugin-search';
@@ -16,13 +13,7 @@ import {
   SearchPagination,
   useSearch,
 } from '@backstage/plugin-search-react';
-import {
-  CatalogIcon,
-  Content,
-  DocsIcon,
-  Header,
-  Page,
-} from '@backstage/core-components';
+import { CatalogIcon, Content, DocsIcon, Header, Page } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -83,8 +74,7 @@ const SearchPage = () => {
                     const { items } = await catalogApi.getEntities({
                       fields: ['metadata.name'],
                       filter: {
-                        'metadata.annotations.backstage.io/techdocs-ref':
-                          CATALOG_FILTER_EXISTS,
+                        'metadata.annotations.backstage.io/techdocs-ref': CATALOG_FILTER_EXISTS,
                       },
                     });
 

@@ -1,9 +1,6 @@
 import { Config } from '@backstage/config';
 import { Issuer, custom } from 'openid-client';
-import {
-  EntityProvider,
-  EntityProviderConnection,
-} from '@backstage/plugin-catalog-node';
+import { EntityProvider, EntityProviderConnection } from '@backstage/plugin-catalog-node';
 import { LoggerService, SchedulerService } from '@backstage/backend-plugin-api';
 //
 /**
@@ -31,11 +28,7 @@ export class MTAProvider implements EntityProvider {
     return p;
   }
   /** [1] */
-  constructor(
-    config: Config,
-    logger: LoggerService,
-    scheduler: SchedulerService,
-  ) {
+  constructor(config: Config, logger: LoggerService, scheduler: SchedulerService) {
     this.config = config;
     this.logger = logger;
     this.scheduler = scheduler;
@@ -106,9 +99,7 @@ export class MTAProvider implements EntityProvider {
         this.logger.info('Issuer discovered successfully');
         break; // Exit loop on success
       } catch (error: any) {
-        this.logger.error(
-          `Attempt ${attempt}: Discovery failed - ${error?.message}`,
-        );
+        this.logger.error(`Attempt ${attempt}: Discovery failed - ${error?.message}`);
         if (attempt === maxRetries) {
           throw new Error(
             `Failed to discover issuer after ${maxRetries} attempts: ${error.message}`,
@@ -145,24 +136,19 @@ export class MTAProvider implements EntityProvider {
     const url = `${this.config.getString('mta.url')}/hub/applications`;
     this.logger.info(`Attempting to fetch applications from ${url}`);
 
-    const response = await fetch(
-      `${this.config.getString('mta.url')}/hub/applications`,
-      {
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json, text/plain, */*',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        method: 'GET',
+    const response = await fetch(`${this.config.getString('mta.url')}/hub/applications`, {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+      method: 'GET',
+    });
 
     this.logger.info(`Received response with status: ${response.status}`);
 
     if (response.status !== 200) {
-      throw new Error(
-        `Failed to fetch applications: Status ${response.status}`,
-      );
+      throw new Error(`Failed to fetch applications: Status ${response.status}`);
     }
     return response.json();
   }
@@ -170,9 +156,7 @@ export class MTAProvider implements EntityProvider {
   async processApplications(applications: any) {
     try {
       // Map applications to entities
-      const entities = applications.map((app: any) =>
-        this.mapApplicationToEntity(app),
-      );
+      const entities = applications.map((app: any) => this.mapApplicationToEntity(app));
 
       // Apply mutations to update the catalog
       await this.connection?.applyMutation({
@@ -181,9 +165,7 @@ export class MTAProvider implements EntityProvider {
       });
 
       // Optionally refresh connections or handle post-mutation logic
-      this.logger.info(
-        'Successfully processed applications, refreshing data...',
-      );
+      this.logger.info('Successfully processed applications, refreshing data...');
       await this.refreshData(entities);
     } catch (error: any) {
       // Log detailed error messages
