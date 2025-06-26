@@ -62,7 +62,7 @@ export const PipelineRunSBOMLink: FC<PipelineRunSBOMLinkProps> = ({ pr }) => {
         fullWidth
         maxWidth="xl"
       />
-      <Tooltip title="Link to SBOM" arrow>
+      <Tooltip title="Link to SBOM" arrow placement="left">
         <Box>
           <IconButton
             className={classes.icon}
