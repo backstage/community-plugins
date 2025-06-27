@@ -7,15 +7,18 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
+    "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
-    "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
+    "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
@@ -38,11 +41,12 @@
     "@backstage/cli": "^0.33.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.14.0",
-    "@changesets/cli": "^2.27.1",
-    "knip": "^5.27.4",
+    "@changesets/cli": "^2.29.5",
+    "@playwright/test": "^1.32.3",
+    "knip": "^5.61.2",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",
@@ -57,5 +61,6 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "packageManager": "yarn@4.4.1"
 }
