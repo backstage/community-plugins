@@ -21,6 +21,7 @@ import {
   SendMessageResponse,
   Task,
   TextPart,
+  AgentCard,
 } from '../a2a/schema';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
@@ -86,6 +87,15 @@ export class ChatbotApi {
     } catch (error) {
       // console.log(error)
       return 'Error connecting to agent';
+    }
+  }
+
+  public async getSkillExamples() {
+    const card: AgentCard | undefined = await this.client?.getAgentCard();
+    try {
+      return card?.skills[0].examples;
+    } catch (error) {
+      return [];
     }
   }
 }
