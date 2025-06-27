@@ -77,6 +77,7 @@ function ChatAssistantApp() {
     );
   }
   const identityApi = useApi(identityApiRef);
+  const showOptions = config.getBoolean('agentForge.showOptions');
 
   const chatbotApi = useMemo(
     () => new ChatbotApi(backendUrl, { identityApi }),
@@ -328,7 +329,7 @@ function ChatAssistantApp() {
         return UserResponse.CONTINUE;
     }
   }
-  if (suggestions.length === 0) {
+  if (showOptions && suggestions.length === 0) {
     chatbotApi.getSkillExamples().then(value => {
       if (value) {
         setSuggestions(value);
