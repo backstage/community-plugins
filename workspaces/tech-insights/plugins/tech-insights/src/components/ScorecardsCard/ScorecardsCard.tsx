@@ -23,6 +23,7 @@ import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-re
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
+import { ScorecardsGauge } from '../ScorecardsGauge';
 
 export const ScorecardsCard = (props: {
   title: string;
@@ -31,6 +32,7 @@ export const ScorecardsCard = (props: {
   filter?: (check: Check) => boolean;
   onlyFailed?: boolean;
   expanded?: boolean;
+  gauge?: boolean;
 }) => {
   const {
     title,
@@ -38,7 +40,8 @@ export const ScorecardsCard = (props: {
     checksId,
     filter,
     onlyFailed,
-    expanded = true,
+    gauge,
+    expanded = !gauge,
   } = props;
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
@@ -72,7 +75,16 @@ export const ScorecardsCard = (props: {
         checkResultRenderers[val.check.type]?.isFailed?.(val),
       );
 
-  return (
+  return gauge ? (
+    <ScorecardsGauge
+      title={title}
+      description={description}
+      entity={entity}
+      checkResults={filteredValue}
+      noWarning={onlyFailed}
+      expanded={expanded}
+    />
+  ) : (
     <ScorecardInfo
       title={title}
       description={description}

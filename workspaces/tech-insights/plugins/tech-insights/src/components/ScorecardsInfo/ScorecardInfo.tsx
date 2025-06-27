@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { ReactNode } from 'react';
-
-import * as React from 'react';
+import { ReactElement, ReactNode } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,63 +40,94 @@ const useStyles = makeStyles(theme => ({
   accordionHeaderContent: {
     margin: `${theme.spacing(2)}px 0 !important`,
   },
+  accordionDetails: {
+    margin: 0,
+    paddingBottom: 0,
+  },
 }));
 
-const infoCard = (
-  title: React.ReactNode,
+const infoAccordion = (
+  title: ReactNode,
+  children: ReactNode,
+  classes: ReturnType<typeof useStyles>,
+  expanded: boolean,
+  summary?: string,
+) => (
+  <Accordion defaultExpanded={expanded}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      className={classes.accordionHeader}
+      classes={{
+        content: classes.accordionHeaderContent,
+      }}
+    >
+      <Grid container justifyContent="space-between" alignItems="center">
+        <Grid item>
+          <Typography variant="h5">{title}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography>{summary}</Typography>
+        </Grid>
+      </Grid>
+    </AccordionSummary>
+    <AccordionDetails classes={{ root: classes.accordionDetails }}>
+      {children}
+    </AccordionDetails>
+  </Accordion>
+);
+
+const infoDetails = (
   description: string | undefined,
   classes: ReturnType<typeof useStyles>,
-  element: React.ReactElement,
+  element: ReactElement,
+) => {
+  return (
+    <Grid container>
+      {description && (
+        <Grid item xs={12}>
+          <Typography
+            className={classes.subheader}
+            variant="body1"
+            gutterBottom
+          >
+            <MarkdownContent content={description} />
+          </Typography>
+        </Grid>
+      )}
+      <Grid item xs={12}>
+        {element}
+      </Grid>
+    </Grid>
+  );
+};
+
+const infoCard = (
+  title: ReactNode,
+  description: string | undefined,
+  classes: ReturnType<typeof useStyles>,
+  element: ReactElement,
   expanded: boolean,
   summary?: string,
 ) => (
   <Grid item xs={12}>
-    <Accordion defaultExpanded={expanded}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        className={classes.accordionHeader}
-        classes={{
-          content: classes.accordionHeaderContent,
-        }}
-      >
-        <Grid container justifyContent="space-between" alignItems="center">
-          <Grid item>
-            <Typography variant="h5">{title}</Typography>
-          </Grid>
-          <Grid item>
-            <Typography>{summary}</Typography>
-          </Grid>
-        </Grid>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Grid container>
-          {description && (
-            <Grid item xs={12}>
-              <Typography
-                className={classes.subheader}
-                variant="body1"
-                gutterBottom
-              >
-                <MarkdownContent content={description} />
-              </Typography>
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            {element}
-          </Grid>
-        </Grid>
-      </AccordionDetails>
-    </Accordion>
+    {infoAccordion(
+      title,
+      infoDetails(description, classes, element),
+      classes,
+      expanded,
+      summary,
+    )}
   </Grid>
 );
 
 export const ScorecardInfo = (props: {
   checkResults: CheckResult[];
   title: ReactNode;
-  entity: Entity;
+  entity?: Entity;
   description?: string;
   noWarning?: boolean;
   expanded?: boolean;
+  dense?: boolean;
 }) => {
   const {
     checkResults,
@@ -107,6 +136,7 @@ export const ScorecardInfo = (props: {
     description,
     noWarning,
     expanded = true,
+    dense,
   } = props;
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
@@ -136,7 +166,12 @@ export const ScorecardInfo = (props: {
     title,
     description,
     classes,
-    <ScorecardsList checkResults={checkResults} entity={entity} />,
+    <ScorecardsList
+      checkResults={checkResults}
+      entity={entity}
+      hideDescription
+      dense={dense}
+    />,
     expanded,
     `${
       checkResults.filter(checkResult => !api.isCheckResultFailed(checkResult))
