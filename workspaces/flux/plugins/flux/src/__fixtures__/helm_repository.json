@@ -1,0 +1,53 @@
+{
+  "apiVersion": "source.toolkit.fluxcd.io/v1beta2",
+  "kind": "HelmRepository",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"source.toolkit.fluxcd.io/v1beta2\",\"kind\":\"HelmRepository\",\"metadata\":{\"annotations\":{},\"name\":\"podinfo\",\"namespace\":\"backstage\"},\"spec\":{\"interval\":\"1m\",\"url\":\"https://stefanprodan.github.io/podinfo\"}}\n"
+    },
+    "creationTimestamp": "2023-06-29T13:50:21Z",
+    "finalizers": ["finalizers.fluxcd.io"],
+    "generation": 1,
+    "name": "podinfo",
+    "namespace": "default",
+    "resourceVersion": "1054927",
+    "uid": "39f589d3-260d-4f93-a4f2-fcd6dc26b8a8"
+  },
+  "spec": {
+    "interval": "1m",
+    "provider": "generic",
+    "timeout": "60s",
+    "url": "https://stefanprodan.github.io/podinfo",
+    "suspend": false
+  },
+  "status": {
+    "artifact": {
+      "digest": "sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e",
+      "lastUpdateTime": "2023-06-29T13:50:22Z",
+      "path": "helmrepository/backstage/podinfo/index-80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e.yaml",
+      "revision": "sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e",
+      "size": 43126,
+      "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/backstage/podinfo/index-80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e.yaml"
+    },
+    "conditions": [
+      {
+        "lastTransitionTime": "2023-07-03T09:18:10Z",
+        "message": "stored artifact: revision 'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastTransitionTime": "2023-06-29T13:50:22Z",
+        "message": "stored artifact: revision 'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "ArtifactInStorage"
+      }
+    ],
+    "observedGeneration": 1,
+    "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/backstage/podinfo/index.yaml"
+  }
+}
