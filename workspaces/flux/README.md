@@ -8,9 +8,3 @@ To start the app, run:
 yarn install
 yarn start
 ```
-
-To generate knip reports for this app, run:
-
-```sh
-yarn backstage-repo-tools knip-reports
-```
