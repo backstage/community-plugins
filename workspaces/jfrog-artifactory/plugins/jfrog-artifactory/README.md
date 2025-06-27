@@ -27,6 +27,19 @@ The Jfrog Artifactory plugin displays information about your container images wi
          secure: true
    ```
 
+If you have multiple instances of artifactory supported, you can set up multiple proxy target paths as follows:
+
+```yaml title="app-config.yaml"
+proxy:
+  endpoints:
+    '/jfrog-instance1': # Please, mind, it's more of an alias
+      target: 'https://<hostname1>'
+      # Rest of the config for hostname1
+    '/jfrog-instance2': # Please, mind, it's more of an alias
+      target: 'https://<hostname2>'
+      # Rest of the config for hostname1
+```
+
 1. Enable the **JFROG ARTIFACTORY** tab on the entity view page in `packages/app/src/components/catalog/EntityPage.tsx`:
 
    ```ts title="packages/app/src/components/catalog/EntityPage.tsx"
@@ -60,6 +73,9 @@ The Jfrog Artifactory plugin displays information about your container images wi
    metadata:
      annotations:
        'jfrog-artifactory/image-name': '<IMAGE-NAME>'
+       # if your app supports multiple artifactory instances,
+       # you'll need to specify the instance proxy target path your image belongs to
+       'jfrog-artifactory/target-proxy': '/<PROXY-TARGET>' # e.g. `/jfrog-instance1` from the example above
    ```
 
 ## For users
