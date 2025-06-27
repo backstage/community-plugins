@@ -20,6 +20,7 @@ import useAsyncFn from 'react-use/esm/useAsyncFn';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 import type { BazaarProject } from '../../types';
 import { bazaarApiRef } from '../../api';
 import { fetchCatalogItems } from '../../util/fetchMethods';
@@ -35,6 +36,14 @@ export type BazaarOverviewCardProps = {
   order: 'latest' | 'random';
   fullWidth?: boolean;
   fullHeight?: boolean;
+  /**
+   * A list of {@link @backstage/catalog-model#Entity} to display as entity page link options. If provided, this will take priority over the `filter` prop.
+   */
+  allCatalogEntities?: Entity[] | null;
+  /**
+   * An {@link @backstage/catalog-client#EntityFilterQuery} used to filter catalog entities. Ignored if `allCatalogEntities` is provided.
+   */
+  filter?: EntityFilterQuery | undefined;
 };
 
 const getUnlinkedCatalogEntities = (
@@ -52,7 +61,14 @@ const getUnlinkedCatalogEntities = (
 
 /** @public */
 export const BazaarOverviewCard = (props: BazaarOverviewCardProps) => {
-  const { title, order, fullWidth = false, fullHeight = false } = props;
+  const {
+    title,
+    order,
+    fullWidth = false,
+    fullHeight = false,
+    allCatalogEntities = null,
+    filter = undefined,
+  } = props;
   const bazaarApi = useApi(bazaarApiRef);
   const catalogApi = useApi(catalogApiRef);
   const root = useRouteRef(bazaarPlugin.routes.root);
@@ -69,7 +85,8 @@ export const BazaarOverviewCard = (props: BazaarOverviewCardProps) => {
     useState<Entity[]>();
 
   const [catalogEntities, fetchCatalogEntities] = useAsyncFn(async () => {
-    return await fetchCatalogItems(catalogApi);
+    if (allCatalogEntities) return allCatalogEntities;
+    return await fetchCatalogItems(catalogApi, filter);
   });
 
   const [bazaarProjects, fetchBazaarProjects] = useAsyncFn(async () => {
