@@ -21,6 +21,10 @@ const backend = createBackend();
 
 // api endpoints from here: https://github.com/backstage/backstage/blob/master/plugins/catalog-backend/src/service/createRouter.ts
 backend.add(import('@backstage/plugin-catalog-backend'));
+
+// Subscribe to catalog errors https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
+backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
+
 backend.add(catalogModuleKeycloakEntityProvider);
 
 backend.start();
