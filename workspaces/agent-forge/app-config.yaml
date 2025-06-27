@@ -9,7 +9,6 @@ agentForge:
   baseUrl: http://127.0.0.1:8000
   showOptions: true
 
-
 backend:
   baseUrl: http://localhost:7007
   listen:
