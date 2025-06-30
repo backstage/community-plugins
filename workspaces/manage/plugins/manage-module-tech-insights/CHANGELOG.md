@@ -1,5 +1,12 @@
 # @backstage-community/plugin-manage-module-tech-insights
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [6e2fffe]
+  - @backstage-community/plugin-manage-react@1.0.0
+
 ## 0.1.5
 
 ### Patch Changes
