@@ -1,5 +1,13 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.5.3
+
+### Patch Changes
+
+- 2564b07: Set all tooltip placements to left
+- 28e2aa1: Fixes disabled sbom link when step is present
+- b21ffcd: Updated dependency `@backstage-community/plugin-github-actions` to `^0.11.0`.
+
 ## 0.5.2
 
 ### Patch Changes
