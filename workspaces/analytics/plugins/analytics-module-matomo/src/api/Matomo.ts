@@ -36,13 +36,13 @@ export class MatomoAnalytics implements AnalyticsApi {
     siteId: number;
     identity: string;
     identityApi?: IdentityApi;
-    disableEncryption?: boolean;
+    sendPlainUserId?: boolean;
   }) {
     loadMatomo(options.matomoUrl, options.siteId);
 
     /* Add user tracking if identity is enabled and identityApi is provided */
     if (options.identity !== 'disabled' && options.identityApi) {
-      this.setUserFrom(options.identityApi, options.disableEncryption).catch(
+      this.setUserFrom(options.identityApi, options.sendPlainUserId).catch(
         () => {
           return;
         },
@@ -59,8 +59,8 @@ export class MatomoAnalytics implements AnalyticsApi {
     const identity =
       config.getOptionalString('app.analytics.matomo.identity') || 'disabled';
 
-    const disableEncryption = config.getOptionalBoolean(
-      'app.analytics.matomo.disableEncryption',
+    const sendPlainUserId = config.getOptionalBoolean(
+      'app.analytics.matomo.sendPlainUserId',
     );
 
     const matomoUrl = config.getString('app.analytics.matomo.host');
@@ -77,7 +77,7 @@ export class MatomoAnalytics implements AnalyticsApi {
       siteId,
       identity,
       identityApi: options?.identityApi,
-      disableEncryption,
+      sendPlainUserId,
     });
   }
 
@@ -96,11 +96,11 @@ export class MatomoAnalytics implements AnalyticsApi {
 
   private async setUserFrom(
     identityApi: IdentityApi,
-    disableEncryption?: boolean,
+    sendPlainUserId?: boolean,
   ) {
     const { userEntityRef } = await identityApi.getBackstageIdentity();
 
-    if (disableEncryption) {
+    if (sendPlainUserId) {
       window._paq.push(['setUserId', userEntityRef]);
     } else {
       // Prevent PII from being passed to Matomo

@@ -37,11 +37,11 @@ export interface Config {
         identity?: 'disabled' | 'optional' | 'required';
 
         /**
-         * Controls if the encryption of userId should be disabled
+         * Controls if the hashing of userId should be disabled
          *
          * @visibility frontend
          */
-        disableEncryption?: boolean;
+        sendPlainUserId?: boolean;
       };
     };
   };
