@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type {
-  Owners,
-  OwnersAndEntities,
-  ManageProvider,
-  ManageApi,
-} from './ManageApi';
+import type { Entity } from '@backstage/catalog-model';
 
-export type { ManageModuleApi, ManageModuleApiRef } from './types';
-
-export type { DefaultManageApiOptions } from './DefaultManageApi';
-export { DefaultManageApi } from './DefaultManageApi';
-
-export type { ApiFactoryOptions } from './api';
-export { manageApiRef, createManageApiFactory } from './api';
+/**
+ * The result of the /home route, i.e. a list of owner entities and owned entities
+ *
+ * @public
+ */
+export interface OwnersAndOwnedEntities {
+  ownerEntities: Entity[];
+  ownedEntities: Entity[];
+}

@@ -15,17 +15,17 @@
  */
 import React, { PropsWithChildren } from 'react';
 
-import { OwnedGroupsProvider } from '../OwnedGroupsProvider';
-import { OwnedEntitiesProvider } from './OwnedEntitiesProvider';
+import { OwnedProvider } from './OwnedProvider';
 
 export {
   useOwnedKinds,
   useOwnedEntities,
   useManagedEntities,
-} from './OwnedEntitiesProvider';
+  useOwners,
+} from './OwnedProvider';
 
 /** @public */
-export interface OwnedEntitiesProviderProps {
+export interface OwnedProviderProps {
   kinds?: string[];
 }
 
@@ -35,11 +35,7 @@ export interface OwnedEntitiesProviderProps {
  * @public
  */
 export function ManageOwnedProvider(
-  props: PropsWithChildren<OwnedEntitiesProviderProps>,
+  props: PropsWithChildren<OwnedProviderProps>,
 ) {
-  return (
-    <OwnedGroupsProvider>
-      <OwnedEntitiesProvider kinds={props.kinds} children={props.children} />
-    </OwnedGroupsProvider>
-  );
+  return <OwnedProvider kinds={props.kinds} children={props.children} />;
 }

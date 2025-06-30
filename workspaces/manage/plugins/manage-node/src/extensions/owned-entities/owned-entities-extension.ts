@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type {
-  Owners,
-  OwnersAndEntities,
-  ManageProvider,
-  ManageApi,
-} from './ManageApi';
+import { createExtensionPoint } from '@backstage/backend-plugin-api';
+import { OwnedEntitiesProvider } from './types';
 
-export type { ManageModuleApi, ManageModuleApiRef } from './types';
-
-export type { DefaultManageApiOptions } from './DefaultManageApi';
-export { DefaultManageApi } from './DefaultManageApi';
-
-export type { ApiFactoryOptions } from './api';
-export { manageApiRef, createManageApiFactory } from './api';
+/**
+ * Extension ref for an {@link OwnedEntitiesProvider | owned entities provider}
+ *
+ * @public
+ */
+export const ownedEntitesExtensionRef =
+  createExtensionPoint<OwnedEntitiesProvider>({
+    id: 'manage.owned-entities-provider',
+  });
