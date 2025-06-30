@@ -42,7 +42,7 @@ export class MatomoAnalytics implements AnalyticsApi {
 
     /* Add user tracking if identity is enabled and identityApi is provided */
     if (options.identity !== 'disabled' && options.identityApi) {
-      this.setUserFrom(options.identityApi, options.disableEncryption).then(
+      this.setUserFrom(options.identityApi, options.disableEncryption).catch(
         () => {
           return;
         },
