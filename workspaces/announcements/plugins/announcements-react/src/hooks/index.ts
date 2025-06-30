@@ -18,5 +18,6 @@ export {
   type AnnouncementsOptions,
 } from './useAnnouncements';
 export { useCategories } from './useCategories';
+export { useTags } from './useTags';
 export { useAnnouncementsTranslation } from './useAnnouncementsTranslation';
 export { useCatalogEntities } from './useCatalogEntities';

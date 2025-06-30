@@ -120,6 +120,7 @@ export const NewAnnouncementBanner: (props: {
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
+  tags?: string[] | undefined;
 }) => JSX_2.Element | null;
 
 // (No @packageDocumentation comment for this package)

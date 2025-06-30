@@ -2,7 +2,7 @@
 
 The backend for the Announcements plugin. This plugin provides:
 
-- REST APIs for managing announcements and categories
+- REST APIs for managing announcements, categories, and tags
 - Integration with the [`@backstage/plugin-search`](https://github.com/backstage/backstage/tree/master/plugins/search) plugin
 - Integration with the [`@backstage/plugin-permission-backend`](https://github.com/backstage/backstage/tree/master/plugins/permission-backend) plugin
 - Integration with the [`@backstage/plugin-events-backend`](https://github.com/backstage/backstage/tree/master/plugins/events-backend) plugin
@@ -65,7 +65,7 @@ docker-compose down -v
 
 #### better-sqlite3
 
-The better-sqlite3 database can be seeded with categories and announcements.
+The better-sqlite3 database can be seeded with categories, tags, and announcements.
 
 With the backend running,
 
@@ -90,6 +90,9 @@ curl http://localhost:7007/api/announcements/announcements
 
 # get all categories
 curl http://localhost:7007/api/categories
+
+# get all tags
+curl http://localhost:7007/api/tags
 ```
 
 ```ts
