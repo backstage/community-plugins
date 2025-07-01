@@ -64,6 +64,16 @@ export interface Config {
        */
       npxCommand?: string;
       /**
+       * Environment variables to set when running the MCP server
+       * @visibility backend
+       */
+      env?: { [key: string]: string };
+      /**
+       * Arguments to pass to the MCP server command
+       * @visibility backend
+       */
+      args?: string[];
+      /**
        * URL endpoint for the MCP server (for HTTP-based servers)
        * @visibility backend
        */

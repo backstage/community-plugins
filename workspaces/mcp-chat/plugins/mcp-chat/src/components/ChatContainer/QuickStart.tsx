@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useMemo } from 'react';
 import { alpha } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import BugReportIcon from '@mui/icons-material/BugReport';
@@ -86,21 +86,26 @@ export const QuickStart: React.FC<QuickStartProps> = ({
   const configApi = useApi(configApiRef);
 
   // Get suggestions from config
-  const suggestions: Suggestion[] = React.useMemo(() => {
-    const configSuggestions = configApi.getOptionalConfigArray(
-      'mcpChat.quickPrompts',
-    );
+  const suggestions: Suggestion[] = useMemo(() => {
+    try {
+      const configSuggestions = configApi.getOptionalConfigArray(
+        'mcpChat.quickPrompts',
+      );
 
-    if (!configSuggestions || configSuggestions.length === 0) {
+      if (!configSuggestions || configSuggestions.length === 0) {
+        return [];
+      }
+
+      return configSuggestions.map(config => ({
+        title: config.getString('title'),
+        description: config.getString('description'),
+        prompt: config.getString('prompt'),
+        category: config.getString('category'),
+      }));
+    } catch (error) {
+      // Handle config errors gracefully by returning empty suggestions
       return [];
     }
-
-    return configSuggestions.map(config => ({
-      title: config.getString('title'),
-      description: config.getString('description'),
-      prompt: config.getString('prompt'),
-      category: config.getString('category'),
-    }));
   }, [configApi]);
 
   // Determine optimal grid layout based on number of suggestions

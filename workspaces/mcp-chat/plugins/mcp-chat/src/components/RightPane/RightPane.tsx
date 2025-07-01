@@ -90,7 +90,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
       }
     };
 
-    if (mcpServers.length > 0) {
+    if (mcpServers && mcpServers.length > 0) {
       fetchTools();
     }
   }, [mcpChatApi, mcpServers]);
