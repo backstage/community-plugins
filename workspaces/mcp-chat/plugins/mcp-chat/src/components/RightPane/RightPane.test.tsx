@@ -19,9 +19,8 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { RightPane } from './RightPane';
 import { mcpChatApiRef } from '../../api';
-import type { ConfigStatus, Tool, ToolsResponse } from '../../api/McpChatApi';
+import type { ConfigStatus, ToolsResponse } from '../../api/McpChatApi';
 
-// Mock the child components
 jest.mock('./ActiveMcpServers', () => ({
   ActiveMcpServers: (props: any) => (
     <div data-testid="active-mcp-servers">
@@ -201,7 +200,6 @@ describe('RightPane', () => {
 
       expect(container.querySelector('[data-testid="bot-icon"]')).toBeDefined();
 
-      // Wait for async operations to complete
       await waitFor(() => {
         expect(
           container.querySelector('[data-testid="active-mcp-servers"]'),
@@ -225,7 +223,6 @@ describe('RightPane', () => {
     it('should call onToggleSidebar when toggle button is clicked', async () => {
       const { container } = await renderRightPane();
 
-      // Wait for component to fully render
       await waitFor(() => {
         const toggleButton = container.querySelector('button');
         expect(toggleButton).toBeDefined();
@@ -249,7 +246,6 @@ describe('RightPane', () => {
     });
 
     it('should show appropriate content based on sidebar state', async () => {
-      // Test expanded state
       const { container: expandedContainer } = await renderRightPane({
         sidebarCollapsed: false,
       });
@@ -257,7 +253,6 @@ describe('RightPane', () => {
         expandedContainer.querySelector('[data-testid="bot-icon"]'),
       ).toBeDefined();
 
-      // Test collapsed state
       const { container: collapsedContainer } = await renderRightPane({
         sidebarCollapsed: true,
       });
@@ -312,7 +307,7 @@ describe('RightPane', () => {
 
     it('should call onServerToggle when server is toggled', async () => {
       await renderRightPane();
-      // The onServerToggle function should be available but not called during render
+
       expect(mockOnServerToggle).not.toHaveBeenCalled();
     });
   });
@@ -331,7 +326,6 @@ describe('RightPane', () => {
     });
 
     it('should handle tools loading state', async () => {
-      // Mock a delayed response
       mockMcpChatApi.getAvailableTools.mockImplementation(
         () =>
           new Promise(resolve =>
@@ -341,13 +335,11 @@ describe('RightPane', () => {
 
       const { container } = await renderRightPane();
 
-      // Initially should show loading
       const toolsComponent = container.querySelector(
         '[data-testid="active-tools"]',
       );
       expect(toolsComponent).toBeDefined();
 
-      // Wait for loading to complete
       await waitFor(() => {
         expect(mockMcpChatApi.getAvailableTools).toHaveBeenCalled();
       });
@@ -372,7 +364,6 @@ describe('RightPane', () => {
     it('should not fetch tools when no servers are available', async () => {
       await renderRightPane({ mcpServers: [] });
 
-      // Should not call getAvailableTools when no servers
       expect(mockMcpChatApi.getAvailableTools).not.toHaveBeenCalled();
     });
   });
@@ -419,7 +410,6 @@ describe('RightPane', () => {
         configStatus: { provider: null, mcpServers: [] },
       });
 
-      // Should not call testProviderConnection when no provider
       expect(mockMcpChatApi.testProviderConnection).not.toHaveBeenCalled();
     });
   });
@@ -427,7 +417,7 @@ describe('RightPane', () => {
   describe('new chat functionality', () => {
     it('should call onNewChat when new chat is triggered', async () => {
       await renderRightPane();
-      // The onNewChat function should be available but not called during render
+
       expect(mockOnNewChat).not.toHaveBeenCalled();
     });
 
@@ -435,7 +425,6 @@ describe('RightPane', () => {
       const { container } = await renderRightPane();
 
       await waitFor(() => {
-        // Look for any button that might trigger new chat
         const buttons = container.querySelectorAll('button');
         expect(buttons.length).toBeGreaterThan(0);
       });
@@ -556,7 +545,6 @@ describe('RightPane', () => {
         sidebarCollapsed: false,
       });
 
-      // Change to collapsed
       await act(async () => {
         rerender(
           <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
@@ -567,7 +555,6 @@ describe('RightPane', () => {
         );
       });
 
-      // Change back to expanded
       await act(async () => {
         rerender(
           <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>

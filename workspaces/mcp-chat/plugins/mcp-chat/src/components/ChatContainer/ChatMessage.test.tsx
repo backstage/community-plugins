@@ -19,14 +19,12 @@ import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatMessage } from './ChatMessage';
 
-// Mock ReactMarkdown
 jest.mock('react-markdown', () => {
   return function MockReactMarkdown(props: any) {
     return <div data-testid="markdown-content">{props.children}</div>;
   };
 });
 
-// Mock BotIcon
 jest.mock('../BotIcon', () => ({
   BotIcon: ({ color }: { color?: string }) => (
     <div data-testid="bot-icon" style={{ color }}>
@@ -35,7 +33,6 @@ jest.mock('../BotIcon', () => ({
   ),
 }));
 
-// Mock clipboard API
 Object.assign(globalThis.navigator, {
   clipboard: {
     writeText: jest.fn(() => Promise.resolve()),
@@ -168,7 +165,6 @@ describe('ChatMessage', () => {
       const emptyMessage = { ...mockMessage, text: '' };
       renderWithTheme(<ChatMessage message={emptyMessage} />);
 
-      // Should still render the message container
       expect(screen.getByTestId('person-icon')).toBeInTheDocument();
     });
 
@@ -233,7 +229,6 @@ describe('ChatMessage', () => {
       const onCopy = jest.fn();
       renderWithTheme(<ChatMessage message={mockMessage} onCopy={onCopy} />);
 
-      // Simulate copy action (implementation would depend on actual copy button)
       await globalThis.navigator.clipboard.writeText(mockMessage.text);
 
       expect(globalThis.navigator.clipboard.writeText).toHaveBeenCalledWith(
@@ -264,8 +259,6 @@ describe('ChatMessage', () => {
         <ChatMessage message={mockBotMessage} onFeedback={onFeedback} />,
       );
 
-      // onFeedback would be called through UI interactions
-      // This tests that the prop is properly accepted
       expect(onFeedback).toBeDefined();
     });
 
@@ -335,7 +328,6 @@ describe('ChatMessage', () => {
     it('manages copied text state correctly', () => {
       renderWithTheme(<ChatMessage message={mockMessage} />);
 
-      // Component should initialize without copied state
       expect(screen.queryByText('Copied!')).not.toBeInTheDocument();
     });
 
@@ -347,7 +339,6 @@ describe('ChatMessage', () => {
       };
       renderWithTheme(<ChatMessage message={messageWithTools} />);
 
-      // Component should initialize without selected tool
       expect(screen.getByText('test-tool')).toBeInTheDocument();
     });
   });

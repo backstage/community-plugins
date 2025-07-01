@@ -23,15 +23,13 @@ import { ChatPage } from './ChatPage';
 import { mcpChatApiRef } from '../../api';
 import type { ConfigStatus } from '../../api/McpChatApi';
 
-// Mock Backstage components
 jest.mock('@backstage/core-components', () => ({
   Content: ({ children }: any) => <div data-testid="content">{children}</div>,
   Page: ({ children }: any) => <div data-testid="page">{children}</div>,
 }));
 
-// Mock the child components
 jest.mock('../ChatContainer', () => ({
-  ChatContainer: forwardRef((props: any, ref: any) => (
+  ChatContainer: forwardRef((_props: any, ref: any) => (
     <div data-testid="chat-container" ref={ref}>
       Chat Container Mock
     </div>
@@ -46,7 +44,6 @@ jest.mock('../RightPane', () => ({
   ),
 }));
 
-// Mock useTheme hook
 jest.mock('@mui/styles', () => ({
   useTheme: jest.fn(),
 }));
