@@ -19,7 +19,6 @@ import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TypingIndicator } from './TypingIndicator';
 
-// Mock BotIcon
 jest.mock('../BotIcon', () => ({
   BotIcon: ({ color }: { color?: string }) => (
     <div data-testid="bot-icon" style={{ color }}>
@@ -86,7 +85,6 @@ describe('TypingIndicator', () => {
     it('renders three animated dots', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Check that the component renders with the expected structure
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
       expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
     });
@@ -94,14 +92,12 @@ describe('TypingIndicator', () => {
     it('applies correct animation styles', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Component should render without errors - animation is handled by CSS classes
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
     });
 
     it('has different animation delays for dots', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Component should render correctly with staggered animations
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
     });
   });
@@ -124,14 +120,12 @@ describe('TypingIndicator', () => {
     it('uses theme spacing correctly', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Component should render without errors with theme spacing
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
     });
 
     it('applies theme background colors', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Check that component renders with theme background
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
     });
   });
@@ -163,7 +157,6 @@ describe('TypingIndicator', () => {
     it('has correct component hierarchy', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Should have avatar, card, and content
       expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
     });
@@ -171,14 +164,12 @@ describe('TypingIndicator', () => {
     it('uses Material-UI components correctly', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Should render without Material-UI errors
       expect(screen.getByText('Hang on...')).toBeInTheDocument();
     });
 
     it('applies correct card styling', () => {
       renderWithTheme(<TypingIndicator />);
 
-      // Card should be present and styled
       const text = screen.getByText('Hang on...');
       expect(text.closest('[class*="MuiCard"]')).toBeInTheDocument();
     });
@@ -203,7 +194,6 @@ describe('TypingIndicator', () => {
       renderWithTheme(<TypingIndicator />);
       const endTime = globalThis.performance.now();
 
-      // Should render quickly (within reasonable time)
       expect(endTime - startTime).toBeLessThan(100);
     });
 

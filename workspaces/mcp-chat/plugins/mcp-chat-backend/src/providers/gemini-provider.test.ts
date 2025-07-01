@@ -20,8 +20,6 @@ import {
   GoogleGenerativeAI,
   GenerativeModel,
   GenerateContentResult,
-  Content,
-  Part,
 } from '@google/generative-ai';
 
 // Mock the Google Generative AI library
@@ -29,9 +27,6 @@ jest.mock('@google/generative-ai');
 
 const MockGoogleGenerativeAI = GoogleGenerativeAI as jest.MockedClass<
   typeof GoogleGenerativeAI
->;
-const MockGenerativeModel = GenerativeModel as jest.MockedClass<
-  typeof GenerativeModel
 >;
 
 describe('GeminiProvider', () => {
