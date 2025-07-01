@@ -18,6 +18,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 import { Box, Typography } from '@material-ui/core';
 
+import { DOC_LINKS } from '../../doc-links';
 import { useRepository, useTags } from '../../hooks';
 import { useQuayViewPermission } from '../../hooks/useQuayViewPermission';
 import PermissionAlert from '../PermissionAlert/PermissionAlert';
@@ -27,10 +28,6 @@ type QuayRepositoryProps = Record<never, any>;
 
 export function QuayRepository(_props: QuayRepositoryProps) {
   const { repository, organization } = useRepository();
-  const authTokenDocs =
-    'https://docs.redhat.com/en/documentation/red_hat_quay/3/html-single/red_hat_quay_api_guide/index#creating-oauth-access-token';
-  const pluginConfigDocLink =
-    'https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-backend#app-config';
   const configApi = useApi(configApiRef);
   const quayUiUrl =
     configApi.getOptionalString('quay.apiUrl') ??
@@ -111,8 +108,11 @@ export function QuayRepository(_props: QuayRepositoryProps) {
               </Typography>
               <Typography component="p" align="center" variant="body2">
                 3. Verify your{' '}
-                <Link to={authTokenDocs}>Quay access tokens</Link> are{' '}
-                <Link to={pluginConfigDocLink}>configured correctly</Link>
+                <Link to={DOC_LINKS.AUTH_TOKEN_GUIDE}>Quay access tokens</Link>{' '}
+                are{' '}
+                <Link to={DOC_LINKS.BACKEND_CONFIGURATION_GUIDE}>
+                  configured correctly
+                </Link>
               </Typography>
             </Box>
           </Box>
