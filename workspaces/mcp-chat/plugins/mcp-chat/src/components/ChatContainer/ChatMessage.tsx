@@ -297,6 +297,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
 
   return (
     <Box
+      data-testid="message-container"
+      className={message.isUser ? 'user-message' : 'bot-message'}
       sx={{
         display: 'flex',
         alignItems: 'flex-start',
@@ -315,9 +317,12 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         }}
       >
         {message.isUser ? (
-          <PersonIcon />
+          <PersonIcon data-testid="person-icon" />
         ) : (
-          <BotIcon color={isDarkMode ? '#e0e0e0' : '#333'} />
+          <BotIcon
+            data-testid="bot-icon"
+            color={isDarkMode ? '#e0e0e0' : '#333'}
+          />
         )}
       </Avatar>
 

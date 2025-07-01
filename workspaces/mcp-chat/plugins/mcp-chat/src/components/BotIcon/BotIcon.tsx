@@ -21,19 +21,20 @@
  * License: Creative Commons (CC BY 3.0)
  * URL: https://thenounproject.com/icon/chatbot-4453381/
  */
-import React from 'react';
+import type { FC, SVGProps } from 'react';
 import { SvgIconProps } from '@mui/material/SvgIcon';
 
-export interface BotIconProps {
+export interface BotIconProps extends SVGProps<SVGSVGElement> {
   /** Size of the icon (width and height) */
   size?: number;
   /** Color of the icon */
   color?: string;
 }
 
-export const BotIcon: React.FC<BotIconProps> = ({
+export const BotIcon: FC<BotIconProps> = ({
   size = 30,
   color = '#333',
+  ...props
 }) => {
   return (
     <svg
@@ -42,6 +43,7 @@ export const BotIcon: React.FC<BotIconProps> = ({
       width={size}
       height={size}
       fill={color}
+      {...props}
     >
       <path
         d="M71,21.2V5H58v14H41V5H29v15C14.1,22,3,34,3,49v0.7C3,66.1,16.4,79,33.5,79H52V64H33.1C24.5,64,18,57.7,18,49.3v-0.7
@@ -55,9 +57,13 @@ export const BotIcon: React.FC<BotIconProps> = ({
 };
 
 // Backstage IconComponent compatible wrapper
-export const BotIconComponent: React.FC<SvgIconProps> = ({
+export const BotIconComponent: FC<SvgIconProps> = ({
   fontSize = 'medium',
   color = 'inherit',
+  titleAccess,
+  htmlColor,
+  inheritViewBox,
+  shapeRendering,
   ...props
 }) => {
   // Map fontSize to size

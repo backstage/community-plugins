@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import BuildIcon from '@mui/icons-material/Build';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -183,6 +182,8 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                     >
                       <CircularProgress
                         size={20}
+                        role="progressbar"
+                        aria-label="Loading tools"
                         style={{ marginRight: '8px' }}
                       />
                       <Typography
