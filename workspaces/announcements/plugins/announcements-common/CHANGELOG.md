@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.5.1
+
+### Patch Changes
+
+- 8c803d8: Added support for tags in announcements
+
 ## 0.5.0
 
 ### Minor Changes

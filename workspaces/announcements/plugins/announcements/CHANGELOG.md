@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 0.8.0
+
+### Minor Changes
+
+- 8c803d8: Added support for tags in announcements
+
+### Patch Changes
+
+- Updated dependencies [8c803d8]
+  - @backstage-community/plugin-announcements-react@0.7.0
+  - @backstage-community/plugin-announcements-common@0.5.1
+
 ## 0.7.2
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 8c803d8: Added support for tags in announcements
+
+### Patch Changes
+
+- Updated dependencies [8c803d8]
+  - @backstage-community/plugin-announcements-common@0.5.1
+  - @backstage-community/plugin-search-backend-module-announcements@0.4.1
+
 ## 0.5.0
 
 ### Minor Changes
