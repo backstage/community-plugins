@@ -20,16 +20,13 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatContainer, type ChatContainerRef } from './ChatContainer';
 import { mcpChatApiRef } from '../../api';
-import type { ChatResponse } from '../../api/McpChatApi';
 
-// Mock scrollIntoView function for JSDOM
 const mockScrollIntoView = jest.fn();
 Object.defineProperty(Element.prototype, 'scrollIntoView', {
   value: mockScrollIntoView,
   writable: true,
 });
 
-// Mock the child components
 jest.mock('./ChatMessage', () => ({
   ChatMessage: ({ message }: any) => (
     <div data-testid="chat-message">{message.text}</div>
@@ -102,7 +99,6 @@ describe('ChatContainer', () => {
 
     chatContainerRef = createRef<ChatContainerRef>();
 
-    // Clear all mocks
     jest.clearAllMocks();
     mockScrollIntoView.mockClear();
   });
@@ -286,12 +282,10 @@ describe('ChatContainer', () => {
 
       await renderChatContainer({ messages: messagesWithData });
 
-      // scrollIntoView should be called during the effect
       expect(mockScrollIntoView).toHaveBeenCalled();
     });
 
     it('should handle scrollIntoView gracefully when element not found', async () => {
-      // This test ensures the component doesn't crash if scrollIntoView fails
       mockScrollIntoView.mockImplementation(() => {
         throw new Error('Element not found');
       });
@@ -320,7 +314,6 @@ describe('ChatContainer', () => {
 
   describe('error handling', () => {
     it('should handle missing required props gracefully', async () => {
-      // Test with minimal props
       const { container } = await renderChatContainer({
         messages: [],
         setMessages: jest.fn(),
@@ -331,9 +324,8 @@ describe('ChatContainer', () => {
     });
 
     it('should handle malformed props', async () => {
-      // Test with null/undefined values that should be handled gracefully
       const { container } = await renderChatContainer({
-        messages: [], // Use empty array instead of null
+        messages: [],
         setMessages: mockSetMessages,
         mcpServers: [],
         customTheme: mockTheme,
@@ -379,7 +371,6 @@ describe('ChatContainer', () => {
   describe('API integration', () => {
     it('should have access to mcpChatApi', async () => {
       await renderChatContainer();
-      // The component should render without API calls during initial render
       expect(mockMcpChatApi.sendChatMessage).not.toHaveBeenCalled();
     });
 

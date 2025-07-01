@@ -154,8 +154,8 @@ describe('ActiveTools', () => {
         />,
       );
 
-      expect(screen.getByText('2 tools')).toBeInTheDocument(); // filesystem
-      expect(screen.getByText('1 tool')).toBeInTheDocument(); // database
+      expect(screen.getByText('2 tools')).toBeInTheDocument();
+      expect(screen.getByText('1 tool')).toBeInTheDocument();
     });
 
     it('displays individual tool names', () => {
@@ -216,7 +216,7 @@ describe('ActiveTools', () => {
         />,
       );
 
-      expect(screen.getAllByText('Loading tools...')).toHaveLength(2); // One for each enabled server
+      expect(screen.getAllByText('Loading tools...')).toHaveLength(2);
       expect(document.querySelectorAll('[role="progressbar"]')).toHaveLength(2);
     });
 
@@ -229,7 +229,7 @@ describe('ActiveTools', () => {
         />,
       );
 
-      expect(screen.getAllByText('...')).toHaveLength(2); // One for each enabled server
+      expect(screen.getAllByText('...')).toHaveLength(2);
     });
 
     it('hides loading indicator when tools are loaded', () => {
@@ -257,7 +257,7 @@ describe('ActiveTools', () => {
       );
 
       expect(screen.getByText('Active Tools')).toBeInTheDocument();
-      // Should not render any server accordions
+
       expect(screen.queryByText('filesystem')).not.toBeInTheDocument();
     });
 
@@ -270,7 +270,7 @@ describe('ActiveTools', () => {
         />,
       );
 
-      expect(screen.getAllByText('0 tools')).toHaveLength(2); // One for each enabled server
+      expect(screen.getAllByText('0 tools')).toHaveLength(2);
     });
 
     it('shows message when no tools are available for server', () => {
@@ -384,7 +384,6 @@ describe('ActiveTools', () => {
         darkTheme,
       );
 
-      // Component should render with dark theme styling
       expect(screen.getByText('filesystem')).toBeInTheDocument();
     });
   });
@@ -399,8 +398,7 @@ describe('ActiveTools', () => {
         />,
       );
 
-      // Should have expand icons
-      expect(screen.getAllByTestId('ExpandMoreIcon')).toHaveLength(2); // 2 enabled servers
+      expect(screen.getAllByTestId('ExpandMoreIcon')).toHaveLength(2);
     });
 
     it('shows tool count in accordion summary', () => {
@@ -425,7 +423,6 @@ describe('ActiveTools', () => {
         />,
       );
 
-      // Tools should be visible in accordion details
       expect(screen.getByText('read_file')).toBeInTheDocument();
       expect(screen.getByText('write_file')).toBeInTheDocument();
       expect(screen.getByText('execute_query')).toBeInTheDocument();
@@ -500,7 +497,6 @@ describe('ActiveTools', () => {
         />,
       );
 
-      // Should have title, accordions, and content
       expect(screen.getByText('Active Tools')).toBeInTheDocument();
       expect(screen.getByText('filesystem')).toBeInTheDocument();
       expect(screen.getByText('database')).toBeInTheDocument();
@@ -515,7 +511,6 @@ describe('ActiveTools', () => {
         />,
       );
 
-      // Should render without Material-UI errors
       expect(screen.getByText('filesystem')).toBeInTheDocument();
     });
   });
@@ -608,7 +603,6 @@ describe('ActiveTools', () => {
         />,
       );
 
-      // Should not crash, orphan tool should not be displayed
       expect(screen.queryByText('orphan_tool')).not.toBeInTheDocument();
     });
 

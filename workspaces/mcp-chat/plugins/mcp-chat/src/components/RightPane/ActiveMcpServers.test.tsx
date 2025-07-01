@@ -30,17 +30,6 @@ const mockTheme = createTheme({
   spacing: (factor: number) => `${8 * factor}px`,
 });
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: { main: '#4CAF50' },
-    text: { primary: '#fff', secondary: '#b3b3b3' },
-    background: { paper: '#1e1e1e', default: '#121212' },
-    divider: '#333',
-  },
-  spacing: (factor: number) => `${8 * factor}px`,
-});
-
 const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
@@ -215,7 +204,7 @@ describe('ActiveMcpServers', () => {
     it('shows correct tooltip text for enabled servers', async () => {
       renderWithTheme(
         <ActiveMcpServers
-          mcpServers={[mockMcpServers[0]]} // enabled server
+          mcpServers={[mockMcpServers[0]]}
           onServerToggle={mockOnServerToggle}
         />,
       );
@@ -231,7 +220,7 @@ describe('ActiveMcpServers', () => {
     it('shows correct tooltip text for disabled servers', async () => {
       renderWithTheme(
         <ActiveMcpServers
-          mcpServers={[mockMcpServers[2]]} // disabled server
+          mcpServers={[mockMcpServers[2]]}
           onServerToggle={mockOnServerToggle}
         />,
       );
@@ -314,7 +303,6 @@ describe('ActiveMcpServers', () => {
         />,
       );
 
-      // The component should still render, even with empty name
       const chips = screen.getAllByRole('button');
       expect(chips).toHaveLength(1);
     });

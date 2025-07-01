@@ -31,17 +31,6 @@ const mockTheme = createTheme({
   spacing: (factor: number) => `${8 * factor}px`,
 });
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: { main: '#4CAF50' },
-    text: { primary: '#fff', secondary: '#b3b3b3' },
-    background: { paper: '#1e1e1e', default: '#121212' },
-    divider: '#333',
-  },
-  spacing: (factor: number) => `${8 * factor}px`,
-});
-
 const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
@@ -93,7 +82,6 @@ describe('ProviderStatus', () => {
         />,
       );
 
-      // Cloud icon should be rendered
       expect(screen.getByTestId('CloudIcon')).toBeInTheDocument();
     });
 
@@ -266,7 +254,6 @@ describe('ProviderStatus', () => {
 
       const statusElement = screen.getByText('Connected');
       expect(statusElement).toBeInTheDocument();
-      // Tooltip is managed by Material-UI and shown on hover
     });
 
     it('provides tooltip for loading status', () => {
@@ -279,7 +266,6 @@ describe('ProviderStatus', () => {
 
       const statusElement = screen.getByText('Testing...');
       expect(statusElement).toBeInTheDocument();
-      // Tooltip is managed by Material-UI and shown on hover
     });
 
     it('provides tooltip for error status', () => {
@@ -292,7 +278,6 @@ describe('ProviderStatus', () => {
 
       const statusElement = screen.getByText('Disconnected');
       expect(statusElement).toBeInTheDocument();
-      // Tooltip is managed by Material-UI and shown on hover
     });
 
     it('includes model count in tooltip when connected', () => {
@@ -305,7 +290,6 @@ describe('ProviderStatus', () => {
 
       const statusElement = screen.getByText('Connected');
       expect(statusElement).toBeInTheDocument();
-      // Tooltip content is managed by Material-UI Tooltip component
     });
 
     it('handles tooltip without models list', () => {
@@ -323,7 +307,6 @@ describe('ProviderStatus', () => {
 
       const statusElement = screen.getByText('Connected');
       expect(statusElement).toBeInTheDocument();
-      // Tooltip is managed by Material-UI and shown on hover
     });
   });
 
@@ -336,7 +319,6 @@ describe('ProviderStatus', () => {
         />,
       );
 
-      // Should have main container, header, and content sections
       expect(screen.getByText('Provider')).toBeInTheDocument();
       expect(screen.getByText('Connected')).toBeInTheDocument();
       expect(screen.getByText(/Model:/)).toBeInTheDocument();
@@ -350,7 +332,6 @@ describe('ProviderStatus', () => {
         />,
       );
 
-      // Component should render with proper styling
       expect(screen.getByText('Provider')).toBeInTheDocument();
     });
   });

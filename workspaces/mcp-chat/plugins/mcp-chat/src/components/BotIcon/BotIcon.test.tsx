@@ -62,13 +62,11 @@ describe('BotIcon', () => {
     expect(path).toBeInTheDocument();
     expect(rects).toHaveLength(2);
 
-    // Check that the path has the correct d attribute (robot shape)
     expect(path).toHaveAttribute(
       'd',
       expect.stringContaining('M71,21.2V5H58v14H41V5H29v15'),
     );
 
-    // Check that the rects have correct attributes (robot eyes)
     expect(rects[0]).toHaveAttribute('x', '31');
     expect(rects[0]).toHaveAttribute('y', '43');
     expect(rects[0]).toHaveAttribute('width', '12');
@@ -172,7 +170,7 @@ describe('BotIconComponent', () => {
   });
 
   it('filters out SvgIconProps that should not be passed to BotIcon', () => {
-    const { container } = render(
+    render(
       <BotIconComponent
         fontSize="large"
         color="primary"
@@ -186,10 +184,9 @@ describe('BotIconComponent', () => {
 
     const svg = screen.getByTestId('filtered-props-icon');
     expect(svg).toBeInTheDocument();
-    expect(svg).toHaveAttribute('width', '35'); // fontSize large
-    expect(svg).toHaveAttribute('fill', 'primary'); // color
+    expect(svg).toHaveAttribute('width', '35');
+    expect(svg).toHaveAttribute('fill', 'primary');
 
-    // These props should not be present on the svg element
     expect(svg).not.toHaveAttribute('titleAccess');
     expect(svg).not.toHaveAttribute('htmlColor');
     expect(svg).not.toHaveAttribute('inheritViewBox');
@@ -206,7 +203,6 @@ describe('BotIconComponent', () => {
     expect(path).toBeInTheDocument();
     expect(rects).toHaveLength(2);
 
-    // Verify the robot shape is preserved
     expect(path).toHaveAttribute(
       'd',
       expect.stringContaining('M71,21.2V5H58v14H41V5H29v15'),

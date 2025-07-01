@@ -32,17 +32,6 @@ const mockTheme = createTheme({
   spacing: (factor: number) => `${8 * factor}px`,
 });
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: { main: '#4CAF50' },
-    text: { primary: '#fff', secondary: '#b3b3b3' },
-    background: { paper: '#1e1e1e', default: '#121212' },
-    divider: '#333',
-  },
-  spacing: (factor: number) => `${8 * factor}px`,
-});
-
 const renderWithProviders = (
   component: React.ReactElement,
   configApi: any,
@@ -221,12 +210,10 @@ describe('QuickStart', () => {
         mockConfigApiWithSuggestions,
       );
 
-      // First render
       expect(
         mockConfigApiWithSuggestions.getOptionalConfigArray,
       ).toHaveBeenCalledTimes(1);
 
-      // Re-render with same props
       rerender(
         <TestApiProvider apis={[[configApiRef, mockConfigApiWithSuggestions]]}>
           <ThemeProvider theme={mockTheme}>
@@ -235,7 +222,6 @@ describe('QuickStart', () => {
         </TestApiProvider>,
       );
 
-      // Should not call config API again due to memoization
       expect(
         mockConfigApiWithSuggestions.getOptionalConfigArray,
       ).toHaveBeenCalledTimes(1);
@@ -249,7 +235,6 @@ describe('QuickStart', () => {
         mockConfigApiWithSuggestions,
       );
 
-      // Component should render without errors when callback is provided
       expect(screen.getByText('Code Analysis')).toBeInTheDocument();
     });
 
