@@ -15,7 +15,6 @@
     "supported-versions": "1.40.0",
     "pluginPackage": "@backstage-community/plugin-mcp-chat-client-backend",
     "pluginPackages": [
-      "@backstage-community/plugin-mcp-chat-client",
       "@backstage-community/plugin-mcp-chat-client-backend"
     ]
   },
