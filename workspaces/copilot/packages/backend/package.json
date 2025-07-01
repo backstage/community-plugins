@@ -37,7 +37,6 @@
     "@backstage/plugin-permission-common": "^0.8.4",
     "@backstage/plugin-permission-node": "^0.9.1",
     "@backstage/plugin-proxy-backend": "^0.6.1",
-    "@backstage/plugin-scaffolder-backend": "^1.32.1",
     "@backstage/plugin-search-backend": "^2.0.1",
     "@backstage/plugin-search-backend-module-catalog": "^0.3.3",
     "@backstage/plugin-search-backend-module-techdocs": "^0.4.1",
