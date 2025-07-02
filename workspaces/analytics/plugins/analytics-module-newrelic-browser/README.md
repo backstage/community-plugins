@@ -111,7 +111,6 @@ Then, add it to your app’s router:
 <AppRouter>
   <UseStartReplay />
   <Root>{routes}</Root>
-  <FeaturedFlaggedNewFeedback />
 </AppRouter>
 ```
 
