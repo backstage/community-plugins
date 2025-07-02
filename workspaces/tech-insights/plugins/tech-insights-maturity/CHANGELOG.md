@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.4.0
+
+### Minor Changes
+
+- 47e26f5: Remove material-ui 4 usage and conflict
+
 ## 0.3.0
 
 ### Minor Changes
