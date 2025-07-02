@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.9.4
+
+### Patch Changes
+
+- 8c13857: Updated dependency `@octokit/rest` to `20.1.2`.
+
 ## 0.9.3
 
 ### Patch Changes
