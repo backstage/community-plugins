@@ -38,7 +38,7 @@
     "@backstage/core-components": "^0.17.2",
     "@backstage/core-plugin-api": "^1.10.7",
     "@backstage/frontend-plugin-api": "^0.10.2",
-    "@newrelic/browser-agent": "^1.236.0"
+    "@newrelic/browser-agent": "^1.292.1"
   },
   "devDependencies": {
     "@backstage/cli": "^0.32.1",
