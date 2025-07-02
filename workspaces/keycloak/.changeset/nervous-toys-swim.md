@@ -2,4 +2,4 @@
 '@backstage-community/plugin-catalog-backend-module-keycloak': patch
 ---
 
-Adds the `sanitizeGroupNameTransformer` and `sanitizeUserNameTransformertransformers` and sets them to be applied by default.
+Adds the `sanitizeGroupNameTransformer` and `sanitizeUserNameTransformer` transformers and sets them to be applied by default.
