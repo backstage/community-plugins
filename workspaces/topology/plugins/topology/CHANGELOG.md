@@ -5,6 +5,7 @@
 ### Minor Changes
 
 - fe1d8aa: Backstage version bump to v1.40.2
+  Remove broken close button from display option chips in `TopologyToolbar`.
 
 ## 2.2.2
 
