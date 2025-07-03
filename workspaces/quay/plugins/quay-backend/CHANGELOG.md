@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.4.0
+
+### Minor Changes
+
+- 0341770: Add more context for debugging access issues with Quay
+
 ## 1.3.1
 
 ### Patch Changes
