@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cloudbuild
 
+## 0.12.0
+
+### Minor Changes
+
+- ff50d8b: Backstage version bump to v1.40.2
+
 ## 0.11.0
 
 ### Minor Changes
