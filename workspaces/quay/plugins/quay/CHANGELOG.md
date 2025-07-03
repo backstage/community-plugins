@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- 0341770: Add more context for debugging access issues with Quay
+
 ## 1.21.1
 
 ### Patch Changes
