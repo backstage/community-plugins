@@ -2,4 +2,4 @@
 '@backstage-community/plugin-analytics-module-matomo': minor
 ---
 
-Added optional config parameter to disable encryption of userID
+Added `sendPlainUserId` config, which controls whether hashing of userId should be disabled.
