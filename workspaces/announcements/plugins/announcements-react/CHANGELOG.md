@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.8.0
+
+### Minor Changes
+
+- 775d236: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [775d236]
+  - @backstage-community/plugin-announcements-common@0.6.0
+
 ## 0.7.0
 
 ### Minor Changes
