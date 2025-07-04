@@ -1,5 +1,16 @@
 # @backstage-community/plugin-manage-react
 
+## 1.1.0
+
+### Minor Changes
+
+- ba844d0: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [ba844d0]
+  - @backstage-community/plugin-manage-common@1.1.0
+
 ## 1.0.0
 
 ### Major Changes
