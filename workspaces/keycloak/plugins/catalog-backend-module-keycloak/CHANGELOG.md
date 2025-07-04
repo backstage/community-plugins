@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.12.1
+
+### Patch Changes
+
+- 4dce226: Adds the `sanitizeGroupNameTransformer` and `sanitizeUserNameTransformer` transformers and sets them to be applied by default.
+
 ## 3.12.0
 
 ### Minor Changes
