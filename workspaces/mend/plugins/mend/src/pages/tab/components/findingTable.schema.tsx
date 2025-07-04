@@ -1,4 +1,4 @@
-import React from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import {
@@ -46,7 +46,7 @@ const tagEngineColorMap: { [key: string]: TagColor } = {
   containers: TagColor.CONTAINERS,
 };
 
-const classes: Record<string, React.CSSProperties> = {
+const classes: Record<string, CSSProperties> = {
   ellipsis: {
     maxWidth: 200, // percentage also works
     whiteSpace: 'nowrap',
@@ -145,7 +145,7 @@ export const findingTableColumnSchema = findingColumn.map(rowData => {
     width: rowData.width,
     headerStyle: rowData.headerStyle,
     cellStyle: rowData.cellStyle,
-    render: (row: TableRowFindingProps): React.ReactNode => {
+    render: (row: TableRowFindingProps): ReactNode => {
       const value = getObjValue(row, rowData.field) as string | number;
       switch (rowData.field) {
         case FINDING_FIELD.SEVERITY: {
