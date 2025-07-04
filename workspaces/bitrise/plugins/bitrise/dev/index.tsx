@@ -16,7 +16,6 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp, EntityGridItem } from '@backstage/dev-utils';
-import React from 'react';
 import { EntityBitriseContent } from '../src';
 import { BitriseApi } from '../src/api/bitriseApi';
 import {
