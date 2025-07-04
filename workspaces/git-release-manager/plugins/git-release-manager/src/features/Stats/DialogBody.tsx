@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Alert } from '@material-ui/lab';
 import {
   makeStyles,
