@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactElement } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Alert } from '@material-ui/lab';
 import { Box } from '@material-ui/core';
@@ -60,7 +60,7 @@ interface GitReleaseManagerProps {
         project: Project;
         releaseBranch: GetBranchResult['branch'] | null;
         repository: GetRepositoryResult['repository'];
-      }) => React.ReactElement | React.ReactElement[];
+      }) => ReactElement | ReactElement[];
     };
   };
 }
