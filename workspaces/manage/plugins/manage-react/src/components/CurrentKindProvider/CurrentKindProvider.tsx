@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useOwnedKinds } from '../OwnedProvider/OwnedProvider';
 import { pluralizeKind } from '../../utils';
