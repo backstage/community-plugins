@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { CatalogEntityPage, CatalogIndexPage } from '@backstage/plugin-catalog';
 import { apis } from './apis';
