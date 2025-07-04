@@ -10,9 +10,9 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityRatingsData } from '@backstage-community/plugin-entity-feedback-common';
 import { FeedbackResponse } from '@backstage-community/plugin-entity-feedback-common';
 import { FetchApi } from '@backstage/core-plugin-api';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { Rating } from '@backstage-community/plugin-entity-feedback-common';
 import { Ratings } from '@backstage-community/plugin-entity-feedback-common';
-import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -83,18 +83,18 @@ export interface EntityFeedbackResponse {
 }
 
 // @public (undocumented)
-export const EntityFeedbackResponseContent: () => React_2.JSX.Element;
+export const EntityFeedbackResponseContent: () => JSX_2.Element;
 
 // @public (undocumented)
-export const EntityLikeDislikeRatingsCard: () => React_2.JSX.Element;
+export const EntityLikeDislikeRatingsCard: () => JSX_2.Element;
 
 // @public (undocumented)
-export const EntityStarredRatingsCard: () => React_2.JSX.Element;
+export const EntityStarredRatingsCard: () => JSX_2.Element;
 
 // @public (undocumented)
 export const FeedbackResponseDialog: (
   props: FeedbackResponseDialogProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export interface FeedbackResponseDialogProps {
@@ -113,7 +113,7 @@ export interface FeedbackResponseDialogProps {
 // @public (undocumented)
 export const FeedbackResponseTable: (
   props: FeedbackResponseTableProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export interface FeedbackResponseTableProps {
@@ -126,7 +126,7 @@ export interface FeedbackResponseTableProps {
 // @public (undocumented)
 export const LikeDislikeButtons: (
   props: LikeDislikeButtonsProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export interface LikeDislikeButtonsProps {
@@ -141,7 +141,7 @@ export interface LikeDislikeButtonsProps {
 // @public (undocumented)
 export const LikeDislikeRatingsTable: (
   props: LikeDislikeRatingsTableProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export interface LikeDislikeRatingsTableProps {
@@ -156,7 +156,7 @@ export interface LikeDislikeRatingsTableProps {
 // @public (undocumented)
 export const StarredRatingButtons: (
   props: StarredRatingButtonsProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export interface StarredRatingButtonsProps {
@@ -173,7 +173,7 @@ export interface StarredRatingButtonsProps {
 // @public (undocumented)
 export const StarredRatingsTable: (
   props: StarredRatingsTableProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export interface StarredRatingsTableProps {
