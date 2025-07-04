@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import pluralize from 'pluralize';
 import { renderInTestApp } from '@backstage/test-utils';
 import { ProjectGrowthAlert } from './ProjectGrowthAlert';
