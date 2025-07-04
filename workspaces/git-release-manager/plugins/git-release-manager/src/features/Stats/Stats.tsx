@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
 import { Button, Dialog, Theme, withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MuiDialogActions from '@material-ui/core/DialogActions';
@@ -38,7 +38,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 interface StatsProps {
-  setShowStats: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowStats: Dispatch<SetStateAction<boolean>>;
 }
 
 export function Stats({ setShowStats }: StatsProps) {
