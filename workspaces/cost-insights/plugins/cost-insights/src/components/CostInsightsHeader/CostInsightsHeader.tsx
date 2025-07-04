@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import useAsync from 'react-use/esm/useAsync';
 import { useCostInsightsStyles } from '../../utils/styles';

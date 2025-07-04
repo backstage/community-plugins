@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { AlertInsights } from './AlertInsights';
 import { MockScrollProvider, MockLoadingProvider } from '../../testUtils';

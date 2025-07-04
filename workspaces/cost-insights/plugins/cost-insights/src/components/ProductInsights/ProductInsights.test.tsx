@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { ProductInsights } from './ProductInsights';
 import { costInsightsApiRef, ProductInsightsOptions } from '../../api';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select, { SelectProps } from '@material-ui/core/Select';
 import { Duration } from '../../types';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Slide from '@material-ui/core/Slide';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
