@@ -1,5 +1,16 @@
 # @backstage-community/plugin-github-discussions
 
+## 0.4.0
+
+### Minor Changes
+
+- f0fb119: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [f0fb119]
+  - @backstage-community/plugin-github-discussions-common@0.5.0
+
 ## 0.3.0
 
 ### Minor Changes
