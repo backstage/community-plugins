@@ -17,7 +17,7 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { when } from 'jest-when';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import {
   ConsumerGroupOffsetsResponse,
   KafkaApi,
