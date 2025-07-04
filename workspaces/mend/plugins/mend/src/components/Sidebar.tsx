@@ -1,4 +1,3 @@
-import React from 'react';
 import { SvgIcon } from '@material-ui/core';
 import { SidebarItem } from '@backstage/core-components';
 
