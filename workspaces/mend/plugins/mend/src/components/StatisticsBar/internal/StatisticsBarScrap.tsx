@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { numberToShortText } from '../../../utils';
 import { StatisticsBarScrapProps } from '../statisticsBar.types';

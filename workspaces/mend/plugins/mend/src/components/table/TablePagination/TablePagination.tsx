@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEvent, ChangeEventHandler } from 'react';
 import {
   TablePagination as MaterialTablePagination,
   makeStyles,
@@ -12,10 +12,10 @@ type TablePaginationProps = {
   rowsPerPage: number;
   page: number;
   onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement> | null,
+    event: MouseEvent<HTMLButtonElement> | null,
     page: number,
   ) => void;
-  onRowsPerPageChange: React.ChangeEventHandler<
+  onRowsPerPageChange: ChangeEventHandler<
     HTMLTextAreaElement | HTMLInputElement
   >;
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import {
   Card as Containter,
   CardContent,
@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 
 type CardProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   loading?: boolean;
   title: string;
 };
@@ -36,11 +36,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const Card = ({
-  children,
-  loading,
-  title,
-}: CardProps): React.ReactNode => {
+export const Card = ({ children, loading, title }: CardProps): ReactNode => {
   const classes = useStyles();
 
   return (
