@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Fragment, MouseEventHandler } from 'react';
+import { Fragment, MouseEventHandler } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { IconButtonProps } from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
