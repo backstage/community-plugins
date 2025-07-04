@@ -23,22 +23,12 @@ import Jenkins from 'jenkins';
  * @returns Empty response, in case of error an exception will be thrown by jenkins client
  */
 export function destroyJob(jenkins: Jenkins) {
-  return createTemplateAction<{
-    jobName: string;
-  }>({
+  return createTemplateAction({
     id: 'jenkins:job:destroy',
     description: 'Destroy an existing job jenkins given a name',
     schema: {
       input: {
-        type: 'object',
-        required: ['jobName'],
-        properties: {
-          jobName: {
-            title: 'Jenkins job name',
-            description: 'Name of jenkins item',
-            type: 'string',
-          },
-        },
+        jobName: z => z.string({ description: 'Name of jenkins item' }),
       },
     },
     async handler(ctx) {

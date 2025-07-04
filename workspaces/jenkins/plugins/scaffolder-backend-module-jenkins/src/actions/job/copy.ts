@@ -23,28 +23,15 @@ import Jenkins from 'jenkins';
  * @returns Empty response, in case of error an exception will be thrown by jenkins client
  */
 export function copyJob(jenkins: Jenkins) {
-  return createTemplateAction<{
-    sourceJobName: string;
-    targetJobName: string;
-  }>({
+  return createTemplateAction({
     id: 'jenkins:job:copy',
     description: 'Creating a job jenkins given an existing job',
     schema: {
       input: {
-        type: 'object',
-        required: ['sourceJobName', 'targetJobName'],
-        properties: {
-          sourceJobName: {
-            title: 'Jenkins job name',
-            description: 'Name of jenkins item',
-            type: 'string',
-          },
-          targetJobName: {
-            title: 'Jenkins job name',
-            description: 'Name of jenkins item',
-            type: 'string',
-          },
-        },
+        sourceJobName: z =>
+          z.string({ description: 'Name of the source jenkins item' }),
+        targetJobName: z =>
+          z.string({ description: 'Name of the target jenkins item' }),
       },
     },
     async handler(ctx) {
