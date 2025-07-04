@@ -1,5 +1,12 @@
 # app
 
+## 0.0.13
+
+### Patch Changes
+
+- Updated dependencies [afc997b]
+  - @backstage-community/plugin-playlist@0.8.0
+
 ## 0.0.12
 
 ### Patch Changes
