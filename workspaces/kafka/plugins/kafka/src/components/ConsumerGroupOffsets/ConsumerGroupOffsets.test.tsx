@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { ConsumerGroupOffsets } from './ConsumerGroupOffsets';
 import * as data from './__fixtures__/consumer-group-offsets.json';
