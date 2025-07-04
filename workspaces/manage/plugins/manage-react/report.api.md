@@ -18,8 +18,8 @@ import { GaugeCard as GaugeCard_2 } from '@backstage/core-components';
 import { GaugePropsGetColor } from '@backstage/core-components';
 import { GridOwnProps } from '@mui/material/Grid';
 import { JsonValue } from '@backstage/types';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 
 // @public
@@ -32,9 +32,7 @@ export interface ApiFactoryOptions {
 export function arrayify<T>(t: T | T[] | Iterable<T> | undefined): T[];
 
 // @public
-export function ColumnIconError(
-  props: ColumnIconErrorProps,
-): React_2.JSX.Element;
+export function ColumnIconError(props: ColumnIconErrorProps): JSX_2.Element;
 
 // @public
 export interface ColumnIconErrorProps {
@@ -42,9 +40,7 @@ export interface ColumnIconErrorProps {
 }
 
 // @public
-export function ColumnIconPercent(
-  props: ColumnIconPercentProps,
-): React_2.JSX.Element;
+export function ColumnIconPercent(props: ColumnIconPercentProps): JSX_2.Element;
 
 // @public
 export interface ColumnIconPercentProps {
@@ -92,7 +88,7 @@ export function CurrentKindProvider(
         starred: true;
       }
   >,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export class DefaultManageApi implements ManageApi {
@@ -167,7 +163,7 @@ export type KindStarredType = typeof KindStarred;
 // @public
 export function ManageAccordion(
   props: PropsWithChildren<ManageAccordionProps>,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface ManageAccordionProps {
@@ -219,9 +215,7 @@ export interface ManageColumnModuleSingle {
 }
 
 // @public
-export function ManageGaugeCard(
-  props: ManageGaugeCardProps,
-): React_2.JSX.Element;
+export function ManageGaugeCard(props: ManageGaugeCardProps): JSX_2.Element;
 
 // @public (undocumented)
 export interface ManageGaugeCardProps {
@@ -232,9 +226,7 @@ export interface ManageGaugeCardProps {
 }
 
 // @public (undocumented)
-export function ManageGaugeGrid(
-  props: ManageGaugeGridProps,
-): React_2.JSX.Element;
+export function ManageGaugeGrid(props: ManageGaugeGridProps): JSX_2.Element;
 
 // @public (undocumented)
 export interface ManageGaugeGridProps {
@@ -271,7 +263,7 @@ export type ManageModuleApiRef = ApiRef<ManageModuleApi>;
 // @public
 export function ManageOwnedProvider(
   props: PropsWithChildren<OwnedProviderProps>,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public (undocumented)
 export type ManageProvider = ComponentType<{
@@ -284,14 +276,14 @@ export const manageReactPlugin: BackstagePlugin<{}, {}, {}>;
 // @public
 export function ManageReorderableTabs(
   props: ReorderableTabsProps,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public (undocumented)
 export function ManageTabContentFullHeight({
   children,
   bottomMargin,
   resizeChild,
-}: PropsWithChildren<TabContentFullHeightProps>): React_2.JSX.Element;
+}: PropsWithChildren<TabContentFullHeightProps>): JSX_2.Element;
 
 // @public (undocumented)
 export const OwnedProvider: ManageOwnedProvider;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { TechInsightsCheckIcon } from '@backstage-community/plugin-tech-insights';
