@@ -1,5 +1,16 @@
 # @backstage-community/plugin-playlist
 
+## 0.8.0
+
+### Minor Changes
+
+- afc997b: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [afc997b]
+  - @backstage-community/plugin-playlist-common@0.7.0
+
 ## 0.7.0
 
 ### Minor Changes
