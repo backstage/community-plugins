@@ -77,6 +77,16 @@ export const backstageMcpPlugin = createBackendPlugin({
                         .describe(
                           'The name field for each Backstage entity in the catalog',
                         ),
+                      kind: z
+                        .string()
+                        .describe(
+                          'The kind/type of the Backstage entity (e.g., Component, API, System)',
+                        ),
+                      tags: z
+                        .array(z.string())
+                        .describe(
+                          'The tags associated with the Backstage entity',
+                        ),
                     }),
                   )
                   .describe('An array of entities'),
@@ -96,7 +106,7 @@ export async function fetchCatalogEntities(catalog: CatalogService, auth: any) {
   const credentials = await auth.getOwnServiceCredentials();
   const { items } = await catalog.getEntities(
     {
-      fields: ['metadata.name'],
+      fields: ['metadata.name', 'kind', 'metadata.tags'],
     },
     {
       credentials,
@@ -106,6 +116,8 @@ export async function fetchCatalogEntities(catalog: CatalogService, auth: any) {
   return {
     entities: items.map(entity => ({
       name: entity.metadata.name,
+      kind: entity.kind,
+      tags: entity.metadata.tags || [],
     })),
   };
 }
