@@ -15,69 +15,14 @@
  */
 
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
-
-/**
- * @public
- */
-export interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-/**
- * @public
- */
-export interface ChatResponse {
-  role: 'assistant';
-  content: string;
-  toolResponses?: any[];
-  toolsUsed?: string[];
-}
-
-/**
- * @public
- */
-export interface ConfigStatus {
-  provider: any;
-  mcpServers: Array<{
-    id?: string;
-    name: string;
-    type: string;
-    hasUrl: boolean;
-    hasNpxCommand: boolean;
-    hasScriptPath: boolean;
-  }>;
-}
-
-/**
- * @public
- */
-export interface Tool {
-  type: string;
-  function: {
-    name: string;
-    description: string;
-    parameters: any;
-  };
-  serverId: string;
-}
-
-/**
- * @public
- */
-export interface ToolsResponse {
-  message: string;
-  serverConfigs: Array<{
-    name: string;
-    type: string;
-    hasUrl: boolean;
-    hasNpxCommand: boolean;
-    hasScriptPath: boolean;
-  }>;
-  availableTools: Tool[];
-  toolCount: number;
-  timestamp: string;
-}
+import { ResponseError } from '@backstage/errors';
+import {
+  ChatMessage,
+  ChatResponse,
+  MCPServerStatusData,
+  ProviderStatusData,
+  ToolsResponse,
+} from '../types';
 
 /**
  * @public
@@ -88,15 +33,9 @@ export interface McpChatApi {
     enabledTools?: string[],
     signal?: AbortSignal,
   ): Promise<ChatResponse>;
-  getConfigStatus(): Promise<ConfigStatus>;
+  getMCPServerStatus(): Promise<MCPServerStatusData>;
   getAvailableTools(): Promise<ToolsResponse>;
-  testProviderConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-    message?: string;
-    timestamp?: string;
-  }>;
+  getProviderStatus(): Promise<ProviderStatusData>;
 }
 
 export class McpChat implements McpChatApi {
@@ -128,53 +67,40 @@ export class McpChat implements McpChatApi {
     });
 
     if (!response.ok) {
-      throw new Error(`Chat request failed: ${response.statusText}`);
+      throw await ResponseError.fromResponse(response);
     }
 
     return response.json();
   }
 
-  async getConfigStatus(): Promise<ConfigStatus> {
+  async getMCPServerStatus(): Promise<MCPServerStatusData> {
     const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
-
-    const response = await this.fetchApi.fetch(`${baseUrl}/config/status`);
-
+    const response = await this.fetchApi.fetch(`${baseUrl}/mcp/status`);
     if (!response.ok) {
-      throw new Error(`Config status request failed: ${response.statusText}`);
+      throw await ResponseError.fromResponse(response);
     }
-
     return response.json();
   }
 
   async getAvailableTools(): Promise<ToolsResponse> {
     const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
 
-    const response = await this.fetchApi.fetch(`${baseUrl}/test/tools`);
+    const response = await this.fetchApi.fetch(`${baseUrl}/tools`);
 
     if (!response.ok) {
-      throw new Error(`Tools request failed: ${response.statusText}`);
+      throw await ResponseError.fromResponse(response);
     }
 
     return response.json();
   }
 
-  async testProviderConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-    message?: string;
-    timestamp?: string;
-  }> {
+  async getProviderStatus(): Promise<ProviderStatusData> {
     const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
 
-    const response = await this.fetchApi.fetch(
-      `${baseUrl}/test/provider-connection`,
-    );
+    const response = await this.fetchApi.fetch(`${baseUrl}/provider/status`);
 
     if (!response.ok) {
-      throw new Error(
-        `Provider connection test failed: ${response.statusText}`,
-      );
+      throw await ResponseError.fromResponse(response);
     }
 
     return response.json();

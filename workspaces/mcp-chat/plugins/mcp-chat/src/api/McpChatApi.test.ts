@@ -183,16 +183,33 @@ describe('McpChatApi', () => {
   describe('getConfigStatus', () => {
     const mockConfigStatus: ConfigStatus = {
       provider: { type: 'openai', model: 'gpt-4' },
-      mcpServers: [
-        {
-          id: '1',
-          name: 'test-server',
-          type: 'stdio',
-          hasUrl: false,
-          hasNpxCommand: true,
-          hasScriptPath: false,
-        },
-      ],
+      mcpServers: {
+        total: 1,
+        valid: 1,
+        invalid: 0,
+        servers: [
+          {
+            id: '1',
+            name: 'test-server',
+            type: 'stdio',
+            configuredType: 'stdio',
+            hasUrl: false,
+            hasNpxCommand: true,
+            hasScriptPath: false,
+            hasArgs: false,
+            hasEnv: false,
+            hasHeaders: false,
+            isValid: true,
+            validationIssues: [],
+          },
+        ],
+      },
+      summary: {
+        hasValidServers: true,
+        configurationComplete: true,
+        issues: [],
+      },
+      timestamp: '2025-01-01T00:00:00.000Z',
     };
 
     it('should get config status successfully', async () => {
@@ -263,7 +280,7 @@ describe('McpChatApi', () => {
       const result = await mcpChat.getAvailableTools();
 
       expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
-      expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/test/tools`);
+      expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/tools`);
       expect(result).toEqual(mockToolsResponse);
     });
 
@@ -306,7 +323,7 @@ describe('McpChatApi', () => {
 
       expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
       expect(mockFetch).toHaveBeenCalledWith(
-        `${baseUrl}/test/provider-connection`,
+        `${baseUrl}/provider/connection-status`,
       );
       expect(result).toEqual(mockConnectionResponse);
     });

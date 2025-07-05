@@ -10,6 +10,14 @@ All server configurations are defined in the `mcpServers` array in your `app-con
 - `name`: Display name in the UI
 - Connection-specific properties (detailed below)
 
+### Universal Properties
+
+These properties can be added to **any** MCP server configuration:
+
+- `env`: Environment variables object
+- `args`: Command-line arguments array (for STDIO servers) or query parameters (for HTTP/SSE servers)
+- `headers`: HTTP headers object (primarily for HTTP/SSE servers, but can be used for metadata in STDIO)
+
 ---
 
 ## STDIO Servers (Local Processes)
@@ -42,6 +50,8 @@ mcpServers:
     args:
       - '--port=9000'
       - '--log-level=debug'
+    env:
+      NODE_ENV: development
 
   # Local script execution
   - id: local-script-server
@@ -50,14 +60,14 @@ mcpServers:
     args:
       - '--port=9100'
       - '--env=dev'
+    env:
+      DEBUG: true
 ```
 
-**Key Properties:**
+**STDIO-Specific Properties:**
 
 - `npxCommand`: NPM package to execute via npx
 - `scriptPath`: Path to a local Node.js script (alternative to npxCommand)
-- `args`: Command-line arguments array
-- `env`: Environment variables object
 
 ---
 
@@ -72,12 +82,14 @@ mcpServers:
     url: 'http://localhost:7007/api/mcp-actions/v1'
     headers:
       Authorization: 'Bearer your-token'
+      Content-Type: 'application/json'
+    env:
+      API_TIMEOUT: '30000'
 ```
 
-**Key Properties:**
+**HTTP-Specific Properties:**
 
 - `url`: HTTP endpoint URL
-- `headers`: Optional HTTP headers for authentication or custom requirements
 
 ---
 
@@ -91,9 +103,13 @@ mcpServers:
     name: SSE Server
     url: 'http://localhost:8080/sse'
     type: sse
+    headers:
+      Authorization: 'Bearer ${SSE_TOKEN}'
+    env:
+      RECONNECT_INTERVAL: '5000'
 ```
 
-**Key Properties:**
+**SSE-Specific Properties:**
 
 - `url`: SSE endpoint URL
 - `type`: Must be set to `sse`
@@ -112,6 +128,9 @@ mcpServers:
     npxCommand: 'dev-tools-server@latest'
     env:
       NODE_ENV: development
+      DEBUG: true
+    args:
+      - '--verbose'
 
   # Remote HTTP server
   - id: production-api
@@ -119,12 +138,19 @@ mcpServers:
     url: 'https://api.example.com/mcp'
     headers:
       Authorization: 'Bearer ${API_TOKEN}'
+      X-Client-Version: '1.0.0'
+    env:
+      API_TIMEOUT: '60000'
 
   # Real-time SSE server
   - id: live-updates
     name: Live Updates Server
     url: 'wss://updates.example.com/sse'
     type: sse
+    headers:
+      Authorization: 'Bearer ${SSE_TOKEN}'
+    env:
+      RECONNECT_INTERVAL: '3000'
 ```
 
 ---
@@ -132,6 +158,7 @@ mcpServers:
 ## Configuration Tips
 
 - **Environment Variables**: Use `${VARIABLE_NAME}` syntax to reference environment variables
+- **Universal Properties**: Remember that `env`, `args`, and `headers` can be added to any server configuration
 - **Server Availability**: Ensure npm packages are installed and URLs are accessible before starting Backstage
 - **Authentication**: Use the `headers` property for API keys, tokens, or custom authentication
 - **Development**: STDIO servers are ideal for local development and testing
