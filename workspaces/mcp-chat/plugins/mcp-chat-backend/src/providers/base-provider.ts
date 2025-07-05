@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { ResponseError } from '@backstage/errors';
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content: string | null;
@@ -24,6 +24,7 @@ export interface ChatMessage {
 export interface Tool {
   type: 'function';
   function: {
+    // OpenAI function calling format
     name: string;
     description: string;
     parameters: any;
@@ -103,10 +104,7 @@ export abstract class LLMProvider {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `${this.type} API error (${response.status}): ${errorText}`,
-      );
+      throw await ResponseError.fromResponse(response);
     }
 
     return response.json();

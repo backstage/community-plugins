@@ -312,7 +312,7 @@ yarn build:all
 Use these endpoints for debugging:
 
 - **Configuration Status**: `GET /api/mcp-chat/config/status`
-- **Available Tools**: `GET /api/mcp-chat/test/tools`
+- **Available Tools**: `GET /api/mcp-chat/tools`
 - **Test News Search**: `GET /api/mcp-chat/test/latest-news`
 
 ### Logging

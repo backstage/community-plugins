@@ -15,10 +15,10 @@
  */
 
 import { ToolCall, Tool } from '../providers/base-provider';
-import { ServerConfig } from '../types';
+import { MCPServer, MCPServerStatusData, ProviderStatusData } from '../types';
 
 export interface MCPClientService {
-  initMCP(serverConfigs: ServerConfig[]): Promise<void>;
+  initializeMCPServers(): Promise<MCPServer[]>;
 
   processQuery(
     messagesInput: any[],
@@ -35,16 +35,6 @@ export interface MCPClientService {
     model: string;
     baseURL: string;
   }>;
-  getProviderStatus(): {
-    provider: string;
-    model: string;
-    baseURL: string;
-    connected: boolean;
-    error?: string;
-  };
-  testProviderConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
+  getProviderStatus(): Promise<ProviderStatusData>;
+  getMCPServerStatus(): Promise<MCPServerStatusData>;
 }

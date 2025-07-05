@@ -59,16 +59,33 @@ describe('ChatPage', () => {
       type: 'openai',
       model: 'gpt-4',
     },
-    mcpServers: [
-      {
-        id: '1',
-        name: 'test-server',
-        type: 'stdio',
-        hasUrl: false,
-        hasNpxCommand: true,
-        hasScriptPath: false,
-      },
-    ],
+    mcpServers: {
+      total: 1,
+      valid: 1,
+      invalid: 0,
+      servers: [
+        {
+          id: '1',
+          name: 'test-server',
+          type: 'stdio',
+          configuredType: 'stdio',
+          hasUrl: false,
+          hasNpxCommand: true,
+          hasScriptPath: false,
+          hasArgs: false,
+          hasEnv: false,
+          hasHeaders: false,
+          isValid: true,
+          validationIssues: [],
+        },
+      ],
+    },
+    summary: {
+      hasValidServers: true,
+      configurationComplete: true,
+      issues: [],
+    },
+    timestamp: '2025-01-01T00:00:00.000Z',
   };
 
   beforeEach(() => {
@@ -214,7 +231,18 @@ describe('ChatPage', () => {
     it('should handle empty configuration', async () => {
       mockMcpChatApi.getConfigStatus.mockResolvedValue({
         provider: null,
-        mcpServers: [],
+        mcpServers: {
+          total: 0,
+          valid: 0,
+          invalid: 0,
+          servers: [],
+        },
+        summary: {
+          hasValidServers: false,
+          configurationComplete: false,
+          issues: [],
+        },
+        timestamp: '2025-01-01T00:00:00.000Z',
       });
 
       const { container } = await renderChatPage();
@@ -240,24 +268,47 @@ describe('ChatPage', () => {
     it('should handle multiple MCP servers', async () => {
       const multipleServersConfig: ConfigStatus = {
         provider: mockConfigStatus.provider,
-        mcpServers: [
-          {
-            id: '1',
-            name: 'server1',
-            type: 'stdio',
-            hasUrl: false,
-            hasNpxCommand: true,
-            hasScriptPath: false,
-          },
-          {
-            id: '2',
-            name: 'server2',
-            type: 'sse',
-            hasUrl: true,
-            hasNpxCommand: false,
-            hasScriptPath: false,
-          },
-        ],
+        mcpServers: {
+          total: 2,
+          valid: 2,
+          invalid: 0,
+          servers: [
+            {
+              id: '1',
+              name: 'server1',
+              type: 'stdio',
+              configuredType: 'stdio',
+              hasUrl: false,
+              hasNpxCommand: true,
+              hasScriptPath: false,
+              hasArgs: false,
+              hasEnv: false,
+              hasHeaders: false,
+              isValid: true,
+              validationIssues: [],
+            },
+            {
+              id: '2',
+              name: 'server2',
+              type: 'sse',
+              configuredType: 'sse',
+              hasUrl: true,
+              hasNpxCommand: false,
+              hasScriptPath: false,
+              hasArgs: false,
+              hasEnv: false,
+              hasHeaders: false,
+              isValid: true,
+              validationIssues: [],
+            },
+          ],
+        },
+        summary: {
+          hasValidServers: true,
+          configurationComplete: true,
+          issues: [],
+        },
+        timestamp: '2025-01-01T00:00:00.000Z',
       };
 
       mockMcpChatApi.getConfigStatus.mockResolvedValue(multipleServersConfig);

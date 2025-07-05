@@ -25,8 +25,9 @@ export interface Config {
       /**
        * Unique identifier for the provider
        * @visibility backend
+       * @enum { 'openai' | 'claude' | 'gemini' | 'ollama' }
        */
-      id: string;
+      id: 'openai' | 'claude' | 'gemini' | 'ollama';
       /**
        * API token for the provider
        * @visibility secret
@@ -64,6 +65,21 @@ export interface Config {
        */
       npxCommand?: string;
       /**
+       * Path to a local script to run as the MCP server
+       * @visibility backend
+       */
+      scriptPath?: string;
+      /**
+       * URL endpoint for the MCP server (for streamable HTTP connections or SSE)
+       * @visibility backend
+       */
+      url?: string;
+      /**
+       * HTTP headers to include when connecting to the MCP server
+       * @visibility backend
+       */
+      headers?: { [key: string]: string };
+      /**
        * Environment variables to set when running the MCP server
        * @visibility backend
        */
@@ -74,15 +90,11 @@ export interface Config {
        */
       args?: string[];
       /**
-       * URL endpoint for the MCP server (for HTTP-based servers)
+       * Type of MCP server connection
        * @visibility backend
+       * @enum { 'stdio' | 'sse' | 'streamable-http' }
        */
-      url?: string;
-      /**
-       * HTTP headers to include when connecting to the MCP server
-       * @visibility backend
-       */
-      headers?: { [key: string]: string };
+      type?: 'stdio' | 'sse' | 'streamable-http';
     }>;
   };
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -23,23 +22,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { useApi } from '@backstage/core-plugin-api';
-import { mcpChatApiRef } from '../../api';
-import type { ConfigStatus, Tool } from '../../api/McpChatApi';
 import { ActiveMcpServers } from './ActiveMcpServers';
 import { ActiveTools } from './ActiveTools';
 import { ProviderStatus } from './ProviderStatus';
 import { BotIcon } from '../BotIcon';
-
-interface MCPServer {
-  id?: string;
-  name: string;
-  enabled: boolean;
-  type?: string;
-  hasUrl?: boolean;
-  hasNpxCommand?: boolean;
-  hasScriptPath?: boolean;
-}
+import { MCPServer } from '../../types';
+import { UseProviderStatusReturn, useAvailableTools } from '../../hooks';
 
 interface RightPaneProps {
   sidebarCollapsed: boolean;
@@ -47,7 +35,7 @@ interface RightPaneProps {
   onNewChat: () => void;
   mcpServers: MCPServer[];
   onServerToggle: (serverName: string) => void;
-  configStatus: ConfigStatus | null;
+  providerStatus: UseProviderStatusReturn;
 }
 
 export const RightPane: React.FC<RightPaneProps> = ({
@@ -56,72 +44,11 @@ export const RightPane: React.FC<RightPaneProps> = ({
   onNewChat,
   mcpServers,
   onServerToggle,
-  configStatus,
+  providerStatus,
 }) => {
   const theme = useTheme();
-  const mcpChatApi = useApi(mcpChatApiRef);
-  const [availableTools, setAvailableTools] = useState<Tool[]>([]);
-  const [toolsLoading, setToolsLoading] = useState(false);
-  const [providerConnectionStatus, setProviderConnectionStatus] = useState<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-    loading: boolean;
-  }>({
-    connected: false,
-    models: undefined,
-    error: undefined,
-    loading: true,
-  });
-
-  // Fetch available tools when component mounts or servers change
-  useEffect(() => {
-    const fetchTools = async () => {
-      try {
-        setToolsLoading(true);
-        const toolsResponse = await mcpChatApi.getAvailableTools();
-        setAvailableTools(toolsResponse.availableTools);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to fetch tools:', error);
-        setAvailableTools([]);
-      } finally {
-        setToolsLoading(false);
-      }
-    };
-
-    if (mcpServers && mcpServers.length > 0) {
-      fetchTools();
-    }
-  }, [mcpChatApi, mcpServers]);
-
-  // Test provider connection when component mounts or config changes
-  useEffect(() => {
-    const testConnection = async () => {
-      try {
-        setProviderConnectionStatus(prev => ({ ...prev, loading: true }));
-        const result = await mcpChatApi.testProviderConnection();
-        setProviderConnectionStatus({
-          connected: result.connected,
-          models: result.models,
-          error: result.error,
-          loading: false,
-        });
-      } catch (error) {
-        setProviderConnectionStatus({
-          connected: false,
-          models: undefined,
-          error:
-            error instanceof Error ? error.message : 'Connection test failed',
-          loading: false,
-        });
-      }
-    };
-
-    if (configStatus?.provider) {
-      testConnection();
-    }
-  }, [mcpChatApi, configStatus]);
+  const { availableTools, isLoading: toolsLoading } =
+    useAvailableTools(mcpServers);
 
   return (
     <Box
@@ -233,8 +160,9 @@ export const RightPane: React.FC<RightPaneProps> = ({
           </Box>
 
           <ProviderStatus
-            configStatus={configStatus}
-            providerConnectionStatus={providerConnectionStatus}
+            providerStatusData={providerStatus.providerStatusData}
+            isLoading={providerStatus.isLoading}
+            error={providerStatus.error}
           />
 
           {/* Active Tools Section - Now taking the main space */}

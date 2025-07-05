@@ -274,7 +274,7 @@ describe('MCPClientServiceImpl', () => {
       });
     });
 
-    it('should throw error for streamable-http without URL', async () => {
+    it('should handle streamable-http without URL gracefully', async () => {
       const serverConfigs: ServerConfig[] = [
         {
           name: 'test-server',
@@ -282,12 +282,16 @@ describe('MCPClientServiceImpl', () => {
         },
       ];
 
-      await expect(service.initMCP(serverConfigs)).rejects.toThrow(
-        "Server config for 'test-server' with streamable-http type must have a url",
-      );
+      // Should not throw but complete successfully with warning
+      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
+
+      // Check that no servers are connected
+      const status = service.getMCPServerStatus();
+      expect(status.totalConnectedServers).toBe(0);
+      expect(status.connectedServers).toEqual([]);
     });
 
-    it('should throw error for SSE without URL', async () => {
+    it('should handle SSE without URL gracefully', async () => {
       const serverConfigs: ServerConfig[] = [
         {
           name: 'test-server',
@@ -295,24 +299,32 @@ describe('MCPClientServiceImpl', () => {
         },
       ];
 
-      await expect(service.initMCP(serverConfigs)).rejects.toThrow(
-        "Server config for 'test-server' with SSE type must have a url",
-      );
+      // Should not throw but complete successfully with warning
+      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
+
+      // Check that no servers are connected
+      const status = service.getMCPServerStatus();
+      expect(status.totalConnectedServers).toBe(0);
+      expect(status.connectedServers).toEqual([]);
     });
 
-    it('should throw error for STDIO without script path or npx command', async () => {
+    it('should handle STDIO without script path or npx command gracefully', async () => {
       const serverConfigs: ServerConfig[] = [
         {
           name: 'test-server',
         },
       ];
 
-      await expect(service.initMCP(serverConfigs)).rejects.toThrow(
-        "Server config for 'test-server' must have either scriptPath, npxCommand, or url",
-      );
+      // Should not throw but complete successfully with warning
+      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
+
+      // Check that no servers are connected
+      const status = service.getMCPServerStatus();
+      expect(status.totalConnectedServers).toBe(0);
+      expect(status.connectedServers).toEqual([]);
     });
 
-    it('should handle npx not found error', async () => {
+    it('should handle npx not found error gracefully', async () => {
       utils.findNpxPath.mockRejectedValue(new Error('npx not found'));
 
       const serverConfigs: ServerConfig[] = [
@@ -322,9 +334,13 @@ describe('MCPClientServiceImpl', () => {
         },
       ];
 
-      await expect(service.initMCP(serverConfigs)).rejects.toThrow(
-        "Failed to find npx for server 'test-server': npx not found",
-      );
+      // Should not throw but complete successfully with warning
+      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
+
+      // Check that no servers are connected
+      const status = service.getMCPServerStatus();
+      expect(status.totalConnectedServers).toBe(0);
+      expect(status.connectedServers).toEqual([]);
     });
 
     it('should use python on Windows for Python scripts', async () => {
@@ -391,6 +407,43 @@ describe('MCPClientServiceImpl', () => {
         function: { name: 'tool2' },
         serverId: 'server2',
       });
+    });
+
+    it('should handle mixed successful and failed connections', async () => {
+      const mockClient = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        listTools: jest.fn().mockResolvedValue({
+          tools: [
+            {
+              name: 'working_tool',
+              description: 'Working tool',
+              inputSchema: {},
+            },
+          ],
+        }),
+        callTool: jest.fn(),
+      };
+
+      Client.mockImplementationOnce(() => mockClient);
+
+      const serverConfigs: ServerConfig[] = [
+        { name: 'working-server', scriptPath: '/path/to/working.py' },
+        { name: 'broken-server', type: 'streamable-http' }, // Missing URL
+      ];
+
+      await service.initMCP(serverConfigs);
+
+      const tools = service.getAvailableTools();
+      expect(tools).toHaveLength(1);
+      expect(tools[0]).toMatchObject({
+        type: 'function',
+        function: { name: 'working_tool' },
+        serverId: 'working-server',
+      });
+
+      const status = service.getMCPServerStatus();
+      expect(status.totalConnectedServers).toBe(1);
+      expect(status.connectedServers).toEqual(['working-server']);
     });
   });
 

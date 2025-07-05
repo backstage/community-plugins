@@ -84,6 +84,12 @@ describe('createRouter', () => {
         connected: true,
         models: ['gpt-4o-mini', 'gpt-4'],
       }),
+      getMCPServerStatus: jest.fn().mockReturnValue({
+        connectedServers: ['Brave Search Server', 'Backstage Server'],
+        totalConnectedServers: 2,
+        isInitialized: true,
+        availableTools: 0,
+      }),
     };
 
     // Mock config service
@@ -105,6 +111,15 @@ describe('createRouter', () => {
           getConfig: jest.fn((_key: string) => ({
             get: jest.fn(() => mockServerConfigs[0].env),
           })),
+          getOptionalConfig: jest.fn((key: string) => {
+            if (key === 'env') {
+              return { get: jest.fn(() => mockServerConfigs[0].env) };
+            }
+            if (key === 'headers') {
+              return undefined;
+            }
+            return undefined;
+          }),
         },
         {
           getOptionalString: jest.fn((key: string) => {
@@ -122,6 +137,15 @@ describe('createRouter', () => {
           getConfig: jest.fn((_key: string) => ({
             get: jest.fn(() => mockServerConfigs[1].headers),
           })),
+          getOptionalConfig: jest.fn((key: string) => {
+            if (key === 'headers') {
+              return { get: jest.fn(() => mockServerConfigs[1].headers) };
+            }
+            if (key === 'env') {
+              return undefined;
+            }
+            return undefined;
+          }),
         },
       ]),
     };
@@ -149,24 +173,47 @@ describe('createRouter', () => {
           model: 'gpt-4o-mini',
           baseURL: 'https://api.openai.com/v1',
         },
-        mcpServers: [
-          {
-            id: 'brave-search',
-            name: 'Brave Search Server',
-            type: 'stdio',
-            hasUrl: false,
-            hasNpxCommand: true,
-            hasScriptPath: false,
-          },
-          {
-            id: 'backstage-server',
-            name: 'Backstage Server',
-            type: 'sse',
-            hasUrl: true,
-            hasNpxCommand: false,
-            hasScriptPath: false,
-          },
-        ],
+        mcpServers: {
+          total: 2,
+          valid: 2,
+          invalid: 0,
+          servers: [
+            {
+              id: 'brave-search',
+              name: 'Brave Search Server',
+              type: 'stdio',
+              configuredType: 'stdio',
+              hasUrl: false,
+              hasNpxCommand: true,
+              hasScriptPath: false,
+              hasArgs: false,
+              hasEnv: true,
+              hasHeaders: false,
+              isValid: true,
+              validationIssues: [],
+            },
+            {
+              id: 'backstage-server',
+              name: 'Backstage Server',
+              type: 'sse',
+              configuredType: 'sse',
+              hasUrl: true,
+              hasNpxCommand: false,
+              hasScriptPath: false,
+              hasArgs: false,
+              hasEnv: false,
+              hasHeaders: true,
+              isValid: true,
+              validationIssues: [],
+            },
+          ],
+        },
+        summary: {
+          hasValidServers: true,
+          configurationComplete: true,
+          issues: [],
+        },
+        timestamp: expect.any(String),
       });
       expect(mcpClientService.getProviderStatus).toHaveBeenCalled();
     });
@@ -179,9 +226,11 @@ describe('createRouter', () => {
       const response = await request(app).get('/config/status');
 
       expect(response.status).toBe(500);
-      expect(response.body).toEqual({
-        error: 'Failed to get configuration status',
-        details: 'Provider connection failed',
+      expect(response.body).toMatchObject({
+        error: expect.objectContaining({
+          message: expect.any(String),
+          name: expect.any(String),
+        }),
       });
     });
   });
@@ -267,8 +316,11 @@ describe('createRouter', () => {
       const response = await request(app).post('/chat').send(validChatRequest);
 
       expect(response.status).toBe(500);
-      expect(response.body).toEqual({
-        error: 'Something went wrong',
+      expect(response.body).toMatchObject({
+        error: expect.objectContaining({
+          message: expect.any(String),
+          name: expect.any(String),
+        }),
       });
     });
 
@@ -280,67 +332,23 @@ describe('createRouter', () => {
       const response = await request(app).post('/chat').send(validChatRequest);
 
       expect(response.status).toBe(500);
-      expect(response.body).toEqual({
-        error: 'Something went wrong',
+      expect(response.body).toMatchObject({
+        error: expect.objectContaining({
+          message: expect.any(String),
+          name: expect.any(String),
+        }),
       });
     });
   });
 
-  describe('GET /test/latest-news', () => {
-    it('should return latest news with tool responses', async () => {
-      mcpClientService.processQuery.mockResolvedValue({
-        reply: 'Here are the latest news stories from this month.',
-        toolCalls: [mockToolCall],
-        toolResponses: [mockToolResponse],
-      });
-
-      const response = await request(app).get('/test/latest-news');
-
-      expect(response.status).toBe(200);
-      expect(response.body).toMatchObject({
-        role: 'assistant',
-        content: expect.stringContaining(
-          'Here are the latest news stories from this month.',
-        ),
-        prompt: expect.stringContaining('Get the latest news from'),
-        toolCalls: [
-          {
-            id: 'call_123',
-            toolName: 'search_web',
-            arguments: { query: 'test query' },
-          },
-        ],
-        toolResponses: [mockToolResponse],
-        serverConfigs: expect.arrayContaining([
-          expect.objectContaining({
-            name: 'Brave Search Server',
-            type: 'stdio',
-          }),
-        ]),
-      });
-    });
-
-    it('should handle test route errors', async () => {
-      mcpClientService.initMCP.mockRejectedValue(new Error('Init failed'));
-
-      const response = await request(app).get('/test/latest-news');
-
-      expect(response.status).toBe(500);
-      expect(response.body).toMatchObject({
-        error: 'Test failed',
-        details: 'Init failed',
-      });
-    });
-  });
-
-  describe('GET /test/tools', () => {
+  describe('GET /tools', () => {
     it('should return tools check information', async () => {
       mcpClientService.getAvailableTools = jest.fn().mockReturnValue([
         { name: 'search_web', description: 'Search the web' },
         { name: 'get_weather', description: 'Get weather information' },
       ]);
 
-      const response = await request(app).get('/test/tools');
+      const response = await request(app).get('/tools');
 
       expect(response.status).toBe(200);
       expect(response.body).toMatchObject({
@@ -359,12 +367,14 @@ describe('createRouter', () => {
         new Error('Tools check failed'),
       );
 
-      const response = await request(app).get('/test/tools');
+      const response = await request(app).get('/tools');
 
       expect(response.status).toBe(500);
       expect(response.body).toMatchObject({
-        error: 'Tools check failed',
-        details: 'Tools check failed',
+        error: expect.objectContaining({
+          message: expect.any(String),
+          name: expect.any(String),
+        }),
       });
     });
   });
@@ -427,7 +437,10 @@ describe('createRouter', () => {
       const response = await request(app).get('/config/status');
 
       expect(response.status).toBe(200);
-      expect(response.body.mcpServers).toHaveLength(2);
+      expect(response.body.mcpServers.servers).toHaveLength(2);
+      expect(response.body.mcpServers.total).toBe(2);
+      expect(response.body.mcpServers.valid).toBe(1);
+      expect(response.body.mcpServers.invalid).toBe(1);
     });
   });
 });

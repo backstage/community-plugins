@@ -31,11 +31,50 @@ export const mcpChatPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         logger: coreServices.logger,
-        httpAuth: coreServices.httpAuth,
         config: coreServices.rootConfig,
         httpRouter: coreServices.httpRouter,
       },
-      async init({ logger, httpAuth, httpRouter, config }) {
+      async init({ logger, httpRouter, config }) {
+        // Validate configuration at startup
+        const mcpServers =
+          config.getOptionalConfigArray('mcpChat.mcpServers') || [];
+        for (const [index, serverConfig] of mcpServers.entries()) {
+          try {
+            // Validate required fields
+            serverConfig.getString('name');
+
+            // Validate headers if present
+            if (serverConfig.has('headers')) {
+              const headers = serverConfig.getOptionalConfig('headers')?.get();
+              if (
+                headers !== undefined &&
+                (typeof headers !== 'object' || Array.isArray(headers))
+              ) {
+                throw new Error(
+                  `headers must be an object with string key-value pairs`,
+                );
+              }
+            }
+
+            // Validate env if present
+            if (serverConfig.has('env')) {
+              const envVars = serverConfig.getOptionalConfig('env')?.get();
+              if (
+                envVars !== undefined &&
+                (typeof envVars !== 'object' || Array.isArray(envVars))
+              ) {
+                throw new Error(
+                  `env must be an object with string key-value pairs`,
+                );
+              }
+            }
+          } catch (error) {
+            throw new Error(
+              `Invalid configuration for mcpChat.mcpServers[${index}]: ${error.message}`,
+            );
+          }
+        }
+
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
@@ -43,7 +82,7 @@ export const mcpChatPlugin = createBackendPlugin({
 
         httpRouter.use(
           await createRouter({
-            httpAuth,
+            logger,
             mcpClientService,
             config,
           }),

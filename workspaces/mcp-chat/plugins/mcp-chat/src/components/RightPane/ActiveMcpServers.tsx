@@ -15,20 +15,12 @@
  */
 import { useTheme } from '@mui/material/styles';
 import MemoryIcon from '@mui/icons-material/Memory';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-
-interface MCPServer {
-  id?: string;
-  name: string;
-  enabled: boolean;
-  type?: string;
-  hasUrl?: boolean;
-  hasNpxCommand?: boolean;
-  hasScriptPath?: boolean;
-}
+import { MCPServer } from '../../types';
 
 interface ActiveMcpServersProps {
   mcpServers: MCPServer[];
@@ -44,6 +36,10 @@ export const ActiveMcpServers = ({
 
   // Helper functions to avoid nested ternary expressions
   const getChipBackgroundColor = (server: MCPServer) => {
+    if (!server.status?.connected) {
+      return isDarkMode ? '#2e1e1e' : '#ffebee';
+    }
+
     if (server.enabled) {
       return isDarkMode ? '#2d4a2d' : '#e8f5e8';
     }
@@ -51,6 +47,10 @@ export const ActiveMcpServers = ({
   };
 
   const getChipColor = (server: MCPServer) => {
+    if (!server.status?.connected) {
+      return theme.palette.error.dark;
+    }
+
     if (server.enabled) {
       return '#4CAF50';
     }
@@ -58,10 +58,23 @@ export const ActiveMcpServers = ({
   };
 
   const getChipBorder = (server: MCPServer) => {
-    if (server.enabled) {
-      return '2px solid #4CAF50';
+    if (!server.status?.connected) {
+      return `2px solid ${theme.palette.error.dark}`;
     }
-    return `2px solid ${isDarkMode ? '#555555' : '#ddd'}`;
+
+    return server.enabled
+      ? '2px solid #4CAF50'
+      : `2px solid ${isDarkMode ? '#555555' : '#ddd'}`;
+  };
+
+  const getDotColor = (server: MCPServer) => {
+    if (!server.status?.connected) {
+      return theme.palette.error.dark;
+    }
+
+    return server.enabled
+      ? theme.palette.success.main
+      : theme.palette.grey[500];
   };
 
   return (
@@ -98,35 +111,58 @@ export const ActiveMcpServers = ({
           Active MCP Servers
         </Typography>
       </Box>
-      <Box style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+      <Box style={{ display: 'flex', flexWrap: 'wrap' }}>
         {mcpServers.map(server => (
           <Tooltip
             key={server.name}
-            title={`Click to ${server.enabled ? 'disable' : 'enable'} ${
-              server.name
-            } server`}
+            title={
+              server.status?.connected
+                ? `Click to ${server.enabled ? 'disable' : 'enable'} ${
+                    server.name
+                  } server`
+                : `Not connected: ${server.status?.error || 'Unknown error'}`
+            }
             arrow
           >
             <Chip
               label={server.name}
-              clickable
-              onClick={() => onServerToggle(server.name)}
+              clickable={server.status?.connected}
+              onClick={
+                server.status?.connected
+                  ? () => onServerToggle(server.name)
+                  : undefined
+              }
+              icon={
+                <FiberManualRecordIcon
+                  sx={{
+                    fill: getDotColor(server),
+                    fontSize: '10px !important',
+                    marginLeft: '8px',
+                  }}
+                />
+              }
               sx={{
                 transition: 'all 0.2s ease',
-                cursor: 'pointer',
+                cursor: server.status?.connected ? 'pointer' : 'default',
                 backgroundColor: getChipBackgroundColor(server),
                 color: getChipColor(server),
                 border: getChipBorder(server),
                 fontSize: '0.75rem',
                 fontWeight: server.enabled ? 600 : 400,
-                '&:hover': {
-                  transform: 'translateY(-1px)',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                '& .MuiChip-icon': {
+                  marginLeft: '8px',
+                  marginRight: '4px',
                 },
-                '&:active': {
-                  transform: 'translateY(0)',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                },
+                ...(server.status?.connected && {
+                  '&:hover': {
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                  },
+                }),
               }}
               size="small"
             />

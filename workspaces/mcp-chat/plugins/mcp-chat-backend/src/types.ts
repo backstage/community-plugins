@@ -15,17 +15,61 @@
  */
 
 // MCP-related types and interfaces
-export interface ServerConfig {
-  id?: string; // Add id field for app-config compatibility
+
+export interface BaseServerConfig {
+  id: string;
   name: string;
   // For STDIO connections
   scriptPath?: string;
   npxCommand?: string;
   args?: string[];
-  env?: Record<string, string>;
   // For SSE connections
   url?: string;
-  headers?: Record<string, string>;
   // Connection type
-  type?: 'stdio' | 'sse' | 'streamable-http';
+  type: 'stdio' | 'sse' | 'streamable-http';
+}
+
+export interface ConfidentialServerConfig {
+  env?: Record<string, string>;
+  headers?: Record<string, string>;
+}
+
+export type ServerConfig = BaseServerConfig & ConfidentialServerConfig;
+
+export type MCPServer = BaseServerConfig & {
+  status: {
+    valid: boolean;
+    connected: boolean;
+    error?: string;
+  };
+};
+
+export interface MCPServerStatusData {
+  total: number;
+  valid: number;
+  active: number;
+  servers: MCPServer[];
+}
+
+export interface ProviderStatusData {
+  providers: Provider[];
+  summary: {
+    totalProviders: number;
+    healthyProviders: number;
+    error?: string;
+  };
+  timestamp: string;
+}
+
+export interface Provider {
+  id: string;
+  model: string;
+  baseUrl: string;
+  connection: ProviderConnectionStatus;
+}
+
+export interface ProviderConnectionStatus {
+  connected: boolean;
+  models?: string[];
+  error?: string;
 }

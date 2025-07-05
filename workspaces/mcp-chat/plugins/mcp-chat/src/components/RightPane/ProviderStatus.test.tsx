@@ -42,7 +42,18 @@ describe('ProviderStatus', () => {
       baseURL: 'https://api.openai.com/v1',
       type: 'openai',
     },
-    mcpServers: [],
+    mcpServers: {
+      total: 0,
+      valid: 0,
+      invalid: 0,
+      servers: [],
+    },
+    summary: {
+      hasValidServers: false,
+      configurationComplete: false,
+      issues: [],
+    },
+    timestamp: '2025-01-01T00:00:00.000Z',
   };
 
   const mockProviderConnectionStatus = {
@@ -344,7 +355,18 @@ describe('ProviderStatus', () => {
           baseURL: '',
           type: 'openai',
         },
-        mcpServers: [],
+        mcpServers: {
+          total: 0,
+          valid: 0,
+          invalid: 0,
+          servers: [],
+        },
+        summary: {
+          hasValidServers: false,
+          configurationComplete: false,
+          issues: [],
+        },
+        timestamp: '2025-01-01T00:00:00.000Z',
       };
 
       renderWithTheme(

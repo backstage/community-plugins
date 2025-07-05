@@ -91,7 +91,8 @@ describe('mcpChatPlugin', () => {
 
         expect(response.body).toHaveProperty('provider');
         expect(response.body).toHaveProperty('mcpServers');
-        expect(Array.isArray(response.body.mcpServers)).toBe(true);
+        expect(response.body.mcpServers).toHaveProperty('servers');
+        expect(Array.isArray(response.body.mcpServers.servers)).toBe(true);
       });
     });
 
@@ -174,38 +175,10 @@ describe('mcpChatPlugin', () => {
       });
     });
 
-    describe('GET /api/mcp-chat/test/latest-news', () => {
-      it('should return test response for latest news', async () => {
-        const response = await request(backend.server)
-          .get('/api/mcp-chat/test/latest-news')
-          .expect(200);
-
-        expect(response.body).toHaveProperty('prompt');
-        expect(response.body).toHaveProperty('reply');
-        expect(response.body).toHaveProperty('toolCalls');
-        expect(response.body).toHaveProperty('toolResponses');
-        expect(response.body).toHaveProperty('serverConfigs');
-        expect(response.body).toHaveProperty('role');
-      });
-
-      it('should include current month and year in prompt', async () => {
-        const response = await request(backend.server)
-          .get('/api/mcp-chat/test/latest-news')
-          .expect(200);
-
-        const now = new Date();
-        const currentMonth = now.toLocaleString('en-US', { month: 'long' });
-        const currentYear = now.getFullYear();
-
-        expect(response.body.prompt).toContain(currentMonth);
-        expect(response.body.prompt).toContain(currentYear.toString());
-      });
-    });
-
-    describe('GET /api/mcp-chat/test/tools', () => {
+    describe('GET /api/mcp-chat/tools', () => {
       it('should return tools information', async () => {
         const response = await request(backend.server)
-          .get('/api/mcp-chat/test/tools')
+          .get('/api/mcp-chat/tools')
           .expect(200);
 
         expect(response.body).toHaveProperty('message');
@@ -218,7 +191,7 @@ describe('mcpChatPlugin', () => {
 
       it('should include server configuration details', async () => {
         const response = await request(backend.server)
-          .get('/api/mcp-chat/test/tools')
+          .get('/api/mcp-chat/tools')
           .expect(200);
 
         expect(Array.isArray(response.body.serverConfigs)).toBe(true);
@@ -241,11 +214,7 @@ describe('mcpChatPlugin', () => {
         })
         .expect(200);
 
-      await request(backend.server)
-        .get('/api/mcp-chat/test/latest-news')
-        .expect(200);
-
-      await request(backend.server).get('/api/mcp-chat/test/tools').expect(200);
+      await request(backend.server).get('/api/mcp-chat/tools').expect(200);
     });
   });
 
