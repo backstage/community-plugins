@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-module-tech-insights
 
+## 0.2.1
+
+### Patch Changes
+
+- 3dbd259: Updated dependency `@backstage-community/plugin-tech-insights` to `^0.6.0`.
+
 ## 0.2.0
 
 ### Minor Changes
