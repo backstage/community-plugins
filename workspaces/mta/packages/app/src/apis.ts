@@ -1,13 +1,5 @@
-import {
-  ScmIntegrationsApi,
-  scmIntegrationsApiRef,
-  ScmAuth,
-} from '@backstage/integration-react';
-import {
-  AnyApiFactory,
-  configApiRef,
-  createApiFactory,
-} from '@backstage/core-plugin-api';
+import { ScmIntegrationsApi, scmIntegrationsApiRef, ScmAuth } from '@backstage/integration-react';
+import { AnyApiFactory, configApiRef, createApiFactory } from '@backstage/core-plugin-api';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({

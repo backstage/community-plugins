@@ -13,37 +13,48 @@ There are four plugins available in this repository:
 - [Catalog MTA Entity Providwer Plugin](./plugins/catalog-backend-module-mta-entity-provider)
 - [Scaffolder MTA Plugin](./plugins/scaffolder-backend-module-mta)
 
-You can also serve each plugin in isolation by running `yarn start` in each plugins respective directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](/dev) directory.
+You can also serve each plugin in isolation by running `yarn start` in each plugins respective
+directory. This method of serving the plugin provides quicker iteration speed and a faster startup
+and hot reloads. It is only meant for local development, and the setup for it can be found inside
+the [/dev](/dev) directory.
 
 ## Introduction
 
-These plugins are designed to work in unison to provide a means to create and analyze applications in MTA (Migration toolkit for Applications). Within this readme, you will find instructions on how to develop, test, and deploy these plugins.
+These plugins are designed to work in unison to provide a means to create and analyze applications
+in MTA (Migration toolkit for Applications). Within this readme, you will find instructions on how
+to develop, test, and deploy these plugins.
 
 ### MTA / Tackle prerequisites
 
-- To begin, you will need to have an MTA instance running in your cluster. For upstream MTA (Tackle), you can follow the instructions [here](https://github.com/konveyor/operator?tab=readme-ov-file#konveyor-operator-installation-on-k8s).
+- To begin, you will need to have an MTA instance running in your cluster. For upstream MTA
+  (Tackle), you can follow the instructions
+  [here](https://github.com/konveyor/operator?tab=readme-ov-file#konveyor-operator-installation-on-k8s).
 
-  - Create a Tackle instance in the cluster. This can be done by running the following command:
+> **Note:** For detailed RHDH-specific setup and deployment instructions, please refer to our
+> [RHDH Setup Guide](https://konveyor.github.io/rhdh-documentation/). This external documentation
+> contains comprehensive information about Keycloak configuration, deployment options, and
+> troubleshooting for Red Hat Developer Hub environments.
 
-  ```
-  kubectl apply -f https://raw.githubusercontent.com/konveyor/tackle2-operator/main/tackle-k8s.yaml
-  ```
+- Create a Tackle instance in the cluster. This can be done by running the following command:
 
-  - Once the tackle instance is running, you can create a Tackle CR to configure the tackle instance. You can apply the CR by running the following command:
+```
+kubectl apply -f https://raw.githubusercontent.com/konveyor/tackle2-operator/main/tackle-k8s.yaml
+```
 
-  ```
-  cat << EOF | kubectl apply -f -
-  kind: Tackle
-  apiVersion: tackle.konveyor.io/v1alpha1
-  metadata:
-    name: tackle
-    namespace: konveyor-tackle
-  spec:
-    feature_auth_required: true
-  EOF
-  ```
+- Once the tackle instance is running, you can create a Tackle CR to configure the tackle instance.
+  You can apply the CR by running the following command:
+
+```
+cat << EOF | kubectl apply -f -
+kind: Tackle
+apiVersion: tackle.konveyor.io/v1alpha1
+metadata:
+  name: tackle
+  namespace: konveyor-tackle
+spec:
+  feature_auth_required: true
+EOF
+```
 
 ```
 

@@ -1,12 +1,7 @@
-import {
-  ComponentEntityV1alpha1,
-  EntityMeta,
-  EntityRelation,
-} from '@backstage/catalog-model';
+import { ComponentEntityV1alpha1, EntityMeta, EntityRelation } from '@backstage/catalog-model';
 
 export class MTAComponentEntity implements ComponentEntityV1alpha1 {
-  apiVersion: 'backstage.io/v1alpha1' | 'backstage.io/v1beta1' =
-    'backstage.io/v1alpha1';
+  apiVersion: 'backstage.io/v1alpha1' | 'backstage.io/v1beta1' = 'backstage.io/v1alpha1';
   kind: 'Component' = 'Component';
   spec: {
     type: string;
