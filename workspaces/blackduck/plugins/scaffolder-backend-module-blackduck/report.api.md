@@ -5,7 +5,6 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
-import { JsonObject } from '@backstage/types/index';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
@@ -16,13 +15,15 @@ export function createBlackduckProjectAction(
 ): TemplateAction<
   {
     projectName: string;
-    projectVersion?: string | undefined;
-    versionPhase?: string | undefined;
-    versionDistribution?: string | undefined;
-    instanceName?: string | undefined;
+    projectVersion: string;
+    versionPhase: string;
+    versionDistribution: string;
+    instanceName: string;
   },
-  JsonObject,
-  'v1'
+  {
+    [x: string]: any;
+  },
+  'v2'
 >;
 
 // @public (undocumented)
