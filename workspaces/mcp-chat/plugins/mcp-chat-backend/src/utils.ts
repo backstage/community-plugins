@@ -17,6 +17,39 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { ServerConfig } from './types';
+import { RootConfigService } from '@backstage/backend-plugin-api';
+
+export function loadServerConfigs(config: RootConfigService): ServerConfig[] {
+  const mcpServers = config.getOptionalConfigArray('mcpChat.mcpServers') || [];
+
+  return mcpServers?.map(serverConfig => {
+    const headers: Record<string, string> | undefined = serverConfig
+      .getOptionalConfig('headers')
+      ?.get() as Record<string, string> | undefined;
+
+    const env: Record<string, string> | undefined = serverConfig
+      .getOptionalConfig('env')
+      ?.get() as Record<string, string> | undefined;
+
+    const type =
+      serverConfig.getOptionalString('type') || serverConfig.has('url')
+        ? 'streamable-http'
+        : 'stdio';
+
+    return {
+      id: serverConfig.getString('id'),
+      name: serverConfig.getString('name'),
+      scriptPath: serverConfig.getOptionalString('scriptPath'),
+      npxCommand: serverConfig.getOptionalString('npxCommand'),
+      args: serverConfig.getOptionalStringArray('args'),
+      env,
+      url: serverConfig.getOptionalString('url'),
+      headers,
+      type,
+    };
+  });
+}
 
 /**
  * Helper function to find npx executable path

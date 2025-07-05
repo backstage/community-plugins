@@ -57,14 +57,12 @@ export class OllamaProvider extends LLMProvider {
       return ollamaMsg;
     });
 
-    console.log('Ollama tools:', tools);
     const response = await this.ollama.chat({
       model: this.model,
       messages: ollamaMessages,
       tools: tools,
     });
     const parsedResponse = this.parseResponse(response);
-    console.log('Ollama parsed response:', parsedResponse);
     return parsedResponse;
   }
 

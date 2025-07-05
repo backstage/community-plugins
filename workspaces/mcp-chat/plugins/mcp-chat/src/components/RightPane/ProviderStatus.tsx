@@ -13,93 +13,107 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useMemo, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import CloudIcon from '@mui/icons-material/Cloud';
-import type { ConfigStatus } from '../../api/McpChatApi';
 import { useTheme } from '@mui/material/styles';
-
-interface ProviderConnectionStatus {
-  connected: boolean;
-  models?: string[];
-  error?: string;
-  loading: boolean;
-}
+import { ProviderStatusData } from '../../types';
 
 interface ProviderStatusProps {
-  configStatus: ConfigStatus | null;
-  providerConnectionStatus: ProviderConnectionStatus;
+  providerStatusData: ProviderStatusData | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export const ProviderStatus = ({
-  configStatus,
-  providerConnectionStatus,
+  providerStatusData,
+  isLoading,
+  error,
 }: ProviderStatusProps) => {
   const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
-  const isError =
-    providerConnectionStatus.connected === false &&
-    !providerConnectionStatus.loading;
+  const isDarkMode = useMemo(
+    () => theme.palette.mode === 'dark',
+    [theme.palette.mode],
+  );
 
-  // Helper functions to avoid nested ternary expressions
-  const getBoxBackgroundColor = () => {
+  const primaryProvider = providerStatusData?.providers?.[0];
+  const connectionInfo = primaryProvider?.connection;
+  const isConnected = connectionInfo?.connected ?? false;
+  const isError = !isConnected && !isLoading;
+
+  const getBoxBackgroundColor = useCallback(() => {
     if (isError) {
       return isDarkMode ? '#2e1e1e' : '#fff5f5';
     }
     return isDarkMode ? '#2a2a2a' : '#f8f9fa';
-  };
+  }, [isError, isDarkMode]);
 
-  const getBorderColor = () => {
+  const getBorderColor = useCallback(() => {
     if (isError) {
       return isDarkMode ? '#4a2c2c' : '#fed7d7';
     }
     return theme.palette.divider;
-  };
+  }, [isError, isDarkMode, theme.palette.divider]);
 
-  const getStatusColor = () => {
-    if (providerConnectionStatus.loading) return '#ff9800';
-    if (providerConnectionStatus.connected) return '#2e7d32';
+  const getStatusColor = useCallback(() => {
+    if (isLoading) return '#ff9800';
+    if (isConnected) return '#2e7d32';
     return '#d32f2f';
-  };
+  }, [isLoading, isConnected]);
 
-  const getStatusBackgroundColor = () => {
-    if (providerConnectionStatus.loading) {
+  const getStatusBackgroundColor = useCallback(() => {
+    if (isLoading) {
       return isDarkMode ? '#2d2316' : '#fff8e1';
     }
-    if (providerConnectionStatus.connected) {
+    if (isConnected) {
       return isDarkMode ? '#1e2e1e' : '#e8f5e8';
     }
     return isDarkMode ? '#2e1e1e' : '#ffebee';
-  };
+  }, [isLoading, isConnected, isDarkMode]);
 
-  const getStatusBorderColor = () => {
-    if (providerConnectionStatus.loading) return '#ffcc02';
-    if (providerConnectionStatus.connected) return '#4caf50';
+  const getStatusBorderColor = useCallback(() => {
+    if (isLoading) return '#ffcc02';
+    if (isConnected) return '#4caf50';
     return '#f44336';
-  };
+  }, [isLoading, isConnected]);
 
-  const getStatusText = () => {
-    if (providerConnectionStatus.loading) return 'Testing...';
-    if (providerConnectionStatus.connected) return 'Connected';
+  const getStatusText = useCallback(() => {
+    if (isLoading) return 'Testing...';
+    if (isConnected) return 'Connected';
     return 'Disconnected';
-  };
+  }, [isLoading, isConnected]);
 
-  const getTooltipTitle = () => {
-    if (providerConnectionStatus.loading) {
+  const getTooltipTitle = useCallback(() => {
+    if (isLoading) {
       return 'Testing provider connection...';
     }
-    if (providerConnectionStatus.connected) {
-      const modelsText = providerConnectionStatus.models
-        ? `${providerConnectionStatus.models.length} models available.`
+    if (isConnected) {
+      const modelsText = connectionInfo?.models
+        ? `${connectionInfo.models.length} models available.`
         : '';
       return `Successfully connected. ${modelsText}`;
     }
     return `Connection failed: ${
-      providerConnectionStatus.error || 'Unknown error'
+      connectionInfo?.error || error || 'Unknown error'
     }`;
-  };
+  }, [isLoading, isConnected, connectionInfo, error]);
+
+  const displayModel = useMemo(() => {
+    if (isLoading) return 'Loading...';
+    if (error && !providerStatusData) return 'Error';
+    return primaryProvider?.model || 'Not available';
+  }, [isLoading, error, providerStatusData, primaryProvider?.model]);
+
+  const displayUrl = useMemo(() => {
+    if (isLoading) return 'Loading...';
+    if (error && !providerStatusData) return 'Error';
+    return primaryProvider?.baseUrl || 'Not available';
+  }, [isLoading, error, providerStatusData, primaryProvider?.baseUrl]);
+
+  const errorMessage = connectionInfo?.error || error;
 
   return (
     <Box
@@ -156,11 +170,11 @@ export const ProviderStatus = ({
           fontSize: '0.8rem',
         }}
       >
-        <strong>Model:</strong> {configStatus?.provider?.model || 'Loading...'}
+        <strong>Model:</strong> {displayModel}
         <br />
-        <strong>URL:</strong> {configStatus?.provider?.baseURL || 'Loading...'}
+        <strong>URL:</strong> {displayUrl}
       </Typography>
-      {providerConnectionStatus.error && !providerConnectionStatus.loading && (
+      {errorMessage && !isLoading && (
         <Box
           style={{
             marginTop: '12px',
@@ -183,7 +197,7 @@ export const ProviderStatus = ({
               whiteSpace: 'pre-wrap',
             }}
           >
-            <strong>Error:</strong> {providerConnectionStatus.error}
+            <strong>Error:</strong> {errorMessage}
           </Typography>
         </Box>
       )}

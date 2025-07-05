@@ -26,7 +26,7 @@ import TextField from '@mui/material/TextField';
 import SendIcon from '@mui/icons-material/Send';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcpChatApiRef } from '../../api';
-import type { ChatMessage as ApiChatMessage } from '../../api/McpChatApi';
+import type { ChatMessage as ApiChatMessage } from '../../types';
 import { ChatMessage } from './ChatMessage';
 import { QuickStart } from './QuickStart';
 import { TypingIndicator } from './TypingIndicator';

@@ -22,18 +22,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-
-import type { Tool } from '../../api/McpChatApi';
-
-interface MCPServer {
-  id?: string;
-  name: string;
-  enabled: boolean;
-  type?: string;
-  hasUrl?: boolean;
-  hasNpxCommand?: boolean;
-  hasScriptPath?: boolean;
-}
+import { MCPServer, Tool } from '../../types';
 
 interface ActiveToolsProps {
   mcpServers: MCPServer[];
@@ -195,65 +184,87 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                     </Box>
                   ) : (
                     <>
-                      {serverTools.length > 0 ? (
-                        <Box
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 6,
-                          }}
-                        >
-                          {serverTools.map(tool => (
+                      {(() => {
+                        if (serverTools.length > 0) {
+                          return (
                             <Box
-                              key={tool.function.name}
                               style={{
-                                padding: '6px 8px',
-                                backgroundColor: isDarkMode
-                                  ? '#2a2a2a'
-                                  : '#ffffff',
-                                borderRadius: 4,
-                                border: `1px solid ${theme.palette.divider}`,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 6,
                               }}
                             >
-                              <Typography
-                                variant="caption"
-                                style={{
-                                  fontWeight: 600,
-                                  color: theme.palette.text.primary,
-                                  fontSize: '0.75rem',
-                                  display: 'block',
-                                  marginBottom: 2,
-                                }}
-                              >
-                                {tool.function.name}
-                              </Typography>
-                              <Typography
-                                variant="caption"
-                                style={{
-                                  color: theme.palette.text.secondary,
-                                  fontSize: '0.7rem',
-                                  lineHeight: 1.3,
-                                  display: 'block',
-                                }}
-                              >
-                                {tool.function.description ||
-                                  'No description available'}
-                              </Typography>
+                              {serverTools.map(tool => (
+                                <Box
+                                  key={tool.function.name}
+                                  style={{
+                                    padding: '6px 8px',
+                                    backgroundColor: isDarkMode
+                                      ? '#2a2a2a'
+                                      : '#ffffff',
+                                    borderRadius: 4,
+                                    border: `1px solid ${theme.palette.divider}`,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    style={{
+                                      fontWeight: 600,
+                                      color: theme.palette.text.primary,
+                                      fontSize: '0.75rem',
+                                      display: 'block',
+                                      marginBottom: 2,
+                                    }}
+                                  >
+                                    {tool.function.name}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    style={{
+                                      color: theme.palette.text.secondary,
+                                      fontSize: '0.7rem',
+                                      lineHeight: 1.3,
+                                      display: 'block',
+                                    }}
+                                  >
+                                    {tool.function.description ||
+                                      'No description available'}
+                                  </Typography>
+                                </Box>
+                              ))}
                             </Box>
-                          ))}
-                        </Box>
-                      ) : (
-                        <Typography
-                          variant="caption"
-                          style={{
-                            color: theme.palette.text.secondary,
-                            fontStyle: 'italic',
-                            textAlign: 'center',
-                          }}
-                        >
-                          No tools available for this server
-                        </Typography>
-                      )}
+                          );
+                        }
+
+                        if (!server.status.connected && server.status.error) {
+                          return (
+                            <Typography
+                              variant="caption"
+                              style={{
+                                color: theme.palette.error.main,
+                                fontWeight: 500,
+                                textAlign: 'center',
+                              }}
+                            >
+                              Problem connecting to MCP server <br />
+                              Error: {server.status.error}
+                            </Typography>
+                          );
+                        }
+
+                        return (
+                          <Typography
+                            variant="caption"
+                            style={{
+                              color: theme.palette.text.secondary,
+                              fontStyle: 'italic',
+                              textAlign: 'center',
+                            }}
+                          >
+                            No tools available for this server
+                          </Typography>
+                        );
+                      })()}
                     </>
                   )}
                 </AccordionDetails>
