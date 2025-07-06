@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TableColumn } from '@backstage/core-components';
+import { Link, TableColumn } from '@backstage/core-components';
 import {
   EntityPeekAheadPopover,
   EntityRefLink,
@@ -32,7 +32,46 @@ import {
 import { SonarQubeTableRow } from './types';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { sonarqubeTranslationRef } from '../../translation';
+import IconButton from '@material-ui/core/IconButton';
+import LinkIcon from '@material-ui/icons/Link';
 
+/**
+ * Renders a link icon button to the SonarQube dashboard if annotation is enabled and projectUrl is provided.
+ *
+ * @param isAnnotationEnabled - Whether SonarQube annotation is enabled.
+ * @param projectUrl - The SonarQube project dashboard URL.
+ * @returns JSX.Element | null
+ */
+export function renderSonarQubeDashboardLink(
+  isAnnotationEnabled?: boolean,
+  projectUrl?: string,
+): JSX.Element | null {
+  if (!isAnnotationEnabled || !projectUrl) {
+    return null;
+  }
+
+  return (
+    <Link
+      to={projectUrl}
+      title="View SonarQube Dashboard"
+      target="_blank"
+      style={{ paddingLeft: 8 }}
+    >
+      <IconButton
+        aria-label="link"
+        color="inherit"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        <LinkIcon />
+      </IconButton>
+    </Link>
+  );
+}
 export const getColumns = (
   t: TranslationFunction<typeof sonarqubeTranslationRef.T>,
 ): TableColumn<SonarQubeTableRow>[] => {
@@ -49,9 +88,15 @@ export const getColumns = (
         const entityRef =
           resolved.entityRef || `component:default/${resolved.name}`;
         return (
-          <EntityPeekAheadPopover entityRef={entityRef}>
-            <EntityRefLink entityRef={entityRef} />
-          </EntityPeekAheadPopover>
+          <>
+            <EntityPeekAheadPopover entityRef={entityRef}>
+              <EntityRefLink entityRef={entityRef} />
+            </EntityPeekAheadPopover>
+            {renderSonarQubeDashboardLink(
+              resolved?.isSonarQubeAnnotationEnabled,
+              resolved?.findings?.projectUrl,
+            )}
+          </>
         );
       },
     },
