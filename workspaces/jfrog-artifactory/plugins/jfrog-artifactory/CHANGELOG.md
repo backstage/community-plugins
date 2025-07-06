@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.15.4
+
+### Patch Changes
+
+- 7f18c19: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+
 ## 1.15.3
 
 ### Patch Changes
