@@ -19,6 +19,7 @@ import { parseMember } from './parseMethods';
 import { BazaarProject, Member } from '../types';
 import { BazaarApi } from '../api';
 import { Entity } from '@backstage/catalog-model';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 import { CatalogApi } from '@backstage/plugin-catalog-react';
 
 export const fetchProjectMembers = async (
@@ -40,11 +41,12 @@ export const fetchProjectMembers = async (
 
 export const fetchCatalogItems = async (
   catalogApi: CatalogApi,
+  filter: EntityFilterQuery | undefined = {
+    kind: ['Component', 'Resource'],
+  },
 ): Promise<Entity[]> => {
   const entities = await catalogApi.getEntities({
-    filter: {
-      kind: ['Component', 'Resource'],
-    },
+    filter,
     fields: ['kind', 'metadata.name', 'metadata.namespace'],
   });
 
