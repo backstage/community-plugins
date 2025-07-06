@@ -32,7 +32,12 @@ import {
 } from '@backstage/test-utils';
 
 import { FeedbackAPI, feedbackApiRef } from '../../api';
-import { mockEntity, mockFeedback } from '../../mocks';
+import {
+  mockEntity,
+  mockErrorList,
+  mockExperienceList,
+  mockFeedback,
+} from '../../mocks';
 import { EntityFeedbackPage } from './EntityFeedbackPage';
 
 describe('Entity Feedback Page', () => {
@@ -45,6 +50,8 @@ describe('Entity Feedback Page', () => {
         pageSize: 5,
       });
     }),
+    getErrorList: jest.fn().mockReturnValue(mockErrorList),
+    getExperienceList: jest.fn().mockReturnValue(mockExperienceList),
   };
 
   const mockIdentityApi: Partial<IdentityApi> = {

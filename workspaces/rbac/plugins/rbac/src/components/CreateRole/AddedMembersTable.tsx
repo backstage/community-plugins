@@ -13,24 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Table } from '@backstage/core-components';
 
-import { makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import { FormikErrors } from 'formik';
 
 import { getMembers } from '../../utils/rbac-utils';
 import { selectedMembersColumns } from './AddedMembersTableColumn';
 import { RoleFormValues, SelectedMember } from './types';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 type AddedMembersTableProps = {
   selectedMembers: SelectedMember[];
@@ -45,21 +35,21 @@ export const AddedMembersTable = ({
   selectedMembers,
   setFieldValue,
 }: AddedMembersTableProps) => {
-  const classes = useStyles();
   return (
     <Table
       title={
         selectedMembers.length > 0
-          ? `Users and groups (${getMembers(selectedMembers)})`
-          : 'Users and groups'
+          ? `${getMembers(selectedMembers)}`
+          : 'No users and groups selected'
       }
       data={selectedMembers}
       columns={selectedMembersColumns(selectedMembers, setFieldValue)}
       emptyContent={
-        <div className={classes.empty}>
-          No records. Selected users and groups appear here.
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+          Selected users and groups appear here.
+        </Box>
       }
+      options={{ emptyRowsWhenPaging: false }}
     />
   );
 };

@@ -26,7 +26,6 @@ import {
   PageBlueprint,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import React from 'react';
 import { techRadarApiRef } from './api';
 import { DefaultTechRadarApi } from './defaultApi';
 import {
@@ -56,8 +55,8 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
           .string()
           .default('Pick the recommended technologies for your projects'),
       pageTitle: z => z.string().default('Company Radar'),
-      width: z => z.number().default(1500),
-      height: z => z.number().default(800),
+      width: z => z.number().optional(),
+      height: z => z.number().optional(),
     },
   },
   factory(originalFactory, { config }) {

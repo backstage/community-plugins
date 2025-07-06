@@ -1,5 +1,62 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.16.0
+
+### Minor Changes
+
+- 74ab831: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [74ab831]
+  - @backstage-community/plugin-cost-insights-common@0.5.0
+
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [6c0f6ee]
+  - @backstage-community/plugin-cost-insights-common@0.4.1
+
+## 0.15.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.15.0
+
+### Minor Changes
+
+- 2d52928: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [2d52928]
+  - @backstage-community/plugin-cost-insights-common@0.4.0
+
+## 0.14.0
+
+### Minor Changes
+
+- 540759d: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [540759d]
+  - @backstage-community/plugin-cost-insights-common@0.3.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 5cf13e0: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [5cf13e0]
+  - @backstage-community/plugin-cost-insights-common@0.2.0
+
 ## 0.12.29
 
 ### Patch Changes

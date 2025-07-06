@@ -1,5 +1,103 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.6.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 01640b2: Fixes import of `backstage-plugin-api`.
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-node@2.5.0
+
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [375612d]
+- Updated dependencies [ac739ca]
+  - @backstage-community/plugin-tech-insights-node@2.4.0
+  - @backstage-community/plugin-tech-insights-common@0.6.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 6951c64: Fix handling not computed Fact references
+
+  - does not throw an error when a fact is valid, but it is not computed for the entity (yet)
+
+## 0.4.0
+
+### Minor Changes
+
+- e919e53: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- 353f022: Fixes an issue where optional links were not included when loading checks from app config
+- c107e0f: Deprecates `TechInsightCheck` from the `tech-insights-node` library in favor of `Check` coming from the `tech-insights-common` library.
+
+  With this change comes a refactor of `Check` from a type to an interface.
+
+  The `TechInsightCheck` interface will be removed from the `tech-insights-node` plugin in it's next major release.
+
+  Importing `Check` from `@backstage-community/plugin-tech-insights-common/client` has been deprecated in favor of importing directly from `@backstage-community/plugin-tech-insights-common`.
+
+- Updated dependencies [f015469]
+- Updated dependencies [e919e53]
+- Updated dependencies [c107e0f]
+  - @backstage-community/plugin-tech-insights-common@0.5.0
+  - @backstage-community/plugin-tech-insights-node@2.3.0
+
+## 0.3.1
+
+### Patch Changes
+
+- 4e5dcbc: Bump json-rules-engine to solve [CVE-2024-21534](https://github.com/backstage/backstage/issues/27386)
+
+## 0.3.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+  - @backstage-community/plugin-tech-insights-node@2.2.0
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [d9d9039]
+  - @backstage-community/plugin-tech-insights-node@2.1.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 5289c38: Add metadata to TechInsightCheck
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+  - @backstage-community/plugin-tech-insights-node@2.1.0
+
+## 0.1.61
+
+### Patch Changes
+
+- Updated dependencies [c3bbe0f]
+  - @backstage-community/plugin-tech-insights-node@2.0.0
+
 ## 0.1.60
 
 ### Patch Changes

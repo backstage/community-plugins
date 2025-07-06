@@ -27,6 +27,9 @@ import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
 import { OcmApiClient, OcmApiRef } from './api';
 import { rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const ocmPlugin = createPlugin({
   id: 'ocm',
   routes: {
@@ -45,6 +48,9 @@ export const ocmPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const OcmPage = ocmPlugin.provide(
   createRoutableExtension({
     name: 'OcmPage',
@@ -54,4 +60,7 @@ export const OcmPage = ocmPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const OcmIcon = HubOutlinedIcon as IconComponent;

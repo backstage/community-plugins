@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Link } from '@backstage/core-components';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
@@ -34,7 +34,7 @@ import { decodeHtml } from '../../util';
  */
 export type StackOverflowSearchResultListItemProps = {
   result?: any; // TODO(emmaindal): type to StackOverflowDocument.
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   rank?: number;
   highlight?: ResultHighlight;
 };

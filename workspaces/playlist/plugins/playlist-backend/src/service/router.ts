@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
 import { CatalogClient } from '@backstage/catalog-client';
-import { parseEntityRef } from '@backstage/catalog-model';
 import { NotAllowedError } from '@backstage/errors';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import {
@@ -42,22 +35,27 @@ import { DatabaseHandler } from './DatabaseHandler';
 import { parseListPlaylistsFilterParams } from './ListPlaylistsFilter';
 import {
   AuthService,
+  DatabaseService,
+  DiscoveryService,
   HttpAuthService,
   LoggerService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { Config } from '@backstage/config';
 
 /**
  * @public
  */
 export interface RouterOptions {
-  database: PluginDatabaseManager;
-  discovery: PluginEndpointDiscovery;
+  database: DatabaseService;
+  discovery: DiscoveryService;
   identity?: IdentityApi;
   logger: LoggerService;
   permissions: PermissionsService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
+  config: Config;
 }
 
 /**
@@ -71,9 +69,10 @@ export async function createRouter(
     discovery,
     logger,
     permissions: permissionEvaluator,
+    auth,
+    httpAuth,
+    config,
   } = options;
-
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   logger.info('Initializing Playlist backend');
 
@@ -218,15 +217,6 @@ export async function createRouter(
       return;
     }
 
-    const filter = entityRefs.map(ref => {
-      const compoundRef = parseEntityRef(ref);
-      return {
-        kind: compoundRef.kind,
-        'metadata.namespace': compoundRef.namespace,
-        'metadata.name': compoundRef.name,
-      };
-    });
-
     const { token } = await auth.getPluginRequestToken({
       onBehalfOf: await httpAuth.credentials(req),
       targetPluginId: 'catalog',
@@ -237,8 +227,9 @@ export async function createRouter(
     // via catalog events (https://github.com/backstage/backstage/issues/8219)
     //
     // Note: This will also enforce catalog permissions and will only return entities for which the current user has access to
-    const entities = (await catalogClient.getEntities({ filter }, { token }))
-      .items;
+    const entities = (
+      await catalogClient.getEntitiesByRefs({ entityRefs }, { token })
+    ).items.filter(Boolean);
 
     res.json(entities);
   });
@@ -270,6 +261,6 @@ export async function createRouter(
     res.status(200).end();
   });
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

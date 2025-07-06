@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
-import {
-  FormControlLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-  useTheme,
-} from '@material-ui/core';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import IconButton from '@mui/material/IconButton';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { useTheme } from '@mui/material/styles';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import {
@@ -37,7 +35,6 @@ import {
   getSimpleRulesCount,
   isNestedConditionRule,
   isSimpleRule,
-  makeConditionsFormRowStyles,
   nestedConditionButtons,
   resetErrors,
   ruleOptionDisabled,
@@ -57,6 +54,7 @@ import {
   NestedCriteriaErrors,
   NotConditionType,
 } from './types';
+import Typography from '@mui/material/Typography';
 
 export const ConditionsFormRow = ({
   conditionRulesData,
@@ -68,15 +66,13 @@ export const ConditionsFormRow = ({
   setErrors,
   setRemoveAllClicked,
 }: ConditionFormRowProps) => {
-  const classes = makeConditionsFormRowStyles();
   const theme = useTheme();
-  const [nestedConditionRow, setNestedConditionRow] = React.useState<
-    Condition[]
-  >([]);
-  const [notConditionType, setNotConditionType] =
-    React.useState<NotConditionType>(NotConditionType.SimpleCondition);
+  const [nestedConditionRow, setNestedConditionRow] = useState<Condition[]>([]);
+  const [notConditionType, setNotConditionType] = useState<NotConditionType>(
+    NotConditionType.SimpleCondition,
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const nestedConditions: Condition[] = [];
     const criteriaTypes = [criterias.allOf, criterias.anyOf, criterias.not];
     switch (criteria) {
@@ -389,8 +385,17 @@ export const ConditionsFormRow = ({
       nestedConditionSimpleRulesCount > 0 && (
         <Box
           mt={2}
-          className={classes.nestedConditionRow}
           key={`nestedCondition-${nestedConditionIndex}`}
+          sx={{
+            padding: '20px',
+            marginLeft: theme.spacing(3),
+            border: `1px solid ${theme.palette.border}`,
+            borderRadius: '4px',
+            backgroundColor: theme.palette.background.default,
+            '& input': {
+              backgroundColor: `${theme.palette.background.paper}!important`,
+            },
+          }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <ToggleButtonGroup
@@ -402,7 +407,11 @@ export const ConditionsFormRow = ({
                   nestedConditionIndex,
                 )
               }
-              className={classes.nestedConditioncriteriaButtonGroup}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                width: '60%',
+                height: '100%',
+              }}
             >
               {nestedConditionButtons.map(({ val, label }) => (
                 <CriteriaToggleButton
@@ -417,7 +426,11 @@ export const ConditionsFormRow = ({
             {criteria !== criterias.not && (
               <IconButton
                 title="Remove nested condition"
-                className={classes.removeNestedRuleButton}
+                sx={{
+                  color: theme.palette.grey[500],
+                  flexGrow: 0,
+                  alignSelf: 'baseline',
+                }}
                 disabled={simpleRulesCount === 0 && nestedConditionsCount === 1} // 0 simple rules and this is the only 1 nested condition
                 onClick={() =>
                   handleRemoveNestedCondition(nestedConditionIndex)
@@ -445,7 +458,6 @@ export const ConditionsFormRow = ({
                   setRemoveAllClicked={setRemoveAllClicked}
                   conditionRulesData={conditionRulesData}
                   notConditionType={notConditionType}
-                  classes={classes}
                   currentCondition={c}
                   ruleIndex={ncrIndex}
                   isNestedCondition
@@ -485,7 +497,10 @@ export const ConditionsFormRow = ({
               )}
             {selectedNestedConditionCriteria !== criterias.not && (
               <Button
-                className={classes.addRuleButton}
+                sx={{
+                  mt: 2,
+                  color: theme.palette.primary.light,
+                }}
                 size="small"
                 onClick={() =>
                   handleAddRuleInNestedCondition(
@@ -493,9 +508,11 @@ export const ConditionsFormRow = ({
                     nestedConditionIndex,
                   )
                 }
+                startIcon={<AddIcon fontSize="small" />}
               >
-                <AddIcon fontSize="small" />
-                Add rule
+                <Typography variant="body2" component="span">
+                  Add rule
+                </Typography>
               </Button>
             )}
           </Box>
@@ -505,12 +522,35 @@ export const ConditionsFormRow = ({
   };
 
   return (
-    <Box className={classes.conditionRow} data-testid="conditions-row">
+    <Box
+      sx={{
+        padding: '20px',
+        border: `1px solid ${theme.palette.border}`,
+        borderRadius: '4px',
+        backgroundColor: theme.palette.background.default,
+        '& input': {
+          color: `${theme.palette.textContrast}!important`,
+          '&:-internal-autofill-selected, &:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active':
+            {
+              WebkitBoxShadow: `0 0 0px 1000px ${theme.palette.background.paper} inset`,
+              WebkitTextFillColor: `${theme.palette.textContrast}!important`,
+              caretColor: `${theme.palette.textContrast}!important`,
+            },
+        },
+        '& button': {
+          textTransform: 'none',
+        },
+      }}
+      data-testid="conditions-row"
+    >
       <ToggleButtonGroup
         exclusive
         value={criteria}
         onChange={(_event, newCriteria) => handleCriteriaChange(newCriteria)}
-        className={classes.criteriaButtonGroup}
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          width: '80%',
+        }}
       >
         {conditionButtons.map(({ val, label }) => (
           <CriteriaToggleButton
@@ -547,7 +587,6 @@ export const ConditionsFormRow = ({
                   setRemoveAllClicked={setRemoveAllClicked}
                   conditionRulesData={conditionRulesData}
                   notConditionType={notConditionType}
-                  classes={classes}
                   currentCondition={c}
                   ruleIndex={srIndex}
                   activeCriteria={criteria as 'allOf' | 'anyOf'}
@@ -556,7 +595,9 @@ export const ConditionsFormRow = ({
             )}
           {criteria === criterias.not && (
             <RadioGroup
-              className={classes.radioGroup}
+              sx={{
+                margin: theme.spacing(1),
+              }}
               value={notConditionType}
               onChange={(_event, value) =>
                 handleNotConditionTypeChange(value as NotConditionType)
@@ -566,7 +607,9 @@ export const ConditionsFormRow = ({
                 value={NotConditionType.SimpleCondition}
                 control={<Radio color="primary" />}
                 label="Add rule"
-                className={classes.radioLabel}
+                sx={{
+                  marginTop: theme.spacing(1),
+                }}
               />
               {notConditionType === NotConditionType.SimpleCondition && (
                 <ConditionsFormRowFields
@@ -593,7 +636,9 @@ export const ConditionsFormRow = ({
                 value={NotConditionType.NestedCondition}
                 control={<Radio color="primary" />}
                 label={<AddNestedConditionButton />}
-                className={classes.radioLabel}
+                sx={{
+                  marginTop: theme.spacing(1),
+                }}
               />
             </RadioGroup>
           )}
@@ -601,7 +646,6 @@ export const ConditionsFormRow = ({
             conditionRow={conditionRow}
             onRuleChange={onRuleChange}
             criteria={criteria}
-            classes={classes}
             selPluginResourceType={selPluginResourceType}
             updateErrors={updateErrors}
             isNestedConditionRule={isNestedConditionRule}

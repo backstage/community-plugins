@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 import { DrawerProvider, useDrawerContext } from '../DrawerContext';
 import { screen, render, renderHook } from '@testing-library/react';
 import { mockApplication } from '../../../../dev/__data__';
-import { Application } from '../../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 const MockComponent = () => {
   const { application, appHistory, latestRevision } = useDrawerContext();
@@ -63,9 +63,7 @@ describe('DrawerContext', () => {
   it('should throw an error if useDrawerContext is used outside of the provider', () => {
     expect(() =>
       renderHook(() => useDrawerContext(), {
-        wrapper: ({ children }: { children: React.ReactNode }) => (
-          <>{children}</>
-        ),
+        wrapper: ({ children }: { children: ReactNode }) => <>{children}</>,
       }),
     ).toThrow(
       new Error('useDrawerContext must be used within an DrawerProvider'),

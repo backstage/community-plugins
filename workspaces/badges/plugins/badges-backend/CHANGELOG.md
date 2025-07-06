@@ -1,5 +1,71 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.13.0
+
+### Minor Changes
+
+- b801c3c: Backstage version bump to v1.40.2
+
+## 0.12.0
+
+### Minor Changes
+
+- 8bc64fb: Backstage version bump to v1.39.0
+
+## 0.11.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.11.0
+
+### Minor Changes
+
+- 11040bc: Backstage version bump to v1.38.1
+
+## 0.10.0
+
+### Minor Changes
+
+- a69614e: Backstage version bump to v1.37.0
+
+## 0.9.0
+
+### Minor Changes
+
+- b3f9a47: Removed support for the legacy backend system.
+
+## 0.8.0
+
+### Minor Changes
+
+- c3a244e: Backstage version bump to v1.36.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.7.0
+
+### Minor Changes
+
+- 0b09ae7: Backstage version bump to v1.35.1
+
+## 0.6.0
+
+### Minor Changes
+
+- 6ce8d6b: Backstage version bump to v1.34.1
+
+## 0.5.4
+
+### Patch Changes
+
+- 1f907f2: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.5.3
 
 ### Patch Changes

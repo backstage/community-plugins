@@ -1,5 +1,202 @@
 ### Dependencies
 
+## 3.26.2
+
+### Patch Changes
+
+- 8fa8ece: Updated dependency `@types/lodash` to `4.17.17`.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-tekton-common@1.10.1
+
+## 3.26.1
+
+### Patch Changes
+
+- 87918c8: PipelineRun list status and duration support i18n
+- 65f826d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
+## 3.26.0
+
+### Minor Changes
+
+- 40d7a3b: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [40d7a3b]
+  - @backstage-community/plugin-tekton-common@1.10.0
+
+## 3.25.3
+
+### Patch Changes
+
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+
+## 3.25.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-tekton-common@1.9.1
+
+## 3.25.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 3.25.0
+
+### Minor Changes
+
+- 692fc75: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [692fc75]
+  - @backstage-community/plugin-tekton-common@1.9.0
+
+## 3.24.0
+
+### Minor Changes
+
+- 6828dde: Added i18n support
+
+## 3.23.0
+
+### Minor Changes
+
+- 1d5f33d: Enhance fetching pod logs
+
+## 3.22.2
+
+### Patch Changes
+
+- 0a0e19a: Fix issue where the SBOM link does not lead to the SBOM task in the pipeline run log dialog
+
+## 3.22.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-tekton-common@1.8.1
+
+## 3.22.0
+
+### Minor Changes
+
+- de82c49: Bump backstage version to 1.36.1
+
+### Patch Changes
+
+- 43ed904: remove unused dependency: @types/node
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+- Updated dependencies [de82c49]
+  - @backstage-community/plugin-tekton-common@1.8.0
+
+## 3.21.1
+
+### Patch Changes
+
+- 76de75c: Remove CSS resets from PatternFly CSS import
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- 3199ac1: Updated dependency `@types/lodash` to `4.17.16`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 973a5ef: removed prettier from devDependencies
+
+## 3.21.0
+
+### Minor Changes
+
+- d5a2be5: Update Kubernetes plugin dependencies
+
+### Patch Changes
+
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+- Updated dependencies [d5a2be5]
+  - @backstage-community/plugin-tekton-common@1.7.0
+
+## 3.20.0
+
+### Minor Changes
+
+- 48e0647: Use Kubernetes plugin permissions for Tekton plugin, remove tekton-specific permissions from tekton-common plugin
+- 585f020: Update aonic-ui/pipelines version
+
+### Patch Changes
+
+- 0ac3320: Updated dependency `@types/lodash` to `4.17.15`.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+- Updated dependencies [48e0647]
+  - @backstage-community/plugin-tekton-common@1.6.0
+
+## 3.19.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 3.18.0
+
+### Minor Changes
+
+- 2f344ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [2f344ca]
+  - @backstage-community/plugin-tekton-common@1.5.0
+
+## 3.17.0
+
+### Minor Changes
+
+- e9600c4: Update Patternfly Dependencies to V6 and also use the latest version of aonic-ui/pipelines.
+
+## 3.16.5
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 3.16.4
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
+## 3.16.3
+
+### Patch Changes
+
+- 41a3d82: Updated dependency `@playwright/test` to `1.48.2`.
+
+## 3.16.2
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+- d3d078b: Updated dependency `@types/lodash` to `4.17.13`.
+
+## 3.16.1
+
+### Patch Changes
+
+- 9b803bb: Fixed `style-inject` imports in packed \*.css.esm.js files until a new version of `@backstage/cli` is released that includes https://github.com/backstage/backstage/pull/27547.
+
 ## 3.16.0
 
 ### Minor Changes

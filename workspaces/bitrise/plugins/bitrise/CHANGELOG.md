@@ -1,5 +1,35 @@
 # @backstage-community/plugin-bitrise
 
+## 0.5.0
+
+### Minor Changes
+
+- e77ec8d: Backstage version bump to v1.40.2
+
+## 0.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.4.0
+
+### Minor Changes
+
+- 2ac7c53: Backstage version bump to v1.37.0
+
+## 0.3.0
+
+### Minor Changes
+
+- d393d67: Backstage version bump to v1.35.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 48d7350: Backstage version bump to v1.34.1
+
 ## 0.1.67
 
 ### Patch Changes

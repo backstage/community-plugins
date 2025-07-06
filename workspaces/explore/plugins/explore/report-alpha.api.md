@@ -15,7 +15,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    'search-result-list-item:explore': ExtensionDefinition<{
+    [x: `search-result-list-item:${string}`]: ExtensionDefinition<{
       kind: 'search-result-list-item';
       name: undefined;
       config: {

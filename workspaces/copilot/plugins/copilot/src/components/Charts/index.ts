@@ -13,5 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { EnterpriseCharts } from './EnterpriseCharts';
+export { DashboardCharts } from './DashboardCharts';
 export { LanguageCharts } from './LanguageCharts';
+export { EngagementCharts } from './EngagementCharts';

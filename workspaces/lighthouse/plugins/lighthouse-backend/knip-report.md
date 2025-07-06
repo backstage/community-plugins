@@ -1,8 +1,7 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name                                          | Location     | Severity |
-| :-------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-lighthouse-common | package.json | error    |
-| winston                                       | package.json | error    |
+| Name    | Location     | Severity |
+| :------ | :----------- | :------- |
+| winston | package.json | error    |

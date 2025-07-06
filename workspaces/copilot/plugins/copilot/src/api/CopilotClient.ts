@@ -18,8 +18,11 @@ import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import { CopilotApi } from './CopilotApi';
 import {
+  EngagementMetrics,
   Metric,
+  MetricsType,
   PeriodRange,
+  SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
 import { DateTime } from 'luxon';
 
@@ -31,7 +34,12 @@ export class CopilotClient implements CopilotApi {
     },
   ) {}
 
-  public async getMetrics(startDate: Date, endDate: Date): Promise<Metric[]> {
+  public async getMetrics(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+    team?: string,
+  ): Promise<Metric[]> {
     const queryString = new URLSearchParams();
 
     queryString.append(
@@ -43,15 +51,102 @@ export class CopilotClient implements CopilotApi {
       DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
     );
 
+    queryString.append('type', type);
+
+    if (team) {
+      queryString.append('team', team);
+    }
+
     const urlSegment = `metrics?${queryString}`;
 
     return await this.get<Metric[]>(urlSegment);
   }
 
-  public async periodRange() {
-    const urlSegment = `metrics/period-range`;
+  public async getEngagementMetrics(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+    team?: string,
+  ): Promise<EngagementMetrics[]> {
+    const queryString = new URLSearchParams();
+
+    queryString.append(
+      'startDate',
+      DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
+    );
+    queryString.append(
+      'endDate',
+      DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
+    );
+
+    queryString.append('type', type);
+
+    if (team) {
+      queryString.append('team', team);
+    }
+
+    const urlSegment = `engagements?${queryString}`;
+
+    return await this.get<EngagementMetrics[]>(urlSegment);
+  }
+  public async getSeatMetrics(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+    team?: string,
+  ): Promise<SeatAnalysis[]> {
+    const queryString = new URLSearchParams();
+
+    queryString.append(
+      'startDate',
+      DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
+    );
+    queryString.append(
+      'endDate',
+      DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
+    );
+
+    queryString.append('type', type);
+
+    if (team) {
+      queryString.append('team', team);
+    }
+
+    const urlSegment = `seats?${queryString}`;
+
+    return await this.get<SeatAnalysis[]>(urlSegment);
+  }
+
+  public async periodRange(type: MetricsType): Promise<PeriodRange> {
+    const queryString = new URLSearchParams();
+    queryString.append('type', type);
+
+    const urlSegment = `metrics/period-range?${queryString}`;
 
     return await this.get<PeriodRange>(urlSegment);
+  }
+
+  public async fetchTeams(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+  ): Promise<string[]> {
+    const queryString = new URLSearchParams();
+
+    queryString.append(
+      'startDate',
+      DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
+    );
+    queryString.append(
+      'endDate',
+      DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
+    );
+
+    queryString.append('type', type);
+
+    const urlSegment = `teams?${queryString}`;
+
+    return await this.get<string[]>(urlSegment);
   }
 
   private async get<T>(path: string): Promise<T> {
@@ -61,7 +156,6 @@ export class CopilotClient implements CopilotApi {
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
     }
-
     return response.json() as Promise<T>;
   }
 }

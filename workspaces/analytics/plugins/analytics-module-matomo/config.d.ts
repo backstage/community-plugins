@@ -28,6 +28,13 @@ export interface Config {
          * @visibility frontend
          */
         siteId: string;
+
+        /**
+         * Controls how the identityApi is used when sending data to Matomo:
+         *
+         * @visibility frontend
+         */
+        identity?: 'disabled' | 'optional' | 'required';
       };
     };
   };

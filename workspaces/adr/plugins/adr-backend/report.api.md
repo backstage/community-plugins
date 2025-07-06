@@ -4,18 +4,28 @@
 
 ```ts
 import { AdrCollatorFactoryOptions as AdrCollatorFactoryOptions_2 } from '@backstage-community/search-backend-module-adr';
+import { AdrInfoParser } from '@backstage-community/plugin-adr-common';
 import { AdrParser as AdrParser_2 } from '@backstage-community/plugin-adr-common';
 import { AdrParserContext as AdrParserContext_2 } from '@backstage-community/plugin-adr-common';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CacheService } from '@backstage/backend-plugin-api';
 import { DefaultAdrCollatorFactory } from '@backstage-community/search-backend-module-adr';
 import express from 'express';
+import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { MadrParserOptions as MadrParserOptions_2 } from '@backstage-community/plugin-adr-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public @deprecated
 export type AdrCollatorFactoryOptions = AdrCollatorFactoryOptions_2;
+
+// @public
+export type AdrExtensionPoint = {
+  setAdrInfoParser(adrInfoParser: AdrInfoParser): void;
+};
+
+// @public
+export const adrExtensionPoint: ExtensionPoint<AdrExtensionPoint>;
 
 // @public @deprecated
 export type AdrParser = AdrParser_2;
@@ -32,6 +42,7 @@ export type AdrRouterOptions = {
   reader: UrlReaderService;
   cacheClient: CacheService;
   logger: LoggerService;
+  parser?: AdrInfoParser;
 };
 
 // @public @deprecated

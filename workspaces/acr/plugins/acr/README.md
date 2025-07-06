@@ -29,6 +29,31 @@ The Azure Container Registry (ACR) plugin displays information about your contai
          secure: true
    ```
 
+   #### (Optional) Specify a Custom Registry Path to Support Multiple Registries
+
+   ```yaml
+   # app-config.yaml
+   proxy:
+     endpoints:
+       '/acr/api':
+         target: 'https://mycontainerregistry.azurecr.io/acr/v1/'
+         credentials: require
+         changeOrigin: true
+         headers:
+           # If you use Bearer Token for authorization, replace 'Basic' with 'Bearer'
+           Authorization: 'Basic ${ACR_AUTH_TOKEN}'
+         # Set to false if using a self-hosted ACR instance with a self-signed certificate
+         secure: true
+
+       '/acr/custom/api/mysecondregistry':
+         target: 'https://mysecondregistry.azurecr.io/acr/v1/'
+         credentials: require
+         changeOrigin: true
+         headers:
+           Authorization: 'Basic ${SECOND_ACR_AUTH_TOKEN}'
+         secure: true
+   ```
+
    > [!NOTE]
    > The value inside each route is either a simple URL string, or an object on the format accepted by [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware). Additionally, it has an optional `credentials` key which can have the following values:
    >
@@ -61,7 +86,10 @@ The Azure Container Registry (ACR) plugin displays information about your contai
 
    ```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
    /* highlight-add-start */
-   import { AcrPage, isAcrAvailable } from '@backstage-community/plugin-acr';
+   import {
+     AcrImagesEntityContent,
+     isAcrAvailable,
+   } from '@backstage-community/plugin-acr';
 
    /* highlight-add-end */
 
@@ -69,12 +97,8 @@ The Azure Container Registry (ACR) plugin displays information about your contai
      <EntityLayout>
        // ...
        {/* highlight-add-start */}
-       <EntityLayout.Route
-         if={e => Boolean(isAcrAvailable(e))}
-         path="/acr"
-         title="ACR"
-       >
-         <AcrPage />
+       <EntityLayout.Route if={isAcrAvailable} path="/acr" title="ACR images">
+         <AcrImagesEntityContent />
        </EntityLayout.Route>
        {/* highlight-add-end */}
      </EntityLayout>
@@ -87,6 +111,43 @@ The Azure Container Registry (ACR) plugin displays information about your contai
    metadata:
      annotations:
        'azure-container-registry/repository-name': `<REPOSITORY-NAME>',
+   ```
+
+#### (Optional) Specify a Custom Registry Path to Support Multiple Registries
+
+```yaml
+  metadata:
+    annotations:
+      'azure-container-registry/repository-name': `<REPOSITORY-NAME>',
+      'azure-container-registry/registry-name': `<REGISTRY-NAME>',
+```
+
+### Use new frontend system
+
+1. Install the frontend plugin:
+
+   ```sh
+   yarn workspace app add @backstage-community/plugin-acr
+   ```
+
+2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+
+   After all other imports:
+
+   ```tsx
+   import acrPlugin from '@backstage-community/plugin-acr/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       acrPlugin,
+       // ...
+     ],
+   });
    ```
 
 ## For users

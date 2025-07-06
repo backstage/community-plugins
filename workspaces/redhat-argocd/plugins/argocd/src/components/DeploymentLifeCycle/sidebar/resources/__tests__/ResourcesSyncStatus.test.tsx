@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { ResourceSyncStatus } from '../ResourcesSyncStatus';
 import { SyncIcon } from '../../../../AppStatus/StatusIcons';
-import { SyncStatusCode } from '../../../../../types/application';
+import { SyncStatusCode } from '@backstage-community/plugin-redhat-argocd-common';
 
 jest.mock('../../../../AppStatus/StatusIcons', () => ({
   SyncIcon: jest.fn(() => <span>Mocked Sync Icon</span>),

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
@@ -90,6 +88,10 @@ class MockKubernetesProxyApi implements KubernetesProxyApi {
 
     const response = `\nstreaming logs from container: ${_request.containerName} \n...`;
     return delayedResponse(response, 500);
+  }
+
+  async deletePod(): Promise<any> {
+    return {};
   }
 
   async getEventsByInvolvedObjectName(): Promise<any> {

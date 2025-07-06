@@ -6,13 +6,14 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
     "start": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
-    "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
@@ -39,13 +40,12 @@
     "directory": "workspaces/mta"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.31.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.5",
+    "@backstage/repo-tools": "^0.13.1",
     "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^15.0.0",
-    "concurrently": "^8.0.0",
+    "knip": "^5.27.4",
     "lerna": "^7.3.0",
     "node-gyp": "^9.0.0",
     "prettier": "^3.3.3",
@@ -53,10 +53,9 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@microsoft/api-extractor": "7.36.4"
+    "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
@@ -66,7 +65,6 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.8.1",
   "dependencies": {
     "dotenv": "^16.4.5"
   }

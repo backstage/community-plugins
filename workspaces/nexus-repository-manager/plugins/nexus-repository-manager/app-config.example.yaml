@@ -1,3 +1,10 @@
+app:
+  title: Nexus Repository Manager
+  baseUrl: http://localhost:3000
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
 proxy:
   endpoints:
     '/nexus-repository-manager':

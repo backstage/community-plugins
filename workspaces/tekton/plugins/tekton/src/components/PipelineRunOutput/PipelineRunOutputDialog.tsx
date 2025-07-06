@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
 
@@ -34,6 +34,8 @@ import { PipelineRunKind, TaskRunKind } from '@janus-idp/shared-react';
 import { tektonGroupColor } from '../../types/types';
 import PipelineRunOutput from '../PipelineRunList/PipelineRunOutput';
 import ResourceBadge from '../PipelineRunList/ResourceBadge';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,6 +66,7 @@ const PipelineRunOutputDialog = ({
   taskRuns,
 }: PipelineRunOutputDialogProps) => {
   const classes = useStyles();
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <Dialog
@@ -73,7 +76,7 @@ const PipelineRunOutputDialog = ({
       open={open}
       onClose={closeDialog}
     >
-      <DialogTitle id="pipelinerun-output" title="PipelineRun Output">
+      <DialogTitle id="pipelinerun-output" title={t('pipelineRunOutput.title')}>
         <Box className={classes.titleContainer}>
           <ResourceBadge
             color={tektonGroupColor}
@@ -98,4 +101,4 @@ const PipelineRunOutputDialog = ({
   );
 };
 
-export default React.memo(PipelineRunOutputDialog);
+export default memo(PipelineRunOutputDialog);

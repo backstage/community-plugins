@@ -1,5 +1,53 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.9.0
+
+### Minor Changes
+
+- 704288e: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- ceb95ab: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 820bb30: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- 1fb4a3e: Backstage version bump to v1.37.0
+
+## 0.5.0
+
+### Minor Changes
+
+- ebfee46: Backstage version bump to v1.36.1
+
+## 0.4.0
+
+### Minor Changes
+
+- afdae7a: Backstage version bump to v1.35.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 62d0ba0: Backstage version bump to v1.34.1
+
 ## 0.2.2
 
 ### Patch Changes

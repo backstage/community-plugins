@@ -1,5 +1,112 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.4.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-node@2.5.0
+
+## 2.3.0
+
+### Minor Changes
+
+- ac739ca: This version adds `techInsightsCheckReadPermission`, `techInsightsCheckUpdatePermission`, and `techInsightsFactRetrieverReadPermission`, which can be used to permission Tech Insights functionalities.
+
+### Patch Changes
+
+- 0a26736: fix null timestamp error when using tech-insights with maturity plugin
+- Updated dependencies [375612d]
+- Updated dependencies [ac739ca]
+  - @backstage-community/plugin-tech-insights-node@2.4.0
+  - @backstage-community/plugin-tech-insights-common@0.6.0
+
+## 2.2.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 2.2.0
+
+### Minor Changes
+
+- e919e53: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- f015469: Introducing a new tech insights react plugin for reusuable frontend utilities. All migrated components and APIs have been marked as deprecated. Please update your imports to come from `@backstage-community/plugin-tech-insights-react`
+
+  Package json files for each plugin have been updated to reflect the new plugin in the Backstage `pluginPackages` metadata.
+
+- c107e0f: Deprecates `TechInsightCheck` from the `tech-insights-node` library in favor of `Check` coming from the `tech-insights-common` library.
+
+  With this change comes a refactor of `Check` from a type to an interface.
+
+  The `TechInsightCheck` interface will be removed from the `tech-insights-node` plugin in it's next major release.
+
+  Importing `Check` from `@backstage-community/plugin-tech-insights-common/client` has been deprecated in favor of importing directly from `@backstage-community/plugin-tech-insights-common`.
+
+- Updated dependencies [f015469]
+- Updated dependencies [e919e53]
+- Updated dependencies [c107e0f]
+  - @backstage-community/plugin-tech-insights-common@0.5.0
+  - @backstage-community/plugin-tech-insights-node@2.3.0
+
+## 2.1.1
+
+### Patch Changes
+
+- 47284ff: Removed usages of `@backstage/backend-tasks`
+
+## 2.1.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+  - @backstage-community/plugin-tech-insights-node@2.2.0
+
+## 2.0.2
+
+### Patch Changes
+
+- Updated dependencies [d9d9039]
+  - @backstage-community/plugin-tech-insights-node@2.1.1
+
+## 2.0.1
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+  - @backstage-community/plugin-tech-insights-node@2.1.0
+
+## 2.0.0
+
+### Major Changes
+
+- c3bbe0f: In order to use UrlReaderService in fact retrievers, UrlReaderService has been added to FactRetrieverContext.
+
+### Minor Changes
+
+- 306121a: Allow tech insights backend to schedule a single job.
+
+### Patch Changes
+
+- Updated dependencies [c3bbe0f]
+  - @backstage-community/plugin-tech-insights-node@2.0.0
+
 ## 1.2.3
 
 ### Patch Changes

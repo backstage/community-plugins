@@ -1,5 +1,187 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.21.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-redhat-argocd-common@1.6.1
+
+## 1.21.1
+
+### Patch Changes
+
+- 4258454: Add namespace to Deployment Summary header link, if specified
+
+## 1.21.0
+
+### Minor Changes
+
+- a6a149c: Bump backstage version to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [a6a149c]
+  - @backstage-community/plugin-redhat-argocd-common@1.6.0
+
+## 1.20.1
+
+### Patch Changes
+
+- 6cb63d0: Resolve 'React not defined error' due to misconfigured plugin level tsconfig
+- Updated dependencies [6cb63d0]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.2
+
+## 1.20.0
+
+### Minor Changes
+
+- 90b54c9: allow appNamespace and project to be used with appName
+
+### Patch Changes
+
+- 9c78a8d: Fix issue where backend does not return instance url in the metadata
+
+## 1.19.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.1
+
+## 1.19.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 1.19.0
+
+### Minor Changes
+
+- bfc2838: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [bfc2838]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.0
+
+## 1.18.0
+
+### Minor Changes
+
+- 1eafdb8: Bump backstage version to 1.36.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- Updated dependencies [f84ad73]
+- Updated dependencies [1eafdb8]
+  - @backstage-community/plugin-redhat-argocd-common@1.4.0
+
+## 1.17.0
+
+### Minor Changes
+
+- df9d65d: Add backwards compatibility fixes to support RoadieHQ ArgoCD Backend
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 989bd8c: Remove CSS resets from PatternFly CSS import
+
+## 1.16.0
+
+### Minor Changes
+
+- bba0c01: Add multi-source application support and move application types to plugin-redhat-argocd-common package.
+
+### Patch Changes
+
+- Updated dependencies [bba0c01]
+  - @backstage-community/plugin-redhat-argocd-common@1.3.0
+
+## 1.15.0
+
+### Minor Changes
+
+- 8322199: Introduce new Red Hat ArgoCD Backend for the Red Hat ArgoCD Plugin
+
+## 1.14.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.13.0
+
+### Minor Changes
+
+- b1f7d58: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [b1f7d58]
+  - @backstage-community/plugin-redhat-argocd-common@1.2.0
+
+## 1.12.0
+
+### Minor Changes
+
+- 5b0553e: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [5b0553e]
+  - @backstage-community/plugin-redhat-argocd-common@1.1.0
+
+## 1.11.3
+
+### Patch Changes
+
+- 693ed35: Updated dependency `react-use` to `17.6.0`.
+
+## 1.11.2
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 1.11.1
+
+### Patch Changes
+
+- b7f5849: Change argocd to Argo CD in comments or description
+
+## 1.11.0
+
+### Minor Changes
+
+- 8c8ab01: Update Patternfly deps to v6
+
+## 1.10.5
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
+## 1.10.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.3
+
+### Patch Changes
+
+- d1cae81: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 1.10.2
 
 ### Patch Changes

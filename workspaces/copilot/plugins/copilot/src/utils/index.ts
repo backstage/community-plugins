@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { Metric } from '@backstage-community/plugin-copilot-common';
+import {
+  Metric,
+  MetricsType,
+} from '@backstage-community/plugin-copilot-common';
 import { LanguageStats } from '../types';
 
 export function getTopLanguagesByAcceptedPrompts(
@@ -42,17 +45,38 @@ export function getLanguageStats(metricsArray: Metric[]): LanguageStats[] {
       if (existingStats) {
         existingStats.totalSuggestions += item.suggestions_count;
         existingStats.totalAcceptances += item.acceptances_count;
-        existingStats.acceptanceRate =
-          existingStats.totalAcceptances / existingStats.totalSuggestions;
+        if (existingStats.totalSuggestions > 0) {
+          existingStats.acceptanceRate =
+            existingStats.totalAcceptances / existingStats.totalSuggestions;
+        }
       } else {
         languageStatsMap.set(item.language, {
           language: item.language,
           totalSuggestions: item.suggestions_count,
           totalAcceptances: item.acceptances_count,
-          acceptanceRate: item.acceptances_count / item.suggestions_count,
+          acceptanceRate:
+            item.suggestions_count > 0
+              ? item.acceptances_count / item.suggestions_count
+              : 0,
         });
       }
     });
   });
   return Array.from(languageStatsMap.values());
+}
+
+export const mappingRoutes: Record<string, MetricsType> = {
+  '/copilot/enterprise': 'enterprise',
+  '/copilot/organization': 'organization',
+};
+
+export function findMetricsTypeFromPath(
+  pathname: string,
+): MetricsType | undefined {
+  for (const [route, metricsType] of Object.entries(mappingRoutes)) {
+    if (pathname.includes(route)) {
+      return metricsType;
+    }
+  }
+  return undefined;
 }

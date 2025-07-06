@@ -1,5 +1,77 @@
 ### Dependencies
 
+## 2.7.0
+
+### Minor Changes
+
+- 2833ad3: Backstage version bump to v1.39.0
+
+## 2.6.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.6.0
+
+### Minor Changes
+
+- fdc9f69: Backstage version bump to v1.38.1
+
+## 2.5.3
+
+### Patch Changes
+
+- 5ed7a38: chore: Remove usage of @spotify/prettier-config
+
+## 2.5.2
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 2.5.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+
+## 2.5.0
+
+### Minor Changes
+
+- 461e7fb: Backstage version bump to v1.36.1
+
+## 2.4.0
+
+### Minor Changes
+
+- b206871: Backstage version bump to v1.35.0
+
+## 2.3.0
+
+### Minor Changes
+
+- b893377: Backstage version bump to v1.34.2
+
+## 2.2.5
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
+## 2.2.4
+
+### Patch Changes
+
+- f7ffafe: Clean up api report warnings and remove unnecessary files
+
+## 2.2.3
+
+### Patch Changes
+
+- 70151fa: rename the plugin from @backstage-community/scaffolder-backend-module-regex to @backstage-community/plugin-scaffolder-backend-module-regex
+
 ## 2.2.2
 
 ### Patch Changes

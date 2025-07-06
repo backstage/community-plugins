@@ -14,74 +14,55 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
-import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { TestApiProvider } from '@backstage/test-utils';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import SomeIcon from '@material-ui/icons/Storage';
-import React from 'react';
-import { VaultApi, vaultApiRef } from '../src/api';
+import {
+  CatalogEntityPage,
+  CatalogIndexPage,
+  catalogPlugin,
+  EntityAboutCard,
+  EntityHasSubcomponentsCard,
+  EntityLayout,
+} from '@backstage/plugin-catalog';
+import Grid from '@material-ui/core/Grid';
+import { PropsWithChildren } from 'react';
 import { EntityVaultCard } from '../src/components/EntityVaultCard';
-import { EntityVaultTable } from '../src/components/EntityVaultTable';
-import { VAULT_SECRET_PATH_ANNOTATION } from '../src/constants';
 import { vaultPlugin } from '../src/plugin';
 
-const entity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage',
-    annotations: { [VAULT_SECRET_PATH_ANNOTATION]: 'a/b' },
-  },
-  spec: {
-    type: 'service',
-  },
-};
-
-const mockedApi: VaultApi = {
-  async listSecrets() {
-    return [
-      {
-        name: 'a::b',
-        path: '',
-        editUrl: 'https://example.com',
-        showUrl: 'https://example.com',
-      },
-      {
-        name: 'c::d',
-        path: '',
-        editUrl: 'https://example.com',
-        showUrl: 'https://example.com',
-      },
-    ];
-  },
-};
+const SampleEntityPage = ({ children }: PropsWithChildren<{}>) => (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      <Grid container spacing={3} alignItems="stretch">
+        <Grid item md={12}>
+          <EntityAboutCard variant="gridItem" />
+        </Grid>
+        {children}
+        <Grid item xs={12}>
+          <EntityHasSubcomponentsCard variant="gridItem" />
+        </Grid>
+      </Grid>
+    </EntityLayout.Route>
+  </EntityLayout>
+);
 
 createDevApp()
-  .registerPlugin(vaultPlugin)
+  // We need the catalog plugin to get the example entities and make the front entity page functional
+  .registerPlugin(catalogPlugin)
   .addPage({
-    element: (
-      <TestApiProvider apis={[[vaultApiRef, mockedApi]]}>
-        <EntityProvider entity={entity}>
-          <Page themeId="service">
-            <Header title="Mocked Vault">
-              <HeaderLabel label="Mode" value="Development" />
-            </Header>
-            <Content>
-              <Typography variant="h3">As a card</Typography>
-              <EntityVaultCard />
-              <Box mt={4} />
-              <Typography variant="h3">As a table</Typography>
-              <EntityVaultTable entity={entity} />
-            </Content>
-          </Page>
-        </EntityProvider>
-      </TestApiProvider>
-    ),
-    title: 'Vault',
-    icon: SomeIcon,
+    path: '/catalog',
+    title: 'Catalog',
+    element: <CatalogIndexPage />,
   })
+  // We need the entity page experience to see the linguist card
+  .addPage({
+    path: '/catalog/:namespace/:kind/:name',
+    element: <CatalogEntityPage />,
+    children: (
+      <SampleEntityPage>
+        <Grid item md={12}>
+          <EntityVaultCard />
+        </Grid>
+      </SampleEntityPage>
+    ),
+  })
+  .registerPlugin(vaultPlugin)
   .render();

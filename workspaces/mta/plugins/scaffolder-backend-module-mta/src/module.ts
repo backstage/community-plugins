@@ -4,7 +4,6 @@ import {
 } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
 import { createMTAApplicationAction } from './actions/mta/create-application';
-import { loggerToWinstonLogger } from '@backstage/backend-common';
 /*
  * A backend module that integrates with the scaffolder to provide MTA application creation.
  */
@@ -23,7 +22,7 @@ export const mtaScaffolderModule = createBackendModule({
       async init({ scaffolder, config, logger, discovery }) {
         const createAction = createMTAApplicationAction({
           config: config,
-          logger: loggerToWinstonLogger(logger),
+          logger: logger,
           discovery,
         });
         scaffolder.addActions(createAction);

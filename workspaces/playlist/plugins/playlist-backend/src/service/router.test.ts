@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
-import { ConfigReader } from '@backstage/config';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissions } from '@backstage-community/plugin-playlist-common';
 import express from 'express';
@@ -51,13 +45,13 @@ const sampleEntities = [
     },
   },
 ];
-const mockGetEntties = jest
+const mockGetEntitiesByRefs = jest
   .fn()
   .mockImplementation(async () => ({ items: sampleEntities }));
 jest.mock('@backstage/catalog-client', () => ({
   CatalogClient: jest
     .fn()
-    .mockImplementation(() => ({ getEntities: mockGetEntties })),
+    .mockImplementation(() => ({ getEntitiesByRefs: mockGetEntitiesByRefs })),
 }));
 
 const mockConditionFilter = { key: 'test', values: ['test-val'] };
@@ -101,18 +95,6 @@ jest.mock('./DatabaseHandler', () => ({
 describe('createRouter', () => {
   let app: express.Express;
 
-  const createDatabase = () =>
-    DatabaseManager.fromConfig(
-      new ConfigReader({
-        backend: {
-          database: {
-            client: 'better-sqlite3',
-            connection: ':memory:',
-          },
-        },
-      }),
-    ).forPlugin('playlist');
-
   const mockedAuthorize = jest
     .fn()
     .mockImplementation(async () => [{ result: AuthorizeResult.ALLOW }]);
@@ -124,19 +106,15 @@ describe('createRouter', () => {
     authorizeConditional: mockedAuthorizeConditional,
   };
 
-  const discovery: jest.Mocked<PluginEndpointDiscovery> = {
-    getBaseUrl: jest.fn(),
-    getExternalBaseUrl: jest.fn(),
-  };
-
   beforeEach(async () => {
     const router = await createRouter({
-      database: createDatabase(),
-      discovery,
-      logger: getVoidLogger(),
+      database: mockServices.database.mock(),
+      discovery: mockServices.discovery(),
+      logger: mockServices.rootLogger(),
       permissions: mockPermissionEvaluator,
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      config: mockServices.rootConfig(),
     });
 
     app = express().use(router);
@@ -432,7 +410,7 @@ describe('createRouter', () => {
         { credentials: mockCredentials.user() },
       );
       expect(mockDbHandler.getPlaylistEntities).not.toHaveBeenCalled();
-      expect(mockGetEntties).not.toHaveBeenCalled();
+      expect(mockGetEntitiesByRefs).not.toHaveBeenCalled();
       expect(response.status).toEqual(403);
     });
 
@@ -441,20 +419,9 @@ describe('createRouter', () => {
       expect(mockDbHandler.getPlaylistEntities).toHaveBeenCalledWith(
         'playlist-id',
       );
-      expect(mockGetEntties).toHaveBeenCalledWith(
+      expect(mockGetEntitiesByRefs).toHaveBeenCalledWith(
         {
-          filter: [
-            {
-              kind: 'component',
-              'metadata.namespace': 'default',
-              'metadata.name': 'test-ent',
-            },
-            {
-              kind: 'system',
-              'metadata.namespace': 'default',
-              'metadata.name': 'test-ent-system',
-            },
-          ],
+          entityRefs: mockEntities,
         },
         {
           token: mockCredentials.service.token({

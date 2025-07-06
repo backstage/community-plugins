@@ -43,12 +43,14 @@ export function useWorkflowRuns({
   repo,
   branch,
   initialPageSize = 6,
+  fetchAllBranches = true,
 }: {
   hostname?: string;
   owner: string;
   repo: string;
   branch?: string | undefined;
   initialPageSize?: number;
+  fetchAllBranches?: boolean;
 }) {
   const api = useApi(githubActionsApiRef);
 
@@ -80,7 +82,7 @@ export function useWorkflowRuns({
 
     const fetchBranches = async () => {
       let next = true;
-      let iteratePage = 0;
+      let iteratePage = 1;
       const branchSet: Branch[] = [];
 
       while (next) {
@@ -100,8 +102,11 @@ export function useWorkflowRuns({
       return branchSet;
     };
 
-    const branchSet = await fetchBranches();
-    setBranches(branchSet);
+    // Fetching branches is expensive and not needed in many cases
+    if (fetchAllBranches) {
+      const branchSet = await fetchBranches();
+      setBranches(branchSet);
+    }
 
     // GitHub API pagination count starts from 1
     const workflowRunsData = await api.listWorkflowRuns({

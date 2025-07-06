@@ -15,20 +15,26 @@
  */
 
 import fetch from 'node-fetch';
-import { errorHandler, requestLoggingHandler } from '@backstage/backend-common';
 import { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -120,7 +126,6 @@ export async function createRouter(
     resp.json(versionsBody);
   });
 
-  router.use(requestLoggingHandler());
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

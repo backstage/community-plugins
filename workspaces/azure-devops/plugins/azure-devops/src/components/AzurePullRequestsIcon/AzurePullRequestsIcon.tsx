@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 /** @public */
 export const AzurePullRequestsIcon = (props: SvgIconProps) => (

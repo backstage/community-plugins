@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
-import { global_palette_red_200 as criticalColor } from '@patternfly/react-tokens/dist/js/global_palette_red_200';
+import { t_color_red_60 as criticalColor } from '@patternfly/react-tokens/dist/js/t_color_red_60';
 
 const CriticalRiskIcon = ({
   className,
@@ -23,7 +23,7 @@ const CriticalRiskIcon = ({
 }: {
   className: string;
   title?: string;
-}): React.ReactElement => {
+}): ReactElement => {
   return (
     <svg
       viewBox="0 0 925 1024"

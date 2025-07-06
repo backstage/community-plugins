@@ -21,7 +21,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { waitFor } from '@testing-library/react';
-import React from 'react';
+import type { ReactNode } from 'react';
 import { ExploreLayout } from './ExploreLayout';
 
 const featureFlagsApi: jest.Mocked<FeatureFlagsApi> = {
@@ -32,7 +32,7 @@ const featureFlagsApi: jest.Mocked<FeatureFlagsApi> = {
 };
 
 describe('<ExploreLayout />', () => {
-  const Wrapper = ({ children }: { children?: React.ReactNode }) => (
+  const Wrapper = ({ children }: { children?: ReactNode }) => (
     <TestApiProvider apis={[[featureFlagsApiRef, featureFlagsApi]]}>
       {children}
     </TestApiProvider>

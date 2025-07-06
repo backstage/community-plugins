@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import {
   compatWrapper,
   convertLegacyRouteRef,
 } from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../plugin';
+import { isSentryAvailable } from '../components';
 
 /**
  * @alpha
@@ -29,7 +29,7 @@ export const entitySentryContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/sentry',
     defaultTitle: 'Sentry',
-    filter: 'kind:component',
+    filter: isSentryAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/Router').then(m => compatWrapper(<m.Router />)),

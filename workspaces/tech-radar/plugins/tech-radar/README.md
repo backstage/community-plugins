@@ -43,7 +43,7 @@ const routes = (
     {/* ...other routes */}
     <Route
       path="/tech-radar"
-      element={<TechRadarPage width={1500} height={800} />}
+      element={<TechRadarPage />}
     />
 ```
 
@@ -57,8 +57,8 @@ export type TechRadarPageProps = TechRadarComponentProps & {
 };
 
 export interface TechRadarPageProps {
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   svgProps?: object;
 }
 ```
@@ -115,8 +115,7 @@ When defining the radar entries you can see the available properties on the file
 
 ### Sample
 
-This is a sample on how the JSON file could look like.
-The TS example can be found [here](src/sample.ts).
+This is a sample on how the JSON file could look like. A more detailed example can be found in the [sampleTechRadarResponse.json](../tech-radar-common/src/sampleTechRadarResponse.json) file.
 
 ```JSON
 {

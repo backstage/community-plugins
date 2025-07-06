@@ -28,13 +28,17 @@ export interface BlackDuckApi {
     projectVersion: string,
     entityRef: string,
   ): Promise<any>;
-}
 
-export interface BlackDuckApi {
   getRiskProfile(
     hostKey: string,
     projectName: string,
     projectVersion: string,
+    entityRef: string,
+  ): Promise<any>;
+
+  getProjectVersions(
+    hostKey: string,
+    projectName: string,
     entityRef: string,
   ): Promise<any>;
 }

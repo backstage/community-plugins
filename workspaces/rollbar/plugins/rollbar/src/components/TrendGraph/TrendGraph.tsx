@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Sparklines, SparklinesBars } from 'react-sparklines';
 
 type Props = {

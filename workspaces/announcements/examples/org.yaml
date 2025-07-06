@@ -1,0 +1,54 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+spec:
+  memberOf: [guests]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-1
+spec:
+  memberOf: [team-a, team-b]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user-2
+spec:
+  memberOf: [team-a]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: guests
+spec:
+  type: team
+  parent: backstage
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-a
+spec:
+  type: team
+  parent: backstage
+  children: []
+  profile:
+    displayName: Team A
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-b
+spec:
+  type: team
+  parent: backstage
+  children: []
+  profile:
+    displayName: Team B
+---
+

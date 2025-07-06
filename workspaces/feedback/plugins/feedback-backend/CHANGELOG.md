@@ -1,5 +1,58 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 2.0.3
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.0.2
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 2.0.1
+
+### Patch Changes
+
+- 46a3e25: - added customizations for frontend plugin
+  - added new component to collect feedback
+  - added httpAuth service to backend plugin
+
+## 2.0.0
+
+### Major Changes
+
+- 1140bf4: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/feedback/plugins/feedback-backend/README.md) for instructions on how to use the new backend system.
+
+  Removed usages and references of `@backstage/backend-common`
+
+## 1.7.11
+
+### Patch Changes
+
+- 4b2e17c: update backstage to 1.34.2 and replace `@spotify/prettier-config` by `@backstage/cli/config/prettier`
+
+## 1.7.10
+
+### Patch Changes
+
+- 4789af2: Fixed some minor issues in feedback plugin
+- ec08aec: Updated dependency `@types/nodemailer` to `6.4.17`.
+
+## 1.7.9
+
+### Patch Changes
+
+- 1e170c1: Clean up api report warnings and remove unnecessary files
+
+## 1.7.8
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.7.7
 
 ### Patch Changes

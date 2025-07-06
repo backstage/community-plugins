@@ -27,6 +27,9 @@ import { JfrogArtifactoryApiClient, jfrogArtifactoryApiRef } from './api';
 import { JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME } from './components/useJfrogArtifactoryAppData';
 import { rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const jfrogArtifactoryPlugin = createPlugin({
   id: 'jfrog-artifactory',
   routes: {
@@ -46,6 +49,9 @@ export const jfrogArtifactoryPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const JfrogArtifactoryPage = jfrogArtifactoryPlugin.provide(
   createComponentExtension({
     name: 'JfrogArtifactoryPage',
@@ -58,6 +64,9 @@ export const JfrogArtifactoryPage = jfrogArtifactoryPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const isJfrogArtifactoryAvailable = (entity: Entity) =>
   Boolean(
     entity?.metadata.annotations?.[JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME],

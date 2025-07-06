@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { Split, SplitItem } from '@patternfly/react-core';
 
@@ -28,11 +28,11 @@ const ResourceBadge = ({
   color: string;
   abbr: string;
   name: string;
-  suffix?: React.ReactNode;
+  suffix?: ReactNode;
 }) => {
   return (
     <Split className="bs-tkn-pipeline-visualization__label">
-      <SplitItem style={{ marginRight: 'var(--pf-v5-global--spacer--sm)' }}>
+      <SplitItem style={{ marginRight: 'var(--pf-t--global--spacer--sm)' }}>
         <span className="badge" style={{ backgroundColor: color }}>
           {abbr}
         </span>
@@ -41,7 +41,7 @@ const ResourceBadge = ({
         <span>{name}</span>
       </SplitItem>
       {suffix ? (
-        <SplitItem style={{ marginLeft: 'var(--pf-v5-global--spacer--sm)' }}>
+        <SplitItem style={{ marginLeft: 'var(--pf-t--global--spacer--sm)' }}>
           {suffix}
         </SplitItem>
       ) : null}

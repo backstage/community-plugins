@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
   DatabaseService,
   DiscoveryService,
@@ -24,36 +23,18 @@ import {
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
 import express from 'express';
-import Router from 'express-promise-router';
+import { createOpenApiRouter } from '../schema/openapi.generated';
 import { LinguistBackendApi } from '../api';
 import { LinguistBackendDatabase } from '../db';
 import { HumanDuration, JsonObject } from '@backstage/types';
 import { CatalogClient } from '@backstage/catalog-client';
 import { LinguistBackendClient } from '../api/LinguistBackendClient';
 import { Config } from '@backstage/config';
-import {
-  AuthService,
-  HttpAuthService,
-  LoggerService,
-} from '@backstage/backend-plugin-api';
+import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- * @public
- * */
-export interface PluginOptions {
-  schedule?: SchedulerServiceTaskScheduleDefinition;
-  age?: HumanDuration;
-  batchSize?: number;
-  useSourceLocation?: boolean;
-  linguistJsOptions?: Record<string, unknown>;
-  kind?: string[];
-}
-
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- * @public
+ * @internal
  * */
 export interface RouterOptions {
   linguistBackendApi?: LinguistBackendApi;
@@ -62,30 +43,35 @@ export interface RouterOptions {
   database: DatabaseService;
   discovery: DiscoveryService;
   config: Config;
+  auth: AuthService;
   scheduler?: SchedulerService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
 }
 
 /**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- * @public
+ * @internal
  * */
 export async function createRouter(
-  pluginOptions: PluginOptions,
   routerOptions: RouterOptions,
 ): Promise<express.Router> {
   const { logger, reader, database, discovery, scheduler, auth, config } =
     routerOptions;
 
-  const {
-    schedule,
-    age,
-    batchSize,
-    useSourceLocation,
-    kind,
-    linguistJsOptions,
-  } = pluginOptions;
+  let schedule: SchedulerServiceTaskScheduleDefinition | undefined;
+  if (config.has('linguist.schedule')) {
+    schedule = readSchedulerServiceTaskScheduleDefinitionFromConfig(
+      config.getConfig('linguist.schedule'),
+    );
+  }
+  const batchSize = config.getOptionalNumber('linguist.batchSize');
+  const useSourceLocation =
+    config.getOptionalBoolean('linguist.useSourceLocation') ?? false;
+  const age = config.getOptional<JsonObject>('linguist.age') as
+    | HumanDuration
+    | undefined;
+  const kind = config.getOptionalStringArray('linguist.kind');
+  const linguistJsOptions = config.getOptional(
+    'linguist.linguistJsOptions',
+  ) as Record<string, unknown>;
 
   const linguistBackendStore = await LinguistBackendDatabase.create(
     await database.getClient(),
@@ -93,18 +79,13 @@ export async function createRouter(
 
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-  const { auth: adaptedAuth } = createLegacyAuthAdapters({
-    auth,
-    discovery: discovery,
-  });
-
   const linguistBackendClient =
     routerOptions.linguistBackendApi ||
     new LinguistBackendClient(
       logger,
       linguistBackendStore,
       reader,
-      adaptedAuth,
+      auth,
       catalogClient,
       age,
       batchSize,
@@ -129,17 +110,16 @@ export async function createRouter(
     });
   }
 
-  const router = Router();
-  router.use(express.json());
+  const apiRouter = await createOpenApiRouter();
 
-  router.get('/health', (_, response) => {
+  apiRouter.get('/health', (_, response) => {
     response.send({ status: 'ok' });
   });
 
   /**
-   * /entity-languages?entity=component:default/my-component
+   * /entity-languages?entityRef=component:default/my-component
    */
-  router.get('/entity-languages', async (req, res) => {
+  apiRouter.get('/entity-languages', async (req, res) => {
     const { entityRef: entityRef } = req.query;
 
     if (!entityRef) {
@@ -153,35 +133,7 @@ export async function createRouter(
   });
 
   const middleware = MiddlewareFactory.create({ logger, config });
+  apiRouter.use(middleware.error());
 
-  router.use(middleware.error());
-  return router;
-}
-
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- * @public
- * */
-export async function createRouterFromConfig(routerOptions: RouterOptions) {
-  const { config } = routerOptions;
-  const pluginOptions: PluginOptions = {};
-  if (config) {
-    if (config.has('linguist.schedule')) {
-      pluginOptions.schedule =
-        readSchedulerServiceTaskScheduleDefinitionFromConfig(
-          config.getConfig('linguist.schedule'),
-        );
-    }
-    pluginOptions.batchSize = config.getOptionalNumber('linguist.batchSize');
-    pluginOptions.useSourceLocation =
-      config.getOptionalBoolean('linguist.useSourceLocation') ?? false;
-    pluginOptions.age = config.getOptional<JsonObject>('linguist.age') as
-      | HumanDuration
-      | undefined;
-    pluginOptions.kind = config.getOptionalStringArray('linguist.kind');
-    pluginOptions.linguistJsOptions = config.getOptional(
-      'linguist.linguistJsOptions',
-    );
-  }
-  return createRouter(pluginOptions, routerOptions);
+  return apiRouter;
 }

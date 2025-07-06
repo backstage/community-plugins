@@ -1,0 +1,59 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-quay
+  title: Quay scaffolder actions
+  description: Quay actions for Backstage
+  annotations:
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
+    github.com/project-slug: backstage/community-plugins
+    github.com/team-slug: backstage-community/maintainers-plugins
+    sonarqube.org/project-key: backstage-community_backstage-plugins
+  tags:
+    - quay
+    - scaffolder
+    - actions
+  links:
+    - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-plugin
+  lifecycle: production
+  owner: rhdh-team
+  system: rhdh
+  subcomponentOf: backstage-community-backstage-plugins
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-quay-actions-module
+  title: '@backstage-community/plugin-scaffolder-backend-module-quay'
+  description: Quay actions for Backstage
+  annotations:
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
+    github.com/project-slug: backstage/community-plugins
+    github.com/team-slug: backstage-community/maintainers-plugins
+    sonarqube.org/project-key: backstage-community_backstage-plugins
+  tags:
+    - quay
+    - scaffolder
+    - actions
+  links:
+    - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-frontend-plugin-module
+  lifecycle: production
+  owner: rhdh-team
+  system: rhdh
+  subcomponentOf: backstage-community-quay-actions

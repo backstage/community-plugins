@@ -1,5 +1,59 @@
 # @backstage-community/plugin-github-issues
 
+## 0.11.0
+
+### Minor Changes
+
+- 4b540a8: Backstage version bump to v1.40.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 8035eee: Backstage version bump to v1.39.0
+
+## 0.9.0
+
+### Minor Changes
+
+- c1cc759: Backstage version bump to v1.38.1
+
+## 0.8.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.8.0
+
+### Minor Changes
+
+- 1484b29: Backstage version bump to v1.37.0
+
+## 0.7.0
+
+### Minor Changes
+
+- cb85eea: Backstage version bump to v1.36.1
+
+## 0.6.0
+
+### Minor Changes
+
+- ed58d1c: Backstage version bump to v1.35.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 4e8bc98: Backstage version bump to v1.34.1
+
+## 0.4.8
+
+### Patch Changes
+
+- 596f613: Adding support for the new frontend system, available at the `/alpha` export.
+
 ## 0.4.7
 
 ### Patch Changes

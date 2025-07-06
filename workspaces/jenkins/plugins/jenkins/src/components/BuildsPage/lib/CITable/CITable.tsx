@@ -17,7 +17,6 @@ import { Table, TableColumn } from '@backstage/core-components';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import RetryIcon from '@material-ui/icons/Replay';
-import { default as React } from 'react';
 import { Project } from '../../../../api/JenkinsApi';
 import JenkinsLogo from '../../../../assets/JenkinsLogo.svg';
 import { useBuilds } from '../../../useBuilds';
@@ -25,6 +24,7 @@ import { columnFactories } from './columns';
 import { defaultCITableColumns } from './presets';
 
 type Props = {
+  title?: string;
   loading: boolean;
   retry: () => void;
   projects?: Project[];
@@ -37,6 +37,7 @@ type Props = {
 };
 
 export const CITableView = ({
+  title = 'Projects',
   loading,
   pageSize,
   page,
@@ -72,7 +73,7 @@ export const CITableView = ({
         <Box display="flex" alignItems="center">
           <img src={JenkinsLogo} alt="Jenkins logo" height="50px" />
           <Box mr={2} />
-          <Typography variant="h6">Projects</Typography>
+          <Typography variant="h6">{title}</Typography>
         </Box>
       }
       columns={
@@ -83,15 +84,17 @@ export const CITableView = ({
 };
 
 type CITableProps = {
+  title?: string;
   columns?: TableColumn<Project>[];
 };
 
-export const CITable = ({ columns }: CITableProps) => {
+export const CITable = ({ title, columns }: CITableProps) => {
   const [tableProps, { setPage, retry, setPageSize }] = useBuilds();
 
   return (
     <CITableView
       {...tableProps}
+      title={title}
       columns={columns || ([] as TableColumn<Project>[])}
       retry={retry}
       onChangePageSize={setPageSize}

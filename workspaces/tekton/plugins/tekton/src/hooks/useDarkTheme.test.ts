@@ -33,7 +33,7 @@ describe('useDarkTheme', () => {
     });
     renderHook(() => useDarkTheme());
     const htmlTagElement = document.documentElement;
-    expect(htmlTagElement.classList.contains('pf-v5-theme-dark')).toBe(true);
+    expect(htmlTagElement.classList.contains('pf-v6-theme-dark')).toBe(true);
   });
 
   it('should remove dark theme class from html tag', () => {
@@ -44,6 +44,6 @@ describe('useDarkTheme', () => {
     });
     renderHook(() => useDarkTheme());
     const htmlTagElement = document.documentElement;
-    expect(htmlTagElement.classList.contains('pf-v5-theme-dark')).toBe(false);
+    expect(htmlTagElement.classList.contains('pf-v6-theme-dark')).toBe(false);
   });
 });

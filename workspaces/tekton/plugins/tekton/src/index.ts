@@ -15,3 +15,4 @@
  */
 export { tektonPlugin, TektonCI } from './plugin';
 export { isTektonCIAvailable } from './utils/isTektonCIAvailable';
+export { tektonTranslationRef } from './translation';

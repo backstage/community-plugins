@@ -35,7 +35,9 @@ import {
   RoleError,
 } from '../types';
 
-// @public
+/**
+ * @public
+ */
 export type RBACAPI = {
   getUserAuthorization: () => Promise<{ status: string }>;
   getRoles: () => Promise<Role[] | Response>;
@@ -80,7 +82,9 @@ export type Options = {
   identityApi: IdentityApi;
 };
 
-// @public
+/**
+ * @public
+ */
 export const rbacApiRef = createApiRef<RBACAPI>({
   id: 'plugin.rbac.service',
 });
@@ -223,6 +227,7 @@ export class RBACBackendClient implements RBACAPI {
     if (jsonResponse.status !== 200 && jsonResponse.status !== 204) {
       return jsonResponse;
     }
+
     return jsonResponse.json();
   }
 

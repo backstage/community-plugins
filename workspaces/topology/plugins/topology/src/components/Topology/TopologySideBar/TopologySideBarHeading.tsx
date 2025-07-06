@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import Typography from '@mui/material/Typography';
 import { Split, SplitItem, Stack, StackItem } from '@patternfly/react-core';
 
@@ -35,7 +33,7 @@ const TopologySideBarHeading = ({ resource }: TopologySideBarHeadingProps) => {
         <Split className="topology-side-bar-heading-label">
           {resourceModels[resourceKind] ? (
             <SplitItem
-              style={{ marginRight: 'var(--pf-v5-global--spacer--sm)' }}
+              style={{ marginRight: 'var(--pf-t--global--spacer--sm)' }}
             >
               <ResourceName
                 kind={resourceKind}

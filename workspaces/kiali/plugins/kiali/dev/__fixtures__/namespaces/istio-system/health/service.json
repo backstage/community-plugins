@@ -1,0 +1,65 @@
+{
+  "grafana": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "istio-egressgateway": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "istio-ingressgateway": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "istiod": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "jaeger-collector": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "kiali": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "prometheus": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "tracing": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "zipkin": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

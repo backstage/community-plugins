@@ -1,0 +1,9 @@
+#!/bin/bash
+
+yarn workspace @backstage-community/plugin-acs export-dynamic
+cd plugins/acs/
+rm *.tgz
+npm pack ./dist-dynamic
+cd ../..
+mv plugins/acs/*.tgz .
+sha256sum *.tgz | awk '{print $1}' | xxd -r -p | base64

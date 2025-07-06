@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Table } from '@backstage/core-components';
-
-import { render, screen } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import { AddedMembersTable } from './AddedMembersTable';
 import { SelectedMember } from './types';
@@ -48,22 +45,22 @@ mockedTable.mockImplementation(
 );
 
 describe('AddedMembersTable component', () => {
-  it('renders with empty content when no selected members', () => {
-    render(
+  it('renders with empty content when no selected members', async () => {
+    const { queryByText } = await renderInTestApp(
       <AddedMembersTable
         selectedMembers={[]}
         setFieldValue={setFieldValueMock}
       />,
     );
 
-    expect(screen.queryByText('Users and groups')).toBeInTheDocument();
+    expect(queryByText('No users and groups selected')).toBeInTheDocument();
     expect(
-      screen.queryByText('No records. Selected users and groups appear here.'),
+      queryByText('Selected users and groups appear here.'),
     ).toBeInTheDocument();
   });
 
-  it('renders with selected members and correct title', () => {
-    render(
+  it('renders with selected members and correct title', async () => {
+    await renderInTestApp(
       <AddedMembersTable
         selectedMembers={selectedMembers}
         setFieldValue={setFieldValueMock}
@@ -72,7 +69,7 @@ describe('AddedMembersTable component', () => {
 
     expect(mockedTable).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: 'Users and groups (1 user, 1 group)',
+        title: '1 group, 1 user',
         data: selectedMembers,
       }),
       expect.anything(),

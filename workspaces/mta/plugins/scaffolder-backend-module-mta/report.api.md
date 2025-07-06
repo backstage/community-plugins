@@ -4,8 +4,8 @@
 
 ```ts
 
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types';
+import { BackendFeature } from '@backstage/backend-plugin-api';
+import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
@@ -14,15 +14,10 @@ name: string;
 url: string;
 branch: string;
 rootPath: string;
-}, JsonObject>;
+}, JsonObject, "v1">;
 
 // @public (undocumented)
-const mtaScaffolderModule: BackendFeatureCompat;
+const mtaScaffolderModule: BackendFeature;
 export default mtaScaffolderModule;
-
-// Warnings were encountered during analysis:
-//
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/actions/mta/create-application.ts:8:1 - (ae-undocumented) Missing documentation for "createMTAApplicationAction".
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/module.ts:12:14 - (ae-undocumented) Missing documentation for "mtaScaffolderModule".
 
 ```

@@ -63,6 +63,22 @@ const serviceEntityPage = (
 );
 ```
 
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), simply import `jenkinsPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import jenkinsPlugin from '@backstage-community/plugin-jenkins/alpha';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ...
+    jenkinsPlugin,
+    // ...
+  ],
+});
+```
+
 4. Run app with `yarn start`
 5. Add the Jenkins folder annotation to your `catalog-info.yaml`.
 
@@ -77,7 +93,7 @@ metadata:
   description: 'a description'
   annotations:
     jenkins.io/github-folder: 'folder-name/project-name' # deprecated
-    jenkins.io/job-full-name: 'folder-name/project-name' # use this instead
+    jenkins.io/job-full-name: 'folder-name/project-name,folder-name/project-name' # use this instead
 
 spec:
   type: service
@@ -131,4 +147,25 @@ export const generatedColumns: TableColumn[] = [
 // ...
 <EntityJenkinsContent columns={generatedColumns}/>
 // ...
+```
+
+## Modify the title
+
+To change the default title text, simply use the `title` property:
+
+```tsx
+<EntityJenkinsContent title="Jenkins build history" />
+
+<EntityLatestJenkinsRunCard
+  branch="main"
+  variant="gridItem"
+  title="Latest production build"
+/>
+
+// Here it is possible to use a function to concatenate the branch name
+<EntityLatestJenkinsRunCard
+  branch="main"
+  variant="gridItem"
+  title={(branch: string) => `Latest ${branch} build`}
+/>
 ```

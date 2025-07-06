@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: n
+  namespace: ns
+  annotations:
+    backstage.io/managed-by-origin-location: url:https://example.com
+    annotation1: value1
+    annotation2: value2
+    annotation3: value3
+  labels:
+    label1: value1
+    label2: value2
+    label3: value3
+spec: {}

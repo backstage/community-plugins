@@ -16,7 +16,6 @@
 
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
 import { FeedbackResponseTable } from './FeedbackResponseTable';
 

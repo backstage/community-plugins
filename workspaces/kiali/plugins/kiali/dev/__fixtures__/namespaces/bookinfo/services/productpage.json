@@ -1,0 +1,437 @@
+{
+  "cluster": "Kubernetes",
+  "destinationRules": [],
+  "endpoints": [
+    {
+      "addresses": [
+        {
+          "kind": "Pod",
+          "name": "productpage-v1-675fc69cf-vv5wr",
+          "ip": "10.244.0.21",
+          "port": 0
+        }
+      ],
+      "ports": [
+        {
+          "name": "http",
+          "protocol": "TCP",
+          "port": 9080
+        }
+      ]
+    }
+  ],
+  "istioPermissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "istioSidecar": true,
+  "k8sHTTPRoutes": [],
+  "k8sReferenceGrants": null,
+  "service": {
+    "name": "productpage",
+    "createdAt": "2024-02-26T09:51:07Z",
+    "resourceVersion": "912",
+    "namespace": {
+      "name": "bookinfo",
+      "cluster": "",
+      "isAmbient": false,
+      "labels": null,
+      "annotations": null
+    },
+    "labels": {
+      "app": "productpage",
+      "service": "productpage"
+    },
+    "selectors": {
+      "app": "productpage"
+    },
+    "type": "ClusterIP",
+    "ip": "10.110.161.39",
+    "ports": [
+      {
+        "name": "http",
+        "protocol": "TCP",
+        "port": 9080
+      }
+    ],
+    "externalName": "",
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"productpage\",\"service\":\"productpage\"},\"name\":\"productpage\",\"namespace\":\"bookinfo\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":9080}],\"selector\":{\"app\":\"productpage\"}}}\n"
+    },
+    "healthAnnotations": {},
+    "additionalDetails": []
+  },
+  "serviceEntries": null,
+  "virtualServices": [
+    {
+      "kind": "VirtualService",
+      "apiVersion": "networking.istio.io/v1beta1",
+      "metadata": {
+        "name": "bookinfo",
+        "namespace": "bookinfo",
+        "uid": "e634070b-10b5-4f92-b3da-3c29a953b1ca",
+        "resourceVersion": "943",
+        "generation": 1,
+        "creationTimestamp": "2024-02-26T09:51:07Z",
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.istio.io/v1alpha3\",\"kind\":\"VirtualService\",\"metadata\":{\"annotations\":{},\"name\":\"bookinfo\",\"namespace\":\"bookinfo\"},\"spec\":{\"gateways\":[\"bookinfo-gateway\"],\"hosts\":[\"*\"],\"http\":[{\"match\":[{\"uri\":{\"exact\":\"/productpage\"}},{\"uri\":{\"prefix\":\"/static\"}},{\"uri\":{\"exact\":\"/login\"}},{\"uri\":{\"exact\":\"/logout\"}},{\"uri\":{\"prefix\":\"/api/v1/products\"}}],\"route\":[{\"destination\":{\"host\":\"productpage\",\"port\":{\"number\":9080}}}]}]}}\n"
+        },
+        "managedFields": [
+          {
+            "manager": "kubectl-client-side-apply",
+            "operation": "Update",
+            "apiVersion": "networking.istio.io/v1alpha3",
+            "time": "2024-02-26T09:51:07Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:annotations": {
+                  ".": {},
+                  "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                }
+              },
+              "f:spec": {
+                ".": {},
+                "f:gateways": {},
+                "f:hosts": {},
+                "f:http": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "hosts": ["*"],
+        "gateways": ["bookinfo-gateway"],
+        "http": [
+          {
+            "match": [
+              {
+                "uri": {
+                  "exact": "/productpage"
+                }
+              },
+              {
+                "uri": {
+                  "prefix": "/static"
+                }
+              },
+              {
+                "uri": {
+                  "exact": "/login"
+                }
+              },
+              {
+                "uri": {
+                  "exact": "/logout"
+                }
+              },
+              {
+                "uri": {
+                  "prefix": "/api/v1/products"
+                }
+              }
+            ],
+            "route": [
+              {
+                "destination": {
+                  "host": "productpage",
+                  "port": {
+                    "number": 9080
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "status": {}
+    }
+  ],
+  "workloads": [
+    {
+      "name": "productpage-v1",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-02-26T09:51:07Z",
+      "resourceVersion": "24559",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "productpage",
+        "version": "v1"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"productpage\",\"version\":\"v1\"},\"name\":\"productpage-v1\",\"namespace\":\"bookinfo\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"productpage\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"prometheus.io/path\":\"/metrics\",\"prometheus.io/port\":\"9080\",\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"productpage\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"image\":\"docker.io/istio/examples-bookinfo-productpage-v1:1.18.0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"productpage\",\"ports\":[{\"containerPort\":9080}],\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"tmp\"}]}],\"serviceAccountName\":\"bookinfo-productpage\",\"volumes\":[{\"emptyDir\":{},\"name\":\"tmp\"}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["bookinfo-productpage"],
+      "health": {
+        "workloadStatus": null,
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "health": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "namespaceMTLS": {
+    "status": "MTLS_NOT_ENABLED",
+    "autoMTLSEnabled": true,
+    "minTLS": ""
+  },
+  "subServices": [
+    {
+      "name": "productpage",
+      "namespace": "",
+      "istioSidecar": false,
+      "cluster": "",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": null,
+      "ports": {
+        "http": 9080
+      },
+      "labels": null,
+      "selector": null,
+      "istioReferences": null,
+      "kialiWizard": "",
+      "serviceRegistry": "",
+      "health": {
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "service": {
+      "productpage.bookinfo": {
+        "name": "productpage",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "cars-v1.travel-agency": {
+        "name": "cars-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "details-v1.bookinfo": {
+        "name": "details-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "discounts-v1.travel-agency": {
+        "name": "discounts-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "flights-v1.travel-agency": {
+        "name": "flights-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "hotels-v1.travel-agency": {
+        "name": "hotels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "insurances-v1.travel-agency": {
+        "name": "insurances-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-egressgateway.istio-system": {
+        "name": "istio-egressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-ingressgateway.istio-system": {
+        "name": "istio-ingressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "jaeger.istio-system": {
+        "name": "jaeger",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali-traffic-generator.bookinfo": {
+        "name": "kiali-traffic-generator",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali.istio-system": {
+        "name": "kiali",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "mysqldb-v1.travel-agency": {
+        "name": "mysqldb-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "productpage-v1.bookinfo": {
+        "name": "productpage-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "prometheus.istio-system": {
+        "name": "prometheus",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "ratings-v1.bookinfo": {
+        "name": "ratings-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v1.bookinfo": {
+        "name": "reviews-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v2.bookinfo": {
+        "name": "reviews-v2",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v3.bookinfo": {
+        "name": "reviews-v3",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels-v1.travel-agency": {
+        "name": "travels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels.travel-portal": {
+        "name": "travels",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "viaggi.travel-portal": {
+        "name": "viaggi",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "voyages.travel-portal": {
+        "name": "voyages",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

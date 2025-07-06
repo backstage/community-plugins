@@ -1,5 +1,106 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.15.0
+
+### Minor Changes
+
+- b5a85c1: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [b5a85c1]
+  - @backstage-community/plugin-jenkins-common@0.7.0
+
+## 0.14.0
+
+### Minor Changes
+
+- f0ef395: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [f0ef395]
+  - @backstage-community/plugin-jenkins-common@0.6.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 9c592af: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- 319b23a: Fixed a bug that prevented the backend from starting if no config was provided.
+- 319b23a: Updated config schema to indicate that _either_ a `jenkins.instances` array should be provided _or_ `jenkins.baseUrl`, `jenkins.username`, and `jenkins.apiKey`, but never both.
+- 5d074b1: Sanitize user input in router before using values in API
+- Updated dependencies [9c592af]
+  - @backstage-community/plugin-jenkins-common@0.5.0
+
+## 0.12.1
+
+### Patch Changes
+
+- 4dc7013: Fixed a bug when Jenkins permissions were not exposed by Jenkins at `/api/jenkins/.well-known/backstage/permissions/metadata`.
+
+## 0.12.0
+
+### Minor Changes
+
+- 09c00a5: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [09c00a5]
+  - @backstage-community/plugin-jenkins-common@0.4.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 29de0c4: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/jenkins/plugins/jenkins-backend/README.md) for instructions on how to use the new backend system.
+
+  Removed usages and references of `@backstage/backend-common`
+
+## 0.10.0
+
+### Minor Changes
+
+- 07ef31b: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [07ef31b]
+  - @backstage-community/plugin-jenkins-common@0.3.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 92a0ff6: feature: allow support for defining multiple projects/job names
+
+## 0.8.0
+
+### Minor Changes
+
+- 9527e9e: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [9527e9e]
+  - @backstage-community/plugin-jenkins-common@0.2.0
+
+## 0.7.0
+
+### Minor Changes
+
+- dfe7569: Add an API to retrieve the consoleText for a build.
+
+## 0.6.3
+
+### Patch Changes
+
+- 3500d71: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.6.2
 
 ### Patch Changes

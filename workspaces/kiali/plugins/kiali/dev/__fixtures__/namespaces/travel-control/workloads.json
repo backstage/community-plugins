@@ -1,0 +1,61 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "workloads": [
+    {
+      "name": "control",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-01-31T14:07:06Z",
+      "resourceVersion": "81463",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "control",
+        "version": "v1"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"control\",\"namespace\":\"travel-control\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"control\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"control\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"PORTAL_SERVICES\",\"value\":\"voyages.fr;http://voyages.travel-portal:8000,viaggi.it;http://viaggi.travel-portal:8000,travels.uk;http://travels.travel-portal:8000\"}],\"image\":\"quay.io/kiali/demo_travels_control:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"control\",\"ports\":[{\"containerPort\":8080}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["default"],
+      "health": {
+        "workloadStatus": {
+          "name": "control",
+          "desiredReplicas": 1,
+          "currentReplicas": 1,
+          "availableReplicas": 1,
+          "syncedProxies": 1
+        },
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "validations": {
+    "workload": {
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

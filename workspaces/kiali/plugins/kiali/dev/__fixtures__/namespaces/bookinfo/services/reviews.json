@@ -1,0 +1,430 @@
+{
+  "cluster": "Kubernetes",
+  "destinationRules": [],
+  "endpoints": [
+    {
+      "addresses": [
+        {
+          "kind": "Pod",
+          "name": "reviews-v3-5b9bd44f4-f2r28",
+          "ip": "10.244.0.18",
+          "port": 0
+        },
+        {
+          "kind": "Pod",
+          "name": "reviews-v2-5b667bcbf8-zxdws",
+          "ip": "10.244.0.25",
+          "port": 0
+        },
+        {
+          "kind": "Pod",
+          "name": "reviews-v1-5b5d6494f4-9rn4v",
+          "ip": "10.244.0.26",
+          "port": 0
+        }
+      ],
+      "ports": [
+        {
+          "name": "http",
+          "protocol": "TCP",
+          "port": 9080
+        }
+      ]
+    }
+  ],
+  "istioPermissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "istioSidecar": true,
+  "k8sHTTPRoutes": [],
+  "k8sReferenceGrants": null,
+  "service": {
+    "name": "reviews",
+    "createdAt": "2024-02-26T09:51:07Z",
+    "resourceVersion": "875",
+    "namespace": {
+      "name": "bookinfo",
+      "cluster": "",
+      "isAmbient": false,
+      "labels": null,
+      "annotations": null
+    },
+    "labels": {
+      "app": "reviews",
+      "service": "reviews"
+    },
+    "selectors": {
+      "app": "reviews"
+    },
+    "type": "ClusterIP",
+    "ip": "10.99.45.111",
+    "ports": [
+      {
+        "name": "http",
+        "protocol": "TCP",
+        "port": 9080
+      }
+    ],
+    "externalName": "",
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"reviews\",\"service\":\"reviews\"},\"name\":\"reviews\",\"namespace\":\"bookinfo\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":9080}],\"selector\":{\"app\":\"reviews\"}}}\n"
+    },
+    "healthAnnotations": {},
+    "additionalDetails": []
+  },
+  "serviceEntries": null,
+  "virtualServices": [],
+  "workloads": [
+    {
+      "name": "reviews-v1",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-02-26T09:51:07Z",
+      "resourceVersion": "24571",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "reviews",
+        "version": "v1"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"reviews\",\"version\":\"v1\"},\"name\":\"reviews-v1\",\"namespace\":\"bookinfo\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"reviews\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"reviews\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LOG_DIR\",\"value\":\"/tmp/logs\"}],\"image\":\"docker.io/istio/examples-bookinfo-reviews-v1:1.18.0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"reviews\",\"ports\":[{\"containerPort\":9080}],\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"tmp\"},{\"mountPath\":\"/opt/ibm/wlp/output\",\"name\":\"wlp-output\"}]}],\"serviceAccountName\":\"bookinfo-reviews\",\"volumes\":[{\"emptyDir\":{},\"name\":\"wlp-output\"},{\"emptyDir\":{},\"name\":\"tmp\"}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["bookinfo-reviews"],
+      "health": {
+        "workloadStatus": null,
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    },
+    {
+      "name": "reviews-v2",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-02-26T09:51:07Z",
+      "resourceVersion": "24577",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "reviews",
+        "version": "v2"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"reviews\",\"version\":\"v2\"},\"name\":\"reviews-v2\",\"namespace\":\"bookinfo\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"reviews\",\"version\":\"v2\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"reviews\",\"version\":\"v2\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LOG_DIR\",\"value\":\"/tmp/logs\"}],\"image\":\"docker.io/istio/examples-bookinfo-reviews-v2:1.18.0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"reviews\",\"ports\":[{\"containerPort\":9080}],\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"tmp\"},{\"mountPath\":\"/opt/ibm/wlp/output\",\"name\":\"wlp-output\"}]}],\"serviceAccountName\":\"bookinfo-reviews\",\"volumes\":[{\"emptyDir\":{},\"name\":\"wlp-output\"},{\"emptyDir\":{},\"name\":\"tmp\"}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["bookinfo-reviews"],
+      "health": {
+        "workloadStatus": null,
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    },
+    {
+      "name": "reviews-v3",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-02-26T09:51:07Z",
+      "resourceVersion": "24584",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "reviews",
+        "version": "v3"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"reviews\",\"version\":\"v3\"},\"name\":\"reviews-v3\",\"namespace\":\"bookinfo\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"reviews\",\"version\":\"v3\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"reviews\",\"version\":\"v3\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LOG_DIR\",\"value\":\"/tmp/logs\"}],\"image\":\"docker.io/istio/examples-bookinfo-reviews-v3:1.18.0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"reviews\",\"ports\":[{\"containerPort\":9080}],\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"tmp\"},{\"mountPath\":\"/opt/ibm/wlp/output\",\"name\":\"wlp-output\"}]}],\"serviceAccountName\":\"bookinfo-reviews\",\"volumes\":[{\"emptyDir\":{},\"name\":\"wlp-output\"},{\"emptyDir\":{},\"name\":\"tmp\"}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["bookinfo-reviews"],
+      "health": {
+        "workloadStatus": null,
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "health": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 1.0000222227160604
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "namespaceMTLS": {
+    "status": "MTLS_NOT_ENABLED",
+    "autoMTLSEnabled": true,
+    "minTLS": ""
+  },
+  "subServices": [
+    {
+      "name": "reviews",
+      "namespace": "",
+      "istioSidecar": false,
+      "cluster": "",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": null,
+      "ports": {
+        "http": 9080
+      },
+      "labels": null,
+      "selector": null,
+      "istioReferences": null,
+      "kialiWizard": "",
+      "serviceRegistry": "",
+      "health": {
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "service": {
+      "reviews.bookinfo": {
+        "name": "reviews",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "cars-v1.travel-agency": {
+        "name": "cars-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "details-v1.bookinfo": {
+        "name": "details-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "discounts-v1.travel-agency": {
+        "name": "discounts-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "flights-v1.travel-agency": {
+        "name": "flights-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "hotels-v1.travel-agency": {
+        "name": "hotels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "insurances-v1.travel-agency": {
+        "name": "insurances-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-egressgateway.istio-system": {
+        "name": "istio-egressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-ingressgateway.istio-system": {
+        "name": "istio-ingressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "jaeger.istio-system": {
+        "name": "jaeger",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali-traffic-generator.bookinfo": {
+        "name": "kiali-traffic-generator",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali.istio-system": {
+        "name": "kiali",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "mysqldb-v1.travel-agency": {
+        "name": "mysqldb-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "productpage-v1.bookinfo": {
+        "name": "productpage-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "prometheus.istio-system": {
+        "name": "prometheus",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "ratings-v1.bookinfo": {
+        "name": "ratings-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v1.bookinfo": {
+        "name": "reviews-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v2.bookinfo": {
+        "name": "reviews-v2",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v3.bookinfo": {
+        "name": "reviews-v3",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels-v1.travel-agency": {
+        "name": "travels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels.travel-portal": {
+        "name": "travels",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "viaggi.travel-portal": {
+        "name": "viaggi",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "voyages.travel-portal": {
+        "name": "voyages",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
-
-import React from 'react';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export const AzurePipelinesIcon = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 512 512">

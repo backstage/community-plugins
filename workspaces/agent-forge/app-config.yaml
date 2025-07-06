@@ -1,0 +1,14 @@
+app:
+  title: Agent Forge
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Cisco
+
+agentForge:
+  baseUrl: http://127.0.0.1:8000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007

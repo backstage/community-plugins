@@ -1,0 +1,84 @@
+app:
+  title: Tech insights Example App
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Tech insights Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'local'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest:
+      userEntityRef: user:default/guest
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+techInsights:
+  factRetrievers:
+    entityOwnershipFactRetriever:
+      cadence: '*/1 * * * *'
+      lifecycle: { timeToLive: { weeks: 2 } }
+    entityMetadataFactRetriever:
+      cadence: '*/1 * * * *'
+      lifecycle: { timeToLive: { weeks: 2 } }
+    techdocsFactRetriever:
+      cadence: '*/1 * * * *'
+      lifecycle: { timeToLive: { weeks: 2 } }
+    apiDefinitionFactRetriever:
+      cadence: '*/1 * * * *'
+      lifecycle: { timeToLive: { weeks: 2 } }
+#  See packages/backend/src/index.ts for programmatically registration
+#  factChecker:
+#    checks:
+#      groupOwnerCheck:
+#        type: json-rules-engine
+#        name: Group Owner Check
+#        description: Verifies that a group has been set as the spec.owner for this entity
+#        factIds:
+#          - entityOwnershipFactRetriever
+#        rule:
+#          conditions:
+#            all:
+#              - fact: hasGroupOwner
+#                operator: equal
+#                value: true

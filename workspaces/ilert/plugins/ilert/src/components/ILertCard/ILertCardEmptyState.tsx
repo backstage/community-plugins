@@ -21,7 +21,6 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { CodeSnippet } from '@backstage/core-components';
 
 const ENTITY_YAML = `apiVersion: backstage.io/v1alpha1

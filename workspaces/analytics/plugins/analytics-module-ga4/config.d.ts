@@ -55,6 +55,14 @@ export interface Config {
         debug?: boolean;
 
         /**
+         * Google Analytics cookie flags. Defaults to 'SameSite=Lax'
+         * More information https://developers.google.com/analytics/devguides/collection/ga4/reference/config#cookie_flags
+         *
+         * @visibility frontend
+         */
+        cookieFlags?: string;
+
+        /**
          * Whether to send default send_page_view event.
          * Defaults to false.
          *

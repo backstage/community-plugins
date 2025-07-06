@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { useSites } from '../../hooks/useSites';
 import { ErrorBoundary, ResponseErrorPanel } from '@backstage/core-components';

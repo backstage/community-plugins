@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Select, SelectedItems, SelectItem } from '@backstage/core-components';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';

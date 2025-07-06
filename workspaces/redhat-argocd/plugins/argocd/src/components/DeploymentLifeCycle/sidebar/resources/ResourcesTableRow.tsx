@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import type { FC } from 'react';
+
+import { useState, useMemo } from 'react';
 import {
   Box,
   Collapse,
@@ -28,7 +30,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { ResourceSyncStatus } from './ResourcesSyncStatus';
 import { ResourceHealthStatus } from './ResourcesHealthStatus';
-import { Resource } from '../../../../types/application';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import ResourceMetadata from './resource/ResourceMetadata';
 
 type ResourcesTableRowProps = {
@@ -57,12 +59,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
-  uid,
-  row,
-}) => {
+export const ResourcesTableRow: FC<ResourcesTableRowProps> = ({ uid, row }) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const formattedTimestamp = useMemo(
     () => moment.utc(row?.createTimestamp).local().format('MM/DD/YYYY hh:mm a'),

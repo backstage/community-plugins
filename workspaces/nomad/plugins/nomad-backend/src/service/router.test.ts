@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getVoidLogger } from '@backstage/backend-common';
+import { mockServices } from '@backstage/backend-test-utils';
 import express from 'express';
 import request from 'supertest';
 
@@ -31,7 +31,7 @@ describe('createRouter', () => {
           token: 'asdf',
         },
       }),
-      logger: getVoidLogger(),
+      logger: mockServices.rootLogger(),
     });
     app = express().use(router);
   });

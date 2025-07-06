@@ -15,7 +15,7 @@ The following actions are currently supported in this plugin:
 Run the following command to install the action package in your Backstage project:
 
 ```console
-yarn workspace backend add @backstage-community/scaffolder-backend-module-regex
+yarn workspace backend add @backstage-community/plugin-scaffolder-backend-module-regex
 ```
 
 ### Installing the action on the new backend
@@ -26,7 +26,9 @@ Add the following to your `packages/backend/src/index.ts` file:
 const backend = createBackend();
 
 // Add the following line
-backend.add(import('@backstage-community/scaffolder-backend-module-regex'));
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-regex'),
+);
 
 backend.start();
 ```

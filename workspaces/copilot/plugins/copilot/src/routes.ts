@@ -13,8 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef } from '@backstage/core-plugin-api';
+import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
 
-export const rootRouteRef = createRouteRef({
-  id: 'copilot',
+export const copilotRouteRef = createRouteRef({
+  id: 'copilot-dashboard',
+});
+
+export const enterpriseRouteRef = createSubRouteRef({
+  id: 'enterprise-dashboard',
+  parent: copilotRouteRef,
+  path: '/enterprise',
+});
+
+export const organizationRouteRef = createSubRouteRef({
+  id: 'organization-dashboard',
+  parent: copilotRouteRef,
+  path: '/organization',
 });

@@ -18,3 +18,8 @@ export * from './checks';
 export * from './extensionPoints';
 export * from './facts';
 export * from './persistence';
+
+export {
+  techInsightsServiceRef,
+  type TechInsightsService,
+} from './techInsightsService';

@@ -1,5 +1,149 @@
 ### Dependencies
 
+## 3.12.1
+
+### Patch Changes
+
+- 4dce226: Adds the `sanitizeGroupNameTransformer` and `sanitizeUserNameTransformer` transformers and sets them to be applied by default.
+
+## 3.12.0
+
+### Minor Changes
+
+- e37a7a6: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- 8fa8ece: Updated dependency `@types/lodash` to `4.17.17`.
+
+## 3.11.1
+
+### Patch Changes
+
+- 66fc757: ensure subgroups are fetched from the correct realm
+
+## 3.11.0
+
+### Minor Changes
+
+- 02c9383: Backstage version bump to v1.38.1
+
+## 3.10.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 3.10.0
+
+### Minor Changes
+
+- 797add4: Implement open-telemetry metrics for catalog backend module keycloak.
+
+## 3.9.0
+
+### Minor Changes
+
+- 3836318: remove inclusion and use dynamic imports to load ESM modules instead
+
+### Patch Changes
+
+- 3836318: remove unused dependencies (@spotify/prettier-config and @common.js/p-limit)
+
+## 3.8.1
+
+### Patch Changes
+
+- c55b868: Updated dependency `@keycloak/keycloak-admin-client` to `26.1.4`.
+
+## 3.8.0
+
+### Minor Changes
+
+- 9ab7992: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 3199ac1: Updated dependency `@types/lodash` to `4.17.16`.
+
+## 3.7.0
+
+### Minor Changes
+
+- f32a370: Extend support to Keycloak v26 and RHBK v26
+
+### Patch Changes
+
+- 61697c6: Updated dependency `@keycloak/keycloak-admin-client` to `26.1.2`.
+
+## 3.6.0
+
+### Minor Changes
+
+- 984800c: Adding briefRepresentation flag to config to fetch additional group and user attributes
+
+## 3.5.3
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 3.5.2
+
+### Patch Changes
+
+- 0ac3320: Updated dependency `@types/lodash` to `4.17.15`.
+
+## 3.5.1
+
+### Patch Changes
+
+- 8e5b0de: Updated dependency `jsonwebtoken` to `^9.0.0`.
+
+## 3.5.0
+
+### Minor Changes
+
+- 75d5f97: Backstage version bump to v1.35.1
+
+## 3.4.1
+
+### Patch Changes
+
+- f64bb64: Fixed the token update issue when the plugin uses the Keycloak client library. Added the ability to configure a maxConcurrency limit to control the number of parallel requests to the Keycloak server, preventing potential DoS attacks. Significantly improved the performance of parsing Keycloak user and group information.
+
+## 3.4.0
+
+### Minor Changes
+
+- f7dfe8e: Update keycloak-admin-client to the latest version.
+
+## 3.3.0
+
+### Minor Changes
+
+- bd47f3a: Backstage version bump to v1.34.2
+
+## 3.2.4
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
+## 3.2.3
+
+### Patch Changes
+
+- 74902d9: Clean up api report warnings and remove unnecessary files
+
+## 3.2.2
+
+### Patch Changes
+
+- 3c72e65: Update Keycloak metadata to reflect dual maintenance support
+- d3d078b: Updated dependency `@types/lodash` to `4.17.13`.
+
 ## 3.2.1
 
 ### Patch Changes

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Badge from '@material-ui/core/Badge';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';

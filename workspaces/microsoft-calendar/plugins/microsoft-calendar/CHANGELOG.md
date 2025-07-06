@@ -1,5 +1,53 @@
 # @backstage-community/plugin-microsoft-calendar
 
+## 0.8.0
+
+### Minor Changes
+
+- b1f6a2b: Backstage version bump to v1.40.2
+
+## 0.7.0
+
+### Minor Changes
+
+- 11f97a9: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 93a0e6e: Backstage version bump to v1.38.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.0
+
+### Minor Changes
+
+- 8de0f49: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- ec041a1: Backstage version bump to v1.36.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 038326a: Backstage version bump to v1.35.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 9eb2194: Backstage version bump to v1.34.1
+
 ## 0.1.21
 
 ### Patch Changes

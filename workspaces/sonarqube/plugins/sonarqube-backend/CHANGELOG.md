@@ -1,5 +1,75 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- ad4279b: Backstage version bump to v1.40.2
+
+## 0.9.2
+
+### Patch Changes
+
+- 65c9891: Fixed a bug in v0.9.1 where basic and bearer auth token types were reversed
+
+## 0.9.1
+
+### Patch Changes
+
+- 65ea416: **BREAKING** This undoes the breaking Authorization header change introduced in v0.7.0 and allows configuring Bearer tokens, while maintaining the old default of Basic. This change will impact SonarQube Cloud users, [details on the config changes needed](https://github.com/backstage/community-plugins/tree/main/workspaces/sonarqube/plugins/sonarqube-backend) in this case are in the `README`.
+
+## 0.9.0
+
+### Minor Changes
+
+- f3284e7: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 8be1894: Upgraded to Backstage release 1.38
+
+## 0.7.0
+
+### Minor Changes
+
+- 5399669: Switch from basic auth to recommended<sup>[[1]](https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/web-api/#authenticate-to-api), [[2]](https://docs.sonarsource.com/sonarqube-server/2025.1/extension-guide/web-api/#authenticate-to-api)</sup> bearer auth in order to also support SonarQube Cloud.
+
+  Basic auth as used previously is exlusively [supported](https://docs.sonarsource.com/sonarqube-server/10.8/user-guide/managing-tokens/#using-a-token) by Sonarqube Server.
+
+## 0.6.0
+
+### Minor Changes
+
+- a751abb: Backstage version bump to v1.37.0
+
+## 0.5.0
+
+### Minor Changes
+
+- dc47683: Backstage version bump to v1.35.1
+
+## 0.4.1
+
+### Patch Changes
+
+- a8acb68: Added missing `instanceKey` to the documentation examples
+
+## 0.4.0
+
+### Minor Changes
+
+- fb4e8b5: Backstage version bump to v1.34.1
+
+## 0.3.1
+
+### Patch Changes
+
+- f53852b: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.0
 
 ### Minor Changes

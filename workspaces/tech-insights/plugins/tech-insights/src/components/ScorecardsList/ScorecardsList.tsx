@@ -14,30 +14,38 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { MarkdownContent } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
-import { ResultCheckIcon } from '../ResultCheckIcon';
+import {
+  ResultCheckIcon,
+  techInsightsApiRef,
+} from '@backstage-community/plugin-tech-insights-react';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles(theme => ({
   listItemText: {
     paddingRight: theme.spacing(0.5),
   },
 }));
+const itemTooltip = (
+  children: React.ReactElement,
+  title: string | NonNullable<React.ReactNode>,
+  enabled?: boolean,
+) => (enabled ? <Tooltip title={title}>{children}</Tooltip> : children);
 
 export const ScorecardsList = (props: {
   checkResults: CheckResult[];
   entity?: Entity;
+  dense?: boolean;
+  hideDescription?: boolean;
 }) => {
-  const { checkResults, entity } = props;
+  const { checkResults, entity, dense, hideDescription } = props;
 
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
@@ -46,35 +54,38 @@ export const ScorecardsList = (props: {
   const checkResultRenderers = api.getCheckResultRenderers(types);
 
   return (
-    <List>
+    <List dense={dense} disablePadding>
       {checkResults.map((result, index) => {
         const checkResultRenderer = checkResultRenderers.find(
           renderer => renderer.type === result.check.type,
         );
+        const renderer = checkResultRenderer?.description;
+        const description = renderer ? (
+          renderer(result)
+        ) : (
+          <MarkdownContent content={result.check.description} />
+        );
 
-        const description = checkResultRenderer?.description;
-
-        return (
-          <ListItem key={result.check.id}>
+        return itemTooltip(
+          <ListItem key={result.check.id} disableGutters>
             <ListItemText
               key={index}
               primary={result.check.name}
-              secondary={
-                description ? (
-                  description(result)
-                ) : (
-                  <MarkdownContent content={result.check.description} />
-                )
-              }
+              {...(!props.hideDescription
+                ? {
+                    secondary: description,
+                  }
+                : {})}
               className={classes.listItemText}
             />
             <ResultCheckIcon
               result={result}
               entity={entity}
-              component={ListItemSecondaryAction}
               checkResultRenderer={checkResultRenderer}
             />
-          </ListItem>
+          </ListItem>,
+          description,
+          hideDescription,
         );
       })}
     </List>

@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { useDeleteDialog } from '@janus-idp/shared-react';
-import { IconButton, Tooltip } from '@material-ui/core';
 import Delete from '@mui/icons-material/Delete';
-import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
+import { useActionPermissionTooltip } from '../../hooks/useActionPermissionTooltip';
 
 type DeleteRoleProps = {
   roleName: string;
-  disable: boolean;
+  canEdit: boolean;
+  dataTestId?: string;
   tooltip?: string;
-  dataTestId: string;
 };
 
 const DeleteRole = ({
   roleName,
-  tooltip,
-  disable,
+  canEdit,
   dataTestId,
+  tooltip,
 }: DeleteRoleProps) => {
   const { setDeleteComponent, setOpenDialog } = useDeleteDialog();
 
@@ -40,19 +40,31 @@ const DeleteRole = ({
     setOpenDialog(true);
   };
 
+  const { disable, tooltipText, testIdText } = useActionPermissionTooltip({
+    permission: policyEntityDeletePermission,
+    resourceRef: roleName,
+    canAct: canEdit,
+    action: 'delete',
+    dataTestId: dataTestId,
+    fallbackTooltip: tooltip,
+  });
+
   return (
-    <Tooltip title={tooltip || ''}>
-      <Typography component="span" data-testid={dataTestId}>
-        <IconButton
-          color="inherit"
-          onClick={() => openDialog(roleName)}
-          aria-label="Delete"
-          disabled={disable}
-          title={tooltip || 'Delete Role'}
-        >
-          <Delete />
-        </IconButton>
-      </Typography>
+    <Tooltip title={tooltipText}>
+      <IconButton
+        onClick={() => openDialog(roleName)}
+        data-testid={testIdText}
+        aria-label="Delete"
+        disabled={disable}
+        title={tooltip ?? 'Delete Role'}
+        sx={{
+          p: 1,
+          borderRadius: '50%',
+          '&:hover': { borderRadius: '50%' },
+        }}
+      >
+        <Delete />
+      </IconButton>
     </Tooltip>
   );
 };

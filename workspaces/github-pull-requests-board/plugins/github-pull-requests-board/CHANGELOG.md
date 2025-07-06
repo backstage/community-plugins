@@ -1,5 +1,53 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.7.0
+
+### Minor Changes
+
+- 3d5c0b4: Backstage version bump to v1.40.2
+
+## 0.6.0
+
+### Minor Changes
+
+- ad15115: Backstage version bump to v1.39.0
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.0
+
+### Minor Changes
+
+- aa5b7fc: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 44307b7: Backstage version bump to v1.35.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 5beb886: Backstage version bump to v1.34.1
+
+## 0.2.8
+
+### Patch Changes
+
+- 5c7171c: Make draft PR icon color inherit from theme
+
+## 0.2.7
+
+### Patch Changes
+
+- afefe93: Adding support for the new frontend system, available at the `/alpha` export.
+
 ## 0.2.6
 
 ### Patch Changes

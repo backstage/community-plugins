@@ -69,7 +69,7 @@ export interface Config {
            * The password to use for SMTP server authentication.
            * @visibility secret
            */
-          password?: string;
+          pass?: string;
         };
 
         /**

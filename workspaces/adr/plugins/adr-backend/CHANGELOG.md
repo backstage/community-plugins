@@ -1,5 +1,109 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- e368185: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [e368185]
+  - @backstage-community/plugin-adr-common@0.9.0
+  - @backstage-community/search-backend-module-adr@0.8.0
+
+## 0.10.0
+
+### Minor Changes
+
+- fc4fa2c: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [fc4fa2c]
+  - @backstage-community/plugin-adr-common@0.8.0
+  - @backstage-community/search-backend-module-adr@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- e22d803: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e22d803]
+  - @backstage-community/plugin-adr-common@0.7.0
+  - @backstage-community/search-backend-module-adr@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+- b397bd6: Added extension point to backend plugin so that a custom ADR parser can be provided in modules to support additional ADR formats.
+
+### Patch Changes
+
+- Updated dependencies [b397bd6]
+  - @backstage-community/plugin-adr-common@0.6.0
+  - @backstage-community/search-backend-module-adr@0.5.1
+
+## 0.7.0
+
+### Minor Changes
+
+- b075789: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [b075789]
+  - @backstage-community/plugin-adr-common@0.5.0
+  - @backstage-community/search-backend-module-adr@0.5.0
+
+## 0.6.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [d527ea3]
+  - @backstage-community/plugin-adr-common@0.4.0
+  - @backstage-community/search-backend-module-adr@0.4.0
+
+## 0.5.3
+
+### Patch Changes
+
+- eb6cbef: Fixed a bug that caused no ADRs to be returned from `/list` if at least one failed to parse.
+
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [03913ac]
+  - @backstage-community/search-backend-module-adr@0.3.2
+
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [9e92818]
+  - @backstage-community/search-backend-module-adr@0.3.1
+
+## 0.5.0
+
+### Minor Changes
+
+- d5e54af: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [d5e54af]
+  - @backstage-community/plugin-adr-common@0.3.0
+  - @backstage-community/search-backend-module-adr@0.3.0
+
 ## 0.4.27
 
 ### Patch Changes

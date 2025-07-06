@@ -1,13 +1,12 @@
 # Knip report
 
-## Unused dependencies (4)
+## Unused dependencies (3)
 
-| Name                                 | Location     | Severity |
-| :----------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-linguist | package.json | error    |
-| react-router                         | package.json | error    |
-| react-use                            | package.json | error    |
-| history                              | package.json | error    |
+| Name         | Location     | Severity |
+| :----------- | :----------- | :------- |
+| react-router | package.json | error    |
+| react-use    | package.json | error    |
+| history      | package.json | error    |
 
 ## Unused devDependencies (4)
 

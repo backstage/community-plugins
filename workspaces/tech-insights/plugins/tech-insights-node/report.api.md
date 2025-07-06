@@ -4,6 +4,8 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
+import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
@@ -15,8 +17,11 @@ import { DurationLike } from 'luxon';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { ServiceRef } from '@backstage/backend-plugin-api';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
 export type CheckValidationResponse = {
@@ -27,7 +32,7 @@ export type CheckValidationResponse = {
 
 // @public
 export interface FactChecker<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   getChecks(): Promise<CheckType[]>;
@@ -37,7 +42,7 @@ export interface FactChecker<
 
 // @public
 export interface FactCheckerFactory<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   // (undocumented)
@@ -50,12 +55,14 @@ export interface FactCheckerFactory<
 export type FactLifecycle = TTL | MaxItems;
 
 // @public
-export interface FactRetriever {
+export interface FactRetriever<
+  TContext extends FactRetrieverContext = FactRetrieverContext,
+> {
   description?: string;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
-  handler: (ctx: FactRetrieverContext) => Promise<TechInsightFact[]>;
+  handler: (ctx: TContext) => Promise<TechInsightFact[]>;
   id: string;
   schema: FactSchema;
   title?: string;
@@ -63,19 +70,22 @@ export interface FactRetriever {
 }
 
 // @public
-export type FactRetrieverContext = {
+export type FactRetrieverContext<TExtension = {}> = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
   auth: AuthService;
+  urlReader: UrlReaderService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
-};
+} & TExtension;
 
 // @public
-export type FactRetrieverRegistration = {
-  factRetriever: FactRetriever;
+export type FactRetrieverRegistration<
+  TContext extends FactRetrieverContext = FactRetrieverContext,
+> = {
+  factRetriever: FactRetriever<TContext>;
   cadence?: string;
   timeout?: Duration | HumanDuration;
   lifecycle?: FactLifecycle;
@@ -93,7 +103,9 @@ export interface FactRetrieverRegistry {
   // (undocumented)
   listRetrievers(): Promise<FactRetriever[]>;
   // (undocumented)
-  register(registration: FactRetrieverRegistration): Promise<void>;
+  register<TContext extends FactRetrieverContext = FactRetrieverContext>(
+    registration: FactRetrieverRegistration<TContext>,
+  ): Promise<void>;
 }
 
 // @public
@@ -114,20 +126,21 @@ export type PersistenceContext = {
   techInsightsStore: TechInsightsStore;
 };
 
-// @public
+// @public @deprecated
 export interface TechInsightCheck {
   description: string;
   factIds: string[];
   failureMetadata?: Record<string, any>;
   id: string;
   links?: CheckLink[];
+  metadata?: Record<string, any>;
   name: string;
   successMetadata?: Record<string, any>;
   type: string;
 }
 
 // @public
-export interface TechInsightCheckRegistry<CheckType extends TechInsightCheck> {
+export interface TechInsightCheckRegistry<CheckType extends Check> {
   // (undocumented)
   get(checkId: string): Promise<CheckType>;
   // (undocumented)
@@ -164,7 +177,7 @@ export type TechInsightFact = {
 export interface TechInsightsFactCheckerFactoryExtensionPoint {
   // (undocumented)
   setFactCheckerFactory<
-    CheckType extends TechInsightCheck,
+    CheckType extends Check,
     CheckResultType extends CheckResult,
   >(
     factory: FactCheckerFactory<CheckType, CheckResultType>,
@@ -200,6 +213,33 @@ export interface TechInsightsPersistenceContextExtensionPoint {
 
 // @public
 export const techInsightsPersistenceContextExtensionPoint: ExtensionPoint<TechInsightsPersistenceContextExtensionPoint>;
+
+// @public
+export interface TechInsightsService {
+  // (undocumented)
+  getAllChecks(): Promise<Check[]>;
+  // (undocumented)
+  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
+  // (undocumented)
+  getFactSchemas(): Promise<FactSchema[]>;
+  // (undocumented)
+  runBulkChecks(
+    entities: CompoundEntityRef[],
+    checks?: Check[],
+  ): Promise<BulkCheckResponse>;
+  // (undocumented)
+  runChecks(
+    entityParams: CompoundEntityRef,
+    checks?: string[],
+  ): Promise<CheckResult[]>;
+}
+
+// @public
+export const techInsightsServiceRef: ServiceRef<
+  TechInsightsService,
+  'plugin',
+  'singleton'
+>;
 
 // @public
 export interface TechInsightsStore {

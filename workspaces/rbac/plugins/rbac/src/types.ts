@@ -33,8 +33,7 @@ export type RolesData = {
   modifiedBy: string;
   lastModified: string;
   actionsPermissionResults: {
-    delete: { allowed: boolean; loading: boolean };
-    edit: { allowed: boolean; loading: boolean };
+    edit: { allowed: boolean };
   };
   accessiblePlugins: string[];
 };
@@ -56,7 +55,11 @@ export type PermissionsDataSet = {
   policies: Set<RowPolicy>;
   policyString?: Set<string>;
   isResourced?: boolean;
+  resourceType?: string;
+  usingResourceType?: boolean;
 };
+
+export type SelectedPlugin = { label: string; value: string };
 
 export type PermissionsData = {
   id?: number;
@@ -66,17 +69,31 @@ export type PermissionsData = {
   policyString?: string[] | string;
   isResourced?: boolean;
   conditions?: ConditionsData;
+  resourceType?: string;
+  usingResourceType?: boolean;
 };
 
+/**
+ * @public
+ */
 export type MemberEntity = UserEntity | GroupEntity;
 
+/**
+ * @public
+ */
 export type RoleError = { error: { name: string; message: string } };
 
+/**
+ * @public
+ */
 export type RoleBasedConditions = Omit<
   RoleConditionalPolicyDecision<PermissionAction>,
   'id'
 >;
 
+/**
+ * @public
+ */
 export type ConditionRule = {
   name: string;
   description?: string;
@@ -84,6 +101,9 @@ export type ConditionRule = {
   paramsSchema: RJSFSchema;
 };
 
+/**
+ * @public
+ */
 export type PluginConditionRules = {
   pluginId: string;
   rules: ConditionRule[];

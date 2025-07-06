@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
 import { configApiRef } from '@backstage/core-plugin-api';
@@ -42,7 +40,7 @@ import {
   ArgocdDeploymentSummary,
   argocdPlugin,
 } from '../src/plugin';
-import { Application } from '../src/types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import { customResourceTypes } from '../src/types/resources';
 import {
   mockApplication,

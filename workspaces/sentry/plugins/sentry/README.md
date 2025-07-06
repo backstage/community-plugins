@@ -69,27 +69,6 @@ const app = createApp({
 export default app.createRoot();
 ```
 
-The, [configure the extension](https://backstage.io/docs/frontend-system/building-apps/configuring-extensions) inside `app-config.yaml` to include the entity content & card:
-
-```yaml
-# app-config.yaml
-app:
-  extensions:
-    - entity-content:sentry/sentry-issues
-    - entity-card:sentry/sentry-issues
-```
-
-You can also control which [entity kinds](https://backstage.io/docs/features/software-catalog/system-model) the sentry card appears on by adding a config underneath the entity-content, like so:
-
-```yaml
-# app-config.yaml
-app:
-  extensions:
-    - entity-content:sentry/sentry-issues
-        config:
-          filter: kind:component,system,group
-```
-
 3. Add the proxy config:
 
 ```yaml

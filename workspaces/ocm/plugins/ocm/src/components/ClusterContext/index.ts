@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { ClusterContextProvider, useCluster } from './ClusterContext';
+export type { ClusterContextType } from './ClusterContext';

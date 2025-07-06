@@ -1,5 +1,178 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- 0341770: Add more context for debugging access issues with Quay
+
+## 1.21.1
+
+### Patch Changes
+
+- 042cea7: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-quay-common@1.9.1
+
+## 1.21.0
+
+### Minor Changes
+
+- 279c9ba: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [279c9ba]
+  - @backstage-community/plugin-quay-common@1.9.0
+
+## 1.20.3
+
+### Patch Changes
+
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+
+## 1.20.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-quay-common@1.8.1
+
+## 1.20.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 1.20.0
+
+### Minor Changes
+
+- e172aba: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e172aba]
+  - @backstage-community/plugin-quay-common@1.8.0
+
+## 1.19.2
+
+### Patch Changes
+
+- 16c57cc: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [16c57cc]
+  - @backstage-community/plugin-quay-common@1.7.2
+
+## 1.19.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- 3bd5e99: remove unused dependencies: @types/node
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+- 61cf479: Fixed a bug where link to Quay repository was not displayed when `@backstage-community/plugin-quay-backend` was used with key `quay.apiUrl`
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-quay-common@1.7.1
+
+## 1.19.0
+
+### Minor Changes
+
+- 110b103: Add scalprum configuration for generating OCI artifacts
+- 1f3ea2f: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- Updated dependencies [973a5ef]
+- Updated dependencies [1f3ea2f]
+  - @backstage-community/plugin-quay-common@1.7.0
+
+## 1.18.1
+
+### Patch Changes
+
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
+## 1.18.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.17.0
+
+### Minor Changes
+
+- e541edd: Adds a new quay-backend plugin and updates the frontend quay plugin to use this new backend.
+- e541edd: Add a quay-backend plugin to query the quay.io API
+- 4a04fa7: Update documentation on the Proxy and new Quay backend functionality
+
+### Patch Changes
+
+- Updated dependencies [e541edd]
+- Updated dependencies [e541edd]
+  - @backstage-community/plugin-quay-common@1.6.0
+
+## 1.16.0
+
+### Minor Changes
+
+- 7226329: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [7226329]
+  - @backstage-community/plugin-quay-common@1.5.0
+
+## 1.15.0
+
+### Minor Changes
+
+- 7daf65a: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+- Updated dependencies [0f5c451]
+- Updated dependencies [7daf65a]
+  - @backstage-community/plugin-quay-common@1.4.0
+
+## 1.14.6
+
+### Patch Changes
+
+- 1af220c: Clean up api report warnings and remove unnecessary files
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+- Updated dependencies [1af220c]
+  - @backstage-community/plugin-quay-common@1.3.4
+
+## 1.14.5
+
+### Patch Changes
+
+- 41a3d82: Updated dependency `@playwright/test` to `1.48.2`.
+
+## 1.14.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.14.3
+
+### Patch Changes
+
+- Updated dependencies [8c4c579]
+  - @backstage-community/plugin-quay-common@1.3.3
+
 ## 1.14.2
 
 ### Patch Changes

@@ -88,9 +88,10 @@ export type TektonResponseData = {
 };
 
 export type TopologyDisplayOption = {
-  id: string;
-  label: string;
-  value: boolean;
+  value: string;
+  content: string;
+  isSelected?: boolean;
+  isDisabled?: boolean;
 };
 
 export type DisplayFilters = TopologyDisplayOption[];

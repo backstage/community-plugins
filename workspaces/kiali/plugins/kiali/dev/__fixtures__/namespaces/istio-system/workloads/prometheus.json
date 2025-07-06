@@ -1,0 +1,162 @@
+{
+  "name": "prometheus",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-15T09:24:58Z",
+  "resourceVersion": "1113",
+  "istioInjectionAnnotation": false,
+  "istioSidecar": false,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "prometheus",
+    "chart": "prometheus-19.6.1",
+    "component": "server",
+    "heritage": "Helm",
+    "release": "prometheus",
+    "sidecar.istio.io/inject": "false"
+  },
+  "appLabel": true,
+  "versionLabel": false,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"prometheus\",\"chart\":\"prometheus-19.6.1\",\"component\":\"server\",\"heritage\":\"Helm\",\"release\":\"prometheus\"},\"name\":\"prometheus\",\"namespace\":\"istio-system\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"prometheus\",\"component\":\"server\",\"release\":\"prometheus\"}},\"strategy\":{\"rollingUpdate\":null,\"type\":\"Recreate\"},\"template\":{\"metadata\":{\"labels\":{\"app\":\"prometheus\",\"chart\":\"prometheus-19.6.1\",\"component\":\"server\",\"heritage\":\"Helm\",\"release\":\"prometheus\",\"sidecar.istio.io/inject\":\"false\"}},\"spec\":{\"containers\":[{\"args\":[\"--volume-dir=/etc/config\",\"--webhook-url=http://127.0.0.1:9090/-/reload\"],\"image\":\"jimmidyson/configmap-reload:v0.8.0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"prometheus-server-configmap-reload\",\"resources\":{},\"volumeMounts\":[{\"mountPath\":\"/etc/config\",\"name\":\"config-volume\",\"readOnly\":true}]},{\"args\":[\"--storage.tsdb.retention.time=15d\",\"--config.file=/etc/config/prometheus.yml\",\"--storage.tsdb.path=/data\",\"--web.console.libraries=/etc/prometheus/console_libraries\",\"--web.console.templates=/etc/prometheus/consoles\",\"--web.enable-lifecycle\"],\"image\":\"prom/prometheus:v2.41.0\",\"imagePullPolicy\":\"IfNotPresent\",\"livenessProbe\":{\"failureThreshold\":3,\"httpGet\":{\"path\":\"/-/healthy\",\"port\":9090,\"scheme\":\"HTTP\"},\"initialDelaySeconds\":30,\"periodSeconds\":15,\"successThreshold\":1,\"timeoutSeconds\":10},\"name\":\"prometheus-server\",\"ports\":[{\"containerPort\":9090}],\"readinessProbe\":{\"failureThreshold\":3,\"httpGet\":{\"path\":\"/-/ready\",\"port\":9090,\"scheme\":\"HTTP\"},\"initialDelaySeconds\":0,\"periodSeconds\":5,\"successThreshold\":1,\"timeoutSeconds\":4},\"resources\":{},\"volumeMounts\":[{\"mountPath\":\"/etc/config\",\"name\":\"config-volume\"},{\"mountPath\":\"/data\",\"name\":\"storage-volume\",\"subPath\":\"\"}]}],\"dnsPolicy\":\"ClusterFirst\",\"enableServiceLinks\":true,\"securityContext\":{\"fsGroup\":65534,\"runAsGroup\":65534,\"runAsNonRoot\":true,\"runAsUser\":65534},\"serviceAccountName\":\"prometheus\",\"terminationGracePeriodSeconds\":300,\"volumes\":[{\"configMap\":{\"name\":\"prometheus\"},\"name\":\"config-volume\"},{\"emptyDir\":{},\"name\":\"storage-volume\"}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "prometheus-db8b4588f-hhrn9",
+      "labels": {
+        "app": "prometheus",
+        "chart": "prometheus-19.6.1",
+        "component": "server",
+        "heritage": "Helm",
+        "pod-template-hash": "db8b4588f",
+        "release": "prometheus",
+        "sidecar.istio.io/inject": "false"
+      },
+      "createdAt": "2024-02-15T09:24:58Z",
+      "createdBy": [
+        {
+          "name": "prometheus-db8b4588f",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "prometheus-server-configmap-reload",
+          "image": "jimmidyson/configmap-reload:v0.8.0",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        },
+        {
+          "name": "prometheus-server",
+          "image": "prom/prometheus:v2.41.0",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": null,
+      "istioInitContainers": null,
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": false,
+      "annotations": null,
+      "proxyStatus": null,
+      "serviceAccountName": "prometheus"
+    }
+  ],
+  "services": [
+    {
+      "name": "prometheus",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "prometheus",
+        "chart": "prometheus-19.6.1",
+        "component": "server",
+        "heritage": "Helm",
+        "release": "prometheus"
+      },
+      "selector": {
+        "app": "prometheus",
+        "component": "server",
+        "release": "prometheus"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "prometheus.istio-system": {
+        "name": "prometheus",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "prometheus",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": -1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

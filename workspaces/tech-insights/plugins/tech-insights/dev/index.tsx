@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import {
   techInsightsPlugin,
   EntityTechInsightsScorecardContent,
-  techInsightsApiRef,
-  TechInsightsApi,
   TechInsightsScorecardPage,
 } from '../src';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import {
+  Check,
+  CheckResult,
+} from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
@@ -30,7 +30,10 @@ import {
   checkResultRenderers,
   runChecksResponse,
 } from './mocks';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  TechInsightsApi,
+  techInsightsApiRef,
+} from '@backstage-community/plugin-tech-insights-react';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',

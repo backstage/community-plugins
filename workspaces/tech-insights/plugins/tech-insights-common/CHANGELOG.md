@@ -1,5 +1,50 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.7.0
+
+### Minor Changes
+
+- d6411fe: run bulk checks in chunks (a 750)
+- a01ae4e: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- ac739ca: Adds permissions for use by the `tech-insights` apis.
+
+## 0.5.0
+
+### Minor Changes
+
+- e919e53: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- f015469: Introducing a new tech insights react plugin for reusuable frontend utilities. All migrated components and APIs have been marked as deprecated. Please update your imports to come from `@backstage-community/plugin-tech-insights-react`
+
+  Package json files for each plugin have been updated to reflect the new plugin in the Backstage `pluginPackages` metadata.
+
+- c107e0f: Deprecates `TechInsightCheck` from the `tech-insights-node` library in favor of `Check` coming from the `tech-insights-common` library.
+
+  With this change comes a refactor of `Check` from a type to an interface.
+
+  The `TechInsightCheck` interface will be removed from the `tech-insights-node` plugin in it's next major release.
+
+  Importing `Check` from `@backstage-community/plugin-tech-insights-common/client` has been deprecated in favor of importing directly from `@backstage-community/plugin-tech-insights-common`.
+
+## 0.4.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+## 0.3.0
+
+### Minor Changes
+
+- 5289c38: Add metadata to TechInsightCheck
+
 ## 0.2.21
 
 ### Patch Changes

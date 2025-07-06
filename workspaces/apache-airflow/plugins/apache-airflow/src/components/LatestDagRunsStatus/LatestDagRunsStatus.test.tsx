@@ -16,7 +16,6 @@
 import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
 import { DagRun } from '../../api/types/Dags';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 import { LatestDagRunsStatus } from './LatestDagRunsStatus';
 
 describe('LatestDagRunsStatus', () => {

@@ -96,9 +96,9 @@ const examples = [
 
 /**
  * Creates an action handler that retrieves the record identified by the specified sys_id from the specified table.
- *
- * @param {CreateActionOptions} options - options to configure the action
- * @returns {TemplateAction} an action handler
+ * @public
+ * @param options - options to configure the action
+ * @returns TemplateAction - an action handler
  */
 export const retrieveRecordAction = (
   options: CreateActionOptions,

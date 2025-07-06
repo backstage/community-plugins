@@ -1,5 +1,90 @@
 # @backstage-community/plugin-adr
 
+## 0.12.0
+
+### Minor Changes
+
+- e368185: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [e368185]
+  - @backstage-community/plugin-adr-common@0.9.0
+
+## 0.11.0
+
+### Minor Changes
+
+- fc4fa2c: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [fc4fa2c]
+  - @backstage-community/plugin-adr-common@0.8.0
+
+## 0.10.0
+
+### Minor Changes
+
+- e22d803: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e22d803]
+  - @backstage-community/plugin-adr-common@0.7.0
+
+## 0.9.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [b397bd6]
+  - @backstage-community/plugin-adr-common@0.6.0
+
+## 0.9.0
+
+### Minor Changes
+
+- b075789: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [b075789]
+  - @backstage-community/plugin-adr-common@0.5.0
+
+## 0.8.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [d527ea3]
+  - @backstage-community/plugin-adr-common@0.4.0
+
+## 0.7.0
+
+### Minor Changes
+
+- d5e54af: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [d5e54af]
+  - @backstage-community/plugin-adr-common@0.3.0
+
+## 0.6.28
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
 ## 0.6.27
 
 ### Patch Changes

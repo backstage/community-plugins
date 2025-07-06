@@ -1,5 +1,82 @@
 ### Dependencies
 
+## 1.16.0
+
+### Minor Changes
+
+- 4ed9028: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+
+## 1.15.0
+
+### Minor Changes
+
+- 8b665f9: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- df57926: Updated dependency `@types/node` to `18.19.103`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+
+## 1.14.0
+
+### Minor Changes
+
+- 9fe29e9: Backstage version bump to v1.37.0
+
+## 1.13.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+
+## 1.13.0
+
+### Minor Changes
+
+- 926f672: Backstage version bump to v1.36.1
+
+## 1.12.0
+
+### Minor Changes
+
+- 2e3d4af: Configurable user tracking for Matomo
+
+## 1.11.0
+
+### Minor Changes
+
+- b56df3f: Backstage version bump to v1.35.1
+
+## 1.10.0
+
+### Minor Changes
+
+- ac6e8f9: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.9.1
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.9.0
+
+### Minor Changes
+
+- 883e289: Migrate matomo analytics provider from janus to backstage community-plugins.
+
 ## 1.8.1
 
 ### Patch Changes

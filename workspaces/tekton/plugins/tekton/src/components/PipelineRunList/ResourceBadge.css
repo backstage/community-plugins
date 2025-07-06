@@ -9,7 +9,7 @@
   min-width: 24px;
   padding: 0 7px;
   border-radius: 20px;
-  color: var(--pf-v5-global--palette--white);
+  color: var(--pf-t--color--white);
   display: inline-block;
   text-align: center;
   white-space: nowrap;

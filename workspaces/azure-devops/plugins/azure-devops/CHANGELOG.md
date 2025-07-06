@@ -1,5 +1,143 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.17.0
+
+### Minor Changes
+
+- 1e109cd: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [1e109cd]
+  - @backstage-community/plugin-azure-devops-common@0.12.0
+
+## 0.16.1
+
+### Patch Changes
+
+- ae70011: Moved `getAnnotationValuesFromEntity` to the common package and deprecated the current location. This will be removed in a future version.
+- 837d67f: Updated `README` with details regarding spaces in project and repo names
+- 9cf745c: Updated permissions section in `README` to remove legacy backend references and to make the instructions more clear
+- 3622b13: Deprecated `getRepoBuilds` on the frontend and backend along with related code. The are no usages of this method as it was replaced by `getBuildRuns` well over a year ago. This will be removed in a future release.
+- d813cec: Updated the `createFrontendPlugin` call to use `pluginId` instead of the deprecated `id`
+- 764e1ef: Added a check to validate that the `dev.azure.com/readme-path` annotation value does not have a relative path and throw an error with details if it does as this is not supported by the Azure DevOps API used for this feature.
+- 071eb9b: Added a note to the `README` regarding what value to use for the `dev.azure.com/build-definition` annotation and how you can find it in Azure DevOps if you are unsure.
+- Updated dependencies [ae70011]
+  - @backstage-community/plugin-azure-devops-common@0.11.1
+
+## 0.16.0
+
+### Minor Changes
+
+- dd67a17: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [dd67a17]
+  - @backstage-community/plugin-azure-devops-common@0.11.0
+
+## 0.15.0
+
+### Minor Changes
+
+- 8e54e8e: **BREAKING** If the specified build definition is not found, return no results and display a message explaining why.
+
+## 0.14.0
+
+### Minor Changes
+
+- 79f360a: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [79f360a]
+  - @backstage-community/plugin-azure-devops-common@0.10.0
+
+## 0.13.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.13.1
+
+### Patch Changes
+
+- 7f32b36: Added New Frontend System filter for cards and tabs so they use `isAzureDevOpsAvailable` and `isAzurePipelinesAvailable` to control their visibility
+
+## 0.13.0
+
+### Minor Changes
+
+- 75f72bb: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [75f72bb]
+  - @backstage-community/plugin-azure-devops-common@0.9.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 1e8ea62: Export function `getAnnotationValuesFromEntity`
+
+## 0.11.0
+
+### Minor Changes
+
+- 32ab469: Add the ability to fetch and see a build's log
+
+## 0.10.0
+
+### Minor Changes
+
+- ff23f2f: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [ff23f2f]
+  - @backstage-community/plugin-azure-devops-common@0.8.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 2ca3917: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [2ca3917]
+  - @backstage-community/plugin-azure-devops-common@0.7.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 52190f0: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [52190f0]
+  - @backstage-community/plugin-azure-devops-common@0.6.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 7ce46dc: Backstage version bump to v1.33.5
+
+### Patch Changes
+
+- Updated dependencies [7ce46dc]
+  - @backstage-community/plugin-azure-devops-common@0.5.0
+
+## 0.6.3
+
+### Patch Changes
+
+- d71fade: Reverted the MUI v5 migration
+
 ## 0.6.2
 
 ### Patch Changes

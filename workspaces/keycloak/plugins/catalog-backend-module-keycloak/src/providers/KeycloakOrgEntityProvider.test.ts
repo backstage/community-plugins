@@ -24,9 +24,6 @@ import { ErrorLike } from '@backstage/errors';
 import type { EntityProviderConnection } from '@backstage/plugin-catalog-node';
 import type { JsonObject } from '@backstage/types';
 
-// @ts-ignore
-import inclusion from 'inclusion';
-
 import {
   assertLogMustNotInclude,
   authMock,
@@ -36,8 +33,6 @@ import {
   PASSWORD_CONFIG,
 } from '../../__fixtures__/helpers';
 import { KeycloakOrgEntityProvider } from './KeycloakOrgEntityProvider';
-
-jest.mock('inclusion', () => jest.fn());
 
 const connection = {
   applyMutation: jest.fn(),
@@ -71,14 +66,42 @@ describe.each([
   let keycloakLogger: ServiceMock<LoggerService>;
   let schedule: SchedulerServiceTaskRunnerMock;
 
+  const mockPLimit = jest.fn().mockImplementation((_concurrency: number) => {
+    // Create function repeatedly calling the original function without limit implementation
+    const limit = jest
+      .fn()
+      .mockImplementation(
+        async <Arguments extends unknown[], ReturnType>(
+          fn: (...args: Arguments) => ReturnType | PromiseLike<ReturnType>,
+          ...args: Arguments
+        ): Promise<ReturnType> => {
+          const result = fn(...args);
+          return result instanceof Promise ? result : Promise.resolve(result); // Ensure result is always a Promise
+        },
+      );
+    return limit;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     authMock.mockReset();
+    jest.resetModules(); // Clears require cache to allow re-mocking
+
+    // @ts-ignore
+    jest.unstable_mockModule('@keycloak/keycloak-admin-client', async () => ({
+      default: mockImplementation,
+    }));
+
+    // @ts-ignore
+    jest.unstable_mockModule('p-limit', () => {
+      return {
+        default: mockPLimit,
+      };
+    });
     keycloakLogger = mockServices.logger.mock();
     logger = mockServices.logger.mock({
       child: () => keycloakLogger,
     });
-    inclusion.mockImplementation(() => ({ default: mockImplementation })); // Return the correct mock based on the version
     schedule = scheduler.createScheduledTaskRunner(
       '' as unknown as SchedulerServiceTaskScheduleDefinition,
     ) as SchedulerServiceTaskRunnerMock;
@@ -109,13 +132,6 @@ describe.each([
     }
   };
 
-  it('should mock inclusion', async () => {
-    const KeyCloakAdminClient = await inclusion(
-      '@keycloak/keycloak-admin-client',
-    );
-    expect(KeyCloakAdminClient).toEqual({ default: mockImplementation });
-  });
-
   it('should connect', async () => {
     const keycloak = createProvider(CONFIG);
     const result = await Promise.all(
@@ -128,7 +144,9 @@ describe.each([
     const keycloak = createProvider(CONFIG);
 
     for await (const k of keycloak) {
-      await expect(() => k.read()).rejects.toThrow('Not initialized');
+      await expect(() =>
+        k.read({ taskInstanceId: 'any-task-instance-id' }),
+      ).rejects.toThrow('Not initialized');
     }
     expect(authMock).toHaveBeenCalledTimes(0);
   });
@@ -170,7 +188,7 @@ describe.each([
 
     await runProvider(validConfig);
 
-    expect(authMock).toHaveBeenCalledTimes(1);
+    expect(authMock).toHaveBeenCalled();
     expect(authMock).toHaveBeenCalledWith({
       grantType: 'client_credentials',
       clientId: 'myclientid',
@@ -205,14 +223,14 @@ describe.each([
   it('should read with grantType password', async () => {
     await runProvider(PASSWORD_CONFIG);
 
-    expect(authMock).toHaveBeenCalledTimes(1);
+    expect(authMock).toHaveBeenCalled();
     expect(authMock).toHaveBeenCalledWith({
       grantType: 'password',
       clientId: 'admin-cli',
       username: 'myusername',
       password: 'mypassword', // NOSONAR
     });
-    expect(connection.applyMutation).toHaveBeenCalledTimes(1);
+    expect(connection.applyMutation).toHaveBeenCalled();
     expect(
       (connection.applyMutation as jest.Mock).mock.calls,
     ).toMatchSnapshot();

@@ -18,3 +18,4 @@ export const KEYCLOAK_HOST_ANNOTATION = 'keycloak.org/host';
 export const KEYCLOAK_ID_ANNOTATION = 'keycloak.org/id';
 export const KEYCLOAK_REALM_ANNOTATION = 'keycloak.org/realm';
 export const KEYCLOAK_ENTITY_QUERY_SIZE = 100;
+export const KEYCLOAK_BRIEF_REPRESENTATION_DEFAULT = true;

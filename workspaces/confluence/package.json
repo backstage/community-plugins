@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "18 || 20 || 22"
   },
   "scripts": {
-    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "dev-next": "yarn workspaces foreach -A --include backend --include app-next --parallel -v -i run start",
     "start": "yarn workspace app start",
+    "start-next": "yarn workspace app-next start",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
@@ -23,6 +25,7 @@
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
@@ -37,13 +40,12 @@
     "directory": "workspaces/confluence"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
+    "@backstage/cli": "^0.33.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.10.0",
+    "@backstage/repo-tools": "^0.14.0",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^15.0.0",
-    "concurrently": "^8.0.0",
+    "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.4.0"
@@ -52,7 +54,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
@@ -61,8 +63,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "knip": "^5.27.4"
   }
 }

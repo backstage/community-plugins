@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Link, TableColumn } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components';
 import {
   EntityPeekAheadPopover,
   EntityRefLink,
 } from '@backstage/plugin-catalog-react';
-import IconButton from '@material-ui/core/IconButton';
-import LinkIcon from '@material-ui/icons/Link';
-import Typography from '@material-ui/core/Typography';
 import {
   BugReportRatingCard,
   CodeSmellsRatingCard,
@@ -33,168 +29,118 @@ import {
   QualityBadge,
   VulnerabilitiesRatingCard,
 } from '../SonarQubeCard/MetricInsights';
-import { EntityLinkProps, SonarQubeTableRow } from './types';
+import { SonarQubeTableRow } from './types';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { sonarqubeTranslationRef } from '../../translation';
 
-const EntityLink = ({
-  entityRef,
-  title,
-  url,
-  kind,
-  namespace,
-}: EntityLinkProps) => {
-  return (
-    <Typography
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0',
-        margin: '0',
-      }}
-    >
-      <EntityPeekAheadPopover entityRef={entityRef}>
-        <EntityRefLink
-          entityRef={{
-            kind: kind,
-            namespace: namespace,
-            name: entityRef.split('/')[1],
-          }}
-        />
-      </EntityPeekAheadPopover>
-      <Link to={url} title={title} target="_blank">
-        <IconButton
-          aria-label="link"
-          color="inherit"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0',
-            paddingLeft: '10px',
-            margin: '0',
-          }}
-        >
-          <LinkIcon />
-        </IconButton>
-      </Link>
-    </Typography>
-  );
-};
-
-export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
+export const getColumns = (
+  t: TranslationFunction<typeof sonarqubeTranslationRef.T>,
+): TableColumn<SonarQubeTableRow>[] => {
   return [
     {
-      title: 'Component',
+      title: t('sonarQubeTable.columnsTitle.name'),
       field: 'resolved.name',
       type: 'string',
       highlight: true,
-      align: 'center',
-      width: '25%',
-      cellStyle: {
-        wordBreak: 'inherit',
-        padding: '10px 20px',
-      },
       render: ({ resolved }) => {
         if (!resolved?.name) {
           return null;
         }
-        const scoreCardComponentUrl = `/catalog/default/component/${
-          resolved?.name
-        }/${resolved?.isSonarQubeAnnotationEnabled ? 'scorecard' : ''}`;
+        const entityRef =
+          resolved.entityRef || `component:default/${resolved.name}`;
         return (
-          <>
-            <EntityLink
-              entityRef={`component:default/${resolved?.name}`}
-              title="View Component details"
-              url={scoreCardComponentUrl}
-              kind="component"
-              namespace="default"
-            />
-          </>
+          <EntityPeekAheadPopover entityRef={entityRef}>
+            <EntityRefLink entityRef={entityRef} />
+          </EntityPeekAheadPopover>
         );
       },
     },
     {
-      title: 'Quality Gate',
-      field: 'resolved?.findings?.metrics.alert_status',
+      title: t('sonarQubeTable.columnsTitle.qualityGate'),
+      field: 'resolved.findings.metrics.alert_status',
       type: 'string',
-      align: 'center',
-      sorting: false,
-      width: '35%',
       render: ({ resolved, id }) => {
         if (resolved?.findings?.metrics) {
-          return (
-            <div>
-              <QualityBadge value={resolved?.findings} />
-              <br />
-              <LastAnalyzedRatingCard value={resolved?.findings} />
-            </div>
-          );
+          return <QualityBadge value={resolved?.findings} compact />;
         }
         return <NoSonarQubeCard value={resolved} sonarQubeComponentKey={id} />;
       },
     },
     {
-      title: 'Bugs',
+      title: t('sonarQubeTable.columnsTitle.lastAnalysis'),
+      field: 'resolved.findings.metrics.lastAnalysis',
+      align: 'right',
+      type: 'datetime',
+      width: '8%',
+      render: ({ resolved }) =>
+        resolved?.findings?.metrics && (
+          <LastAnalyzedRatingCard value={resolved?.findings} />
+        ),
+    },
+    {
+      title: t('sonarQubeTable.columnsTitle.bugs'),
       field: 'resolved.findings.metrics.bugs',
       align: 'center',
       type: 'numeric',
-      width: '5%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <BugReportRatingCard value={resolved?.findings} />
+          <BugReportRatingCard value={resolved?.findings} compact />
         ),
     },
     {
-      title: 'Vulnerabilities',
+      title: t('sonarQubeTable.columnsTitle.vulnerabilities'),
       field: 'resolved.findings.metrics.vulnerabilities',
       align: 'center',
-      width: '5%',
+      width: '7%',
       type: 'numeric',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <VulnerabilitiesRatingCard value={resolved?.findings} />
+          <VulnerabilitiesRatingCard value={resolved?.findings} compact />
         ),
     },
     {
-      title: 'Code Smells',
+      title: t('sonarQubeTable.columnsTitle.codeSmells'),
       field: 'resolved.findings.metrics.code_smells',
       align: 'center',
       type: 'numeric',
-      width: '5%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <CodeSmellsRatingCard value={resolved?.findings} />
+          <CodeSmellsRatingCard value={resolved?.findings} compact />
         ),
     },
     {
-      title: 'Hotspots Reviewed',
+      title: t('sonarQubeTable.columnsTitle.hotspotsReviewed'),
       field: 'resolved.findings.metrics.security_hotspots_reviewed',
       align: 'center',
       type: 'numeric',
-      width: '5%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <HotspotsReviewed value={resolved?.findings} />
+          <HotspotsReviewed value={resolved?.findings} compact />
         ),
     },
     {
-      title: 'Coverage',
+      title: t('sonarQubeTable.columnsTitle.coverage'),
       field: 'resolved.findings.metrics.coverage',
       align: 'center',
       type: 'numeric',
-      width: '10%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <CoverageRatingCard value={resolved?.findings} />
+          <CoverageRatingCard value={resolved?.findings} compact />
         ),
     },
     {
-      title: 'Duplications',
+      title: t('sonarQubeTable.columnsTitle.duplications'),
       field: 'resolved.findings.metrics.duplicated_lines_density',
+      align: 'center',
       type: 'numeric',
-      width: '10%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <DuplicationsRatingCard value={resolved?.findings} />
+          <DuplicationsRatingCard value={resolved?.findings} compact />
         ),
     },
   ];

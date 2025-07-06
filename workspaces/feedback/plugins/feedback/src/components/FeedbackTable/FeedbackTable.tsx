@@ -86,7 +86,7 @@ export const FeedbackTable = (props: { projectId?: string }) => {
       render: (row: any) => {
         const data: FeedbackType = row;
         return data.feedbackType === 'BUG' ? (
-          <BugReportOutlined color="secondary" key={data.feedbackType} />
+          <BugReportOutlined color="error" key={data.feedbackType} />
         ) : (
           <TextsmsOutlined color="primary" key={data.feedbackType} />
         );
@@ -176,7 +176,7 @@ export const FeedbackTable = (props: { projectId?: string }) => {
           <Chip
             label={data.tag}
             variant="outlined"
-            color={data.feedbackType === 'FEEDBACK' ? 'primary' : 'secondary'}
+            color={data.feedbackType === 'FEEDBACK' ? 'primary' : 'error'}
           />
         );
       },

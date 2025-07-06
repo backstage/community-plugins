@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { configApiRef } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
@@ -23,8 +21,6 @@ import {
   MockPermissionApi,
   TestApiProvider,
 } from '@backstage/test-utils';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import {
   PermissionAction,
@@ -175,7 +171,6 @@ const mockConfigApi = new MockConfigApi({
 
 createDevApp()
   .registerPlugin(rbacPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

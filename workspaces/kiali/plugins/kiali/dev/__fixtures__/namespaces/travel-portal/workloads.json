@@ -1,0 +1,165 @@
+{
+  "namespace": {
+    "name": "travel-portal",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "workloads": [
+    {
+      "name": "travels",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-01-31T14:07:06Z",
+      "resourceVersion": "81433",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "travels",
+        "version": "v1"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"travels\",\"namespace\":\"travel-portal\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"travels\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"proxy.istio.io/config\":\"tracing:\\n  zipkin:\\n    address: zipkin.istio-system:9411\\n  sampling: 10\\n  custom_tags:\\n    http.header.portal:\\n      header:\\n        name: portal\\n    http.header.device:\\n      header:\\n        name: device\\n    http.header.user:\\n      header:\\n        name: user\\n    http.header.travel:\\n      header:\\n        name: travel\\n\",\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"travels\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LISTEN_ADDRESS\",\"value\":\":8000\"},{\"name\":\"PORTAL_COORDINATES\",\"value\":\"55.956245,-3.187915\"},{\"name\":\"PORTAL_COUNTRY\",\"value\":\"United Kingdom\"},{\"name\":\"PORTAL_NAME\",\"value\":\"travels.uk\"},{\"name\":\"TRAVELS_AGENCY_SERVICE\",\"value\":\"http://travels.travel-agency:8000\"}],\"image\":\"quay.io/kiali/demo_travels_portal:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"control\",\"ports\":[{\"containerPort\":8000}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["default"],
+      "health": {
+        "workloadStatus": {
+          "name": "travels",
+          "desiredReplicas": 1,
+          "currentReplicas": 1,
+          "availableReplicas": 1,
+          "syncedProxies": 1
+        },
+        "requests": {
+          "inbound": {},
+          "outbound": {
+            "http": {
+              "200": 0.2666666666666666
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "viaggi",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-01-31T14:07:06Z",
+      "resourceVersion": "81479",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "viaggi",
+        "version": "v1"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"viaggi\",\"namespace\":\"travel-portal\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"viaggi\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"proxy.istio.io/config\":\"tracing:\\n  zipkin:\\n    address: zipkin.istio-system:9411\\n  sampling: 10\\n  custom_tags:\\n    http.header.portal:\\n      header:\\n        name: portal\\n    http.header.device:\\n      header:\\n        name: device\\n    http.header.user:\\n      header:\\n        name: user\\n    http.header.travel:\\n      header:\\n        name: travel\\n\",\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"viaggi\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LISTEN_ADDRESS\",\"value\":\":8000\"},{\"name\":\"PORTAL_COORDINATES\",\"value\":\"41.890668,12.492194\"},{\"name\":\"PORTAL_COUNTRY\",\"value\":\"Italy\"},{\"name\":\"PORTAL_NAME\",\"value\":\"viaggi.it\"},{\"name\":\"TRAVELS_AGENCY_SERVICE\",\"value\":\"http://travels.travel-agency:8000\"}],\"image\":\"quay.io/kiali/demo_travels_portal:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"control\",\"ports\":[{\"containerPort\":8000}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["default"],
+      "health": {
+        "workloadStatus": {
+          "name": "viaggi",
+          "desiredReplicas": 1,
+          "currentReplicas": 1,
+          "availableReplicas": 1,
+          "syncedProxies": 1
+        },
+        "requests": {
+          "inbound": {},
+          "outbound": {
+            "http": {
+              "200": 0.2644533333333333
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "voyages",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-01-31T14:07:06Z",
+      "resourceVersion": "81495",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "voyages",
+        "version": "v1"
+      },
+      "appLabel": true,
+      "versionLabel": true,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"voyages\",\"namespace\":\"travel-portal\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"voyages\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"proxy.istio.io/config\":\"tracing:\\n  zipkin:\\n    address: zipkin.istio-system:9411\\n  sampling: 10\\n  custom_tags:\\n    http.header.portal:\\n      header:\\n        name: portal\\n    http.header.device:\\n      header:\\n        name: device\\n    http.header.user:\\n      header:\\n        name: user\\n    http.header.travel:\\n      header:\\n        name: travel\\n\",\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"voyages\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LISTEN_ADDRESS\",\"value\":\":8000\"},{\"name\":\"PORTAL_COORDINATES\",\"value\":\"48.861310,2.337418\"},{\"name\":\"PORTAL_COUNTRY\",\"value\":\"France\"},{\"name\":\"PORTAL_NAME\",\"value\":\"voyages.fr\"},{\"name\":\"TRAVELS_AGENCY_SERVICE\",\"value\":\"http://travels.travel-agency:8000\"}],\"image\":\"quay.io/kiali/demo_travels_portal:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"voyages\",\"ports\":[{\"containerPort\":8000}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["default"],
+      "health": {
+        "workloadStatus": {
+          "name": "voyages",
+          "desiredReplicas": 1,
+          "currentReplicas": 1,
+          "availableReplicas": 1,
+          "syncedProxies": 1
+        },
+        "requests": {
+          "inbound": {},
+          "outbound": {
+            "http": {
+              "200": 0.2605377777777778
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "validations": {
+    "workload": {
+      "travels.travel-portal": {
+        "name": "travels",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "viaggi.travel-portal": {
+        "name": "viaggi",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "voyages.travel-portal": {
+        "name": "voyages",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

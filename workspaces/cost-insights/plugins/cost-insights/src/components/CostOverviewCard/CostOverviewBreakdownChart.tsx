@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DateTime } from 'luxon';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';

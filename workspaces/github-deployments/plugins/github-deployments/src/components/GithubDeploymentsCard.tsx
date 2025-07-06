@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { GithubDeployment, githubDeploymentsApiRef } from '../api';
 import {
@@ -36,12 +35,14 @@ import { useApi } from '@backstage/core-plugin-api';
 
 const GithubDeploymentsComponent = ({
   projectSlug,
+  environments,
   last,
   lastStatuses,
   columns,
   host,
 }: {
   projectSlug: string;
+  environments?: string[];
   last: number;
   lastStatuses: number;
   columns: TableColumn<GithubDeployment>[];
@@ -61,6 +62,7 @@ const GithubDeploymentsComponent = ({
         host,
         owner,
         repo,
+        environments,
         last,
         lastStatuses,
       }),
@@ -81,11 +83,12 @@ const GithubDeploymentsComponent = ({
 };
 
 export const GithubDeploymentsCard = (props: {
+  environments?: string[];
   last?: number;
   lastStatuses?: number;
   columns?: TableColumn<GithubDeployment>[];
 }) => {
-  const { last, lastStatuses, columns } = props;
+  const { environments, last, lastStatuses, columns } = props;
   const { entity } = useEntity();
   const [host] = [
     entity?.metadata.annotations?.[ANNOTATION_SOURCE_LOCATION],
@@ -99,6 +102,7 @@ export const GithubDeploymentsCard = (props: {
       projectSlug={
         entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] || ''
       }
+      environments={environments}
       last={last || 10}
       lastStatuses={lastStatuses || 5}
       host={host}

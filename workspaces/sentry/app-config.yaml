@@ -9,8 +9,6 @@ app:
     - entity-card:catalog/links:
         config:
           filter: kind:component has:links
-    - entity-card:sentry/sentry-issues
-    - entity-content:sentry/sentry-issues
 
 organization:
   name: Sentry Example

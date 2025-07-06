@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import AngleDoubleDownIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
 import AngleDoubleUpIcon from '@mui/icons-material/KeyboardDoubleArrowUpOutlined';
 import { Tooltip } from '@patternfly/react-core';
-import { global_palette_gold_400 as mediumColor } from '@patternfly/react-tokens/dist/js/global_palette_gold_400';
-import { global_palette_orange_300 as highColor } from '@patternfly/react-tokens/dist/js/global_palette_orange_300';
+import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/js/t_color_yellow_40';
+import { t_color_orange_40 as highColor } from '@patternfly/react-tokens/dist/js/t_color_orange_40';
 import classNames from 'classnames';
 
 import { PipelineRunKind } from '@janus-idp/shared-react';
@@ -28,6 +28,8 @@ import { PipelineRunKind } from '@janus-idp/shared-react';
 import { usePipelineRunScanResults } from '../../hooks/usePipelineRunScanResults';
 import CriticalRiskIcon from '../Icons/CriticalRiskIcon';
 import EqualsIcon from '../Icons/EqualsIcon';
+import { tektonTranslationRef } from '../../translation';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 const useVStyles = makeStyles((theme: Theme) => ({
   pipelineVulnerabilities: {
@@ -75,12 +77,13 @@ type PipelineRunVulnerabilitiesProps = {
   condensed?: boolean;
 };
 
-const PipelineRunVulnerabilities: React.FC<PipelineRunVulnerabilitiesProps> = ({
+const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
   pipelineRun,
   condensed,
 }) => {
   const classes = useVStyles();
   const scanResults = usePipelineRunScanResults(pipelineRun);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <div className={classes.pipelineVulnerabilities}>
@@ -88,13 +91,21 @@ const PipelineRunVulnerabilities: React.FC<PipelineRunVulnerabilitiesProps> = ({
         <>
           <div className={classNames(classes.severityContainer, 'severity')}>
             <span className={classes.severityStatus}>
-              <Tooltip content="Critical">
+              <Tooltip
+                content={t(
+                  'pipelineRunList.vulnerabilitySeverityTitle.critical',
+                )}
+              >
                 <CriticalRiskIcon
                   className={classes.criticalStatus}
-                  title="Critical"
+                  title={t(
+                    'pipelineRunList.vulnerabilitySeverityTitle.critical',
+                  )}
                 />
               </Tooltip>
-              {!condensed ? 'Critical' : null}
+              {!condensed
+                ? t('pipelineRunList.vulnerabilitySeverityTitle.critical')
+                : null}
             </span>
             <span className={classes.severityCount}>
               {scanResults.vulnerabilities.critical || 0}
@@ -102,13 +113,19 @@ const PipelineRunVulnerabilities: React.FC<PipelineRunVulnerabilitiesProps> = ({
           </div>
           <div className={classNames(classes.severityContainer, 'severity')}>
             <span className={classes.severityStatus}>
-              <Tooltip content="High">
+              <Tooltip
+                content={t('pipelineRunList.vulnerabilitySeverityTitle.high')}
+              >
                 <AngleDoubleUpIcon
                   className={classes.highStatus}
-                  titleAccess="High"
+                  titleAccess={t(
+                    'pipelineRunList.vulnerabilitySeverityTitle.high',
+                  )}
                 />
               </Tooltip>
-              {!condensed ? 'High' : null}
+              {!condensed
+                ? t('pipelineRunList.vulnerabilitySeverityTitle.high')
+                : null}
             </span>
             <span className={classes.severityCount}>
               {scanResults.vulnerabilities.high || 0}
@@ -116,10 +133,17 @@ const PipelineRunVulnerabilities: React.FC<PipelineRunVulnerabilitiesProps> = ({
           </div>
           <div className={classNames(classes.severityContainer, 'severity')}>
             <span className={classes.severityStatus}>
-              <Tooltip content="Medium">
-                <EqualsIcon className={classes.mediumStatus} title="Medium" />
+              <Tooltip
+                content={t('pipelineRunList.vulnerabilitySeverityTitle.medium')}
+              >
+                <EqualsIcon
+                  className={classes.mediumStatus}
+                  title={t('pipelineRunList.vulnerabilitySeverityTitle.medium')}
+                />
               </Tooltip>
-              {!condensed ? 'Medium' : null}
+              {!condensed
+                ? t('pipelineRunList.vulnerabilitySeverityTitle.medium')
+                : null}
             </span>
             <span className={classes.severityCount}>
               {scanResults.vulnerabilities.medium || 0}
@@ -127,13 +151,19 @@ const PipelineRunVulnerabilities: React.FC<PipelineRunVulnerabilitiesProps> = ({
           </div>
           <div className={classNames(classes.severityContainer, 'severity')}>
             <span className={classes.severityStatus}>
-              <Tooltip content="Low">
+              <Tooltip
+                content={t('pipelineRunList.vulnerabilitySeverityTitle.low')}
+              >
                 <AngleDoubleDownIcon
                   className={classes.lowStatus}
-                  titleAccess="Low"
+                  titleAccess={t(
+                    'pipelineRunList.vulnerabilitySeverityTitle.low',
+                  )}
                 />
               </Tooltip>
-              {!condensed ? 'Low' : null}
+              {!condensed
+                ? t('pipelineRunList.vulnerabilitySeverityTitle.low')
+                : null}
             </span>
             <span className={classes.severityCount}>
               {scanResults.vulnerabilities.low || 0}

@@ -15,7 +15,6 @@
  */
 
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { RadarLegendQuadrant } from './RadarLegendQuadrant';
 import { RadarLegendProps } from './types';
 import { setupSegments } from './utils';
@@ -35,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: '18px',
   },
   rings: {
-    columns: 3,
+    columns: (props: { columnCount: number }) => props.columnCount,
   },
   ring: {
     breakInside: 'avoid-column',

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Content, Header, Page } from '@backstage/core-components';
@@ -30,6 +29,8 @@ const mockEntity = {
   metadata: {
     name: 'backstage-plugin-catalog',
     annotations: {
+      // Workaround to disable backend communication in plugin-test-app
+      'npm/__devapp__': 'true',
       'npm/package': '@backstage/plugin-catalog',
     },
   },

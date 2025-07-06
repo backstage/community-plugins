@@ -38,8 +38,8 @@ export class CasbinDBAdapterFactory {
 
     let adapter;
     if (client === 'pg') {
-      const dbName = await this.databaseClient.client.config.connection
-        .database;
+      const dbName =
+        await this.databaseClient.client.config.connection.database;
       const schema =
         (await this.databaseClient.client.searchPath?.[0]) ?? 'public';
 
@@ -54,6 +54,7 @@ export class CasbinDBAdapterFactory {
         ssl,
         database: dbName,
         schema: schema,
+        poolSize: databaseConfig?.getOptionalNumber('knexConfig.pool.max'),
       });
     }
 

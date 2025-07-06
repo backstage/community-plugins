@@ -1,5 +1,74 @@
 ## @janus-idp/backstage-plugin-feedback [1.6.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback@1.5.0...@janus-idp/backstage-plugin-feedback@1.6.0) (2024-07-26)
 
+## 1.7.4
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.7.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 1.7.2
+
+### Patch Changes
+
+- 1a5c83c: reset fields after submitting feedback
+
+## 1.7.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
+## 1.7.0
+
+### Minor Changes
+
+- 46a3e25: - added customizations for frontend plugin
+  - added new component to collect feedback
+  - added httpAuth service to backend plugin
+
+## 1.6.15
+
+### Patch Changes
+
+- f34426f: fixed newline characters causing error in summary field
+
+## 1.6.14
+
+### Patch Changes
+
+- 4b2e17c: update backstage to 1.34.2 and replace `@spotify/prettier-config` by `@backstage/cli/config/prettier`
+
+## 1.6.13
+
+### Patch Changes
+
+- 4789af2: Fixed some minor issues in feedback plugin
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+
+## 1.6.12
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
+## 1.6.11
+
+### Patch Changes
+
+- 1e170c1: Clean up api report warnings and remove unnecessary files
+
+## 1.6.10
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.6.9
 
 ### Patch Changes

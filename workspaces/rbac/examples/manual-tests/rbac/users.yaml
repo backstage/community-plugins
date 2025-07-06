@@ -1,0 +1,473 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: ant_man
+spec:
+  memberOf: []
+  profile:
+    displayName: Ant Man
+    email: ant_man@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: hulk
+spec:
+  memberOf: []
+  profile:
+    displayName: Hulk
+    email: hulk@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: thor
+spec:
+  memberOf:
+    - thor_group_0
+  profile:
+    displayName: Thor
+    email: thor@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: wasp
+spec:
+  memberOf:
+    - wasp_group_0
+  profile:
+    displayName: Wasp
+    email: wasp@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: captain_america
+spec:
+  memberOf:
+    - captain_america_group_0
+  profile:
+    displayName: Captain America
+    email: captain_america@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: hawkeye
+spec:
+  memberOf:
+    - hawkeye_group_0
+  profile:
+    displayName: Hawkeye
+    email: hawkeye@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: quicksilver
+spec:
+  memberOf:
+    - quicksilver_group_0
+  profile:
+    displayName: Quicksilver
+    email: quicksilver@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: scarlet_witch
+spec:
+  memberOf:
+    - scarlet_witch_group_0
+  profile:
+    displayName: Scarlet Witch
+    email: scarlet_witch@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: swordsman
+spec:
+  memberOf:
+    - swordsman_group_0
+  profile:
+    displayName: Swordsman
+    email: swordsman@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: hercules
+spec:
+  memberOf:
+    - hercules_group_0
+  profile:
+    displayName: Hercules
+    email: hercules@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: black_panther
+spec:
+  memberOf:
+    - black_panther_group_0
+  profile:
+    displayName: Black Panther
+    email: black_panther@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: vision
+spec:
+  memberOf:
+    - vision_group_0
+  profile:
+    displayName: Vision
+    email: vision@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: black_knight
+spec:
+  memberOf:
+    - black_knight_group_a
+    - black_knight_group_b
+  profile:
+    displayName: Black Knight
+    email: black_knight@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: black_widow
+spec:
+  memberOf:
+    - black_widow_group_a
+    - black_widow_group_b
+  profile:
+    displayName: Black Widow
+    email: black_widow@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: mantis
+spec:
+  memberOf:
+    - mantis_group_a
+    - mantis_group_b
+  profile:
+    displayName: Mantis
+    email: mantis@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: beast
+spec:
+  memberOf:
+    - beast_group_a
+    - beast_group_b
+  profile:
+    displayName: Beast
+    email: beast@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: moondragon
+spec:
+  memberOf:
+    - moondragon_group_a_0
+    - moondragon_group_b_0
+  profile:
+    displayName: Moondragon
+    email: moondragon@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: hellcat
+spec:
+  memberOf:
+    - hellcat_group_a_0
+    - hellcat_group_b_0
+  profile:
+    displayName: Hellcat
+    email: hellcat@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: captain_marvel
+spec:
+  memberOf:
+    - captain_marvel_group_a_0
+    - captain_marvel_group_b_0
+  profile:
+    displayName: Captain Marvel
+    email: captain_marvel@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: falcon
+spec:
+  memberOf:
+    - falcon_group_a_0
+    - falcon_group_b_0
+  profile:
+    displayName: Falcon
+    email: falcon@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: wonder_man
+spec:
+  memberOf:
+    - wonder_man_group_0
+  profile:
+    displayName: Wonder Man
+    email: wonder_man@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: tigra
+spec:
+  memberOf:
+    - tigra_group_0
+  profile:
+    displayName: Tigra
+    email: tigra@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: she_hulk
+spec:
+  memberOf:
+    - she_hulk_group_0
+  profile:
+    displayName: She-Hulk
+    email: she_hulk@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: starfox
+spec:
+  memberOf:
+    - starfox_group_0
+  profile:
+    displayName: Starfox
+    email: starfox@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: mockingbird
+spec:
+  memberOf:
+    - mockingbird_group_0
+  profile:
+    displayName: Mockingbird
+    email: mockingbird@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: war_machine
+spec:
+  memberOf:
+    - war_machine_group_0
+  profile:
+    displayName: War Machine
+    email: war_machine@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: namor
+spec:
+  memberOf:
+    - namor_group_a_0
+    - namor_group_b_0
+  profile:
+    displayName: Namor
+    email: namor@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: thing
+spec:
+  memberOf:
+    - thing_group_a_0
+    - thing_group_b_0
+  profile:
+    displayName: Thing
+    email: thing@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: doctor_druid
+spec:
+  memberOf:
+    - doctor_druid_group_a_0
+    - doctor_druid_group_b_0
+  profile:
+    displayName: Doctor Druid
+    email: doctor_druid@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: firebird
+spec:
+  memberOf:
+    - firebird_group_a_0
+    - firebird_group_b_0
+  profile:
+    displayName: Firebird
+    email: firebird@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: moon_knight
+spec:
+  memberOf:
+    - moon_knight_group_0
+  profile:
+    displayName: Moon Knight
+    email: moon_knight@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: spiderman
+spec:
+  memberOf:
+    - spiderman_group_0
+  profile:
+    displayName: Spiderman
+    email: spiderman@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: valkyrie
+spec:
+  memberOf:
+    - valkyrie_group_a_0
+    - valkyrie_group_b_0
+  profile:
+    displayName: Valkyrie
+    email: valkyrie@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: nova
+spec:
+  memberOf:
+    - nova_group_a_0
+    - nova_group_b_0
+  profile:
+    displayName: Nova
+    email: nova@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: storm
+spec:
+  memberOf:
+    - storm_group_a_0
+    - storm_group_b_0
+  profile:
+    displayName: Storm
+    email: storm@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: daredevil
+spec:
+  memberOf:
+    - daredevil_group_a_0
+    - daredevil_group_b_0
+  profile:
+    displayName: Daredevil
+    email: daredevil@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: psylocke
+spec:
+  memberOf: []
+  profile:
+    displayName: Psylocke
+    email: psylocke@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: penance
+spec:
+  memberOf: []
+  profile:
+    displayName: Penance
+    email: penance@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: cable
+spec:
+  memberOf:
+    - cable_group_0
+  profile:
+    displayName: Cable
+    email: cable@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: ghost_rider
+spec:
+  memberOf:
+    - ghost_rider_group_0
+  profile:
+    displayName: Ghost Rider
+    email: ghost_rider@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: admin
+spec:
+  memberOf: []
+  profile:
+    displayName: Admin
+    email: admin@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: super_user
+spec:
+  memberOf: []
+  profile:
+    displayName: Super User
+    email: super_user@example.com
+---
+

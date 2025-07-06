@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CostOverviewCard } from '../CostOverviewCard';
 import {
   BillingDateProvider,

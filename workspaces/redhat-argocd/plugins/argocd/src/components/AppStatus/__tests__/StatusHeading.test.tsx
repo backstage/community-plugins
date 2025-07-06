@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { render, screen } from '@testing-library/react';
 
 import { mockApplication } from '../../../../dev/__data__';
-import { Application } from '../../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import StatusHeading from '../StatusHeading';
 
 describe('StatusHeading', () => {

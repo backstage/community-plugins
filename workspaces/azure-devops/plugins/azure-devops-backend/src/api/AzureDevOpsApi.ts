@@ -17,6 +17,7 @@
 import {
   Build,
   BuildDefinitionReference,
+  BuildLog,
 } from 'azure-devops-node-api/interfaces/BuildInterfaces';
 import {
   BuildRun,
@@ -214,6 +215,9 @@ export class AzureDevOpsApi {
     );
   }
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   public async getRepoBuilds(
     projectName: string,
     repoName: string,
@@ -457,6 +461,9 @@ export class AzureDevOpsApi {
     }));
   }
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   public async getBuildDefinitions(
     projectName: string,
     definitionName: string,
@@ -544,6 +551,11 @@ export class AzureDevOpsApi {
         host,
         org,
       );
+
+      if (buildDefinitions.length === 0) {
+        return [];
+      }
+
       definitions = buildDefinitions
         .map(bd => bd.id)
         .filter((bd): bd is number => Boolean(bd));
@@ -585,5 +597,38 @@ export class AzureDevOpsApi {
       buffer.toString(),
     );
     return { url, content };
+  }
+
+  public async getBuildRunLog(
+    project: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<string[]> {
+    const webApi = await this.getWebApi(host, org);
+    const client = await webApi.getBuildApi();
+
+    // Get and sort logs by ID, ascending
+    const logs: BuildLog[] =
+      (await client.getBuildLogs(project, buildId)) ?? [];
+    const sortedLogs: BuildLog[] = logs
+      .filter(log => log.id !== undefined)
+      .sort((a: BuildLog, b: BuildLog) => {
+        return a.id! - b.id!;
+      });
+
+    // Fetch all log lines in parallel
+    const logLines: Promise<string[]>[] = sortedLogs
+      .filter(
+        (log: BuildLog) => log.id !== undefined && log.lineCount !== undefined,
+      )
+      .map((log: BuildLog) =>
+        client.getBuildLogLines(project, buildId, log.id!, 0, log.lineCount!),
+      );
+
+    // Wait for all requests to complete
+    const results = await Promise.all(logLines);
+
+    return results.flat();
   }
 }

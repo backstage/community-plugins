@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { getVoidLogger } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
 import { RollbarApi } from '../api';
 import { createRouter } from './router';
 import { RollbarProject, RollbarTopActiveItem } from '../api/types';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let rollbarApi: jest.Mocked<RollbarApi>;
@@ -37,7 +37,7 @@ describe('createRouter', () => {
     } as any;
     const router = await createRouter({
       rollbarApi,
-      logger: getVoidLogger(),
+      logger: mockServices.rootLogger(),
       config: new ConfigReader({ rollbar: { accountToken: 'foo' } }),
     });
     app = express().use(router);

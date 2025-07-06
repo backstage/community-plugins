@@ -20,7 +20,7 @@ import {
   LaunchDetailsResponse,
   ProjectDetails,
   ProjectListResponse,
-} from './types';
+} from '@backstage-community/plugin-report-portal-common';
 
 export class ReportPortalClient implements ReportPortalApi {
   constructor(

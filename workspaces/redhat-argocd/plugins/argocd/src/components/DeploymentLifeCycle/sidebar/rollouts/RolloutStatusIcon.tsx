@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 
 import {
   CheckCircleIcon,
@@ -27,7 +27,7 @@ import {
   AnalysisRunPhase,
   AnalysisRunPhases,
 } from '../../../../types/analysisRuns';
-import { HealthStatus } from '../../../../types/application';
+import { HealthStatus } from '@backstage-community/plugin-redhat-argocd-common';
 import { RolloutPhase, RolloutPhaseType } from '../../../../types/rollouts';
 
 export const getStatusColor = (
@@ -52,9 +52,9 @@ export const getStatusColor = (
   }
 };
 
-const RolloutStatusIcon: React.FC<{ status: keyof typeof RolloutPhase }> = ({
+const RolloutStatusIcon: FC<{ status: keyof typeof RolloutPhase }> = ({
   status,
-}): React.ReactNode => {
+}): ReactNode => {
   const classes = useIconStyles();
 
   const commonProps = {

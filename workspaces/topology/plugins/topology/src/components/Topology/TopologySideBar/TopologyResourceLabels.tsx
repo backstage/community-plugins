@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Label } from '@patternfly/react-core';
 
 import './TopologyResourceLabels.css';
@@ -33,7 +31,7 @@ const TopologyResourceLabels = ({
       {Object.keys(labels ?? {}).map((key: string) => (
         <li key={key}>
           <Label className="topology-resource-labels-list-item" color="blue">
-            <span className="pf-v5-c-label__content">
+            <span className="pf-v6-c-label__content">
               <span className="label-key">{key}</span>
               <span>=</span>
               <span className="label-value">{labels[key]}</span>

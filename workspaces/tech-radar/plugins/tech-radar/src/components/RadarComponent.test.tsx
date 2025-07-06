@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
@@ -39,7 +38,12 @@ describe('RadarComponent', () => {
       await new Promise(resolve => setTimeout(resolve, this.delay));
       return {
         entries: [],
-        quadrants: [],
+        quadrants: [
+          { id: 'infrastructure', name: 'Infrastructure' },
+          { id: 'frameworks', name: 'Frameworks' },
+          { id: 'languages', name: 'Languages' },
+          { id: 'process', name: 'Process' },
+        ],
         rings: [],
       };
     }

@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useEffect } from 'react';
 
 import { useTheme } from '@material-ui/core/styles';
 
 const THEME_DARK = 'dark';
-const THEME_DARK_CLASS = 'pf-v5-theme-dark';
+const THEME_DARK_CLASS = 'pf-v6-theme-dark';
 
 export const useDarkTheme = () => {
   const {
     palette: { type },
   } = useTheme();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const htmlTagElement = document.documentElement;
     if (type === THEME_DARK) {
       htmlTagElement.classList.add(THEME_DARK_CLASS);

@@ -1,5 +1,65 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.10.0
+
+### Minor Changes
+
+- 4af6e47: Backstage version bump to v1.40.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 09f302e: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- f1bfb28: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.7.0
+
+### Minor Changes
+
+- c2ba5bb: Backstage version bump to v1.37.0
+
+## 0.6.0
+
+### Minor Changes
+
+- aca1af5: Backstage version bump to v1.36.1
+
+## 0.5.2
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.5.1
+
+### Patch Changes
+
+- 34a5da7: Fixed code example in the README.md file where a code line was lacking an apostrophe and a semicolon
+
+## 0.5.0
+
+### Minor Changes
+
+- c4f37bd: Backstage version bump to v1.35.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 8df327b: Backstage version bump to v1.34.1
+
 ## 0.3.28
 
 ### Patch Changes

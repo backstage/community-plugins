@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 import {
+  createApiFactory,
   createComponentExtension,
   createPlugin,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
+import { NpmBackendApiRef, NpmBackendClient } from './api';
 
 /**
  * Backstage plugin.
@@ -30,6 +34,20 @@ export const npmPlugin = createPlugin({
   routes: {
     root: rootRouteRef,
   },
+  apis: [
+    createApiFactory({
+      api: NpmBackendApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new NpmBackendClient({
+          discoveryApi,
+          fetchApi,
+        }),
+    }),
+  ],
 });
 
 /**

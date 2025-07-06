@@ -17,7 +17,6 @@
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp, EntityGridItem } from '@backstage/dev-utils';
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
 import { EntitySonarQubeCard, sonarQubePlugin } from '../src';
 import { Content, Header, Page } from '@backstage/core-components';
 import {

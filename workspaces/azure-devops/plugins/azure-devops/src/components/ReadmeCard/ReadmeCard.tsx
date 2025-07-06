@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import makeStyles from '@mui/styles/makeStyles';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   InfoCard,
   Progress,
@@ -25,7 +25,6 @@ import {
   ErrorPanel,
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import React from 'react';
 
 import { useReadme } from '../../hooks';
 

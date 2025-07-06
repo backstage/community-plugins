@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
-import { usePermission } from '@backstage/plugin-permission-react';
 
-import { Card, CardContent, makeStyles } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
-
-import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
+import CachedIcon from '@mui/icons-material/Cached';
+import Box from '@mui/material/Box';
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
-import { PermissionsData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -49,8 +39,8 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
   return (
     <EditRole
       dataTestId={isAllowed ? 'update-policies' : 'disable-update-policies'}
+      canEdit={isAllowed}
       roleName={roleName}
-      disable={!isAllowed}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${2}`}
     />
   );
@@ -62,27 +52,21 @@ export const PermissionsCard = ({
 }: PermissionsCardProps) => {
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
-  const [permissions, setPermissions] = React.useState<PermissionsData[]>();
-  const permissionResult = usePermission({
-    permission: policyEntityUpdatePermission,
-    resourceRef: policyEntityUpdatePermission.resourceType,
-  });
-  const classes = useStyles();
+  const [searchText, setSearchText] = useState<string>();
 
-  const onSearchResultsChange = (searchResults: PermissionsData[]) => {
-    setPermissions(searchResults);
-  };
+  const numberOfPolicies = useMemo(() => {
+    const filteredPermissions = filterTableData({ data, columns, searchText });
+    let policies = 0;
+    filteredPermissions.forEach(p => {
+      if (p.conditions) {
+        policies++;
+        return;
+      }
+      policies += p.policies.filter(pol => pol.effect === 'allow').length;
+    });
+    return policies;
+  }, [data, searchText]);
 
-  let numberOfPolicies = 0;
-  (permissions || data)?.forEach(p => {
-    if (p.conditions) {
-      numberOfPolicies++;
-      return;
-    }
-    numberOfPolicies =
-      numberOfPolicies +
-      p.policies.filter(pol => pol.effect === 'allow').length;
-  });
   const actions = [
     {
       icon: getRefreshIcon,
@@ -95,51 +79,48 @@ export const PermissionsCard = ({
       },
     },
     {
-      icon: () =>
-        getEditIcon(
-          permissionResult.allowed && canReadUsersAndGroups,
-          entityReference,
-        ),
-      tooltip:
-        permissionResult.allowed && canReadUsersAndGroups
-          ? 'Edit'
-          : 'Unauthorized to edit',
+      icon: () => getEditIcon(canReadUsersAndGroups, entityReference),
+      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
       isFreeAction: true,
       onClick: () => {},
     },
   ];
 
+  let title = 'Permission Policies';
+  if (!loading && data.length > 0) {
+    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
+  }
+
   return (
-    <Card>
-      <CardContent>
-        {error?.name && error.name !== 404 && (
-          <div style={{ paddingBottom: '16px' }}>
-            <WarningPanel
-              message={error?.message}
-              title="Something went wrong while fetching the permission policies"
-              severity="error"
-            />
-          </div>
-        )}
+    <Box>
+      {error?.name && error.name !== 404 && (
+        <Box style={{ paddingBottom: '16px' }}>
+          <WarningPanel
+            message={error?.message}
+            title="Something went wrong while fetching the permission policies"
+            severity="error"
+          />
+        </Box>
+      )}
+      <StyledTableWrapper>
         <Table
-          title={
-            !loading && data.length > 0
-              ? `Permission Policies (${numberOfPolicies})`
-              : 'Permission Policies'
-          }
+          title={title}
           actions={actions}
-          renderSummaryRow={summary => onSearchResultsChange(summary.data)}
           options={{ padding: 'default', search: true, paging: true }}
           data={data}
           columns={columns}
           isLoading={loading}
           emptyContent={
-            <div data-testid="permission-table-empty" className={classes.empty}>
+            <Box
+              data-testid="permission-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
               No records found
-            </div>
+            </Box>
           }
+          onSearchChange={setSearchText}
         />
-      </CardContent>
-    </Card>
+      </StyledTableWrapper>
+    </Box>
   );
 };

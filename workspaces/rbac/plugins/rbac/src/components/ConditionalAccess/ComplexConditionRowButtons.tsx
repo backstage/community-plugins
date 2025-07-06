@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import AddIcon from '@mui/icons-material/Add';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 import { getDefaultRule } from '../../utils/conditional-access-utils';
-import { AddNestedConditionButton } from './AddNestedConditionButton';
+import { tooltipTitle } from './AddNestedConditionButton';
 import { criterias } from './const';
 import { Condition, ConditionsData } from './types';
 
@@ -28,7 +29,6 @@ type ComplexConditionRowButtonsProps = {
   conditionRow: ConditionsData;
   onRuleChange: (newCondition: ConditionsData) => void;
   criteria: string;
-  classes: any;
   selPluginResourceType: string;
   updateErrors: (_index: number) => void;
   isNestedConditionRule: (condition: Condition) => boolean;
@@ -39,7 +39,6 @@ export const ComplexConditionRowButtons = ({
   conditionRow,
   onRuleChange,
   criteria,
-  classes,
   selPluginResourceType,
   updateErrors,
   isNestedConditionRule,
@@ -72,22 +71,42 @@ export const ComplexConditionRowButtons = ({
 
   return (
     (criteria === criterias.allOf || criteria === criterias.anyOf) && (
-      <Box mt={1} mb={1}>
+      <Box
+        mt={2}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          gap: 1,
+          alignItems: 'flex-start',
+        }}
+      >
         <Button
-          className={classes.addRuleButton}
+          sx={{
+            color: theme => theme.palette.primary.light,
+          }}
           size="small"
           onClick={handleAddRule}
+          startIcon={<AddIcon fontSize="small" />}
         >
-          <AddIcon fontSize="small" />
-          Add rule
+          <Typography variant="body2" component="span">
+            Add rule
+          </Typography>
         </Button>
         <Button
-          className={classes.addNestedConditionButton}
+          sx={{
+            color: theme => theme.palette.primary.light,
+          }}
           size="small"
           onClick={() => handleAddNestedCondition(criteria)}
+          startIcon={<AddIcon fontSize="small" />}
         >
-          <AddIcon fontSize="small" />
-          <AddNestedConditionButton />
+          <Typography variant="body2" component="span">
+            Add nested condition
+          </Typography>
+          <Tooltip title={tooltipTitle()} placement="top">
+            <HelpOutlineIcon fontSize="inherit" style={{ marginLeft: 4 }} />
+          </Tooltip>
         </Button>
       </Box>
     )

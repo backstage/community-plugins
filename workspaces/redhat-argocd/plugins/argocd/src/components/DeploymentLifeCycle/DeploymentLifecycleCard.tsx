@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -27,7 +27,10 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import { Application, RevisionInfo } from '../../types/application';
+import {
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { isAppHelmChartType } from '../../utils/utils';
 import AppNamespace from '../Common/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
@@ -36,6 +39,7 @@ import MetadataItem from '../Common/MetadataItem';
 import Metadata from '../Common/Metadata';
 import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
+import MetadataItemWithTooltip from '../Common/MetadataItemWithTooltip';
 
 const useCardStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -53,7 +57,7 @@ interface DeploymentLifecycleCardProps {
   onclick?: () => void;
 }
 
-const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
+const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   app,
   onclick,
   revisionsMap,
@@ -99,14 +103,17 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
           </MetadataItem>
 
           {!isAppHelmChartType(app) ? (
-            <MetadataItem title="Commit">
+            <MetadataItemWithTooltip
+              title="Commit"
+              tooltipText="The commit SHA shown below is the latest commit from the first defined Application source."
+            >
               <AppCommitLink
                 application={app}
                 entity={entity}
                 revisionsMap={revisionsMap}
                 latestRevision={latestRevision}
               />
-            </MetadataItem>
+            </MetadataItemWithTooltip>
           ) : (
             <></>
           )}

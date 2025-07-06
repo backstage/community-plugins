@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   RequirePermission,
   usePermission,
@@ -48,8 +46,7 @@ const useRolesMockData: RolesData[] = [
     modifiedBy: '-',
     lastModified: '-',
     actionsPermissionResults: {
-      delete: { allowed: true, loading: false },
-      edit: { allowed: true, loading: false },
+      edit: { allowed: true },
     },
     accessiblePlugins: ['catalog'],
   },
@@ -61,8 +58,7 @@ const useRolesMockData: RolesData[] = [
     modifiedBy: '-',
     lastModified: '-',
     actionsPermissionResults: {
-      delete: { allowed: true, loading: false },
-      edit: { allowed: true, loading: false },
+      edit: { allowed: true },
     },
     accessiblePlugins: ['catalog', 'permission', 'scaffolder'],
   },
@@ -110,7 +106,7 @@ describe('RolesList', () => {
     expect(queryByText('All roles (2)')).not.toBeNull();
     expect(queryByText('role:default/guests')).not.toBeNull();
     expect(queryByText('role:default/rbac_admin')).not.toBeNull();
-    expect(queryByText('1 user, 1 group')).not.toBeNull();
+    expect(queryByText('1 group, 1 user')).not.toBeNull();
   });
 
   it('should show empty table when there are no roles', async () => {
@@ -157,24 +153,24 @@ describe('RolesList', () => {
 
   it('should show disabled delete icon if user is not authorized to delete roles', async () => {
     RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
-    mockUsePermission
-      .mockReturnValueOnce({ loading: false, allowed: true })
-      .mockReturnValue({ loading: false, allowed: false });
+    mockUsePermission.mockImplementation(input => {
+      if (input.permission.name === 'policy.entity.delete')
+        return { loading: false, allowed: false };
+      return { loading: false, allowed: true };
+    });
     mockUseRoles.mockReturnValue({
       loading: false,
       data: [
         {
           ...useRolesMockData[0],
           actionsPermissionResults: {
-            delete: { allowed: false, loading: false },
-            edit: { allowed: true, loading: false },
+            edit: { allowed: true },
           },
         },
         {
           ...useRolesMockData[1],
           actionsPermissionResults: {
-            delete: { allowed: false, loading: true },
-            edit: { allowed: true, loading: false },
+            edit: { allowed: true },
           },
         },
       ],
@@ -191,29 +187,29 @@ describe('RolesList', () => {
     expect(
       getByTestId('disable-delete-role-role:default/guests'),
     ).not.toBeNull();
-    expect(getByTestId('update-role-role:default/guests')).not.toBeNull();
+    expect(getByTestId('edit-role-role:default/guests')).not.toBeNull();
   });
 
   it('should show disabled edit icon if user is not authorized to update roles', async () => {
     RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
-    mockUsePermission
-      .mockReturnValueOnce({ loading: false, allowed: true })
-      .mockReturnValue({ loading: false, allowed: false });
+    mockUsePermission.mockImplementation(input => {
+      if (input.permission.name === 'policy.entity.update')
+        return { loading: false, allowed: false };
+      return { loading: false, allowed: true };
+    });
     mockUseRoles.mockReturnValue({
       loading: false,
       data: [
         {
           ...useRolesMockData[0],
           actionsPermissionResults: {
-            delete: { allowed: true, loading: false },
-            edit: { allowed: false, loading: false },
+            edit: { allowed: true },
           },
         },
         {
           ...useRolesMockData[1],
           actionsPermissionResults: {
-            delete: { allowed: true, loading: true },
-            edit: { allowed: false, loading: false },
+            edit: { allowed: true },
           },
         },
       ],
@@ -227,9 +223,7 @@ describe('RolesList', () => {
       createRoleLoading: false,
     });
     const { getByTestId } = await renderInTestApp(<RolesList />);
-    expect(
-      getByTestId('disable-update-role-role:default/guests'),
-    ).not.toBeNull();
+    expect(getByTestId('disable-edit-role-role:default/guests')).not.toBeNull();
     expect(getByTestId('delete-role-role:default/rbac_admin')).not.toBeNull();
   });
 

@@ -16,7 +16,7 @@ It is only meant for local development, and the setup for it can be found inside
 ## Use GitOps-API backend with Backstage
 
 The backend of this plugin is written in Golang and its source code is available [here](https://github.com/chanwit/gitops-api) as a separate GitHub repository.
-The binary of this plugin is available as a ready-to-use Docker image, [https://hub.docker.com/chanwit/gitops-api](https://hub.docker.com/chanwit/gitops-api).
+The binary of this plugin is available as a ready-to-use Docker image, [https://hub.docker.com/r/chanwit/gitops-api](https://hub.docker.com/r/chanwit/gitops-api).
 To start using GitOps with Backstage, you have to start the backend using the following command:
 
 ```bash

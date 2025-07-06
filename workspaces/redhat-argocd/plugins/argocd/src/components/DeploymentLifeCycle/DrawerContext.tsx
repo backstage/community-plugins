@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { createContext, ReactNode } from 'react';
-import { Application, History, RevisionInfo } from '../../types/application';
+import type { FC } from 'react';
+
+import { useContext, createContext, ReactNode } from 'react';
+import {
+  Application,
+  History,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 
 interface DrawerContextValue {
   application: Application;
@@ -33,7 +39,7 @@ export const DrawerContext = createContext<DrawerContextValue>(
   undefined as any,
 );
 
-export const DrawerProvider: React.FC<DrawerContextProps> = ({
+export const DrawerProvider: FC<DrawerContextProps> = ({
   application,
   revisionsMap,
   children,
@@ -56,7 +62,7 @@ export const DrawerProvider: React.FC<DrawerContextProps> = ({
 };
 
 export const useDrawerContext = () => {
-  const context = React.useContext(DrawerContext);
+  const context = useContext(DrawerContext);
   if (!context) {
     throw new Error('useDrawerContext must be used within an DrawerProvider');
   }

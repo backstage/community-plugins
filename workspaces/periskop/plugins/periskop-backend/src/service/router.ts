@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { PeriskopApi } from '../api/index';
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  */
 export interface RouterOptions {
@@ -30,6 +32,8 @@ export interface RouterOptions {
 }
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  */
 export async function createRouter(
@@ -52,6 +56,7 @@ export async function createRouter(
     const errors = await periskopApi.getErrors(locationName, serviceName);
     response.status(200).json(errors);
   });
-  router.use(errorHandler());
+
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

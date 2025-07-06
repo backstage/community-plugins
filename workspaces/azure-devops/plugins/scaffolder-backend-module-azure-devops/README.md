@@ -10,7 +10,7 @@ It contains the following actions:
 From your Backstage instance root folder:
 
 ```shell
-yarn add --cwd packages/backend @backstage-community/plugin-scaffolder-backend-module-azure-devops
+yarn --cwd packages/backend add @backstage-community/plugin-scaffolder-backend-module-azure-devops
 ```
 
 ## Configuration
@@ -146,5 +146,50 @@ spec:
       action: azure:pipeline:run
       input:
         #[...]
-        pipelineId: ${{ parameters.branch }}
+        branch: ${{ parameters.branch }}
+```
+
+### Example running a pipeline with template parameters using the `azure:pipeline:run` action
+
+```yaml
+spec:
+  parameters:
+    #[...]
+    properties:
+      #[...]
+      templateParameters:
+        type: object
+        title: Template Parameters
+        description: Azure DevOps pipeline template parameters in key-value pairs.
+
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        #[...]
+        templateParameters:
+          projectRepo: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+          sampleTemplateParameterKey: sampleTemplateParameterValue
+```
+
+### Example running a pipeline, waiting for it to complete, and printing the output using the `azure:pipeline:run` action
+
+```yaml
+spec:
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        #[...]
+        pollingInterval: 10 # Poll for pipeline run status every 10 second
+        pipelineTimeout: 300 # Timeout after 5 minutes
+  output:
+    text:
+      - title: Pipeline run info
+        content: |
+          **pipelineRunStatus:** `${{ steps['runAzurePipeline'].output.pipelineRunStatus }}` }}
+          **pipelineRunId:** `${{ steps['runAzurePipeline'].output.pipelineRunId }}` }}
+          **pipeline output:** `${{ steps['runAzurePipeline'].output.pipelineOutput['myOutputVar'].value }}` }}
 ```

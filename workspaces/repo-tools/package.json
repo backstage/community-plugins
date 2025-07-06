@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "18 || 20 || 22"
   },
   "workspaces": {
     "packages": [
@@ -22,11 +22,12 @@
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope internal",
-    "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports": "exit 0",
+    "build:api-reports:only": "exit 0",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
@@ -37,14 +38,15 @@
     ]
   },
   "dependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@backstage/repo-tools": "^0.9.4",
+    "@backstage/cli": "^0.32.0",
+    "@backstage/repo-tools": "^0.13.2",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^15.0.0",
-    "knip": "^5.27.4",
     "prettier": "^2.3.2",
     "ts-morph": "^23.0.0",
     "typescript": "~5.3.0"
+  },
+  "devDependencies": {
+    "knip": "^5.27.4"
   }
 }

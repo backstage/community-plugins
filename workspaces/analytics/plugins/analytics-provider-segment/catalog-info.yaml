@@ -1,0 +1,51 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-analytics-segment
+  title: 'Analytics Module: Segment'
+  description: 'Analytics Module: Segment'
+  annotations:
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment
+    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment/catalog-info.yaml
+    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/team-slug: backstage-community/maintainers-plugins
+    sonarqube.org/project-key: backstage-community_backstage-plugins
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-plugin
+  lifecycle: production
+  owner: backstage-community
+  system: backstage-community
+  subcomponentOf: backstage/community-plugins
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-plugin-analytics-provider-segment
+  title: '@backstage-community/plugin-analytics-provider-segment'
+  description: 'Analytics Module: Segment'
+  annotations:
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment
+    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment/catalog-info.yaml
+    github.com/project-slug: backstage/community-plugins
+    github.com/team-slug: backstage-community/maintainers-plugins
+    sonarqube.org/project-key: backstage_community-plugins
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-frontend-plugin-module
+  lifecycle: production
+  owner: backstage-community
+  system: backstage-community
+  subcomponentOf: backstage-community-analytics-segment

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
-import { IconButton } from '@material-ui/core';
 import RemoveIcon from '@mui/icons-material/Remove';
+import IconButton from '@mui/material/IconButton';
 
 import {
   getNestedRuleErrors,
@@ -45,13 +45,10 @@ type ComplexConditionRowProps = {
   criteria: keyof ConditionsData;
   onRuleChange: (newCondition: ConditionsData) => void;
   updateRules: (updatedNestedConditionRow: Condition[] | Condition) => void;
-  setErrors: React.Dispatch<
-    React.SetStateAction<AccessConditionsErrors | undefined>
-  >;
-  setRemoveAllClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrors: Dispatch<SetStateAction<AccessConditionsErrors | undefined>>;
+  setRemoveAllClicked: Dispatch<SetStateAction<boolean>>;
   conditionRulesData?: RulesData;
   notConditionType?: NotConditionType;
-  classes: any;
   currentCondition: Condition;
   ruleIndex: number;
   activeCriteria?: 'allOf' | 'anyOf';
@@ -70,7 +67,6 @@ export const ComplexConditionRow = ({
   setRemoveAllClicked,
   conditionRulesData,
   notConditionType,
-  classes,
   currentCondition,
   ruleIndex,
   activeCriteria,
@@ -252,7 +248,12 @@ export const ComplexConditionRow = ({
         />
         <IconButton
           title="Remove"
-          className={classes.removeRuleButton}
+          sx={{
+            color: theme => theme.palette.grey[500],
+            flexGrow: 0,
+            alignSelf: 'baseline',
+            mt: '34px',
+          }}
           disabled={isNestedCondition ? nestedDisabled : disabled}
           onClick={
             isNestedCondition &&

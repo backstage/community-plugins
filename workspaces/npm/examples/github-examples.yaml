@@ -1,0 +1,21 @@
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-example
+  annotations:
+    npm/registry: github
+    npm/package: '@github-packages-examples/npm-publish'
+  links:
+    - url: https://github.com/github-packages-examples
+      title: GitHub org
+    - url: https://github.com/github-packages-examples/npm-publish
+      title: GitHub repo
+    - url: https://github.com/github-packages-examples/npm-publish/pkgs/npm/npm-publish
+      title: GitHub npm packages
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage

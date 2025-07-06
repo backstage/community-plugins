@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
-
-import withStyles from '@mui/styles/withStyles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { styled, withStyles } from '@material-ui/core/styles';
 
 import { PullRequestCard } from '../PullRequestCard';
 import { PullRequestGroup } from '../types';
-import React from 'react';
 
 const ColumnPaper = withStyles(theme => ({
   root: {
@@ -31,7 +28,7 @@ const ColumnPaper = withStyles(theme => ({
     flex: 1,
     padding: theme.spacing(2),
     backgroundColor:
-      theme.palette.mode === 'dark'
+      theme.palette.type === 'dark'
         ? theme.palette.grey[800]
         : theme.palette.grey[300],
     height: '100%',

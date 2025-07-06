@@ -1,0 +1,7 @@
+{
+  "verify": false,
+  "missingAttributes": ["serviceAccountToken"],
+  "message": "Attribute 'serviceAccountToken' is not in the backstage configuration",
+  "helper": "For more information follow the steps in https://github.com/backstage/community-plugins/blob/main/workspaces/kiali/README.md",
+  "authData": { "strategy": "token", "sessionInfo": {} }
+}

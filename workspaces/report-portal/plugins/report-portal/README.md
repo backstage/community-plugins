@@ -17,6 +17,7 @@ It is only meant for local development, and the setup for it can be found inside
 ### Prequisite
 
 - To make this plugin work you need to install [report-portal-backend](../report-portal-backend/) plugin to backend package.
+- To make the search bar work you need to install [search-module-report-portal](../search-backend-module-report-portal-collator/) plugin to backend package.
 
 ### Screenshots:
 

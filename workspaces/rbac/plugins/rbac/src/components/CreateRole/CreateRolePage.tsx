@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { useAsync } from 'react-use';
 
 import {
@@ -27,7 +26,6 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity } from '../../types';
-import { initialPermissionPolicyRowValue } from './const';
 import { RoleForm } from './RoleForm';
 import { RoleFormValues } from './types';
 
@@ -53,7 +51,8 @@ export const CreateRolePage = () => {
     kind: 'role',
     description: '',
     selectedMembers: [],
-    permissionPoliciesRows: [initialPermissionPolicyRowValue],
+    selectedPlugins: [],
+    permissionPoliciesRows: [],
   };
 
   if (membersLoading) {

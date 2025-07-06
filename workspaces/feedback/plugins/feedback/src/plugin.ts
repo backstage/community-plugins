@@ -27,6 +27,9 @@ import {
 import { FeedbackAPI, feedbackApiRef } from './api';
 import { entityRootRouteRef, rootRouteRef, viewDocsRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const feedbackPlugin = createPlugin({
   id: 'feedback',
   routes: {
@@ -57,6 +60,9 @@ export const feedbackPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const GlobalFeedbackPage = feedbackPlugin.provide(
   createRoutableExtension({
     name: 'GlobalFeedbackPage',
@@ -66,6 +72,9 @@ export const GlobalFeedbackPage = feedbackPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const EntityFeedbackPage = feedbackPlugin.provide(
   createRoutableExtension({
     name: 'EntityFeedbackPage',
@@ -75,6 +84,10 @@ export const EntityFeedbackPage = feedbackPlugin.provide(
   }),
 );
 
+/**
+ * This component is deprecated in favout of `GlobalFeedbackComponent`, it will be removed in future
+ * @public @deprecated use {@link GlobalFeedbackComponent}
+ */
 export const OpcFeedbackComponent = feedbackPlugin.provide(
   createComponentExtension({
     name: 'OpcFeedbackComponent',
@@ -82,6 +95,22 @@ export const OpcFeedbackComponent = feedbackPlugin.provide(
       lazy: () =>
         import('./components/OpcFeedbackComponent').then(
           m => m.OpcFeedbackComponent,
+        ),
+    },
+  }),
+);
+
+/**
+ * Global feedback component which uses same modal as entiy page, eliminating dependecny on other web components
+ * @public
+ */
+export const GlobalFeedbackComponent = feedbackPlugin.provide(
+  createComponentExtension({
+    name: 'GlobalFeedbackComponent',
+    component: {
+      lazy: () =>
+        import('./components/GlobalFeedbackComponent').then(
+          m => m.GlobalFeedbackComponent,
         ),
     },
   }),

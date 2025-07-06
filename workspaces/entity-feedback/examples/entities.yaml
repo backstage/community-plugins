@@ -5,7 +5,7 @@ kind: System
 metadata:
   name: examples
 spec:
-  owner: guests
+  owner: development/guests
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
@@ -15,7 +15,7 @@ metadata:
 spec:
   type: website
   lifecycle: experimental
-  owner: guests
+  owner: development/guests
   system: examples
 ---
 

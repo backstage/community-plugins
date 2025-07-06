@@ -16,7 +16,6 @@
 import { useMemo } from 'react';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { defaultDuplicationRatings } from '../SonarQubeTable/types';
 import BugReport from '@material-ui/icons/BugReport';
 import Lock from '@material-ui/icons/Lock';
@@ -31,9 +30,12 @@ import { Rating } from './Rating';
 import { RatingCard } from './RatingCard';
 import { Value } from './Value';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { sonarqubeTranslationRef } from '../../translation';
 
 type MetricInsightsProps = {
   value: FindingSummary | any;
+  compact?: boolean;
   title?: string;
   sonarQubeComponentKey?: string;
 };
@@ -42,8 +44,11 @@ const useStyles = makeStyles(theme => ({
   badgeLabel: {
     color: theme.palette.common.white,
   },
-  badgeError: {
+  badgeCompact: {
     margin: 0,
+    height: 28,
+  },
+  badgeError: {
     backgroundColor: theme.palette.error.main,
   },
   badgeSuccess: {
@@ -56,13 +61,16 @@ const useStyles = makeStyles(theme => ({
 
 export const QualityBadge = (props: MetricInsightsProps) => {
   const classes = useStyles();
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
 
   const { value } = props;
-  let gateLabel = 'Not computed';
+  let gateLabel: string = t('sonarQubeCard.qualityBadgeLabel.notComputed');
   let gateColor = classes.badgeUnknown;
   if (value?.metrics.alert_status) {
     const gatePassed = value?.metrics.alert_status === 'OK';
-    gateLabel = gatePassed ? 'Gate passed' : 'Gate failed';
+    gateLabel = gatePassed
+      ? t('sonarQubeCard.qualityBadgeLabel.gatePassed')
+      : t('sonarQubeCard.qualityBadgeLabel.gateFailed');
     gateColor = gatePassed ? classes.badgeSuccess : classes.badgeError;
   }
   let clickableAttrs = {};
@@ -77,6 +85,7 @@ export const QualityBadge = (props: MetricInsightsProps) => {
     <Chip
       label={gateLabel}
       {...clickableAttrs}
+      className={props.compact ? classes.badgeCompact : ''}
       classes={{ root: gateColor, label: classes.badgeLabel }}
     />
   );
@@ -87,10 +96,11 @@ export const BugReportRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       titleIcon={<BugReport />}
       title={title}
       link={value.getIssuesUrl('BUG')}
-      leftSlot={<Value value={value.metrics.bugs} />}
+      leftSlot={<Value value={value.metrics.bugs} compact={props.compact} />}
       rightSlot={<Rating rating={value.metrics.reliability_rating} />}
     />
   );
@@ -100,12 +110,15 @@ export const VulnerabilitiesRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       titleIcon={
         value.metrics.vulnerabilities === '0' ? <Lock /> : <LockOpen />
       }
       title={title}
       link={value.getIssuesUrl('VULNERABILITY')}
-      leftSlot={<Value value={value.metrics.vulnerabilities} />}
+      leftSlot={
+        <Value value={value.metrics.vulnerabilities} compact={props.compact} />
+      }
       rightSlot={<Rating rating={value.metrics.security_rating} />}
     />
   );
@@ -115,6 +128,7 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       titleIcon={
         value.metrics.code_smells === '0' ? (
           <SentimentVerySatisfied />
@@ -124,7 +138,9 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
       }
       title={title}
       link={value.getIssuesUrl('CODE_SMELL')}
-      leftSlot={<Value value={value.metrics.code_smells} />}
+      leftSlot={
+        <Value value={value.metrics.code_smells} compact={props.compact} />
+      }
       rightSlot={<Rating rating={value.metrics.sqale_rating} />}
     />
   );
@@ -135,6 +151,7 @@ export const HotspotsReviewed = (props: MetricInsightsProps) => {
   return (
     value.metrics.security_review_rating && (
       <RatingCard
+        compact={props.compact}
         titleIcon={<Security />}
         title={title}
         link={value.getSecurityHotspotsUrl()}
@@ -145,6 +162,7 @@ export const HotspotsReviewed = (props: MetricInsightsProps) => {
                 ? `${value.metrics.security_hotspots_reviewed}%`
                 : '—'
             }
+            compact={props.compact}
           />
         }
         rightSlot={<Rating rating={value.metrics.security_review_rating} />}
@@ -157,12 +175,14 @@ export const CoverageRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       link={value.getComponentMeasuresUrl('COVERAGE')}
       title={title}
       leftSlot={<Percentage value={value.metrics.coverage} />}
       rightSlot={
         <Value
           value={value.metrics.coverage ? `${value.metrics.coverage}%` : '—'}
+          compact={props.compact}
         />
       }
     />
@@ -189,10 +209,16 @@ export const DuplicationsRatingCard = (props: MetricInsightsProps) => {
 
   return (
     <RatingCard
+      compact={props.compact}
       title={title}
       link={value.getComponentMeasuresUrl('DUPLICATED_LINES_DENSITY')}
       leftSlot={<Rating rating={duplicationRating} hideValue />}
-      rightSlot={<Value value={`${value.metrics.duplicated_lines_density}%`} />}
+      rightSlot={
+        <Value
+          value={`${value.metrics.duplicated_lines_density}%`}
+          compact={props.compact}
+        />
+      }
     />
   );
 };
@@ -200,23 +226,27 @@ export const DuplicationsRatingCard = (props: MetricInsightsProps) => {
 export const LastAnalyzedRatingCard = (props: MetricInsightsProps) => {
   const { value } = props;
   return (
-    <div>
-      Last analyzed on{' '}
-      {DateTime.fromISO(value.lastAnalysis).toLocaleString(
+    <div
+      title={DateTime.fromISO(value.lastAnalysis).toLocaleString(
         DateTime.DATETIME_MED,
       )}
+    >
+      {DateTime.fromISO(value.lastAnalysis).toRelative()}
     </div>
   );
 };
 
 export const NoSonarQubeCard = (props: MetricInsightsProps) => {
   const { value, sonarQubeComponentKey } = props;
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
   return (
-    <Typography color="error" variant="subtitle2">
+    <Typography color="textSecondary" variant="subtitle2">
       {value?.isSonarQubeAnnotationEnabled &&
-        `Unable to access SonarQube project "${sonarQubeComponentKey}": Check project exists and permissions`}
+        t('sonarQubeCard.noSonarQubeError.hasAnnotation', {
+          project: sonarQubeComponentKey || '',
+        })}
       {!value?.isSonarQubeAnnotationEnabled &&
-        `${value?.name} has no DX-Hub annotation for SonarQube`}
+        t('sonarQubeCard.noSonarQubeError.noAnnotation')}
     </Typography>
   );
 };

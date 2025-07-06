@@ -34,11 +34,7 @@ import {
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
 
-import {
-  getProxyConfig,
-  listApiDocs,
-  listServices,
-} from '../clients/ThreeScaleAPIConnector';
+import { getProxyConfig, listApiDocs, listServices } from '../clients';
 import type {
   APIDocElement,
   APIDocs,
@@ -56,11 +52,16 @@ import {
 } from './open-api-merger-converter';
 import { Swagger } from 'atlassian-openapi';
 
+/**
+ * @public
+ */
 export class ThreeScaleApiEntityProvider implements EntityProvider {
   private static SERVICES_FETCH_SIZE: number = 500;
   private readonly env: string;
   private readonly baseUrl: string;
   private readonly accessToken: string;
+  private readonly ownerLabel: string;
+  private readonly systemLabel: string;
   private readonly logger: LoggerService;
   private readonly scheduleFn: () => Promise<void>;
   private readonly openApiMerger: OpenAPIMergerAndConverter;
@@ -71,7 +72,6 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       config: Config;
       logger: LoggerService;
     },
-
     options: {
       schedule: SchedulerServiceTaskRunner;
       scheduler: SchedulerService;
@@ -121,6 +121,8 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
     this.env = config.id;
     this.baseUrl = config.baseUrl;
     this.accessToken = config.accessToken;
+    this.ownerLabel = config.ownerLabel || '3scale';
+    this.systemLabel = config.systemLabel || '3scale';
     this.logger = logger.child({
       target: this.getProviderName(),
     });
@@ -191,35 +193,52 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       );
       apiDocs = await listApiDocs(this.baseUrl, this.accessToken);
       for (const element of services.services) {
-        const service = element;
-        this.logger.debug(`Find service ${service.service.name}`);
+        try {
+          const service = element;
+          this.logger.debug(`Find service ${service.service.name}`);
 
-        const docs = apiDocs.api_docs.filter(
-          obj => obj.api_doc.service_id === service.service.id,
-        );
-        const proxy = await getProxyConfig(
-          this.baseUrl,
-          this.accessToken,
-          service.service.id,
-        );
-        if (isNonEmptyArray(docs)) {
-          this.logger.info(JSON.stringify(docs));
-          const apiEntity: ApiEntity = await this.buildApiEntityFromService(
-            service,
-            docs,
-            proxy,
+          const docs = apiDocs.api_docs.filter(
+            obj => obj.api_doc.service_id === service.service.id,
           );
-          entities.push(apiEntity);
-          this.logger.debug(`Discovered ApiEntity ${service.service.name}`);
+          const proxy = await getProxyConfig(
+            this.baseUrl,
+            this.accessToken,
+            service.service.id,
+          );
+          if (isNonEmptyArray(docs)) {
+            this.logger.info(JSON.stringify(docs));
+            const apiEntity: ApiEntity = await this.buildApiEntityFromService(
+              service,
+              docs,
+              proxy,
+            );
+            entities.push(apiEntity);
+            this.logger.debug(`Discovered ApiEntity ${service.service.name}`);
+          }
+        } catch (error: any) {
+          if (isError(error)) {
+            // Ensure that we don't log any sensitive internal data:
+            this.logger.error(
+              `Error while building API entity from ${element.service.id}: ${element.service.name}`,
+              {
+                // Default Error properties:
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+                // Additional status code if available:
+                status: (error.response as { status?: string })?.status,
+              },
+            );
+          }
         }
       }
-
       if (
         services.services.length <
         ThreeScaleApiEntityProvider.SERVICES_FETCH_SIZE
       ) {
         fetchServices = false;
       }
+
       page++;
     }
 
@@ -315,8 +334,8 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       spec: {
         type: 'openapi',
         lifecycle: this.env,
-        system: '3scale',
-        owner: '3scale',
+        system: this.systemLabel,
+        owner: this.ownerLabel,
         definition: JSON.stringify(swaggerDocJSON, null, 2),
       },
     };

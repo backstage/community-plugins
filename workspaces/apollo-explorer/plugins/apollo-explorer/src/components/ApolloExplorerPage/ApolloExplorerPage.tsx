@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { ApolloExplorerBrowser } from '../ApolloExplorerBrowser';
 import { JSONObject } from '@apollo/explorer/src/helpers/types';

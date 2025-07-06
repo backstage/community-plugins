@@ -1,5 +1,49 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- e385ba7: Backstage version bump to v1.40.2
+
+## 0.7.0
+
+### Minor Changes
+
+- 62ba41c: Backstage version bump to v1.37.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.6.0
+
+### Minor Changes
+
+- 02cdb81: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/code-coverage/plugins/code-coverage-backend/README.md) for instructions on how to use the new backend system.
+
+  Removed usages and references of `@backstage/backend-common`
+
+## 0.5.0
+
+### Minor Changes
+
+- 7ac16c4: Backstage version bump to v1.35.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 02e39fa: Backstage version bump to v1.34.1
+
+## 0.3.3
+
+### Patch Changes
+
+- 37bd870: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.2
 
 ### Patch Changes

@@ -18,6 +18,9 @@ import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-no
 
 import { createSonarQubeProjectAction } from './actions';
 
+/**
+ * @public
+ */
 export const scaffolderModuleSonarqubeActions = createBackendModule({
   moduleId: 'scaffolder-backend-sonarqube',
   pluginId: 'scaffolder',

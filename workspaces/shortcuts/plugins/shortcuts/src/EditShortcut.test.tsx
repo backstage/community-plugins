@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { EditShortcut } from './EditShortcut';
 import { Shortcut } from './types';

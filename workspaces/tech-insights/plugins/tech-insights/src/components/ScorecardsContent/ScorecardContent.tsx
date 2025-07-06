@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Content, Page, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ScorecardInfo } from '../ScorecardsInfo';
 import Alert from '@material-ui/lab/Alert';
-import { techInsightsApiRef } from '../../api/TechInsightsApi';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 
 const useStyles = makeStyles(() => ({
   contentScorecards: {
@@ -38,8 +37,9 @@ export const ScorecardsContent = (props: {
   description?: string;
   checksId?: string[];
   filter?: (check: Check) => boolean;
+  dense?: boolean;
 }) => {
-  const { title, description, checksId, filter } = props;
+  const { title, description, checksId, filter, dense } = props;
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
@@ -65,6 +65,7 @@ export const ScorecardsContent = (props: {
           description={description}
           entity={entity}
           checkResults={filteredValues || []}
+          dense={dense}
         />
       </Content>
     </Page>

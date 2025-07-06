@@ -1,5 +1,78 @@
 # @backstage-community/plugin-playlist
 
+## 0.8.0
+
+### Minor Changes
+
+- afc997b: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [afc997b]
+  - @backstage-community/plugin-playlist-common@0.7.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 79ebcc3: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+- Updated dependencies [79ebcc3]
+  - @backstage-community/plugin-playlist-common@0.6.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- 1f54d17: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [1f54d17]
+  - @backstage-community/plugin-playlist-common@0.5.0
+
+## 0.5.0
+
+### Minor Changes
+
+- b7910ae: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [b7910ae]
+  - @backstage-community/plugin-playlist-common@0.4.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 79f848a: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [79f848a]
+  - @backstage-community/plugin-playlist-common@0.3.0
+
+## 0.3.0
+
+### Minor Changes
+
+- b33acbf: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [b33acbf]
+  - @backstage-community/plugin-playlist-common@0.2.0
+
 ## 0.2.16
 
 ### Patch Changes

@@ -8,6 +8,9 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { Conditions } from '@backstage/plugin-permission-node';
+import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
@@ -19,8 +22,6 @@ import { PermissionPolicy } from '@backstage/plugin-permission-node';
 import { PermissionRule } from '@backstage/plugin-permission-node';
 import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PlaylistMetadata } from '@backstage-community/plugin-playlist-common';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
 import { PolicyDecision } from '@backstage/plugin-permission-common';
 import { PolicyQuery } from '@backstage/plugin-permission-node';
 import { ResourcePermission } from '@backstage/plugin-permission-common';
@@ -90,13 +91,15 @@ export default playlistPlugin;
 // @public (undocumented)
 export interface RouterOptions {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
-  database: PluginDatabaseManager;
+  config: Config;
   // (undocumented)
-  discovery: PluginEndpointDiscovery;
+  database: DatabaseService;
   // (undocumented)
-  httpAuth?: HttpAuthService;
+  discovery: DiscoveryService;
+  // (undocumented)
+  httpAuth: HttpAuthService;
   // (undocumented)
   identity?: IdentityApi;
   // (undocumented)

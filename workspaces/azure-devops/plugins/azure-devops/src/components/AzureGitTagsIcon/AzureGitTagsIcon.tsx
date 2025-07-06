@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
-
-import React from 'react';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 // From https://github.com/microsoft/fluentui-system-icons/blob/30a3e3c458883a1d63a43a951407f30e6b32b60c/assets/Tag/SVG/ic_fluent_tag_32_regular.svg
 export const AzureGitTagsIcon = (props: SvgIconProps) => (

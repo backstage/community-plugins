@@ -13,35 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
-import { usePermission } from '@backstage/plugin-permission-react';
 
-import { Card, CardContent, makeStyles } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
-
-import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
+import CachedIcon from '@mui/icons-material/Cached';
+import Box from '@mui/material/Box';
 
 import { MembersInfo } from '../../hooks/useMembers';
-import { MembersData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import { columns } from './MembersListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type MembersCardProps = {
   roleName: string;
   membersInfo: MembersInfo;
 };
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 const getRefreshIcon = () => <CachedIcon />;
 const getEditIcon = (isAllowed: boolean, roleName: string) => {
@@ -50,8 +40,8 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
   return (
     <EditRole
       dataTestId={isAllowed ? 'update-members' : 'disable-update-members'}
+      canEdit={isAllowed}
       roleName={roleName}
-      disable={!isAllowed}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${1}`}
     />
   );
@@ -59,13 +49,8 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
-  const [members, setMembers] = React.useState<MembersData[]>();
-  const policyEntityPermissionResult = usePermission({
-    permission: policyEntityUpdatePermission,
-    resourceRef: policyEntityUpdatePermission.resourceType,
-  });
+  const [searchText, setSearchText] = useState<string>();
 
-  const classes = useStyles();
   const actions = [
     {
       icon: getRefreshIcon,
@@ -77,55 +62,52 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
       },
     },
     {
-      icon: () =>
-        getEditIcon(
-          policyEntityPermissionResult.allowed && canReadUsersAndGroups,
-          roleName,
-        ),
-      tooltip:
-        policyEntityPermissionResult.allowed && canReadUsersAndGroups
-          ? 'Edit'
-          : 'Unauthorized to edit',
+      icon: () => getEditIcon(canReadUsersAndGroups, roleName),
+      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
       isFreeAction: true,
       onClick: () => {},
     },
   ];
 
-  const onSearchResultsChange = (searchResults: MembersData[]) => {
-    setMembers(searchResults);
-  };
+  const filteredData = useMemo(
+    () => filterTableData({ data, columns, searchText }),
+    [data, searchText],
+  );
 
   return (
-    <Card>
-      <CardContent>
-        {!loading && error && (
-          <div style={{ paddingBottom: '16px' }}>
-            <WarningPanel
-              message={(error as Error)?.message || (error as Error)?.name}
-              title="Something went wrong while fetching the users and groups"
-              severity="error"
-            />
-          </div>
-        )}
+    <Box>
+      {!loading && error && (
+        <Box style={{ paddingBottom: '16px' }}>
+          <WarningPanel
+            message={(error as Error)?.message || (error as Error)?.name}
+            title="Something went wrong while fetching the users and groups"
+            severity="error"
+          />
+        </Box>
+      )}
+      <StyledTableWrapper>
         <Table
           title={
             !loading && data?.length
-              ? `Users and groups (${getMembers(members || data)})`
+              ? `${getMembers(filteredData)}`
               : 'Users and groups'
           }
           actions={actions}
-          renderSummaryRow={summary => onSearchResultsChange(summary.data)}
           options={{ padding: 'default', search: true, paging: true }}
           data={data ?? []}
           isLoading={loading}
           columns={columns}
           emptyContent={
-            <div data-testid="members-table-empty" className={classes.empty}>
+            <Box
+              data-testid="members-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
               No records found
-            </div>
+            </Box>
           }
+          onSearchChange={setSearchText}
         />
-      </CardContent>
-    </Card>
+      </StyledTableWrapper>
+    </Box>
   );
 };

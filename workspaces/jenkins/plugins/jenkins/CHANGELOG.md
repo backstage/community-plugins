@@ -1,5 +1,107 @@
 # @backstage-community/plugin-jenkins
 
+## 0.20.0
+
+### Minor Changes
+
+- b5a85c1: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [b5a85c1]
+  - @backstage-community/plugin-jenkins-common@0.7.0
+
+## 0.19.0
+
+### Minor Changes
+
+- f0ef395: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [f0ef395]
+  - @backstage-community/plugin-jenkins-common@0.6.0
+
+## 0.18.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.18.0
+
+### Minor Changes
+
+- 9c592af: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [9c592af]
+  - @backstage-community/plugin-jenkins-common@0.5.0
+
+## 0.17.0
+
+### Minor Changes
+
+- 09c00a5: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [09c00a5]
+  - @backstage-community/plugin-jenkins-common@0.4.0
+
+## 0.16.0
+
+### Minor Changes
+
+- 07ef31b: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [07ef31b]
+  - @backstage-community/plugin-jenkins-common@0.3.0
+
+## 0.15.0
+
+### Minor Changes
+
+- 92a0ff6: feature: allow support for defining multiple projects/job names
+
+## 0.14.0
+
+### Minor Changes
+
+- 9527e9e: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [9527e9e]
+  - @backstage-community/plugin-jenkins-common@0.2.0
+
+## 0.13.0
+
+### Minor Changes
+
+- dfe7569: Add an API to retrieve the consoleText for a build.
+
+## 0.12.2
+
+### Patch Changes
+
+- 69f11c0: Fix typo in the readme
+
+## 0.12.1
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
+## 0.12.0
+
+### Minor Changes
+
+- 6bde043: Add title property to Jenkins components.
+
 ## 0.11.1
 
 ### Patch Changes

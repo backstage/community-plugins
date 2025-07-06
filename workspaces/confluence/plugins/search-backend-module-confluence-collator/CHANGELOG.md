@@ -1,5 +1,71 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.9.0
+
+### Minor Changes
+
+- 8298b36: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 3b26c6b: Backstage version bump to v1.38.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 7f9ae73: Added configurable rate limiting to the Confluence plugin to mitigate excessive requests and improve performance under high load. Administrators can now set limits on API calls to better control usage. Please refer to the documentation for configuration details.
+
+## 0.6.0
+
+### Minor Changes
+
+- 5b8d4b0: Backstage version bump to v1.37.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 53f211f: Backstage version bump to v1.36.1
+
+## 0.4.1
+
+### Patch Changes
+
+- 0a80de6: update app-config example for confluence search collator schedule
+
+## 0.4.0
+
+### Minor Changes
+
+- 75f7435: Backstage version bump to v1.35.1
+
+## 0.3.2
+
+### Patch Changes
+
+- 18c36d8: Removed usages of `@backstage/backend-tasks`
+
+## 0.3.1
+
+### Patch Changes
+
+- 5431e37: Update config with links to confluence docs, and ensure omitting the optional 'spaces' & 'query' config sections returns all results (instead of throwing an error)
+
+## 0.3.0
+
+### Minor Changes
+
+- cfd4174: Backstage version bump to v1.34.2
+
+## 0.2.5
+
+### Patch Changes
+
+- f4ea9a2: Fix typo in readme
+
 ## 0.2.4
 
 ### Patch Changes

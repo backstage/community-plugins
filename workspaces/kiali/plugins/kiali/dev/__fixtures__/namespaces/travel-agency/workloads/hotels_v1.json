@@ -1,0 +1,199 @@
+{
+  "name": "hotels-v1",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-16T11:27:38Z",
+  "resourceVersion": "56712",
+  "istioSidecar": true,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "hotels",
+    "version": "v1"
+  },
+  "appLabel": true,
+  "versionLabel": true,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"hotels-v1\",\"namespace\":\"travel-agency\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"hotels\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"proxy.istio.io/config\":\"tracing:\\n  zipkin:\\n    address: zipkin.istio-system:9411\\n  sampling: 10\\n  custom_tags:\\n    http.header.portal:\\n      header:\\n        name: portal\\n    http.header.device:\\n      header:\\n        name: device\\n    http.header.user:\\n      header:\\n        name: user\\n    http.header.travel:\\n      header:\\n        name: travel\\n\",\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"hotels\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"CURRENT_SERVICE\",\"value\":\"hotels\"},{\"name\":\"CURRENT_VERSION\",\"value\":\"v1\"},{\"name\":\"LISTEN_ADDRESS\",\"value\":\":8000\"},{\"name\":\"DISCOUNTS_SERVICE\",\"value\":\"http://discounts.travel-agency:8000\"},{\"name\":\"MYSQL_SERVICE\",\"value\":\"mysqldb.travel-agency:3306\"},{\"name\":\"MYSQL_USER\",\"value\":\"root\"},{\"name\":\"MYSQL_PASSWORD\",\"valueFrom\":{\"secretKeyRef\":{\"key\":\"rootpasswd\",\"name\":\"mysql-credentials\"}}},{\"name\":\"MYSQL_DATABASE\",\"value\":\"test\"}],\"image\":\"quay.io/kiali/demo_travels_hotels:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"hotels\",\"ports\":[{\"containerPort\":8000}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "hotels-v1-57d9574745-kjqqj",
+      "labels": {
+        "app": "hotels",
+        "pod-template-hash": "57d9574745",
+        "security.istio.io/tlsMode": "istio",
+        "service.istio.io/canonical-name": "hotels",
+        "service.istio.io/canonical-revision": "v1",
+        "version": "v1"
+      },
+      "createdAt": "2024-02-16T11:27:38Z",
+      "createdBy": [
+        {
+          "name": "hotels-v1-57d9574745",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "hotels",
+          "image": "quay.io/kiali/demo_travels_hotels:v1",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": [
+        {
+          "name": "istio-proxy",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioInitContainers": [
+        {
+          "name": "istio-init",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": true,
+      "annotations": {
+        "istio.io/rev": "default",
+        "kubectl.kubernetes.io/default-container": "hotels",
+        "kubectl.kubernetes.io/default-logs-container": "hotels",
+        "prometheus.io/path": "/stats/prometheus",
+        "prometheus.io/port": "15020",
+        "prometheus.io/scrape": "true",
+        "proxy.istio.io/config": "tracing:\n  zipkin:\n    address: zipkin.istio-system:9411\n  sampling: 10\n  custom_tags:\n    http.header.portal:\n      header:\n        name: portal\n    http.header.device:\n      header:\n        name: device\n    http.header.user:\n      header:\n        name: user\n    http.header.travel:\n      header:\n        name: travel\n",
+        "readiness.status.sidecar.istio.io/applicationPorts": "",
+        "sidecar.istio.io/status": "{\"initContainers\":[\"istio-init\"],\"containers\":[\"istio-proxy\"],\"volumes\":[\"workload-socket\",\"credential-socket\",\"workload-certs\",\"istio-envoy\",\"istio-data\",\"istio-podinfo\",\"istio-token\",\"istiod-ca-cert\"],\"imagePullSecrets\":null,\"revision\":\"default\"}"
+      },
+      "proxyStatus": {
+        "CDS": "Synced",
+        "EDS": "Synced",
+        "LDS": "Synced",
+        "RDS": "Synced"
+      },
+      "serviceAccountName": "default"
+    }
+  ],
+  "services": [
+    {
+      "name": "hotels",
+      "namespace": "travel-agency",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "hotels"
+      },
+      "selector": {
+        "app": "hotels"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": false,
+        "checks": [
+          {
+            "code": "KIA0302",
+            "message": "No matching workload found for gateway selector in this namespace",
+            "severity": "warning",
+            "path": "spec/selector"
+          }
+        ],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "hotels-v1.travel-agency": {
+        "name": "hotels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "hotels-v1",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.7999999999999999
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.39999999999999997
+        }
+      },
+      "healthAnnotations": {}
+    }
+  }
+}

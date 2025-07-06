@@ -1,8 +1,9 @@
 # Knip report
 
-## Unused devDependencies (2)
+## Unlisted dependencies (3)
 
-| Name             | Location     | Severity |
-| :--------------- | :----------- | :------- |
-| @types/react-dom | package.json | error    |
-| react-router-dom | package.json | error    |
+| Name        | Location      | Severity |
+| :---------- | :------------ | :------- |
+| webpack-env | tsconfig.json | error    |
+| node        | tsconfig.json | error    |
+| jest        | tsconfig.json | error    |

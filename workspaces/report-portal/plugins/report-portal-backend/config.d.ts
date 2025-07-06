@@ -18,7 +18,7 @@ export interface Config {
    * Configuration values for Report Portal plugin
    * @visibility frontend
    */
-  reportPortal: {
+  reportPortal?: {
     /**
      * A link in form of Email template
      * @example
@@ -32,7 +32,7 @@ export interface Config {
     /**
      * @visibility frontend
      */
-    integrations: Array<{
+    integrations?: Array<{
       /**
        * Host of report portal url
        * @visibility frontend

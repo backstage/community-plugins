@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { CatalogEntityPage, CatalogIndexPage } from '@backstage/plugin-catalog';
 import { apis } from './apis';
@@ -27,6 +26,7 @@ import {
 } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
+import { NotificationsPage } from '@backstage/plugin-notifications';
 
 const app = createApp({
   apis,
@@ -45,6 +45,7 @@ const routes = (
     >
       {entityPage}
     </Route>
+    <Route path="/notifications" element={<NotificationsPage />} />
   </FlatRoutes>
 );
 

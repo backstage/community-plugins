@@ -1,5 +1,47 @@
 # @backstage-community/plugin-adr-common
 
+## 0.9.0
+
+### Minor Changes
+
+- e368185: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- fc4fa2c: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- e22d803: Backstage version bump to v1.38.1
+
+## 0.6.0
+
+### Minor Changes
+
+- b397bd6: Added extension point to backend plugin so that a custom ADR parser can be provided in modules to support additional ADR formats.
+
+## 0.5.0
+
+### Minor Changes
+
+- b075789: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+## 0.3.0
+
+### Minor Changes
+
+- d5e54af: Backstage version bump to v1.34.1
+
 ## 0.2.30
 
 ### Patch Changes

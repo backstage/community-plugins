@@ -21,4 +21,3 @@
  */
 
 export * from './annotations';
-export * from './permissions';

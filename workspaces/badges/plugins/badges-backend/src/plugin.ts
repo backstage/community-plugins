@@ -20,6 +20,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
 import { createDefaultBadgeFactories } from './badges';
+import { badgeBuildersExtensionPoint } from './extensions';
+import { BadgeFactories } from './types';
+import { BadgeBuilder } from './lib';
+import { BadgesStore } from './database/badgesStore';
 
 /**
  * Badges backend plugin
@@ -29,6 +33,22 @@ import { createDefaultBadgeFactories } from './badges';
 export const badgesPlugin = createBackendPlugin({
   pluginId: 'badges',
   register(env) {
+    let badgeFactories: BadgeFactories | undefined;
+    let badgeBuilder: BadgeBuilder | undefined;
+    let badgeStore: BadgesStore | undefined;
+
+    env.registerExtensionPoint(badgeBuildersExtensionPoint, {
+      setBadgeFactories(factory) {
+        badgeFactories = factory;
+      },
+      setBadgeBuilder(builder) {
+        badgeBuilder = builder;
+      },
+      setBadgeStore(store) {
+        badgeStore = store;
+      },
+    });
+
     env.registerInit({
       deps: {
         config: coreServices.rootConfig,
@@ -37,16 +57,28 @@ export const badgesPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
         auth: coreServices.auth,
+        database: coreServices.database,
       },
-      async init({ config, logger, discovery, httpRouter, httpAuth, auth }) {
+      async init({
+        config,
+        logger,
+        discovery,
+        httpRouter,
+        httpAuth,
+        auth,
+        database,
+      }) {
         httpRouter.use(
           await createRouter({
+            badgeBuilder,
+            badgeStore,
             config,
             logger,
-            badgeFactories: createDefaultBadgeFactories(),
+            badgeFactories: badgeFactories || createDefaultBadgeFactories(),
             discovery,
             httpAuth,
             auth,
+            database,
           }),
         );
         httpRouter.addAuthPolicy({

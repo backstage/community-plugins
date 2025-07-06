@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAsync } from 'react-use';
 
 import { Progress } from '@backstage/core-components';
@@ -33,7 +32,7 @@ export function getAssetVariants(component: ComponentXO) {
   );
 }
 
-export function NexusRepositoryManager() {
+export const NexusRepositoryManager = () => {
   const nexusClient = useApi(NexusRepositoryManagerApiRef);
   const { entity } = useEntity();
   const { ANNOTATIONS } = nexusClient.getAnnotations();
@@ -91,4 +90,4 @@ export function NexusRepositoryManager() {
       <ArtifactTable title={title} artifacts={artifacts} />
     </div>
   );
-}
+};

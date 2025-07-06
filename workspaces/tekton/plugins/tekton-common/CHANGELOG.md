@@ -1,5 +1,59 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.10.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.10.0
+
+### Minor Changes
+
+- 40d7a3b: Bump to backstage version 1.39.1
+
+## 1.9.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 692fc75: Backstage version bump to v1.38.1
+
+## 1.8.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 1.8.0
+
+### Minor Changes
+
+- de82c49: Bump backstage version to 1.36.1
+
+## 1.7.0
+
+### Minor Changes
+
+- d5a2be5: Update Kubernetes plugin dependencies
+
+## 1.6.0
+
+### Minor Changes
+
+- 48e0647: Use Kubernetes plugin permissions for Tekton plugin, remove tekton-specific permissions from tekton-common plugin
+
+## 1.5.0
+
+### Minor Changes
+
+- 2f344ca: Backstage version bump to v1.35.0
+
 ## 1.4.0
 
 ### Minor Changes

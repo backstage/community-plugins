@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { JSX } from 'react';
 import {
   RELATION_API_CONSUMED_BY,
   RELATION_API_PROVIDED_BY,
@@ -69,6 +69,7 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 
 import {
   ArgocdDeploymentLifecycle,
+  ArgocdDeploymentSummary,
   isArgocdConfigured,
 } from '@backstage-community/plugin-redhat-argocd';
 import Button from '@mui/material/Button';
@@ -89,6 +90,10 @@ const cdContent = (
     <EntitySwitch.Case if={e => Boolean(isArgocdConfigured(e))}>
       <Grid item sm={12}>
         <ArgocdDeploymentLifecycle />
+      </Grid>
+      <br />
+      <Grid item sm={12}>
+        <ArgocdDeploymentSummary />
       </Grid>
     </EntitySwitch.Case>
     <EntitySwitch.Case>
@@ -394,7 +399,7 @@ const domainPage = (
   </EntityLayout>
 );
 
-export const entityPage: React.JSX.Element = (
+export const entityPage: JSX.Element = (
   <EntitySwitch>
     <EntitySwitch.Case if={isKind('component')} children={componentPage} />
     <EntitySwitch.Case if={isKind('api')} children={apiPage} />

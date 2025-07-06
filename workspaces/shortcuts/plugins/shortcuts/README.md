@@ -83,7 +83,7 @@ const app = createApp({
 Or simply edit `App.tsx` with:
 
 ```diff
-+ import { shortcutsPlugin } from '@backstage-community/plugin-shortcuts
++ import { shortcutsPlugin } from '@backstage-community/plugin-shortcuts';
 
 const app = createApp({
   apis,

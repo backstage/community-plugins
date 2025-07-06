@@ -433,6 +433,95 @@ describe('replaceAliases', () => {
       });
     });
 
+    it('should replace aliases with criteria anyOf and few values in a different order', () => {
+      const conditionParam: PermissionCriteria<
+        PermissionCondition<string, PermissionRuleParams>
+      > = {
+        anyOf: [
+          {
+            rule: 'IS_ENTITY_KIND',
+            resourceType: 'catalog-entity',
+            params: { kinds: ['Group', 'User'] },
+          },
+          {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['$ownerRefs'],
+            },
+          },
+        ],
+      };
+
+      replaceAliases(conditionParam, {
+        userEntityRef: 'user:default/tim',
+        ownershipEntityRefs: ['user:default/tim', 'group:default/team-a'],
+      });
+
+      expect(conditionParam).toEqual({
+        anyOf: [
+          {
+            rule: 'IS_ENTITY_KIND',
+            resourceType: 'catalog-entity',
+            params: { kinds: ['Group', 'User'] },
+          },
+          {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['user:default/tim', 'group:default/team-a'],
+            },
+          },
+        ],
+      });
+    });
+
+    it('should replace aliases with criteria anyOf and few values for other rules', () => {
+      const conditionParam: PermissionCriteria<
+        PermissionCondition<string, PermissionRuleParams>
+      > = {
+        anyOf: [
+          {
+            rule: 'HAS_ANNOTATION',
+            resourceType: 'catalog-entity',
+            params: { value: '$currentUser', annotation: 'template/creator' },
+          },
+          {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['$ownerRefs'],
+            },
+          },
+        ],
+      };
+
+      replaceAliases(conditionParam, {
+        userEntityRef: 'user:default/tim',
+        ownershipEntityRefs: ['user:default/tim', 'group:default/team-a'],
+      });
+
+      expect(conditionParam).toEqual({
+        anyOf: [
+          {
+            rule: 'HAS_ANNOTATION',
+            resourceType: 'catalog-entity',
+            params: {
+              value: 'user:default/tim',
+              annotation: 'template/creator',
+            },
+          },
+          {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['user:default/tim', 'group:default/team-a'],
+            },
+          },
+        ],
+      });
+    });
+
     it('should replace aliases with criteria allOf', () => {
       const conditionParam: PermissionCriteria<
         PermissionCondition<string, PermissionRuleParams>

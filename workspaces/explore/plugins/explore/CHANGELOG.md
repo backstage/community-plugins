@@ -1,5 +1,77 @@
 # @backstage-community/plugin-explore
 
+## 0.10.0
+
+### Minor Changes
+
+- 2294eff: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [2294eff]
+  - @backstage-community/plugin-explore-common@0.5.0
+  - @backstage-community/plugin-explore-react@0.5.0
+
+## 0.9.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.9.0
+
+### Minor Changes
+
+- 849c872: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [849c872]
+  - @backstage-community/plugin-explore-common@0.4.0
+  - @backstage-community/plugin-explore-react@0.4.0
+
+## 0.8.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.8.0
+
+### Minor Changes
+
+- e1cc281: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [e1cc281]
+  - @backstage-community/plugin-explore-common@0.3.0
+  - @backstage-community/plugin-explore-react@0.3.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 067c8d7: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [067c8d7]
+  - @backstage-community/plugin-explore-common@0.2.0
+  - @backstage-community/plugin-explore-react@0.2.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 082fc58: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [082fc58]
+  - @backstage-community/plugin-explore-common@0.1.0
+  - @backstage-community/plugin-explore-react@0.1.0
+
 ## 0.5.6
 
 ### Patch Changes

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 import Typography from '@material-ui/core/Typography';
 import {
   Audit,
@@ -73,7 +73,7 @@ const LighthouseAuditStatus = (props: { audit: Audit }) => (
 const LighthouseAuditSummary = (props: { audit: Audit; dense?: boolean }) => {
   const { audit, dense = false } = props;
   const { url } = audit;
-  const flattenedCategoryData: Record<string, React.ReactNode> = {};
+  const flattenedCategoryData: Record<string, ReactNode> = {};
   if (audit.status === 'COMPLETED') {
     const categories = (audit as AuditCompleted).categories;
     const categoryIds = Object.keys(categories) as LighthouseCategoryId[];

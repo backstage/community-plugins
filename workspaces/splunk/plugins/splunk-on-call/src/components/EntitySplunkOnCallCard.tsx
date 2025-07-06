@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Entity } from '@backstage/catalog-model';
 import {

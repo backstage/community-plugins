@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactNode } from 'react';
+
+import { useState } from 'react';
 import { DateTime } from 'luxon';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
@@ -52,14 +54,11 @@ export const PERISKOP_NAME_ANNOTATION = 'periskop.io/service-name';
 export const isPeriskopAvailable = (entity: Entity): boolean =>
   Boolean(entity.metadata.annotations?.[PERISKOP_NAME_ANNOTATION]);
 
-const renderKey = (
-  error: AggregatedError,
-  linkTarget: string,
-): React.ReactNode => {
+const renderKey = (error: AggregatedError, linkTarget: string): ReactNode => {
   return <Link to={linkTarget}>{error.aggregation_key}</Link>;
 };
 
-const renderSeverity = (severity: string): React.ReactNode => {
+const renderSeverity = (severity: string): ReactNode => {
   if (severity.toLocaleLowerCase('en-US') === 'warning') {
     return <StatusWarning>{severity}</StatusWarning>;
   } else if (severity.toLocaleLowerCase('en-US') === 'error') {
@@ -68,7 +67,7 @@ const renderSeverity = (severity: string): React.ReactNode => {
   return <StatusPending>{severity}</StatusPending>;
 };
 
-const renderLastOccurrence = (error: AggregatedError): React.ReactNode => {
+const renderLastOccurrence = (error: AggregatedError): ReactNode => {
   return DateTime.fromMillis(
     error.latest_errors[0].timestamp * 1000,
   ).toRelative();
@@ -88,7 +87,7 @@ export const EntityPeriskopErrorsCard = () => {
 
   const periskopApi = useApi(periskopApiRef);
   const instanceNames = periskopApi.getInstanceNames();
-  const [instanceOption, setInstanceOption] = React.useState<string>(
+  const [instanceOption, setInstanceOption] = useState<string>(
     instanceNames[0],
   );
   const {

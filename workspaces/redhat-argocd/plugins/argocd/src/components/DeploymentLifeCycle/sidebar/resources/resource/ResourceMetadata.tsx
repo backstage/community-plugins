@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Resource } from '../../../../../types/application';
+import type { FC } from 'react';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import DeploymentMetadata from './DeploymentMetadata';
 import RolloutMetadata from './RolloutMetadata';
 import Metadata from '../../../../Common/Metadata';
@@ -23,7 +23,7 @@ import MetadataItem from '../../../../Common/MetadataItem';
 type ResourceMetadataProps = {
   resource: Resource;
 };
-const ResourceMetadata: React.FC<ResourceMetadataProps> = ({ resource }) => {
+const ResourceMetadata: FC<ResourceMetadataProps> = ({ resource }) => {
   switch (resource.kind) {
     case 'Deployment':
       return <DeploymentMetadata resource={resource} />;

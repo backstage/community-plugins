@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-github-deployments",
-  "version": "0.1.70",
+  "version": "0.9.0",
   "description": "A Backstage plugin that integrates towards GitHub Deployments",
   "backstage": {
     "role": "frontend-plugin",
@@ -10,9 +10,22 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "homepage": "https://backstage.io",
   "repository": {
@@ -37,13 +50,15 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.0",
-    "@backstage/core-components": "^0.15.1",
-    "@backstage/core-plugin-api": "^1.10.0",
-    "@backstage/errors": "^1.2.4",
-    "@backstage/integration": "^1.15.1",
-    "@backstage/integration-react": "^1.2.0",
-    "@backstage/plugin-catalog-react": "^1.14.0",
+    "@backstage/catalog-model": "^1.7.4",
+    "@backstage/core-compat-api": "^0.4.3",
+    "@backstage/core-components": "^0.17.3",
+    "@backstage/core-plugin-api": "^1.10.8",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/frontend-plugin-api": "^0.10.3",
+    "@backstage/integration": "^1.17.0",
+    "@backstage/integration-react": "^1.2.8",
+    "@backstage/plugin-catalog-react": "^1.19.0",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@octokit/graphql": "^5.0.0",
@@ -52,15 +67,15 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
-    "@backstage/core-app-api": "^1.15.1",
-    "@backstage/dev-utils": "^1.1.2",
-    "@backstage/test-utils": "^1.7.0",
+    "@backstage/cli": "^0.33.0",
+    "@backstage/core-app-api": "^1.17.1",
+    "@backstage/dev-utils": "^1.1.11",
+    "@backstage/frontend-test-utils": "^0.3.3",
+    "@backstage/test-utils": "^1.7.9",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
-    "canvas": "^2.11.2",
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",

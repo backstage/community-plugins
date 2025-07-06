@@ -17,9 +17,7 @@ import {
   AnalyticsApi,
   AnalyticsEvent,
   ConfigApi,
-  analyticsApiRef,
-  configApiRef,
-  createApiFactory,
+  IdentityApi,
 } from '@backstage/core-plugin-api';
 
 import { loadMatomo } from './loadMatomo';
@@ -29,27 +27,50 @@ declare const window: Window &
     _paq: any[];
   };
 
-type Options = {
-  configApi: ConfigApi;
-};
-
 /**
  * @public
  */
 export class MatomoAnalytics implements AnalyticsApi {
-  private readonly configApi: ConfigApi;
+  private constructor(options: {
+    matomoUrl: string;
+    siteId: number;
+    identity: string;
+    identityApi?: IdentityApi;
+  }) {
+    loadMatomo(options.matomoUrl, options.siteId);
 
-  private constructor(options: Options) {
-    this.configApi = options.configApi;
-    const matomoUrl = this.configApi.getString('app.analytics.matomo.host');
-    const matomoSiteId = this.configApi.getNumber(
-      'app.analytics.matomo.siteId',
-    );
-    loadMatomo(matomoUrl, matomoSiteId);
+    /* Add user tracking if identity is enabled and identityApi is provided */
+    if (options.identity !== 'disabled' && options.identityApi) {
+      this.setUserFrom(options.identityApi).then(() => {
+        return;
+      });
+    }
   }
 
-  static fromConfig(config: ConfigApi) {
-    return new MatomoAnalytics({ configApi: config });
+  static fromConfig(
+    config: ConfigApi,
+    options?: {
+      identityApi?: IdentityApi;
+    },
+  ) {
+    const identity =
+      config.getOptionalString('app.analytics.matomo.identity') || 'disabled';
+
+    const matomoUrl = config.getString('app.analytics.matomo.host');
+    const siteId = config.getNumber('app.analytics.matomo.siteId');
+
+    if (identity === 'required' && !options?.identityApi) {
+      throw new Error(
+        'Invalid config: identity API must be provided to deps when app.matomo.identity is required',
+      );
+    }
+
+    return new MatomoAnalytics({
+      matomoUrl,
+      siteId,
+      identity,
+      identityApi: options?.identityApi,
+    });
   }
 
   captureEvent(event: AnalyticsEvent) {
@@ -64,14 +85,26 @@ export class MatomoAnalytics implements AnalyticsApi {
       value,
     ]);
   }
-}
 
-/**
- * Api factory method for matomo
- * @public
- */
-export const MatomoAnalyticsApi = createApiFactory({
-  api: analyticsApiRef,
-  deps: { configApi: configApiRef },
-  factory: ({ configApi }) => MatomoAnalytics.fromConfig(configApi),
-});
+  private async setUserFrom(identityApi: IdentityApi) {
+    const { userEntityRef } = await identityApi.getBackstageIdentity();
+
+    // Prevent PII from being passed to Matomo
+    const userId = await this.getPrivateUserId(userEntityRef);
+
+    window._paq.push(['setUserId', userId]);
+  }
+
+  private getPrivateUserId(userEntityRef: string): Promise<string> {
+    return this.hash(userEntityRef);
+  }
+
+  private async hash(value: string): Promise<string> {
+    const digest = await window.crypto.subtle.digest(
+      'sha-256',
+      new TextEncoder().encode(value),
+    );
+    const hashArray = Array.from(new Uint8Array(digest));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+}

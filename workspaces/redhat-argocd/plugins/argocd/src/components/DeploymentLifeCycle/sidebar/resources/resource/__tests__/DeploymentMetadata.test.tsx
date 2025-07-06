@@ -19,9 +19,8 @@ import {
   Application,
   Resource,
   Source,
-} from '../../../../../../types/application';
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { useDrawerContext } from '../../../../DrawerContext';
-import React from 'react';
 import { mockApplication, mockEntity } from '../../../../../../../dev/__data__';
 import { useEntity } from '@backstage/plugin-catalog-react';
 

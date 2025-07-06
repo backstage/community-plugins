@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { screen, render } from '@testing-library/react';
 import { mockArgoResources } from '../../../../../../../dev/__data__/argoRolloutsObjects';
-import { Resource } from '../../../../../../types/application';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { getRolloutUIResources } from '../../../../../../utils/rollout-utils';
 import { useArgoResources } from '../../../rollouts/RolloutContext';
 import RolloutMetadata from '../RolloutMetadata';

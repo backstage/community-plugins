@@ -32,6 +32,8 @@ import {
 } from '@backstage/backend-plugin-api';
 
 import { Config } from '@backstage/config';
+import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
+import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 
 /** @public */
 export type JenkinsBuilderReturn = Promise<{
@@ -108,6 +110,11 @@ export class JenkinsBuilder {
 
     const router = Router();
     router.use(express.json());
+    router.use(
+      createPermissionIntegrationRouter({
+        permissions: jenkinsPermissions,
+      }),
+    );
 
     router.get(
       '/v1/entity/:namespace/:kind/:name/projects',
@@ -151,7 +158,7 @@ export class JenkinsBuilder {
           if (err.errors) {
             throw new Error(
               `Unable to fetch projects, for ${
-                jenkinsInfo.jobFullName
+                jenkinsInfo.fullJobNames
               }: ${stringifyError(err.errors)}`,
             );
           }
@@ -165,6 +172,7 @@ export class JenkinsBuilder {
       async (request, response) => {
         const { namespace, kind, name, jobFullName, buildNumber } =
           request.params;
+        const jobs = this.jobFullNameParamToJobs(jobFullName);
 
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
           entityRef: {
@@ -172,13 +180,13 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
         const build = await jenkinsApi.getBuild(
           jenkinsInfo,
-          jobFullName,
+          jobs,
           parseInt(buildNumber, 10),
         );
 
@@ -192,6 +200,7 @@ export class JenkinsBuilder {
       '/v1/entity/:namespace/:kind/:name/job/:jobFullName',
       async (request, response) => {
         const { namespace, kind, name, jobFullName } = request.params;
+        const jobs = this.jobFullNameParamToJobs(jobFullName);
 
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
           entityRef: {
@@ -199,11 +208,11 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
-        const build = await jenkinsApi.getJobBuilds(jenkinsInfo, jobFullName);
+        const build = await jenkinsApi.getJobBuilds(jenkinsInfo, jobs);
 
         response.json({
           build: build,
@@ -216,20 +225,22 @@ export class JenkinsBuilder {
       async (request, response) => {
         const { namespace, kind, name, jobFullName, buildNumber } =
           request.params;
+        const jobs = this.jobFullNameParamToJobs(jobFullName);
+
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
           entityRef: {
             kind,
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
         const resourceRef = stringifyEntityRef({ kind, namespace, name });
         const status = await jenkinsApi.rebuildProject(
           jenkinsInfo,
-          jobFullName,
+          jobs,
           parseInt(buildNumber, 10),
           resourceRef,
           {
@@ -240,6 +251,40 @@ export class JenkinsBuilder {
       },
     );
 
+    router.get(
+      '/v1/entity/:namespace/:kind/:name/job/:jobFullName/:buildNumber/consoleText',
+      async (request, response) => {
+        const { namespace, kind, name, jobFullName, buildNumber } =
+          request.params;
+        const jobs = this.jobFullNameParamToJobs(jobFullName);
+
+        const jenkinsInfo = await jenkinsInfoProvider.getInstance({
+          entityRef: {
+            kind,
+            namespace,
+            name,
+          },
+          fullJobNames: [jobFullName],
+          credentials: await httpAuth.credentials(request),
+        });
+
+        const consoleText = await jenkinsApi.getBuildConsoleText(
+          jenkinsInfo,
+          jobs,
+          parseInt(buildNumber, 10),
+        );
+
+        response.json({
+          consoleText: consoleText,
+        });
+      },
+    );
+
     return router;
+  }
+
+  private jobFullNameParamToJobs(jobFullName: string): string[] {
+    // jobFullName may contain a list of job names separated by '/'
+    return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
   }
 }

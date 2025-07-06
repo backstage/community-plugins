@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
+import Box from '@material-ui/core/Box';
+import Chip from '@material-ui/core/Chip';
 import {
   Link,
   ResponseErrorPanel,
@@ -26,7 +26,7 @@ import {
   PullRequest,
   PullRequestStatus,
 } from '@backstage-community/plugin-azure-devops-common';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { AzurePullRequestsIcon } from '../AzurePullRequestsIcon';
 import { DateTime } from 'luxon';

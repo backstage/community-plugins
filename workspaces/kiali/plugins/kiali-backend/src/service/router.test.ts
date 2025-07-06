@@ -15,11 +15,9 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
-
 import express from 'express';
 import { setupServer } from 'msw/node';
 import request from 'supertest';
-
 import { handlers } from '../../__fixtures__/handlers';
 import { createRouter } from './router';
 
@@ -48,8 +46,13 @@ describe('createRouter', () => {
       logger,
       config: new ConfigReader({
         kiali: {
-          url: 'https://localhost:4000',
-          serviceAccountToken: '<token>',
+          providers: [
+            {
+              name: 'default',
+              url: 'https://localhost:4000',
+              serviceAccountToken: '<token>',
+            },
+          ],
         },
       }),
     });
@@ -61,14 +64,16 @@ describe('createRouter', () => {
 
   describe('POST /status', () => {
     it('should get the kiali status', async () => {
-      const result = await request(app).post('/status');
+      const result = await request(app)
+        .post('/status')
+        .send('{"provider":"default"}');
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
         status: {
           'Kiali commit hash': '72a2496cb4ed1545457a68e34fe3e81409b1611d',
-          'Kiali container version': 'v1.73.0-SNAPSHOT',
+          'Kiali container version': 'v1.86.0-SNAPSHOT',
           'Kiali state': 'running',
-          'Kiali version': 'v1.73.0-SNAPSHOT',
+          'Kiali version': 'v1.86.0-SNAPSHOT',
           'Mesh name': 'Istio',
           'Mesh version': '1.17.1',
         },
@@ -97,6 +102,7 @@ describe('createRouter', () => {
           isMaistra: false,
           istioAPIEnabled: true,
         },
+        providers: ['default'],
       });
     });
   });
@@ -105,7 +111,7 @@ describe('createRouter', () => {
     it('should get namespaces', async () => {
       const result = await request(app)
         .post('/proxy')
-        .send('{"endpoint":"api/namespaces"}')
+        .send('{"endpoint":"api/namespaces", "provider":"default"}')
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json');
       expect(result.status).toBe(200);

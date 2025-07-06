@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { createContext, ReactNode } from 'react';
+import type { FC } from 'react';
+
+import { useContext, createContext, ReactNode } from 'react';
 
 import { useArgocdRollouts } from '../../../../hooks/useArgoRollouts';
-import { Application } from '../../../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import { RolloutUI } from '../../../../types/revision';
 import { getRolloutUIResources } from '../../../../utils/rollout-utils';
 import { ArgoResources } from '../../../../types/resources';
@@ -30,7 +32,7 @@ export const ArgoResourcesContext = createContext<ArgoResourcesContextProps>(
   undefined as any,
 );
 
-export const ArgoResourcesProvider: React.FC<{
+export const ArgoResourcesProvider: FC<{
   application: Application | undefined;
   children: ReactNode;
 }> = ({ application, children }) => {
@@ -51,7 +53,7 @@ export const ArgoResourcesProvider: React.FC<{
 };
 
 export const useArgoResources = () => {
-  const context = React.useContext(ArgoResourcesContext);
+  const context = useContext(ArgoResourcesContext);
   if (!context) {
     throw new Error(
       'useArgoResources must be used within an ArgoResourcesProvider',

@@ -13,5 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  analyticsApiRef,
+  configApiRef,
+  createApiFactory,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
+import { MatomoAnalytics } from './api';
+
 export { analyticsModuleMatomoPlugin } from './plugin';
 export * from './api';
+/**
+ * API factory method for matomo
+ *
+ * @public
+ */
+export const MatomoAnalyticsApi = createApiFactory({
+  api: analyticsApiRef,
+  deps: { configApi: configApiRef, identityApi: identityApiRef },
+  factory: ({ configApi, identityApi }) =>
+    MatomoAnalytics.fromConfig(configApi, {
+      identityApi,
+    }),
+});

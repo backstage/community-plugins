@@ -82,56 +82,89 @@ export class JenkinsApiImpl {
    * Get a list of projects for the given JenkinsInfo.
    * @see ../../../jenkins/src/api/JenkinsApi.ts#getProjects
    */
-  async getProjects(jenkinsInfo: JenkinsInfo, branches?: string[]) {
+  async getProjects(
+    jenkinsInfo: JenkinsInfo,
+    branches?: string[],
+  ): Promise<BackstageProject[]> {
     const client = await JenkinsApiImpl.getClient(jenkinsInfo);
-    const projects: BackstageProject[] = [];
 
     if (branches) {
-      // Assume jenkinsInfo.jobFullName is a MultiBranch Pipeline project which contains one job per branch.
+      // Assume jenkinsInfo.fullJobNames are one or more MultiBranch Pipeline projects which contain one job per branch.
       // TODO: extract a strategy interface for this
-      const job = await Promise.any(
-        branches.map(branch =>
-          client.job.get({
-            name: `${jenkinsInfo.jobFullName}/${encodeURIComponent(branch)}`,
-            tree: JenkinsApiImpl.jobTreeSpec.replace(/\s/g, ''),
-          }),
-        ),
+      return this.fetchBranchSpecificProjects(client, jenkinsInfo, branches);
+    }
+
+    return this.fetchAllProjects(client, jenkinsInfo);
+  }
+
+  private async fetchBranchSpecificProjects(
+    client: any,
+    jenkinsInfo: JenkinsInfo,
+    branches: string[],
+  ): Promise<BackstageProject[]> {
+    const projects = await Promise.all(
+      jenkinsInfo.fullJobNames.map(async jobName => {
+        const job = await Promise.any(
+          branches.map(branch =>
+            client.job.get({
+              name: `${jobName}/${encodeURIComponent(branch)}`,
+              tree: JenkinsApiImpl.jobTreeSpec.replace(/\s/g, ''),
+            }),
+          ),
+        );
+        return this.augmentProject(job);
+      }),
+    );
+
+    return projects;
+  }
+
+  private async fetchAllProjects(
+    client: any,
+    jenkinsInfo: JenkinsInfo,
+  ): Promise<BackstageProject[]> {
+    // We aren't filtering
+    // Assume jenkinsInfo.fullJobNames can contain either of the following:
+    // a MultiBranch Pipeline (folder with one job per branch) project
+    // a Pipeline (standalone) project
+
+    // Add count limit to projects
+    // If limit is set in the config, use it, otherwise use the default limit of 50
+    const limitedJobsTreeSpec: string =
+      `${JenkinsApiImpl.jobsTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`.replace(
+        /\s/g,
+        '',
       );
-      projects.push(this.augmentProject(job));
-    } else {
-      // We aren't filtering
-      // Assume jenkinsInfo.jobFullName is either
-      // a MultiBranch Pipeline (folder with one job per branch) project
-      // a Pipeline (standalone) project
+    const limitedStandaloneJobTreeSpec =
+      `${JenkinsApiImpl.jobTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`.replace(
+        /\s/g,
+        '',
+      );
 
-      // Add count limit to projects
-      // If limit is set in the config, use it, otherwise use the default limit of 50
-      const limitedJobsTreeSpec: string = `${JenkinsApiImpl.jobsTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`;
+    const projects: Promise<BackstageProject[]>[] =
+      jenkinsInfo.fullJobNames.map(async jobName => {
+        const project = await client.job.get({
+          name: jobName,
+          tree: limitedJobsTreeSpec,
+        });
 
-      const project = await client.job.get({
-        name: jenkinsInfo.jobFullName,
-        // Filter only be the information we need, instead of loading all fields.
-        // Whitespaces are only included for readability here and stripped out
-        // before sending to Jenkins
-        tree: limitedJobsTreeSpec.replace(/\s/g, ''),
+        if (!project.jobs) {
+          // Standalone project
+          const standaloneProject = await client.job.get({
+            name: jobName,
+            tree: limitedStandaloneJobTreeSpec,
+          });
+          return [this.augmentProject(standaloneProject)];
+        }
+
+        // Multi-branch project
+        return project.jobs.map((jobDetails: JenkinsProject) =>
+          this.augmentProject(jobDetails),
+        );
       });
 
-      const isStandaloneProject = !project.jobs;
-      if (isStandaloneProject) {
-        const limitedStandaloneJobTreeSpec = `${JenkinsApiImpl.jobTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`;
-        const standaloneProject = await client.job.get({
-          name: jenkinsInfo.jobFullName,
-          tree: limitedStandaloneJobTreeSpec.replace(/\s/g, ''),
-        });
-        projects.push(this.augmentProject(standaloneProject));
-        return projects;
-      }
-      for (const jobDetails of project.jobs) {
-        // for each branch (we assume)
-        projects.push(this.augmentProject(jobDetails));
-      }
-    }
-    return projects;
+    const nestedProjects = await Promise.all(projects);
+    return nestedProjects.flat();
   }
 
   /**
@@ -140,17 +173,17 @@ export class JenkinsApiImpl {
    */
   async getBuild(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildNumber: number,
   ) {
     const client = await JenkinsApiImpl.getClient(jenkinsInfo);
 
     const project = await client.job.get({
-      name: jobFullName,
+      name: jobs,
       depth: 1,
     });
 
-    const build = await client.build.get(jobFullName, buildNumber);
+    const build = await client.build.get(jobs, buildNumber);
     const jobScmInfo = JenkinsApiImpl.extractScmDetailsFromJob(project);
 
     return this.augmentBuild(build, jobScmInfo);
@@ -162,7 +195,7 @@ export class JenkinsApiImpl {
    */
   async rebuildProject(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildNumber: number,
     resourceRef: string,
     options: { credentials: BackstageCredentials },
@@ -179,7 +212,7 @@ export class JenkinsApiImpl {
       }
     }
 
-    const buildUrl = this.getBuildUrl(jenkinsInfo, jobFullName, buildNumber);
+    const buildUrl = this.getBuildUrl(jenkinsInfo, jobs, buildNumber);
 
     // the current SDK only supports triggering a new build
     // replay the job by triggering request directly from Jenkins api
@@ -339,29 +372,17 @@ export class JenkinsApiImpl {
 
   private getBuildUrl(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildId: number,
   ): string {
-    const jobs = jobFullName.split('/');
     return `${jenkinsInfo.baseUrl}/job/${jobs.join('/job/')}/${buildId}`;
   }
 
-  async getJobBuilds(jenkinsInfo: JenkinsInfo, jobFullName: string) {
-    let jobName = jobFullName;
-    if (jobFullName.includes('/')) {
-      jobName = jobFullName
-        .split('/')
-        .map((s: string) => `${encodeURIComponent(s)}`)
-        .join('/job/');
-    }
-
+  async getJobBuilds(jenkinsInfo: JenkinsInfo, jobs: string[]) {
     const response = await fetch(
-      `${
-        jenkinsInfo.baseUrl
-      }/job/${jobName}/api/json?tree=${JenkinsApiImpl.jobBuildsTreeSpec.replace(
-        /\s/g,
-        '',
-      )}`,
+      `${jenkinsInfo.baseUrl}/job/${jobs.join(
+        '/job/',
+      )}/api/json?tree=${JenkinsApiImpl.jobBuildsTreeSpec.replace(/\s/g, '')}`,
       {
         method: 'get',
         headers: jenkinsInfo.headers as HeaderInit,
@@ -370,5 +391,25 @@ export class JenkinsApiImpl {
 
     const jobBuilds = await response.json();
     return jobBuilds;
+  }
+
+  /**
+   * Get the console text for a single build.
+   * @see ../../../jenkins/src/api/JenkinsApi.ts#getBuildConsoleText
+   */
+  async getBuildConsoleText(
+    jenkinsInfo: JenkinsInfo,
+    jobs: string[],
+    buildNumber: number,
+  ) {
+    const buildUrl = this.getBuildUrl(jenkinsInfo, jobs, buildNumber);
+
+    const response = await fetch(`${buildUrl}/consoleText`, {
+      method: 'get',
+      headers: jenkinsInfo.headers as HeaderInit,
+    });
+
+    const consoleText = await response.text();
+    return consoleText;
   }
 }

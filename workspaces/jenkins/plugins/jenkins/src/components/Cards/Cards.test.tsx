@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { LatestRunCard } from './Cards';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
@@ -87,5 +86,49 @@ describe('<LatestRunCard />', () => {
 
     expect(getByText("Error: Can't find Jenkins project")).toBeInTheDocument();
     expect(getByText('jenkins-project not found')).toBeInTheDocument();
+  });
+
+  describe('when title is undefined', () => {
+    it('should render default text', async () => {
+      const { getByText } = await renderInTestApp(
+        <TestApiProvider apis={[[jenkinsApiRef, jenkinsApi]]}>
+          <EntityProvider entity={entity}>
+            <LatestRunCard branch="main" />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByText('Latest main build')).toBeVisible();
+    });
+  });
+
+  describe('when title is defined as string', () => {
+    it('should render the title as is', async () => {
+      const { getByText } = await renderInTestApp(
+        <TestApiProvider apis={[[jenkinsApiRef, jenkinsApi]]}>
+          <EntityProvider entity={entity}>
+            <LatestRunCard branch="main" title="My custom tile!" />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByText('My custom tile!')).toBeVisible();
+    });
+  });
+
+  describe('when title is defined as function', () => {
+    it('should call the function and use its return', async () => {
+      const titleFn = (branch: string) => `Show ${branch} status`;
+
+      const { getByText } = await renderInTestApp(
+        <TestApiProvider apis={[[jenkinsApiRef, jenkinsApi]]}>
+          <EntityProvider entity={entity}>
+            <LatestRunCard branch="main" title={titleFn} />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByText('Show main status')).toBeVisible();
+    });
   });
 });

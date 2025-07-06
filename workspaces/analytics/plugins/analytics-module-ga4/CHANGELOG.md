@@ -1,5 +1,48 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.8.0
+
+### Minor Changes
+
+- 4ed9028: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 8b665f9: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- 9fe29e9: Backstage version bump to v1.37.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 926f672: Backstage version bump to v1.36.1
+
+## 0.4.0
+
+### Minor Changes
+
+- b56df3f: Backstage version bump to v1.35.1
+
+## 0.3.0
+
+### Minor Changes
+
+- cab1716: Allow defining custom cookie flags and setting it to 'SameSite=Lax' by default to make every browser behave similarly.
+- ac6e8f9: Backstage version bump to v1.34.1
+
 ## 0.2.11
 
 ### Patch Changes

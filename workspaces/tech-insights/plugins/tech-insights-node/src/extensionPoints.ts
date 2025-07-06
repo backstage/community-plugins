@@ -15,8 +15,11 @@
  */
 
 import { createExtensionPoint } from '@backstage/backend-plugin-api';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { FactCheckerFactory, TechInsightCheck } from './checks';
+import {
+  CheckResult,
+  Check,
+} from '@backstage-community/plugin-tech-insights-common';
+import { FactCheckerFactory } from './checks';
 import { FactRetriever, FactRetrieverRegistry } from './facts';
 import { PersistenceContext } from './persistence';
 
@@ -42,7 +45,7 @@ export const techInsightsFactRetrieversExtensionPoint =
  */
 export interface TechInsightsFactCheckerFactoryExtensionPoint {
   setFactCheckerFactory<
-    CheckType extends TechInsightCheck,
+    CheckType extends Check,
     CheckResultType extends CheckResult,
   >(
     factory: FactCheckerFactory<CheckType, CheckResultType>,

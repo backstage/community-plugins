@@ -15,9 +15,8 @@
  */
 
 import { Avatar } from '@backstage/core-components';
-import React from 'react';
 import { Reviewer } from '@backstage-community/plugin-azure-devops-common';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
 type PullRequestCardReviewerProps = {
   reviewer: Reviewer;

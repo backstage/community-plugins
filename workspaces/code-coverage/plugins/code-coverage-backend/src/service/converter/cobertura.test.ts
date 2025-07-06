@@ -18,12 +18,12 @@ import fs from 'fs';
 import path from 'path';
 import { Cobertura } from './cobertura';
 import { CoberturaXML } from './types';
-import { getVoidLogger } from '@backstage/backend-common';
+import { mockServices } from '@backstage/backend-test-utils';
 
 /* eslint-disable no-restricted-syntax */
 
 describe('convert cobertura', () => {
-  const converter = new Cobertura(getVoidLogger());
+  const converter = new Cobertura(mockServices.rootLogger());
   [1, 2, 3, 4, 5, 6].forEach(idx => {
     let fixture: CoberturaXML;
     parseString(

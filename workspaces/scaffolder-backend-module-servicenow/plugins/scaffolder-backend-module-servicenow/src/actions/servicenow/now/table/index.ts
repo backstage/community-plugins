@@ -27,8 +27,8 @@ import { CreateActionOptions } from '../../../types';
 
 /**
  * Returns all ServiceNow `now` namespace `Table API` actions.
- *
- * @returns {TemplateAction[]}
+ * @public
+ * @returns TemplateAction[]
  */
 export function createTableActions(
   options: CreateActionOptions,

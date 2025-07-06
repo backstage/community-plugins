@@ -1,61 +1,38 @@
-import { resolvePackagePath } from '@backstage/backend-common';
 import { Knex } from 'knex';
-import { Logger } from 'winston';
-import path from 'path';
-import dotenv from 'dotenv';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 const ENTITY_APPLICATION_TABLE = 'entity-application-mapping';
 const OAUTH_MAPPING_TABLE = 'oauth-mapping';
 
-// Load environment variables
-dotenv.config();
-
-// Define default plugin root path using APP_ROOT if available
-const defaultPluginRoot = path.join(
-  process.env.APP_ROOT || '/opt/app-root', // Fallback to a hardcoded default if APP_ROOT is not set
-  'src',
-  'dynamic-plugins-root',
-  'backstage-community-backstage-plugin-mta-backend-dynamic-0.1.1',
-);
-
-// Check if running in development environment
-const isDevelopment = process.env.NODE_ENV === 'development';
-
-// Determine the plugin root directory based on environment
-const pluginRoot = isDevelopment
-  ? resolvePackagePath('@backstage-community/backstage-plugin-mta-backend')
-  : process.env.PLUGIN_ROOT || defaultPluginRoot;
-
-console.log('Resolving path for migrations...');
-const migrationsDir = path.join(pluginRoot, 'migrations');
-console.log(`Using plugin root directory: ${pluginRoot}`);
-console.log(`Migrations directory resolved to: ${migrationsDir}`);
-
 export interface EntityApplicationStorage {
   getAllEntities(): Promise<any[]>;
-  getApplicationIDForEntity(entityUID: string): Promise<Number | undefined>;
+  getApplicationIDForEntity(entityUID: string): Promise<number | undefined>;
   saveApplicationIDForEntity(
     entityID: string,
     applicationID: string,
-  ): Promise<Boolean | void>;
+  ): Promise<boolean | void>;
   saveRefreshTokenForUser(
     backstageID: string,
     refreshToken: string,
-  ): Promise<Boolean | undefined>;
-  getRefreshTokenForUser(backstageID: string): Promise<String | undefined>;
+  ): Promise<boolean | undefined>;
+  getRefreshTokenForUser(backstageID: string): Promise<string | undefined>;
 }
 
 export class DataBaseEntityApplicationStorage
   implements EntityApplicationStorage
 {
-  public constructor(
+  private constructor(
     private readonly knex: Knex<any, any[]>,
-    private readonly logger: Logger,
+    private readonly logger: LoggerService,
   ) {}
 
+  /**
+   * Create the storage instance and run migrations.
+   */
   static async create(
     knex: Knex<any, any[]>,
-    logger: Logger,
+    logger: LoggerService,
+    migrationsDir: string,
   ): Promise<EntityApplicationStorage> {
     logger.info('Starting to migrate database');
     await knex.migrate.latest({
@@ -71,98 +48,63 @@ export class DataBaseEntityApplicationStorage
 
   async getApplicationIDForEntity(
     entityUID: string,
-  ): Promise<Number | undefined> {
+  ): Promise<number | undefined> {
     if (!entityUID) {
       return undefined;
     }
-    const v: number = await this.knex
+    return this.knex
       .table(ENTITY_APPLICATION_TABLE)
-      .where({ entityUID: entityUID })
+      .where({ entityUID })
       .first()
-      .then(data => {
-        if (!data) {
-          return undefined;
-        }
-        console.log(data.mtaApplication);
-        return data.mtaApplication;
-      });
-    return v;
+      .then(row => row?.mtaApplication);
   }
 
   async saveApplicationIDForEntity(
     entityID: string,
     applicationID: string,
-  ): Promise<Boolean | void> {
-    // this.logger.info('saving in storage: ' + entityID + ' ' + applicatonID);
+  ): Promise<boolean | void> {
     this.logger.info(`saving in storage: ${entityID} ${applicationID}`);
-
     if (!entityID || !applicationID) {
       return undefined;
     }
-    const res = this.knex
+    return this.knex
       .insert({ entityUID: entityID, mtaApplication: applicationID })
       .into(ENTITY_APPLICATION_TABLE)
-      .then(data => {
-        if (data.length === 1) {
-          return true;
-        }
-        return false;
-      });
-    return res;
+      .then(data => data.length === 1);
   }
 
   async saveRefreshTokenForUser(
     backstageID: string,
     refreshToken: string,
-  ): Promise<Boolean | undefined> {
+  ): Promise<boolean | undefined> {
     if (!backstageID || !refreshToken) {
       return undefined;
     }
-    const r = await this.getRefreshTokenForUser(backstageID);
-
-    if (r && r !== refreshToken) {
-      const res = await this.knex
+    const existing = await this.getRefreshTokenForUser(backstageID);
+    if (existing && existing !== refreshToken) {
+      const updated = await this.knex
         .table(OAUTH_MAPPING_TABLE)
         .update({ mtaOAuthRefreshToken: refreshToken })
-        .where('backstageID', backstageID)
-        .then(data => {
-          if (data === 1) {
-            return true;
-          }
-          return false;
-        });
-      return res;
+        .where('backstageID', backstageID);
+      return updated === 1;
     }
 
-    const res = this.knex
-      .insert({ backstageID: backstageID, mtaOAuthRefreshToken: refreshToken })
-      .into(OAUTH_MAPPING_TABLE)
-      .then(data => {
-        if (data.length === 1) {
-          return true;
-        }
-        return false;
-      });
-    return res;
+    const inserted = await this.knex
+      .insert({ backstageID, mtaOAuthRefreshToken: refreshToken })
+      .into(OAUTH_MAPPING_TABLE);
+    return inserted.length === 1;
   }
 
   async getRefreshTokenForUser(
     backstageID: string,
-  ): Promise<String | undefined> {
+  ): Promise<string | undefined> {
     if (!backstageID) {
       return undefined;
     }
-
-    const v: string = await this.knex
+    return this.knex
       .table(OAUTH_MAPPING_TABLE)
-      .where({ backstageID: backstageID })
+      .where({ backstageID })
       .first()
-      .then(data => {
-        if (!data) {
-          return undefined;
-        }
-        return data.mtaOAuthRefreshToken;
-      });
-    return v;
+      .then(row => row?.mtaOAuthRefreshToken);
   }
 }

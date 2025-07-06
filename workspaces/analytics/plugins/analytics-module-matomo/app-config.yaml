@@ -1,0 +1,10 @@
+app:
+  title: 'Matomo Test'
+  analytics:
+    matomo:
+      host: example.com
+      siteId: 2
+      identity: 'disabled'
+
+backend:
+  baseUrl: http://localhost:7007

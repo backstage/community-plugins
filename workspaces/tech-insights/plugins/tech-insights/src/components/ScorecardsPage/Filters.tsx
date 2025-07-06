@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { techInsightsApiRef } from '../../api';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import Typography from '@material-ui/core/Typography';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -31,6 +29,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 import { ErrorPanel } from '@backstage/core-components';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 
 const useStyles = makeStyles({
   fullWidth: { width: '100%' },

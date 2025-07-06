@@ -27,7 +27,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
 import qs from 'qs';
-import React from 'react';
 import { useProjectName } from '../useProjectName';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import { useWorkflowRunsDetails } from './useWorkflowRunsDetails';

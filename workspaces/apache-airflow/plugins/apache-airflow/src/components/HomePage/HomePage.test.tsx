@@ -15,7 +15,6 @@
  */
 
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
 import { HomePage } from './HomePage';
 

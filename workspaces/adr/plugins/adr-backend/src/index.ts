@@ -21,5 +21,9 @@
  */
 
 export * from './service';
-export { adrPlugin as default } from './plugin';
+export {
+  adrPlugin as default,
+  adrExtensionPoint,
+  type AdrExtensionPoint,
+} from './plugin';
 export * from './deprecated';

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { MouseEvent } from 'react';
 
 import { makeStyles } from '@mui/styles';
 import {
@@ -52,7 +52,7 @@ const VmNode = ({
   const { kind, osImage } = vmData;
   const iconRadius = Math.min(width, height) * 0.25;
 
-  const onNodeSelect = (e: React.MouseEvent) => {
+  const onNodeSelect = (e: MouseEvent) => {
     const params = new URLSearchParams(window.location.search);
     params.set('selectedId', element.getId());
     history.replaceState(null, '', `?${params.toString()}`);
@@ -72,7 +72,7 @@ const VmNode = ({
 
   const useStyles = makeStyles({
     kubevirtbg: {
-      fill: 'var(--pf-v5-global--BackgroundColor--light-100)',
+      fill: 'var(--pf-t--color--white)',
     },
   });
   const classes = useStyles();

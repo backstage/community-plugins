@@ -8,6 +8,7 @@ import { mendApiRef, MendClient } from './api';
 
 import { rootRouteRef } from './routes';
 
+/** @public */
 export const plugin = createPlugin({
   id: 'mend-plugin',
   routes: {
@@ -24,7 +25,8 @@ export const plugin = createPlugin({
   ],
 });
 
-export const Page = plugin.provide(
+/** @public */
+export const MendPage = plugin.provide(
   createRoutableExtension({
     name: 'mend-page',
     component: () => import('./App').then(m => m.App),

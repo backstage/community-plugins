@@ -1,5 +1,92 @@
 ### Dependencies
 
+## 1.14.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.14.0
+
+### Minor Changes
+
+- 227dae4: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- 19d4246: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+- 31b91ce: Updated dependency `@hey-api/openapi-ts` to `0.67.3`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- fd39ec9: Updated dependency `@hey-api/openapi-ts` to `0.72.2`.
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
+## 1.13.1
+
+### Patch Changes
+
+- 35b813d: Updated dependency `@hey-api/openapi-ts` to `0.66.7`.
+
+## 1.13.0
+
+### Minor Changes
+
+- b0d13f7: Backstage version bump to v1.36.1
+
+## 1.12.2
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json and remove legacy maintainers field.
+
+## 1.12.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
+## 1.12.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.11.0
+
+### Minor Changes
+
+- ad66a7a: Backstage version bump to v1.35.1
+
+## 1.10.9
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.10.8
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
+## 1.10.7
+
+### Patch Changes
+
+- 8e9239f: Clean up api report warnings and remove unnecessary files
+
+## 1.10.6
+
+### Patch Changes
+
+- 3d6256e: Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
+
+## 1.10.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.10.4
 
 ### Patch Changes

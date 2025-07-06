@@ -1,0 +1,23 @@
+{
+  "travels": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "viaggi": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "voyages": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

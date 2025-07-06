@@ -21,7 +21,6 @@ import {
 } from '@backstage/test-utils';
 import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 import { act, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import GetBBoxPolyfill from '../utils/polyfills/getBBox';
 import { RadarPage } from './RadarPage';
 import { techRadarApiRef, TechRadarApi } from '../api';
@@ -40,7 +39,12 @@ describe('RadarPage', () => {
     async load(): Promise<TechRadarLoaderResponse> {
       return {
         entries: [],
-        quadrants: [],
+        quadrants: [
+          { id: 'infrastructure', name: 'Infrastructure' },
+          { id: 'frameworks', name: 'Frameworks' },
+          { id: 'languages', name: 'Languages' },
+          { id: 'process', name: 'Process' },
+        ],
         rings: [],
       };
     }
@@ -54,7 +58,12 @@ describe('RadarPage', () => {
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         return {
           entries: [],
-          quadrants: [],
+          quadrants: [
+            { id: 'infrastructure', name: 'Infrastructure' },
+            { id: 'frameworks', name: 'Frameworks' },
+            { id: 'languages', name: 'Languages' },
+            { id: 'process', name: 'Process' },
+          ],
           rings: [],
         };
       }

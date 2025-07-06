@@ -1,0 +1,39 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "cluster": "",
+  "applications": [
+    {
+      "name": "control",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "control",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "control",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ]
+}

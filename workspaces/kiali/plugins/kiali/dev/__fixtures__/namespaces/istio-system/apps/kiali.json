@@ -1,0 +1,70 @@
+{
+  "namespace": {
+    "name": "istio-system",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "istio-system",
+      "topology.istio.io/network": ""
+    },
+    "annotations": null
+  },
+  "name": "kiali",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "kiali",
+      "istioSidecar": false,
+      "istioAmbient": false,
+      "labels": {
+        "app": "kiali",
+        "app.kubernetes.io/instance": "kiali",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "kiali",
+        "app.kubernetes.io/part-of": "kiali",
+        "app.kubernetes.io/version": "v1.79.0",
+        "helm.sh/chart": "kiali-server-1.79.0",
+        "sidecar.istio.io/inject": "false",
+        "version": "v1.79.0"
+      },
+      "serviceAccountNames": ["kiali"]
+    }
+  ],
+  "serviceNames": ["kiali"],
+  "runtimes": [
+    {
+      "name": "Go",
+      "dashboardRefs": [
+        {
+          "template": "go",
+          "title": "Go Metrics"
+        }
+      ]
+    },
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "kiali",
+          "title": "Kiali Internal Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "kiali",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

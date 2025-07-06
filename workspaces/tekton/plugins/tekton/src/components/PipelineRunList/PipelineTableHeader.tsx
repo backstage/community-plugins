@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { MouseEvent } from 'react';
 
 import {
   makeStyles,
@@ -24,11 +24,13 @@ import {
 } from '@material-ui/core';
 
 import { Order } from '../../types/types';
-import { PipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { getPipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type EnhancedTableProps = {
   onRequestSort: (
-    event: React.MouseEvent<unknown>,
+    event: MouseEvent<unknown>,
     property: string,
     id: string,
   ) => void;
@@ -56,15 +58,17 @@ export const EnhancedTableHead = ({
   onRequestSort,
 }: EnhancedTableProps) => {
   const createSortHandler =
-    (property: string, id: string) => (event: React.MouseEvent<unknown>) => {
+    (property: string, id: string) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property, id);
     };
   const classes = useStyles();
+  const { t } = useTranslationRef(tektonTranslationRef);
+  const pipelineRunColumnHeader = getPipelineRunColumnHeader(t);
 
   return (
     <TableHead>
       <TableRow>
-        {PipelineRunColumnHeader.map(headCell => {
+        {pipelineRunColumnHeader.map(headCell => {
           return (
             <TableCell
               className={classes.header}

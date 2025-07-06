@@ -19,6 +19,19 @@ export interface AdrDocument extends IndexableDocument {
 export type AdrFilePathFilterFn = (path: string) => boolean;
 
 // @public
+export interface AdrInfo {
+  // (undocumented)
+  date?: string;
+  // (undocumented)
+  status?: string;
+  // (undocumented)
+  title?: string;
+}
+
+// @public
+export type AdrInfoParser = (content: string, dateFormat?: string) => AdrInfo;
+
+// @public
 export type AdrParser = (ctx: AdrParserContext) => Promise<AdrDocument>;
 
 // @public
@@ -55,14 +68,7 @@ export const MADR_DATE_FORMAT = 'yyyy-MM-dd';
 export const madrFilePathFilter: AdrFilePathFilterFn;
 
 // @public
-export const madrParser: (
-  content: string,
-  dateFormat?: string,
-) => {
-  title: string | undefined;
-  status: string | undefined;
-  date: string | undefined;
-};
+export const madrParser: (content: string, dateFormat?: string) => AdrInfo;
 
 // @public
 export type MadrParserOptions = {

@@ -20,6 +20,5 @@
  * @packageDocumentation
  */
 
-export * from './service/router';
 export type { LinguistBackendApi } from './api';
 export { linguistPlugin as default } from './plugin';

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 import { isArray, filter, map, reduce, reverse, sortBy } from 'lodash';
 
 import Typography from '@material-ui/core/Typography';
@@ -105,4 +105,4 @@ const AllocationChart = ({ allocationRange, currency, n, height }) => {
   return <RangeChart data={data} currency={currency} height={height} />;
 };
 
-export default React.memo(AllocationChart);
+export default memo(AllocationChart);

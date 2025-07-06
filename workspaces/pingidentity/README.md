@@ -6,7 +6,7 @@ To start the app, run:
 
 ```sh
 yarn install
-yarn dev
+yarn start
 ```
 
 ### To learn more about the plugins included:

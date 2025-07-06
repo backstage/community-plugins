@@ -17,7 +17,7 @@
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { waitFor, getByText } from '@testing-library/react';
-import React from 'react';
+import type { ReactNode } from 'react';
 import { DefaultExplorePage } from './DefaultExplorePage';
 
 describe('<DefaultExplorePage />', () => {
@@ -35,7 +35,7 @@ describe('<DefaultExplorePage />', () => {
     validateEntity: jest.fn(),
   };
 
-  const Wrapper = ({ children }: { children?: React.ReactNode }) => (
+  const Wrapper = ({ children }: { children?: ReactNode }) => (
     <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
       {children}
     </TestApiProvider>

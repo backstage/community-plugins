@@ -21,27 +21,59 @@ import {
   ScmIntegrations,
 } from '@backstage/integration';
 
-export type GithubInfo = {
-  credentials: GithubCredentials;
-  apiBaseUrl: string;
-  enterprise: string;
+export type CopilotCredentials = {
+  enterprise?: GithubCredentials;
+  organization?: GithubCredentials;
 };
 
-export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
-  const integrations = ScmIntegrations.fromConfig(config);
-  const credentialsProvider =
-    DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+export type CopilotConfig = {
+  host: string;
+  enterprise?: string;
+  organization?: string;
+  apiBaseUrl: string;
+};
 
+export const getCopilotConfig = (config: Config): CopilotConfig => {
   const host = config.getString('copilot.host');
-  const enterprise = config.getString('copilot.enterprise');
+  const enterprise = config.getOptionalString('copilot.enterprise');
+  const organization = config.getOptionalString('copilot.organization');
 
-  if (!host) {
-    throw new Error('The host configuration is missing from the config.');
+  const integrations = ScmIntegrations.fromConfig(config);
+
+  const githubConfig = integrations.github.byHost(host)?.config;
+
+  if (!githubConfig) {
+    throw new Error(
+      `GitHub configuration for host "${host}" is missing or incomplete. Please check the integretions configuration section.`,
+    );
   }
 
-  if (!enterprise) {
-    throw new Error('The enterprise configuration is missing from the config.');
+  if (enterprise && !githubConfig.token) {
+    throw new Error(
+      `Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "${host}" in the config.`,
+    );
   }
+
+  if (organization && !(githubConfig.token || githubConfig.apps)) {
+    throw new Error(
+      `Organization API for copilot works with both classic and fine grained PAT tokens or GitHub apps. No token or app is configured for "${host}" in the config.`,
+    );
+  }
+
+  return {
+    host,
+    enterprise,
+    organization,
+    apiBaseUrl: githubConfig.apiBaseUrl ?? 'https://api.github.com',
+  };
+};
+
+export const getGithubCredentials = async (
+  config: Config,
+  copilotConfig: CopilotConfig,
+): Promise<CopilotCredentials> => {
+  const integrations = ScmIntegrations.fromConfig(config);
+  const { host, enterprise, organization } = copilotConfig;
 
   const githubConfig = integrations.github.byHost(host)?.config;
 
@@ -51,19 +83,47 @@ export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
     );
   }
 
-  const apiBaseUrl = githubConfig.apiBaseUrl ?? 'https://api.github.com';
+  const credentials: CopilotCredentials = {
+    enterprise: undefined,
+    organization: undefined,
+  };
 
-  const credentials = await credentialsProvider.getCredentials({
-    url: apiBaseUrl,
-  });
-
-  if (!credentials.headers) {
-    throw new Error('Failed to retrieve credentials headers.');
+  if (enterprise) {
+    if (!githubConfig.token) {
+      throw new Error(
+        `Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "${host}" in the config.`,
+      );
+    } else {
+      credentials.enterprise = {
+        type: 'token',
+        headers: { Authorization: `Bearer ${githubConfig.token}` },
+        token: githubConfig.token,
+      };
+    }
   }
 
-  return {
-    apiBaseUrl,
-    credentials,
-    enterprise,
-  };
+  if (organization) {
+    if (githubConfig.apps) {
+      const githubCredentialsProvider =
+        DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+
+      credentials.organization = await githubCredentialsProvider.getCredentials(
+        {
+          url: `https://${host}/${organization}`,
+        },
+      );
+    } else if (githubConfig.token) {
+      credentials.organization = {
+        type: 'token',
+        headers: { Authorization: `Bearer ${githubConfig.token}` },
+        token: githubConfig.token,
+      };
+    } else {
+      throw new Error(
+        `Organization API for copilot works with both classic and fine grained PAT tokens or GitHub apps. No token or app is configured for "${host}" in the config.`,
+      );
+    }
+  }
+
+  return credentials;
 };

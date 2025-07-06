@@ -15,7 +15,6 @@
  */
 import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { PRIVATE, PUBLIC, StatusPage } from '../../types';
 
 const PrivateChip = withStyles(theme => ({

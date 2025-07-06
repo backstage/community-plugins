@@ -18,7 +18,6 @@ import { IdentityApi, identityApiRef } from '@backstage/core-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent, getByRole, waitFor, act } from '@testing-library/react';
 import { PlaylistApi, playlistApiRef } from '../../api';
-import React from 'react';
 
 import { PlaylistEditDialog } from './PlaylistEditDialog';
 

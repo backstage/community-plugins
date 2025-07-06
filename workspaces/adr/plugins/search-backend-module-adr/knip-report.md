@@ -1,12 +1,11 @@
 # Knip report
 
-## Unused dependencies (3)
+## Unused dependencies (2)
 
-| Name                                   | Location     | Severity |
-| :------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-adr-common | package.json | error    |
-| marked                                 | package.json | error    |
-| luxon                                  | package.json | error    |
+| Name   | Location     | Severity |
+| :----- | :----------- | :------- |
+| marked | package.json | error    |
+| luxon  | package.json | error    |
 
 ## Unused devDependencies (1)
 

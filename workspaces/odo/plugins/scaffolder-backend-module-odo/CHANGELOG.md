@@ -1,5 +1,23 @@
 # @backstage-community/plugin-scaffolder-backend-module-odo
 
+## 0.24.0
+
+### Minor Changes
+
+- e5e39ea: Backstage version bump to v1.36.1
+
+## 0.23.0
+
+### Minor Changes
+
+- 613c851: Backstage version bump to v1.35.1
+
+## 0.22.0
+
+### Minor Changes
+
+- 41a2455: Backstage version bump to v1.34.2
+
 ## 0.21.4
 
 ### Patch Changes

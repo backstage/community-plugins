@@ -15,12 +15,20 @@
  */
 import type { GroupTransformer, UserTransformer } from './types';
 
+/**
+ * @public
+ * Group transformer that does nothing.
+ */
 export const noopGroupTransformer: GroupTransformer = async (
   entity,
   _user,
   _realm,
 ) => entity;
 
+/**
+ * @public
+ * User transformer that does nothing.
+ */
 export const noopUserTransformer: UserTransformer = async (
   entity,
   _user,
@@ -29,6 +37,7 @@ export const noopUserTransformer: UserTransformer = async (
 ) => entity;
 
 /**
+ * @public
  * User transformer that sanitizes .metadata.name from email address to a valid name
  */
 export const sanitizeEmailTransformer: UserTransformer = async (
@@ -38,5 +47,32 @@ export const sanitizeEmailTransformer: UserTransformer = async (
   _groups,
 ) => {
   entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9]/g, '-');
+  return entity;
+};
+
+/**
+ * @public
+ * User transformer that sanitizes .metadata.name from invalid Backstage object name to a valid name
+ */
+export const sanitizeUserNameTransformer: UserTransformer = async (
+  entity,
+  _user,
+  _realm,
+  _groups,
+) => {
+  entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9\-_.]/g, '-');
+  return entity;
+};
+
+/**
+ * @public
+ * Group transformer that sanitizes .metadata.name from invalid Backstage object name to a valid name
+ */
+export const sanitizeGroupNameTransformer: GroupTransformer = async (
+  entity,
+  _user,
+  _realm,
+) => {
+  entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9\-_.]/g, '-');
   return entity;
 };

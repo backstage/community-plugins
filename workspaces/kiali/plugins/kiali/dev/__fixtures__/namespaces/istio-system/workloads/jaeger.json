@@ -1,0 +1,210 @@
+{
+  "name": "jaeger",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-15T09:24:59Z",
+  "resourceVersion": "1068",
+  "istioInjectionAnnotation": false,
+  "istioSidecar": false,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "jaeger",
+    "sidecar.istio.io/inject": "false"
+  },
+  "appLabel": true,
+  "versionLabel": false,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"jaeger\"},\"name\":\"jaeger\",\"namespace\":\"istio-system\"},\"spec\":{\"selector\":{\"matchLabels\":{\"app\":\"jaeger\"}},\"template\":{\"metadata\":{\"annotations\":{\"prometheus.io/port\":\"14269\",\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"jaeger\",\"sidecar.istio.io/inject\":\"false\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"BADGER_EPHEMERAL\",\"value\":\"false\"},{\"name\":\"SPAN_STORAGE_TYPE\",\"value\":\"badger\"},{\"name\":\"BADGER_DIRECTORY_VALUE\",\"value\":\"/badger/data\"},{\"name\":\"BADGER_DIRECTORY_KEY\",\"value\":\"/badger/key\"},{\"name\":\"COLLECTOR_ZIPKIN_HOST_PORT\",\"value\":\":9411\"},{\"name\":\"MEMORY_MAX_TRACES\",\"value\":\"50000\"},{\"name\":\"QUERY_BASE_PATH\",\"value\":\"/jaeger\"}],\"image\":\"docker.io/jaegertracing/all-in-one:1.46\",\"livenessProbe\":{\"httpGet\":{\"path\":\"/\",\"port\":14269}},\"name\":\"jaeger\",\"readinessProbe\":{\"httpGet\":{\"path\":\"/\",\"port\":14269}},\"resources\":{\"requests\":{\"cpu\":\"10m\"}},\"volumeMounts\":[{\"mountPath\":\"/badger\",\"name\":\"data\"}]}],\"volumes\":[{\"emptyDir\":{},\"name\":\"data\"}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "jaeger-7d7d59b9d-q8wzb",
+      "labels": {
+        "app": "jaeger",
+        "pod-template-hash": "7d7d59b9d",
+        "sidecar.istio.io/inject": "false"
+      },
+      "createdAt": "2024-02-15T09:24:59Z",
+      "createdBy": [
+        {
+          "name": "jaeger-7d7d59b9d",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "jaeger",
+          "image": "docker.io/jaegertracing/all-in-one:1.46",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": null,
+      "istioInitContainers": null,
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": false,
+      "annotations": {
+        "prometheus.io/port": "14269",
+        "prometheus.io/scrape": "true"
+      },
+      "proxyStatus": null,
+      "serviceAccountName": "default"
+    }
+  ],
+  "services": [
+    {
+      "name": "jaeger-collector",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "jaeger"
+      },
+      "selector": {
+        "app": "jaeger"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "zipkin",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "name": "zipkin"
+      },
+      "selector": {
+        "app": "jaeger"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "tracing",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "jaeger"
+      },
+      "selector": {
+        "app": "jaeger"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "Go",
+      "dashboardRefs": [
+        {
+          "template": "go",
+          "title": "Go Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "jaeger.istio-system": {
+        "name": "jaeger",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "jaeger",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": -1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

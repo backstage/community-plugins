@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 import { RBACAPI } from '../api/RBACBackendClient';
 import {
@@ -21,6 +22,7 @@ import {
   RoleError,
   UpdatedConditionsData,
 } from '../types';
+import { NavigateFunction } from 'react-router-dom';
 
 export const createPermissions = async (
   newPermissions: RoleBasedPolicy[],
@@ -123,5 +125,29 @@ export const createConditions = async (
         } ${cpErr.join('\n')}`,
       );
     }
+  }
+};
+
+export const navigateTo = (
+  navigate: NavigateFunction,
+  roleName?: string,
+  rName?: string,
+  action?: string,
+  step?: number,
+) => {
+  const currentRoleName = rName || roleName;
+  const stateProp =
+    currentRoleName && action
+      ? {
+          state: {
+            toastMessage: `Role ${currentRoleName} ${action} successfully`,
+          },
+        }
+      : undefined;
+  if (step && currentRoleName) {
+    const { kind, namespace, name } = parseEntityRef(currentRoleName);
+    navigate(`../roles/${kind}/${namespace}/${name}`, stateProp);
+  } else {
+    navigate('..', stateProp);
   }
 };

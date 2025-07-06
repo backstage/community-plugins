@@ -15,6 +15,9 @@
  */
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * @public
+ */
 export const ocmClusterReadPermission = createPermission({
   name: 'ocm.cluster.read',
   attributes: {
@@ -22,6 +25,9 @@ export const ocmClusterReadPermission = createPermission({
   },
 });
 
+/**
+ * @public
+ */
 export const ocmEntityReadPermission = createPermission({
   name: 'ocm.entity.read',
   attributes: {
@@ -29,6 +35,9 @@ export const ocmEntityReadPermission = createPermission({
   },
 });
 
+/**
+ * @public
+ */
 export const ocmEntityPermissions = [
   ocmClusterReadPermission,
   ocmEntityReadPermission,

@@ -37,6 +37,9 @@ export const azureDevOpsApiRef = createApiRef<AzureDevOpsApi>({
 
 /** @public */
 export interface AzureDevOpsApi {
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   getRepoBuilds(
     projectName: string,
     repoName: string,
@@ -82,4 +85,12 @@ export interface AzureDevOpsApi {
   ): Promise<{ items: BuildRun[] }>;
 
   getReadme(opts: ReadmeConfig): Promise<Readme>;
+
+  getBuildRunLog(
+    projectName: string,
+    entityRef: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<{ log: string[] }>;
 }

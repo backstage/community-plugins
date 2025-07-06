@@ -15,7 +15,7 @@
  */
 import { rest } from 'msw';
 
-const LOCAL_ADDR = 'http://localhost:5000';
+const LOCAL_ADDR = 'https://example.com';
 
 export const handlers = [
   rest.get(

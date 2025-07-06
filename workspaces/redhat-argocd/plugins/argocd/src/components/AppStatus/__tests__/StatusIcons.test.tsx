@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { render, screen } from '@testing-library/react';
 
-import { HealthStatus, SyncStatusCode } from '../../../types/application';
+import {
+  HealthStatus,
+  SyncStatusCode,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { AppHealthIcon, SyncIcon } from '../StatusIcons';
 
 describe('StatusIcons', () => {

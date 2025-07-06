@@ -1,5 +1,86 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- afc997b: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [afc997b]
+  - @backstage-community/plugin-playlist-common@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 79ebcc3: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- a52f5c1: Heavily improved the speed of querying entities for a playlist
+- Updated dependencies [79ebcc3]
+  - @backstage-community/plugin-playlist-common@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 1f54d17: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [1f54d17]
+  - @backstage-community/plugin-playlist-common@0.5.0
+
+## 0.7.0
+
+### Minor Changes
+
+- b7910ae: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [b7910ae]
+  - @backstage-community/plugin-playlist-common@0.4.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.6.0
+
+### Minor Changes
+
+- 79f848a: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [79f848a]
+  - @backstage-community/plugin-playlist-common@0.3.0
+
+## 0.5.0
+
+### Minor Changes
+
+- b33acbf: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [b33acbf]
+  - @backstage-community/plugin-playlist-common@0.2.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 8634a13: **BREAKING** `auth`, `config`, and `httpAuth` are now required, please migrate to the new backend system as the best path forward for this change.
+
+  Also, removed usages and references of `@backstage/backend-common`
+
 ## 0.3.28
 
 ### Patch Changes

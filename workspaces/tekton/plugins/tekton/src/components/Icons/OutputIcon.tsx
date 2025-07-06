@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
@@ -21,7 +21,7 @@ import classNames from 'classnames';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     icon: {
-      fill: 'var(--pf-v5-global--Color--100)',
+      fill: 'var(--pf-t--global--icon--color--100)',
     },
     disabledButton: {
       fill: theme.palette.grey[600],
@@ -29,11 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const OutputIcon = ({
-  disabled,
-}: {
-  disabled?: boolean;
-}): React.ReactElement => {
+const OutputIcon = ({ disabled }: { disabled?: boolean }): ReactElement => {
   const classes = useStyles();
   return (
     <svg

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useLayoutEffect } from 'react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useDarkTheme } from '../../hooks/useDarkTheme';
@@ -23,9 +23,7 @@ import { ModelsPlural } from '../../models';
 import PermissionAlert from '../common/PermissionAlert';
 import PipelineRunList from '../PipelineRunList/PipelineRunList';
 
-import '@patternfly/react-core/dist/styles/base.css';
-import '@patternfly/patternfly/patternfly-theme-dark.css';
-import '@patternfly/patternfly/patternfly-charts-theme-dark.css';
+import '@patternfly/react-core/dist/styles/base-no-reset.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 
 const savedStylesheets = new Set<HTMLLinkElement>();
@@ -33,7 +31,7 @@ const savedStylesheets = new Set<HTMLLinkElement>();
 export const TektonCIComponent = () => {
   useDarkTheme();
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const scalprumStyles = Array.from(
       document.querySelectorAll('link[rel="stylesheet"]'),
     ).filter(link =>

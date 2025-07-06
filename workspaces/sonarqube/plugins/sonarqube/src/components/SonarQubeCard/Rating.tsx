@@ -17,7 +17,7 @@
 import Avatar from '@material-ui/core/Avatar';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/styles/withStyles';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 const useStyles = makeStyles(theme => {
   const commonCardRating: CSSProperties = {

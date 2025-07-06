@@ -16,25 +16,33 @@
 import React from 'react';
 
 import { createDevApp } from '@backstage/dev-utils';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+import {
+  CatalogEntityPage,
+  CatalogIndexPage,
+  catalogPlugin,
+  EntityAboutCard,
+  EntityLayout,
+} from '@backstage/plugin-catalog';
 
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
-import { mockEntity } from '../src/mocks';
 import {
   EntityFeedbackPage,
   feedbackPlugin,
+  GlobalFeedbackComponent,
   GlobalFeedbackPage,
   OpcFeedbackComponent,
 } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(feedbackPlugin)
+  .registerPlugin(catalogPlugin)
   .addThemes(getAllThemes())
   .addPage({
     element: (
       <>
-        <GlobalFeedbackPage /> <OpcFeedbackComponent />
+        <GlobalFeedbackPage /> <GlobalFeedbackComponent />{' '}
+        <OpcFeedbackComponent />
       </>
     ),
     title: 'Root Page',
@@ -42,14 +50,34 @@ createDevApp()
   })
   .addPage({
     element: (
-      <div style={{ padding: '1rem' }}>
-        <EntityProvider entity={mockEntity}>
-          <EntityFeedbackPage />
-        </EntityProvider>
+      <>
+        <CatalogIndexPage />
+        <GlobalFeedbackComponent />
         <OpcFeedbackComponent />
-      </div>
+      </>
     ),
+    title: 'Catalog',
+    path: '/catalog',
+  })
+  .addPage({
     title: 'Entity Page',
-    path: '/catalog/default/component/example-website-for-feedback-plugin',
+    path: '/catalog/:namespace/:kind/:name',
+    element: (
+      <>
+        <CatalogEntityPage />
+        <GlobalFeedbackComponent />
+        <OpcFeedbackComponent />
+      </>
+    ),
+    children: (
+      <EntityLayout>
+        <EntityLayout.Route path="feedback" title="Feedback">
+          <>
+            <EntityAboutCard />
+            <EntityFeedbackPage />
+          </>
+        </EntityLayout.Route>
+      </EntityLayout>
+    ),
   })
   .render();

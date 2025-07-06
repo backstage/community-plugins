@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import { DateTime, Duration } from 'luxon';
 import humanizeDuration from 'humanize-duration';
 import { capitalize } from 'lodash';
