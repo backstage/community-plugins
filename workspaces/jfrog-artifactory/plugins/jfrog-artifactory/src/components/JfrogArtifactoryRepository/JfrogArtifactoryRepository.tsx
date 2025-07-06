@@ -39,7 +39,7 @@ const useLocalStyles = makeStyles({
   },
 });
 
-export function JfrogArtifactoryRepository({ image }: RepositoryProps) {
+export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
   const jfrogArtifactoryClient = useApi(jfrogArtifactoryApiRef);
   const classes = useStyles();
   const localClasses = useLocalStyles();
@@ -47,7 +47,7 @@ export function JfrogArtifactoryRepository({ image }: RepositoryProps) {
   const titleprop = `Jfrog Artifactory repository: ${image}`;
 
   const { loading } = useAsync(async () => {
-    const tagsResponse = await jfrogArtifactoryClient.getTags(image);
+    const tagsResponse = await jfrogArtifactoryClient.getTags(image, target);
 
     setEdges(tagsResponse.data.versions.edges);
 
@@ -99,4 +99,5 @@ export function JfrogArtifactoryRepository({ image }: RepositoryProps) {
 
 interface RepositoryProps {
   image: string;
+  target?: string;
 }
