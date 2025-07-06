@@ -17,6 +17,8 @@ import { useMemo, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import CloudIcon from '@mui/icons-material/Cloud';
 import { useTheme } from '@mui/material/styles';
 import { ProviderStatusData } from '../../types';
@@ -45,40 +47,59 @@ export const ProviderStatus = ({
   const isError = !isConnected && !isLoading;
 
   const getBoxBackgroundColor = useCallback(() => {
-    if (isError) {
-      return isDarkMode ? '#2e1e1e' : '#fff5f5';
-    }
-    return isDarkMode ? '#2a2a2a' : '#f8f9fa';
-  }, [isError, isDarkMode]);
+    return theme.palette.background.paper;
+  }, [theme.palette]);
 
   const getBorderColor = useCallback(() => {
     if (isError) {
-      return isDarkMode ? '#4a2c2c' : '#fed7d7';
+      return theme.palette.error.main;
     }
     return theme.palette.divider;
-  }, [isError, isDarkMode, theme.palette.divider]);
+  }, [isError, theme.palette]);
 
-  const getStatusColor = useCallback(() => {
-    if (isLoading) return '#ff9800';
-    if (isConnected) return '#2e7d32';
-    return '#d32f2f';
-  }, [isLoading, isConnected]);
-
-  const getStatusBackgroundColor = useCallback(() => {
+  const getChipBackgroundColor = useCallback(() => {
     if (isLoading) {
-      return isDarkMode ? '#2d2316' : '#fff8e1';
+      return 'transparent';
     }
     if (isConnected) {
-      return isDarkMode ? '#1e2e1e' : '#e8f5e8';
+      return theme.palette.mode === 'dark'
+        ? theme.palette.background.paper
+        : 'transparent';
     }
-    return isDarkMode ? '#2e1e1e' : '#ffebee';
-  }, [isLoading, isConnected, isDarkMode]);
+    return 'transparent';
+  }, [isLoading, isConnected, theme.palette.mode]);
 
-  const getStatusBorderColor = useCallback(() => {
-    if (isLoading) return '#ffcc02';
-    if (isConnected) return '#4caf50';
-    return '#f44336';
-  }, [isLoading, isConnected]);
+  const getChipColor = useCallback(() => {
+    if (isLoading) {
+      return theme.palette.warning.main;
+    }
+    if (isConnected) {
+      return theme.palette.mode === 'dark'
+        ? theme.palette.success.light
+        : theme.palette.success.dark;
+    }
+    return theme.palette.error.main;
+  }, [isLoading, isConnected, theme.palette]);
+
+  const getChipBorder = useCallback(() => {
+    if (isLoading) {
+      return `2px solid ${theme.palette.warning.main}`;
+    }
+    if (isConnected) {
+      return `2px solid ${theme.palette.success.main}`;
+    }
+    return `2px solid ${theme.palette.error.main}`;
+  }, [isLoading, isConnected, theme.palette]);
+
+  const getDotColor = useCallback(() => {
+    if (isLoading) {
+      return theme.palette.warning.main;
+    }
+    if (isConnected) {
+      return theme.palette.success.main;
+    }
+    return theme.palette.error.main;
+  }, [isLoading, isConnected, theme.palette]);
 
   const getStatusText = useCallback(() => {
     if (isLoading) return 'Testing...';
@@ -145,27 +166,37 @@ export const ProviderStatus = ({
           </Typography>
         </Box>
         <Tooltip title={getTooltipTitle()} placement="left">
-          <Typography
-            variant="caption"
-            style={{
-              color: getStatusColor(),
-              fontWeight: 600,
-              fontSize: '0.75rem',
-              padding: '4px 8px',
-              borderRadius: '6px',
-              backgroundColor: getStatusBackgroundColor(),
+          <Chip
+            label={getStatusText()}
+            size="small"
+            icon={
+              <FiberManualRecordIcon
+                sx={{
+                  fill: getDotColor(),
+                  fontSize: '10px !important',
+                  marginLeft: '8px',
+                }}
+              />
+            }
+            sx={{
               cursor: 'help',
-              border: `1px solid ${getStatusBorderColor()}`,
+              backgroundColor: getChipBackgroundColor(),
+              color: getChipColor(),
+              border: getChipBorder(),
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              '& .MuiChip-icon': {
+                marginLeft: '8px',
+                marginRight: '4px',
+              },
             }}
-          >
-            {getStatusText()}
-          </Typography>
+          />
         </Tooltip>
       </Box>
       <Typography
         variant="caption"
         style={{
-          color: theme.palette.text.secondary,
+          color: theme.palette.text.primary,
           lineHeight: 1.5,
           fontSize: '0.8rem',
         }}
@@ -179,9 +210,9 @@ export const ProviderStatus = ({
           style={{
             marginTop: '12px',
             padding: '10px',
-            backgroundColor: isDarkMode ? '#2e1e1e' : '#ffebee',
+            backgroundColor: theme.palette.background.paper,
             borderRadius: '6px',
-            border: `1px solid ${isDarkMode ? '#4a2c2c' : '#ffcdd2'}`,
+            border: `1px solid ${theme.palette.error.main}`,
             maxHeight: '80px',
             overflowY: 'auto',
           }}
@@ -189,7 +220,7 @@ export const ProviderStatus = ({
           <Typography
             variant="caption"
             style={{
-              color: isDarkMode ? '#ff6b6b' : '#d32f2f',
+              color: theme.palette.text.primary,
               fontSize: '0.75rem',
               lineHeight: 1.4,
               display: 'block',
