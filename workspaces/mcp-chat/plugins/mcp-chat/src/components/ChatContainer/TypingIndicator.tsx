@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import React from 'react';
-
 import { useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -41,16 +40,26 @@ export const TypingIndicator: React.FC = () => {
           width: 35,
           height: 35,
           fontSize: '1rem',
-          backgroundColor: isDarkMode ? '#2a2a2a' : '#fff',
-          color: isDarkMode ? '#e0e0e0' : '#666',
+          backgroundColor: isDarkMode
+            ? theme.palette.background.default
+            : theme.palette.background.paper,
+          color: isDarkMode
+            ? theme.palette.text.primary
+            : theme.palette.text.secondary,
         }}
       >
-        <BotIcon color={isDarkMode ? '#e0e0e0' : '#333'} />
+        <BotIcon
+          color={
+            isDarkMode
+              ? theme.palette.text.primary
+              : theme.palette.text.secondary
+          }
+        />
       </Avatar>
       <Card
         elevation={0}
         sx={{
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: 'transparent',
           border: `0px solid ${theme.palette.background.paper}`,
           maxWidth: '70%',
         }}

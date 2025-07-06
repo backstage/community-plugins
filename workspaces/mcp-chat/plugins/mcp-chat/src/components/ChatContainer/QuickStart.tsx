@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useMemo } from 'react';
-import { alpha } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import BuildIcon from '@mui/icons-material/Build';
@@ -140,7 +139,10 @@ export const QuickStart: React.FC<QuickStartProps> = ({
           fontWeight: 700,
           marginBottom: theme.spacing(2),
           color: theme.palette.text.primary,
-          background: `linear-gradient(45deg, #185A4B, #1B5F4F, #2A6C5F, #437E72)`,
+          background:
+            theme.palette.mode === 'dark'
+              ? `linear-gradient(45deg, ${theme.palette.primary.light}, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+              : `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
@@ -188,23 +190,17 @@ export const QuickStart: React.FC<QuickStartProps> = ({
               sx={{
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+                border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.spacing(2),
                 height: '160px',
                 position: 'relative',
                 overflow: 'hidden',
-                background: `linear-gradient(135deg, ${alpha(
-                  theme.palette.background.paper,
-                  0.8,
-                )}, ${alpha(theme.palette.background.default, 0.4)})`,
+                background: theme.palette.background.paper,
                 backdropFilter: 'blur(10px)',
                 '&:hover': {
                   transform: 'translateY(-4px) scale(1.01)',
-                  boxShadow: `0 8px 25px ${alpha(
-                    theme.palette.primary.main,
-                    0.15,
-                  )}`,
-                  borderColor: alpha(theme.palette.primary.main, 0.3),
+                  boxShadow: theme.shadows[8],
+                  borderColor: theme.palette.primary.main,
                   '& .suggestion-icon': {
                     transform: 'scale(1.1)',
                   },
@@ -219,7 +215,10 @@ export const QuickStart: React.FC<QuickStartProps> = ({
                   left: 0,
                   right: 0,
                   height: 3,
-                  background: `linear-gradient(45deg, #185A4B, #1B5F4F, #2A6C5F, #437E72)`,
+                  background:
+                    theme.palette.mode === 'dark'
+                      ? `linear-gradient(45deg, ${theme.palette.primary.light}, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+                      : `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                   opacity: 0,
                   transition: 'opacity 0.3s ease',
                 },
@@ -245,12 +244,9 @@ export const QuickStart: React.FC<QuickStartProps> = ({
                     right: theme.spacing(1),
                     fontSize: '0.7rem',
                     height: 20,
-                    background: alpha(theme.palette.primary.main, 0.1),
+                    background: theme.palette.action.hover,
                     color: theme.palette.primary.main,
-                    border: `1px solid ${alpha(
-                      theme.palette.primary.main,
-                      0.2,
-                    )}`,
+                    border: `1px solid ${theme.palette.divider}`,
                   }}
                 />
                 <Box
@@ -259,10 +255,7 @@ export const QuickStart: React.FC<QuickStartProps> = ({
                     fontSize: '2rem',
                     marginBottom: theme.spacing(1),
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    background: `linear-gradient(45deg, #185A4B, #1B5F4F, #2A6C5F, #437E72)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
+                    color: theme.palette.primary.main,
                   }}
                 >
                   {getRandomIcon(index)}

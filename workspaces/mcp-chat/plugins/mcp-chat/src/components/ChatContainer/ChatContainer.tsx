@@ -24,6 +24,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import SendIcon from '@mui/icons-material/Send';
+import { useTheme } from '@mui/material/styles';
 import { useApi } from '@backstage/core-plugin-api';
 import { mcpChatApiRef } from '../../api';
 import type { ChatMessage as ApiChatMessage } from '../../types';
@@ -52,7 +53,6 @@ interface MCPServer {
 }
 
 interface ChatContainerProps {
-  customTheme: any;
   sidebarCollapsed: boolean;
   mcpServers: MCPServer[];
   messages: Message[];
@@ -64,10 +64,8 @@ export interface ChatContainerRef {
 }
 
 export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
-  (
-    { customTheme, sidebarCollapsed, mcpServers, messages, setMessages },
-    ref,
-  ) => {
+  ({ sidebarCollapsed, mcpServers, messages, setMessages }, ref) => {
+    const theme = useTheme();
     const mcpChatApi = useApi(mcpChatApiRef);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -232,11 +230,11 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
 
     return (
       <Box
-        style={{
+        sx={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          marginRight: sidebarCollapsed ? 60 : 400,
+          marginRight: sidebarCollapsed ? '60px' : '400px',
           transition: 'margin-right 0.3s ease',
         }}
       >
@@ -244,16 +242,16 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
           <QuickStart onSuggestionClick={handleSuggestionClick} />
         ) : (
           <Box
-            style={{
+            sx={{
               flex: 1,
               overflowY: 'auto',
-              padding: customTheme.spacing(6),
-              paddingBottom: customTheme.spacing(10), // Add padding to account for fixed input
-              paddingRight: customTheme.spacing(14),
+              padding: theme.spacing(6),
+              paddingBottom: theme.spacing(10),
+              paddingRight: theme.spacing(14),
               display: 'flex',
               flexDirection: 'column',
-              gap: customTheme.spacing(1),
-              backgroundColor: customTheme.palette.background.paper,
+              gap: theme.spacing(1),
+              backgroundColor: theme.palette.background.default,
               scrollbarGutter: 'stable',
             }}
           >
@@ -266,33 +264,34 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
         )}
 
         <Box
-          style={{
+          sx={{
             marginLeft: '14rem',
             position: 'fixed',
             bottom: 0,
             left: 0,
-            right: sidebarCollapsed ? 60 : 400, // Account for sidebar width
-            padding: customTheme.spacing(2),
-            borderTop: `1px solid ${customTheme.palette.divider}`,
+            right: sidebarCollapsed ? '60px' : '400px',
+            padding: theme.spacing(2),
+            borderTop: `1px solid ${theme.palette.divider}`,
+            borderLeft: `1px solid ${theme.palette.divider}`,
             display: 'flex',
             alignItems: 'center',
-            gap: customTheme.spacing(1),
-            backgroundColor: customTheme.palette.background.paper,
+            gap: theme.spacing(1),
+            backgroundColor: theme.palette.background.paper,
             zIndex: 1000,
             transition: 'right 0.3s ease',
           }}
         >
           <TextField
-            style={{
-              marginLeft: customTheme.spacing(5),
-              marginRight: customTheme.spacing(5),
-              flex: 1,
-            }}
             sx={{
+              marginLeft: theme.spacing(5),
+              marginRight: theme.spacing(5),
+              flex: 1,
               '& .MuiOutlinedInput-root': {
-                borderRadius: customTheme.spacing(3),
+                borderRadius: theme.spacing(3),
                 backgroundColor:
-                  customTheme.palette.mode === 'dark' ? '#2a2a2a' : '#f8f8f8',
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.05)'
+                    : 'rgba(0, 0, 0, 0.05)',
               },
             }}
             placeholder="Message Assistant..."
@@ -307,26 +306,24 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
             color="primary"
           />
           <IconButton
-            style={{
+            sx={{
               backgroundColor:
                 !inputValue.trim() || isTyping
-                  ? '#ccc'
-                  : customTheme.palette.primary.main,
+                  ? theme.palette.action.disabledBackground
+                  : theme.palette.primary.main,
               color:
                 !inputValue.trim() || isTyping
-                  ? '#888'
-                  : customTheme.palette.primary.contrastText,
-            }}
-            sx={{
+                  ? theme.palette.text.disabled
+                  : theme.palette.primary.contrastText,
               '&:hover': {
                 backgroundColor:
                   !inputValue.trim() || isTyping
-                    ? '#ccc'
-                    : customTheme.palette.primary.dark,
+                    ? theme.palette.action.disabledBackground
+                    : theme.palette.primary.dark,
               },
               '&:disabled': {
-                backgroundColor: '#ccc',
-                color: '#888',
+                backgroundColor: theme.palette.action.disabledBackground,
+                color: theme.palette.text.disabled,
               },
             }}
             onClick={handleSendMessage}

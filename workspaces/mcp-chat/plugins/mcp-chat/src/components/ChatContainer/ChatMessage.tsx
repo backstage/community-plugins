@@ -52,23 +52,29 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
 
   // Helper functions to avoid nested ternary expressions
   const getAvatarBackgroundColor = () => {
-    if (message.isUser) return '#4CAF50';
-    return isDarkMode ? '#2a2a2a' : '#fff';
+    if (message.isUser) return theme.palette.success.main;
+    return isDarkMode
+      ? theme.palette.background.paper
+      : theme.palette.background.paper;
   };
 
   const getAvatarColor = () => {
-    if (message.isUser) return '#fff';
-    return isDarkMode ? '#e0e0e0' : '#666';
+    if (message.isUser) return theme.palette.success.contrastText;
+    return isDarkMode
+      ? theme.palette.text.primary
+      : theme.palette.text.secondary;
   };
 
   const getCardBackgroundColor = () => {
     if (!message.isUser) return 'transparent';
-    return isDarkMode ? '#2a2a2a' : '#f8f9fa';
+    return isDarkMode
+      ? theme.palette.background.paper
+      : theme.palette.background.default;
   };
 
   const getCardBorder = () => {
     if (!message.isUser) return 'none';
-    return `1px solid ${isDarkMode ? '#444444' : '#e9ecef'}`;
+    return `1px solid ${theme.palette.divider}`;
   };
 
   const handleCopyCode = async (text: string) => {
@@ -150,7 +156,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
           sx={{
             fontSize: '0.95rem',
             lineHeight: message.isUser ? 1.5 : 1.6,
-            color: '#333',
+            color: theme.palette.text.primary,
             fontWeight: message.isUser ? 500 : 'normal',
             fontFamily: message.isUser
               ? 'inherit'
@@ -209,21 +215,21 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
               paddingLeft: theme.spacing(2),
               margin: theme.spacing(1, 0),
               fontStyle: 'italic',
-              backgroundColor: isDarkMode ? '#2a2a2a' : '#f9f9f9',
+              backgroundColor: theme.palette.background.default,
               padding: theme.spacing(1, 1, 1, 2),
               borderRadius: theme.spacing(0.5),
             },
             '& code': {
-              backgroundColor: isDarkMode ? '#3a3a3a' : '#f1f3f4',
-              color: isDarkMode ? '#e0e0e0' : 'inherit',
+              backgroundColor: theme.palette.action.hover,
+              color: theme.palette.text.primary,
               padding: '2px 4px',
               borderRadius: '3px',
               fontFamily: 'monospace',
               fontSize: '0.875em',
             },
             '& pre': {
-              backgroundColor: isDarkMode ? '#2a2a2a' : '#f8f9fa',
-              border: `1px solid ${isDarkMode ? '#444444' : '#e9ecef'}`,
+              backgroundColor: theme.palette.background.default,
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: theme.spacing(0.5),
               padding: theme.spacing(1.5),
               fontFamily: 'monospace',
@@ -234,7 +240,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
               '& code': {
                 backgroundColor: 'transparent',
                 padding: 0,
-                color: isDarkMode ? '#e0e0e0' : 'inherit',
+                color: theme.palette.text.primary,
               },
             },
             '& table': {
@@ -243,12 +249,12 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
               margin: theme.spacing(1, 0),
             },
             '& th, & td': {
-              border: `1px solid ${isDarkMode ? '#555555' : '#ddd'}`,
+              border: `1px solid ${theme.palette.divider}`,
               padding: theme.spacing(0.5, 1),
               textAlign: 'left',
             },
             '& th': {
-              backgroundColor: isDarkMode ? '#3a3a3a' : '#f5f5f5',
+              backgroundColor: theme.palette.action.hover,
               fontWeight: 600,
             },
             '& a': {
@@ -260,7 +266,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
             },
             '& hr': {
               border: 'none',
-              borderTop: `1px solid ${isDarkMode ? '#444444' : '#e9ecef'}`,
+              borderTop: `1px solid ${theme.palette.divider}`,
               margin: theme.spacing(2, 0),
             },
           }}
@@ -321,7 +327,11 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         ) : (
           <BotIcon
             data-testid="bot-icon"
-            color={isDarkMode ? '#e0e0e0' : '#333'}
+            color={
+              isDarkMode
+                ? theme.palette.text.primary
+                : theme.palette.text.secondary
+            }
           />
         )}
       </Avatar>
@@ -335,7 +345,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
             color: 'inherit',
             border: getCardBorder(),
             borderRadius: message.isUser ? theme.spacing(1) : 0,
-            boxShadow: message.isUser ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+            boxShadow: message.isUser ? theme.shadows[1] : 'none',
             '&:hover .message-actions': {
               opacity: 1,
             },
@@ -355,9 +365,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                   sx={{
                     marginTop: theme.spacing(1.5),
                     padding: theme.spacing(1, 0),
-                    borderTop: `1px solid ${
-                      isDarkMode ? '#444444' : '#f0f0f0'
-                    }`,
+                    borderTop: `1px solid ${theme.palette.divider}`,
                   }}
                 >
                   <Box
@@ -392,16 +400,21 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                           height: 24,
                           fontSize: '0.75rem',
                           fontWeight: 500,
-                          backgroundColor:
-                            selectedTool === tool ? '#2e7d32' : '#e8f5e8',
-                          color: selectedTool === tool ? '#fff' : '#2e7d32',
+                          backgroundColor: 'transparent',
+                          color:
+                            selectedTool === tool
+                              ? theme.palette.primary.main
+                              : theme.palette.text.secondary,
                           margin: '0 4px 0 8px',
-                          border: '1px solid #c8e6c9',
+                          border:
+                            selectedTool === tool
+                              ? `2px solid ${theme.palette.primary.main}`
+                              : `1px solid ${theme.palette.divider}`,
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                           '&:hover': {
-                            backgroundColor:
-                              selectedTool === tool ? '#2e7d32' : '#c8e6c9',
+                            backgroundColor: theme.palette.action.hover,
+                            color: theme.palette.text.primary,
                             transform: 'translateY(-1px)',
                           },
                         }}
@@ -418,10 +431,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                       <Card
                         sx={{
                           marginTop: theme.spacing(1),
-                          backgroundColor: isDarkMode ? '#2a2a2a' : '#fafafa',
-                          border: `1px solid ${
-                            isDarkMode ? '#444444' : '#e0e0e0'
-                          }`,
+                          backgroundColor: theme.palette.background.default,
+                          border: `1px solid ${theme.palette.divider}`,
                           borderRadius: theme.spacing(1),
                         }}
                       >
@@ -431,10 +442,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             padding: theme.spacing(1, 1.5),
-                            backgroundColor: isDarkMode ? '#3a3a3a' : '#f5f5f5',
-                            borderBottom: `1px solid ${
-                              isDarkMode ? '#444444' : '#e0e0e0'
-                            }`,
+                            backgroundColor: theme.palette.action.hover,
+                            borderBottom: `1px solid ${theme.palette.divider}`,
                             borderRadius: theme.spacing(1, 1, 0, 0),
                           }}
                         >
@@ -442,7 +451,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                             sx={{
                               fontSize: '0.875rem',
                               fontWeight: 600,
-                              color: isDarkMode ? '#e0e0e0' : '#333',
+                              color: theme.palette.text.primary,
                             }}
                           >
                             {tool} Response
@@ -452,7 +461,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                             onClick={() => handleCopyToolResponse(tool)}
                             title={copiedText ? 'Copied!' : 'Copy response'}
                             sx={{
-                              color: isDarkMode ? '#e0e0e0' : 'inherit',
+                              color: theme.palette.text.primary,
                             }}
                           >
                             <FileCopyIcon fontSize="small" />
@@ -467,12 +476,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                         >
                           <Box
                             sx={{
-                              backgroundColor: isDarkMode
-                                ? '#1a1a1a'
-                                : '#f8f9fa',
-                              border: `1px solid ${
-                                isDarkMode ? '#333333' : '#e9ecef'
-                              }`,
+                              backgroundColor: theme.palette.background.paper,
+                              border: `1px solid ${theme.palette.divider}`,
                               borderRadius: theme.spacing(0.5),
                               padding: theme.spacing(1.5),
                               fontFamily:
@@ -482,7 +487,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                               overflow: 'auto',
                               whiteSpace: 'pre-wrap',
                               wordBreak: 'break-word',
-                              color: isDarkMode ? '#e0e0e0' : '#333',
+                              color: theme.palette.text.primary,
                             }}
                           >
                             {getToolResponseForTool(tool)}
