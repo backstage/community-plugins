@@ -75,7 +75,7 @@ export class DatabaseHandler implements ShortURLStore {
       })
       .where({ short_id: options.shortId });
 
-    return Promise.resolve({ fullUrl: rowData?.[0]?.full_url });
+    return Promise.resolve({ fullUrl: rowData?.at(0)?.full_url ?? '' });
   }
 
   async getIdByUrl(options: { fullUrl: string }): Promise<{ shortId: string }> {
@@ -89,7 +89,7 @@ export class DatabaseHandler implements ShortURLStore {
       throw new NotFoundError(`Unable to find the record`);
     }
 
-    return Promise.resolve({ shortId: rowData?.[0]?.short_id });
+    return Promise.resolve({ shortId: rowData?.at(0)?.short_id ?? '' });
   }
 
   async getAllRecords(): Promise<
