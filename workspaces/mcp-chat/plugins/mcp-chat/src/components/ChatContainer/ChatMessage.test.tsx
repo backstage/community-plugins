@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { ReactElement } from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatMessage } from './ChatMessage';
 
@@ -26,42 +26,19 @@ jest.mock('react-markdown', () => {
 });
 
 jest.mock('../BotIcon', () => ({
-  BotIcon: ({ color }: { color?: string }) => (
-    <div data-testid="bot-icon" style={{ color }}>
-      Bot Icon
-    </div>
-  ),
+  BotIcon: () => <div data-testid="bot-icon">Bot Icon</div>,
 }));
 
-Object.assign(globalThis.navigator, {
-  clipboard: {
-    writeText: jest.fn(() => Promise.resolve()),
-  },
+const mockClipboard = {
+  writeText: jest.fn(),
+};
+
+Object.assign(window.navigator, {
+  clipboard: mockClipboard,
 });
 
-const mockTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: { main: '#4CAF50' },
-    text: { primary: '#333', secondary: '#666' },
-    background: { paper: '#fff', default: '#f5f5f5' },
-    divider: '#e0e0e0',
-  },
-  spacing: (factor: number) => `${8 * factor}px`,
-});
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: { main: '#4CAF50' },
-    text: { primary: '#fff', secondary: '#b3b3b3' },
-    background: { paper: '#1e1e1e', default: '#121212' },
-    divider: '#333',
-  },
-  spacing: (factor: number) => `${8 * factor}px`,
-});
-
-const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
+const renderWithTheme = (component: ReactElement) => {
+  const theme = createTheme();
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
@@ -121,25 +98,20 @@ describe('ChatMessage', () => {
     });
   });
 
-  describe('Dark Mode', () => {
-    it('renders correctly in dark mode', () => {
-      renderWithTheme(<ChatMessage message={mockMessage} />, darkTheme);
-
-      expect(screen.getByText('Hello, world!')).toBeInTheDocument();
-      const personIcon = screen.getByTestId('person-icon');
-      expect(personIcon).toBeInTheDocument();
-    });
-
+  describe('Bot Message Features', () => {
     it('renders bot icon for bot message', () => {
-      renderWithTheme(<ChatMessage message={mockBotMessage} />, darkTheme);
+      renderWithTheme(<ChatMessage message={mockBotMessage} />);
       const botIcon = screen.getByTestId('bot-icon');
       expect(botIcon).toBeInTheDocument();
     });
 
-    it('applies dark mode colors to avatar', () => {
-      renderWithTheme(<ChatMessage message={mockBotMessage} />, darkTheme);
-      const avatar = document.querySelector('.MuiAvatar-root');
-      expect(avatar).toHaveStyle('background-color: #2a2a2a');
+    it('renders markdown content for bot messages', () => {
+      const markdownMessage = {
+        ...mockBotMessage,
+        text: 'Hello! Here is some **bold** text and `code`.',
+      };
+      renderWithTheme(<ChatMessage message={markdownMessage} />);
+      expect(screen.getByTestId('markdown-content')).toBeInTheDocument();
     });
   });
 

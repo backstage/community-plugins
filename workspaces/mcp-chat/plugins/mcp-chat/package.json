@@ -32,11 +32,12 @@
   "dependencies": {
     "@backstage/core-components": "^0.17.3",
     "@backstage/core-plugin-api": "^1.10.8",
+    "@backstage/errors": "^1.2.7",
     "@backstage/theme": "^0.6.6",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.17.1",
-    "@mui/styles": "^5.17.1",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "react-use": "^17.2.4"
   },
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^18.0.0",

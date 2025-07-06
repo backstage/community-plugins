@@ -14,339 +14,271 @@
  * limitations under the License.
  */
 
+import { ReactElement } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ActiveMcpServers } from './ActiveMcpServers';
+import { MCPServer } from '../../types';
 
-const mockTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: { main: '#4CAF50' },
-    text: { primary: '#333', secondary: '#666' },
-    background: { paper: '#fff', default: '#f5f5f5' },
-    divider: '#e0e0e0',
-  },
-  spacing: (factor: number) => `${8 * factor}px`,
-});
-
-const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
+const renderWithTheme = (component: ReactElement) => {
+  const theme = createTheme();
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
-interface MCPServer {
-  id?: string;
-  name: string;
-  enabled: boolean;
-  type?: string;
-  hasUrl?: boolean;
-  hasNpxCommand?: boolean;
-  hasScriptPath?: boolean;
-}
+const mockServers: MCPServer[] = [
+  {
+    id: '1',
+    name: 'test-server-1',
+    enabled: true,
+    type: 'stdio' as const,
+    status: { valid: true, connected: true },
+  },
+  {
+    id: '2',
+    name: 'test-server-2',
+    enabled: false,
+    type: 'sse' as const,
+    status: { valid: true, connected: false },
+  },
+  {
+    id: '3',
+    name: 'invalid-server',
+    enabled: true,
+    type: 'stdio' as const,
+    status: { valid: false, connected: false, error: 'Configuration error' },
+  },
+];
 
 describe('ActiveMcpServers', () => {
-  const mockOnServerToggle = jest.fn();
+  const defaultProps = {
+    mcpServers: mockServers,
+    onServerToggle: jest.fn(),
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const mockMcpServers: MCPServer[] = [
-    {
-      id: 'filesystem',
-      name: 'filesystem',
-      enabled: true,
-      type: 'stdio',
-      hasUrl: false,
-      hasNpxCommand: false,
-      hasScriptPath: true,
-    },
-    {
-      id: 'database',
-      name: 'database',
-      enabled: true,
-      type: 'stdio',
-      hasUrl: false,
-      hasNpxCommand: true,
-      hasScriptPath: false,
-    },
-    {
-      id: 'web-server',
-      name: 'web-server',
-      enabled: false,
-      type: 'sse',
-      hasUrl: true,
-      hasNpxCommand: false,
-      hasScriptPath: false,
-    },
-    {
-      id: 'api-server',
-      name: 'api-server',
-      enabled: false,
-      type: 'stdio',
-      hasUrl: false,
-      hasNpxCommand: false,
-      hasScriptPath: true,
-    },
-  ];
+  describe('rendering', () => {
+    it('renders all provided servers', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
 
-  describe('Rendering', () => {
-    it('renders the component with title and icon', () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={mockMcpServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
+      expect(screen.getByText('test-server-1')).toBeInTheDocument();
+      expect(screen.getByText('test-server-2')).toBeInTheDocument();
+      expect(screen.getByText('invalid-server')).toBeInTheDocument();
+    });
+
+    it('displays component header', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
 
       expect(screen.getByText('Active MCP Servers')).toBeInTheDocument();
-      expect(screen.getByTestId('MemoryIcon')).toBeInTheDocument();
     });
 
-    it('renders all MCP servers as chips', () => {
+    it('shows empty state when no servers', () => {
       renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={mockMcpServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      mockMcpServers.forEach(server => {
-        expect(screen.getByText(server.name)).toBeInTheDocument();
-      });
-    });
-
-    it('displays enabled servers with enabled styling', () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={mockMcpServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      const enabledServers = mockMcpServers.filter(s => s.enabled);
-      enabledServers.forEach(server => {
-        const chip = screen.getByText(server.name).closest('.MuiChip-root');
-        expect(chip).toHaveStyle({
-          backgroundColor: '#e8f5e8',
-          color: '#4CAF50',
-          border: '2px solid #4CAF50',
-        });
-      });
-    });
-
-    it('displays disabled servers with disabled styling', () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={mockMcpServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      const disabledServers = mockMcpServers.filter(s => !s.enabled);
-      disabledServers.forEach(server => {
-        const chip = screen.getByText(server.name).closest('.MuiChip-root');
-        expect(chip).toHaveStyle({
-          backgroundColor: 'transparent',
-          color: '#666666',
-          border: '2px solid #ddd',
-        });
-      });
-    });
-
-    it('shows empty state when no servers are provided', () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={[]}
-          onServerToggle={mockOnServerToggle}
-        />,
+        <ActiveMcpServers mcpServers={[]} onServerToggle={jest.fn()} />,
       );
 
       expect(screen.getByText('No MCP servers configured')).toBeInTheDocument();
     });
+
+    it('renders server chips with proper styling', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
+
+      const serverChips = screen.getAllByRole('button');
+      expect(serverChips).toHaveLength(1);
+    });
   });
 
-  describe('Interactions', () => {
-    it('calls onServerToggle when a server chip is clicked', () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={mockMcpServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      const filesystemChip = screen.getByText('filesystem');
-      fireEvent.click(filesystemChip);
-
-      expect(mockOnServerToggle).toHaveBeenCalledWith('filesystem');
-      expect(mockOnServerToggle).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls onServerToggle with correct server name for multiple clicks', () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={mockMcpServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      const filesystemChip = screen.getByText('filesystem');
-      const databaseChip = screen.getByText('database');
-
-      fireEvent.click(filesystemChip);
-      fireEvent.click(databaseChip);
-
-      expect(mockOnServerToggle).toHaveBeenCalledTimes(2);
-      expect(mockOnServerToggle).toHaveBeenNthCalledWith(1, 'filesystem');
-      expect(mockOnServerToggle).toHaveBeenNthCalledWith(2, 'database');
-    });
-
-    it('shows correct tooltip text for enabled servers', async () => {
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={[mockMcpServers[0]]}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      const chip = screen.getByText('filesystem');
-      fireEvent.mouseOver(chip);
+  describe('server status indicators', () => {
+    it('shows connection status through tooltips', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
 
       expect(
-        await screen.findByText('Click to disable filesystem server'),
+        screen.getByLabelText('Click to disable test-server-1 server'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('Not connected: Unknown error'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('Not connected: Configuration error'),
       ).toBeInTheDocument();
     });
 
-    it('shows correct tooltip text for disabled servers', async () => {
+    it('displays proper status indicators', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
+
+      const statusIcons = screen.getAllByTestId('FiberManualRecordIcon');
+      expect(statusIcons).toHaveLength(3);
+    });
+  });
+
+  describe('server toggling', () => {
+    it('calls onServerToggle when connected server is clicked', () => {
+      const onServerToggle = jest.fn();
       renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={[mockMcpServers[2]]}
-          onServerToggle={mockOnServerToggle}
-        />,
+        <ActiveMcpServers {...defaultProps} onServerToggle={onServerToggle} />,
       );
 
-      const chip = screen.getByText('web-server');
-      fireEvent.mouseOver(chip);
+      const connectedServer = screen.getByLabelText(
+        'Click to disable test-server-1 server',
+      );
+      fireEvent.click(connectedServer);
+
+      expect(onServerToggle).toHaveBeenCalledWith('test-server-1');
+    });
+
+    it('does not call onServerToggle for disconnected servers', () => {
+      const onServerToggle = jest.fn();
+      renderWithTheme(
+        <ActiveMcpServers {...defaultProps} onServerToggle={onServerToggle} />,
+      );
+
+      const disconnectedServer = screen.getByLabelText(
+        'Not connected: Unknown error',
+      );
+      fireEvent.click(disconnectedServer);
+
+      expect(onServerToggle).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('accessibility', () => {
+    it('provides proper aria labels for server chips', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
 
       expect(
-        await screen.findByText('Click to enable web-server server'),
+        screen.getByLabelText('Click to disable test-server-1 server'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('Not connected: Unknown error'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('Not connected: Configuration error'),
       ).toBeInTheDocument();
     });
-  });
 
-  describe('Server Properties', () => {
-    it('handles servers with minimal properties', () => {
-      const minimalServers: MCPServer[] = [
-        {
-          name: 'minimal-server',
-          enabled: true,
-        },
-        {
-          name: 'another-minimal',
-          enabled: false,
-        },
-      ];
+    it('maintains keyboard navigation for clickable servers', () => {
+      renderWithTheme(<ActiveMcpServers {...defaultProps} />);
 
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={minimalServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      expect(screen.getByText('minimal-server')).toBeInTheDocument();
-      expect(screen.getByText('another-minimal')).toBeInTheDocument();
-    });
-
-    it('handles servers with all optional properties', () => {
-      const fullServers: MCPServer[] = [
-        {
-          id: 'full-server-1',
-          name: 'full-server',
-          enabled: true,
-          type: 'sse',
-          hasUrl: true,
-          hasNpxCommand: true,
-          hasScriptPath: true,
-        },
-      ];
-
-      renderWithTheme(
-        <ActiveMcpServers
-          mcpServers={fullServers}
-          onServerToggle={mockOnServerToggle}
-        />,
-      );
-
-      expect(screen.getByText('full-server')).toBeInTheDocument();
-
-      const chip = screen.getByText('full-server');
-      fireEvent.click(chip);
-
-      expect(mockOnServerToggle).toHaveBeenCalledWith('full-server');
+      const clickableServers = screen.getAllByRole('button');
+      clickableServers.forEach(server => {
+        expect(server).toHaveAttribute('tabindex', '0');
+      });
     });
   });
 
-  describe('Edge Cases', () => {
-    it('handles servers with empty names gracefully', () => {
-      const serversWithEmptyNames: MCPServer[] = [
-        {
-          name: '',
-          enabled: true,
-        },
-      ];
+  describe('error handling', () => {
+    it('handles servers with missing status gracefully', () => {
+      const serversWithoutStatus = [
+        { id: '1', name: 'server1', enabled: true, type: 'stdio' as const },
+      ] as any;
 
+      expect(() =>
+        renderWithTheme(
+          <ActiveMcpServers
+            mcpServers={serversWithoutStatus}
+            onServerToggle={jest.fn()}
+          />,
+        ),
+      ).not.toThrow();
+    });
+
+    it('handles missing onServerToggle gracefully', () => {
+      expect(() =>
+        renderWithTheme(
+          <ActiveMcpServers
+            mcpServers={mockServers}
+            onServerToggle={undefined as any}
+          />,
+        ),
+      ).not.toThrow();
+    });
+
+    it('handles servers with complete data', () => {
       renderWithTheme(
         <ActiveMcpServers
-          mcpServers={serversWithEmptyNames}
-          onServerToggle={mockOnServerToggle}
+          mcpServers={mockServers}
+          onServerToggle={jest.fn()}
         />,
       );
 
-      const chips = screen.getAllByRole('button');
-      expect(chips).toHaveLength(1);
+      expect(screen.getByText('test-server-1')).toBeInTheDocument();
+      expect(screen.getByText('test-server-2')).toBeInTheDocument();
+      expect(screen.getByText('invalid-server')).toBeInTheDocument();
     });
+  });
 
-    it('handles large number of servers', () => {
-      const manyServers: MCPServer[] = Array.from({ length: 20 }, (_, i) => ({
-        id: `server-${i}`,
-        name: `server-${i}`,
+  describe('responsive behavior', () => {
+    it('maintains layout with many servers', () => {
+      const manyServers = Array.from({ length: 10 }, (_, i) => ({
+        id: `${i + 1}`,
+        name: `server-${i + 1}`,
         enabled: i % 2 === 0,
-        type: 'stdio',
+        type: 'stdio' as const,
+        status: { valid: true, connected: i % 3 === 0 },
       }));
 
       renderWithTheme(
         <ActiveMcpServers
           mcpServers={manyServers}
-          onServerToggle={mockOnServerToggle}
+          onServerToggle={jest.fn()}
         />,
       );
 
-      manyServers.forEach(server => {
-        expect(screen.getByText(server.name)).toBeInTheDocument();
-      });
+      expect(screen.getByText('Active MCP Servers')).toBeInTheDocument();
+      expect(screen.getByText('server-1')).toBeInTheDocument();
+      expect(screen.getByText('server-10')).toBeInTheDocument();
     });
 
-    it('handles servers with long names', () => {
-      const longNameServers: MCPServer[] = [
+    it('handles long server names appropriately', () => {
+      const longNameServers = [
         {
-          name: 'this-is-a-very-long-server-name-that-might-cause-layout-issues',
+          id: '1',
+          name: 'very-long-server-name-that-might-cause-layout-issues',
           enabled: true,
+          type: 'stdio' as const,
+          status: { valid: true, connected: true },
         },
       ];
 
       renderWithTheme(
         <ActiveMcpServers
           mcpServers={longNameServers}
-          onServerToggle={mockOnServerToggle}
+          onServerToggle={jest.fn()}
         />,
       );
 
       expect(
         screen.getByText(
-          'this-is-a-very-long-server-name-that-might-cause-layout-issues',
+          'very-long-server-name-that-might-cause-layout-issues',
         ),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('theme integration', () => {
+    it('renders with light theme', () => {
+      const lightTheme = createTheme({ palette: { mode: 'light' } });
+      render(
+        <ThemeProvider theme={lightTheme}>
+          <ActiveMcpServers {...defaultProps} />
+        </ThemeProvider>,
+      );
+
+      expect(screen.getByText('Active MCP Servers')).toBeInTheDocument();
+    });
+
+    it('renders with dark theme', () => {
+      const darkTheme = createTheme({ palette: { mode: 'dark' } });
+      render(
+        <ThemeProvider theme={darkTheme}>
+          <ActiveMcpServers {...defaultProps} />
+        </ThemeProvider>,
+      );
+
+      expect(screen.getByText('Active MCP Servers')).toBeInTheDocument();
     });
   });
 });

@@ -191,9 +191,9 @@ export const validateConfig = (config: RootConfigService) => {
         { config: serverConfig.getOptionalConfig('env'), name: 'env' },
       ];
 
-      for (const { config, name } of configs) {
-        if (config?.has('')) {
-          const value = config.get();
+      for (const { config: configItem, name } of configs) {
+        if (configItem?.has('')) {
+          const value = configItem.get();
           if (typeof value !== 'object' || Array.isArray(value)) {
             throw new Error(
               `${name} must be an object with string key-value pairs`,

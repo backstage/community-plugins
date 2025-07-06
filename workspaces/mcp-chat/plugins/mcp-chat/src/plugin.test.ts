@@ -19,140 +19,71 @@ import { rootRouteRef } from './routes';
 import { BotIconComponent } from './components/BotIcon';
 import { McpChat } from './api/McpChatApi';
 
-// Mock dependencies
-jest.mock('./api/McpChatApi');
 jest.mock('./components/BotIcon', () => ({
   BotIconComponent: jest.fn(() => 'BotIconComponent'),
 }));
 
 describe('mcp-chat plugin', () => {
   describe('mcpChatPlugin', () => {
-    it('should be defined', () => {
-      expect(mcpChatPlugin).toBeDefined();
-    });
-
-    it('should have correct plugin id', () => {
+    it('should have correct plugin configuration', () => {
       expect(mcpChatPlugin.getId()).toBe('mcp-chat');
+      expect(mcpChatPlugin.routes.root).toBe(rootRouteRef);
     });
 
-    it('should have root route configured', () => {
-      const routes = mcpChatPlugin.routes;
-      expect(routes).toBeDefined();
-      expect(routes.root).toBe(rootRouteRef);
+    it('should register API factory with correct dependencies', () => {
+      const apis = Array.from(mcpChatPlugin.getApis());
+      expect(apis).toHaveLength(1);
+
+      const apiFactory = apis[0];
+      expect(apiFactory.api).toBe(mcpChatApiRef);
+      expect(apiFactory.deps).toEqual({
+        discoveryApi: expect.any(Object),
+        fetchApi: expect.any(Object),
+      });
     });
 
-    it('should have APIs configured', () => {
-      const apis = mcpChatPlugin.getApis();
-      expect(apis).toBeDefined();
-      // APIs should be iterable
-      expect(typeof apis[Symbol.iterator]).toBe('function');
-    });
+    it('should create McpChat instance through API factory', () => {
+      const apis = Array.from(mcpChatPlugin.getApis());
+      const apiFactory = apis[0];
 
-    it('should create McpChat instance', () => {
       const mockDiscoveryApi = { getBaseUrl: jest.fn() };
       const mockFetchApi = { fetch: jest.fn() };
 
-      const client = new McpChat({
+      const client = apiFactory.factory({
         discoveryApi: mockDiscoveryApi,
         fetchApi: mockFetchApi,
       });
 
-      expect(client).toBeDefined();
-      expect(typeof client.sendChatMessage).toBe('function');
-      expect(typeof client.getConfigStatus).toBe('function');
-      expect(typeof client.getAvailableTools).toBe('function');
-      expect(typeof client.testProviderConnection).toBe('function');
+      expect(client).toBeInstanceOf(McpChat);
     });
   });
 
   describe('McpChatPage', () => {
-    it('should be defined', () => {
+    it('should be a routable extension', () => {
       expect(McpChatPage).toBeDefined();
-    });
-
-    it('should be a function (component)', () => {
       expect(typeof McpChatPage).toBe('function');
     });
   });
 
   describe('MCPChatIcon', () => {
-    it('should be defined', () => {
-      expect(MCPChatIcon).toBeDefined();
-    });
-
-    it('should be the BotIconComponent', () => {
+    it('should reference BotIconComponent', () => {
       expect(MCPChatIcon).toBe(BotIconComponent);
     });
-
-    it('should be a React component function', () => {
-      expect(typeof MCPChatIcon).toBe('function');
-    });
   });
 
-  describe('Plugin integration', () => {
-    it('should export all required components', () => {
-      expect(mcpChatPlugin).toBeDefined();
-      expect(McpChatPage).toBeDefined();
-      expect(MCPChatIcon).toBeDefined();
-    });
-
-    it('should have consistent plugin structure', () => {
-      // Verify the plugin has all expected properties
-      expect(mcpChatPlugin.getId()).toBeTruthy();
-      expect(mcpChatPlugin.routes).toBeDefined();
-      expect(mcpChatPlugin.getApis()).toBeDefined();
-
-      // Verify the icon is properly exported
-      expect(MCPChatIcon).toBe(BotIconComponent);
-    });
-
-    it('should have plugin routes with root route', () => {
-      const routes = mcpChatPlugin.routes;
-      expect(routes).toHaveProperty('root');
-      expect(routes.root).toBe(rootRouteRef);
-    });
-  });
-
-  describe('Plugin exports validation', () => {
-    it('should export plugin as a valid Backstage plugin', () => {
-      expect(mcpChatPlugin).toBeDefined();
-      expect(typeof mcpChatPlugin.getId).toBe('function');
-      expect(mcpChatPlugin.getId()).toBe('mcp-chat');
-    });
-
-    it('should export page component', () => {
-      expect(McpChatPage).toBeDefined();
-      expect(typeof McpChatPage).toBe('function');
-    });
-
-    it('should export icon component', () => {
-      expect(MCPChatIcon).toBeDefined();
-      expect(typeof MCPChatIcon).toBe('function');
-    });
-  });
-
-  describe('API reference validation', () => {
-    it('should have mcpChatApiRef defined', () => {
-      expect(mcpChatApiRef).toBeDefined();
-      expect(mcpChatApiRef.id).toBe('plugin.mcp-chat.service');
-    });
-
-    it('should have rootRouteRef defined', () => {
-      expect(rootRouteRef).toBeDefined();
-    });
-  });
-
-  describe('McpChat API', () => {
+  describe('McpChat API implementation', () => {
     let client: McpChat;
     let mockDiscoveryApi: any;
     let mockFetchApi: any;
+    let mockFetch: jest.Mock;
 
     beforeEach(() => {
+      mockFetch = jest.fn();
       mockDiscoveryApi = {
         getBaseUrl: jest.fn().mockResolvedValue('http://localhost:7007/api'),
       };
       mockFetchApi = {
-        fetch: jest.fn(),
+        fetch: mockFetch,
       };
       client = new McpChat({
         discoveryApi: mockDiscoveryApi,
@@ -160,43 +91,65 @@ describe('mcp-chat plugin', () => {
       });
     });
 
-    it('should have all required methods', () => {
+    it('should implement all required API methods', () => {
       expect(typeof client.sendChatMessage).toBe('function');
-      expect(typeof client.getConfigStatus).toBe('function');
+      expect(typeof client.getMCPServerStatus).toBe('function');
       expect(typeof client.getAvailableTools).toBe('function');
-      expect(typeof client.testProviderConnection).toBe('function');
+      expect(typeof client.getProviderStatus).toBe('function');
     });
 
-    it('should handle sendChatMessage method signature', () => {
-      const messages = [{ role: 'user' as const, content: 'Hello' }];
-      const enabledTools = ['tool1'];
-      const signal = new AbortController().signal;
+    it('should handle sendChatMessage with proper parameters', async () => {
+      const mockResponse = { role: 'assistant', content: 'Hello' };
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
 
-      // Should not throw when called with proper parameters
-      expect(() => {
-        client.sendChatMessage(messages, enabledTools, signal);
-      }).not.toThrow();
+      const messages = [{ role: 'user' as const, content: 'Hello' }];
+      const result = await client.sendChatMessage(messages, ['tool1']);
+
+      expect(result).toEqual(mockResponse);
+      expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
     });
 
-    it('should handle method calls without optional parameters', () => {
-      const messages = [{ role: 'user' as const, content: 'Hello' }];
+    it('should handle API methods without optional parameters', async () => {
+      const mockServerStatus = {
+        total: 0,
+        valid: 0,
+        active: 0,
+        servers: [],
+        timestamp: '2024-01-01',
+      };
+      const mockTools = { tools: [] };
+      const mockProviderStatus = { providers: [] };
 
-      // Should not throw when called with minimal parameters
-      expect(() => {
-        client.sendChatMessage(messages);
-      }).not.toThrow();
+      mockFetch
+        .mockResolvedValueOnce({
+          ok: true,
+          json: jest.fn().mockResolvedValue(mockServerStatus),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: jest.fn().mockResolvedValue(mockTools),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: jest.fn().mockResolvedValue(mockProviderStatus),
+        });
 
-      expect(() => {
-        client.getConfigStatus();
-      }).not.toThrow();
+      const serverStatus = await client.getMCPServerStatus();
+      const tools = await client.getAvailableTools();
+      const providerStatus = await client.getProviderStatus();
 
-      expect(() => {
-        client.getAvailableTools();
-      }).not.toThrow();
+      expect(serverStatus).toEqual(mockServerStatus);
+      expect(tools).toEqual(mockTools);
+      expect(providerStatus).toEqual(mockProviderStatus);
+    });
+  });
 
-      expect(() => {
-        client.testProviderConnection();
-      }).not.toThrow();
+  describe('API reference', () => {
+    it('should have correct API reference configuration', () => {
+      expect(mcpChatApiRef.id).toBe('plugin.mcp-chat.service');
     });
   });
 });
