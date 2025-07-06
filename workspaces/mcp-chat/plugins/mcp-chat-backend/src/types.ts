@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-// MCP-related types and interfaces
+import { Tool } from './providers/base-provider';
+
+// Valid roles for chat messages
+export const VALID_ROLES = ['user', 'assistant', 'system', 'tool'] as const;
 
 export interface BaseServerConfig {
   id: string;
@@ -49,6 +52,7 @@ export interface MCPServerStatusData {
   valid: number;
   active: number;
   servers: MCPServer[];
+  timestamp: string;
 }
 
 export interface ProviderStatusData {
@@ -72,4 +76,8 @@ export interface ProviderConnectionStatus {
   connected: boolean;
   models?: string[];
   error?: string;
+}
+
+export interface ServerTool extends Tool {
+  serverId: string;
 }

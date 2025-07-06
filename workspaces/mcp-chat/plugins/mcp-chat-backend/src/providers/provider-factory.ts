@@ -48,17 +48,20 @@ export class ProviderFactory {
 export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const providers = config.getOptionalConfigArray('mcpChat.providers') || [];
 
-  if (providers.length === 0) {
-    throw new Error(
-      'No LLM providers configured in mcpChat.providers. Please add at least one provider.',
-    );
-  }
-
   // For now, use the first provider. In the future, you might want to support multiple providers
   const providerConfig = providers[0];
   const providerId = providerConfig.getString('id');
   const token = providerConfig.getOptionalString('token');
   const model = providerConfig.getString('model');
+
+  const allowedProviders = ['openai', 'claude', 'gemini', 'ollama'];
+  if (!allowedProviders.includes(providerId)) {
+    throw new Error(
+      `Unsupported provider id: ${providerId}. Allowed values are: ${allowedProviders.join(
+        ', ',
+      )}`,
+    );
+  }
 
   const configs: Record<string, Partial<ProviderConfig>> = {
     openai: {

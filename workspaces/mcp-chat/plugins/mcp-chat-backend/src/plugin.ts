@@ -19,6 +19,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
 import { MCPClientServiceImpl } from './services';
+import { validateConfig } from './utils';
 
 /**
  * mcpChatPlugin backend plugin
@@ -35,56 +36,15 @@ export const mcpChatPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
       },
       async init({ logger, httpRouter, config }) {
-        // Validate configuration at startup
-        const mcpServers =
-          config.getOptionalConfigArray('mcpChat.mcpServers') || [];
-        for (const [index, serverConfig] of mcpServers.entries()) {
-          try {
-            // Validate required fields
-            serverConfig.getString('name');
-
-            // Validate headers if present
-            if (serverConfig.has('headers')) {
-              const headers = serverConfig.getOptionalConfig('headers')?.get();
-              if (
-                headers !== undefined &&
-                (typeof headers !== 'object' || Array.isArray(headers))
-              ) {
-                throw new Error(
-                  `headers must be an object with string key-value pairs`,
-                );
-              }
-            }
-
-            // Validate env if present
-            if (serverConfig.has('env')) {
-              const envVars = serverConfig.getOptionalConfig('env')?.get();
-              if (
-                envVars !== undefined &&
-                (typeof envVars !== 'object' || Array.isArray(envVars))
-              ) {
-                throw new Error(
-                  `env must be an object with string key-value pairs`,
-                );
-              }
-            }
-          } catch (error) {
-            throw new Error(
-              `Invalid configuration for mcpChat.mcpServers[${index}]: ${error.message}`,
-            );
-          }
-        }
-
+        validateConfig(config);
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
         });
-
         httpRouter.use(
           await createRouter({
             logger,
             mcpClientService,
-            config,
           }),
         );
         httpRouter.addAuthPolicy({

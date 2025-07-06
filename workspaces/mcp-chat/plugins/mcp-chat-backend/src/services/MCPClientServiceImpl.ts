@@ -35,7 +35,12 @@ import {
   ToolCall,
 } from '../providers/base-provider';
 import { MCPClientService } from './MCPClientService';
-import { MCPServer, MCPServerStatusData, ProviderStatusData } from '../types';
+import {
+  MCPServer,
+  MCPServerStatusData,
+  ProviderStatusData,
+  ServerTool,
+} from '../types';
 
 export type Options = {
   logger: LoggerService;
@@ -47,7 +52,7 @@ export class MCPClientServiceImpl implements MCPClientService {
   private readonly config: RootConfigService;
   private llmProvider: LLMProvider;
   private readonly mcpClients: Map<string, Client> = new Map();
-  private tools: any[] = [];
+  private tools: ServerTool[] = [];
   private connected = false;
   private mcpServers: Promise<MCPServer[]> | null = null;
 
@@ -55,7 +60,6 @@ export class MCPClientServiceImpl implements MCPClientService {
     this.logger = options.logger;
     this.config = options.config;
     this.llmProvider = this.initializeLLMProvider();
-    // Start initialization in background
     this.mcpServers = this.initializeMCPServers();
   }
 
@@ -89,7 +93,7 @@ export class MCPClientServiceImpl implements MCPClientService {
       return this.mcpServers ? await this.mcpServers : [];
     }
 
-    const allTools = [];
+    const allTools: ServerTool[] = [];
     const serverResults: MCPServer[] = [];
     const serverConfigs = loadServerConfigs(this.config);
 
@@ -214,11 +218,11 @@ export class MCPClientServiceImpl implements MCPClientService {
 
         const toolsResult = await client.listTools();
 
-        const serverTools = toolsResult.tools.map(tool => ({
+        const serverTools: ServerTool[] = toolsResult.tools.map(tool => ({
           type: 'function',
           function: {
             name: tool.name,
-            description: tool.description,
+            description: tool.description ?? '', // Ensure string
             parameters: tool.inputSchema,
           },
           serverId: serverConfig.name, // Track which server this tool belongs to
@@ -392,12 +396,8 @@ export class MCPClientServiceImpl implements MCPClientService {
     };
   }
 
-  getAvailableTools() {
+  getAvailableTools(): ServerTool[] {
     return this.tools;
-  }
-
-  async getProviderConfig() {
-    return getProviderInfo(this.config);
   }
 
   async getProviderStatus(): Promise<ProviderStatusData> {
@@ -456,6 +456,7 @@ export class MCPClientServiceImpl implements MCPClientService {
         valid: 0,
         active: 0,
         servers: [],
+        timestamp: new Date().toISOString(),
       };
     }
     const servers = await this.mcpServers;
@@ -464,6 +465,7 @@ export class MCPClientServiceImpl implements MCPClientService {
       valid: servers.filter(s => s.status.valid).length,
       active: servers.filter(s => s.status.connected).length,
       servers,
+      timestamp: new Date().toISOString(),
     };
   }
 }
