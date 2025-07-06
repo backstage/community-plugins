@@ -54,6 +54,7 @@ export interface MCPServerStatusData {
   valid: number;
   active: number;
   servers: MCPServer[];
+  timestamp: string;
 }
 
 /**

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { MCPServer } from '../types';
 import { mcpChatApiRef } from '../api';
 
@@ -22,35 +23,34 @@ export interface UseMcpServersReturn {
   mcpServers: MCPServer[];
   isLoading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
   handleServerToggle: (serverName: string) => void;
 }
 
 export const useMcpServers = (): UseMcpServersReturn => {
   const mcpChatApi = useApi(mcpChatApiRef);
   const [mcpServers, setMcpServers] = useState<MCPServer[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchMcpServers = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  const {
+    loading: isLoading,
+    error,
+    retry: refetch,
+  } = useAsyncRetry(async () => {
     try {
       const mcpServerStatus = await mcpChatApi.getMCPServerStatus();
-      setMcpServers(
+      const servers =
         mcpServerStatus.servers?.map((server: MCPServer) => ({
           ...server,
           enabled: true, // Default all servers to enabled
-        })) || [],
-      );
+        })) || [];
+      setMcpServers(servers);
+      return servers;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to load MCP servers';
       // eslint-disable-next-line no-console
       console.error('Failed to load MCP servers:', err);
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+      throw new Error(errorMessage);
     }
   }, [mcpChatApi]);
 
@@ -64,15 +64,11 @@ export const useMcpServers = (): UseMcpServersReturn => {
     );
   }, []);
 
-  useEffect(() => {
-    fetchMcpServers();
-  }, [fetchMcpServers]);
-
   return {
     mcpServers,
     isLoading,
-    error,
-    refetch: fetchMcpServers,
+    error: error?.message || null,
+    refetch,
     handleServerToggle,
   };
 };

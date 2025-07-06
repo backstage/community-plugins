@@ -13,95 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  LoggerService,
-  RootConfigService,
-} from '@backstage/backend-plugin-api';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
 import { MCPClientService } from './services/MCPClientService';
-
-// Helper function to load server configurations from app-config
+import { validateMessages } from './utils';
 
 export async function createRouter({
   logger,
   mcpClientService,
-  config,
 }: {
   logger: LoggerService;
   mcpClientService: MCPClientService;
-  config: RootConfigService;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
-
-  // Configuration status endpoint
-  router.get('/config/status', async (_req, res) => {
-    const providerConfig = mcpClientService.getProviderConfig();
-    const mcpServers =
-      config.getOptionalConfigArray('mcpChat.mcpServers') || [];
-
-    const serverList = mcpServers?.map(serverConfig => {
-      const configuredType = serverConfig.getOptionalString('type') as
-        | 'stdio'
-        | 'sse'
-        | 'streamable-http'
-        | undefined;
-      const hasUrl = serverConfig.has('url');
-
-      const effectiveType =
-        configuredType || (hasUrl ? 'streamable-http' : 'stdio');
-
-      const serverInfo = {
-        id: serverConfig.getString('id'),
-        name: serverConfig.getString('name'),
-        type: effectiveType,
-        configuredType,
-        hasUrl,
-        hasNpxCommand: serverConfig.has('npxCommand'),
-        hasScriptPath: serverConfig.has('scriptPath'),
-        hasArgs: serverConfig.has('args'),
-        hasEnv: serverConfig.has('env'),
-        hasHeaders: serverConfig.has('headers'),
-      };
-
-      const isValid =
-        serverInfo.hasUrl ||
-        serverInfo.hasNpxCommand ||
-        serverInfo.hasScriptPath;
-
-      return {
-        ...serverInfo,
-        isValid,
-        validationIssues: !isValid
-          ? ['Missing required configuration: url, npxCommand, or scriptPath']
-          : [],
-      };
-    });
-
-    const validServers = serverList.filter(server => server.isValid);
-    const invalidServers = serverList.filter(server => !server.isValid);
-
-    res.json({
-      provider: providerConfig,
-      mcpServers: {
-        total: serverList.length,
-        valid: validServers.length,
-        invalid: invalidServers.length,
-        servers: serverList,
-      },
-      summary: {
-        hasValidServers: validServers.length > 0,
-        configurationComplete:
-          invalidServers.length === 0 && serverList.length > 0,
-        issues:
-          invalidServers.length > 0
-            ? [`${invalidServers.length} server(s) have configuration issues`]
-            : [],
-      },
-      timestamp: new Date().toISOString(),
-    });
-  });
 
   // provider status endpoint
   router.get('/provider/status', async (_req, res) => {
@@ -110,7 +36,7 @@ export async function createRouter({
     return res.json(providerStatus);
   });
 
-  // mcp server status endpoint
+  // MCP server status endpoint
   router.get('/mcp/status', async (_req, res) => {
     logger.info('Route called: /mcp/status');
     const mcpServerStatus = await mcpClientService.getMCPServerStatus();
@@ -135,15 +61,23 @@ export async function createRouter({
   router.post('/chat', async (req, res) => {
     const { messages, enabledTools = [] } = req.body;
 
-    // Validate messages array
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ error: 'No query provided' });
+    const validation = validateMessages(messages);
+    if (!validation.isValid) {
+      logger.warn(`Message validation failed: ${validation.error}`);
+      return res.status(400).json({ error: validation.error });
     }
 
-    const userQuery = messages[messages.length - 1]?.content;
+    if (enabledTools && !Array.isArray(enabledTools)) {
+      return res.status(400).json({ error: 'enabledTools must be an array' });
+    }
 
-    if (!userQuery) {
-      return res.status(400).json({ error: 'No query provided' });
+    if (
+      enabledTools &&
+      enabledTools.some((tool: any) => typeof tool !== 'string')
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'All enabledTools must be strings' });
     }
 
     const { reply, toolCalls, toolResponses } =
