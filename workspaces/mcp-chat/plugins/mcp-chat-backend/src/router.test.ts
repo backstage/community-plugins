@@ -13,244 +13,190 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mockErrorHandler, mockServices } from '@backstage/backend-test-utils';
+import { mockServices } from '@backstage/backend-test-utils';
 import express from 'express';
 import request from 'supertest';
-
 import { createRouter } from './router';
-import { ServerConfig } from './types';
-import { MCPClientService } from './services';
-import { ToolCall } from './providers/base-provider';
+import { MCPClientService } from './services/MCPClientService';
 
 describe('createRouter', () => {
   let app: express.Express;
   let mcpClientService: jest.Mocked<MCPClientService>;
-  let mockConfig: any;
-
-  const mockServerConfigs: ServerConfig[] = [
-    {
-      id: 'brave-search',
-      name: 'Brave Search Server',
-      npxCommand: '@modelcontextprotocol/server-brave-search@latest',
-      type: 'stdio',
-      env: { BRAVE_API_KEY: 'test-key' },
-    },
-    {
-      id: 'backstage-server',
-      name: 'Backstage Server',
-      url: 'http://localhost:7007/api/mcp-actions/v1',
-      type: 'sse',
-      headers: { Authorization: 'Bearer test-token' },
-    },
-  ];
-
-  const mockToolCall: ToolCall = {
-    id: 'call_123',
-    type: 'function',
-    function: {
-      name: 'search_web',
-      arguments: JSON.stringify({ query: 'test query' }),
-    },
-  };
-
-  const mockToolResponse = {
-    toolName: 'search_web',
-    result: 'Search results here',
-    success: true,
-  };
 
   beforeEach(async () => {
-    // Mock MCPClientService
     mcpClientService = {
-      initMCP: jest.fn().mockResolvedValue(undefined),
-      processQuery: jest.fn().mockResolvedValue({
-        reply: 'Test response',
-        toolCalls: [],
-        toolResponses: [],
-      }),
-      getAvailableTools: jest.fn().mockReturnValue([]),
-      getProviderConfig: jest.fn().mockResolvedValue({
-        provider: 'openai',
-        model: 'gpt-4o-mini',
-        baseURL: 'https://api.openai.com/v1',
-      }),
-      getProviderStatus: jest.fn().mockReturnValue({
-        connected: true,
-        provider: 'openai',
-        model: 'gpt-4o-mini',
-        baseURL: 'https://api.openai.com/v1',
-      }),
-      testProviderConnection: jest.fn().mockResolvedValue({
-        connected: true,
-        models: ['gpt-4o-mini', 'gpt-4'],
-      }),
-      getMCPServerStatus: jest.fn().mockReturnValue({
-        connectedServers: ['Brave Search Server', 'Backstage Server'],
-        totalConnectedServers: 2,
-        isInitialized: true,
-        availableTools: 0,
-      }),
-    };
-
-    // Mock config service
-    mockConfig = {
-      getOptionalConfigArray: jest.fn().mockReturnValue([
-        {
-          getOptionalString: jest.fn((key: string) => {
-            const config = mockServerConfigs[0];
-            return config[key as keyof ServerConfig];
-          }),
-          getString: jest.fn((key: string) => {
-            const config = mockServerConfigs[0];
-            return config[key as keyof ServerConfig];
-          }),
-          getOptionalStringArray: jest.fn(() => undefined),
-          has: jest.fn((key: string) => {
-            return key === 'env' || key === 'npxCommand';
-          }),
-          getConfig: jest.fn((_key: string) => ({
-            get: jest.fn(() => mockServerConfigs[0].env),
-          })),
-          getOptionalConfig: jest.fn((key: string) => {
-            if (key === 'env') {
-              return { get: jest.fn(() => mockServerConfigs[0].env) };
-            }
-            if (key === 'headers') {
-              return undefined;
-            }
-            return undefined;
-          }),
-        },
-        {
-          getOptionalString: jest.fn((key: string) => {
-            const config = mockServerConfigs[1];
-            return config[key as keyof ServerConfig];
-          }),
-          getString: jest.fn((key: string) => {
-            const config = mockServerConfigs[1];
-            return config[key as keyof ServerConfig];
-          }),
-          getOptionalStringArray: jest.fn(() => undefined),
-          has: jest.fn((key: string) => {
-            return key === 'headers' || key === 'url';
-          }),
-          getConfig: jest.fn((_key: string) => ({
-            get: jest.fn(() => mockServerConfigs[1].headers),
-          })),
-          getOptionalConfig: jest.fn((key: string) => {
-            if (key === 'headers') {
-              return { get: jest.fn(() => mockServerConfigs[1].headers) };
-            }
-            if (key === 'env') {
-              return undefined;
-            }
-            return undefined;
-          }),
-        },
-      ]),
+      initializeMCPServers: jest.fn(),
+      processQuery: jest.fn(),
+      getAvailableTools: jest.fn(),
+      getProviderStatus: jest.fn(),
+      getMCPServerStatus: jest.fn(),
     };
 
     const router = await createRouter({
-      httpAuth: mockServices.httpAuth(),
+      logger: mockServices.logger.mock(),
       mcpClientService,
-      config: mockConfig,
     });
 
     app = express();
     app.use(router);
-    app.use(mockErrorHandler());
   });
 
-  describe('GET /config/status', () => {
-    it('should return configuration status successfully', async () => {
-      const response = await request(app).get('/config/status');
+  describe('GET /provider/status', () => {
+    it('should return provider status successfully', async () => {
+      const mockStatus = {
+        providers: [
+          {
+            id: 'openai',
+            model: 'gpt-4o-mini',
+            baseUrl: 'https://api.openai.com/v1',
+            connection: {
+              connected: true,
+            },
+          },
+        ],
+        summary: {
+          totalProviders: 1,
+          healthyProviders: 1,
+        },
+        timestamp: '2025-01-01T00:00:00.000Z',
+      };
+
+      mcpClientService.getProviderStatus.mockResolvedValue(mockStatus);
+
+      const response = await request(app).get('/provider/status');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockStatus);
+      expect(mcpClientService.getProviderStatus).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle provider status errors', async () => {
+      mcpClientService.getProviderStatus.mockRejectedValue(
+        new Error('Provider connection failed'),
+      );
+
+      const response = await request(app).get('/provider/status');
+
+      expect(response.status).toBe(500);
+    });
+  });
+
+  describe('GET /mcp/status', () => {
+    it('should return MCP server status successfully', async () => {
+      const mockStatus = {
+        total: 2,
+        valid: 2,
+        active: 2,
+        servers: [
+          {
+            id: 'brave-search',
+            name: 'Brave Search',
+            type: 'stdio' as const,
+            status: {
+              valid: true,
+              connected: true,
+            },
+          },
+          {
+            id: 'backstage-server',
+            name: 'Backstage Server',
+            type: 'sse' as const,
+            status: {
+              valid: true,
+              connected: true,
+            },
+          },
+        ],
+        timestamp: '2025-01-01T00:00:00.000Z',
+      };
+
+      mcpClientService.getMCPServerStatus.mockResolvedValue(mockStatus);
+
+      const response = await request(app).get('/mcp/status');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockStatus);
+      expect(mcpClientService.getMCPServerStatus).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle MCP status errors', async () => {
+      mcpClientService.getMCPServerStatus.mockRejectedValue(
+        new Error('MCP status failed'),
+      );
+
+      const response = await request(app).get('/mcp/status');
+
+      expect(response.status).toBe(500);
+    });
+  });
+
+  describe('GET /tools', () => {
+    it('should return available tools successfully', async () => {
+      const mockTools = [
+        {
+          serverId: 'brave-search',
+          type: 'function' as const,
+          function: {
+            name: 'search_web',
+            description: 'Search the web',
+            parameters: {},
+          },
+        },
+        {
+          serverId: 'weather-server',
+          type: 'function' as const,
+          function: {
+            name: 'get_weather',
+            description: 'Get weather information',
+            parameters: {},
+          },
+        },
+      ];
+
+      mcpClientService.getAvailableTools.mockReturnValue(mockTools);
+
+      const response = await request(app).get('/tools');
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
-        provider: {
-          connected: true,
-          provider: 'openai',
-          model: 'gpt-4o-mini',
-          baseURL: 'https://api.openai.com/v1',
-        },
-        mcpServers: {
-          total: 2,
-          valid: 2,
-          invalid: 0,
-          servers: [
-            {
-              id: 'brave-search',
-              name: 'Brave Search Server',
-              type: 'stdio',
-              configuredType: 'stdio',
-              hasUrl: false,
-              hasNpxCommand: true,
-              hasScriptPath: false,
-              hasArgs: false,
-              hasEnv: true,
-              hasHeaders: false,
-              isValid: true,
-              validationIssues: [],
-            },
-            {
-              id: 'backstage-server',
-              name: 'Backstage Server',
-              type: 'sse',
-              configuredType: 'sse',
-              hasUrl: true,
-              hasNpxCommand: false,
-              hasScriptPath: false,
-              hasArgs: false,
-              hasEnv: false,
-              hasHeaders: true,
-              isValid: true,
-              validationIssues: [],
-            },
-          ],
-        },
-        summary: {
-          hasValidServers: true,
-          configurationComplete: true,
-          issues: [],
-        },
+        availableTools: mockTools,
+        toolCount: 2,
         timestamp: expect.any(String),
       });
-      expect(mcpClientService.getProviderStatus).toHaveBeenCalled();
+      expect(mcpClientService.getAvailableTools).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle configuration errors gracefully', async () => {
-      mcpClientService.getProviderStatus.mockImplementation(() => {
-        throw new Error('Provider connection failed');
-      });
+    it('should return empty tools list', async () => {
+      mcpClientService.getAvailableTools.mockReturnValue([]);
 
-      const response = await request(app).get('/config/status');
+      const response = await request(app).get('/tools');
 
-      expect(response.status).toBe(500);
-      expect(response.body).toMatchObject({
-        error: expect.objectContaining({
-          message: expect.any(String),
-          name: expect.any(String),
-        }),
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        availableTools: [],
+        toolCount: 0,
+        timestamp: expect.any(String),
       });
     });
   });
 
   describe('POST /chat', () => {
-    const validChatRequest = {
-      messages: [
-        { role: 'user', content: 'Hello, what can you help me with?' },
-      ],
-      enabledTools: ['search_web'],
-    };
+    const validMessages = [
+      { role: 'user', content: 'Hello, what can you help me with?' },
+    ];
 
-    it('should process chat request without tools successfully', async () => {
-      mcpClientService.processQuery.mockResolvedValue({
+    it('should process chat request without tools', async () => {
+      const mockResponse = {
         reply: 'Hello! I can help you with various tasks.',
         toolCalls: [],
         toolResponses: [],
-      });
+      };
 
-      const response = await request(app).post('/chat').send(validChatRequest);
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: [] });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
@@ -259,137 +205,103 @@ describe('createRouter', () => {
         toolResponses: [],
         toolsUsed: [],
       });
-      expect(mcpClientService.initMCP).toHaveBeenCalled();
       expect(mcpClientService.processQuery).toHaveBeenCalledWith(
-        validChatRequest.messages,
-        validChatRequest.enabledTools,
+        validMessages,
+        [],
       );
     });
 
-    it('should process chat request with tools successfully', async () => {
-      mcpClientService.processQuery.mockResolvedValue({
-        reply: 'I found some search results for you.',
-        toolCalls: [mockToolCall],
-        toolResponses: [mockToolResponse],
-      });
+    it('should process chat request with tools', async () => {
+      const mockToolCall = {
+        id: 'call_123',
+        type: 'function' as const,
+        function: {
+          name: 'search_web',
+          arguments: JSON.stringify({ query: 'test' }),
+        },
+      };
 
-      const response = await request(app).post('/chat').send(validChatRequest);
+      const mockResponse = {
+        reply: 'I found some search results.',
+        toolCalls: [mockToolCall],
+        toolResponses: [{ toolName: 'search_web', result: 'Results here' }],
+      };
+
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: ['search_web'] });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         role: 'assistant',
-        content: 'I found some search results for you.',
-        toolResponses: [mockToolResponse],
+        content: 'I found some search results.',
+        toolResponses: [{ toolName: 'search_web', result: 'Results here' }],
         toolsUsed: ['search_web'],
       });
     });
 
     it('should return 400 for empty messages array', async () => {
-      const response = await request(app).post('/chat').send({
-        messages: [],
-        enabledTools: [],
-      });
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: [], enabledTools: [] });
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'No query provided',
+        error: 'At least one message is required',
       });
     });
 
-    it('should return 400 for messages without content', async () => {
+    it('should return 400 for missing messages', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({ enabledTools: [] });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'Messages field is required',
+      });
+    });
+
+    it('should return 400 for invalid message structure', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: [{ role: 'user' }], enabledTools: [] });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: "Message at index 0 is missing required field 'content'",
+      });
+    });
+
+    it('should return 400 for invalid role', async () => {
       const response = await request(app)
         .post('/chat')
         .send({
-          messages: [{ role: 'user' }],
+          messages: [{ role: 'invalid', content: 'test' }],
+          enabledTools: [],
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toContain('invalid role');
+    });
+
+    it('should return 400 for empty content', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({
+          messages: [{ role: 'user', content: '' }],
           enabledTools: [],
         });
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'No query provided',
+        error: 'Message at index 0 has empty content',
       });
     });
 
-    it('should handle MCP initialization errors', async () => {
-      mcpClientService.initMCP.mockRejectedValue(new Error('MCP init failed'));
-
-      const response = await request(app).post('/chat').send(validChatRequest);
-
-      expect(response.status).toBe(500);
-      expect(response.body).toMatchObject({
-        error: expect.objectContaining({
-          message: expect.any(String),
-          name: expect.any(String),
-        }),
-      });
-    });
-
-    it('should handle query processing errors', async () => {
-      mcpClientService.processQuery.mockRejectedValue(
-        new Error('Query processing failed'),
-      );
-
-      const response = await request(app).post('/chat').send(validChatRequest);
-
-      expect(response.status).toBe(500);
-      expect(response.body).toMatchObject({
-        error: expect.objectContaining({
-          message: expect.any(String),
-          name: expect.any(String),
-        }),
-      });
-    });
-  });
-
-  describe('GET /tools', () => {
-    it('should return tools check information', async () => {
-      mcpClientService.getAvailableTools = jest.fn().mockReturnValue([
-        { name: 'search_web', description: 'Search the web' },
-        { name: 'get_weather', description: 'Get weather information' },
-      ]);
-
-      const response = await request(app).get('/tools');
-
-      expect(response.status).toBe(200);
-      expect(response.body).toMatchObject({
-        message: 'Tools check completed',
-        availableTools: expect.arrayContaining([
-          { name: 'search_web', description: 'Search the web' },
-          { name: 'get_weather', description: 'Get weather information' },
-        ]),
-        toolCount: 2,
-        timestamp: expect.any(String),
-      });
-    });
-
-    it('should handle tools check errors', async () => {
-      mcpClientService.initMCP.mockRejectedValue(
-        new Error('Tools check failed'),
-      );
-
-      const response = await request(app).get('/tools');
-
-      expect(response.status).toBe(500);
-      expect(response.body).toMatchObject({
-        error: expect.objectContaining({
-          message: expect.any(String),
-          name: expect.any(String),
-        }),
-      });
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle malformed JSON in requests', async () => {
-      const response = await request(app)
-        .post('/chat')
-        .set('Content-Type', 'application/json')
-        .send('{ invalid json }');
-
-      expect(response.status).toBe(400);
-    });
-
-    it('should handle null content in messages', async () => {
+    it('should return 400 for null content', async () => {
       const response = await request(app)
         .post('/chat')
         .send({
@@ -398,49 +310,80 @@ describe('createRouter', () => {
         });
 
       expect(response.status).toBe(400);
-      expect(response.body.error).toBe('No query provided');
+      expect(response.body).toEqual({
+        error: 'Message at index 0 has empty content',
+      });
     });
 
-    it('should handle mixed server configurations', async () => {
-      const mixedConfigs = [
-        {
-          getOptionalString: jest.fn((key: string) => {
-            const mapping: Record<string, string> = {
-              id: 'stdio-server',
-              type: 'stdio',
-            };
-            return mapping[key];
-          }),
-          getString: jest.fn(() => 'STDIO Server'),
-          getOptionalStringArray: jest.fn(() => undefined),
-          has: jest.fn(() => false),
-          getConfig: jest.fn(() => ({ get: jest.fn(() => ({})) })),
-        },
-        {
-          getOptionalString: jest.fn((key: string) => {
-            const mapping: Record<string, string> = {
-              id: 'sse-server',
-              url: 'http://example.com/sse',
-              type: 'sse',
-            };
-            return mapping[key];
-          }),
-          getString: jest.fn(() => 'SSE Server'),
-          getOptionalStringArray: jest.fn(() => undefined),
-          has: jest.fn((key: string) => key === 'url'),
-          getConfig: jest.fn(() => ({ get: jest.fn(() => ({})) })),
-        },
-      ];
+    it('should return 400 for non-user last message', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({
+          messages: [
+            { role: 'user', content: 'Hello' },
+            { role: 'assistant', content: 'Hi there' },
+          ],
+          enabledTools: [],
+        });
 
-      mockConfig.getOptionalConfigArray.mockReturnValue(mixedConfigs);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'Last message must be from user',
+      });
+    });
 
-      const response = await request(app).get('/config/status');
+    it('should return 400 for non-array enabledTools', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: 'not-array' });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'enabledTools must be an array',
+      });
+    });
+
+    it('should return 400 for non-string enabledTools elements', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: [123, 'valid'] });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'All enabledTools must be strings',
+      });
+    });
+
+    it('should handle processQuery errors', async () => {
+      mcpClientService.processQuery.mockRejectedValue(
+        new Error('Query processing failed'),
+      );
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: [] });
+
+      expect(response.status).toBe(500);
+    });
+
+    it('should handle enabledTools being undefined', async () => {
+      const mockResponse = {
+        reply: 'Response without tools',
+        toolCalls: [],
+        toolResponses: [],
+      };
+
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages });
 
       expect(response.status).toBe(200);
-      expect(response.body.mcpServers.servers).toHaveLength(2);
-      expect(response.body.mcpServers.total).toBe(2);
-      expect(response.body.mcpServers.valid).toBe(1);
-      expect(response.body.mcpServers.invalid).toBe(1);
+      expect(mcpClientService.processQuery).toHaveBeenCalledWith(
+        validMessages,
+        [],
+      );
     });
   });
 });

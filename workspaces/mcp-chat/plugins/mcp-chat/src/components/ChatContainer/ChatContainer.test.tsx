@@ -15,7 +15,13 @@
  */
 
 import { createRef } from 'react';
-import { render, act } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatContainer, type ChatContainerRef } from './ChatContainer';
@@ -29,7 +35,10 @@ Object.defineProperty(Element.prototype, 'scrollIntoView', {
 
 jest.mock('./ChatMessage', () => ({
   ChatMessage: ({ message }: any) => (
-    <div data-testid="chat-message">{message.text}</div>
+    <div data-testid="chat-message">
+      <span data-testid="message-text">{message.text}</span>
+      <span data-testid="message-user">{message.isUser.toString()}</span>
+    </div>
   ),
 }));
 
@@ -47,109 +56,67 @@ jest.mock('./TypingIndicator', () => ({
   TypingIndicator: () => <div data-testid="typing-indicator">Typing...</div>,
 }));
 
-describe('ChatContainer', () => {
-  let mockMcpChatApi: jest.Mocked<any>;
-  let mockTheme: any;
-  let mockMessages: any[];
-  let mockSetMessages: jest.Mock;
-  let mockMcpServers: any[];
-  let chatContainerRef: React.RefObject<ChatContainerRef>;
+const mockMcpChatApi = {
+  sendChatMessage: jest.fn(),
+  getConfigStatus: jest.fn(),
+  getAvailableTools: jest.fn(),
+  testProviderConnection: jest.fn(),
+};
 
-  const defaultProps = {
-    sidebarCollapsed: false,
+const defaultProps = {
+  sidebarCollapsed: false,
+  mcpServers: [
+    {
+      id: '1',
+      name: 'test-server',
+      enabled: true,
+      type: 'stdio',
+      hasUrl: false,
+      hasNpxCommand: true,
+      hasScriptPath: false,
+    },
+  ],
+  messages: [],
+  setMessages: jest.fn(),
+};
+
+const renderChatContainer = (props = {}) => {
+  const theme = createTheme();
+  const ref = createRef<ChatContainerRef>();
+
+  return {
+    ref,
+    ...render(
+      <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
+        <ThemeProvider theme={theme}>
+          <ChatContainer ref={ref} {...defaultProps} {...props} />
+        </ThemeProvider>
+      </TestApiProvider>,
+    ),
   };
+};
 
+describe('ChatContainer', () => {
   beforeEach(() => {
-    mockMcpChatApi = {
-      sendChatMessage: jest.fn(),
-      getConfigStatus: jest.fn(),
-      getAvailableTools: jest.fn(),
-      testProviderConnection: jest.fn(),
-    };
-
-    mockTheme = createTheme({
-      spacing: (factor: number) => `${8 * factor}px`,
-      palette: {
-        mode: 'light',
-        background: {
-          paper: '#ffffff',
-        },
-        divider: '#e0e0e0',
-        primary: {
-          main: '#1976d2',
-          dark: '#115293',
-          contrastText: '#ffffff',
-        },
-      },
-    });
-
-    mockMessages = [];
-    mockSetMessages = jest.fn();
-    mockMcpServers = [
-      {
-        id: '1',
-        name: 'test-server',
-        enabled: true,
-        type: 'stdio',
-        hasUrl: false,
-        hasNpxCommand: true,
-        hasScriptPath: false,
-      },
-    ];
-
-    chatContainerRef = createRef<ChatContainerRef>();
-
     jest.clearAllMocks();
     mockScrollIntoView.mockClear();
+    mockMcpChatApi.sendChatMessage.mockResolvedValue({
+      content: 'Test response',
+      toolsUsed: [],
+      toolResponses: [],
+    });
   });
 
-  const renderChatContainer = async (props = {}) => {
-    let result;
-    await act(async () => {
-      result = render(
-        <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
-          <ThemeProvider theme={mockTheme}>
-            <ChatContainer
-              ref={chatContainerRef}
-              customTheme={mockTheme}
-              messages={mockMessages}
-              setMessages={mockSetMessages}
-              mcpServers={mockMcpServers}
-              {...defaultProps}
-              {...props}
-            />
-          </ThemeProvider>
-        </TestApiProvider>,
-      );
-    });
-    return result!;
-  };
+  describe('rendering', () => {
+    it('renders QuickStart when no messages', () => {
+      renderChatContainer();
 
-  describe('component rendering', () => {
-    it('should render without crashing', async () => {
-      const { container } = await renderChatContainer();
-      expect(container).toBeDefined();
+      expect(screen.getByTestId('quick-start')).toBeInTheDocument();
+      expect(screen.getByText('Test Suggestion')).toBeInTheDocument();
     });
 
-    it('should render with required props', async () => {
-      const { container } = await renderChatContainer({
-        customTheme: mockTheme,
-        sidebarCollapsed: true,
-        mcpServers: mockMcpServers,
-        messages: mockMessages,
-        setMessages: mockSetMessages,
-      });
-      expect(container.firstChild).toBeDefined();
-    });
-
-    it('should render QuickStart when no messages', async () => {
-      const { container } = await renderChatContainer();
-      const quickStart = container.querySelector('[data-testid="quick-start"]');
-      expect(quickStart).toBeDefined();
-    });
-
-    it('should render messages when messages exist', async () => {
-      const messagesWithData = [
+    it('renders messages when messages exist', () => {
+      const messages = [
         {
           id: '1',
           text: 'Hello',
@@ -164,220 +131,407 @@ describe('ChatContainer', () => {
         },
       ];
 
-      const { container } = await renderChatContainer({
-        messages: messagesWithData,
-      });
-      const messages = container.querySelectorAll(
-        '[data-testid="chat-message"]',
-      );
-      expect(messages.length).toBe(2);
+      renderChatContainer({ messages });
+
+      const messageElements = screen.getAllByTestId('chat-message');
+      expect(messageElements).toHaveLength(2);
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+      expect(screen.getByText('Hi there!')).toBeInTheDocument();
     });
 
-    it('should render input field', async () => {
-      const { container } = await renderChatContainer();
-      const input = container.querySelector(
-        'input[placeholder="Message Assistant..."]',
-      );
-      expect(input).toBeDefined();
+    it('renders input field and send button', () => {
+      renderChatContainer();
+
+      expect(
+        screen.getByPlaceholderText('Message Assistant...'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('SendIcon')).toBeInTheDocument();
     });
 
-    it('should render send button', async () => {
-      const { container } = await renderChatContainer();
-      const buttons = container.querySelectorAll('button');
-      expect(buttons.length).toBeGreaterThan(0);
+    it('adjusts layout based on sidebar state', () => {
+      const { rerender } = renderChatContainer({ sidebarCollapsed: true });
+
+      rerender(
+        <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
+          <ThemeProvider theme={createTheme()}>
+            <ChatContainer {...defaultProps} sidebarCollapsed={false} />
+          </ThemeProvider>
+        </TestApiProvider>,
+      );
+
+      expect(
+        screen.getByPlaceholderText('Message Assistant...'),
+      ).toBeInTheDocument();
     });
   });
 
-  describe('props validation', () => {
-    it('should handle sidebar collapsed state', async () => {
-      const { container } = await renderChatContainer({
-        sidebarCollapsed: true,
+  describe('message sending', () => {
+    it('sends message when send button is clicked', async () => {
+      const setMessages = jest.fn();
+
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
+        [{ role: 'user', content: 'Hello world' }],
+        ['test-server'],
+        expect.any(AbortSignal),
+      );
+    });
+
+    it('sends message when Enter key is pressed', async () => {
+      const setMessages = jest.fn();
+
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
+
+      expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalled();
+    });
+
+    it('does not send message when Shift+Enter is pressed', async () => {
+      renderChatContainer();
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.keyPress(input, {
+        key: 'Enter',
+        code: 'Enter',
+        charCode: 13,
+        shiftKey: true,
       });
-      expect(container.firstChild).toBeDefined();
+
+      expect(mockMcpChatApi.sendChatMessage).not.toHaveBeenCalled();
     });
 
-    it('should handle sidebar expanded state', async () => {
-      const { container } = await renderChatContainer({
-        sidebarCollapsed: false,
+    it('clears input after sending message', async () => {
+      renderChatContainer();
+
+      const input = screen.getByPlaceholderText(
+        'Message Assistant...',
+      ) as HTMLInputElement;
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      await waitFor(() => {
+        expect(input.value).toBe('');
       });
-      expect(container.firstChild).toBeDefined();
     });
 
-    it('should handle empty MCP servers array', async () => {
-      const { container } = await renderChatContainer({ mcpServers: [] });
-      expect(container.firstChild).toBeDefined();
+    it('disables input and send button while typing', async () => {
+      mockMcpChatApi.sendChatMessage.mockImplementation(
+        () => new Promise(resolve => setTimeout(resolve, 1000)),
+      );
+
+      renderChatContainer();
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      expect(input).toBeDisabled();
+      expect(sendButton).toBeDisabled();
     });
 
-    it('should handle multiple MCP servers', async () => {
-      const multipleServers = [
-        { id: '1', name: 'server1', enabled: true },
-        { id: '2', name: 'server2', enabled: false },
-      ];
-      const { container } = await renderChatContainer({
-        mcpServers: multipleServers,
-      });
-      expect(container.firstChild).toBeDefined();
-    });
+    it('shows typing indicator while waiting for response', async () => {
+      mockMcpChatApi.sendChatMessage.mockImplementation(
+        () => new Promise(resolve => setTimeout(resolve, 100)),
+      );
 
-    it('should handle custom theme', async () => {
-      const customTheme = createTheme({
-        palette: {
-          primary: {
-            main: '#ff0000',
-          },
+      // Start with existing messages so we don't show QuickStart
+      const messages = [
+        {
+          id: '1',
+          text: 'Previous message',
+          isUser: true,
+          timestamp: new Date(),
         },
+      ];
+
+      renderChatContainer({ messages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+
+      act(() => {
+        fireEvent.click(sendButton!);
       });
-      const { container } = await renderChatContainer({ customTheme });
-      expect(container.firstChild).toBeDefined();
+
+      await waitFor(() => {
+        expect(screen.getByTestId('typing-indicator')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('QuickStart integration', () => {
+    it('sends message when suggestion is clicked', async () => {
+      const setMessages = jest.fn();
+
+      renderChatContainer({ setMessages });
+
+      const suggestionButton = screen.getByText('Test Suggestion');
+      fireEvent.click(suggestionButton);
+
+      expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
+        [{ role: 'user', content: 'Test suggestion' }],
+        ['test-server'],
+        expect.any(AbortSignal),
+      );
     });
   });
 
   describe('message state management', () => {
-    it('should handle message updates', async () => {
-      const { container } = await renderChatContainer();
-      expect(container.firstChild).toBeDefined();
-      expect(mockSetMessages).not.toHaveBeenCalled();
+    it('adds user message to state when sending', async () => {
+      const setMessages = jest.fn();
+
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      expect(setMessages).toHaveBeenCalledWith(expect.any(Function));
     });
 
-    it('should handle empty messages array', async () => {
-      const { container } = await renderChatContainer({ messages: [] });
-      expect(container.firstChild).toBeDefined();
-    });
+    it('adds bot response to state after API call', async () => {
+      const setMessages = jest.fn();
 
-    it('should handle messages with different types', async () => {
-      const mixedMessages = [
-        {
-          id: '1',
-          text: 'User message',
-          isUser: true,
-          timestamp: new Date(),
-        },
-        {
-          id: '2',
-          text: 'Assistant message',
-          isUser: false,
-          timestamp: new Date(),
-          tools: ['tool1'],
-          toolsUsed: ['tool1'],
-          toolResponses: [{ toolName: 'tool1', result: 'success' }],
-        },
-      ];
-      const { container } = await renderChatContainer({
-        messages: mixedMessages,
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      await waitFor(() => {
+        expect(setMessages).toHaveBeenCalledTimes(2);
       });
-      expect(container.firstChild).toBeDefined();
     });
-  });
 
-  describe('scrolling behavior', () => {
-    it('should call scrollIntoView when messages change', async () => {
-      const messagesWithData = [
-        {
-          id: '1',
-          text: 'Hello',
-          isUser: true,
-          timestamp: new Date(),
-        },
+    it('includes enabled MCP servers in API call', async () => {
+      const mcpServers = [
+        { id: '1', name: 'server1', enabled: true, type: 'stdio' },
+        { id: '2', name: 'server2', enabled: false, type: 'stdio' },
+        { id: '3', name: 'server3', enabled: true, type: 'stdio' },
       ];
 
-      await renderChatContainer({ messages: messagesWithData });
+      renderChatContainer({ mcpServers });
 
-      expect(mockScrollIntoView).toHaveBeenCalled();
-    });
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
 
-    it('should handle scrollIntoView gracefully when element not found', async () => {
-      mockScrollIntoView.mockImplementation(() => {
-        throw new Error('Element not found');
-      });
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
 
-      const { container } = await renderChatContainer();
-      expect(container.firstChild).toBeDefined();
-    });
-  });
-
-  describe('ref functionality', () => {
-    it('should expose cancelOngoingRequest method through ref', async () => {
-      await renderChatContainer();
-      expect(chatContainerRef.current).toBeDefined();
-      expect(typeof chatContainerRef.current?.cancelOngoingRequest).toBe(
-        'function',
+      expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
+        expect.any(Array),
+        ['server1', 'server3'],
+        expect.any(AbortSignal),
       );
-    });
-
-    it('should handle cancelOngoingRequest call', async () => {
-      await renderChatContainer();
-      expect(() => {
-        chatContainerRef.current?.cancelOngoingRequest();
-      }).not.toThrow();
     });
   });
 
   describe('error handling', () => {
-    it('should handle missing required props gracefully', async () => {
-      const { container } = await renderChatContainer({
-        messages: [],
-        setMessages: jest.fn(),
-        mcpServers: [],
-        customTheme: mockTheme,
-      });
-      expect(container.firstChild).toBeDefined();
-    });
-
-    it('should handle malformed props', async () => {
-      const { container } = await renderChatContainer({
-        messages: [],
-        setMessages: mockSetMessages,
-        mcpServers: [],
-        customTheme: mockTheme,
-      });
-      expect(container.firstChild).toBeDefined();
-    });
-
-    it('should handle undefined mcpServers', async () => {
-      const { container } = await renderChatContainer({
-        mcpServers: undefined,
-      });
-      expect(container.firstChild).toBeDefined();
-    });
-  });
-
-  describe('user interactions', () => {
-    it('should handle suggestion clicks', async () => {
-      const { container } = await renderChatContainer();
-      const suggestionButton = container.querySelector(
-        '[data-testid="quick-start"] button',
-      );
-
-      if (suggestionButton) {
-        await act(async () => {
-          suggestionButton.dispatchEvent(
-            new MouseEvent('click', { bubbles: true }),
-          );
-        });
-      }
-
-      expect(container.firstChild).toBeDefined();
-    });
-
-    it('should handle input changes', async () => {
-      const { container } = await renderChatContainer();
-      const input = container.querySelector(
-        'input[placeholder="Message Assistant..."]',
-      );
-      expect(input).toBeDefined();
-    });
-  });
-
-  describe('API integration', () => {
-    it('should have access to mcpChatApi', async () => {
-      await renderChatContainer();
-      expect(mockMcpChatApi.sendChatMessage).not.toHaveBeenCalled();
-    });
-
-    it('should handle API errors gracefully', async () => {
+    it('handles API errors gracefully', async () => {
+      const setMessages = jest.fn();
       mockMcpChatApi.sendChatMessage.mockRejectedValue(new Error('API Error'));
-      const { container } = await renderChatContainer();
-      expect(container.firstChild).toBeDefined();
+
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      await waitFor(() => {
+        expect(setMessages).toHaveBeenCalledWith(expect.any(Function));
+      });
+    });
+
+    it('handles network errors with specific message', async () => {
+      const setMessages = jest.fn();
+      mockMcpChatApi.sendChatMessage.mockRejectedValue(
+        new Error('Network error'),
+      );
+
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      await waitFor(() => {
+        expect(setMessages).toHaveBeenCalledWith(expect.any(Function));
+      });
+    });
+
+    it('handles 404 errors with specific message', async () => {
+      const setMessages = jest.fn();
+      mockMcpChatApi.sendChatMessage.mockRejectedValue(
+        new Error('404 Not Found'),
+      );
+
+      renderChatContainer({ setMessages });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      await waitFor(() => {
+        expect(setMessages).toHaveBeenCalledWith(expect.any(Function));
+      });
+    });
+  });
+
+  describe('request cancellation', () => {
+    it('exposes cancel function through ref', () => {
+      const { ref } = renderChatContainer();
+
+      expect(ref.current).toHaveProperty('cancelOngoingRequest');
+      expect(typeof ref.current?.cancelOngoingRequest).toBe('function');
+    });
+
+    it('cancels ongoing request when new request is made', async () => {
+      let firstCallResolve: (value: any) => void;
+      const firstCallPromise = new Promise(resolve => {
+        firstCallResolve = resolve;
+      });
+
+      mockMcpChatApi.sendChatMessage
+        .mockImplementationOnce(() => firstCallPromise)
+        .mockResolvedValueOnce({
+          content: 'Second response',
+          toolsUsed: [],
+          toolResponses: [],
+        });
+
+      const { ref } = renderChatContainer();
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      // First request
+      fireEvent.change(input, { target: { value: 'First message' } });
+      act(() => {
+        fireEvent.click(sendButton!);
+      });
+
+      // Wait for first request to start
+      await waitFor(() => {
+        expect(input).toBeDisabled();
+      });
+
+      // Manually cancel the first request to simulate a new request
+      act(() => {
+        ref.current?.cancelOngoingRequest();
+      });
+
+      // Wait for input to be enabled again
+      await waitFor(() => {
+        expect(input).not.toBeDisabled();
+      });
+
+      // Second request
+      fireEvent.change(input, { target: { value: 'Second message' } });
+      act(() => {
+        fireEvent.click(sendButton!);
+      });
+
+      // Resolve the first promise (should be ignored)
+      firstCallResolve!({
+        content: 'First response',
+        toolsUsed: [],
+        toolResponses: [],
+      });
+
+      await waitFor(() => {
+        expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    it('cancels request when component unmounts', () => {
+      const { unmount } = renderChatContainer();
+
+      expect(() => unmount()).not.toThrow();
+    });
+  });
+
+  describe('auto-scrolling', () => {
+    it('scrolls to bottom when new messages are added', () => {
+      const messages = [
+        { id: '1', text: 'Hello', isUser: true, timestamp: new Date() },
+      ];
+
+      const { rerender } = renderChatContainer({ messages });
+
+      const newMessages = [
+        ...messages,
+        { id: '2', text: 'Hi there!', isUser: false, timestamp: new Date() },
+      ];
+
+      rerender(
+        <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
+          <ThemeProvider theme={createTheme()}>
+            <ChatContainer {...defaultProps} messages={newMessages} />
+          </ThemeProvider>
+        </TestApiProvider>,
+      );
+
+      expect(mockScrollIntoView).toHaveBeenCalled();
+    });
+  });
+
+  describe('input validation', () => {
+    it('disables send button when input is empty', () => {
+      renderChatContainer();
+
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+      expect(sendButton).toBeDisabled();
+    });
+
+    it('enables send button when input has content', async () => {
+      renderChatContainer();
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello' } });
+
+      expect(sendButton).toBeEnabled();
+    });
+
+    it('disables send button when input is only whitespace', async () => {
+      renderChatContainer();
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: '   ' } });
+
+      expect(sendButton).toBeDisabled();
     });
   });
 });

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { ResponseError } from '@backstage/errors';
+
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content: string | null;

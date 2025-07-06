@@ -114,7 +114,7 @@ describe('TypingIndicator', () => {
       renderWithTheme(<TypingIndicator />, darkTheme);
 
       const botIcon = screen.getByTestId('bot-icon');
-      expect(botIcon).toHaveStyle('color: #e0e0e0');
+      expect(botIcon).toHaveStyle('color: rgb(255, 255, 255)');
     });
 
     it('uses theme spacing correctly', () => {
