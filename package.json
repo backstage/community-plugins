@@ -2,7 +2,10 @@
   "name": "@backstage-community/plugins",
   "private": true,
   "version": "0.0.0",
-  "repository": "git@github.com:backstage/community-plugins.git",
+  "repository": {
+    "type": "git",
+    "directory": "."
+  },
   "engines": {
     "node": "20 || 22"
   },
