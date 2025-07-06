@@ -49,6 +49,7 @@ export async function discoverEnterpriseTeamMetrics({
   const type: MetricsType = 'enterprise';
 
   try {
+    await api.createEnterpriseOctokit();
     const teams = await api.fetchEnterpriseTeams();
     logger.info(
       `[discoverEnterpriseTeamMetrics] Fetched ${teams.length} teams`,
@@ -178,9 +179,18 @@ export async function discoverEnterpriseTeamMetrics({
           );
         }
       } catch (error) {
-        logger.error(
-          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`,
-        );
+        if (error instanceof Error) {
+          logger.error(
+            `[discoverEnterpriseTeamMetrics] An error occurred while processing Github Copilot metrics: ${error.message}\n${error.stack}`,
+          );
+        } else {
+          logger.error(
+            `[discoverEnterpriseTeamMetrics] An error occurred while processing Github Copilot metrics: ${JSON.stringify(
+              error,
+            )}`,
+          );
+        }
+        throw error;
       }
     }
   } catch (error) {
