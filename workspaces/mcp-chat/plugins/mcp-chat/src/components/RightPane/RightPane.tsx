@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MemoryIcon from '@mui/icons-material/Memory';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  Drawer,
+  Divider,
+} from '@mui/material';
 import { ActiveMcpServers } from './ActiveMcpServers';
 import { ActiveTools } from './ActiveTools';
 import { ProviderStatus } from './ProviderStatus';
@@ -45,7 +50,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
   mcpServers,
   onServerToggle,
   providerStatus,
-}) => {
+}: RightPaneProps) => {
   const theme = useTheme();
   const { availableTools, isLoading: toolsLoading } =
     useAvailableTools(mcpServers);
@@ -104,7 +109,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
             <BotIcon size={25} color={theme.palette.text.primary} />
             <Typography
               variant="h6"
-              style={{
+              sx={{
                 fontWeight: 600,
                 marginLeft: theme.spacing(1),
                 color: theme.palette.text.primary,
@@ -116,7 +121,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
         )}
         {sidebarCollapsed && (
           <Box
-            style={{
+            sx={{
               display: 'flex',
               justifyContent: 'center',
               marginBottom: '8px',
@@ -135,16 +140,15 @@ export const RightPane: React.FC<RightPaneProps> = ({
 
       {!sidebarCollapsed && (
         <>
-          <Box style={{ padding: '16px 16px 8px' }}>
+          <Box sx={{ padding: '16px 16px 8px' }}>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               sx={{
-                background: `linear-gradient(45deg, #185A4B, #1B5F4F, #2A6C5F, #437E72)`,
-                color: 'white',
+                background: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
                 '&:hover': {
-                  background: `linear-gradient(45deg, #1E6B59, #226860, #2F7A6E, #4B8C7F)`,
-                  boxShadow: '0 4px 12px rgba(24, 90, 75, 0.3)',
+                  background: theme.palette.primary.dark,
                 },
                 borderRadius: theme.spacing(1),
                 textTransform: 'none',
@@ -184,7 +188,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
 
       {sidebarCollapsed && (
         <Box
-          style={{
+          sx={{
             padding: '16px 8px',
             display: 'flex',
             flexDirection: 'column',
@@ -195,7 +199,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
           <Box>
             {/* Add button when collapsed */}
             <Box
-              style={{
+              sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 marginBottom: '16px',
@@ -204,18 +208,14 @@ export const RightPane: React.FC<RightPaneProps> = ({
               <IconButton
                 size="small"
                 onClick={onNewChat}
-                style={{
-                  backgroundColor: '#1E6253',
-                  color: 'white',
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.primary.contrastText,
                   transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.backgroundColor = '#367568';
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.backgroundColor = '#1E6253';
-                  e.currentTarget.style.transform = 'scale(1)';
+                  '&:hover': {
+                    backgroundColor: theme.palette.primary.dark,
+                    transform: 'scale(1.05)',
+                  },
                 }}
               >
                 <AddIcon />
@@ -227,7 +227,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
           <Box>
             {/* Separator line */}
             <Box
-              style={{
+              sx={{
                 borderTop: `2px solid ${theme.palette.divider}`,
                 margin: '0 8px 16px 8px',
               }}
@@ -235,7 +235,7 @@ export const RightPane: React.FC<RightPaneProps> = ({
 
             {/* MCP Servers Section Icon */}
             <Box
-              style={{
+              sx={{
                 display: 'flex',
                 justifyContent: 'center',
               }}

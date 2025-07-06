@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { useTheme } from '@mui/material/styles';
-import MemoryIcon from '@mui/icons-material/Memory';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import MemoryIcon from '@mui/icons-material/Memory';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { MCPServer } from '../../types';
@@ -27,74 +27,70 @@ interface ActiveMcpServersProps {
   onServerToggle: (serverName: string) => void;
 }
 
+const getChipBackgroundColor = (server: MCPServer, theme: any) => {
+  if (!server.status?.connected) {
+    return 'transparent';
+  }
+  if (server.enabled) {
+    return theme.palette.mode === 'dark'
+      ? theme.palette.background.paper
+      : 'transparent';
+  }
+  return 'transparent';
+};
+
+const getChipColor = (server: MCPServer, theme: any) => {
+  if (!server.status?.connected) {
+    return theme.palette.error.main;
+  }
+  if (server.enabled) {
+    return theme.palette.mode === 'dark'
+      ? theme.palette.success.light
+      : theme.palette.success.dark;
+  }
+  return theme.palette.text.secondary;
+};
+
+const getChipBorder = (server: MCPServer, theme: any) => {
+  if (!server.status?.connected) {
+    return `2px solid ${theme.palette.error.main}`;
+  }
+  return server.enabled
+    ? `2px solid ${theme.palette.success.main}`
+    : `2px solid ${theme.palette.divider}`;
+};
+
+const getDotColor = (server: MCPServer, theme: any) => {
+  if (!server.status?.connected) {
+    return theme.palette.error.main;
+  }
+  return server.enabled ? theme.palette.success.main : theme.palette.grey[500];
+};
+
 export const ActiveMcpServers = ({
   mcpServers,
   onServerToggle,
 }: ActiveMcpServersProps) => {
   const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
-
-  // Helper functions to avoid nested ternary expressions
-  const getChipBackgroundColor = (server: MCPServer) => {
-    if (!server.status?.connected) {
-      return isDarkMode ? '#2e1e1e' : '#ffebee';
-    }
-
-    if (server.enabled) {
-      return isDarkMode ? '#2d4a2d' : '#e8f5e8';
-    }
-    return 'transparent';
-  };
-
-  const getChipColor = (server: MCPServer) => {
-    if (!server.status?.connected) {
-      return theme.palette.error.dark;
-    }
-
-    if (server.enabled) {
-      return '#4CAF50';
-    }
-    return isDarkMode ? '#999999' : '#666666';
-  };
-
-  const getChipBorder = (server: MCPServer) => {
-    if (!server.status?.connected) {
-      return `2px solid ${theme.palette.error.dark}`;
-    }
-
-    return server.enabled
-      ? '2px solid #4CAF50'
-      : `2px solid ${isDarkMode ? '#555555' : '#ddd'}`;
-  };
-
-  const getDotColor = (server: MCPServer) => {
-    if (!server.status?.connected) {
-      return theme.palette.error.dark;
-    }
-
-    return server.enabled
-      ? theme.palette.success.main
-      : theme.palette.grey[500];
-  };
 
   return (
     <Box
       sx={{
         padding: theme.spacing(2),
         borderTop: `1px solid ${theme.palette.divider}`,
-        backgroundColor: isDarkMode ? '#2a2a2a' : '#fafafa',
+        backgroundColor: theme.palette.background.default,
       }}
     >
       <Box
-        style={{
+        sx={{
           display: 'flex',
           alignItems: 'center',
-          marginBottom: 12,
+          marginBottom: 1.5,
         }}
       >
         <MemoryIcon
-          style={{
-            marginRight: '4px',
+          sx={{
+            marginRight: 0.5,
             marginBottom: '2.5px',
             color: theme.palette.text.primary,
             fontSize: '1.1rem',
@@ -102,7 +98,7 @@ export const ActiveMcpServers = ({
         />
         <Typography
           variant="caption"
-          style={{
+          sx={{
             color: theme.palette.text.primary,
             fontWeight: 600,
             fontSize: '0.85rem',
@@ -111,7 +107,7 @@ export const ActiveMcpServers = ({
           Active MCP Servers
         </Typography>
       </Box>
-      <Box style={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         {mcpServers.map(server => (
           <Tooltip
             key={server.name}
@@ -135,7 +131,7 @@ export const ActiveMcpServers = ({
               icon={
                 <FiberManualRecordIcon
                   sx={{
-                    fill: getDotColor(server),
+                    fill: getDotColor(server, theme),
                     fontSize: '10px !important',
                     marginLeft: '8px',
                   }}
@@ -143,10 +139,10 @@ export const ActiveMcpServers = ({
               }
               sx={{
                 transition: 'all 0.2s ease',
-                cursor: server.status?.connected ? 'pointer' : 'default',
-                backgroundColor: getChipBackgroundColor(server),
-                color: getChipColor(server),
-                border: getChipBorder(server),
+                cursor: server.status?.connected ? 'pointer' : 'help',
+                backgroundColor: getChipBackgroundColor(server, theme),
+                color: getChipColor(server, theme),
+                border: getChipBorder(server, theme),
                 fontSize: '0.75rem',
                 fontWeight: server.enabled ? 600 : 400,
                 '& .MuiChip-icon': {
@@ -156,11 +152,11 @@ export const ActiveMcpServers = ({
                 ...(server.status?.connected && {
                   '&:hover': {
                     transform: 'translateY(-1px)',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                    boxShadow: theme.shadows[2],
                   },
                   '&:active': {
                     transform: 'translateY(0)',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    boxShadow: theme.shadows[1],
                   },
                 }),
               }}

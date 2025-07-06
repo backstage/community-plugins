@@ -36,7 +36,6 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
   toolsLoading,
 }) => {
   const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   return (
     <Box
@@ -49,24 +48,24 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
       }}
     >
       <Box
-        style={{
+        sx={{
           display: 'flex',
           alignItems: 'center',
-          marginBottom: 12,
-          paddingBottom: 8,
+          marginBottom: 1.5,
+          paddingBottom: 1,
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}
       >
         <BuildIcon
-          style={{
-            marginRight: '8px',
+          sx={{
+            marginRight: 1,
             color: theme.palette.text.primary,
             fontSize: '1.1rem',
           }}
         />
         <Typography
           variant="subtitle2"
-          style={{
+          sx={{
             fontWeight: 600,
             color: theme.palette.text.primary,
             fontSize: '1rem',
@@ -76,10 +75,10 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
         </Typography>
       </Box>
       <Box
-        style={{
+        sx={{
           flex: 1,
           overflowY: 'scroll',
-          paddingRight: 4,
+          paddingRight: 0.5,
         }}
       >
         {mcpServers
@@ -92,40 +91,46 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
             return (
               <Accordion
                 key={server.name}
-                style={{
-                  marginBottom: 6,
+                sx={{
+                  marginBottom: 0.75,
                   boxShadow: 'none',
-                  borderRadius: 6,
+                  borderRadius: 1.5,
                   overflow: 'hidden',
+                  '&.Mui-expanded:before': {
+                    opacity: 1,
+                  },
                 }}
               >
                 <AccordionSummary
                   expandIcon={
                     <ExpandMoreIcon
-                      style={{
+                      sx={{
                         fontSize: '1rem',
                         color: theme.palette.text.primary,
                       }}
                     />
                   }
-                  style={{
+                  sx={{
                     minHeight: 44,
                     backgroundColor: theme.palette.background.paper,
                     padding: '0 12px',
+                    '& .MuiAccordionSummary-content': {
+                      margin: '12px 0',
+                    },
                   }}
                 >
                   <Box
-                    style={{
+                    sx={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       width: '100%',
-                      paddingRight: 8,
+                      paddingRight: 1,
                     }}
                   >
                     <Typography
                       variant="body2"
-                      style={{
+                      sx={{
                         fontWeight: 500,
                         color: theme.palette.text.primary,
                         fontSize: '0.875rem',
@@ -135,13 +140,13 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                     </Typography>
                     <Typography
                       variant="caption"
-                      style={{
+                      sx={{
                         color: theme.palette.text.secondary,
                         fontSize: '0.75rem',
                         fontWeight: 500,
-                        backgroundColor: isDarkMode ? '#3a3a3a' : '#f0f0f0',
+                        backgroundColor: theme.palette.action.hover,
                         padding: '2px 6px',
-                        borderRadius: 10,
+                        borderRadius: 2.5,
                       }}
                     >
                       {toolsLoading
@@ -153,16 +158,16 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                   </Box>
                 </AccordionSummary>
                 <AccordionDetails
-                  style={{
+                  sx={{
                     flexDirection: 'column',
                     padding: '8px 12px 12px',
-                    backgroundColor: isDarkMode ? '#2a2a2a' : '#fafafa',
+                    backgroundColor: theme.palette.background.default,
                     borderTop: `1px solid ${theme.palette.divider}`,
                   }}
                 >
                   {toolsLoading ? (
                     <Box
-                      style={{
+                      sx={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -173,11 +178,11 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                         size={20}
                         role="progressbar"
                         aria-label="Loading tools"
-                        style={{ marginRight: '8px' }}
+                        sx={{ marginRight: 1 }}
                       />
                       <Typography
                         variant="caption"
-                        style={{ color: theme.palette.text.secondary }}
+                        sx={{ color: theme.palette.text.secondary }}
                       >
                         Loading tools...
                       </Typography>
@@ -188,39 +193,38 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                         if (serverTools.length > 0) {
                           return (
                             <Box
-                              style={{
+                              sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: 6,
+                                gap: 0.75,
                               }}
                             >
                               {serverTools.map(tool => (
                                 <Box
                                   key={tool.function.name}
-                                  style={{
+                                  sx={{
                                     padding: '6px 8px',
-                                    backgroundColor: isDarkMode
-                                      ? '#2a2a2a'
-                                      : '#ffffff',
-                                    borderRadius: 4,
+                                    backgroundColor:
+                                      theme.palette.background.paper,
+                                    borderRadius: 1,
                                     border: `1px solid ${theme.palette.divider}`,
                                   }}
                                 >
                                   <Typography
                                     variant="caption"
-                                    style={{
+                                    sx={{
                                       fontWeight: 600,
                                       color: theme.palette.text.primary,
                                       fontSize: '0.75rem',
                                       display: 'block',
-                                      marginBottom: 2,
+                                      marginBottom: 0.25,
                                     }}
                                   >
                                     {tool.function.name}
                                   </Typography>
                                   <Typography
                                     variant="caption"
-                                    style={{
+                                    sx={{
                                       color: theme.palette.text.secondary,
                                       fontSize: '0.7rem',
                                       lineHeight: 1.3,
@@ -240,7 +244,7 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                           return (
                             <Typography
                               variant="caption"
-                              style={{
+                              sx={{
                                 color: theme.palette.error.main,
                                 fontWeight: 500,
                                 textAlign: 'center',
@@ -255,10 +259,10 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
                         return (
                           <Typography
                             variant="caption"
-                            style={{
+                            sx={{
                               color: theme.palette.text.secondary,
-                              fontStyle: 'italic',
                               textAlign: 'center',
+                              display: 'block',
                             }}
                           >
                             No tools available for this server
@@ -275,7 +279,7 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
         {mcpServers.filter(server => server.enabled).length === 0 && (
           <Typography
             variant="caption"
-            style={{
+            sx={{
               color: theme.palette.text.secondary,
               fontStyle: 'italic',
               textAlign: 'center',

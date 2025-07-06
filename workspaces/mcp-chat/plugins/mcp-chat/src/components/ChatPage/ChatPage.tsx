@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 import { useState, useRef } from 'react';
-import { useTheme } from '@mui/styles';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { Content, Page, ResponseErrorPanel } from '@backstage/core-components';
 import { ChatContainer, type ChatContainerRef } from '../ChatContainer';
 import { RightPane } from '../RightPane';
 import { useProviderStatus, useMcpServers } from '../../hooks';
-import { getCustomTheme } from '../../customTheme';
 
 interface Message {
   id: string;
@@ -34,9 +32,7 @@ interface Message {
 }
 
 export const ChatPage = () => {
-  const baseTheme = useTheme();
-  const isDarkMode = baseTheme.palette.mode === 'dark';
-  const customTheme = createTheme(getCustomTheme(baseTheme, isDarkMode));
+  const theme = useTheme();
 
   const providerStatus = useProviderStatus();
   const {
@@ -68,69 +64,66 @@ export const ChatPage = () => {
   };
 
   return (
-    <ThemeProvider theme={customTheme}>
-      <Page themeId="tool">
-        <Content noPadding>
+    <Page themeId="tool">
+      <Content noPadding>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            backgroundColor: theme.palette.background.default,
+          }}
+        >
+          {/* Content Area */}
           <Box
-            style={{
+            sx={{
               display: 'flex',
-              flexDirection: 'column',
-              height: '100vh',
-              backgroundColor: customTheme.palette.background.default,
+              flex: 1,
+              overflow: 'hidden',
+              position: 'relative',
             }}
           >
-            {/* Content Area */}
-            <Box
-              style={{
-                display: 'flex',
-                flex: 1,
-                overflow: 'hidden',
-                position: 'relative',
-              }}
-            >
-              {combinedError ? (
-                <Box
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    height: '100%',
-                    padding: '20px',
-                  }}
-                >
-                  <ResponseErrorPanel
-                    error={new Error(combinedError)}
-                    defaultExpanded
-                  />
-                </Box>
-              ) : (
-                <>
-                  {/* Chat Container */}
-                  <ChatContainer
-                    ref={chatContainerRef}
-                    customTheme={customTheme}
-                    sidebarCollapsed={sidebarCollapsed}
-                    mcpServers={mcpServers}
-                    messages={messages}
-                    setMessages={setMessages}
-                  />
+            {combinedError ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
+                  height: '100%',
+                  padding: '20px',
+                }}
+              >
+                <ResponseErrorPanel
+                  error={new Error(combinedError)}
+                  defaultExpanded
+                />
+              </Box>
+            ) : (
+              <>
+                {/* Chat Container */}
+                <ChatContainer
+                  ref={chatContainerRef}
+                  sidebarCollapsed={sidebarCollapsed}
+                  mcpServers={mcpServers}
+                  messages={messages}
+                  setMessages={setMessages}
+                />
 
-                  {/* Sidebar - Right Side */}
-                  <RightPane
-                    sidebarCollapsed={sidebarCollapsed}
-                    onToggleSidebar={toggleSidebar}
-                    onNewChat={handleNewChat}
-                    mcpServers={mcpServers}
-                    onServerToggle={handleServerToggle}
-                    providerStatus={providerStatus}
-                  />
-                </>
-              )}
-            </Box>
+                {/* Sidebar - Right Side */}
+                <RightPane
+                  sidebarCollapsed={sidebarCollapsed}
+                  onToggleSidebar={toggleSidebar}
+                  onNewChat={handleNewChat}
+                  mcpServers={mcpServers}
+                  onServerToggle={handleServerToggle}
+                  providerStatus={providerStatus}
+                />
+              </>
+            )}
           </Box>
-        </Content>
-      </Page>
-    </ThemeProvider>
+        </Box>
+      </Content>
+    </Page>
   );
 };
