@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEffect, useState, useCallback } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { ProviderStatusData } from '../types';
 import { mcpChatApiRef } from '../api';
 
@@ -22,41 +22,33 @@ export interface UseProviderStatusReturn {
   providerStatusData: ProviderStatusData | null;
   isLoading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 export const useProviderStatus = (): UseProviderStatusReturn => {
   const mcpChatApi = useApi(mcpChatApiRef);
-  const [providerStatusData, setProviderStatusData] =
-    useState<ProviderStatusData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchProviderStatus = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  const {
+    value: providerStatusData,
+    loading: isLoading,
+    error,
+    retry: refetch,
+  } = useAsyncRetry(async () => {
     try {
-      const statusData = await mcpChatApi.getProviderStatus();
-      setProviderStatusData(statusData);
+      return await mcpChatApi.getProviderStatus();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to fetch provider status';
       // eslint-disable-next-line no-console
       console.error('Failed to fetch provider status:', err);
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+      throw new Error(errorMessage);
     }
   }, [mcpChatApi]);
 
-  useEffect(() => {
-    fetchProviderStatus();
-  }, [fetchProviderStatus]);
-
   return {
-    providerStatusData,
+    providerStatusData: providerStatusData || null,
     isLoading,
-    error,
-    refetch: fetchProviderStatus,
+    error: error?.message || null,
+    refetch,
   };
 };
