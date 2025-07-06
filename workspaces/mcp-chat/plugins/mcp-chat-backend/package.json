@@ -30,6 +30,7 @@
   "dependencies": {
     "@backstage/backend-defaults": "^0.11.0",
     "@backstage/backend-plugin-api": "^1.4.0",
+    "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-node": "^1.17.1",
     "@google/generative-ai": "^0.24.1",
     "@modelcontextprotocol/sdk": "^1.11.0",

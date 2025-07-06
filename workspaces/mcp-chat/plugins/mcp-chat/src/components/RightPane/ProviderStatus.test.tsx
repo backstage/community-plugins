@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
+import { ReactElement } from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ProviderStatus } from './ProviderStatus';
-import type { ConfigStatus } from '../../api/McpChatApi';
 
 const mockTheme = createTheme({
   palette: {
@@ -27,58 +26,116 @@ const mockTheme = createTheme({
     text: { primary: '#333', secondary: '#666' },
     background: { paper: '#fff', default: '#f5f5f5' },
     divider: '#e0e0e0',
+    success: { main: '#4CAF50', dark: '#2e7d32', light: '#81c784' },
+    error: { main: '#d32f2f' },
+    warning: { main: '#ff9800' },
   },
   spacing: (factor: number) => `${8 * factor}px`,
 });
 
-const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: { main: '#4CAF50' },
+    text: { primary: '#fff', secondary: 'rgba(255, 255, 255, 0.7)' },
+    background: { paper: '#121212', default: '#000' },
+    divider: '#333',
+    success: { main: '#4CAF50', dark: '#2e7d32', light: '#81c784' },
+    error: { main: '#f44336' },
+    warning: { main: '#ff9800' },
+  },
+  spacing: (factor: number) => `${8 * factor}px`,
+});
+
+const renderWithTheme = (component: ReactElement, theme = mockTheme) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
 describe('ProviderStatus', () => {
-  const mockConfigStatus: ConfigStatus = {
-    provider: {
-      model: 'gpt-4',
-      baseURL: 'https://api.openai.com/v1',
-      type: 'openai',
-    },
-    mcpServers: {
-      total: 0,
-      valid: 0,
-      invalid: 0,
-      servers: [],
-    },
+  const mockConnectedProviderData = {
+    providers: [
+      {
+        id: 'provider-1',
+        model: 'gpt-4',
+        baseUrl: 'https://api.openai.com/v1',
+        connection: {
+          connected: true,
+          models: ['gpt-4', 'gpt-3.5-turbo'],
+        },
+      },
+    ],
     summary: {
-      hasValidServers: false,
-      configurationComplete: false,
-      issues: [],
+      totalProviders: 1,
+      healthyProviders: 1,
     },
     timestamp: '2025-01-01T00:00:00.000Z',
   };
 
-  const mockProviderConnectionStatus = {
-    connected: true,
-    models: ['gpt-4', 'gpt-3.5-turbo'],
-    loading: false,
+  const mockDisconnectedProviderData = {
+    providers: [
+      {
+        id: 'provider-1',
+        model: 'gpt-4',
+        baseUrl: 'https://api.openai.com/v1',
+        connection: {
+          connected: false,
+          error: 'Connection failed: Network timeout',
+        },
+      },
+    ],
+    summary: {
+      totalProviders: 1,
+      healthyProviders: 0,
+      error: 'Connection failed: Network timeout',
+    },
+    timestamp: '2025-01-01T00:00:00.000Z',
   };
 
-  const mockLoadingStatus = {
-    connected: false,
-    loading: true,
+  const mockMultipleModelsData = {
+    providers: [
+      {
+        id: 'provider-1',
+        model: 'gpt-4',
+        baseUrl: 'https://api.openai.com/v1',
+        connection: {
+          connected: true,
+          models: Array.from({ length: 10 }, (_, i) => `model-${i + 1}`),
+        },
+      },
+    ],
+    summary: {
+      totalProviders: 1,
+      healthyProviders: 1,
+    },
+    timestamp: '2025-01-01T00:00:00.000Z',
   };
 
-  const mockErrorStatus = {
-    connected: false,
-    error: 'Connection failed: Network timeout',
-    loading: false,
+  const mockLongModelNameData = {
+    providers: [
+      {
+        id: 'provider-1',
+        model: 'very-long-model-name-that-might-cause-layout-issues',
+        baseUrl: 'https://api.openai.com/v1',
+        connection: {
+          connected: true,
+          models: ['very-long-model-name-that-might-cause-layout-issues'],
+        },
+      },
+    ],
+    summary: {
+      totalProviders: 1,
+      healthyProviders: 1,
+    },
+    timestamp: '2025-01-01T00:00:00.000Z',
   };
 
   describe('Basic Rendering', () => {
     it('renders provider section title', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
@@ -88,8 +145,9 @@ describe('ProviderStatus', () => {
     it('displays cloud icon', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
@@ -99,8 +157,9 @@ describe('ProviderStatus', () => {
     it('shows provider URL information', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
@@ -109,14 +168,28 @@ describe('ProviderStatus', () => {
         screen.getByText(/https:\/\/api\.openai\.com\/v1/),
       ).toBeInTheDocument();
     });
+
+    it('shows model information', () => {
+      renderWithTheme(
+        <ProviderStatus
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
+        />,
+      );
+
+      expect(screen.getByText(/Model:/)).toBeInTheDocument();
+      expect(screen.getByText(/gpt-4/)).toBeInTheDocument();
+    });
   });
 
   describe('Connection Status Display', () => {
     it('shows connected status when provider is connected', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
@@ -125,10 +198,7 @@ describe('ProviderStatus', () => {
 
     it('shows testing status when connection is loading', () => {
       renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockLoadingStatus}
-        />,
+        <ProviderStatus providerStatusData={null} isLoading error={null} />,
       );
 
       expect(screen.getByText('Testing...')).toBeInTheDocument();
@@ -137,48 +207,33 @@ describe('ProviderStatus', () => {
     it('shows disconnected status when connection failed', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockErrorStatus}
+          providerStatusData={mockDisconnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
       expect(screen.getByText('Disconnected')).toBeInTheDocument();
     });
 
-    it('applies correct status colors for connected state', () => {
+    it('shows loading text for model and URL when loading', () => {
       renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
-        />,
+        <ProviderStatus providerStatusData={null} isLoading error={null} />,
       );
 
-      const statusElement = screen.getByText('Connected');
-      expect(statusElement).toHaveStyle('color: #2e7d32');
+      expect(screen.getByText(/Loading\.\.\./)).toBeInTheDocument();
     });
 
-    it('applies correct status colors for loading state', () => {
+    it('shows not available when no provider data', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockLoadingStatus}
+          providerStatusData={null}
+          isLoading={false}
+          error={null}
         />,
       );
 
-      const statusElement = screen.getByText('Testing...');
-      expect(statusElement).toHaveStyle('color: #ff9800');
-    });
-
-    it('applies correct status colors for error state', () => {
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockErrorStatus}
-        />,
-      );
-
-      const statusElement = screen.getByText('Disconnected');
-      expect(statusElement).toHaveStyle('color: #d32f2f');
+      expect(screen.getByText(/Not available/)).toBeInTheDocument();
     });
   });
 
@@ -186,8 +241,9 @@ describe('ProviderStatus', () => {
     it('displays error message when connection fails', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockErrorStatus}
+          providerStatusData={mockDisconnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
@@ -200,248 +256,154 @@ describe('ProviderStatus', () => {
     it('does not show error section when connected', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
       expect(screen.queryByText(/Error:/)).not.toBeInTheDocument();
     });
 
-    it('does not show error section when loading', () => {
+    it('shows error text when there is an error prop', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockLoadingStatus}
-        />,
-      );
-
-      expect(screen.queryByText(/Error:/)).not.toBeInTheDocument();
-    });
-
-    it('handles long error messages', () => {
-      const longErrorStatus = {
-        connected: false,
-        error:
-          'This is a very long error message that should be properly displayed and wrapped in the error section without breaking the layout or causing overflow issues',
-        loading: false,
-      };
-
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={longErrorStatus}
+          providerStatusData={null}
+          isLoading={false}
+          error="Provider configuration error"
         />,
       );
 
       expect(
-        screen.getByText(/This is a very long error message/),
+        screen.getByText(/Provider configuration error/),
       ).toBeInTheDocument();
+    });
+
+    it('handles null provider data gracefully', () => {
+      expect(() =>
+        renderWithTheme(
+          <ProviderStatus
+            providerStatusData={null}
+            isLoading={false}
+            error={null}
+          />,
+        ),
+      ).not.toThrow();
     });
   });
 
-  describe('Null Config Handling', () => {
-    it('handles null config status gracefully', () => {
+  describe('Loading States', () => {
+    it('shows loading indicator in status chip', () => {
       renderWithTheme(
-        <ProviderStatus
-          configStatus={null}
-          providerConnectionStatus={mockProviderConnectionStatus}
-        />,
+        <ProviderStatus providerStatusData={null} isLoading error={null} />,
       );
 
-      expect(screen.getByText('Provider')).toBeInTheDocument();
+      expect(screen.getByText('Testing...')).toBeInTheDocument();
+    });
+
+    it('shows loading text in model field', () => {
+      renderWithTheme(
+        <ProviderStatus providerStatusData={null} isLoading error={null} />,
+      );
+
       expect(screen.getByText(/Loading\.\.\./)).toBeInTheDocument();
     });
   });
 
+  describe('Theming', () => {
+    it('adapts to light theme', () => {
+      renderWithTheme(
+        <ProviderStatus
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
+        />,
+        mockTheme,
+      );
+
+      expect(screen.getByText('Connected')).toBeInTheDocument();
+    });
+
+    it('adapts to dark theme', () => {
+      renderWithTheme(
+        <ProviderStatus
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
+        />,
+        darkTheme,
+      );
+
+      expect(screen.getByText('Connected')).toBeInTheDocument();
+    });
+  });
+
+  describe('Responsive Behavior', () => {
+    it('handles many models gracefully', () => {
+      renderWithTheme(
+        <ProviderStatus
+          providerStatusData={mockMultipleModelsData}
+          isLoading={false}
+          error={null}
+        />,
+      );
+
+      expect(screen.getByText('Connected')).toBeInTheDocument();
+    });
+
+    it('handles long model names', () => {
+      renderWithTheme(
+        <ProviderStatus
+          providerStatusData={mockLongModelNameData}
+          isLoading={false}
+          error={null}
+        />,
+      );
+
+      expect(screen.getByText('Connected')).toBeInTheDocument();
+    });
+  });
+
   describe('Tooltip Functionality', () => {
-    it('provides tooltip for connected status', () => {
+    it('provides helpful tooltips for status', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
+          providerStatusData={mockConnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
-      const statusElement = screen.getByText('Connected');
-      expect(statusElement).toBeInTheDocument();
+      const statusChip = screen
+        .getByText('Connected')
+        .closest('[data-mui-internal-clone-element]');
+      expect(statusChip).toHaveAttribute('aria-label');
     });
 
-    it('provides tooltip for loading status', () => {
+    it('shows loading tooltip when testing', () => {
+      renderWithTheme(
+        <ProviderStatus providerStatusData={null} isLoading error={null} />,
+      );
+
+      const statusChip = screen
+        .getByText('Testing...')
+        .closest('[data-mui-internal-clone-element]');
+      expect(statusChip).toHaveAttribute('aria-label');
+    });
+
+    it('shows error tooltip when disconnected', () => {
       renderWithTheme(
         <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockLoadingStatus}
+          providerStatusData={mockDisconnectedProviderData}
+          isLoading={false}
+          error={null}
         />,
       );
 
-      const statusElement = screen.getByText('Testing...');
-      expect(statusElement).toBeInTheDocument();
-    });
-
-    it('provides tooltip for error status', () => {
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockErrorStatus}
-        />,
-      );
-
-      const statusElement = screen.getByText('Disconnected');
-      expect(statusElement).toBeInTheDocument();
-    });
-
-    it('includes model count in tooltip when connected', () => {
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
-        />,
-      );
-
-      const statusElement = screen.getByText('Connected');
-      expect(statusElement).toBeInTheDocument();
-    });
-
-    it('handles tooltip without models list', () => {
-      const statusWithoutModels = {
-        connected: true,
-        loading: false,
-      };
-
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={statusWithoutModels}
-        />,
-      );
-
-      const statusElement = screen.getByText('Connected');
-      expect(statusElement).toBeInTheDocument();
-    });
-  });
-
-  describe('Component Structure', () => {
-    it('has proper component hierarchy', () => {
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
-        />,
-      );
-
-      expect(screen.getByText('Provider')).toBeInTheDocument();
-      expect(screen.getByText('Connected')).toBeInTheDocument();
-      expect(screen.getByText(/Model:/)).toBeInTheDocument();
-    });
-
-    it('applies correct styling classes', () => {
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={mockProviderConnectionStatus}
-        />,
-      );
-
-      expect(screen.getByText('Provider')).toBeInTheDocument();
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('handles empty provider config', () => {
-      const emptyConfig: ConfigStatus = {
-        provider: {
-          model: '',
-          baseURL: '',
-          type: 'openai',
-        },
-        mcpServers: {
-          total: 0,
-          valid: 0,
-          invalid: 0,
-          servers: [],
-        },
-        summary: {
-          hasValidServers: false,
-          configurationComplete: false,
-          issues: [],
-        },
-        timestamp: '2025-01-01T00:00:00.000Z',
-      };
-
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={emptyConfig}
-          providerConnectionStatus={mockProviderConnectionStatus}
-        />,
-      );
-
-      expect(screen.getByText('Provider')).toBeInTheDocument();
-    });
-
-    it('handles undefined error message', () => {
-      const undefinedErrorStatus = {
-        connected: false,
-        error: undefined,
-        loading: false,
-      };
-
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={undefinedErrorStatus}
-        />,
-      );
-
-      expect(screen.getByText('Disconnected')).toBeInTheDocument();
-    });
-
-    it('handles empty models array', () => {
-      const emptyModelsStatus = {
-        connected: true,
-        models: [],
-        loading: false,
-      };
-
-      renderWithTheme(
-        <ProviderStatus
-          configStatus={mockConfigStatus}
-          providerConnectionStatus={emptyModelsStatus}
-        />,
-      );
-
-      expect(screen.getByText('Connected')).toBeInTheDocument();
-    });
-  });
-
-  describe('Props Validation', () => {
-    it('handles all required props', () => {
-      expect(() => {
-        renderWithTheme(
-          <ProviderStatus
-            configStatus={mockConfigStatus}
-            providerConnectionStatus={mockProviderConnectionStatus}
-          />,
-        );
-      }).not.toThrow();
-    });
-
-    it('validates connection status structure', () => {
-      const validStatus = {
-        connected: false,
-        models: ['model1', 'model2'],
-        error: 'Test error',
-        loading: true,
-      };
-
-      expect(() => {
-        renderWithTheme(
-          <ProviderStatus
-            configStatus={mockConfigStatus}
-            providerConnectionStatus={validStatus}
-          />,
-        );
-      }).not.toThrow();
+      const statusChip = screen
+        .getByText('Disconnected')
+        .closest('[data-mui-internal-clone-element]');
+      expect(statusChip).toHaveAttribute('aria-label');
     });
   });
 });

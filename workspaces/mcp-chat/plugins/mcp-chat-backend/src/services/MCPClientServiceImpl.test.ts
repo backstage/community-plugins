@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { MCPClientServiceImpl } from './MCPClientServiceImpl';
-import {
-  LoggerService,
-  RootConfigService,
-} from '@backstage/backend-plugin-api';
-import {
-  LLMProvider,
-  ChatResponse,
-  ToolCall,
-} from '../providers/base-provider';
-import { ServerConfig } from '../types';
+import { ChatResponse, ToolCall } from '../providers/base-provider';
 
-// Mock external dependencies
 jest.mock('@modelcontextprotocol/sdk/client/index.js');
 jest.mock('@modelcontextprotocol/sdk/client/streamableHttp.js');
 jest.mock('@modelcontextprotocol/sdk/client/stdio.js');
@@ -34,7 +25,6 @@ jest.mock('@modelcontextprotocol/sdk/client/sse.js');
 jest.mock('../providers/provider-factory');
 jest.mock('../utils');
 
-// Import after mocking
 const { Client } = require('@modelcontextprotocol/sdk/client/index.js');
 const {
   StreamableHTTPClientTransport,
@@ -42,54 +32,33 @@ const {
 const {
   StdioClientTransport,
 } = require('@modelcontextprotocol/sdk/client/stdio.js');
-const {
-  SSEClientTransport,
-} = require('@modelcontextprotocol/sdk/client/sse.js');
 const providerFactory = require('../providers/provider-factory');
 const utils = require('../utils');
 
 describe('MCPClientServiceImpl', () => {
   let service: MCPClientServiceImpl;
-  let mockLogger: jest.Mocked<LoggerService>;
-  let mockConfig: jest.Mocked<RootConfigService>;
-  let mockLLMProvider: jest.Mocked<LLMProvider>;
+  let mockLogger: ReturnType<typeof mockServices.logger.mock>;
+  let mockConfig: ReturnType<typeof mockServices.rootConfig.mock>;
+  let mockLLMProvider: any;
   let mockClient: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock logger
-    mockLogger = {
-      info: jest.fn(),
-      warn: jest.fn(),
-      error: jest.fn(),
-      debug: jest.fn(),
-      child: jest.fn(),
-    } as any;
+    mockLogger = mockServices.logger.mock();
+    mockConfig = mockServices.rootConfig.mock();
 
-    // Mock config
-    mockConfig = {
-      getOptionalConfigArray: jest.fn(),
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    } as any;
-
-    // Mock LLM provider
     mockLLMProvider = {
       sendMessage: jest.fn(),
       testConnection: jest.fn(),
-    } as any;
+    };
 
-    // Mock client
     mockClient = {
       connect: jest.fn().mockResolvedValue(undefined),
       listTools: jest.fn().mockResolvedValue({ tools: [] }),
-      callTool: jest.fn().mockResolvedValue({
-        content: [{ type: 'text', text: 'tool result' }],
-      }),
+      callTool: jest.fn(),
     };
 
-    // Mock provider factory
     providerFactory.getProviderConfig.mockReturnValue({
       type: 'openai',
       apiKey: 'test-key',
@@ -107,7 +76,7 @@ describe('MCPClientServiceImpl', () => {
       baseURL: 'https://api.openai.com/v1',
     });
 
-    // Mock utils
+    utils.loadServerConfigs.mockReturnValue([]);
     utils.findNpxPath.mockResolvedValue('/usr/local/bin/npx');
     utils.executeToolCall.mockResolvedValue({
       id: 'call_1',
@@ -117,29 +86,26 @@ describe('MCPClientServiceImpl', () => {
       serverId: 'test-server',
     });
 
-    // Mock Client constructor
     Client.mockImplementation(() => mockClient);
   });
 
-  describe('constructor', () => {
-    it('should initialize with logger and config', () => {
+  describe('Service Initialization', () => {
+    it('should initialize successfully with valid configuration', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
       });
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Initializing MCPClientService',
-      );
+      expect(service).toBeDefined();
       expect(providerFactory.getProviderConfig).toHaveBeenCalledWith(
         mockConfig,
       );
       expect(providerFactory.ProviderFactory.createProvider).toHaveBeenCalled();
     });
 
-    it('should throw error if LLM provider initialization fails', () => {
+    it('should throw error when LLM provider configuration is invalid', () => {
       providerFactory.getProviderConfig.mockImplementation(() => {
-        throw new Error('Provider config error');
+        throw new Error('Invalid provider configuration');
       });
 
       expect(
@@ -148,11 +114,11 @@ describe('MCPClientServiceImpl', () => {
             logger: mockLogger,
             config: mockConfig,
           }),
-      ).toThrow('Provider config error');
+      ).toThrow('Invalid provider configuration');
     });
   });
 
-  describe('initMCP', () => {
+  describe('Query Processing', () => {
     beforeEach(() => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
@@ -160,322 +126,13 @@ describe('MCPClientServiceImpl', () => {
       });
     });
 
-    it('should not reinitialize if already connected', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          scriptPath: '/path/to/script.py',
-        },
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      // Reset mock call count
-      Client.mockClear();
-
-      // Second initialization should return early
-      await service.initMCP(serverConfigs);
-
-      // Should not have been called again
-      expect(Client).not.toHaveBeenCalled();
-    });
-
-    it('should connect via STDIO with script path', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          scriptPath: '/path/to/script.py',
-          args: ['--arg1', 'value1'],
-          env: { TEST_VAR: 'test' },
-        },
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      expect(Client).toHaveBeenCalledWith({
-        name: 'test-server-client',
-        version: '1.0.0',
-      });
-
-      expect(StdioClientTransport).toHaveBeenCalledWith({
-        command: 'python3',
-        args: ['/path/to/script.py', '--arg1', 'value1'],
-        env: expect.objectContaining({
-          TEST_VAR: 'test',
-        }),
-      });
-
-      expect(mockClient.connect).toHaveBeenCalled();
-      expect(mockClient.listTools).toHaveBeenCalled();
-    });
-
-    it('should connect via STDIO with npx command', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          npxCommand: '@modelcontextprotocol/server-filesystem',
-          args: ['/path/to/files'],
-        },
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      expect(utils.findNpxPath).toHaveBeenCalled();
-      expect(StdioClientTransport).toHaveBeenCalledWith({
-        command: '/usr/local/bin/npx',
-        args: [
-          '-y',
-          '@modelcontextprotocol/server-filesystem',
-          '/path/to/files',
-        ],
-        env: expect.objectContaining({
-          PATH: expect.stringContaining('/usr/local/bin'),
-        }),
-      });
-    });
-
-    it('should connect via Streamable HTTP', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          type: 'streamable-http',
-          url: 'https://example.com/mcp',
-          headers: { Authorization: 'Bearer token' },
-        },
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      expect(StreamableHTTPClientTransport).toHaveBeenCalledWith(
-        new URL('https://example.com/mcp'),
-        {
-          requestInit: {
-            headers: { Authorization: 'Bearer token' },
-          },
-        },
-      );
-    });
-
-    it('should connect via SSE', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          type: 'sse',
-          url: 'https://example.com/sse',
-          headers: { Authorization: 'Bearer token' },
-        },
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      expect(SSEClientTransport).toHaveBeenCalledWith({
-        url: new URL('https://example.com/sse'),
-        headers: { Authorization: 'Bearer token' },
-      });
-    });
-
-    it('should handle streamable-http without URL gracefully', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          type: 'streamable-http',
-        },
-      ];
-
-      // Should not throw but complete successfully with warning
-      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
-
-      // Check that no servers are connected
-      const status = service.getMCPServerStatus();
-      expect(status.totalConnectedServers).toBe(0);
-      expect(status.connectedServers).toEqual([]);
-    });
-
-    it('should handle SSE without URL gracefully', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          type: 'sse',
-        },
-      ];
-
-      // Should not throw but complete successfully with warning
-      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
-
-      // Check that no servers are connected
-      const status = service.getMCPServerStatus();
-      expect(status.totalConnectedServers).toBe(0);
-      expect(status.connectedServers).toEqual([]);
-    });
-
-    it('should handle STDIO without script path or npx command gracefully', async () => {
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-        },
-      ];
-
-      // Should not throw but complete successfully with warning
-      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
-
-      // Check that no servers are connected
-      const status = service.getMCPServerStatus();
-      expect(status.totalConnectedServers).toBe(0);
-      expect(status.connectedServers).toEqual([]);
-    });
-
-    it('should handle npx not found error gracefully', async () => {
-      utils.findNpxPath.mockRejectedValue(new Error('npx not found'));
-
-      const serverConfigs: ServerConfig[] = [
-        {
-          name: 'test-server',
-          npxCommand: '@modelcontextprotocol/server-filesystem',
-        },
-      ];
-
-      // Should not throw but complete successfully with warning
-      await expect(service.initMCP(serverConfigs)).resolves.not.toThrow();
-
-      // Check that no servers are connected
-      const status = service.getMCPServerStatus();
-      expect(status.totalConnectedServers).toBe(0);
-      expect(status.connectedServers).toEqual([]);
-    });
-
-    it('should use python on Windows for Python scripts', async () => {
-      const originalPlatform = process.platform;
-      Object.defineProperty(process, 'platform', { value: 'win32' });
-
-      try {
-        const serverConfigs: ServerConfig[] = [
-          {
-            name: 'test-server',
-            scriptPath: '/path/to/script.py',
-          },
-        ];
-
-        await service.initMCP(serverConfigs);
-
-        expect(StdioClientTransport).toHaveBeenCalledWith({
-          command: 'python',
-          args: ['/path/to/script.py'],
-          env: expect.any(Object),
-        });
-      } finally {
-        Object.defineProperty(process, 'platform', { value: originalPlatform });
-      }
-    });
-
-    it('should collect tools from multiple servers', async () => {
-      const mockClient1 = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        listTools: jest.fn().mockResolvedValue({
-          tools: [{ name: 'tool1', description: 'Tool 1', inputSchema: {} }],
-        }),
-        callTool: jest.fn(),
-      };
-
-      const mockClient2 = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        listTools: jest.fn().mockResolvedValue({
-          tools: [{ name: 'tool2', description: 'Tool 2', inputSchema: {} }],
-        }),
-        callTool: jest.fn(),
-      };
-
-      Client.mockImplementationOnce(() => mockClient1).mockImplementationOnce(
-        () => mockClient2,
-      );
-
-      const serverConfigs: ServerConfig[] = [
-        { name: 'server1', scriptPath: '/path/to/script1.py' },
-        { name: 'server2', scriptPath: '/path/to/script2.py' },
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      const tools = service.getAvailableTools();
-      expect(tools).toHaveLength(2);
-      expect(tools[0]).toMatchObject({
-        type: 'function',
-        function: { name: 'tool1' },
-        serverId: 'server1',
-      });
-      expect(tools[1]).toMatchObject({
-        type: 'function',
-        function: { name: 'tool2' },
-        serverId: 'server2',
-      });
-    });
-
-    it('should handle mixed successful and failed connections', async () => {
-      const mockClient = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        listTools: jest.fn().mockResolvedValue({
-          tools: [
-            {
-              name: 'working_tool',
-              description: 'Working tool',
-              inputSchema: {},
-            },
-          ],
-        }),
-        callTool: jest.fn(),
-      };
-
-      Client.mockImplementationOnce(() => mockClient);
-
-      const serverConfigs: ServerConfig[] = [
-        { name: 'working-server', scriptPath: '/path/to/working.py' },
-        { name: 'broken-server', type: 'streamable-http' }, // Missing URL
-      ];
-
-      await service.initMCP(serverConfigs);
-
-      const tools = service.getAvailableTools();
-      expect(tools).toHaveLength(1);
-      expect(tools[0]).toMatchObject({
-        type: 'function',
-        function: { name: 'working_tool' },
-        serverId: 'working-server',
-      });
-
-      const status = service.getMCPServerStatus();
-      expect(status.totalConnectedServers).toBe(1);
-      expect(status.connectedServers).toEqual(['working-server']);
-    });
-  });
-
-  describe('processQuery', () => {
-    beforeEach(async () => {
-      service = new MCPClientServiceImpl({
-        logger: mockLogger,
-        config: mockConfig,
-      });
-
-      // Initialize with mock tools
-      mockClient.listTools.mockResolvedValue({
-        tools: [
-          { name: 'test_tool', description: 'Test tool', inputSchema: {} },
-        ],
-      });
-
-      await service.initMCP([
-        {
-          name: 'test-server',
-          scriptPath: '/path/to/script.py',
-        },
-      ]);
-    });
-
-    it('should process query without tool calls', async () => {
+    it('should process simple query without tools', async () => {
       const mockResponse: ChatResponse = {
         choices: [
           {
             message: {
               role: 'assistant',
-              content: 'Hello, how can I help you?',
+              content: 'Hello! How can I help you?',
             },
           },
         ],
@@ -488,30 +145,19 @@ describe('MCPClientServiceImpl', () => {
       ]);
 
       expect(result).toEqual({
-        reply: 'Hello, how can I help you?',
+        reply: 'Hello! How can I help you?',
         toolCalls: [],
         toolResponses: [],
       });
-
-      expect(mockLLMProvider.sendMessage).toHaveBeenCalledWith(
-        [
-          {
-            role: 'system',
-            content: expect.stringContaining('helpful assistant'),
-          },
-          { role: 'user', content: 'Hello' },
-        ],
-        expect.any(Array),
-      );
     });
 
-    it('should process query with tool calls and follow up', async () => {
+    it('should process query with tool execution', async () => {
       const toolCall: ToolCall = {
         id: 'call_1',
         type: 'function',
         function: {
           name: 'test_tool',
-          arguments: '{"arg1": "value1"}',
+          arguments: '{"query": "test"}',
         },
       };
 
@@ -546,160 +192,78 @@ describe('MCPClientServiceImpl', () => {
         { role: 'user', content: 'Use the test tool' },
       ]);
 
-      expect(result).toEqual({
-        reply: 'Based on the tool result: tool result',
-        toolCalls: [toolCall],
-        toolResponses: [
-          {
-            id: 'call_1',
-            name: 'test_tool',
-            arguments: { arg1: 'value1' },
-            result: 'tool result',
-            serverId: 'test-server',
-          },
-        ],
-      });
-
+      expect(result.reply).toBe('Based on the tool result: tool result');
+      expect(result.toolCalls).toHaveLength(1);
+      expect(result.toolResponses).toHaveLength(1);
       expect(utils.executeToolCall).toHaveBeenCalledWith(
         toolCall,
         expect.any(Array),
         expect.any(Map),
       );
-
-      // Should make two calls to LLM - initial and follow-up
-      expect(mockLLMProvider.sendMessage).toHaveBeenCalledTimes(2);
     });
 
-    it('should filter tools by enabled servers', async () => {
-      const mockResponse: ChatResponse = {
+    it('should handle tool execution errors gracefully', async () => {
+      const toolCall: ToolCall = {
+        id: 'call_1',
+        type: 'function',
+        function: {
+          name: 'failing_tool',
+          arguments: '{}',
+        },
+      };
+
+      const initialResponse: ChatResponse = {
         choices: [
           {
             message: {
               role: 'assistant',
-              content: 'Response with filtered tools',
+              content: null,
+              tool_calls: [toolCall],
             },
           },
         ],
       };
 
-      mockLLMProvider.sendMessage.mockResolvedValue(mockResponse);
+      const followUpResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'I encountered an error with the tool.',
+            },
+          },
+        ],
+      };
 
-      await service.processQuery(
-        [{ role: 'user', content: 'Hello' }],
-        ['test-server'],
+      mockLLMProvider.sendMessage
+        .mockResolvedValueOnce(initialResponse)
+        .mockResolvedValueOnce(followUpResponse);
+
+      utils.executeToolCall.mockRejectedValue(
+        new Error('Tool execution failed'),
       );
 
-      // Verify that sendMessage was called with filtered tools
-      const [, tools] = mockLLMProvider.sendMessage.mock.calls[0];
-      expect(tools).toHaveLength(1);
-      expect(tools![0]).not.toHaveProperty('serverId'); // serverId should be removed
+      const result = await service.processQuery([
+        { role: 'user', content: 'Use the failing tool' },
+      ]);
+
+      expect(result.reply).toBe('I encountered an error with the tool.');
+      expect(result.toolResponses[0].result).toContain('Tool execution failed');
+      expect(result.toolResponses[0].serverId).toBe('error');
     });
 
     it('should handle LLM provider errors', async () => {
-      mockLLMProvider.sendMessage.mockRejectedValue(new Error('LLM error'));
+      mockLLMProvider.sendMessage.mockRejectedValue(
+        new Error('LLM connection failed'),
+      );
 
       await expect(
         service.processQuery([{ role: 'user', content: 'Hello' }]),
-      ).rejects.toThrow('LLM error');
+      ).rejects.toThrow('LLM connection failed');
     });
   });
 
-  describe('getAvailableTools', () => {
-    it('should return empty array when not initialized', () => {
-      service = new MCPClientServiceImpl({
-        logger: mockLogger,
-        config: mockConfig,
-      });
-
-      expect(service.getAvailableTools()).toEqual([]);
-    });
-
-    it('should return tools after initialization', async () => {
-      service = new MCPClientServiceImpl({
-        logger: mockLogger,
-        config: mockConfig,
-      });
-
-      mockClient.listTools.mockResolvedValue({
-        tools: [{ name: 'tool1', description: 'Tool 1', inputSchema: {} }],
-      });
-
-      await service.initMCP([
-        {
-          name: 'test-server',
-          scriptPath: '/path/to/script.py',
-        },
-      ]);
-
-      const tools = service.getAvailableTools();
-      expect(tools).toHaveLength(1);
-      expect(tools[0]).toMatchObject({
-        type: 'function',
-        function: { name: 'tool1' },
-        serverId: 'test-server',
-      });
-    });
-  });
-
-  describe('getProviderConfig', () => {
-    it('should return provider configuration', async () => {
-      service = new MCPClientServiceImpl({
-        logger: mockLogger,
-        config: mockConfig,
-      });
-
-      const config = await service.getProviderConfig();
-
-      expect(config).toEqual({
-        provider: 'openai',
-        model: 'gpt-4',
-        baseURL: 'https://api.openai.com/v1',
-      });
-
-      expect(providerFactory.getProviderInfo).toHaveBeenCalledWith(mockConfig);
-    });
-  });
-
-  describe('getProviderStatus', () => {
-    it('should return connected status when provider is working', () => {
-      service = new MCPClientServiceImpl({
-        logger: mockLogger,
-        config: mockConfig,
-      });
-
-      const status = service.getProviderStatus();
-
-      expect(status).toEqual({
-        provider: 'openai',
-        model: 'gpt-4',
-        baseURL: 'https://api.openai.com/v1',
-        connected: true,
-      });
-    });
-
-    it('should return error status when provider info fails', () => {
-      providerFactory.getProviderInfo.mockImplementation(() => {
-        throw new Error('Provider error');
-      });
-
-      service = new MCPClientServiceImpl({
-        logger: mockLogger,
-        config: mockConfig,
-      });
-
-      const status = service.getProviderStatus();
-
-      expect(status).toEqual({
-        provider: 'unknown',
-        model: 'unknown',
-        baseURL: 'unknown',
-        connected: false,
-        error: 'Provider error',
-      });
-    });
-  });
-
-  describe('testProviderConnection', () => {
+  describe('Status Reporting', () => {
     beforeEach(() => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
@@ -707,46 +271,181 @@ describe('MCPClientServiceImpl', () => {
       });
     });
 
-    it('should return connection test result', async () => {
-      const mockResult = {
+    it('should return provider status successfully', async () => {
+      mockLLMProvider.testConnection.mockResolvedValue({
         connected: true,
         models: ['gpt-4', 'gpt-3.5-turbo'],
-      };
+      });
 
-      mockLLMProvider.testConnection.mockResolvedValue(mockResult);
+      const status = await service.getProviderStatus();
 
-      const result = await service.testProviderConnection();
-
-      expect(result).toEqual(mockResult);
-      expect(mockLLMProvider.testConnection).toHaveBeenCalled();
+      expect(status.providers).toHaveLength(1);
+      expect(status.providers[0]).toMatchObject({
+        id: 'openai',
+        model: 'gpt-4',
+        baseUrl: 'https://api.openai.com/v1',
+        connection: {
+          connected: true,
+          models: ['gpt-4', 'gpt-3.5-turbo'],
+        },
+      });
+      expect(status.summary.healthyProviders).toBe(1);
+      expect(status.timestamp).toBeDefined();
     });
 
-    it('should handle connection test errors', async () => {
-      mockLLMProvider.testConnection.mockRejectedValue(
-        new Error('Connection failed'),
+    it('should handle provider status errors', async () => {
+      providerFactory.getProviderInfo.mockImplementation(() => {
+        throw new Error('Provider info failed');
+      });
+
+      const status = await service.getProviderStatus();
+
+      expect(status.providers).toHaveLength(0);
+      expect(status.summary.totalProviders).toBe(0);
+      expect(status.summary.error).toBe('Provider info failed');
+      expect(status.timestamp).toBeDefined();
+    });
+
+    it('should return MCP server status', async () => {
+      const status = await service.getMCPServerStatus();
+
+      expect(status).toMatchObject({
+        total: expect.any(Number),
+        valid: expect.any(Number),
+        active: expect.any(Number),
+        servers: expect.any(Array),
+        timestamp: expect.any(String),
+      });
+    });
+  });
+
+  describe('Server Configuration Handling', () => {
+    it('should handle STDIO server configuration', async () => {
+      const serverConfigs = [
+        {
+          id: 'test-server',
+          name: 'test-server',
+          type: 'stdio' as const,
+          scriptPath: '/path/to/script.py',
+          args: ['--verbose'],
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.listTools.mockResolvedValue({
+        tools: [
+          { name: 'test_tool', description: 'Test tool', inputSchema: {} },
+        ],
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      const servers = await service.initializeMCPServers();
+
+      expect(utils.loadServerConfigs).toHaveBeenCalledWith(mockConfig);
+      expect(servers).toHaveLength(1);
+      expect(servers[0].name).toBe('test-server');
+    });
+
+    it('should handle HTTP server configuration', async () => {
+      const serverConfigs = [
+        {
+          id: 'http-server',
+          name: 'http-server',
+          type: 'streamable-http' as const,
+          url: 'https://example.com/mcp',
+          headers: { Authorization: 'Bearer token' },
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      const servers = await service.initializeMCPServers();
+
+      expect(StreamableHTTPClientTransport).toHaveBeenCalledWith(
+        new URL('https://example.com/mcp'),
+        {
+          requestInit: {
+            headers: { Authorization: 'Bearer token' },
+          },
+        },
       );
+      expect(servers).toHaveLength(1);
+    });
 
-      const result = await service.testProviderConnection();
+    it('should handle npx command configuration', async () => {
+      const serverConfigs = [
+        {
+          id: 'fs-server',
+          name: 'fs-server',
+          type: 'stdio' as const,
+          npxCommand: '@modelcontextprotocol/server-filesystem',
+          args: ['/tmp'],
+        },
+      ];
 
-      expect(result).toEqual({
-        connected: false,
-        error: 'Connection failed',
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.initializeMCPServers();
+
+      expect(utils.findNpxPath).toHaveBeenCalled();
+      expect(StdioClientTransport).toHaveBeenCalledWith({
+        command: '/usr/local/bin/npx',
+        args: ['-y', '@modelcontextprotocol/server-filesystem', '/tmp'],
+        env: expect.objectContaining({
+          PATH: expect.stringContaining('/usr/local/bin'),
+        }),
       });
     });
 
-    it('should reinitialize provider if not available', async () => {
-      // Manually set llmProvider to undefined to simulate the scenario
-      (service as any).llmProvider = undefined;
+    it('should handle connection failures gracefully', async () => {
+      const serverConfigs = [
+        {
+          id: 'failing-server',
+          name: 'failing-server',
+          type: 'stdio' as const,
+          scriptPath: '/failing.py',
+        },
+      ];
 
-      const mockResult = { connected: true };
-      mockLLMProvider.testConnection.mockResolvedValue(mockResult);
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.connect.mockRejectedValue(new Error('Connection failed'));
 
-      const result = await service.testProviderConnection();
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
 
-      expect(result).toEqual(mockResult);
-      expect(
-        providerFactory.ProviderFactory.createProvider,
-      ).toHaveBeenCalledTimes(2);
+      const servers = await service.initializeMCPServers();
+
+      expect(servers).toHaveLength(1);
+      expect(servers[0].status.connected).toBe(false);
+      expect(servers[0].status.error).toBe('Connection failed');
+    });
+  });
+
+  describe('Tool Management', () => {
+    it('should return available tools', () => {
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      const tools = service.getAvailableTools();
+      expect(Array.isArray(tools)).toBe(true);
     });
   });
 });

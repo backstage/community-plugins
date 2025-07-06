@@ -36,11 +36,6 @@ export const ProviderStatus = ({
 }: ProviderStatusProps) => {
   const theme = useTheme();
 
-  const isDarkMode = useMemo(
-    () => theme.palette.mode === 'dark',
-    [theme.palette.mode],
-  );
-
   const primaryProvider = providerStatusData?.providers?.[0];
   const connectionInfo = primaryProvider?.connection;
   const isConnected = connectionInfo?.connected ?? false;
@@ -48,7 +43,7 @@ export const ProviderStatus = ({
 
   const getBoxBackgroundColor = useCallback(() => {
     return theme.palette.background.paper;
-  }, [theme.palette]);
+  }, [theme.palette.background.paper]);
 
   const getBorderColor = useCallback(() => {
     if (isError) {
@@ -67,7 +62,12 @@ export const ProviderStatus = ({
         : 'transparent';
     }
     return 'transparent';
-  }, [isLoading, isConnected, theme.palette.mode]);
+  }, [
+    isLoading,
+    isConnected,
+    theme.palette.mode,
+    theme.palette.background.paper,
+  ]);
 
   const getChipColor = useCallback(() => {
     if (isLoading) {

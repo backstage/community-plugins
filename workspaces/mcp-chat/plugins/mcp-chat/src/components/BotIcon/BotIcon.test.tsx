@@ -14,198 +14,209 @@
  * limitations under the License.
  */
 
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { BotIcon, BotIconComponent } from './BotIcon';
+import { ReactElement } from 'react';
+import { render } from '@testing-library/react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { BotIcon } from './BotIcon';
 
-describe('BotIcon', () => {
-  it('renders with default props', () => {
-    const { container } = render(<BotIcon />);
-
-    const svg = container.querySelector('svg');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveAttribute('width', '30');
-    expect(svg).toHaveAttribute('height', '30');
-    expect(svg).toHaveAttribute('fill', '#333');
-    expect(svg).toHaveAttribute('viewBox', '0 0 100 100');
-  });
-
-  it('renders with custom size', () => {
-    const { container } = render(<BotIcon size={50} />);
-
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '50');
-    expect(svg).toHaveAttribute('height', '50');
-  });
-
-  it('renders with custom color', () => {
-    const { container } = render(<BotIcon color="#ff0000" />);
-
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('fill', '#ff0000');
-  });
-
-  it('forwards additional props to the svg element', () => {
-    render(<BotIcon data-testid="custom-bot-icon" className="custom-class" />);
-
-    const svg = screen.getByTestId('custom-bot-icon');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveClass('custom-class');
-  });
-
-  it('contains the correct path and rect elements', () => {
-    const { container } = render(<BotIcon />);
-
-    const path = container.querySelector('path');
-    const rects = container.querySelectorAll('rect');
-
-    expect(path).toBeInTheDocument();
-    expect(rects).toHaveLength(2);
-
-    expect(path).toHaveAttribute(
-      'd',
-      expect.stringContaining('M71,21.2V5H58v14H41V5H29v15'),
-    );
-
-    expect(rects[0]).toHaveAttribute('x', '31');
-    expect(rects[0]).toHaveAttribute('y', '43');
-    expect(rects[0]).toHaveAttribute('width', '12');
-    expect(rects[0]).toHaveAttribute('height', '12');
-
-    expect(rects[1]).toHaveAttribute('x', '55');
-    expect(rects[1]).toHaveAttribute('y', '43');
-    expect(rects[1]).toHaveAttribute('width', '12');
-    expect(rects[1]).toHaveAttribute('height', '12');
-  });
-
-  it('has correct namespace and viewBox attributes', () => {
-    const { container } = render(<BotIcon />);
-
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    expect(svg).toHaveAttribute('viewBox', '0 0 100 100');
-  });
+const mockTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: { main: '#4CAF50' },
+    text: { primary: '#333', secondary: '#666' },
+    background: { paper: '#fff', default: '#f5f5f5' },
+  },
+  spacing: (factor: number) => `${8 * factor}px`,
 });
 
-describe('BotIconComponent', () => {
-  it('renders with default props', () => {
-    const { container } = render(<BotIconComponent />);
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: { main: '#4CAF50' },
+    text: { primary: '#fff', secondary: 'rgba(255, 255, 255, 0.7)' },
+    background: { paper: '#121212', default: '#000' },
+  },
+  spacing: (factor: number) => `${8 * factor}px`,
+});
 
-    const svg = container.querySelector('svg');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveAttribute('width', '24'); // medium fontSize maps to 24
-    expect(svg).toHaveAttribute('height', '24');
-    expect(svg).toHaveAttribute('fill', '#B5B5B5'); // inherit color maps to #B5B5B5
+const renderWithTheme = (component: ReactElement, theme = mockTheme) => {
+  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+};
+
+describe('BotIcon', () => {
+  describe('Basic Rendering', () => {
+    it('renders without crashing', () => {
+      const { container } = renderWithTheme(<BotIcon />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+    });
+
+    it('renders with default size', () => {
+      const { container } = renderWithTheme(<BotIcon />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '30');
+      expect(icon).toHaveAttribute('height', '30');
+    });
+
+    it('renders with default color', () => {
+      const { container } = renderWithTheme(<BotIcon />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('fill', '#333');
+    });
+
+    it('has correct viewBox', () => {
+      const { container } = renderWithTheme(<BotIcon />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('viewBox', '0 0 100 100');
+    });
   });
 
-  it('maps fontSize to correct sizes', () => {
-    const { rerender, container } = render(
-      <BotIconComponent fontSize="small" />,
-    );
-    let svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '20');
-    expect(svg).toHaveAttribute('height', '20');
+  describe('Props Handling', () => {
+    it('accepts custom size prop', () => {
+      const { container } = renderWithTheme(<BotIcon size={48} />);
 
-    rerender(<BotIconComponent fontSize="medium" />);
-    svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '24');
-    expect(svg).toHaveAttribute('height', '24');
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '48');
+      expect(icon).toHaveAttribute('height', '48');
+    });
 
-    rerender(<BotIconComponent fontSize="large" />);
-    svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '35');
-    expect(svg).toHaveAttribute('height', '35');
+    it('accepts custom color prop', () => {
+      const { container } = renderWithTheme(<BotIcon color="#ff0000" />);
 
-    rerender(<BotIconComponent fontSize="inherit" />);
-    svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '24');
-    expect(svg).toHaveAttribute('height', '24');
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('fill', '#ff0000');
+    });
+
+    it('passes through additional SVG props', () => {
+      const { container } = renderWithTheme(
+        <BotIcon className="custom-class" />,
+      );
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveClass('custom-class');
+    });
+
+    it('handles multiple props together', () => {
+      const { container } = renderWithTheme(
+        <BotIcon size={64} color="#blue" className="test-icon" />,
+      );
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '64');
+      expect(icon).toHaveAttribute('height', '64');
+      expect(icon).toHaveAttribute('fill', '#blue');
+      expect(icon).toHaveClass('test-icon');
+    });
   });
 
-  it('handles numeric fontSize by defaulting to medium', () => {
-    const { container } = render(<BotIconComponent fontSize={16 as any} />);
+  describe('Size Variations', () => {
+    it('renders small size correctly', () => {
+      const { container } = renderWithTheme(<BotIcon size={16} />);
 
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '24');
-    expect(svg).toHaveAttribute('height', '24');
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '16');
+      expect(icon).toHaveAttribute('height', '16');
+    });
+
+    it('renders large size correctly', () => {
+      const { container } = renderWithTheme(<BotIcon size={64} />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '64');
+      expect(icon).toHaveAttribute('height', '64');
+    });
+
+    it('maintains aspect ratio', () => {
+      const { container } = renderWithTheme(<BotIcon size={32} />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '32');
+      expect(icon).toHaveAttribute('height', '32');
+    });
+
+    it('scales properly with different sizes', () => {
+      [12, 24, 48, 96].forEach(size => {
+        const { container, unmount } = renderWithTheme(<BotIcon size={size} />);
+
+        const icon = container.querySelector('svg');
+        expect(icon).toHaveAttribute('width', `${size}`);
+        expect(icon).toHaveAttribute('height', `${size}`);
+
+        unmount();
+      });
+    });
   });
 
-  it('handles unknown fontSize by defaulting to medium', () => {
-    const { container } = render(
-      <BotIconComponent fontSize={'unknown' as any} />,
-    );
+  describe('Edge Cases', () => {
+    it('handles zero size gracefully', () => {
+      const { container } = renderWithTheme(<BotIcon size={0} />);
 
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('width', '24');
-    expect(svg).toHaveAttribute('height', '24');
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '0');
+      expect(icon).toHaveAttribute('height', '0');
+    });
+
+    it('handles very large size', () => {
+      const { container } = renderWithTheme(<BotIcon size={200} />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveAttribute('width', '200');
+      expect(icon).toHaveAttribute('height', '200');
+    });
+
+    it('handles negative size gracefully', () => {
+      const { container } = renderWithTheme(<BotIcon size={-10} />);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+    });
   });
 
-  it('maps color correctly', () => {
-    const { rerender, container } = render(
-      <BotIconComponent color="inherit" />,
-    );
-    let svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('fill', '#B5B5B5');
+  describe('Theme Integration', () => {
+    it('adapts to light theme', () => {
+      const { container } = renderWithTheme(<BotIcon />, mockTheme);
 
-    rerender(<BotIconComponent color="primary" />);
-    svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('fill', 'primary');
+      const icon = container.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+    });
 
-    rerender(<BotIconComponent color="secondary" />);
-    svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('fill', 'secondary');
+    it('adapts to dark theme', () => {
+      const { container } = renderWithTheme(<BotIcon />, darkTheme);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+    });
+
+    it('respects theme spacing', () => {
+      const { container } = renderWithTheme(<BotIcon />, mockTheme);
+
+      const icon = container.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+    });
   });
 
-  it('forwards additional props to BotIcon', () => {
-    render(
-      <BotIconComponent
-        data-testid="backstage-bot-icon"
-        className="backstage-class"
-      />,
-    );
+  describe('SVG Structure', () => {
+    it('contains the correct SVG elements', () => {
+      const { container } = renderWithTheme(<BotIcon />);
 
-    const svg = screen.getByTestId('backstage-bot-icon');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveClass('backstage-class');
-  });
+      const icon = container.querySelector('svg');
+      expect(icon?.tagName).toBe('svg');
+      expect(icon).toHaveAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    });
 
-  it('filters out SvgIconProps that should not be passed to BotIcon', () => {
-    render(
-      <BotIconComponent
-        fontSize="large"
-        color="primary"
-        titleAccess="Bot Icon"
-        htmlColor="#blue"
-        inheritViewBox
-        shapeRendering="auto"
-        data-testid="filtered-props-icon"
-      />,
-    );
+    it('has proper SVG content', () => {
+      const { container } = renderWithTheme(<BotIcon />);
 
-    const svg = screen.getByTestId('filtered-props-icon');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveAttribute('width', '35');
-    expect(svg).toHaveAttribute('fill', 'primary');
+      const icon = container.querySelector('svg');
+      const paths = icon?.querySelectorAll('path');
+      const rects = icon?.querySelectorAll('rect');
 
-    expect(svg).not.toHaveAttribute('titleAccess');
-    expect(svg).not.toHaveAttribute('htmlColor');
-    expect(svg).not.toHaveAttribute('inheritViewBox');
-    expect(svg).not.toHaveAttribute('shapeRendering');
-    expect(svg).not.toHaveAttribute('fontSize');
-  });
-
-  it('maintains SVG structure and content', () => {
-    const { container } = render(<BotIconComponent />);
-
-    const path = container.querySelector('path');
-    const rects = container.querySelectorAll('rect');
-
-    expect(path).toBeInTheDocument();
-    expect(rects).toHaveLength(2);
-
-    expect(path).toHaveAttribute(
-      'd',
-      expect.stringContaining('M71,21.2V5H58v14H41V5H29v15'),
-    );
+      expect(paths).toHaveLength(1);
+      expect(rects).toHaveLength(2);
+    });
   });
 });

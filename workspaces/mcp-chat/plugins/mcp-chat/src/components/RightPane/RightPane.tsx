@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { FC } from 'react';
 import { useTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MemoryIcon from '@mui/icons-material/Memory';
-import {
-  Box,
-  Button,
-  IconButton,
-  Typography,
-  Drawer,
-  Divider,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import { ActiveMcpServers } from './ActiveMcpServers';
 import { ActiveTools } from './ActiveTools';
 import { ProviderStatus } from './ProviderStatus';
@@ -43,7 +39,7 @@ interface RightPaneProps {
   providerStatus: UseProviderStatusReturn;
 }
 
-export const RightPane: React.FC<RightPaneProps> = ({
+export const RightPane: FC<RightPaneProps> = ({
   sidebarCollapsed,
   onToggleSidebar,
   onNewChat,

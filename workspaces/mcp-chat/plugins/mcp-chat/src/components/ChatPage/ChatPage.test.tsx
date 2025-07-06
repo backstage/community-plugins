@@ -14,431 +14,241 @@
  * limitations under the License.
  */
 
-import { forwardRef } from 'react';
-import { render, act, waitFor } from '@testing-library/react';
+import { ReactNode, forwardRef, useImperativeHandle } from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useTheme } from '@mui/styles';
 import { ChatPage } from './ChatPage';
 import { mcpChatApiRef } from '../../api';
-import type { ConfigStatus } from '../../api/McpChatApi';
+
+const mockChatContainer = jest.fn();
+const mockRightPane = jest.fn();
+const mockCancelOngoingRequest = jest.fn();
 
 jest.mock('@backstage/core-components', () => ({
-  Content: ({ children }: any) => <div data-testid="content">{children}</div>,
-  Page: ({ children }: any) => <div data-testid="page">{children}</div>,
-}));
-
-jest.mock('../ChatContainer', () => ({
-  ChatContainer: forwardRef((_props: any, ref: any) => (
-    <div data-testid="chat-container" ref={ref}>
-      Chat Container Mock
-    </div>
-  )),
-}));
-
-jest.mock('../RightPane', () => ({
-  RightPane: (props: any) => (
-    <div data-testid="right-pane">
-      Right Pane Mock - Collapsed: {props.sidebarCollapsed.toString()}
-    </div>
+  Content: ({ children }: { children: ReactNode }) => (
+    <div data-testid="content">{children}</div>
+  ),
+  Page: ({ children }: { children: ReactNode }) => (
+    <div data-testid="page">{children}</div>
+  ),
+  ResponseErrorPanel: ({ error }: { error: Error }) => (
+    <div data-testid="error-panel">{error.message}</div>
   ),
 }));
 
-jest.mock('@mui/styles', () => ({
-  useTheme: jest.fn(),
+jest.mock('../ChatContainer', () => ({
+  ChatContainer: forwardRef((props: any, ref: any) => {
+    mockChatContainer(props);
+
+    // Expose the cancelOngoingRequest method through the ref
+    useImperativeHandle(ref, () => ({
+      cancelOngoingRequest: mockCancelOngoingRequest,
+    }));
+
+    return <div data-testid="chat-container" />;
+  }),
 }));
 
-const mockUseTheme = useTheme as jest.MockedFunction<typeof useTheme>;
+jest.mock('../RightPane', () => ({
+  RightPane: (props: any) => {
+    mockRightPane(props);
+    return (
+      <div data-testid="right-pane">
+        <button onClick={props.onToggleSidebar}>Toggle Sidebar</button>
+        <button onClick={props.onNewChat}>New Chat</button>
+      </div>
+    );
+  },
+}));
+
+// Default mock for hooks
+const mockUseMcpServers = jest.fn(() => ({
+  mcpServers: [{ id: '1', name: 'test-server', enabled: true, type: 'stdio' }],
+  error: null,
+  handleServerToggle: jest.fn(),
+}));
+
+const mockUseProviderStatus = jest.fn(() => ({
+  providerStatusData: { connected: true },
+  isLoading: false,
+  error: null,
+}));
+
+jest.mock('../../hooks', () => ({
+  useProviderStatus: () => mockUseProviderStatus(),
+  useMcpServers: () => mockUseMcpServers(),
+}));
+
+const mockMcpChatApi = {
+  sendChatMessage: jest.fn(),
+  getConfigStatus: jest.fn(),
+  getAvailableTools: jest.fn(),
+  testProviderConnection: jest.fn(),
+};
+
+const renderChatPage = () => {
+  const theme = createTheme();
+  return render(
+    <ThemeProvider theme={theme}>
+      <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
+        <ChatPage />
+      </TestApiProvider>
+    </ThemeProvider>,
+  );
+};
 
 describe('ChatPage', () => {
-  let mockMcpChatApi: jest.Mocked<any>;
-  let mockTheme: any;
-
-  const mockConfigStatus: ConfigStatus = {
-    provider: {
-      type: 'openai',
-      model: 'gpt-4',
-    },
-    mcpServers: {
-      total: 1,
-      valid: 1,
-      invalid: 0,
-      servers: [
-        {
-          id: '1',
-          name: 'test-server',
-          type: 'stdio',
-          configuredType: 'stdio',
-          hasUrl: false,
-          hasNpxCommand: true,
-          hasScriptPath: false,
-          hasArgs: false,
-          hasEnv: false,
-          hasHeaders: false,
-          isValid: true,
-          validationIssues: [],
-        },
-      ],
-    },
-    summary: {
-      hasValidServers: true,
-      configurationComplete: true,
-      issues: [],
-    },
-    timestamp: '2025-01-01T00:00:00.000Z',
-  };
-
   beforeEach(() => {
-    mockMcpChatApi = {
-      sendChatMessage: jest.fn(),
-      getConfigStatus: jest.fn(),
-      getAvailableTools: jest.fn(),
-      testProviderConnection: jest.fn(),
-    };
-
-    mockTheme = {
-      palette: {
-        mode: 'light',
-        background: {
-          default: '#f5f5f5',
-          paper: '#ffffff',
-        },
-        text: {
-          primary: '#333333',
-          secondary: '#666666',
-        },
-        divider: '#e0e0e0',
-        primary: {
-          main: '#4CAF50',
-          light: '#81C784',
-          dark: '#388E3C',
-          contrastText: '#ffffff',
-        },
-      },
-      components: {},
-      spacing: (factor: number) => `${8 * factor}px`,
-    };
-
-    mockUseTheme.mockReturnValue(mockTheme);
-    mockMcpChatApi.getConfigStatus.mockResolvedValue(mockConfigStatus);
-
     jest.clearAllMocks();
+    mockChatContainer.mockClear();
+    mockRightPane.mockClear();
+    mockCancelOngoingRequest.mockClear();
+
+    // Reset mocks to default values
+    mockUseMcpServers.mockReturnValue({
+      mcpServers: [
+        { id: '1', name: 'test-server', enabled: true, type: 'stdio' },
+      ],
+      error: null,
+      handleServerToggle: jest.fn(),
+    });
+
+    mockUseProviderStatus.mockReturnValue({
+      providerStatusData: { connected: true },
+      isLoading: false,
+      error: null,
+    });
   });
 
-  const renderChatPage = async () => {
-    const theme = createTheme({
-      palette: {
-        mode: 'light',
-        primary: {
-          main: '#4CAF50',
-        },
-        background: {
-          default: '#f5f5f5',
-          paper: '#ffffff',
-        },
-        text: {
-          primary: '#333333',
-          secondary: '#666666',
-        },
-        divider: '#e0e0e0',
-      },
-      spacing: (factor: number) => 8 * factor,
+  describe('rendering', () => {
+    it('renders the main page structure', () => {
+      renderChatPage();
+
+      expect(screen.getByTestId('page')).toBeInTheDocument();
+      expect(screen.getByTestId('content')).toBeInTheDocument();
+      expect(screen.getByTestId('chat-container')).toBeInTheDocument();
+      expect(screen.getByTestId('right-pane')).toBeInTheDocument();
     });
 
-    let result;
-    await act(async () => {
-      result = render(
-        <ThemeProvider theme={theme}>
-          <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
-            <ChatPage />
-          </TestApiProvider>
-        </ThemeProvider>,
+    it('passes correct props to ChatContainer', () => {
+      renderChatPage();
+
+      expect(mockChatContainer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sidebarCollapsed: true,
+          mcpServers: expect.arrayContaining([
+            expect.objectContaining({ name: 'test-server' }),
+          ]),
+          messages: [],
+          setMessages: expect.any(Function),
+        }),
       );
     });
-    return result!;
-  };
 
-  describe('component rendering', () => {
-    it('should render without crashing', async () => {
-      const { container } = await renderChatPage();
-      expect(container).toBeDefined();
-    });
+    it('passes correct props to RightPane', () => {
+      renderChatPage();
 
-    it('should render ChatContainer component', async () => {
-      const { container } = await renderChatPage();
-      const chatContainer = container.querySelector(
-        '[data-testid="chat-container"]',
+      expect(mockRightPane).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sidebarCollapsed: true,
+          onToggleSidebar: expect.any(Function),
+          onNewChat: expect.any(Function),
+          mcpServers: expect.arrayContaining([
+            expect.objectContaining({ name: 'test-server' }),
+          ]),
+          onServerToggle: expect.any(Function),
+          providerStatus: expect.objectContaining({
+            providerStatusData: expect.any(Object),
+          }),
+        }),
       );
-      expect(chatContainer).toBeDefined();
-    });
-
-    it('should render RightPane component', async () => {
-      const { container } = await renderChatPage();
-      const rightPane = container.querySelector('[data-testid="right-pane"]');
-      expect(rightPane).toBeDefined();
-    });
-
-    it('should render with Page and Content components', async () => {
-      const { container } = await renderChatPage();
-      expect(container.querySelector('[data-testid="page"]')).toBeDefined();
-      expect(container.querySelector('[data-testid="content"]')).toBeDefined();
     });
   });
 
   describe('sidebar functionality', () => {
-    it('should initialize with sidebar collapsed', async () => {
-      const { container } = await renderChatPage();
-      const rightPane = container.querySelector('[data-testid="right-pane"]');
-      expect(rightPane?.textContent).toContain('Collapsed: true');
+    it('initializes with sidebar collapsed', () => {
+      renderChatPage();
+
+      expect(mockRightPane).toHaveBeenCalledWith(
+        expect.objectContaining({ sidebarCollapsed: true }),
+      );
     });
 
-    it('should handle sidebar toggle', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
-  });
+    it('toggles sidebar state when toggle button is clicked', () => {
+      renderChatPage();
 
-  describe('configuration loading', () => {
-    it('should load configuration on mount', async () => {
-      await renderChatPage();
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
-    });
+      const toggleButton = screen.getByText('Toggle Sidebar');
+      fireEvent.click(toggleButton);
 
-    it('should handle successful configuration load', async () => {
-      mockMcpChatApi.getConfigStatus.mockResolvedValue(mockConfigStatus);
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
-    });
-
-    it('should handle configuration load failure', async () => {
-      const error = new Error('Failed to load config');
-      mockMcpChatApi.getConfigStatus.mockRejectedValue(error);
-
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
-    });
-
-    it('should handle empty configuration', async () => {
-      mockMcpChatApi.getConfigStatus.mockResolvedValue({
-        provider: null,
-        mcpServers: {
-          total: 0,
-          valid: 0,
-          invalid: 0,
-          servers: [],
-        },
-        summary: {
-          hasValidServers: false,
-          configurationComplete: false,
-          issues: [],
-        },
-        timestamp: '2025-01-01T00:00:00.000Z',
-      });
-
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
+      expect(mockRightPane).toHaveBeenLastCalledWith(
+        expect.objectContaining({ sidebarCollapsed: false }),
+      );
     });
   });
 
-  describe('MCP server management', () => {
-    it('should initialize servers as enabled', async () => {
-      mockMcpChatApi.getConfigStatus.mockResolvedValue(mockConfigStatus);
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
+  describe('new chat functionality', () => {
+    it('clears messages when new chat is triggered', () => {
+      renderChatPage();
 
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
+      const newChatButton = screen.getByText('New Chat');
+      fireEvent.click(newChatButton);
+
+      expect(mockChatContainer).toHaveBeenLastCalledWith(
+        expect.objectContaining({ messages: [] }),
+      );
     });
 
-    it('should handle multiple MCP servers', async () => {
-      const multipleServersConfig: ConfigStatus = {
-        provider: mockConfigStatus.provider,
-        mcpServers: {
-          total: 2,
-          valid: 2,
-          invalid: 0,
-          servers: [
-            {
-              id: '1',
-              name: 'server1',
-              type: 'stdio',
-              configuredType: 'stdio',
-              hasUrl: false,
-              hasNpxCommand: true,
-              hasScriptPath: false,
-              hasArgs: false,
-              hasEnv: false,
-              hasHeaders: false,
-              isValid: true,
-              validationIssues: [],
-            },
-            {
-              id: '2',
-              name: 'server2',
-              type: 'sse',
-              configuredType: 'sse',
-              hasUrl: true,
-              hasNpxCommand: false,
-              hasScriptPath: false,
-              hasArgs: false,
-              hasEnv: false,
-              hasHeaders: false,
-              isValid: true,
-              validationIssues: [],
-            },
-          ],
-        },
-        summary: {
-          hasValidServers: true,
-          configurationComplete: true,
-          issues: [],
-        },
-        timestamp: '2025-01-01T00:00:00.000Z',
-      };
+    it('calls cancelOngoingRequest when new chat is triggered', () => {
+      renderChatPage();
 
-      mockMcpChatApi.getConfigStatus.mockResolvedValue(multipleServersConfig);
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
+      const newChatButton = screen.getByText('New Chat');
+      fireEvent.click(newChatButton);
 
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
-    });
-
-    it('should handle server toggle functionality', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
+      expect(mockCancelOngoingRequest).toHaveBeenCalled();
     });
   });
 
   describe('error handling', () => {
-    it('should handle API errors gracefully', async () => {
-      const error = new Error('API Error');
-      mockMcpChatApi.getConfigStatus.mockRejectedValue(error);
-
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
+    it('displays error panel when there is an MCP servers error', () => {
+      // Mock the hook to return an error
+      mockUseMcpServers.mockReturnValue({
+        mcpServers: [],
+        error: 'Failed to load servers' as any,
+        handleServerToggle: jest.fn(),
       });
+
+      renderChatPage();
+
+      expect(screen.getByTestId('error-panel')).toBeInTheDocument();
+      expect(screen.getByText('Failed to load servers')).toBeInTheDocument();
     });
 
-    it('should handle network errors', async () => {
-      const networkError = new Error('Network error');
-      mockMcpChatApi.getConfigStatus.mockRejectedValue(networkError);
-
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
+    it('hides chat components when error is present', () => {
+      // Mock the hook to return an error
+      mockUseMcpServers.mockReturnValue({
+        mcpServers: [],
+        error: 'Server error' as any,
+        handleServerToggle: jest.fn(),
       });
-    });
 
-    it('should handle malformed configuration', async () => {
-      mockMcpChatApi.getConfigStatus.mockResolvedValue(null);
+      renderChatPage();
 
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-
-      await waitFor(() => {
-        expect(mockMcpChatApi.getConfigStatus).toHaveBeenCalled();
-      });
+      expect(screen.queryByTestId('chat-container')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('right-pane')).not.toBeInTheDocument();
     });
   });
 
-  describe('message management', () => {
-    it('should initialize with empty messages', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
+  describe('ref forwarding', () => {
+    it('exposes cancel function through ChatContainer ref', () => {
+      renderChatPage();
 
-    it('should handle new chat functionality', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
+      // Verify that the ref was set up correctly by triggering new chat
+      const newChatButton = screen.getByText('New Chat');
+      fireEvent.click(newChatButton);
 
-    it('should handle message state updates', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
-  });
-
-  describe('component integration', () => {
-    it('should pass correct props to ChatContainer', async () => {
-      const { container } = await renderChatPage();
-      const chatContainer = container.querySelector(
-        '[data-testid="chat-container"]',
-      );
-      expect(chatContainer).toBeDefined();
-    });
-
-    it('should pass correct props to RightPane', async () => {
-      const { container } = await renderChatPage();
-      const rightPane = container.querySelector('[data-testid="right-pane"]');
-      expect(rightPane).toBeDefined();
-      expect(rightPane?.textContent).toContain('Collapsed: true');
-    });
-
-    it('should handle component communication', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
-  });
-
-  describe('performance', () => {
-    it('should render efficiently', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
-
-    it('should handle re-renders efficiently', async () => {
-      const { rerender } = await renderChatPage();
-      await act(async () => {
-        rerender(
-          <TestApiProvider apis={[[mcpChatApiRef, mockMcpChatApi]]}>
-            <ChatPage />
-          </TestApiProvider>,
-        );
-      });
-      // Test should verify that component can be re-rendered without errors
-      expect(true).toBe(true);
-    });
-  });
-
-  describe('component lifecycle', () => {
-    it('should mount successfully', async () => {
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
-    });
-
-    it('should unmount successfully', async () => {
-      const { unmount } = await renderChatPage();
-      expect(() => unmount()).not.toThrow();
-    });
-
-    it('should handle multiple mount/unmount cycles', async () => {
-      const { unmount } = await renderChatPage();
-      unmount();
-
-      const { container } = await renderChatPage();
-      expect(container.firstChild).toBeDefined();
+      // The cancelOngoingRequest should have been called
+      expect(mockCancelOngoingRequest).toHaveBeenCalled();
     });
   });
 });

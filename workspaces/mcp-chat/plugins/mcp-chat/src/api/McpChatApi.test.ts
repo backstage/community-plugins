@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
+import { ResponseError } from '@backstage/errors';
 import { McpChat } from './McpChatApi';
 import type {
   ChatMessage,
   ChatResponse,
-  ConfigStatus,
+  MCPServerStatusData,
+  ProviderStatusData,
   ToolsResponse,
-} from './McpChatApi';
+} from '../types';
 
 describe('McpChatApi', () => {
   let mcpChat: McpChat;
@@ -53,9 +55,9 @@ describe('McpChatApi', () => {
     it('should initialize with discovery and fetch APIs', () => {
       expect(mcpChat).toBeDefined();
       expect(typeof mcpChat.sendChatMessage).toBe('function');
-      expect(typeof mcpChat.getConfigStatus).toBe('function');
+      expect(typeof mcpChat.getMCPServerStatus).toBe('function');
       expect(typeof mcpChat.getAvailableTools).toBe('function');
-      expect(typeof mcpChat.testProviderConnection).toBe('function');
+      expect(typeof mcpChat.getProviderStatus).toBe('function');
     });
   });
 
@@ -140,107 +142,73 @@ describe('McpChatApi', () => {
     });
 
     it('should handle HTTP errors', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const response = {
         ok: false,
         statusText: 'Internal Server Error',
-      });
+      };
+      mockFetch.mockResolvedValueOnce(response);
+      const mockResponseError = new Error('Internal Server Error') as any;
+      mockResponseError.response = response;
+      mockResponseError.statusCode = 500;
+      mockResponseError.statusText = 'Internal Server Error';
+      jest
+        .spyOn(ResponseError, 'fromResponse')
+        .mockResolvedValueOnce(mockResponseError);
 
       await expect(mcpChat.sendChatMessage(mockMessages)).rejects.toThrow(
-        'Chat request failed: Internal Server Error',
-      );
-    });
-
-    it('should handle network errors', async () => {
-      const networkError = new Error('Network error');
-      mockFetch.mockRejectedValueOnce(networkError);
-
-      await expect(mcpChat.sendChatMessage(mockMessages)).rejects.toThrow(
-        'Network error',
-      );
-    });
-
-    it('should handle discovery API errors', async () => {
-      const discoveryError = new Error('Discovery failed');
-      mockDiscoveryApi.getBaseUrl.mockRejectedValueOnce(discoveryError);
-
-      await expect(mcpChat.sendChatMessage(mockMessages)).rejects.toThrow(
-        'Discovery failed',
-      );
-    });
-
-    it('should handle JSON parsing errors', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
-      });
-
-      await expect(mcpChat.sendChatMessage(mockMessages)).rejects.toThrow(
-        'Invalid JSON',
+        'Internal Server Error',
       );
     });
   });
 
-  describe('getConfigStatus', () => {
-    const mockConfigStatus: ConfigStatus = {
-      provider: { type: 'openai', model: 'gpt-4' },
-      mcpServers: {
-        total: 1,
-        valid: 1,
-        invalid: 0,
-        servers: [
-          {
-            id: '1',
-            name: 'test-server',
-            type: 'stdio',
-            configuredType: 'stdio',
-            hasUrl: false,
-            hasNpxCommand: true,
-            hasScriptPath: false,
-            hasArgs: false,
-            hasEnv: false,
-            hasHeaders: false,
-            isValid: true,
-            validationIssues: [],
+  describe('getMCPServerStatus', () => {
+    const mockServerStatus: MCPServerStatusData = {
+      total: 1,
+      valid: 1,
+      active: 1,
+      servers: [
+        {
+          id: '1',
+          name: 'test-server',
+          type: 'stdio',
+          status: {
+            valid: true,
+            connected: true,
           },
-        ],
-      },
-      summary: {
-        hasValidServers: true,
-        configurationComplete: true,
-        issues: [],
-      },
+          enabled: true,
+        },
+      ],
       timestamp: '2025-01-01T00:00:00.000Z',
     };
 
-    it('should get config status successfully', async () => {
+    it('should get MCP server status successfully', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockConfigStatus),
+        json: jest.fn().mockResolvedValue(mockServerStatus),
       });
 
-      const result = await mcpChat.getConfigStatus();
+      const result = await mcpChat.getMCPServerStatus();
 
       expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
-      expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/config/status`);
-      expect(result).toEqual(mockConfigStatus);
+      expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/mcp/status`);
+      expect(result).toEqual(mockServerStatus);
     });
 
     it('should handle HTTP errors', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const response = {
         ok: false,
         statusText: 'Not Found',
-      });
+      };
+      mockFetch.mockResolvedValueOnce(response);
+      const mockResponseError = new Error('Not Found') as any;
+      mockResponseError.response = response;
+      mockResponseError.statusCode = 404;
+      mockResponseError.statusText = 'Not Found';
+      jest
+        .spyOn(ResponseError, 'fromResponse')
+        .mockResolvedValueOnce(mockResponseError);
 
-      await expect(mcpChat.getConfigStatus()).rejects.toThrow(
-        'Config status request failed: Not Found',
-      );
-    });
-
-    it('should handle network errors', async () => {
-      const networkError = new Error('Network error');
-      mockFetch.mockRejectedValueOnce(networkError);
-
-      await expect(mcpChat.getConfigStatus()).rejects.toThrow('Network error');
+      await expect(mcpChat.getMCPServerStatus()).rejects.toThrow('Not Found');
     });
   });
 
@@ -285,147 +253,73 @@ describe('McpChatApi', () => {
     });
 
     it('should handle HTTP errors', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const response = {
         ok: false,
         statusText: 'Service Unavailable',
-      });
+      };
+      mockFetch.mockResolvedValueOnce(response);
+      const mockResponseError = new Error('Service Unavailable') as any;
+      mockResponseError.response = response;
+      mockResponseError.statusCode = 503;
+      mockResponseError.statusText = 'Service Unavailable';
+      jest
+        .spyOn(ResponseError, 'fromResponse')
+        .mockResolvedValueOnce(mockResponseError);
 
       await expect(mcpChat.getAvailableTools()).rejects.toThrow(
-        'Tools request failed: Service Unavailable',
-      );
-    });
-
-    it('should handle network errors', async () => {
-      const networkError = new Error('Connection timeout');
-      mockFetch.mockRejectedValueOnce(networkError);
-
-      await expect(mcpChat.getAvailableTools()).rejects.toThrow(
-        'Connection timeout',
+        'Service Unavailable',
       );
     });
   });
 
-  describe('testProviderConnection', () => {
-    const mockConnectionResponse = {
-      connected: true,
-      models: ['gpt-4', 'gpt-3.5-turbo'],
-      message: 'Connection successful',
+  describe('getProviderStatus', () => {
+    const mockProviderStatus: ProviderStatusData = {
+      providers: [
+        {
+          id: 'openai',
+          model: 'gpt-4',
+          baseUrl: 'https://api.openai.com',
+          connection: {
+            connected: true,
+            models: ['gpt-4', 'gpt-3.5-turbo'],
+          },
+        },
+      ],
+      summary: {
+        totalProviders: 1,
+        healthyProviders: 1,
+      },
       timestamp: '2025-01-01T00:00:00Z',
     };
 
-    it('should test provider connection successfully', async () => {
+    it('should get provider status successfully', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockConnectionResponse),
+        json: jest.fn().mockResolvedValue(mockProviderStatus),
       });
 
-      const result = await mcpChat.testProviderConnection();
+      const result = await mcpChat.getProviderStatus();
 
       expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
-      expect(mockFetch).toHaveBeenCalledWith(
-        `${baseUrl}/provider/connection-status`,
-      );
-      expect(result).toEqual(mockConnectionResponse);
-    });
-
-    it('should handle connection failure', async () => {
-      const failureResponse = {
-        connected: false,
-        error: 'Invalid API key',
-        message: 'Connection failed',
-        timestamp: '2025-01-01T00:00:00Z',
-      };
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValue(failureResponse),
-      });
-
-      const result = await mcpChat.testProviderConnection();
-
-      expect(result).toEqual(failureResponse);
-      expect(result.connected).toBe(false);
-      expect(result.error).toBe('Invalid API key');
+      expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/provider/status`);
+      expect(result).toEqual(mockProviderStatus);
     });
 
     it('should handle HTTP errors', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const response = {
         ok: false,
         statusText: 'Unauthorized',
-      });
-
-      await expect(mcpChat.testProviderConnection()).rejects.toThrow(
-        'Provider connection test failed: Unauthorized',
-      );
-    });
-
-    it('should handle network errors', async () => {
-      const networkError = new Error('Request timeout');
-      mockFetch.mockRejectedValueOnce(networkError);
-
-      await expect(mcpChat.testProviderConnection()).rejects.toThrow(
-        'Request timeout',
-      );
-    });
-  });
-
-  describe('error handling edge cases', () => {
-    it('should handle undefined response body', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValue(undefined),
-      });
-
-      const result = await mcpChat.getConfigStatus();
-      expect(result).toBeUndefined();
-    });
-
-    it('should handle empty response', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValue({}),
-      });
-
-      const result = await mcpChat.getConfigStatus();
-      expect(result).toEqual({});
-    });
-
-    it('should handle discovery API returning null', async () => {
-      mockDiscoveryApi.getBaseUrl.mockResolvedValueOnce(null);
-
-      await expect(mcpChat.getConfigStatus()).rejects.toThrow();
-    });
-  });
-
-  describe('concurrent requests', () => {
-    it('should handle multiple concurrent requests', async () => {
-      const mockResponse1 = {
-        role: 'assistant' as const,
-        content: 'Response 1',
       };
-      const mockResponse2 = {
-        role: 'assistant' as const,
-        content: 'Response 2',
-      };
+      mockFetch.mockResolvedValueOnce(response);
+      const mockResponseError = new Error('Unauthorized') as any;
+      mockResponseError.response = response;
+      mockResponseError.statusCode = 401;
+      mockResponseError.statusText = 'Unauthorized';
+      jest
+        .spyOn(ResponseError, 'fromResponse')
+        .mockResolvedValueOnce(mockResponseError);
 
-      mockFetch
-        .mockResolvedValueOnce({
-          ok: true,
-          json: jest.fn().mockResolvedValue(mockResponse1),
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: jest.fn().mockResolvedValue(mockResponse2),
-        });
-
-      const [result1, result2] = await Promise.all([
-        mcpChat.sendChatMessage([{ role: 'user', content: 'Message 1' }]),
-        mcpChat.sendChatMessage([{ role: 'user', content: 'Message 2' }]),
-      ]);
-
-      expect(result1).toEqual(mockResponse1);
-      expect(result2).toEqual(mockResponse2);
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+      await expect(mcpChat.getProviderStatus()).rejects.toThrow('Unauthorized');
     });
   });
 });

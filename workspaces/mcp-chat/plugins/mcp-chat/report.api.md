@@ -30,40 +30,19 @@ export interface ChatResponse {
 }
 
 // @public (undocumented)
-export interface ConfigStatus {
-  // (undocumented)
-  mcpServers: Array<{
-    id?: string;
-    name: string;
-    type: string;
-    hasUrl: boolean;
-    hasNpxCommand: boolean;
-    hasScriptPath: boolean;
-  }>;
-  // (undocumented)
-  provider: any;
-}
-
-// @public (undocumented)
 export interface McpChatApi {
   // (undocumented)
   getAvailableTools(): Promise<ToolsResponse>;
   // (undocumented)
-  getConfigStatus(): Promise<ConfigStatus>;
+  getMCPServerStatus(): Promise<MCPServerStatusData>;
+  // (undocumented)
+  getProviderStatus(): Promise<ProviderStatusData>;
   // (undocumented)
   sendChatMessage(
     messages: ChatMessage[],
     enabledTools?: string[],
     signal?: AbortSignal,
   ): Promise<ChatResponse>;
-  // (undocumented)
-  testProviderConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-    message?: string;
-    timestamp?: string;
-  }>;
 }
 
 // @public (undocumented)
@@ -83,6 +62,82 @@ export const mcpChatPlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// @public (undocumented)
+export interface MCPServer {
+  // (undocumented)
+  args?: string[];
+  // (undocumented)
+  enabled: boolean;
+  // (undocumented)
+  id: string;
+  // (undocumented)
+  name: string;
+  // (undocumented)
+  npxCommand?: string;
+  // (undocumented)
+  scriptPath?: string;
+  // (undocumented)
+  status: {
+    valid: boolean;
+    connected: boolean;
+    error?: string;
+  };
+  // (undocumented)
+  type: 'stdio' | 'sse' | 'streamable-http';
+  // (undocumented)
+  url?: string;
+}
+
+// @public (undocumented)
+export interface MCPServerStatusData {
+  // (undocumented)
+  active: number;
+  // (undocumented)
+  servers: MCPServer[];
+  // (undocumented)
+  timestamp: string;
+  // (undocumented)
+  total: number;
+  // (undocumented)
+  valid: number;
+}
+
+// @public (undocumented)
+export interface Provider {
+  // (undocumented)
+  baseUrl: string;
+  // (undocumented)
+  connection: ProviderConnectionStatus;
+  // (undocumented)
+  id: string;
+  // (undocumented)
+  model: string;
+}
+
+// @public (undocumented)
+export interface ProviderConnectionStatus {
+  // (undocumented)
+  connected: boolean;
+  // (undocumented)
+  error?: string;
+  // (undocumented)
+  models?: string[];
+}
+
+// @public (undocumented)
+export interface ProviderStatusData {
+  // (undocumented)
+  providers: Provider[];
+  // (undocumented)
+  summary: {
+    totalProviders: number;
+    healthyProviders: number;
+    error?: string;
+  };
+  // (undocumented)
+  timestamp: string;
+}
 
 // @public (undocumented)
 export interface Tool {

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import { ReactElement } from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ActiveTools } from './ActiveTools';
-import type { Tool } from '../../api/McpChatApi';
+import { MCPServer, Tool } from '../../types';
 
 const mockTheme = createTheme({
   palette: {
@@ -42,26 +42,25 @@ const darkTheme = createTheme({
   spacing: (factor: number) => `${8 * factor}px`,
 });
 
-const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
+const renderWithTheme = (component: ReactElement, theme = mockTheme) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
 describe('ActiveTools', () => {
-  const mockMcpServers = [
+  const mockMcpServers: MCPServer[] = [
     {
+      id: 'filesystem',
       name: 'filesystem',
       enabled: true,
       type: 'stdio',
+      status: { valid: true, connected: true },
     },
     {
+      id: 'database',
       name: 'database',
       enabled: true,
       type: 'stdio',
-    },
-    {
-      name: 'disabled-server',
-      enabled: false,
-      type: 'stdio',
+      status: { valid: true, connected: true },
     },
   ];
 
@@ -93,541 +92,258 @@ describe('ActiveTools', () => {
       },
       serverId: 'database',
     },
-    {
-      type: 'function',
-      function: {
-        name: 'disabled_tool',
-        description: 'Tool from disabled server',
-        parameters: {},
-      },
-      serverId: 'disabled-server',
-    },
   ];
 
-  describe('Basic Rendering', () => {
-    it('renders section title', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
+  const defaultProps = {
+    mcpServers: mockMcpServers,
+    availableTools: mockTools,
+    toolsLoading: false,
+  };
+
+  describe('rendering', () => {
+    it('renders component header', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />);
 
       expect(screen.getByText('Active Tools')).toBeInTheDocument();
     });
 
-    it('displays build icon', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByTestId('BuildIcon')).toBeInTheDocument();
-    });
-
-    it('renders server accordions for enabled servers', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('filesystem')).toBeInTheDocument();
-      expect(screen.getByText('database')).toBeInTheDocument();
-      expect(screen.queryByText('disabled-server')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Tool Display', () => {
-    it('shows correct tool count for each server', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('2 tools')).toBeInTheDocument();
-      expect(screen.getByText('1 tool')).toBeInTheDocument();
-    });
-
-    it('displays individual tool names', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
+    it('displays available tools', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />);
 
       expect(screen.getByText('read_file')).toBeInTheDocument();
       expect(screen.getByText('write_file')).toBeInTheDocument();
       expect(screen.getByText('execute_query')).toBeInTheDocument();
     });
 
-    it('does not show tools from disabled servers', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
+    it('shows tool descriptions', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />);
 
-      expect(screen.queryByText('disabled_tool')).not.toBeInTheDocument();
+      expect(screen.getByText('Read contents of a file')).toBeInTheDocument();
+      expect(screen.getByText('Write contents to a file')).toBeInTheDocument();
+      expect(screen.getByText('Execute SQL query')).toBeInTheDocument();
     });
 
-    it('handles servers with no tools', () => {
-      const serversWithNoTools = [
-        {
-          name: 'empty-server',
-          enabled: true,
-          type: 'stdio',
-        },
-      ];
+    it('groups tools by server', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />);
 
+      expect(screen.getByText('filesystem')).toBeInTheDocument();
+      expect(screen.getByText('database')).toBeInTheDocument();
+    });
+
+    it('shows empty state when no tools available', () => {
       renderWithTheme(
         <ActiveTools
-          mcpServers={serversWithNoTools}
           availableTools={[]}
           toolsLoading={false}
+          mcpServers={[]}
         />,
       );
 
-      expect(screen.getByText('empty-server')).toBeInTheDocument();
-      expect(screen.getByText('0 tools')).toBeInTheDocument();
+      expect(screen.getByText('Active Tools')).toBeInTheDocument();
     });
   });
 
-  describe('Loading States', () => {
+  describe('loading states', () => {
     it('shows loading indicator when tools are loading', () => {
       renderWithTheme(
         <ActiveTools
-          mcpServers={mockMcpServers}
           availableTools={[]}
           toolsLoading
-        />,
-      );
-
-      expect(screen.getAllByText('Loading tools...')).toHaveLength(2);
-      expect(document.querySelectorAll('[role="progressbar"]')).toHaveLength(2);
-    });
-
-    it('shows loading count when tools are loading', () => {
-      renderWithTheme(
-        <ActiveTools
           mcpServers={mockMcpServers}
-          availableTools={[]}
-          toolsLoading
         />,
       );
 
       expect(screen.getAllByText('...')).toHaveLength(2);
     });
 
-    it('hides loading indicator when tools are loaded', () => {
-      renderWithTheme(
+    it('shows tools after loading completes', () => {
+      const { rerender } = renderWithTheme(
         <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.queryByText('Loading tools...')).not.toBeInTheDocument();
-      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Empty States', () => {
-    it('handles empty server list', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={[]}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('Active Tools')).toBeInTheDocument();
-
-      expect(screen.queryByText('filesystem')).not.toBeInTheDocument();
-    });
-
-    it('handles empty tools list', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
           availableTools={[]}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getAllByText('0 tools')).toHaveLength(2);
-    });
-
-    it('shows message when no tools are available for server', () => {
-      const serverWithoutTools = [
-        {
-          name: 'no-tools-server',
-          enabled: true,
-          type: 'stdio',
-        },
-      ];
-
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={serverWithoutTools}
-          availableTools={[]}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(
-        screen.getByText('No tools available for this server'),
-      ).toBeInTheDocument();
-    });
-  });
-
-  describe('Server Filtering', () => {
-    it('only shows enabled servers', () => {
-      const mixedServers = [
-        { name: 'enabled1', enabled: true, type: 'stdio' },
-        { name: 'disabled1', enabled: false, type: 'stdio' },
-        { name: 'enabled2', enabled: true, type: 'stdio' },
-        { name: 'disabled2', enabled: false, type: 'stdio' },
-      ];
-
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mixedServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('enabled1')).toBeInTheDocument();
-      expect(screen.getByText('enabled2')).toBeInTheDocument();
-      expect(screen.queryByText('disabled1')).not.toBeInTheDocument();
-      expect(screen.queryByText('disabled2')).not.toBeInTheDocument();
-    });
-
-    it('filters tools by server ID correctly', () => {
-      const specificTools: Tool[] = [
-        {
-          type: 'function',
-          function: {
-            name: 'tool1',
-            description: 'Tool 1',
-            parameters: {},
-          },
-          serverId: 'server1',
-        },
-        {
-          type: 'function',
-          function: {
-            name: 'tool2',
-            description: 'Tool 2',
-            parameters: {},
-          },
-          serverId: 'server2',
-        },
-      ];
-
-      const specificServers = [
-        { name: 'server1', enabled: true, type: 'stdio' },
-        { name: 'server2', enabled: true, type: 'stdio' },
-      ];
-
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={specificServers}
-          availableTools={specificTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('tool1')).toBeInTheDocument();
-      expect(screen.getByText('tool2')).toBeInTheDocument();
-    });
-  });
-
-  describe('Dark Mode Support', () => {
-    it('renders correctly in dark mode', () => {
-      renderWithTheme(
-        <ActiveTools
+          toolsLoading
           mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-        darkTheme,
-      );
-
-      expect(screen.getByText('Active Tools')).toBeInTheDocument();
-      expect(screen.getByText('filesystem')).toBeInTheDocument();
-    });
-
-    it('applies dark theme colors to accordions', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-        darkTheme,
-      );
-
-      expect(screen.getByText('filesystem')).toBeInTheDocument();
-    });
-  });
-
-  describe('Accordion Behavior', () => {
-    it('renders expandable accordions', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
         />,
       );
 
-      expect(screen.getAllByTestId('ExpandMoreIcon')).toHaveLength(2);
-    });
+      expect(screen.getAllByText('...')).toHaveLength(2);
 
-    it('shows tool count in accordion summary', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
+      rerender(
+        <ThemeProvider theme={mockTheme}>
+          <ActiveTools {...defaultProps} />
+        </ThemeProvider>,
       );
 
-      expect(screen.getByText('2 tools')).toBeInTheDocument();
-      expect(screen.getByText('1 tool')).toBeInTheDocument();
-    });
-
-    it('displays tools in accordion details', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
+      expect(screen.queryByText('...')).not.toBeInTheDocument();
       expect(screen.getByText('read_file')).toBeInTheDocument();
-      expect(screen.getByText('write_file')).toBeInTheDocument();
-      expect(screen.getByText('execute_query')).toBeInTheDocument();
     });
   });
 
-  describe('Tool Count Display', () => {
-    it('shows singular form for one tool', () => {
-      const singleToolServers = [
-        { name: 'single-tool-server', enabled: true, type: 'stdio' },
-      ];
-
-      const singleTool: Tool[] = [
+  describe('tool categorization', () => {
+    it('handles tools from same server', () => {
+      const toolsFromSameServer: Tool[] = [
         {
           type: 'function',
           function: {
-            name: 'single_tool',
-            description: 'Single tool',
+            name: 'read_file',
+            description: 'Read contents of a file',
             parameters: {},
           },
-          serverId: 'single-tool-server',
+          serverId: 'filesystem',
         },
-      ];
-
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={singleToolServers}
-          availableTools={singleTool}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('1 tool')).toBeInTheDocument();
-    });
-
-    it('shows plural form for multiple tools', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('2 tools')).toBeInTheDocument();
-    });
-
-    it('shows zero tools correctly', () => {
-      const emptyToolServer = [
-        { name: 'empty-server', enabled: true, type: 'stdio' },
-      ];
-
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={emptyToolServer}
-          availableTools={[]}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('0 tools')).toBeInTheDocument();
-    });
-  });
-
-  describe('Component Structure', () => {
-    it('has proper component hierarchy', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('Active Tools')).toBeInTheDocument();
-      expect(screen.getByText('filesystem')).toBeInTheDocument();
-      expect(screen.getByText('database')).toBeInTheDocument();
-    });
-
-    it('uses Material-UI accordion components', () => {
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mockTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.getByText('filesystem')).toBeInTheDocument();
-    });
-  });
-
-  describe('Props Validation', () => {
-    it('handles all required props', () => {
-      expect(() => {
-        renderWithTheme(
-          <ActiveTools
-            mcpServers={mockMcpServers}
-            availableTools={mockTools}
-            toolsLoading={false}
-          />,
-        );
-      }).not.toThrow();
-    });
-
-    it('handles optional server properties', () => {
-      const serversWithOptionalProps = [
-        {
-          id: 'server-1',
-          name: 'filesystem',
-          enabled: true,
-          type: 'stdio',
-          hasUrl: true,
-          hasNpxCommand: false,
-          hasScriptPath: true,
-        },
-      ];
-
-      expect(() => {
-        renderWithTheme(
-          <ActiveTools
-            mcpServers={serversWithOptionalProps}
-            availableTools={mockTools}
-            toolsLoading={false}
-          />,
-        );
-      }).not.toThrow();
-    });
-
-    it('validates tool structure', () => {
-      const validTools: Tool[] = [
         {
           type: 'function',
           function: {
-            name: 'test_tool',
-            description: 'Test tool description',
-            parameters: { type: 'object' },
-          },
-          serverId: 'test-server',
-        },
-      ];
-
-      const validServers = [
-        { name: 'test-server', enabled: true, type: 'stdio' },
-      ];
-
-      expect(() => {
-        renderWithTheme(
-          <ActiveTools
-            mcpServers={validServers}
-            availableTools={validTools}
-            toolsLoading={false}
-          />,
-        );
-      }).not.toThrow();
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('handles mismatched server IDs', () => {
-      const mismatchedTools: Tool[] = [
-        {
-          type: 'function',
-          function: {
-            name: 'orphan_tool',
-            description: 'Tool without matching server',
-            parameters: {},
-          },
-          serverId: 'nonexistent-server',
-        },
-      ];
-
-      renderWithTheme(
-        <ActiveTools
-          mcpServers={mockMcpServers}
-          availableTools={mismatchedTools}
-          toolsLoading={false}
-        />,
-      );
-
-      expect(screen.queryByText('orphan_tool')).not.toBeInTheDocument();
-    });
-
-    it('handles undefined tool properties', () => {
-      const toolsWithUndefined: Tool[] = [
-        {
-          type: 'function',
-          function: {
-            name: 'test_tool',
-            description: undefined as any,
+            name: 'write_file',
+            description: 'Write contents to a file',
             parameters: {},
           },
           serverId: 'filesystem',
         },
       ];
 
-      expect(() => {
+      renderWithTheme(
+        <ActiveTools
+          availableTools={toolsFromSameServer}
+          toolsLoading={false}
+          mcpServers={mockMcpServers}
+        />,
+      );
+
+      expect(screen.getByText('filesystem')).toBeInTheDocument();
+      expect(screen.getByText('read_file')).toBeInTheDocument();
+      expect(screen.getByText('write_file')).toBeInTheDocument();
+    });
+  });
+
+  describe('error handling', () => {
+    it('handles malformed tool data gracefully', () => {
+      const malformedTools = [
+        {
+          type: 'function',
+          function: { name: 'broken_tool' },
+          serverId: 'filesystem',
+        },
+      ] as any;
+
+      expect(() =>
         renderWithTheme(
           <ActiveTools
-            mcpServers={mockMcpServers}
-            availableTools={toolsWithUndefined}
+            availableTools={malformedTools}
             toolsLoading={false}
+            mcpServers={mockMcpServers}
           />,
-        );
-      }).not.toThrow();
+        ),
+      ).not.toThrow();
+    });
+
+    it('handles tools without matching server', () => {
+      const toolsWithoutServer: Tool[] = [
+        {
+          type: 'function',
+          function: {
+            name: 'orphan_tool',
+            description: 'A tool without server info',
+            parameters: {},
+          },
+          serverId: 'unknown',
+        },
+      ];
+
+      renderWithTheme(
+        <ActiveTools
+          availableTools={toolsWithoutServer}
+          toolsLoading={false}
+          mcpServers={mockMcpServers}
+        />,
+      );
+
+      expect(
+        screen.getAllByText('No tools available for this server'),
+      ).toHaveLength(2);
+    });
+  });
+
+  describe('responsive behavior', () => {
+    it('handles many tools efficiently', () => {
+      const manyTools: Tool[] = Array.from({ length: 10 }, (_, i) => ({
+        type: 'function',
+        function: {
+          name: `tool_${i + 1}`,
+          description: `Description for tool ${i + 1}`,
+          parameters: {},
+        },
+        serverId: 'filesystem',
+      }));
+
+      renderWithTheme(
+        <ActiveTools
+          availableTools={manyTools}
+          toolsLoading={false}
+          mcpServers={mockMcpServers}
+        />,
+      );
+
+      expect(screen.getByText('tool_1')).toBeInTheDocument();
+      expect(screen.getByText('tool_10')).toBeInTheDocument();
+    });
+
+    it('maintains layout with long tool names', () => {
+      const toolsWithLongNames: Tool[] = [
+        {
+          type: 'function',
+          function: {
+            name: 'very_long_tool_name_that_might_cause_layout_issues',
+            description:
+              'This is a very long description that might cause layout issues',
+            parameters: {},
+          },
+          serverId: 'filesystem',
+        },
+      ];
+
+      renderWithTheme(
+        <ActiveTools
+          availableTools={toolsWithLongNames}
+          toolsLoading={false}
+          mcpServers={mockMcpServers}
+        />,
+      );
+
+      expect(
+        screen.getByText('very_long_tool_name_that_might_cause_layout_issues'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('accessibility', () => {
+    it('provides proper heading structure', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />);
+
+      const heading = screen.getByRole('heading', { name: 'Active Tools' });
+      expect(heading).toBeInTheDocument();
+    });
+
+    it('provides expandable sections for tool groups', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />);
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('theme integration', () => {
+    it('renders correctly with dark theme', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />, darkTheme);
+
+      expect(screen.getByText('Active Tools')).toBeInTheDocument();
+      expect(screen.getByText('read_file')).toBeInTheDocument();
+    });
+
+    it('maintains proper styling with light theme', () => {
+      renderWithTheme(<ActiveTools {...defaultProps} />, mockTheme);
+
+      expect(screen.getByText('Active Tools')).toBeInTheDocument();
+      expect(screen.getByText('read_file')).toBeInTheDocument();
     });
   });
 });
