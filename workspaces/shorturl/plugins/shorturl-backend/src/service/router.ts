@@ -36,8 +36,8 @@ export interface RouterOptions {
   database: DatabaseService;
 }
 
-const defaultAlphabet =
-  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-';
+const DEFAULT_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-' as const;
+const DEFAULT_URL_LENGTH = 8;
 
 /**
  * createRouter
@@ -74,9 +74,9 @@ export async function createRouter(
       logger.debug(`URL not found in the database. Proceeding to create it.`);
     }
 
-    const urlLenght = Number(config.getOptionalString('shorturl.length')) || 8;
+    const urlLenght = Number(config.getOptionalString('shorturl.length')) || DEFAULT_URL_LENGTH;
     const urlAlphabet =
-      config.getOptionalString('shorturl.alphabet') || defaultAlphabet;
+      config.getOptionalString('shorturl.alphabet') || DEFAULT_ALPHABET;
     const nanoid = customAlphabet(urlAlphabet, urlLenght);
     const id = nanoid();
     await db.saveUrlMapping({
