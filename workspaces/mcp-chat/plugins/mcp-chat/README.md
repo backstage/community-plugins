@@ -53,17 +53,17 @@ To quickly test this plugin, we recommend using Gemini's free API:
 <table>
   <tr>
     <td style="padding: 0 10px;">
-      <img src="../../docs/images/quick-prompts.png" alt="Quick Prompts" width="800"/>
+      <img src="../../docs/images/quick-prompts.png" alt="Quick Prompts" width="900"/>
       <div align="center"><em>Pre-configured prompts for common tasks</em></div>
     </td>
     <td rowspan="2" style="vertical-align: top; padding: 0 10px;">
-      <img src="../../docs/images/mcp-tools-panel.png" alt="MCP Tools Panel" height="800"/>
+      <img src="../../docs/images/mcp-tools-panel.png" alt="MCP Tools Panel" height="600"/>
       <div align="center"><em>Available MCP tools and server connections</em></div>
     </td>
   </tr>
   <tr>
     <td style="padding: 0 10px;">
-      <img src="../../docs/images/chat-interface.png" alt="Chat Interface" width="800"/>
+      <img src="../../docs/images/chat-interface.png" alt="Chat Interface" width="900"/>
       <div align="center"><em>The main chat interface with AI responses and tool integration</em></div>
     </td>
   </tr>
@@ -142,16 +142,20 @@ Add the following configuration to your `app-config.yaml`:
 ```yaml
 mcpChat:
   # Configure AI providers (currently only the first provider is used)
+  # Supported Providers: OpenAI, Gemini, Claude, and Ollama
   providers:
-    - id: openai
+    - id: openai # OpenAI provider
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini # or gpt-4, gpt-3.5-turbo, etc.
-    - id: ollama
+    - id: claude # Claude provider
+      token: ${CLAUDE_API_KEY}
+      model: claude-sonnet-4-20250514 # or claude-3-7-sonnet-latest
+    - id: gemini # Gemini provider
+      token: ${GEMINI_API_KEY}
+      model: gemini-2.5-flash # or gemini-2.0-pro, etc.
+    - id: ollama # Ollama provider
       baseUrl: 'http://localhost:11434'
       model: llama3.1:8b # or any model you have locally
-    - id: gemini
-      token: ${GEMINI_API_KEY}
-      model: gemini-2.5-flash
 
   # Configure MCP servers
   mcpServers:
@@ -194,7 +198,7 @@ mcpChat:
       category: Catalog
 ```
 
-For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, SSE, custom scripts, and arguments), see [SERVER_CONFIGURATION](./SERVER_CONFIGURATION.md).
+For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, SSE, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
 
 ### Environment Variables
 
@@ -311,27 +315,20 @@ yarn build:all
 
 Use these endpoints for debugging:
 
-- **Configuration Status**: `GET /api/mcp-chat/config/status`
-- **Available Tools**: `GET /api/mcp-chat/tools`
-- **Test News Search**: `GET /api/mcp-chat/test/latest-news`
-
-### Logging
-
-Enable debug logging by setting:
-
-```bash
-export LOG_LEVEL=debug
-```
+- **Provider Status**: `/api/mcp-chat/provider/status`
+- **MCP Server Status**: `/api/mcp-chat/mcp/status`
+- **Available Tools**: `/api/mcp-chat/tools`
 
 ## API Reference
 
 ### Backend Endpoints
 
-| Endpoint                      | Method | Description              |
-| ----------------------------- | ------ | ------------------------ |
-| `/api/mcp-chat/chat`          | POST   | Send chat messages       |
-| `/api/mcp-chat/config/status` | GET    | Get configuration status |
-| `/api/mcp-chat/tools`         | GET    | List available tools     |
+| Endpoint                        | Method | Description                           |
+| ------------------------------- | ------ | ------------------------------------- |
+| `/api/mcp-chat/chat`            | POST   | Send chat messages                    |
+| `/api/mcp-chat/provider/status` | GET    | Get status of connected AI provider   |
+| `/api/mcp-chat/mcp/status`      | GET    | Get status of connected MCP servers   |
+| `/api/mcp-chat/tools`           | GET    | List available MCP tools from servers |
 
 ## Contributing
 

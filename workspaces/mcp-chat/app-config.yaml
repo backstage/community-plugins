@@ -30,12 +30,15 @@ mcpChat:
     - id: openai
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini
-    - id: ollama
-      baseUrl: 'http://localhost:11434'
-      model: llama3.1:8b
     - id: gemini
       token: ${GEMINI_API_KEY}
       model: gemini-2.5-flash
+    - id: claude
+      token: ${CLAUDE_API_KEY}
+      model: claude-sonnet-4-20250514
+    - id: ollama
+      baseUrl: 'http://localhost:11434'
+      model: llama3.1:8b
   mcpServers:
     - id: brave-search-server
       name: Brave Search Server
