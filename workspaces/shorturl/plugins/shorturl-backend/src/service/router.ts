@@ -11,6 +11,7 @@ import { NotFoundError } from '@backstage/errors';
 import { customAlphabet } from 'nanoid';
 import { DatabaseHandler } from '../database/DatabaseHandler';
 import { ShortURLStore } from '../database/ShortURLStore';
+import { Request, Response } from 'express';
 
 /**
  * RouterOptions
@@ -52,21 +53,21 @@ export async function createRouter(
 
   const db: ShortURLStore = await DatabaseHandler.create({ database });
 
-  router.put('/create', async (_, response) => {
-    const reqBody = _.body;
+  router.put('/create', async (req: Request, res: Response) => {
+    const reqBody = req.body;
     if (
       !reqBody ||
       Object.keys(reqBody)?.length === 0 ||
       !reqBody.fullUrl ||
       reqBody.usageCount === undefined
     ) {
-      response.status(400).json({ status: 'invalid request' });
+      res.status(400).json({ status: 'invalid request' });
       return;
     }
     try {
       const existing = await db.getIdByUrl({ fullUrl: reqBody.fullUrl });
       if (existing && existing.shortId) {
-        response.json({ status: 'ok', shortUrl: existing.shortId });
+        res.json({ status: 'ok', shortUrl: existing.shortId });
       }
       return;
     } catch (e) {
@@ -84,51 +85,51 @@ export async function createRouter(
       usageCount: reqBody.usageCount,
     });
 
-    response.status(201).json({ status: 'ok', shortUrl: id });
+    res.status(201).json({ status: 'ok', shortUrl: id });
   });
 
-  router.get('/go/:id', async (_, response) => {
-    const shortId = _.params?.id;
+  router.get('/go/:id', async (req: Request, res: Response) => {
+    const shortId = req.params?.id;
     if (!shortId) {
-      response.status(400).json({ status: 'invalid request' });
+      res.status(400).json({ status: 'invalid request' });
       return;
     }
 
     try {
       const urlResponse = await db.getUrlById({ shortId });
       if (urlResponse && urlResponse?.fullUrl) {
-        response
+        res
           .status(200)
           .json({ status: 'ok', redirectUrl: urlResponse.fullUrl });
       } else {
-        response
+        res
           .status(500)
           .json({ status: 'error', message: 'Not able to redirect' });
       }
       return;
     } catch (error) {
       if (error instanceof NotFoundError) {
-        response.status(404).json({ status: 'ok', message: 'Not found' });
+        res.status(404).json({ status: 'ok', message: 'Not found' });
       } else {
-        response
+        res
           .status(500)
           .json({ status: 'error', message: `Not found ${error}` });
       }
     }
   });
 
-  router.get('/getAll', async (_, response) => {
+  router.get('/getAll', async (_req: Request, res: Response) => {
     const allRows = await db.getAllRecords();
     if (allRows) {
-      response.json({ status: 'ok', data: allRows });
+      res.json({ status: 'ok', data: allRows });
     } else {
-      response.json({ status: 'error', message: 'Not able to fetch' });
+      res.json({ status: 'error', message: 'Not able to fetch' });
     }
   });
 
-  router.get('/health', (_, response) => {
+  router.get('/health', (_req: Request, res: Response) => {
     logger.info('PONG!');
-    response.json({ status: 'ok' });
+    res.json({ status: 'ok' });
   });
 
   const middleware = MiddlewareFactory.create({ logger, config });
