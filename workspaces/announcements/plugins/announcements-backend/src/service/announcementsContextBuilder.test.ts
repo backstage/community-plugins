@@ -14,62 +14,49 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
+import { SignalsService } from '@backstage/plugin-signals-node';
 import { buildAnnouncementsContext } from './announcementsContextBuilder';
 import { initializePersistenceContext } from './persistence/persistenceContext';
-import {
-  HttpAuthService,
-  PermissionsService,
-} from '@backstage/backend-plugin-api';
-import { EventsService } from '@backstage/plugin-events-node';
-import { SignalsService } from '@backstage/plugin-signals-node';
-
-jest.mock('./persistence/persistenceContext', () => ({
-  initializePersistenceContext: jest.fn(),
-}));
 
 describe('buildAnnouncementsContext', () => {
-  it('returns context with logger, persistenceContext, permissions and httpAuth properties', async () => {
+  it('returns initialized context with persistence', async () => {
     const logger = mockServices.logger.mock();
-    const config = mockServices.rootConfig.mock();
-    const database = {
-      getClient: jest.fn(),
-      url: 'url',
-    };
-    const permissions: PermissionsService = {
-      authorize: jest.fn(),
-      authorizeConditional: jest.fn(),
-    };
-    const httpAuth: HttpAuthService = {
-      credentials: jest.fn(),
-      issueUserCookie: jest.fn(),
-    };
-
-    const events: EventsService = {
-      publish: jest.fn(),
-      subscribe: jest.fn(),
-    };
+    const config = mockServices.rootConfig();
+    const database = mockServices.database.mock({
+      migrations: {
+        skip: true,
+      },
+    });
+    const permissions = mockServices.permissions();
+    const httpAuth = mockServices.httpAuth();
+    const permissionsRegistry = mockServices.permissionsRegistry.mock();
+    const events = mockServices.events();
 
     const signals: SignalsService = {
       publish: jest.fn(),
     };
 
     const context = await buildAnnouncementsContext({
-      logger,
       config,
       database,
-      permissions,
-      httpAuth,
       events,
+      httpAuth,
+      logger,
+      permissions,
+      permissionsRegistry,
       signals,
     });
 
+    const persistenceContext = await initializePersistenceContext(database);
+
     expect(context).toStrictEqual({
-      logger,
       config,
-      persistenceContext: await initializePersistenceContext(database),
-      permissions,
-      httpAuth,
       events,
+      httpAuth,
+      logger,
+      permissions,
+      permissionsRegistry,
+      persistenceContext,
       signals,
     });
   });

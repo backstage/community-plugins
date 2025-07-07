@@ -25,9 +25,6 @@ import {
   BasicPermission,
 } from '@backstage/plugin-permission-common';
 import {
-  announcementCreatePermission,
-  announcementDeletePermission,
-  announcementUpdatePermission,
   announcementEntityPermissions,
   EVENTS_TOPIC_ANNOUNCEMENTS,
   EVENTS_ACTION_CREATE_ANNOUNCEMENT,
@@ -39,7 +36,6 @@ import {
   EVENTS_ACTION_DELETE_TAG,
   MAX_TITLE_TAG_LENGTH,
 } from '@backstage-community/plugin-announcements-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
 
@@ -72,18 +68,20 @@ export async function createRouter(
   context: AnnouncementsContext,
 ): Promise<express.Router> {
   const {
+    config,
+    events,
+    httpAuth,
+    logger,
     persistenceContext,
     permissions,
-    httpAuth,
-    config,
-    logger,
-    events,
     signals,
   } = context;
 
-  const permissionIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: Object.values(announcementEntityPermissions),
-  });
+  const {
+    announcementCreatePermission,
+    announcementDeletePermission,
+    announcementUpdatePermission,
+  } = announcementEntityPermissions;
 
   const isRequestAuthorized = async (
     req: Request,
@@ -102,7 +100,6 @@ export async function createRouter(
 
   const router = Router();
   router.use(express.json());
-  router.use(permissionIntegrationRouter);
 
   router.get(
     '/announcements',
