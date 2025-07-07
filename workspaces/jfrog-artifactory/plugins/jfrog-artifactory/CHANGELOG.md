@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 1.16.0
+
+### Minor Changes
+
+- 3dab416: Adds the possibility to use multiple artifactory instances
+
+### Patch Changes
+
+- 7f18c19: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+
 ## 1.15.3
 
 ### Patch Changes
