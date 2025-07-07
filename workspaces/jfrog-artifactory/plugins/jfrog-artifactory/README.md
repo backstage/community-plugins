@@ -35,7 +35,7 @@ proxy:
     '/jfrog-instance1': # This is a local alias for the proxy endpoint, not the actual Artifactory hostname
       target: 'https://<hostname1>'
       # Rest of the config for hostname1
-    '/jfrog-instance2': 
+    '/jfrog-instance2':
       target: 'https://<hostname2>'
 ```
 
