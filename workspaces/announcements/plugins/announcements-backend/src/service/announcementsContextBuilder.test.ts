@@ -39,6 +39,7 @@ describe('buildAnnouncementsContext', () => {
       authorize: jest.fn(),
       authorizeConditional: jest.fn(),
     };
+
     const httpAuth: HttpAuthService = {
       credentials: jest.fn(),
       issueUserCookie: jest.fn(),
@@ -58,6 +59,7 @@ describe('buildAnnouncementsContext', () => {
       config,
       database,
       permissions,
+      permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth,
       events,
       signals,
