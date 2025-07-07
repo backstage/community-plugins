@@ -21,6 +21,7 @@ import { createRouter } from './router';
 import { signalsServiceRef } from '@backstage/plugin-signals-node';
 import { eventsServiceRef } from '@backstage/plugin-events-node';
 import { buildAnnouncementsContext } from './service';
+import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 
 /**
  * A backend for the announcements plugin.
@@ -31,34 +32,41 @@ export const announcementsPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        logger: coreServices.logger,
-        http: coreServices.httpRouter,
-        permissions: coreServices.permissions,
-        database: coreServices.database,
-        httpAuth: coreServices.httpAuth,
         config: coreServices.rootConfig,
+        database: coreServices.database,
         events: eventsServiceRef,
+        http: coreServices.httpRouter,
+        httpAuth: coreServices.httpAuth,
+        logger: coreServices.logger,
+        permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
         signals: signalsServiceRef,
       },
       async init({
+        config,
+        database,
+        events,
         http,
+        httpAuth,
         logger,
         permissions,
-        database,
-        httpAuth,
-        config,
-        events,
+        permissionsRegistry,
         signals,
       }) {
         const context = await buildAnnouncementsContext({
-          events,
-          logger,
           config,
           database,
-          permissions,
-          signals,
+          events,
           httpAuth,
+          logger,
+          permissions,
+          permissionsRegistry,
+          signals,
         });
+
+        permissionsRegistry.addPermissions(
+          Object.values(announcementEntityPermissions),
+        );
 
         const router = await createRouter(context);
 
