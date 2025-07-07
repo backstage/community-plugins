@@ -69,6 +69,7 @@ describe('createRouter', () => {
       config: mockServices.rootConfig.mock(),
       persistenceContext: mockPersistenceContext,
       permissions: mockPermissions,
+      permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth: mockHttpAuth,
     };
 
