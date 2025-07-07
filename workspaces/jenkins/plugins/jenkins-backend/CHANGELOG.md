@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.16.0
+
+### Minor Changes
+
+- a9d0544: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [a9d0544]
+  - @backstage-community/plugin-jenkins-common@0.8.0
+
 ## 0.15.0
 
 ### Minor Changes
