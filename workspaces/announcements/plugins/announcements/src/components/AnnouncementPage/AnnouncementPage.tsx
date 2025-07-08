@@ -28,10 +28,7 @@ import {
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import {
-  EntityPeekAheadPopover,
-  EntityRefLink,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
@@ -57,14 +54,10 @@ const AnnouncementDetails = ({
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover
+      <EntityRefLink
         entityRef={announcement.on_behalf_of || announcement.publisher}
-      >
-        <EntityRefLink
-          entityRef={announcement.on_behalf_of || announcement.publisher}
-          hideIcon
-        />
-      </EntityPeekAheadPopover>
+        hideIcon
+      />
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>
   );
