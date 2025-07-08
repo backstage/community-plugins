@@ -1,5 +1,18 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 1a231d9: Potentially BREAKING CHANGES for those who were still using the deprecated code.
+
+  - Removes code related to deprecated search collator from `@backstage-community/plugin-announcements-backend` (import from `@backstage-community/plugin-search-backend-module-announcements`)
+  - Removes code related to deprecated `announcementsService` from `@backstage-community/plugin-announcements-node` in favor of `announcementsServiceRef`
+
+### Patch Changes
+
+- cbc8c92: Deprecates createPermissionIntegrationRouter in favor of leveraging the new PermissionsRegistryService. There should be no external impact to end users.
+
 ## 0.7.0
 
 ### Minor Changes
