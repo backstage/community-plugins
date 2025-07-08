@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.9.1
+
+### Patch Changes
+
+- dc03b75: Remove redundant `EntityPeekAheadPopover` when hovering over user or group entity.
+
 ## 0.9.0
 
 ### Minor Changes
