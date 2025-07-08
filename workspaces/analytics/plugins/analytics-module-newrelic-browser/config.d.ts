@@ -53,6 +53,41 @@ export interface Config {
          * @visibility frontend
          */
         cookiesEnabled: boolean;
+
+        /**
+         * Session Replay configuration
+         * @deepVisibility frontend
+         */
+        sessionReplay?: {
+          /**
+           * Whether to enable Session Replay, defaults to false
+           */
+          enabled: boolean;
+          /**
+           * Sampling rate for session replay, defaults to 0
+           */
+          samplingRate?: number;
+          /**
+           * Error sampling rate for session replay, defaults to 100
+           */
+          errorSamplingRate?: number;
+          /**
+           * Whether to mask all inputs, defaults to false
+           */
+          maskTextSelector?: string;
+          /**
+           * Whether to mask all inputs, defaults to true
+           */
+          maskAllInputs?: boolean;
+          /**
+           * Whether to collect fonts, defaults to true
+           */
+          collectFonts?: boolean;
+          /**
+           * Block selector for session replay, defaults to true
+           */
+          blockSelector?: string;
+        };
       };
     };
   };
