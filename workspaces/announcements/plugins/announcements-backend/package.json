@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:^",
-    "@backstage-community/plugin-search-backend-module-announcements": "workspace:^",
     "@backstage/backend-defaults": "^0.11.0",
     "@backstage/backend-plugin-api": "^1.4.0",
     "@backstage/backend-test-utils": "^1.6.0",
