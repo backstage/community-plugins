@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- b5a8ecf: Added `sendPlainUserId` config, which controls whether hashing of userId should be disabled.
+- 70f97c5: Backstage version bump to v1.40.2
+
 ## 1.16.0
 
 ### Minor Changes
