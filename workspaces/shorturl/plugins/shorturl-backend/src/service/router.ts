@@ -76,7 +76,7 @@ export async function createRouter(
     }
 
     const urlLenght =
-      Number(config.getOptionalString('shorturl.length')) || DEFAULT_URL_LENGTH;
+      Number(config.getOptionalNumber('shorturl.length')) || DEFAULT_URL_LENGTH;
     const urlAlphabet =
       config.getOptionalString('shorturl.alphabet') || DEFAULT_ALPHABET;
     const nanoid = customAlphabet(urlAlphabet, urlLenght);
