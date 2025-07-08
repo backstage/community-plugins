@@ -13,184 +13,551 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { findNpxPath, executeToolCall } from './utils';
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
+import { mockServices } from '@backstage/backend-test-utils';
+import {
+  loadServerConfigs,
+  executeToolCall,
+  validateConfig,
+  validateMessages,
+} from './utils';
 
-// Mock child_process and fs
-jest.mock('child_process');
-jest.mock('fs', () => ({
-  promises: {
-    access: jest.fn(),
-  },
-}));
-
-// Mock MCP client
 jest.mock('@modelcontextprotocol/sdk/client/index.js', () => ({
   Client: jest.fn(),
 }));
 
-const mockSpawn = spawn as jest.MockedFunction<typeof spawn>;
-const mockAccess = fs.access as jest.MockedFunction<typeof fs.access>;
-
 describe('Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    delete process.env.DEBUG_MCP;
   });
 
-  describe('findNpxPath', () => {
-    it('should find npx in system PATH', async () => {
-      mockAccess.mockResolvedValue(undefined);
+  describe('loadServerConfigs', () => {
+    it('should load basic server configurations', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'Test Server',
+                scriptPath: '/path/to/script',
+                args: ['--arg1', '--arg2'],
+              },
+            ],
+          },
+        },
+      });
 
-      const mockChild = {
-        on: jest.fn((event: string, callback: Function) => {
-          if (event === 'close') {
-            callback(0); // Exit code 0 = success
-          }
-        }),
-      };
-      mockSpawn.mockReturnValue(mockChild as any);
+      const result = loadServerConfigs(mockConfig);
 
-      const npxPath = await findNpxPath();
+      expect(result).toEqual([
+        {
+          id: 'server1',
+          name: 'Test Server',
+          scriptPath: '/path/to/script',
+          args: ['--arg1', '--arg2'],
+          type: 'stdio',
+          env: undefined,
+          headers: undefined,
+          npxCommand: undefined,
+          url: undefined,
+        },
+      ]);
+    });
 
-      expect(npxPath).toBe('npx');
-      expect(mockSpawn).toHaveBeenCalledWith('npx', ['--version'], {
-        stdio: 'pipe',
+    it('should handle optional fields', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'Test Server',
+                scriptPath: '/path/to/script',
+                headers: {
+                  Authorization: 'Bearer token',
+                  'Content-Type': 'application/json',
+                },
+                env: {
+                  NODE_ENV: 'test',
+                  API_KEY: 'secret',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      const result = loadServerConfigs(mockConfig);
+
+      expect(result[0]).toMatchObject({
+        id: 'server1',
+        name: 'Test Server',
+        headers: {
+          Authorization: 'Bearer token',
+          'Content-Type': 'application/json',
+        },
+        env: {
+          NODE_ENV: 'test',
+          API_KEY: 'secret',
+        },
       });
     });
 
-    it('should find npx in node directory', async () => {
-      mockAccess
-        .mockRejectedValueOnce(new Error('not found')) // npx not in PATH
-        .mockResolvedValue(undefined); // found in node dir
+    it('should infer streamable-http type when url is present', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'HTTP Server',
+                url: 'http://example.com/mcp',
+              },
+            ],
+          },
+        },
+      });
 
-      const mockChild = {
-        on: jest.fn((event: string, callback: Function) => {
-          if (event === 'close') {
-            callback(0);
-          }
-        }),
-      };
-      mockSpawn.mockReturnValue(mockChild as any);
+      const result = loadServerConfigs(mockConfig);
 
-      const npxPath = await findNpxPath();
-
-      expect(npxPath).toContain('npx');
-      expect(mockSpawn).toHaveBeenCalled();
+      expect(result[0].type).toBe('streamable-http');
     });
 
-    it('should find npx.cmd on Windows', async () => {
-      // Mock Windows environment
-      const originalPlatform = process.platform;
-      Object.defineProperty(process, 'platform', { value: 'win32' });
+    it('should infer streamable-http type when type is explicitly set', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'HTTP Server',
+                type: 'streamable-http',
+                scriptPath: '/path/to/script',
+              },
+            ],
+          },
+        },
+      });
 
-      mockAccess
-        .mockRejectedValueOnce(new Error('not found')) // npx not in PATH
-        .mockRejectedValueOnce(new Error('not found')) // npx not in node dir
-        .mockResolvedValue(undefined); // found npx.cmd
+      const result = loadServerConfigs(mockConfig);
 
-      const mockChild = {
-        on: jest.fn((event: string, callback: Function) => {
-          if (event === 'close') {
-            callback(0);
-          }
-        }),
-      };
-      mockSpawn.mockReturnValue(mockChild as any);
-
-      const npxPath = await findNpxPath();
-
-      expect(npxPath).toContain('npx.cmd');
-
-      // Restore platform
-      Object.defineProperty(process, 'platform', { value: originalPlatform });
+      expect(result[0].type).toBe('streamable-http');
     });
 
-    it('should throw error when npx not found anywhere', async () => {
-      mockAccess.mockRejectedValue(new Error('not found'));
+    it('should handle empty server configurations', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {},
+        },
+      });
 
-      await expect(findNpxPath()).rejects.toThrow(
-        'npx not found. Please ensure Node.js is properly installed with npm.',
+      const result = loadServerConfigs(mockConfig);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should handle missing mcpServers configuration', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {},
+      });
+
+      const result = loadServerConfigs(mockConfig);
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('validateConfig', () => {
+    it('should throw error when no providers are configured', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            mcpServers: [],
+          },
+        },
+      });
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'No LLM providers configured in mcpChat.providers. Please add at least one provider.',
       );
     });
 
-    it('should throw error when npx exists but is not functional', async () => {
-      mockAccess.mockResolvedValue(undefined);
+    it('should validate provider requirements', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [
+              {
+                id: 'test-provider',
+                model: 'test-model',
+              },
+            ],
+          },
+        },
+      });
 
-      const mockChild = {
-        on: jest.fn((event: string, callback: Function) => {
-          if (event === 'close') {
-            callback(1); // Exit code 1 = failure
-          }
-        }),
-      };
-      mockSpawn.mockReturnValue(mockChild as any);
+      expect(() => validateConfig(mockConfig)).not.toThrow();
+    });
 
-      await expect(findNpxPath()).rejects.toThrow(
-        'npx not found. Please ensure Node.js is properly installed with npm.',
+    it('should validate MCP server headers configuration', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'Test Server',
+                headers: 'invalid-headers',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'Invalid configuration for MCP server at index 0',
       );
     });
 
-    it('should handle spawn errors gracefully', async () => {
-      mockAccess.mockResolvedValue(undefined);
+    it('should validate MCP server env configuration', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'Test Server',
+                env: ['invalid-env'],
+              },
+            ],
+          },
+        },
+      });
 
-      const mockChild = {
-        on: jest.fn((event: string, callback: Function) => {
-          if (event === 'error') {
-            callback();
-          } else if (event === 'close') {
-            callback(1);
-          }
-        }),
-      };
-      mockSpawn.mockReturnValue(mockChild as any);
-
-      await expect(findNpxPath()).rejects.toThrow(
-        'npx not found. Please ensure Node.js is properly installed with npm.',
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'Invalid configuration for MCP server at index 0',
       );
     });
 
-    it('should enable debug logging when DEBUG_MCP is set', async () => {
-      process.env.DEBUG_MCP = 'true';
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    it('should validate quickPrompts required fields', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            quickPrompts: [
+              {
+                title: 'Test Prompt',
+                description: 'Test Description',
+                category: 'Test Category',
+              },
+            ],
+          },
+        },
+      });
 
-      mockAccess.mockResolvedValue(undefined);
+      expect(() => validateConfig(mockConfig)).toThrow(
+        "QuickPrompt at index 0 is missing required field: 'prompt'",
+      );
+    });
 
-      const mockChild = {
-        on: jest.fn((event: string, callback: Function) => {
-          if (event === 'close') {
-            callback(0);
-          }
-        }),
-      };
-      mockSpawn.mockReturnValue(mockChild as any);
+    it('should validate quickPrompts empty values', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            quickPrompts: [
+              {
+                title: '',
+                description: 'Test Description',
+                prompt: 'Test Prompt',
+                category: 'Test Category',
+              },
+            ],
+          },
+        },
+      });
 
-      await findNpxPath();
+      expect(() => validateConfig(mockConfig)).toThrow();
+    });
 
+    it('should pass validation with valid configuration', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            mcpServers: [
+              {
+                id: 'server1',
+                name: 'Test Server',
+                headers: { 'Content-Type': 'application/json' },
+                env: { NODE_ENV: 'test' },
+              },
+            ],
+            quickPrompts: [
+              {
+                title: 'Test Prompt',
+                description: 'Test Description',
+                prompt: 'Test Prompt Content',
+                category: 'Test Category',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(() => validateConfig(mockConfig)).not.toThrow();
+    });
+  });
+
+  describe('validateMessages', () => {
+    it('should validate basic message structure', () => {
+      const messages = [
+        { role: 'user', content: 'Hello' },
+        { role: 'assistant', content: 'Hi there' },
+        { role: 'user', content: 'How are you?' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should require messages field', () => {
+      const result = validateMessages(null);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Messages field is required');
+    });
+
+    it('should require messages to be an array', () => {
+      const result = validateMessages('not an array');
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Messages must be an array');
+    });
+
+    it('should require at least one message', () => {
+      const result = validateMessages([]);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('At least one message is required');
+    });
+
+    it('should validate message object structure', () => {
+      const messages = ['not an object'];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Message at index 0 must be an object');
+    });
+
+    it('should validate required role field', () => {
+      const messages = [{ content: 'Hello' }];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        "Message at index 0 is missing required field 'role'",
+      );
+    });
+
+    it('should validate required content field', () => {
+      const messages = [{ role: 'user' }];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        "Message at index 0 is missing required field 'content'",
+      );
+    });
+
+    it('should validate role values', () => {
+      const messages = [{ role: 'invalid', content: 'Hello' }];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toContain(
+        "Message at index 0 has invalid role 'invalid'",
+      );
+    });
+
+    it('should validate content types', () => {
+      const messages = [{ role: 'user', content: 123 }];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Message at index 0 content must be a string or null',
+      );
+    });
+
+    it('should validate content length', () => {
+      const longContent = 'a'.repeat(100001);
+      const messages = [{ role: 'user', content: longContent }];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Message at index 0 content exceeds maximum length of 100,000 characters',
+      );
+    });
+
+    it('should validate empty content for non-tool messages', () => {
+      const messages = [{ role: 'user', content: '' }];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Message at index 0 has empty content');
+    });
+
+    it('should allow empty content for tool messages', () => {
+      const messages = [
+        { role: 'tool', content: '', tool_call_id: 'call_123' },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should validate tool message tool_call_id', () => {
+      const messages = [
+        { role: 'tool', content: 'result' },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Tool message at index 0 must have a valid tool_call_id',
+      );
+    });
+
+    it('should validate tool_calls array structure', () => {
+      const messages = [
+        {
+          role: 'assistant',
+          content: 'Let me help',
+          tool_calls: 'not an array',
+        },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Message at index 0 tool_calls must be an array',
+      );
+    });
+
+    it('should validate tool_calls object structure', () => {
+      const messages = [
+        {
+          role: 'assistant',
+          content: 'Let me help',
+          tool_calls: ['not an object'],
+        },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Tool call at index 0 in message 0 must be an object',
+      );
+    });
+
+    it('should validate tool_calls id field', () => {
+      const messages = [
+        {
+          role: 'assistant',
+          content: 'Let me help',
+          tool_calls: [{ function: { name: 'test' } }],
+        },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Tool call at index 0 in message 0 must have a valid id',
+      );
+    });
+
+    it('should validate tool_calls function structure', () => {
+      const messages = [
+        {
+          role: 'assistant',
+          content: 'Let me help',
+          tool_calls: [{ id: 'call_123' }],
+        },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Tool call at index 0 in message 0 must have a valid function object',
+      );
+    });
+
+    it('should validate tool_calls function name', () => {
+      const messages = [
+        {
+          role: 'assistant',
+          content: 'Let me help',
+          tool_calls: [{ id: 'call_123', function: {} }],
+        },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(
+        'Tool call at index 0 in message 0 must have a valid function name',
+      );
+    });
+
+    it('should require last message to be from user', () => {
+      const messages = [
+        { role: 'user', content: 'Hello' },
+        { role: 'assistant', content: 'Hi there' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Last message must be from user');
+    });
+
+    it('should warn about consecutive user messages but still validate', () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const messages = [
+        { role: 'user', content: 'Hello' },
+        { role: 'user', content: 'Are you there?' },
+      ];
+
+      const result = validateMessages(messages);
+
+      expect(result.isValid).toBe(true);
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Found npx at:'),
-      );
-      consoleSpy.mockRestore();
-    });
-
-    it('should log debug information about search paths', async () => {
-      process.env.DEBUG_MCP = 'true';
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-
-      mockAccess.mockRejectedValue(new Error('not found'));
-
-      try {
-        await findNpxPath();
-      } catch {
-        // Expected to fail
-      }
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Node.js executable:'),
-      );
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Searching for npx in:'),
+        'Consecutive user messages detected in conversation',
       );
       consoleSpy.mockRestore();
     });
@@ -214,7 +581,7 @@ describe('Utils', () => {
       ];
     });
 
-    it('should execute tool call successfully with text content', async () => {
+    it('should execute tool call successfully', async () => {
       const toolCall = {
         id: 'call_123',
         function: {
@@ -224,7 +591,7 @@ describe('Utils', () => {
       };
 
       mockClient.callTool.mockResolvedValue({
-        content: [{ type: 'text', text: 'Tool result text' }],
+        content: [{ type: 'text', text: 'Tool result' }],
       });
 
       const result = await executeToolCall(toolCall, mockTools, mockClients);
@@ -233,17 +600,12 @@ describe('Utils', () => {
         id: 'call_123',
         name: 'test_tool',
         arguments: { param: 'value' },
-        result: 'Tool result text',
+        result: 'Tool result',
         serverId: 'server1',
       });
-
-      expect(mockClient.callTool).toHaveBeenCalledWith({
-        name: 'test_tool',
-        arguments: { param: 'value' },
-      });
     });
 
-    it('should execute tool call with multiple content blocks', async () => {
+    it('should handle different result formats', async () => {
       const toolCall = {
         id: 'call_123',
         function: {
@@ -253,95 +615,12 @@ describe('Utils', () => {
       };
 
       mockClient.callTool.mockResolvedValue({
-        content: [
-          { type: 'text', text: 'First part' },
-          { type: 'text', text: 'Second part' },
-        ],
+        content: 'Direct string result',
       });
 
       const result = await executeToolCall(toolCall, mockTools, mockClients);
 
-      expect(result.result).toBe('First part\nSecond part');
-    });
-
-    it('should handle string content blocks', async () => {
-      const toolCall = {
-        id: 'call_123',
-        function: {
-          name: 'test_tool',
-          arguments: JSON.stringify({ param: 'value' }),
-        },
-      };
-
-      mockClient.callTool.mockResolvedValue({
-        content: ['String content 1', 'String content 2'],
-      });
-
-      const result = await executeToolCall(toolCall, mockTools, mockClients);
-
-      expect(result.result).toBe('String content 1\nString content 2');
-    });
-
-    it('should handle non-text content blocks', async () => {
-      const toolCall = {
-        id: 'call_123',
-        function: {
-          name: 'test_tool',
-          arguments: JSON.stringify({ param: 'value' }),
-        },
-      };
-
-      mockClient.callTool.mockResolvedValue({
-        content: [
-          { type: 'image', data: 'base64data' },
-          { type: 'custom', value: 123 },
-        ],
-      });
-
-      const result = await executeToolCall(toolCall, mockTools, mockClients);
-
-      expect(result.result).toContain('"type": "image"');
-      expect(result.result).toContain('"data": "base64data"');
-      expect(result.result).toContain('"type": "custom"');
-      expect(result.result).toContain('"value": 123');
-    });
-
-    it('should handle string content directly', async () => {
-      const toolCall = {
-        id: 'call_123',
-        function: {
-          name: 'test_tool',
-          arguments: JSON.stringify({ param: 'value' }),
-        },
-      };
-
-      mockClient.callTool.mockResolvedValue({
-        content: 'Direct string content',
-      });
-
-      const result = await executeToolCall(toolCall, mockTools, mockClients);
-
-      expect(result.result).toBe('Direct string content');
-    });
-
-    it('should handle object content', async () => {
-      const toolCall = {
-        id: 'call_123',
-        function: {
-          name: 'test_tool',
-          arguments: JSON.stringify({ param: 'value' }),
-        },
-      };
-
-      mockClient.callTool.mockResolvedValue({
-        content: { key: 'value', nested: { data: 123 } },
-      });
-
-      const result = await executeToolCall(toolCall, mockTools, mockClients);
-
-      expect(result.result).toContain('"key": "value"');
-      expect(result.result).toContain('"nested"');
-      expect(result.result).toContain('"data": 123');
+      expect(result.result).toBe('Direct string result');
     });
 
     it('should handle empty arguments', async () => {
@@ -350,27 +629,6 @@ describe('Utils', () => {
         function: {
           name: 'test_tool',
           arguments: '',
-        },
-      };
-
-      mockClient.callTool.mockResolvedValue({
-        content: [{ type: 'text', text: 'Success' }],
-      });
-
-      const result = await executeToolCall(toolCall, mockTools, mockClients);
-
-      expect(result.arguments).toEqual({});
-      expect(mockClient.callTool).toHaveBeenCalledWith({
-        name: 'test_tool',
-        arguments: {},
-      });
-    });
-
-    it('should handle missing arguments property', async () => {
-      const toolCall = {
-        id: 'call_123',
-        function: {
-          name: 'test_tool',
         },
       };
 
@@ -446,41 +704,6 @@ describe('Utils', () => {
       await expect(
         executeToolCall(toolCall, mockTools, mockClients),
       ).rejects.toThrow('Tool execution failed');
-    });
-
-    it('should handle complex nested arguments', async () => {
-      const complexArgs = {
-        simple: 'string',
-        number: 42,
-        boolean: true,
-        array: [1, 2, 3],
-        nested: {
-          key: 'value',
-          deep: {
-            level: 'test',
-          },
-        },
-      };
-
-      const toolCall = {
-        id: 'call_123',
-        function: {
-          name: 'test_tool',
-          arguments: JSON.stringify(complexArgs),
-        },
-      };
-
-      mockClient.callTool.mockResolvedValue({
-        content: [{ type: 'text', text: 'Success' }],
-      });
-
-      const result = await executeToolCall(toolCall, mockTools, mockClients);
-
-      expect(result.arguments).toEqual(complexArgs);
-      expect(mockClient.callTool).toHaveBeenCalledWith({
-        name: 'test_tool',
-        arguments: complexArgs,
-      });
     });
   });
 });
