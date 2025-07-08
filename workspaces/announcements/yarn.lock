@@ -2631,7 +2631,6 @@ __metadata:
   resolution: "@backstage-community/plugin-announcements-backend@workspace:plugins/announcements-backend"
   dependencies:
     "@backstage-community/plugin-announcements-common": "workspace:^"
-    "@backstage-community/plugin-search-backend-module-announcements": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.11.0"
     "@backstage/backend-plugin-api": "npm:^1.4.0"
     "@backstage/backend-test-utils": "npm:^1.6.0"

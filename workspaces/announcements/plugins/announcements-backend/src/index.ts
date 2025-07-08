@@ -14,11 +14,3 @@
  * limitations under the License.
  */
 export { announcementsPlugin as default } from './plugin';
-
-import { AnnouncementCollatorFactory as AnnouncementCollatorFactory_ } from '@backstage-community/plugin-search-backend-module-announcements';
-
-/**
- * @public
- * @deprecated Use `AnnouncementCollatorFactory` from `@backstage-community/plugin-search-backend-module-announcements` instead
- */
-export type AnnouncementCollatorFactory = AnnouncementCollatorFactory_;
