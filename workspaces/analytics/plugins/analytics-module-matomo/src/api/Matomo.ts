@@ -36,14 +36,17 @@ export class MatomoAnalytics implements AnalyticsApi {
     siteId: number;
     identity: string;
     identityApi?: IdentityApi;
+    sendPlainUserId?: boolean;
   }) {
     loadMatomo(options.matomoUrl, options.siteId);
 
     /* Add user tracking if identity is enabled and identityApi is provided */
     if (options.identity !== 'disabled' && options.identityApi) {
-      this.setUserFrom(options.identityApi).then(() => {
-        return;
-      });
+      this.setUserFrom(options.identityApi, options.sendPlainUserId).catch(
+        () => {
+          return;
+        },
+      );
     }
   }
 
@@ -55,6 +58,10 @@ export class MatomoAnalytics implements AnalyticsApi {
   ) {
     const identity =
       config.getOptionalString('app.analytics.matomo.identity') || 'disabled';
+
+    const sendPlainUserId = config.getOptionalBoolean(
+      'app.analytics.matomo.sendPlainUserId',
+    );
 
     const matomoUrl = config.getString('app.analytics.matomo.host');
     const siteId = config.getNumber('app.analytics.matomo.siteId');
@@ -70,6 +77,7 @@ export class MatomoAnalytics implements AnalyticsApi {
       siteId,
       identity,
       identityApi: options?.identityApi,
+      sendPlainUserId,
     });
   }
 
@@ -86,13 +94,20 @@ export class MatomoAnalytics implements AnalyticsApi {
     ]);
   }
 
-  private async setUserFrom(identityApi: IdentityApi) {
+  private async setUserFrom(
+    identityApi: IdentityApi,
+    sendPlainUserId?: boolean,
+  ) {
     const { userEntityRef } = await identityApi.getBackstageIdentity();
 
-    // Prevent PII from being passed to Matomo
-    const userId = await this.getPrivateUserId(userEntityRef);
+    if (sendPlainUserId) {
+      window._paq.push(['setUserId', userEntityRef]);
+    } else {
+      // Prevent PII from being passed to Matomo
+      const userId = await this.getPrivateUserId(userEntityRef);
 
-    window._paq.push(['setUserId', userId]);
+      window._paq.push(['setUserId', userId]);
+    }
   }
 
   private getPrivateUserId(userEntityRef: string): Promise<string> {
