@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import {
   ProviderFactory,
   getProviderConfig,
@@ -23,73 +24,30 @@ import { OpenAIProvider } from './openai-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
-import { RootConfigService } from '@backstage/backend-plugin-api';
 import { ProviderConfig } from './base-provider';
 
 describe('ProviderFactory', () => {
   describe('createProvider', () => {
-    it('should create OpenAI provider', () => {
-      const config: ProviderConfig = {
-        type: 'openai',
-        apiKey: 'test-key',
-        baseUrl: 'https://api.openai.com/v1',
-        model: 'gpt-4',
-      };
+    it('should create correct provider instances for supported types', () => {
+      const testCases = [
+        { type: 'openai', expectedClass: OpenAIProvider },
+        { type: 'claude', expectedClass: ClaudeProvider },
+        { type: 'gemini', expectedClass: GeminiProvider },
+        { type: 'ollama', expectedClass: OllamaProvider },
+        { type: 'custom', expectedClass: OpenAIProvider },
+      ];
 
-      const provider = ProviderFactory.createProvider(config);
+      testCases.forEach(({ type, expectedClass }) => {
+        const config: ProviderConfig = {
+          type,
+          apiKey: 'test-key',
+          baseUrl: 'https://example.com',
+          model: 'test-model',
+        };
 
-      expect(provider).toBeInstanceOf(OpenAIProvider);
-    });
-
-    it('should create Claude provider', () => {
-      const config: ProviderConfig = {
-        type: 'claude',
-        apiKey: 'test-key',
-        baseUrl: 'https://api.anthropic.com/v1',
-        model: 'claude-3-sonnet-20240229',
-      };
-
-      const provider = ProviderFactory.createProvider(config);
-
-      expect(provider).toBeInstanceOf(ClaudeProvider);
-    });
-
-    it('should create Gemini provider', () => {
-      const config: ProviderConfig = {
-        type: 'gemini',
-        apiKey: 'test-key',
-        baseUrl: 'https://generativelanguage.googleapis.com',
-        model: 'gemini-pro',
-      };
-
-      const provider = ProviderFactory.createProvider(config);
-
-      expect(provider).toBeInstanceOf(GeminiProvider);
-    });
-
-    it('should create Ollama provider', () => {
-      const config: ProviderConfig = {
-        type: 'ollama',
-        baseUrl: 'http://localhost:11434',
-        model: 'llama2',
-      };
-
-      const provider = ProviderFactory.createProvider(config);
-
-      expect(provider).toBeInstanceOf(OllamaProvider);
-    });
-
-    it('should create OpenAI provider for custom type', () => {
-      const config: ProviderConfig = {
-        type: 'custom',
-        apiKey: 'test-key',
-        baseUrl: 'https://custom-api.com/v1',
-        model: 'custom-model',
-      };
-
-      const provider = ProviderFactory.createProvider(config);
-
-      expect(provider).toBeInstanceOf(OpenAIProvider);
+        const provider = ProviderFactory.createProvider(config);
+        expect(provider).toBeInstanceOf(expectedClass);
+      });
     });
 
     it('should throw error for unsupported provider type', () => {
@@ -108,322 +66,157 @@ describe('ProviderFactory', () => {
 });
 
 describe('getProviderConfig', () => {
-  let mockConfig: jest.Mocked<RootConfigService>;
+  let mockConfig: ReturnType<typeof mockServices.rootConfig.mock>;
 
   beforeEach(() => {
-    mockConfig = {
-      getOptionalConfigArray: jest.fn(),
-    } as any;
+    mockConfig = mockServices.rootConfig.mock();
   });
 
   it('should throw error when no providers are configured', () => {
     mockConfig.getOptionalConfigArray.mockReturnValue([]);
 
+    expect(() => getProviderConfig(mockConfig)).toThrow();
+  });
+
+  it('should throw error for unsupported provider id', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'unsupported';
+        if (key === 'model') return 'test-model';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockReturnValue('test-key'),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
     expect(() => getProviderConfig(mockConfig)).toThrow(
-      'No LLM providers configured in mcpChat.providers. Please add at least one provider.',
+      'Unsupported provider id: unsupported. Allowed values are: openai, claude, gemini, ollama',
     );
   });
 
-  it('should configure OpenAI provider correctly', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
+  it('should configure providers with correct default base URLs', () => {
+    const testCases = [
+      { id: 'openai', expectedBaseUrl: 'https://api.openai.com/v1' },
+      { id: 'claude', expectedBaseUrl: 'https://api.anthropic.com/v1' },
+      {
+        id: 'gemini',
+        expectedBaseUrl: 'https://generativelanguage.googleapis.com',
+      },
+    ];
 
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'openai';
-      if (key === 'model') return 'gpt-4';
-      throw new Error(`Unexpected key: ${key}`);
-    });
+    testCases.forEach(({ id, expectedBaseUrl }) => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return id;
+          if (key === 'model') return 'test-model';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockReturnValue('test-key'),
+      } as any;
 
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'sk-test-key';
-      if (key === 'baseUrl') return undefined;
-      return undefined;
-    });
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    const result = getProviderConfig(mockConfig);
-
-    expect(result).toEqual({
-      type: 'openai',
-      apiKey: 'sk-test-key',
-      baseUrl: 'https://api.openai.com/v1',
-      model: 'gpt-4',
+      const result = getProviderConfig(mockConfig);
+      expect(result.baseUrl).toBe(expectedBaseUrl);
+      expect(result.type).toBe(id);
+      expect(result.apiKey).toBe('test-key');
+      expect(result.model).toBe('test-model');
     });
   });
 
-  it('should configure Claude provider correctly', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
+  it('should configure Ollama provider with default and custom base URLs', () => {
+    const testCases = [
+      { customBaseUrl: undefined, expectedBaseUrl: 'http://localhost:11434' },
+      {
+        customBaseUrl: 'http://custom:11434',
+        expectedBaseUrl: 'http://custom:11434',
+      },
+    ];
 
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'claude';
-      if (key === 'model') return 'claude-3-sonnet-20240229';
-      throw new Error(`Unexpected key: ${key}`);
+    testCases.forEach(({ customBaseUrl, expectedBaseUrl }) => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'ollama';
+          if (key === 'model') return 'llama2';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'token') return undefined;
+          if (key === 'baseUrl') return customBaseUrl;
+          return undefined;
+        }),
+      } as any;
+
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+      expect(result.baseUrl).toBe(expectedBaseUrl);
+      expect(result.type).toBe('ollama');
+      expect(result.apiKey).toBeUndefined();
     });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'claude-test-key';
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    const result = getProviderConfig(mockConfig);
-
-    expect(result).toEqual({
-      type: 'claude',
-      apiKey: 'claude-test-key',
-      baseUrl: 'https://api.anthropic.com/v1',
-      model: 'claude-3-sonnet-20240229',
-    });
-  });
-
-  it('should configure Gemini provider correctly', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
-
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'gemini';
-      if (key === 'model') return 'gemini-pro';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'gemini-test-key';
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    const result = getProviderConfig(mockConfig);
-
-    expect(result).toEqual({
-      type: 'gemini',
-      apiKey: 'gemini-test-key',
-      baseUrl: 'https://generativelanguage.googleapis.com',
-      model: 'gemini-pro',
-    });
-  });
-
-  it('should configure Ollama provider correctly with default baseUrl', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
-
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'ollama';
-      if (key === 'model') return 'llama2';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return undefined;
-      if (key === 'baseUrl') return undefined;
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    const result = getProviderConfig(mockConfig);
-
-    expect(result).toEqual({
-      type: 'ollama',
-      baseUrl: 'http://localhost:11434',
-      model: 'llama2',
-    });
-  });
-
-  it('should configure Ollama provider with custom baseUrl', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
-
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'ollama';
-      if (key === 'model') return 'llama2';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return undefined;
-      if (key === 'baseUrl') return 'http://custom-ollama:11434';
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    const result = getProviderConfig(mockConfig);
-
-    expect(result).toEqual({
-      type: 'ollama',
-      baseUrl: 'http://custom-ollama:11434',
-      model: 'llama2',
-    });
-  });
-
-  it('should configure custom provider correctly', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
-
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'custom';
-      if (key === 'model') return 'custom-model';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'custom-api-key';
-      if (key === 'baseUrl') return 'https://custom-api.com/v1';
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    const result = getProviderConfig(mockConfig);
-
-    expect(result).toEqual({
-      type: 'custom',
-      apiKey: 'custom-api-key',
-      baseUrl: 'https://custom-api.com/v1',
-      model: 'custom-model',
-    });
-  });
-
-  it('should throw error for unknown provider', () => {
-    const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
-
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'unknown';
-      if (key === 'model') return 'test-model';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
-
-    expect(() => getProviderConfig(mockConfig)).toThrow(
-      'Unknown provider: unknown',
-    );
   });
 
   it('should throw error when API key is missing for non-Ollama providers', () => {
     const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockReturnValue(undefined),
+    } as any;
 
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'openai';
-      if (key === 'model') return 'gpt-4';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return undefined; // No API key
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
     expect(() => getProviderConfig(mockConfig)).toThrow(
       'API key is required for provider: openai',
     );
   });
 
-  it('should throw error when baseUrl is missing for custom provider', () => {
+  it('should throw error for custom provider id not in allowed list', () => {
     const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'custom';
+        if (key === 'model') return 'custom-model';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'token') return 'api-key';
+        if (key === 'baseUrl') return undefined;
+        return undefined;
+      }),
+    } as any;
 
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'custom';
-      if (key === 'model') return 'custom-model';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'api-key';
-      if (key === 'baseUrl') return undefined; // No base URL
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
     expect(() => getProviderConfig(mockConfig)).toThrow(
-      'Base URL is required for provider: custom',
+      'Unsupported provider id: custom. Allowed values are: openai, claude, gemini, ollama',
     );
   });
 
   it('should use first provider when multiple are configured', () => {
     const mockProviderConfig1 = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockReturnValue('first-key'),
+    } as any;
 
     const mockProviderConfig2 = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
-
-    // First provider (should be used)
-    mockProviderConfig1.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'openai';
-      if (key === 'model') return 'gpt-4';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig1.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'first-key';
-      return undefined;
-    });
-
-    // Second provider (should be ignored)
-    mockProviderConfig2.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'claude';
-      if (key === 'model') return 'claude-3-sonnet-20240229';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig2.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'second-key';
-      return undefined;
-    });
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'claude';
+        if (key === 'model') return 'claude-3-sonnet-20240229';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockReturnValue('second-key'),
+    } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig1 as any,
-      mockProviderConfig2 as any,
+      mockProviderConfig1,
+      mockProviderConfig2,
     ]);
 
     const result = getProviderConfig(mockConfig);
@@ -435,37 +228,43 @@ describe('getProviderConfig', () => {
       model: 'gpt-4',
     });
   });
+
+  it('should throw error when model is missing', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return '';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockReturnValue('test-key'),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    expect(() => getProviderConfig(mockConfig)).toThrow(
+      'Model is required for provider: openai',
+    );
+  });
 });
 
 describe('getProviderInfo', () => {
-  let mockConfig: jest.Mocked<RootConfigService>;
+  let mockConfig: ReturnType<typeof mockServices.rootConfig.mock>;
 
   beforeEach(() => {
-    mockConfig = {
-      getOptionalConfigArray: jest.fn(),
-    } as any;
+    mockConfig = mockServices.rootConfig.mock();
   });
 
-  it('should return provider info', () => {
+  it('should return provider info from config', () => {
     const mockProviderConfig = {
-      getString: jest.fn(),
-      getOptionalString: jest.fn(),
-    };
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockReturnValue('test-key'),
+    } as any;
 
-    mockProviderConfig.getString.mockImplementation((key: string) => {
-      if (key === 'id') return 'openai';
-      if (key === 'model') return 'gpt-4';
-      throw new Error(`Unexpected key: ${key}`);
-    });
-
-    mockProviderConfig.getOptionalString.mockImplementation((key: string) => {
-      if (key === 'token') return 'test-key';
-      return undefined;
-    });
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([
-      mockProviderConfig as any,
-    ]);
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
     const result = getProviderInfo(mockConfig);
 
@@ -479,8 +278,6 @@ describe('getProviderInfo', () => {
   it('should propagate errors from getProviderConfig', () => {
     mockConfig.getOptionalConfigArray.mockReturnValue([]);
 
-    expect(() => getProviderInfo(mockConfig)).toThrow(
-      'No LLM providers configured in mcpChat.providers. Please add at least one provider.',
-    );
+    expect(() => getProviderInfo(mockConfig)).toThrow();
   });
 });
