@@ -34,10 +34,7 @@ import {
   LinkButton,
 } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
-import {
-  EntityPeekAheadPopover,
-  EntityRefLink,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -130,14 +127,10 @@ const AnnouncementCard = ({
     <>
       <Typography variant="body2" color="textSecondary" component="span">
         {t('announcementsPage.card.by')}{' '}
-        <EntityPeekAheadPopover
+        <EntityRefLink
           entityRef={announcement.on_behalf_of || announcement.publisher}
-        >
-          <EntityRefLink
-            entityRef={announcement.on_behalf_of || announcement.publisher}
-            hideIcon
-          />
-        </EntityPeekAheadPopover>
+          hideIcon
+        />
         {announcement.category && (
           <>
             {' '}
