@@ -48,5 +48,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@react-hookz/web": "^25.1.1"
   }
 }

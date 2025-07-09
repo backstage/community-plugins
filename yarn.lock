@@ -1717,6 +1717,7 @@ __metadata:
     "@changesets/parse": "npm:^0.4.0"
     "@manypkg/get-packages": "npm:^2.2.2"
     "@octokit/rest": "npm:^20.1.1"
+    "@react-hookz/web": "npm:^25.1.1"
     "@spotify/eslint-plugin": "npm:^15.0.0"
     array-to-table: "npm:^1.0.1"
     codeowners-utils: "npm:^1.0.2"
@@ -3556,6 +3557,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-hookz/web@npm:^25.1.1":
+  version: 25.1.1
+  resolution: "@react-hookz/web@npm:25.1.1"
+  dependencies:
+    "@ver0/deep-equal": "npm:^1.0.0"
+  peerDependencies:
+    js-cookie: ^3.0.5
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    js-cookie:
+      optional: true
+  checksum: 10/bb91d9551c96535632918e6bc3037b6eac179f0775e2a0382b20545e7c4af178992978f0341e39f6ae7f7d3e4fdea2a96c64193ae6d2f5c45c2c7b98ef427ed3
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-commonjs@npm:^26.0.0":
   version: 26.0.1
   resolution: "@rollup/plugin-commonjs@npm:26.0.1"
@@ -4929,6 +4946,13 @@ __metadata:
   version: 1.2.0
   resolution: "@ungap/structured-clone@npm:1.2.0"
   checksum: 10/c6fe89a505e513a7592e1438280db1c075764793a2397877ff1351721fe8792a966a5359769e30242b3cd023f2efb9e63ca2ca88019d73b564488cc20e3eab12
+  languageName: node
+  linkType: hard
+
+"@ver0/deep-equal@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@ver0/deep-equal@npm:1.0.0"
+  checksum: 10/3e280ff7705fdb8bf1f51ffec982d85d877c0bc4f7de04f3d2ce802c0f5bb7be411c3ee413c8c20bcc8ff2bafa58a61ee2beeaef602672790b852e1457647da7
   languageName: node
   linkType: hard
 

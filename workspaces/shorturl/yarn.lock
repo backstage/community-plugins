@@ -2547,6 +2547,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
+    "@react-hookz/web": "npm:^25.1.1"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
@@ -6864,6 +6865,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-hookz/web@npm:^25.1.1":
+  version: 25.1.1
+  resolution: "@react-hookz/web@npm:25.1.1"
+  dependencies:
+    "@ver0/deep-equal": "npm:^1.0.0"
+  peerDependencies:
+    js-cookie: ^3.0.5
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    js-cookie:
+      optional: true
+  checksum: 10/bb91d9551c96535632918e6bc3037b6eac179f0775e2a0382b20545e7c4af178992978f0341e39f6ae7f7d3e4fdea2a96c64193ae6d2f5c45c2c7b98ef427ed3
+  languageName: node
+  linkType: hard
+
 "@remix-run/router@npm:1.19.2":
   version: 1.19.2
   resolution: "@remix-run/router@npm:1.19.2"
@@ -9621,6 +9638,13 @@ __metadata:
     url-join: "npm:^4.0.1"
     yaml-ast-parser: "npm:^0.0.43"
   checksum: 10/c8580f4201cf643eef702e1e161bfa8e5655d81e9c3ca776470db0d68af44d4f3b6bcfb44ac52f9b4bf85ced3d1c6a80462c89e8b602872adb0532695202d8cd
+  languageName: node
+  linkType: hard
+
+"@ver0/deep-equal@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@ver0/deep-equal@npm:1.0.0"
+  checksum: 10/3e280ff7705fdb8bf1f51ffec982d85d877c0bc4f7de04f3d2ce802c0f5bb7be411c3ee413c8c20bcc8ff2bafa58a61ee2beeaef602672790b852e1457647da7
   languageName: node
   linkType: hard
 
