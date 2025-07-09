@@ -18,7 +18,6 @@ import {
   type TemplateAction,
 } from '@backstage/plugin-scaffolder-node';
 
-import yaml from 'yaml';
 import { z } from 'zod';
 
 import {
@@ -28,6 +27,8 @@ import {
 } from '../../../../generated/now/table';
 import { CreateActionOptions } from '../../../types';
 import { updateOpenAPIConfig } from './helpers';
+
+import { examples } from './delete-record.example';
 
 /**
  * Schema for the input to the `deleteRecord` action.
@@ -52,24 +53,6 @@ const schemaInput = z.object({
 });
 
 const id = 'servicenow:now:table:deleteRecord';
-
-const examples = [
-  {
-    description: 'Delete a record from the incident table',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'deleteRecord',
-          action: id,
-          input: {
-            tableName: 'incident',
-            sysId: '8e67d33b97d1b5108686b680f053af2b',
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * Creates an action handler that deletes the specified record from the specified table.
