@@ -62,12 +62,14 @@ const schemaInput = z.object({
   ),
 });
 
+const id = 'regex:replace';
+
 /**
  * @public
  */
 export const createReplaceAction = () => {
   return createTemplateAction({
-    id: 'regex:replace',
+    id,
     description:
       'Replaces strings that match a regular expression pattern with a specified replacement string',
     examples,
