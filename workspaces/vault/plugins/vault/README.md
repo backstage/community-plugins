@@ -46,6 +46,16 @@ To get started, first you need a running instance of Vault. You can follow [this
      kvVersion: <kv-version> # Optional. The K/V version that your instance is using. The available options are '1' or '2'
    ```
 
+4. Get a `VAULT_TOKEN` with **LIST** permissions, as it's enough for the plugin. You can check [this tutorial](https://learn.hashicorp.com/tutorials/vault/tokens) for more info.
+
+5. If you also want to use the `renew` functionality, you need to attach the following block to your custom policy, so that Backstage can perform a token-renew:
+   ```
+     # Allow tokens to renew themselves
+     path "auth/token/renew-self" {
+       capabilities = ["update"]
+     }
+   ```
+
 ### Use new frontend system
 
 1. Install the frontend plugin:
@@ -72,16 +82,6 @@ To get started, first you need a running instance of Vault. You can follow [this
        // ...
      ],
    });
-   ```
-
-3. Get a `VAULT_TOKEN` with **LIST** permissions, as it's enough for the plugin. You can check [this tutorial](https://learn.hashicorp.com/tutorials/vault/tokens) for more info.
-
-4. If you also want to use the `renew` functionality, you need to attach the following block to your custom policy, so that Backstage can perform a token-renew:
-   ```
-     # Allow tokens to renew themselves
-     path "auth/token/renew-self" {
-       capabilities = ["update"]
-     }
    ```
 
 ## Integration with the Catalog
