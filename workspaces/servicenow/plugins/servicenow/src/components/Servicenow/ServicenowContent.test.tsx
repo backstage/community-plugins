@@ -21,7 +21,7 @@ import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicen
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@material-ui/core';
 import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
-import { mockIncidents } from '../../mocks/mockData';
+
 import userEvent from '@testing-library/user-event';
 import { ServicenowContent } from './ServicenowContent';
 import {
@@ -31,6 +31,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { of } from 'rxjs';
+import { mockRefinedIncidentData } from '../../__fixtures__/mockRefinedIncidentData';
 
 const mockEntity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -91,8 +92,8 @@ describe('ServicenowContent', () => {
   beforeEach(() => {
     mockServiceNowApi.getIncidents.mockReset();
     mockServiceNowApi.getIncidents.mockResolvedValue({
-      incidents: mockIncidents,
-      totalCount: mockIncidents.length,
+      incidents: mockRefinedIncidentData,
+      totalCount: mockRefinedIncidentData.length,
     });
   });
 
@@ -125,15 +126,17 @@ describe('ServicenowContent', () => {
     expect(mockServiceNowApi.getIncidents).toHaveBeenCalledTimes(1);
 
     expect(
-      await screen.findByText(mockIncidents[0].number),
+      await screen.findByText(mockRefinedIncidentData[0].number),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText(`ServiceNow tickets (${mockIncidents.length})`),
+      screen.getByText(
+        `ServiceNow tickets (${mockRefinedIncidentData.length})`,
+      ),
     ).toBeInTheDocument();
 
     // First page of incidents
-    mockIncidents.slice(0, 5).forEach(incident => {
+    mockRefinedIncidentData.slice(0, 5).forEach(incident => {
       expect(screen.getByText(incident.number)).toBeInTheDocument();
     });
   });
@@ -162,7 +165,9 @@ describe('ServicenowContent', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(`ServiceNow tickets (${mockIncidents.length})`),
+        screen.getByText(
+          `ServiceNow tickets (${mockRefinedIncidentData.length})`,
+        ),
       ).toBeInTheDocument();
     });
 
@@ -238,7 +243,7 @@ describe('ServicenowContent', () => {
     });
 
     expect(
-      await screen.findByText(mockIncidents[0].number),
+      await screen.findByText(mockRefinedIncidentData[0].number),
     ).toBeInTheDocument();
 
     await waitFor(() => {

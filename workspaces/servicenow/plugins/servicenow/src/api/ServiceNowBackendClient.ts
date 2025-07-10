@@ -69,7 +69,9 @@ export class ServiceNowBackendClient implements ServiceNowBackendAPI {
   }
 }
 
-function incidentsPickToIncidentsData(data: IncidentPick[]): IncidentsData[] {
+export function incidentsPickToIncidentsData(
+  data: IncidentPick[],
+): IncidentsData[] {
   return data.map(item => ({
     sysId: item.sys_id,
     number: item.number,
