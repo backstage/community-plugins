@@ -1,12 +1,12 @@
 {
-  "name": "@backstage-community/plugin-vault",
+  "name": "@internal/plugin-vault",
   "version": "0.8.0",
   "description": "A Backstage plugin that integrates towards Vault",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "vault",
     "pluginPackages": [
-      "@backstage-community/plugin-vault",
+      "@internal/plugin-vault",
       "@backstage-community/plugin-vault-backend",
       "@backstage-community/plugin-vault-node"
     ]
@@ -14,7 +14,8 @@
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "types": "dist/index.d.ts",
+    "registry": "https://sandbox.spotifyportal.com/api/plugin-installer/registry/npm"
   },
   "keywords": [
     "backstage",
@@ -40,19 +41,36 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "start": "backstage-cli package start",
-    "test": "backstage-cli package test"
+    "test": "backstage-cli package test",
+    "publish": "yarn npm publish"
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.4",
     "@backstage/core-components": "^0.17.3",
     "@backstage/core-plugin-api": "^1.10.8",
     "@backstage/errors": "^1.2.7",
+    "@backstage/frontend-plugin-api": "^0.10.3",
     "@backstage/plugin-catalog-react": "^1.19.0",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-use": "^17.2.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "devDependencies": {
     "@backstage/cli": "^0.33.0",
