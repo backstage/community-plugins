@@ -58,5 +58,15 @@
   },
   "files": [
     "dist"
+  ],
+  "maintainers": [
+    "@ciiay",
+    "@AndrienkoAleksandr"
+  ],
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "author": "Red Hat",
+  "keywords": [
+    "backstage",
+    "plugin"
   ]
 }
