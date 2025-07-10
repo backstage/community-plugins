@@ -12,9 +12,7 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "keywords": [
     "backstage",
@@ -47,12 +45,28 @@
     "@backstage/core-components": "^0.17.3",
     "@backstage/core-plugin-api": "^1.10.8",
     "@backstage/errors": "^1.2.7",
+    "@backstage/frontend-plugin-api": "^0.10.3",
     "@backstage/plugin-catalog-react": "^1.19.0",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-use": "^17.2.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "devDependencies": {
     "@backstage/cli": "^0.33.0",
