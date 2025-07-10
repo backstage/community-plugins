@@ -98,7 +98,7 @@ This page provides a table listing all the frontend plugins in the Community Plu
 | @backstage-community/plugin-tekton                             | frontend-plugin |           |       | [README](git+https://github.com/backstage/community-plugins.git/blob/master/workspaces/tekton/plugins/tekton/README.md)                                     |
 | @backstage-community/plugin-todo                               | frontend-plugin |           |       | [README](https://github.com/backstage/community-plugins/blob/master/workspaces/todo/plugins/todo/README.md)                                                 |
 | @backstage-community/plugin-topology                           | frontend-plugin |           |       | [README](https://github.com/backstage/community-plugins/blob/master/workspaces/topology/plugins/topology/README.md)                                         |
-| @backstage-community/plugin-vault                              | frontend-plugin |           |       | [README](https://github.com/backstage/community-plugins/blob/master/workspaces/vault/plugins/vault/README.md)                                               |
+| @backstage-community/plugin-vault                              | frontend-plugin | true      | true  | [README](https://github.com/backstage/community-plugins/blob/master/workspaces/vault/plugins/vault/README.md)                                               |
 | @backstage-community/plugin-xcmetrics                          | frontend-plugin |           |       | [README](https://github.com/backstage/community-plugins/blob/master/workspaces/xcmetrics/plugins/xcmetrics/README.md)                                       |
 
 ## Generating Table
