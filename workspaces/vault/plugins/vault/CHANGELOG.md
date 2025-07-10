@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault
 
+## 0.9.0
+
+### Minor Changes
+
+- ada5266: Added support for the new frontend system
+
 ## 0.8.0
 
 ### Minor Changes
