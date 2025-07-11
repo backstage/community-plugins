@@ -19,6 +19,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import semver from 'semver';
+import { listWorkspaces } from './list-workspaces.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,41 +36,34 @@ async function getLatestBackstageVersion() {
 }
 
 // get all workspace versions
-function getWorkspaceVersions() {
+async function getWorkspaceVersions() {
+  const workspaceNames = await listWorkspaces();
   const workspacesDir = path.join(__dirname, '..', 'workspaces');
   const workspaces = [];
 
-  if (!fs.existsSync(workspacesDir)) {
-    throw new Error('Workspaces directory not found');
-  }
+  for (const workspaceName of workspaceNames) {
+    const backstageJsonPath = path.join(
+      workspacesDir,
+      workspaceName,
+      'backstage.json',
+    );
 
-  const entries = fs.readdirSync(workspacesDir, { withFileTypes: true });
-
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const backstageJsonPath = path.join(
-        workspacesDir,
-        entry.name,
-        'backstage.json',
-      );
-
-      if (fs.existsSync(backstageJsonPath)) {
-        try {
-          const backstageJson = JSON.parse(
-            fs.readFileSync(backstageJsonPath, 'utf8'),
-          );
-          if (backstageJson.version) {
-            workspaces.push({
-              name: entry.name,
-              version: backstageJson.version,
-            });
-          }
-        } catch (error) {
-          console.warn(
-            `Warning: Could not read version from ${entry.name}/backstage.json:`,
-            error.message,
-          );
+    if (fs.existsSync(backstageJsonPath)) {
+      try {
+        const backstageJson = JSON.parse(
+          fs.readFileSync(backstageJsonPath, 'utf8'),
+        );
+        if (backstageJson.version) {
+          workspaces.push({
+            name: workspaceName,
+            version: backstageJson.version,
+          });
         }
+      } catch (error) {
+        console.warn(
+          `Warning: Could not read version from ${workspaceName}/backstage.json:`,
+          error.message,
+        );
       }
     }
   }
@@ -163,7 +157,7 @@ function generateDashboard(tiers, latestVersion) {
 // main function
 async function main() {
   const latestVersion = await getLatestBackstageVersion();
-  const workspaces = getWorkspaceVersions();
+  const workspaces = await getWorkspaceVersions();
   const tiers = categorizeWorkspaces(workspaces, latestVersion);
   const dashboard = generateDashboard(tiers, latestVersion);
 
