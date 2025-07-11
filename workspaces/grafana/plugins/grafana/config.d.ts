@@ -34,5 +34,17 @@ export interface Config {
      * @visibility frontend
      */
     unifiedAlerting?: boolean;
+
+    /**
+     * Limit value to pass in Grafana Dashboard search query.
+     * @visibility frontend
+     */
+    grafanaDashboardSearchLimit?: number;
+
+    /**
+     * Max pages of Grafana Dashboard search query to fetch.
+     * @visibility frontend
+     */
+    grafanaDashboardMaxPages?: number;
   };
 }

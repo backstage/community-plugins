@@ -113,6 +113,8 @@ export type Options = {
 };
 
 const DEFAULT_PROXY_PATH = '/grafana/api';
+const DEFAULT_DASHBOARDS_LIMIT: number = 1000; // same as upstream behavior if no limit is specified.
+const DEFAULT_PAGES_LIMIT: number = 1;
 
 const isSingleWord = (input: string): boolean => {
   return input.match(/^[\w-]+$/g) !== null;
@@ -123,14 +125,18 @@ class Client {
   private readonly fetchApi: FetchApi;
   private readonly proxyPath: string;
   private readonly queryEvaluator: QueryEvaluator;
-  private static DASHBOARDS_LIMIT: number = 1000;
-  private static PAGES_LIMIT: number = 1000; // 1000 pages of 1000 dashboards = 1,000,000 dashboards.
+  private readonly grafanaDashboardSearchLimit: number;
+  private readonly grafanaDashboardMaxPages: number;
 
   constructor(opts: Options) {
     this.discoveryApi = opts.discoveryApi;
     this.fetchApi = opts.fetchApi;
     this.proxyPath = opts.proxyPath ?? DEFAULT_PROXY_PATH;
     this.queryEvaluator = new QueryEvaluator();
+    this.grafanaDashboardSearchLimit =
+      opts.grafanaDashboardSearchLimit ?? DEFAULT_DASHBOARDS_LIMIT;
+    this.grafanaDashboardMaxPages =
+      opts.grafanaDashboardMaxPages ?? DEFAULT_PAGES_LIMIT;
   }
 
   public async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
@@ -181,14 +187,14 @@ class Client {
       const dashboards: Dashboard[] = await this.fetchSomeDashboards({
         domain: options.domain,
         page: page++,
-        limit: Client.DASHBOARDS_LIMIT,
+        limit: this.grafanaDashboardSearchLimit,
         tag: options.tag,
       });
       allDashboards.push(...dashboards);
       // pages limit exists to prevent accidental infinite loops from Grafana
       more =
-        dashboards.length >= Client.DASHBOARDS_LIMIT &&
-        page < Client.PAGES_LIMIT;
+        dashboards.length >= this.grafanaDashboardSearchLimit &&
+        page < this.grafanaDashboardMaxPages;
     } while (more);
     return allDashboards;
   }
