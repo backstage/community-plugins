@@ -26,20 +26,12 @@ const __dirname = path.dirname(__filename);
 // get latest stable Backstage release
 async function getLatestBackstageVersion() {
   const response = await fetch(
-    'https://api.github.com/repos/backstage/backstage/releases',
+    'https://versions.backstage.io/v1/tags/main/manifest.json',
   );
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-  const releases = await response.json();
-  const stableRelease = releases.find(
-    release =>
-      !release.prerelease &&
-      !release.tag_name.includes('next') &&
-      !release.tag_name.includes('rc'),
-  );
-
-  if (!stableRelease) throw new Error('No stable releases found');
-  return stableRelease.tag_name;
+  const manifest = await response.json();
+  return manifest.releaseVersion;
 }
 
 // get all workspace versions
