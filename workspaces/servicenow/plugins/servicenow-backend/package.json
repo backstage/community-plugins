@@ -61,7 +61,9 @@
   ],
   "maintainers": [
     "@ciiay",
-    "@AndrienkoAleksandr"
+    "@AndrienkoAleksandr",
+    "@PatAKnight",
+    "@christoph-jerolimov"
   ],
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "author": "Red Hat",
