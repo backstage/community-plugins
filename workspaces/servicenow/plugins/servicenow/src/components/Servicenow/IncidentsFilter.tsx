@@ -20,26 +20,34 @@ import { INCIDENT_STATE_MAP, PRIORITY_MAP } from '../../utils/incidentUtils';
 import { useQueryArrayFilter } from '../../hooks/useQueryArrayFilter';
 import { useMemo, useCallback } from 'react';
 import { SelectItem } from '@backstage/core-components';
+import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 
 export const IncidentsFilter = () => {
   const stateFilter = useQueryArrayFilter('state');
   const priorityFilter = useQueryArrayFilter('priority');
+  const updateQueryParams = useUpdateQueryParams();
 
   const stateValue = useMemo(() => stateFilter.current, [stateFilter]);
   const priorityValue = useMemo(() => priorityFilter.current, [priorityFilter]);
 
   const handleStateChange = useCallback(
     (_e: any, value: SelectItem[]) => {
-      stateFilter.set(value.map(v => v.value));
+      updateQueryParams({
+        state: value.map(v => v.value).join(','),
+        offset: '0',
+      });
     },
-    [stateFilter],
+    [updateQueryParams],
   );
 
   const handlePriorityChange = useCallback(
     (_e: any, value: SelectItem[]) => {
-      priorityFilter.set(value.map(v => v.value));
+      updateQueryParams({
+        priority: value.map(v => v.value).join(','),
+        offset: '0',
+      });
     },
-    [priorityFilter],
+    [updateQueryParams],
   );
 
   return (
