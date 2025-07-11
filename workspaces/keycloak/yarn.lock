@@ -2540,7 +2540,7 @@ __metadata:
     "@backstage/plugin-catalog-node": "npm:^1.17.0"
     "@keycloak/keycloak-admin-client": "npm:26.1.4"
     "@opentelemetry/api": "npm:^1.9.0"
-    "@types/lodash": "npm:4.17.17"
+    "@types/lodash": "npm:4.17.20"
     "@types/uuid": "npm:10.0.0"
     deepmerge: "npm:4.3.1"
     jsonwebtoken: "npm:^9.0.0"
@@ -7497,10 +7497,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.17.17":
-  version: 4.17.17
-  resolution: "@types/lodash@npm:4.17.17"
-  checksum: 10/496459a3cb1a0733bb60532de3899ad6297717af0b9b26ad6821154b2005fec86f29ccd47a2e6f4da4a8c7c818bb8ae73901144e8057ea86b7b02a3d7bb9d13f
+"@types/lodash@npm:4.17.20":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: 10/8cd8ad3bd78d2e06a93ae8d6c9907981d5673655fec7cb274a4d9a59549aab5bb5b3017361280773b8990ddfccf363e14d1b37c97af8a9fe363de677f9a61524
   languageName: node
   linkType: hard
 
