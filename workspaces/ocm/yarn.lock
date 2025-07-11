@@ -2683,7 +2683,7 @@ __metadata:
     "@backstage/plugin-permission-node": "npm:^0.10.0"
     "@kubernetes/client-node": "npm:1.0.0-rc7"
     "@openapitools/openapi-generator-cli": "npm:2.21.0"
-    "@types/express": "npm:4.17.22"
+    "@types/express": "npm:4.17.23"
     "@types/supertest": "npm:2.0.16"
     express: "npm:^4.18.2"
     msw: "npm:1.3.5"
@@ -12873,15 +12873,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:4.17.22, @types/express@npm:^4.17.21, @types/express@npm:^4.17.6":
-  version: 4.17.22
-  resolution: "@types/express@npm:4.17.22"
+"@types/express@npm:4.17.23, @types/express@npm:^4.17.21, @types/express@npm:^4.17.6":
+  version: 4.17.23
+  resolution: "@types/express@npm:4.17.23"
   dependencies:
     "@types/body-parser": "npm:*"
     "@types/express-serve-static-core": "npm:^4.17.33"
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
-  checksum: 10/9497634fc341ff4ac966ec0c529ded03bdacd2c3dae164f10a060ff250c66591b873aedce92d0239869cf3d05615ae9bcad584c7349fe68780242f6fef010c62
+  checksum: 10/cf4d540bbd90801cdc79a46107b8873404698a7fd0c3e8dd42989d52d3bd7f5b8768672e54c20835e41e27349c319bb47a404ad14c0f8db0e9d055ba1cb8a05b
   languageName: node
   linkType: hard
 
