@@ -79,6 +79,11 @@ export interface TechInsightsOptions<
    */
   persistenceContext?: PersistenceContext;
 
+  /**
+   * Optional Allows humanizing the schedule ids.
+   */
+  hunanizeScheduleIds?: boolean;
+
   logger: LoggerService;
   config: Config;
   discovery: DiscoveryService;
@@ -130,6 +135,7 @@ export const buildTechInsightsContext = async <
     scheduler,
     auth,
     urlReader,
+    hunanizeScheduleIds,
   } = options;
 
   const buildFactRetrieverRegistry = (): FactRetrieverRegistry => {
@@ -156,6 +162,7 @@ export const buildTechInsightsContext = async <
     scheduler,
     repository: persistenceContext.techInsightsStore,
     factRetrieverRegistry,
+    hunanizeScheduleIds,
     factRetrieverContext: {
       config,
       discovery,
