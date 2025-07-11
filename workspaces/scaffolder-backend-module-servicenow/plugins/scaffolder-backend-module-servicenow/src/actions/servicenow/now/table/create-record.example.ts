@@ -21,15 +21,20 @@ const id = 'servicenow:now:table:createRecord';
 
 export const examples: TemplateExample[] = [
   {
-    description: 'Delete a record from the incident table',
+    description: 'Create a record in the incident table',
     example: yaml.stringify({
       steps: [
         {
-          id: 'deleteRecord',
+          id: 'createRecord',
           action: id,
+          name: 'Create Record',
           input: {
             tableName: 'incident',
-            sysId: '8e67d33b97d1b5108686b680f053af2b',
+            requestBody: {
+              short_description: 'Test incident',
+              description: 'This is a test incident',
+              severity: '3',
+            },
           },
         },
       ],
