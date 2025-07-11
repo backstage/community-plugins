@@ -6,10 +6,6 @@ The RBAC UI plugin offers a streamlined user interface for effectively managing 
 
 ### Installation
 
-#### Installing as a dynamic plugin?
-
-The sections below are relevant for static plugins. If the plugin is expected to be installed as a dynamic one, follow the [dynamic plugin installation guide](https://github.com/redhat-developer/rhdh/blob/main/docs/dynamic-plugins/installing-plugins.md).
-
 #### Prerequisites
 
 Follow the RBAC backend plugin [README](../rbac-backend/README.md) to integrate rbac in your Backstage instance.
