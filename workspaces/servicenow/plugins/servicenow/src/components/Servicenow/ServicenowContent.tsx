@@ -49,6 +49,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
+import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 
 export const ServicenowContent = () => {
   const { entity } = useEntity();
@@ -64,7 +65,7 @@ export const ServicenowContent = () => {
     IncidentTableFieldEnum.Number,
   );
 
-  const [rowsPerPage, setRowsPerPage] = useQueryState<number>('limit', 5);
+  const [rowsPerPage] = useQueryState<number>('limit', 5);
   const [offset, setOffset] = useQueryState<number>('offset', 0);
   const [state] = useQueryArrayState('state', []);
   const [priority] = useQueryArrayState('priority', []);
@@ -75,6 +76,7 @@ export const ServicenowContent = () => {
   const [incidentsData, setIncidentsData] = useState<IncidentsData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const updateQueryParams = useUpdateQueryParams();
 
   const entityId = entity.metadata.annotations?.[ServiceAnnotationFieldName];
 
@@ -141,8 +143,10 @@ export const ServicenowContent = () => {
 
   const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newLimit = parseInt(event.target.value, 10);
-    setRowsPerPage(newLimit);
-    setOffset(0);
+    updateQueryParams({
+      limit: String(newLimit),
+      offset: '0',
+    });
   };
 
   const handlePageChange = (_event: unknown, page: number) => {
