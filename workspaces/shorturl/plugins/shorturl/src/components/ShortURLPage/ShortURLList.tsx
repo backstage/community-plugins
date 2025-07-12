@@ -15,10 +15,12 @@ export const ShortURLList = ({ refreshFlag }: { refreshFlag: boolean }) => {
 
   const getData = async () => {
     try {
-      const response = await shorturlApi.getAllURLs().then(res => res.json());
+      const res = await shorturlApi.getAllURLs();
+      const response = await res.json();
+
       if (response && response.status === 'ok') {
         if (urlData !== response?.data) {
-          setUrlData(response?.data);
+          setUrlData(response.data);
         }
         setApiFailure(false);
       } else {

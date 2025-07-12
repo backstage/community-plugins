@@ -49,7 +49,7 @@ export const ShortURLGo = () => {
 
   useEffect(() => {
     execute();
-  });
+  }, [execute]);
 
   return (
     <Content>
