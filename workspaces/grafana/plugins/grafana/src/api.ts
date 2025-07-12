@@ -155,7 +155,10 @@ class Client {
   ): Promise<Dashboard[]> {
     const parsedQuery = this.queryEvaluator.parse(query);
     const response = await this.fetch<Dashboard[]>(`/api/search?type=dash-db`);
-    const allDashboards = this.fullyQualifiedDashboardURLs(domain, response);
+    const allDashboards = this.fullyQualifiedDashboardMetadata(
+      domain,
+      response,
+    );
 
     return allDashboards.filter(dashboard => {
       return this.queryEvaluator.evaluate(parsedQuery, dashboard) === true;
@@ -167,16 +170,17 @@ class Client {
       `/api/search?type=dash-db&tag=${tag}`,
     );
 
-    return this.fullyQualifiedDashboardURLs(domain, response);
+    return this.fullyQualifiedDashboardMetadata(domain, response);
   }
 
-  private fullyQualifiedDashboardURLs(
+  private fullyQualifiedDashboardMetadata(
     domain: string,
     dashboards: Dashboard[],
   ): Dashboard[] {
     return dashboards.map(dashboard => ({
       ...dashboard,
       url: domain + dashboard.url,
+      folderTitle: dashboard.folderTitle ?? '',
       folderUrl: domain + dashboard.folderUrl,
     }));
   }
