@@ -53,14 +53,14 @@ export default class TaskManagement {
     const taskPromises = this.tasks.map(async task => {
       try {
         await task();
-      } catch (e) {
-        if (e instanceof Error) {
+      } catch (error) {
+        if (error instanceof Error) {
           this.options.logger.error(
-            `[TaskManagement] Failed to process task: ${e.message}`,
+            `[TaskManagement] Failed to process task: ${error.message}\n${error.stack}`,
           );
         } else {
           this.options.logger.error(
-            `[TaskManagement] Failed to process task: ${e}`,
+            `[TaskManagement] Failed to process task: ${JSON.stringify(error)}`,
           );
         }
       }
