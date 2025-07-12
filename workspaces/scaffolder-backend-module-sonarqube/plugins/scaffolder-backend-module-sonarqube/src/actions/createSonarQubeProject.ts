@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
-
-import yaml from 'yaml';
+import { examples } from './createSonarQubeProject.examples';
 
 import querystring from 'querystring';
 
@@ -41,49 +40,6 @@ export type TemplateActionParameters = {
   branch?: string;
   visibility?: string;
 };
-
-const examples = [
-  {
-    description:
-      'Create a new SonarQube project using all the input parameters',
-    example: yaml.stringify({
-      steps: [
-        {
-          action: id,
-          id: 'create-sonar-project',
-          name: 'Create SonarQube Project',
-          input: {
-            baseUrl: 'https://sonarqube.com',
-            token: '4518a13e-093f-4b66-afac-46a1aece3149',
-            name: 'My SonarQube Project',
-            key: 'my-sonarqube-project',
-            branch: 'main',
-            visibility: 'public',
-          },
-        },
-      ],
-    }),
-  },
-  {
-    description:
-      'Create a new SonarQube project using only required parameters',
-    example: yaml.stringify({
-      steps: [
-        {
-          action: id,
-          id: 'create-sonar-project',
-          name: 'Create SonarQube Project',
-          input: {
-            baseUrl: 'https://sonarqube.com',
-            token: '4518a13e-093f-4b66-afac-46a1aece3149',
-            name: 'My SonarQube Project',
-            key: 'my-sonarqube-project',
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * @public
