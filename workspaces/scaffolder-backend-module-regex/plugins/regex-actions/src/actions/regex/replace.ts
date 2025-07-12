@@ -15,8 +15,9 @@
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
-import yaml from 'yaml';
 import { z } from 'zod';
+
+import { examples } from './replace.example';
 
 const schemaInput = z.object({
   regExps: z.array(
@@ -61,112 +62,7 @@ const schemaInput = z.object({
   ),
 });
 
-const exampleValue =
-  'The quick brown fox jumps over the lazy dog. If the dog reacted, was it really lazy?';
-
 const id = 'regex:replace';
-
-const examples = [
-  {
-    description: 'Create a regex to capture the first word of a string',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'regexValues',
-          action: id,
-          name: 'Regex Values',
-          input: {
-            regExps: [
-              {
-                pattern: '^(\\S+).*$',
-                replacement: '$1',
-                values: [
-                  { key: 'eg1', value: 'Hello world!' },
-                  { key: 'eg2', value: 'Test world!' },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-    }),
-  },
-  {
-    description: 'Create a regex to replace a word in a string',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'regexValues',
-          action: id,
-          name: 'Regex Values',
-          input: {
-            regExps: [
-              {
-                pattern: 'dog',
-                replacement: 'monkey',
-                values: [
-                  {
-                    key: 'eg1',
-                    value: exampleValue,
-                  },
-                ],
-              },
-              {
-                pattern: 'Dog',
-                replacement: 'ferret',
-                flags: ['i'],
-                values: [
-                  {
-                    key: 'eg2',
-                    value: exampleValue,
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-    }),
-  },
-  {
-    description: 'Create a regex to replace a word globally in a string',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'regexValues',
-          action: id,
-          name: 'Regex Values',
-          input: {
-            regExps: [
-              {
-                pattern: 'dog',
-                replacement: 'monkey',
-                flags: ['g'],
-                values: [
-                  {
-                    key: 'eg1',
-                    value: exampleValue,
-                  },
-                ],
-              },
-              {
-                pattern: 'Dog',
-                replacement: 'ferret',
-                flags: ['gi'],
-                values: [
-                  {
-                    key: 'eg2',
-                    value: exampleValue,
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * @public
