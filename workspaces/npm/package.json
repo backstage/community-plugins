@@ -7,6 +7,7 @@
     "node": "20 || 22"
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-npm --include @backstage-community/plugin-npm-backend --parallel -v -i run start",
     "start": "backstage-cli repo start",
     "start-next": "yarn workspaces foreach -A --include backend --include app-next --parallel -v -i run start",
     "build:backend": "yarn workspace backend build",

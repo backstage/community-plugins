@@ -17,51 +17,48 @@ import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
+
 import {
   npmPlugin,
   EntityNpmInfoCard,
   EntityNpmReleaseTableCard,
+  EntityNpmReleaseOverviewCard,
 } from '../src/plugin';
 
-const mockEntity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage-plugin-catalog',
-    annotations: {
-      // Workaround to disable backend communication in plugin-test-app
-      'npm/__devapp__': 'true',
-      'npm/package': '@backstage/plugin-catalog',
-    },
-  },
-  spec: {
-    type: 'website',
-    lifecycle: 'production',
-    owner: 'guests',
-  },
-};
+import { npmTranslations } from '../src/translations';
 
-createDevApp()
+import { allExamples } from './examples';
+
+const builder = createDevApp()
   .registerPlugin(npmPlugin)
-  .addPage({
+  .addTranslationResource(npmTranslations)
+  .setAvailableLanguages(['en', 'de']);
+
+allExamples.forEach(example => {
+  builder.addPage({
     element: (
       <Page themeId="tool">
-        <Header title="Npm demo application" subtitle="standalone app" />
+        <Header title={example.metadata.name} />
         <Content>
-          <EntityProvider entity={mockEntity}>
+          <EntityProvider entity={example}>
             <Grid container>
-              <Grid item xs={8}>
-                <EntityNpmReleaseTableCard />
-              </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <EntityNpmInfoCard />
+              </Grid>
+              <Grid item xs={6}>
+                <EntityNpmReleaseOverviewCard />
+              </Grid>
+              <Grid item xs={12}>
+                <EntityNpmReleaseTableCard />
               </Grid>
             </Grid>
           </EntityProvider>
         </Content>
       </Page>
     ),
-    title: 'Npm',
-    path: '/npm',
-  })
-  .render();
+    title: example.metadata.name,
+    path: `/${example.metadata.name}`,
+  });
+});
+
+builder.render();
