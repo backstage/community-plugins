@@ -127,6 +127,7 @@ export interface TechInsightsOptions<
   factCheckerFactory?: FactCheckerFactory<CheckType, CheckResultType>;
   factRetrieverRegistry?: FactRetrieverRegistry_2;
   factRetrievers?: FactRetrieverRegistration[];
+  hunanizeScheduleIds?: boolean;
   // (undocumented)
   logger: LoggerService;
   persistenceContext?: PersistenceContext_2;

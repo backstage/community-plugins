@@ -24,6 +24,7 @@ import {
 } from '@backstage-community/plugin-tech-insights-node';
 import { Duration } from 'luxon';
 import { LoggerService, SchedulerService } from '@backstage/backend-plugin-api';
+import slugify from 'slugify';
 
 function randomDailyCron() {
   const rand = (min: number, max: number) =>
@@ -85,6 +86,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
     private readonly defaultCadence?: string,
     private readonly defaultTimeout?: Duration,
     private readonly defaultInitialDelay?: Duration,
+    private readonly hunanizeScheduleIds?: boolean,
   ) {}
 
   static async create(options: {
@@ -92,6 +94,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
     factRetrieverRegistry: FactRetrieverRegistry;
     factRetrieverContext: FactRetrieverContext;
     scheduler: SchedulerService;
+    hunanizeScheduleIds?: boolean;
     defaultCadence?: string;
     defaultTimeout?: Duration;
     defaultInitialDelay?: Duration;
@@ -104,6 +107,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
       defaultCadence,
       defaultTimeout,
       defaultInitialDelay,
+      hunanizeScheduleIds,
     } = options;
 
     const retrievers = await factRetrieverRegistry.listRetrievers();
@@ -118,6 +122,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
       defaultCadence,
       defaultTimeout,
       defaultInitialDelay,
+      hunanizeScheduleIds,
     );
   }
 
@@ -133,7 +138,7 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
       Duration.fromObject({ seconds: 5 });
 
     await this.scheduler.scheduleTask({
-      id: factRetriever.id,
+      id: this.getScheduleId(factRetriever),
       frequency: { cron: cronExpression },
       fn: this.createFactRetrieverHandler(factRetriever, lifecycle),
       timeout: timeLimit,
@@ -141,6 +146,12 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
       // fact that the backend is not yet online in a cold-start scenario
       initialDelay: initialDelaySetting,
     });
+  }
+
+  private getScheduleId(factRetriever: FactRetriever) {
+    return this.hunanizeScheduleIds
+      ? slugify(factRetriever.title || factRetriever.id)
+      : factRetriever.id;
   }
 
   async scheduleJob(ref: string): Promise<void> {
@@ -175,7 +186,13 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
   }
 
   async triggerJob(ref: string): Promise<void> {
-    await this.scheduler.triggerTask(ref);
+    let scheduleId = ref;
+    if (this.hunanizeScheduleIds) {
+      scheduleId = this.getScheduleId(
+        (await this.factRetrieverRegistry.get(ref)).factRetriever,
+      );
+    }
+    await this.scheduler.triggerTask(scheduleId);
   }
 
   private createFactRetrieverHandler(
