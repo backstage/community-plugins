@@ -1,0 +1,28 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-service
+  title: Test Service
+  description: |
+    Test Service is a simple app that does nothing.
+
+  labels:
+    service: test-service
+    platform: test-platform
+
+  tags:
+    - test-service
+
+  annotations:
+    backstage.io/techdocs-ref: url:https://github.com/TestOrg/test-service
+    backstage.io/source-location: url:https://github.com/TestOrg/test-service
+    quay.io/repository-slug: TestOrg/test-service
+    github.com/project-slug: TestOrg/test-service
+
+spec:
+  type: service
+  system: test-service
+  owner: test-service-app-owners
+  lifecycle: OnBoarded
+  subcomponentOf: test-service-app
