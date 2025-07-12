@@ -25,41 +25,21 @@ export function scaffoldResourceFromAmplicationTemplate({
 }: {
   config: Config;
 }) {
-  return createTemplateAction<{
-    name: string;
-    description: string;
-    project_id: string;
-    serviceTemplate_id: string;
-    workspace_id: string;
-  }>({
+  return createTemplateAction({
     id: 'amplication:scaffold-service',
     description: 'Scaffold a new service from a template (using Amplication)',
     schema: {
       input: {
-        type: 'object',
-        required: ['name', 'project_id', 'serviceTemplate_id'],
-        properties: {
-          name: {
-            title: 'Service Name',
-            description: 'The name of the service',
-            type: 'string',
-          },
-          description: {
-            title: 'Service Description',
-            description: 'The description of the service',
-            type: 'string',
-          },
-          project_id: {
-            title: 'Project ID',
-            description: 'The ID of the project',
-            type: 'string',
-          },
-          serviceTemplate_id: {
-            title: 'Service Template ID',
-            description: 'The ID of the service template',
-            type: 'string',
-          },
-        },
+        name: z => z.string({ description: 'The name of the service' }),
+        description: z =>
+          z
+            .string({ description: 'The description of the service' })
+            .optional(),
+        project_id: z => z.string({ description: 'The ID of the project' }),
+        serviceTemplate_id: z =>
+          z.string({ description: 'The ID of the service template' }),
+        workspace_id: z =>
+          z.string({ description: 'The ID of the workspace' }).optional(),
       },
     },
     async handler(ctx) {

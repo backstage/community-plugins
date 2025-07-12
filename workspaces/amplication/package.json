@@ -6,6 +6,7 @@
     "node": "18 || 20 || 22"
   },
   "scripts": {
+    "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -34,9 +35,9 @@
     "directory": "workspaces/amplication"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.33.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.12.1",
+    "@backstage/repo-tools": "^0.14.0",
     "@changesets/cli": "^2.27.1",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
