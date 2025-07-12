@@ -18,7 +18,6 @@ import {
   type TemplateAction,
 } from '@backstage/plugin-scaffolder-node';
 
-import yaml from 'yaml';
 import { z } from 'zod';
 
 import {
@@ -28,6 +27,8 @@ import {
 } from '../../../../generated/now/table';
 import { CreateActionOptions, ServiceNowResponses } from '../../../types';
 import { updateOpenAPIConfig } from './helpers';
+
+import { examples } from './create-record.example';
 
 /**
  * Schema for the input to the `createRecord` action.
@@ -82,29 +83,6 @@ const schemaInput = z.object({
 });
 
 const id = 'servicenow:now:table:createRecord';
-
-const examples = [
-  {
-    description: 'Create a record in the incident table',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'createRecord',
-          action: id,
-          name: 'Create Record',
-          input: {
-            tableName: 'incident',
-            requestBody: {
-              short_description: 'Test incident',
-              description: 'This is a test incident',
-              severity: '3',
-            },
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * Creates an action handler that inserts one record in the specified table.
