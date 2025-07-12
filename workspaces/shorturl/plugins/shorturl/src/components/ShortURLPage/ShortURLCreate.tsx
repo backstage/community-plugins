@@ -1,14 +1,4 @@
-// code based on https://github.com/shailahir/backstage-plugin-shorturl
-import { Link } from '@backstage/core-components';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  TextField,
-} from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   useApi,
   alertApiRef,
@@ -18,11 +8,30 @@ import {
   identityApiRef,
 } from '@backstage/core-plugin-api';
 import { DefaultShortURLApi } from '../../api';
-import useAsync from 'react-use/lib/useAsync';
+import { useAsync } from '@react-hookz/web';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+} from '@material-ui/core';
+import { Link } from '@backstage/core-components';
 
 interface ShortURLCreateProps {
   onCreate: () => void;
 }
+
+const validateUrl = (url: string): boolean => {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 export const ShortURLCreate: React.FC<ShortURLCreateProps> = ({ onCreate }) => {
   const alertApi = useApi(alertApiRef);
@@ -39,42 +48,39 @@ export const ShortURLCreate: React.FC<ShortURLCreateProps> = ({ onCreate }) => {
   const [longUrl, setLongUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
 
-  const { value: baseUrl } = useAsync(async () => {
-    return await configApi.getString('app.baseUrl');
-  }, []);
+  const [{ result: baseUrl }, { execute: fetchBaseUrl }] = useAsync(
+    async () => {
+      return configApi.getString('app.baseUrl');
+    },
+  );
 
-  const validateUrl = (url: string): boolean => {
-    try {
-      const validUrl = new URL(url);
-      return !!validUrl;
-    } catch (_) {
-      return false;
-    }
-  };
+  useEffect(() => {
+    fetchBaseUrl();
+  }, [fetchBaseUrl]);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
+  const copyToClipboard = useCallback(
+    async (text: string) => {
+      try {
+        await navigator.clipboard.writeText(text);
         alertApi.post({
           message: 'Short URL copied to clipboard',
           display: 'transient',
         });
-      },
-      () => {
+      } catch {
         alertApi.post({
           message: `Failed to copy short URL to clipboard`,
           severity: 'error',
         });
-      },
-    );
-  };
+      }
+    },
+    [alertApi],
+  );
 
   const handleCopyClick = async () => {
     copyToClipboard(shortUrl);
   };
 
   const handleCreateClick = async () => {
-    let error: Error | undefined;
     if (!validateUrl(longUrl)) {
       alertApi.post({
         message: 'Invalid URL',
@@ -82,27 +88,28 @@ export const ShortURLCreate: React.FC<ShortURLCreateProps> = ({ onCreate }) => {
       });
       return;
     }
-    const response = await shortURLApi
-      .createOrRetrieveShortUrl({
+
+    try {
+      const res = await shortURLApi.createOrRetrieveShortUrl({
         fullUrl: longUrl,
         usageCount: 0,
-      })
-      .then(res => {
-        if (res.status === 200 || res.status === 201) {
-          // retrieved or created
-          return res.json();
-        }
-        throw new Error(`API returned status ${res.status}`);
-      })
-      .catch(err => {
-        error = err;
       });
-    if (response && response.status === 'ok') {
-      const newLink = `${baseUrl}/go/${response.shortUrl}`;
-      setShortUrl(newLink);
-    } else {
+
+      if (res.status !== 200 && res.status !== 201) {
+        throw new Error(`API returned status ${res.status}`);
+      }
+
+      const json = await res.json();
+
+      if (json.status === 'ok') {
+        const newLink = `${baseUrl}/go/${json.shortUrl}`;
+        setShortUrl(newLink);
+      } else {
+        throw new Error('Unexpected response from server');
+      }
+    } catch (err: any) {
       alertApi.post({
-        message: `Failed to create short URL: ${error}`,
+        message: `Failed to create short URL: ${err.message || err}`,
         severity: 'error',
       });
     }
