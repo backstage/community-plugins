@@ -56,6 +56,7 @@ export const ShortURLList = ({ refreshFlag }: { refreshFlag: boolean }) => {
         columns={[
           {
             title: 'Full URL',
+            field: 'full_url',
             render: (data: any) => {
               return (
                 <Link to={`${data?.full_url}`}>{`${data?.full_url}`}</Link>
@@ -64,6 +65,7 @@ export const ShortURLList = ({ refreshFlag }: { refreshFlag: boolean }) => {
           },
           {
             title: 'Short URL',
+            field: 'short_id',
             render: (data: any) => {
               return (
                 <Link
