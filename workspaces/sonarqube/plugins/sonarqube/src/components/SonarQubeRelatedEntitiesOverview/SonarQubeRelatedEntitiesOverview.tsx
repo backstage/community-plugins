@@ -19,8 +19,8 @@ import { useApi } from '@backstage/core-plugin-api';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
-  SONARQUBE_PROJECT_KEY_ANNOTATION,
   sonarQubeApiRef,
+  getProjectInfo,
 } from '@backstage-community/plugin-sonarqube-react';
 import { SonarQubeTable } from '../index.ts';
 
@@ -39,7 +39,7 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
   const sonarQubeApi = useApi(sonarQubeApiRef);
   const { entity: parentEntity } = useEntity();
   const {
-    entities,
+    entities = [],
     loading: loadingEntities,
     error: errorEntities,
   } = useRelatedEntities(parentEntity, {
@@ -51,16 +51,14 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     projectInstance: string | undefined;
     componentKey: string;
   }> = [];
+
   const entityNameToProjectKey: { [key: string]: string } = {};
-  for (const entity of entities || []) {
-    const projectKey =
-      entity?.metadata.annotations?.[SONARQUBE_PROJECT_KEY_ANNOTATION];
+
+  for (const entity of entities) {
+    const { projectKey, projectInstance } = getProjectInfo(entity);
     if (projectKey) {
       entityNameToProjectKey[entity.metadata.name] = projectKey;
-      findingsRequest.push({
-        componentKey: projectKey,
-        projectInstance: undefined,
-      });
+      findingsRequest.push({ componentKey: projectKey, projectInstance });
     }
   }
   const {
@@ -80,10 +78,9 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     return <ResponseErrorPanel error={error} />;
   }
 
-  const tableContent: any[] = [];
-  entities?.forEach(entity => {
+  const tableContent: any[] = entities.map(entity => {
     const projectKey = entityNameToProjectKey[entity.metadata.name];
-    tableContent.push({
+    return {
       id: projectKey || entity.metadata.name,
       resolved: {
         entityRef: stringifyEntityRef(entity),
@@ -91,7 +88,7 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
         findings: findingResults?.get(projectKey),
         isSonarQubeAnnotationEnabled: !!projectKey,
       },
-    });
+    };
   });
 
   return <SonarQubeTable tableContent={tableContent} />;
