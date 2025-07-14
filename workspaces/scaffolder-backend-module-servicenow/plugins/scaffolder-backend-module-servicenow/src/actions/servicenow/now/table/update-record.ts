@@ -18,7 +18,6 @@ import {
   type TemplateAction,
 } from '@backstage/plugin-scaffolder-node';
 
-import yaml from 'yaml';
 import { z } from 'zod';
 
 import {
@@ -28,6 +27,8 @@ import {
 } from '../../../../generated/now/table';
 import { CreateActionOptions, ServiceNowResponses } from '../../../types';
 import { updateOpenAPIConfig } from './helpers';
+
+import { examples } from './update-record.example';
 
 /**
  * Schema for the input to the `updateRecord` action.
@@ -92,28 +93,6 @@ const schemaInput = z.object({
 });
 
 const id = 'servicenow:now:table:updateRecord';
-
-const examples = [
-  {
-    description: 'Update a record in the incident table',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'updateRecord',
-          action: id,
-          name: 'Update Record',
-          input: {
-            tableName: 'incident',
-            sysId: '8e67d33b97d1b5108686b680f053af2b',
-            requestBody: {
-              short_description: 'Updated short description',
-            },
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * Creates an action handler that updates a record in the specified table.

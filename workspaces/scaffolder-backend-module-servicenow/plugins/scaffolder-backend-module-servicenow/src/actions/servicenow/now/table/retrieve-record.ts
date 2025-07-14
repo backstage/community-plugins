@@ -18,7 +18,6 @@ import {
   type TemplateAction,
 } from '@backstage/plugin-scaffolder-node';
 
-import yaml from 'yaml';
 import { z } from 'zod';
 
 import {
@@ -28,6 +27,8 @@ import {
 } from '../../../../generated/now/table';
 import { CreateActionOptions, ServiceNowResponses } from '../../../types';
 import { updateOpenAPIConfig } from './helpers';
+
+import { examples } from './retrieve-record.example';
 
 /**
  * Schema for the input to the `retrieveRecord` action.
@@ -74,25 +75,6 @@ const schemaInput = z.object({
 });
 
 const id = 'servicenow:now:table:retrieveRecord';
-
-const examples = [
-  {
-    description: 'Retrieve a record from the incident table',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'retrieveRecord',
-          action: id,
-          name: 'Retrieve Record',
-          input: {
-            tableName: 'incident',
-            sysId: '8e67d33b97d1b5108686b680f053af2b',
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * Creates an action handler that retrieves the record identified by the specified sys_id from the specified table.
