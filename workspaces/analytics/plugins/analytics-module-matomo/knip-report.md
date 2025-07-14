@@ -1,9 +1,8 @@
 # Knip report
 
-## Unused devDependencies (3)
+## Unused devDependencies (2)
 
-| Name                                          | Location     | Severity |
-| :-------------------------------------------- | :----------- | :------- |
-| @redhat-developer/red-hat-developer-hub-theme | package.json | error    |
-| @backstage/core-app-api                       | package.json | error    |
-| msw                                           | package.json | error    |
+| Name                    | Location          | Severity |
+| :---------------------- | :---------------- | :------- |
+| @backstage/core-app-api | package.json:44:6 | error    |
+| msw                     | package.json:50:6 | error    |
