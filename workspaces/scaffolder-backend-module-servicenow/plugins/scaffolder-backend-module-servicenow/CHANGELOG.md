@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- 7cfcb00: Updated dependency `@hey-api/openapi-ts` to `0.78.3`.
+- 042961c: add examples for action servicenow backend scaffolder
+
 ## 2.7.0
 
 ### Minor Changes
