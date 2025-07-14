@@ -122,8 +122,8 @@ function generateTierTable(workspaces, emoji, title, description) {
 
 // generate the dashboard output
 function generateDashboard(tiers, latestVersion) {
-  let output = '# 📊 Backstage Upgrade Dashboard\n\n';
-  output += 'Tracking workspaces not on the latest Backstage minor version\n\n';
+  let output =
+    'Tracking workspaces not on the latest Backstage minor version\n\n';
   output += `**Latest Version:** ${latestVersion}\n\n`;
 
   output += generateTierTable(
@@ -161,11 +161,7 @@ async function main() {
   const tiers = categorizeWorkspaces(workspaces, latestVersion);
   const dashboard = generateDashboard(tiers, latestVersion);
 
-  console.log(`\n${'='.repeat(60)}`);
-  console.log('BACKSTAGE UPGRADE DASHBOARD');
-  console.log('='.repeat(60));
   console.log(dashboard);
-  console.log('='.repeat(60));
 }
 
 // run the script
