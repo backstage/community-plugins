@@ -100,6 +100,7 @@ export class NpmRegistryServiceImpl implements NpmRegistryService {
       // TODO pass apiFetch.fetch
       baseUrl: registry?.url,
       token: registry?.token,
+      extraRequestHeaders: registry?.extraRequestHeaders,
     });
     const packageInfo = await client.getPackageInfo(packageName);
     return packageInfo;
