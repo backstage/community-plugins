@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- 70f97c5: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- 0775db8: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+
 ## 1.16.0
 
 ### Minor Changes
