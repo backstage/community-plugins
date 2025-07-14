@@ -1,54 +1,11 @@
 // code based on https://github.com/shailahir/backstage-plugin-shorturl
 import { Link, Table } from '@backstage/core-components';
-import { alertApiRef, configApiRef, useApi } from '@backstage/core-plugin-api';
+import React from 'react';
 import { Box } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { shorturlApiRef } from '../../api';
-import useAsync from 'react-use/lib/useAsync';
+import { useShortUrlList } from '../../hooks/useShortUrlList';
 
 export const ShortURLList = ({ refreshFlag }: { refreshFlag: boolean }) => {
-  const [urlData, setUrlData] = useState([]);
-  const [apiFailure, setApiFailure] = useState(false);
-  const alertApi = useApi(alertApiRef);
-  const shorturlApi = useApi(shorturlApiRef);
-  const configApi = useApi(configApiRef);
-
-  const getData = async () => {
-    try {
-      const res = await shorturlApi.getAllURLs();
-      const response = await res.json();
-
-      if (response && response.status === 'ok') {
-        if (urlData !== response?.data) {
-          setUrlData(response.data);
-        }
-        setApiFailure(false);
-      } else {
-        setApiFailure(true);
-        setUrlData([]);
-        alertApi.post({
-          message: 'Failed to fetch ShortURLs',
-          severity: 'error',
-        });
-      }
-    } catch (error) {
-      setApiFailure(true);
-      setUrlData([]);
-      alertApi.post({
-        message: 'Failed to fetch ShortURLs',
-        severity: 'error',
-      });
-    }
-  };
-
-  const { value: baseUrl } = useAsync(async () => {
-    return await configApi.getString('app.baseUrl');
-  }, []);
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiFailure, refreshFlag]);
+  const { urlData, baseUrl } = useShortUrlList(refreshFlag);
 
   return (
     <Box>
