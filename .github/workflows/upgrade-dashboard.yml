@@ -1,0 +1,45 @@
+name: Backstage Upgrade Dashboard
+
+permissions:
+  contents: read
+  issues: write
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # run at 6 AM UTC every day
+  workflow_dispatch: # allow manual triggers
+
+jobs:
+  update-dashboard:
+    name: Generate Upgrade Dashboard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Update Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+            const dashboardContent = execSync('node scripts/generate-upgrade-dashboard.js', { encoding: 'utf8' });
+            
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 4593,
+              body: dashboardContent
+            });
