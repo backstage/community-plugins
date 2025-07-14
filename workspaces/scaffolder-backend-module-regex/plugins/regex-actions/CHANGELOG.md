@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- d73ba40: Adding regex:replace examples
+
 ## 2.7.0
 
 ### Minor Changes
