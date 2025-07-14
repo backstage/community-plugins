@@ -2536,7 +2536,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "npm:^0.8.2"
     "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.2.2"
     "@backstage/types": "npm:^1.2.1"
-    "@hey-api/openapi-ts": "npm:0.72.2"
+    "@hey-api/openapi-ts": "npm:0.78.3"
     "@types/node-fetch": "npm:2.6.12"
     abort-controller: "npm:^3.0.0"
     axios: "npm:^1.7.4"
@@ -3929,9 +3929,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.72.2":
-  version: 0.72.2
-  resolution: "@hey-api/openapi-ts@npm:0.72.2"
+"@hey-api/openapi-ts@npm:0.78.3":
+  version: 0.78.3
+  resolution: "@hey-api/openapi-ts@npm:0.78.3"
   dependencies:
     "@hey-api/json-schema-ref-parser": "npm:1.0.6"
     ansi-colors: "npm:4.1.3"
@@ -3944,7 +3944,7 @@ __metadata:
     typescript: ^5.5.3
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 10/36786f0f9c660dc840e20e84807fba393d7f8be35525e1452da68f998fd42f2039d7959c77f3c897e02ca3805a4269b37571aa33935a4023dca9c54260bac6a9
+  checksum: 10/8e5d4970dba343f915042405396c996e2a3dcbbde6dcea29dc5f0c447c792bebebed40f1815374487790a3a8338705ec4614d94fe33cdc0bfcc4bede6dd6b782
   languageName: node
   linkType: hard
 
