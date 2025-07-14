@@ -35,6 +35,14 @@ export const useProjectInfo = (
   projectInstance: string | undefined;
   projectKey: string | undefined;
 } => {
+  return getProjectInfo(entity);
+};
+
+/**
+ * Extracted function to avoid rule of hooks:
+ * Do not call Hooks inside conditions or loops.
+ */
+export function getProjectInfo(entity: Entity) {
   let projectInstance = undefined;
   let projectKey = undefined;
   const annotation =
@@ -55,4 +63,4 @@ export const useProjectInfo = (
     }
   }
   return { projectInstance, projectKey };
-};
+}

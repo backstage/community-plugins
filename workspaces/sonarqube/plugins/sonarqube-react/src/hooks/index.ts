@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { useProjectInfo } from './useProjectInfo';
+export { useProjectInfo, getProjectInfo } from './useProjectInfo';

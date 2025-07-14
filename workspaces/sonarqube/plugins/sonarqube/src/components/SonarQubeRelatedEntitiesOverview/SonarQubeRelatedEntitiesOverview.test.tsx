@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactElement } from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { Entity, RELATION_HAS_PART } from '@backstage/catalog-model';
 import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
@@ -31,7 +31,7 @@ const catalogApi = {
   getEntitiesByRefs: jest.fn(),
 };
 
-const Providers = ({ children }: PropsWithChildren<any>): JSX.Element => (
+const Providers = ({ children }: PropsWithChildren<any>): ReactElement => (
   <TestApiProvider
     apis={[
       [catalogApiRef, catalogApi],
@@ -64,13 +64,16 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
   EntityRefLink: jest.fn(() => <div>Mocked EntityRefLink</div>),
 }));
 
-function createMockEntity(relationName: string): Entity {
+function createMockEntity(
+  annotationName: string,
+  value: string = 'foo.bar',
+): Entity {
   return {
     metadata: {
       name: 'mock',
       namespace: 'default',
       annotations: {
-        [relationName]: 'foo/bar',
+        [annotationName]: value,
       },
     },
     apiVersion: 'backstage.io/v1alpha1',
@@ -92,7 +95,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
     );
     expect(rendered.getByText('(0)', { exact: false })).toBeInTheDocument();
     expect(rendered.getByText('No records to display')).toBeInTheDocument();
-    expect(rendered.queryAllByText('Gate passed').length).toBe(0);
+    expect(rendered.queryAllByText('Gate passed')).toHaveLength(0);
   }, 15000);
 
   it('renders properly if sonar annotation is missing', async () => {
@@ -111,7 +114,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
     expect(
       rendered.getByText('annotation', { exact: false }), // no DX-Hub annotation for SonarQube / No SonarQube annotation found
     ).toBeInTheDocument();
-    expect(rendered.queryAllByText('Gate passed').length).toBe(0);
+    expect(rendered.queryAllByText('Gate passed')).toHaveLength(0);
   }, 15000);
 
   it('renders properly if no metrics are returned by sonar', async () => {
@@ -132,7 +135,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
     expect(
       rendered.getByText('SonarQube project', { exact: false }), // Unable to access SonarQube project / There is no SonarQube project
     ).toBeInTheDocument();
-    expect(rendered.queryAllByText('Gate passed').length).toBe(0);
+    expect(rendered.queryAllByText('Gate passed')).toHaveLength(0);
   }, 15000);
 
   it('renders properly if sonar returns metrics', async () => {
@@ -147,7 +150,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, any>([['foo/bar', mockMetrics]]);
+    const mockData = new Map<string, any>([['foo.bar', mockMetrics]]);
     sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
 
     const rendered = await renderInTestApp(
@@ -159,6 +162,42 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
       </Providers>,
     );
     expect(rendered.getByText('(1)', { exact: false })).toBeInTheDocument();
-    expect(rendered.queryAllByText('Gate passed').length).toBe(1);
+    expect(rendered.queryAllByText('Gate passed')).toHaveLength(1);
+  }, 15000);
+
+  it('renders properly if multiple instances are present', async () => {
+    const mockEntities: Entity[] = [
+      createMockEntity(SONARQUBE_PROJECT_KEY_ANNOTATION, 'component-key.1'),
+      createMockEntity(
+        SONARQUBE_PROJECT_KEY_ANNOTATION,
+        'instance-key/component-key.2',
+      ),
+    ];
+    catalogApi.getEntitiesByRefs.mockResolvedValue({
+      items: mockEntities,
+    });
+    const mockMetrics = {
+      getComponentMeasuresUrl: () => '',
+      getIssuesUrl: () => '',
+      metrics: {
+        alert_status: 'OK',
+      },
+    };
+    const mockData = new Map<string, any>([
+      ['component-key.1', mockMetrics],
+      ['component-key.2', mockMetrics],
+    ]);
+    sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
+
+    const rendered = await renderInTestApp(
+      <Providers>
+        <SonarQubeRelatedEntitiesOverview
+          relationType={RELATION_HAS_PART}
+          entityKind="component"
+        />
+      </Providers>,
+    );
+    expect(rendered.getByText('(2)', { exact: false })).toBeInTheDocument();
+    expect(rendered.queryAllByText('Gate passed')).toHaveLength(2);
   }, 15000);
 });
