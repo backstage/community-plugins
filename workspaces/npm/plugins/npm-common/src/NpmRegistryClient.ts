@@ -24,15 +24,18 @@ export class NpmRegistryClient {
   private readonly fetch: typeof fetch;
   private readonly baseUrl: string;
   private readonly token?: string;
+  private readonly extraRequestHeaders?: Record<string, string>;
 
   constructor(options: {
     fetch?: typeof fetch;
     baseUrl?: string;
     token?: string;
+    extraRequestHeaders?: Record<string, string>;
   }) {
     this.fetch = options?.fetch || global.fetch.bind(global);
     this.baseUrl = options.baseUrl || 'https://registry.npmjs.com';
     this.token = options.token;
+    this.extraRequestHeaders = options.extraRequestHeaders;
   }
 
   async getPackageInfo(packageName: string): Promise<NpmRegistryPackageInfo> {
@@ -43,7 +46,10 @@ export class NpmRegistryClient {
     const url = `${this.baseUrl}/${encodeURIComponent(packageName)}`;
 
     const response = await this.fetch(url, {
-      headers: this.token ? { Authorization: this.token } : undefined,
+      headers: {
+        ...this.extraRequestHeaders,
+        ...(this.token ? { Authorization: this.token } : undefined),
+      },
     });
 
     if (!response.ok) {
