@@ -44,7 +44,9 @@ describe('formatDate', () => {
 
   it('correctly formats an ISO-8601 string', () => {
     const iso = '2025-06-09T18:15:00';
-    const expected = DateTime.fromISO(iso).toFormat('MMM d, yyyy, h:mm a');
+    const expected = DateTime.fromISO(iso).toLocaleString(
+      DateTime.DATETIME_MED,
+    );
     expect(formatDate(iso)).toBe(expected);
   });
 
@@ -57,7 +59,9 @@ describe('formatDate', () => {
   });
   it('formats an ISO string with fractional seconds and Z suffix (UTC)', () => {
     const isoZ = '2024-01-29T08:07:53.1204155Z';
-    const expected = DateTime.fromISO(isoZ).toFormat('MMM d, yyyy, h:mm a');
+    const expected = DateTime.fromISO(isoZ).toLocaleString(
+      DateTime.DATETIME_MED,
+    );
     expect(formatDate(isoZ)).toBe(expected);
   });
 });

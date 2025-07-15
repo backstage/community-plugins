@@ -39,5 +39,5 @@ export function formatDate(date: string | number | Date | undefined): string {
   if (!dt.isValid) {
     return 'N/A';
   }
-  return dt.toFormat('MMM d, yyyy, h:mm a');
+  return dt.toLocaleString(DateTime.DATETIME_MED);
 }
