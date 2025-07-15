@@ -1,9 +1,9 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { MTableToolbar } from '@material-table/core';
 import { Grid, Typography } from '@material-ui/core';
 
 type TableToolbarProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   title?: string;
   toolbar: any; // Allow any object structure here
 };

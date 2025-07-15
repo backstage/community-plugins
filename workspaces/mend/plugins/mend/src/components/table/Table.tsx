@@ -1,4 +1,5 @@
-import React, { forwardRef } from 'react';
+import type { ReactElement, ReactNode, Ref } from 'react';
+import { useRef, forwardRef } from 'react';
 import { Table as TableBackstage } from '@backstage/core-components';
 import { makeStyles, SvgIcon } from '@material-ui/core';
 import { Project, Finding, Statistics } from '../../models';
@@ -31,12 +32,12 @@ export type TableRowFindingProps = Finding & {
 };
 
 export type TableColumnProps<T> = {
-  title: React.ReactElement;
+  title: ReactElement;
   field: string;
   width: string;
   headerStyle: any;
   cellStyle: any;
-  render: (row: T) => React.ReactNode;
+  render: (row: T) => ReactNode;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -73,7 +74,7 @@ export const Table = ({
   totalTitle,
 }: TableProps) => {
   const classes = useStyles();
-  const tableRef = React.useRef<MaterialTable>(null);
+  const tableRef = useRef<MaterialTable>(null);
   return (
     <TableBackstage
       localization={{
@@ -115,7 +116,7 @@ export const Table = ({
       data={tableData as (Project & Finding)[]} // Accept both types
       icons={{
         ...tableBackstageIcons,
-        Search: forwardRef((_, ref: React.Ref<SVGSVGElement>) => (
+        Search: forwardRef((_, ref: Ref<SVGSVGElement>) => (
           <SvgIcon
             ref={ref}
             width="16"

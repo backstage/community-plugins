@@ -21,7 +21,9 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'search-filter-result-type:confluence/confluence-results-type': ExtensionDefinition<{
+    [
+      x: `search-filter-result-type:${string}/confluence-results-type`
+    ]: ExtensionDefinition<{
       kind: 'search-filter-result-type';
       name: 'confluence-results-type';
       config: {};
@@ -38,7 +40,9 @@ const _default: FrontendPlugin<
       inputs: {};
       params: SearchFilterResultTypeBlueprintParams;
     }>;
-    'search-result-list-item:confluence/search-result': ExtensionDefinition<{
+    [
+      x: `search-result-list-item:${string}/search-result`
+    ]: ExtensionDefinition<{
       kind: 'search-result-list-item';
       name: 'search-result';
       config: {

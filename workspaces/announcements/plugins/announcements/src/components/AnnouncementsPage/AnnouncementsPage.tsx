@@ -34,10 +34,7 @@ import {
   LinkButton,
 } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
-import {
-  EntityPeekAheadPopover,
-  EntityRefLink,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -60,6 +57,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   IconButton,
   ListItemIcon,
   makeStyles,
@@ -70,6 +68,7 @@ import {
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
 import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
+import { MarkdownRendererTypeProps } from '../MarkdownRenderer/MarkdownRenderer';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -128,14 +127,10 @@ const AnnouncementCard = ({
     <>
       <Typography variant="body2" color="textSecondary" component="span">
         {t('announcementsPage.card.by')}{' '}
-        <EntityPeekAheadPopover
+        <EntityRefLink
           entityRef={announcement.on_behalf_of || announcement.publisher}
-        >
-          <EntityRefLink
-            entityRef={announcement.on_behalf_of || announcement.publisher}
-            hideIcon
-          />
-        </EntityPeekAheadPopover>
+          hideIcon
+        />
         {announcement.category && (
           <>
             {' '}
@@ -163,6 +158,25 @@ const AnnouncementCard = ({
           </Typography>
         )}
       </Box>
+      {announcement.tags && announcement.tags.length > 0 && (
+        <Typography variant="body2" color="textSecondary">
+          {announcement.tags && announcement.tags.length > 0 && (
+            <Box mt={1}>
+              {announcement.tags.map(tag => (
+                <Chip
+                  key={tag.slug}
+                  size="small"
+                  label={tag.title}
+                  component={Link}
+                  to={`${announcementsLink()}?tags=${tag.slug}`}
+                  clickable
+                  style={{ marginRight: 4, marginBottom: 4 }}
+                />
+              ))}
+            </Box>
+          )}
+        </Typography>
+      )}
     </>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =
@@ -364,11 +378,13 @@ export type AnnouncementsPageProps = {
   subtitle?: ReactNode;
   maxPerPage?: number;
   category?: string;
+  tags?: string[];
   buttonOptions?: AnnouncementCreateButtonProps;
   cardOptions?: AnnouncementCardProps;
   hideContextMenu?: boolean;
   hideInactive?: boolean;
   hideStartAt?: boolean;
+  markdownRenderer?: MarkdownRendererTypeProps;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
@@ -422,7 +438,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           maxPerPage={maxPerPage ?? 10}
           category={category ?? queryParams.get('category') ?? undefined}
           cardTitleLength={cardOptions?.titleLength}
-          active={hideInactive ? true : false}
+          active={!!hideInactive}
           sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}
           hideStartAt={hideStartAt}

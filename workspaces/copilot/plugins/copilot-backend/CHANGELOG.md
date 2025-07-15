@@ -1,5 +1,22 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- d3221bf: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [d3221bf]
+  - @backstage-community/plugin-copilot-common@0.10.0
+
+## 0.9.4
+
+### Patch Changes
+
+- 8c13857: Updated dependency `@octokit/rest` to `20.1.2`.
+
 ## 0.9.3
 
 ### Patch Changes

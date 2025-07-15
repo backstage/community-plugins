@@ -1,5 +1,33 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.8.0
+
+### Minor Changes
+
+- 775d236: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [775d236]
+  - @backstage-community/plugin-announcements-common@0.6.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 8c803d8: Added support for tags in announcements
+
+### Patch Changes
+
+- Updated dependencies [8c803d8]
+  - @backstage-community/plugin-announcements-common@0.5.1
+
+## 0.6.1
+
+### Patch Changes
+
+- b5402a7: Fix pagination issue when fetching groups. This resolves the issue where the "On-Behalf" team dropdown always displayed only 10 groups.
+
 ## 0.6.0
 
 ### Minor Changes

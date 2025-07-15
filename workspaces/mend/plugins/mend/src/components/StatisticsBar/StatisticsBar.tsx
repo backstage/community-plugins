@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { StatisticsBarScrap } from './internal/StatisticsBarScrap';
 import { StatisticsBarSegment } from './internal/StatisticsBarSegment';

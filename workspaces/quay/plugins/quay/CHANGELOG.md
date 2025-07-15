@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- 0341770: Add more context for debugging access issues with Quay
+
+## 1.21.1
+
+### Patch Changes
+
+- 042cea7: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-quay-common@1.9.1
+
 ## 1.21.0
 
 ### Minor Changes

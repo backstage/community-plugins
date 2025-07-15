@@ -19,7 +19,6 @@ import { ErrorApi, errorApiRef } from '@backstage/core-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { getByRole, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
 import { FeedbackResponseDialog } from './FeedbackResponseDialog';

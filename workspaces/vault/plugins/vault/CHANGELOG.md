@@ -1,5 +1,17 @@
 # @backstage-community/plugin-vault
 
+## 0.9.0
+
+### Minor Changes
+
+- ada5266: Added support for the new frontend system
+
+## 0.8.0
+
+### Minor Changes
+
+- f1eec5a: Backstage version bump to v1.40.2
+
 ## 0.7.0
 
 ### Minor Changes

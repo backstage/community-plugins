@@ -1,5 +1,38 @@
 # @backstage-community/plugin-npm-backend
 
+## 1.9.0
+
+### Minor Changes
+
+- 9df5e2a: Add new npm registry option `extraRequestHeaders` to pass for example non-standard authentification headers.
+
+### Patch Changes
+
+- Updated dependencies [9df5e2a]
+  - @backstage-community/plugin-npm-common@1.9.0
+
+## 1.8.0
+
+### Minor Changes
+
+- 4bfc2ec: Backstage version bump to v1.40.1
+
+### Patch Changes
+
+- Updated dependencies [4bfc2ec]
+  - @backstage-community/plugin-npm-common@1.8.0
+
+## 1.7.0
+
+### Minor Changes
+
+- c42ca51: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [c42ca51]
+  - @backstage-community/plugin-npm-common@1.7.0
+
 ## 1.6.0
 
 ### Minor Changes

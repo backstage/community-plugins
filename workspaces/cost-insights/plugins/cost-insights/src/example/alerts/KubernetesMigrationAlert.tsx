@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import pluralize from 'pluralize';
 import Typography from '@material-ui/core/Typography';
 import { KubernetesMigrationAlertCard } from '../components';

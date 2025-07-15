@@ -81,6 +81,33 @@ const serviceEntityPage = (
 );
 ```
 
+### BlackDuck Vulnerability Table List for All Version in to Service Entity
+
+Add the following into `packages/app/src/components/catalog/EntityPage.tsx` and add the following.
+
+Note: You still need to specify the default version in `blackduck/project` annotations like `example-host/example-service/version`, since `RiskProfileCard` only support one version.
+
+```typescript
+// ...
+import { BlackDuckAllVersionPage } from '@backstage-community/plugin-blackduck';
+// ...
+const serviceEntityPage = (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      {overviewContent}
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+      {cicdContent}
+    </EntityLayout.Route>
+    //...
+    <EntityLayout.Route path="/blackduck" title="Security">
+      <BlackDuckAllVersionPage />
+    </EntityLayout.Route>
+    // ...
+  </EntityLayout>
+);
+```
+
 `Note: If you dont want to display the Service page if no annotation specified in catalog.`
 
 ```typescript

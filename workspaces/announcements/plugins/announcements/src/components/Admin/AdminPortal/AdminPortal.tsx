@@ -22,6 +22,7 @@ import { useAnnouncementsTranslation } from '@backstage-community/plugin-announc
 import { makeStyles, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
+import { TagsContent } from '../TagsContent';
 
 const useStyles = makeStyles(() => ({
   tabPanel: {
@@ -55,12 +56,16 @@ const AdminPortalContent = () => {
           label={t('admin.adminPortal.categoriesLabel')}
           value="categories"
         />
+        <Tab label={t('admin.adminPortal.tagsLabel')} value="tags" />
       </TabList>
       <TabPanel value="announcements" className={classes.tabPanel}>
         <AnnouncementsContent />
       </TabPanel>
       <TabPanel value="categories" className={classes.tabPanel}>
         <CategoriesContent />
+      </TabPanel>
+      <TabPanel value="tags" className={classes.tabPanel}>
+        <TagsContent />
       </TabPanel>
     </TabContext>
   );

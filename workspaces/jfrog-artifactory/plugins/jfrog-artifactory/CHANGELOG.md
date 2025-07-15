@@ -1,5 +1,33 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- 3b95346: Backstage version bump to v1.40.2
+
+## 1.16.0
+
+### Minor Changes
+
+- 3dab416: Adds the possibility to use multiple artifactory instances
+
+### Patch Changes
+
+- 7f18c19: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+
+## 1.15.3
+
+### Patch Changes
+
+- 66718a0: remove unused devDependencies
+
+## 1.15.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 1.15.1
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.8.0
+
+### Minor Changes
+
+- 44ef44f: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [44ef44f]
+  - @backstage-community/plugin-tech-radar-common@1.7.0
+
+## 1.7.1
+
+### Patch Changes
+
+- 701ce81: Wrapped timeline entry description in MarkdownContent to support markdown content
+
 ## 1.7.0
 
 ### Minor Changes

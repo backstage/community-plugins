@@ -26,6 +26,7 @@ import {
   PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
+import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -45,6 +46,7 @@ describe('createRouter', () => {
       updateAnnouncement: updateAnnouncementMock,
     } as unknown as AnnouncementsDatabase,
     categoriesStore: {} as unknown as CategoriesDatabase,
+    tagsStore: {} as unknown as TagsDatabase,
   };
 
   const mockPermissions: PermissionsService = {
@@ -67,6 +69,7 @@ describe('createRouter', () => {
       config: mockServices.rootConfig.mock(),
       persistenceContext: mockPersistenceContext,
       permissions: mockPermissions,
+      permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth: mockHttpAuth,
     };
 

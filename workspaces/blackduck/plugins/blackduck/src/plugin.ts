@@ -64,6 +64,20 @@ export const BlackDuckPage = blackduckPlugin.provide(
 /**
  * @public
  */
+export const BlackDuckAllVersionPage = blackduckPlugin.provide(
+  createRoutableExtension({
+    name: 'BlackDuckAllVersionPage',
+    component: () =>
+      import('./components/BlackDuckPage').then(
+        m => m.BlackDuckAllVersionPageComponent,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * @public
+ */
 export const RiskCard = blackduckPlugin.provide(
   createRoutableExtension({
     name: 'RiskCard',

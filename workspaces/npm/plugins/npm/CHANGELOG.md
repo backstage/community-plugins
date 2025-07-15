@@ -1,5 +1,44 @@
 # @backstage-community/plugin-npm
 
+## 1.9.0
+
+### Minor Changes
+
+- 9df5e2a: Add new npm registry option `extraRequestHeaders` to pass for example non-standard authentification headers.
+
+### Patch Changes
+
+- Updated dependencies [9df5e2a]
+  - @backstage-community/plugin-npm-common@1.9.0
+
+## 1.8.0
+
+### Minor Changes
+
+- 4bfc2ec: Backstage version bump to v1.40.1
+
+### Patch Changes
+
+- Updated dependencies [4bfc2ec]
+  - @backstage-community/plugin-npm-common@1.8.0
+
+## 1.7.0
+
+### Minor Changes
+
+- c42ca51: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [c42ca51]
+  - @backstage-community/plugin-npm-common@1.7.0
+
+## 1.6.1
+
+### Patch Changes
+
+- c33ba27: Improve error handling when the npm plugin is used without the existing `isNpmAvailable` condition for catalog entities and without the `npm/package` annotation. A generic error was shown instead of the expected missing annotation component (`MissingAnnotationEmptyState`).
+
 ## 1.6.0
 
 ### Minor Changes

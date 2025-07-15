@@ -1,4 +1,3 @@
-import React from 'react';
 import { Header as CoreHeader } from '@backstage/core-components';
 
 export const Header = () => (

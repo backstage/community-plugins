@@ -17,7 +17,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
-import React from 'react';
 
 import { CalverTagParts } from '../../../helpers/tagParts/getCalverTagParts';
 import { getPatchCommitSuffix } from '../helpers/getPatchCommitSuffix';

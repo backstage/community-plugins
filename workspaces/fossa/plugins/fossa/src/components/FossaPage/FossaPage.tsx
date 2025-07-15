@@ -30,7 +30,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { DateTime } from 'luxon';
-import * as React from 'react';
 import { useMemo, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import useDeepCompareEffect from 'react-use/esm/useDeepCompareEffect';

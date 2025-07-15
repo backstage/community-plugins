@@ -1,5 +1,26 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.5.3
+
+### Patch Changes
+
+- 2564b07: Set all tooltip placements to left
+- 28e2aa1: Fixes disabled sbom link when step is present
+- b21ffcd: Updated dependency `@backstage-community/plugin-github-actions` to `^0.11.0`.
+
+## 0.5.2
+
+### Patch Changes
+
+- cfaaf7e: Updated dependency `@backstage-community/plugin-jenkins` to `^0.20.0`.
+
+## 0.5.1
+
+### Patch Changes
+
+- c8e1803: Use getAnnotationValuesFromEntity from azure-devops-common
+- 5ac4c60: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
 ## 0.5.0
 
 ### Minor Changes

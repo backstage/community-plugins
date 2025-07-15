@@ -1,5 +1,24 @@
 ### Dependencies
 
+## 2.3.0
+
+### Minor Changes
+
+- fe1d8aa: Backstage version bump to v1.40.2
+  Remove broken close button from display option chips in `TopologyToolbar`.
+
+## 2.2.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.2.1
+
+### Patch Changes
+
+- 6fb7a4d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
 ## 2.2.0
 
 ### Minor Changes

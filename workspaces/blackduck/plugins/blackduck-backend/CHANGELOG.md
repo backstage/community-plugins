@@ -1,5 +1,25 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- bbc534f: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [bbc534f]
+  - @backstage-community/plugin-blackduck-common@0.5.0
+  - @backstage-community/plugin-blackduck-node@0.3.0
+
+## 0.5.1
+
+### Patch Changes
+
+- 25fa4bf: Implemented BlackDuckAllVersionPage to support multiple versions in Blackduck page
+- Updated dependencies [25fa4bf]
+  - @backstage-community/plugin-blackduck-node@0.2.1
+
 ## 0.5.0
 
 ### Minor Changes

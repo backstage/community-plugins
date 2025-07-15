@@ -16,16 +16,18 @@
 import { Link, Progress, Table } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
+import { Box, Typography } from '@material-ui/core';
+
+import { DOC_LINKS } from '../../doc-links';
 import { useRepository, useTags } from '../../hooks';
 import { useQuayViewPermission } from '../../hooks/useQuayViewPermission';
 import PermissionAlert from '../PermissionAlert/PermissionAlert';
-import { columns, useStyles } from './tableHeading';
+import { columns } from './tableHeading';
 
 type QuayRepositoryProps = Record<never, any>;
 
 export function QuayRepository(_props: QuayRepositoryProps) {
   const { repository, organization } = useRepository();
-  const classes = useStyles();
   const configApi = useApi(configApiRef);
   const quayUiUrl =
     configApi.getOptionalString('quay.apiUrl') ??
@@ -65,9 +67,55 @@ export function QuayRepository(_props: QuayRepositoryProps) {
         data={data}
         columns={columns}
         emptyContent={
-          <div data-testid="quay-repo-table-empty" className={classes.empty}>
-            There are no images available.
-          </div>
+          <Box data-testid="quay-repo-table-empty" padding={2}>
+            <Typography component="h3" align="center" variant="h6" gutterBottom>
+              No container images found
+            </Typography>
+            <Typography
+              component="p"
+              align="center"
+              variant="body1"
+              color="textSecondary"
+              gutterBottom
+            >
+              This repository doesn't contain any images yet, or there might be
+              an access issue.
+            </Typography>
+            <Box mt={2}>
+              <Typography
+                component="p"
+                align="center"
+                variant="body2"
+                gutterBottom
+              >
+                <strong>Possible solutions:</strong>
+              </Typography>
+              <Typography
+                component="p"
+                align="center"
+                variant="body2"
+                gutterBottom
+              >
+                1. Check if images have been pushed to this repository
+              </Typography>
+              <Typography
+                component="p"
+                align="center"
+                variant="body2"
+                gutterBottom
+              >
+                2. Review the application logs in your Backstage instance
+              </Typography>
+              <Typography component="p" align="center" variant="body2">
+                3. Verify your{' '}
+                <Link to={DOC_LINKS.AUTH_TOKEN_GUIDE}>Quay access tokens</Link>{' '}
+                are{' '}
+                <Link to={DOC_LINKS.BACKEND_CONFIGURATION_GUIDE}>
+                  configured correctly
+                </Link>
+              </Typography>
+            </Box>
+          </Box>
         }
       />
     </div>

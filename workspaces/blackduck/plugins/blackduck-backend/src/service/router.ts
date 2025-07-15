@@ -190,6 +190,64 @@ export async function createRouter(
     },
   );
 
+  router.post(
+    '/project-versions/:hostKey/:projectName',
+    async (_request, response) => {
+      const { hostKey, projectName } = _request.params;
+      const credentials = await httpAuth.credentials(_request);
+      const entityRef = _request.body.entityRef;
+      logger.info(`getting versions for the project: ${projectName}`);
+      if (typeof entityRef !== 'string') {
+        throw new InputError('Invalid entityRef, not a string');
+      }
+
+      if (!hostKey || !projectName) {
+        response.status(400).json({
+          message: 'The hostKey, projectName and projectVersion are required',
+        });
+        return;
+      }
+
+      let host: string;
+      let token: string;
+
+      try {
+        const hostConfig = blackDuckConfig.getHostConfigByName(hostKey);
+        host = hostConfig.host;
+        token = hostConfig.token;
+      } catch (error) {
+        response.status(400).json({
+          message: 'The hostKey is not valid.',
+        });
+        return;
+      }
+
+      const decision = (
+        await permissions.authorize(
+          [
+            {
+              permission: blackduckVulnerabilitiesReadPermission,
+              resourceRef: entityRef,
+            },
+          ],
+          {
+            credentials,
+          },
+        )
+      )[0];
+      logger.info('decision', decision);
+      if (decision.result !== AuthorizeResult.ALLOW) {
+        throw new NotAllowedError('Unauthorized');
+      }
+
+      const blackDuck = new BlackDuckRestApi(logger, host, token);
+
+      await blackDuck.auth();
+      const versions = await blackDuck.getProjectVersions(projectName);
+      response.json(versions);
+    },
+  );
+
   router.use(middleware.error());
   return router;
 }

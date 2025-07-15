@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 1.42.0
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+
 ## 1.41.6
 
 ### Patch Changes

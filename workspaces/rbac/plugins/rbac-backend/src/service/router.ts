@@ -16,6 +16,7 @@
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
+import Router from 'express-promise-router';
 
 import express from 'express';
 
@@ -35,7 +36,7 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, config } = options;
 
-  const router = express.Router();
+  const router = Router();
   router.use(express.json());
 
   router.get('/health', (_, response) => {

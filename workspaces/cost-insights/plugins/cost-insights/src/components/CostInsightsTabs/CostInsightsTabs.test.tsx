@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { CostInsightsTabs } from './CostInsightsTabs';
 import userEvent from '@testing-library/user-event';
 import { Group } from '@backstage-community/plugin-cost-insights-common';
@@ -37,7 +37,7 @@ const mockGroups: Group[] = [
 ];
 
 describe('<CostInsightsTabs />', () => {
-  const renderWrapped = (children: React.ReactNode) =>
+  const renderWrapped = (children: ReactNode) =>
     renderInTestApp(
       <MockFilterProvider setPageFilters={mockSetPageFilters}>
         <MockLoadingProvider>{children}</MockLoadingProvider>

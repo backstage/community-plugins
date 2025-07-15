@@ -79,6 +79,7 @@ export const AnnouncementsPage: (props: {
     | undefined;
   hideInactive?: boolean | undefined;
   hideStartAt?: boolean | undefined;
+  markdownRenderer?: MarkdownRendererTypeProps | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -110,12 +111,16 @@ export type AnnouncementsTimelineProps = {
   order?: 'asc' | 'desc';
 };
 
+// @public
+export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
+
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {
   variant?: 'block' | 'floating' | undefined;
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
+  tags?: string[] | undefined;
 }) => JSX_2.Element | null;
 
 // (No @packageDocumentation comment for this package)

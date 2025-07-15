@@ -1,5 +1,42 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 1a231d9: Potentially BREAKING CHANGES for those who were still using the deprecated code.
+
+  - Removes code related to deprecated search collator from `@backstage-community/plugin-announcements-backend` (import from `@backstage-community/plugin-search-backend-module-announcements`)
+  - Removes code related to deprecated `announcementsService` from `@backstage-community/plugin-announcements-node` in favor of `announcementsServiceRef`
+
+### Patch Changes
+
+- cbc8c92: Deprecates createPermissionIntegrationRouter in favor of leveraging the new PermissionsRegistryService. There should be no external impact to end users.
+
+## 0.7.0
+
+### Minor Changes
+
+- 775d236: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [775d236]
+  - @backstage-community/plugin-announcements-common@0.6.0
+  - @backstage-community/plugin-search-backend-module-announcements@0.5.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 8c803d8: Added support for tags in announcements
+
+### Patch Changes
+
+- Updated dependencies [8c803d8]
+  - @backstage-community/plugin-announcements-common@0.5.1
+  - @backstage-community/plugin-search-backend-module-announcements@0.4.1
+
 ## 0.5.0
 
 ### Minor Changes

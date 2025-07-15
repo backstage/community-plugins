@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ComponentProps, ReactNode } from 'react';
+import { ComponentProps, ReactNode } from 'react';
 
 import { GaugeCard, GaugePropsGetColor } from '@backstage/core-components';
 

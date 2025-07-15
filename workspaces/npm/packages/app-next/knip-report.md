@@ -1,6 +1,6 @@
 # Knip report
 
-## Unused dependencies (17)
+## Unused dependencies (16)
 
 | Name                             | Location          | Severity |
 | :------------------------------- | :---------------- | :------- |
@@ -19,13 +19,12 @@
 | @backstage/plugin-org            | package.json:40:6 | error    |
 | @material-ui/icons               | package.json:44:6 | error    |
 | @material-ui/core                | package.json:43:6 | error    |
-| styled-components                | package.json:50:6 | error    |
-| react-use                        | package.json:49:6 | error    |
+| styled-components                | package.json:49:6 | error    |
 
 ## Unused devDependencies (3)
 
 | Name                        | Location          | Severity |
 | :-------------------------- | :---------------- | :------- |
-| @testing-library/user-event | package.json:58:6 | error    |
-| @testing-library/dom        | package.json:55:6 | error    |
-| @playwright/test            | package.json:54:6 | error    |
+| @testing-library/user-event | package.json:57:6 | error    |
+| @testing-library/dom        | package.json:54:6 | error    |
+| @playwright/test            | package.json:53:6 | error    |

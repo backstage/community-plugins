@@ -11,6 +11,15 @@ import { TableColumn } from '@backstage/core-components';
 import { TableFilter } from '@backstage/core-components';
 
 // @public (undocumented)
+export const BlackDuckAllVersionPage: ({
+  columns,
+  filters,
+}: {
+  columns?: TableColumn<{}>[] | undefined;
+  filters?: TableFilter[] | undefined;
+}) => JSX_2.Element;
+
+// @public (undocumented)
 export const BlackDuckPage: ({
   columns,
   filters,

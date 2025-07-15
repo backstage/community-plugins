@@ -21,7 +21,6 @@ import {
   Page,
   Header,
   Content,
-  MarkdownContent,
   InfoCard,
 } from '@backstage/core-components';
 import {
@@ -29,20 +28,23 @@ import {
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import {
-  EntityPeekAheadPopover,
-  EntityRefLink,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import {
+  MarkdownRenderer,
+  MarkdownRendererTypeProps,
+} from '../MarkdownRenderer';
 
 const AnnouncementDetails = ({
   announcement,
+  markdownRenderer,
 }: {
   announcement: Announcement;
+  markdownRenderer?: MarkdownRendererTypeProps;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
@@ -52,14 +54,10 @@ const AnnouncementDetails = ({
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover
+      <EntityRefLink
         entityRef={announcement.on_behalf_of || announcement.publisher}
-      >
-        <EntityRefLink
-          entityRef={announcement.on_behalf_of || announcement.publisher}
-          hideIcon
-        />
-      </EntityPeekAheadPopover>
+        hideIcon
+      />
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>
   );
@@ -70,7 +68,10 @@ const AnnouncementDetails = ({
       subheader={subHeader}
       deepLink={deepLink}
     >
-      <MarkdownContent content={announcement.body} />
+      <MarkdownRenderer
+        content={announcement.body}
+        rendererType={markdownRenderer}
+      />
     </InfoCard>
   );
 };
@@ -79,6 +80,7 @@ type AnnouncementPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
+  markdownRenderer?: MarkdownRendererTypeProps;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
@@ -98,7 +100,12 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
     content = <Alert severity="error">{error.message}</Alert>;
   } else {
     title = `${value!.title} – ${title}`;
-    content = <AnnouncementDetails announcement={value!} />;
+    content = (
+      <AnnouncementDetails
+        announcement={value!}
+        markdownRenderer={props.markdownRenderer}
+      />
+    );
 
     const lastSeen = announcementsApi.lastSeenDate();
     const announcementCreatedAt = DateTime.fromISO(value!.created_at);

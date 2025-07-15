@@ -110,7 +110,7 @@ Example
 
 ### Overriding the AnnouncementsPage
 
-It is possible to specify the Announcements within a specific category rendered on the `AnnouncementsPage`. You can do this by passing a `category` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts an value such as:
+It is possible to specify the Announcements within a specific category or tags rendered on the `AnnouncementsPage`. You can do this by passing a `category` or `tags` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts a value such as:
 
 ```ts
 category = 'conferences';
@@ -131,6 +131,24 @@ It is possible to specify the text for the "New announcement" button rendered on
   name: string; // defaults to 'announcement'
 }
 ```
+
+### Markdown rendering
+
+The plugin supports two different markdown rendering options:
+
+1. **backstage** (default): Uses Backstage's built-in `MarkdownContent` component. This ensures compatibility with Backstage theming but may support a more limited set of markdown features.
+
+2. **md-editor**: Uses `MDEditor.Markdown` which provides more complete markdown rendering with WYSIWYG-like results. However, it might not render correctly if your Backstage instance has custom theming applied.
+
+You can select the markdown renderer when using the AnnouncementsPage component:
+
+```tsx
+<AnnouncementsPage markdownRenderer="backstage" /> // Default option
+// or
+<AnnouncementsPage markdownRenderer="md-editor" /> // Full markdown support
+```
+
+Select the renderer that best fits your needs based on whether theme consistency or markdown feature completeness is more important for your use case.
 
 ## Development
 

@@ -38,6 +38,7 @@ export const EntityTechInsightsScorecardCard: (props: {
   filter?: ((check: Check) => boolean) | undefined;
   onlyFailed?: boolean | undefined;
   expanded?: boolean | undefined;
+  gauge?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -46,6 +47,7 @@ export const EntityTechInsightsScorecardContent: (props: {
   description?: string | undefined;
   checksId?: string[] | undefined;
   filter?: ((check: Check) => boolean) | undefined;
+  dense?: boolean | undefined;
 }) => JSX_2.Element;
 
 export { InsightFacts };
@@ -62,16 +64,19 @@ export { ResultLinksMenuInfo };
 export const ScorecardInfo: (props: {
   checkResults: CheckResult[];
   title: ReactNode;
-  entity: Entity;
+  entity?: Entity | undefined;
   description?: string | undefined;
   noWarning?: boolean | undefined;
   expanded?: boolean | undefined;
+  dense?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const ScorecardsList: (props: {
   checkResults: CheckResult[];
   entity?: Entity | undefined;
+  dense?: boolean | undefined;
+  hideDescription?: boolean | undefined;
 }) => JSX_2.Element;
 
 export { TechInsightsApi };
@@ -106,7 +111,10 @@ export const techInsightsPlugin: BackstagePlugin<
 >;
 
 // @public (undocumented)
-export const TechInsightsScorecardPage: () => JSX_2.Element;
+export const TechInsightsScorecardPage: (props: {
+  badge?: boolean | undefined;
+  dense?: boolean | undefined;
+}) => JSX_2.Element;
 
 // (No @packageDocumentation comment for this package)
 ```

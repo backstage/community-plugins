@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- d73ba40: Adding regex:replace examples
+
+## 2.7.0
+
+### Minor Changes
+
+- 2833ad3: Backstage version bump to v1.39.0
+
+## 2.6.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 2.6.0
 
 ### Minor Changes

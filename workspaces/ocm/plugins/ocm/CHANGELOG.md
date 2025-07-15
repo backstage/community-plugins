@@ -1,5 +1,24 @@
 ### Dependencies
 
+## 5.6.0
+
+### Minor Changes
+
+- f0a6ba7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f0a6ba7]
+  - @backstage-community/plugin-ocm-common@3.10.0
+
+## 5.5.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-ocm-common@3.9.1
+
 ## 5.5.0
 
 ### Minor Changes

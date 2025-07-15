@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 2.7.0
+
+### Minor Changes
+
+- 4202946: Backstage version bump to v1.39.0
+
+## 2.6.4
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 2.6.3
 
 ### Patch Changes

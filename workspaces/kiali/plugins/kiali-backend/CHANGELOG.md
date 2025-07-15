@@ -1,5 +1,12 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.22.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+
 ## 1.22.0
 
 ### Minor Changes

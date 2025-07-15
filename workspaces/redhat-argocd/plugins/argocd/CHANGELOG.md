@@ -1,5 +1,19 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.21.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-redhat-argocd-common@1.6.1
+
+## 1.21.1
+
+### Patch Changes
+
+- 4258454: Add namespace to Deployment Summary header link, if specified
+
 ## 1.21.0
 
 ### Minor Changes

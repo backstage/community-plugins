@@ -146,10 +146,11 @@ type NewAnnouncementBannerProps = {
   max?: number;
   category?: string;
   active?: boolean;
+  tags?: string[];
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
-  const { max, category, active, variant } = props;
+  const { max, category, tags, active, variant } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
 
@@ -160,6 +161,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
   const { announcements, loading, error } = useAnnouncements({
     max: max ?? 1,
     category,
+    tags,
     active,
   });
   const lastSeen = announcementsApi.lastSeenDate();

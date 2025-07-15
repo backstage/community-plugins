@@ -1,5 +1,27 @@
 ### Dependencies
 
+## 5.7.0
+
+### Minor Changes
+
+- f0a6ba7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f0a6ba7]
+  - @backstage-community/plugin-ocm-common@3.10.0
+
+## 5.6.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+- c2146d3: Updated dependency `@openapitools/openapi-generator-cli` to `2.20.2`.
+- 9ef8dfd: Updated dependency `@openapitools/openapi-generator-cli` to `2.20.0`.
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-ocm-common@3.9.1
+
 ## 5.6.0
 
 ### Minor Changes

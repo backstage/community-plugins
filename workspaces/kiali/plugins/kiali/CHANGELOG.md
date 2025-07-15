@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 1.39.0
+
+### Minor Changes
+
+- cdad6af: Create kiali-react component library
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+- Updated dependencies [9e58717]
+  - @backstage-community/plugin-kiali-react@0.1.1
+
 ## 1.38.0
 
 ### Minor Changes

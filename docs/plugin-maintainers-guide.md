@@ -65,7 +65,7 @@ These automated PRs are intended as a convenience to open the version bump for y
 
 ## Opt-in to Knip Reports Check
 
-Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`) and adding `"knip-reports": true`. This ensures that knip reports in your workspace stay up to date.
+Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knip-reports": true }`. This ensures that knip reports in your workspace stay up to date.
 
 [Knip](https://knip.dev/) is a tool that helps with clean-up and maintenance by identifying unused dependencies within workspaces. Regularly reviewing and addressing these reports can significantly improve code quality and reduce bloat.
 

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-stack-overflow-backend",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Deprecated, use @backstage/plugin-search-backend-module-stack-overflow-collator instead",
   "deprecated": "Deprecated, use @backstage/plugin-search-backend-module-stack-overflow-collator instead",
   "backstage": {
@@ -43,14 +43,14 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/plugin-search-backend-module-stack-overflow-collator": "^0.3.9",
+    "@backstage/plugin-search-backend-module-stack-overflow-collator": "^0.3.10",
     "node-fetch": "^2.6.7",
     "qs": "^6.9.4",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.5.0",
-    "@backstage/cli": "^0.32.1",
+    "@backstage/backend-test-utils": "^1.6.0",
+    "@backstage/cli": "^0.33.0",
     "@types/node-fetch": "^2.5.12"
   },
   "configSchema": "config.d.ts"

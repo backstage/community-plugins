@@ -24,28 +24,13 @@ import Jenkins from 'jenkins';
  * @returns Empty response, in case of error an exception will be thrown by jenkins client
  */
 export function buildJob(jenkins: Jenkins) {
-  return createTemplateAction<{
-    jobName: string;
-    jobParameters: any;
-  }>({
+  return createTemplateAction({
     id: 'jenkins:job:build',
     description: 'Run an existing job jenkins given a name',
     schema: {
       input: {
-        type: 'object',
-        required: ['jobName'],
-        properties: {
-          jobName: {
-            title: 'Jenkins job name',
-            description: 'Name of jenkins item',
-            type: 'string',
-          },
-          jobParameters: {
-            title: 'Jenkins job parameters',
-            description: 'Parameters passed to job jenkins',
-            type: 'any',
-          },
-        },
+        jobName: z => z.string({ description: 'Name of jenkins item' }),
+        jobParameters: z => z.record(z.any()).optional(),
       },
     },
     async handler(ctx) {

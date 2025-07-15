@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-github-issues",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "github-issues",
@@ -50,14 +50,14 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.4",
-    "@backstage/core-compat-api": "^0.4.2",
-    "@backstage/core-components": "^0.17.2",
-    "@backstage/core-plugin-api": "^1.10.7",
+    "@backstage/core-compat-api": "^0.4.3",
+    "@backstage/core-components": "^0.17.3",
+    "@backstage/core-plugin-api": "^1.10.8",
     "@backstage/errors": "^1.2.7",
-    "@backstage/frontend-plugin-api": "^0.10.2",
+    "@backstage/frontend-plugin-api": "^0.10.3",
     "@backstage/integration": "^1.17.0",
-    "@backstage/integration-react": "^1.2.7",
-    "@backstage/plugin-catalog-react": "^1.18.0",
+    "@backstage/integration-react": "^1.2.8",
+    "@backstage/plugin-catalog-react": "^1.19.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -67,10 +67,10 @@
     "react-use": "^17.4.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.1",
-    "@backstage/dev-utils": "^1.1.10",
-    "@backstage/frontend-test-utils": "^0.3.2",
-    "@backstage/test-utils": "^1.7.8",
+    "@backstage/cli": "^0.33.0",
+    "@backstage/dev-utils": "^1.1.11",
+    "@backstage/frontend-test-utils": "^0.3.3",
+    "@backstage/test-utils": "^1.7.9",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
