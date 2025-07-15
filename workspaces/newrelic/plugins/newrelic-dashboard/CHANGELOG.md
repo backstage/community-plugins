@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.11.1
+
+### Patch Changes
+
+- 7e0e57c: change name of new relic dashboards tab
+
 ## 0.11.0
 
 ### Minor Changes
