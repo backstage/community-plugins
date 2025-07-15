@@ -48,7 +48,7 @@ export const newRelicDashboardEntityContent = EntityContentBlueprint.make({
   name: 'EntityNewRelicDashboardContent',
   params: {
     defaultPath: '/newrelic-dashboard',
-    defaultTitle: 'New Relic',
+    defaultTitle: 'New Relic Dashboard',
     loader: () => import('../Router').then(m => compatWrapper(<m.Router />)),
   },
 });
