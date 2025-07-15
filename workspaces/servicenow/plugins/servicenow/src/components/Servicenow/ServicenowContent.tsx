@@ -15,7 +15,7 @@
  */
 
 import { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
-import { useApi } from '@backstage/core-plugin-api';
+import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 
 import {
   CatalogFilterLayout,
@@ -82,6 +82,16 @@ export const ServicenowContent = () => {
 
   const kind = entity.kind.toLocaleLowerCase('en-US');
   const userEmail = useUserEmail(kind);
+
+  const identityApi = useApi(identityApiRef);
+
+  useEffect(() => {
+    identityApi.getBackstageIdentity().then(identity => {
+      if (identity.userEntityRef) {
+        localStorage.setItem('userEntityRef', identity.userEntityRef);
+      }
+    });
+  }, [identityApi]);
 
   useEffect(() => {
     if (debouncedInput !== search) {
