@@ -47,8 +47,8 @@ export const newRelicApi = ApiBlueprint.make({
 export const newRelicDashboardEntityContent = EntityContentBlueprint.make({
   name: 'EntityNewRelicDashboardContent',
   params: {
-    defaultPath: '/pull-requests',
-    defaultTitle: 'Pull Requests',
+    defaultPath: '/newrelic-dashboard',
+    defaultTitle: 'New Relic Dashboard',
     loader: () => import('../Router').then(m => compatWrapper(<m.Router />)),
   },
 });
