@@ -1,13 +1,34 @@
-# servicenow
+# ServiceNow Frontend Plugin
 
-Welcome to the servicenow plugin!
+This is the frontend implementation of the ServiceNow plugin for Backstage.
 
-_This plugin was created through the Backstage CLI_
+It is responsible for rendering the ServiceNow tab content, fetching incident data, and integrating with Backstage's dynamic plugin system.
 
-## Getting started
+---
 
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/servicenow](http://localhost:3000/servicenow).
+## 🚀 Getting Started
 
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+1. Install dependencies:
+
+   ```bash
+   yarn install
+   ```
+
+2. Start the Backstage dev app:
+
+Your plugin has been added to the example app in this `plugins/servicenow` directory, meaning you'll be able to access it by running `yarn start` in the current directory, and then navigating to [/servicenow](http://localhost:3000/servicenow).
+
+## Frontend Configuration
+
+This plugin supports dynamic mounting via `dynamic-plugins.yaml`.
+Please refer to the main plugin [README](../README.md) for complete instructions on:
+
+- Adding dynamic mount points
+- Configuring tabs
+- Using the `isMyProfile` condition on mount point configuration
+
+## Notes on Identity Handling
+
+When using this plugin in a Backstage instance that supports dynamic plugins (e.g., RHDH), it enables user-specific incident filtering in the **"My ServiceNow Tickets"** tab, shown on the entity page of the currently logged-in user.
+
+> **NOTE:** The local dev app does **not** support user-specific incident filtering.

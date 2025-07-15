@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { servicenowPlugin, ServicenowPage } from './plugin';
+export { servicenowPlugin, ServicenowPage, isMyProfile } from './plugin';

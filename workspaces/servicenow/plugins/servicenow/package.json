@@ -70,13 +70,6 @@
   "files": [
     "dist"
   ],
-  "scalprum": {
-    "name": "backstage-community.plugin-servicenow",
-    "exposedModules": {
-      "PluginRoot": "./src/index.ts",
-      "isMyProfile": "./src/utils/isMyProfile.ts"
-    }
-  },
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@ciiay",

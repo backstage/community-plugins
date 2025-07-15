@@ -28,6 +28,12 @@ import {
   ServiceNowBackendClient,
 } from './api/ServiceNowBackendClient';
 
+import {
+  Entity,
+  parseEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
+
 /**
  * Servicenow Plugin
  * @public
@@ -63,3 +69,25 @@ export const ServicenowPage = servicenowPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+/**
+ * @public
+ * Check if the current entity is the logged-in user
+ */
+
+export const isMyProfile = (entity: Entity): boolean => {
+  const currentUserRef = localStorage.getItem('userEntityRef');
+  if (!currentUserRef) return false;
+
+  try {
+    const a = parseEntityRef(currentUserRef);
+    const b = parseEntityRef(stringifyEntityRef(entity));
+    return (
+      a.kind.toLowerCase() === b.kind.toLowerCase() &&
+      a.namespace.toLowerCase() === b.namespace.toLowerCase() &&
+      a.name.toLowerCase() === b.name.toLowerCase()
+    );
+  } catch {
+    return false;
+  }
+};

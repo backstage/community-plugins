@@ -8,7 +8,7 @@ You need to have a ServiceNow developer instance. You can request a new one from
 
 ## `app-config.yaml`
 
-To use the ServiceNow backend plugin, you need to configure it in your `app-config.local.yaml` file. The plugin supports both Basic Authentication and OAuth with grant types "password" and "client_credentials".
+To use the ServiceNow backend plugin, you need to configure it in your `app-config.yaml` file. The plugin supports both Basic Authentication and OAuth with grant types "password" and "client_credentials".
 
 ### Basic Authentication
 
