@@ -30,11 +30,12 @@ import pThrottle from 'p-throttle';
  * @public
  */
 export type ConfluenceDocumentMetadata = {
+  id: string;
   title: string;
   status: string;
 
   _links: {
-    self: string;
+    base?: string; // not available when listing documents with search API
     webui: string;
   };
 };
@@ -299,7 +300,11 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
         break;
       }
 
-      documentsList.push(...data.results.map(result => result._links.self));
+      documentsList.push(
+        ...data.results.map(
+          result => `${this.baseUrl}/rest/api/content/${result.id}`,
+        ),
+      );
 
       if (data._links.next) {
         requestUrl = `${this.baseUrl}${data._links.next}`;
@@ -326,14 +331,14 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     const ancestors: IndexableAncestorRef[] = [
       {
         title: data.space.name,
-        location: `${this.baseUrl}${data.space._links.webui}`,
+        location: `${data._links.base}${data.space._links.webui}`,
       },
     ];
 
     data.ancestors.forEach(ancestor => {
       ancestors.push({
         title: ancestor.title,
-        location: `${this.baseUrl}${ancestor._links.webui}`,
+        location: `${data._links.base}${ancestor._links.webui}`,
       });
     });
 
@@ -341,7 +346,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       {
         title: data.title,
         text: this.stripHtml(data.body.storage.value),
-        location: `${this.baseUrl}${data._links.webui}`,
+        location: `${data._links.base}${data._links.webui}`,
         spaceKey: data.space.key,
         spaceName: data.space.name,
         ancestors: ancestors,

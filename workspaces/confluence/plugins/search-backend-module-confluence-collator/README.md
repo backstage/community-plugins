@@ -116,6 +116,19 @@ confluence:
 
 **Note:** For `basic` and `bearer` authorization methods you will need an access token for authorization with `Read` permissions. You can create a Personal Access Token (PAT) [in Confluence](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/). The value used should be the raw token as it will be encoded for you by the action.
 
+#### Using Scoped API Tokens with Atlassian Cloud
+
+If you want to use scoped API tokens, which allow limiting the permission of the token, you need to call a different Atlassian API endpoint and use a unique `baseUrl` ([see the documentation here](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/#Create-an-API-token-with-scopes)).
+
+Note: this endpoint uses your `cloudid` which can be found as described in [this article](https://support.atlassian.com/jira/kb/retrieve-my-atlassian-sites-cloud-id/).
+
+The required classic scopes for this plugin are:
+
+- read:confluence-content.all
+- read:confluence-content.summary
+- read:confluence-space.summary
+- search:confluence
+
 #### Search Schedule
 
 By default the Confluence documents indexing will run every two hours. Here's how to configure the schedule:
