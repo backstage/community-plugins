@@ -17,7 +17,6 @@ import { useState, useMemo } from 'react';
 
 import { Progress, Table, WarningPanel } from '@backstage/core-components';
 
-import { useDeleteDialog } from '@janus-idp/shared-react';
 import Box from '@mui/material/Box';
 
 import { useCheckIfLicensePluginEnabled } from '../../hooks/useCheckIfLicensePluginEnabled';
@@ -30,6 +29,7 @@ import { useToast } from '../ToastContext';
 import DeleteRoleDialog from './DeleteRoleDialog';
 import { columns } from './RolesListColumns';
 import { RolesListToolbar } from './RolesListToolbar';
+import { useDeleteDialog } from '../DeleteDialogContext';
 
 export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
