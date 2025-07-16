@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.42.1
+
+### Patch Changes
+
+- aec6bc2: docs(rbac): Removing Janus IDP dynamic plugin installation instructions, switching to relative paths for doc links
+- ac39bff: removed shared-react dependencies
+
 ## 1.42.0
 
 ### Minor Changes
