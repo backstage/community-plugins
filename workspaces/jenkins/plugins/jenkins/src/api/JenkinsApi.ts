@@ -112,7 +112,7 @@ export interface JenkinsApi {
     entity: CompoundEntityRef;
     /** a filter on jobs. Currently this just takes a branch (and assumes certain structures in jenkins) */
     filter: { branch?: string };
-  }): Promise<Project[]>;
+  }): Promise<Project[] | { status: number; statusText?: string }>;
 
   /**
    * Get a single build.
@@ -160,7 +160,7 @@ export class JenkinsClient implements JenkinsApi {
   async getProjects(options: {
     entity: CompoundEntityRef;
     filter: { branch?: string };
-  }): Promise<Project[]> {
+  }): Promise<Project[] | { status: number; statusText?: string }> {
     const { entity, filter } = options;
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
@@ -175,6 +175,11 @@ export class JenkinsClient implements JenkinsApi {
     }
 
     const response = await this.fetchApi.fetch(url);
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      return { status: response.status, statusText: errorBody.errno };
+    }
 
     return (
       (await response.json()).projects?.map((p: Project) => ({

@@ -153,6 +153,14 @@ export class JenkinsBuilder {
             projects: projects,
           });
         } catch (err) {
+          // Respondes to the client with an error message and status code, so it may parse and display the issue occuring when connecting to Jenkins
+          const status = mapErrnoToHttpStatus(err.code || err.errno);
+          response.status(status).json({
+            error: err.message || 'Internal Server Error',
+            errno: err.code || err.errno,
+            status,
+          });
+
           // Promise.any, used in the getProjects call returns an Aggregate error message with a useless error message 'AggregateError: All promises were rejected'
           // extract useful information ourselves
           if (err.errors) {
@@ -286,5 +294,113 @@ export class JenkinsBuilder {
   private jobFullNameParamToJobs(jobFullName: string): string[] {
     // jobFullName may contain a list of job names separated by '/'
     return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
+  }
+}
+
+// Mapping the Errno values to Status Code response values when sending a failed connection to the frontend
+function mapErrnoToHttpStatus(errno: string | number): number {
+  switch (errno) {
+    // 400 Bad Request family
+    case 'EINVAL': // Invalid argument
+    case -22:
+    case 'EADDRNOTAVAIL': // Address not available
+    case -99:
+    case 'EADDRINUSE': // Address already in use
+    case -98:
+    case 'EBADF': // Bad file descriptor
+    case -9:
+    case 'ENOTDIR': // Not a directory
+    case -20:
+    case 'EISDIR': // Is a directory
+    case -21:
+    case 'EMSGSIZE': // Message too long
+    case -90:
+    case 'ENAMETOOLONG': // Name too long
+    case -36:
+    case 'ENOTEMPTY': // Directory not empty
+    case -39:
+    case 'ENOSPC': // No space left on device
+    case -28:
+    case 'EROFS': // Read-only file system
+    case -30:
+    case 'ENODEV': // No such device
+    case -19:
+    case 'ENXIO': // No such device or address
+    case -6:
+    case 'EFAULT': // Bad address
+    case -14:
+      return 400; // Bad Request
+
+    // 401 Unauthorized
+    case 'EPERM': // Operation not permitted
+    case -1:
+    case 'EAUTH': // Custom: Authentication error
+      return 401; // Unauthorized
+
+    // 403 Forbidden
+    case 'EACCES': // Permission denied
+    case -13:
+      return 403; // Forbidden
+
+    // 404 Not Found
+    case 'ENOENT': // No such file or directory
+    case -2:
+      return 404; // Not Found
+
+    // 408 Request Timeout
+    case 'ETIMEDOUT': // Connection timed out
+    case -3002:
+      return 408; // Request Timeout
+
+    // 409 Conflict
+    case 'EEXIST': // File exists
+    case -17:
+      return 409; // Conflict
+
+    // 410 Gone
+    case 'ENODATA': // No data available
+    case -61:
+      return 410; // Gone
+
+    // 429 Too Many Requests
+    case 'EAGAIN': // Resource temporarily unavailable
+    case -11:
+      return 429; // Too Many Requests
+
+    // 500 Internal Server Error family
+    case 'EIO': // I/O error
+    case -5:
+    case 'ENOSYS': // Function not implemented
+    case -38:
+    case 'EPIPE': // Broken pipe
+    case -32:
+    case 'ESPIPE': // Illegal seek
+    case -29:
+      return 500; // Internal Server Error
+
+    // 502 Bad Gateway
+    case 'ENOTFOUND': // DNS lookup failed
+    case -3008:
+    case 'ECONNREFUSED': // Connection refused
+    case -3005:
+    case 'ECONNRESET': // Connection reset by peer
+    case -3004:
+    case 'EHOSTUNREACH': // No route to host
+    case -3006:
+    case 'ENETUNREACH': // Network is unreachable
+    case -3007:
+      return 502; // Bad Gateway
+
+    // 503 Service Unavailable
+    case 'EAI_AGAIN': // DNS lookup timed out
+    case -3001:
+    case 'EUNAVAILABLE': // Custom: Service unavailable
+      return 503; // Service Unavailable
+
+    // 504 Gateway Timeout
+    // (ETIMEDOUT already mapped above to 408, so do not repeat)
+
+    default:
+      return 500; // Internal Server Error
   }
 }

@@ -83,6 +83,36 @@ export const CITableView = ({
   );
 };
 
+function CITableErrorView({
+  statusCode,
+  statusText,
+}: {
+  statusCode?: number;
+  statusText?: string;
+}) {
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      mt={4}
+    >
+      <Typography variant="h5" color="error" gutterBottom>
+        Failed to retrieve data
+      </Typography>
+      <Typography variant="body1" color="textSecondary">
+        Status code: {statusCode}
+      </Typography>
+      {statusText && (
+        <Typography variant="body2" color="textSecondary">
+          Status text: {statusText}
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
 type CITableProps = {
   title?: string;
   columns?: TableColumn<Project>[];
@@ -91,9 +121,29 @@ type CITableProps = {
 export const CITable = ({ title, columns }: CITableProps) => {
   const [tableProps, { setPage, retry, setPageSize }] = useBuilds();
 
+  // Check if projects is a status object
+  const projects = tableProps.projects;
+
+  let safeProjects: Project[] | undefined;
+  let statusCode: number | undefined;
+  let statusText: string | undefined;
+
+  if (Array.isArray(projects)) {
+    safeProjects = projects;
+  } else if (projects && typeof projects === 'object' && 'status' in projects) {
+    // status object
+    statusCode = (projects as any).status;
+    statusText = (projects as any).statusText;
+  }
+
+  if (statusCode !== undefined) {
+    return <CITableErrorView statusCode={statusCode} statusText={statusText} />;
+  }
+
   return (
     <CITableView
       {...tableProps}
+      projects={safeProjects}
       title={title}
       columns={columns || ([] as TableColumn<Project>[])}
       retry={retry}
