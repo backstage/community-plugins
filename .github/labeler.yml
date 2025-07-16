@@ -262,6 +262,9 @@ workspace/scaffolder-relation-processor:
 workspace/sentry:
   - "Workspace\\s*sentry"
 
+workspace/servicenow:
+  - "Workspace\\s*servicenow"
+
 workspace/shortcuts:
   - "Workspace\\s*shortcuts"
 
