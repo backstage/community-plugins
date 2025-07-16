@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.10.0
+
+### Minor Changes
+
+- 106dd40: Add support for scoped API tokens when using Atlassian Cloud for the Confluence plugin.
+
 ## 0.9.0
 
 ### Minor Changes
