@@ -1,0 +1,69 @@
+{
+  "name": "@internal/servicenow",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20 || 22"
+  },
+  "scripts": {
+    "start": "backstage-cli repo start",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
+    "build:all": "backstage-cli repo build --all",
+    "build:api-reports": "yarn build:api-reports:only",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/servicenow"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.32.1",
+    "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/repo-tools": "^0.13.4",
+    "@changesets/cli": "^2.27.1",
+    "@types/simple-oauth2": "^5",
+    "knip": "^5.27.4",
+    "node-gyp": "^10.0.0",
+    "prettier": "^2.3.2",
+    "typescript": "~5.3.0"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@google-cloud/storage": "7.14.0",
+    "@octokit/types": "13.6.1",
+    "@octokit/plugin-rest-endpoint-methods": "13.2.2",
+    "@octokit/plugin-paginate-rest": "11.3.1",
+    "isomorphic-git": "1.27.1"
+  },
+  "prettier": "@backstage/cli/config/prettier",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "simple-oauth2": "^5.1.0"
+  }
+}
