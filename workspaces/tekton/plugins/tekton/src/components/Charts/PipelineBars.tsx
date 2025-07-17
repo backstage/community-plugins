@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useContext, useState } from 'react';
-
+import './PipelineBars.css';
 import { Tooltip } from '@patternfly/react-core';
 
 import {
