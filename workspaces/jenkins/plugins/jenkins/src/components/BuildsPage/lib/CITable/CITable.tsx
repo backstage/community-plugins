@@ -85,10 +85,12 @@ export const CITableView = ({
 
 function CITableErrorView({
   statusCode,
-  statusText,
+  errorReason,
+  connectionIssueMessage,
 }: {
   statusCode?: number;
-  statusText?: string;
+  errorReason?: string;
+  connectionIssueMessage?: string;
 }) {
   return (
     <Box
@@ -101,12 +103,30 @@ function CITableErrorView({
       <Typography variant="h5" color="error" gutterBottom>
         Failed to retrieve data
       </Typography>
-      <Typography variant="body1" color="textSecondary">
-        Status code: {statusCode}
+      <Typography
+        variant="body1"
+        color="textSecondary"
+        style={{ fontWeight: 'bold', marginBottom: 16 }}
+      >
+        {statusCode}: {errorReason || 'Unknown error'}
       </Typography>
-      {statusText && (
-        <Typography variant="body2" color="textSecondary">
-          Status text: {statusText}
+      {connectionIssueMessage && (
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          style={{
+            fontWeight: 'bold',
+            padding: '16px 24px',
+            background: '#5c5252ff', // Material-UI grey[400] - darker grey
+            borderRadius: 4,
+            border: '1px solid #a3a3a3ff', // Material-UI grey[600] - darker border
+            marginTop: 8,
+            maxWidth: 600,
+            textAlign: 'center',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)', // slightly stronger shadow
+          }}
+        >
+          {connectionIssueMessage}
         </Typography>
       )}
     </Box>
@@ -126,18 +146,30 @@ export const CITable = ({ title, columns }: CITableProps) => {
 
   let safeProjects: Project[] | undefined;
   let statusCode: number | undefined;
-  let statusText: string | undefined;
+  let errorReason: string | undefined;
+  let connectionIssueMessage: string | undefined;
 
   if (Array.isArray(projects)) {
     safeProjects = projects;
-  } else if (projects && typeof projects === 'object' && 'status' in projects) {
+  } else if (
+    projects &&
+    typeof projects === 'object' &&
+    'statusCode' in projects
+  ) {
     // status object
-    statusCode = (projects as any).status;
-    statusText = (projects as any).statusText;
+    statusCode = (projects as any).statusCode;
+    errorReason = (projects as any).errorReason;
+    connectionIssueMessage = (projects as any).connectionIssueMessage;
   }
 
   if (statusCode !== undefined) {
-    return <CITableErrorView statusCode={statusCode} statusText={statusText} />;
+    return (
+      <CITableErrorView
+        statusCode={statusCode}
+        errorReason={errorReason}
+        connectionIssueMessage={connectionIssueMessage}
+      />
+    );
   }
 
   return (

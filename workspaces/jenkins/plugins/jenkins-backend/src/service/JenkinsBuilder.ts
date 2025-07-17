@@ -154,11 +154,15 @@ export class JenkinsBuilder {
           });
         } catch (err) {
           // Respondes to the client with an error message and status code, so it may parse and display the issue occuring when connecting to Jenkins
-          const status = mapErrnoToHttpStatus(err.code || err.errno);
+          const { status, reason } = mapErrnoToHttpStatus(
+            err.code || err.errno,
+          );
+          const config = this.env.config;
           response.status(status).json({
-            error: err.message || 'Internal Server Error',
-            errno: err.code || err.errno,
-            status,
+            errorReason: reason,
+            connectionIssueMessage: config.getOptionalString(
+              'jenkins.connectionIssueMessage',
+            ),
           });
 
           // Promise.any, used in the getProjects call returns an Aggregate error message with a useless error message 'AggregateError: All promises were rejected'
@@ -297,8 +301,13 @@ export class JenkinsBuilder {
   }
 }
 
-// Mapping the Errno values to Status Code response values when sending a failed connection to the frontend
-function mapErrnoToHttpStatus(errno: string | number): number {
+/**
+ * Maps Node.js errno values to HTTP status codes and provides an explanation.
+ */
+function mapErrnoToHttpStatus(errno: string | number): {
+  status: number;
+  reason: string;
+} {
   switch (errno) {
     // 400 Bad Request family
     case 'EINVAL': // Invalid argument
@@ -329,43 +338,72 @@ function mapErrnoToHttpStatus(errno: string | number): number {
     case -6:
     case 'EFAULT': // Bad address
     case -14:
-      return 400; // Bad Request
+      return {
+        status: 400,
+        reason:
+          'Bad Request: The request was invalid or contained invalid parameters.',
+      };
 
     // 401 Unauthorized
     case 'EPERM': // Operation not permitted
     case -1:
     case 'EAUTH': // Custom: Authentication error
-      return 401; // Unauthorized
+      return {
+        status: 401,
+        reason: 'Unauthorized: Authentication is required or has failed.',
+      };
 
     // 403 Forbidden
     case 'EACCES': // Permission denied
     case -13:
-      return 403; // Forbidden
+      return {
+        status: 403,
+        reason:
+          'Forbidden: You do not have permission to access this resource.',
+      };
 
     // 404 Not Found
     case 'ENOENT': // No such file or directory
     case -2:
-      return 404; // Not Found
+      return {
+        status: 404,
+        reason: 'Not Found: The requested resource could not be found.',
+      };
 
     // 408 Request Timeout
     case 'ETIMEDOUT': // Connection timed out
     case -3002:
-      return 408; // Request Timeout
+      return {
+        status: 408,
+        reason:
+          'Request Timeout: The server timed out waiting for the request.',
+      };
 
     // 409 Conflict
     case 'EEXIST': // File exists
     case -17:
-      return 409; // Conflict
+      return {
+        status: 409,
+        reason:
+          'Conflict: The request could not be completed due to a conflict.',
+      };
 
     // 410 Gone
     case 'ENODATA': // No data available
     case -61:
-      return 410; // Gone
+      return {
+        status: 410,
+        reason: 'Gone: The requested resource is no longer available.',
+      };
 
     // 429 Too Many Requests
     case 'EAGAIN': // Resource temporarily unavailable
     case -11:
-      return 429; // Too Many Requests
+      return {
+        status: 429,
+        reason:
+          'Too Many Requests: You have sent too many requests in a given amount of time.',
+      };
 
     // 500 Internal Server Error family
     case 'EIO': // I/O error
@@ -376,7 +414,11 @@ function mapErrnoToHttpStatus(errno: string | number): number {
     case -32:
     case 'ESPIPE': // Illegal seek
     case -29:
-      return 500; // Internal Server Error
+      return {
+        status: 500,
+        reason:
+          'Internal Server Error: An unexpected error occurred on the server.',
+      };
 
     // 502 Bad Gateway
     case 'ENOTFOUND': // DNS lookup failed
@@ -389,18 +431,26 @@ function mapErrnoToHttpStatus(errno: string | number): number {
     case -3006:
     case 'ENETUNREACH': // Network is unreachable
     case -3007:
-      return 502; // Bad Gateway
+      return {
+        status: 502,
+        reason:
+          'Bad Gateway: The server received an invalid response from the upstream server.',
+      };
 
     // 503 Service Unavailable
     case 'EAI_AGAIN': // DNS lookup timed out
     case -3001:
     case 'EUNAVAILABLE': // Custom: Service unavailable
-      return 503; // Service Unavailable
-
-    // 504 Gateway Timeout
-    // (ETIMEDOUT already mapped above to 408, so do not repeat)
+      return {
+        status: 503,
+        reason:
+          'Service Unavailable: The server is currently unable to handle the request.',
+      };
 
     default:
-      return 500; // Internal Server Error
+      return {
+        status: 500,
+        reason: 'Internal Server Error: An unexpected error occurred.',
+      };
   }
 }
