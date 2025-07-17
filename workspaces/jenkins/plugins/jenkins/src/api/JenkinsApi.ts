@@ -118,6 +118,7 @@ export interface JenkinsApi {
         statusCode: number;
         errorReason?: string;
         connectionIssueMessage?: string;
+        jenkinsJobFullPath?: string;
       }
   >;
 
@@ -173,6 +174,7 @@ export class JenkinsClient implements JenkinsApi {
         statusCode: number;
         errorReason?: string;
         connectionIssueMessage?: string;
+        jenkinsJobFullPath?: string;
       }
   > {
     const { entity, filter } = options;
@@ -196,6 +198,7 @@ export class JenkinsClient implements JenkinsApi {
         statusCode: response.status,
         errorReason: errorBody.errorReason,
         connectionIssueMessage: errorBody.connectionIssueMessage,
+        jenkinsJobFullPath: errorBody.jenkinsJobFullPath,
       };
     }
 

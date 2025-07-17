@@ -163,6 +163,7 @@ export class JenkinsBuilder {
             connectionIssueMessage: config.getOptionalString(
               'jenkins.connectionIssueMessage',
             ),
+            jenkinsJobFullPath: `${jenkinsInfo.baseUrl}/${jenkinsInfo.fullJobNames}`,
           });
 
           // Promise.any, used in the getProjects call returns an Aggregate error message with a useless error message 'AggregateError: All promises were rejected'

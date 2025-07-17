@@ -87,10 +87,12 @@ function CITableErrorView({
   statusCode,
   errorReason,
   connectionIssueMessage,
+  jenkinsJobFullPath,
 }: {
   statusCode?: number;
   errorReason?: string;
   connectionIssueMessage?: string;
+  jenkinsJobFullPath?: string;
 }) {
   return (
     <Box
@@ -109,6 +111,13 @@ function CITableErrorView({
         style={{ fontWeight: 'bold', marginBottom: 16 }}
       >
         {statusCode}: {errorReason || 'Unknown error'}
+      </Typography>
+      <Typography
+        variant="body1"
+        color="textSecondary"
+        style={{ fontWeight: 'bold', marginBottom: 16 }}
+      >
+        {jenkinsJobFullPath}
       </Typography>
       {connectionIssueMessage && (
         <Typography
@@ -148,6 +157,7 @@ export const CITable = ({ title, columns }: CITableProps) => {
   let statusCode: number | undefined;
   let errorReason: string | undefined;
   let connectionIssueMessage: string | undefined;
+  let jenkinsJobFullPath: string | undefined;
 
   if (Array.isArray(projects)) {
     safeProjects = projects;
@@ -160,6 +170,7 @@ export const CITable = ({ title, columns }: CITableProps) => {
     statusCode = (projects as any).statusCode;
     errorReason = (projects as any).errorReason;
     connectionIssueMessage = (projects as any).connectionIssueMessage;
+    jenkinsJobFullPath = (projects as any).jenkinsJobFullPath;
   }
 
   if (statusCode !== undefined) {
@@ -168,6 +179,7 @@ export const CITable = ({ title, columns }: CITableProps) => {
         statusCode={statusCode}
         errorReason={errorReason}
         connectionIssueMessage={connectionIssueMessage}
+        jenkinsJobFullPath={jenkinsJobFullPath}
       />
     );
   }
