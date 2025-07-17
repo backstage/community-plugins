@@ -95,10 +95,10 @@ yarn.lock                                                               @backsta
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-backend-module-annotator                         @backstage/community-plugins-maintainers  @debsmita1
 /workspaces/scaffolder-backend-module-kubernetes                        @backstage/community-plugins-maintainers  @debsmita1
-/workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov @lholmquist
-/workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov @lholmquist
-/workspaces/scaffolder-backend-module-sonarqube                         @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov @lholmquist
-/workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov @lholmquist
+/workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
+/workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
+/workspaces/scaffolder-backend-module-sonarqube                         @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
+/workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
 /workspaces/sentry                                                      @backstage/community-plugins-maintainers
 /workspaces/servicenow                                                  @backstage/community-plugins-maintainers  @AndrienkoAleksandr @ciiay @PatAKnight @christoph-jerolimov
 /workspaces/shortcuts                                                   @backstage/community-plugins-maintainers
