@@ -186,6 +186,28 @@ This configuration will track jobs at:
 
 **Limitation:** Currently you cannot associate jobs from different Jenkins instances with the same component. All jobs must belong to the same Jenkins instance.
 
+#### Example - Display Custom message when Plugin cannot connect to Jenkins
+
+You can configure the Config file to display a custom message to the user when a failure occurs in the Jenkins Builder attempting to retrieve the projects.
+
+This message can be used to redirect the user's to a specific channel/email/location to get help in diagnosing their issue.
+
+```yaml
+jenkins:
+  connectionIssueMessage: 'Unable to connect to Jenkins instance. Please check the configuration.'
+  instances:
+    - name: default
+      baseUrl: https://jenkins.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+    - name: departmentFoo
+      baseUrl: https://jenkins-foo.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+```
+
 ### Custom JenkinsInfoProvider
 
 An example of a bespoke JenkinsInfoProvider which uses an organisation specific annotation to look up the Jenkins info (including jobFullName):
