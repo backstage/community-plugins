@@ -90,7 +90,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     );
     if (defaultRole === '') {
       logger.error(
-        'Ignoreing default role as it is empty. Please set a valid default role in the configuration.',
+        'Ignoring default role as it is empty. Please set a valid default role in the configuration.',
       );
       defaultRole = undefined;
     }
