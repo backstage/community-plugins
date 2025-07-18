@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.17.0
+
+### Minor Changes
+
+- 364eea8: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
 ## 0.16.0
 
 ### Minor Changes
