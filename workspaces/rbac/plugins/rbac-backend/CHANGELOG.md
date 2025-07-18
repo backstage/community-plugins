@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 7.0.1
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
 ## 7.0.0
 
 ### Major Changes
