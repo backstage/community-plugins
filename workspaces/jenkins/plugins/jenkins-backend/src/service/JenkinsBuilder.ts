@@ -153,10 +153,9 @@ export class JenkinsBuilder {
             projects: projects,
           });
         } catch (err) {
-          // Respondes to the client with an error message and status code, so it may parse and display the issue occuring when connecting to Jenkins
-          const { status, reason } = mapErrnoToHttpStatus(
-            err.code || err.errno,
-          );
+          // Get status and reason from the error handler
+          const { status, reason } = this.handleError(err);
+
           const config = this.env.config;
           response.status(status).json({
             errorReason: reason,
@@ -166,8 +165,7 @@ export class JenkinsBuilder {
             jenkinsJobFullPath: `${jenkinsInfo.baseUrl}/${jenkinsInfo.fullJobNames}`,
           });
 
-          // Promise.any, used in the getProjects call returns an Aggregate error message with a useless error message 'AggregateError: All promises were rejected'
-          // extract useful information ourselves
+          // Handle aggregate errors
           if (err.errors) {
             throw new Error(
               `Unable to fetch projects, for ${
@@ -299,6 +297,35 @@ export class JenkinsBuilder {
   private jobFullNameParamToJobs(jobFullName: string): string[] {
     // jobFullName may contain a list of job names separated by '/'
     return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
+  }
+
+  /**
+   * Handles error mapping for Jenkins API responses.
+   * Maps system errors (errno) and HTTP responses to appropriate status codes and messages.
+   *
+   * @param err - The error object to handle, can be a system error with errno/code or an HTTP response error
+   * @returns An object containing:
+   *          - status: HTTP status code (e.g., 400, 401, 403, 500)
+   *          - reason: Human-readable explanation of the error
+   * @private
+   */
+  private handleError(err: any): { status: number; reason: string } {
+    let status = 500;
+    let reason = 'Internal Server Error';
+
+    if (err.errno && err.code) {
+      ({ status, reason } = mapErrnoToHttpStatus(err.code || err.errno));
+    } else if (err.response) {
+      // Handle cases where statusCode or statusMessage might be undefined
+      status = err.response.statusCode || 500;
+      reason =
+        err.response.statusMessage ||
+        (err.response.statusCode
+          ? `HTTP Error ${err.response.statusCode}`
+          : 'Unknown Error');
+    }
+
+    return { status, reason };
   }
 }
 
