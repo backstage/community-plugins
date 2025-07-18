@@ -21,10 +21,7 @@ import {
   rootRouteRef,
   unlabeledDataflowAlertRef,
 } from './routes';
-import {
-  createFrontendPlugin,
-  FrontendPlugin,
-} from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   CostInsightsLabelDataflowInstructionsPage,
   CostInsightsNavItem,
@@ -47,4 +44,4 @@ export default createFrontendPlugin({
     growthAlerts: projectGrowthAlertRef,
     unlabeledDataflowAlerts: unlabeledDataflowAlertRef,
   }),
-}) as FrontendPlugin;
+});
