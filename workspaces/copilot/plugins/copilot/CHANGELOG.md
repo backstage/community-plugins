@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.11.0
+
+### Minor Changes
+
+- 4b09bc8: Adds support for the new frontend system
+
 ## 0.10.0
 
 ### Minor Changes
