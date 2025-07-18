@@ -294,7 +294,7 @@ export class JenkinsBuilder {
     return router;
   }
 
-  private jobFullNameParamToJobs(jobFullName: string): string[] {
+  public jobFullNameParamToJobs(jobFullName: string): string[] {
     // jobFullName may contain a list of job names separated by '/'
     return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
   }
@@ -307,9 +307,9 @@ export class JenkinsBuilder {
    * @returns An object containing:
    *          - status: HTTP status code (e.g., 400, 401, 403, 500)
    *          - reason: Human-readable explanation of the error
-   * @private
+   * @public
    */
-  private handleError(err: any): { status: number; reason: string } {
+  public handleError(err: any): { status: number; reason: string } {
     let status = 500;
     let reason = 'Internal Server Error';
 
