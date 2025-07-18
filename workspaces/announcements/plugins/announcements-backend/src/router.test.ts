@@ -176,5 +176,105 @@ describe('createRouter', () => {
         },
       ]);
     });
+    it('filters announcements by single tag', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [
+          {
+            id: 'uuid1',
+            title: 'Tagged Announcement',
+            excerpt: 'This has tag1',
+            body: 'Full content',
+            publisher: 'user:default/name',
+            created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            tags: [{ slug: 'tag1', title: 'Tag 1' }],
+          },
+        ],
+        count: 1,
+      });
+
+      const response = await request(app).get('/announcements?tags=tag1');
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: undefined,
+        sortBy: 'created_at',
+        order: 'desc',
+        tags: ['tag1'],
+      });
+
+      expect(response.body.results).toHaveLength(1);
+      expect(response.body.results[0].tags).toEqual([
+        { slug: 'tag1', title: 'Tag 1' },
+      ]);
+    });
+
+    it('filters announcements by multiple tags', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [
+          {
+            id: 'uuid1',
+            title: 'Multi-tagged Announcement',
+            excerpt: 'This has multiple tags',
+            body: 'Full content',
+            publisher: 'user:default/name',
+            created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            tags: [
+              { slug: 'tag1', title: 'Tag 1' },
+              { slug: 'tag2', title: 'Tag 2' },
+            ],
+          },
+        ],
+        count: 1,
+      });
+
+      const response = await request(app).get('/announcements?tags=tag1,tag2');
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: undefined,
+        sortBy: 'created_at',
+        order: 'desc',
+        tags: ['tag1', 'tag2'],
+      });
+
+      expect(response.body.results).toHaveLength(1);
+      expect(response.body.results[0].tags).toEqual([
+        { slug: 'tag1', title: 'Tag 1' },
+        { slug: 'tag2', title: 'Tag 2' },
+      ]);
+    });
+
+    it('returns empty results when no announcements match tags', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [],
+        count: 0,
+      });
+
+      const response = await request(app).get(
+        '/announcements?tags=nonexistent',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: undefined,
+        sortBy: 'created_at',
+        order: 'desc',
+        tags: ['nonexistent'],
+      });
+
+      expect(response.body.results).toHaveLength(0);
+      expect(response.body.count).toEqual(0);
+    });
   });
 });

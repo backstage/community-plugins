@@ -22,7 +22,7 @@ import { AnnouncementsPage } from './AnnouncementsPage';
 import { rootRouteRef } from '../../routes';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { DateTime } from 'luxon';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
@@ -237,6 +237,118 @@ describe('AnnouncementsPage', () => {
         },
       );
       expect(screen.queryByText(/Scheduled Today/i)).toBeNull();
+    });
+
+    it('should filter announcements by tag when tag is clicked', async () => {
+      const announcementWithTags: AnnouncementsList = {
+        count: 1,
+        results: [
+          {
+            id: '2',
+            title: 'Tagged Announcement',
+            excerpt: 'This has some tags',
+            body: 'Full content',
+            publisher: 'default:user/user',
+            created_at: '2023-01-01T10:00:00.000Z',
+            active: true,
+            start_at: '2023-01-01T10:00:00.000Z',
+            tags: [
+              { slug: 'important', title: 'Important' },
+              { slug: 'release', title: 'Release' },
+            ],
+          },
+        ],
+      };
+
+      const mockTagsApi = {
+        announcements: jest.fn().mockResolvedValue(announcementWithTags),
+        lastSeenDate: jest.fn().mockReturnValue(DateTime.fromISO('2000-01-01')),
+      };
+
+      await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [permissionApiRef, mockApis.permission()],
+            [announcementsApiRef, mockTagsApi],
+            [catalogApiRef, mockCatalogApi],
+          ]}
+        >
+          <AnnouncementsPage themeId="home" title="Announcements" />
+        </TestApiProvider>,
+        {
+          mountedRoutes: {
+            '/announcements': rootRouteRef,
+            '/catalog/:namespace/:kind/:name': entityRouteRef,
+          },
+        },
+      );
+
+      expect(screen.getByText('Important')).toBeInTheDocument();
+      expect(screen.getByText('Release')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Important'));
+
+      await waitFor(() => {
+        expect(mockTagsApi.announcements).toHaveBeenCalledWith(
+          expect.objectContaining({
+            tags: ['important'],
+          }),
+        );
+      });
+    });
+
+    it('should filter announcements by multiple tags from URL parameters', async () => {
+      const filteredAnnouncements: AnnouncementsList = {
+        count: 1,
+        results: [
+          {
+            id: '3',
+            title: 'Multi-tagged Announcement',
+            excerpt: 'This matches multiple tags',
+            body: 'Full content',
+            publisher: 'default:user/user',
+            created_at: '2023-01-01T10:00:00.000Z',
+            active: true,
+            start_at: '2023-01-01T10:00:00.000Z',
+            tags: [
+              { slug: 'important', title: 'Important' },
+              { slug: 'release', title: 'Release' },
+            ],
+          },
+        ],
+      };
+
+      const mockTagsApi = {
+        announcements: jest.fn().mockResolvedValue(filteredAnnouncements),
+        lastSeenDate: jest.fn().mockReturnValue(DateTime.fromISO('2000-01-01')),
+      };
+
+      await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [permissionApiRef, mockApis.permission()],
+            [announcementsApiRef, mockTagsApi],
+            [catalogApiRef, mockCatalogApi],
+          ]}
+        >
+          <AnnouncementsPage themeId="home" title="Announcements" />
+        </TestApiProvider>,
+        {
+          mountedRoutes: {
+            '/announcements': rootRouteRef,
+            '/catalog/:namespace/:kind/:name': entityRouteRef,
+          },
+          routeEntries: ['/announcements?tags=important,release'],
+        },
+      );
+
+      expect(mockTagsApi.announcements).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: ['important', 'release'],
+        }),
+      );
+
+      expect(screen.getByText('Multi-tagged Announcement')).toBeInTheDocument();
     });
   });
 });
