@@ -18,7 +18,7 @@ import {
   DefaultAzureDevOpsCredentialsProvider,
   ScmIntegrationRegistry,
 } from '@backstage/integration';
-import { examples } from './devopsRunPipeline.examples';
+import { examples } from './devopsCreatePipeline.examples';
 
 import { InputError } from '@backstage/errors';
 import {
