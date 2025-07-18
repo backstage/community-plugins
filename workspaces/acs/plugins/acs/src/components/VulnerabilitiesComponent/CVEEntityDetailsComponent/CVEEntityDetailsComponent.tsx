@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useTheme } from '@material-ui/core/styles';
 import { Box, Chip, Grid, Typography } from '@material-ui/core';
