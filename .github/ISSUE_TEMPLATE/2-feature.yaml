@@ -102,6 +102,7 @@ body:
         - scaffolder-backend-module-sonarqube
         - scaffolder-relation-processor
         - sentry
+        - servicenow
         - shortcuts
         - sonarqube
         - splunk
