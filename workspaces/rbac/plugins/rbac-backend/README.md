@@ -85,6 +85,20 @@ permission:
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
 
+### Configure default role
+
+You can optionally assign a default role to all authenticated users by specifying the `defaultRole` configuration option.
+This ensures that every authenticated user receives the specified role in addition to any other roles they may have.
+This is especially useful when using [Sign-In without Users in the Catalog](https://backstage.io/docs/auth/identity-resolver/#sign-in-without-users-in-the-catalog).
+
+```YAML
+permission:
+  rbac:
+    defaultRole: role:default/my-default-role
+```
+
+If set, the RBAC backend will automatically include the default role in each authenticated user's roles.
+
 ### Configure plugins with permission
 
 In order for the RBAC UI to display the available permissions provided by installed plugins, you must supply the corresponding list of plugin IDs. There are two ways to achieve this:
