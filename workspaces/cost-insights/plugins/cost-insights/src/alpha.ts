@@ -34,7 +34,7 @@ import {
 } from './alpha/plugin';
 
 export default createFrontendPlugin({
-  id: 'cost-insights',
+  pluginId: 'cost-insights',
   extensions: [
     CostInsightsPage,
     CostInsightsProjectGrowthInstructionsPage,
