@@ -2793,6 +2793,7 @@ __metadata:
     luxon: "npm:^3.0.0"
     p-limit: "npm:^3.1.0"
     semver: "npm:^7.5.3"
+    slugify: "npm:1.6.6"
     supertest: "npm:^7.0.0"
     uuid: "npm:^9.0.0"
     wait-for-expect: "npm:^3.0.2"
@@ -30827,6 +30828,13 @@ __metadata:
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
   checksum: 10/94a93fff615f25a999ad4b83c9d5e257a7280c90a32a7cb8b4a87996e4babf322e469c42b7f649fd5796edd8687652f3fb452a86dc97a816f01113183393f11c
+  languageName: node
+  linkType: hard
+
+"slugify@npm:1.6.6":
+  version: 1.6.6
+  resolution: "slugify@npm:1.6.6"
+  checksum: 10/d0737cdedc834c50f74227bc1a1cf4f449f3575893f031b0e8c59f501c73526c866a23e47261b262c7acdaaaaf30d6f9e8aaae22772b3f56e858ac84c35efa7b
   languageName: node
   linkType: hard
 
