@@ -62,6 +62,15 @@ agentForge:
 ...
 ```
 
+The plugin can display as pre-defined options all the examples defined in the agent card skills. In order to do so, set the showOptions configuration to true:
+
+```
+...
+agentForge:
+  showOptions: true
+...
+```
+
 ## Usage
 
 Use the chat to ask your questions or perform the required task
