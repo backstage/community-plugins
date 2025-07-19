@@ -1,7 +1,4 @@
-import {
-  coreServices,
-  createBackendModule,
-} from '@backstage/backend-plugin-api';
+import { coreServices, createBackendModule } from '@backstage/backend-plugin-api';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 import { MTAProvider } from './provider/MTAEntityProvider';
 /**
@@ -20,9 +17,7 @@ export const catalogModuleMtaEntityProvider = createBackendModule({
         scheduler: coreServices.scheduler,
       },
       async init({ config, catalog, logger, scheduler }) {
-        catalog.addEntityProvider(
-          MTAProvider.newProvider(config, logger, scheduler),
-        );
+        catalog.addEntityProvider(MTAProvider.newProvider(config, logger, scheduler));
       },
     });
   },

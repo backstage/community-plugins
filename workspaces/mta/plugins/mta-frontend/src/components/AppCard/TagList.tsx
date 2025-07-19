@@ -27,12 +27,7 @@ const TagList = ({ tags }: { tags: Tags[] }) => {
       {tags.map((tag, index) => (
         <Grid item key={index}>
           <Tooltip title={`Source: ${tag.source || 'Unknown'}`}>
-            <Chip
-              label={tag.name}
-              clickable
-              color="primary"
-              className={classes.chip}
-            />
+            <Chip label={tag.name} clickable color="primary" className={classes.chip} />
           </Tooltip>
         </Grid>
       ))}
