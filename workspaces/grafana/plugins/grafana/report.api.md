@@ -31,7 +31,7 @@ export const alertSelectorFromEntity: (entity: Entity) => string | string[];
 
 // @public
 export interface Dashboard {
-  folderTitle: string;
+  folderTitle: string | undefined;
   folderUrl: string;
   tags: string[];
   title: string;
