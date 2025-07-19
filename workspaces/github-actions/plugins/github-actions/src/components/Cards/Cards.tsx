@@ -32,6 +32,7 @@ import {
   StructuredMetadataTable,
 } from '@backstage/core-components';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
+import { useDefaultBranch } from '../useDefaultBranch';
 import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles({
@@ -81,13 +82,19 @@ export const LatestWorkflowRunCard = (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => {
-  const { branch = 'master', variant } = props;
+  const { variant } = props;
   const { entity } = useEntity();
   const errorApi = useApi(errorApiRef);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (
     entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
   ).split('/');
+  const defaultBranch = useDefaultBranch({
+    hostname,
+    owner,
+    repo,
+  });
+  const branch = props.branch ?? defaultBranch;
   const [{ runs, loading, error }] = useWorkflowRuns({
     hostname,
     owner,
@@ -119,8 +126,18 @@ export const LatestWorkflowsForBranchCard = (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => {
-  const { branch = 'master', variant } = props;
+  const { variant } = props;
   const { entity } = useEntity();
+  const hostname = getHostnameFromEntity(entity);
+  const [owner, repo] = (
+    entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
+  ).split('/');
+  const defaultBranch = useDefaultBranch({
+    hostname,
+    owner,
+    repo,
+  });
+  const branch = props.branch ?? defaultBranch;
 
   return (
     <InfoCard title={`Last ${branch} build`} variant={variant}>
