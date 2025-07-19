@@ -91,7 +91,7 @@ describe('TagsInput', () => {
     expect(autocomplete).toBeInTheDocument();
     expect(screen.getByLabelText('Tags')).toBeInTheDocument();
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
     await userEvent.click(input);
 
     await waitFor(() => {
@@ -106,7 +106,7 @@ describe('TagsInput', () => {
   it('should set tag when a tag is selected', async () => {
     await render();
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
     await userEvent.click(input);
 
     await waitFor(() => {
