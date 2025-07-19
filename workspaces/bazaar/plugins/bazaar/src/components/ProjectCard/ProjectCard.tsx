@@ -84,6 +84,7 @@ export const ProjectCard = ({
           initProject={project}
           handleClose={handleClose}
           initEntity={catalogEntities[0] || null}
+          allCatalogEntities={catalogEntities}
         />
       </Dialog>
 
