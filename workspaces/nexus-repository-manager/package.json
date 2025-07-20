@@ -20,6 +20,7 @@
     "lint": "backstage-cli repo lint --since upstream/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
