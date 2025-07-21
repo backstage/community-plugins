@@ -113,6 +113,8 @@ export type Options = {
 };
 
 const DEFAULT_PROXY_PATH = '/grafana/api';
+const DEFAULT_DASHBOARDS_LIMIT: number = 1000; // same as upstream behavior if no limit is specified.
+const DEFAULT_PAGES_LIMIT: number = 1;
 
 const isSingleWord = (input: string): boolean => {
   return input.match(/^[\w-]+$/g) !== null;
@@ -123,12 +125,18 @@ class Client {
   private readonly fetchApi: FetchApi;
   private readonly proxyPath: string;
   private readonly queryEvaluator: QueryEvaluator;
+  private readonly grafanaDashboardSearchLimit: number;
+  private readonly grafanaDashboardMaxPages: number;
 
   constructor(opts: Options) {
     this.discoveryApi = opts.discoveryApi;
     this.fetchApi = opts.fetchApi;
     this.proxyPath = opts.proxyPath ?? DEFAULT_PROXY_PATH;
     this.queryEvaluator = new QueryEvaluator();
+    this.grafanaDashboardSearchLimit =
+      opts.grafanaDashboardSearchLimit ?? DEFAULT_DASHBOARDS_LIMIT;
+    this.grafanaDashboardMaxPages =
+      opts.grafanaDashboardMaxPages ?? DEFAULT_PAGES_LIMIT;
   }
 
   public async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
@@ -149,25 +157,61 @@ class Client {
     return this.dashboardsForQuery(domain, query);
   }
 
+  private async fetchSomeDashboards(options: {
+    domain: string;
+    page: number;
+    limit: number;
+    tag?: string;
+  }): Promise<Dashboard[]> {
+    const query = `/api/search?type=dash-db&limit=${options.limit}&page=${
+      options.page
+    }${options.tag !== undefined ? `&tag=${options.tag}` : ''}`;
+    const response = await this.fetch<Dashboard[]>(query);
+    return this.fullyQualifiedDashboardURLs(options.domain, response);
+  }
+
+  // Grafana Search API does not have pagination metadata in the response body or headers
+  // so we have to guess if we are at the end based on number of items in the result
+  // https://grafana.com/docs/grafana/latest/developers/http_api/folder_dashboard_search/
+  // The API also does not use continuation tokens, so there is no gaurentee
+  // that dashboards have not been added or deleted since listing the previous
+  // page.
+  private async fetchAllDashboards(options: {
+    domain: string;
+    tag?: string;
+  }): Promise<Dashboard[]> {
+    let page: number = 0;
+    const allDashboards: Dashboard[] = [];
+    let more: boolean = true;
+    do {
+      const dashboards: Dashboard[] = await this.fetchSomeDashboards({
+        domain: options.domain,
+        page: page++,
+        limit: this.grafanaDashboardSearchLimit,
+        tag: options.tag,
+      });
+      allDashboards.push(...dashboards);
+      // pages limit exists to prevent accidental infinite loops from Grafana
+      more =
+        dashboards.length >= this.grafanaDashboardSearchLimit &&
+        page < this.grafanaDashboardMaxPages;
+    } while (more);
+    return allDashboards;
+  }
+
   async dashboardsForQuery(
     domain: string,
     query: string,
   ): Promise<Dashboard[]> {
     const parsedQuery = this.queryEvaluator.parse(query);
-    const response = await this.fetch<Dashboard[]>(`/api/search?type=dash-db`);
-    const allDashboards = this.fullyQualifiedDashboardURLs(domain, response);
-
+    const allDashboards = await this.fetchAllDashboards({ domain: domain });
     return allDashboards.filter(dashboard => {
       return this.queryEvaluator.evaluate(parsedQuery, dashboard) === true;
     });
   }
 
   async dashboardsByTag(domain: string, tag: string): Promise<Dashboard[]> {
-    const response = await this.fetch<Dashboard[]>(
-      `/api/search?type=dash-db&tag=${tag}`,
-    );
-
-    return this.fullyQualifiedDashboardURLs(domain, response);
+    return this.fetchAllDashboards({ domain: domain, tag: tag });
   }
 
   private fullyQualifiedDashboardURLs(

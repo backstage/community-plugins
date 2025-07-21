@@ -27,6 +27,14 @@ grafana:
   # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
   # Optional. Default: false
   unifiedAlerting: false
+
+  # How many pages of Grafana Dashboard search results to check for dashboards?
+  # Optional. Default: 1
+  grafanaDashboardMaxPages: 1
+
+  # What limit value to pass for each query to the Grafana Dashboard search endpoint?
+  # Optional. Default: 1000
+  grafanaDashboardSearchLimit: 1000
 ```
 
 Expose the plugin to Backstage:
