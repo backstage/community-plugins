@@ -162,7 +162,7 @@ export class JenkinsBuilder {
             connectionIssueMessage: config.getOptionalString(
               'jenkins.connectionIssueMessage',
             ),
-            jenkinsJobFullPath: `${jenkinsInfo.baseUrl}/${jenkinsInfo.fullJobNames}`,
+            jenkinsJobFullPath: `${jenkinsInfo.baseUrl}`,
           });
 
           // Handle aggregate errors
