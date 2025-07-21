@@ -93,7 +93,7 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
 
   async onChange(): Promise<void> {
     try {
-      const newConds = this.parse().filter(c => c);
+      const newConds = this.parse();
 
       const addedConds: RoleConditionalPolicyDecision<PermissionAction>[] = [];
       const removedConds: RoleConditionalPolicyDecision<PermissionAction>[] =
@@ -173,9 +173,11 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
    */
   parse(): RoleConditionalPolicyDecision<PermissionAction>[] {
     const fileContents = this.getCurrentContents();
-    const data = yaml.loadAll(
-      fileContents,
-    ) as RoleConditionalPolicyDecision<PermissionAction>[];
+    const data = yaml
+      .loadAll(fileContents)
+      .filter(
+        doc => doc !== null,
+      ) as RoleConditionalPolicyDecision<PermissionAction>[];
 
     for (const condition of data) {
       validateRoleCondition(condition);
