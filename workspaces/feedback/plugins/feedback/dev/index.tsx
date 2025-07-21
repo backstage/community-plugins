@@ -24,8 +24,6 @@ import {
   EntityLayout,
 } from '@backstage/plugin-catalog';
 
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import {
   EntityFeedbackPage,
   feedbackPlugin,
@@ -37,7 +35,6 @@ import {
 createDevApp()
   .registerPlugin(feedbackPlugin)
   .registerPlugin(catalogPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <>
