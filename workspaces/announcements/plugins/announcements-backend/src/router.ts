@@ -62,6 +62,7 @@ type GetAnnouncementsQueryParams = {
   active?: boolean;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  tags?: string[];
 };
 
 export async function createRouter(
@@ -103,7 +104,10 @@ export async function createRouter(
 
   router.get(
     '/announcements',
-    async (req: Request<{}, {}, {}, GetAnnouncementsQueryParams>, res) => {
+    async (
+      req: Request<{}, {}, {}, GetAnnouncementsQueryParams & { tags?: string }>,
+      res,
+    ) => {
       const {
         query: {
           category,
@@ -112,8 +116,11 @@ export async function createRouter(
           active,
           sortby = 'created_at',
           order = 'desc',
+          tags,
         },
       } = req;
+
+      const tagsFilter = tags ? tags.split(',') : undefined;
 
       const results = await persistenceContext.announcementsStore.announcements(
         {
@@ -125,6 +132,7 @@ export async function createRouter(
             ? sortby
             : 'created_at',
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
+          tags: tagsFilter,
         },
       );
 
