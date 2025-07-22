@@ -32,19 +32,22 @@ export function useDefaultBranch({
   const [defaultBranch, setDefaultBranch] = useState<string>('');
 
   const {
+    value,
     loading,
-    value: runs,
-    retry,
     error,
   } = useAsyncRetry<string>(async () => {
-    const fetchedDefaultBranch = await api.getDefaultBranch({
+    return api.getDefaultBranch({
       hostname,
       owner,
       repo,
     });
 
     setDefaultBranch(fetchedDefaultBranch);
-  });
+  }, [api]);
 
-  return defaultBranch as string;
+  return {
+	  branch: value,
+	  loading,
+	  error
+  }
 }
