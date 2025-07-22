@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { githubActionsApiRef } from '../api/GithubActionsApi';
 import { useApi, errorApiRef } from '@backstage/core-plugin-api';
@@ -28,7 +27,6 @@ export function useDefaultBranch({
   repo: string;
 }) {
   const api = useApi(githubActionsApiRef);
-  const errorApi = useApi(errorApiRef);
 
   const {
     value,
