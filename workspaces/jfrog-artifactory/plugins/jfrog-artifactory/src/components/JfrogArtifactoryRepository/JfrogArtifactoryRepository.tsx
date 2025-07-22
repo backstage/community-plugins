@@ -21,12 +21,10 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { Box, Chip, makeStyles } from '@material-ui/core';
 
-import { formatDate } from '@janus-idp/shared-react';
-
 import { jfrogArtifactoryApiRef } from '../../api';
 import { Edge } from '../../types';
 import { columns, useStyles } from './tableHeading';
-import { formatByteSize } from '../../utils';
+import { formatByteSize, formatDate } from '../../utils';
 
 const useLocalStyles = makeStyles({
   chip: {
