@@ -2,8 +2,8 @@ name: Auto Version Bump Scheduler
 
 on:
   schedule:
-    # Run on Tuesdays at 4:00 UTC to check for Backstage releases
-    - cron: '0 4 * * 2'
+    # Run on Tuesdays at 12:00 UTC to check for Backstage releases
+    - cron: '0 12 * * 2'
 
 concurrency:
   group: auto-version-bump-scheduler
@@ -33,7 +33,7 @@ jobs:
         run: |
           # This script checks for Backstage minor releases ≤7 days old
           # and writes should_trigger directly to GITHUB_OUTPUT
-          node scripts/ci/should-trigger-version.js
+          node scripts/ci/trigger-auto-version-bump.js
 
   trigger-auto-version-bump:
     needs: check-and-schedule
