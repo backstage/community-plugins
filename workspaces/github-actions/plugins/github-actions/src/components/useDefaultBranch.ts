@@ -15,7 +15,7 @@
  */
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { githubActionsApiRef } from '../api/GithubActionsApi';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 
 export function useDefaultBranch({
   hostname,
