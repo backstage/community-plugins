@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.26.4
+
+### Patch Changes
+
+- 22e56c8: Apply a temporary fix for the horizontal bar issue under the Task Status column
+
 ## 3.26.3
 
 ### Patch Changes
