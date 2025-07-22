@@ -160,21 +160,19 @@ const AnnouncementCard = ({
       </Box>
       {announcement.tags && announcement.tags.length > 0 && (
         <Typography variant="body2" color="textSecondary">
-          {announcement.tags && announcement.tags.length > 0 && (
-            <Box mt={1}>
-              {announcement.tags.map(tag => (
-                <Chip
-                  key={tag.slug}
-                  size="small"
-                  label={tag.title}
-                  component={Link}
-                  to={`${announcementsLink()}?tags=${tag.slug}`}
-                  clickable
-                  style={{ marginRight: 4, marginBottom: 4 }}
-                />
-              ))}
-            </Box>
-          )}
+          <Box mt={1}>
+            {announcement.tags.map(tag => (
+              <Chip
+                key={tag.slug}
+                size="small"
+                label={tag.title}
+                component={Link}
+                to={`${announcementsLink()}?tags=${tag.slug}`}
+                clickable
+                style={{ marginRight: 4, marginBottom: 4 }}
+              />
+            ))}
+          </Box>
         </Typography>
       )}
     </>
