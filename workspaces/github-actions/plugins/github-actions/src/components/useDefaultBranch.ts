@@ -29,7 +29,6 @@ export function useDefaultBranch({
 }) {
   const api = useApi(githubActionsApiRef);
   const errorApi = useApi(errorApiRef);
-  const [defaultBranch, setDefaultBranch] = useState<string>('');
 
   const {
     value,
@@ -41,8 +40,6 @@ export function useDefaultBranch({
       owner,
       repo,
     });
-
-    setDefaultBranch(fetchedDefaultBranch);
   }, [api]);
 
   return {
