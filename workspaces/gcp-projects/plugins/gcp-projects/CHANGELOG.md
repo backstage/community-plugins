@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.11.0
+
+### Minor Changes
+
+- c18a86c: Backstage version bump to v1.41.1
+
 ## 0.10.0
 
 ### Minor Changes
