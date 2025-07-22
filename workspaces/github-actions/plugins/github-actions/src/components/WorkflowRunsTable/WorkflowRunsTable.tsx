@@ -96,7 +96,7 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
       return getStatusDescription(d1).localeCompare(getStatusDescription(d2));
     },
     render: row => (
-      <Box display="flex" alignItems="center">
+      <Box display="flex" justifyContent="center" alignItems="center">
         <WorkflowRunStatus status={row.status} conclusion={row.conclusion} />
       </Box>
     ),
