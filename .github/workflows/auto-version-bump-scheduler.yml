@@ -2,8 +2,8 @@ name: Auto Version Bump Scheduler
 
 on:
   schedule:
-    # Run on Tuesdays at 12:00 UTC to check for Backstage releases
-    - cron: '0 12 * * 2'
+    # Run on Tuesdays at 13:00 UTC to check for Backstage releases
+    - cron: '0 13 * * 2'
 
 concurrency:
   group: auto-version-bump-scheduler
@@ -27,6 +27,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+
+      - name: yarn install
+        run: yarn install --immutable
 
       - name: Check for Backstage minor releases
         id: check-releases
