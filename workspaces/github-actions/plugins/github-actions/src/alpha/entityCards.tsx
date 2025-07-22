@@ -15,7 +15,6 @@
  */
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isGithubActionsAvailable } from '../components/Router';
-import { useDefaultBranch } from '../components/useDefaultBranch';
 
 /**
  * @alpha
@@ -40,7 +39,7 @@ export const entityLatestGithubActionRunCard =
         props: z =>
           z
             .object({
-              branch: z.string().default(null),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -67,7 +66,7 @@ export const entityLatestGithubActionsForBranchCard =
         props: z =>
           z
             .object({
-              branch: z.string().default(null),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -94,7 +93,7 @@ export const entityRecentGithubActionsRunsCard =
         props: z =>
           z
             .object({
-              branch: z.string().default(null),
+              branch: z.string().optional(),
               dense: z.boolean().default(false),
               limit: z.number().default(5).optional(),
             })

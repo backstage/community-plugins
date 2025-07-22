@@ -46,7 +46,7 @@ const WidgetContent = (props: {
   error?: Error;
   loading?: boolean;
   lastRun: WorkflowRun;
-  branch: string;
+  branch?: string;
 }) => {
   const { error, loading, lastRun, branch } = props;
   const classes = useStyles();
