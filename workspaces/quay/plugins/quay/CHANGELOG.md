@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.22.1
+
+### Patch Changes
+
+- 19fe3ed: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
 ## 1.22.0
 
 ### Minor Changes
