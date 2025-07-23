@@ -80,7 +80,7 @@ export const useRoles = (
     value: members,
     error: membersError,
   } = useAsync(async () => {
-    return await rbacApi.getMembers();
+    return await rbacApi.getMembers(1, 1);
   });
 
   const {
