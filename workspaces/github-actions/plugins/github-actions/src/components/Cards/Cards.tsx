@@ -89,11 +89,12 @@ export const LatestWorkflowRunCard = (props: {
   const [owner, repo] = (
     entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
   ).split('/');
-  const branch = props.branch ?? useDefaultBranch({
+  const defaultBranch = useDefaultBranch({
     hostname,
     owner,
     repo,
   }).branch;
+  const branch = props.branch ?? defaultBranch;
   const [{ runs, loading, error }] = useWorkflowRuns({
     hostname,
     owner,
@@ -131,11 +132,12 @@ export const LatestWorkflowsForBranchCard = (props: {
   const [owner, repo] = (
     entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
   ).split('/');
-  const branch = props.branch ?? useDefaultBranch({
+  const defaultBranch = useDefaultBranch({
     hostname,
     owner,
     repo,
   }).branch;
+  const branch = props.branch ?? defaultBranch;
 
   return (
     <InfoCard title={`Last ${branch} build`} variant={variant}>
