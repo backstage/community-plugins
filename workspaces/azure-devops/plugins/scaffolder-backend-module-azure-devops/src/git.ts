@@ -20,7 +20,7 @@ import git, {
   ReadCommitResult,
   AuthCallback,
 } from 'isomorphic-git';
-import http from 'isomorphic-git';
+import http from 'isomorphic-git/http/node';
 import fs from 'fs-extra';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
