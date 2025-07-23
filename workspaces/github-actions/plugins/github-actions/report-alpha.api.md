@@ -49,7 +49,7 @@ const _default: FrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -59,7 +59,7 @@ const _default: FrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -108,7 +108,7 @@ const _default: FrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -118,7 +118,7 @@ const _default: FrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -169,19 +169,19 @@ const _default: FrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         props?:
           | {
-              branch?: string | undefined;
               dense?: boolean | undefined;
+              branch?: string | undefined;
               limit?: number | undefined;
             }
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -228,11 +228,11 @@ const _default: FrontendPlugin<
       name: 'workflow-runs';
       config: {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -322,10 +322,10 @@ const _default: FrontendPlugin<
         defaultTitle: string;
         defaultGroup?:
           | (string & {})
-          | 'overview'
-          | 'documentation'
           | 'development'
           | 'deployment'
+          | 'overview'
+          | 'documentation'
           | 'operation'
           | 'observability'
           | undefined;
