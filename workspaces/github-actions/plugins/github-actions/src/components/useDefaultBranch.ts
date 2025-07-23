@@ -28,11 +28,7 @@ export function useDefaultBranch({
 }) {
   const api = useApi(githubActionsApiRef);
 
-  const {
-    value,
-    loading,
-    error,
-  } = useAsyncRetry<string>(async () => {
+  const { value, loading, error } = useAsyncRetry<string>(async () => {
     return api.getDefaultBranch({
       hostname,
       owner,
@@ -41,8 +37,8 @@ export function useDefaultBranch({
   }, [api]);
 
   return {
-	  branch: value,
-	  loading,
-	  error
-  }
+    branch: value,
+    loading,
+    error,
+  };
 }
