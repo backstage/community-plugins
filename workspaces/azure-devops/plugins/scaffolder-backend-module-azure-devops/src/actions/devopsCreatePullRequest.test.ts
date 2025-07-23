@@ -30,7 +30,6 @@ const {
   createADOPullRequest,
   updateADOPullRequest,
   linkWorkItemToADOPullRequest,
-  logConnectionData,
 } = require('./helpers');
 
 describe('createAzureDevopsCreatePullRequestAction', () => {
