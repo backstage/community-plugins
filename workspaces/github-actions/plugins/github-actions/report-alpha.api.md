@@ -45,11 +45,11 @@ const _default: FrontendPlugin<
     ]: ExtensionDefinition<{
       config: {
         props: {
-          branch: string;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -59,7 +59,7 @@ const _default: FrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -104,11 +104,11 @@ const _default: FrontendPlugin<
     [x: `entity-card:${string}/latest-workflow-run`]: ExtensionDefinition<{
       config: {
         props: {
-          branch: string;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -118,7 +118,7 @@ const _default: FrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -164,24 +164,24 @@ const _default: FrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          branch: string;
+          branch?: string | undefined;
           limit?: number | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         props?:
           | {
-              dense?: boolean | undefined;
               branch?: string | undefined;
+              dense?: boolean | undefined;
               limit?: number | undefined;
             }
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -228,11 +228,11 @@ const _default: FrontendPlugin<
       name: 'workflow-runs';
       config: {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -322,10 +322,10 @@ const _default: FrontendPlugin<
         defaultTitle: string;
         defaultGroup?:
           | (string & {})
-          | 'development'
-          | 'deployment'
           | 'overview'
           | 'documentation'
+          | 'development'
+          | 'deployment'
           | 'operation'
           | 'observability'
           | undefined;
