@@ -18,8 +18,11 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
+import { cloneAzureRepoAction } from './actions/devopsRepoClone';
 import { createAzureDevopsRunPipelineAction } from './actions/devopsRunPipeline';
 import { createAzureDevopsCreatePipelineAction } from './actions/devopsCreatePipeline';
+import { createAzureDevopsCreatePullRequestAction } from './actions/devopsCreatePullRequest';
+import { pushAzureRepoAction } from './actions/devopsRepoPush';
 import { ScmIntegrations } from '@backstage/integration';
 
 /**
@@ -38,8 +41,11 @@ export const scaffolderModule = createBackendModule({
       async init({ scaffolderActions, config }) {
         const integrations = ScmIntegrations.fromConfig(config);
         scaffolderActions.addActions(
+          cloneAzureRepoAction({ integrations }),
           createAzureDevopsRunPipelineAction({ integrations }),
           createAzureDevopsCreatePipelineAction({ integrations }),
+          createAzureDevopsCreatePullRequestAction({ integrations }),
+          pushAzureRepoAction({ integrations, config: config }),
         );
       },
     });
