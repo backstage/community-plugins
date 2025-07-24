@@ -76,7 +76,7 @@ describe('Entity card extensions', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText('Last master build')).toBeInTheDocument();
+        expect(screen.getByText('Last main build')).toBeInTheDocument();
       },
       { timeout: 5000 },
     );
@@ -95,7 +95,7 @@ describe('Entity card extensions', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText('Last master build')).toBeInTheDocument();
+        expect(screen.getByText('Recent main builds')).toBeInTheDocument();
       },
       { timeout: 5000 },
     );
