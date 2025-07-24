@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.22.2
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
 ## 1.22.1
 
 ### Patch Changes
