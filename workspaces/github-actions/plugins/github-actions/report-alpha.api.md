@@ -45,7 +45,7 @@ const _default: FrontendPlugin<
     ]: ExtensionDefinition<{
       config: {
         props: {
-          branch: string;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
@@ -104,7 +104,7 @@ const _default: FrontendPlugin<
     [x: `entity-card:${string}/latest-workflow-run`]: ExtensionDefinition<{
       config: {
         props: {
-          branch: string;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
@@ -164,7 +164,7 @@ const _default: FrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          branch: string;
+          branch?: string | undefined;
           limit?: number | undefined;
         };
       } & {

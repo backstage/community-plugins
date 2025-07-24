@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.39.1
+
+### Patch Changes
+
+- e4f6d5f: Updated dependency `cytoscape` to `3.32.0`.
+- 5d0701f: Updated dependency `cytoscape` to `3.32.1`.
+
 ## 1.39.0
 
 ### Minor Changes
