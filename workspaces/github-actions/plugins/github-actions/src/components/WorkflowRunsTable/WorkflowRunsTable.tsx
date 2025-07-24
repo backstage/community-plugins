@@ -102,6 +102,16 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
     ),
   },
   {
+    title: 'Age',
+    render: row => (
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <Tooltip title={row.status_date ?? ''}>
+          <Box>{row.status_age}</Box>
+        </Tooltip>
+      </Box>
+    ),
+  },
+  {
     title: 'Actions',
     render: (row: Partial<WorkflowRun>) => (
       <Tooltip title="Rerun workflow">

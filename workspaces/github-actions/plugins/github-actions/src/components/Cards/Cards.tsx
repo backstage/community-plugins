@@ -16,6 +16,7 @@
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
@@ -64,6 +65,13 @@ const WidgetContent = (props: {
             />
           </Box>
         ),
+        age: (
+          <Box display="flex">
+            <Tooltip title={lastRun.status_date ?? ''}>
+              <Box>{lastRun.status_age}</Box>
+            </Tooltip>
+          </Box>
+        ),
         message: lastRun.message,
         url: (
           <Link to={lastRun.githubUrl ?? ''}>
@@ -81,7 +89,7 @@ export const LatestWorkflowRunCard = (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => {
-  const { branch = 'master', variant } = props;
+  const { branch = 'main', variant } = props;
   const { entity } = useEntity();
   const errorApi = useApi(errorApiRef);
   const hostname = getHostnameFromEntity(entity);
@@ -119,7 +127,7 @@ export const LatestWorkflowsForBranchCard = (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => {
-  const { branch = 'master', variant } = props;
+  const { branch = 'main', variant } = props;
   const { entity } = useEntity();
 
   return (

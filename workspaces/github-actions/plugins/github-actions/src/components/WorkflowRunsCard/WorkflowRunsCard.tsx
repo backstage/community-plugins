@@ -204,6 +204,15 @@ export const WorkflowRunsCardView = ({
                   </Box>
                   <Box
                     display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Tooltip title={run.status_date ?? ''}>
+                      <Box>{run.status_age}</Box>
+                    </Tooltip>
+                  </Box>
+                  <Box
+                    display="flex"
                     flexDirection="column"
                     justifyContent="space-between"
                     alignItems="center"
