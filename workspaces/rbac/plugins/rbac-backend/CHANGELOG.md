@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 7.1.0
+
+### Minor Changes
+
+- 8db28a0: Updated readme example on conditional policy yaml to be well formed (removed quotes)
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
 ## 7.0.0
 
 ### Major Changes
