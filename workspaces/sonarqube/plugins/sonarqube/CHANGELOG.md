@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.16.0
+
+### Minor Changes
+
+- b61e4a0: Improve the discoverability of Sonarqube dashboard URL in both sonarqube entity card & tabular view
+
 ## 0.15.0
 
 ### Minor Changes
