@@ -37,12 +37,12 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-client": "^1.10.1",
-    "@backstage/catalog-model": "^1.7.4",
-    "@backstage/core-components": "^0.17.3",
-    "@backstage/core-plugin-api": "^1.10.8",
+    "@backstage/catalog-client": "^1.10.2",
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.17.4",
+    "@backstage/core-plugin-api": "^1.10.9",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-react": "^1.19.0",
+    "@backstage/plugin-catalog-react": "^1.19.1",
     "@date-io/luxon": "1.x",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
@@ -57,9 +57,9 @@
     "react-window": "^1.8.10"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.0",
-    "@backstage/dev-utils": "^1.1.11",
-    "@backstage/plugin-catalog": "^1.31.0",
+    "@backstage/cli": "^0.33.1",
+    "@backstage/dev-utils": "^1.1.12",
+    "@backstage/plugin-catalog": "^1.31.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
