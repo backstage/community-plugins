@@ -1,5 +1,15 @@
 # @backstage-community/plugin-grafana
 
+## 0.7.0
+
+### Minor Changes
+
+- e0159d4: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 4281062: Prevent dashboard queries on folderTitle from breaking
+
 ## 0.6.0
 
 ### Minor Changes
