@@ -18,7 +18,9 @@ pattern: string;
 replacement: string;
 flags?: ("i" | "g" | "m" | "y" | "u" | "s" | "d")[] | undefined;
 }[];
-}, any, "v1">;
+}, {
+[x: string]: any;
+}, "v2">;
 
 // @public (undocumented)
 const scaffolderModuleRegexActions: BackendFeature;
