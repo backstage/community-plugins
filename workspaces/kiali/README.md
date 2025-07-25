@@ -135,6 +135,20 @@ The following table describes the parameters that you can configure to enable th
 | `caFile`              | Filesystem path (on the host where the Backstage process is running) to a certificate authority bundle in PEM format | ""            | No                                      |
 | `sessionTime`         | Time in seconds that session is enabled                                                                              | 60            | No                                      |
 
+#### Setting up the Kiali backend package
+
+Add the Kiali backend in the `packages/backend/src/index.ts` file as follows:
+
+```tsx title="packages/backend/src/index.ts"
+// kubernetes
+backend.add(import('@backstage/plugin-kubernetes-backend'));
+
+// kiali
+backend.add(import('@backstage-community/plugin-kiali-backend'));
+
+backend.start();
+```
+
 ## For users
 
 We have 2 ways to consume the Kiali plugin, entity view or full view.
