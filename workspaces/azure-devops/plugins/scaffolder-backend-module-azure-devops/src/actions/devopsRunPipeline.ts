@@ -31,11 +31,7 @@ import {
   RunState,
 } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
 /**
- * Creates an `acme:example` Scaffolder action.
- *
- * @remarks
- *
- * See {@link https://example.com} for more information.
+ * Creates an `azure:pipeline:run` Scaffolder action.
  *
  * @public
  */
