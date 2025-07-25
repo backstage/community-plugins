@@ -259,18 +259,14 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     const ancestors: IndexableAncestorRef[] = [
       {
         title: data.space.name,
-        location: `${this.confluenceClient.getBaseUrl()}${
-          data.space._links.webui
-        }`,
+        location: `${data._links.base}${data._links.webui}`,
       },
     ];
 
     data.ancestors.forEach(ancestor => {
       ancestors.push({
         title: ancestor.title,
-        location: `${this.confluenceClient.getBaseUrl()}${
-          ancestor._links.webui
-        }`,
+        location: `${data._links.base}${ancestor._links.webui}`,
       });
     });
 
@@ -278,7 +274,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       {
         title: data.title,
         text: this.stripHtml(data.body.storage.value),
-        location: `${this.confluenceClient.getBaseUrl()}${data._links.webui}`,
+        location: `${data._links.base}${data._links.webui}`,
         spaceKey: data.space.key,
         spaceName: data.space.name,
         ancestors: ancestors,

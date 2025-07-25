@@ -23,10 +23,11 @@ import { LoggerService, CacheService } from '@backstage/backend-plugin-api';
  * @public
  */
 export type ConfluenceDocumentMetadata = {
+  id: string;
   title: string;
   status: string;
   _links: {
-    self: string;
+    base?: string; // not available when listing documents with search API
     webui: string;
   };
   version?: {
@@ -175,7 +176,7 @@ export class ConfluenceClient {
 
       documentsList.push(
         ...data.results.map(result => ({
-          url: result._links.self,
+          url: `${this.baseUrl}/rest/api/content/${result.id}`,
           versionWhen: result.version?.when,
         })),
       );
@@ -215,7 +216,9 @@ export class ConfluenceClient {
           return cachedDocument;
         }
 
-        this.logger.debug(`Cache miss for document: "${documentUrl}", fetching from Confluence`);
+        this.logger.debug(
+          `Cache miss for document: "${documentUrl}", fetching from Confluence`,
+        );
 
         // Cache miss, fetch full document
         const data = await this.get<ConfluenceDocument>(
