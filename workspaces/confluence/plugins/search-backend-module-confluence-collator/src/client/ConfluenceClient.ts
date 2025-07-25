@@ -119,6 +119,8 @@ export type DocumentMetadata = {
  * @public
  */
 export class ConfluenceClient {
+  private static readonly CACHE_VERSION = 'v1'; // Increment this if cache format changes
+
   private readonly baseUrl: string;
   private readonly auth: string;
   private readonly token?: string;
@@ -276,14 +278,15 @@ export class ConfluenceClient {
    * Generate cache key for document
    */
   private generateCacheKey(contentId: string, versionId?: string): string {
-    const cacheVersion = 'v1'; // Increment this if cache format changes
-    return `confluence:${contentId}:${versionId || 'unknown'}:${cacheVersion}`;
+    return `confluence:${contentId}:${versionId || 'unknown'}:${
+      ConfluenceClient.CACHE_VERSION
+    }`;
   }
 
   /**
    * Generic GET request method
    */
-  private async get<T = any>(requestUrl: string): Promise<T> {
+  private async get<T>(requestUrl: string): Promise<T> {
     const response = await this.fetch(requestUrl, {
       method: 'get',
       headers: {
