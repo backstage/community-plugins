@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.11.1
+
+### Patch Changes
+
+- 1fc5b4b: Add new action (azure:pipeline:permit) to Authorize the necessary pipeline resources (e.g., Service Connections, repositories) by executing azure:pipeline:permit; this step ensures that the pipeline has all the required permissions to automatically access the protected resources.
+
 ## 0.11.0
 
 ### Minor Changes
