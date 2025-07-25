@@ -74,7 +74,7 @@ export const createReplaceAction = () => {
       'Replaces strings that match a regular expression pattern with a specified replacement string',
     examples,
     schema: {
-      input: schemaInput,
+      input: _zImpl => schemaInput,
     },
 
     async handler(ctx) {
