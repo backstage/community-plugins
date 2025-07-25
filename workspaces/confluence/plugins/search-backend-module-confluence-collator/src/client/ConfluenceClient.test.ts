@@ -50,6 +50,7 @@ describe('ConfluenceClient', () => {
         Promise.resolve({
           results: [
             {
+              id: '123',
               _links: { self: '/rest/api/content/123' },
               version: { when: '2024-01-01T00:00:00.000Z' },
             },
@@ -62,7 +63,10 @@ describe('ConfluenceClient', () => {
     const result = await client.searchDocuments('type=page');
 
     expect(result).toEqual([
-      { url: '/rest/api/content/123', versionWhen: '2024-01-01T00:00:00.000Z' },
+      {
+        url: 'https://confluence.example.com/rest/api/content/123',
+        versionWhen: '2024-01-01T00:00:00.000Z',
+      },
     ]);
   });
 
