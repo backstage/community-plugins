@@ -82,65 +82,45 @@ const isValueValid = (
  * @public
  */
 export function createQuayRepositoryAction() {
-  return createTemplateAction<TemplateActionParameters>({
+  return createTemplateAction({
     id: 'quay:create-repository',
     examples,
     description: 'Create an quay image repository',
     schema: {
       input: {
-        type: 'object',
-        required: ['name', 'visibility', 'description', 'token'],
-        properties: {
-          name: {
-            title: 'Repository name',
-            description: 'Name of the repository to be created',
-            type: 'string',
-          },
-          visibility: {
-            title: 'Visibility setting',
-            description:
+        name: z => z.string().describe('Name of the repository to be created'),
+        visibility: z =>
+          z
+            .string()
+            .describe(
               'Visibility setting for the created repository, either public or private',
-            type: 'string',
-          },
-          description: {
-            title: 'Repository description',
-            description: 'The repository desription',
-            type: 'string',
-          },
-          token: {
-            title: 'Token',
-            description: 'Bearer token used for authorization',
-            type: 'string',
-          },
-          baseUrl: {
-            title: 'Base URL',
-            description:
+            ),
+        description: z => z.string().describe('The repository description'),
+        token: z => z.string().describe('Bearer token used for authorization'),
+        baseUrl: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'URL of your quay instance, set to "https://quay.io" by default',
-            type: 'string',
-          },
-          namespace: {
-            title: 'Namespace',
-            description:
+            ),
+        namespace: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'Namespace in which to create the repository, by default the users namespace',
-            type: 'string',
-          },
-          repoKind: {
-            title: 'Repository kind',
-            description:
-              'The crated repository type either image or an application, if empty image will be used',
-            type: 'string',
-          },
-        },
+            ),
+        repoKind: z =>
+          z
+            .string()
+            .optional()
+            .describe(
+              'The created repository type either image or an application, if empty image will be used',
+            ),
       },
       output: {
-        type: 'object',
-        properties: {
-          repositoryUrl: {
-            title: 'Quay image repository URL',
-            type: 'string',
-            description: 'Created repository URL link',
-          },
-        },
+        repositoryUrl: z => z.string().describe('Created repository URL link'),
       },
     },
     async handler(ctx) {
