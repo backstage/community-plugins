@@ -184,7 +184,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
           return this.getDocumentInfo(document.url, document.versionWhen);
         } catch (err) {
           this.logger.warn(
-            `error while indexing document "${document}": ${err}`,
+            `Error while indexing document "${document.url}" (version: "${document.versionWhen}"): ${err}`,
           );
         }
 

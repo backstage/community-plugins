@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-search-backend-module-confluence-collator': minor
+'@backstage-community/plugin-search-backend-module-confluence-collator': patch
 ---
 
 Cache Confluence documents by default to reduce API calls.
