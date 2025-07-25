@@ -215,7 +215,7 @@ export class ConfluenceClient {
           return cachedDocument;
         }
 
-        this.logger.debug(`Cache miss for document: "${documentUrl}"`);
+        this.logger.debug(`Cache miss for document: "${documentUrl}", fetching from Confluence`);
 
         // Cache miss, fetch full document
         const data = await this.get<ConfluenceDocument>(
