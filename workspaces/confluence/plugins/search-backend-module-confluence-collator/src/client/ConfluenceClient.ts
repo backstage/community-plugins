@@ -178,6 +178,7 @@ export class ConfluenceClient {
 
       documentsList.push(
         ...data.results.map(result => ({
+          // Do not use _links.self, which does not work when using scoped tokens, see #4615
           url: `${this.baseUrl}/rest/api/content/${result.id}`,
           versionWhen: result.version?.when,
         })),

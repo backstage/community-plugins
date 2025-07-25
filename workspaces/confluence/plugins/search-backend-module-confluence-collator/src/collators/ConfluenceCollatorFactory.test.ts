@@ -208,6 +208,7 @@ describe('ConfluenceCollatorFactory', () => {
       limit: '1000',
       status: 'current',
       cql: 'space="SPACE1" or space="SPACE2"',
+      expand: 'version',
     };
     testSearchQuery(request, expectedSearch);
   });
@@ -243,6 +244,7 @@ describe('ConfluenceCollatorFactory', () => {
       limit: '1000',
       status: 'current',
       cql: 'type = page',
+      expand: 'version',
     };
     testSearchQuery(request, expectedSearch);
   });
