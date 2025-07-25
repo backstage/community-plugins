@@ -127,8 +127,8 @@ export const RecentWorkflowRunsCard = (props: {
               title: 'Age',
               render: row => (
                 <Box display="flex">
-                  <Tooltip title={row.status_date ?? ''}>
-                    <Box>{row.status_age}</Box>
+                  <Tooltip title={row.statusDate ?? ''}>
+                    <Box>{row.statusAge}</Box>
                   </Tooltip>
                 </Box>
               ),

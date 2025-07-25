@@ -105,8 +105,8 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
     title: 'Age',
     render: row => (
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Tooltip title={row.status_date ?? ''}>
-          <Box>{row.status_age}</Box>
+        <Tooltip title={row.statusDate ?? ''}>
+          <Box>{row.statusAge}</Box>
         </Tooltip>
       </Box>
     ),

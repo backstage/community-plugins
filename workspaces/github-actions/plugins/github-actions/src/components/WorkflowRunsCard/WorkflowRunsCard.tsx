@@ -207,8 +207,8 @@ export const WorkflowRunsCardView = ({
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Tooltip title={run.status_date ?? ''}>
-                      <Box>{run.status_age}</Box>
+                    <Tooltip title={run.statusDate ?? ''}>
+                      <Box>{run.statusAge}</Box>
                     </Tooltip>
                   </Box>
                   <Box

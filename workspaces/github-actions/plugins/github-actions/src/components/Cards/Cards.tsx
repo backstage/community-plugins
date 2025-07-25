@@ -68,8 +68,8 @@ const WidgetContent = (props: {
         ),
         age: (
           <Box display="flex">
-            <Tooltip title={lastRun.status_date ?? ''}>
-              <Box>{lastRun.status_age}</Box>
+            <Tooltip title={lastRun.statusDate ?? ''}>
+              <Box>{lastRun.statusAge}</Box>
             </Tooltip>
           </Box>
         ),

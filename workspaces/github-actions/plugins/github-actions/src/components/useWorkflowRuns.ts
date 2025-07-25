@@ -34,8 +34,8 @@ export type WorkflowRun = {
     };
   };
   status?: string;
-  status_date?: string;
-  status_age?: string;
+  statusDate?: string;
+  statusAge?: string;
   conclusion?: string;
   onReRunClick: () => void;
 };
@@ -151,8 +151,8 @@ export function useWorkflowRuns({
         },
       },
       status: run.status ?? undefined,
-      status_date: run.updated_at,
-      status_age:
+      statusDate: run.updated_at,
+      statusAge:
         (run.updated_at
           ? DateTime.fromISO(run.updated_at)
           : DateTime.now()
