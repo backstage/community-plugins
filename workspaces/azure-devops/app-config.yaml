@@ -68,3 +68,8 @@ catalog:
       target: ../../examples/scaffolder/createAzurePipeline.yaml
       rules:
         - allow: [Template]
+      # Local example scaffolder action
+    - type: file
+      target: ../../examples/scaffolder/permitAzurePipeline.yaml
+      rules:
+        - allow: [Template]
