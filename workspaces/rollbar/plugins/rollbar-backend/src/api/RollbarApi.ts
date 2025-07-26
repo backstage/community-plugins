@@ -156,7 +156,9 @@ export class RollbarApi {
 
     if (!project.accessToken) {
       const tokens = await this.getProjectAccessTokens(project.id);
-      const token = tokens.find(t => t.scopes.includes('read'));
+      const token = tokens.find(
+        t => t.scopes.includes('read') && t.status !== 'expired',
+      );
       project.accessToken = token ? token.accessToken : undefined;
 
       // recache to persist mutated item in project map
@@ -166,7 +168,9 @@ export class RollbarApi {
     }
 
     if (!project.accessToken) {
-      throw Error(`Could not find project read access token for '${name}'`);
+      throw Error(
+        `Could not find an active project read access token for '${name}'`,
+      );
     }
 
     return project;

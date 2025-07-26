@@ -25,7 +25,7 @@ interface RouterOptions {
   rollbarApi?: RollbarApi;
   logger: LoggerService;
   config: Config;
-  cache?: CacheService;
+  cache: CacheService;
 }
 
 export async function createRouter(
