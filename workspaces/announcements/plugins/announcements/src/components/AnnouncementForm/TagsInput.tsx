@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { useMemo } from 'react';
-import Autocomplete, {
-  createFilterOptions,
-} from '@material-ui/lab/Autocomplete';
-import { TextField, Chip, CircularProgress } from '@material-ui/core';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   useTags,
   useAnnouncementsTranslation,
@@ -112,10 +112,7 @@ export default function TagsInput({ setForm, form }: TagsInputProps) {
               ? { title: option, slug: option.toLocaleLowerCase('en-US') }
               : option;
 
-          const tagProps = getTagProps({ index }) as {
-            key: string;
-            [key: string]: any;
-          };
+          const tagProps = getTagProps({ index });
           const { key, ...chipProps } = tagProps;
 
           return (
