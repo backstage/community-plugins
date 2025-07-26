@@ -24,7 +24,10 @@ import {
   RollbarTopActiveItem,
 } from './types';
 import fetch from 'node-fetch';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import { CacheService, LoggerService } from '@backstage/backend-plugin-api';
+
+const CACHE_KEY = 'projectmap';
+const CACHE_TTL = 300;
 
 const baseUrl = 'https://api.rollbar.com/api/1';
 
@@ -44,11 +47,17 @@ function camelize<T extends unknown>(val: T): T {
 
 /** @public */
 export class RollbarApi {
+  // TODO: remove this state after legacy backend support is removed
   private projectMap: ProjectMetadataMap | undefined;
 
   constructor(
     private readonly accessToken: string,
     private readonly logger: LoggerService,
+
+    // TODO: cache is an optional dependency until legacy backend support
+    // is removed and dependencies are solely registered through the
+    // createBackendPlugin function
+    private readonly cache?: CacheService,
   ) {}
 
   async getAllProjects() {
@@ -156,6 +165,11 @@ export class RollbarApi {
       const tokens = await this.getProjectAccessTokens(project.id);
       const token = tokens.find(t => t.scopes.includes('read'));
       project.accessToken = token ? token.accessToken : undefined;
+
+      // recache to persist mutated item in project map
+      if (this.cache) {
+        this.cache.set(CACHE_KEY, projectMap, { ttl: 300 });
+      }
     }
 
     if (!project.accessToken) {
@@ -169,15 +183,21 @@ export class RollbarApi {
     if (this.projectMap) {
       return this.projectMap;
     }
-
-    const projects = await this.getAllProjects();
-
-    this.projectMap = projects.reduce((accum: ProjectMetadataMap, i) => {
-      accum[i.name] = { id: i.id, name: i.name };
-      return accum;
-    }, {});
-
-    return this.projectMap;
+    let projectMap: ProjectMetadataMap | undefined = this.cache
+      ? await this.cache.get(CACHE_KEY)
+      : undefined;
+    if (!projectMap) {
+      const projects = await this.getAllProjects();
+      projectMap = projects.reduce((accum: ProjectMetadataMap, i) => {
+        accum[i.name] = { id: i.id, name: i.name };
+        return accum;
+      }, {});
+      if (this.cache) {
+        this.cache.set(CACHE_KEY, projectMap, { ttl: CACHE_TTL });
+      }
+    }
+    this.projectMap = projectMap;
+    return projectMap;
   }
 }
 
