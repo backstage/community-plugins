@@ -97,6 +97,13 @@ describe('RollbarApi', () => {
               result: [
                 {
                   projectId: 123,
+                  name: 'project-token-expired',
+                  scopes: ['read'],
+                  accessToken: 'xyzzy',
+                  status: 'expired',
+                },
+                {
+                  projectId: 123,
                   name: 'project-token',
                   scopes: ['read'],
                   accessToken: 'plugh',
