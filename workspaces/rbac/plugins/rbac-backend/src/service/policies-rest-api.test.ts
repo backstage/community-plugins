@@ -751,31 +751,16 @@ describe('REST policies API', () => {
       enforcerDelegateMock.getFilteredPolicy = jest
         .fn()
         .mockImplementation(
-          async (_fieldIndex: number, ...fieldValues: string[]) => {
-            if (fieldValues[0] === 'role:default/permission_admin') {
-              return [
-                [
-                  'role:default/permission_admin',
-                  'policy.entity.create',
-                  'create',
-                  'allow',
-                ],
-              ];
-            }
-
-            if (fieldValues[0] === 'role:default/guest') {
-              return [
-                [
-                  'role:default/guest',
-                  'policy-entity',
-                  'read',
-                  'allow',
-                  'rest',
-                ],
-              ];
-            }
-
-            return [];
+          async (_fieldIndex: number, ..._fieldValues: string[]) => {
+            return [
+              [
+                'role:default/permission_admin',
+                'policy.entity.create',
+                'create',
+                'allow',
+              ],
+              ['role:default/guest', 'policy-entity', 'read', 'allow', 'rest'],
+            ];
           },
         );
       const result = await request(app).get('/policies').send();
@@ -813,38 +798,23 @@ describe('REST policies API', () => {
       enforcerDelegateMock.getFilteredPolicy = jest
         .fn()
         .mockImplementation(
-          async (_fieldIndex: number, ...fieldValues: string[]) => {
-            if (fieldValues[0] === 'role:default/permission_admin') {
-              return [
-                [
-                  'role:default/permission_admin',
-                  'policy.entity.create',
-                  'create',
-                  'allow',
-                ],
-              ];
-            }
-
-            if (fieldValues[0] === 'role:default/guest') {
-              return [
-                [
-                  'role:default/guest',
-                  'policy-entity',
-                  'read',
-                  'allow',
-                  'rest',
-                ],
-                [
-                  'role:default/guest',
-                  'policy-entity',
-                  'create',
-                  'allow',
-                  'rest',
-                ],
-              ];
-            }
-
-            return [];
+          async (_fieldIndex: number, ..._fieldValues: string[]) => {
+            return [
+              [
+                'role:default/permission_admin',
+                'policy.entity.create',
+                'create',
+                'allow',
+              ],
+              ['role:default/guest', 'policy-entity', 'read', 'allow', 'rest'],
+              [
+                'role:default/guest',
+                'policy-entity',
+                'create',
+                'allow',
+                'rest',
+              ],
+            ];
           },
         );
       const result = await request(app).get('/policies').send();

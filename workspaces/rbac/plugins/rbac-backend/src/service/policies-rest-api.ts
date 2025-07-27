@@ -205,14 +205,12 @@ export class PoliciesServer {
             ? await this.enforcer.getFilteredPolicy(0, ...filter)
             : [];
         } else {
-          for (const role of roleMetadata) {
-            policies.push(
-              ...(await this.enforcer.getFilteredPolicy(
-                0,
-                ...[role.roleEntityRef],
-              )),
-            );
-          }
+          const rolePermFilter: string[][] = roleMetadata.map(r => [
+            r.roleEntityRef,
+          ]);
+          policies.push(
+            ...(await this.enforcer.getFilteredPolicy(0, ...rolePermFilter)),
+          );
         }
 
         const body = await this.transformPolicyArray(...policies);
