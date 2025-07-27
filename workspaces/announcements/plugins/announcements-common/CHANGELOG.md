@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.7.0
+
+### Minor Changes
+
+- 220cc20: Backstage version bump to v1.41.1
+
 ## 0.6.0
 
 ### Minor Changes
