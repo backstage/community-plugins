@@ -28,6 +28,7 @@ import { Message, Feedback, UserResponse } from '../types';
 import {
   appThemeApiRef,
   configApiRef,
+  identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import { createTimestamp, delay, makeLinksClickable } from '../utils';
@@ -75,9 +76,11 @@ function ChatAssistantApp() {
       )}`,
     );
   }
+  const identityApi = useApi(identityApiRef);
+  const showOptions = config.getBoolean('agentForge.showOptions');
 
   const chatbotApi = useMemo(
-    () => new ChatbotApi(backendUrl),
+    () => new ChatbotApi(backendUrl, { identityApi }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [backendUrl],
   );
@@ -93,6 +96,8 @@ function ChatAssistantApp() {
   const [isPromptShown, setShowPrompt] = useState<boolean>(false);
   const [isInitialState, setIsInitialState] = useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
   const [providerModelsMap] = useState<{
     [key: string]: string[];
   }>({});
@@ -190,7 +195,8 @@ function ChatAssistantApp() {
 
     await addUserMessage({ text: input, isUser: true });
     const timestamp = createTimestamp();
-    switch (continueMessaging(input)) {
+    const contMsg = await continueMessaging(input);
+    switch (contMsg) {
       case UserResponse.RESET:
         // console.log('Reset Chat ID:', getChatId());
         setIsTyping(false);
@@ -306,12 +312,14 @@ function ChatAssistantApp() {
     ]);
   }
 
-  function continueMessaging(input = 'hi'): UserResponse {
+  async function continueMessaging(input = 'hi'): Promise<UserResponse> {
     const [yesNo, ...additionalInput] = input.toLocaleLowerCase().split(' ');
+
     if (additionalInput.length > 0) {
       return UserResponse.CONTINUE;
     }
     const greetings = ['hi', 'hello', 'hey'];
+
     switch (true) {
       case greetings.some(greeting => yesNo.startsWith(greeting)):
         return UserResponse.NEW;
@@ -320,6 +328,13 @@ function ChatAssistantApp() {
       default:
         return UserResponse.CONTINUE;
     }
+  }
+  if (showOptions && suggestions.length === 0) {
+    chatbotApi.getSkillExamples().then(value => {
+      if (value) {
+        setSuggestions(value);
+      }
+    });
   }
 
   if (!isOpen) {
@@ -359,6 +374,7 @@ function ChatAssistantApp() {
           <ChatTabs
             isFullScreen={isFullScreen}
             handleMessageSubmit={handleMessageSubmit}
+            suggestions={suggestions}
           />
         ) : (
           <>
