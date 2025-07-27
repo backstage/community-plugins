@@ -175,4 +175,74 @@ describe('ConfluenceCollatorFactory', () => {
     };
     testSearchQuery(request, expectedSearch);
   });
+
+  it('uses only spaces when only spaces is present in config', async () => {
+    const configWithSpacesOnly = new ConfigReader({
+      confluence: {
+        baseUrl: BASE_URL,
+        auth: {
+          type: 'basic',
+          token: 'AA',
+          email: 'user@example.com',
+        },
+        spaces: ['SPACE1', 'SPACE2'],
+      },
+    });
+    const factoryWithConfig = ConfluenceCollatorFactory.fromConfig(
+      configWithSpacesOnly,
+      options,
+    );
+    let request;
+    worker.use(
+      rest.get(BASE_URL + CONFLUENCE_API_PATH, (req, res, ctx) => {
+        request = req;
+        return res(ctx.status(200), ctx.json({}));
+      }),
+    );
+
+    const collator = await factoryWithConfig.getCollator();
+    const pipeline = TestPipeline.fromCollator(collator);
+    await pipeline.execute();
+    const expectedSearch = {
+      limit: '1000',
+      status: 'current',
+      cql: 'space="SPACE1" or space="SPACE2"',
+    };
+    testSearchQuery(request, expectedSearch);
+  });
+
+  it('uses only query when only query is present in config', async () => {
+    const configWithQueryOnly = new ConfigReader({
+      confluence: {
+        baseUrl: BASE_URL,
+        auth: {
+          type: 'basic',
+          token: 'AA',
+          email: 'user@example.com',
+        },
+        query: 'type = page',
+      },
+    });
+    const factoryWithConfig = ConfluenceCollatorFactory.fromConfig(
+      configWithQueryOnly,
+      options,
+    );
+    let request;
+    worker.use(
+      rest.get(BASE_URL + CONFLUENCE_API_PATH, (req, res, ctx) => {
+        request = req;
+        return res(ctx.status(200), ctx.json({}));
+      }),
+    );
+
+    const collator = await factoryWithConfig.getCollator();
+    const pipeline = TestPipeline.fromCollator(collator);
+    await pipeline.execute();
+    const expectedSearch = {
+      limit: '1000',
+      status: 'current',
+      cql: 'type = page',
+    };
+    testSearchQuery(request, expectedSearch);
+  });
 });
