@@ -15,7 +15,7 @@
  */
 import { newRelicDashboardPlugin } from './plugin';
 
-describe('new-relic-dashboard', () => {
+describe('newrelic-dashboard', () => {
   it('should export plugin', () => {
     expect(newRelicDashboardPlugin).toBeDefined();
   });
