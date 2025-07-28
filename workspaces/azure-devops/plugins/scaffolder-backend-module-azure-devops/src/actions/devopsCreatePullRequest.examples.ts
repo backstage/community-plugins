@@ -24,7 +24,7 @@ export const examples: TemplateExample[] = [
       steps: [
         {
           id: 'createAzureDevOpsPullRequest',
-          action: 'azure:repo:pr',
+          action: 'azure:pr:create',
           name: 'Create Azure DevOps Pull Request',
           input: {
             organization: 'org',
@@ -44,7 +44,7 @@ export const examples: TemplateExample[] = [
       steps: [
         {
           id: 'createAzureDevOpsPullRequest',
-          action: 'azure:repo:pr',
+          action: 'azure:pr:create',
           name: 'Create Azure DevOps Pull Request',
           input: {
             organization: 'org',

@@ -26,7 +26,7 @@ import {
 import * as GitInterfaces from 'azure-devops-node-api/interfaces/GitInterfaces';
 
 /**
- * Creates an `azure:repo:pr` Scaffolder action.
+ * Creates an `azure:pr:create` Scaffolder action.
  *
  * @remarks
  *
@@ -40,7 +40,7 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
   const { integrations } = options;
 
   return createTemplateAction({
-    id: 'azure:repo:pr',
+    id: 'azure:pr:create',
     description: 'Create a PR to a repository in Azure DevOps.',
     schema: {
       input: {

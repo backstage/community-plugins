@@ -31,7 +31,7 @@ export const createAzureDevOpsPushRepoAction = (options: {
   const { integrations, config } = options;
 
   return createTemplateAction({
-    id: 'azure:repo:push',
+    id: 'azure:repository:push',
     description:
       'Push the content in the workspace to a remote Azure repository.',
     schema: {

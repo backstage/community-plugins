@@ -24,7 +24,26 @@ export const examples: TemplateExample[] = [
       steps: [
         {
           id: 'cloneAzureDevOpsRepository',
-          action: 'azure:repo:clone',
+          action: 'azure:repository:clone',
+          name: 'Clone Azure DevOps Repository',
+          input: {
+            remoteUrl:
+              'https://dev.azure.com/{organization}/{project}/_git/{repository}',
+            branch: 'main',
+            targetPath: './my-repo',
+            token: '${{ secrets.USER_OAUTH_TOKEN }}',
+          },
+        },
+      ],
+    }),
+  },
+  {
+    description: 'Clone Repository',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'cloneAzureDevOpsRepository',
+          action: 'azure:repository:clone',
           name: 'Clone Azure DevOps Repository',
           input: {
             remoteUrl:

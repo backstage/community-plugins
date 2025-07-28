@@ -27,7 +27,7 @@ export const createAzureDevOpsCloneRepoAction = (options: {
   const { integrations } = options;
 
   return createTemplateAction({
-    id: 'azure:repo:clone',
+    id: 'azure:repository:clone',
     description: 'Clone an Azure repository into the workspace directory.',
     schema: {
       input: {

@@ -24,7 +24,7 @@ export const examples: TemplateExample[] = [
       steps: [
         {
           id: 'pushAzureDevOpsRepository',
-          action: 'azure:repo:push',
+          action: 'azure:repository:push',
           name: 'Push Changes to Azure DevOps Repository',
           input: {
             branch: 'scaffolder/new-feature',
@@ -42,7 +42,7 @@ export const examples: TemplateExample[] = [
       steps: [
         {
           id: 'pushAzureDevOpsRepository',
-          action: 'azure:repo:push',
+          action: 'azure:repository:push',
           name: 'Push Changes to Azure DevOps Repository',
           input: {
             remoteUrl:
