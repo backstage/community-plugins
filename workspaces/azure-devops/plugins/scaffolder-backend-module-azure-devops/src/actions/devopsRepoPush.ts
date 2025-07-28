@@ -15,16 +15,16 @@
  */
 
 import { Config } from '@backstage/config';
+import { ScmIntegrationRegistry } from '@backstage/integration';
 import {
-  DefaultAzureDevOpsCredentialsProvider,
-  ScmIntegrationRegistry,
-} from '@backstage/integration';
-import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+  addFiles,
+  commitAndPushBranch,
+  createTemplateAction,
+} from '@backstage/plugin-scaffolder-node';
+import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
+import { getGitCredentials } from './helpers';
 
-import { commitAndPushBranch } from './helpers';
-import { getRepoSourceDirectory } from './util';
-
-export const pushAzureRepoAction = (options: {
+export const createAzureDevOpsPushRepoAction = (options: {
   integrations: ScmIntegrationRegistry;
   config: Config;
 }) => {
@@ -36,6 +36,7 @@ export const pushAzureRepoAction = (options: {
       'Push the content in the workspace to a remote Azure repository.',
     schema: {
       input: {
+        remoteUrl: z => z.string().describe('The Git URL to the repository.'),
         branch: z =>
           z.string().describe('The branch to checkout to.').optional(),
         // Where not set, defaults to workspacePath
@@ -70,16 +71,16 @@ export const pushAzureRepoAction = (options: {
     },
     async handler(ctx) {
       const {
+        remoteUrl,
         branch = 'scaffolder',
         gitCommitMessage = 'Initial commit',
         gitAuthorName,
         gitAuthorEmail,
-        token,
       } = ctx.input;
 
-      const sourcePath = getRepoSourceDirectory(
+      const sourcePath = resolveSafeChildPath(
         ctx.workspacePath,
-        ctx.input.sourcePath,
+        ctx.input.sourcePath ?? '.',
       );
 
       const gitAuthorInfo = {
@@ -91,10 +92,22 @@ export const pushAzureRepoAction = (options: {
           : config.getOptionalString('scaffolder.defaultAuthor.email'),
       };
 
+      const auth = await getGitCredentials(
+        integrations,
+        remoteUrl,
+        ctx.input.token,
+      );
+
+      await addFiles({
+        dir: sourcePath,
+        filepath: '.',
+        auth: auth,
+        logger: ctx.logger,
+      });
+
       await commitAndPushBranch({
         dir: sourcePath,
-        credentialsProvider:
-          DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations),
+        auth: auth,
         logger: ctx.logger,
         commitMessage: gitCommitMessage
           ? gitCommitMessage
@@ -102,7 +115,6 @@ export const pushAzureRepoAction = (options: {
             'Initial commit',
         gitAuthorInfo,
         branch,
-        token,
       });
     },
   });

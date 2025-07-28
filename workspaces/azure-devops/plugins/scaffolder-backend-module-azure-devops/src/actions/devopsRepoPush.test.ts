@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-import { pushAzureRepoAction } from './devopsRepoPush';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 
-jest.mock('./helpers', () => ({
+jest.mock('@backstage/plugin-scaffolder-node', () => ({
+  ...jest.requireActual('@backstage/plugin-scaffolder-node'),
   commitAndPushBranch: jest.fn(),
 }));
-jest.mock('./util', () => ({
-  getRepoSourceDirectory: jest.fn((workspacePath, sourcePath) =>
-    sourcePath ? `${workspacePath}/${sourcePath}` : workspacePath,
-  ),
-}));
 
-const { commitAndPushBranch } = require('./helpers');
-const { getRepoSourceDirectory } = require('./util');
+import { createAzureDevOpsPushRepoAction } from './devopsRepoPush';
 
-describe('pushAzureRepoAction', () => {
+const { commitAndPushBranch } = require('@backstage/plugin-scaffolder-node');
+
+describe('createAzureDevOpsPushRepoAction', () => {
   const config = new ConfigReader({
     scaffolder: {
       defaultAuthor: { name: 'Default Name', email: 'default@email.com' },
@@ -41,42 +37,51 @@ describe('pushAzureRepoAction', () => {
   const integrations = ScmIntegrations.fromConfig(
     new ConfigReader({ integrations: { azure: [] } }),
   );
-  const action = pushAzureRepoAction({ integrations, config });
+  const action = createAzureDevOpsPushRepoAction({ integrations, config });
   const workspacePath = '/tmp/workspace';
+  const remoteUrl = 'https://dev.azure.com/org/project/_git/repo';
+  let getCredentialsMock: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    getCredentialsMock = jest.fn();
+    jest
+      .spyOn(
+        require('@backstage/integration').DefaultAzureDevOpsCredentialsProvider,
+        'fromIntegrations',
+      )
+      .mockReturnValue({ getCredentials: getCredentialsMock });
   });
 
   it('calls commitAndPushBranch with defaults', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
     const ctx = createMockActionContext({
       workspacePath,
-      input: {},
+      input: { remoteUrl, token: 'tok' },
     });
     await action.handler(ctx);
-    expect(getRepoSourceDirectory).toHaveBeenCalledWith(
-      workspacePath,
-      undefined,
-    );
     expect(commitAndPushBranch).toHaveBeenCalledWith(
       expect.objectContaining({
         dir: workspacePath,
         branch: 'scaffolder',
         commitMessage: 'Initial commit',
         gitAuthorInfo: { name: 'Default Name', email: 'default@email.com' },
-        token: undefined,
+        // token: undefined,
       }),
     );
   });
 
   it('passes custom input values', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
     const ctx = createMockActionContext({
       workspacePath,
       input: {
+        remoteUrl,
         branch: 'feature',
         gitCommitMessage: 'My commit',
         gitAuthorName: 'Alice',
         gitAuthorEmail: 'alice@email.com',
+        token: 'tok',
       },
     });
     await action.handler(ctx);
@@ -90,35 +95,36 @@ describe('pushAzureRepoAction', () => {
   });
 
   it('passes token if provided', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
     const ctx = createMockActionContext({
       workspacePath,
-      input: { token: 'tok' },
+      input: { token: 'tok', remoteUrl },
     });
     await action.handler(ctx);
     expect(commitAndPushBranch).toHaveBeenCalledWith(
-      expect.objectContaining({ token: 'tok' }),
+      expect.objectContaining({
+        auth: expect.objectContaining({ password: 'tok' }),
+      }),
     );
   });
 
   it('uses custom sourcePath if provided', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
     const ctx = createMockActionContext({
       workspacePath,
-      input: { sourcePath: 'subdir' },
+      input: { sourcePath: 'subdir', remoteUrl, token: 'tok' },
     });
     await action.handler(ctx);
-    expect(getRepoSourceDirectory).toHaveBeenCalledWith(
-      workspacePath,
-      'subdir',
-    );
     expect(commitAndPushBranch).toHaveBeenCalledWith(
       expect.objectContaining({ dir: `${workspacePath}/subdir` }),
     );
   });
 
   it('uses config defaults if input values are missing', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
     const ctx = createMockActionContext({
       workspacePath,
-      input: {},
+      input: { remoteUrl, token: 'tok' },
     });
     await action.handler(ctx);
     expect(commitAndPushBranch).toHaveBeenCalledWith(

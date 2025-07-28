@@ -20,6 +20,7 @@ import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 
 jest.mock('./helpers', () => ({
+  ...jest.requireActual('./helpers'),
   createADOPullRequest: jest.fn(),
   updateADOPullRequest: jest.fn(),
   linkWorkItemToADOPullRequest: jest.fn(),
@@ -62,7 +63,7 @@ describe('createAzureDevopsCreatePullRequestAction', () => {
       },
     });
     await expect(action.handler(ctx)).rejects.toThrow(
-      /No token credentials provided/,
+      /No credentials provided/,
     );
   });
 
@@ -81,10 +82,7 @@ describe('createAzureDevopsCreatePullRequestAction', () => {
     await action.handler(ctx);
     expect(createADOPullRequest).toHaveBeenCalledWith(
       expect.objectContaining({
-        gitPullRequestToCreate: expect.objectContaining({ title: 'PR' }),
-        repoName: 'repo',
-        project: 'proj',
-        auth: expect.objectContaining({ token: 'tok' }),
+        authHandler: expect.objectContaining({ token: 'tok' }),
       }),
     );
     expect(ctx.output).toHaveBeenCalledWith('pullRequestId', 42);

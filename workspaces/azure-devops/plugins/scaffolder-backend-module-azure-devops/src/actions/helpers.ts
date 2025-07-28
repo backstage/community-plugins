@@ -18,157 +18,33 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import * as azdev from 'azure-devops-node-api';
 import * as GitApi from 'azure-devops-node-api/GitApi';
 import * as GitInterfaces from 'azure-devops-node-api/interfaces/GitInterfaces';
-import { AzureDevOpsCredentialsProvider } from '@backstage/integration';
 import { InputError } from '@backstage/errors';
-import { Git } from '../git.ts';
-
-export async function cloneRepo({
-  dir,
-  auth,
-  logger,
-  remote = 'origin',
-  remoteUrl,
-  branch = 'main',
-}: {
-  dir: string;
-  auth: { username: string; password: string } | { token: string };
-  logger: LoggerService;
-  remote?: string;
-  remoteUrl: string;
-  branch?: string;
-}): Promise<void> {
-  const git = Git.fromAuth({
-    ...auth,
-    logger,
-  });
-
-  await git.clone({
-    url: remoteUrl,
-    dir,
-  });
-
-  await git.addRemote({
-    dir,
-    remote,
-    url: remoteUrl,
-  });
-
-  await git.checkout({
-    dir,
-    ref: branch,
-  });
-}
-
-export async function commitAndPushBranch({
-  dir,
-  credentialsProvider,
-  logger,
-  remote = 'origin',
-  commitMessage,
-  gitAuthorInfo,
-  branch = 'scaffolder',
-  token,
-}: {
-  dir: string;
-  credentialsProvider: AzureDevOpsCredentialsProvider;
-  logger: LoggerService;
-  remote?: string;
-  commitMessage: string;
-  gitAuthorInfo?: { name?: string; email?: string };
-  branch?: string;
-  token?: string;
-}): Promise<void> {
-  const authorInfo = {
-    name: gitAuthorInfo?.name ?? 'Scaffolder',
-    email: gitAuthorInfo?.email ?? 'scaffolder@backstage.io',
-  };
-
-  const git = Git.fromAuth({
-    onAuth: async url => {
-      const credentials = await credentialsProvider.getCredentials({ url });
-
-      if (token) {
-        return { username: 'not-empty', password: token };
-      } else if (credentials?.type === 'pat') {
-        return { username: 'not-empty', password: credentials.token };
-      } else if (credentials?.type === 'bearer') {
-        return {
-          headers: {
-            Authorization: `Bearer ${credentials.token}`,
-          },
-        };
-      }
-      throw new InputError(
-        `No token credentials provided for Azure repository ${url}`,
-      );
-    },
-    logger,
-  });
-
-  const currentBranch = await git.currentBranch({ dir });
-
-  logger.info(`Current branch is ${currentBranch}`);
-  logger.info(`Target branch is ${branch}`);
-
-  if (currentBranch !== branch) {
-    try {
-      await git.branch({
-        dir,
-        ref: branch,
-      });
-    } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AlreadyExistsError') {
-        // we safely ignore this error
-      } else {
-        throw err;
-      }
-    }
-
-    await git.checkout({
-      dir,
-      ref: branch,
-    });
-  }
-
-  await git.add({
-    dir,
-    filepath: '.',
-  });
-
-  await git.commit({
-    dir,
-    message: commitMessage,
-    author: authorInfo,
-    committer: authorInfo,
-  });
-
-  await git.push({
-    dir,
-    remote: remote,
-    remoteRef: `refs/heads/${branch}`,
-  });
-}
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
+import {
+  DefaultAzureDevOpsCredentialsProvider,
+  ScmIntegrationRegistry,
+} from '@backstage/integration';
 
 export async function createADOPullRequest({
   gitPullRequestToCreate,
   server,
-  auth,
+  org,
+  authHandler,
   repoName,
   project,
   supportsIterations,
 }: {
   gitPullRequestToCreate: GitInterfaces.GitPullRequest;
   server: string;
-  auth: { org: string; token: string };
+  org: string;
+  authHandler: IRequestHandler;
   repoName: string;
   project?: string;
   supportsIterations?: boolean;
 }): Promise<GitInterfaces.GitPullRequest> {
   const url = `https://${server}/`;
-  const orgUrl = url + auth.org;
-  const token: string = auth.token || ''; // process.env.AZURE_TOKEN || "";
+  const orgUrl = url + org;
 
-  const authHandler = azdev.getHandlerFromToken(token);
   const connection = new azdev.WebApi(orgUrl, authHandler);
 
   const gitApiObject: GitApi.IGitApi = await connection.getGitApi();
@@ -184,23 +60,23 @@ export async function createADOPullRequest({
 export async function updateADOPullRequest({
   gitPullRequestToUpdate,
   server,
-  auth,
+  org,
+  authHandler,
   repoName,
   project,
   pullRequestId,
 }: {
   gitPullRequestToUpdate: GitInterfaces.GitPullRequest;
   server: string;
-  auth: { org: string; token: string };
+  org: string;
+  authHandler: IRequestHandler;
   repoName: string;
   project?: string;
   pullRequestId: number;
 }): Promise<void> {
   const url = `https://${server}/`;
-  const orgUrl = url + auth.org;
-  const token: string = auth.token || ''; // process.env.AZURE_TOKEN || "";
+  const orgUrl = url + org;
 
-  const authHandler = azdev.getHandlerFromToken(token);
   const connection = new azdev.WebApi(orgUrl, authHandler);
 
   const gitApiObject: GitApi.IGitApi = await connection.getGitApi();
@@ -213,10 +89,55 @@ export async function updateADOPullRequest({
   );
 }
 
+export async function getGitCredentials(
+  integrations: ScmIntegrationRegistry,
+  url: string,
+  token?: string,
+) {
+  const credentialProvider =
+    DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
+  const credentials = await credentialProvider.getCredentials({ url: url });
+
+  let auth: { username: string; password: string } | { token: string };
+  if (token) {
+    auth = { username: 'not-empty', password: token };
+  } else if (credentials?.type === 'pat') {
+    auth = { username: 'not-empty', password: credentials.token };
+  } else if (credentials?.type === 'bearer') {
+    auth = { token: credentials.token };
+  } else {
+    throw new InputError(
+      `No credentials provided ${url}, please check your integrations config`,
+    );
+  }
+  return auth;
+}
+
+export async function getAuthHandler(
+  integrations: ScmIntegrationRegistry,
+  url: string,
+  token?: string,
+): Promise<IRequestHandler> {
+  const credentialProvider =
+    DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
+  const credentials = await credentialProvider.getCredentials({ url: url });
+
+  if (credentials === undefined && token === undefined) {
+    throw new InputError(
+      `No credentials provided ${url}, please check your integrations config`,
+    );
+  }
+
+  return token || credentials?.type === 'pat'
+    ? azdev.getPersonalAccessTokenHandler(token ?? credentials!.token)
+    : azdev.getBearerHandler(credentials!.token);
+}
+
 export async function linkWorkItemToADOPullRequest({
   workItemId,
   server,
-  auth,
+  org,
+  authHandler,
   logger,
   repoName,
   project,
@@ -224,17 +145,16 @@ export async function linkWorkItemToADOPullRequest({
 }: {
   workItemId: number;
   server: string;
-  auth: { org: string; token: string };
+  org: string;
+  authHandler: IRequestHandler;
   logger: LoggerService;
   repoName: string;
   project: string;
   pullRequestId: number;
 }): Promise<void> {
   const url = `https://${server}/`;
-  const orgUrl = url + auth.org;
-  const token: string = auth.token || '';
+  const orgUrl = url + org;
 
-  const authHandler = azdev.getHandlerFromToken(token);
   const connection = new azdev.WebApi(orgUrl, authHandler);
   connection.options.allowRetries = true;
   connection.options.maxRetries = 5;
@@ -276,18 +196,18 @@ export async function linkWorkItemToADOPullRequest({
 // For debug logging
 export async function logConnectionData({
   server,
-  auth,
+  org,
+  authHandler,
   logger,
 }: {
   server: string;
-  auth: { org: string; token: string };
+  org: string;
+  authHandler: IRequestHandler;
   logger: LoggerService;
 }): Promise<void> {
   const url = `https://${server}/`;
-  const orgUrl = url + auth.org;
-  const token: string = auth.token || '';
+  const orgUrl = url + org;
 
-  const authHandler = azdev.getHandlerFromToken(token);
   const connection = new azdev.WebApi(orgUrl, authHandler);
 
   const connectionData = await (

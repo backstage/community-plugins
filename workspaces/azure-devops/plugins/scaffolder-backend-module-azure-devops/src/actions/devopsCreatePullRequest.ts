@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  DefaultAzureDevOpsCredentialsProvider,
-  ScmIntegrationRegistry,
-} from '@backstage/integration';
+import { ScmIntegrationRegistry } from '@backstage/integration';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { InputError } from '@backstage/errors';
 import {
@@ -24,11 +21,12 @@ import {
   updateADOPullRequest,
   linkWorkItemToADOPullRequest,
   logConnectionData,
+  getAuthHandler,
 } from './helpers';
 import * as GitInterfaces from 'azure-devops-node-api/interfaces/GitInterfaces';
 
 /**
- * Creates an `ado:repo:pr` Scaffolder action.
+ * Creates an `azure:repo:pr` Scaffolder action.
  *
  * @remarks
  *
@@ -119,23 +117,18 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
       const sourceBranchRef = `refs/heads/${sourceBranch}`;
       const targetBranchRef = `refs/heads/${targetBranch}`;
 
-      const provider =
-        DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
       const url = `https://${server}/${organization}`;
-      const credentials = await provider.getCredentials({ url: url });
 
-      const token = ctx.input.token ?? credentials?.token;
-
-      if (!token) {
-        throw new InputError(`No token credentials provided for ${url}`);
-      }
+      const authHandler = await getAuthHandler(
+        integrations,
+        url,
+        ctx.input.token,
+      );
 
       await logConnectionData({
         server: server,
-        auth: {
-          org: organization,
-          token: token,
-        },
+        org: organization,
+        authHandler: authHandler,
         logger: logger,
       });
 
@@ -161,10 +154,8 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
       const pullRequestResponse = await createADOPullRequest({
         gitPullRequestToCreate: pullRequest,
         server: server,
-        auth: {
-          org: organization,
-          token: token,
-        },
+        org: organization,
+        authHandler: authHandler,
         repoName: repoName,
         project: project,
         supportsIterations: supportsIterations,
@@ -196,10 +187,8 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
         await updateADOPullRequest({
           gitPullRequestToUpdate: updateProperties,
           server: server,
-          auth: {
-            org: organization,
-            token: token,
-          },
+          org: organization,
+          authHandler: authHandler,
           repoName: repoName,
           project: project,
           pullRequestId: pullRequestId,
@@ -212,10 +201,8 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
         );
         await linkWorkItemToADOPullRequest({
           server: server,
-          auth: {
-            org: organization,
-            token: token,
-          },
+          org: organization,
+          authHandler: authHandler,
           logger: logger,
           repoName: repoName,
           pullRequestId: pullRequestId,

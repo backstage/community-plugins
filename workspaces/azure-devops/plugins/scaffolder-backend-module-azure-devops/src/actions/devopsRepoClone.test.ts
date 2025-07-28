@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { cloneAzureRepoAction } from './devopsRepoClone';
+import { createAzureDevOpsCloneRepoAction } from './devopsRepoClone';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 
-jest.mock('./helpers', () => ({
+jest.mock('@backstage/plugin-scaffolder-node', () => ({
+  ...jest.requireActual('@backstage/plugin-scaffolder-node'),
   cloneRepo: jest.fn(),
 }));
 jest.mock('@backstage/backend-plugin-api', () => ({
@@ -29,10 +30,10 @@ jest.mock('@backstage/backend-plugin-api', () => ({
   ),
 }));
 
-const { cloneRepo } = require('./helpers');
+const { cloneRepo } = require('@backstage/plugin-scaffolder-node');
 const { resolveSafeChildPath } = require('@backstage/backend-plugin-api');
 
-describe('cloneAzureRepoAction', () => {
+describe('createAzureDevOpsCloneRepoAction', () => {
   const integrations = ScmIntegrations.fromConfig(
     new ConfigReader({ integrations: { azure: [] } }),
   );
@@ -57,13 +58,14 @@ describe('cloneAzureRepoAction', () => {
       workspacePath,
       input: { remoteUrl, token: 'tok' },
     });
-    await cloneAzureRepoAction({ integrations }).handler(ctx);
+    await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
+
     expect(cloneRepo).toHaveBeenCalledWith(
       expect.objectContaining({
         dir: `${workspacePath}/./`,
-        auth: { username: 'not-empty', password: 'tok' },
-        remoteUrl,
-        branch: 'main',
+        auth: expect.objectContaining({ password: 'tok' }),
+        url: remoteUrl,
+        ref: 'main',
       }),
     );
     expect(ctx.output).toHaveBeenCalledWith(
@@ -78,7 +80,7 @@ describe('cloneAzureRepoAction', () => {
       workspacePath,
       input: { remoteUrl },
     });
-    await cloneAzureRepoAction({ integrations }).handler(ctx);
+    await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
     expect(cloneRepo).toHaveBeenCalledWith(
       expect.objectContaining({
         auth: { username: 'not-empty', password: 'pat-token' },
@@ -95,7 +97,7 @@ describe('cloneAzureRepoAction', () => {
       workspacePath,
       input: { remoteUrl },
     });
-    await cloneAzureRepoAction({ integrations }).handler(ctx);
+    await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
     expect(cloneRepo).toHaveBeenCalledWith(
       expect.objectContaining({
         auth: { token: 'bearer-token' },
@@ -110,8 +112,8 @@ describe('cloneAzureRepoAction', () => {
       input: { remoteUrl },
     });
     await expect(
-      cloneAzureRepoAction({ integrations }).handler(ctx),
-    ).rejects.toThrow(/No token credentials provided/);
+      createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx),
+    ).rejects.toThrow(/No credentials provided/);
   });
 
   it('uses custom branch and targetPath', async () => {
@@ -120,12 +122,12 @@ describe('cloneAzureRepoAction', () => {
       workspacePath,
       input: { remoteUrl, branch: 'develop', targetPath: 'subdir' },
     });
-    await cloneAzureRepoAction({ integrations }).handler(ctx);
+    await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
     expect(resolveSafeChildPath).toHaveBeenCalledWith(workspacePath, 'subdir');
     expect(cloneRepo).toHaveBeenCalledWith(
       expect.objectContaining({
         dir: `${workspacePath}/subdir`,
-        branch: 'develop',
+        ref: 'develop',
       }),
     );
     expect(ctx.output).toHaveBeenCalledWith(

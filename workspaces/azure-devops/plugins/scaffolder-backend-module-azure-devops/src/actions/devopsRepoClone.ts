@@ -15,16 +15,13 @@
  */
 
 import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
-import { InputError } from '@backstage/errors';
-import {
-  DefaultAzureDevOpsCredentialsProvider,
-  ScmIntegrationRegistry,
-} from '@backstage/integration';
+import { ScmIntegrationRegistry } from '@backstage/integration';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
-import { cloneRepo } from './helpers';
+import { cloneRepo } from '@backstage/plugin-scaffolder-node';
+import { getGitCredentials } from './helpers';
 
-export const cloneAzureRepoAction = (options: {
+export const createAzureDevOpsCloneRepoAction = (options: {
   integrations: ScmIntegrationRegistry;
 }) => {
   const { integrations } = options;
@@ -62,29 +59,18 @@ export const cloneAzureRepoAction = (options: {
 
       const outputDir = resolveSafeChildPath(ctx.workspacePath, targetPath);
 
-      const provider =
-        DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
-      const credentials = await provider.getCredentials({ url: remoteUrl });
-
-      let auth: { username: string; password: string } | { token: string };
-      if (ctx.input.token) {
-        auth = { username: 'not-empty', password: ctx.input.token };
-      } else if (credentials?.type === 'pat') {
-        auth = { username: 'not-empty', password: credentials.token };
-      } else if (credentials?.type === 'bearer') {
-        auth = { token: credentials.token };
-      } else {
-        throw new InputError(
-          `No token credentials provided for Azure repository ${remoteUrl}`,
-        );
-      }
+      const auth = await getGitCredentials(
+        integrations,
+        remoteUrl,
+        ctx.input.token,
+      );
 
       await cloneRepo({
+        url: remoteUrl,
         dir: outputDir,
         auth: auth,
         logger: ctx.logger,
-        remoteUrl: remoteUrl,
-        branch: branch,
+        ref: branch,
       });
 
       ctx.output('cloneFullPath', outputDir);
