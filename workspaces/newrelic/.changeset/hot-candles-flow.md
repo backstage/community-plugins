@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-newrelic-dashboard': patch
+'@backstage-community/plugin-newrelic-dashboard': minor
 ---
 
 fix incorrect pluginId for NFE
