@@ -205,7 +205,7 @@ export const useRoles = (
                     getPluginInfo(
                       permissionPolicies as PluginPermissionMetaData[],
                       po,
-                    ).pluginId,
+                    )?.pluginId,
                 );
                 accPls = [...accPls, ...pls].filter(val => !!val) as string[];
               }

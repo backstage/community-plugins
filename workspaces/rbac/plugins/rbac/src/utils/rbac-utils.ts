@@ -50,6 +50,7 @@ import {
   MembersData,
   PermissionsData,
   PermissionsDataSet,
+  PluginInfoType,
 } from '../types';
 import { getMembersCount } from './create-role-utils';
 
@@ -135,24 +136,9 @@ export const getMembersFromGroup = (group: GroupEntity): number => {
 export const getPluginInfo = (
   permissions: PluginPermissionMetaData[],
   policy: RoleBasedPolicy,
-): {
-  pluginId: string;
-  isResourced: boolean;
-  resourceType?: string;
-  permissionName: string;
-  usingResourceType?: boolean;
-} =>
+): PluginInfoType | null =>
   permissions.reduce(
-    (
-      acc: {
-        pluginId: string;
-        isResourced: boolean;
-        resourceType?: string;
-        permissionName: string;
-        usingResourceType?: boolean;
-      },
-      p: PluginPermissionMetaData,
-    ) => {
+    (acc: PluginInfoType | null, p: PluginPermissionMetaData) => {
       const policyData = p.policies.find(pol => {
         if (pol.policy === policy.policy) {
           if (isResourcedPolicy(pol)) {
@@ -166,9 +152,9 @@ export const getPluginInfo = (
         }
         return false;
       });
-      if (policyData) {
+      if (p.pluginId && policyData) {
         return {
-          pluginId: p.pluginId || '-',
+          pluginId: p.pluginId,
           permissionName: policyData.name || '-',
           isResourced: isResourcedPolicy(policyData) || false,
           resourceType: isResourcedPolicy(policyData)
@@ -181,7 +167,7 @@ export const getPluginInfo = (
       }
       return acc;
     },
-    { pluginId: '-', isResourced: false, permissionName: '-' },
+    null,
   );
 
 const getPolicy = (str: string) => {
@@ -226,25 +212,21 @@ export const getPermissionsData = (
         const policyTitleCase = capitalizeFirstLetter(policyStr);
         const policyString = new Set<string>();
         const policiesSet = new Set<{ policy: string; effect: string }>();
-        const {
-          pluginId,
-          isResourced,
-          resourceType,
-          permissionName,
-          usingResourceType,
-        } = getPluginInfo(permissionPolicies, policy);
-        acc.push({
-          permission: permissionName,
-          plugin: pluginId,
-          policyString: policyString.add(policyTitleCase || 'Use'),
-          policies: policiesSet.add({
-            policy: policyTitleCase || 'Use',
-            effect: policy.effect,
-          }),
-          isResourced,
-          resourceType,
-          usingResourceType,
-        });
+        const pluginInfo = getPluginInfo(permissionPolicies, policy);
+        if (pluginInfo?.pluginId) {
+          acc.push({
+            permission: pluginInfo.permissionName,
+            plugin: pluginInfo.pluginId,
+            policyString: policyString.add(policyTitleCase || 'Use'),
+            policies: policiesSet.add({
+              policy: policyTitleCase || 'Use',
+              effect: policy.effect,
+            }),
+            isResourced: pluginInfo.isResourced,
+            resourceType: pluginInfo.resourceType,
+            usingResourceType: pluginInfo.usingResourceType,
+          });
+        }
       }
       return acc;
     },
