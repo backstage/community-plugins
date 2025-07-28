@@ -21,7 +21,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    'api:newrelic': ExtensionDefinition<{
+    'api:newrelic-dashboard': ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -36,7 +36,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:newrelic/EntityNewRelicDashboardCard': ExtensionDefinition<{
+    'entity-card:newrelic-dashboard/EntityNewRelicDashboardCard': ExtensionDefinition<{
       kind: 'entity-card';
       name: 'EntityNewRelicDashboardCard';
       config: {
@@ -77,7 +77,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:newrelic/EntityNewRelicDashboardContent': ExtensionDefinition<{
+    'entity-content:newrelic-dashboard/EntityNewRelicDashboardContent': ExtensionDefinition<{
       kind: 'entity-content';
       name: 'EntityNewRelicDashboardContent';
       config: {
