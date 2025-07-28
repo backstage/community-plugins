@@ -2535,7 +2535,6 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "npm:^0.10.0"
     "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.3.1"
     yaml: "npm:^2.3.3"
-    zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
 
