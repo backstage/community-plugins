@@ -38,4 +38,26 @@ export const examples: TemplateExample[] = [
       ],
     }),
   },
+  {
+    description: 'Create Pull Request and associate a work item',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'createAzureDevOpsPullRequest',
+          action: 'azure:repo:pr',
+          name: 'Create Azure DevOps Pull Request',
+          input: {
+            organization: 'org',
+            repository: 'repo',
+            title: 'My PR',
+            description: 'This is a PR created by the Scaffolder',
+            repoName: 'my-repo',
+            project: 'my-project',
+            autoComplete: true,
+            workItemId: 12345,
+          },
+        },
+      ],
+    }),
+  },
 ];

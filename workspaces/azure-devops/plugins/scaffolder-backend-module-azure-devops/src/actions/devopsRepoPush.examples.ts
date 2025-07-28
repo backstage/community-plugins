@@ -36,4 +36,24 @@ export const examples: TemplateExample[] = [
       ],
     }),
   },
+  {
+    description: 'Push Changes to Repository',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'pushAzureDevOpsRepository',
+          action: 'azure:repo:push',
+          name: 'Push Changes to Azure DevOps Repository',
+          input: {
+            remoteUrl:
+              'https://{organization}@dev.azure.com/{organization}/{project}/_git/{repository}',
+            branch: 'scaffolder/new-feature',
+            sourcePath: './my-repo',
+            gitCommitMessage: 'Add new feature',
+            token: '${{ secrets.USER_OAUTH_TOKEN }}',
+          },
+        },
+      ],
+    }),
+  },
 ];
