@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.23.1
+
+### Patch Changes
+
+- d942f33: remove product theme from dev dependencies and dev app
+
 ## 1.23.0
 
 ### Minor Changes
