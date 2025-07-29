@@ -2986,7 +2986,6 @@ __metadata:
     "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-tokens": "npm:^6.0.0"
-    "@redhat-developer/red-hat-developer-hub-theme": "npm:^0.4.0"
     "@tanstack/react-query": "npm:^5.62.7"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
@@ -10410,21 +10409,6 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 10/ecd6c410d0277649c6a6dc19156a06cc7beb92ac79eb798ee18d30ca9bdf92ccf63ad7794b384471059f03d3dc8c612b26ca6aec42769d01e2a43d07919fd02b
-  languageName: node
-  linkType: hard
-
-"@redhat-developer/red-hat-developer-hub-theme@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.4.0"
-  peerDependencies:
-    "@backstage/theme": ^0.5.2
-    "@emotion/react": ^11.11.1
-    "@emotion/styled": ^11.11.0
-    "@material-ui/core": ^4.12.4
-    "@material-ui/icons": ^4.11.3
-    "@mui/icons-material": ^5.14.19
-    "@mui/material": ^5.14.20
-  checksum: 10/ea8ffb4eac6841b0d7992655d44321abe3476279a58a4d2371b3f72dfef53e426e03d1ffc95adb014f6371cd8e02a8aa4f7657f98721d440a7ff4f2c98c2629b
   languageName: node
   linkType: hard
 
