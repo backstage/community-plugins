@@ -27,16 +27,4 @@ export const createSonarQubeProjectAction: () => TemplateAction<
 // @public (undocumented)
 const scaffolderModuleSonarqubeActions: BackendFeature;
 export default scaffolderModuleSonarqubeActions;
-
-// @public (undocumented)
-export type TemplateActionParameters = {
-  baseUrl: string;
-  token?: string;
-  username?: string;
-  password?: string;
-  name: string;
-  key: string;
-  branch?: string;
-  visibility?: string;
-};
 ```

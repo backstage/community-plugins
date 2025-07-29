@@ -30,20 +30,6 @@ interface RequestParameters {
 /**
  * @public
  */
-export type TemplateActionParameters = {
-  baseUrl: string;
-  token?: string;
-  username?: string;
-  password?: string;
-  name: string;
-  key: string;
-  branch?: string;
-  visibility?: string;
-};
-
-/**
- * @public
- */
 export const createSonarQubeProjectAction = () => {
   return createTemplateAction({
     id: id,
