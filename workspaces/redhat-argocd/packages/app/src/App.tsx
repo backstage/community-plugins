@@ -49,8 +49,6 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 
-import { getThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
@@ -92,7 +90,6 @@ const app = createApp({
       />
     ),
   },
-  themes: getThemes(),
 });
 
 const routes = (
