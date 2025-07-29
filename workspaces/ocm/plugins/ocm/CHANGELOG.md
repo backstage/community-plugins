@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.6.1
+
+### Patch Changes
+
+- 9bfafad: remove product theme from dev dependencies and dev app
+
 ## 5.6.0
 
 ### Minor Changes
