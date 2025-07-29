@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.27.1
+
+### Patch Changes
+
+- e6d88ff: remove product theme from dev dependencies and dev app
+
 ## 3.27.0
 
 ### Minor Changes
