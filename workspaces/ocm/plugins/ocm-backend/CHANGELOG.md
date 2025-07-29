@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.7.1
+
+### Patch Changes
+
+- 4bd3ce5: Updated dependency `@openapitools/openapi-generator-cli` to `2.21.0`.
+- 8d2ce9b: Updated dependency `@openapitools/openapi-generator-cli` to `2.21.4`.
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
 ## 5.7.0
 
 ### Minor Changes
