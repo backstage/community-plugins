@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.42.2
+
+### Patch Changes
+
+- 2e28d31: hide permissions for uninstalled plugins
+
 ## 1.42.1
 
 ### Patch Changes
