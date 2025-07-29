@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.22.1
+
+### Patch Changes
+
+- 80baed2: remove product theme from dev dependencies and dev app
+
 ## 1.22.0
 
 ### Minor Changes
