@@ -71,7 +71,6 @@
     "@backstage/core-app-api": "^1.17.1",
     "@backstage/dev-utils": "^1.1.11",
     "@backstage/test-utils": "^1.7.9",
-    "@redhat-developer/red-hat-developer-hub-theme": "0.5.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
