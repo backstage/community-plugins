@@ -60,7 +60,6 @@
     "@backstage/dev-utils": "^1.1.10",
     "@backstage/plugin-catalog": "^1.30.0",
     "@backstage/test-utils": "^1.7.8",
-    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
