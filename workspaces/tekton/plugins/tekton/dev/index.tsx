@@ -24,8 +24,6 @@ import {
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import { mockKubernetesPlrResponse } from '../src/__fixtures__/1-pipelinesData';
 import {
   acsDeploymentCheck,
@@ -204,7 +202,6 @@ const mockKubernetesAuthProviderApiRef = {
 };
 
 createDevApp()
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider
