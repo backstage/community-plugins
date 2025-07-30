@@ -66,7 +66,7 @@ export const newRelicDashboardCard = EntityCardBlueprint.make({
 
 /** @alpha */
 export default createFrontendPlugin({
-  pluginId: 'newrelic',
+  pluginId: 'newrelic-dashboard',
   extensions: [
     newRelicApi,
     newRelicDashboardEntityContent,
