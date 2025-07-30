@@ -27,6 +27,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { EventsService } from '@backstage/plugin-events-node';
 import { SignalsService } from '@backstage/plugin-signals-node';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * Context for the announcements plugin.
@@ -42,6 +43,7 @@ export type AnnouncementsContext = {
   permissionsRegistry: PermissionsRegistryService;
   persistenceContext: PersistenceContext;
   signals?: SignalsService;
+  notifications?: NotificationService;
 };
 
 /**
@@ -70,6 +72,7 @@ export const buildAnnouncementsContext = async ({
   permissions,
   permissionsRegistry,
   signals,
+  notifications,
 }: AnnouncementsContextOptions): Promise<AnnouncementsContext> => {
   return {
     config,
@@ -80,5 +83,6 @@ export const buildAnnouncementsContext = async ({
     permissionsRegistry,
     persistenceContext: await initializePersistenceContext(database),
     signals,
+    notifications,
   };
 };
