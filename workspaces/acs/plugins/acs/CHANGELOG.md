@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acs
 
+## 0.1.0
+
+### Minor Changes
+
+- ff51971: Backstage version bump to v1.40.2
+
 ## 0.0.5
 
 ### Patch Changes
