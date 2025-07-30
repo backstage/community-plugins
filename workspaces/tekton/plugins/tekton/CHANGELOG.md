@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.27.2
+
+### Patch Changes
+
+- e7d7f3f: render loading when permission api is loading
+
 ## 3.27.1
 
 ### Patch Changes
