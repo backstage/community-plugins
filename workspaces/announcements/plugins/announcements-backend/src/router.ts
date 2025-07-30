@@ -38,46 +38,9 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
-import { NotificationService } from '@backstage/plugin-notifications-node';
-import { Config } from '@backstage/config';
+import { sendAnnouncementNotification } from './service/announcementNotification';
 
-const sendAnnouncementNotification = (
-  announcementId: string,
-  announcementNotificationOpts: {
-    notifications?: NotificationService;
-    config: Config;
-  },
-) => {
-  const notificationsConfig =
-    announcementNotificationOpts.config.getOptionalConfig(
-      'announcements.notification',
-    );
-
-  const notifications = announcementNotificationOpts.notifications;
-
-  if (!notificationsConfig || !notifications) {
-    return;
-  }
-  const entityRefsTargets =
-    notificationsConfig.getOptionalStringArray('targets');
-  const hostUrl = notificationsConfig.getOptionalString('hostUrl');
-
-  notifications.send({
-    recipients: {
-      type: 'entity',
-      entityRef: entityRefsTargets ?? [],
-    },
-    payload: {
-      title: 'New Announcement',
-      description: 'New announcement has been added',
-      link: hostUrl
-        ? `${hostUrl}/announcements/view/${announcementId}`
-        : `/announcements/view/${announcementId}`,
-    },
-  });
-};
-
-interface AnnouncementRequest {
+export interface AnnouncementRequest {
   publisher: string;
   category?: string;
   title: string;
@@ -249,11 +212,7 @@ export async function createRouter(
         });
 
       // Send announcement notification
-      const announcementNotificationOpts = { notifications, config };
-      sendAnnouncementNotification(
-        announcement.id,
-        announcementNotificationOpts,
-      );
+      sendAnnouncementNotification(req, announcement.id, notifications);
 
       if (events) {
         events.publish({
