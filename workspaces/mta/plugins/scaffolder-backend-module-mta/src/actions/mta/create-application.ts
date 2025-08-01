@@ -51,9 +51,7 @@ export function createMTAApplicationAction(opts: any) {
 
         if (!tokenSet.access_token) {
           logger.error('Failed to obtain access token from auth server.');
-          throw new Error(
-            'Unable to access hub due to authentication failure.',
-          );
+          throw new Error('Unable to access hub due to authentication failure.');
         }
 
         const repository = {
@@ -82,13 +80,9 @@ export function createMTAApplicationAction(opts: any) {
         }
 
         const responseData = await response.json();
-        logger.info(
-          `Application created successfully: ${JSON.stringify(responseData)}`,
-        );
+        logger.info(`Application created successfully: ${JSON.stringify(responseData)}`);
       } catch (error: any) {
-        logger.error(
-          `Error in creating application: ${error?.message as string}`,
-        );
+        logger.error(`Error in creating application: ${error?.message as string}`);
         throw error;
       }
     },
