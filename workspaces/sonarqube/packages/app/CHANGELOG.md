@@ -1,5 +1,12 @@
 # app
 
+## 0.0.23
+
+### Patch Changes
+
+- Updated dependencies [1eda234]
+  - @backstage-community/plugin-sonarqube@0.16.2
+
 ## 0.0.22
 
 ### Patch Changes
