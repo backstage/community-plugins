@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.16.2
+
+### Patch Changes
+
+- 1eda234: Fix maximum update depth exceeded in SonarqubeRelatedEntitiesOverview
+
 ## 0.16.1
 
 ### Patch Changes
