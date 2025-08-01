@@ -6,6 +6,7 @@
 import { ApiHolder } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -20,6 +21,8 @@ export type BazaarOverviewCardProps = {
   order: 'latest' | 'random';
   fullWidth?: boolean;
   fullHeight?: boolean;
+  allCatalogEntities?: Entity[] | null;
+  filter?: EntityFilterQuery | undefined;
 };
 
 // @public (undocumented)
@@ -31,6 +34,8 @@ export type BazaarPageProps = {
   subtitle?: string;
   fullWidth?: boolean;
   fullHeight?: boolean;
+  catalogEntities?: Entity[] | null;
+  filter?: EntityFilterQuery | undefined;
 };
 
 // @public (undocumented)
@@ -60,6 +65,8 @@ export const SortView: (props: SortViewProps) => JSX_2.Element;
 export type SortViewProps = {
   fullWidth?: boolean;
   fullHeight?: boolean;
+  allCatalogEntities?: Entity[] | null;
+  filter?: EntityFilterQuery | undefined;
 };
 
 // (No @packageDocumentation comment for this package)
