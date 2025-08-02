@@ -180,13 +180,15 @@ export async function discoverOrganizationTeamMetrics({
         }
       } catch (error) {
         logger.error(
-          `[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`,
+          `[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}`,
+          error,
         );
       }
     }
   } catch (error) {
     logger.error(
-      `[discoverOrganizationTeamMetrics] Error fetching teams: ${error}`,
+      '[discoverOrganizationTeamMetrics] Error fetching teams',
+      error,
     );
     throw error;
   }

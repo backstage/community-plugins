@@ -179,14 +179,13 @@ export async function discoverEnterpriseTeamMetrics({
         }
       } catch (error) {
         logger.error(
-          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`,
+          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}`,
+          error,
         );
       }
     }
   } catch (error) {
-    logger.error(
-      `[discoverEnterpriseTeamMetrics] Error fetching teams: ${error}`,
-    );
+    logger.error('[discoverEnterpriseTeamMetrics] Error fetching teams', error);
     throw error;
   }
 }
