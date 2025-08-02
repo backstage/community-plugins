@@ -55,6 +55,12 @@ export async function discoverOrganizationTeamMetrics({
       `[discoverOrganizationTeamMetrics] Fetched ${teams.length} teams`,
     );
 
+    // Fetch seat analysis
+    const seats = await api.fetchOrganizationSeats();
+    logger.info(
+      `[discoverOrganizationTeamMetrics] Fetched ${seats.seats.length} seats from organization`,
+    );
+
     for (const team of teams) {
       try {
         logger.info(
@@ -161,8 +167,6 @@ export async function discoverOrganizationTeamMetrics({
             await db.batchInsertIdeChatEditorModels(chunk);
           });
 
-          // Fetch seat analysis
-          const seats = await api.fetchOrganizationSeats();
           const seatsToInsert = convertToTeamSeatAnalysis(
             seats,
             type,
