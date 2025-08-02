@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.14.3
+
+### Patch Changes
+
+- c6f0aec: remove product theme from dev dependencies and dev app
+- 333e98c: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
 ## 1.14.2
 
 ### Patch Changes
