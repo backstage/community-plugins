@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-feedback [1.6.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback@1.5.0...@janus-idp/backstage-plugin-feedback@1.6.0) (2024-07-26)
 
+## 1.7.5
+
+### Patch Changes
+
+- 57f1bd7: remove devDependency on `@redhat-developer/red-hat-developer-hub-theme`
+
 ## 1.7.4
 
 ### Patch Changes
