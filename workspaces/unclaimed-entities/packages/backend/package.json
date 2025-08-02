@@ -24,6 +24,7 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.10",
     "@backstage/plugin-auth-node": "^0.6.5",
     "@backstage/plugin-catalog-backend": "^3.0.0",
+    "@backstage/plugin-catalog-backend-module-azure": "^0.3.7",
     "@backstage/plugin-catalog-backend-module-logs": "^0.1.12",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.10",
     "@backstage/plugin-kubernetes-backend": "^0.19.8",

@@ -42,7 +42,10 @@ integrations:
     # - host: ghe.example.net
     #   apiBaseUrl: https://ghe.example.net/api/v3
     #   token: ${GHE_TOKEN}
-
+  azure:
+    - host: dev.azure.com
+      credentials:
+        - personalAccessToken: ${AZURE_DEVOPS_PAT}
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
@@ -103,7 +106,18 @@ catalog:
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
     #   rules:
     #     - allow: [User, Group]
-
+  providers:
+    azureDevOps:
+      my-testorg: # identifies your dataset / provider independent of config changes
+        organization: ${AZURE_DEVOPS_ORG} # your Azure DevOps organization
+        project: ${AZURE_DEVOPS_PROJECT} # your Azure DevOps project
+        repository: '*' # this will match all repos
+        path: /catalog-info.yaml
+        schedule: # optional; same options as in SchedulerServiceTaskScheduleDefinition
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { minutes: 30 }
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 3 }
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
 
