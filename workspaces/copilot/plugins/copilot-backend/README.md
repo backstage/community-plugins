@@ -117,7 +117,7 @@ To ensure the GitHub Copilot plugin operates correctly within your organization 
 
 ```yaml
 copilot:
-  scheduler:
+  schedule:
     frequency:
       hours: 2
     timeout:
