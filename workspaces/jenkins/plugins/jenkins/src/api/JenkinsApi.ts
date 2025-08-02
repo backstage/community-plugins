@@ -112,7 +112,15 @@ export interface JenkinsApi {
     entity: CompoundEntityRef;
     /** a filter on jobs. Currently this just takes a branch (and assumes certain structures in jenkins) */
     filter: { branch?: string };
-  }): Promise<Project[]>;
+  }): Promise<
+    | Project[]
+    | {
+        statusCode: number;
+        errorReason?: string;
+        connectionIssueMessage?: string;
+        jenkinsJobFullPath?: string;
+      }
+  >;
 
   /**
    * Get a single build.
@@ -160,7 +168,15 @@ export class JenkinsClient implements JenkinsApi {
   async getProjects(options: {
     entity: CompoundEntityRef;
     filter: { branch?: string };
-  }): Promise<Project[]> {
+  }): Promise<
+    | Project[]
+    | {
+        statusCode: number;
+        errorReason?: string;
+        connectionIssueMessage?: string;
+        jenkinsJobFullPath?: string;
+      }
+  > {
     const { entity, filter } = options;
     const url = new URL(
       `${await this.discoveryApi.getBaseUrl(
@@ -175,6 +191,16 @@ export class JenkinsClient implements JenkinsApi {
     }
 
     const response = await this.fetchApi.fetch(url);
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      return {
+        statusCode: response.status,
+        errorReason: errorBody.errorReason,
+        connectionIssueMessage: errorBody.connectionIssueMessage,
+        jenkinsJobFullPath: errorBody.jenkinsJobFullPath,
+      };
+    }
 
     return (
       (await response.json()).projects?.map((p: Project) => ({
