@@ -119,6 +119,9 @@ export class UnclaimedEntityProvider implements EntityProvider {
 
     const integrations = ScmIntegrations.fromConfig(config);
 
+    // I need to return an array of UnclaimedEntityProvider instances
+    // and each instance should be configured with the catalog configurations
+    // https://github.com/backstage/backstage/blob/master/plugins/catalog-backend-module-azure/src/providers/AzureDevOpsEntityProvider.ts
     return new UnclaimedEntityProvider(
       {
         catalogconfigurations,
