@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-/**
- * The unclaimed-entities backend module for the catalog plugin.
- *
- * @packageDocumentation
- */
+import { Entity } from '@backstage/catalog-model';
 
-export { catalogModuleUnclaimedEntities as default } from './module';
-export { UnclaimedEntityProvider } from './providers/UnclaimedEntityProvider';
-export type { UnclaimedEntityProviderConfig } from './providers/UnclaimedEntityProvider';
-export { AzureDevopsUnclaimedEntityProvider } from './providers/AzureDevopsUnclaimedEntityProvider';
-export type { AzureDevopsUnclaimedEntityProviderConfig } from './providers/AzureDevopsUnclaimedEntityProvider';
-export type { UnclaimedEntity } from './types/types';
+export interface UnclaimedEntity extends Entity {
+  kind: 'Unclaimed';
+  spec: {
+    type: string;
+    lifecycle: string;
+  };
+}

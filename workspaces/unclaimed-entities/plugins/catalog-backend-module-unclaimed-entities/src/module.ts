@@ -17,15 +17,27 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { UnclaimedEntityProvider } from './providers/UnclaimedEntityProvider';
 
 export const catalogModuleUnclaimedEntities = createBackendModule({
   pluginId: 'catalog',
   moduleId: 'unclaimed-entities',
   register(reg) {
     reg.registerInit({
-      deps: { logger: coreServices.logger },
-      async init({ logger }) {
-        logger.info('Hello World!');
+      deps: {
+        logger: coreServices.logger,
+        config: coreServices.rootConfig,
+        scheduler: coreServices.scheduler,
+        catalog: catalogProcessingExtensionPoint,
+      },
+      async init({ logger, config, scheduler, catalog }) {
+        catalog.addEntityProvider(
+          UnclaimedEntityProvider.fromConfig(config, {
+            logger,
+            scheduler,
+          }),
+        );
       },
     });
   },
