@@ -411,6 +411,41 @@ const domainPage = (
   </EntityLayout>
 );
 
+const unclaimedPage = (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      <Grid container spacing={3} alignItems="stretch">
+        {entityWarningContent}
+        <Grid item md={6}>
+          <EntityAboutCard variant="gridItem" />
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <EntityCatalogGraphCard variant="gridItem" height={400} />
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <EntityLinksCard />
+        </Grid>
+        <Grid item md={8} xs={12}>
+          <EmptyState
+            title="Repository not claimed"
+            description="This repository has not been claimed yet. Consider adding a catalog-info.yaml file to register it properly in the software catalog."
+            missing="content"
+            action={
+              <Button
+                variant="contained"
+                color="primary"
+                href="https://backstage.io/docs/features/software-catalog/descriptor-format"
+              >
+                Learn how to add catalog-info.yaml
+              </Button>
+            }
+          />
+        </Grid>
+      </Grid>
+    </EntityLayout.Route>
+  </EntityLayout>
+);
+
 export const entityPage = (
   <EntitySwitch>
     <EntitySwitch.Case if={isKind('component')} children={componentPage} />
@@ -419,6 +454,7 @@ export const entityPage = (
     <EntitySwitch.Case if={isKind('user')} children={userPage} />
     <EntitySwitch.Case if={isKind('system')} children={systemPage} />
     <EntitySwitch.Case if={isKind('domain')} children={domainPage} />
+    <EntitySwitch.Case if={isKind('unclaimed')} children={unclaimedPage} />
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
   </EntitySwitch>

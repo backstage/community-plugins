@@ -19,6 +19,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 import { UnclaimedEntityProvider } from './providers/UnclaimedEntityProvider';
+import { UnclaimedEntityProcessor } from './processors/UnclaimedEntityProcessor';
 
 export const catalogModuleUnclaimedEntities = createBackendModule({
   pluginId: 'catalog',
@@ -38,6 +39,9 @@ export const catalogModuleUnclaimedEntities = createBackendModule({
             scheduler,
           }),
         );
+
+        // Register the processor to handle Unclaimed entities
+        catalog.addProcessor(new UnclaimedEntityProcessor());
       },
     });
   },

@@ -26,3 +26,5 @@ export type { UnclaimedEntityProviderConfig } from './providers/UnclaimedEntityP
 export { AzureDevopsUnclaimedEntityProvider } from './providers/AzureDevopsUnclaimedEntityProvider';
 export type { AzureDevopsUnclaimedEntityProviderConfig } from './providers/AzureDevopsUnclaimedEntityProvider';
 export type { UnclaimedEntity } from './types/types';
+export { UnclaimedEntityProcessor } from './processors/UnclaimedEntityProcessor';
+export { UnclaimedEntityV1alpha1Validator } from './validators/UnclaimedEntityValidator';

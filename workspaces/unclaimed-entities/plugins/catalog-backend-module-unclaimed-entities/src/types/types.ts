@@ -19,7 +19,7 @@ import { Entity } from '@backstage/catalog-model';
 export interface UnclaimedEntity extends Entity {
   kind: 'Unclaimed';
   spec: {
-    type: string;
-    lifecycle: string;
+    type?: string;
+    lifecycle?: string;
   };
 }
