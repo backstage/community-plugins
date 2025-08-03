@@ -14,34 +14,5 @@
  * limitations under the License.
  */
 
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-
-import {
-  projectGrowthAlertRef,
-  rootRouteRef,
-  unlabeledDataflowAlertRef,
-} from './routes';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import {
-  CostInsightsLabelDataflowInstructionsPage,
-  CostInsightsNavItem,
-  CostInsightsPage,
-  CostInsightsProjectGrowthInstructionsPage,
-  EntityCostInsightsContent,
-} from './alpha/plugin';
-
-export default createFrontendPlugin({
-  pluginId: 'cost-insights',
-  extensions: [
-    CostInsightsPage,
-    CostInsightsProjectGrowthInstructionsPage,
-    CostInsightsLabelDataflowInstructionsPage,
-    EntityCostInsightsContent,
-    CostInsightsNavItem,
-  ],
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-    growthAlerts: projectGrowthAlertRef,
-    unlabeledDataflowAlerts: unlabeledDataflowAlertRef,
-  }),
-});
+export * from './alpha/index';
+export { default } from './alpha/index';
