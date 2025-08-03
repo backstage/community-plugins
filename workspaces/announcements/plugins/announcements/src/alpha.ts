@@ -28,7 +28,7 @@ import { rootRouteRef } from './routes';
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'announcements',
+  pluginId: 'announcements',
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
