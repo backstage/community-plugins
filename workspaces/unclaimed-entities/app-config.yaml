@@ -131,6 +131,9 @@ catalog:
           frequency: { minutes: 30 }
           # supports ISO duration, "human duration" as used in code
           timeout: { minutes: 3 }
+
+
+          
 UnclaimedEntities:
   catalogconfigurations:
     - my-testorg

@@ -46,11 +46,10 @@ export class AzureDevOpsClient {
   constructor(
     config: AzureClientConfig,
     logger: LoggerService,
-    private readonly credentials: AzureDevOpsCredentials,
+    credentials: AzureDevOpsCredentials,
   ) {
     this.config = config;
     this.logger = logger;
-    this.credentials = credentials;
 
     const serverUrl = `https://${config.host || 'dev.azure.com'}/${
       config.organization
@@ -107,9 +106,70 @@ export class AzureDevOpsClient {
       projectName,
     );
 
-    return repositories.map(repo =>
-      this.mapToAzureRepository(repo, projectName),
+    if (!repositories || repositories.length === 0) {
+      this.logger.warn(
+        `No repositories found for project ${projectName}. Please check the project name and permissions.`,
+      );
+      return [];
+    }
+
+    this.logger.info(
+      `Fetched ${repositories.length} repositories for project ${projectName}`,
     );
+
+    // Filter out repositories that already have catalog-info.yaml files
+    const unclaimedRepositories: AzureRepository[] = [];
+    const catalogFiles = [
+      'catalog-info.yaml',
+      'catalog-info.yml',
+      '.backstage/catalog-info.yaml',
+      '.backstage/catalog-info.yml',
+    ];
+
+    for (const repo of repositories) {
+      if (!repo.id) {
+        continue;
+      }
+
+      let hasCatalogFile = false;
+
+      // Check if any catalog file exists in the repository
+      for (const catalogFile of catalogFiles) {
+        try {
+          const fileExists = await this.checkFileExists(
+            projectName,
+            repo.id,
+            catalogFile,
+          );
+          if (fileExists) {
+            hasCatalogFile = true;
+            this.logger.debug(
+              `Repository ${repo.name} has ${catalogFile}, excluding from unclaimed entities`,
+            );
+            break;
+          }
+        } catch (error) {
+          // Continue checking other files if one fails
+          this.logger.debug(
+            `Error checking ${catalogFile} in repository ${repo.name}:`,
+            error,
+          );
+        }
+      }
+
+      // Only include repositories that don't have catalog files
+      if (!hasCatalogFile) {
+        unclaimedRepositories.push(
+          this.mapToAzureRepository(repo, projectName),
+        );
+      }
+    }
+
+    this.logger.info(
+      `Found ${unclaimedRepositories.length} unclaimed repositories out of ${repositories.length} total repositories in project ${projectName}`,
+    );
+
+    return unclaimedRepositories;
   }
 
   private async getAllProjects(): Promise<TeamProject[]> {
@@ -128,19 +188,7 @@ export class AzureDevOpsClient {
       const gitApi = await this.connection.getGitApi();
 
       // Try to get the file content to check if it exists
-      const item = await gitApi.getItem(
-        repositoryId,
-        filePath,
-        projectName,
-        undefined, // scopePath
-        undefined, // recursionLevel
-        false, // includeContentMetadata
-        false, // latestProcessedChange
-        false, // download
-        undefined, // versionDescriptor
-        false, // includeContent
-        false, // resolveLfs
-      );
+      const item = await gitApi.getItem(repositoryId, filePath, projectName);
 
       return !!item;
     } catch (error) {

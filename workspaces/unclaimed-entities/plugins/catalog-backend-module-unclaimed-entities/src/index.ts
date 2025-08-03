@@ -23,8 +23,6 @@
 export { catalogModuleUnclaimedEntities as default } from './module';
 export { UnclaimedEntityProvider } from './providers/UnclaimedEntityProvider';
 export type { UnclaimedEntityProviderConfig } from './providers/UnclaimedEntityProvider';
-export { AzureDevopsUnclaimedEntityProvider } from './providers/AzureDevopsUnclaimedEntityProvider';
-export type { AzureDevopsUnclaimedEntityProviderConfig } from './providers/AzureDevopsUnclaimedEntityProvider';
 export type { UnclaimedEntity } from './types/types';
 export { UnclaimedEntityProcessor } from './processors/UnclaimedEntityProcessor';
 export { UnclaimedEntityV1alpha1Validator } from './validators/UnclaimedEntityValidator';

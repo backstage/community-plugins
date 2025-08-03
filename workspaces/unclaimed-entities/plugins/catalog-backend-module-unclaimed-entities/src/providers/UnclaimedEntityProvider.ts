@@ -313,7 +313,7 @@ export class UnclaimedEntityProvider implements EntityProvider {
     }
 
     const baseUrl = `https://api.${integration.config.host || 'github.com'}`;
-    const token = providerConfig.token || integration.config.token;
+    const token = integration.config.token;
     const headers = {
       Authorization: `token ${token}`,
       Accept: 'application/vnd.github.v3+json',
@@ -381,7 +381,7 @@ export class UnclaimedEntityProvider implements EntityProvider {
   }
 
   private async getAzureDevOpsRepositories(
-    integration: any,
+    _integration: any,
     providerConfig: ExtractedProviderConfig,
   ): Promise<Repository[]> {
     const { organization, project } = providerConfig;
@@ -479,10 +479,62 @@ export class UnclaimedEntityProvider implements EntityProvider {
       '.backstage/catalog-info.yml',
     ];
 
+    // For Azure DevOps repositories, use the Azure client to check for files
+    if (repo.host === 'dev.azure.com' || repo.host?.includes('azure')) {
+      try {
+        const url = `https://${repo.host}/${repo.organization}`;
+        const credentialProvider =
+          DefaultAzureDevOpsCredentialsProvider.fromIntegrations(
+            this.integrations,
+          );
+        const credentials = await credentialProvider.getCredentials({ url });
+
+        if (credentials) {
+          const azureClient = new AzureDevOpsClient(
+            {
+              organization: repo.organization,
+              project: repo.project,
+              host: repo.host,
+            },
+            this.logger,
+            credentials,
+          );
+
+          for (const catalogFile of catalogFiles) {
+            try {
+              const fileExists = await azureClient.checkFileExists(
+                repo.project || repo.organization,
+                repo.id,
+                catalogFile,
+              );
+              if (fileExists) {
+                this.logger.debug(
+                  `Found catalog file ${catalogFile} in repository ${repo.fullName}`,
+                );
+                return true;
+              }
+            } catch (error) {
+              // Continue checking other files
+              this.logger.debug(
+                `Error checking ${catalogFile} in repository ${repo.fullName}:`,
+                error,
+              );
+            }
+          }
+        }
+      } catch (error) {
+        this.logger.debug(
+          `Failed to check catalog files for Azure DevOps repository ${repo.fullName}:`,
+          error,
+        );
+      }
+    }
+
+    // For other providers, implement basic checks (placeholder for now)
     for (const catalogFile of catalogFiles) {
       try {
         // This is a simplified check - in practice, you'd need to implement
-        // provider-specific file checking logic
+        // provider-specific file checking logic for GitHub, GitLab, etc.
         const hasFile = false;
         if (hasFile) {
           this.logger.debug(
