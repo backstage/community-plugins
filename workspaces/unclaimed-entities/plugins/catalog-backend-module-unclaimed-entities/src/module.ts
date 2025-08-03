@@ -33,12 +33,16 @@ export const catalogModuleUnclaimedEntities = createBackendModule({
         catalog: catalogProcessingExtensionPoint,
       },
       async init({ logger, config, scheduler, catalog }) {
-        catalog.addEntityProvider(
-          UnclaimedEntityProvider.fromConfig(config, {
-            logger,
-            scheduler,
-          }),
-        );
+        // Get array of providers from configuration
+        const providers = UnclaimedEntityProvider.fromConfig(config, {
+          logger,
+          scheduler,
+        });
+
+        // Register each provider
+        for (const provider of providers) {
+          catalog.addEntityProvider(provider);
+        }
 
         // Register the processor to handle Unclaimed entities
         catalog.addProcessor(new UnclaimedEntityProcessor());

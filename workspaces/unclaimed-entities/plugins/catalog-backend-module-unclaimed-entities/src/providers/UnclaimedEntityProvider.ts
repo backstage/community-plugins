@@ -40,29 +40,21 @@ import { InputError } from '@backstage/errors';
  * Configuration for scanning GitHub and Azure DevOps providers for unclaimed entities
  */
 export interface UnclaimedEntityProviderConfig {
-  /** List of catalog configuration IDs to scan for unclaimed entities */
-  catalogconfigurations: string[];
+  /** Type of provider (github or azureDevOps) */
+  providerType: 'github' | 'azureDevOps';
+  /** Provider ID from the configuration */
+  providerId: string;
+  /** Organization/namespace to scan */
+  organization: string;
+  /** Project to scan (for Azure DevOps only) */
+  project?: string;
+  /** Host to scan (optional, defaults to provider default host) */
+  host?: string;
   /** Schedule configuration for the provider */
   schedule?: {
     frequency: { minutes?: number; hours?: number; days?: number };
     timeout?: { minutes?: number };
   };
-}
-
-/**
- * Provider configuration extracted from existing catalog providers
- */
-interface ExtractedProviderConfig {
-  /** Type of provider (github or azure) */
-  type: 'github' | 'azure';
-  /** Configuration ID from catalog.providers */
-  id: string;
-  /** Host to scan (optional, defaults to provider default host) */
-  host?: string;
-  /** Organization/namespace to scan */
-  organization?: string;
-  /** Project to scan (for Azure DevOps only) */
-  project?: string;
 }
 
 /**
@@ -96,41 +88,105 @@ export class UnclaimedEntityProvider implements EntityProvider {
       schedule?: SchedulerServiceTaskRunner;
       scheduler?: SchedulerService;
     },
-  ): UnclaimedEntityProvider {
-    const providerConfig = config.getConfig('UnclaimedEntities');
+  ): UnclaimedEntityProvider[] {
+    const unclaimedEntitiesConfig = config.getConfig('UnclaimedEntities');
+    const integrations = ScmIntegrations.fromConfig(config);
 
-    const catalogconfigurations = providerConfig.getStringArray(
-      'catalogconfigurations',
-    );
+    const providers: UnclaimedEntityProvider[] = [];
 
-    const schedule = providerConfig.getOptionalConfig('schedule');
-    const scheduleConfig = schedule
+    // Get global schedule configuration
+    const globalSchedule =
+      unclaimedEntitiesConfig.getOptionalConfig('schedule');
+    const scheduleConfig = globalSchedule
       ? {
           frequency: {
-            minutes: schedule.getOptionalNumber('frequency.minutes'),
-            hours: schedule.getOptionalNumber('frequency.hours'),
-            days: schedule.getOptionalNumber('frequency.days'),
+            minutes: globalSchedule.getOptionalNumber('frequency.minutes'),
+            hours: globalSchedule.getOptionalNumber('frequency.hours'),
+            days: globalSchedule.getOptionalNumber('frequency.days'),
           },
           timeout: {
-            minutes: schedule.getOptionalNumber('timeout.minutes'),
+            minutes: globalSchedule.getOptionalNumber('timeout.minutes'),
           },
         }
       : undefined;
 
-    const integrations = ScmIntegrations.fromConfig(config);
+    // Process Azure DevOps providers
+    const azureProviders =
+      unclaimedEntitiesConfig.getOptionalStringArray('azureDevops') || [];
+    for (const providerId of azureProviders) {
+      try {
+        const azureConfig = config.getConfig(
+          `catalog.providers.azureDevOps.${providerId}`,
+        );
+        const organization = azureConfig.getString('organization');
+        const project = azureConfig.getOptionalString('project');
+        const host = azureConfig.getOptionalString('host') || 'dev.azure.com';
 
-    // I need to return an array of UnclaimedEntityProvider instances
-    // and each instance should be configured with the catalog configurations
-    // https://github.com/backstage/backstage/blob/master/plugins/catalog-backend-module-azure/src/providers/AzureDevOpsEntityProvider.ts
-    return new UnclaimedEntityProvider(
-      {
-        catalogconfigurations,
-        schedule: scheduleConfig,
-      },
-      options,
-      integrations,
-      config,
-    );
+        providers.push(
+          new UnclaimedEntityProvider(
+            {
+              providerType: 'azureDevOps',
+              providerId,
+              organization,
+              project,
+              host,
+              schedule: scheduleConfig,
+            },
+            options,
+            integrations,
+          ),
+        );
+      } catch (error) {
+        options.logger.warn(
+          `Failed to create Azure DevOps provider for ${providerId}:`,
+          error,
+        );
+      }
+    }
+
+    // Process GitHub providers
+    const githubProviders =
+      unclaimedEntitiesConfig.getOptionalStringArray('github') || [];
+    for (const providerId of githubProviders) {
+      try {
+        const githubConfig = config.getConfig(
+          `catalog.providers.github.${providerId}`,
+        );
+        const organization = githubConfig.getString('organization');
+        const host = githubConfig.getOptionalString('host') || 'github.com';
+
+        providers.push(
+          new UnclaimedEntityProvider(
+            {
+              providerType: 'github',
+              providerId,
+              organization,
+              host,
+              schedule: scheduleConfig,
+            },
+            options,
+            integrations,
+          ),
+        );
+      } catch (error) {
+        options.logger.warn(
+          `Failed to create GitHub provider for ${providerId}:`,
+          error,
+        );
+      }
+    }
+
+    if (providers.length === 0) {
+      options.logger.warn(
+        'No unclaimed entity providers were created from configuration',
+      );
+    } else {
+      options.logger.info(
+        `Created ${providers.length} unclaimed entity providers`,
+      );
+    }
+
+    return providers;
   }
 
   constructor(
@@ -141,7 +197,6 @@ export class UnclaimedEntityProvider implements EntityProvider {
       scheduler?: SchedulerService;
     },
     integrations: ScmIntegrationRegistry,
-    private readonly rootConfig: Config,
   ) {
     this.config = config;
     this.logger = options.logger.child({
@@ -151,7 +206,7 @@ export class UnclaimedEntityProvider implements EntityProvider {
   }
 
   getProviderName(): string {
-    return 'UnclaimedEntityProvider';
+    return `UnclaimedEntityProvider:${this.config.providerType}:${this.config.providerId}`;
   }
 
   async connect(connection: EntityProviderConnection): Promise<void> {
@@ -165,32 +220,17 @@ export class UnclaimedEntityProvider implements EntityProvider {
       throw new Error('Not initialized');
     }
 
-    this.logger.info('Discovering repositories for unclaimed entities');
+    this.logger.info(
+      `Discovering repositories for unclaimed entities from ${this.config.providerType} provider (${this.config.providerId})`,
+    );
 
     try {
-      const allRepositories: Repository[] = [];
+      const repositories = await this.getRepositoriesForProvider();
+      this.logger.info(
+        `Found ${repositories.length} repositories from ${this.config.providerType} provider (${this.config.providerId})`,
+      );
 
-      // Extract provider configurations from existing catalog providers
-      const extractedProviders = this.extractProviderConfigs();
-
-      for (const providerConfig of extractedProviders) {
-        try {
-          const repositories = await this.getRepositoriesForProvider(
-            providerConfig,
-          );
-          allRepositories.push(...repositories);
-          this.logger.info(
-            `Found ${repositories.length} repositories from ${providerConfig.type} provider (${providerConfig.id})`,
-          );
-        } catch (error) {
-          this.logger.warn(
-            `Failed to fetch repositories from ${providerConfig.type} provider (${providerConfig.id}):`,
-            error,
-          );
-        }
-      }
-
-      const entities = await this.createUnclaimedEntities(allRepositories);
+      const entities = await this.createUnclaimedEntities(repositories);
 
       await this.connection.applyMutation({
         type: 'full',
@@ -201,72 +241,33 @@ export class UnclaimedEntityProvider implements EntityProvider {
       });
 
       this.logger.info(
-        `Discovered ${entities.length} unclaimed repositories from ${extractedProviders.length} providers`,
+        `Discovered ${entities.length} unclaimed repositories from ${this.config.providerType} provider (${this.config.providerId})`,
       );
     } catch (error) {
       this.logger.error('Failed to refresh unclaimed entities', error);
     }
   }
 
-  private extractProviderConfigs(): ExtractedProviderConfig[] {
-    const extractedProviders: ExtractedProviderConfig[] = [];
-
-    for (const configId of this.config.catalogconfigurations) {
-      try {
-        // Try to find Azure DevOps provider with this ID
-        const azureProviders = this.rootConfig.getOptionalConfig(
-          `catalog.providers.azureDevOps.${configId}`,
-        );
-        if (azureProviders) {
-          extractedProviders.push({
-            type: 'azure',
-            id: configId,
-            organization: azureProviders.getOptionalString('organization'),
-            project: azureProviders.getOptionalString('project'),
-            host: azureProviders.getOptionalString('host') || 'dev.azure.com',
-          });
-          continue;
-        }
-      } catch (error) {
-        this.logger.warn(
-          `Failed to extract configuration for provider ${configId}:`,
-          error,
-        );
-      }
-    }
-
-    if (extractedProviders.length === 0) {
-      this.logger.warn(
-        `No valid provider configurations found for IDs: ${this.config.catalogconfigurations.join(
-          ', ',
-        )}`,
-      );
-    }
-
-    return extractedProviders;
-  }
-
-  private async getRepositoriesForProvider(
-    providerConfig: ExtractedProviderConfig,
-  ): Promise<Repository[]> {
+  private async getRepositoriesForProvider(): Promise<Repository[]> {
     const integration = this.integrations.byHost(
-      providerConfig.host || this.getDefaultHost(providerConfig.type),
+      this.config.host || this.getDefaultHost(this.config.providerType),
     );
 
     if (!integration) {
       throw new Error(
-        `No integration found for ${providerConfig.type} provider`,
+        `No integration found for ${this.config.providerType} provider`,
       );
     }
 
-    switch (providerConfig.type.toLowerCase()) {
+    switch (this.config.providerType.toLowerCase()) {
       case 'github':
-        return this.getGitHubRepositories(integration, providerConfig);
-      case 'azure':
+        return this.getGitHubRepositories(integration);
       case 'azuredevops':
-        return this.getAzureDevOpsRepositories(integration, providerConfig);
+        return this.getAzureDevOpsRepositories(integration);
       default:
-        throw new Error(`Unsupported provider type: ${providerConfig.type}`);
+        throw new Error(
+          `Unsupported provider type: ${this.config.providerType}`,
+        );
     }
   }
 
@@ -282,36 +283,11 @@ export class UnclaimedEntityProvider implements EntityProvider {
     }
   }
 
-  private async getGitHubRepositories(
-    integration: any,
-    providerConfig: ExtractedProviderConfig,
-  ): Promise<Repository[]> {
-    // For GitHub, we need to determine the organization from the integration or provider config
-    // We'll try to extract it from the existing GitHub integration config
-    let organization = providerConfig.organization;
-    if (!organization) {
-      // Try to extract organization from existing GitHub provider configurations
-      try {
-        const githubConfig =
-          this.rootConfig.getOptionalConfig(`integrations.github`);
-        if (githubConfig) {
-          // This is a simplified approach - in practice you might need more sophisticated logic
-          // to match the right GitHub integration based on the provider ID
-          organization = this.extractOrganizationFromGitHubConfig(
-            providerConfig.id,
-          );
-        }
-      } catch (error) {
-        this.logger.warn(
-          `Could not extract organization for GitHub provider ${providerConfig.id}:`,
-          error,
-        );
-      }
-    }
-
+  private async getGitHubRepositories(integration: any): Promise<Repository[]> {
+    const organization = this.config.organization;
     if (!organization) {
       throw new Error(
-        `GitHub provider ${providerConfig.id} requires organization configuration`,
+        `GitHub provider ${this.config.providerId} requires organization configuration`,
       );
     }
 
@@ -346,55 +322,17 @@ export class UnclaimedEntityProvider implements EntityProvider {
     }));
   }
 
-  private extractOrganizationFromGitHubConfig(
-    providerId: string,
-  ): string | undefined {
-    // This method attempts to extract organization information from various sources
-
-    // Try to get organization from environment variables
-    try {
-      // Try specific patterns for organization extraction
-      const envPatterns = [
-        `GITHUB_ORG_${providerId.toUpperCase().replace(/-/g, '_')}`,
-        `${providerId.toUpperCase().replace(/-/g, '_')}_ORG`,
-        'GITHUB_ORG',
-        'GITHUB_ORGANIZATION',
-      ];
-
-      for (const pattern of envPatterns) {
-        const value = process.env[pattern];
-        if (value) {
-          return value;
-        }
-      }
-
-      // If the provider ID looks like an organization name itself
-      if (
-        providerId &&
-        !providerId.includes('github') &&
-        !providerId.includes('com')
-      ) {
-        return providerId;
-      }
-    } catch {
-      // Fallback to undefined
-    }
-
-    return undefined;
-  }
-
   private async getAzureDevOpsRepositories(
     _integration: any,
-    providerConfig: ExtractedProviderConfig,
   ): Promise<Repository[]> {
-    const { organization, project } = providerConfig;
+    const { organization, project } = this.config;
     if (!organization) {
       throw new Error(
-        `Azure DevOps provider ${providerConfig.id} requires organization configuration`,
+        `Azure DevOps provider ${this.config.providerId} requires organization configuration`,
       );
     }
 
-    const host = providerConfig.host || 'dev.azure.com';
+    const host = this.config.host || 'dev.azure.com';
     const url = `https://${host}/${organization}`;
 
     const credentialProvider =
@@ -411,7 +349,7 @@ export class UnclaimedEntityProvider implements EntityProvider {
       {
         organization,
         project,
-        host: providerConfig.host,
+        host: this.config.host,
       },
       this.logger,
       credentials,

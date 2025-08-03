@@ -20,7 +20,7 @@ import { mockServices } from '@backstage/backend-test-utils';
 
 describe('UnclaimedEntityProvider', () => {
   describe('fromConfig', () => {
-    it('should create provider from config', () => {
+    it('should create providers from config', () => {
       const config = new ConfigReader({
         integrations: {
           github: [
@@ -29,66 +29,99 @@ describe('UnclaimedEntityProvider', () => {
               token: 'test-token',
             },
           ],
+          azure: [
+            {
+              host: 'dev.azure.com',
+              credentials: [
+                {
+                  personalAccessToken: 'test-pat',
+                },
+              ],
+            },
+          ],
         },
         catalog: {
           providers: {
-            unclaimed: {
-              providers: [
-                {
-                  type: 'github',
-                  organization: 'test-org',
-                },
-              ],
-              schedule: {
-                frequency: { hours: 6 },
-                timeout: { minutes: 10 },
+            github: {
+              'test-github': {
+                organization: 'test-org',
+              },
+            },
+            azureDevOps: {
+              'test-azure': {
+                organization: 'test-azure-org',
+                project: 'test-project',
               },
             },
           },
         },
+        UnclaimedEntities: {
+          github: ['test-github'],
+          azureDevops: ['test-azure'],
+          schedule: {
+            frequency: { hours: 6 },
+            timeout: { minutes: 10 },
+          },
+        },
       });
 
-      const provider = UnclaimedEntityProvider.fromConfig(config, {
+      const providers = UnclaimedEntityProvider.fromConfig(config, {
         logger: mockServices.logger.mock(),
         scheduler: mockServices.scheduler.mock(),
       });
 
-      expect(provider).toBeInstanceOf(UnclaimedEntityProvider);
-      expect(provider.getProviderName()).toBe('UnclaimedEntityProvider');
+      expect(providers).toHaveLength(2);
+      expect(providers[0]).toBeInstanceOf(UnclaimedEntityProvider);
+      expect(providers[1]).toBeInstanceOf(UnclaimedEntityProvider);
+      expect(providers[0].getProviderName()).toBe(
+        'UnclaimedEntityProvider:github:test-github',
+      );
+      expect(providers[1].getProviderName()).toBe(
+        'UnclaimedEntityProvider:azureDevOps:test-azure',
+      );
     });
 
-    it('should throw error if providers configuration is missing', () => {
+    it('should return empty array if no providers are configured', () => {
       const config = new ConfigReader({
-        catalog: {
-          providers: {
-            unclaimed: {
-              schedule: {
-                frequency: { hours: 6 },
-              },
-            },
+        UnclaimedEntities: {
+          schedule: {
+            frequency: { hours: 6 },
           },
         },
       });
 
-      expect(() =>
-        UnclaimedEntityProvider.fromConfig(config, {
-          logger: mockServices.logger.mock(),
-          scheduler: mockServices.scheduler.mock(),
-        }),
-      ).toThrow();
+      const providers = UnclaimedEntityProvider.fromConfig(config, {
+        logger: mockServices.logger.mock(),
+        scheduler: mockServices.scheduler.mock(),
+      });
+
+      expect(providers).toHaveLength(0);
+    });
+
+    it('should handle missing catalog provider configurations gracefully', () => {
+      const config = new ConfigReader({
+        UnclaimedEntities: {
+          github: ['non-existent-provider'],
+          azureDevops: ['another-non-existent'],
+        },
+      });
+
+      const providers = UnclaimedEntityProvider.fromConfig(config, {
+        logger: mockServices.logger.mock(),
+        scheduler: mockServices.scheduler.mock(),
+      });
+
+      expect(providers).toHaveLength(0);
     });
   });
 
   describe('getProviderName', () => {
-    it('should return provider name', () => {
+    it('should return provider name with type and id', () => {
       const provider = new UnclaimedEntityProvider(
         {
-          providers: [
-            {
-              type: 'github',
-              organization: 'test-org',
-            },
-          ],
+          providerType: 'github',
+          providerId: 'test-provider',
+          organization: 'test-org',
         },
         {
           logger: mockServices.logger.mock(),
@@ -97,7 +130,9 @@ describe('UnclaimedEntityProvider', () => {
         {} as any, // integrations mock
       );
 
-      expect(provider.getProviderName()).toBe('UnclaimedEntityProvider');
+      expect(provider.getProviderName()).toBe(
+        'UnclaimedEntityProvider:github:test-provider',
+      );
     });
   });
 });

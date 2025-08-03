@@ -121,7 +121,7 @@ catalog:
     github:
       # the provider ID can be any camelCase string
       providerId:
-        organization: 'backstage' # string
+        organization: ${GITHUB_ORG} # string
         catalogPath: '/catalog-info.yaml' # string
         filters:
           branch: 'main' # string
@@ -133,13 +133,17 @@ catalog:
           timeout: { minutes: 3 }
 
 
-          
+
 UnclaimedEntities:
-  catalogconfigurations:
+  azureDevops:
     - my-testorg
+  github: 
+    - providerId
   schedule:
     frequency: { hours: 6 } # Run every 6 hours
     timeout: { minutes: 10 }
+
+
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
 
