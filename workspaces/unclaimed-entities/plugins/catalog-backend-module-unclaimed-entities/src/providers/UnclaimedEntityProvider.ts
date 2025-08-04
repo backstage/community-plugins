@@ -32,7 +32,9 @@ import {
   ScmIntegrations,
   ScmIntegrationRegistry,
   DefaultAzureDevOpsCredentialsProvider,
+  GithubIntegration,
 } from '@backstage/integration';
+import { Octokit } from '@octokit/rest';
 import { UnclaimedEntity } from '../types/types';
 import { AzureDevOpsClient } from '../clients/azure-client';
 import { InputError } from '@backstage/errors';
@@ -291,35 +293,49 @@ export class UnclaimedEntityProvider implements EntityProvider {
       );
     }
 
-    const baseUrl = `https://api.${integration.config.host || 'github.com'}`;
-    const token = integration.config.token;
-    const headers = {
-      Authorization: `token ${token}`,
-      Accept: 'application/vnd.github.v3+json',
-    };
-
-    const response = await fetch(
-      `${baseUrl}/orgs/${organization}/repos?per_page=100&type=all`,
-      { headers },
-    );
-
-    if (!response.ok) {
+    const githubIntegration = integration as GithubIntegration;
+    const token = githubIntegration.config?.token;
+    if (!token) {
       throw new Error(
-        `Failed to fetch GitHub repositories: ${response.status} ${response.statusText}`,
+        `GitHub provider ${this.config.providerId} requires token configuration`,
       );
     }
 
-    const repos = await response.json();
-    return repos.map((repo: any) => ({
-      id: repo.id.toString(),
-      name: repo.name,
-      fullName: repo.full_name,
-      url: repo.url,
-      webUrl: repo.html_url,
-      defaultBranch: repo.default_branch,
-      host: integration.config.host || 'github.com',
-      organization,
-    }));
+    const baseUrl =
+      githubIntegration.config?.apiBaseUrl ||
+      `https://api.${githubIntegration.config?.host || 'github.com'}`;
+
+    const octokit = new Octokit({
+      auth: token,
+      baseUrl,
+    });
+
+    try {
+      const response = await octokit.repos.listForOrg({
+        org: organization,
+        per_page: 100,
+        type: 'all',
+      });
+
+      this.logger.info(
+        `Found ${response.data.length} repositories for organization ${organization}`,
+      );
+
+      return response.data.map((repo: any) => ({
+        id: repo.id.toString(),
+        name: repo.name,
+        fullName: repo.full_name,
+        url: repo.url,
+        webUrl: repo.html_url,
+        defaultBranch: repo.default_branch,
+        host: githubIntegration.config?.host || 'github.com',
+        organization,
+      }));
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch GitHub repositories for organization ${organization}: ${error}`,
+      );
+    }
   }
 
   private async getAzureDevOpsRepositories(
@@ -471,11 +487,63 @@ export class UnclaimedEntityProvider implements EntityProvider {
       }
     }
 
+    // For GitHub repositories, use Octokit to check for files
+    if (repo.host === 'github.com' || repo.host?.includes('github')) {
+      try {
+        const githubIntegration = integration as GithubIntegration;
+        const token = githubIntegration.config?.token;
+        if (!token) {
+          this.logger.debug(
+            `No token available for GitHub repository ${repo.fullName}`,
+          );
+          return false;
+        }
+
+        const baseUrl =
+          githubIntegration.config?.apiBaseUrl ||
+          `https://api.${githubIntegration.config?.host || 'github.com'}`;
+
+        const octokit = new Octokit({
+          auth: token,
+          baseUrl,
+        });
+
+        for (const catalogFile of catalogFiles) {
+          try {
+            await octokit.repos.getContent({
+              owner: repo.organization,
+              repo: repo.name,
+              path: catalogFile,
+              ref: repo.defaultBranch,
+            });
+
+            this.logger.debug(
+              `Found catalog file ${catalogFile} in repository ${repo.fullName}`,
+            );
+            return true;
+          } catch (error: any) {
+            // Continue checking other files - 404 means file doesn't exist
+            if (error.status !== 404) {
+              this.logger.debug(
+                `Error checking ${catalogFile} in repository ${repo.fullName}:`,
+                error,
+              );
+            }
+          }
+        }
+      } catch (error) {
+        this.logger.debug(
+          `Failed to check catalog files for GitHub repository ${repo.fullName}:`,
+          error,
+        );
+      }
+    }
+
     // For other providers, implement basic checks (placeholder for now)
     for (const catalogFile of catalogFiles) {
       try {
         // This is a simplified check - in practice, you'd need to implement
-        // provider-specific file checking logic for GitHub, GitLab, etc.
+        // provider-specific file checking logic for GitLab, etc.
         const hasFile = false;
         if (hasFile) {
           this.logger.debug(

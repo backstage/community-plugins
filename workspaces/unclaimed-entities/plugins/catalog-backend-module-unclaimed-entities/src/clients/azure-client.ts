@@ -175,7 +175,6 @@ export class AzureDevOpsClient {
   private async getAllProjects(): Promise<TeamProject[]> {
     const coreApi = await this.connection.getCoreApi();
     const projects = await coreApi.getProjects();
-    this.logger.error(`Fetched projects: ${projects.length}`);
     return projects || [];
   }
 

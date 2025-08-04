@@ -2806,6 +2806,7 @@ __metadata:
     "@backstage/integration": "npm:^1.17.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.5"
     "@backstage/plugin-catalog-node": "npm:^1.17.2"
+    "@octokit/rest": "npm:^19.0.0"
     azure-devops-node-api: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
@@ -4374,7 +4375,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-common@npm:^0.9.0, @backstage/plugin-permission-common@npm:^0.9.1":
+"@backstage/plugin-permission-common@npm:^0.9.1":
   version: 0.9.1
   resolution: "@backstage/plugin-permission-common@npm:0.9.1"
   dependencies:
@@ -5320,7 +5321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.6.0":
+"@backstage/ui@npm:^0.6.1":
   version: 0.6.1
   resolution: "@backstage/ui@npm:0.6.1"
   dependencies:
@@ -9217,7 +9218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/rest@npm:^19.0.3":
+"@octokit/rest@npm:^19.0.0, @octokit/rest@npm:^19.0.3":
   version: 19.0.13
   resolution: "@octokit/rest@npm:19.0.13"
   dependencies:
@@ -16313,7 +16314,7 @@ __metadata:
     "@backstage/plugin-user-settings": "npm:^0.8.24"
     "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
-    "@backstage/ui": "npm:^0.6.0"
+    "@backstage/ui": "npm:^0.6.1"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"
@@ -16984,7 +16985,7 @@ __metadata:
     "@backstage/plugin-kubernetes-backend": "npm:^0.19.8"
     "@backstage/plugin-permission-backend": "npm:^0.7.2"
     "@backstage/plugin-permission-backend-module-allow-all-policy": "npm:^0.2.10"
-    "@backstage/plugin-permission-common": "npm:^0.9.0"
+    "@backstage/plugin-permission-common": "npm:^0.9.1"
     "@backstage/plugin-permission-node": "npm:^0.10.2"
     "@backstage/plugin-proxy-backend": "npm:^0.6.4"
     "@backstage/plugin-scaffolder-backend": "npm:^2.1.0"
