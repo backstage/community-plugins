@@ -74,10 +74,10 @@ describe('UnclaimedEntityProvider', () => {
       expect(providers[0]).toBeInstanceOf(UnclaimedEntityProvider);
       expect(providers[1]).toBeInstanceOf(UnclaimedEntityProvider);
       expect(providers[0].getProviderName()).toBe(
-        'UnclaimedEntityProvider:github:test-github',
+        'UnclaimedEntityProvider:azureDevOps:test-azure',
       );
       expect(providers[1].getProviderName()).toBe(
-        'UnclaimedEntityProvider:azureDevOps:test-azure',
+        'UnclaimedEntityProvider:github:test-github',
       );
     });
 
