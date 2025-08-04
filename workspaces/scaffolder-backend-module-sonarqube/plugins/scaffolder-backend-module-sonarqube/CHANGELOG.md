@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.8.0
+
+### Minor Changes
+
+- e9ce512: Backstage version bump to v1.41.1
+
 ## 2.7.2
 
 ### Patch Changes

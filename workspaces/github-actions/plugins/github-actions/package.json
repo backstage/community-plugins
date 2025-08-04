@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-github-actions",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "A Backstage plugin that integrates towards GitHub Actions",
   "backstage": {
     "role": "frontend-plugin",

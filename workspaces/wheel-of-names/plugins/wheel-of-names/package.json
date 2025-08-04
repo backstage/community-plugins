@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-wheel-of-names",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Backstage plugin that provides a wheel of names",
   "main": "src/index.ts",
   "types": "src/index.ts",

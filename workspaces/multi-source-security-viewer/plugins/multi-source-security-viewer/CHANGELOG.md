@@ -1,5 +1,14 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.5.5
+
+### Patch Changes
+
+- 490b55b: Updated dependency `@backstage-community/plugin-jenkins` to `^0.21.0`.
+- eaedbb2: Updated dependency `@backstage-community/plugin-github-actions` to `^0.12.0`.
+- f9f35a4: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.12.0`.
+- 1d7d0ce: remove product theme from dev dependencies and dev app
+
 ## 0.5.4
 
 ### Patch Changes

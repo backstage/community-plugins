@@ -30,6 +30,24 @@ const serviceEntityPage = (
 );
 ```
 
+## Integrating with the new Frontend System
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+Import `todoPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import todoPlugin from '@backstage-community/plugin-todo/alpha';
+// ...
+export const app = createApp({
+  features: [
+    // ...
+    todoPlugin,
+    // ...
+  ],
+});
+```
+
 ## Format
 
 The default parser uses [Leasot](https://github.com/pgilad/leasot), which supports a wide range of languages. By default it supports the `TODO` and `FIXME` tags, along with `@` prefix and author reference through with either a `(<name>)` suffix or trailing `/<name>`. For more information on how to configure the parser, see `@backstage-community/plugin-todo-backend`.

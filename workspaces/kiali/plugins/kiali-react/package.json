@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-kiali-react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "Apache-2.0",
   "description": "Web library for the kiali plugin",
   "main": "src/index.ts",
@@ -51,7 +51,6 @@
     "@backstage/cli": "^0.32.0",
     "@backstage/dev-utils": "^1.1.9",
     "@backstage/test-utils": "^1.7.7",
-    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"

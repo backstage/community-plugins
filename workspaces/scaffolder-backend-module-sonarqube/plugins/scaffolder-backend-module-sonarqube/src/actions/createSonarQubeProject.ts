@@ -30,89 +30,74 @@ interface RequestParameters {
 /**
  * @public
  */
-export type TemplateActionParameters = {
-  baseUrl: string;
-  token?: string;
-  username?: string;
-  password?: string;
-  name: string;
-  key: string;
-  branch?: string;
-  visibility?: string;
-};
-
-/**
- * @public
- */
 export const createSonarQubeProjectAction = () => {
-  return createTemplateAction<TemplateActionParameters>({
+  return createTemplateAction({
     id: id,
     description: 'Creates a new project in SonarQube',
     examples,
     schema: {
       input: {
-        required: ['baseUrl', 'name', 'key'],
-        type: 'object',
-        properties: {
-          baseUrl: {
-            type: 'string',
-            title: 'Base URL',
-            description:
+        baseUrl: z =>
+          z
+            .string()
+            .url()
+            .describe(
               'SonarQube server base URL. Example: "https://sonar-server.com"',
-          },
-          name: {
-            type: 'string',
-            title: 'Name',
-            description:
+            ),
+        name: z =>
+          z
+            .string()
+            .describe(
               'Name of the project to be created in SonarQube. Example: "My Project"',
-          },
-          key: {
-            type: 'string',
-            title: 'Key',
-            description:
+            ),
+        key: z =>
+          z
+            .string()
+            .describe(
               'Key of the project to identify the project in SonarQube. Example: "my-project"',
-          },
-          branch: {
-            type: 'string',
-            title: 'Branch',
-            description:
+            ),
+        branch: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'Name of the main branch of the project. If not provided, the default main branch name will be used',
-          },
-          visibility: {
-            type: 'string',
-            title: 'Visibility',
-            description:
+            ),
+        visibility: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'Whether the created project should be visible to everyone or only specific groups. If no visibility is specified, the default project visibility will be used. Allowed values: "public" or "private"',
-          },
-          token: {
-            type: 'string',
-            title: 'Token',
-            description:
+            ),
+        token: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'SonarQube authentication token. Please review the SonarQube documentation on how to create a token',
-          },
-          username: {
-            type: 'string',
-            title: 'Username',
-            description:
+            ),
+        username: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'SonarQube username. If a token is provided it will be used instead of username and password',
-          },
-          password: {
-            type: 'string',
-            title: 'Password',
-            description:
+            ),
+        password: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'SonarQube password. If a token is provided it will be used instead of username and password',
-          },
-        },
+            ),
       },
       output: {
-        type: 'object',
-        properties: {
-          projectUrl: {
-            title: 'SonarQube project URL',
-            type: 'string',
-            description: 'SonarQube project URL created by this action',
-          },
-        },
+        projectUrl: z =>
+          z
+            .string()
+            .url()
+            .describe('SonarQube project URL created by this action'),
       },
     },
     async handler(ctx) {
