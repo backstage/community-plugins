@@ -140,8 +140,7 @@ The following table describes the parameters that you can configure to enable th
 Add the Kiali backend in the `packages/backend/src/index.ts` file as follows:
 
 ```tsx title="packages/backend/src/index.ts"
-// kubernetes
-backend.add(import('@backstage/plugin-kubernetes-backend'));
+const backend = createBackend();
 
 // kiali
 backend.add(import('@backstage-community/plugin-kiali-backend'));
