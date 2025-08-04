@@ -2786,7 +2786,7 @@ __metadata:
     canvas: "npm:^3.1.2"
     classnames: "npm:^2.3.2"
     compare-versions: "npm:^6.1.0"
-    cross-fetch: "npm:^3.1.5"
+    cross-fetch: "npm:^4.0.0"
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.3.0"
     msw: "npm:^1.0.0"
