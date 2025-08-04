@@ -137,7 +137,13 @@ The following table describes the parameters that you can configure to enable th
 
 #### Setting up the Kiali backend package
 
-Add the Kiali backend in the `packages/backend/src/index.ts` file as follows:
+1. Install the Kiali backend plugin using the following command:
+
+```console
+yarn workspace backend add @backstage-community/plugin-kiali-backend
+```
+
+2. Add the Kiali backend in the `packages/backend/src/index.ts` file as follows:
 
 ```tsx title="packages/backend/src/index.ts"
 const backend = createBackend();
