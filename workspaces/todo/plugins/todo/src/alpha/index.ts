@@ -13,15 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { Model } from '@patternfly/react-topology';
-import { TrafficGraph } from '../src';
-import graphModel from './__data__/bookinfoGraphModel.json';
 
-createDevApp()
-  .registerPlugin()
-  .addPage({
-    element: <TrafficGraph model={graphModel as Model} />,
-    title: 'TrafficGraph',
-    path: '/kiali/trafficGraph',
-  });
+export { default } from './plugin';

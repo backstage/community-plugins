@@ -2651,10 +2651,12 @@ __metadata:
   dependencies:
     "@backstage/catalog-model": "npm:^1.7.5"
     "@backstage/cli": "npm:^0.33.1"
+    "@backstage/core-compat-api": "npm:^0.4.4"
     "@backstage/core-components": "npm:^0.17.4"
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
     "@backstage/errors": "npm:^1.2.7"
+    "@backstage/frontend-plugin-api": "npm:^0.10.4"
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
     "@backstage/test-utils": "npm:^1.7.10"
     "@material-ui/icons": "npm:^4.9.1"

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo
 
+## 0.11.1
+
+### Patch Changes
+
+- 1790453: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
 ## 0.11.0
 
 ### Minor Changes
