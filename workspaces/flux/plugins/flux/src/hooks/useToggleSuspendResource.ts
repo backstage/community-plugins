@@ -16,7 +16,7 @@
 import { AlertApi, alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
-import { useAsyncFn } from 'react-use';
+import useAsyncFn from 'react-use/esm/useAsyncFn';
 import { gvkFromKind } from '../objects';
 import { Deployment, Source } from '../components/helpers';
 
