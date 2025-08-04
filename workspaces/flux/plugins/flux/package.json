@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/flux"
+    "directory": "workspaces/flux/plugins/flux"
   },
   "publishConfig": {
     "access": "public",
@@ -49,13 +49,15 @@
     "compare-versions": "^6.1.0",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
-    "react-use": "^17.4.0",
+    "react-use": "^17.6.0",
     "styled-components": "^6.1.1",
     "use-deep-compare": "^1.1.0",
     "yaml": "^2.3.1"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.33.1",
@@ -67,11 +69,15 @@
     "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.0.0",
     "@types/lodash": "^4.17.16",
-    "@types/node": "*",
+    "@types/node": "22.15.29",
+    "@types/react": "^18.2.58",
     "@types/styled-components": "^5.1.26",
     "canvas": "^3.1.2",
     "cross-fetch": "^4.0.0",
-    "msw": "^1.0.0"
+    "msw": "^1.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "files": [
     "LICENSE",
