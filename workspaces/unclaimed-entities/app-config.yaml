@@ -134,7 +134,7 @@ catalog:
 
 
 
-UnclaimedEntities:
+unclaimedentities:
   azureDevops:
     - my-testorg
   github: 

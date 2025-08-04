@@ -44,11 +44,11 @@ export interface UnclaimedEntityProviderConfig {
   providerType: 'github' | 'azureDevOps';
   /** Provider ID from the configuration */
   providerId: string;
-  /** Organization/namespace to scan */
+  /** Organization for the provider */
   organization: string;
-  /** Project to scan (for Azure DevOps only) */
+  /** Project for the provider (Azure DevOps only) */
   project?: string;
-  /** Host to scan (optional, defaults to provider default host) */
+  /** Host for the provider */
   host?: string;
   /** Schedule configuration for the provider */
   schedule?: {
@@ -89,7 +89,7 @@ export class UnclaimedEntityProvider implements EntityProvider {
       scheduler?: SchedulerService;
     },
   ): UnclaimedEntityProvider[] {
-    const unclaimedEntitiesConfig = config.getConfig('UnclaimedEntities');
+    const unclaimedEntitiesConfig = config.getConfig('unclaimedentities');
     const integrations = ScmIntegrations.fromConfig(config);
 
     const providers: UnclaimedEntityProvider[] = [];
