@@ -1,6 +1,6 @@
 /* eslint-disable */
 import 'styled-components';
-import { ThemeTypes } from '../contexts/AppContext';
+import { ThemeTypes } from '../theme';
 
 export namespace colors {
   const black: string;
