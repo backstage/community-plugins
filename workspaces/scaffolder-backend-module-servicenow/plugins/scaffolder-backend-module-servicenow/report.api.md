@@ -74,6 +74,9 @@ export const modifyRecordAction: (
     sysparmExcludeReferenceLink?: boolean | undefined;
     sysparmFields?: string[] | undefined;
     sysparmInputDisplayValue?: boolean | undefined;
+    sysparmSuppressAutoSysField?: boolean | undefined;
+    sysparmView?: string | undefined;
+    sysparmQueryNoDomain?: boolean | undefined;
   },
   {
     [x: string]: any;
@@ -139,6 +142,9 @@ export const updateRecordAction: (
     sysparmExcludeReferenceLink?: boolean | undefined;
     sysparmFields?: string[] | undefined;
     sysparmInputDisplayValue?: boolean | undefined;
+    sysparmSuppressAutoSysField?: boolean | undefined;
+    sysparmView?: string | undefined;
+    sysparmQueryNoDomain?: boolean | undefined;
   },
   {
     [x: string]: any;

@@ -86,6 +86,27 @@ export const updateRecordAction = (options: CreateActionOptions) => {
             .describe(
               'Set field values using their display value (true) or actual value (false) (default: false)',
             ),
+        sysparmSuppressAutoSysField: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to suppress auto generation of system fields (default: false)',
+            ),
+        sysparmView: z =>
+          z
+            .string()
+            .optional()
+            .describe(
+              'Render the response according to the specified UI view (overridden by sysparm_fields)',
+            ),
+        sysparmQueryNoDomain: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to access data across domains if authorized (default: false)',
+            ),
       },
     },
 
