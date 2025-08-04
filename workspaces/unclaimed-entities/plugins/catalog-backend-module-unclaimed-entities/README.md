@@ -2,15 +2,15 @@
 
 The unclaimed-entities backend module for the catalog plugin.
 
-This module provides a generic entity provider that discovers repositories from existing catalog integrations without catalog-info.yaml files and creates "Unclaimed" catalog entities for them.
+This module provides a generic entity provider that discovers repositories from existing GitHub and Azure DevOps catalog integrations without catalog-info.yaml files and creates "Unclaimed" catalog entities for them.
 
 ## Features
 
-- Works with any SCM provider supported by Backstage integrations (GitHub, GitLab, Azure DevOps, Bitbucket)
+- Works with GitHub and Azure DevOps integrations
 - Leverages existing integration configurations (no duplicate tokens needed)
 - Automatically detects repositories that don't have catalog-info.yaml files
 - Creates catalog entities with new "Unclaimed" kind for easy identification
-- Configurable provider selection - choose which integrations to scan
+- Configurable provider selection - choose which existing providers to scan
 - Scheduled discovery with configurable intervals
 - Full integration with Backstage's catalog system
 
@@ -41,33 +41,43 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location, Unclaimed]
   providers:
-    unclaimed:
-      providers:
-        - type: github
-          organization: my-org
-        - type: azure
-          organization: my-azure-org
-          project: my-project # Optional: specific project
-        - type: gitlab
-          organization: my-group
-        - type: bitbucket
-          organization: my-workspace
-      schedule:
-        frequency: { hours: 6 } # Run every 6 hours
-        timeout: { minutes: 10 }
+    # Your existing GitHub provider configuration
+    github:
+      providerId:
+        organization: my-org
+        # ... other github provider config
+    # Your existing Azure DevOps provider configuration
+    azureDevOps:
+      my-testorg:
+        organization: my-testorg
+        project: my-project # Optional: specific project
+        # ... other azure devops provider config
+
+# Unclaimed entities configuration
+unclaimedentities:
+  # List of GitHub provider IDs to scan for unclaimed entities
+  github:
+    - providerId
+  # List of Azure DevOps provider IDs to scan for unclaimed entities
+  azureDevops:
+    - my-testorg
+  schedule:
+    frequency: { hours: 6 } # Run every 6 hours
+    timeout: { minutes: 10 }
 ```
 
 ### Configuration Options
 
 #### Provider Configuration
 
-Each provider in the `providers` array supports:
+The unclaimed entities provider references your existing catalog provider configurations by their provider IDs:
 
-- `type` (required): Provider type (`github`, `gitlab`, `azure`/`azuredevops`, `bitbucket`)
-- `host` (optional): Custom host (defaults to provider's public instance)
-- `organization` (required): Organization/namespace/workspace to scan
-- `project` (optional): Specific project/group (for providers that support it)
-- `config` (optional): Additional provider-specific configuration
+- **GitHub providers**: List provider IDs under `unclaimedentities.github`
+- **Azure DevOps providers**: List provider IDs under `unclaimedentities.azureDevops`
+
+The provider will automatically use the organization, host, and authentication settings from your existing catalog providers.
+
+**Important**: You must have existing GitHub or Azure DevOps catalog providers configured before using this module. The provider IDs you specify must match those in your `catalog.providers.github` or `catalog.providers.azureDevOps` configuration.
 
 #### Schedule Configuration
 
@@ -87,12 +97,6 @@ integrations:
     - host: dev.azure.com
       credentials:
         - personalAccessToken: ${AZURE_DEVOPS_PAT}
-  gitlab:
-    - host: gitlab.com
-      token: ${GITLAB_TOKEN}
-  bitbucket:
-    - host: bitbucket.org
-      token: ${BITBUCKET_TOKEN}
 ```
 
 ## Generated Entities
@@ -151,9 +155,7 @@ After discovering unclaimed entities, you can:
 ## Supported Providers
 
 - **GitHub**: Public and Enterprise instances
-- **GitLab**: Public and self-hosted instances
 - **Azure DevOps**: Azure DevOps Services and Server
-- **Bitbucket**: Cloud and Server instances
 
 ## Permissions
 
@@ -167,8 +169,9 @@ The provider uses your existing integration tokens, so ensure they have the nece
 ### Common Issues
 
 1. **Authentication failures**: Verify your integration tokens are correct and have necessary permissions
-2. **No entities discovered**: Check that your organization and provider configurations are correct
-3. **Rate limiting**: If you have many repositories, consider adjusting the timeout configuration
+2. **No entities discovered**: Check that your provider IDs in `unclaimedentities` config match your existing catalog provider configurations
+3. **Provider not found**: Ensure the provider ID you reference exists in your `catalog.providers.github` or `catalog.providers.azureDevOps` configuration
+4. **Rate limiting**: If you have many repositories, consider adjusting the timeout configuration
 
 ### Debugging
 
@@ -180,33 +183,4 @@ backend:
     level: debug
 ```
 
-Look for log messages from `UnclaimedEntityProvider` to troubleshoot discovery issues.
-
-## Migration from Azure-specific Provider
-
-If you were using the previous Azure-specific provider, update your configuration:
-
-**Old configuration:**
-
-```yaml
-catalog:
-  providers:
-    azureDevopsUnclaimed:
-      organization: my-org
-      personalAccessToken: ${AZURE_DEVOPS_PAT}
-```
-
-**New configuration:**
-
-```yaml
-catalog:
-  rules:
-    - allow: [Component, System, API, Resource, Location, Unclaimed]
-  providers:
-    unclaimed:
-      providers:
-        - type: azure
-          organization: my-org
-```
-
-The new provider will use your existing Azure DevOps integration configuration.
+Look for log messages from `UnclaimedEntityProvider` to troubleshoot discovery issues. The provider will log warnings if it cannot find or configure specified providers.
