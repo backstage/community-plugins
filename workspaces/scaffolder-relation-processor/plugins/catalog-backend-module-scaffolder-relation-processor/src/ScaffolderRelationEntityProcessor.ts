@@ -17,21 +17,48 @@ import {
   Entity,
   getCompoundEntityRef,
   parseEntityRef,
+  stringifyEntityRef,
 } from '@backstage/catalog-model';
 import type { LocationSpec } from '@backstage/plugin-catalog-common';
 import {
   CatalogProcessor,
+  CatalogProcessorCache,
   CatalogProcessorEmit,
   processingResult,
 } from '@backstage/plugin-catalog-node';
 
 import { RELATION_SCAFFOLDED_FROM, RELATION_SCAFFOLDER_OF } from './relations';
 import type { ScaffoldedFromSpec } from './types';
+import { handleTemplateVersion } from './templateVersionUtils';
 
 /** @public */
 export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
   getProcessorName(): string {
     return 'ScaffolderRelationEntityProcessor';
+  }
+
+  async preProcessEntity(
+    entity: Entity,
+    _location: LocationSpec,
+    _emit: CatalogProcessorEmit,
+    _originLocation: LocationSpec,
+    cache: CatalogProcessorCache,
+  ): Promise<Entity> {
+    if (entity.kind !== 'Template') {
+      return entity;
+    }
+
+    const currentVersion =
+      entity.metadata.annotations?.['backstage.io/template-version'];
+    if (!currentVersion) {
+      return entity;
+    }
+
+    const entityRef = stringifyEntityRef(entity);
+
+    await handleTemplateVersion(entityRef, currentVersion, cache);
+
+    return entity;
   }
 
   async postProcessEntity(
