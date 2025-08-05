@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.10.1
+
+### Patch Changes
+
+- ba2b006: Updated configuration example in documentation
+
 ## 0.10.0
 
 ### Minor Changes
