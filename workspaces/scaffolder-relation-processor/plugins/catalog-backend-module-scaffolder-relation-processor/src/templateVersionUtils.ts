@@ -18,7 +18,7 @@ import type { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 /**
  * Cache structure for storing template version information
  *
- * @public
+ * @internal
  */
 export interface TemplateVersionCache {
   version: string;
@@ -31,7 +31,7 @@ export interface TemplateVersionCache {
  * @param currentVersion - The current version of the template
  * @param cache - The catalog processor cache
  *
- * @public
+ * @internal
  */
 export async function handleTemplateVersion(
   entityRef: string,
