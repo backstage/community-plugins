@@ -31,12 +31,9 @@ import {
 import { Grid, Paper, Typography } from '@material-ui/core';
 
 import { PipelineRunKind, TaskRunKind } from '@janus-idp/shared-react';
-
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
-import {
-  kubernetesProxyApiRef,
-  TektonResourcesContextData,
-} from '../../types/types';
+import { TektonResourcesContextData } from '../../types/types';
 import { tektonTranslationRef } from '../../translation';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
