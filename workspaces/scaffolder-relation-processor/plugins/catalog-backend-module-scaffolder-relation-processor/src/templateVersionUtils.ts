@@ -43,13 +43,11 @@ export async function handleTemplateVersion(
     | TemplateVersionCache
     | undefined;
 
-  if (cachedData) {
-    if (cachedData.version < currentVersion) {
-      console.log(
-        `Template ${entityRef} version was updated from ${cachedData.version} to ${currentVersion}`,
-      );
-      // I will emit an event here
-    }
+  if (cachedData && cachedData.version < currentVersion) {
+    console.log(
+      `Template ${entityRef} version was updated from ${cachedData.version} to ${currentVersion}`,
+    );
+    // I will emit an event here
   }
 
   await cache.set(cacheKey, {
