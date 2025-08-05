@@ -94,7 +94,7 @@ export async function createRouter(
       const credentials = await httpAuth.credentials(request);
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: credentials,
-        targetPluginId: 'plugin.catalog.service',
+        targetPluginId: 'catalog',
       });
 
       // entity to project match
@@ -154,7 +154,7 @@ export async function createRouter(
       const credentials = await httpAuth.credentials(request);
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: credentials,
-        targetPluginId: 'plugin.catalog.service',
+        targetPluginId: 'catalog',
       });
 
       // entity to project match
