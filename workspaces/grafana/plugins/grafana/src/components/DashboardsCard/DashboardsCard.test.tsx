@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { render } from '@testing-library/react';
 import { DashboardsTable } from './DashboardsCard';
+import { renderInTestApp } from '@backstage/test-utils';
 
 describe('DashboardsTable', () => {
   const entityMock = {
@@ -35,7 +34,7 @@ describe('DashboardsTable', () => {
   };
 
   it('should render even with no dashboards', async () => {
-    const rendered = render(
+    const rendered = await renderInTestApp(
       <DashboardsTable dashboards={[]} entity={entityMock} opts={{}} />,
     );
 

@@ -1,5 +1,95 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- 5d47950: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [5d47950]
+  - @backstage-community/plugin-azure-sites-common@0.7.0
+
+## 0.9.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.9.0
+
+### Minor Changes
+
+- 554b8d9: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [554b8d9]
+  - @backstage-community/plugin-azure-sites-common@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 044529a: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [044529a]
+  - @backstage-community/plugin-azure-sites-common@0.5.0
+
+## 0.7.0
+
+### Minor Changes
+
+- c149be8: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [c149be8]
+  - @backstage-community/plugin-azure-sites-common@0.4.0
+
+## 0.6.1
+
+### Patch Changes
+
+- b5b8c39: Updated plugin so that config schema is being included with plugin
+
+## 0.6.0
+
+### Minor Changes
+
+- 09b2057: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [09b2057]
+  - @backstage-community/plugin-azure-sites-common@0.3.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 5bf8850: Removed support for the legacy backend system.
+
+## 0.4.0
+
+### Minor Changes
+
+- 486d59b: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [486d59b]
+  - @backstage-community/plugin-azure-sites-common@0.2.0
+
+## 0.3.11
+
+### Patch Changes
+
+- 2101453: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.10
 
 ### Patch Changes

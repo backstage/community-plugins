@@ -17,7 +17,6 @@
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 import {
   LighthouseRestApi,
   WebsiteListResponse,
@@ -67,7 +66,7 @@ describe('<AuditListTableForEntity />', () => {
     },
     spec: {
       owner: 'guest',
-      type: 'Website',
+      type: 'web',
       lifecycle: 'development',
     },
   };
@@ -90,11 +89,9 @@ describe('<AuditListTableForEntity />', () => {
     });
     const rendered = await renderInTestApp(subject(), testAppOptions);
     const create_audit_button = await rendered.findByText('Create New Audit');
-    const support_button = await rendered.findByText('Support');
     expect(await rendered.findByText(entityWebsite.url)).toBeInTheDocument();
     expect(await rendered.findByText('Latest Audit')).toBeInTheDocument();
     expect(create_audit_button).toBeInTheDocument();
-    expect(support_button).toBeInTheDocument();
   });
 
   it('renders a Progress element when the data is loading', async () => {
@@ -132,13 +129,11 @@ describe('<AuditListTableForEntity />', () => {
 
     const rendered = await renderInTestApp(subject(), testAppOptions);
     const create_audit_button = await rendered.findByText('Create New Audit');
-    const support_button = await rendered.findByText('Support');
     expect(
       await rendered.findByText('No records to display'),
     ).toBeInTheDocument();
     expect(await rendered.findByText('Latest Audit')).toBeInTheDocument();
     expect(create_audit_button).toBeInTheDocument();
-    expect(support_button).toBeInTheDocument();
   });
 
   it('renders an empty table when there is no data and error loading data due to empty database query result', async () => {
@@ -153,12 +148,10 @@ describe('<AuditListTableForEntity />', () => {
 
     const rendered = await renderInTestApp(subject(), testAppOptions);
     const create_audit_button = await rendered.findByText('Create New Audit');
-    const support_button = await rendered.findByText('Support');
     expect(
       await rendered.findByText('No records to display'),
     ).toBeInTheDocument();
     expect(await rendered.findByText('Latest Audit')).toBeInTheDocument();
     expect(create_audit_button).toBeInTheDocument();
-    expect(support_button).toBeInTheDocument();
   });
 });

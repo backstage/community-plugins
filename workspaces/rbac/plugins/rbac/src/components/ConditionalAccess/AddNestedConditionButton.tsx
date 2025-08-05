@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
-import { Box, Typography } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+export const tooltipTitle = () => (
+  <div>
+    <Typography variant="body1" component="p" align="center">
+      Nested conditions are <b>1 layer rules within a main condition</b>. It
+      lets you allow appropriate access by using detailed permissions based on
+      various conditions. You can add multiple nested conditions.
+    </Typography>
+    <Typography variant="body1" component="p" align="center">
+      For example, you can allow access to all entity types in the main
+      condition and use a nested condition to limit the access to entities owned
+      by the user.
+    </Typography>
+  </div>
+);
 
 export const AddNestedConditionButton = () => {
-  const tooltipTitle = () => (
-    <div>
-      <Typography variant="body1" component="p" align="center">
-        Nested conditions are <b>1 layer rules within a main condition</b>. It
-        lets you allow appropriate access by using detailed permissions based on
-        various conditions. You can add multiple nested conditions.
-      </Typography>
-      <Typography variant="body1" component="p" align="center">
-        For example, you can allow access to all entity types in the main
-        condition and use a nested condition to limit the access to entities
-        owned by the user.
-      </Typography>
-    </div>
-  );
   return (
     <Box
-      style={{
+      sx={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
       }}
     >
       <Typography variant="body1" component="span">
-        Add Nested Condition
+        Add nested condition
       </Typography>
       <Tooltip title={tooltipTitle()} placement="top">
         <HelpOutlineIcon fontSize="inherit" style={{ marginLeft: '0.25rem' }} />

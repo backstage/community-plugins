@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
 
@@ -35,6 +29,7 @@ const sampleOwnedEntities = [
       name: 'foo',
       title: 'Foo Component',
     },
+    relations: [{ type: 'ownedBy', targetRef: 'group:development/guests' }],
   },
   {
     kind: 'component',
@@ -77,6 +72,7 @@ jest.mock('@backstage/catalog-client', () => ({
   CatalogClient: jest.fn().mockImplementation(() => ({
     getEntities: mockGetEntities,
     getEntitiesByRefs: mockGetEnttiesByRefs,
+    getEntityByRef: () => sampleEntities[0],
   })),
 }));
 
@@ -130,33 +126,22 @@ jest.mock('./DatabaseHandler', () => ({
   DatabaseHandler: { create: async () => mockDbHandler },
 }));
 
+const mockNotificationService = {
+  send: jest.fn().mockImplementation(async () => {}),
+};
+
 describe('createRouter', () => {
   let app: express.Express;
 
-  const createDatabase = () =>
-    DatabaseManager.fromConfig(
-      new ConfigReader({
-        backend: {
-          database: {
-            client: 'better-sqlite3',
-            connection: ':memory:',
-          },
-        },
-      }),
-    ).forPlugin('entity-feedback');
-
-  const discovery: jest.Mocked<PluginEndpointDiscovery> = {
-    getBaseUrl: jest.fn(),
-    getExternalBaseUrl: jest.fn(),
-  };
-
   beforeEach(async () => {
     const router = await createRouter({
-      database: createDatabase(),
-      discovery,
-      logger: getVoidLogger(),
+      database: mockServices.database.mock(),
+      discovery: mockServices.discovery(),
+      logger: mockServices.rootLogger(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      config: mockServices.rootConfig(),
+      notificationService: mockNotificationService,
     });
 
     app = express().use(router);
@@ -228,7 +213,7 @@ describe('createRouter', () => {
     });
   });
 
-  describe('POST /ratings/:entityRef', () => {
+  describe('POST /ratings/:entityRef(*)', () => {
     it('should record a rating correctly', async () => {
       const body = { rating: 'LIKE' };
       const response = await request(app)
@@ -242,25 +227,23 @@ describe('createRouter', () => {
       });
       expect(response.status).toEqual(201);
     });
-  });
 
-  describe('GET /ratings/:entityRef', () => {
-    it('should get ratings for an entity correctly', async () => {
+    it('should handle non encoded entity refs', async () => {
+      const body = { rating: 'LIKE' };
       const response = await request(app)
-        .get('/ratings/component%3Adefault%2Fservice')
+        .post('/ratings/component:default/service')
         .set('authorization', mockCredentials.user.header())
-        .send();
-      expect(mockDbHandler.getRatings).toHaveBeenCalledWith(
-        'component:default/service',
-      );
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual(
-        mockRatings.filter(r => r.userRef !== 'user:default/test'),
-      );
+        .send(body);
+      expect(mockDbHandler.recordRating).toHaveBeenCalledWith({
+        entityRef: 'component:default/service',
+        userRef: 'user:default/mock',
+        ...body,
+      });
+      expect(response.status).toEqual(201);
     });
   });
 
-  describe('GET /ratings/:entityRef/aggregate', () => {
+  describe('GET /ratings/:entityRef(*)/aggregate', () => {
     it('should get aggregated ratings for an entity correctly', async () => {
       const response = await request(app)
         .get('/ratings/component%3Adefault%2Fservice/aggregate')
@@ -275,11 +258,60 @@ describe('createRouter', () => {
         LIKE: 2,
       });
     });
+
+    it('should handle non encoded entity refs', async () => {
+      const response = await request(app)
+        .get('/ratings/component:default/service/aggregate')
+        .set('authorization', mockCredentials.user.header())
+        .send();
+      expect(mockDbHandler.getRatings).toHaveBeenCalledWith(
+        'component:default/service',
+      );
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        DISLIKE: 1,
+        LIKE: 2,
+      });
+    });
   });
 
-  describe('POST /responses/:entityRef', () => {
+  describe('GET /ratings/:entityRef(*)', () => {
+    it('should get ratings for an entity correctly', async () => {
+      const response = await request(app)
+        .get('/ratings/component%3Adefault%2Fservice')
+        .set('authorization', mockCredentials.user.header())
+        .send();
+      expect(mockDbHandler.getRatings).toHaveBeenCalledWith(
+        'component:default/service',
+      );
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(
+        mockRatings.filter(r => r.userRef !== 'user:default/test'),
+      );
+    });
+
+    it('should handle non encoded entity refs', async () => {
+      const response = await request(app)
+        .get('/ratings/component:default/service')
+        .set('authorization', mockCredentials.user.header())
+        .send();
+      expect(mockDbHandler.getRatings).toHaveBeenCalledWith(
+        'component:default/service',
+      );
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(
+        mockRatings.filter(r => r.userRef !== 'user:default/test'),
+      );
+    });
+  });
+
+  describe('POST /responses/:entityRef(*)', () => {
     it('should record a response correctly', async () => {
-      const body = { response: 'blah', comments: 'feedback', consent: true };
+      const body = {
+        response: 'blah',
+        comments: '{ "additionalComments": "feedback" }',
+        consent: true,
+      };
       const response = await request(app)
         .post('/responses/component%3Adefault%2Fservice')
         .set('authorization', mockCredentials.user.header())
@@ -289,14 +321,66 @@ describe('createRouter', () => {
         userRef: 'user:default/mock',
         ...body,
       });
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'group:development/guests',
+        },
+        payload: {
+          title: 'New feedback for component:default/service',
+          description: 'Comments: feedback',
+        },
+      });
+      expect(response.status).toEqual(201);
+    });
+
+    it('should handle non encoded entity refs', async () => {
+      const body = {
+        response: 'blah',
+        comments: '{ "additionalComments": "feedback" }',
+        consent: true,
+      };
+      const response = await request(app)
+        .post('/responses/component:default/service')
+        .set('authorization', mockCredentials.user.header())
+        .send(body);
+      expect(mockDbHandler.recordResponse).toHaveBeenCalledWith({
+        entityRef: 'component:default/service',
+        userRef: 'user:default/mock',
+        ...body,
+      });
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'group:development/guests',
+        },
+        payload: {
+          title: 'New feedback for component:default/service',
+          description: 'Comments: feedback',
+        },
+      });
       expect(response.status).toEqual(201);
     });
   });
 
-  describe('GET /responses/:entityRef', () => {
+  describe('GET /responses/:entityRef(*)', () => {
     it('should get responses for an entity correctly', async () => {
       const response = await request(app)
         .get('/responses/component%3Adefault%2Fservice')
+        .set('authorization', mockCredentials.user.header())
+        .send();
+      expect(mockDbHandler.getResponses).toHaveBeenCalledWith(
+        'component:default/service',
+      );
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(
+        mockResponses.filter(r => r.userRef !== 'user:default/test'),
+      );
+    });
+
+    it('should handle non encoded entity refs', async () => {
+      const response = await request(app)
+        .get('/responses/component:default/service')
         .set('authorization', mockCredentials.user.header())
         .send();
       expect(mockDbHandler.getResponses).toHaveBeenCalledWith(

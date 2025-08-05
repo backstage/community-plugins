@@ -45,7 +45,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { useTitle } from '../../hooks/useTitle';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -186,7 +186,7 @@ export const AddEntitiesDrawer = ({
               {({ results }) => (
                 <List>
                   {results.map(({ document }) => (
-                    <React.Fragment key={document.location}>
+                    <Fragment key={document.location}>
                       <ListItem alignItems="flex-start">
                         <div className={classes.itemContainer}>
                           <ListItemText
@@ -234,7 +234,7 @@ export const AddEntitiesDrawer = ({
                         </div>
                       </ListItem>
                       <Divider component="li" />
-                    </React.Fragment>
+                    </Fragment>
                   ))}
                 </List>
               )}

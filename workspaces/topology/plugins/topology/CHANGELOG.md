@@ -1,5 +1,176 @@
 ### Dependencies
 
+## 2.3.1
+
+### Patch Changes
+
+- 7bfeab1: remove product theme from dev dependencies and dev app
+
+## 2.3.0
+
+### Minor Changes
+
+- fe1d8aa: Backstage version bump to v1.40.2
+  Remove broken close button from display option chips in `TopologyToolbar`.
+
+## 2.2.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.2.1
+
+### Patch Changes
+
+- 6fb7a4d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
+## 2.2.0
+
+### Minor Changes
+
+- f734003: Bump to backstage version 1.39.1
+
+## 2.1.0
+
+### Minor Changes
+
+- e35ad72: Backstage version bump to v1.38.1
+
+## 2.0.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 2.0.0
+
+### Major Changes
+
+- 215f3c6: **BREAKING** Use Kubernetes plugin permissions `kubernetes.clusters.read` and `kubernetes.resources.read` in Topology plugin, remove topology-specific permission `topology.view.read`.
+  If you are importing `topologyViewPermission` or `topologyPermissions` from `@backstage-community/plugin-topology-common`, the imports need to be updated to instead import from `@backstage/plugin-kubernetes-common`.
+
+## 1.33.1
+
+### Patch Changes
+
+- 1a6414e: remove unused dependency: @types/node
+
+## 1.33.0
+
+### Minor Changes
+
+- 075e059: Backstage version bump to v1.36.0
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+- Updated dependencies [075e059]
+  - @backstage-community/plugin-topology-common@1.7.0
+
+## 1.32.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.31.0
+
+### Minor Changes
+
+- c6207a6: Backstage version bump to v1.35.0
+- 8ab6e45: upgraded @backstage-community/plugin-topology plugin to PatternFly 6
+
+### Patch Changes
+
+- 8ab6e45: Long annotations doesn't overflow the sidebar content for Pods anymore
+- Updated dependencies [c6207a6]
+  - @backstage-community/plugin-topology-common@1.6.0
+
+## 1.30.0
+
+### Minor Changes
+
+- df7804a: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [df7804a]
+  - @backstage-community/plugin-topology-common@1.5.0
+
+## 1.29.10
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.29.9
+
+### Patch Changes
+
+- b133709: fix status text and icon alignment issue
+
+## 1.29.8
+
+### Patch Changes
+
+- e815da7: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [e815da7]
+  - @backstage-community/plugin-topology-common@1.4.4
+
+## 1.29.7
+
+### Patch Changes
+
+- aaeb7fc: Fixed tab button margin, text color, and text background color issues.
+
+## 1.29.6
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.29.5
+
+### Patch Changes
+
+- 72f0537: Update topology dev pages (requires an additional permission dependency). This should not affect users.
+
+## 1.29.4
+
+### Patch Changes
+
+- e5c3246: Added `prepublish` script to correct `style-inject` module path references in packed files, ensuring proper resolution and avoiding runtime errors in the published package. And reverted `build` script.
+
+## 1.29.3
+
+### Patch Changes
+
+- a2c5a0a: Updated the `build` script to correct `style-inject` module path references in packed files, ensuring proper resolution and avoiding runtime errors in the published package.
+- a2c5a0a: Added `build:all` script to trigger `prepare` script in release process and removed `postversion` script.
+
+## 1.29.2
+
+### Patch Changes
+
+- 232c0e7: Added `build:all` script to trigger `prepare` script in release process and removed `postversion` script.
+
+## 1.29.1
+
+### Patch Changes
+
+- 833d4dd: Resolved issues with the style-inject module path references in the npm package to ensure proper loading.
+- e77652d: Bump up share-react version to ^2.13.1 and updated supported-versions to ^1.28.4.
+- Updated dependencies [e77652d]
+  - @backstage-community/plugin-topology-common@1.4.3
+
 ## 1.29.0
 
 ### Minor Changes

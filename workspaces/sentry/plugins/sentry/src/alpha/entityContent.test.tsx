@@ -26,7 +26,6 @@ import {
   sampleEntity,
   sampleEntityWithoutAnnotation,
 } from '../__fixtures__/entity';
-import React from 'react';
 
 describe('Entity content extension', () => {
   it('should render Sentry tab', async () => {

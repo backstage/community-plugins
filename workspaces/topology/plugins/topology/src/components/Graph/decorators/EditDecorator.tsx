@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
+
+import { useRef } from 'react';
 
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 import { Node } from '@patternfly/react-topology';
@@ -32,7 +34,7 @@ interface DefaultDecoratorProps {
   y: number;
 }
 
-const EditDecorator: React.FC<DefaultDecoratorProps> = ({
+const EditDecorator: FC<DefaultDecoratorProps> = ({
   element,
   radius,
   x,
@@ -43,7 +45,7 @@ const EditDecorator: React.FC<DefaultDecoratorProps> = ({
   const cheURL = getCheDecoratorData(cheCluster);
   const cheEnabled = !!cheURL;
   const editUrl = editURL || getEditURL(vcsURI, vcsRef, cheURL);
-  const decoratorRef = React.useRef<SVGGElement | null>(null);
+  const decoratorRef = useRef<SVGGElement | null>(null);
   const repoIcon = (
     <RouteDecoratorIcon
       routeURL={editUrl}

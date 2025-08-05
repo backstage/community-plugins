@@ -35,11 +35,13 @@ import type {
   MetadataResponseSerializedRule,
 } from '@backstage/plugin-permission-node';
 
-import type {
-  PluginPermissionMetaData,
-  PolicyDetails,
+import {
+  policyEntityPermissions,
+  type PluginPermissionMetaData,
+  type PolicyDetails,
 } from '@backstage-community/plugin-rbac-common';
-import type { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
+import { rbacRules } from '../permissions';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 type PluginMetadataResponse = {
   pluginId: string;
@@ -51,8 +53,13 @@ export type PluginMetadataResponseSerializedRule = {
   rules: MetadataResponseSerializedRule[];
 };
 
+const rbacPermissionMetadata: MetadataResponse = {
+  permissions: policyEntityPermissions,
+  rules: [rbacRules],
+};
+
 export class PluginPermissionMetadataCollector {
-  private readonly pluginIds: string[];
+  private readonly pluginIdProvider: ExtendablePluginIdProvider;
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -63,7 +70,7 @@ export class PluginPermissionMetadataCollector {
   }: {
     deps: {
       discovery: DiscoveryService;
-      pluginIdProvider: PluginIdProvider;
+      pluginIdProvider: ExtendablePluginIdProvider;
       logger: LoggerService;
       config: Config;
     };
@@ -71,9 +78,9 @@ export class PluginPermissionMetadataCollector {
       urlReader?: UrlReaderService;
     };
   }) {
-    const { discovery, pluginIdProvider, logger, config } = deps;
-    this.pluginIds = pluginIdProvider.getPluginIds();
+    const { discovery, logger, config, pluginIdProvider } = deps;
     this.discovery = discovery;
+    this.pluginIdProvider = pluginIdProvider;
     this.logger = logger;
     this.urlReader =
       optional?.urlReader ??
@@ -125,7 +132,8 @@ export class PluginPermissionMetadataCollector {
   ): Promise<PluginMetadataResponse[]> {
     let pluginResponses: PluginMetadataResponse[] = [];
 
-    for (const pluginId of this.pluginIds) {
+    const pluginIds = await this.pluginIdProvider.getPluginIds();
+    for (const pluginId of pluginIds) {
       try {
         const { token } = await auth.getPluginRequestToken({
           onBehalfOf: await auth.getOwnServiceCredentials(),
@@ -157,6 +165,15 @@ export class PluginPermissionMetadataCollector {
     token: string | undefined,
   ): Promise<MetadataResponse | undefined> {
     let permMetaData: MetadataResponse | undefined;
+
+    // Work around: This is needed for start up whenever a conditional policy for the plugin permission in the yaml file
+    // will make a check to the well known endpoint
+    // However, our plugin has not completely started and as such will throw a 503 error
+    // TODO: see if we are able to remove this after we migrate to the permission registry
+    if (pluginId === 'permission') {
+      return rbacPermissionMetadata;
+    }
+
     try {
       const baseEndpoint = await this.discovery.getBaseUrl(pluginId);
       const wellKnownURL = `${baseEndpoint}/.well-known/backstage/permissions/metadata`;

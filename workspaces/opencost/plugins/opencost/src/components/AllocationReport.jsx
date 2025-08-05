@@ -18,7 +18,9 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import * as React from 'react';
 import { get, round } from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -251,8 +253,8 @@ const AllocationReport = ({
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[10, 25, 50]}
         page={Math.min(page, lastPage)}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </div>
   );

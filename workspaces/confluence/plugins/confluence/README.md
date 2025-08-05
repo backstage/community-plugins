@@ -55,7 +55,25 @@ import {
             </SearchResult>
 ```
 
+## Integrating with the new Frontend System
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+Import `confluencePlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import confluencePlugin from '@backstage-community/plugin-confluence/alpha';
+// ...
+export const app = createApp({
+  features: [
+    // ...
+    confluencePlugin,
+    // ...
+  ],
+});
+```
+
 ## Special thanks & Disclaimer
 
-Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome
+Thanks to K-Phoen for creating the confluence plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome
 of [this discussion](https://github.com/K-Phoen/backstage-plugin-confluence/issues/193), he gave us permission to keep working on this plugin.

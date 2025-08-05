@@ -150,6 +150,15 @@ components:
             source:
               type: string
               description: The source from which the permission policy was defined.
+    PluginIds:
+      type: object
+      properties:
+        ids:
+          type: array
+          description: List of plugin ids, which support Backstage permission framework.
+          items:
+            type: string
+
   parameters:
     nameParam:
       name: name
@@ -517,6 +526,58 @@ paths:
                                       $ref: '#/components/schemas/PropertyObject'
         '403':
           description: Refusal to authorize
+  /api/permission/plugins/id:
+    get:
+      description: Returns plugin IDs that support the Backstage permission framework.
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize
+
+    post:
+      description: Add additional plugin IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/PluginIds'
+      responses:
+        '200':
+          description: Plugin IDs were successfully added. Returns updated list.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '409':
+          description: Conflict with current state and target resource.
+        '403':
+          description: Refusal to authorize
+
+    delete:
+      description: Delete some additional plugin IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/PluginIds'
+      responses:
+        '200':
+          description: Plugin IDs were successfully removed. Returns updated list.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '404':
+          description: Could not find resource
+        '403':
+          description: Refusal to authorize
   /api/permission/roles/conditions:
     get:
       description: Lists all conditions
@@ -676,6 +737,23 @@ paths:
           description: ok
         '400':
           description: Id is not a valid number.
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource.
+  /api/permission/refresh/{id}:
+    post:
+      description: >-
+        Refreshes RBAC permission policies by provider id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request was successful
         '403':
           description: Refusal to authorize
         '404':

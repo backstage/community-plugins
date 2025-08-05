@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useLayoutEffect } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 
@@ -25,22 +25,24 @@ import { ModelsPlural } from '../../models';
 import { ModelsPlural as TektonModels } from '../../pipeline-models';
 import { TopologyWorkloadView } from './TopologyWorkloadView';
 
-import '@patternfly/react-core/dist/styles/base.css';
-import '@patternfly/patternfly/patternfly-theme-dark.css';
-import '@patternfly/patternfly/patternfly-charts-theme-dark.css';
+import '@patternfly/react-core/dist/styles/base-no-reset.css';
+import '@patternfly/patternfly/patternfly.min.css';
+import '@patternfly/patternfly/patternfly-charts.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
+import { RequireKubernetesReadPermissions } from './permissions/requireKubernetesReadPermissions';
 
 const THEME_DARK = 'dark';
-const THEME_DARK_CLASS = 'pf-v5-theme-dark';
+const THEME_DARK_CLASS = 'pf-v6-theme-dark';
 
 const savedStylesheets = new Set<HTMLLinkElement>();
+const firstLinkOrScript = document.head.querySelector('link, script');
 
 export const TopologyComponent = () => {
   const {
     palette: { mode },
   } = useTheme();
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const htmlTagElement = document.documentElement;
 
     const scalprumStyles = Array.from(
@@ -57,7 +59,11 @@ export const TopologyComponent = () => {
 
     savedStylesheets.forEach(link => {
       if (!document.head.contains(link)) {
-        document.head.appendChild(link);
+        if (firstLinkOrScript) {
+          document.head.insertBefore(link, firstLinkOrScript);
+        } else {
+          document.head.insertBefore(link, document.head.firstChild);
+        }
       }
     });
 
@@ -103,12 +109,14 @@ export const TopologyComponent = () => {
   const filterContextData = useFilterContextValues();
 
   return (
-    <K8sResourcesContext.Provider value={k8sResourcesContextData}>
-      <FilterContext.Provider value={filterContextData}>
-        <div className="pf-ri__topology">
-          <TopologyWorkloadView />
-        </div>
-      </FilterContext.Provider>
-    </K8sResourcesContext.Provider>
+    <RequireKubernetesReadPermissions>
+      <K8sResourcesContext.Provider value={k8sResourcesContextData}>
+        <FilterContext.Provider value={filterContextData}>
+          <div className="pf-ri__topology">
+            <TopologyWorkloadView />
+          </div>
+        </FilterContext.Provider>
+      </K8sResourcesContext.Provider>
+    </RequireKubernetesReadPermissions>
   );
 };

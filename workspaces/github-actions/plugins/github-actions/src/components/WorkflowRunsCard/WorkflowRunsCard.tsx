@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,12 +26,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  LinkButton,
-  EmptyState,
-  Link,
-  InfoCard,
-} from '@backstage/core-components';
+import { LinkButton, Link, InfoCard } from '@backstage/core-components';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import RetryIcon from '@material-ui/icons/Replay';
 import SyncIcon from '@material-ui/icons/Sync';
@@ -197,10 +192,25 @@ export const WorkflowRunsCardView = ({
                       {run.id}
                     </Typography>
                   </Box>
-                  <WorkflowRunStatus
-                    status={run.status}
-                    conclusion={run.conclusion}
-                  />
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <WorkflowRunStatus
+                      status={run.status}
+                      conclusion={run.conclusion}
+                    />
+                  </Box>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Tooltip title={run.statusDate ?? ''}>
+                      <Box>{run.statusAge}</Box>
+                    </Tooltip>
+                  </Box>
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -312,10 +322,8 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
     owner,
     repo,
     branch: branch === 'all' ? undefined : branch,
+    fetchAllBranches: true,
   });
-
-  const githubHost = hostname || 'github.com';
-  const hasNoRuns = !cardProps.loading && !runsData;
 
   const handleMenuChange = (
     event: ChangeEvent<{ name?: string; value: unknown }>,
@@ -336,90 +344,73 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
 
   return (
     <Grid item>
-      {hasNoRuns ? (
-        <EmptyState
-          missing="data"
-          title="No Workflow Data"
-          description="This component has GitHub Actions enabled, but no data was found. Have you created any Workflows? Click the button below to create a new Workflow."
-          action={
-            <Button
-              variant="contained"
-              color="primary"
-              href={`https://${githubHost}/${projectName}/actions/new`}
+      <InfoCard
+        title={
+          <Box display="flex" alignItems="center">
+            <GitHubIcon />
+            <Box mr={1} />
+            <Typography variant="h6">{projectName}</Typography>
+
+            <Select
+              value={branch}
+              key={branch}
+              label="Branch"
+              onChange={handleMenuChange}
+              data-testid="menu-control"
+              style={{
+                marginLeft: '30px',
+                marginRight: '20px',
+                width: '230px',
+              }}
             >
-              Create new Workflow
-            </Button>
-          }
-        />
-      ) : (
-        <InfoCard
-          title={
-            <Box display="flex" alignItems="center">
-              <GitHubIcon />
-              <Box mr={1} />
-              <Typography variant="h6">{projectName}</Typography>
-
-              <Select
-                value={branch}
-                key={branch}
-                label="Branch"
-                onChange={handleMenuChange}
-                data-testid="menu-control"
-                style={{
-                  marginLeft: '30px',
-                  marginRight: '20px',
-                  width: '230px',
-                }}
-              >
-                {branches.map(branchItem => (
-                  <MenuItem key={branchItem.name} value={branchItem.name}>
-                    {branchItem.name === defaultBranch ? (
-                      <Typography variant="body2" component="span">
-                        {branchItem.name}{' '}
-                        <Typography
-                          variant="body2"
-                          component="span"
-                          style={{ color: 'lightgray', fontSize: 'x-small' }}
-                        >
-                          (default)
-                        </Typography>
+              {branches.map(branchItem => (
+                <MenuItem key={branchItem.name} value={branchItem.name}>
+                  {branchItem.name === defaultBranch ? (
+                    <Typography variant="body2" component="span">
+                      {branchItem.name}{' '}
+                      <Typography
+                        variant="body2"
+                        component="span"
+                        style={{ color: 'lightgray', fontSize: 'x-small' }}
+                      >
+                        (default)
                       </Typography>
-                    ) : (
-                      branchItem.name
-                    )}
-                  </MenuItem>
-                ))}
-
-                <MenuItem
-                  value="all"
-                  key="all"
-                  style={{ color: 'lightGrey', fontSize: 'small' }}
-                >
-                  select all branches
+                    </Typography>
+                  ) : (
+                    branchItem.name
+                  )}
                 </MenuItem>
-              </Select>
+              ))}
 
-              <WorkflowRunsCardSearch
-                searchTerm={searchTerm}
-                handleSearch={handleSearch}
-                retry={retry}
-              />
-            </Box>
-          }
-        >
-          <WorkflowRunsCardView
-            runs={runs}
-            loading={cardProps.loading}
-            onChangePageSize={setPageSize}
-            onChangePage={setPage}
-            page={cardProps.page}
-            total={cardProps.total}
-            pageSize={cardProps.pageSize}
-            searchTerm={searchTerm}
-            projectName={projectName}
-          />
-        </InfoCard>
-      )}
+              <MenuItem
+                value="all"
+                key="all"
+                style={{ color: 'lightGrey', fontSize: 'small' }}
+              >
+                select all branches
+              </MenuItem>
+            </Select>
+
+            <WorkflowRunsCardSearch
+              searchTerm={searchTerm}
+              handleSearch={handleSearch}
+              retry={retry}
+            />
+          </Box>
+        }
+      >
+        <WorkflowRunsCardView
+          runs={runs}
+          loading={cardProps.loading}
+          onChangePageSize={setPageSize}
+          onChangePage={setPage}
+          page={cardProps.page}
+          total={cardProps.total}
+          pageSize={cardProps.pageSize}
+          searchTerm={searchTerm}
+          projectName={projectName}
+        />
+      </InfoCard>
     </Grid>
   );
 };

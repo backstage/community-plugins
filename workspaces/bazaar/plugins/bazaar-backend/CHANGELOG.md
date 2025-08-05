@@ -1,5 +1,59 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.13.0
+
+### Minor Changes
+
+- b9ee445: Backstage version bump to v1.41.1
+
+## 0.12.0
+
+### Minor Changes
+
+- 51e5cc9: Backstage version bump to v1.40.2
+
+## 0.11.0
+
+### Minor Changes
+
+- 716ba31: Backstage version bump to v1.39.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 5e5f531: Backstage version bump to v1.38.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 6dcd5b7: Backstage version bump to v1.37.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 59fd8df: The plugin has been migrated to support the new backend system by default. If you were previously importing from `alpha`, you can now remove this.
+
+## 0.7.0
+
+### Minor Changes
+
+- bcfde77: Backstage version bump to v1.36.1
+
+## 0.6.0
+
+### Minor Changes
+
+- b42cfab: Backstage version bump to v1.35.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 9e1fa3b: Backstage version bump to v1.34.1
+
 ## 0.4.3
 
 ### Patch Changes

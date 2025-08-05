@@ -1,0 +1,172 @@
+{
+  "cars": {
+    "workloadStatuses": [
+      {
+        "name": "cars-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.26322191455252564
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.2649572649572649
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "discounts": {
+    "workloadStatuses": [
+      {
+        "name": "discounts-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 1.3299145299145296
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "flights": {
+    "workloadStatuses": [
+      {
+        "name": "flights-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 0
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.2653657058650162
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.2666666666666666
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "hotels": {
+    "workloadStatuses": [
+      {
+        "name": "hotels-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.7991927774830533
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.39829059829059826
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "insurances": {
+    "workloadStatuses": [
+      {
+        "name": "insurances-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.39883943943412903
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.39999999999999997
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "mysqldb": {
+    "workloadStatuses": [
+      {
+        "name": "mysqldb-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "travels": {
+    "workloadStatuses": [
+      {
+        "name": "travels-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      },
+      {
+        "name": "travels-v2",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      },
+      {
+        "name": "travels-v3",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.7942120752085292
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 1.9840915760326658
+        }
+      },
+      "healthAnnotations": {}
+    }
+  }
+}

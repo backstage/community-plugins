@@ -47,6 +47,7 @@ describe('readProviderConfigs', () => {
         schedule: undefined,
         userQuerySize: undefined,
         groupQuerySize: undefined,
+        briefRepresentation: undefined,
       },
     ]);
   });
@@ -66,6 +67,7 @@ describe('readProviderConfigs', () => {
                 clientSecret: 'myclientsecret',
                 userQuerySize: 100,
                 groupQuerySize: 200,
+                briefRepresentation: true,
                 schedule: {
                   frequency: { hours: 1 },
                   timeout: { minutes: 50 },
@@ -92,6 +94,7 @@ describe('readProviderConfigs', () => {
         clientSecret: 'myclientsecret',
         userQuerySize: 100,
         groupQuerySize: 200,
+        briefRepresentation: true,
         schedule: {
           scope: undefined,
           frequency: { hours: 1 },

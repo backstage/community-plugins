@@ -15,7 +15,7 @@
  */
 import {
   coreServices,
-  createBackendPlugin,
+  createBackendModule,
 } from '@backstage/backend-plugin-api';
 
 import { PolicyBuilder } from '@backstage-community/plugin-rbac-backend';
@@ -27,12 +27,16 @@ import {
   rbacProviderExtensionPoint,
 } from '@backstage-community/plugin-rbac-node';
 
+import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+
 /**
+ * @public
  * RBAC plugin
  *
  */
-export const rbacPlugin = createBackendPlugin({
+export const rbacPlugin = createBackendModule({
   pluginId: 'permission',
+  moduleId: 'rbac',
   register(env) {
     const pluginIdProviderExtensionPointImpl = new (class PluginIdProviderImpl
       implements PluginIdProviderExtensionPoint
@@ -68,8 +72,11 @@ export const rbacPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
+        auditor: coreServices.auditor,
         userInfo: coreServices.userInfo,
         lifecycle: coreServices.lifecycle,
+        permissionsRegistry: coreServices.permissionsRegistry,
+        policy: policyExtensionPoint,
       },
       async init({
         http,
@@ -79,8 +86,10 @@ export const rbacPlugin = createBackendPlugin({
         permissions,
         auth,
         httpAuth,
-        userInfo,
+        auditor,
         lifecycle,
+        permissionsRegistry: permissionsRegistry,
+        policy,
       }) {
         http.use(
           await PolicyBuilder.build(
@@ -91,8 +100,10 @@ export const rbacPlugin = createBackendPlugin({
               permissions,
               auth,
               httpAuth,
-              userInfo,
+              auditor,
               lifecycle,
+              permissionsRegistry: permissionsRegistry,
+              policy,
             },
             {
               getPluginIds: () =>

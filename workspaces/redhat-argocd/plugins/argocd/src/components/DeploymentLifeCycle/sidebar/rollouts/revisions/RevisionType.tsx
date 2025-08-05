@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Chip } from '@material-ui/core';
 import {
@@ -23,7 +23,7 @@ import {
   SearchIcon,
 } from '@patternfly/react-icons';
 
-const RevisionType: React.FC<{ label: string }> = ({ label }) => {
+const RevisionType: FC<{ label: string }> = ({ label }) => {
   const iconStyle = {
     marginLeft: '10px',
     width: '1em',

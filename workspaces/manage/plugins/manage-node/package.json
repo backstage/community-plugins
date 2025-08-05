@@ -1,0 +1,47 @@
+{
+  "name": "@backstage-community/plugin-manage-node",
+  "version": "1.1.0",
+  "license": "Apache-2.0",
+  "description": "Node.js library for the manage plugin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/manage/plugins/manage-node"
+  },
+  "backstage": {
+    "role": "node-library",
+    "pluginId": "manage",
+    "pluginPackages": [
+      "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-backend",
+      "@backstage-community/plugin-manage-common",
+      "@backstage-community/plugin-manage-node",
+      "@backstage-community/plugin-manage-react"
+    ]
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "^1.4.0",
+    "@backstage/catalog-model": "^1.7.4"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

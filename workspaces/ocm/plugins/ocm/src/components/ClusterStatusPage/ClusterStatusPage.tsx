@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -68,7 +68,7 @@ const NodeChip = ({
   indicatorComponent: IndicatorComponent,
 }: {
   count: number;
-  indicatorComponent: React.FC<React.PropsWithChildren<{}>>;
+  indicatorComponent: FC<PropsWithChildren<{}>>;
 }) => {
   if (!count) {
     return null;
@@ -186,7 +186,7 @@ const CatalogClusters = () => {
   );
 };
 
-export const ClusterStatusPage = ({ logo }: { logo?: React.ReactNode }) => {
+export const ClusterStatusPage = ({ logo }: { logo?: ReactNode }) => {
   const { container } = useStyles();
 
   return (

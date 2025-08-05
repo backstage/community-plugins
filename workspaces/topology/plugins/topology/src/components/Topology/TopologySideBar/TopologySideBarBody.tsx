@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren, ChangeEvent } from 'react';
+
+import { useState } from 'react';
 
 import Divider from '@mui/material/Divider';
 import Tab from '@mui/material/Tab';
@@ -30,7 +32,7 @@ interface TabPanelProps {
   value: number;
 }
 
-const TabPanel = (props: React.PropsWithChildren<TabPanelProps>) => {
+const TabPanel = (props: PropsWithChildren<TabPanelProps>) => {
   const { children, value, index } = props;
 
   return (
@@ -45,8 +47,8 @@ const TabPanel = (props: React.PropsWithChildren<TabPanelProps>) => {
 type TopologySideBarBodyProps = { node: BaseNode };
 
 const TopologySideBarBody = ({ node }: TopologySideBarBodyProps) => {
-  const [value, setValue] = React.useState(0);
-  const handleChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
+  const [value, setValue] = useState(0);
+  const handleChange = (_event: ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 

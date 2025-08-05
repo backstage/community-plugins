@@ -1,5 +1,101 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.9.0
+
+### Minor Changes
+
+- c5f6243: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [c5f6243]
+  - @backstage-community/plugin-adr-common@0.10.0
+
+## 0.8.0
+
+### Minor Changes
+
+- e368185: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [e368185]
+  - @backstage-community/plugin-adr-common@0.9.0
+
+## 0.7.0
+
+### Minor Changes
+
+- fc4fa2c: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [fc4fa2c]
+  - @backstage-community/plugin-adr-common@0.8.0
+
+## 0.6.0
+
+### Minor Changes
+
+- e22d803: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e22d803]
+  - @backstage-community/plugin-adr-common@0.7.0
+
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [b397bd6]
+  - @backstage-community/plugin-adr-common@0.6.0
+
+## 0.5.0
+
+### Minor Changes
+
+- b075789: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [b075789]
+  - @backstage-community/plugin-adr-common@0.5.0
+
+## 0.4.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [d527ea3]
+  - @backstage-community/plugin-adr-common@0.4.0
+
+## 0.3.2
+
+### Patch Changes
+
+- 03913ac: Fixed backend-plugin-api import that caused an error at backend startup
+
+## 0.3.1
+
+### Patch Changes
+
+- 9e92818: Removed usages of `@backstage/backend-tasks`
+
+## 0.3.0
+
+### Minor Changes
+
+- d5e54af: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [d5e54af]
+  - @backstage-community/plugin-adr-common@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes

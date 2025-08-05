@@ -1,5 +1,61 @@
 # @backstage-community/plugin-nomad-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- c272b8b: Backstage version bump to v1.41.1
+
+## 0.8.0
+
+### Minor Changes
+
+- ca3aef5: Backstage version bump to v1.40.2
+
+## 0.7.0
+
+### Minor Changes
+
+- d52ac6e: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 6fe4907: Backstage version bump to v1.38.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 79631d5: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 557d3cc: Backstage version bump to v1.36.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 454def8: Backstage version bump to v1.35.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 77be307: Backstage version bump to v1.34.1
+
+## 0.1.26
+
+### Patch Changes
+
+- 75644d9: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.1.25
 
 ### Patch Changes

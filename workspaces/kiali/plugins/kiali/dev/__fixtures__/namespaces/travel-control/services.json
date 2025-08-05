@@ -1,0 +1,50 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "services": [
+    {
+      "name": "control",
+      "namespace": "travel-control",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "control"
+      },
+      "selector": {
+        "app": "control"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "validations": {
+    "service": {
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

@@ -21,9 +21,11 @@ import {
   discoveryApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
+import {
+  techInsightsApiRef,
+  TechInsightsClient,
+} from '@backstage-community/plugin-tech-insights-react';
 import { rootRouteRef } from './routes';
-import { techInsightsApiRef } from './api/TechInsightsApi';
-import { TechInsightsClient } from './api/TechInsightsClient';
 
 /**
  * @public
@@ -72,6 +74,32 @@ export const ScorecardsList = techInsightsPlugin.provide(
 /**
  * @public
  */
+export const ScorecardBadge = techInsightsPlugin.provide(
+  createComponentExtension({
+    name: 'ScorecardBadge',
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsBadge').then(m => m.ScorecardsBadge),
+    },
+  }),
+);
+
+/**
+ * @public
+ */
+export const ScorecardGauge = techInsightsPlugin.provide(
+  createComponentExtension({
+    name: 'ScorecardGauge',
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsGauge').then(m => m.ScorecardsGauge),
+    },
+  }),
+);
+
+/**
+ * @public
+ */
 export const EntityTechInsightsScorecardContent = techInsightsPlugin.provide(
   createRoutableExtension({
     name: 'EntityTechInsightsScorecardContent',
@@ -107,26 +135,32 @@ export const TechInsightsScorecardPage = techInsightsPlugin.provide(
 
 /**
  * @public
+ * @deprecated Use `ResultCheckIcon` from `@backstage-community/plugin-tech-insights-react` instead
  */
 export const TechInsightsCheckIcon = techInsightsPlugin.provide(
   createComponentExtension({
     name: 'TechInsightsCheckIcon',
     component: {
       lazy: () =>
-        import('./components/ResultCheckIcon').then(m => m.ResultCheckIcon),
+        import('@backstage-community/plugin-tech-insights-react').then(
+          m => m.ResultCheckIcon,
+        ),
     },
   }),
 );
 
 /**
  * @public
+ * @deprecated Use `ResultLinksMenu` from `@backstage-community/plugin-tech-insights-react` instead
  */
 export const TechInsightsLinksMenu = techInsightsPlugin.provide(
   createComponentExtension({
     name: 'TechInsightsLinksMenu',
     component: {
       lazy: () =>
-        import('./components/ResultLinksMenu').then(m => m.ResultLinksMenu),
+        import('@backstage-community/plugin-tech-insights-react').then(
+          m => m.ResultLinksMenu,
+        ),
     },
   }),
 );

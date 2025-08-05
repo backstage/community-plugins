@@ -19,7 +19,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 
-import { createRouterFromConfig } from './service/router';
+import { createRouter } from './service/router';
 
 /**
  * Linguist backend plugin
@@ -32,7 +32,6 @@ export const linguistPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         auth: coreServices.auth,
-        httpAuth: coreServices.httpAuth,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         reader: coreServices.urlReader,
@@ -43,7 +42,6 @@ export const linguistPlugin = createBackendPlugin({
       },
       async init({
         auth,
-        httpAuth,
         logger,
         config,
         reader,
@@ -53,9 +51,8 @@ export const linguistPlugin = createBackendPlugin({
         httpRouter,
       }) {
         httpRouter.use(
-          await createRouterFromConfig({
+          await createRouter({
             auth,
-            httpAuth,
             logger,
             config,
             reader,

@@ -16,7 +16,7 @@
 import { IdentityApi } from '@backstage/core-plugin-api';
 
 import { ArgoCDApiClient } from '..';
-import { mockApplication } from '../../../dev/__data__';
+import { mockApplication, multiSourceArgoApp } from '../../../dev/__data__';
 
 const getIdentityApiStub: IdentityApi = {
   getProfileInfo: jest.fn(),
@@ -284,6 +284,44 @@ describe('API calls', () => {
 
       expect(global.fetch).toHaveBeenCalledWith(
         'https://test.com/api/argocd/argoInstance/main/applications/name/quarkus-app-dev/revisions/90f9758b7033a4bbb7c33a35ee474d61091644bc/metadata',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer fake-jwt-token`,
+          },
+        }),
+      );
+    });
+
+    test('should return the list of revision details for multi-source apps', async () => {
+      const client = new ArgoCDApiClient({
+        backendBaseUrl: 'https://test.com',
+        useNamespacedApps: false,
+        identityApi: getIdentityApiStub,
+      });
+
+      await client.getRevisionDetailsList({
+        instanceName: 'main',
+        apps: [multiSourceArgoApp],
+        revisionIDs: [
+          '331386ce09e4536a730a16f10d1bce8dfca0c8b1',
+          'de1631a6d84f35d826235a933657baca77c2ca9c',
+        ],
+        appNamespace: '',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.com/api/argocd/argoInstance/main/applications/name/demo/revisions/331386ce09e4536a730a16f10d1bce8dfca0c8b1/metadata?sourceIndex=0',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer fake-jwt-token`,
+          },
+        }),
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.com/api/argocd/argoInstance/main/applications/name/demo/revisions/de1631a6d84f35d826235a933657baca77c2ca9c/metadata?sourceIndex=1',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',

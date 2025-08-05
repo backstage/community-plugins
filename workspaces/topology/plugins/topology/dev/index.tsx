@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
+import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
-import { TestApiProvider } from '@backstage/test-utils';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
 
 import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
 import { TopologyPage, topologyPlugin } from '../src/plugin';
@@ -35,6 +34,23 @@ const mockEntity: Entity = {
   kind: 'Component',
   metadata: {
     name: 'backstage',
+    description: 'backstage.io',
+    annotations: {
+      'backstage.io/kubernetes-id': 'backstage',
+    },
+  },
+  spec: {
+    lifecycle: 'production',
+    type: 'service',
+    owner: 'user:guest',
+  },
+};
+
+const permissionDeniedMockEntity: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'permission-denied',
     description: 'backstage.io',
     annotations: {
       'backstage.io/kubernetes-id': 'backstage',
@@ -138,24 +154,62 @@ const mockKubernetesAuthProviderApiRef = {
 };
 
 createDevApp()
-  .addThemes(getAllThemes())
+  .registerPlugin(topologyPlugin)
   .addPage({
     element: (
       <TestApiProvider
         apis={[
           [kubernetesApiRef, new MockKubernetesClient(mockKubernetesResponse)],
           [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [permissionApiRef, mockApis.permission()],
         ]}
       >
         <EntityProvider entity={mockEntity}>
-          <div style={{ height: '100vh' }}>
-            <TopologyPage />
-          </div>
+          <Page themeId="service">
+            <Header
+              type="component — service"
+              title={mockEntity.metadata.name}
+            />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="Topology">
+                <TopologyPage />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
         </EntityProvider>
       </TestApiProvider>
     ),
-    title: 'Topology Page',
+    title: 'Topology',
     path: '/topology',
   })
-  .registerPlugin(topologyPlugin)
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, new MockKubernetesClient(mockKubernetesResponse)],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [
+            permissionApiRef,
+            mockApis.permission({ authorize: AuthorizeResult.DENY }),
+          ],
+        ]}
+      >
+        <EntityProvider entity={permissionDeniedMockEntity}>
+          <Page themeId="service">
+            <Header
+              type="component — service"
+              title={permissionDeniedMockEntity.metadata.name}
+            />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="Topology">
+                <TopologyPage />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Missing permissions',
+    path: '/missing-permissions',
+  })
   .render();

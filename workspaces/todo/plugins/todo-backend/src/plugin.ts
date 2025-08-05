@@ -31,13 +31,17 @@ export const todoPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        todoReader: todoServiceRef,
+        todoService: todoServiceRef,
         http: coreServices.httpRouter,
+        config: coreServices.rootConfig,
+        logger: coreServices.rootLogger,
       },
-      async init({ http, todoReader }) {
+      async init({ http, todoService, config, logger }) {
         http.use(
           await createRouter({
-            todoService: todoReader,
+            todoService,
+            config: config,
+            logger: logger,
           }),
         );
       },

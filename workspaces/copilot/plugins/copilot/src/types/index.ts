@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { Metric } from '@backstage-community/plugin-copilot-common';
+import {
+  EngagementMetrics,
+  Metric,
+  SeatAnalysis,
+} from '@backstage-community/plugin-copilot-common';
+import { SetStateAction, Dispatch } from 'react';
 
 export type LanguageStats = {
   language: string;
@@ -24,11 +29,46 @@ export type LanguageStats = {
 };
 
 export type CardsProps = {
+  team?: string;
   metrics: Metric[];
+  metricsByTeam: Metric[];
+  startDate: Date;
+  endDate: Date;
+};
+
+export type EngagementCardsProps = {
+  team?: string;
+  metrics: EngagementMetrics[];
+  metricsByTeam: EngagementMetrics[];
+  seats: SeatAnalysis[];
+  seatsByTeam: SeatAnalysis[];
   startDate: Date;
   endDate: Date;
 };
 
 export type ChartsProps = {
+  team?: string;
   metrics: Metric[];
+  metricsByTeam: Metric[];
+};
+
+export type EngagementChartsProps = {
+  team?: string;
+  metrics: EngagementMetrics[];
+  metricsByTeam: EngagementMetrics[];
+  seats: SeatAnalysis[];
+  seatsByTeam: SeatAnalysis[];
+};
+
+export type FilterProps = {
+  team?: string;
+  setTeam: Dispatch<SetStateAction<string | undefined>>;
+  options: FilterOptions;
+};
+
+export type FilterOptions = FilterOption[];
+
+export type FilterOption = {
+  label: string;
+  value: string;
 };

@@ -21,7 +21,6 @@ import {
   waitFor,
   act,
 } from '@testing-library/react';
-import React from 'react';
 
 import { MockPlaylistListProvider } from '../../testUtils';
 import {

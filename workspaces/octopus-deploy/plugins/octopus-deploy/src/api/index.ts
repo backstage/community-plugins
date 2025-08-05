@@ -43,6 +43,7 @@ export type OctopusReleaseProgression = {
 export type OctopusRelease = {
   Id: string;
   Version: string;
+  Links: OctopusLinks;
 };
 
 /** @public */

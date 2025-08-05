@@ -68,7 +68,10 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-import { ReportPortalOverviewCard } from '@backstage-community/plugin-report-portal';
+import {
+  isReportPortalAvailable,
+  ReportPortalOverviewCard,
+} from '@backstage-community/plugin-report-portal';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -191,6 +194,14 @@ const websiteEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      if={isReportPortalAvailable}
+      path="/report-portal"
+      title="Report Portal"
+    >
+      <></>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">

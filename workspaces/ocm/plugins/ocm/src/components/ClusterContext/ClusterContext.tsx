@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -28,7 +28,10 @@ import {
 
 import { OcmApiRef } from '../../api';
 
-type ClusterContextType = {
+/**
+ * @public
+ */
+export type ClusterContextType = {
   data: Cluster | null;
   loading: boolean;
   error: Error | null;
@@ -38,6 +41,9 @@ const ClusterContext = createContext<ClusterContextType>(
   {} as ClusterContextType,
 );
 
+/**
+ * @public
+ */
 export const ClusterContextProvider = (props: any) => {
   const { entity } = useEntity();
   const ocmApi = useApi(OcmApiRef);
@@ -84,4 +90,8 @@ export const ClusterContextProvider = (props: any) => {
     </ClusterContext.Provider>
   );
 };
+
+/**
+ * @public
+ */
 export const useCluster = () => useContext(ClusterContext);

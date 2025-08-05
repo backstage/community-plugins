@@ -18,8 +18,9 @@ import {
   BulkCheckResponse,
   CheckResult,
   FactSchema,
+  Check,
+  InsightFacts,
 } from '@backstage-community/plugin-tech-insights-common';
-import { Check, InsightFacts } from './types';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
@@ -28,6 +29,7 @@ import {
 } from '@backstage/catalog-model';
 import qs from 'qs';
 import { AuthService } from '@backstage/backend-plugin-api';
+import stableStringify from 'fast-json-stable-stringify';
 
 /**
  * Client to fetch data from tech-insights backend
@@ -36,6 +38,8 @@ import { AuthService } from '@backstage/backend-plugin-api';
 export class TechInsightsClient {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi | AuthService;
+  private readonly apiCache = new Map<string, Promise<any>>();
+  private readonly chunkSize = 750;
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
@@ -114,38 +118,65 @@ export class TechInsightsClient {
     checks?: Check[],
   ): Promise<BulkCheckResponse> {
     const checkIds = checks ? checks.map(check => check.id) : [];
-    const requestBody = {
-      entities,
-      checks: checkIds.length > 0 ? checkIds : undefined,
-    };
-    return this.api('/checks/run', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-    });
+    let bulkResponse: BulkCheckResponse = [];
+    for (let i = 0; i <= entities.length; i += this.chunkSize) {
+      const chunk = entities.slice(i, i + this.chunkSize);
+      const requestBody = {
+        entities: chunk,
+        checks: checkIds.length > 0 ? checkIds : undefined,
+      };
+      const response = await this.api('/checks/run', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+      });
+      bulkResponse = bulkResponse.concat(response as BulkCheckResponse);
+    }
+    return bulkResponse;
+  }
+
+  private getCacheKey(path: string, init?: RequestInit): string {
+    return `${path} ${stableStringify(init ?? {})}`;
   }
 
   private async api<T>(path: string, init?: RequestInit): Promise<T> {
     const url = await this.discoveryApi.getBaseUrl('tech-insights');
-    const token = await this.getToken();
 
-    const headers: HeadersInit = new Headers(init?.headers);
-    if (!headers.has('content-type'))
-      headers.set('content-type', 'application/json');
-    if (token && !headers.has('authorization')) {
-      headers.set('authorization', `Bearer ${token}`);
+    const cacheKey = this.getCacheKey(`${url}${path}`, init);
+    const cached = this.apiCache.get(cacheKey);
+    if (cached) {
+      return cached;
     }
 
-    const request = new Request(`${url}${path}`, {
-      ...init,
-      headers,
-    });
+    const result = (async () => {
+      const token = await this.getToken();
 
-    return fetch(request).then(async response => {
-      if (!response.ok) {
-        throw await ResponseError.fromResponse(response);
+      const headers: HeadersInit = new Headers(init?.headers);
+      if (!headers.has('content-type'))
+        headers.set('content-type', 'application/json');
+      if (token && !headers.has('authorization')) {
+        headers.set('authorization', `Bearer ${token}`);
       }
-      return response.json() as Promise<T>;
-    });
+
+      const request = new Request(`${url}${path}`, {
+        ...init,
+        headers,
+      });
+
+      return fetch(request).then(async response => {
+        if (!response.ok) {
+          throw await ResponseError.fromResponse(response);
+        }
+        return response.json() as Promise<T>;
+      });
+    })();
+
+    // Fill cache, and clear after 2 seconds
+    this.apiCache.set(cacheKey, result);
+    setTimeout(() => {
+      this.apiCache.delete(cacheKey);
+    }, 2000);
+
+    return result;
   }
 
   private async getToken(): Promise<string | null> {

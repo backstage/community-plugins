@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 /** Configuration for the Vault plugin */
 export interface Config {
@@ -89,6 +89,6 @@ export interface Config {
      * If set to true, the default schedule (hourly) will be used. If a
      * different schedule is set, this will be used instead.
      * */
-    schedule?: TaskScheduleDefinitionConfig | boolean;
+    schedule?: SchedulerServiceTaskScheduleDefinitionConfig | boolean;
   };
 }

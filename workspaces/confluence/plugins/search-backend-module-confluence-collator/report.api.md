@@ -38,6 +38,7 @@ export type ConfluenceCollatorFactoryOptions = {
   spaces?: string[];
   query?: string;
   parallelismLimit?: number;
+  maxRequestsPerSecond?: number;
   logger: LoggerService;
 };
 
@@ -75,10 +76,11 @@ export type ConfluenceDocumentList = {
 
 // @public
 export type ConfluenceDocumentMetadata = {
+  id: string;
   title: string;
   status: string;
   _links: {
-    self: string;
+    base?: string;
     webui: string;
   };
 };

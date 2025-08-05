@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Resource } from '../../../../../types/application';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { useArgoResources } from '../../rollouts/RolloutContext';
 import Rollout from '../../rollouts/Rollout';
 import { RolloutUI } from '../../../../../types/revision';

@@ -18,14 +18,17 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  CheckResult,
+  Check,
+  techInsightsPermissions,
+} from '@backstage-community/plugin-tech-insights-common';
 import {
   FactCheckerFactory,
   FactRetriever,
   FactRetrieverRegistration,
   FactRetrieverRegistry,
   PersistenceContext,
-  TechInsightCheck,
   techInsightsFactCheckerFactoryExtensionPoint,
   techInsightsFactRetrieverRegistryExtensionPoint,
   techInsightsFactRetrieversExtensionPoint,
@@ -48,12 +51,11 @@ import { createFactRetrieverRegistrationFromConfig } from './config';
 export const techInsightsPlugin = createBackendPlugin({
   pluginId: 'tech-insights',
   register(env) {
-    let factCheckerFactory:
-      | FactCheckerFactory<TechInsightCheck, CheckResult>
-      | undefined = undefined;
+    let factCheckerFactory: FactCheckerFactory<Check, CheckResult> | undefined =
+      undefined;
     env.registerExtensionPoint(techInsightsFactCheckerFactoryExtensionPoint, {
       setFactCheckerFactory<
-        CheckType extends TechInsightCheck,
+        CheckType extends Check,
         CheckResultType extends CheckResult,
       >(factory: FactCheckerFactory<CheckType, CheckResultType>): void {
         factCheckerFactory = factory;
@@ -101,6 +103,10 @@ export const techInsightsPlugin = createBackendPlugin({
         logger: coreServices.logger,
         scheduler: coreServices.scheduler,
         auth: coreServices.auth,
+        urlReader: coreServices.urlReader,
+        httpAuth: coreServices.httpAuth,
+        permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
       },
       async init({
         config,
@@ -110,7 +116,13 @@ export const techInsightsPlugin = createBackendPlugin({
         logger,
         scheduler,
         auth,
+        urlReader,
+        httpAuth,
+        permissions,
+        permissionsRegistry,
       }) {
+        permissionsRegistry.addPermissions(techInsightsPermissions);
+
         const factRetrievers: FactRetrieverRegistration[] = Object.entries(
           addedFactRetrievers,
         )
@@ -134,6 +146,7 @@ export const techInsightsPlugin = createBackendPlugin({
           persistenceContext,
           scheduler,
           auth,
+          urlReader,
         });
 
         httpRouter.use(
@@ -141,6 +154,8 @@ export const techInsightsPlugin = createBackendPlugin({
             ...context,
             config,
             logger,
+            permissions,
+            httpAuth,
           }),
         );
       },

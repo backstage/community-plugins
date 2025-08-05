@@ -1,5 +1,35 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.7.0
+
+### Minor Changes
+
+- 05b22de: Backstage version bump to v1.40.2
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- a20db16: Backstage version bump to v1.37.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 9dd3e4e: Backstage version bump to v1.35.1
+
+## 0.4.0
+
+### Minor Changes
+
+- aa8707b: Backstage version bump to v1.34.1
+
 ## 0.3.52
 
 ### Patch Changes

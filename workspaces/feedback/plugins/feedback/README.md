@@ -20,6 +20,10 @@ It is dedicated to simplifying the process of gathering and managing user feedba
 | -------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------- |
 | ![initialDialog](./docs/images/initial-dialog.png) | ![issueDialog](./docs/images/issue-dialog.png) | ![feedbackDialog](./docs/images/feedback-dialog.png) | ![finalDialog](./docs/images/final-dialog.png) |
 
+| Global Feedback Component                                               |
+| ----------------------------------------------------------------------- |
+| ![globalFeedbackComponent](./docs/images/global-feedback-component.png) |
+
 ### Key Features
 
 - List all the feedbacks and bugs for the componnets on global page.
@@ -51,15 +55,53 @@ It is dedicated to simplifying the process of gathering and managing user feedba
      # Limit the number of characters for summary field
      # should be between 1-255
      summaryLimit: 240
+
+     # Frontend plugin customizations (optional)
+     customizations:
+       # Hide docs link from OpcFeedbackComponent
+       hideDocsLink: true
+
+       ## refer https://github.com/1-Platform/op-components/tree/master/packages/opc-feedback#custom-template-example
+       opcFeedbackTemplate:
+         feedbackFAB: 'Send Feedback'
+         dialogTitle: 'Share your thoughts with us'
+         bugReportTitle: 'Report Bug'
+         feedbackReportTitle: 'Send Feedback'
+         documentationTitle: 'Documentation'
+         spaRedirectTitle: 'View Feedback'
+         errorTitle: 'What is wrong?'
+         bugSubmissionNote: 'Note: By submitting a bug it will open an issue in jira'
+         feedbackTitle: 'How was your overall experience?'
+         feedbackSubtitle: 'It will help us to improve platform'
+         summary: 'Summary'
+         summaryPlaceholder: 'How can we do better?'
+         confirmationTitle: 'Thanks for your feedback. Your experience is important to us!'
+         confirmationSubTitle: 'Each time a friend submits a experience, it creates a task for our developer team to resolve it with priority.'
+         confirmationEventMessage: 'Submitted the feedback'
+
+       # List of experiences to show in feedback form, (note: jira is not created for "excellent" and "good" feedbacks)
+       experienceList:
+         - Excellent
+         - Good
+         - Needs Improvement
+         - Other
+       # List of errors to show in feedback form
+       errorList:
+         - Slow Loading
+         - Not Responsive
+         - Navigation
+         - UI Issues
+         - Other
    ```
 
-3. Add `GlobalFeedbackPage`, `OpcFeedbackComponent` component to the `src/App.tsx`.
+3. Add `GlobalFeedbackPage`, `GlobalFeedbackComponent` component to the `src/App.tsx`.
 
    ```jsx
    import {
      feedbackPlugin,
      GlobalFeedbackPage,
      OpcFeedbackComponent,
+     GlobalFeedbackComponent,
    } from '@backstage-community/plugin-feedback';
 
    // ...
@@ -89,6 +131,7 @@ It is dedicated to simplifying the process of gathering and managing user feedba
        <AppRouter>
          // ...
          <OpcFeedbackComponent />
+         <GlobalFeedbackComponent />
        </AppRouter>
      </>,
    );

@@ -16,7 +16,10 @@
 import { expect, Locator } from '@playwright/test';
 
 import { mockArgocdConfig, mockRevisions } from '../dev/__data__';
-import { Application, History } from '../src/types';
+import {
+  Application,
+  History,
+} from '@backstage-community/plugin-redhat-argocd-common';
 
 export const verifyHeader = async (app: Application, card: Locator) => {
   const header = card.locator('.MuiCardHeader-content');
@@ -52,7 +55,7 @@ export const verifyDeployments = async (
   const image = imageUrl.split('/').pop();
   const latestDeploy = app.status.history?.slice(-1)[0];
   const deployHistory = app.status.history?.slice(0, -1) as History[];
-  const shortRevision = `${latestDeploy?.revision.substring(0, 7)}`;
+  const shortRevision = `${latestDeploy?.revision?.substring(0, 7)}`;
 
   const latest = sideBar.locator('.MuiGrid-item', {
     hasText: 'Latest deployment',
@@ -64,7 +67,7 @@ export const verifyDeployments = async (
     'href',
     imageUrl,
   );
-  const revisionUrl = latestDeploy?.source.repoURL.substring(
+  const revisionUrl = latestDeploy?.source?.repoURL.substring(
     0,
     latestDeploy?.source.repoURL.lastIndexOf('.'),
   );
@@ -101,7 +104,7 @@ export const verifyAppCard = async (
 
   const revision = app.status.history
     ?.slice(-1)[0]
-    .revision.substring(0, 7) as string;
+    .revision?.substring(0, 7) as string;
   await verifyItem(
     'Commit',
     `${revision}${mockRevisions[index].message}`,
@@ -133,7 +136,7 @@ export const verifyAppSidebar = async (
 
   const revision = app.status.history
     ?.slice(-1)[0]
-    .revision.substring(0, 7) as string;
+    ?.revision?.substring(0, 7) as string;
   await verifyItem(
     'Commit',
     `${revision}${mockRevisions[index].message} by ${mockRevisions[index].author}`,

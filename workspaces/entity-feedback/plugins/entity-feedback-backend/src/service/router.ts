@@ -15,10 +15,6 @@
  */
 
 import {
-  createLegacyAuthAdapters,
-  errorHandler,
-} from '@backstage/backend-common';
-import {
   AuthService,
   DatabaseService,
   DiscoveryService,
@@ -26,7 +22,11 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  Entity,
+  RELATION_OWNED_BY,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import {
   EntityRatingsData,
@@ -35,8 +35,14 @@ import {
 import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
-
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { DatabaseHandler } from './DatabaseHandler';
+import { Config } from '@backstage/config';
+import {
+  NotificationRecipients,
+  NotificationService,
+} from '@backstage/plugin-notifications-node';
+import { NotificationPayload } from '@backstage/plugin-notifications-common';
 
 /**
  * @public
@@ -46,8 +52,10 @@ export interface RouterOptions {
   discovery: DiscoveryService;
   identity?: IdentityApi;
   logger: LoggerService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
+  config: Config;
+  notificationService: NotificationService;
 }
 
 /**
@@ -56,10 +64,17 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { database, discovery, logger } = options;
+  const {
+    database,
+    discovery,
+    logger,
+    httpAuth,
+    auth,
+    config,
+    notificationService,
+  } = options;
 
   logger.info('Initializing Entity Feedback backend');
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
   const db = await database.getClient();
@@ -137,7 +152,7 @@ export async function createRouter(
     res.json(Object.values(entityRatingsMap));
   });
 
-  router.post('/ratings/:entityRef', async (req, res) => {
+  router.post('/ratings/:entityRef(*)', async (req, res) => {
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
 
     const rating = req.body.rating;
@@ -156,7 +171,18 @@ export async function createRouter(
     res.status(201).end();
   });
 
-  router.get('/ratings/:entityRef', async (req, res) => {
+  router.get('/ratings/:entityRef(*)/aggregate', async (req, res) => {
+    const entityRatings = (
+      await dbHandler.getRatings(req.params.entityRef)
+    ).reduce((ratings: Ratings, { rating }) => {
+      ratings[rating] = (ratings[rating] ?? 0) + 1;
+      return ratings;
+    }, {});
+
+    res.json(entityRatings);
+  });
+
+  router.get('/ratings/:entityRef(*)', async (req, res) => {
     const ratings = await dbHandler.getRatings(req.params.entityRef);
 
     const { token } = await auth.getPluginRequestToken({
@@ -180,20 +206,40 @@ export async function createRouter(
     res.json(ratings.filter(r => accessibleEntityRefs.includes(r.userRef)));
   });
 
-  router.get('/ratings/:entityRef/aggregate', async (req, res) => {
-    const entityRatings = (
-      await dbHandler.getRatings(req.params.entityRef)
-    ).reduce((ratings: Ratings, { rating }) => {
-      ratings[rating] = (ratings[rating] ?? 0) + 1;
-      return ratings;
-    }, {});
-
-    res.json(entityRatings);
-  });
-
-  router.post('/responses/:entityRef', async (req, res) => {
+  router.post('/responses/:entityRef(*)', async (req, res) => {
     const { response, comments, consent } = req.body;
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: credentials,
+      targetPluginId: 'catalog',
+    });
+
+    try {
+      const entityOwner =
+        (
+          await catalogClient.getEntityByRef(req.params.entityRef, {
+            token: token,
+          })
+        )?.relations?.find(rel => rel.type === RELATION_OWNED_BY)?.targetRef ||
+        '';
+
+      const recipients: NotificationRecipients = {
+        type: 'entity',
+        entityRef: entityOwner,
+      };
+      const payload: NotificationPayload = {
+        title: `New feedback for ${req.params.entityRef}`,
+        description: `Comments: ${JSON.parse(comments).additionalComments}`,
+      };
+      await notificationService.send({
+        recipients,
+        payload,
+      });
+    } catch (error) {
+      logger.error(
+        `Failed to send notification for feedback: ${error}, entityRef: ${req.params.entityRef}`,
+      );
+    }
 
     await dbHandler.recordResponse({
       entityRef: req.params.entityRef,
@@ -206,7 +252,7 @@ export async function createRouter(
     res.status(201).end();
   });
 
-  router.get('/responses/:entityRef', async (req, res) => {
+  router.get('/responses/:entityRef(*)', async (req, res) => {
     const responses = await dbHandler.getResponses(req.params.entityRef);
 
     const { token } = await auth.getPluginRequestToken({
@@ -231,6 +277,6 @@ export async function createRouter(
     res.json(responses.filter(r => accessibleEntityRefs.includes(r.userRef)));
   });
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

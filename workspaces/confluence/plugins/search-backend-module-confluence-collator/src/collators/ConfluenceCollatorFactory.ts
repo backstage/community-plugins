@@ -19,9 +19,10 @@ import {
 } from '@backstage/plugin-search-common';
 import { Config } from '@backstage/config';
 import { Readable } from 'stream';
-import fetch from 'node-fetch';
+import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
 import pLimit from 'p-limit';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import pThrottle from 'p-throttle';
 
 /**
  * Document metadata
@@ -29,11 +30,12 @@ import { LoggerService } from '@backstage/backend-plugin-api';
  * @public
  */
 export type ConfluenceDocumentMetadata = {
+  id: string;
   title: string;
   status: string;
 
   _links: {
-    self: string;
+    base?: string; // not available when listing documents with search API
     webui: string;
   };
 };
@@ -65,6 +67,7 @@ export type ConfluenceCollatorFactoryOptions = {
   spaces?: string[];
   query?: string;
   parallelismLimit?: number;
+  maxRequestsPerSecond?: number;
   logger: LoggerService;
 };
 
@@ -138,6 +141,10 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly parallelismLimit: number | undefined;
   private readonly logger: LoggerService;
   public readonly type: string = 'confluence';
+  private readonly fetch: (
+    url: RequestInfo,
+    init?: RequestInit,
+  ) => Promise<Response>;
 
   private constructor(options: ConfluenceCollatorFactoryOptions) {
     this.baseUrl = options.baseUrl;
@@ -150,6 +157,19 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     this.query = options.query;
     this.parallelismLimit = options.parallelismLimit;
     this.logger = options.logger.child({ documentType: this.type });
+
+    if (options.maxRequestsPerSecond) {
+      const throttle = pThrottle({
+        limit: options.maxRequestsPerSecond,
+        interval: 1000,
+      });
+      this.fetch = throttle(async (url: RequestInfo, init?: RequestInit) => {
+        const response = await fetch(url, init);
+        return response;
+      });
+    } else {
+      this.fetch = fetch;
+    }
   }
 
   static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
@@ -195,9 +215,11 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       spaces,
       query,
       parallelismLimit,
+      maxRequestsPerSecond: config.getOptionalNumber(
+        'confluence.maxRequestsPerSecond',
+      ),
     });
   }
-
   async getCollator() {
     return Readable.from(this.execute());
   }
@@ -248,11 +270,27 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
   private async getConfluenceQuery(): Promise<string> {
     const spaceList = await this.getSpacesConfig();
-    const spaceQuery = spaceList.map(s => `space="${s}"`).join(' or ');
-    let query = spaceQuery;
-    const additionalQuery = this.query;
-    if (additionalQuery !== '') {
+    const spaceQuery =
+      spaceList.length > 0
+        ? spaceList.map(s => `space="${s}"`).join(' or ')
+        : '';
+    const additionalQuery = this.query?.trim() ?? '';
+
+    let query = '';
+    if (spaceQuery && additionalQuery) {
       query = `(${spaceQuery}) and (${additionalQuery})`;
+    } else if (spaceQuery) {
+      query = spaceQuery;
+    } else if (additionalQuery) {
+      query = additionalQuery;
+    }
+    // If no query is provided, default to fetching all pages, blogposts, comments and attachments (which encompasses all content)
+    // https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/#type
+    if (query === '') {
+      this.logger.info(
+        `No confluence query nor spaces provided via config, so will index all pages, blogposts, comments and attachments`,
+      );
+      query = 'type IN (page, blogpost, comment, attachment)';
     }
     return query;
   }
@@ -270,7 +308,11 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
         break;
       }
 
-      documentsList.push(...data.results.map(result => result._links.self));
+      documentsList.push(
+        ...data.results.map(
+          result => `${this.baseUrl}/rest/api/content/${result.id}`,
+        ),
+      );
 
       if (data._links.next) {
         requestUrl = `${this.baseUrl}${data._links.next}`;
@@ -297,14 +339,14 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     const ancestors: IndexableAncestorRef[] = [
       {
         title: data.space.name,
-        location: `${this.baseUrl}${data.space._links.webui}`,
+        location: `${data._links.base}${data.space._links.webui}`,
       },
     ];
 
     data.ancestors.forEach(ancestor => {
       ancestors.push({
         title: ancestor.title,
-        location: `${this.baseUrl}${ancestor._links.webui}`,
+        location: `${data._links.base}${ancestor._links.webui}`,
       });
     });
 
@@ -312,7 +354,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       {
         title: data.title,
         text: this.stripHtml(data.body.storage.value),
-        location: `${this.baseUrl}${data._links.webui}`,
+        location: `${data._links.base}${data._links.webui}`,
         spaceKey: data.space.key,
         spaceName: data.space.name,
         ancestors: ancestors,
@@ -345,7 +387,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   }
 
   private async get<T = any>(requestUrl: string): Promise<T> {
-    const res = await fetch(requestUrl, {
+    const res = await this.fetch(requestUrl, {
       method: 'get',
       headers: {
         Authorization: this.getAuthorizationHeader(),
@@ -361,7 +403,6 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
       throw new Error(`Request failed with ${res.status} ${res.statusText}`);
     }
-
     return await res.json();
   }
 }

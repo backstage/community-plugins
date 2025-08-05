@@ -145,7 +145,9 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
             </Wrapper>
           ))
         ) : (
-          <Typography variant="overline">No pull requests found</Typography>
+          <Typography variant="overline" data-testid="no-prs-msg">
+            No pull requests found
+          </Typography>
         )}
       </Grid>
     );

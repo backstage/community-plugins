@@ -16,7 +16,7 @@
 import { ApiBlueprint, createApiFactory } from '@backstage/frontend-plugin-api';
 import { SonarQubeClient } from '../api';
 import { sonarQubeApiRef } from '@backstage-community/plugin-sonarqube-react';
-import { discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
+import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
 /**
  * @alpha
@@ -27,12 +27,12 @@ export const sonarQubeApi = ApiBlueprint.make({
       api: sonarQubeApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
-        identityApi: identityApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, identityApi }) =>
+      factory: ({ discoveryApi, fetchApi }) =>
         new SonarQubeClient({
           discoveryApi,
-          identityApi,
+          fetchApi,
         }),
     }),
   },

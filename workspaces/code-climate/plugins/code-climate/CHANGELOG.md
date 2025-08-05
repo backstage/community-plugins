@@ -1,5 +1,59 @@
 # @backstage-community/plugin-code-climate
 
+## 0.9.0
+
+### Minor Changes
+
+- 1bf753e: Backstage version bump to v1.41.1
+
+## 0.8.0
+
+### Minor Changes
+
+- 82bfec9: Backstage version bump to v1.40.2
+
+## 0.7.0
+
+### Minor Changes
+
+- af25535: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- ba7a25e: Backstage version bump to v1.38.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.0
+
+### Minor Changes
+
+- 74a4f3f: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 6c68948: Backstage version bump to v1.36.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 6251598: Backstage version bump to v1.35.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 5cf47f1: Backstage version bump to v1.34.1
+
 ## 0.1.39
 
 ### Patch Changes

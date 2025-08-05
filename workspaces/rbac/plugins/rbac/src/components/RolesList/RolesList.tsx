@@ -13,40 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { Progress, Table, WarningPanel } from '@backstage/core-components';
 
-import { useDeleteDialog } from '@janus-idp/shared-react';
-import { makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
 
 import { useCheckIfLicensePluginEnabled } from '../../hooks/useCheckIfLicensePluginEnabled';
 import { useLocationToast } from '../../hooks/useLocationToast';
 import { useRoles } from '../../hooks/useRoles';
-import { RolesData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import DownloadCSVLink from '../DownloadUserStatistics';
 import { SnackbarAlert } from '../SnackbarAlert';
 import { useToast } from '../ToastContext';
 import DeleteRoleDialog from './DeleteRoleDialog';
 import { columns } from './RolesListColumns';
 import { RolesListToolbar } from './RolesListToolbar';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
+import { useDeleteDialog } from '../DeleteDialogContext';
 
 export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
-  const [roles, setRoles] = React.useState<number | undefined>();
-  const classes = useStyles();
+  const [searchText, setSearchText] = useState<string>();
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
-    useRoles();
+    useRoles(page, pageSize);
 
   const closeDialog = () => {
     setOpenDialog(false);
@@ -57,9 +50,10 @@ export const RolesList = () => {
   const onAlertClose = () => {
     setToastMessage('');
   };
-  const onSearchResultsChange = (searchResults: RolesData[]) => {
-    setRoles(searchResults.length);
-  };
+  const filteredRoles = useMemo(
+    () => filterTableData({ data, columns, searchText }),
+    [data, searchText],
+  );
 
   const getErrorWarning = () => {
     const errorTitleBase = 'Something went wrong while fetching the';
@@ -109,19 +103,27 @@ export const RolesList = () => {
       <Table
         title={
           !loading && data?.length
-            ? `All roles (${roles ?? data.length})`
+            ? `All roles (${filteredRoles.length})`
             : `All roles`
         }
         options={{ padding: 'default', search: true, paging: true }}
         data={data}
         isLoading={loading}
         columns={columns}
-        renderSummaryRow={summary => onSearchResultsChange(summary.data)}
         emptyContent={
-          <div data-testid="roles-table-empty" className={classes.empty}>
+          <Box
+            data-testid="roles-table-empty"
+            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+          >
             No records found
-          </div>
+          </Box>
         }
+        onSearchChange={setSearchText}
+        onPageChange={setPage}
+        onRowsPerPageChange={newPageSize => {
+          setPageSize(newPageSize);
+          setPage(0);
+        }}
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}
       {openDialog && (

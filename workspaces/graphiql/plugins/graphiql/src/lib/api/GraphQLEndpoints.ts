@@ -16,6 +16,7 @@
 
 import { GraphQLBrowseApi, GraphQLEndpoint } from './types';
 import { ErrorApi, FetchApi, OAuthApi } from '@backstage/core-plugin-api';
+import type { GraphiQLPlugin } from '@graphiql/react';
 
 /**
  * Helper for generic http endpoints
@@ -35,6 +36,10 @@ export type EndpointConfig = {
    * Fetch API to use instead of browser fetch()
    */
   fetchApi?: FetchApi;
+  /**
+   * A list of plugins to be used with GraphiQL Explorer
+   */
+  plugins?: GraphiQLPlugin[];
 };
 
 /** @public */
@@ -57,13 +62,17 @@ export type GithubEndpointConfig = {
    * GitHub Auth API used to authenticate requests.
    */
   githubAuthApi: OAuthApi;
+  /**
+   * A list of plugins to be used with GraphiQL Explorer
+   */
+  plugins?: GraphiQLPlugin[];
 };
 
 /** @public */
 export class GraphQLEndpoints implements GraphQLBrowseApi {
   // Create a support
   static create(config: EndpointConfig): GraphQLEndpoint {
-    const { id, title, url, method = 'POST', fetchApi } = config;
+    const { id, title, url, method = 'POST', fetchApi, plugins } = config;
     return {
       id,
       title,
@@ -81,6 +90,7 @@ export class GraphQLEndpoints implements GraphQLBrowseApi {
         });
         return res.json();
       },
+      plugins,
     };
   }
 
@@ -98,6 +108,7 @@ export class GraphQLEndpoints implements GraphQLBrowseApi {
       errorApi,
       fetchApi,
       githubAuthApi,
+      plugins,
     } = config;
     type ResponseBody = {
       errors?: Array<{ type: string; message: string }>;
@@ -161,6 +172,7 @@ export class GraphQLEndpoints implements GraphQLBrowseApi {
 
         return await doRequest();
       },
+      plugins,
     };
   }
 

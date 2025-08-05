@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { AuditorService } from '@backstage/backend-plugin-api';
 import type { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
@@ -13,19 +14,16 @@ import type { HttpAuthService } from '@backstage/backend-plugin-api';
 import type { LifecycleService } from '@backstage/backend-plugin-api';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
-import { PermissionPolicy } from '@backstage/plugin-permission-node';
+import type { PermissionsRegistryService } from '@backstage/backend-plugin-api';
+import type { PermissionsService } from '@backstage/backend-plugin-api';
 import { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
+import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 import type { Router } from 'express';
-import type { UserInfoService } from '@backstage/backend-plugin-api';
 
-// Warning: (ae-missing-release-tag) "createRouter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// Warning: (ae-missing-release-tag) "EnvOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type EnvOptions = {
     config: Config;
@@ -34,41 +32,35 @@ export type EnvOptions = {
     permissions: PermissionEvaluator;
     auth: AuthService;
     httpAuth: HttpAuthService;
-    userInfo: UserInfoService;
+    auditor: AuditorService;
     lifecycle: LifecycleService;
+    permissionsRegistry: PermissionsRegistryService;
+    policy: PolicyExtensionPoint;
 };
 
 export { PluginIdProvider }
 
-// Warning: (ae-missing-release-tag) "PolicyBuilder" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export class PolicyBuilder {
     // (undocumented)
     static build(env: EnvOptions, pluginIdProvider?: PluginIdProvider, rbacProviders?: Array<RBACProvider>): Promise<Router>;
 }
 
-// Warning: (ae-missing-release-tag) "rbacPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 const rbacPlugin: BackendFeature;
 export default rbacPlugin;
 
-// Warning: (ae-missing-release-tag) "RBACRouterOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RBACRouterOptions = {
     config: Config;
     logger: LoggerService;
-    discovery: DiscoveryService;
-    policy: PermissionPolicy;
     auth: AuthService;
     httpAuth: HttpAuthService;
-    userInfo: UserInfoService;
+    permissions: PermissionsService;
+    permissionsRegistry: PermissionsRegistryService;
+    auditor: AuditorService;
 };
 
-// Warning: (ae-missing-release-tag) "RouterOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RouterOptions {
     // (undocumented)
@@ -76,17 +68,6 @@ export interface RouterOptions {
     // (undocumented)
     logger: LoggerService;
 }
-
-// Warnings were encountered during analysis:
-//
-// src/service/policy-builder.d.ts:7:1 - (ae-undocumented) Missing documentation for "EnvOptions".
-// src/service/policy-builder.d.ts:17:1 - (ae-undocumented) Missing documentation for "RBACRouterOptions".
-// src/service/policy-builder.d.ts:26:1 - (ae-undocumented) Missing documentation for "PolicyBuilder".
-// src/service/policy-builder.d.ts:27:5 - (ae-undocumented) Missing documentation for "build".
-// src/service/router.d.ts:4:1 - (ae-undocumented) Missing documentation for "RouterOptions".
-// src/service/router.d.ts:5:5 - (ae-undocumented) Missing documentation for "logger".
-// src/service/router.d.ts:6:5 - (ae-undocumented) Missing documentation for "config".
-// src/service/router.d.ts:8:1 - (ae-undocumented) Missing documentation for "createRouter".
 
 // (No @packageDocumentation comment for this package)
 

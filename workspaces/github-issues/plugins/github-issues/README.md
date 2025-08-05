@@ -80,3 +80,32 @@ However, you can configure the plugin with props:
   }}
 />
 ```
+
+## Integrating with the new Frontend System
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+1. Import `githubIssuesPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import githubIssuesPlugin from '@backstage-community/plugin-github-issues/alpha';
+// ...
+export const app = createApp({
+  features: [
+    // ...
+    githubIssuesPlugin,
+    // ...
+  ],
+});
+```
+
+2. Next, enable your desired extensions in `app-config.yaml`
+
+```yaml
+app:
+  extensions:
+    - entity-content:github-issues/entity
+    - entity-card:github-issues/overview
+```
+
+3. Whichever extensions you've enabled should now appear in your entity page.

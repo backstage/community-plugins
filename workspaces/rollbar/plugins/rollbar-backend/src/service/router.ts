@@ -16,19 +16,25 @@
 
 import express from 'express';
 import Router from 'express-promise-router';
-import { errorHandler } from '@backstage/backend-common';
 import { Config } from '@backstage/config';
 import { RollbarApi } from '../api';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export interface RouterOptions {
   rollbarApi?: RollbarApi;
   logger: LoggerService;
   config: Config;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -85,8 +91,7 @@ export async function createRouter(
     });
   }
 
-  router.use(errorHandler());
-
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
 

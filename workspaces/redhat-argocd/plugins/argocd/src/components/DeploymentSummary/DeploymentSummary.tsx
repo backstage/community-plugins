@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { Table, TableColumn } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -29,7 +29,7 @@ import {
   Application,
   HealthStatus,
   SyncStatuses,
-} from '../../types/application';
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
   getCommitUrl,
@@ -69,17 +69,21 @@ const DeploymentSummary = () => {
     return baseUrl;
   };
 
+  const buildAppUrl = (row: any): string | undefined => {
+    const appBaseUrl = getBaseUrl(row);
+
+    return row?.metadata?.namespace
+      ? `${appBaseUrl}/applications/${row.metadata.namespace}/${row.metadata.name}`
+      : `${appBaseUrl}/applications/${row.metadata.name}`;
+  };
+
   const columns: TableColumn<Application>[] = [
     {
       title: 'ArgoCD App',
       field: 'name',
-      render: (row: Application): React.ReactNode =>
+      render: (row: Application): ReactNode =>
         getBaseUrl(row) ? (
-          <Link
-            href={`${getBaseUrl(row)}/applications/${row?.metadata?.name}`}
-            target="_blank"
-            rel="noopener"
-          >
+          <Link href={`${buildAppUrl(row)}`} target="_blank" rel="noopener">
             {row.metadata.name}{' '}
             <IconButton color="primary" size="small">
               <ExternalLinkIcon />
@@ -92,36 +96,38 @@ const DeploymentSummary = () => {
     {
       title: 'Namespace',
       field: 'namespace',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         return <>{row.spec.destination.namespace}</>;
       },
     },
     {
       title: 'Instance',
       field: 'instance',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         return <>{row.metadata?.instance?.name || instanceName}</>;
       },
     },
     {
       title: 'Server',
       field: 'server',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         return <>{row.spec.destination.server}</>;
       },
     },
     {
       title: 'Revision',
       field: 'revision',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         const historyList = row.status?.history ?? [];
         const latestRev = historyList[historyList.length - 1];
-        const repoUrl = row?.spec?.source?.repoURL;
+        const repoUrl =
+          row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
+
         const commitUrl = isAppHelmChartType(row)
           ? repoUrl
           : getCommitUrl(
               repoUrl,
-              latestRev?.revision,
+              latestRev?.revision ?? '',
               entity?.metadata?.annotations || {},
             );
         return (
@@ -145,7 +151,7 @@ const DeploymentSummary = () => {
 
         return moment(aDeployedAt).diff(moment(bDeployedAt));
       },
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         const history = row?.status?.history ?? [];
         const finishedAt = history[history.length - 1]?.deployedAt;
         return (
@@ -167,9 +173,7 @@ const DeploymentSummary = () => {
           syncStatusOrder.indexOf(b?.status?.sync?.status)
         );
       },
-      render: (row: Application): React.ReactNode => (
-        <AppSyncStatus app={row} />
-      ),
+      render: (row: Application): ReactNode => <AppSyncStatus app={row} />,
     },
     {
       title: 'Health status',
@@ -181,7 +185,7 @@ const DeploymentSummary = () => {
           healthStatusOrder.indexOf(b?.status?.health?.status)
         );
       },
-      render: (row: Application): React.ReactNode => (
+      render: (row: Application): ReactNode => (
         <>
           <AppHealthIcon status={row.status.health.status as HealthStatus} />{' '}
           {row?.status?.health?.status}

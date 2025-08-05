@@ -36,11 +36,17 @@ export type PluginIdProviderExtensionPoint = {
   addPluginIdProvider(pluginIdProvider: PluginIdProvider): void;
 };
 
+/**
+ * @public
+ */
 export const rbacProviderExtensionPoint =
   createExtensionPoint<RBACProviderExtensionPoint>({
     id: 'permission.rbac.rbacProvider',
   });
 
+/**
+ * @public
+ */
 export type RBACProviderExtensionPoint = {
   addRBACProvider(
     ...providers: Array<RBACProvider | Array<RBACProvider>>

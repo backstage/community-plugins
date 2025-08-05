@@ -85,9 +85,11 @@ Resource type permissions on the other hand are basic named permissions with a r
 
 ## Kubernetes
 
-| Name             | Resource Type | Policy | Description                                                                                                 | Requirements        |
-| ---------------- | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
-| kubernetes.proxy |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
+| Name                      | Resource Type | Policy | Description                                                                                                 | Requirements        |
+| ------------------------- | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
+| kubernetes.clusters.read  |               | read   | Allows the user to read Kubernetes clusters information under `/clusters`                                   | catalog.entity.read |
+| kubernetes.resources.read |               | read   | Allows the user to read Kubernetes resources information under `/services/:serviceId` and `/resources`      | catalog.entity.read |
+| kubernetes.proxy          |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
 
 ## RBAC
 
@@ -100,14 +102,15 @@ Resource type permissions on the other hand are basic named permissions with a r
 
 ## Scaffolder
 
-| Name                               | Resource Type       | Policy | Description                                                                                                                     | Requirements                                                      |
-| ---------------------------------- | ------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| scaffolder.action.execute          | scaffolder-action   |        | Allows the execution of an action from a template                                                                               | scaffolder.template.parameter.read, scaffolder.template.step.read |
-| scaffolder.template.parameter.read | scaffolder-template | read   | Allows the user to read parameters of a template                                                                                | scaffolder.template.step.read                                     |
-| scaffolder.template.step.read      | scaffolder-template | read   | Allows the user to read steps of a template                                                                                     | scaffolder.template.paramater.read                                |
-| scaffolder.task.create             |                     | create | This permission is used to authorize actions that involve the creation of tasks in the scaffolder                               | scaffolder.template.parameter.read, scaffolder.template.step.read |
-| scaffolder.task.read               |                     | read   | This permission is used to authorize actions that involve reading one or more tasks in the scaffolder and reading logs of tasks | scaffolder.template.parameter.read, scaffolder.template.step.read |
-| scaffolder.task.cancel             |                     | use    | This permission is used to authorize actions that involve the cancellation of tasks in the scaffolder                           | scaffolder.template.parameter.read, scaffolder.template.step.read |
+| Name                               | Resource Type       | Policy | Description                                                                                                                                           | Requirements                                                      |
+| ---------------------------------- | ------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| scaffolder.action.execute          | scaffolder-action   |        | Allows the execution of an action from a template                                                                                                     | scaffolder.template.parameter.read, scaffolder.template.step.read |
+| scaffolder.template.parameter.read | scaffolder-template | read   | Allows the user to read parameters of a template                                                                                                      | scaffolder.template.step.read                                     |
+| scaffolder.template.step.read      | scaffolder-template | read   | Allows the user to read steps of a template                                                                                                           | scaffolder.template.paramater.read                                |
+| scaffolder.task.create             |                     | create | This permission is used to authorize actions that involve the creation of tasks in the scaffolder                                                     | scaffolder.template.parameter.read, scaffolder.template.step.read |
+| scaffolder.task.read               |                     | read   | This permission is used to authorize actions that involve reading one or more tasks in the scaffolder and reading logs of tasks                       | scaffolder.template.parameter.read, scaffolder.template.step.read |
+| scaffolder.task.cancel             |                     | use    | This permission is used to authorize actions that involve the cancellation of tasks in the scaffolder                                                 | scaffolder.template.parameter.read, scaffolder.template.step.read |
+| scaffolder.template.management     |                     | use    | Allows a user or role to access frontend template management features, including editing, previewing, and trying templates, forms, and custom fields. |                                                                   |
 
 ## OCM
 
@@ -118,17 +121,19 @@ Resource type permissions on the other hand are basic named permissions with a r
 
 ## Tekton
 
-| Name             | Resource Type | Policy | Description                                                                                                        | Requirements        |
-| ---------------- | ------------- | ------ | ------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| tekton.view.read |               | read   | Allows the user to view the tekton plugin                                                                          | catalog.entity.read |
-| kubernetes.proxy |               |        | Allows the user to access the proxy endpoint (ability to read tekton pod logs and events within Showcase and RHDH) | catalog.entity.read |
+| Name                      | Resource Type | Policy | Description                                                                                                        | Requirements        |
+| ------------------------- | ------------- | ------ | ------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| kubernetes.clusters.read  |               | read   | Allows the user to read Kubernetes clusters information under `/clusters`                                          | catalog.entity.read |
+| kubernetes.resources.read |               | read   | Allows the user to read Kubernetes resources information under `/services/:serviceId` and `/resources`             | catalog.entity.read |
+| kubernetes.proxy          |               |        | Allows the user to access the proxy endpoint (ability to read tekton pod logs and events within Showcase and RHDH) | catalog.entity.read |
 
 ## Topology
 
-| Name               | Resource Type | Policy | Description                                                                                                 | Requirements        |
-| ------------------ | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
-| topology.view.read |               | read   | Allows the user to view the topology plugin                                                                 | X                   |
-| kubernetes.proxy   |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
+| Name                      | Resource Type | Policy | Description                                                                                                 | Requirements        |
+| ------------------------- | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
+| kubernetes.clusters.read  |               | read   | Allows the user to read Kubernetes clusters information under `/clusters`                                   | catalog.entity.read |
+| kubernetes.resources.read |               | read   | Allows the user to read Kubernetes resources information under `/services/:serviceId` and `/resources`      | catalog.entity.read |
+| kubernetes.proxy          |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
 
 ## Argocd
 

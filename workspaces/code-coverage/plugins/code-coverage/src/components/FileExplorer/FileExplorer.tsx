@@ -21,7 +21,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import FolderIcon from '@material-ui/icons/Folder';
 import FileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined';
 import Alert from '@material-ui/lab/Alert';
-import React, { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { codeCoverageApiRef } from '../../api';
 import { FileEntry } from '../../types';
@@ -127,12 +127,15 @@ const formatInitialData = (value: any) => {
       return {
         path: '',
         filename: fc.filename,
-        coverage: Math.floor(
-          (Object.values(fc.lineHits).filter((hits: number) => hits > 0)
-            .length /
-            Object.values(fc.lineHits).length) *
-            100,
-        ),
+        coverage:
+          Object.values(fc.lineHits).length > 0
+            ? Math.floor(
+                (Object.values(fc.lineHits).filter((hits: number) => hits > 0)
+                  .length /
+                  Object.values(fc.lineHits).length) *
+                  100,
+              )
+            : 0,
         missing: Object.values(fc.lineHits).filter(hits => !hits).length,
         tracked: Object.values(fc.lineHits).length,
       };

@@ -1,5 +1,134 @@
 ### Dependencies
 
+## 1.18.0
+
+### Minor Changes
+
+- 7731edd: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 4252a3f: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
+## 1.17.0
+
+### Minor Changes
+
+- 3b95346: Backstage version bump to v1.40.2
+
+## 1.16.0
+
+### Minor Changes
+
+- 3dab416: Adds the possibility to use multiple artifactory instances
+
+### Patch Changes
+
+- 7f18c19: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+
+## 1.15.3
+
+### Patch Changes
+
+- 66718a0: remove unused devDependencies
+
+## 1.15.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.15.1
+
+### Patch Changes
+
+- 172353e: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+
+## 1.15.0
+
+### Minor Changes
+
+- 10adaa0: Backstage version bump to v1.39.0
+
+## 1.14.0
+
+### Minor Changes
+
+- ea83bb6: Backstage version bump to v1.36.1
+
+## 1.13.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 1.13.2
+
+### Patch Changes
+
+- ac7a432: remove unused dependencies: @material-ui/lab and @types/node
+
+## 1.13.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
+## 1.13.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.12.0
+
+### Minor Changes
+
+- 030b677: Backstage version bump to v1.35.1
+
+## 1.11.0
+
+### Minor Changes
+
+- 75e9202: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+## 1.10.6
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.10.5
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
+## 1.10.4
+
+### Patch Changes
+
+- 378ca22: Clean up api report warnings and remove unnecessary files
+
+## 1.10.3
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.2
+
+### Patch Changes
+
+- 0568517: Bump shared-react to 2.13.1
+
+## 1.10.1
+
+### Patch Changes
+
+- a83d499: Bumping the @janus-cli/shared-react dependency to ^2.13.0
+
 ## 1.10.0
 
 ### Minor Changes

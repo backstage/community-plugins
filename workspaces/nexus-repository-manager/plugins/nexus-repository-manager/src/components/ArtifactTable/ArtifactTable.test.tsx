@@ -1,8 +1,8 @@
-import React from 'react';
-
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
+import { TestApiProvider, MockErrorApi, mockApis } from '@backstage/test-utils';
+import { errorApiRef } from '@backstage/core-plugin-api';
+import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { ArtifactRowData, ArtifactTable } from './ArtifactTable';
 
 // Get the text at row[columnName]
@@ -55,8 +55,15 @@ describe('ArtifactTable', () => {
   ];
 
   it('renders rows', async () => {
-    await render(
-      <ArtifactTable title="Nexus Artifacts" artifacts={sampleRows} />,
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={sampleRows} />
+      </TestApiProvider>,
     );
 
     const table = screen.getAllByRole('table')[0];
@@ -76,8 +83,15 @@ describe('ArtifactTable', () => {
   });
 
   it('renders empty state', async () => {
-    const { queryByTestId } = await render(
-      <ArtifactTable title="Nexus Artifacts" artifacts={[]} />,
+    const { queryByTestId } = render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={[]} />
+      </TestApiProvider>,
     );
 
     expect(
@@ -94,7 +108,16 @@ describe('ArtifactTable', () => {
       },
     ];
 
-    await render(<ArtifactTable title="Nexus Artifacts" artifacts={rowData} />);
+    await render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
 
     const table = screen.getAllByRole('table')[0];
     expect(getCellText(table, 0, 'Artifact')).toContain(
@@ -108,8 +131,15 @@ describe('ArtifactTable', () => {
       hash: undefined,
     };
 
-    await render(
-      <ArtifactTable title="Nexus Artifacts" artifacts={[noHash]} />,
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={[noHash]} />
+      </TestApiProvider>,
     );
 
     const table = screen.getAllByRole('table')[0];
@@ -129,7 +159,16 @@ describe('ArtifactTable', () => {
         sizeBytes: 200,
       },
     ];
-    await render(<ArtifactTable title="Nexus Artifacts" artifacts={rowData} />);
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
 
     const user = userEvent.setup();
     const table = screen.getAllByRole('table')[0];
@@ -174,7 +213,16 @@ describe('ArtifactTable', () => {
         hash: undefined,
       },
     ];
-    await render(<ArtifactTable title="Nexus Artifacts" artifacts={rowData} />);
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
 
     const user = userEvent.setup();
     const table = screen.getAllByRole('table')[0];
@@ -221,7 +269,16 @@ describe('ArtifactTable', () => {
         hash: undefined,
       },
     ];
-    await render(<ArtifactTable title="Nexus Artifacts" artifacts={rowData} />);
+    render(
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <ArtifactTable title="Nexus Artifacts" artifacts={rowData} />
+      </TestApiProvider>,
+    );
 
     const user = userEvent.setup();
     const table = screen.getAllByRole('table')[0];

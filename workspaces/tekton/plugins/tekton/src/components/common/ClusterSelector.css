@@ -1,0 +1,8 @@
+.bs-tkn-cluster-selector {
+  display: flex;
+  align-items: center;
+}
+
+.bs-tkn-cluster-selector > div > div > div {
+  margin-top: 0;
+}

@@ -28,6 +28,7 @@ describe('techInsightsPlugin', () => {
         httpRouterMock.factory,
         mockServices.database.factory(),
         mockServices.logger.factory(),
+        mockServices.urlReader.factory(),
         mockServices.rootConfig.factory({
           data: {
             techInsights: {
@@ -41,9 +42,10 @@ describe('techInsightsPlugin', () => {
           },
         }),
         mockServices.scheduler.factory(),
+        mockServices.permissionsRegistry.factory(),
       ],
     });
 
-    expect(httpRouterMock.use).toHaveBeenCalledTimes(1);
+    expect(httpRouterMock.use).toHaveBeenCalledTimes(4);
   });
 });

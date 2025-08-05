@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';

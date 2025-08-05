@@ -38,8 +38,7 @@ backend:
 mta:
   url: <MTA_URL>
   providerAuth:
-    # realm: mta
-    realm: tackle
+    realm: mta
     secret: backstage-provider-secret
     clientID: backstage-provider
 

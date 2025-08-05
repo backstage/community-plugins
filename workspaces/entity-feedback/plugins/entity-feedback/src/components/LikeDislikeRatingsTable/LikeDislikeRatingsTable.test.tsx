@@ -15,7 +15,6 @@
  */
 
 import { renderInTestApp } from '@backstage/test-utils';
-import React from 'react';
 
 import { FeedbackRatings } from '../LikeDislikeButtons';
 import { LikeDislikeRatingsTable } from './LikeDislikeRatingsTable';

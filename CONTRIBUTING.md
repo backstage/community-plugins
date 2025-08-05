@@ -11,7 +11,7 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Code of Conduct](#code-of-conduct)
   - [License](#license)
   - [Security Issues](#security-issues)
-  - [Get Started!](#get-started)
+  - [Get Started](#get-started)
     - [Forking the Repository](#forking-the-repository)
     - [Developing Plugins in Workspaces](#developing-plugins-in-workspaces)
   - [Coding Guidelines](#coding-guidelines)
@@ -20,12 +20,15 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Release](#release)
   - [Creating a new Workspace](#creating-a-new-workspace)
   - [Creating new plugins or packages in a Workspace](#creating-new-plugins-or-packages-in-a-workspace)
+    - [Local development of plugins](#local-development-of-plugins)
   - [Migrating a plugin](#migrating-a-plugin)
     - [Manual migration steps](#manual-migration-steps)
   - [Organization Membership Request for CODEOWNERS](#organization-membership-request-for-codeowners)
+    - [Adding Additional CODEOWNERS](#adding-additional-codeowners)
   - [Developer Certificate of Origin](#developer-certificate-of-origin)
   - [API Reports](#api-reports)
   - [Submitting a Pull Request](#submitting-a-pull-request)
+    - [Merge Strategy](#merge-strategy)
   - [Review Process](#review-process)
     - [Review Tips](#review-tips)
 
@@ -43,7 +46,7 @@ The community plugins repository is under [Apache 2.0](../LICENSE) license. All 
 
 See [SECURITY](SECURITY.md).
 
-## Get Started!
+## Get Started
 
 So...feel ready to jump in? Let's do this. 👏🏻 💯
 
@@ -77,12 +80,15 @@ Frontend and Backend plugins come with a standalone runner that you should be ab
 
 There could be times when there is a need for a more rich development environment for a workspace. Say that the workspace and it's plugin depend on a full catalog, and maybe the kubernetes plugin already running too, that could be a bit of a pain to set up. In that case, there might be a full Backstage environment that you can run with `yarn dev` in the workspace root, which will start up a full Backstage environment located in `$WORKSPACE_ROOT/packages/app` and `$WORKSPACE_ROOT/packages/backend`.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This full Backstage environment is not setup by default, and is setup on a per workspace basis. Check out the workspace `README.md` for more information on how to get a dev environment setup for each plugin.
 
 ## Coding Guidelines
 
-All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
+To keep the codebase consistent and maintainable, we have a some cross workspace tolling in place:
+
+- `yarn`: is the package manager used for all workspaces. We will regularly update the yarn version to keep up with the latest features and bug fixes. This version is managed in the root `package.json` and `.yarnrc.yml` files and should not be locked to a different version in any workspace. Updating the yarn version could imply changes on all the `yarn.lock` files.
+- `prettier`: All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
 
 ## Versioning
 
@@ -98,9 +104,9 @@ To create a changeset, follow these steps:
 
 2. Run the following command to create a new changeset:
 
-    ```bash
-    $ yarn changeset
-    ```
+   ```bash
+   $ yarn changeset
+   ```
 
 3. You will be prompted to select the packages and the type of change you are making.
 
@@ -112,7 +118,7 @@ To create a changeset, follow these steps:
 
 Once the changeset is merged, it will trigger the release process for the plugin and create a "Version packages ($workspace_name)" PR. Once the PR is merged, a new version of the plugin will be published based on the type of change made.
 
-> [!NOTE]  
+> [!NOTE]
 > It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
 
 ## Release
@@ -125,7 +131,7 @@ A release is automatically triggered by merging the plugins “Version Packages�
 
 For workspaces the name should reflect the name of the plugins contained in a simple manner (e.g. for the plugins `todo` & `todo-backend` the workspace would be called `todo`).
 
-For plugins we will continue to follow the naming pattern suggested by the ADR on the main repository: https://backstage.io/docs/architecture-decisions/adrs-adr011.
+For plugins we will continue to follow the naming pattern suggested by the ADR on the main repository: <https://backstage.io/docs/architecture-decisions/adrs-adr011>.
 
 You can create a workspace by running the following:
 
@@ -149,6 +155,20 @@ cd workspaces/adr
 yarn new
 ```
 
+### Local development of plugins
+
+We recommend setting up a local development environment for your plugin. New plugins come with a `dev/index.ts` file that can be used to run the plugin in a standalone environment. This is useful for developing the plugin in isolation, please make sure that the `dev/index.ts` file is set up correctly for your plugin. For example, this is how it has been setup in the linguist workspace [frontend dev environment](https://github.com/backstage/community-plugins/blob/main/workspaces/linguist/plugins/linguist/dev/index.tsx) and [backend dev environment](https://github.com/backstage/community-plugins/blob/main/workspaces/linguist/plugins/linguist-backend/dev/index.tsx).
+
+If your project is composed by multiple plugins you can run them all together by setting up a `yarn dev` command in the workspace root.
+
+For example, if your workspace contains a frontend plugin `@backstage-community/plugin-foo` that uses the entity page and a backend plugin `@backstage-community/plugin-foo-backend` you can add the following to the `package.json`:
+
+```diff
+  "scripts": {
++   "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-foo --include @backstage-community/plugin-foo-backend --parallel -v -i run start",
+    "start": "yarn workspace app start",
+```
+
 ## Migrating a plugin
 
 Before proceeding with migrating a plugin, please review the following sections of the `README`:
@@ -162,7 +182,7 @@ By migrating a plugin to this repository you will need to ensure you can meet ce
 - Adopt the Changesets workflow for releasing new plugin versions.
 - Adhere to the repository security process for handling security-related issues.
 - Agree to commit to the responsibilities and requirements listed in the [Plugin Maintainer's role
-](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
+  ](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
 - Plugins moved to the repository should be licensed under Apache 2.0.
 
 ### Manual migration steps
@@ -170,11 +190,11 @@ By migrating a plugin to this repository you will need to ensure you can meet ce
 1. Prepare your environment by cloning both the repository you are migrating from and the `backstage/community-plugins` repository:
 
 ```sh
-git clone https://github.com/source-repo/existing-plugins.git
+git clone https://github.com/<source-repo>/existing-plugins.git
 git clone https://github.com/backstage/community-plugins.git
 ```
 
-2. Identify the plugin(s) you wish to migrate. If you're migrating multiple plugins, is recommended to group the migration of these by workspace.
+2. Identify the plugin(s) you wish to migrate. If you're migrating multiple plugins, it's recommended to group the migration of these by workspace.
 
 3. Within the `backstage/community-plugins` repository create a new branch for your changes:
 
@@ -182,58 +202,58 @@ git clone https://github.com/backstage/community-plugins.git
 git checkout -b migrate-workspace
 ```
 
-3. Create a new workspace in the community plugins repository.
+4. Create a new workspace in the community plugins repository. See the [Creating a new Workspace](#creating-a-new-workspace) section for more information.
 
-4. Copy the plugin files from the source repository to the `backstage/community-plugins` repository.
+5. Copy the plugin files from the source repository to the `backstage/community-plugins` repository.
 
 ```sh
 cp -r ../existing-plugins/plugins/plugin-name plugins/
 ```
 
-5. Ensure all metadata files (`package.json`) are updated to reflect the new repository. This includes updating repository URLs, issues URLs, and other references.
+6. Ensure all metadata files (`package.json`) are updated to reflect the new repository. This includes updating repository URLs, issues URLs, and other references.
 
-6. Add maintainers to the `CODEOWNERS` file for the new workspace.
+7. Generate API reports for the new plugin(s) in the workspace. See the [API Reports](#api-reports) section for more information.
+
+8. If migrating older plugins, the `package.json` file may not contain the required Backstage metadata. This can usually be resolved by running the command below.
+
+```sh
+# navigate to the root of the workspace
+yarn backstage-cli repo fix --publish
+```
+
+Visit the [Package Metadata documentation](https://backstage.io/docs/tooling/package-metadata/#backstagepluginpackages) for more information.
+
+9. Add maintainers to the `CODEOWNERS` file for the new workspace.
 
 > **Note:** The `CODEOWNERS` file will have errors until the [Organization Membership Request for CODEOWNERS](#organization-membership-request-for-codeowners) has been approved. However, it is still useful to add `CODEOWNERS` as this point as it provides a documented reference as to who owns/maintains the plugin.
 
-7. Create a new pull request from your branch.
+10. Create a new pull request from your branch.
 
-8. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
+11. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository. If applicable, update the [Backstage Plugin directory](https://backstage.io/plugins/) to reflect the new location ([example](https://github.com/backstage/backstage/pull/28502)).
 
-9.  In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
+12. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. It's recommended you deprecate the old plugin packages on npm.
 
 ## Organization Membership Request for CODEOWNERS
 
 This section outlines the process for plugin maintainers to request organization membership in the Backstage community, which is necessary for efficiently managing `CODEOWNERS` in this repository.
 
-Plugin maintainers can request organization membership by submitting a request through [this link](https://github.com/backstage/community/issues/new/choose) and filling out the provided form. In the request, they should:
+Plugin maintainers can request organization membership by submitting a request through [this link](https://github.com/backstage/community/issues/new/choose) and filling out the provided form. In the request:
 
-- List the plugins they have contributed and/or maintain within the 'Highlighted Contributions' section.
+- If you are requesting membership after migrating a plugin into this repository, include a link to the PR that performed the migration.
+- List the plugins you have contributed to and/or maintain.
 - Ping the [Community Plugins Area Maintainers](https://github.com/backstage/community/tree/main/project-areas/community-plugins#community-plugin-area-maintainers) for review and support of the request.
-
-As becoming an organization member provides elevated permissions, addition of new organization members follows a vetting process, while hoping not to create unnecessary barriers for new plugin maintainers. The following criteria are often used for the vetting process:
-
-- Is the individual a member of other teams in Backstage?
-- What is the length and consistency of their involvement with Backstage plugins and/or the Backstage community?
-- Are there other contributors or plugin maintainers who work with the individual and can vouch for them?
-- Do they have an employer with a vested interest in the Backstage community?
 
 The Community Plugins Area Maintainers will review the request. While the request is being processed, plugin maintainers are encouraged to review and approve PRs related to their plugins, even though it will not yet show up as a formal review in the GitHub UI.
 
-**Form Details:**
+Open requests will be routinely reviewed during Community Plugins SIG meetings. Community Plugin Area Maintainers must indicate support before a request is approved. Once approved, a Backstage organization admin will carry out the membership action.
 
-- **Name**: Organization Membership Request
-- **Description**: A request to become a Backstage organization member
-- **Title**: Org Member: `<your-github-login>`
-- **Labels**: `org-member-request`
+### Adding Additional CODEOWNERS
 
-The form includes fields to confirm adherence to the Code of Conduct, list highlighted contributions, and more. Please ensure you provide:
+New individuals can be added to a plugin’s `CODEOWNERS` entry to help support reviews, issue triage, and ongoing maintenance. To propose an addition, open a PR that updates the plugin's entry in the `CODEOWNERS` file and include a brief justification along with links to relevant contributions (such as authored PRs, reviews, or issue triage).
 
-1. The plugins you maintain within the community plugins section.
-2. Links to your notable contributions (PRs, issues, etc.).
-3. A list of other plugin maintainers who can vouch for your request.
+Agreement from the existing `CODEOWNERS` of the plugin is required before the change is approved.
 
-Once the form is submitted, the plugin maintainers will review your request and provide feedback or support as needed.
+Ideally, proposed codeowners have already been actively involved with the plugin. Providing this evidence also helps build a foundation for future organization membership requests.
 
 ## Developer Certificate of Origin
 
@@ -251,6 +271,12 @@ There are two ways you can do this:
 > Note: the above commands assume you've run `yarn install` before hand or recently
 
 Each plugin/package has its own API Report which means you might see more then one file updated or created depending on your changes. These changes will then need to be committed as well.
+
+> [!WARNING]
+> If you encounter this error during `yarn build:api-reports` or the "check API reports and generate API reference" step in CI:
+> "The API Report for _plugin_ is not allowed to have warnings"
+>
+> Open the API report to view more details about the warning(s), resolve them, and regenerate the api reports with `yarn build:api-reports` before committing the changes.
 
 ## Submitting a Pull Request
 
@@ -282,6 +308,12 @@ Here are some examples of good PR descriptions:
 - <https://github.com/backstage/backstage/pull/15881>
 - <https://github.com/backstage/backstage/pull/16401>
 
+### Merge Strategy
+
+The standard merge strategy for this repository is **squash merge**. This keeps the commit history clean and concise by combining all changes from a pull request into a single commit.
+
+In certain situations, such as when a pull request introduces logically distinct changes for frontend and backend, a **rebase merge** may be acceptable. This allows preserving individual commits for better traceability. However, when using rebase merge, pull request authors are expected to be judicious with the number of commits merged and ensure each commit represents a meaningful and self-contained change. Excessive granularity in commits should still be avoided. Please discuss with the reviewers if you believe a rebase merge is appropriate for your pull request.
+
 ## Review Process
 
 Once you've submitted a Pull Request (PR) the various bots will come out and do their work:
@@ -301,4 +333,4 @@ Here are a few things that can help as you go through the review process:
 - You'll want to make sure all the automated checks are passing as generally the PR won't get a review if something like the CI build is failing
 - PRs get automatically assigned so you don't need to ping people, they will be notified and have a process of their own for this
 - If you are waiting for a review or mid-review and your PR goes stale one of the easiest ways to clear the stale bot is by simply rebasing your PR
-- There are times where you might run into conflict with the `yarn.lock` during a rebase, to help with that make sure your `main` branch is up to date and then in your branch run `git checkout master yarn.lock` from the workspace too and then run `yarn install`, this will get you a conflict free `yarn.lock` file you can commit
+- There are times where you might run into conflict with the `yarn.lock` during a rebase, to help with that make sure your `main` branch is up to date and then in your branch run `git checkout main yarn.lock` from the workspace too and then run `yarn install`, this will get you a conflict free `yarn.lock` file you can commit

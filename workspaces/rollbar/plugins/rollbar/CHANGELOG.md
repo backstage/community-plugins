@@ -1,5 +1,41 @@
 # @backstage-community/plugin-rollbar
 
+## 0.8.0
+
+### Minor Changes
+
+- 583c7bd: Backstage version bump to v1.40.2
+
+## 0.7.2
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.7.0
+
+### Minor Changes
+
+- 04862ec: Backstage version bump to v1.37.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 5ac5c71: Backstage version bump to v1.35.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 0aec63d: Backstage version bump to v1.34.1
+
 ## 0.4.39
 
 ### Patch Changes

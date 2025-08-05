@@ -26,16 +26,19 @@ import {
   FactRetrieverRegistration,
   FactRetrieverRegistry,
   PersistenceContext,
-  TechInsightCheck,
 } from '@backstage-community/plugin-tech-insights-node';
 import { initializePersistenceContext } from './persistence';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  CheckResult,
+  Check,
+} from '@backstage-community/plugin-tech-insights-common';
 import {
   AuthService,
   DatabaseService,
   DiscoveryService,
   LoggerService,
   SchedulerService,
+  UrlReaderService,
 } from '@backstage/backend-plugin-api';
 
 /**
@@ -47,7 +50,7 @@ import {
  * is included for FactChecker creation.
  */
 export interface TechInsightsOptions<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   /**
@@ -82,6 +85,7 @@ export interface TechInsightsOptions<
   database: DatabaseService;
   scheduler: SchedulerService;
   auth: AuthService;
+  urlReader: UrlReaderService;
 }
 
 /**
@@ -93,7 +97,7 @@ export interface TechInsightsOptions<
  * FactChecker is present if an optional FactCheckerFactory is included in the build stage.
  */
 export type TechInsightsContext<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > = {
   factChecker?: FactChecker<CheckType, CheckResultType>;
@@ -111,7 +115,7 @@ export type TechInsightsContext<
  * @returns TechInsightsContext with persistence implementations and optionally an implementation of a FactChecker
  */
 export const buildTechInsightsContext = async <
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 >(
   options: TechInsightsOptions<CheckType, CheckResultType>,
@@ -125,6 +129,7 @@ export const buildTechInsightsContext = async <
     logger,
     scheduler,
     auth,
+    urlReader,
   } = options;
 
   const buildFactRetrieverRegistry = (): FactRetrieverRegistry => {
@@ -156,6 +161,7 @@ export const buildTechInsightsContext = async <
       discovery,
       logger,
       auth,
+      urlReader,
     },
   });
 

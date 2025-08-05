@@ -19,7 +19,7 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useBitriseBuildWorkflows } from '../../hooks/useBitriseBuildWorkflows';
 import { AsyncState } from 'react-use/esm/useAsync';
 import { BitriseBuildsTable } from '../BitriseBuildsTableComponent';

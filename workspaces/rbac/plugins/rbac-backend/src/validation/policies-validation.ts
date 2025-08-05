@@ -27,10 +27,7 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import {
-  RoleMetadataDao,
-  RoleMetadataStorage,
-} from '../database/role-metadata';
+import { RoleMetadataDao } from '../database/role-metadata';
 
 /**
  * validateSource validates the source to the role that is being modified. This includes comparing the source from the
@@ -116,6 +113,14 @@ export function validateRole(role: Role): Error | undefined {
       return err;
     }
   }
+
+  if (role.metadata && role.metadata.owner) {
+    err = validateEntityReference(role.metadata.owner, false, true);
+    if (err) {
+      return err;
+    }
+  }
+
   return undefined;
 }
 
@@ -140,6 +145,7 @@ function isValidEntityNamespace(namespace: string): boolean {
 export function validateEntityReference(
   entityRef?: string,
   role?: boolean,
+  owner?: boolean,
 ): Error | undefined {
   if (!entityRef) {
     return new Error(`'entityReference' must not be empty`);
@@ -162,6 +168,16 @@ export function validateEntityReference(
   if (role && entityRefCompound.kind !== 'role') {
     return new Error(
       `Unsupported kind ${entityRefCompound.kind}. Supported value should be "role"`,
+    );
+  }
+
+  if (
+    owner &&
+    entityRefCompound.kind !== 'user' &&
+    entityRefCompound.kind !== 'group'
+  ) {
+    return new Error(
+      `Unsupported kind ${entityRefCompound.kind}. List supported values ["user", "group"]`,
     );
   }
 
@@ -192,7 +208,7 @@ export function validateEntityReference(
 
 export async function validateGroupingPolicy(
   groupPolicy: string[],
-  roleMetadataStorage: RoleMetadataStorage,
+  metadata: RoleMetadataDao | undefined,
   source: Source,
 ): Promise<Error | undefined> {
   if (groupPolicy.length !== 2) {
@@ -228,8 +244,6 @@ export async function validateGroupingPolicy(
       `Group policy is invalid: ${groupPolicy}. User membership information could be provided only with help of Catalog API.`,
     );
   }
-
-  const metadata = await roleMetadataStorage.findRoleMetadata(parent);
 
   err = await validateSource(source, metadata);
   if (metadata && err) {

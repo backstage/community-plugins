@@ -77,3 +77,51 @@ In your `packages/backend/src/index.ts` make the following changes:
 ## Indexing ADR documents for search
 
 Refer to the [search-backend-module-adr](../search-backend-module-adr/README.md) documentation to integrate the search collator.
+
+## Parsing custom ADR formats
+
+By default, the plugin parses documents that follow the [MADR v3.0.0](https://github.com/adr/madr/tree/3.0.0)
+and [MADR v2.x](https://github.com/adr/madr/tree/2.1.2) template formats. If you use a different ADR format, consider
+writing a [module](https://backstage.io/docs/backend-system/architecture/modules) that extends this plugin and provides
+a custom parser via
+the [extension point](https://backstage.io/docs/backend-system/architecture/extension-points/) `adrExtensionPoint`. For
+example, you can create a new module that provides a custom parser as follows:
+
+```ts
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { adrExtensionPoint } from '@backstage-community/plugin-adr-backend';
+import { createCustomAdrParser } from './parser';
+
+export const adrModuleCustomAdrParser = createBackendModule({
+  pluginId: 'adr',
+  moduleId: 'custom-adr-parser',
+  register(reg) {
+    reg.registerInit({
+      deps: {
+        extensionPoint: adrExtensionPoint,
+      },
+      async init({ extensionPoint }) {
+        extensionPoint.setAdrInfoParser(createCustomAdrParser());
+      },
+    });
+  },
+});
+```
+
+And in your `parser.ts`:
+
+```ts
+import { AdrInfoParser } from '@backstage-community/plugin-adr-common';
+
+export const createCustomAdrParser = (): AdrInfoParser => {
+  return (content: string, dateFormat?: string) => {
+    // Your custom parsing logic here
+
+    return {
+      title: adrTitle,
+      status: adrStatus,
+      date: adrDate,
+    };
+  };
+};
+```

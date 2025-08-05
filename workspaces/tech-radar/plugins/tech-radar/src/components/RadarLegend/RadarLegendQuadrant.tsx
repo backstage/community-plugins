@@ -15,7 +15,6 @@
  */
 
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-import React from 'react';
 import { Quadrant, Ring } from '../../utils/types';
 import { RadarLegendRing } from './RadarLegendRing';
 import { RadarLegendProps, Segments } from './types';

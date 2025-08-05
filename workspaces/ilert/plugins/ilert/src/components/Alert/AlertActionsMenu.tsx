@@ -18,7 +18,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import React from 'react';
+import type { MouseEvent, ReactNode } from 'react';
+import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { useAlertActions } from '../../hooks/useAlertActions';
 import { Alert, AlertAction } from '../../types';
@@ -44,18 +45,18 @@ export const AlertActionsMenu = ({
   const ilertApi = useApi(ilertApiRef);
   const alertApi = useApi(alertApiRef);
   const identityApi = useApi(identityApiRef);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const callback = onAlertChanged || ((_: Alert): void => {});
   const setProcessing = setIsLoading || ((_: boolean): void => {});
   const [isAssignAlertModalOpened, setIsAssignAlertModalOpened] =
-    React.useState(false);
+    useState(false);
 
   const [{ alertActions, isLoading }] = useAlertActions(
     alert,
     Boolean(anchorEl),
   );
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -122,7 +123,7 @@ export const AlertActionsMenu = ({
     }
   };
 
-  const actions: React.ReactNode[] = alertActions.map(a => {
+  const actions: ReactNode[] = alertActions.map(a => {
     const successTrigger = a.history
       ? a.history.find(h => h.success)
       : undefined;

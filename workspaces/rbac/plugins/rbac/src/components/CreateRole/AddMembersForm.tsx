@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
 
-import { LinearProgress, TextField } from '@material-ui/core';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
+import FormHelperText from '@mui/material/FormHelperText';
+import LinearProgress from '@mui/material/LinearProgress';
+import TextField from '@mui/material/TextField';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
 import { MemberEntity } from '../../types';
@@ -48,13 +51,12 @@ export const AddMembersForm = ({
   setFieldValue,
   membersData,
 }: AddMembersFormProps) => {
-  const [search, setSearch] = React.useState<string>('');
-  const [selectedMember, setSelectedMember] = React.useState<SelectedMember>({
-    label: '',
-    etag: '',
-    type: '',
-    ref: '',
-  } as SelectedMember);
+  const [search, setSearch] = useState<string>('');
+  const [selectedMember, setSelectedMember] =
+    useState<SelectedMember[]>(selectedMembers);
+  useEffect(() => {
+    setSelectedMember(selectedMembers);
+  }, [selectedMembers]);
 
   const getDescription = (member: MemberEntity) => {
     const memberCount = getMembersCount(member);
@@ -62,11 +64,17 @@ export const AddMembersForm = ({
     const childCount = getChildGroupsCount(member);
 
     return member.kind === 'Group'
-      ? `${memberCount} members, ${parentCount} parent group, ${childCount} child groups`
+      ? [
+          memberCount > 0 ? `${memberCount} members` : '',
+          parentCount > 0 ? `${parentCount} parent group` : '',
+          childCount > 0 ? `${childCount} child groups` : '',
+        ]
+          .filter(Boolean) // Remove any empty strings
+          .join(', ')
       : undefined;
   };
 
-  const membersOptions: SelectedMember[] = React.useMemo(() => {
+  const membersOptions: SelectedMember[] = useMemo(() => {
     return membersData.members
       ? membersData.members.map((member: MemberEntity, index: number) => {
           const tag =
@@ -86,7 +94,7 @@ export const AddMembersForm = ({
       : ([] as SelectedMember[]);
   }, [membersData.members]);
 
-  const filteredMembers = React.useMemo(() => {
+  const filteredMembers = useMemo(() => {
     if (search) {
       return membersOptions
         .filter(m =>
@@ -100,56 +108,81 @@ export const AddMembersForm = ({
     return membersOptions.slice(0, 99);
   }, [membersOptions, search]);
 
+  const handleIsOptionEqualToValue = (
+    option: SelectedMember,
+    value: SelectedMember,
+  ) =>
+    value.etag
+      ? option.etag === value.etag
+      : selectedMember?.[0].etag === value.etag;
+
   return (
     <>
       <FormHelperText>
         Search and select users and groups to be added. Selected users and
-        groups will appear in the members table.
+        groups will appear in the table below.
       </FormHelperText>
       <br />
       <Autocomplete
+        disableCloseOnSelect
+        data-testid="users-and-groups-autocomplete"
+        sx={{ width: '30%' }}
+        multiple
         options={filteredMembers || []}
         getOptionLabel={(option: SelectedMember) => option.label ?? ''}
-        getOptionSelected={(option: SelectedMember, value: SelectedMember) =>
-          value.etag
-            ? option.etag === value.etag
-            : selectedMember.etag === value.etag
-        }
+        isOptionEqualToValue={handleIsOptionEqualToValue}
         loading={membersData.loading}
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}
-        onChange={(_e, value: SelectedMember) => {
+        onChange={(_e, value: SelectedMember[]) => {
           setSelectedMember(value);
-          if (value) {
-            setSearch(value.label);
-            setFieldValue('selectedMembers', [...selectedMembers, value]);
-          }
+          setFieldValue('selectedMembers', value);
         }}
+        renderTags={() => ''}
         inputValue={search}
         onInputChange={(_e, newSearch: string, reason) =>
           reason === 'input' && setSearch(newSearch)
         }
-        getOptionDisabled={(option: SelectedMember) =>
-          !!selectedMembers.find(
-            (sm: SelectedMember) => sm.etag === option.etag,
-          )
-        }
-        renderOption={(option: SelectedMember, state) => (
-          <MembersDropdownOption option={option} state={state} />
+        renderOption={(props, option: SelectedMember, state) => (
+          <MembersDropdownOption props={props} option={option} state={state} />
         )}
         noOptionsText="No users and groups found."
         clearOnEscape
         renderInput={params => (
           <TextField
+            data-testid="users-and-groups-text-field"
             {...params}
             name="add-users-and-groups"
             variant="outlined"
-            label="Users and groups"
-            placeholder="Search by user name or group name"
+            label="Select users and groups"
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required
+            onKeyDown={event => {
+              if (event.key === 'Backspace' && params.inputProps.value === '') {
+                event.stopPropagation();
+              }
+            }}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {search && (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setSearch('');
+                      }}
+                      aria-label="clear search"
+                    >
+                      <HighlightOffIcon fontSize="small" />
+                    </IconButton>
+                  )}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
           />
         )}
       />

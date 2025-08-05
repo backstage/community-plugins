@@ -5,6 +5,7 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
@@ -17,15 +18,17 @@ import { FactLifecycle } from '@backstage-community/plugin-tech-insights-node';
 import { FactRetriever } from '@backstage-community/plugin-tech-insights-node';
 import { FactRetrieverRegistration } from '@backstage-community/plugin-tech-insights-node';
 import { FactRetrieverRegistry as FactRetrieverRegistry_2 } from '@backstage-community/plugin-tech-insights-node';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { HumanDuration } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
-import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
 export const buildTechInsightsContext: <
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 >(
   options: TechInsightsOptions<CheckType, CheckResultType>,
@@ -38,7 +41,7 @@ export function createFactRetrieverRegistration(
 
 // @public
 export function createRouter<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router>;
 
@@ -49,10 +52,11 @@ export const entityMetadataFactRetriever: FactRetriever;
 export const entityOwnershipFactRetriever: FactRetriever;
 
 // @public
-export interface FactRetrieverEngine {
-  getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
-  schedule(): Promise<void>;
-  triggerJob(ref: string): Promise<void>;
+export abstract class FactRetrieverEngine {
+  abstract getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
+  abstract schedule(): Promise<void>;
+  scheduleJob(_: string): Promise<void>;
+  abstract triggerJob(ref: string): Promise<void>;
 }
 
 // @public (undocumented)
@@ -83,12 +87,14 @@ export type PersistenceContextOptions = {
 
 // @public
 export interface RouterOptions<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   config: Config;
   factChecker?: FactChecker<CheckType, CheckResultType>;
+  httpAuth: HttpAuthService;
   logger: LoggerService;
+  permissions: PermissionsService;
   persistenceContext: PersistenceContext_2;
 }
 
@@ -97,7 +103,7 @@ export const techdocsFactRetriever: FactRetriever;
 
 // @public (undocumented)
 export type TechInsightsContext<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > = {
   factChecker?: FactChecker<CheckType, CheckResultType>;
@@ -107,7 +113,7 @@ export type TechInsightsContext<
 
 // @public (undocumented)
 export interface TechInsightsOptions<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   // (undocumented)
@@ -126,6 +132,8 @@ export interface TechInsightsOptions<
   persistenceContext?: PersistenceContext_2;
   // (undocumented)
   scheduler: SchedulerService;
+  // (undocumented)
+  urlReader: UrlReaderService;
 }
 
 // @public

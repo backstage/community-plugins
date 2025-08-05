@@ -9,27 +9,27 @@
 
 .bs-topology-base-node-resource-icon {
   font-size: 80%;
-  fill: var(--pf-v5-global--palette--blue-300);
+  fill: var(--pf-t--global--icon--color--brand--default);
 }
 
 .bs-topology-base-node-resource-icon > text {
-  fill: var(--pf-v5-global--palette--white);
+  fill: var(--pf-t--global--text--color--on-brand--default);
 }
 
 .bs-topology-base-node-resource-icon-service {
-  fill: var(--pf-v5-global--palette--light-green-500);
+  fill: var(--pf-v6-chart-color-green-300);
 }
 
 .bs-topology-base-node-resource-icon-deployment,
 .bs-topology-base-node-resource-icon-daemonset,
 .bs-topology-base-node-resource-icon-job {
-  fill: var(--pf-v5-chart-color-blue-500);
+  fill: var(--pf-v6-chart-color-blue-500);
 }
 
 .bs-topology-base-node-resource-icon-application {
-  fill: var(--pf-v5-chart-color-green-500);
+  fill: var(--pf-v6-chart-color-green-500);
 }
 
 .bs-topology-resource-icon-pod {
-  fill: var(--pf-v5-chart-color-cyan-300);
+  fill: var(--pf-v6-chart-color-teal-300);
 }

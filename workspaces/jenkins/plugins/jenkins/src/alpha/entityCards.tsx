@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isJenkinsAvailable } from '../components/Router';
 
 /**
  * @alpha
@@ -30,7 +30,7 @@ export const entityLatestJenkinsRunCard = EntityCardBlueprint.makeWithOverrides(
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: 'kind:component',
+        filter: isJenkinsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.LatestRunCard {...config} />
@@ -46,6 +46,7 @@ export const entityLatestJenkinsRunCard = EntityCardBlueprint.makeWithOverrides(
 export const entityJobRunsTable = EntityCardBlueprint.make({
   name: 'job-runs',
   params: {
+    filter: isJenkinsAvailable,
     loader: () =>
       import('../components/JobRunsTable').then(m => <m.JobRunsTable />),
   },

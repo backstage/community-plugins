@@ -1,5 +1,87 @@
 ### Dependencies
 
+## 2.7.0
+
+### Minor Changes
+
+- 4202946: Backstage version bump to v1.39.0
+
+## 2.6.4
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.6.3
+
+### Patch Changes
+
+- fd39ec9: Updated dependency `@hey-api/openapi-ts` to `0.72.2`.
+
+## 2.6.2
+
+### Patch Changes
+
+- 31b91ce: Updated dependency `@hey-api/openapi-ts` to `0.67.3`.
+
+## 2.6.1
+
+### Patch Changes
+
+- 35b813d: Updated dependency `@hey-api/openapi-ts` to `0.66.7`.
+
+## 2.6.0
+
+### Minor Changes
+
+- 1b241c5: Backstage version bump to v1.38.1
+
+## 2.5.0
+
+### Minor Changes
+
+- 35086d7: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+
+## 2.4.0
+
+### Minor Changes
+
+- 972cf05: Backstage version bump to v1.35.0
+
+## 2.3.0
+
+### Minor Changes
+
+- f57dc91: Backstage version bump to v1.34.2
+
+## 2.2.5
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
+## 2.2.4
+
+### Patch Changes
+
+- 4d3571c: Clean up api report warnings and remove unnecessary files
+
+## 2.2.3
+
+### Patch Changes
+
+- 3d6256e: Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
+
+## 2.2.2
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 2.2.1
 
 ### Patch Changes

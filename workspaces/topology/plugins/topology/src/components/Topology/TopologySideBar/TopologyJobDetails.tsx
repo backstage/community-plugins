@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { V1Job } from '@kubernetes/client-node';
 
 import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 import TopologyWorkloadDetails from './TopologyWorkloadDetails';
 
-const TopologyJobDetails: React.FC<{ resource: V1Job }> = ({ resource }) => {
+const TopologyJobDetails: FC<{ resource: V1Job }> = ({ resource }) => {
   return (
     <TopologyWorkloadDetails resource={resource}>
       <TopologySideBarDetailsItem label="Desired completions">

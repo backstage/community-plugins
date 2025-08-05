@@ -1,7 +1,7 @@
 .topology-resource-labels-list {
-  border: 1px solid var(--pf-v5-global--BorderColor--300);
-  margin: var(--pf-v5-global--spacer--xs) 0px 0px 0px;
-  padding: var(--pf-v5-global--spacer--xs) var(--pf-v5-global--spacer--xs) 0px;
+  border: 1px solid var(--pf-t--global--border--color--default);
+  margin: var(--pf-t--global--spacer--xs) 0px 0px 0px;
+  padding: var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--xs) 0px;
   display: flex;
   flex-wrap: wrap;
 }
@@ -11,7 +11,7 @@
 }
 
 .topology-resource-labels-list-item {
-  margin: 0 0 var(--pf-v5-global--spacer--xs) 0 !important;
+  margin: 0 0 var(--pf-t--global--spacer--xs) 0 !important;
   display: flex !important;
   justify-content: flex-start !important;
 }
@@ -23,6 +23,6 @@
   white-space: nowrap;
 }
 
-.pf-v5-c-label__content {
+.pf-v6-c-label__content {
   font-size: 13px;
 }

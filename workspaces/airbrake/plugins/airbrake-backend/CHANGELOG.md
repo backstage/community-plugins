@@ -1,5 +1,66 @@
 # @backstage-community/plugin-airbrake-backend
 
+## 0.12.0
+
+### Minor Changes
+
+- 5756278: Backstage version bump to v1.41.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 029efd6: Backstage version bump to v1.40.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 56bc30a: Backstage version bump to v1.39.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 3c8a084: Backstage version bump to v1.38.1
+
+## 0.8.0
+
+### Minor Changes
+
+- ff89674: Backstage version bump to v1.37.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 5ffa2da: Backstage version bump to v1.36.1
+
+## 0.6.0
+
+### Minor Changes
+
+- 7d72c9c: Backstage version bump to v1.35.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 99ac249: Removed usages and references of `@backstage/backend-common`
+  Removed deprecated exports for createRouter and RouterOptions
+
+## 0.4.0
+
+### Minor Changes
+
+- ee3f034: Backstage version bump to v1.34.1
+
+## 0.3.21
+
+### Patch Changes
+
+- 14a35d5: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.20
 
 ### Patch Changes

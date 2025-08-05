@@ -6,30 +6,20 @@
 
 import { BasicPermission } from '@backstage/plugin-permission-common';
 
-// Warning: (ae-missing-release-tag) "ANNOTATION_CLUSTER_ID" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ANNOTATION_CLUSTER_ID = "janus-idp.io/ocm-cluster-id";
 
-// Warning: (ae-missing-release-tag) "ANNOTATION_PROVIDER_ID" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ANNOTATION_PROVIDER_ID = "janus-idp.io/ocm-provider-id";
 
-// Warning: (ae-missing-release-tag) "Cluster" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Cluster = ClusterBase & ClusterDetails;
 
-// Warning: (ae-missing-release-tag) "ClusterBase" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ClusterBase = {
     name: string;
 };
 
-// Warning: (ae-missing-release-tag) "ClusterDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ClusterDetails = {
     consoleUrl?: string;
@@ -53,16 +43,12 @@ export type ClusterDetails = {
     status: ClusterStatus;
 };
 
-// Warning: (ae-missing-release-tag) "ClusterNodesStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ClusterNodesStatus = {
     status: string;
     type: string;
 };
 
-// Warning: (ae-missing-release-tag) "ClusterOverview" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ClusterOverview = ClusterBase & {
     status: ClusterStatus;
@@ -72,16 +58,12 @@ export type ClusterOverview = ClusterBase & {
     nodes: Array<ClusterNodesStatus>;
 };
 
-// Warning: (ae-missing-release-tag) "ClusterStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ClusterStatus = {
     available: boolean;
     reason?: string;
 };
 
-// Warning: (ae-missing-release-tag) "ClusterUpdate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ClusterUpdate = {
     available?: boolean;
@@ -89,35 +71,14 @@ export type ClusterUpdate = {
     url?: string;
 };
 
-// Warning: (ae-missing-release-tag) "ocmClusterReadPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ocmClusterReadPermission: BasicPermission;
 
-// Warning: (ae-missing-release-tag) "ocmEntityPermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ocmEntityPermissions: BasicPermission[];
 
-// Warning: (ae-missing-release-tag) "ocmEntityReadPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ocmEntityReadPermission: BasicPermission;
-
-// Warnings were encountered during analysis:
-//
-// src/index.d.ts:3:22 - (ae-undocumented) Missing documentation for "ANNOTATION_CLUSTER_ID".
-// src/index.d.ts:4:22 - (ae-undocumented) Missing documentation for "ANNOTATION_PROVIDER_ID".
-// src/permissions.d.ts:1:22 - (ae-undocumented) Missing documentation for "ocmClusterReadPermission".
-// src/permissions.d.ts:2:22 - (ae-undocumented) Missing documentation for "ocmEntityReadPermission".
-// src/permissions.d.ts:3:22 - (ae-undocumented) Missing documentation for "ocmEntityPermissions".
-// src/types.d.ts:1:1 - (ae-undocumented) Missing documentation for "ClusterStatus".
-// src/types.d.ts:5:1 - (ae-undocumented) Missing documentation for "ClusterBase".
-// src/types.d.ts:8:1 - (ae-undocumented) Missing documentation for "ClusterUpdate".
-// src/types.d.ts:13:1 - (ae-undocumented) Missing documentation for "ClusterNodesStatus".
-// src/types.d.ts:17:1 - (ae-undocumented) Missing documentation for "ClusterDetails".
-// src/types.d.ts:38:1 - (ae-undocumented) Missing documentation for "Cluster".
-// src/types.d.ts:39:1 - (ae-undocumented) Missing documentation for "ClusterOverview".
 
 // (No @packageDocumentation comment for this package)
 

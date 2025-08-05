@@ -1,5 +1,117 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.12.0
+
+### Minor Changes
+
+- 97794d9: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [97794d9]
+  - @backstage-community/plugin-vault-node@0.9.0
+
+## 0.11.0
+
+### Minor Changes
+
+- f1eec5a: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [f1eec5a]
+  - @backstage-community/plugin-vault-node@0.8.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 07ed09f: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [07ed09f]
+  - @backstage-community/plugin-vault-node@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 6fed93a: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [6fed93a]
+  - @backstage-community/plugin-vault-node@0.6.0
+
+## 0.8.1
+
+### Patch Changes
+
+- bdf4d36: Add catalog plugins in devDependencies for development purposes.
+
+## 0.8.0
+
+### Minor Changes
+
+- 416179b: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [416179b]
+  - @backstage-community/plugin-vault-node@0.5.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 2c14d3a: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [2c14d3a]
+  - @backstage-community/plugin-vault-node@0.4.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 9c6bac1: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [9c6bac1]
+  - @backstage-community/plugin-vault-node@0.3.0
+
+## 0.5.2
+
+### Patch Changes
+
+- e7dea45: Fixed typo under the "New Backend System" instructions
+
+## 0.5.1
+
+### Patch Changes
+
+- e0cedc6: Removed dependency `@backstage/backend-tasks`
+
+## 0.5.0
+
+### Minor Changes
+
+- 5bbd06d: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [5bbd06d]
+  - @backstage-community/plugin-vault-node@0.2.0
+
+## 0.4.21
+
+### Patch Changes
+
+- e45e2f8: Remove unused @backstage/backend-common package from dependencies.
+
 ## 0.4.20
 
 ### Patch Changes

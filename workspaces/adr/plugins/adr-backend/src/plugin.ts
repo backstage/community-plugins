@@ -16,8 +16,31 @@
 import {
   coreServices,
   createBackendPlugin,
+  createExtensionPoint,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
+import { AdrInfoParser } from '@backstage-community/plugin-adr-common';
+
+/**
+ * Options for {@link adrExtensionPoint}.
+ *
+ * @public
+ */
+export type AdrExtensionPoint = {
+  /**
+   * Allows you to parse files into different ADR formats.
+   */
+  setAdrInfoParser(adrInfoParser: AdrInfoParser): void;
+};
+
+/**
+ * Extension point for customizing how ADRs are shaped for the backend.
+ *
+ * @public
+ */
+export const adrExtensionPoint = createExtensionPoint<AdrExtensionPoint>({
+  id: 'adr.parser.extension',
+});
 
 /**
  * ADR backend plugin
@@ -27,6 +50,12 @@ import { createRouter } from './service/router';
 export const adrPlugin = createBackendPlugin({
   pluginId: 'adr',
   register(env) {
+    let parser: AdrInfoParser | undefined;
+    env.registerExtensionPoint(adrExtensionPoint, {
+      setAdrInfoParser(adrInfoParser: AdrInfoParser) {
+        parser = adrInfoParser;
+      },
+    });
     env.registerInit({
       deps: {
         logger: coreServices.logger,
@@ -40,6 +69,7 @@ export const adrPlugin = createBackendPlugin({
             logger,
             reader,
             cacheClient: cache,
+            parser,
           }),
         );
 

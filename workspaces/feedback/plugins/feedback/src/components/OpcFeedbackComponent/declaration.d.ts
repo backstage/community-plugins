@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare module '@one-platform/opc-feedback';
 declare namespace JSX {
   interface IntrinsicElements {
     'opc-feedback': {
       spa: string;
-      docs: string;
       summaryLimit: number;
       theme: string;
       app: string;
+      docs?: string;
+      template?: any;
     };
   }
 }

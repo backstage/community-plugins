@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
-import { Content, Header, Page } from '@backstage/core-components';
-import { RequirePermission } from '@backstage/plugin-permission-react';
-
-import { DeleteDialogContextProvider } from '@janus-idp/shared-react';
-
-import { policyEntityReadPermission } from '@backstage-community/plugin-rbac-common';
+import { Content, Header, Page, Progress } from '@backstage/core-components';
 
 import { RolesList } from './RolesList/RolesList';
+import { useApi } from '@backstage/core-plugin-api';
+import { rbacApiRef } from '../api/RBACBackendClient';
+import { useAsync } from 'react-use';
+import { ErrorPage } from '@backstage/core-components';
+import { DeleteDialogContextProvider } from './DeleteDialogContext';
 
-export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => (
-  <RequirePermission
-    permission={policyEntityReadPermission}
-    resourceRef={policyEntityReadPermission.resourceType}
-  >
-    <Page themeId="tool">
-      {useHeader && <Header title="RBAC" />}
-      <Content>
-        <DeleteDialogContextProvider>
-          <RolesList />
-        </DeleteDialogContextProvider>
-      </Content>
-    </Page>
-  </RequirePermission>
-);
+export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
+  const rbacApi = useApi(rbacApiRef);
+  const { loading: isUserLoading, value: result } = useAsync(
+    async () => await rbacApi.getUserAuthorization(),
+    [],
+  );
+
+  if (!isUserLoading) {
+    return result?.status === 'Authorized' ? (
+      <Page themeId="tool">
+        {useHeader && <Header title="RBAC" />}
+        <Content>
+          <DeleteDialogContextProvider>
+            <RolesList />
+          </DeleteDialogContextProvider>
+        </Content>
+      </Page>
+    ) : (
+      <ErrorPage statusMessage="Not Found" />
+    );
+  }
+  return <Progress />;
+};

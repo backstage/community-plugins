@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 
 type CriteriaToggleButtonProps = {

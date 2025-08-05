@@ -1,5 +1,71 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.10.0
+
+### Minor Changes
+
+- 3bf0bac: Backstage version bump to v1.41.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 89ddc71: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 1cd31a8: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 8bda463: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- c0c6866: Added the `environments` prop to the `<EntityGithubDeploymentsCard />` component to filter deployments by environment.
+
+## 0.5.0
+
+### Minor Changes
+
+- aeeb3d2: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 314b86f: Backstage version bump to v1.36.1
+
+## 0.3.0
+
+### Minor Changes
+
+- eb947f4: Backstage version bump to v1.35.1
+
+## 0.2.1
+
+### Patch Changes
+
+- 9063139: Adding support for the new frontend system, available at the `/alpha` export.
+
+## 0.2.0
+
+### Minor Changes
+
+- 3492406: Backstage version bump to v1.34.2
+
 ## 0.1.70
 
 ### Patch Changes

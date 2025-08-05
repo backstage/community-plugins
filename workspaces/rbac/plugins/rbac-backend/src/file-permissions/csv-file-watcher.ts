@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { LoggerService } from '@backstage/backend-plugin-api';
+import type {
+  AuditorService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 
-import type { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
-import { Enforcer, FileAdapter, newEnforcer, newModelFromString } from 'casbin';
+import { Enforcer, newEnforcer, newModelFromString } from 'casbin';
 import { parse } from 'csv-parse/sync';
 import { difference } from 'lodash';
 
-import {
-  HANDLE_RBAC_DATA_STAGE,
-  PermissionAuditInfo,
-  PermissionEvents,
-  RBAC_BACKEND,
-  RoleAuditInfo,
-  RoleEvents,
-} from '../audit-log/audit-logger';
+import { ActionType, PermissionEvents, RoleEvents } from '../auditor/auditor';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -37,6 +32,7 @@ import {
   metadataStringToPolicy,
   policyToString,
   transformArrayToPolicy,
+  transformPolicyGroupToLowercase,
 } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
@@ -48,14 +44,15 @@ import {
   validateSource,
 } from '../validation/policies-validation';
 import { AbstractFileWatcher } from './file-watcher';
+import { LowercaseFileAdapter } from './lowercase-file-adapter';
 
 export const CSV_PERMISSION_POLICY_FILE_AUTHOR = 'csv permission policy file';
 
 type CSVFilePolicies = {
   addedPolicies: string[][];
-  addedGroupPolicies: string[][];
   removedPolicies: string[][];
-  removedGroupPolicies: string[][];
+  addedGroupPolicies: Map<string, string[]>;
+  removedGroupPolicies: Map<string, string[]>;
 };
 
 export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
@@ -68,15 +65,15 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     logger: LoggerService,
     private readonly enforcer: EnforcerDelegate,
     private readonly roleMetadataStorage: RoleMetadataStorage,
-    private readonly auditLogger: AuditLogger,
+    private readonly auditor: AuditorService,
   ) {
     super(filePath, allowReload, logger);
     this.currentContent = [];
     this.csvFilePolicies = {
       addedPolicies: [],
-      addedGroupPolicies: [],
       removedPolicies: [],
-      removedGroupPolicies: [],
+      addedGroupPolicies: new Map<string, string[]>(),
+      removedGroupPolicies: new Map<string, string[]>(),
     };
   }
 
@@ -86,13 +83,17 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    */
   parse(): string[][] {
     const content = this.getCurrentContents();
-    const parser = parse(content, {
+    const data = parse(content, {
       skip_empty_lines: true,
       relax_column_count: true,
       trim: true,
     });
 
-    return parser;
+    for (const policy of data) {
+      transformPolicyGroupToLowercase(policy);
+    }
+
+    return data;
   }
 
   /**
@@ -114,56 +115,29 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     const tempEnforcer = await newEnforcer(
       newModelFromString(MODEL),
-      new FileAdapter(this.filePath),
+      new LowercaseFileAdapter(this.filePath),
     );
 
-    // Check for any old policies that will need to be removed by checking if
-    // the policy no longer exists in the temp enforcer (csv file)
-    const roleMetadatas = await this.roleMetadataStorage.filterRoleMetadata(
-      'csv-file',
+    // Check for any old policies that will need to be removed
+    await this.filterPoliciesAndRoles(
+      this.enforcer,
+      tempEnforcer,
+      this.csvFilePolicies.removedPolicies,
+      this.csvFilePolicies.removedGroupPolicies,
+      true,
     );
-    const fileRoles = roleMetadatas.map(meta => meta.roleEntityRef);
 
-    if (fileRoles.length > 0) {
-      const groupingPoliciesToRemove =
-        await this.enforcer.getFilteredGroupingPolicy(1, ...fileRoles);
-      for (const gPolicy of groupingPoliciesToRemove) {
-        if (!(await tempEnforcer.hasGroupingPolicy(...gPolicy))) {
-          this.csvFilePolicies.removedGroupPolicies.push(gPolicy);
-        }
-      }
-      const policiesToRemove = await this.enforcer.getFilteredPolicy(
-        0,
-        ...fileRoles,
-      );
-      for (const policy of policiesToRemove) {
-        if (!(await tempEnforcer.hasPolicy(...policy))) {
-          this.csvFilePolicies.removedPolicies.push(policy);
-        }
-      }
-    }
-
-    // Check for any new policies that need to be added by checking if
-    // the policy does not currently exist in the enforcer
-    const policiesToAdd = await tempEnforcer.getPolicy();
-    const groupPoliciesToAdd = await tempEnforcer.getGroupingPolicy();
-
-    for (const policy of policiesToAdd) {
-      if (!(await this.enforcer.hasPolicy(...policy))) {
-        this.csvFilePolicies.addedPolicies.push(policy);
-      }
-    }
-
-    for (const groupPolicy of groupPoliciesToAdd) {
-      if (!(await this.enforcer.hasGroupingPolicy(...groupPolicy))) {
-        this.csvFilePolicies.addedGroupPolicies.push(groupPolicy);
-      }
-    }
+    await this.filterPoliciesAndRoles(
+      tempEnforcer,
+      this.enforcer,
+      this.csvFilePolicies.addedPolicies,
+      this.csvFilePolicies.addedGroupPolicies,
+    );
 
     await this.migrateLegacyMetadata(tempEnforcer);
 
     // We pass current here because this is during initialization and it has not changed yet
-    await this.updatePolicies(content, tempEnforcer);
+    await this.updatePolicies(content);
 
     if (this.allowReload) {
       this.watchFile();
@@ -175,9 +149,8 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
   // temp enforcer (csv file) and a role metadata storage.
   // We will update role metadata with the new source "csv-file"
   private async migrateLegacyMetadata(tempEnforcer: Enforcer) {
-    let legacyRolesMetadata = await this.roleMetadataStorage.filterRoleMetadata(
-      'legacy',
-    );
+    let legacyRolesMetadata =
+      await this.roleMetadataStorage.filterRoleMetadata('legacy');
     const legacyRoles = legacyRolesMetadata.map(meta => meta.roleEntityRef);
     if (legacyRoles.length > 0) {
       const legacyGroupPolicies = await tempEnforcer.getFilteredGroupingPolicy(
@@ -221,7 +194,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     const tempEnforcer = await newEnforcer(
       newModelFromString(MODEL),
-      new FileAdapter(this.filePath!),
+      new LowercaseFileAdapter(this.filePath!),
     );
 
     const currentFlatContent = this.currentContent.flatMap(data => {
@@ -231,6 +204,359 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       return policyToString(data);
     });
 
+    await this.findFileContentDiff(
+      currentFlatContent,
+      newFlatContent,
+      tempEnforcer,
+    );
+
+    await this.updatePolicies(newContent);
+  }
+
+  /**
+   * updatePolicies is used to update all of the permission policies and roles within a CSV file.
+   * It will check the number of added and removed permissions policies and roles and call the appropriate
+   * methods for these.
+   * It will also update the current contents of the CSV file to the most recent
+   * @param newContent The new content present in the CSV file
+   */
+  private async updatePolicies(newContent: string[][]): Promise<void> {
+    this.currentContent = newContent;
+
+    if (this.csvFilePolicies.addedPolicies.length > 0)
+      await this.addPermissionPolicies();
+    if (this.csvFilePolicies.removedPolicies.length > 0)
+      await this.removePermissionPolicies();
+    if (this.csvFilePolicies.addedGroupPolicies.size > 0) await this.addRoles();
+    if (this.csvFilePolicies.removedGroupPolicies.size > 0)
+      await this.removeRoles();
+  }
+
+  /**
+   * addPermissionPolicies will add the new permission policies that are present in the CSV file.
+   */
+  private async addPermissionPolicies(): Promise<void> {
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: PermissionEvents.POLICY_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.CREATE, source: 'csv-file' },
+    });
+
+    try {
+      await this.enforcer.addPolicies(this.csvFilePolicies.addedPolicies);
+      await auditorEvent.success({
+        meta: { policies: this.csvFilePolicies.addedPolicies },
+      });
+    } catch (e) {
+      await auditorEvent.fail({
+        meta: { policies: this.csvFilePolicies.addedPolicies },
+        error: e,
+      });
+    }
+
+    this.csvFilePolicies.addedPolicies = [];
+  }
+
+  /**
+   * removePermissionPolicies will remove the permission policies that are no longer present in the CSV file.
+   */
+  private async removePermissionPolicies(): Promise<void> {
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: PermissionEvents.POLICY_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.DELETE, source: 'csv-file' },
+    });
+
+    try {
+      await this.enforcer.removePolicies(this.csvFilePolicies.removedPolicies);
+      await auditorEvent.success({
+        meta: { policies: this.csvFilePolicies.removedPolicies },
+      });
+    } catch (e) {
+      await auditorEvent.fail({
+        meta: { policies: this.csvFilePolicies.removedPolicies },
+        error: e,
+      });
+    }
+
+    this.csvFilePolicies.removedPolicies = [];
+  }
+
+  /**
+   * addRoles will add the new roles that are present in the CSV file.
+   */
+  private async addRoles(): Promise<void> {
+    const changedPolicies: {
+      addedPolicies: string[][];
+      updatedPolicies: string[][];
+      failedPolicies: { error: string; policies: string[][] }[];
+    } = {
+      addedPolicies: [],
+      updatedPolicies: [],
+      failedPolicies: [],
+    };
+
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: RoleEvents.ROLE_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.CREATE_OR_UPDATE, source: 'csv-file' },
+    });
+
+    for (const [key, value] of this.csvFilePolicies.addedGroupPolicies) {
+      const groupPolicies = value.map(member => {
+        return [member, key];
+      });
+
+      const roleMetadata: RoleMetadataDao = {
+        source: 'csv-file',
+        roleEntityRef: key,
+        author: CSV_PERMISSION_POLICY_FILE_AUTHOR,
+        modifiedBy: CSV_PERMISSION_POLICY_FILE_AUTHOR,
+      };
+
+      try {
+        const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
+          roleMetadata.roleEntityRef,
+        );
+
+        await this.enforcer.addGroupingPolicies(groupPolicies, roleMetadata);
+
+        if (currentMetadata) {
+          changedPolicies.updatedPolicies.push(...groupPolicies);
+        } else {
+          changedPolicies.addedPolicies.push(...groupPolicies);
+        }
+      } catch (e) {
+        changedPolicies.failedPolicies.push({
+          error: e,
+          policies: groupPolicies,
+        });
+      }
+    }
+
+    if (changedPolicies.failedPolicies.length > 0) {
+      await auditorEvent.fail({
+        error: new Error(
+          `Failed to add or update group policies after modification ${this.filePath}.`,
+        ),
+        meta: { ...changedPolicies },
+      });
+    } else {
+      await auditorEvent.success({
+        meta: {
+          addedPolicies: changedPolicies.addedPolicies,
+          updatedPolicies: changedPolicies.updatedPolicies,
+        },
+      });
+    }
+
+    this.csvFilePolicies.addedGroupPolicies = new Map<string, string[]>();
+  }
+
+  /**
+   * removeRoles will remove the roles that are no longer present in the CSV file.
+   * If the role exists with multiple groups and or users, we will update it role information.
+   * Otherwise, we will remove the role completely.
+   */
+  private async removeRoles(): Promise<void> {
+    for (const [key, value] of this.csvFilePolicies.removedGroupPolicies) {
+      // This requires knowledge of whether or not it is an update
+      const oldGroupingPolicies = await this.enforcer.getFilteredGroupingPolicy(
+        1,
+        key,
+      );
+      const groupPolicies = value.map(member => {
+        return [member, key];
+      });
+
+      const roleMetadata: RoleMetadataDao = {
+        source: 'csv-file',
+        roleEntityRef: key,
+        author: CSV_PERMISSION_POLICY_FILE_AUTHOR,
+        modifiedBy: CSV_PERMISSION_POLICY_FILE_AUTHOR,
+      };
+      const isUpdate =
+        oldGroupingPolicies.length > 1 &&
+        oldGroupingPolicies.length !== groupPolicies.length;
+      const actionType = isUpdate ? ActionType.UPDATE : ActionType.DELETE;
+
+      const meta = {
+        ...roleMetadata,
+        members: value,
+      };
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: RoleEvents.ROLE_WRITE,
+        severityLevel: 'medium',
+        meta: { actionType, source: meta.source },
+      });
+
+      try {
+        await this.enforcer.removeGroupingPolicies(
+          groupPolicies,
+          roleMetadata,
+          isUpdate,
+        );
+        await auditorEvent.success({ meta });
+      } catch (e) {
+        await auditorEvent.fail({
+          meta,
+          error: e,
+        });
+      }
+    }
+
+    this.csvFilePolicies.removedGroupPolicies = new Map<string, string[]>();
+  }
+
+  async cleanUpRolesAndPolicies(): Promise<void> {
+    const roleMetadatas =
+      await this.roleMetadataStorage.filterRoleMetadata('csv-file');
+    const fileRoles = roleMetadatas.map(meta => meta.roleEntityRef);
+
+    if (fileRoles.length > 0) {
+      for (const fileRole of fileRoles) {
+        const filteredPolicies = await this.enforcer.getFilteredGroupingPolicy(
+          1,
+          fileRole,
+        );
+        for (const groupPolicy of filteredPolicies) {
+          this.addGroupPolicyToMap(
+            this.csvFilePolicies.removedGroupPolicies,
+            groupPolicy[1],
+            groupPolicy[0],
+          );
+        }
+        this.csvFilePolicies.removedPolicies.push(
+          ...(await this.enforcer.getFilteredPolicy(0, fileRole)),
+        );
+      }
+    }
+    await this.removePermissionPolicies();
+    await this.removeRoles();
+  }
+
+  async filterPoliciesAndRoles(
+    enforcerOne: Enforcer | EnforcerDelegate,
+    enforcerTwo: Enforcer | EnforcerDelegate,
+    policies: string[][],
+    groupPolicies: Map<string, string[]>,
+    remove?: boolean,
+  ) {
+    // Check for any policies that need to be edited by comparing policies from
+    // one enforcer to the other
+    const policiesToEdit = await enforcerOne.getPolicy();
+    const groupPoliciesToEdit = await enforcerOne.getGroupingPolicy();
+
+    for (const policy of policiesToEdit) {
+      if (
+        !(await enforcerTwo.hasPolicy(...policy)) &&
+        (await this.validateAddedPolicy(
+          policy,
+          enforcerOne as Enforcer,
+          remove,
+        ))
+      ) {
+        policies.push(policy);
+      }
+
+      // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+      if (policy[1] === 'policy-entity' && policy[2] === 'create' && !remove) {
+        this.logger.warn(
+          `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${policy} to use 'policy.entity.create' instead of 'policy-entity' from source csv-file`,
+        );
+      }
+    }
+
+    for (const groupPolicy of groupPoliciesToEdit) {
+      if (
+        !(await enforcerTwo.hasGroupingPolicy(...groupPolicy)) &&
+        (await this.validateAddedGroupPolicy(
+          groupPolicy,
+          enforcerOne as Enforcer,
+          remove,
+        ))
+      ) {
+        this.addGroupPolicyToMap(groupPolicies, groupPolicy[1], groupPolicy[0]);
+      }
+    }
+  }
+
+  async validateAddedPolicy(
+    policy: string[],
+    tempEnforcer: Enforcer,
+    remove?: boolean,
+  ): Promise<boolean> {
+    const transformedPolicy = transformArrayToPolicy(policy);
+    const metadata = await this.roleMetadataStorage.findRoleMetadata(policy[0]);
+
+    if (remove) {
+      return metadata?.source === 'csv-file';
+    }
+
+    let err = validatePolicy(transformedPolicy);
+    if (err) {
+      this.logger.warn(
+        `Failed to validate policy from file ${this.filePath}. Cause: ${err.message}`,
+      );
+      return false;
+    }
+
+    err = await validateSource('csv-file', metadata);
+    if (err) {
+      this.logger.warn(
+        `Unable to add policy ${policy} from file ${this.filePath}. Cause: ${err.message}`,
+      );
+      return false;
+    }
+
+    err = await checkForDuplicatePolicies(tempEnforcer, policy, this.filePath!);
+    if (err) {
+      this.logger.warn(err.message);
+      return false;
+    }
+
+    return true;
+  }
+
+  async validateAddedGroupPolicy(
+    groupPolicy: string[],
+    tempEnforcer: Enforcer,
+    remove?: boolean,
+  ): Promise<boolean> {
+    const metadata = await this.roleMetadataStorage.findRoleMetadata(
+      groupPolicy[1],
+    );
+
+    if (remove) {
+      return metadata?.source === 'csv-file';
+    }
+
+    let err = await validateGroupingPolicy(groupPolicy, metadata, 'csv-file');
+    if (err) {
+      this.logger.warn(
+        `${err.message}, error originates from file ${this.filePath}`,
+      );
+      return false;
+    }
+
+    err = await checkForDuplicateGroupPolicies(
+      tempEnforcer,
+      groupPolicy,
+      this.filePath!,
+    );
+    if (err) {
+      this.logger.warn(err.message);
+      return false;
+    }
+
+    return true;
+  }
+
+  async findFileContentDiff(
+    currentFlatContent: string[],
+    newFlatContent: string[],
+    tempEnforcer: Enforcer,
+  ) {
     const diffRemoved = difference(currentFlatContent, newFlatContent); // policy was removed
     const diffAdded = difference(newFlatContent, currentFlatContent); // policy was added
 
@@ -247,272 +573,50 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         this.csvFilePolicies.removedPolicies.push(convertedPolicy);
       } else if (convertedPolicy[0] === 'g') {
         convertedPolicy.splice(0, 1);
-        this.csvFilePolicies.removedGroupPolicies.push(convertedPolicy);
+        this.addGroupPolicyToMap(
+          this.csvFilePolicies.removedGroupPolicies,
+          convertedPolicy[1],
+          convertedPolicy[0],
+        );
       }
     });
 
-    diffAdded.forEach(policy => {
+    for (const policy of diffAdded) {
       const convertedPolicy = metadataStringToPolicy(policy);
       if (convertedPolicy[0] === 'p') {
         convertedPolicy.splice(0, 1);
-        this.csvFilePolicies.addedPolicies.push(convertedPolicy);
+        if (await this.validateAddedPolicy(convertedPolicy, tempEnforcer))
+          this.csvFilePolicies.addedPolicies.push(convertedPolicy);
+
+        // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+        if (
+          convertedPolicy[1] === 'policy-entity' &&
+          convertedPolicy[2] === 'create'
+        ) {
+          this.logger.warn(
+            `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${convertedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source csv-file`,
+          );
+        }
       } else if (convertedPolicy[0] === 'g') {
         convertedPolicy.splice(0, 1);
-        this.csvFilePolicies.addedGroupPolicies.push(convertedPolicy);
-      }
-    });
-
-    await this.updatePolicies(newContent, tempEnforcer);
-  }
-
-  /**
-   * updatePolicies is used to update all of the permission policies and roles within a CSV file.
-   * It will check the number of added and removed permissions policies and roles and call the appropriate
-   * methods for these.
-   * It will also update the current contents of the CSV file to the most recent
-   * @param newContent The new content present in the CSV file
-   * @param tempEnforcer Temporary enforcer for checking for duplicates when adding policies
-   */
-  private async updatePolicies(
-    newContent: string[][],
-    tempEnforcer: Enforcer,
-  ): Promise<void> {
-    this.currentContent = newContent;
-
-    if (this.csvFilePolicies.addedPolicies.length > 0)
-      await this.addPermissionPolicies(tempEnforcer);
-    if (this.csvFilePolicies.removedPolicies.length > 0)
-      await this.removePermissionPolicies();
-    if (this.csvFilePolicies.addedGroupPolicies.length > 0)
-      await this.addRoles(tempEnforcer);
-    if (this.csvFilePolicies.removedGroupPolicies.length > 0)
-      await this.removeRoles();
-  }
-
-  /**
-   * addPermissionPolicies will add the new permission policies that are present in the CSV file.
-   * We will attempt to validate the permission policy and log any warnings that are encountered.
-   * If a warning is encountered, we will skip adding the permission policy to the enforcer.
-   * @param tempEnforcer Temporary enforcer for checking for duplicates when adding policies
-   */
-  private async addPermissionPolicies(tempEnforcer: Enforcer): Promise<void> {
-    for (const policy of this.csvFilePolicies.addedPolicies) {
-      const transformedPolicy = transformArrayToPolicy(policy);
-      const metadata = await this.roleMetadataStorage.findRoleMetadata(
-        policy[0],
-      );
-
-      let err = validatePolicy(transformedPolicy);
-      if (err) {
-        this.logger.warn(
-          `Failed to validate policy from file ${this.filePath}. Cause: ${err.message}`,
-        );
-        continue;
-      }
-
-      err = await validateSource('csv-file', metadata);
-      if (err) {
-        this.logger.warn(
-          `Unable to add policy ${policy} from file ${this.filePath}. Cause: ${err.message}`,
-        );
-        continue;
-      }
-
-      err = await checkForDuplicatePolicies(
-        tempEnforcer,
-        policy,
-        this.filePath!,
-      );
-      if (err) {
-        this.logger.warn(err.message);
-        continue;
-      }
-      try {
-        await this.enforcer.addPolicy(policy);
-
-        await this.auditLogger.auditLog<PermissionAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message: `Created policy`,
-          eventName: PermissionEvents.CREATE_POLICY,
-          metadata: { policies: [policy], source: 'csv-file' },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
-        });
-      } catch (e) {
-        this.logger.warn(
-          `Failed to add or update policy ${policy} after modification ${this.filePath}. Cause: ${e}`,
-        );
+        if (await this.validateAddedGroupPolicy(convertedPolicy, tempEnforcer))
+          this.addGroupPolicyToMap(
+            this.csvFilePolicies.addedGroupPolicies,
+            convertedPolicy[1],
+            convertedPolicy[0],
+          );
       }
     }
-
-    this.csvFilePolicies.addedPolicies = [];
   }
 
-  /**
-   * removePermissionPolicies will remove the permission policies that are no longer present in the CSV file.
-   */
-  private async removePermissionPolicies(): Promise<void> {
-    try {
-      await this.enforcer.removePolicies(this.csvFilePolicies.removedPolicies);
-
-      await this.auditLogger.auditLog<PermissionAuditInfo>({
-        actorId: RBAC_BACKEND,
-        message: `Deleted policies`,
-        eventName: PermissionEvents.DELETE_POLICY,
-        metadata: {
-          policies: this.csvFilePolicies.removedPolicies,
-          source: 'csv-file',
-        },
-        stage: HANDLE_RBAC_DATA_STAGE,
-        status: 'succeeded',
-      });
-    } catch (e) {
-      this.logger.warn(
-        `Failed to remove policies ${JSON.stringify(
-          this.csvFilePolicies.removedPolicies,
-        )} after modification ${this.filePath}. Cause: ${e}`,
-      );
+  addGroupPolicyToMap(
+    groupPolicyMap: Map<string, string[]>,
+    key: string,
+    value: string,
+  ) {
+    if (!groupPolicyMap.has(key)) {
+      groupPolicyMap.set(key, []);
     }
-    this.csvFilePolicies.removedPolicies = [];
-  }
-
-  /**
-   * addRoles will add the new roles that are present in the CSV file.
-   * We will attempt to validate the role and log any warnings that are encountered.
-   * If a warning is encountered, we will skip adding the role to the enforcer.
-   * @param tempEnforcer Temporary enforcer for checking for duplicates when adding policies
-   */
-  private async addRoles(tempEnforcer: Enforcer): Promise<void> {
-    for (const groupPolicy of this.csvFilePolicies.addedGroupPolicies) {
-      let err = await validateGroupingPolicy(
-        groupPolicy,
-        this.roleMetadataStorage,
-        'csv-file',
-      );
-      if (err) {
-        this.logger.warn(
-          `${err.message}, error originates from file ${this.filePath}`,
-        );
-        continue;
-      }
-
-      err = await checkForDuplicateGroupPolicies(
-        tempEnforcer,
-        groupPolicy,
-        this.filePath!,
-      );
-      if (err) {
-        this.logger.warn(err.message);
-        continue;
-      }
-
-      try {
-        const roleMetadata: RoleMetadataDao = {
-          source: 'csv-file',
-          roleEntityRef: groupPolicy[1],
-          author: CSV_PERMISSION_POLICY_FILE_AUTHOR,
-          modifiedBy: CSV_PERMISSION_POLICY_FILE_AUTHOR,
-        };
-
-        const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
-          roleMetadata.roleEntityRef,
-        );
-
-        await this.enforcer.addGroupingPolicy(groupPolicy, roleMetadata);
-
-        const eventName = currentMetadata
-          ? RoleEvents.UPDATE_ROLE
-          : RoleEvents.CREATE_ROLE;
-        const message = currentMetadata ? 'Updated role' : 'Created role';
-        await this.auditLogger.auditLog<RoleAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message,
-          eventName,
-          metadata: { ...roleMetadata, members: [groupPolicy[0]] },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
-        });
-      } catch (e) {
-        this.logger.warn(
-          `Failed to add or update group policy ${groupPolicy} after modification ${this.filePath}. Cause: ${e}`,
-        );
-      }
-    }
-    this.csvFilePolicies.addedGroupPolicies = [];
-  }
-
-  /**
-   * removeRoles will remove the roles that are no longer present in the CSV file.
-   * If the role exists with multiple groups and or users, we will update it role information.
-   * Otherwise, we will remove the role completely.
-   */
-  private async removeRoles(): Promise<void> {
-    for (const groupPolicy of this.csvFilePolicies.removedGroupPolicies) {
-      const roleEntityRef = groupPolicy[1];
-      // this requires knowledge of whether or not it is an update
-      const isUpdate = await this.enforcer.getFilteredGroupingPolicy(
-        1,
-        roleEntityRef,
-      );
-
-      // Need to update the time
-      try {
-        const metadata: RoleMetadataDao = {
-          source: 'csv-file',
-          roleEntityRef,
-          author: CSV_PERMISSION_POLICY_FILE_AUTHOR,
-          modifiedBy: CSV_PERMISSION_POLICY_FILE_AUTHOR,
-        };
-
-        await this.enforcer.removeGroupingPolicy(
-          groupPolicy,
-          metadata,
-          isUpdate.length > 1,
-        );
-
-        const isRolePresent = await this.roleMetadataStorage.findRoleMetadata(
-          roleEntityRef,
-        );
-        const eventName = isRolePresent
-          ? RoleEvents.UPDATE_ROLE
-          : RoleEvents.DELETE_ROLE;
-        const message = isRolePresent
-          ? 'Updated role: deleted members'
-          : 'Deleted role';
-        await this.auditLogger.auditLog<RoleAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message,
-          eventName,
-          metadata: { ...metadata, members: [groupPolicy[0]] },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
-        });
-      } catch (e) {
-        this.logger.warn(
-          `Failed to remove group policy ${groupPolicy} after modification ${this.filePath}. Cause: ${e}`,
-        );
-      }
-    }
-    this.csvFilePolicies.removedGroupPolicies = [];
-  }
-
-  async cleanUpRolesAndPolicies(): Promise<void> {
-    const roleMetadatas = await this.roleMetadataStorage.filterRoleMetadata(
-      'csv-file',
-    );
-    const fileRoles = roleMetadatas.map(meta => meta.roleEntityRef);
-
-    if (fileRoles.length > 0) {
-      for (const fileRole of fileRoles) {
-        this.csvFilePolicies.removedGroupPolicies.push(
-          ...(await this.enforcer.getFilteredGroupingPolicy(1, fileRole)),
-        );
-        this.csvFilePolicies.removedPolicies.push(
-          ...(await this.enforcer.getFilteredPolicy(0, fileRole)),
-        );
-      }
-    }
-    await this.removePermissionPolicies();
-    await this.removeRoles();
+    groupPolicyMap.get(key)?.push(value);
   }
 }

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { render, screen } from '@testing-library/react';
 
 import { ReviewStep } from './ReviewStep';
@@ -30,6 +28,7 @@ describe('ReviewStep', () => {
     selectedMembers: [
       { label: 'User 1', etag: 'etag1', type: 'User', ref: 'User One' },
     ],
+    selectedPlugins: [{ label: 'Policy1', value: 'policy1' }],
     permissionPoliciesRows: [
       {
         plugin: 'policy1',

@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 
-import { makeStyles, TextField, Typography } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { getDefaultRegistry } from '@rjsf/core';
 import { FieldProps } from '@rjsf/utils';
-import { getInnerSchemaForArrayItem } from '@rjsf/utils/lib/schema/getDefaultFormState';
-
-const useStyles = makeStyles(theme => ({
-  arrayFieldDescription: {
-    marginTop: '5px',
-    fontWeight: 500,
-    color: `${theme.palette.grey[500]} !important`,
-  },
-}));
+import { getInnerSchemaForArrayItem } from '@rjsf/utils/lib/schema/getDefaultFormState.js';
 
 export const CustomArrayField = (props: FieldProps) => {
   const { name, required, schema: sch, formData, onChange } = props;
-  const classes = useStyles();
-  const [fieldVal, setFieldVal] = React.useState<string>(
-    formData?.toString() ?? '',
-  );
+  const [fieldVal, setFieldVal] = useState<string>(formData?.toString() ?? '');
 
   const arrayItemsType = getInnerSchemaForArrayItem(sch).type;
 
@@ -57,7 +47,11 @@ export const CustomArrayField = (props: FieldProps) => {
       <Typography variant="caption">
         <Typography
           variant="subtitle2"
-          className={classes.arrayFieldDescription}
+          sx={{
+            mt: 0.5,
+            fontWeight: 500,
+            color: theme => `${theme.palette.grey[500]}`,
+          }}
         >
           {sch.description ?? ''}
         </Typography>

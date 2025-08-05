@@ -2,9 +2,9 @@
 
 ## Unused dependencies (1)
 
-| Name                                           | Location     | Severity |
-| :--------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-azure-sites-common | package.json | error    |
+| Name | Location     | Severity |
+| :--- | :----------- | :------- |
+| yn   | package.json | error    |
 
 ## Unused devDependencies (1)
 

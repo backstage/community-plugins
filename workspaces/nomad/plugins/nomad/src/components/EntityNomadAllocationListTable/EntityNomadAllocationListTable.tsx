@@ -29,7 +29,7 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Allocation, nomadApiRef } from '../../api';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {

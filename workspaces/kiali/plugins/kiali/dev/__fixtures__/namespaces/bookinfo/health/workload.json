@@ -1,0 +1,136 @@
+{
+  "details-v1": {
+    "workloadStatus": {
+      "name": "details-v1",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "kiali-traffic-generator": {
+    "workloadStatus": {
+      "name": "kiali-traffic-generator",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "productpage-v1": {
+    "workloadStatus": {
+      "name": "productpage-v1",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 2
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "ratings-v1": {
+    "workloadStatus": {
+      "name": "ratings-v1",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.6666666666666665
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "reviews-v1": {
+    "workloadStatus": {
+      "name": "reviews-v1",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.3333333333333333
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "reviews-v2": {
+    "workloadStatus": {
+      "name": "reviews-v2",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.3777777777777777
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.3777777777777777
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "reviews-v3": {
+    "workloadStatus": {
+      "name": "reviews-v3",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.3555555555555555
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.2444444444444444
+        }
+      },
+      "healthAnnotations": {}
+    }
+  }
+}

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { SelectOption, SelectList } from '@patternfly/react-core';
 import { ResourcesFilters, FiltersType } from '../../../../../types/resources';
-import { HealthStatus, SyncStatuses } from '../../../../../types/application';
+import {
+  HealthStatus,
+  SyncStatuses,
+} from '@backstage-community/plugin-redhat-argocd-common';
 
 export const resourcesFiltersMenuItems = () => (
   <SelectList data-testid="filter-resources-items">

@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { MouseEvent } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { makeStyles } from '@material-ui/core';
+import Button from '@mui/material/Button';
 
 import { licensedUsersApiRef } from '../api/LicensedUsersClient';
 
-const useStyles = makeStyles(theme => ({
-  linkStyle: {
-    color: theme.palette.link,
-    textDecoration: 'underline',
-  },
-}));
-
 function DownloadCSVLink() {
-  const classes = useStyles();
   const licensedUsersClient = useApi(licensedUsersApiRef);
   const handleDownload = async (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
   ) => {
     event.preventDefault(); // Prevent the default link behavior
 
@@ -68,13 +60,18 @@ function DownloadCSVLink() {
   };
 
   return (
-    <a
+    <Button
       href="/download-csv"
       onClick={handleDownload}
-      className={classes.linkStyle}
+      sx={{
+        color: theme => theme.palette.link,
+        textDecoration: 'underline',
+        marginTop: '1rem',
+      }}
+      size="small"
     >
       Download User List
-    </a>
+    </Button>
   );
 }
 

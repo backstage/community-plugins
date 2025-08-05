@@ -35,6 +35,17 @@ const OverviewContent = () => (
 );
 ```
 
+You can filter for environment names via an environment parameter.
+
+```typescript
+// packages/app/src/components/catalog/EntityPage.tsx
+// ...
+<Grid item xs={12} sm={6} md={4}>
+  <EntityGithubDeploymentsCard environments={['env-a', 'env-b']} />
+</Grid>
+// ...
+```
+
 3. Add the `github.com/project-slug` annotation to your `catalog-info.yaml` file:
 
 ```yaml
@@ -67,3 +78,31 @@ integrations:
     - host: 'your-github-host.com'
       apiBaseUrl: 'https://api.your-github-host.com'
 ```
+
+## Integrating with the new Frontend System
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+1. Import `githubDeploymentsPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import githubDeploymentsPlugin from '@backstage-community/plugin-github-deployments/alpha';
+// ...
+export const app = createApp({
+  features: [
+    // ...
+    githubDeploymentsPlugin,
+    // ...
+  ],
+});
+```
+
+2. Next, enable your desired extensions in `app-config.yaml`
+
+```yaml
+app:
+  extensions:
+    - entity-card:github-deployments/overview
+```
+
+3. Whichever extensions you've enabled should now appear in your entity page.

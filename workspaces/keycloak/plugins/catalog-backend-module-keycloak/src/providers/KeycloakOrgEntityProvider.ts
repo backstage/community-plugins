@@ -31,10 +31,9 @@ import type {
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
 
-import type { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 // @ts-ignore
-import inclusion from 'inclusion';
 import { merge } from 'lodash';
+import { LimitFunction } from 'p-limit';
 import * as uuid from 'uuid';
 
 import {
@@ -45,6 +44,8 @@ import {
 } from '../lib';
 import { readProviderConfigs } from '../lib/config';
 import { readKeycloakRealm } from '../lib/read';
+import { authenticate } from '../lib/authenticate';
+import { Attributes, Counter, Meter, metrics } from '@opentelemetry/api';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -119,8 +120,16 @@ export const withLocations = (
  */
 export class KeycloakOrgEntityProvider implements EntityProvider {
   private connection?: EntityProviderConnection;
+  private meter: Meter;
+  private counter: Counter<Attributes>;
   private scheduleFn?: () => Promise<void>;
 
+  /**
+   * Static builder method to create multiple KeycloakOrgEntityProvider instances from a single config.
+   * @param deps - The dependencies required for the provider, including the configuration and logger.
+   * @param options - Options for scheduling tasks and transforming users and groups.
+   * @returns An array of KeycloakOrgEntityProvider instances.
+   */
   static fromConfig(
     deps: {
       config: Config;
@@ -174,13 +183,28 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       groupTransformer?: GroupTransformer;
     },
   ) {
+    this.meter = metrics.getMeter('default');
+    this.counter = this.meter.createCounter(
+      'backend_keycloak.fetch.task.failure.count',
+      {
+        description:
+          'Counts the number of failed Keycloak data fetch tasks. Each increment indicates a complete failure of a fetch task, meaning no data was provided to the Catalog API. However, data may still be fetched in subsequent tasks, depending on the nature of the error.',
+      },
+    );
     this.schedule(options.taskRunner);
   }
 
+  /**
+   * Returns the name of this entity provider.
+   */
   getProviderName(): string {
     return `KeycloakOrgEntityProvider:${this.options.id}`;
   }
 
+  /**
+   * Connect to Backstage catalog entity provider
+   * @param connection - The connection to the catalog API ingestor, which allows the provision of new entities.
+   */
   async connect(connection: EntityProviderConnection) {
     this.connection = connection;
     await this.scheduleFn?.();
@@ -190,7 +214,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
    * Runs one complete ingestion loop. Call this method regularly at some
    * appropriate cadence.
    */
-  async read(options?: { logger?: LoggerService }) {
+  async read(options: { logger?: LoggerService; taskInstanceId: string }) {
     if (!this.connection) {
       throw new NotFoundError('Not initialized');
     }
@@ -199,8 +223,8 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     const provider = this.options.provider;
 
     const { markReadComplete } = trackProgress(logger);
-    const KeyCloakAdminClientModule = await inclusion(
-      '@keycloak/keycloak-admin-client',
+    const KeyCloakAdminClientModule = await import(
+      '@keycloak/keycloak-admin-client'
     );
     const KeyCloakAdminClient = KeyCloakAdminClientModule.default;
 
@@ -208,34 +232,27 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       baseUrl: provider.baseUrl,
       realmName: provider.loginRealm,
     });
+    await authenticate(kcAdminClient, provider, logger);
 
-    let credentials: Credentials;
+    const pLimitCJSModule = await import('p-limit');
+    const limitFunc = pLimitCJSModule.default;
+    const concurrency = provider.maxConcurrency ?? 20;
+    const limit: LimitFunction = limitFunc(concurrency);
 
-    if (provider.username && provider.password) {
-      credentials = {
-        grantType: 'password',
-        clientId: provider.clientId ?? 'admin-cli',
-        username: provider.username,
-        password: provider.password,
-      };
-    } else if (provider.clientId && provider.clientSecret) {
-      credentials = {
-        grantType: 'client_credentials',
-        clientId: provider.clientId,
-        clientSecret: provider.clientSecret,
-      };
-    } else {
-      throw new InputError(
-        `username and password or clientId and clientSecret must be provided.`,
-      );
-    }
-
-    await kcAdminClient.auth(credentials);
-
+    const dataBatchFailureCounter = this.meter.createCounter(
+      'backend_keycloak.fetch.data.batch.failure.count',
+      {
+        description:
+          'Keycloak data batch fetch failure counter. Incremented for each batch fetch failure. Each failure means that a part of the data was not fetched due to an error, and thus the corresponding data batch was skipped during the current fetch task.',
+      },
+    );
     const { users, groups } = await readKeycloakRealm(
       kcAdminClient,
       provider,
       logger,
+      limit,
+      options.taskInstanceId,
+      dataBatchFailureCounter,
       {
         userQuerySize: provider.userQuerySize,
         groupQuerySize: provider.groupQuerySize,
@@ -257,21 +274,27 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     markCommitComplete();
   }
 
+  /**
+   * Periodically schedules a task to read Keycloak user and group information, parse it, and provision it to the Backstage catalog.
+   * @param taskRunner - The task runner to use for scheduling tasks.
+   */
   schedule(taskRunner: SchedulerServiceTaskRunner) {
     this.scheduleFn = async () => {
       const id = `${this.getProviderName()}:refresh`;
       await taskRunner.run({
         id,
         fn: async () => {
+          const taskInstanceId = uuid.v4();
           const logger = this.options.logger.child({
             class: KeycloakOrgEntityProvider.prototype.constructor.name,
             taskId: id,
-            taskInstanceId: uuid.v4(),
+            taskInstanceId: taskInstanceId,
           });
 
           try {
-            await this.read({ logger });
+            await this.read({ logger, taskInstanceId });
           } catch (error) {
+            this.counter.add(1, { taskInstanceId: taskInstanceId });
             if (isError(error)) {
               // Ensure that we don't log any sensitive internal data:
               logger.error('Error while syncing Keycloak users and groups', {

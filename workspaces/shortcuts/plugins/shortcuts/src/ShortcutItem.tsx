@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { MouseEvent } from 'react';
+
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -63,9 +65,9 @@ type Props = {
 
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<Element | undefined>();
+  const [anchorEl, setAnchorEl] = useState<Element | undefined>();
 
-  const handleClick = (event: React.MouseEvent<Element>) => {
+  const handleClick = (event: MouseEvent<Element>) => {
     event.preventDefault();
     setAnchorEl(event.currentTarget);
   };

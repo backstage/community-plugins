@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   MarkdownContent,
   Progress,
@@ -22,34 +20,15 @@ import {
 } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  makeStyles,
-} from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Grid from '@mui/material/Grid';
+import { makeStyles } from '@mui/styles';
 
 import { useRole } from '../../hooks/useRole';
 
 const useStyles = makeStyles({
-  gridItemCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: 'calc(100% - 10px)', // for pages without content header
-    marginBottom: '10px',
-  },
-  fullHeightCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-  },
-  gridItemCardContent: {
-    flex: 1,
-  },
-  fullHeightCardContent: {
-    flex: 1,
-  },
   text: {
     wordBreak: 'break-word',
   },
@@ -61,9 +40,6 @@ type AboutCardProps = {
 
 export const AboutCard = ({ roleName }: AboutCardProps) => {
   const classes = useStyles();
-  const cardClass = classes.gridItemCard;
-  const cardContentClass = classes.gridItemCardContent;
-
   const { role, roleError, loading } = useRole(roleName);
   if (loading) {
     return <Progress />;
@@ -82,13 +58,37 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
       month: 'short',
     })} ${date.getUTCFullYear()}, ${time}`;
   } else {
-    lastModified = 'No information';
+    lastModified = '--';
   }
 
+  const description =
+    role?.metadata?.description && role.metadata.description.length > 0
+      ? role.metadata.description
+      : '--';
+  const modifiedBy =
+    role?.metadata?.modifiedBy && role.metadata.modifiedBy.length > 0
+      ? role.metadata.modifiedBy
+      : '--';
+  const owner =
+    role?.metadata?.owner && role.metadata.owner.length > 0
+      ? role.metadata.owner
+      : '--';
+
   return (
-    <Card className={cardClass}>
+    <Card
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: 'calc(100% - 10px)', // for pages without content header
+        marginBottom: '10px',
+      }}
+    >
       <CardHeader title="About" />
-      <CardContent className={cardContentClass}>
+      <CardContent
+        sx={{
+          flex: 1,
+        }}
+      >
         {roleError.name ? (
           <div style={{ paddingBottom: '16px' }}>
             <WarningPanel
@@ -98,28 +98,36 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
             />
           </div>
         ) : (
-          <Grid container>
-            <AboutField label="Description" gridSizes={{ xs: 4, sm: 8, lg: 4 }}>
-              <MarkdownContent
-                className={classes.text}
-                content={role?.metadata?.description ?? 'No description'}
-              />
-            </AboutField>
-            <AboutField label="Modified By" gridSizes={{ xs: 4, sm: 8, lg: 4 }}>
-              <MarkdownContent
-                className={classes.text}
-                content={role?.metadata?.modifiedBy ?? 'No information'}
-              />
-            </AboutField>
-            <AboutField
-              label="Last Modified"
-              gridSizes={{ xs: 4, sm: 8, lg: 4 }}
-            >
-              <MarkdownContent
-                className={classes.text}
-                content={lastModified}
-              />
-            </AboutField>
+          <Grid container spacing={2}>
+            <Grid item xs={3} sm={6} lg={3}>
+              <AboutField label="Description">
+                <MarkdownContent
+                  className={classes.text}
+                  content={description}
+                />
+              </AboutField>
+            </Grid>
+            <Grid item xs={3} sm={6} lg={3}>
+              <AboutField label="Modified By">
+                <MarkdownContent
+                  className={classes.text}
+                  content={modifiedBy}
+                />
+              </AboutField>
+            </Grid>
+            <Grid item xs={3} sm={6} lg={3}>
+              <AboutField label="Last Modified">
+                <MarkdownContent
+                  className={classes.text}
+                  content={lastModified}
+                />
+              </AboutField>
+            </Grid>
+            <Grid item xs={3} sm={6} lg={3}>
+              <AboutField label="Owner">
+                <MarkdownContent className={classes.text} content={owner} />
+              </AboutField>
+            </Grid>
           </Grid>
         )}
       </CardContent>

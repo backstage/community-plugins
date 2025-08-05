@@ -54,7 +54,7 @@ export const mockNewConditions: RoleBasedConditions[] = [
       ],
     },
     roleEntityRef: 'role:default/rbac_admin',
-    permissionMapping: ['delete', 'update'],
+    permissionMapping: ['delete'],
   },
 ];
 
@@ -149,25 +149,10 @@ export const mockConditions: RoleConditionalPolicyDecision<PermissionAction>[] =
         ],
       },
       roleEntityRef: 'role:default/rbac_admin',
-      permissionMapping: ['read', 'delete', 'update'],
+      permissionMapping: ['update'],
     },
     {
       id: 4,
-      result: AuthorizeResult.CONDITIONAL,
-      pluginId: 'catalog',
-      resourceType: 'catalog-entity',
-      conditions: {
-        not: {
-          rule: 'HAS_LABEL',
-          resourceType: 'catalog-entity',
-          params: { label: 'temp' },
-        },
-      },
-      roleEntityRef: 'role:default/rbac_admin',
-      permissionMapping: ['delete', 'update'],
-    },
-    {
-      id: 5,
       result: AuthorizeResult.CONDITIONAL,
       pluginId: 'scaffolder',
       resourceType: 'scaffolder-template',

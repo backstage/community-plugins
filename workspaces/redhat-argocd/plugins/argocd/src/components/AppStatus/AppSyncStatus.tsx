@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Chip } from '@material-ui/core';
 
-import { Application, SyncStatusCode } from '../../types/application';
+import {
+  Application,
+  SyncStatusCode,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { SyncIcon } from './StatusIcons';
 
-const AppSyncStatus: React.FC<{
+const AppSyncStatus: FC<{
   app: Application;
   isChip?: boolean;
 }> = ({ app, isChip = false }) => {

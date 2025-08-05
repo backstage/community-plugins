@@ -1,0 +1,55 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: scaffold-new-service-amplication
+  title: Scaffold a New Service
+  description: Scaffold a new service from a template (using Amplication)
+  tags:
+    - amplication
+spec:
+  type: service
+  parameters:
+    - title: Service Information
+      required:
+        - name
+        - template
+      properties:
+        name:
+          title: Name
+          type: string
+          description: The name of the service
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: The description of the service
+        template:
+          title: Template
+          type: string
+          description: The template to use
+          ui:field: EntityPicker
+          ui:options:
+            allowedKinds: []
+            catalogFilter:
+              - kind: component
+                spec.type: ServiceTemplate
+  steps:
+    - id: fetch
+      name: Fetch catalog entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.template }}
+    - id: scaffoldService
+      name: Scaffold a New Service
+      action: amplication:scaffold-service
+      input:
+        name: ${{ parameters.name }}
+        description: ${{ parameters.description }}
+        project_id: ${{ steps.fetch.output.entity.spec.project_id }}
+        serviceTemplate_id: ${{ steps.fetch.output.entity.spec.id }}
+        workspace_id: ${{ steps.fetch.output.entity.spec.workspace }}
+  output:
+    links:
+      - title: Service on Amplication
+        url: ${{ steps.scaffoldService.output.url }}

@@ -51,6 +51,15 @@ export interface Config {
            * @see https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_groups_resource
            */
           groupQuerySize?: number;
+          /**
+           * Maximum request concurrency to prevent DoS attacks on the Keycloak server.
+           */
+          maxConcurrency?: number;
+          /**
+           * Whether the API call will return a brief representation for groups and users or not. Defaults to true
+           * @defaultValue true
+           */
+          briefRepresentation?: boolean;
           schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
         } & (
           | {

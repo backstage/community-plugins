@@ -18,7 +18,6 @@ import {
   type TemplateAction,
 } from '@backstage/plugin-scaffolder-node';
 
-import yaml from 'yaml';
 import { z } from 'zod';
 
 import {
@@ -28,6 +27,8 @@ import {
 } from '../../../../generated/now/table';
 import { CreateActionOptions, ServiceNowResponses } from '../../../types';
 import { updateOpenAPIConfig } from './helpers';
+
+import { examples } from './retrieve-records.example';
 
 /**
  * Schema for the input to the `retrieveRecords` action.
@@ -95,29 +96,11 @@ const schemaInput = z.object({
 
 const id = 'servicenow:now:table:retrieveRecords';
 
-const examples = [
-  {
-    description: 'Retrieve a record from the incident table',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'retrieveRecords',
-          action: id,
-          name: 'Retrieve Records',
-          input: {
-            tableName: 'incident',
-          },
-        },
-      ],
-    }),
-  },
-];
-
 /**
  * Creates an action handler that retrieves multiple records for the specified table.
- *
- * @param {CreateActionOptions} options - options to configure the action
- * @returns {TemplateAction} an action handler
+ * @public
+ * @param options - options to configure the action
+ * @returns TemplateAction - an action handler
  */
 export const retrieveRecordsAction = (
   options: CreateActionOptions,

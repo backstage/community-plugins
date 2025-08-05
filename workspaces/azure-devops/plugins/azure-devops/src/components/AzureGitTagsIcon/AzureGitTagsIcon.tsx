@@ -16,8 +16,6 @@
 
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-import React from 'react';
-
 // From https://github.com/microsoft/fluentui-system-icons/blob/30a3e3c458883a1d63a43a951407f30e6b32b60c/assets/Tag/SVG/ic_fluent_tag_32_regular.svg
 export const AzureGitTagsIcon = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 32 32">

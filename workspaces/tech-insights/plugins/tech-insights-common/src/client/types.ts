@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { JsonValue } from '@backstage/types';
 
 /**
  * Represents a single check defined on the TechInsights backend.
  *
  * @public
+ * @deprecated
+ *
+ * Use the Check interface from `@backstage-community/plugin-tech-insights-common` instead
  */
 export type Check = {
   /**
@@ -54,6 +56,12 @@ export type Check = {
   factIds: string[];
 
   /**
+   * General Metadata to be returned
+   * Can contain links, description texts or other actionable items
+   */
+  metadata?: Record<string, any>;
+
+  /**
    * Metadata to be returned in case a check has been successfully evaluated
    * Can contain links, description texts or other actionable items
    */
@@ -70,6 +78,9 @@ export type Check = {
  * Represents a Fact defined on the TechInsights backend.
  *
  * @public
+ * @deprecated
+ *
+ * Use InsightFacts directly from `@backstage-community/plugin-tech-insights-common` instead
  */
 export interface InsightFacts {
   /**

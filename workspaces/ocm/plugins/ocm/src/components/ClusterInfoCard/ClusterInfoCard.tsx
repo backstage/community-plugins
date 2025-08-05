@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { ocmEntityReadPermission } from '@backstage-community/plugin-ocm-common';
@@ -23,6 +21,9 @@ import { useCluster } from '../ClusterContext';
 import { Status, Update } from '../common';
 import { TableCardFromData } from '../TableCardFromData';
 
+/**
+ * @public
+ */
 export const ClusterInfoCard = () => {
   const { data } = useCluster();
 

@@ -1,5 +1,46 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.6.0
+
+### Minor Changes
+
+- d870c31: Backstage version bump to v1.40.2
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.0
+
+### Minor Changes
+
+- d1c59fc: Backstage version bump to v1.37.0
+
+## 0.4.1
+
+### Patch Changes
+
+- aa488b9: UI tweaking release table
+
+  - added external links to the Octopus release version detail
+  - table title contains external link to the Octopus project (moved from the table footer to save some space)
+  - fixed searching for states in the table
+  - fixed state icon position next to state
+
+## 0.4.0
+
+### Minor Changes
+
+- c1af81e: Backstage version bump to v1.35.1
+
+## 0.3.0
+
+### Minor Changes
+
+- e57e15b: Backstage version bump to v1.34.1
+
 ## 0.2.21
 
 ### Patch Changes

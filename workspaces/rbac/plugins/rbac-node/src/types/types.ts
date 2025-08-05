@@ -22,12 +22,18 @@ export interface PluginIdProvider {
   getPluginIds: () => string[];
 }
 
+/**
+ * @public
+ */
 export interface RBACProvider {
   getProviderName(): string;
   connect(connection: RBACProviderConnection): Promise<void>;
   refresh(): Promise<void>;
 }
 
+/**
+ * @public
+ */
 export interface RBACProviderConnection {
   applyRoles(roles: string[][]): Promise<void>;
   applyPermissions(permissions: string[][]): Promise<void>;

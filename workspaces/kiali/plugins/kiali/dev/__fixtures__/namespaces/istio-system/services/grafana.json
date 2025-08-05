@@ -1,0 +1,353 @@
+{
+  "cluster": "Kubernetes",
+  "destinationRules": [],
+  "endpoints": [
+    {
+      "addresses": [
+        {
+          "kind": "Pod",
+          "name": "grafana-6f68dfd8f4-xrqfh",
+          "ip": "10.244.0.29",
+          "port": 0
+        }
+      ],
+      "ports": [
+        {
+          "name": "service",
+          "protocol": "TCP",
+          "port": 3000
+        }
+      ]
+    }
+  ],
+  "istioPermissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "istioSidecar": false,
+  "k8sHTTPRoutes": [],
+  "k8sReferenceGrants": null,
+  "service": {
+    "name": "grafana",
+    "createdAt": "2024-02-26T09:50:00Z",
+    "resourceVersion": "630",
+    "namespace": {
+      "name": "istio-system",
+      "cluster": "",
+      "isAmbient": false,
+      "labels": null,
+      "annotations": null
+    },
+    "labels": {
+      "app.kubernetes.io/instance": "grafana",
+      "app.kubernetes.io/managed-by": "Helm",
+      "app.kubernetes.io/name": "grafana",
+      "app.kubernetes.io/version": "10.1.5",
+      "helm.sh/chart": "grafana-6.61.1"
+    },
+    "selectors": {
+      "app.kubernetes.io/instance": "grafana",
+      "app.kubernetes.io/name": "grafana"
+    },
+    "type": "ClusterIP",
+    "ip": "10.105.137.13",
+    "ports": [
+      {
+        "name": "service",
+        "protocol": "TCP",
+        "port": 3000
+      }
+    ],
+    "externalName": "",
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"grafana\",\"app.kubernetes.io/version\":\"10.1.5\",\"helm.sh/chart\":\"grafana-6.61.1\"},\"name\":\"grafana\",\"namespace\":\"istio-system\"},\"spec\":{\"ports\":[{\"name\":\"service\",\"port\":3000,\"protocol\":\"TCP\",\"targetPort\":3000}],\"selector\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/name\":\"grafana\"},\"type\":\"ClusterIP\"}}\n"
+    },
+    "healthAnnotations": {},
+    "additionalDetails": []
+  },
+  "serviceEntries": null,
+  "virtualServices": [],
+  "workloads": [
+    {
+      "name": "grafana",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-02-26T09:50:00Z",
+      "resourceVersion": "739",
+      "istioSidecar": false,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app.kubernetes.io/instance": "grafana",
+        "app.kubernetes.io/name": "grafana",
+        "sidecar.istio.io/inject": "false"
+      },
+      "appLabel": false,
+      "versionLabel": false,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1",
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"grafana\",\"app.kubernetes.io/version\":\"10.1.5\",\"helm.sh/chart\":\"grafana-6.61.1\"},\"name\":\"grafana\",\"namespace\":\"istio-system\"},\"spec\":{\"replicas\":1,\"revisionHistoryLimit\":10,\"selector\":{\"matchLabels\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/name\":\"grafana\"}},\"strategy\":{\"type\":\"RollingUpdate\"},\"template\":{\"metadata\":{\"annotations\":{\"checksum/config\":\"e6dc57066020dcc7ec73db1b5e39370203985e5071b47f1f1414ee5c42679d46\",\"checksum/dashboards-json-config\":\"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b\",\"checksum/sc-dashboard-provider-config\":\"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b\",\"kubectl.kubernetes.io/default-container\":\"grafana\"},\"labels\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/name\":\"grafana\",\"sidecar.istio.io/inject\":\"false\"}},\"spec\":{\"automountServiceAccountToken\":true,\"containers\":[{\"env\":[{\"name\":\"POD_IP\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"status.podIP\"}}},{\"name\":\"GF_PATHS_DATA\",\"value\":\"/var/lib/grafana/\"},{\"name\":\"GF_PATHS_LOGS\",\"value\":\"/var/log/grafana\"},{\"name\":\"GF_PATHS_PLUGINS\",\"value\":\"/var/lib/grafana/plugins\"},{\"name\":\"GF_PATHS_PROVISIONING\",\"value\":\"/etc/grafana/provisioning\"},{\"name\":\"GF_AUTH_ANONYMOUS_ENABLED\",\"value\":\"true\"},{\"name\":\"GF_AUTH_ANONYMOUS_ORG_ROLE\",\"value\":\"Admin\"},{\"name\":\"GF_AUTH_BASIC_ENABLED\",\"value\":\"false\"},{\"name\":\"GF_SECURITY_ADMIN_PASSWORD\",\"value\":\"admin\"},{\"name\":\"GF_SECURITY_ADMIN_USER\",\"value\":\"admin\"}],\"image\":\"docker.io/grafana/grafana:10.1.5\",\"imagePullPolicy\":\"IfNotPresent\",\"livenessProbe\":{\"failureThreshold\":10,\"httpGet\":{\"path\":\"/api/health\",\"port\":3000},\"initialDelaySeconds\":60,\"timeoutSeconds\":30},\"name\":\"grafana\",\"ports\":[{\"containerPort\":3000,\"name\":\"grafana\",\"protocol\":\"TCP\"},{\"containerPort\":9094,\"name\":\"gossip-tcp\",\"protocol\":\"TCP\"},{\"containerPort\":9094,\"name\":\"gossip-udp\",\"protocol\":\"UDP\"}],\"readinessProbe\":{\"httpGet\":{\"path\":\"/api/health\",\"port\":3000}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/etc/grafana/grafana.ini\",\"name\":\"config\",\"subPath\":\"grafana.ini\"},{\"mountPath\":\"/var/lib/grafana\",\"name\":\"storage\"},{\"mountPath\":\"/var/lib/grafana/dashboards/istio\",\"name\":\"dashboards-istio\"},{\"mountPath\":\"/var/lib/grafana/dashboards/istio-services\",\"name\":\"dashboards-istio-services\"},{\"mountPath\":\"/etc/grafana/provisioning/datasources/datasources.yaml\",\"name\":\"config\",\"subPath\":\"datasources.yaml\"},{\"mountPath\":\"/etc/grafana/provisioning/dashboards/dashboardproviders.yaml\",\"name\":\"config\",\"subPath\":\"dashboardproviders.yaml\"}]}],\"enableServiceLinks\":true,\"serviceAccountName\":\"grafana\",\"volumes\":[{\"configMap\":{\"name\":\"grafana\"},\"name\":\"config\"},{\"configMap\":{\"name\":\"istio-grafana-dashboards\"},\"name\":\"dashboards-istio\"},{\"configMap\":{\"name\":\"istio-services-grafana-dashboards\"},\"name\":\"dashboards-istio-services\"},{\"emptyDir\":{},\"name\":\"storage\"}]}}}}\n"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["grafana"],
+      "health": {
+        "workloadStatus": null,
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "health": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "namespaceMTLS": {
+    "status": "MTLS_NOT_ENABLED",
+    "autoMTLSEnabled": true,
+    "minTLS": ""
+  },
+  "subServices": [
+    {
+      "name": "grafana",
+      "namespace": "",
+      "istioSidecar": false,
+      "cluster": "",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": null,
+      "ports": {
+        "service": 3000
+      },
+      "labels": null,
+      "selector": null,
+      "istioReferences": null,
+      "kialiWizard": "",
+      "serviceRegistry": "",
+      "health": {
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "service": {
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "cars-v1.travel-agency": {
+        "name": "cars-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "details-v1.bookinfo": {
+        "name": "details-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "discounts-v1.travel-agency": {
+        "name": "discounts-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "flights-v1.travel-agency": {
+        "name": "flights-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "hotels-v1.travel-agency": {
+        "name": "hotels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "insurances-v1.travel-agency": {
+        "name": "insurances-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-egressgateway.istio-system": {
+        "name": "istio-egressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-ingressgateway.istio-system": {
+        "name": "istio-ingressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "jaeger.istio-system": {
+        "name": "jaeger",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali-traffic-generator.bookinfo": {
+        "name": "kiali-traffic-generator",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali.istio-system": {
+        "name": "kiali",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "mysqldb-v1.travel-agency": {
+        "name": "mysqldb-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "productpage-v1.bookinfo": {
+        "name": "productpage-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "prometheus.istio-system": {
+        "name": "prometheus",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "ratings-v1.bookinfo": {
+        "name": "ratings-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v1.bookinfo": {
+        "name": "reviews-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v2.bookinfo": {
+        "name": "reviews-v2",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v3.bookinfo": {
+        "name": "reviews-v3",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels-v1.travel-agency": {
+        "name": "travels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels.travel-portal": {
+        "name": "travels",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "viaggi.travel-portal": {
+        "name": "viaggi",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "voyages.travel-portal": {
+        "name": "voyages",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

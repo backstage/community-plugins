@@ -17,7 +17,11 @@
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
-import { madrParser } from '@backstage-community/plugin-adr-common';
+import {
+  AdrInfo,
+  AdrInfoParser,
+  madrParser,
+} from '@backstage-community/plugin-adr-common';
 import {
   CacheService,
   LoggerService,
@@ -29,13 +33,14 @@ export type AdrRouterOptions = {
   reader: UrlReaderService;
   cacheClient: CacheService;
   logger: LoggerService;
+  parser?: AdrInfoParser;
 };
 
 /** @public */
 export async function createRouter(
   options: AdrRouterOptions,
 ): Promise<express.Router> {
-  const { reader, cacheClient, logger } = options;
+  const { reader, cacheClient, logger, parser } = options;
 
   const router = Router();
   router.use(express.json());
@@ -63,21 +68,30 @@ export async function createRouter(
         etag: cachedTree?.etag,
       });
       const files = await treeGetResponse.files();
-      const data = await Promise.all(
+      const results = await Promise.all(
         files
           .map(async file => {
             const fileContent = await file.content();
-            const adrInfo = madrParser(fileContent.toString());
-            return {
-              type: 'file',
-              name: file.path.substring(file.path.lastIndexOf('/') + 1),
-              path: file.path,
-              ...adrInfo,
-            };
+
+            try {
+              const adrInfo: AdrInfo = parser
+                ? parser(fileContent.toString())
+                : madrParser(fileContent.toString());
+              return {
+                type: 'file',
+                name: file.path.substring(file.path.lastIndexOf('/') + 1),
+                path: file.path,
+                ...adrInfo,
+              };
+            } catch (e: any) {
+              logger.error(`Failed to parse ${file.path}: ${e.message}`);
+              return null;
+            }
           })
           .reverse(),
       );
 
+      const data = results.filter(Boolean);
       await cacheClient.set(urlToProcess, {
         data,
         etag: treeGetResponse.etag,

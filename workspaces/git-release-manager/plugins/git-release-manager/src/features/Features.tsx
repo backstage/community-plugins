@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ComponentProps } from 'react';
+import { Fragment, ComponentProps } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
 import { CreateReleaseCandidate } from './CreateReleaseCandidate/CreateReleaseCandidate';
@@ -98,9 +98,7 @@ export function Features({
     }) ?? null;
   if (Array.isArray(CustomFeatures)) {
     CustomFeatures = CustomFeatures.map((CustomFeature, index) => (
-      <React.Fragment key={`grm--custom-feature--${index}`}>
-        {CustomFeature}
-      </React.Fragment>
+      <Fragment key={`grm--custom-feature--${index}`}>{CustomFeature}</Fragment>
     ));
   }
 

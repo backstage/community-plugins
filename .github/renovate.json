@@ -24,6 +24,11 @@
       "groupName": "GitHub Actions"
     },
     {
+      "matchManagers": ["npm"],
+      "enabled": false,
+      "matchPackageNames": ["@backstage/**"]
+    },
+    {
       "matchPackageNames": ["node-fetch"],
       "allowedVersions": "<3.0.0"
     },
@@ -36,5 +41,8 @@
       "allowedVersions": "<5.0.0"
     }
   ],
-  "ignorePaths": ["**/dist-dynamic/**"]
+  "ignorePaths": ["**/dist-dynamic/**"],
+  "gitIgnoredAuthors": [
+    "97962292+backstage-goalie[bot]@users.noreply.github.com"
+  ]
 }

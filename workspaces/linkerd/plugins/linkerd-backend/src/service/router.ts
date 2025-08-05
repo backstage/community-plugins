@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { errorHandler } from '@backstage/backend-common';
+
 import {
   AuthService,
   DiscoveryService,
@@ -24,6 +24,7 @@ import {
 import express from 'express';
 import Router from 'express-promise-router';
 import { LinkerdVizClient } from '../lib/linkerdVizClient';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -36,7 +37,7 @@ export interface RouterOptions {
 export async function createRouter(
   opts: RouterOptions,
 ): Promise<express.Router> {
-  const { discovery, auth, httpAuth, config } = opts;
+  const { discovery, auth, httpAuth, config, logger } = opts;
 
   const linkerdVizClient = LinkerdVizClient.fromConfig({
     discovery,
@@ -98,6 +99,6 @@ export async function createRouter(
     },
   );
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

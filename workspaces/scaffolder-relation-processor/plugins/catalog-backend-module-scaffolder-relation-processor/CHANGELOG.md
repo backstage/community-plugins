@@ -1,5 +1,41 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.5.0
+
+### Minor Changes
+
+- 8d2a2f5: Backstage version bump to v1.39.0
+
+## 2.4.0
+
+### Minor Changes
+
+- 4de1e1a: Backstage version bump to v1.38.1
+
+## 2.3.0
+
+### Minor Changes
+
+- 9e34e53: Backstage version bump to v1.36.1
+
+## 2.2.0
+
+### Minor Changes
+
+- 6b3f852: Backstage version bump to v1.35.0
+
+## 2.1.0
+
+### Minor Changes
+
+- d102b8f: Backstage version bump to v1.34.2
+
+## 2.0.2
+
+### Patch Changes
+
+- b774194: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 2.0.1
 
 ### Patch Changes

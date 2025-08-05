@@ -1,0 +1,54 @@
+{
+  "namespace": {
+    "name": "travel-agency",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "travel-agency"
+    },
+    "annotations": null
+  },
+  "name": "mysqldb",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "mysqldb-v1",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "mysqldb",
+        "version": "v1"
+      },
+      "serviceAccountNames": ["default"]
+    }
+  ],
+  "serviceNames": ["mysqldb"],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "mysqldb-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

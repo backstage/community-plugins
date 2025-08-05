@@ -1,5 +1,59 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.10.0
+
+### Minor Changes
+
+- 9073d3b: Backstage version bump to v1.41.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 0a5d8de: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 9b29540: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- ba4f4a6: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- 2a62e14: Backstage version bump to v1.37.0
+
+## 0.5.0
+
+### Minor Changes
+
+- cc121af: Backstage version bump to v1.36.1
+
+## 0.4.0
+
+### Minor Changes
+
+- d64f01f: Backstage version bump to v1.35.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 0c40de4: Backstage version bump to v1.34.1
+
 ## 0.2.24
 
 ### Patch Changes

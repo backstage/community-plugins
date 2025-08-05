@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import Box from '@material-ui/core/Box';
+import { ReactNode } from 'react';
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { getColumns } from './Columns';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { sonarqubeTranslationRef } from '../../translation';
 
 /**
  * @public
@@ -25,7 +26,7 @@ export type SonarQubeTableProps = {
   tableContent: any[] | undefined;
   title?: string;
   options?: any | undefined;
-  emptyContent?: React.ReactNode;
+  emptyContent?: ReactNode;
   localization?: any;
 };
 /**
@@ -38,25 +39,30 @@ export const SonarQubeTable = ({
   emptyContent,
   localization,
 }: SonarQubeTableProps) => {
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
   if (!tableContent) {
     return <ErrorPanel error={Error('Table could not be rendered')} />;
   }
+  const pageSize = options?.pageSize || 20;
+  const showPagination = tableContent?.length > pageSize;
   return (
-    <Box
-      sx={{
-        overflow: 'auto',
+    <Table
+      title={
+        <div>{`${title ?? t('sonarQubeCard.title')} (${
+          tableContent.length
+        })`}</div>
+      }
+      options={{
+        padding: 'dense',
+        paging: showPagination,
+        pageSize: pageSize,
+        pageSizeOptions: [10, 20, 50, 100],
+        ...options,
       }}
-    >
-      <div>
-        <Table
-          title={<div>{`(${tableContent.length}) ${title}`}</div>}
-          options={options}
-          data={tableContent || []}
-          columns={getColumns()}
-          emptyContent={emptyContent}
-          localization={localization}
-        />
-      </div>
-    </Box>
+      data={tableContent || []}
+      columns={getColumns(t)}
+      emptyContent={emptyContent}
+      localization={localization}
+    />
   );
 };

@@ -15,7 +15,7 @@
  */
 
 import { useEntity } from '@backstage/plugin-catalog-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { todoApiRef } from '../../api';
 import { TodoItem, TodoListOptions } from '../../api/types';
 

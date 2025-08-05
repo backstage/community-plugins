@@ -1,4 +1,3 @@
-import React from 'react';
 import { Statistics } from '../../models';
 import { Total } from '../Total';
 import { TableToolbar } from './TableToolbar';

@@ -1,0 +1,8 @@
+{
+  "status": 404,
+  "type": "https://quay.io/api/v1/error/not_found",
+  "detail": "The resource was not found.",
+  "title": "not_found",
+  "error_message": "The resource was not found.",
+  "error_type": "not_found"
+}

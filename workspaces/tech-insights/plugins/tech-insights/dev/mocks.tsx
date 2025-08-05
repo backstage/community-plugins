@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import {
   BulkCheckResponse,
   CheckResult,
 } from '@backstage-community/plugin-tech-insights-common';
-import { BooleanCheck, CheckResultRenderer } from '../src';
+import {
+  BooleanCheck,
+  CheckResultRenderer,
+} from '@backstage-community/plugin-tech-insights-react';
 
 export const runChecksResponse = [
   {

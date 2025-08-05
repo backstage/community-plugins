@@ -1,5 +1,65 @@
 ## @backstage-community/plugin-ocm-common [3.3.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-ocm-common@3.2.0...@backstage-community/plugin-ocm-common@3.3.0) (2024-07-26)
 
+## 3.10.0
+
+### Minor Changes
+
+- f0a6ba7: Backstage version bump to v1.39.0
+
+## 3.9.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 3.9.0
+
+### Minor Changes
+
+- fde918d: Backstage version bump to v1.38.1
+
+## 3.8.3
+
+### Patch Changes
+
+- 1ac3b94: remove @spotify/prettier-config direct dependency
+
+## 3.8.2
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
+## 3.8.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+
+## 3.8.0
+
+### Minor Changes
+
+- fb29ca1: Backstage version bump to v1.36.1
+
+## 3.7.0
+
+### Minor Changes
+
+- e0796ca: Backstage version bump to v1.35.0
+
+## 3.6.3
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
+## 3.6.2
+
+### Patch Changes
+
+- 40f3226: Clean up api report warnings and remove unnecessary files
+
 ## 3.6.1
 
 ### Patch Changes

@@ -49,3 +49,11 @@ reportPortal:
       baseUrl: ${REPORT_PORTAL_BASE_URL}
       token: Bearer ${REPORT_PORTAL_TOKEN}
       filterType: INTERNAL
+
+search:
+  collators:
+    reportPortal:
+      schedule:
+        frequency: { minutes: 3 }
+        timeout: { minutes: 5 }
+        initialDelay: { seconds: 3 }

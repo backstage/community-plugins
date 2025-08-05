@@ -13,44 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { parseEntityRef } from '@backstage/catalog-model';
-import { Link } from '@backstage/core-components';
 
-import { IconButton, Tooltip, Typography } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
+import { useNavigate } from 'react-router-dom';
+import { useActionPermissionTooltip } from '../hooks/useActionPermissionTooltip';
 
 type EditRoleProps = {
   roleName: string;
-  disable: boolean;
+  canEdit: boolean;
+  dataTestId?: string;
   tooltip?: string;
-  dataTestId: string;
   to?: string;
 };
 
 const EditRole = ({
   roleName,
-  tooltip,
-  disable,
+  canEdit,
   dataTestId,
+  tooltip,
   to,
 }: EditRoleProps) => {
+  const navigate = useNavigate();
   const { name, namespace, kind } = parseEntityRef(roleName);
+
+  const { disable, tooltipText, testIdText } = useActionPermissionTooltip({
+    permission: policyEntityUpdatePermission,
+    resourceRef: roleName,
+    canAct: canEdit,
+    action: 'edit',
+    dataTestId: dataTestId,
+    fallbackTooltip: tooltip,
+  });
+
   return (
-    <Tooltip title={tooltip || ''}>
-      <Typography component="span" data-testid={dataTestId}>
-        <IconButton
-          color="inherit"
-          component={Link}
-          aria-label="Update"
-          disabled={disable}
-          title={tooltip || 'Edit Role'}
-          to={to || `../role/${kind}/${namespace}/${name}`}
-        >
-          <EditIcon />
-        </IconButton>
-      </Typography>
+    <Tooltip title={tooltipText}>
+      <IconButton
+        onClick={() => {
+          navigate(to ?? `../role/${kind}/${namespace}/${name}`);
+        }}
+        data-testid={testIdText}
+        aria-label="Update"
+        disabled={disable}
+        title={tooltip ?? 'Edit Role'}
+        sx={{
+          p: 1,
+          borderRadius: '50%',
+          '&:hover': { borderRadius: '50%' },
+        }}
+      >
+        <EditIcon />
+      </IconButton>
     </Tooltip>
   );
 };

@@ -1,0 +1,7 @@
+{
+  "digest": "sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752",
+  "is_manifest_list": true,
+  "manifest_data": "{bar}",
+  "config_media_type": null,
+  "layers": null
+}

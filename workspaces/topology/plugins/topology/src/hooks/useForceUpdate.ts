@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useCallback } from 'react';
 
 export const useForceUpdate = () => {
-  const [, setTick] = React.useState(0);
-  const update = React.useCallback(() => {
+  const [, setTick] = useState(0);
+  const update = useCallback(() => {
     setTick(tick => tick + 1);
   }, []);
   return update;

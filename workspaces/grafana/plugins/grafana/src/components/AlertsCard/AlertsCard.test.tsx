@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { render } from '@testing-library/react';
 import { AlertsTable } from './AlertsCard';
+import { renderInTestApp } from '@backstage/test-utils';
 
 describe('AlertsTable', () => {
   it('should render even with no alerts', async () => {
-    const rendered = render(
+    const rendered = await renderInTestApp(
       <AlertsTable opts={{ title: 'alerts', showState: true }} alerts={[]} />,
     );
 

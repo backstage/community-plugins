@@ -6,17 +6,14 @@ Welcome to the GitHub Copilot Plugin!
 
 ![home](media/demo.gif)
 
-![enterprise](media/enterprise.png)
-
-![language](media/language.png)
-
 ## Overview
 
-The GitHub Copilot Plugin enhances your Backstage experience by providing features tailored to enterprise management.
+The GitHub Copilot Plugin enhances your Backstage experience by providing features tailored to both enterprise and organization management.
 
 ## Features
 
-- **Enterprise Integration**: Seamlessly integrate enterprise-level functionalities.
+- **Enterprise and Organization Integration**: Seamlessly integrate functionalities for GitHub Enterprise and GitHub Organizations.
+- **Team Metrics Comparison**: Select a team and compare its metrics with the overall data, offering more insights into individual team performance.
 
 ## Setup
 
@@ -24,7 +21,7 @@ The following sections will help you get the GitHub Copilot Plugin setup and run
 
 ### Backend
 
-You need to setup the Copilot backend plugin ([copilot-backend](../copilot-backend/README.md)) before you move forward with any of the following steps if you haven't already.
+You need to set up the Copilot backend plugin ([copilot-backend](../copilot-backend/README.md)) before you move forward with any of the following steps if you haven't already.
 
 ## Installation
 
@@ -33,7 +30,8 @@ To start using the GitHub Copilot Plugin, follow these steps:
 1. **Install Dependencies**:
 
    ```bash
-   yarn add @backstage-community/plugin-copilot
+   # From your Backstage root directory
+   yarn --cwd packages/app add @backstage-community/plugin-copilot
    ```
 
 2. **Configure Routes**:
@@ -41,17 +39,18 @@ To start using the GitHub Copilot Plugin, follow these steps:
    **App.tsx**:
 
    ```tsx
-   import { CopilotPage } from '@backstage-community/plugin-copilot';
-   // Add route
-   <Route path="/copilot" element={<CopilotPage />} />;
+   import { CopilotIndexPage } from '@backstage-community/plugin-copilot';
+
+   // Add the routes
+   <Route path="/copilot" element={<CopilotIndexPage />} />;
    ```
 
    **Root.tsx**:
 
    ```tsx
-   import GithubIcon from '@mui/icons-material/GitHub';
-   // Add sidebar item
+   import { CopilotSidebar } from '@backstage-community/plugin-copilot';
+   // Add the copilot sidebar
    <SidebarScrollWrapper>
-     <SidebarItem icon={GithubIcon} to="copilot" text="Copilot" />
+     <CopilotSidebar />
    </SidebarScrollWrapper>;
    ```

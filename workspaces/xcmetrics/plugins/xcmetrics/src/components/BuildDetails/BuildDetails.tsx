@@ -17,7 +17,6 @@
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { BuildResponse, xcmetricsApiRef } from '../../api';
 import { Progress, StructuredMetadataTable } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';

@@ -1,5 +1,59 @@
 # @backstage-community/plugin-gcalendar
 
+## 0.11.0
+
+### Minor Changes
+
+- f8b005a: Backstage version bump to v1.41.1
+
+## 0.10.0
+
+### Minor Changes
+
+- f001e25: Backstage version bump to v1.40.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 4b10cdd: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- e019ba4: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.7.0
+
+### Minor Changes
+
+- 36f7294: Backstage version bump to v1.37.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 7ff4578: Backstage version bump to v1.36.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 6d3ed9f: Backstage version bump to v1.35.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 5011e4c: Backstage version bump to v1.34.1
+
 ## 0.3.32
 
 ### Patch Changes

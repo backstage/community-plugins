@@ -33,6 +33,7 @@ jest.mock('./fact/FactRetrieverEngine', () => ({
 
 describe('buildTechInsightsContext', () => {
   const logger = mockServices.logger.mock();
+  const urlReader = mockServices.urlReader.mock();
   const database: DatabaseService = {
     getClient: () => {
       return Promise.resolve({
@@ -46,7 +47,15 @@ describe('buildTechInsightsContext', () => {
     getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
     getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
   };
-  const scheduler = DefaultSchedulerService.create({ database, logger });
+  const rootLifecycle = mockServices.rootLifecycle.mock();
+  const httpRouter = mockServices.httpRouter.mock();
+  const scheduler = DefaultSchedulerService.create({
+    database,
+    logger,
+    rootLifecycle,
+    httpRouter,
+    pluginMetadata: { getId: () => 'plugin-id' },
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -61,6 +70,7 @@ describe('buildTechInsightsContext', () => {
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
       auth: mockServices.auth(),
+      urlReader,
     });
     expect(DefaultFactRetrieverRegistry).toHaveBeenCalledTimes(1);
   });
@@ -77,6 +87,7 @@ describe('buildTechInsightsContext', () => {
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
       auth: mockServices.auth(),
+      urlReader,
     });
     expect(DefaultFactRetrieverRegistry).not.toHaveBeenCalled();
   });

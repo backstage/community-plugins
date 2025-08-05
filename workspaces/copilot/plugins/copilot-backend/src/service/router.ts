@@ -24,10 +24,23 @@ import {
   SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import { Metric } from '@backstage-community/plugin-copilot-common';
+import { NotFoundError } from '@backstage/errors';
+import {
+  Metric,
+  PeriodRange,
+} from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
-import Scheduler from '../task/Scheduler';
+import TaskManagement from '../task/TaskManagement';
 import { GithubClient } from '../client/GithubClient';
+import { validateQuery } from './validation/validateQuery';
+import {
+  MetricsQuery,
+  metricsQuerySchema,
+  PeriodRangeQuery,
+  periodRangeQuerySchema,
+  TeamQuery,
+  teamQuerySchema,
+} from './validation/schema';
 import { DateTime } from 'luxon';
 
 /**
@@ -115,7 +128,8 @@ async function createRouter(
   await scheduler.scheduleTask({
     id: 'copilot-metrics',
     ...(schedule ?? defaultSchedule),
-    fn: async () => await Scheduler.create({ db, logger, api, config }).run(),
+    fn: async () =>
+      await TaskManagement.create({ db, logger, api, config }).runAsync(),
   });
 
   const router = Router();
@@ -126,38 +140,133 @@ async function createRouter(
     response.json({ status: 'ok' });
   });
 
-  router.get('/metrics', async (request, response) => {
-    const { startDate, endDate } = request.query;
+  router.get(
+    '/metrics',
+    validateQuery(metricsQuerySchema),
+    async (req, res) => {
+      const { startDate, endDate, type, team } = req.query as MetricsQuery;
+      let metrics: Metric[] = [];
 
-    if (typeof startDate !== 'string' || typeof endDate !== 'string') {
-      return response.status(400).json('Invalid query parameters');
+      // if startDate is earlier than last date of MetricsV1, fetch the old data
+      const lastDayOfOldMetrics = await db.getMostRecentDayFromMetrics(
+        type,
+        team,
+      );
+
+      if (
+        startDate &&
+        lastDayOfOldMetrics &&
+        DateTime.fromISO(startDate) <=
+          DateTime.fromJSDate(new Date(lastDayOfOldMetrics))
+      ) {
+        const result = await db.getMetrics(startDate, endDate, type, team);
+        metrics = result.map(metric => ({
+          ...metric,
+          breakdown: JSON.parse(metric.breakdown),
+        }));
+      }
+
+      // if endDate is later or equal to first day of new metrics, fetch those also and merge into metrics
+      const firstDayOfNewMetrics = await db.getEarliestDayFromMetricsV2(
+        type,
+        team,
+      );
+      if (
+        endDate &&
+        firstDayOfNewMetrics &&
+        DateTime.fromISO(endDate) >=
+          DateTime.fromJSDate(new Date(firstDayOfNewMetrics))
+      ) {
+        const result = await db.getMetricsV2(startDate, endDate, type, team);
+        const breakdown = await db.getBreakdown(startDate, endDate, type, team);
+
+        const newMetrics = result.map(metric => ({
+          ...metric,
+          breakdown: breakdown.filter(day => {
+            const metricDate = DateTime.fromJSDate(new Date(metric.day));
+            const dayDate = DateTime.fromJSDate(new Date(day.day));
+            return metricDate.equals(dayDate);
+          }),
+        }));
+
+        // Merge new metrics with old metrics
+        metrics = [...metrics, ...newMetrics];
+      }
+
+      return res.json(metrics);
+    },
+  );
+
+  router.get(
+    '/engagements',
+    validateQuery(metricsQuerySchema),
+    async (req, res) => {
+      const { startDate, endDate, type, team } = req.query as MetricsQuery;
+
+      const engagements = await db.getEngagementMetrics(
+        startDate,
+        endDate,
+        type,
+        team,
+      );
+      if (!engagements) {
+        throw new NotFoundError();
+      }
+
+      return res.json(engagements);
+    },
+  );
+
+  router.get('/seats', validateQuery(metricsQuerySchema), async (req, res) => {
+    const { startDate, endDate, type, team } = req.query as MetricsQuery;
+
+    const seats = await db.getSeatMetrics(startDate, endDate, type, team);
+    if (!seats) {
+      throw new NotFoundError();
     }
 
-    const parsedStartDate = DateTime.fromISO(startDate);
-    const parsedEndDate = DateTime.fromISO(endDate);
-
-    if (!parsedStartDate.isValid || !parsedEndDate.isValid) {
-      return response.status(400).json('Invalid date format');
-    }
-
-    const result = await db.getMetricsByPeriod(startDate, endDate);
-
-    const metrics: Metric[] = result.map(metric => ({
-      ...metric,
-      breakdown: JSON.parse(metric.breakdown),
-    }));
-
-    return response.json(metrics);
+    return res.json(seats);
   });
 
-  router.get('/metrics/period-range', async (_, response) => {
-    const result = await db.getPeriodRange();
+  router.get(
+    '/metrics/period-range',
+    validateQuery(periodRangeQuerySchema),
+    async (req, res) => {
+      const { type } = req.query as PeriodRangeQuery;
+      const oldMetricRange = await db.getPeriodRange(type);
+      const newMetricRange = await db.getPeriodRangeV2(type);
+
+      if (!oldMetricRange && !newMetricRange) {
+        throw new NotFoundError();
+      }
+
+      // Determine the minDate, prioritizing oldMetricRange if available
+      const minDate = oldMetricRange?.minDate || newMetricRange?.minDate;
+
+      // Determine the maxDate, prioritizing newMetricRange if available
+      const maxDate = newMetricRange?.maxDate || oldMetricRange?.maxDate;
+
+      // Make sure both minDate and maxDate are defined
+      if (!minDate || !maxDate) {
+        throw new NotFoundError('Unable to determine metric date range');
+      }
+
+      const result: PeriodRange = { minDate, maxDate };
+
+      return res.json(result);
+    },
+  );
+
+  router.get('/teams', validateQuery(teamQuerySchema), async (req, res) => {
+    const { type, startDate, endDate } = req.query as TeamQuery;
+
+    const result = await db.getTeams(type, startDate, endDate);
 
     if (!result) {
-      return response.status(400).json('No available data');
+      throw new NotFoundError();
     }
 
-    return response.json(result);
+    return res.json(result);
   });
 
   router.use(MiddlewareFactory.create({ config, logger }).error);

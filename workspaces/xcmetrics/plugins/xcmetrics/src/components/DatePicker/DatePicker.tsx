@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { createStyles } from '@material-ui/core/styles';
 import { InputProps } from '@material-ui/core/Input';
 import withStyles from '@material-ui/core/styles/withStyles';

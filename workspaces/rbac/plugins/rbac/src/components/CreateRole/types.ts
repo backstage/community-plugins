@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PermissionsData } from '../../types';
+import { PermissionsData, SelectedPlugin } from '../../types';
 
 export type SelectedMember = {
   id?: string;
@@ -36,12 +36,18 @@ export type RoleFormValues = {
   namespace: string;
   kind: string;
   description?: string;
+  owner?: string;
   selectedMembers: SelectedMember[];
+  selectedPlugins: SelectedPlugin[];
   permissionPoliciesRows: PermissionsData[];
 };
 
 export type PermissionPolicies = {
-  [permission: string]: { policies: string[]; isResourced: boolean };
+  [permission: string]: {
+    policies: string[];
+    isResourced: boolean;
+    resourceType?: string;
+  };
 };
 
 export type PluginsPermissions = {

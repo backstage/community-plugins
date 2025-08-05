@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { configApiRef } from '@backstage/core-plugin-api';
 import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
@@ -21,7 +21,10 @@ import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
-import { Application, Source } from '../../../types/application';
+import {
+  Application,
+  Source,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import DeploymentLifecycleDrawer from '../DeploymentLifecycleDrawer';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 import { useDrawerContext } from '../DrawerContext';
@@ -62,7 +65,7 @@ describe('DeploymentLifecycleDrawer', () => {
     jest.clearAllMocks();
   });
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => {
+  const wrapper = ({ children }: { children: ReactNode }) => {
     return (
       <TestApiProvider
         apis={[

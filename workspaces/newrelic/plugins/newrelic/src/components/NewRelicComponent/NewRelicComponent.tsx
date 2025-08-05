@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import NewRelicFetchComponent from '../NewRelicFetchComponent';
 import {
@@ -26,7 +25,7 @@ import {
   SupportButton,
 } from '@backstage/core-components';
 
-const NewRelicComponent = () => (
+export const NewRelicComponent = () => (
   <Page themeId="tool">
     <Header title="New Relic">
       <HeaderLabel label="Owner" value="Engineering" />
@@ -45,5 +44,3 @@ const NewRelicComponent = () => (
     </Content>
   </Page>
 );
-
-export default NewRelicComponent;

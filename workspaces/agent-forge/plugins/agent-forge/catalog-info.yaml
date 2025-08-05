@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-agent-forge
+  title: '@backstage-community/plugin-agent-forge'
+  description: Chat plugin for AI agents
+spec:
+  lifecycle: experimental
+  type: backstage-frontend-plugin
+  owner: maintainers

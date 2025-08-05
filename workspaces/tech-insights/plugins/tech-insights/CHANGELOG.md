@@ -1,5 +1,94 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.6.1
+
+### Patch Changes
+
+- d97a34e: Added support for alternate visualizations of boolean checks:
+
+  - Content lists can be rendered with smaller text size and reduced padding (option `dense`)
+  - Checks in the overview page can be rendered as a badge (option `badge`)
+  - Checks in the entity card can be rendered as a gauge (option `gauge`)
+
+## 0.6.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 01640b2: Makes minor change to API report.
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-react@1.2.0
+
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [ac739ca]
+  - @backstage-community/plugin-tech-insights-common@0.6.0
+  - @backstage-community/plugin-tech-insights-react@1.1.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.0
+
+### Minor Changes
+
+- e919e53: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- f015469: Introducing a new tech insights react plugin for reusuable frontend utilities. All migrated components and APIs have been marked as deprecated. Please update your imports to come from `@backstage-community/plugin-tech-insights-react`
+
+  Package json files for each plugin have been updated to reflect the new plugin in the Backstage `pluginPackages` metadata.
+
+- f015469: Several symbols have been migrated and marked deprecated. Please update all deprecated symbols to import from `@backstage-community/plugin-tech-insights-react` instead.
+- Updated dependencies [f015469]
+- Updated dependencies [e919e53]
+- Updated dependencies [c107e0f]
+  - @backstage-community/plugin-tech-insights-common@0.5.0
+  - @backstage-community/plugin-tech-insights-react@1.1.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+
+## 0.3.42
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+
+## 0.3.41
+
+### Patch Changes
+
+- 9a09c39: Remove use of react 18 `useId` hook to maintain compatibility with react 17.
+
+## 0.3.40
+
+### Patch Changes
+
+- 331daba: Added optional `filter` prop to `EntityTechInsightsScorecardContent` and `EntityTechInsightsScorecardCard` for easier and more flexible filtering of what checks to display.
+- Updated dependencies [331daba]
+  - @backstage-community/plugin-tech-insights-common@0.2.21
+
 ## 0.3.39
 
 ### Patch Changes

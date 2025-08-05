@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-quay-backend
+  title: '@backstage-community/plugin-quay-backend'
+  description: A Backstage backend plugin that makes calls to the Quay API
+spec:
+  lifecycle: experimental
+  type: backstage-backend-plugin
+  owner: maintainers

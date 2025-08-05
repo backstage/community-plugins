@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import {
+  isAlertSelectorAvailable,
+  isDashboardSelectorAvailable,
+  isOverviewDashboardAvailable,
+} from '../constants';
 
 /**
  * @alpha
@@ -22,7 +26,7 @@ import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 export const entityGrafanaDashboardsCard = EntityCardBlueprint.make({
   name: 'dashboards',
   params: {
-    filter: 'kind:component',
+    filter: entity => Boolean(isDashboardSelectorAvailable(entity)),
     loader: () =>
       import('../components/DashboardsCard').then(m => <m.DashboardsCard />),
   },
@@ -34,7 +38,9 @@ export const entityGrafanaDashboardsCard = EntityCardBlueprint.make({
 export const entityGrafanaAlertsCard = EntityCardBlueprint.make({
   name: 'alerts',
   params: {
-    filter: 'kind:component',
+    filter: entity =>
+      Boolean(isDashboardSelectorAvailable(entity)) ||
+      isAlertSelectorAvailable(entity),
     loader: () =>
       import('../components/AlertsCard').then(m => <m.AlertsCard />),
   },
@@ -46,7 +52,7 @@ export const entityGrafanaAlertsCard = EntityCardBlueprint.make({
 export const entityGrafanaOverviewDashboardViewer = EntityCardBlueprint.make({
   name: 'overview-dashboard',
   params: {
-    filter: 'kind:component',
+    filter: entity => isOverviewDashboardAvailable(entity),
     loader: () =>
       import('../components/DashboardViewer').then(m => (
         <m.EntityDashboardViewer />

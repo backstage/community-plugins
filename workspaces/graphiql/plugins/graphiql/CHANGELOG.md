@@ -1,5 +1,23 @@
 # @backstage-community/plugin-graphiql
 
+## 0.5.0
+
+### Minor Changes
+
+- 4e40c49: Backstage version bump to v1.40.2
+
+## 0.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.4.0
+
+### Minor Changes
+
+- d6ab6de: Add support for GraphiQL plugins.
+
 ## 0.3.11
 
 ### Patch Changes

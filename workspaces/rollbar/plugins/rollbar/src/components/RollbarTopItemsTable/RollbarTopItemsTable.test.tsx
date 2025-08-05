@@ -16,7 +16,6 @@
 
 import { renderInTestApp } from '@backstage/test-utils';
 import { screen } from '@testing-library/react';
-import * as React from 'react';
 import { RollbarTopActiveItem } from '../../api/types';
 import { RollbarTopItemsTable } from './RollbarTopItemsTable';
 

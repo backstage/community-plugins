@@ -37,12 +37,12 @@ const mockedJenkins = jenkins as jest.Mocked<any>;
 mockedJenkins.mockReturnValue(mockedJenkinsClient);
 
 const resourceRef = 'component:default/example-component';
-const jobFullName = 'example-jobName/foo';
+const jobs = ['example-jobName', 'foo'];
 const buildNumber = 19;
 const jenkinsInfo: JenkinsInfo = {
   baseUrl: 'https://jenkins.example.com',
   headers: { headerName: 'headerValue' },
-  jobFullName: 'example-jobName',
+  fullJobNames: ['example-jobName'],
   projectCountLimit: 60,
 };
 
@@ -61,6 +61,7 @@ describe('JenkinsApi', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockFetch.mockReset();
   });
 
   describe('getProjects', () => {
@@ -127,7 +128,7 @@ describe('JenkinsApi', () => {
           promisify: true,
         });
         expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: jenkinsInfo.jobFullName,
+          name: jenkinsInfo.fullJobNames[0],
           tree: expect.anything(),
         });
         expect(result).toHaveLength(1);
@@ -168,7 +169,7 @@ describe('JenkinsApi', () => {
           promisify: true,
         });
         expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/testBranchName`,
+          name: `${jenkinsInfo.fullJobNames[0]}/testBranchName`,
           tree: expect.anything(),
         });
         expect(result).toHaveLength(1);
@@ -184,28 +185,31 @@ describe('JenkinsApi', () => {
           'with-a/slash',
         ]);
 
-        expect(mockedJenkins).toHaveBeenCalledWith({
-          baseUrl: jenkinsInfo.baseUrl,
-          headers: jenkinsInfo.headers,
-          promisify: true,
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/foo`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/bar`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/catpants`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/with-a%2Fslash`,
-          tree: expect.anything(),
-        });
-        expect(result).toHaveLength(1);
+        for (const jobName of jenkinsInfo.fullJobNames) {
+          expect(mockedJenkins).toHaveBeenCalledWith({
+            baseUrl: jenkinsInfo.baseUrl,
+            headers: jenkinsInfo.headers,
+            promisify: true,
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/foo`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/bar`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/catpants`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/with-a%2Fslash`,
+            tree: expect.anything(),
+          });
+        }
+
+        expect(result).toHaveLength(jenkinsInfo.fullJobNames.length);
       });
     });
     describe('augmented', () => {
@@ -681,7 +685,7 @@ describe('JenkinsApi', () => {
     mockedJenkinsClient.job.get.mockResolvedValueOnce(project);
     mockedJenkinsClient.build.get.mockResolvedValueOnce(build);
 
-    await jenkinsApi.getBuild(jenkinsInfo, jobFullName, buildNumber);
+    await jenkinsApi.getBuild(jenkinsInfo, jobs, buildNumber);
 
     expect(mockedJenkins).toHaveBeenCalledWith({
       baseUrl: jenkinsInfo.baseUrl,
@@ -689,11 +693,11 @@ describe('JenkinsApi', () => {
       promisify: true,
     });
     expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-      name: jobFullName,
+      name: jobs,
       depth: 1,
     });
     expect(mockedJenkinsClient.build.get).toHaveBeenCalledWith(
-      jobFullName,
+      jobs,
       buildNumber,
     );
   });
@@ -701,7 +705,7 @@ describe('JenkinsApi', () => {
     const jenkinsApiProto = Object.getPrototypeOf(jenkinsApi);
     const buildUrl = jenkinsApiProto.getBuildUrl(
       jenkinsInfo,
-      jobFullName,
+      jobs,
       buildNumber,
     );
     expect(buildUrl).toEqual(
@@ -710,7 +714,7 @@ describe('JenkinsApi', () => {
 
     const buildUrlTriple = jenkinsApiProto.getBuildUrl(
       jenkinsInfo,
-      'example-jobName/foo/bar',
+      ['example-jobName', 'foo', 'bar'],
       buildNumber,
     );
     expect(buildUrlTriple).toEqual(
@@ -724,7 +728,7 @@ describe('JenkinsApi', () => {
       mockFetch.mockResolvedValueOnce({ status: 200 } as Response);
       const status = await jenkinsApi.rebuildProject(
         jenkinsInfo,
-        jobFullName,
+        jobs,
         buildNumber,
         resourceRef,
         { credentials: await auth.getOwnServiceCredentials() },
@@ -735,7 +739,7 @@ describe('JenkinsApi', () => {
       mockFetch.mockResolvedValueOnce({ status: 401 } as Response);
       const status = await jenkinsApi.rebuildProject(
         jenkinsInfo,
-        jobFullName,
+        jobs,
         buildNumber,
         resourceRef,
         { credentials: await auth.getOwnServiceCredentials() },
@@ -758,7 +762,7 @@ describe('JenkinsApi', () => {
       } as Response);
       const status = await jenkinsApi.rebuildProject(
         jenkinsInfo,
-        jobFullName,
+        jobs,
         buildNumber,
         resourceRef,
         { credentials: await auth.getOwnServiceCredentials() },
@@ -772,7 +776,7 @@ describe('JenkinsApi', () => {
         status: 200,
         json: async () => {},
       } as Response);
-      await jenkinsApi.getJobBuilds(jenkinsInfo, jobFullName);
+      await jenkinsApi.getJobBuilds(jenkinsInfo, jobs);
       expect(mockFetch).toHaveBeenCalledWith(
         'https://jenkins.example.com/job/example-jobName/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
         { headers: { headerName: 'headerValue' }, method: 'get' },
@@ -784,10 +788,33 @@ describe('JenkinsApi', () => {
         status: 200,
         json: async () => {},
       } as Response);
-      const fullJobName = 'test/folder/depth/foo';
+      const fullJobName = ['test', 'folder', 'depth', 'foo'];
       await jenkinsApi.getJobBuilds(jenkinsInfo, fullJobName);
       expect(mockFetch).toHaveBeenCalledWith(
         'https://jenkins.example.com/job/test/job/folder/job/depth/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
+        { headers: { headerName: 'headerValue' }, method: 'get' },
+      );
+    });
+  });
+  describe('getBuildConsoleText', () => {
+    it('should return the console text for a build', async () => {
+      const mockedConsoleText = 'Build Ran';
+      mockFetch.mockResolvedValueOnce({
+        status: 200,
+        text: async () => {
+          return mockedConsoleText;
+        },
+      } as unknown as Response);
+
+      const consoleText = await jenkinsApi.getBuildConsoleText(
+        jenkinsInfo,
+        jobs,
+        buildNumber,
+      );
+
+      expect(consoleText).toBe('Build Ran');
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://jenkins.example.com/job/example-jobName/job/foo/19/consoleText',
         { headers: { headerName: 'headerValue' }, method: 'get' },
       );
     });

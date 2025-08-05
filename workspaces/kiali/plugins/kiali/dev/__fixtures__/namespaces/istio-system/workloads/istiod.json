@@ -1,0 +1,172 @@
+{
+  "name": "istiod",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-15T09:24:36Z",
+  "resourceVersion": "852",
+  "istioInjectionAnnotation": false,
+  "istioSidecar": false,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "istiod",
+    "install.operator.istio.io/owning-resource": "unknown",
+    "istio": "pilot",
+    "istio.io/rev": "default",
+    "operator.istio.io/component": "Pilot",
+    "sidecar.istio.io/inject": "false"
+  },
+  "appLabel": true,
+  "versionLabel": false,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "istiod-74586f98bb-khmv4",
+      "labels": {
+        "app": "istiod",
+        "install.operator.istio.io/owning-resource": "unknown",
+        "istio": "pilot",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "Pilot",
+        "pod-template-hash": "74586f98bb",
+        "sidecar.istio.io/inject": "false"
+      },
+      "createdAt": "2024-02-15T09:24:36Z",
+      "createdBy": [
+        {
+          "name": "istiod-74586f98bb",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "discovery",
+          "image": "gcr.io/istio-release/pilot:1.20.1",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": null,
+      "istioInitContainers": null,
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": false,
+      "annotations": {
+        "ambient.istio.io/redirection": "disabled",
+        "prometheus.io/port": "15014",
+        "prometheus.io/scrape": "true",
+        "sidecar.istio.io/inject": "false"
+      },
+      "proxyStatus": null,
+      "serviceAccountName": "istiod"
+    }
+  ],
+  "services": [
+    {
+      "name": "istiod",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "istiod",
+        "install.operator.istio.io/owning-resource": "installed-state",
+        "install.operator.istio.io/owning-resource-namespace": "istio-system",
+        "istio": "pilot",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "Pilot",
+        "operator.istio.io/managed": "Reconcile",
+        "operator.istio.io/version": "1.20.1",
+        "release": "istio"
+      },
+      "selector": {
+        "app": "istiod",
+        "istio": "pilot"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "Go",
+      "dashboardRefs": [
+        {
+          "template": "go",
+          "title": "Go Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "istiod",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": -1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

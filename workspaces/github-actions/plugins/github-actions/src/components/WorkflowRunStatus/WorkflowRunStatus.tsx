@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import {
   StatusPending,
   StatusRunning,
@@ -41,7 +40,7 @@ export const WorkflowRunStatus = (props: {
 }) => {
   const classes = useStyles();
   return (
-    <Box display="flex" justifyContent="center" alignItems="center">
+    <Box display="flex" alignItems="center">
       <Box className={classes.statusIcon}>
         <WorkflowIcon {...props} />
       </Box>

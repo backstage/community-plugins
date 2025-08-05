@@ -20,12 +20,12 @@ import { getPackages } from '@manypkg/get-packages';
 import { resolve, join } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
+import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 const BACKSTAGE_PLUGIN =
-  "import { BackstagePlugin } from '@backstage/frontend-plugin-api';";
+  "import { FrontendPlugin } from '@backstage/frontend-plugin-api';";
 
 async function main(args) {
   const rootPath = resolve(__dirname, '..');
@@ -34,9 +34,7 @@ async function main(args) {
   const frontendFeatureReports = [];
 
   // Get workspaces
-  const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
-    .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
-    .map(w => w.name);
+  const workspaces = await listWorkspaces();
 
   // Loop through workspaces
   for (const workspace of workspaces) {
@@ -58,14 +56,14 @@ async function main(args) {
         frontendFeatureReport.package = pkg.packageJson.name;
         frontendFeatureReport.role = pkgRole;
         frontendFeatureReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
-        const apiReportPath = join(pkg.dir, 'api-report.md');
+        const apiReportPath = join(pkg.dir, 'report.api.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
         if (apiReport.includes(BACKSTAGE_PLUGIN)) {
           frontendFeatureReport.supported = true;
           frontendFeatureReport.alpha = false;
         }
 
-        const apiReportAlphaPath = join(pkg.dir, 'api-report-alpha.md');
+        const apiReportAlphaPath = join(pkg.dir, 'report-alpha.api.md');
         if (fs.existsSync(apiReportAlphaPath)) {
           const apiReportAlpha = (
             await fs.readFile(apiReportAlphaPath)

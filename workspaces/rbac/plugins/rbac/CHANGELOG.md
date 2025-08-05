@@ -1,5 +1,285 @@
 ### Dependencies
 
+## 1.42.2
+
+### Patch Changes
+
+- 2e28d31: hide permissions for uninstalled plugins
+
+## 1.42.1
+
+### Patch Changes
+
+- a2e5d4e: Added optional pagination support to getMembers API
+- aec6bc2: docs(rbac): Removing Janus IDP dynamic plugin installation instructions, switching to relative paths for doc links
+- ac39bff: removed shared-react dependencies
+- 4719a0e: Fix to remove entire permission when no policy is selected.
+
+## 1.42.0
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+
+## 1.41.6
+
+### Patch Changes
+
+- 6c4ee27: Replaced `getTitleCase` from `shared-react` with the `capitalizeFirstLetter` utility from the RBAC plugin as part of sunsetting the `shared-react` package.
+- e141237: Improve `useRoles` hook to support paginated role condition fetching using `Promise.allSettled`, ensuring partial data availability even if individual condition fetch fails.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+- Updated dependencies [a42945e]
+  - @backstage-community/plugin-rbac-common@1.17.0
+
+## 1.41.5
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+- 4d8a8e9: Removed theme package "@redhat-developer/red-hat-developer-hub-theme" in dev.
+- 79213e4: Fixed role actions tooltip delay issue.
+
+## 1.41.4
+
+### Patch Changes
+
+- eebc68d: UI Enhancements:
+
+  - Added vertical spacing between buttons in the side drawer for improved usability.
+  - Fixed layout issue in the Users and Groups table where adding a row caused unexpected height changes.
+  - Aligned action icon colors in the Roles table for visual consistency.
+  - Simplified label formatting in the Overview table for a cleaner look.
+  - Improved dropdown behavior in Users, Groups, and Permissions sections — selecting an option no longer clears the input text.
+  - Conditionally hid input field labels when validation errors are present to reduce visual clutter.
+  - Aligned “No options” placeholder text across the Users and Groups and Plugin selection dropdowns.
+  - Prevented backspace from unintentionally removing selected items in the Users and Groups and Plugin dropdowns.
+
+## 1.41.3
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+
+## 1.41.2
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 1.41.1
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
+## 1.41.0
+
+### Minor Changes
+
+- e8755f6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e8755f6]
+  - @backstage-community/plugin-rbac-common@1.16.0
+
+## 1.40.1
+
+### Patch Changes
+
+- 1adf6a6: resolve module import error while importing from `@rjsf/utils/lib/schema/getDefaultFormState`
+
+## 1.40.0
+
+### Minor Changes
+
+- d278b4c: Adds the ability to assign ownership to roles that can then be used to conditionally filter roles, permission policies, and conditional policies. The conditional filter can now be accomplished through the use of the new RBAC conditional rule `IS_OWNER`.
+
+  `IS_OWNER` can be used to grant limited access to the RBAC plugins where in admins might want leads to control their own team's access.
+
+  Removed the resource type from the `policy.entity.create` permission to prevent conditional rules being applied to the permission. At the moment, the plugins will still continue to work as expected. However, it is strongly recommended updating all permission policies that utilize the resource type `policy-entity` with the action `create` (ex. `role:default/some_role, policy-entity, create, allow` to `role:default/some_role, policy.entity.create, create, allow`) to prevent any future degradation in service. A migration has been supplied to automatically update all permission policies that have not originated from the CSV file. The CSV file was skipped as a duplication event could happen during reloads / restarts. This means that the CSV file will need to be updated manually to ensure that all references to the old permission policy, resource type `policy-entity` with an action of `create`, have been updated to the named permission `policy.entity.create` with an action of `create`.
+
+### Patch Changes
+
+- Updated dependencies [d278b4c]
+  - @backstage-community/plugin-rbac-common@1.15.0
+
+## 1.39.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-rbac-common@1.14.1
+
+## 1.39.2
+
+### Patch Changes
+
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+
+## 1.39.1
+
+### Patch Changes
+
+- 85541c1: RBACApiRef should be exposed to support simulation / customization based on use-cases and to mock API implementation for feature testing. #2872
+
+## 1.39.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+
+## 1.38.3
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 973a5ef: remove prettier from devDevpendencies
+
+## 1.38.2
+
+### Patch Changes
+
+- 3f80cbb: fixed no record found was being shown before the role list get displayed
+- a388178: Fix to show conditional permission policy with multiple CRUD actions on single resource-type created via CLI/CSV correctly in edit form.
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+
+## 1.38.1
+
+### Patch Changes
+
+- 152eb5f: In edit role form show selected permissions for a plugin based on resource-type and policy mapping if resource-type used in creation of simple permission policy via CLI/CSV file.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
+## 1.38.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.37.0
+
+### Minor Changes
+
+- 5934dfe: Open confirmation modal with options to discard the entered information or continue with adding more information on create/edit role forms cancel button click.
+
+## 1.36.0
+
+### Minor Changes
+
+- 838db28: Redesigned RBAC form permissions section.
+  User will be able to select multiple plugins at once.
+
+## 1.35.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+
+## 1.34.0
+
+### Minor Changes
+
+- 622dcb6: Allow admin to select multiple users/groups
+
+## 1.33.6
+
+### Patch Changes
+
+- 5b19b0d: Update documentation information about `pluginsWithPermission` setting. In order for the RBAC UI to display available permissions provided by installed plugins, this setting needs to be configured.
+
+## 1.33.5
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 1.33.4
+
+### Patch Changes
+
+- 27c3f1f: Fix role overview page styling issues
+
+## 1.33.3
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [4b3653a]
+  - @backstage-community/plugin-rbac-common@1.12.3
+
+## 1.33.2
+
+### Patch Changes
+
+- c3fe880: - fix: remove empty summary row
+  - fix: remove `@janus-idp/cli` / `scalprum` configuration from `package.json`. Users that build and install the plugin from the source code must change their app-config.yaml from `janus-idp.backstage-plugin-rbac` to `backstage-community.plugin-rbac` and drop the module parameter. This matches now other plugins we migrated from the Janus IDP community to the Backstage community plugin and was missed before.
+
+## 1.33.1
+
+### Patch Changes
+
+- ba05b93: Fixed UI issues.
+
+## 1.33.0
+
+### Minor Changes
+
+- 757799e: Upgraded RBAC plugin from mui4 to mui5
+
+## 1.32.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.32.4
+
+### Patch Changes
+
+- 066b3bd: removed canvas from devDependencies
+
+## 1.32.3
+
+### Patch Changes
+
+- dd0e2b4: chore: use workspace dependencies
+- b7c2fa1: Updated supported-versions to ^1.28.4.
+- Updated dependencies [b7c2fa1]
+  - @backstage-community/plugin-rbac-common@1.12.2
+
 ## 1.32.2
 
 ### Patch Changes

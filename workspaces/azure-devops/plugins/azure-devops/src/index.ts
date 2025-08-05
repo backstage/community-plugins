@@ -43,3 +43,5 @@ export type {
   CreatedByTeamsFilter,
   AllFilter,
 } from './components/PullRequestsPage';
+
+export * from './deprecated';

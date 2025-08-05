@@ -166,6 +166,28 @@ describe('condition-validation', () => {
       );
     });
 
+    it('should fail validation role condition with policy-entity resource type and create action', () => {
+      const condition: any = {
+        resourceType: 'policy-entity',
+        pluginId: 'permission',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['create'],
+        conditions: {
+          anyOf: [
+            {
+              rule: 'IS_OWNER',
+              resourceType: 'policy-entity',
+              params: { key: 'owner', values: ['user:default/mock'] },
+            },
+          ],
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `Conditional policy can not be created for resource type 'policy-entity' with the permission action 'create'`,
+      );
+    });
+
     it('should fail validation role condition without role entity reference', () => {
       const condition: any = {
         pluginId: 'catalog',

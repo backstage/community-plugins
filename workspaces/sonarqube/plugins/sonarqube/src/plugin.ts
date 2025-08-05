@@ -20,7 +20,7 @@ import {
   createComponentExtension,
   createPlugin,
   discoveryApiRef,
-  identityApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { sonarQubeApiRef } from '@backstage-community/plugin-sonarqube-react';
 
@@ -32,12 +32,12 @@ export const sonarQubePlugin = createPlugin({
       api: sonarQubeApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
-        identityApi: identityApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, identityApi }) =>
+      factory: ({ discoveryApi, fetchApi }) =>
         new SonarQubeClient({
           discoveryApi,
-          identityApi,
+          fetchApi,
         }),
     }),
   ],

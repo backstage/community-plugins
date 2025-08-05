@@ -23,12 +23,13 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { SonarQubeCard } from '../SonarQubeCard';
 import {
   isSonarQubeAvailable,
   SONARQUBE_PROJECT_KEY_ANNOTATION,
 } from '@backstage-community/plugin-sonarqube-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { sonarqubeTranslationRef } from '../../translation';
 
 /** @public */
 export type SonarQubeContentPageProps = {
@@ -40,10 +41,11 @@ export type SonarQubeContentPageProps = {
 export const SonarQubeContentPage = (props: SonarQubeContentPageProps) => {
   const { entity } = useEntity();
   const { title, supportTitle, missingAnnotationReadMoreUrl } = props;
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
 
   return isSonarQubeAvailable(entity) ? (
     <Content>
-      <ContentHeader title={title ?? 'SonarQube Dashboard'}>
+      <ContentHeader title={title ?? t('title')}>
         {supportTitle && <SupportButton>{supportTitle}</SupportButton>}
       </ContentHeader>
       <SonarQubeCard

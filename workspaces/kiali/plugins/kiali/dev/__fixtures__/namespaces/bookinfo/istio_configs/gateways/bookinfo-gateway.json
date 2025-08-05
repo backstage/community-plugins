@@ -1,0 +1,103 @@
+{
+  "namespace": {
+    "name": "bookinfo",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "objectType": "gateways",
+  "authorizationPolicy": null,
+  "destinationRule": null,
+  "envoyFilter": null,
+  "gateway": {
+    "kind": "Gateway",
+    "apiVersion": "networking.istio.io/v1beta1",
+    "metadata": {
+      "name": "bookinfo-gateway",
+      "namespace": "bookinfo",
+      "uid": "6369d379-ce97-4a77-98ef-5702845ddc56",
+      "resourceVersion": "811259",
+      "generation": 3,
+      "creationTimestamp": "2024-03-05T14:38:05Z",
+      "annotations": {
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.istio.io/v1alpha3\",\"kind\":\"Gateway\",\"metadata\":{\"annotations\":{},\"name\":\"bookinfo-gateway\",\"namespace\":\"bookinfo\"},\"spec\":{\"selector\":{\"istio\":\"ingressgateway\"},\"servers\":[{\"hosts\":[\"*\"],\"port\":{\"name\":\"http\",\"number\":8080,\"protocol\":\"HTTP\"}}]}}\n"
+      },
+      "managedFields": [
+        {
+          "manager": "kubectl-client-side-apply",
+          "operation": "Update",
+          "apiVersion": "networking.istio.io/v1alpha3",
+          "time": "2024-03-05T14:38:05Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:annotations": {
+                ".": {},
+                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+              }
+            },
+            "f:spec": {
+              ".": {},
+              "f:selector": {},
+              "f:servers": {}
+            }
+          }
+        },
+        {
+          "manager": "kiali",
+          "operation": "Update",
+          "apiVersion": "networking.istio.io/v1beta1",
+          "time": "2024-03-20T12:42:26Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:spec": {
+              "f:selector": {
+                "f:istio": {}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "servers": [
+        {
+          "port": {
+            "number": 8080,
+            "protocol": "HTTP",
+            "name": "http"
+          },
+          "hosts": ["*"]
+        }
+      ],
+      "selector": {
+        "istio": "ingressgateway"
+      }
+    },
+    "status": {}
+  },
+  "peerAuthentication": null,
+  "requestAuthentication": null,
+  "serviceEntry": null,
+  "sidecar": null,
+  "virtualService": null,
+  "workloadEntry": null,
+  "workloadGroup": null,
+  "wasmPlugin": null,
+  "telemetry": null,
+  "k8sGateway": null,
+  "k8sGRPCRoute": null,
+  "k8sHTTPRoute": null,
+  "k8sReferenceGrant": null,
+  "k8sTCPRoute": null,
+  "k8sTLSRoute": null,
+  "permissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "validation": null,
+  "references": null,
+  "help": null
+}

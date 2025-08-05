@@ -29,3 +29,17 @@ export const mockFeedback = {
   userAgent:
     'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0',
 };
+
+export const mockErrorList = [
+  'Slow Loading',
+  'Not Responsive',
+  'Navigation',
+  'UI Issues',
+  'Other',
+];
+export const mockExperienceList = [
+  'Excellent',
+  'Good',
+  'Needs Improvement',
+  'Other',
+];

@@ -10,7 +10,14 @@ import { createApiFactory } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from './routes';
 import { mtaApiRef, DefaultMtaApi } from './api/api';
 
-/** @public */
+/**
+ * The frontend MTA plugin for Backstage.
+ *
+ * Provides entity driven plugin for analyzing MTA applications.
+ *
+ * @public
+ */
+
 export const mtaPlugin = createPlugin({
   id: 'mta',
   apis: [
@@ -31,7 +38,14 @@ export const mtaPlugin = createPlugin({
   },
 });
 
-/** @public */
+/**
+ * The main content extension for the frontend MTA plugin.
+ *
+ * This extension mounts the main `App` component of the MTA plugin at the defined `entityContent` route.
+ *
+ * @public
+ */
+
 export const EntityMTAContent = mtaPlugin.provide(
   createRoutableExtension({
     name: 'EntityMTAContent',

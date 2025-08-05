@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -25,12 +25,17 @@ import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
-import { Application, RevisionInfo } from '../../types/application';
+import {
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
   getInstanceName,
   getUniqueRevisions,
+  mapRevisions,
 } from '../../utils/utils';
+
 import PermissionAlert from '../Common/PermissionAlert';
 import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
@@ -77,19 +82,19 @@ const DeploymentLifecycle = () => {
 
   const hasArgocdViewAccess = useArgocdViewPermission();
 
-  const [open, setOpen] = React.useState(false);
-  const [activeItem, setActiveItem] = React.useState<string>();
-  const [, setRevisions] = React.useState<{
+  const [open, setOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState<string>();
+  const [, setRevisions] = useState<{
     [key: string]: RevisionInfo;
   }>();
-  const revisionCache = React.useRef<{ [key: string]: RevisionInfo }>({});
+  const revisionCache = useRef<{ [key: string]: RevisionInfo }>({});
 
-  const uniqRevisions: string[] = React.useMemo(
+  const uniqRevisions: string[] = useMemo(
     () => getUniqueRevisions(apps),
     [apps],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (uniqRevisions.length !== Object.keys(revisionCache.current).length) {
       api
         .getRevisionDetailsList({
@@ -98,9 +103,7 @@ const DeploymentLifecycle = () => {
           revisionIDs: uniqRevisions,
         })
         .then(data => {
-          uniqRevisions.forEach((rev, i) => {
-            revisionCache.current[rev] = data[i];
-          });
+          revisionCache.current = mapRevisions(uniqRevisions, data);
           setRevisions(revisionCache.current);
         })
         .catch(e => {

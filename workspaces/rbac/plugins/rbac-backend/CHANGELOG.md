@@ -1,5 +1,265 @@
 ### Dependencies
 
+## 7.1.0
+
+### Minor Changes
+
+- 8db28a0: Updated readme example on conditional policy yaml to be well formed (removed quotes)
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
+## 7.0.0
+
+### Major Changes
+
+- 2e732e8: **BREAKING**: Removal of the deprecated createRouter from @backstage/plugin-permission-backend. This results in a new requirement of having the permission plugin installed alongside the RBAC backend plugin.
+
+  Recent changes to the @backstage/plugin-permission-backend resulted in the deprecating and removal of `createRouter` which was primarily used as a way to start both the permission backend plugin and the RBAC backend plugin at the same time. This removal now results in the requirement of having the permission backend plugin installed separately to ensure that the RBAC backend plugin works accordingly.
+
+  Changes required to `packages/backend/src/index.ts`
+
+  ```diff
+  // permission plugin
+  + backend.add(import('@backstage/plugin-permission-backend'));
+  backend.add(import('@backstage-community/plugin-rbac-backend'));
+  ```
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+  - @backstage-community/plugin-rbac-node@1.12.0
+
+## 6.3.0
+
+### Minor Changes
+
+- a42945e: Introduce API to store additional plugin ID list
+- 3e3f346: Migrate rbac-backend to use permission registry service.
+
+### Patch Changes
+
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- Updated dependencies [a42945e]
+  - @backstage-community/plugin-rbac-common@1.17.0
+
+## 6.2.6
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
+## 6.2.5
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+  - @backstage-community/plugin-rbac-node@1.11.1
+
+## 6.2.4
+
+### Patch Changes
+
+- 298b1d4: Avoid unnecessary query to check 'relations' table in the role manager
+
+## 6.2.3
+
+### Patch Changes
+
+- 9436665: Reduce rbac-backend requests to credentials API.
+
+## 6.2.2
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
+## 6.2.1
+
+### Patch Changes
+
+- 10b9919: Avoid filter's args duplication.
+
+## 6.2.0
+
+### Minor Changes
+
+- e8755f6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e8755f6]
+  - @backstage-community/plugin-rbac-common@1.16.0
+  - @backstage-community/plugin-rbac-node@1.11.0
+
+## 6.1.1
+
+### Patch Changes
+
+- 10a0d31: Fixes an issue where the correct permission name was not selected while processing new conditional policies to be added. This scenario happens whenever a plugin exports multiple permissions that have different resource types but similar actions. What would end up happening is the first matched action would be the one selected during processing even though it was not the correct permission and used for the conditional policy. This problem has been fixed and now the correct permission name and action are selected.
+
+## 6.1.0
+
+### Minor Changes
+
+- d278b4c: Adds the ability to assign ownership to roles that can then be used to conditionally filter roles, permission policies, and conditional policies. The conditional filter can now be accomplished through the use of the new RBAC conditional rule `IS_OWNER`.
+
+  `IS_OWNER` can be used to grant limited access to the RBAC plugins where in admins might want leads to control their own team's access.
+
+  Removed the resource type from the `policy.entity.create` permission to prevent conditional rules being applied to the permission. At the moment, the plugins will still continue to work as expected. However, it is strongly recommended updating all permission policies that utilize the resource type `policy-entity` with the action `create` (ex. `role:default/some_role, policy-entity, create, allow` to `role:default/some_role, policy.entity.create, create, allow`) to prevent any future degradation in service. A migration has been supplied to automatically update all permission policies that have not originated from the CSV file. The CSV file was skipped as a duplication event could happen during reloads / restarts. This means that the CSV file will need to be updated manually to ensure that all references to the old permission policy, resource type `policy-entity` with an action of `create`, have been updated to the named permission `policy.entity.create` with an action of `create`.
+
+### Patch Changes
+
+- Updated dependencies [d278b4c]
+  - @backstage-community/plugin-rbac-common@1.15.0
+
+## 6.0.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-rbac-common@1.14.1
+  - @backstage-community/plugin-rbac-node@1.10.1
+
+## 6.0.0
+
+### Major Changes
+
+- 9cccb0d: **BREAKING**: Migration to the core Auditor service. The Auditor format has been updated. Audit fields and event names (ids) have been updated to conform with the new Auditor service conventions. Filtering queries based on the old format may no longer work.
+
+## 5.6.1
+
+### Patch Changes
+
+- b2a5daa: Updated dependency `qs` to `6.14.0`.
+
+## 5.6.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+  - @backstage-community/plugin-rbac-node@1.10.0
+
+## 5.5.3
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-rbac-node@1.9.1
+
+## 5.5.2
+
+### Patch Changes
+
+- 9aa839a: Fixes two issues that were impact the performance, the first was that we were individually adding and removing roles and the second was we were removing all policies and roles regardless of whether they should actually be removed.
+
+## 5.5.1
+
+### Patch Changes
+
+- fcfaf89: Fixed an issue where aliases would not be applied across all conditional policy rules.
+
+## 5.5.0
+
+### Minor Changes
+
+- 36e2c6c: Reduces the number of times that we build the group hierarchy graphs during evaluation. Originally, during time of evaluation, we would build a graph to of all of the groups that a user was directly or indirectly a member of. Now, we only build the graph once and pass along all of the roles that the user is directly or indirectly attached to.
+
+## 5.4.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+  - @backstage-community/plugin-rbac-node@1.9.0
+
+## 5.3.1
+
+### Patch Changes
+
+- 1d5dd17: Evaluate the permissions for a superuser earlier in the process to avoid the unintended consequence of having conditional permissions policies applied to a superuser.
+
+## 5.3.0
+
+### Minor Changes
+
+- 53daff0: Roles and permissions were not correctly applied for users and groups with names containing uppercase letters. To address this issue, we now convert user and group references in all user inputs to lowercase. This change migrates `v0` column in `casbin_rule` table in `backstage_plugin_permission` database. Conditions containing claims with uppercase letters are not resolved yet.
+
+## 5.2.10
+
+### Patch Changes
+
+- ba4b3e9: Use loadPolicy to keep the enforcer in sync for edit operations. It should keep the RBAC plugin in sync when the Backstage instance is scaled to multiple deployment replicas. Reuse the maximum database pool size value from the application configuration in the RBAC Casbin adapter.
+
+## 5.2.9
+
+### Patch Changes
+
+- 5b19b0d: Update documentation information about `pluginsWithPermission` setting. In order for the RBAC UI to display available permissions provided by installed plugins, this setting needs to be configured.
+
+## 5.2.8
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- Updated dependencies [0f5c451]
+  - @backstage-community/plugin-rbac-node@1.8.4
+
+## 5.2.7
+
+### Patch Changes
+
+- 7843798: Updated dependency `qs` to `6.13.1`.
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [4b3653a]
+  - @backstage-community/plugin-rbac-common@1.12.3
+  - @backstage-community/plugin-rbac-node@1.8.3
+
+## 5.2.6
+
+### Patch Changes
+
+- 4084738: Ensures that the permissions and roles are properly synced during request handling. This is important in high availability scenarios as we need to ensure data is up to date during scaling.
+
+## 5.2.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 5.2.4
+
+### Patch Changes
+
+- dd0e2b4: chore: use workspace dependencies
+- b7c2fa1: Updated supported-versions to ^1.28.4.
+- Updated dependencies [b7c2fa1]
+  - @backstage-community/plugin-rbac-common@1.12.2
+  - @backstage-community/plugin-rbac-node@1.8.2
+
 ## 5.2.3
 
 ### Patch Changes

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useMemo } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
@@ -108,7 +108,7 @@ export const useMembers = (
 
   const loading = !roleError && !membersError && !role && !members;
 
-  data = React.useMemo(
+  data = useMemo(
     () =>
       Array.isArray(role)
         ? role[0].memberReferences.reduce((acc: MembersData[], ref: string) => {

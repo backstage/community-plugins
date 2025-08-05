@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import {
   githubAuthApiRef,
@@ -54,6 +53,13 @@ createDevApp()
           id: 'countries',
           title: 'Countries',
           url: 'https://countries.trevorblades.com/',
+          plugins: [
+            {
+              content: () => <div>Hello from My plugin</div>,
+              icon: GraphiQLIcon,
+              title: 'My plugin',
+            },
+          ],
         }),
       ]);
     },

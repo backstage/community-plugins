@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 import { Execution, StackstormApi, stackstormApiRef } from '../../api';
 import { ExecutionsTable } from './ExecutionsTable';
 

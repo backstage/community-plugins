@@ -24,7 +24,6 @@ import {
   fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import React from 'react';
 
 import { entityFeedbackApiRef, EntityFeedbackClient } from './api';
 import { rootRouteRef } from './routes';

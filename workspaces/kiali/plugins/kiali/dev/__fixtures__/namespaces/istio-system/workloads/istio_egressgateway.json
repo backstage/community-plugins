@@ -1,0 +1,183 @@
+{
+  "name": "istio-egressgateway",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-15T09:24:44Z",
+  "resourceVersion": "16281",
+  "istioInjectionAnnotation": false,
+  "istioSidecar": false,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "istio-egressgateway",
+    "chart": "gateways",
+    "heritage": "Tiller",
+    "install.operator.istio.io/owning-resource": "unknown",
+    "istio": "egressgateway",
+    "istio.io/rev": "default",
+    "operator.istio.io/component": "EgressGateways",
+    "release": "istio",
+    "service.istio.io/canonical-name": "istio-egressgateway",
+    "service.istio.io/canonical-revision": "latest",
+    "sidecar.istio.io/inject": "false"
+  },
+  "appLabel": true,
+  "versionLabel": false,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "istio-egressgateway-55bc68746f-l87v2",
+      "labels": {
+        "app": "istio-egressgateway",
+        "chart": "gateways",
+        "heritage": "Tiller",
+        "install.operator.istio.io/owning-resource": "unknown",
+        "istio": "egressgateway",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "EgressGateways",
+        "pod-template-hash": "55bc68746f",
+        "release": "istio",
+        "service.istio.io/canonical-name": "istio-egressgateway",
+        "service.istio.io/canonical-revision": "latest",
+        "sidecar.istio.io/inject": "false"
+      },
+      "createdAt": "2024-02-15T09:24:44Z",
+      "createdBy": [
+        {
+          "name": "istio-egressgateway-55bc68746f",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "istio-proxy",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": null,
+      "istioInitContainers": null,
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": false,
+      "annotations": {
+        "istio.io/rev": "default",
+        "prometheus.io/path": "/stats/prometheus",
+        "prometheus.io/port": "15020",
+        "prometheus.io/scrape": "true",
+        "sidecar.istio.io/inject": "false"
+      },
+      "proxyStatus": null,
+      "serviceAccountName": "istio-egressgateway-service-account"
+    }
+  ],
+  "services": [
+    {
+      "name": "istio-egressgateway",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "istio-egressgateway",
+        "install.operator.istio.io/owning-resource": "installed-state",
+        "install.operator.istio.io/owning-resource-namespace": "istio-system",
+        "istio": "egressgateway",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "EgressGateways",
+        "operator.istio.io/managed": "Reconcile",
+        "operator.istio.io/version": "1.20.1",
+        "release": "istio"
+      },
+      "selector": {
+        "app": "istio-egressgateway",
+        "istio": "egressgateway"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "istio-egressgateway.istio-system": {
+        "name": "istio-egressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "istio-egressgateway",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": -1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

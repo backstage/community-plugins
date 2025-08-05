@@ -1,0 +1,50 @@
+app:
+  title: Vault Backstage App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+vault:
+  baseUrl: http://localhost:8200
+  publicUrl: http://localhost:8200
+  auth:
+    type: static
+    secret: root
+  secretEngine: 'secrets-v1' # Optional. By default it uses 'secrets'. Can be overwritten by the annotation of the entity
+  kvVersion: 1 # Optional. The K/V version that your instance is using. The available options are '1' or '2'
+  schedule: # Optional. If the token renewal is enabled this schedule will be used instead of the hourly one
+    frequency: { hours: 1 }
+    timeout: { hours: 1 }

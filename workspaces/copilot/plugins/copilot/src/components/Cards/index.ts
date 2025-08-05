@@ -13,5 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { EnterpriseCards } from './EnterpriseCards';
+export { DashboardCards } from './DashboardCards';
 export { LanguageCards } from './LanguageCards';
+export { EngagementCards } from './EngagementCards';

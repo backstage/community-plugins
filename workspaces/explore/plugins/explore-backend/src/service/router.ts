@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
 
-/**
- * @public
- */
 export interface RouterOptions {
   logger: LoggerService;
   toolProvider: ExploreToolProvider;
 }
 
-/**
- * @public
- */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -45,8 +38,6 @@ export async function createRouter(
     const result = await toolProvider.getTools(requestQuery);
     response.json(result);
   });
-
-  router.use(errorHandler());
 
   return router;
 }

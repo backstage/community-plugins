@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext, useEffect } from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
 
@@ -40,10 +40,6 @@ import TopologyToolbar from './TopologyToolbar';
 
 import './TopologyToolbar.css';
 
-import { usePermission } from '@backstage/plugin-permission-react';
-
-import { topologyViewPermission } from '@backstage-community/plugin-topology-common';
-
 type TopologyViewWorkloadComponentProps = {
   useToolbar?: boolean;
 };
@@ -55,7 +51,7 @@ const TopologyViewWorkloadComponent = ({
   const layout = 'ColaNoForce';
   const { loaded, dataModel } = useWorkloadsWatcher();
   const { clusters, selectedClusterErrors, responseError } =
-    React.useContext(K8sResourcesContext);
+    useContext(K8sResourcesContext);
   const graphDimensions = controller.hasGraph()
     ? controller.getGraph().getDimensions()
     : undefined;
@@ -68,16 +64,12 @@ const TopologyViewWorkloadComponent = ({
     removeSelectedIdParam,
   ] = useSideBar();
 
-  const topologyViewPermissionResult = usePermission({
-    permission: topologyViewPermission,
-  });
-
   const allErrors: ClusterErrors = [
     ...(responseError ? [{ message: responseError }] : []),
     ...(selectedClusterErrors ?? []),
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     const model = {
       graph: {
         id: 'g1',
@@ -88,13 +80,13 @@ const TopologyViewWorkloadComponent = ({
     controller.fromModel(model);
   }, [controller]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (graphDimensions && loaded && dataModel) {
       controller.fromModel(dataModel, true);
     }
   }, [graphDimensions, layout, loaded, dataModel, controller]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (dataModel) {
       const selectedNode: BaseNode | null = selectedId
         ? (controller.getElementById(selectedId) as BaseNode)
@@ -137,14 +129,6 @@ const TopologyViewWorkloadComponent = ({
   const getTopologyState = () => {
     if (isDataModelEmpty) {
       return <TopologyEmptyState />;
-    }
-    if (!topologyViewPermissionResult.allowed) {
-      return (
-        <TopologyEmptyState
-          title="Permission required"
-          description="To view Topology, contact your administrator to give you the topology.view.read permission"
-        />
-      );
     }
     return <VisualizationSurface state={{ selectedIds: [selectedId] }} />;
   };

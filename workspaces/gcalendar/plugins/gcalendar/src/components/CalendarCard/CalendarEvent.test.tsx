@@ -16,7 +16,6 @@
 
 import { fireEvent } from '@testing-library/react';
 import { screen } from '@testing-library/react';
-import React from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { CalendarEvent } from './CalendarEvent';
 

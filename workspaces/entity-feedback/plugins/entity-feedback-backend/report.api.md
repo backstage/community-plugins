@@ -5,12 +5,14 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -22,16 +24,20 @@ export default entityFeedbackPlugin;
 // @public (undocumented)
 export interface RouterOptions {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
+  // (undocumented)
+  config: Config;
   // (undocumented)
   database: DatabaseService;
   // (undocumented)
   discovery: DiscoveryService;
   // (undocumented)
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
   // (undocumented)
   identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
+  // (undocumented)
+  notificationService: NotificationService;
 }
 ```

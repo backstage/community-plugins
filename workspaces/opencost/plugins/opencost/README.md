@@ -65,11 +65,21 @@ opencost:
   baseUrl: http://localhost:9003
 ```
 
+If your OpenCost service is private and not directly accessible from the client side, consider using the Backstage proxy to communicate with it. To do so, add the following configs to your `app-config.yaml`:
+
+```yaml
+proxy:
+  endpoints:
+    /opencost: http://opencost-svc.opencost:9003
+---
+opencost:
+  baseUrl: http://your-backstage-instance:7007/api/proxy/opencost
+```
+
 ## Ideas/Next Steps
 
 - More testing
 - Use the OpenCost mascot for the sidebar logo
-- Use the Backstage proxy to communicate with the OpenCost API if necessary for authentication
 - Convert AllocationReport.js to use the [Backstage Table](https://backstage.io/storybook/?path=/story/data-display-table--default-table)
 - Allow for user-provided default reports and/or disabling controls
 - Support multiple hard-coded reports

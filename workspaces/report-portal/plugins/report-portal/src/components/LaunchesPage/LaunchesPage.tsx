@@ -31,6 +31,8 @@ import { styled, Theme } from '@mui/material/styles';
 
 import { projectsRouteRef, rootRouteRef } from '../../routes';
 import { LaunchesPageContent } from './LaunchesPageContent/LaunchesPageContent';
+import Grid from '@mui/material/Grid';
+import { ReportPortalSearchBar } from '../ReportPortalSearchBar';
 
 const StyledButton = styled(LinkButton)(({ theme }: { theme: Theme }) => ({
   backdropFilter: 'blur(10px)',
@@ -73,7 +75,21 @@ export const LaunchesPage = (props: { themeId?: string }) => {
         </StyledButton>
       </Header>
       <Content>
-        <LaunchesPageContent host={hostName} project={projectName} />
+        <Grid container justifyContent="space-around">
+          <Grid item xs={8}>
+            <ReportPortalSearchBar
+              initialState={{
+                term: '',
+                filters: {},
+                types: ['report-portal'],
+                pageLimit: 10,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <LaunchesPageContent host={hostName} project={projectName} />
+          </Grid>
+        </Grid>
       </Content>
     </Page>
   );

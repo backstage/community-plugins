@@ -1,5 +1,43 @@
 # @backstage-community/plugin-rollbar-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 583c7bd: Backstage version bump to v1.40.2
+
+## 0.4.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.4.0
+
+### Minor Changes
+
+- 04862ec: Backstage version bump to v1.37.0
+
+## 0.3.0
+
+### Minor Changes
+
+- 5ac5c71: Backstage version bump to v1.35.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 0aec63d: Backstage version bump to v1.34.1
+
+## 0.1.70
+
+### Patch Changes
+
+- 3a74e4b: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.1.69
 
 ### Patch Changes

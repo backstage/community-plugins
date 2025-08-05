@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import IconButton from '@mui/material/IconButton';
 import DownloadIcon from '@mui/icons-material/GetApp';
 
-import { downloadLogFile } from '@janus-idp/shared-react';
+import { downloadLogFile } from '../../../../utils/download-log-file-utils';
 
 type PodLogsDownloadProps = {
   logText?: string;

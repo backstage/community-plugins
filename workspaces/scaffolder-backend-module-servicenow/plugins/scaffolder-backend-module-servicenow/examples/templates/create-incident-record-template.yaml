@@ -1,0 +1,48 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-incident-record
+  title: Create Incident Record
+  description: Create a record in the incident table
+spec:
+  type: service
+  owner: user:default/admin
+  parameters:
+    - title: Incident Details
+      required:
+        - short_description
+        - description
+        - severity
+      properties:
+        short_description:
+          title: Short Description
+          type: string
+          description: A brief description of the incident.
+        description:
+          title: Description
+          type: string
+          description: Detailed information about the incident.
+        severity:
+          title: Severity
+          type: string
+          description: Severity level of the incident.
+          enum:
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+  steps:
+    - id: createRecord
+      name: Create Record
+      action: servicenow:now:table:createRecord
+      input:
+        tableName: incident
+        requestBody:
+          short_description: ${{ parameters.short_description }}
+          description: ${{ parameters.description }}
+          severity: ${{ parameters.severity }}
+  output:
+    incidentId: ${{ steps.createRecord.output.id }}
+    text:
+      - title: 'Incident record created successfully.'

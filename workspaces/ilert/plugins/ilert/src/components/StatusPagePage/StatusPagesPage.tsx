@@ -19,7 +19,6 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
-import React from 'react';
 import { useStatusPages } from '../../hooks/useStatusPages';
 import { MissingAuthorizationHeaderError } from '../Errors';
 import { StatusPagesTable } from './StatusPagesTable';

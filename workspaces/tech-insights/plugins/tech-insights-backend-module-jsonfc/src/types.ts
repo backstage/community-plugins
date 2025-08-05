@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { TopLevelCondition } from 'json-rules-engine';
-import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
 import {
   BooleanCheckResult,
   CheckResponse,
+  Check,
 } from '@backstage-community/plugin-tech-insights-common';
 
 /**
@@ -32,7 +32,7 @@ export type Rule = {
 /**
  * @public
  */
-export interface TechInsightJsonRuleCheck extends TechInsightCheck {
+export interface TechInsightJsonRuleCheck extends Check {
   rule: Rule;
 }
 

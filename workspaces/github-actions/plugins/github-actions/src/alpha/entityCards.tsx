@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isGithubActionsAvailable } from '../components/Router';
 
 /**
  * @alpha
@@ -22,7 +22,7 @@ import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 export const entityGithubActionsCard = EntityCardBlueprint.make({
   name: 'workflow-runs',
   params: {
-    filter: 'kind:component',
+    filter: isGithubActionsAvailable,
     loader: () =>
       import('../components/Router').then(m => <m.Router view="cards" />),
   },
@@ -39,14 +39,14 @@ export const entityLatestGithubActionRunCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: 'kind:component',
+        filter: isGithubActionsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.LatestWorkflowRunCard {...config.props} />
@@ -66,14 +66,14 @@ export const entityLatestGithubActionsForBranchCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: 'kind:component',
+        filter: isGithubActionsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.LatestWorkflowsForBranchCard {...config.props} />
@@ -93,7 +93,7 @@ export const entityRecentGithubActionsRunsCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
               dense: z.boolean().default(false),
               limit: z.number().default(5).optional(),
             })
@@ -102,7 +102,7 @@ export const entityRecentGithubActionsRunsCard =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: 'kind:component',
+        filter: isGithubActionsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.RecentWorkflowRunsCard {...config.props} />

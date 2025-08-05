@@ -15,19 +15,19 @@
  */
 import { DatabaseManager } from '@backstage/backend-defaults/database';
 import type {
+  AuditorService,
   AuthService,
   DiscoveryService,
   HttpAuthService,
   LifecycleService,
   LoggerService,
-  UserInfoService,
+  PermissionsRegistryService,
+  PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import type { Config } from '@backstage/config';
 import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
-import { PermissionPolicy } from '@backstage/plugin-permission-node';
 
-import { DefaultAuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import { newEnforcer, newModelFromString } from 'casbin';
 import type { Router } from 'express';
 
@@ -48,7 +48,16 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
+import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
+import { rules } from '../permissions';
+import { permissionMetadataResourceRef } from '../permissions/resource';
+import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 
+/**
+ * @public
+ */
 export type EnvOptions = {
   config: Config;
   logger: LoggerService;
@@ -56,28 +65,34 @@ export type EnvOptions = {
   permissions: PermissionEvaluator;
   auth: AuthService;
   httpAuth: HttpAuthService;
-  userInfo: UserInfoService;
+  auditor: AuditorService;
   lifecycle: LifecycleService;
+  permissionsRegistry: PermissionsRegistryService;
+  policy: PolicyExtensionPoint;
 };
 
+/**
+ * @public
+ */
 export type RBACRouterOptions = {
   config: Config;
   logger: LoggerService;
-  discovery: DiscoveryService;
-  policy: PermissionPolicy;
   auth: AuthService;
   httpAuth: HttpAuthService;
-  userInfo: UserInfoService;
+  permissions: PermissionsService;
+  permissionsRegistry: PermissionsRegistryService;
+  auditor: AuditorService;
 };
 
+/**
+ * @public
+ */
 export class PolicyBuilder {
   public static async build(
     env: EnvOptions,
     pluginIdProvider: PluginIdProvider = { getPluginIds: () => [] },
     rbacProviders?: Array<RBACProvider>,
   ): Promise<Router> {
-    let policy: PermissionPolicy;
-
     const databaseManager = DatabaseManager.fromConfig(env.config).forPlugin(
       'permission',
       { logger: env.logger, lifecycle: env.lifecycle },
@@ -118,14 +133,22 @@ export class PolicyBuilder {
     const roleMetadataStorage = new DataBaseRoleMetadataStorage(databaseClient);
     const enforcerDelegate = new EnforcerDelegate(
       enf,
+      env.auditor,
+      conditionStorage,
       roleMetadataStorage,
       databaseClient,
     );
 
-    const defAuditLog = new DefaultAuditLogger({
-      logger: env.logger,
-      authService: env.auth,
-      httpAuthService: env.httpAuth,
+    env.permissionsRegistry.addResourceType({
+      resourceRef: permissionMetadataResourceRef,
+      getResources: resourceRefs =>
+        Promise.all(
+          resourceRefs.map(ref => {
+            return roleMetadataStorage.findRoleMetadata(ref);
+          }),
+        ),
+      permissions: policyEntityPermissions,
+      rules: Object.values(rules),
     });
 
     if (rbacProviders) {
@@ -134,27 +157,23 @@ export class PolicyBuilder {
         enforcerDelegate,
         roleMetadataStorage,
         env.logger,
-        defAuditLog,
+        env.auditor,
       );
     }
 
-    const pluginIdsConfig = env.config.getOptionalStringArray(
-      'permission.rbac.pluginsWithPermission',
+    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
+      databaseClient,
     );
-    if (pluginIdsConfig) {
-      const pluginIds = new Set([
-        ...pluginIdsConfig,
-        ...pluginIdProvider.getPluginIds(),
-      ]);
-      pluginIdProvider.getPluginIds = () => {
-        return [...pluginIds];
-      };
-    }
-
+    const extendablePluginIdProvider = new ExtendablePluginIdProvider(
+      extraPluginsIdStorage,
+      pluginIdProvider,
+      env.config,
+    );
+    await extendablePluginIdProvider.handleConflictedPluginIds();
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
-        pluginIdProvider: pluginIdProvider,
+        pluginIdProvider: extendablePluginIdProvider,
         logger: env.logger,
         config: env.config,
       },
@@ -164,43 +183,45 @@ export class PolicyBuilder {
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
-      policy = await RBACPermissionPolicy.build(
-        env.logger,
-        defAuditLog,
-        env.config,
-        conditionStorage,
-        enforcerDelegate,
-        roleMetadataStorage,
-        databaseClient,
-        pluginPermMetaData,
-        env.auth,
+      env.policy.setPolicy(
+        await RBACPermissionPolicy.build(
+          env.logger,
+          env.auditor,
+          env.config,
+          conditionStorage,
+          enforcerDelegate,
+          roleMetadataStorage,
+          databaseClient,
+          pluginPermMetaData,
+          env.auth,
+        ),
       );
     } else {
       env.logger.warn(
         'RBAC backend plugin was disabled by application config permission.enabled: false',
       );
 
-      policy = new AllowAllPolicy();
+      env.policy.setPolicy(new AllowAllPolicy());
     }
 
     const options: RBACRouterOptions = {
       config: env.config,
       logger: env.logger,
-      discovery: env.discovery,
-      policy,
       auth: env.auth,
       httpAuth: env.httpAuth,
-      userInfo: env.userInfo,
+      permissions: env.permissions,
+      permissionsRegistry: env.permissionsRegistry,
+      auditor: env.auditor,
     };
 
     const server = new PoliciesServer(
-      env.permissions,
       options,
       enforcerDelegate,
       conditionStorage,
       pluginPermMetaData,
       roleMetadataStorage,
-      defAuditLog,
+      extraPluginsIdStorage,
+      extendablePluginIdProvider,
       rbacProviders,
     );
     return server.serve();

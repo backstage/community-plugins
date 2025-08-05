@@ -24,7 +24,7 @@ import { Playlist } from '@backstage-community/plugin-playlist-common';
 import { TestApiProvider } from '@backstage/test-utils';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import qs from 'qs';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { PlaylistApi, playlistApiRef } from '../api';
 import {

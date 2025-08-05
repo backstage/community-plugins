@@ -1,5 +1,105 @@
 ### Dependencies
 
+## 1.15.2
+
+### Patch Changes
+
+- 561b7b9: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
+## 1.15.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.15.0
+
+### Minor Changes
+
+- cc6712e: Backstage version bump to v1.39.0
+
+## 1.14.1
+
+### Patch Changes
+
+- 86fc9e2: remove product specific theme (dev dependency only)
+- 86fc9e2: remove react import
+
+## 1.14.0
+
+### Minor Changes
+
+- ba585fb: Backstage version bump to v1.38.1
+
+## 1.13.0
+
+### Minor Changes
+
+- 87e3c32: Added functionality to define multiple ACR registries within Backstage.
+- cfdcd07: Limit returned images to 100 and sort latest first.
+
+## 1.12.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json and remove legacy maintainers field.
+
+## 1.12.0
+
+### Minor Changes
+
+- c2ae23e: Backstage version bump to v1.36.1
+
+## 1.11.2
+
+### Patch Changes
+
+- bea2321: remove unused dependencies: @material-ui/lab and @types/node
+
+## 1.11.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
+## 1.11.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.10.0
+
+### Minor Changes
+
+- 182e024: Backstage version bump to v1.35.0
+
+## 1.9.0
+
+### Minor Changes
+
+- 0c1e93a: add support for the new frontend-system (alpha)
+- 0c1e93a: Aligned the exported component names with other plugins and the Backstage recommendations. Please use the exported `AcrImagesEntityContent` component instead of `AcrPage`. `AcrPage` is still exported, but deprecated and might be removed in the future.
+
+## 1.8.8
+
+### Patch Changes
+
+- f9270df: fix `react-use` compile issue and update plugin description
+
+## 1.8.7
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.8.6
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.8.5
 
 ### Patch Changes

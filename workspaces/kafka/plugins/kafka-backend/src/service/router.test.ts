@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import request from 'supertest';
 import express from 'express';
 import { makeRouter, ClusterApi } from './router';
-import { errorHandler, getVoidLogger } from '@backstage/backend-common';
 import { KafkaApi } from './KafkaApi';
 import { when } from 'jest-when';
 
@@ -43,7 +43,11 @@ describe('router', () => {
       { name: 'prod', api: prodKafkaApi },
     ];
 
-    const router = makeRouter(getVoidLogger(), apis);
+    const router = makeRouter(
+      mockServices.rootLogger(),
+      apis,
+      mockServices.rootConfig(),
+    );
     app = express().use(router);
   });
 
@@ -112,9 +116,7 @@ describe('router', () => {
     });
 
     it('handles unknown cluster errors correctly', async () => {
-      const response = await request(app.use(errorHandler())).get(
-        '/consumers/unknown/hey/offsets',
-      );
+      const response = await request(app).get('/consumers/unknown/hey/offsets');
       expect(response.status).toEqual(404);
       expect(response.body).toMatchObject({
         error: {

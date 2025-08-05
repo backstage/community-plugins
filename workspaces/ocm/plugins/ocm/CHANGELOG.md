@@ -1,5 +1,134 @@
 ### Dependencies
 
+## 5.6.1
+
+### Patch Changes
+
+- 9bfafad: remove product theme from dev dependencies and dev app
+
+## 5.6.0
+
+### Minor Changes
+
+- f0a6ba7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f0a6ba7]
+  - @backstage-community/plugin-ocm-common@3.10.0
+
+## 5.5.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-ocm-common@3.9.1
+
+## 5.5.0
+
+### Minor Changes
+
+- fde918d: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [fde918d]
+  - @backstage-community/plugin-ocm-common@3.9.0
+
+## 5.4.4
+
+### Patch Changes
+
+- 1ac3b94: remove @spotify/prettier-config direct dependency
+- Updated dependencies [1ac3b94]
+  - @backstage-community/plugin-ocm-common@3.8.3
+
+## 5.4.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-ocm-common@3.8.2
+
+## 5.4.2
+
+### Patch Changes
+
+- b58e6d7: remove unused dependencies: @material-ui/lab and @types/node
+
+## 5.4.1
+
+### Patch Changes
+
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-ocm-common@3.8.1
+
+## 5.4.0
+
+### Minor Changes
+
+- fb29ca1: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- Updated dependencies [fb29ca1]
+  - @backstage-community/plugin-ocm-common@3.8.0
+
+## 5.3.2
+
+### Patch Changes
+
+- 89198dc: updated peer dependencies and added backstage app and backend to the workspace
+
+## 5.3.1
+
+### Patch Changes
+
+- 7ba7e60: Removed unused dependency PatternFly.
+
+## 5.3.0
+
+### Minor Changes
+
+- e0796ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [e0796ca]
+  - @backstage-community/plugin-ocm-common@3.7.0
+
+## 5.2.6
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- Updated dependencies [0f5c451]
+  - @backstage-community/plugin-ocm-common@3.6.3
+
+## 5.2.5
+
+### Patch Changes
+
+- 40f3226: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [40f3226]
+  - @backstage-community/plugin-ocm-common@3.6.2
+
+## 5.2.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 5.2.3
+
+### Patch Changes
+
+- 066b3bd: removed canvas from devDependencies
+
 ## 5.2.2
 
 ### Patch Changes

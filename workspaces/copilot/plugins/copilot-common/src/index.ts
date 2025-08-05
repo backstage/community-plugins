@@ -23,7 +23,11 @@
 /**
  * Represents metrics data for a day in the copilot plugin.
  *
- * @public
+ * This used to be part of an API exposed by GitHub (/usage),
+ * that was deprecated. At some point we should fully convert to the new CopilotMetrics way.
+ * Until the frontend is fully converted, we need to keep this type, since the new metrics converts its result to this type.
+ *
+ * @public @deprecated Should not be used in new code.
  */
 export interface Breakdown {
   /**
@@ -63,9 +67,19 @@ export interface Breakdown {
 }
 
 /**
- * Represents a detailed breakdown of metrics by language and editor.
+ * Represents the possible types of metrics data.
  *
  * @public
+ */
+export type MetricsType = 'enterprise' | 'organization';
+
+/**
+ * Represents a detailed breakdown of metrics by language and editor.
+ * This represents data from the old usage API
+ * Until the frontend is fully converted to the new CopilotMetrics way,
+ * we need to keep this type, since the new metrics converts its result to this type.
+ *
+ * @public @deprecated Should not be used in new code.
  */
 export interface Metric {
   /**
@@ -77,6 +91,18 @@ export interface Metric {
    * The date for the metrics reported.
    */
   day: string;
+
+  /**
+   * The type of the metrics data.
+   * Can be 'enterprise', 'organization'.
+   */
+  type: MetricsType;
+
+  /**
+   * The name of the team, applicable when the metric is for a specific team.
+   * When null, it indicates metrics for all teams, aggregated at the 'enterprise' or 'organization' level.
+   */
+  team_name?: string;
 
   /**
    * The total number of suggestions accepted.
@@ -134,4 +160,518 @@ export interface PeriodRange {
    * The minimum date of the reporting period.
    */
   minDate: string;
+}
+
+/**
+ * Represents information about a team.
+ *
+ * @public
+ */
+export interface TeamInfo {
+  /**
+   * The unique identifier of the team.
+   */
+  id: number;
+
+  /**
+   * The slug of the team, used for URL-friendly identifiers.
+   */
+  slug: string;
+
+  /**
+   * The name of the team.
+   */
+  name: string;
+}
+
+/**
+ * Represents the metrics data for copilot ide language metrics
+ *
+ * @public
+ */
+export interface CopilotLanguages {
+  /**
+   * The language name
+   */
+  name: string;
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * total number of code suggestions
+   */
+  total_code_suggestions: number;
+  /**
+   * total number of code acceptances
+   */
+  total_code_acceptances: number;
+  /**
+   * total number of code lines suggested
+   */
+  total_code_lines_suggested: number;
+  /**
+   * total number of code lines accepted
+   */
+  total_code_lines_accepted: number;
+}
+
+/**
+ * Represents the metrics data for copilot ide languages
+ *
+ * @public
+ */
+export interface CopilotIdeLanguages {
+  /**
+   * The language name
+   */
+  name: string;
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+}
+
+/**
+ * Represents the metrics data for copilot models
+ *
+ * @public
+ */
+export interface CopilotModels {
+  /**
+   * The model name
+   */
+  name: string;
+  /**
+   * List of languages this model was used in
+   */
+  languages: CopilotLanguages[];
+  /**
+   * The total number of engaged users
+   */
+  total_engaged_users: number;
+}
+
+/**
+ * Represents the metrics data for copilot ide chat models
+ *
+ * @public
+ */
+export interface CopilotChatModels {
+  /**
+   * The model name
+   */
+  name: string;
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * Total number of chat turns
+   */
+  total_chats: number;
+  /**
+   * Total number of chat copy events
+   */
+  total_chat_copy_events: number;
+  /**
+   * Total number of chat insertion events
+   */
+  total_chat_insertion_events: number;
+}
+
+/**
+ * Represents the metrics data for copilot ide chats
+ *
+ * @public
+ */
+export interface CopilotChats {
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * List of editors
+   */
+  editors: CopilotChatEditors[];
+}
+
+/**
+ * Represents the metrics data for copilot chat editors
+ *
+ * @public
+ */
+export interface CopilotChatEditors {
+  /**
+   * The Editor name
+   */
+  name: string;
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * List of models used in this editor
+   */
+  models: CopilotChatModels[];
+}
+
+/**
+ * Represents the metrics data for copilot github chats
+ *
+ * @public
+ */
+export interface DotcomChat {
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * List of models used in dotcom chat
+   */
+  models: DotcomChatModels[];
+}
+
+/**
+ * Represents the metrics data for copilot models
+ *
+ * @public
+ */
+export interface DotcomChatModels {
+  /**
+   * The model name
+   */
+  name: string;
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * Total number of chat turns
+   */
+  total_chats: number;
+  /**
+   * Indicates if it is a custom model
+   */
+  is_custom_model: boolean;
+}
+
+/**
+ * Represents the metrics data for copilot editors
+ *
+ * @public
+ */
+export interface CopilotEditors {
+  /**
+   * The editor name
+   */
+  name: string;
+  /**
+   * List of models this editor was used in
+   */
+  models: CopilotModels[];
+  /**
+   * The total number of engaged users
+   */
+  total_engaged_users: number;
+}
+
+/**
+ * Represents the metrics data for copilot ide completions
+ *
+ * @public
+ */
+export interface CopilotIdeCodeCompletions {
+  /**
+   * List of editors
+   */
+  editors: CopilotEditors[];
+  /**
+   * The total number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * List of languages used in IDE
+   */
+  languages: CopilotIdeLanguages[];
+}
+
+/**
+ * Represents the metrics data for copilot pull requests
+ *
+ * @public
+ */
+export interface DotcomPullRequests {
+  /**
+   * The total number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * List of repositories
+   */
+  repositories: CopilotRepository[];
+}
+
+/**
+ * Represents the metrics data for copilot repos
+ *
+ * @public
+ */
+export interface CopilotRepository {
+  /**
+   * The repository name
+   */
+  name: string;
+  /**
+   * The total number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * List of models used in this repository
+   */
+  models: CopilotRepositoryModels[];
+}
+
+/**
+ * Represents the metrics data for copilot repo models
+ *
+ * @public
+ */
+export interface CopilotRepositoryModels {
+  /**
+   * The model name
+   */
+  name: string;
+  /**
+   * The total number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * The total number of PR summaries created
+   */
+  total_pr_summaries_created: number;
+  /**
+   * Indicates if it is a custom model
+   */
+  is_custom_model: boolean;
+  /**
+   * The date when the custom model was trained
+   */
+  custom_model_training_date: string;
+}
+
+/**
+ * Represents the metrics data for copilot
+ *
+ * @public
+ */
+export interface CopilotMetrics {
+  /**
+   * The date for the metrics reported.
+   */
+  date: string;
+
+  /**
+   * The total number of active users.
+   */
+  total_active_users: number;
+
+  /**
+   * The total number of engaged users.
+   */
+  total_engaged_users: number;
+
+  /**
+   * The total number of code suggestions for IDE users.
+   */
+  copilot_ide_code_completions: CopilotIdeCodeCompletions;
+
+  /**
+   * The total number of chats for IDE users.
+   */
+  copilot_ide_chat: CopilotChats;
+
+  /**
+   * The total number of chats for dotcom users.
+   */
+  copilot_dotcom_chat: DotcomChat;
+
+  /**
+   * The total number of pull requests for dotcom users.
+   */
+  copilot_dotcom_pull_requests: DotcomPullRequests;
+}
+
+/**
+ * Represents the engagement metrics for copilot.
+ *
+ * @public
+ */
+export interface EngagementMetrics {
+  /**
+   * The date for the metrics reported.
+   */
+  day: string;
+  /**
+   * The type of the metrics data.
+   * Can be 'enterprise', 'organization'.
+   */
+  type: MetricsType;
+
+  /**
+   * The name of the team, applicable when the metric is for a specific team.
+   * When null, it indicates metrics for all teams, aggregated at the 'enterprise' or 'organization' level.
+   */
+  team_name?: string;
+
+  /**
+   * The total number of users who have used Copilot.
+   */
+  total_active_users: number;
+
+  /**
+   * The total number of users who have meaningfully interacted with Copilot features.
+   */
+  total_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with IDE code completions.
+   */
+  ide_completions_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with IDE chat features.
+   */
+  ide_chats_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with GitHub.com chat features.
+   */
+  dotcom_chats_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with pull request features.
+   */
+  dotcom_prs_engaged_users: number;
+}
+
+/**
+ * Represents the assignee for a copilot seat
+ *
+ * @public
+ */
+export interface CopilotAssignee {
+  /**
+   * The unique identifier of the assignee.
+   */
+  id: number;
+  /**
+   * The login username of the assignee.
+   */
+  login: string;
+}
+
+/**
+ * Represents the assigning team for a copilot seat
+ *
+ * @public
+ */
+export interface CopilotAssigningTeam {
+  /**
+   * The unique identifier of the team.
+   */
+  id: number;
+  /**
+   * The slug of the team, used for URL-friendly identifiers.
+   */
+  slug: string;
+}
+/**
+ * Represents the a seat for copilot
+ *
+ * @public
+ */
+export interface CopilotSeat {
+  /**
+   * The date when the seat was created.
+   */
+  created_at: string;
+  /**
+   * The date when the seat was last updated.
+   */
+  updated_at: string;
+  /**
+   * The date when the seat was last active.
+   */
+  last_activity_at: string;
+  /**
+   * The editor used in the last activity.
+   */
+  last_activity_editor: string;
+  /**
+   * The type of plan for this seat.
+   */
+  plan_type: string;
+  /**
+   * The user assigned to this seat.
+   */
+  assignee: CopilotAssignee;
+  /**
+   * The team that assigned this seat.
+   */
+  assigning_team: CopilotAssigningTeam;
+}
+/**
+ * Represents the base seat data for copilot
+ *
+ * @public
+ */
+export interface CopilotSeats {
+  /**
+   * The total number of seats available.
+   */
+  total_seats: number;
+  /**
+   * The list of individual seats.
+   */
+  seats: CopilotSeat[];
+}
+/**
+ * Represents the seat analysis data for copilot
+ *
+ * @public
+ */
+export interface SeatAnalysis {
+  /**
+   * The date for the analysis.
+   */
+  day: string;
+  /**
+   * The type of the seat data (enterprise or organization).
+   */
+  type: MetricsType;
+  /**
+   * The name of the team for this analysis.
+   */
+  team_name: string;
+  /**
+   * The total number of seats available.
+   */
+  total_seats: number;
+  /**
+   * The number of seats that have never been used.
+   */
+  seats_never_used: number;
+  /**
+   * The number of seats inactive for 7 days.
+   */
+  seats_inactive_7_days: number;
+  /**
+   * The number of seats inactive for 14 days.
+   */
+  seats_inactive_14_days: number;
+  /**
+   * The number of seats inactive for 28 days.
+   */
+  seats_inactive_28_days: number;
 }

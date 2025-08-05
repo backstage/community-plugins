@@ -15,10 +15,12 @@
  */
 
 import { getRequestHeaders, RollbarApi } from './RollbarApi';
-import { registerMswTestHooks } from '@backstage/backend-test-utils';
+import {
+  mockServices,
+  registerMswTestHooks,
+} from '@backstage/backend-test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { getVoidLogger } from '@backstage/backend-common';
 
 describe('RollbarApi', () => {
   describe('getRequestHeaders', () => {
@@ -58,7 +60,7 @@ describe('RollbarApi', () => {
 
     it('should return all projects with a name attribute', async () => {
       setupHandlers();
-      const api = new RollbarApi('my-access-token', getVoidLogger());
+      const api = new RollbarApi('my-access-token', mockServices.rootLogger());
       const projects = await api.getAllProjects();
       expect(projects).toEqual([
         { id: 123, name: 'abc', accountId: 1, status: 'enabled' },

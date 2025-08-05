@@ -2,10 +2,6 @@
 
 The backend plugin for Tech Insights.
 
-It provides the API for the frontend tech insights, scorecards and fact visualization functionality, as well as a framework to run fact retrievers and store fact values in to a data store.
-
-Looking for the old backend installation docs? Visit [here](./docs/old-backend-system.md).
-
 ## Installation
 
 ### Install the package
@@ -70,7 +66,7 @@ lifecycle: { timeToLive: { weeks: 2 } }; # Human readable value
 
 #### Running fact retrievers in a multi-instance installation
 
-The Tech Insights plugin utilizes `PluginTaskScheduler` to schedule and coordinate task invocation across instances. See [the PluginTaskScheduler documentation](https://backstage.io/docs/reference/backend-tasks.plugintaskscheduler) for more information.
+The Tech Insights plugin utilizes `SchedulerService` to schedule and coordinate task invocation across instances. See [the SchedulerService documentation](https://backstage.io/docs/reference/backend-plugin-api.schedulerservice/) for more information.
 
 ### Included FactChecker
 

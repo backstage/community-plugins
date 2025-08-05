@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { configApiRef } from '@backstage/core-plugin-api';
 import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
@@ -24,7 +24,7 @@ import { useArgocdConfig } from '../useArgocdConfig';
 
 describe('useArgocdConfig', () => {
   it('should return default instance and refreshInterval', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider
           apis={[
@@ -51,7 +51,7 @@ describe('useArgocdConfig', () => {
   });
 
   it('should return default name and url', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider
           apis={[
@@ -83,7 +83,7 @@ describe('useArgocdConfig', () => {
   });
 
   it('should return base url', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider
           apis={[
@@ -131,7 +131,7 @@ describe('useArgocdConfig', () => {
       },
     });
 
-    const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider apis={[[configApiRef, mockConfig]]}>
           {children}

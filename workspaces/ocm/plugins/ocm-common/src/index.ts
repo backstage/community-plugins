@@ -17,5 +17,12 @@
 export * from './types';
 export * from './permissions';
 
+/**
+ * @public
+ */
 export const ANNOTATION_CLUSTER_ID = 'janus-idp.io/ocm-cluster-id';
+
+/**
+ * @public
+ */
 export const ANNOTATION_PROVIDER_ID = 'janus-idp.io/ocm-provider-id';

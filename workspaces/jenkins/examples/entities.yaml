@@ -21,6 +21,17 @@ spec:
   system: examples
   providesApis: [example-grpc-api]
 ---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-component
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guests
+  system: examples
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
 kind: API

@@ -1,5 +1,59 @@
 # @backstage-community/plugin-stackstorm
 
+## 0.9.0
+
+### Minor Changes
+
+- a89b48f: Backstage version bump to v1.41.1
+
+## 0.8.0
+
+### Minor Changes
+
+- 550abf0: Backstage version bump to v1.40.2
+
+## 0.7.0
+
+### Minor Changes
+
+- d02b0b1: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 1858a20: Backstage version bump to v1.38.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.0
+
+### Minor Changes
+
+- c989bfd: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- bc02a88: Backstage version bump to v1.36.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 4cb973d: Backstage version bump to v1.35.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 9d6c595: Backstage version bump to v1.34.1
+
 ## 0.1.20
 
 ### Patch Changes

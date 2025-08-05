@@ -1,14 +1,13 @@
 # Knip report
 
-## Unused dependencies (5)
+## Unused dependencies (4)
 
-| Name                                   | Location     | Severity |
-| :------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-confluence | package.json | error    |
-| @backstage/plugin-catalog-react        | package.json | error    |
-| react-router                           | package.json | error    |
-| react-use                              | package.json | error    |
-| history                                | package.json | error    |
+| Name                            | Location     | Severity |
+| :------------------------------ | :----------- | :------- |
+| @backstage/plugin-catalog-react | package.json | error    |
+| react-router                    | package.json | error    |
+| react-use                       | package.json | error    |
+| history                         | package.json | error    |
 
 ## Unused devDependencies (4)
 

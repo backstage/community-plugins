@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link, TableColumn } from '@backstage/core-components';
 
-import { Box, IconButton } from '@material-ui/core';
 import Delete from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
 import { RoleFormValues, SelectedMember } from './types';
@@ -98,6 +97,8 @@ export const selectedMembersColumns = (
               onClick={() => onRemove(mem.etag)}
               aria-label="Remove"
               title="Remove member"
+              style={{ padding: '0.5rem', borderRadius: '50%' }}
+              sx={{ '&:hover': { borderRadius: '50%' } }}
             >
               <Delete />
             </IconButton>
