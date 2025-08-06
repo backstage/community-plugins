@@ -39,7 +39,7 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
   const sonarQubeApi = useApi(sonarQubeApiRef);
   const { entity: parentEntity } = useEntity();
   const {
-    entities = [],
+    entities,
     loading: loadingEntities,
     error: errorEntities,
   } = useRelatedEntities(parentEntity, {
@@ -54,7 +54,7 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
 
   const entityNameToProjectKey: { [key: string]: string } = {};
 
-  for (const entity of entities) {
+  for (const entity of entities || []) {
     const { projectKey, projectInstance } = getProjectInfo(entity);
     if (projectKey) {
       entityNameToProjectKey[entity.metadata.name] = projectKey;
@@ -78,7 +78,7 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     return <ResponseErrorPanel error={error} />;
   }
 
-  const tableContent: any[] = entities.map(entity => {
+  const tableContent: any[] | undefined = entities?.map(entity => {
     const projectKey = entityNameToProjectKey[entity.metadata.name];
     return {
       id: projectKey || entity.metadata.name,
