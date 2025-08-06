@@ -5,6 +5,7 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
+import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorEmit } from '@backstage/plugin-catalog-node';
 import { Entity } from '@backstage/catalog-model';
 import type { LocationSpec } from '@backstage/plugin-catalog-common';
@@ -35,6 +36,14 @@ export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
     entity: Entity,
     _location: LocationSpec,
     emit: CatalogProcessorEmit,
+  ): Promise<Entity>;
+  // (undocumented)
+  preProcessEntity(
+    entity: Entity,
+    _location: LocationSpec,
+    _emit: CatalogProcessorEmit,
+    _originLocation: LocationSpec,
+    cache: CatalogProcessorCache,
   ): Promise<Entity>;
 }
 
