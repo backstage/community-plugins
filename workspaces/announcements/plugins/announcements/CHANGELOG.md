@@ -1,5 +1,12 @@
 # @backstage-community/plugin-announcements
 
+## 0.10.1
+
+### Patch Changes
+
+- 0ab4439: Updated the New Frontend System NavItem to use the `RecordVoiceOverIcon` instead of the `NotificationsIcon` to avoid confusion with the Backstage Notifications NavItem
+- 1a08ba6: Fixed an issue where your would get a "Routing context not available" error when using the New Frontend System
+
 ## 0.10.0
 
 ### Minor Changes
