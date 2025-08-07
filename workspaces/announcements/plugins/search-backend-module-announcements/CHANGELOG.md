@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.6.0
+
+### Minor Changes
+
+- 220cc20: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [220cc20]
+  - @backstage-community/plugin-announcements-common@0.7.0
+  - @backstage-community/plugin-announcements-node@0.7.0
+
 ## 0.5.1
 
 ### Patch Changes

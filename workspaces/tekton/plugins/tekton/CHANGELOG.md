@@ -1,5 +1,28 @@
 ### Dependencies
 
+## 3.27.2
+
+### Patch Changes
+
+- e7d7f3f: render loading when permission api is loading
+
+## 3.27.1
+
+### Patch Changes
+
+- e6d88ff: remove product theme from dev dependencies and dev app
+
+## 3.27.0
+
+### Minor Changes
+
+- 8e74b11: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [8e74b11]
+  - @backstage-community/plugin-tekton-common@1.11.0
+
 ## 3.26.4
 
 ### Patch Changes

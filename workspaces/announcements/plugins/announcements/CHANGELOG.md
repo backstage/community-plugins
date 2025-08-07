@@ -1,5 +1,29 @@
 # @backstage-community/plugin-announcements
 
+## 0.10.1
+
+### Patch Changes
+
+- 0ab4439: Updated the New Frontend System NavItem to use the `RecordVoiceOverIcon` instead of the `NotificationsIcon` to avoid confusion with the Backstage Notifications NavItem
+- 1a08ba6: Fixed an issue where your would get a "Routing context not available" error when using the New Frontend System
+
+## 0.10.0
+
+### Minor Changes
+
+- bb76f4e: This change introduces tag filtering to announcements, allowing users to filter by tag by clicking on a tag on an announcement card.
+- 220cc20: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- dc03b75: Remove redundant `EntityPeekAheadPopover` when hovering over user or group entity.
+- 477eeb0: Reorganized the Create Announcement form: optional fields have been moved below the Markdown editor for improved layout. This change also includes MUI component updates, upgrading them to MUI v5.
+- ee361a8: Removed a redundant inner check for `tags` existence and length.
+- Updated dependencies [bb76f4e]
+- Updated dependencies [220cc20]
+  - @backstage-community/plugin-announcements-react@0.9.0
+  - @backstage-community/plugin-announcements-common@0.7.0
+
 ## 0.9.0
 
 ### Minor Changes

@@ -80,7 +80,7 @@ export const useRoles = (
     value: members,
     error: membersError,
   } = useAsync(async () => {
-    return await rbacApi.getMembers();
+    return await rbacApi.getMembers(1, 1);
   });
 
   const {
@@ -205,7 +205,7 @@ export const useRoles = (
                     getPluginInfo(
                       permissionPolicies as PluginPermissionMetaData[],
                       po,
-                    ).pluginId,
+                    )?.pluginId,
                 );
                 accPls = [...accPls, ...pls].filter(val => !!val) as string[];
               }

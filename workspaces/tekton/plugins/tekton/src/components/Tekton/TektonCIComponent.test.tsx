@@ -61,4 +61,10 @@ describe('TektonComponent', () => {
     const { getByText } = await renderInTestApp(<TektonCIComponent />);
     expect(getByText(/No Pipeline Runs found/i)).not.toBeNull();
   });
+
+  it('should render Process', async () => {
+    mockUsePermission.mockReturnValue({ loading: true, allowed: false });
+    const { getByTestId } = await renderInTestApp(<TektonCIComponent />);
+    expect(getByTestId('tekton-permission-progress')).toBeInTheDocument();
+  });
 });

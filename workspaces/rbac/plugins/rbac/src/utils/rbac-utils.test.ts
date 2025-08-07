@@ -22,6 +22,7 @@ import {
 
 import {
   PermissionAction,
+  PluginPermissionMetaData,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
@@ -181,19 +182,28 @@ describe('rbac utils', () => {
     expect(getMembersFromGroup(resource)).toBe(0);
   });
 
-  it('should return plugin-id of the policy', () => {
+  it('should return plugin-id of the policy and return null if no pluginId exists', () => {
     expect(
       getPluginInfo(mockPermissionPolicies, {
         permission: 'catalog.entity.read',
         policy: 'read',
-      }).pluginId,
+      })?.pluginId,
     ).toBe('catalog');
     expect(
       getPluginInfo(mockPermissionPolicies, {
         permission: 'scaffolder.template.read',
         policy: 'read',
-      }).pluginId,
+      })?.pluginId,
     ).toBe('scaffolder');
+    const mockPermissionPoliciesWithoutPluginId = [
+      { ...mockPermissionPolicies[0], pluginId: undefined },
+    ] as any as PluginPermissionMetaData[];
+    expect(
+      getPluginInfo(mockPermissionPoliciesWithoutPluginId, {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+      }),
+    ).toBe(null);
   });
 
   it('should return if the permission is resourced', () => {
@@ -201,13 +211,13 @@ describe('rbac utils', () => {
       getPluginInfo(mockPermissionPolicies, {
         permission: 'catalog.entity.read',
         policy: 'read',
-      }).isResourced,
+      })?.isResourced,
     ).toBe(true);
     expect(
       getPluginInfo(mockPermissionPolicies, {
         permission: 'scaffolder.template.read',
         policy: 'read',
-      }).isResourced,
+      })?.isResourced,
     ).toBe(true);
   });
 

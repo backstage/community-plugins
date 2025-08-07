@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 3.12.2
+
+### Patch Changes
+
+- 1d0b86f: Updated dependency `@keycloak/keycloak-admin-client` to `26.3.1`.
+- f818001: Updated dependency `@types/lodash` to `4.17.20`.
+
 ## 3.12.1
 
 ### Patch Changes

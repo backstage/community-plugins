@@ -16,6 +16,7 @@
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
@@ -32,6 +33,7 @@ import {
   StructuredMetadataTable,
 } from '@backstage/core-components';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
+import { useDefaultBranch } from '../useDefaultBranch';
 import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles({
@@ -45,7 +47,7 @@ const WidgetContent = (props: {
   error?: Error;
   loading?: boolean;
   lastRun: WorkflowRun;
-  branch: string;
+  branch?: string;
 }) => {
   const { error, loading, lastRun, branch } = props;
   const classes = useStyles();
@@ -62,6 +64,13 @@ const WidgetContent = (props: {
               status={lastRun.status}
               conclusion={lastRun.conclusion}
             />
+          </Box>
+        ),
+        age: (
+          <Box display="flex">
+            <Tooltip title={lastRun.statusDate ?? ''}>
+              <Box>{lastRun.statusAge}</Box>
+            </Tooltip>
           </Box>
         ),
         message: lastRun.message,
@@ -81,13 +90,19 @@ export const LatestWorkflowRunCard = (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => {
-  const { branch = 'master', variant } = props;
+  const { variant } = props;
   const { entity } = useEntity();
   const errorApi = useApi(errorApiRef);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (
     entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
   ).split('/');
+  const defaultBranch = useDefaultBranch({
+    hostname,
+    owner,
+    repo,
+  }).branch;
+  const branch = props.branch ?? defaultBranch;
   const [{ runs, loading, error }] = useWorkflowRuns({
     hostname,
     owner,
@@ -119,11 +134,21 @@ export const LatestWorkflowsForBranchCard = (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => {
-  const { branch = 'master', variant } = props;
+  const { variant } = props;
   const { entity } = useEntity();
+  const hostname = getHostnameFromEntity(entity);
+  const [owner, repo] = (
+    entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '/'
+  ).split('/');
+  const defaultBranch = useDefaultBranch({
+    hostname,
+    owner,
+    repo,
+  }).branch;
+  const branch = props.branch ?? defaultBranch;
 
   return (
-    <InfoCard title={`Last ${branch} build`} variant={variant}>
+    <InfoCard title={`Recent ${branch} builds`} variant={variant}>
       <WorkflowRunsTable branch={branch} entity={entity} />
     </InfoCard>
   );

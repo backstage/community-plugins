@@ -11,8 +11,11 @@ import { RouteRef } from '@backstage/core-plugin-api';
 // @public (undocumented)
 export const EntityMultiCIPipelinesContent: () => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export const isMultiCIAvailable: (entity: Entity) => boolean;
+
+// @public
+export const isMultiCIAvailableAndEnabled: (entity: Entity) => boolean;
 
 // @public (undocumented)
 export const multiSourceSecurityViewerPlugin: BackstagePlugin<
