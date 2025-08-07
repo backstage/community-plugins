@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { render, screen, waitFor } from '@testing-library/react';
-import { TestApiProvider } from '@backstage/test-utils';
+import { screen, waitFor } from '@testing-library/react';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { useCatalogEntities } from './useCatalogEntities';
 
@@ -65,7 +65,7 @@ const renderTestComponent = (props: {
   limit?: number;
   kind?: string;
 }) => {
-  return render(
+  return renderInTestApp(
     <TestApiProvider apis={[[catalogApiRef, mockCatalogApi]]}>
       <TestComponent {...props} />
     </TestApiProvider>,
@@ -96,6 +96,35 @@ describe('useCatalogEntities', () => {
       });
 
       expect(mockCatalogApi.queryEntities).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when refs is an array of refs', () => {
+    const mockEntity1 = {
+      kind: 'Group',
+      metadata: { name: 'team-one', namespace: 'default' },
+    };
+
+    const mockEntity2 = {
+      metadata: { name: 'team-two' },
+    };
+
+    it('should return the entities for the refs', async () => {
+      mockCatalogApi.queryEntities.mockResolvedValue({
+        items: [mockEntity1, mockEntity2],
+        totalItems: 2,
+      });
+
+      await renderTestComponent({
+        refs: ['group:default/team-one', 'group:default/team-two'],
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('total-items')).toHaveTextContent('2');
+        expect(screen.getByTestId('entities-count')).toHaveTextContent('2');
+        expect(screen.getByText('team-one')).toBeInTheDocument();
+        expect(screen.getByText('team-two')).toBeInTheDocument();
+      });
     });
   });
 });
