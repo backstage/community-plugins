@@ -41,33 +41,123 @@ export const backstageMcpPlugin = createBackendPlugin({
       },
       // Sample action used in the Backstage docs: https://github.com/backstage/backstage/tree/master/plugins/mcp-actions-backend
       async init({ actionsRegistry, catalog, auth }) {
-        actionsRegistry.register({
-          name: 'greet-user',
-          title: 'Greet User',
-          description: 'Generate a personalized greeting',
-          schema: {
-            input: z =>
-              z.object({
-                name: z.string().describe('The name of the person to greet'),
-              }),
-            output: z =>
-              z.object({
-                greeting: z.string().describe('The generated greeting'),
-              }),
-          },
-          action: async ({ input }) => ({
-            output: { greeting: `Hello ${input.name}!` },
-          }),
-        });
         // This action is used to fetch the list of catalog entities from Backstage. It returns an array of entity names
         actionsRegistry.register({
           name: 'fetch-catalog-entities',
           title: 'Fetch Catalog Entities',
-          description:
-            'Retrieve the list of catalog entities from the Backstage server.',
+          description: `Search and retrieve catalog entities from the Backstage server.
+
+List all Backstage entities such as Components, Systems, Resources, APIs, Locations, Users, and Groups. 
+Results are returned in JSON array format, where each entry in the JSON array has the following fields: 'name', 'description','uid', and 'type'.
+
+This tool searches through the software catalog to find components the entities. It supports filtering by entity properties and 
+text-based search across entity metadata.
+
+Examples:
+  # Get all entities in the catalog
+  fetch-catalog-entities
+  Output: {
+  "entities": [
+    {
+      "name": "model-service-api",
+      "kind": "API",
+      "tags": [
+        "api",
+        "openai",
+        "vllm"
+      ]
+    },
+    {
+      "name": "developer-model-service",
+      "kind": "Component",
+      "tags": [
+        "genai",
+        "ibm-granite",
+        "vllm",
+        "llm",
+        "developer-model-service",
+        "authenticated",
+        "gateway"
+      ]
+    },
+    {
+      "name": "generated-c4d4657b4fbb886fe0a962cdf12b8732d33946ca",
+      "kind": "Location",
+      "tags": []
+    },
+    {
+      "name": "ibm-granite-8b-code-instruct",
+      "kind": "Resource",
+      "tags": [
+        "genai",
+        "ibm",
+        "llm",
+        "granite",
+        "conversational",
+        "task-text-generation"
+      ]
+    }
+  ]
+}
+
+  # Find all entities of kind Resource
+  fetch-catalog-entities kind:Resource
+  Output: {
+  "entities": [
+    {
+      "name": "ibm-granite-8b-code-instruct",
+      "kind": "Resource",
+      "tags": [
+        "genai",
+        "ibm",
+        "llm",
+        "granite",
+        "conversational",
+        "task-text-generation"
+      ]
+    }
+  ]
+}
+
+  # Find all Components of type service
+  fetch-catalog-entities kind:Resource type:storage
+  Output: {
+  "entities": [
+    {
+      "name": "ibm-granite-s3-bucket",
+      "kind": "Resource",
+      "type": "storage",
+      "tags": [
+        "genai",
+        "ibm",
+        "llm",
+        "granite",
+        "conversational",
+        "task-text-generation"
+      ]
+    }
+  ]
+}
+`,
           schema: {
-            input: z => z.object({}),
-            output: z =>
+            input: z =>
+              z.object({
+                kind: z
+                  .string()
+                  .optional()
+                  .describe(
+                    'Filter entities by kind (e.g., Component, API, System)',
+                  ),
+                type: z
+                  .string()
+                  .optional()
+                  .describe(
+                    'Filter entities by type (e.g., ai-model, library, website).',
+                  ),
+              }),
+            output: (
+              z, // TODO: This output schema will not scale well beyond the limited set of metadata we currently return, we should look at making this more generic
+            ) =>
               z.object({
                 entities: z
                   .array(
@@ -87,26 +177,88 @@ export const backstageMcpPlugin = createBackendPlugin({
                         .describe(
                           'The tags associated with the Backstage entity',
                         ),
+                      description: z
+                        .string()
+                        .optional()
+                        .describe('The description of the Backstage entity'),
+                      type: z
+                        .string()
+                        .optional()
+                        .describe(
+                          'The type of the Backstage entity (e.g., service, library, website)',
+                        ),
                     }),
                   )
                   .describe('An array of entities'),
+                error: z
+                  .string()
+                  .optional()
+                  .describe('Error message if validation fails'),
               }),
           },
-          action: async ({}) => ({
-            output: await fetchCatalogEntities(catalog, auth),
-          }),
+          action: async ({ input }) => {
+            // Validate that type is only used with kind -- we could just allow `type` to be specified without `kind` but given types are per kind it made sense to restrict it
+            // The Backstage MCP server will return a 500 error if we throw a validation error (without saying why), so instead, let's return the error message in the output
+            // TODO: Investigate potential upstream improvements to allow error messages to be returned to the client
+            if (input.type && !input.kind) {
+              return {
+                output: {
+                  entities: [],
+                  error:
+                    'entity type cannot be specified without an entity kind specified',
+                },
+              };
+            }
+            try {
+              const result = await fetchCatalogEntities(catalog, auth, input);
+              return {
+                output: {
+                  ...result,
+                  error: undefined,
+                },
+              };
+            } catch (error) {
+              return {
+                output: {
+                  entities: [],
+                  error: error.message,
+                },
+              };
+            }
+          },
         });
       },
     });
   },
 });
 
-// TODO: This function currently just returns the name of the entity. We should expand this further as needed
-export async function fetchCatalogEntities(catalog: CatalogService, auth: any) {
+// fetchCatalogEntities retrieves the list of entities present in the Backstage catalog, with optional filtering by kind and type
+export async function fetchCatalogEntities(
+  catalog: CatalogService,
+  auth: any,
+  input?: { kind?: string; type?: string },
+) {
   const credentials = await auth.getOwnServiceCredentials();
+
+  // Build filter object based on input parameters
+  const filter: any = {};
+  if (input?.kind) {
+    filter.kind = input.kind;
+  }
+  if (input?.type) {
+    filter['spec.type'] = input.type;
+  }
+
   const { items } = await catalog.getEntities(
     {
-      fields: ['metadata.name', 'kind', 'metadata.tags'],
+      fields: [
+        'metadata.name',
+        'kind',
+        'metadata.tags',
+        'metadata.description',
+        'spec.type',
+      ],
+      filter,
     },
     {
       credentials,
@@ -118,6 +270,9 @@ export async function fetchCatalogEntities(catalog: CatalogService, auth: any) {
       name: entity.metadata.name,
       kind: entity.kind,
       tags: entity.metadata.tags || [],
+      description: entity.metadata.description,
+      type:
+        typeof entity.spec?.type === 'string' ? entity.spec.type : undefined,
     })),
   };
 }
