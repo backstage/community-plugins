@@ -19,7 +19,11 @@ import { configApiRef } from '@backstage/core-plugin-api';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
+import {
+  KubernetesApi,
+  kubernetesApiRef,
+  kubernetesAuthProvidersApiRef,
+} from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
@@ -33,7 +37,6 @@ import {
   RevisionDetailsListOptions,
   RevisionDetailsOptions,
 } from '../src/api';
-import { kubernetesApiRef } from '../src/kubeApi';
 import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
@@ -94,6 +97,21 @@ export class MockArgoCDApiClient implements ArgoCDApi {
     return mockApplication;
   }
 }
+
+const mockKubernetesAuthProviderApiRef = {
+  decorateRequestBodyForAuth: async () => {
+    return {
+      entity: {
+        apiVersion: 'v1',
+        kind: 'xyz',
+        metadata: { name: 'hey' },
+      },
+    };
+  },
+  getCredentials: async () => {
+    return {};
+  },
+};
 
 class MockKubernetesClient implements KubernetesApi {
   readonly resources;
@@ -192,6 +210,7 @@ createDevApp()
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
           [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
       >
         <EntityProvider entity={mockEntity}>
