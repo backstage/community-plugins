@@ -54,7 +54,7 @@ If you are no longer maintaining a plugin, please take the following steps to fo
 
 ## Archiving a Plugin
 
-When a plugin is no longer maintained, has security vulnerabilities, or is being deprecated in favor of alternatives, it should be archived rather than abandoned. The archival process ensures that users are properly notified through npm deprecation warnings while preserving the code for historical reference through Git tags.
+When a plugin is no longer maintained, it should be archived rather than abandoned. The archival process ensures that users are properly notified through npm deprecation warnings while preserving the code for historical reference through Git tags.
 
 ### When to Archive
 
