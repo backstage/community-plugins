@@ -1,6 +1,6 @@
 # 3scale
 
-This workspace contains a plugin to synchronize the 3scale content into the [Backstage](https://backstage.io/) catalog.
+This workspace contains a plugin to synchronize the 3scale content into the Backstage catalog.
 
 ## Plugins
 
