@@ -6,9 +6,7 @@
     "node": "20 || 22"
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
+    "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -24,7 +22,7 @@
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope backstage-community"
   },
   "workspaces": {
     "packages": [
@@ -45,7 +43,7 @@
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",
