@@ -1,10 +1,7 @@
-# [Backstage](https://backstage.io)
+# 3scale
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains a plugin to synchronize the 3scale content into the Backstage catalog.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [3scale-backend](./plugins/3scale-backend/README): Backend plugin that provides an entity provider to ingest 3scale data into the catalog.
