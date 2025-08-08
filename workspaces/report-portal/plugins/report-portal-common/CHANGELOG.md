@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal-common
 
+## 1.1.0
+
+### Minor Changes
+
+- 1def230: Backstage version bump to v1.41.1
+
 ## 1.0.1
 
 ### Patch Changes
