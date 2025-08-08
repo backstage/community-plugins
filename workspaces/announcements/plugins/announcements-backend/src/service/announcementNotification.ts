@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 import { NotificationService } from '@backstage/plugin-notifications-node';
-import { AnnouncementRequest } from './../router';
+import { AnnouncementModel } from './model';
 
 export const sendAnnouncementNotification = (
-  request: any,
-  announcementId: string,
+  announcement: AnnouncementModel,
   notifications?: NotificationService,
 ) => {
-  const reqData: AnnouncementRequest = request.body;
   if (!notifications) {
     return;
   }
@@ -30,9 +28,9 @@ export const sendAnnouncementNotification = (
       type: 'broadcast',
     },
     payload: {
-      title: `New Announcement "${reqData.title}"`,
-      description: reqData.excerpt,
-      link: `/announcements/view/${announcementId}`,
+      title: `New Announcement "${announcement.title}"`,
+      description: announcement.excerpt,
+      link: `/announcements/view/${announcement.id}`,
     },
   });
 };
