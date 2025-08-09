@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 import { useDebounce } from 'react-use';
 
 import { parseEntityRef } from '@backstage/catalog-model';
@@ -246,7 +246,7 @@ export const FeedbackTable = (props: { projectId?: string }) => {
   }
 
   function handleRowClick(
-    event?: React.MouseEvent<Element, MouseEvent> | undefined,
+    event?: MouseEvent<Element, globalThis.MouseEvent> | undefined,
     rowData?: any,
   ) {
     event?.preventDefault();
@@ -255,7 +255,7 @@ export const FeedbackTable = (props: { projectId?: string }) => {
   }
 
   function handleSearch(
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) {
     const _searchText = event.target.value;
     if (_searchText.trim().length !== 0) return setSearchText(_searchText);

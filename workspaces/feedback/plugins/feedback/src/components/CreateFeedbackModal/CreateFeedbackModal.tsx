@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { FocusEvent, useState } from 'react';
 
 import { configApiRef, useAnalytics, useApi } from '@backstage/core-plugin-api';
 
@@ -159,7 +159,7 @@ export const CreateFeedbackModal = (props: {
   }
 
   function handleInputChange(
-    event: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) {
     if (event.target.id === 'summary') {
       const _summary = event.target.value;
@@ -191,7 +191,7 @@ export const CreateFeedbackModal = (props: {
   }
 
   function handleValidation(
-    event: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) {
     if (event.target.id === 'summary') {
       if (event.target.value.length === 0) {
