@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "tech-insights",
