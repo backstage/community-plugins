@@ -57,6 +57,12 @@ export class JenkinsBuilder {
   static createBuilder(env: JenkinsEnvironment): JenkinsBuilder;
   // (undocumented)
   protected readonly env: JenkinsEnvironment;
+  handleError(err: any): {
+    status: number;
+    reason: string;
+  };
+  // (undocumented)
+  jobFullNameParamToJobs(jobFullName: string): string[];
 }
 
 // @public (undocumented)
