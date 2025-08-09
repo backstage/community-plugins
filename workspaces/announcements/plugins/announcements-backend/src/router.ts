@@ -38,6 +38,7 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
+import { sendAnnouncementNotification } from './service/announcementNotification';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -76,6 +77,7 @@ export async function createRouter(
     persistenceContext,
     permissions,
     signals,
+    notifications,
   } = context;
 
   const {
@@ -200,6 +202,14 @@ export async function createRouter(
           ? req.body.tags.map(tag => slugify(tag.trim(), { lower: true }))
           : [];
 
+      const isSignalsEnabled =
+        (config.getOptionalBoolean('backend.signals.enabled') ?? false) &&
+        signals !== undefined;
+
+      const isAnnouncementNotificationsEnabled =
+        (config.getOptionalBoolean('backend.notifications.enabled') ?? false) &&
+        notifications !== undefined;
+
       const announcement =
         await persistenceContext.announcementsStore.insertAnnouncement({
           ...req.body,
@@ -218,9 +228,13 @@ export async function createRouter(
           metadata: { action: EVENTS_ACTION_CREATE_ANNOUNCEMENT },
         });
 
-        await signalAnnouncement(announcement, signals);
+        if (isSignalsEnabled) {
+          await signalAnnouncement(announcement, signals);
+        }
+        if (isAnnouncementNotificationsEnabled) {
+          sendAnnouncementNotification(announcement, notifications);
+        }
       }
-
       return res.status(201).json(announcement);
     },
   );

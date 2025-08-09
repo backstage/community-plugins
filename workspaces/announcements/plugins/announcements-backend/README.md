@@ -103,3 +103,31 @@ const response = await fetch(
 const data = await response.json();
 return data;
 ```
+
+### Notifications for Announcements
+
+Backstage’s Notification System empowers plugins and services to deliver alerts to users and is directly visible in the UI or via external channels. It supports two notification types:
+Broadcast: sent to all users.
+Entity: sent to specific users or groups (e.g., owners of an entity).
+
+The Notification plugin delivers real-time alerting, with backend/frontend components to send and display notifications - including push signals.
+To trigger alerts when a new announcement appears, you can combine these systems: send a notification via the Notifications backend whenver an announcement is created.
+
+Signals and Announcement notifications are disabled by-default (enabled: false).
+It can be enabled in app-config.yaml file when required.
+
+To enable Signals, need to use below configuration under backend:
+
+```yaml
+backend:
+  signals:
+    enabled: true
+```
+
+To enable Announcement notifications, need to use below configuration under backend:
+
+```yaml
+backend:
+  notifications:
+    enabled: true
+```
