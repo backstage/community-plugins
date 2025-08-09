@@ -17,18 +17,31 @@
 import {
   PageBlueprint,
   NavItemBlueprint,
+  createFrontendPlugin,
+  ApiBlueprint,
+  createApiFactory,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
   convertLegacyRouteRef,
+  convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import MoneyIcon from '@material-ui/icons/MonetizationOn';
-import {
-  projectGrowthAlertRef,
-  rootRouteRef,
-  unlabeledDataflowAlertRef,
-} from '../routes';
+import { rootRouteRef } from '../routes';
+import { costInsightsApiRef } from '../api';
+import { ExampleCostInsightsClient } from '../example';
+
+/** @alpha */
+export const CostInsightsApi = ApiBlueprint.make({
+  params: {
+    factory: createApiFactory({
+      api: costInsightsApiRef,
+      deps: {},
+      factory: ({}) => new ExampleCostInsightsClient(),
+    }),
+  },
+});
 
 /** @alpha */
 export const CostInsightsPage = PageBlueprint.make({
@@ -36,33 +49,7 @@ export const CostInsightsPage = PageBlueprint.make({
     defaultPath: '/cost-insights',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
-      import('../components/CostInsightsPage').then(m =>
-        compatWrapper(<m.CostInsightsPage />),
-      ),
-  },
-});
-
-/** @alpha */
-export const CostInsightsProjectGrowthInstructionsPage = PageBlueprint.make({
-  params: {
-    defaultPath: '/cost-insights/investigating-growth',
-    routeRef: convertLegacyRouteRef(projectGrowthAlertRef),
-    loader: () =>
-      import('../components/ProjectGrowthInstructionsPage').then(m =>
-        compatWrapper(<m.ProjectGrowthInstructionsPage />),
-      ),
-  },
-});
-
-/** @alpha */
-export const CostInsightsLabelDataflowInstructionsPage = PageBlueprint.make({
-  params: {
-    defaultPath: '/cost-insights/labeling-jobs',
-    routeRef: convertLegacyRouteRef(unlabeledDataflowAlertRef),
-    loader: () =>
-      import('../components/LabelDataflowInstructionsPage').then(m =>
-        compatWrapper(<m.LabelDataflowInstructionsPage />),
-      ),
+      import('./router').then(m => compatWrapper(<m.CostInsightsRouter />)),
   },
 });
 
@@ -72,7 +59,6 @@ export const EntityCostInsightsContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/cost-insights',
     defaultTitle: 'Cost Insights',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/EntityCosts').then(m =>
         compatWrapper(<m.EntityCosts />),
@@ -89,4 +75,12 @@ export const CostInsightsNavItem = NavItemBlueprint.make({
     routeRef: convertLegacyRouteRef(rootRouteRef),
     icon: MoneyIcon,
   },
+});
+
+export default createFrontendPlugin({
+  pluginId: 'cost-insights',
+  extensions: [CostInsightsApi, CostInsightsPage, CostInsightsNavItem],
+  routes: convertLegacyRouteRefs({
+    root: rootRouteRef,
+  }),
 });
