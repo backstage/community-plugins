@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.5.1
+
+### Patch Changes
+
+- Updated dependencies [ba5bf7b]
+  - @backstage-community/plugin-tech-insights-common@0.7.1
+
 ## 2.5.0
 
 ### Minor Changes
