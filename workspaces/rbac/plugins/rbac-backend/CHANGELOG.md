@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 7.1.1
+
+### Patch Changes
+
+- e843699: Added missing configSchema into package.json
+
 ## 7.1.0
 
 ### Minor Changes
