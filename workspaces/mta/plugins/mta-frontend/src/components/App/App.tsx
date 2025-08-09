@@ -1,12 +1,6 @@
 import React from 'react';
 import { Divider, Grid } from '@material-ui/core';
-import {
-  Header,
-  Page,
-  Content,
-  ContentHeader,
-  SupportButton,
-} from '@backstage/core-components';
+import { Header, Page, Content, ContentHeader, SupportButton } from '@backstage/core-components';
 import { MTAApplicationManager } from '../MTAApplicationManager/MTAApplicationManager';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -27,7 +21,7 @@ export const App = () => (
       <Content>
         <ContentHeader title="MTA Quick Overview">
           <SupportButton>
-            A comprehensive view of the MTA workflow integrated within RHDH.
+            A comprehensive view of the MTA workflow for application modernization and migration.
           </SupportButton>
         </ContentHeader>
         <Divider style={{ margin: '20px 0' }} />
