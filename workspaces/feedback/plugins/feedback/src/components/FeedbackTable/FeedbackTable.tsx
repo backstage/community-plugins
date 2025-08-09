@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ChangeEvent, MouseEvent, useState } from 'react';
-import { useDebounce } from 'react-use';
+import useDebounce from 'react-use/lib/useDebounce';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import {

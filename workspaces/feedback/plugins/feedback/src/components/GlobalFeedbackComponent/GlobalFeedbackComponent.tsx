@@ -28,7 +28,7 @@ import { Entity, parseEntityRef } from '@backstage/catalog-model';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import Fab from '@mui/material/Fab';
 import { DateTime } from 'luxon';
-import { useLocalStorage } from 'react-use';
+import useLocalStorage from 'react-use/lib/useLocalStorage';
 import { FeedbackIcon } from '../..';
 import { CreateFeedbackModal } from '../CreateFeedbackModal';
 

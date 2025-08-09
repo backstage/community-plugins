@@ -19,9 +19,9 @@ export const feedbackPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
     entityRoot: RouteRef<{
-      namespace: string;
-      kind: string;
       name: string;
+      kind: string;
+      namespace: string;
     }>;
   },
   {
@@ -34,9 +34,7 @@ export const feedbackPlugin: BackstagePlugin<
 export const GlobalFeedbackComponent: () => JSX_2.Element;
 
 // @public (undocumented)
-export const GlobalFeedbackPage: (props: {
-  themeId?: string | undefined;
-}) => JSX_2.Element;
+export const GlobalFeedbackPage: (props: { themeId?: string }) => JSX_2.Element;
 
 // @public @deprecated
 export const OpcFeedbackComponent: () => JSX_2.Element;
