@@ -73,7 +73,7 @@
     "@backstage/dev-utils": "^1.1.12",
     "@backstage/test-utils": "^1.7.10",
     "@playwright/test": "^1.52.0",
-    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/jest-dom": "6.6.4",
     "@testing-library/react": "14.3.1",
     "@testing-library/react-hooks": "8.0.1",
     "@testing-library/user-event": "14.6.1",
