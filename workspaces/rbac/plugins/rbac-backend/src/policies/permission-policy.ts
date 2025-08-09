@@ -59,6 +59,7 @@ import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
+  private readonly defaultRole?: string;
 
   public static async build(
     logger: LoggerService,
@@ -83,6 +84,16 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const policiesFile = configApi.getOptionalString(
       'permission.rbac.policies-csv-file',
     );
+
+    let defaultRole = configApi.getOptionalString(
+      'permission.rbac.defaultRole',
+    );
+    if (defaultRole === '') {
+      logger.error(
+        'Ignoring default role as it is empty. Please set a valid default role in the configuration.',
+      );
+      defaultRole = undefined;
+    }
 
     const allowReload =
       configApi.getOptionalBoolean('permission.rbac.policyFileReload') || false;
@@ -155,6 +166,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       auditor,
       conditionalStorage,
       superUserList,
+      defaultRole,
     );
   }
 
@@ -163,8 +175,10 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
     superUserList?: string[],
+    defaultRole?: string,
   ) {
     this.superUserList = superUserList;
+    this.defaultRole = defaultRole;
   }
 
   async handle(
@@ -199,6 +213,10 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
+      if (this.defaultRole !== undefined && !roles.includes(this.defaultRole)) {
+        roles.push(this.defaultRole);
+      }
+
       // handle permission with 'resource' type
       const hasNamedPermission =
         await this.hasImplicitPermissionSpecifiedByName(
