@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-search-backend-module-confluence-collator",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The confluence-collator backend module for the search plugin.",
   "backstage": {
     "role": "backend-plugin-module",

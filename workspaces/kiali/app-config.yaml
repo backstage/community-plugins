@@ -102,21 +102,21 @@ kiali:
       # caFile: ''
       # Optional. Time in seconds that session is enabled, defaults to 1 minute.
       sessionTime: 60
-    - name: default
+      #- name: default
       # See the README file for configuration
-      url: ${KIALI_BASE_URL}
+      #url: ${KIALI_BASE_URL}
       # Optional. Kiali public URL to redirect to standalone Kiali. When not specified, url will be used.
       # urlExternal: ''
       # Optional. Required by token authentication
       # serviceAccountToken: ${KIALI_SERVICE_ACCOUNT_TOKEN}
       # Optional. defaults false
-      skipTLSVerify: true
+      #skipTLSVerify: true
       # Optional
       # caData: ${KIALI_CONFIG_CA_DATA}
       # Optional. Local path to CA file
       # caFile: ''
       # Optional. Time in seconds that session is enabled, defaults to 1 minute.
-      sessionTime: 60
+      #sessionTime: 60
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

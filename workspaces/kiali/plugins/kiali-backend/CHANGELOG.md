@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.23.0
+
+### Minor Changes
+
+- 1c08f79: Upgrade backstage to 1.39.1
+
 ## 1.22.2
 
 ### Patch Changes

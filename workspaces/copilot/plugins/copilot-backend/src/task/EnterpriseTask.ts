@@ -152,7 +152,8 @@ export async function discoverEnterpriseMetrics({
     }
   } catch (error) {
     logger.error(
-      `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${error}`,
+      '[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics',
+      error,
     );
     throw error;
   }

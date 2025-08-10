@@ -238,9 +238,9 @@ export const Participants = ({
             name: member.metadata.name,
             displayName:
               // Type assertion to handle potential undefined values
-              (entity.spec as EntitySpec)?.profile?.displayName ||
-              entity.metadata.title ||
-              entity.metadata.name,
+              (member.spec as EntitySpec)?.profile?.displayName ||
+              member.metadata.title ||
+              member.metadata.name,
             fromGroup: entity.metadata.name,
           });
         }

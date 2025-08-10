@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
 
@@ -24,9 +27,7 @@ export const announcementsPage = PageBlueprint.make({
   params: {
     defaultPath: '/announcements',
     routeRef: convertLegacyRouteRef(rootRouteRef),
-    loader: async () => {
-      const { Router } = await import('../components/Router');
-      return <Router />;
-    },
+    loader: async () =>
+      import('../components/Router').then(m => compatWrapper(<m.Router />)),
   },
 });

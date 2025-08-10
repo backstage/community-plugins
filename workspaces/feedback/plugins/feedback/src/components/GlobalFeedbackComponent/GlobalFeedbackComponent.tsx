@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import '@one-platform/opc-feedback';
 
@@ -24,13 +24,13 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 
-import Fab from '@mui/material/Fab';
-import { CreateFeedbackModal } from '../CreateFeedbackModal';
-import { FeedbackIcon } from '../..';
 import { Entity, parseEntityRef } from '@backstage/catalog-model';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { useLocalStorage } from 'react-use';
+import Fab from '@mui/material/Fab';
 import { DateTime } from 'luxon';
+import useLocalStorage from 'react-use/lib/useLocalStorage';
+import { FeedbackIcon } from '../..';
+import { CreateFeedbackModal } from '../CreateFeedbackModal';
 
 const KEY = 'feedbackPlugin.globalComponent';
 

@@ -1,5 +1,22 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.17.0
+
+### Minor Changes
+
+- 6d6b976: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [6d6b976]
+  - @backstage-community/plugin-sonarqube-react@0.9.0
+
+## 0.16.2
+
+### Patch Changes
+
+- 1eda234: Fix maximum update depth exceeded in SonarqubeRelatedEntitiesOverview
+
 ## 0.16.1
 
 ### Patch Changes
