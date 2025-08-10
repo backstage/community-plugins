@@ -30,6 +30,43 @@ backend.add(
 backend.start();
 ```
 
+#### Customization (alpha)
+
+If you need to customize how Confluence content is parsed or how search documents are shaped, this module exposes an alpha extension point. You can register a custom content parser and/or document transformer when adding the module:
+
+```ts
+// packages/backend/src/index.ts
+import { createBackend } from '@backstage/backend-defaults';
+
+const backend = createBackend();
+backend.add(import('@backstage/plugin-search-backend/alpha'));
+backend.add(
+  import(
+    '@backstage-community/plugin-search-backend-module-confluence-collator/alpha'
+  ).then(mod => ({
+    default: mod.default,
+    register(reg) {
+      reg.registerExtensionPoint(mod.confluenceCollatorExtensionPoint, {
+        setContentParser(parser) {
+          // optional – can be omitted if you only want a document transformer
+          parser;
+        },
+        setDocumentTransformer(transformer) {
+          // optional – can be omitted if you only want a content parser
+          transformer;
+        },
+      });
+    },
+  })),
+);
+backend.start();
+```
+
+- `setContentParser`: `(document) => string` – converts Confluence storage content to plaintext for indexing. The default implementation strips HTML tags. See `defaultConfluenceCollatorContentParser` for a starting point.
+- `setDocumentTransformer`: `(doc, raw) => Partial<doc>` – lets you add/override fields on the final indexable document. See `defaultConfluenceCollatorDocumentTransformer` for a starting point.
+
+Note: These extension points are alpha and may evolve in the future to ease potential response format changes without breaking existing implementations.
+
 ### Legacy backend
 
 #### Index Confluence Spaces to search
