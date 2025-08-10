@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  type ConfluenceCollatorFactoryOptions,
-  type IndexableAncestorRef,
-  type IndexableConfluenceDocument,
-  ConfluenceCollatorFactory,
-} from './ConfluenceCollatorFactory';
-export type {
-  ConfluenceCollatorContentParser,
+
+import {
   ConfluenceCollatorDocumentTransformer,
+  IndexableConfluenceDocument,
 } from './ConfluenceCollatorFactory';
-export { defaultConfluenceCollatorContentParser } from './defaultConfluenceCollatorContentParser';
-export { defaultConfluenceCollatorDocumentTransformer } from './defaultConfluenceCollatorDocumentTransformer';
+import { ConfluenceDocument } from '../client';
+
+/**
+ * Default document transformer. Returns an empty object by default.
+ *
+ * This is provided as a reference and easy starting point for customization.
+ * Future format changes may be accommodated by evolving this API.
+ * @alpha
+ */
+export const defaultConfluenceCollatorDocumentTransformer: ConfluenceCollatorDocumentTransformer =
+  (_doc: IndexableConfluenceDocument, _raw: ConfluenceDocument) => ({});
