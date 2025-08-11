@@ -15,12 +15,17 @@
  */
 import type { Entity } from '@backstage/catalog-model';
 import type { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
+import type { EventsService } from '@backstage/plugin-events-node';
 
 import { ScaffolderRelationEntityProcessor } from './ScaffolderRelationEntityProcessor';
 
 describe('ScaffolderRelationEntityProcessor', () => {
   describe('preProcessEntity', () => {
-    const processor = new ScaffolderRelationEntityProcessor();
+    const mockEventsService: jest.Mocked<EventsService> = {
+      publish: jest.fn(),
+      subscribe: jest.fn(),
+    };
+    const processor = new ScaffolderRelationEntityProcessor(mockEventsService);
     const location = { type: 'url', target: 'test-url' };
     const emit = jest.fn();
     const mockCache: CatalogProcessorCache = {
@@ -117,7 +122,7 @@ describe('ScaffolderRelationEntityProcessor', () => {
       );
     });
 
-    it('should detect version update when cached version is different', async () => {
+    it('should detect version update and publish event when cached version is different', async () => {
       const entity: Entity = {
         apiVersion: 'scaffolder.backstage.io/v1beta3',
         kind: 'Template',
@@ -150,12 +155,17 @@ describe('ScaffolderRelationEntityProcessor', () => {
           version: '2.0.0',
         },
       );
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        'Template template:default/test-template version was updated from 1.0.0 to 2.0.0',
-      );
+      expect(mockEventsService.publish).toHaveBeenCalledWith({
+        topic: 'software.template.update',
+        eventPayload: {
+          entityRef: 'template:default/test-template',
+          previousVersion: '1.0.0',
+          currentVersion: '2.0.0',
+        },
+      });
     });
 
-    it('should not log update when cached version is the same', async () => {
+    it('should not publish event when cached version is the same', async () => {
       const entity: Entity = {
         apiVersion: 'scaffolder.backstage.io/v1beta3',
         kind: 'Template',
@@ -188,7 +198,7 @@ describe('ScaffolderRelationEntityProcessor', () => {
           version: '1.0.0',
         },
       );
-      expect(consoleLogSpy).not.toHaveBeenCalled();
+      expect(mockEventsService.publish).not.toHaveBeenCalled();
     });
 
     it('should handle template with namespace', async () => {
@@ -225,9 +235,49 @@ describe('ScaffolderRelationEntityProcessor', () => {
         },
       );
     });
+
+    it('should work without events service for backwards compatibility', async () => {
+      const processorWithoutEvents = new ScaffolderRelationEntityProcessor();
+      const entity: Entity = {
+        apiVersion: 'scaffolder.backstage.io/v1beta3',
+        kind: 'Template',
+        metadata: {
+          name: 'test-template',
+          annotations: {
+            'backstage.io/template-version': '2.0.0',
+          },
+        },
+      };
+
+      const cachedData = { version: '1.0.0' };
+      (mockCache.get as jest.Mock).mockResolvedValue(cachedData);
+
+      const result = await processorWithoutEvents.preProcessEntity(
+        entity,
+        location,
+        emit,
+        location,
+        mockCache,
+      );
+
+      expect(result).toBe(entity);
+      expect(mockCache.set).toHaveBeenCalledWith(
+        'template-version-template:default/test-template',
+        {
+          version: '2.0.0',
+        },
+      );
+    });
   });
+
   describe('postProcessEntity', () => {
-    const processor = new ScaffolderRelationEntityProcessor();
+    const mockEventsServiceForPost: jest.Mocked<EventsService> = {
+      publish: jest.fn(),
+      subscribe: jest.fn(),
+    };
+    const processor = new ScaffolderRelationEntityProcessor(
+      mockEventsServiceForPost,
+    );
     const location = { type: 'url', target: 'test-url' };
     const emit = jest.fn();
 
