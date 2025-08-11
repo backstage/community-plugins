@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import type { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
+import type { EventsService } from '@backstage/plugin-events-node';
 
 /**
  * Cache structure for storing template version information
@@ -30,6 +31,7 @@ export interface TemplateVersionCache {
  * @param entityRef - The string reference of the template entity
  * @param currentVersion - The current version of the template
  * @param cache - The catalog processor cache
+ * @param eventsService - The events service for emitting events
  *
  * @internal
  */
@@ -37,6 +39,7 @@ export async function handleTemplateVersion(
   entityRef: string,
   currentVersion: string,
   cache: CatalogProcessorCache,
+  eventsService?: EventsService,
 ): Promise<void> {
   const cacheKey = `template-version-${entityRef}`;
   const cachedData = (await cache.get(cacheKey)) as
@@ -44,10 +47,16 @@ export async function handleTemplateVersion(
     | undefined;
 
   if (cachedData && cachedData.version < currentVersion) {
-    console.log(
-      `Template ${entityRef} version was updated from ${cachedData.version} to ${currentVersion}`,
-    );
-    // I will emit an event here
+    if (eventsService) {
+      await eventsService.publish({
+        topic: 'software.template.update',
+        eventPayload: {
+          entityRef,
+          previousVersion: cachedData.version,
+          currentVersion,
+        },
+      });
+    }
   }
 
   await cache.set(cacheKey, {
