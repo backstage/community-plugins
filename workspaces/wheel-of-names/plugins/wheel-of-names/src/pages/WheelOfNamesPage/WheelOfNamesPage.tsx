@@ -51,6 +51,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+export interface Participant {
+  id: string;
+  name: string;
+  displayName?: string;
+  fromGroup?: string;
+}
+
 export const WheelOfNamesPage = () => {
   const classes = useStyles();
   const [searchParams] = useSearchParams();
@@ -75,8 +82,9 @@ export const WheelOfNamesPage = () => {
     const loadInitialParticipants = async () => {
       // Extract group parameters from URL
       const groupParam = searchParams.get('group');
+      const groupsParam = searchParams.get('groups');
 
-      if (!groupParam) return;
+      if (!groupParam && !groupsParam) return;
 
       setIsLoading(true);
       try {
@@ -95,6 +103,26 @@ export const WheelOfNamesPage = () => {
             fromGroup: groupParam,
           }));
           setParticipants(groupParticipants);
+        } else if (groupsParam) {
+          // Load multiple groups
+          const groupNames = groupsParam.split(',');
+          const allParticipants: Participant[] = [];
+          for (const groupName of groupNames) {
+            const groupMembers = await entityService.fetchGroupMembers(
+              groupName.trim(),
+            );
+            const groupParticipants = groupMembers.map(member => ({
+              id: member.metadata.uid!,
+              name: member.metadata.name,
+              displayName:
+                (member.spec as any)?.profile?.displayName ||
+                member.metadata.title ||
+                member.metadata.name,
+              fromGroup: groupName.trim(),
+            }));
+            allParticipants.push(...groupParticipants);
+          }
+          setParticipants(allParticipants);
         }
       } finally {
         setHasLoadedFromUrl(true);
