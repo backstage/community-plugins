@@ -271,13 +271,7 @@ describe('ScaffolderRelationEntityProcessor', () => {
   });
 
   describe('postProcessEntity', () => {
-    const mockEventsServiceForPost: jest.Mocked<EventsService> = {
-      publish: jest.fn(),
-      subscribe: jest.fn(),
-    };
-    const processor = new ScaffolderRelationEntityProcessor(
-      mockEventsServiceForPost,
-    );
+    const processor = new ScaffolderRelationEntityProcessor();
     const location = { type: 'url', target: 'test-url' };
     const emit = jest.fn();
 
