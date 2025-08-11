@@ -81,14 +81,14 @@ export const Participants = ({
     configApi.getOptionalNumber('wheelOfNames.searchLimit') || 10;
   const [entities, setEntities] = useState<Entity[]>([]);
   const [excludedUsers, setExcludedUsers] = useState<Set<string>>(new Set());
-  const [resolvedParticipants, setResolvedParticipants] = useState<
-    Array<{
-      id: string;
-      name: string;
-      displayName?: string;
-      fromGroup?: string;
-    }>
-  >(initialParticipants);
+  const [resolvedParticipants, setResolvedParticipants] =
+    useState<Participant[]>(initialParticipants);
+  useEffect(() => {
+    if (initialParticipants.length > 0) {
+      setResolvedParticipants(initialParticipants);
+      onParticipantsChange(initialParticipants);
+    }
+  }, [initialParticipants, onParticipantsChange]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [processingGroups, setProcessingGroups] = useState(false);

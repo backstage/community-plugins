@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Content, Page, ContentHeader } from '@backstage/core-components';
 import { Wheel } from '../../components/Wheel';
 import { Participants } from '../../components/Participants';
+import { useSearchParams } from 'react-router-dom';
+import { EntityService } from '../../components/Participants/Service';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -49,9 +53,58 @@ const useStyles = makeStyles(theme => ({
 
 export const WheelOfNamesPage = () => {
   const classes = useStyles();
+  const [searchParams] = useSearchParams();
+  const catalogApi = useApi(catalogApiRef);
+  const entityService = useMemo(
+    () => new EntityService(catalogApi),
+    [catalogApi],
+  );
+
   const [participants, setParticipants] = useState<
     Array<{ id: string; name: string }>
   >([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [hasLoadedFromUrl, setHasLoadedFromUrl] = useState(false);
+
+  // Load participants from URL group parameters on mount
+  useEffect(() => {
+    if (hasLoadedFromUrl) return;
+
+    const loadInitialParticipants = async () => {
+      // Extract group parameters from URL
+      const groupParam = searchParams.get('group');
+
+      if (!groupParam) return;
+
+      setIsLoading(true);
+      try {
+        if (groupParam) {
+          // Load group members
+          const groupMembers = await entityService.fetchGroupMembers(
+            groupParam,
+          );
+          const groupParticipants = groupMembers.map(member => ({
+            id: member.metadata.uid!,
+            name: member.metadata.name,
+            displayName:
+              (member.spec as any)?.profile?.displayName ||
+              member.metadata.title ||
+              member.metadata.name,
+            fromGroup: groupParam,
+          }));
+          setParticipants(groupParticipants);
+        }
+      } finally {
+        setHasLoadedFromUrl(true);
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialParticipants();
+  }, [searchParams, entityService, hasLoadedFromUrl, catalogApi]);
+
   return (
     <Page themeId="tool">
       <Content>
@@ -61,9 +114,13 @@ export const WheelOfNamesPage = () => {
           who goes first in meetings, who brings snacks next time, or any other
           fun team decisions!
         </div>
+        {isLoading && <div>Loading participants...</div>}
         <div className={classes.container}>
           <div className={classes.leftColumn}>
-            <Participants onParticipantsChange={setParticipants} />
+            <Participants
+              onParticipantsChange={setParticipants}
+              initialParticipants={participants}
+            />
           </div>
           <div className={classes.rightColumn}>
             {participants.length > 0 && <Wheel participants={participants} />}
