@@ -26,6 +26,7 @@ import {
   CatalogProcessorEmit,
   processingResult,
 } from '@backstage/plugin-catalog-node';
+import type { EventsService } from '@backstage/plugin-events-node';
 
 import { RELATION_SCAFFOLDED_FROM, RELATION_SCAFFOLDER_OF } from './relations';
 import type { ScaffoldedFromSpec } from './types';
@@ -33,6 +34,8 @@ import { handleTemplateVersion } from './templateVersionUtils';
 
 /** @public */
 export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
+  constructor(private readonly eventsService?: EventsService) {}
+
   getProcessorName(): string {
     return 'ScaffolderRelationEntityProcessor';
   }
@@ -56,7 +59,12 @@ export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
 
     const entityRef = stringifyEntityRef(entity);
 
-    await handleTemplateVersion(entityRef, currentVersion, cache);
+    await handleTemplateVersion(
+      entityRef,
+      currentVersion,
+      cache,
+      this.eventsService,
+    );
 
     return entity;
   }
