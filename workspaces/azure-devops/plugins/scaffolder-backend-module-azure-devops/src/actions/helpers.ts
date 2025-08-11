@@ -15,9 +15,13 @@
  */
 
 import { LoggerService } from '@backstage/backend-plugin-api';
-import * as azdev from 'azure-devops-node-api';
-import * as GitApi from 'azure-devops-node-api/GitApi';
-import * as GitInterfaces from 'azure-devops-node-api/interfaces/GitInterfaces';
+import {
+  WebApi,
+  getPersonalAccessTokenHandler,
+  getBearerHandler,
+} from 'azure-devops-node-api';
+import { IGitApi } from 'azure-devops-node-api/GitApi';
+import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { InputError } from '@backstage/errors';
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
 import {
@@ -34,20 +38,20 @@ export async function createADOPullRequest({
   project,
   supportsIterations,
 }: {
-  gitPullRequestToCreate: GitInterfaces.GitPullRequest;
+  gitPullRequestToCreate: GitPullRequest;
   server: string;
   org: string;
   authHandler: IRequestHandler;
   repoName: string;
   project?: string;
   supportsIterations?: boolean;
-}): Promise<GitInterfaces.GitPullRequest> {
+}): Promise<GitPullRequest> {
   const url = `https://${server}/`;
   const orgUrl = url + org;
 
-  const connection = new azdev.WebApi(orgUrl, authHandler);
+  const connection = new WebApi(orgUrl, authHandler);
 
-  const gitApiObject: GitApi.IGitApi = await connection.getGitApi();
+  const gitApiObject: IGitApi = await connection.getGitApi();
 
   return await gitApiObject.createPullRequest(
     gitPullRequestToCreate,
@@ -66,7 +70,7 @@ export async function updateADOPullRequest({
   project,
   pullRequestId,
 }: {
-  gitPullRequestToUpdate: GitInterfaces.GitPullRequest;
+  gitPullRequestToUpdate: GitPullRequest;
   server: string;
   org: string;
   authHandler: IRequestHandler;
@@ -77,9 +81,9 @@ export async function updateADOPullRequest({
   const url = `https://${server}/`;
   const orgUrl = url + org;
 
-  const connection = new azdev.WebApi(orgUrl, authHandler);
+  const connection = new WebApi(orgUrl, authHandler);
 
-  const gitApiObject: GitApi.IGitApi = await connection.getGitApi();
+  const gitApiObject: IGitApi = await connection.getGitApi();
 
   await gitApiObject.updatePullRequest(
     gitPullRequestToUpdate,
@@ -129,8 +133,8 @@ export async function getAuthHandler(
   }
 
   return token || credentials?.type === 'pat'
-    ? azdev.getPersonalAccessTokenHandler(token ?? credentials!.token)
-    : azdev.getBearerHandler(credentials!.token);
+    ? getPersonalAccessTokenHandler(token ?? credentials!.token)
+    : getBearerHandler(credentials!.token);
 }
 
 export async function linkWorkItemToADOPullRequest({
@@ -155,7 +159,7 @@ export async function linkWorkItemToADOPullRequest({
   const url = `https://${server}/`;
   const orgUrl = url + org;
 
-  const connection = new azdev.WebApi(orgUrl, authHandler);
+  const connection = new WebApi(orgUrl, authHandler);
   connection.options.allowRetries = true;
   connection.options.maxRetries = 5;
 
@@ -191,29 +195,4 @@ export async function linkWorkItemToADOPullRequest({
     `Executing work item update with patch: ${JSON.stringify(document)}`,
   );
   await workItemApi.updateWorkItem(undefined, document, workItemId, project);
-}
-
-// For debug logging
-export async function logConnectionData({
-  server,
-  org,
-  authHandler,
-  logger,
-}: {
-  server: string;
-  org: string;
-  authHandler: IRequestHandler;
-  logger: LoggerService;
-}): Promise<void> {
-  const url = `https://${server}/`;
-  const orgUrl = url + org;
-
-  const connection = new azdev.WebApi(orgUrl, authHandler);
-
-  const connectionData = await (
-    await connection.getLocationsApi()
-  ).getConnectionData();
-  const userName = connectionData.authenticatedUser?.properties.Account.$value;
-  const userDisplayName = connectionData.authenticatedUser?.providerDisplayName;
-  logger.info(`Connected as user ${userName} (${userDisplayName})`);
 }

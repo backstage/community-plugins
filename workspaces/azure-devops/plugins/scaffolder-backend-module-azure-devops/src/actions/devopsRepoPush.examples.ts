@@ -19,7 +19,7 @@ import yaml from 'yaml';
 
 export const examples: TemplateExample[] = [
   {
-    description: 'Push Changes to Repository',
+    description: 'Push Changes to Repository, current working directory',
     example: yaml.stringify({
       steps: [
         {
@@ -27,9 +27,8 @@ export const examples: TemplateExample[] = [
           action: 'azure:repository:push',
           name: 'Push Changes to Azure DevOps Repository',
           input: {
-            branch: 'scaffolder/new-feature',
-            sourcePath: './my-repo',
-            gitCommitMessage: 'Add new feature',
+            remoteUrl:
+              'https://{organization}@dev.azure.com/{organization}/{project}/_git/{repository}',
             token: '${{ secrets.USER_OAUTH_TOKEN }}',
           },
         },
@@ -37,7 +36,28 @@ export const examples: TemplateExample[] = [
     }),
   },
   {
-    description: 'Push Changes to Repository',
+    description:
+      'Push Changes to Repository, current working directory, with author name and email',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'pushAzureDevOpsRepository',
+          action: 'azure:repository:push',
+          name: 'Push Changes to Azure DevOps Repository',
+          input: {
+            remoteUrl:
+              'https://{organization}@dev.azure.com/{organization}/{project}/_git/{repository}',
+            gitAuthorName: 'Backstage Scaffolder',
+            gitAuthorEmail: 'scaffolder@example.com',
+            token: '${{ secrets.USER_OAUTH_TOKEN }}',
+          },
+        },
+      ],
+    }),
+  },
+  {
+    description:
+      'Push Changes to Repository, specific branch, subdirectory and commit message',
     example: yaml.stringify({
       steps: [
         {

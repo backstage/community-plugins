@@ -19,7 +19,7 @@ import yaml from 'yaml';
 
 export const examples: TemplateExample[] = [
   {
-    description: 'Clone Repository',
+    description: 'Clone Repository into current directory',
     example: yaml.stringify({
       steps: [
         {
@@ -29,8 +29,6 @@ export const examples: TemplateExample[] = [
           input: {
             remoteUrl:
               'https://dev.azure.com/{organization}/{project}/_git/{repository}',
-            branch: 'main',
-            targetPath: './my-repo',
             token: '${{ secrets.USER_OAUTH_TOKEN }}',
           },
         },
@@ -38,7 +36,7 @@ export const examples: TemplateExample[] = [
     }),
   },
   {
-    description: 'Clone Repository',
+    description: 'Clone Repository from a specific branch into a subdirectory',
     example: yaml.stringify({
       steps: [
         {

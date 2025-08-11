@@ -20,10 +20,13 @@ import {
   createADOPullRequest,
   updateADOPullRequest,
   linkWorkItemToADOPullRequest,
-  logConnectionData,
   getAuthHandler,
 } from './helpers';
-import * as GitInterfaces from 'azure-devops-node-api/interfaces/GitInterfaces';
+import {
+  GitPullRequest,
+  GitPullRequestCompletionOptions,
+  GitPullRequestMergeStrategy,
+} from 'azure-devops-node-api/interfaces/GitInterfaces';
 
 /**
  * Creates an `azure:pr:create` Scaffolder action.
@@ -125,13 +128,6 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
         ctx.input.token,
       );
 
-      await logConnectionData({
-        server: server,
-        org: organization,
-        authHandler: authHandler,
-        logger: logger,
-      });
-
       let workItemIdNumber: number | undefined;
       if (workItemId) {
         workItemIdNumber = Number(workItemId);
@@ -140,12 +136,12 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
         }
       }
 
-      const pullRequest: GitInterfaces.GitPullRequest = {
+      const pullRequest: GitPullRequest = {
         sourceRefName: sourceBranchRef,
         targetRefName: targetBranchRef,
         title: title,
         description: description,
-      } as GitInterfaces.GitPullRequest;
+      } as GitPullRequest;
 
       logger.info(
         `Creating PR to merge ${sourceBranchRef} into ${targetBranchRef}`,
@@ -177,10 +173,9 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
             deleteSourceBranch: true,
             // All new repos will accept semi-linear merges by default, and the default merge strategy (a fast-forward merge)
             // is disabled by default so we cannot use it here.
-            mergeStrategy:
-              GitInterfaces.GitPullRequestMergeStrategy.RebaseMerge,
-          } as GitInterfaces.GitPullRequestCompletionOptions,
-        } as GitInterfaces.GitPullRequest;
+            mergeStrategy: GitPullRequestMergeStrategy.RebaseMerge,
+          } as GitPullRequestCompletionOptions,
+        } as GitPullRequest;
 
         logger.info(`Setting auto-complete on PR ${pullRequestId}`);
 

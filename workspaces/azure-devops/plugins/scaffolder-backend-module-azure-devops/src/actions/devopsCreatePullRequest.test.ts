@@ -24,7 +24,6 @@ jest.mock('./helpers', () => ({
   createADOPullRequest: jest.fn(),
   updateADOPullRequest: jest.fn(),
   linkWorkItemToADOPullRequest: jest.fn(),
-  logConnectionData: jest.fn(),
 }));
 
 const {
