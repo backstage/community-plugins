@@ -80,7 +80,6 @@ export const Participants = ({
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
-
   // New state variables for pagination
   const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);

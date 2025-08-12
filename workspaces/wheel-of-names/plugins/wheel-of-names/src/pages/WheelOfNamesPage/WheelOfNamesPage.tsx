@@ -21,7 +21,7 @@ import { Participants } from '../../components/Participants';
 import { useSearchParams } from 'react-router-dom';
 import { EntityService } from '../../components/Participants/Service';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Participant } from '../../types';
 
 const useStyles = makeStyles(theme => ({
@@ -60,6 +60,13 @@ export const WheelOfNamesPage = () => {
     () => new EntityService(catalogApi),
     [catalogApi],
   );
+
+  const config = useApi(configApiRef);
+  const title =
+    config.getOptionalString('wheelOfNames.title') || 'Wheel of Names';
+  const description =
+    config.getOptionalString('wheelOfNames.description') ||
+    'Spin the wheel to randomly select a team member. Perfect for choosing who goes first in meetings, who brings snacks next time, or any other fun team decisions!';
 
   const [participants, setParticipants] = useState<Participant[]>([]);
 
@@ -128,12 +135,8 @@ export const WheelOfNamesPage = () => {
   return (
     <Page themeId="tool">
       <Content>
-        <ContentHeader title="Wheel of Names" />
-        <div className={classes.contentDescription}>
-          Spin the wheel to randomly select a team member. Perfect for choosing
-          who goes first in meetings, who brings snacks next time, or any other
-          fun team decisions!
-        </div>
+        <ContentHeader title={title} />
+        <div className={classes.contentDescription}>{description}</div>
         {isLoading && <div>Loading participants...</div>}
         <div className={classes.container}>
           <div className={classes.leftColumn}>
