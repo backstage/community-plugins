@@ -147,33 +147,29 @@ type CITableProps = {
   columns?: TableColumn<Project>[];
 };
 
+type ProjectStatus = {
+  statusCode: number;
+  errorReason?: string;
+  connectionIssueMessage?: string;
+  jenkinsJobFullPath?: string;
+};
+
+function isProjectsStatus(x: unknown): x is ProjectStatus {
+  return !!x && typeof x === 'object' && 'statusCode' in x;
+}
+
 export const CITable = ({ title, columns }: CITableProps) => {
   const [tableProps, { setPage, retry, setPageSize }] = useBuilds();
 
-  // Check if projects is a status object
   const projects = tableProps.projects;
 
-  let safeProjects: Project[] | undefined;
-  let statusCode: number | undefined;
-  let errorReason: string | undefined;
-  let connectionIssueMessage: string | undefined;
-  let jenkinsJobFullPath: string | undefined;
-
-  if (Array.isArray(projects)) {
-    safeProjects = projects;
-  } else if (
-    projects &&
-    typeof projects === 'object' &&
-    'statusCode' in projects
-  ) {
-    // status object
-    statusCode = (projects as any).statusCode;
-    errorReason = (projects as any).errorReason;
-    connectionIssueMessage = (projects as any).connectionIssueMessage;
-    jenkinsJobFullPath = (projects as any).jenkinsJobFullPath;
-  }
-
-  if (statusCode !== undefined) {
+  if (isProjectsStatus(projects)) {
+    const {
+      statusCode,
+      errorReason,
+      connectionIssueMessage,
+      jenkinsJobFullPath,
+    } = projects;
     return (
       <CITableErrorView
         statusCode={statusCode}
@@ -187,7 +183,7 @@ export const CITable = ({ title, columns }: CITableProps) => {
   return (
     <CITableView
       {...tableProps}
-      projects={safeProjects}
+      projects={projects}
       title={title}
       columns={columns || ([] as TableColumn<Project>[])}
       retry={retry}
