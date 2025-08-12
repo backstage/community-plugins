@@ -21,7 +21,7 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 /**
  * Hook to fetch catalog entities based on entity references.
  *
- * @param refs - An array of entity reference strings.
+ * @param refs - An array of entity reference strings, or undefined if not yet loaded.
  * @param searchTerm - A string to filter entities by a search term.
  * @param limit - The maximum number of entities to fetch per page.
  * @param kind - The kind of entities to fetch.
@@ -30,7 +30,7 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
  * @public
  */
 export const useCatalogEntities = (
-  refs: string[],
+  refs: string[] | undefined,
   searchTerm: string = '',
   limit: number = 25,
   kind: string | undefined = undefined,
@@ -38,6 +38,13 @@ export const useCatalogEntities = (
   const catalogApi = useApi(catalogApiRef);
 
   const fetchEntities = async () => {
+    if (!refs || refs.length === 0) {
+      return {
+        items: [],
+        totalItems: 0,
+      };
+    }
+
     const filterArray = refs.map(refString => {
       const { kind: refKind, namespace, name } = parseEntityRef(refString);
       return {

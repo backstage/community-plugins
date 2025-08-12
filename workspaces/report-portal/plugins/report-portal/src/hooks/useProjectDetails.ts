@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { reportPortalApiRef } from '../api';
 import { ProjectDetails } from '@backstage-community/plugin-report-portal-common';
+import { useEffect, useState } from 'react';
+import { reportPortalApiRef } from '../api';
 
 export function useProjectDetails(
   projectId: string,
   host: string,
 ): { loading: boolean; projectDetails: ProjectDetails | undefined } {
   const reportPortalApi = useApi(reportPortalApiRef);
-  const [projectDetails, setProjectDetails] = React.useState<ProjectDetails>();
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [projectDetails, setProjectDetails] = useState<ProjectDetails>();
+  const [loading, setLoading] = useState<boolean>(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
     reportPortalApi
       .getProjectDetails(projectId, host)

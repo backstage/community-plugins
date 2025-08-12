@@ -70,7 +70,7 @@ yarn.lock                                                               @backsta
 /workspaces/linkerd                                                     @backstage/community-plugins-maintainers
 /workspaces/manage                                                      @backstage/community-plugins-maintainers  @grantila
 /workspaces/matomo                                                      @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
-/workspaces/mend                                                        @backstage/community-plugins-maintainers  @dariuszsobkowicz
+/workspaces/mend                                                        @backstage/community-plugins-maintainers  @NormanWenzelWSS @rupalvihol @hetsaliya-crestdata
 /workspaces/microsoft-calendar                                          @backstage/community-plugins-maintainers
 /workspaces/mta                                                         @backstage/community-plugins-maintainers  @ibolton336
 /workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo

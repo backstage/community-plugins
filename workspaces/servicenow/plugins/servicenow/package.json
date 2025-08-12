@@ -43,7 +43,7 @@
     "@mui/icons-material": "^5.15.17",
     "@mui/lab": "^5.0.0-alpha.153",
     "@mui/material": "^5.17.1",
-    "@mui/styles": "5.16.14",
+    "@mui/styles": "5.18.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0",
     "react-use": "^17.2.4"

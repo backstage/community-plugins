@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges
 
+## 0.11.0
+
+### Minor Changes
+
+- dad55b1: Backstage version bump to v1.41.1
+
 ## 0.10.0
 
 ### Minor Changes

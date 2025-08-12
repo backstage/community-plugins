@@ -27,7 +27,6 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import React from 'react';
 
 /** @public */
 export type ReportPortalSearchResultItemProps = {
