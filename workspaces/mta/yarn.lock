@@ -15654,7 +15654,7 @@ __metadata:
     "@backstage/plugin-techdocs-backend": "npm:^2.0.0"
     "@types/dockerode": "npm:^3.3.0"
     "@types/express": "npm:^4.17.6"
-    "@types/express-serve-static-core": "npm:^4.17.5"
+    "@types/express-serve-static-core": "npm:^5.0.0"
     "@types/luxon": "npm:^2.0.4"
     app: "link:../app"
     better-sqlite3: "npm:^9.0.0"
