@@ -153,8 +153,11 @@ export class JenkinsBuilder {
             projects: projects,
           });
         } catch (err) {
-          // Get status and reason from the error handler
+          // Get status and reason from the error handler and full job path correctly to display
           const { status, reason } = this.handleError(err);
+          const jenkinsJobFullPath = `${
+            jenkinsInfo.baseUrl
+          }/job/${jenkinsInfo.fullJobNames.join('/').replace(/\//g, '/job/')}`;
 
           const config = this.env.config;
           response.status(status).json({
@@ -162,7 +165,7 @@ export class JenkinsBuilder {
             connectionIssueMessage: config.getOptionalString(
               'jenkins.connectionIssueMessage',
             ),
-            jenkinsJobFullPath: `${jenkinsInfo.baseUrl}`,
+            jenkinsJobFullPath: jenkinsJobFullPath,
           });
 
           // Handle aggregate errors
