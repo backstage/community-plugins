@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.13.1
+
+### Patch Changes
+
+- 069adf6: Updated dependency `@keycloak/keycloak-admin-client` to `26.3.2`.
+
 ## 3.13.0
 
 ### Minor Changes
