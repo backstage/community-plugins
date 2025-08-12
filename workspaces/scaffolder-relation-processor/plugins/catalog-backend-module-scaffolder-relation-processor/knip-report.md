@@ -4,5 +4,5 @@
 
 | Name                          | Location          | Severity |
 | :---------------------------- | :---------------- | :------- |
-| @backstage/backend-test-utils | package.json:48:6 | error    |
+| @backstage/backend-test-utils | package.json:49:6 | error    |
 
