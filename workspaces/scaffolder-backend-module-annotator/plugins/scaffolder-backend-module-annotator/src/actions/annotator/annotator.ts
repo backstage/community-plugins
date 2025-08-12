@@ -27,6 +27,7 @@ import { resolveSpec, Value } from '../../utils/resolveSpec';
 import { resolveAnnotation } from '../../utils/resolveAnnotation';
 
 /**
+ * @public
  * Creates a new Scaffolder action to annotate an entity object with specified label(s), annotation(s) and spec property(ies).
  *
  */
@@ -52,21 +53,21 @@ export const createAnnotatorAction = (
       input: {
         labels: z =>
           z
-            .custom<Record<string, string>>()
+            .record(z.string(), z.string())
             .optional()
             .describe(
               'Labels that will be applied to the `metadata.labels` of the entity object',
             ),
         annotations: z =>
           z
-            .custom<Record<string, string>>()
+            .record(z.string(), z.string())
             .optional()
             .describe(
               'Annotations that will be applied to the `metadata.annotations` of the entity object',
             ),
         spec: z =>
           z
-            .custom<Record<string, string>>()
+            .record(z.string(), z.string())
             .optional()
             .describe(
               'Key-Value pair(s) that will be applied to the `spec` of the entity object',
@@ -78,7 +79,7 @@ export const createAnnotatorAction = (
             .describe('Path to the entity yaml you want to annotate'),
         objectYaml: z =>
           z
-            .custom<Record<string, string>>()
+            .record(z.string(), z.string())
             .optional()
             .describe('Entity object yaml you want to annotate'),
         writeToFile: z =>
