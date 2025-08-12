@@ -2,4 +2,4 @@
 '@backstage-community/plugin-nexus-repository-manager': patch
 ---
 
-Aligned `formatDate` utility with `ADR012 using Luxon`.
+Updated dependency `@hey-api/openapi-ts` to `0.80.5`.

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.4.1
+
+### Patch Changes
+
+- a6e6de7: Updated the targetPluginId from 'plugin.catalog.service' to 'catalog' to get the correct token
+
 ## 0.4.0
 
 ### Minor Changes
