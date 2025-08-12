@@ -1798,6 +1798,7 @@ __metadata:
     "@backstage/config": "backstage:^"
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-search-common": "backstage:^"
+    "@backstage/types": "backstage:^"
     "@types/node-fetch": "npm:^2.6.11"
     msw: "npm:^1.0.0"
     node-fetch: "npm:^2.6.7"
@@ -3482,7 +3483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/types@npm:^1.2.1":
+"@backstage/types@backstage:^::backstage=1.42.3&npm=1.2.1, @backstage/types@npm:^1.2.1":
   version: 1.2.1
   resolution: "@backstage/types@npm:1.2.1"
   checksum: 10/e3e65835b9db31d3f697e2d62fbcf52a3a6373e9f75fa8429e61f0a455880d4c32cdf996b22e85165e1a5b108604267281624befebcf9ae692c8844675925f14

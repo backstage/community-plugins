@@ -81,7 +81,7 @@ Documentation about CQL can be found [here](https://developer.atlassian.com/serv
 
 #### Document Caching
 
-Documents will be cached by default. The cache key includes the document version, so you can set a long `documentCacheTtl` if your cache storage allows it.
+Documents can be cached, by setting config `documentCacheEnabled: true`. The cache key includes the document version, so you can set a long `documentCacheTtl` if your cache storage allows it.
 
 > Note: Search queries are not cached.
 
