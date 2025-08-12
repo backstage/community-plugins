@@ -103,7 +103,7 @@ export interface Config {
     documentCacheTtl?: HumanDuration;
     /**
      * Set to false to disable all Confluence document caching.
-     * Default: true (cache enabled)
+     * Default: false (cache disabled)
      */
     documentCacheEnabled?: boolean;
   };

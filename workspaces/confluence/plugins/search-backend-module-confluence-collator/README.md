@@ -66,7 +66,7 @@ confluence:
   spaces: [] # It is highly recommended to safely list the spaces that you want to index, otherwise all spaces will be indexed.
   query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above.
   maxRequestsPerSecond: 5 # If your Confluence Server is getting a lot of API requests hit, you can use this parameter to specify the maximum number of API requests per second.
-  documentCacheEnabled: true # Enable caching of Confluence documents to reduce API calls. Default: true
+  documentCacheEnabled: false # Enable caching of Confluence documents to reduce API calls. Default: false
   documentCacheTtl: '24h' # How long to cache documents. Can be long as cache is keyed by Confluence version info. Default: 24h
 ```
 

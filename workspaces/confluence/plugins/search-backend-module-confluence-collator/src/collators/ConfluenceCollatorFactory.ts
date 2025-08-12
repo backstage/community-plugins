@@ -137,7 +137,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     }
 
     const documentCacheEnabled =
-      config.getOptionalBoolean('confluence.documentCacheEnabled') !== false;
+      config.getOptionalBoolean('confluence.documentCacheEnabled') ?? false;
     const documentCacheTtl = (() => {
       try {
         const dur = readDurationFromConfig(config, {
