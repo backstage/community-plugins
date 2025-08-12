@@ -2991,7 +2991,6 @@ __metadata:
     "@backstage/cli": "npm:^0.32.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.4"
     "@backstage/plugin-catalog-node": "npm:^1.17.0"
-    "@backstage/plugin-events-node": "npm:^0.4.13"
   languageName: unknown
   linkType: soft
 
