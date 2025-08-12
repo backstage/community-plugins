@@ -8,6 +8,7 @@ import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorEmit } from '@backstage/plugin-catalog-node';
 import { Entity } from '@backstage/catalog-model';
+import type { EventsService } from '@backstage/plugin-events-node';
 import type { LocationSpec } from '@backstage/plugin-catalog-common';
 
 // @public
@@ -29,6 +30,7 @@ export type ScaffoldedFromSpec = {
 
 // @public (undocumented)
 export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
+  constructor(eventsService?: EventsService | undefined);
   // (undocumented)
   getProcessorName(): string;
   // (undocumented)
