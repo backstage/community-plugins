@@ -26,16 +26,11 @@ import {
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupIcon from '@material-ui/icons/Group';
+// eslint-disable-next-line @backstage/no-undeclared-imports
 import { Entity } from '@backstage/catalog-model';
 import { useParticipantsStyles } from './Styles';
 import { getUserDisplayName } from './utils/participantUtils';
-
-interface EntityPickerProps {
-  entities: Entity[];
-  selectedEntities: string[];
-  onChange: (selected: string[]) => void;
-  isProcessing: boolean;
-}
+import { EntityPickerProps } from '../../types';
 
 export const EntityPicker = ({
   entities,

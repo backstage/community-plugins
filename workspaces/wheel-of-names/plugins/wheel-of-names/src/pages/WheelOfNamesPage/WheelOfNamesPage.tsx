@@ -22,6 +22,7 @@ import { useSearchParams } from 'react-router-dom';
 import { EntityService } from '../../components/Participants/Service';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
+import { Participant } from '../../types';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -51,13 +52,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export interface Participant {
-  id: string;
-  name: string;
-  displayName?: string;
-  fromGroup?: string;
-}
-
 export const WheelOfNamesPage = () => {
   const classes = useStyles();
   const [searchParams] = useSearchParams();
@@ -67,9 +61,7 @@ export const WheelOfNamesPage = () => {
     [catalogApi],
   );
 
-  const [participants, setParticipants] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
 

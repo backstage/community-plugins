@@ -29,21 +29,9 @@ import {
 import PersonIcon from '@material-ui/icons/Person';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useParticipantsStyles } from './Styles';
+// eslint-disable-next-line @backstage/no-undeclared-imports
 import { Entity } from '@backstage/catalog-model';
-
-interface Participant {
-  id: string;
-  name: string;
-  displayName?: string;
-  fromGroup?: string;
-}
-
-interface ParticipantsListProps {
-  participants: Participant[];
-  onRemoveParticipant: (id: string) => void;
-  onClearAll: () => void;
-  isProcessing: boolean;
-}
+import { Participant, ParticipantsListProps } from '../../types';
 
 export const ParticipantsList = (
   {

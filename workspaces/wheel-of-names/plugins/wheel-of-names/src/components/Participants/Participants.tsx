@@ -20,6 +20,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
+// eslint-disable-next-line @backstage/no-undeclared-imports
 import { Entity } from '@backstage/catalog-model';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -50,25 +51,7 @@ import { useParticipantsStyles } from './Styles';
 import { ParticipantsList } from './List';
 import { EntityService } from './Service';
 import ClearIcon from '@material-ui/icons/Clear';
-
-export interface Participant {
-  id: string;
-  name: string;
-  displayName?: string;
-  fromGroup?: string;
-}
-
-interface EntitySpec {
-  profile?: {
-    displayName?: string;
-  };
-  [key: string]: any;
-}
-
-export interface ParticipantsProps {
-  onParticipantsChange: (participants: Participant[]) => void;
-  initialParticipants?: Participant[];
-}
+import { Participant, ParticipantsProps, EntitySpec } from '../../types';
 
 export const Participants = ({
   onParticipantsChange,
