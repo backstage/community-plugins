@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.15.0
+
+### Minor Changes
+
+- d7e6708: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- c6f0aec: remove product theme from dev dependencies and dev app
+- 333e98c: Aligned `formatDate` utility with `ADR012 using Luxon`.
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
 ## 1.14.2
 
 ### Patch Changes

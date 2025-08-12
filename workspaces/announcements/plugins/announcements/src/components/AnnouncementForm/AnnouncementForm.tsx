@@ -15,31 +15,33 @@
  */
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
+import { DateTime } from 'luxon';
+import slugify from 'slugify';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
   announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
+
 import CategoryInput from './CategoryInput';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
-import {
-  Box,
-  Button,
-  Divider,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  Switch,
-  TextField,
-  Typography,
-} from '@material-ui/core';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
-import { DateTime } from 'luxon';
-import slugify from 'slugify';
+
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -141,6 +143,7 @@ export const AnnouncementForm = ({
             ? t('announcementForm.editAnnouncement')
             : t('announcementForm.newAnnouncement')}
         </Typography>
+        <Divider sx={{ mb: 3 }} />
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -152,43 +155,6 @@ export const AnnouncementForm = ({
                 variant="outlined"
                 fullWidth
                 required
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CategoryInput
-                setForm={setForm}
-                form={form}
-                initialValue={initialData.category?.title ?? ''}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TagsInput setForm={setForm} form={form} />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <OnBehalfTeamDropdown
-                selectedTeam={onBehalfOfSelectedTeam}
-                onChange={setOnBehalfOfSelectedTeam}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                variant="outlined"
-                label={t('announcementForm.startAt')}
-                id="start-at-date"
-                type="date"
-                value={form.start_at}
-                InputLabelProps={{ shrink: true }}
-                required
-                onChange={e =>
-                  setForm({
-                    ...form,
-                    start_at: e.target.value,
-                  })
-                }
               />
             </Grid>
 
@@ -206,11 +172,53 @@ export const AnnouncementForm = ({
             </Grid>
 
             <Grid item xs={12}>
-              <MDEditor
-                value={form.body}
-                style={{ minHeight: '30rem' }}
-                onChange={value =>
-                  setForm({ ...form, ...{ body: value || '' } })
+              <Paper
+                variant="outlined"
+                sx={{ borderRadius: 2, borderColor: 'divider', p: 2 }}
+              >
+                <MDEditor
+                  value={form.body}
+                  style={{ minHeight: '30rem' }}
+                  onChange={value =>
+                    setForm({ ...form, ...{ body: value || '' } })
+                  }
+                />
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CategoryInput
+                setForm={setForm}
+                form={form}
+                initialValue={initialData.category?.title ?? ''}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <OnBehalfTeamDropdown
+                selectedTeam={onBehalfOfSelectedTeam}
+                onChange={setOnBehalfOfSelectedTeam}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TagsInput setForm={setForm} form={form} />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TextField
+                variant="outlined"
+                label={t('announcementForm.startAt')}
+                id="start-at-date"
+                type="date"
+                value={form.start_at}
+                InputLabelProps={{ shrink: true }}
+                required
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    start_at: e.target.value,
+                  })
                 }
               />
             </Grid>

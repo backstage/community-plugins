@@ -1,5 +1,28 @@
 ### Dependencies
 
+## 1.23.1
+
+### Patch Changes
+
+- d942f33: remove product theme from dev dependencies and dev app
+
+## 1.23.0
+
+### Minor Changes
+
+- 78bb7a9: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [78bb7a9]
+  - @backstage-community/plugin-quay-common@1.10.0
+
+## 1.22.1
+
+### Patch Changes
+
+- 19fe3ed: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
 ## 1.22.0
 
 ### Minor Changes

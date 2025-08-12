@@ -132,7 +132,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     if (category) {
       params.append('category', category);
     }
-    if (tags) {
+    if (tags && tags.length > 0) {
       params.append('tags', tags.join(','));
     }
     if (max) {

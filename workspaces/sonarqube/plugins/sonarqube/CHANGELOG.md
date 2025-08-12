@@ -1,5 +1,36 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.17.0
+
+### Minor Changes
+
+- 6d6b976: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [6d6b976]
+  - @backstage-community/plugin-sonarqube-react@0.9.0
+
+## 0.16.2
+
+### Patch Changes
+
+- 1eda234: Fix maximum update depth exceeded in SonarqubeRelatedEntitiesOverview
+
+## 0.16.1
+
+### Patch Changes
+
+- b64dc92: Fixed bug in SonarQubeRelatedEntitiesOverview where the projectInstance was always undefined
+- Updated dependencies [b64dc92]
+  - @backstage-community/plugin-sonarqube-react@0.8.1
+
+## 0.16.0
+
+### Minor Changes
+
+- b61e4a0: Improve the discoverability of Sonarqube dashboard URL in both sonarqube entity card & tabular view
+
 ## 0.15.0
 
 ### Minor Changes

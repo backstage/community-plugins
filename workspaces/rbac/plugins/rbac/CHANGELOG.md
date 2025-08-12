@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 1.42.2
+
+### Patch Changes
+
+- 2e28d31: hide permissions for uninstalled plugins
+
+## 1.42.1
+
+### Patch Changes
+
+- a2e5d4e: Added optional pagination support to getMembers API
+- aec6bc2: docs(rbac): Removing Janus IDP dynamic plugin installation instructions, switching to relative paths for doc links
+- ac39bff: removed shared-react dependencies
+- 4719a0e: Fix to remove entire permission when no policy is selected.
+
 ## 1.42.0
 
 ### Minor Changes

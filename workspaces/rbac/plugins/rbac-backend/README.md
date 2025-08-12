@@ -222,7 +222,7 @@ Example of the conditional policies file:
 ```yaml
 ---
 result: CONDITIONAL
-roleEntityRef: 'role:default/test'
+roleEntityRef: role:default/test
 pluginId: catalog
 resourceType: catalog-entity
 permissionMapping:
@@ -233,11 +233,11 @@ conditions:
   resourceType: catalog-entity
   params:
     claims:
-      - 'group:default/team-a'
-      - 'group:default/team-b'
+      - group:default/team-a
+      - group:default/team-b
 ---
 result: CONDITIONAL
-roleEntityRef: 'role:default/test'
+roleEntityRef: role:default/test
 pluginId: catalog
 resourceType: catalog-entity
 permissionMapping:
@@ -247,7 +247,7 @@ conditions:
   resourceType: catalog-entity
   params:
     claims:
-      - 'group:default/team-a'
+      - group:default/team-a
 ```
 
 Information about condition policies format you can find in the doc: [Conditional policies documentation](./docs/conditions.md). There is only one difference: yaml format compare to json. But yaml and json are back convertiable.

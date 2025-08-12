@@ -2,4 +2,4 @@
 '@backstage-community/plugin-rbac-backend': patch
 ---
 
-Updated dependency `@types/express` to `4.17.23`.
+Added missing configSchema into package.json

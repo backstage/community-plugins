@@ -113,7 +113,7 @@ To start the app, run:
 
 ```sh
 yarn install
-yarn dev
+yarn start
 ```
 
 The app will be available at `http://localhost:3000`.

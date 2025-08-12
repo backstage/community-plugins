@@ -106,11 +106,27 @@ export const PermissionPoliciesForm = ({
     policyIndex: number,
     index: number,
   ) => {
-    setFieldValue(
-      `permissionPoliciesRows[${index}].policies[${policyIndex}].effect`,
-      isChecked ? 'allow' : 'deny',
-      true,
-    );
+    const updatedRows = [...permissionPoliciesRows];
+    updatedRows[index].policies[policyIndex].effect = isChecked
+      ? 'allow'
+      : 'deny';
+
+    // If unchecking and no policies are left with 'allow' effect, remove the entire permission
+    if (!isChecked) {
+      const hasAnyAllowPolicy = updatedRows[index].policies.some(
+        policy => policy.effect === 'allow',
+      );
+
+      if (!hasAnyAllowPolicy) {
+        // Remove the entire permission entry
+        const finalPps = updatedRows.filter((_ppr, pIndex) => index !== pIndex);
+        setFieldValue('permissionPoliciesRows', finalPps, true);
+        setFieldError(`permissionPoliciesRows[${index}]`, undefined);
+        return;
+      }
+    }
+
+    setFieldValue('permissionPoliciesRows', updatedRows, true);
   };
 
   const onAddConditions = (index: number, conditions?: ConditionsData) => {

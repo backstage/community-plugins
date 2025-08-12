@@ -22,6 +22,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -37,9 +38,9 @@
     "directory": "workspaces/quay"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.1",
+    "@backstage/cli": "^0.33.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.4",
+    "@backstage/repo-tools": "^0.15.0",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
     "knip": "^5.27.4",
