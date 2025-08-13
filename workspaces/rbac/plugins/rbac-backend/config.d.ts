@@ -63,6 +63,14 @@ export interface Config {
        * @visibility frontend
        */
       maxDepth?: number;
+      /**
+       * An optional value that controls evaluation order between basic permission policy and conditional policy for permissions.
+       * - Default: "conditional"
+       * - "basic": prefer permission policy first
+       * - "conditional": prefer conditional policies first
+       * @visibility frontend
+       */
+      policyDecisionPrecedence?: 'basic' | 'conditional';
     };
   };
 }

@@ -279,3 +279,17 @@ More information about group hierarchy can be found in the doc: [Group hierarchy
 ### Optional RBAC provider module support
 
 We also include the ability to create and load in RBAC backend plugin modules that can be used to make connections to third part access management tools. For more information, consult the [RBAC Providers documentation](./docs/providers.md).
+
+### Optional configuration to control policy decision precedence
+
+Controls the evaluation order between permission policies (basic) and conditional policies for resource permissions.
+
+- Default: `conditional` (conditional policies take precedence when present)
+- Set to `basic` to evaluate basic permission policy first
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    policyDecisionPrecedence: basic # or conditional
+```
