@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.9.1
+
+### Patch Changes
+
+- 7ad0cd0: Fixes an issue where an empty list of userOwnershipRefs causes excessive api calls to the catalog when creating a new announcement.
+
 ## 0.9.0
 
 ### Minor Changes
