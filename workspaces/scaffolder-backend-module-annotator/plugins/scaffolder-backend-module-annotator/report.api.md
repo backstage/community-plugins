@@ -36,9 +36,9 @@ export const createAnnotatorAction: (
   {
     labels?: Record<string, string> | undefined;
     annotations?: Record<string, string> | undefined;
-    spec?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
     entityFilePath?: string | undefined;
-    objectYaml?: Record<string, string> | undefined;
+    objectYaml?: Record<string, any> | undefined;
     writeToFile?: string | undefined;
   },
   {
@@ -52,9 +52,9 @@ export const createScaffoldedFromAction: () => TemplateAction<
   {
     labels?: Record<string, string> | undefined;
     annotations?: Record<string, string> | undefined;
-    spec?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
     entityFilePath?: string | undefined;
-    objectYaml?: Record<string, string> | undefined;
+    objectYaml?: Record<string, any> | undefined;
     writeToFile?: string | undefined;
   },
   {
@@ -68,9 +68,9 @@ export const createTimestampAction: () => TemplateAction<
   {
     labels?: Record<string, string> | undefined;
     annotations?: Record<string, string> | undefined;
-    spec?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
     entityFilePath?: string | undefined;
-    objectYaml?: Record<string, string> | undefined;
+    objectYaml?: Record<string, any> | undefined;
     writeToFile?: string | undefined;
   },
   {
@@ -84,9 +84,9 @@ export const createVersionAction: () => TemplateAction<
   {
     labels?: Record<string, string> | undefined;
     annotations?: Record<string, string> | undefined;
-    spec?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
     entityFilePath?: string | undefined;
-    objectYaml?: Record<string, string> | undefined;
+    objectYaml?: Record<string, any> | undefined;
     writeToFile?: string | undefined;
   },
   {

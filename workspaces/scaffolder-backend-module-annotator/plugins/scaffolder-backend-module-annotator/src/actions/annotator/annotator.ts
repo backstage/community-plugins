@@ -32,7 +32,6 @@ import { Value } from '../../types';
  * Creates a new Scaffolder action to annotate an entity object with specified label(s), annotation(s) and spec property(ies).
  *
  */
-
 export const createAnnotatorAction = (
   actionId: string = 'catalog:annotate',
   actionDescription?: string,
@@ -68,7 +67,7 @@ export const createAnnotatorAction = (
             ),
         spec: z =>
           z
-            .record(z.string(), z.string())
+            .record(z.string(), z.any())
             .optional()
             .describe(
               'Key-Value pair(s) that will be applied to the `spec` of the entity object',
@@ -80,7 +79,7 @@ export const createAnnotatorAction = (
             .describe('Path to the entity yaml you want to annotate'),
         objectYaml: z =>
           z
-            .record(z.string(), z.string())
+            .record(z.string(), z.any())
             .optional()
             .describe('Entity object yaml you want to annotate'),
         writeToFile: z =>
