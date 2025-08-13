@@ -23,8 +23,9 @@ import * as fs from 'fs-extra';
 import * as yaml from 'yaml';
 
 import { getObjectToAnnotate } from '../../utils/getObjectToAnnotate';
-import { resolveSpec, Value } from '../../utils/resolveSpec';
+import { resolveSpec } from '../../utils/resolveSpec';
 import { resolveAnnotation } from '../../utils/resolveAnnotation';
+import { Value } from '../../types';
 
 /**
  * @public

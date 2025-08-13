@@ -47,8 +47,6 @@ export const createAnnotatorAction: (
   'v2'
 >;
 
-// Warning: (ae-missing-release-tag) "createScaffoldedFromAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const createScaffoldedFromAction: () => TemplateAction<
   {
@@ -65,8 +63,6 @@ export const createScaffoldedFromAction: () => TemplateAction<
   'v2'
 >;
 
-// Warning: (ae-missing-release-tag) "createTimestampAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const createTimestampAction: () => TemplateAction<
   {
@@ -83,8 +79,6 @@ export const createTimestampAction: () => TemplateAction<
   'v2'
 >;
 
-// Warning: (ae-missing-release-tag) "createVersionAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const createVersionAction: () => TemplateAction<
   {
@@ -101,14 +95,14 @@ export const createVersionAction: () => TemplateAction<
   'v2'
 >;
 
-// Warning: (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
-//
 // @alpha
 const scaffolderCustomActionsScaffolderModule: BackendFeature;
 export default scaffolderCustomActionsScaffolderModule;
 
-// Warnings were encountered during analysis:
-//
-// src/actions/annotator/annotator.d.ts:10:9 - (ae-forgotten-export) The symbol "Value" needs to be exported by the entry point index.d.ts
-// src/index.d.ts:2:29 - (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
+// @public (undocumented)
+export type Value =
+  | string
+  | {
+      readFromContext: string;
+    };
 ```
