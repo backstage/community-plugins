@@ -29,8 +29,7 @@ import { rest, RestRequest } from 'msw';
 const logger = mockServices.logger.mock();
 
 const BASE_URL = 'http://confluence.example.com';
-const CONFLUENCE_API_PATH =
-  '/rest/api/content/search?limit=1000&status=current&cql=';
+const CONFLUENCE_API_PATH = '/rest/api/content/search';
 
 /* eslint jest/expect-expect: ["warn", { "assertFunctionNames": ["expect", "testSearchQuery"] }]  */
 const testSearchQuery = (
@@ -134,6 +133,7 @@ describe('ConfluenceCollatorFactory', () => {
     const expectedSearch = {
       limit: '1000',
       status: 'current',
+      expand: 'version',
       cql: 'type IN (page, blogpost, comment, attachment)',
     };
     testSearchQuery(request, expectedSearch);
@@ -171,6 +171,7 @@ describe('ConfluenceCollatorFactory', () => {
     const expectedSearch = {
       limit: '1000',
       status: 'current',
+      expand: 'version',
       cql: '(space="SPACE1" or space="SPACE2") and (type = page)',
     };
     testSearchQuery(request, expectedSearch);
@@ -207,6 +208,7 @@ describe('ConfluenceCollatorFactory', () => {
       limit: '1000',
       status: 'current',
       cql: 'space="SPACE1" or space="SPACE2"',
+      expand: 'version',
     };
     testSearchQuery(request, expectedSearch);
   });
@@ -242,6 +244,7 @@ describe('ConfluenceCollatorFactory', () => {
       limit: '1000',
       status: 'current',
       cql: 'type = page',
+      expand: 'version',
     };
     testSearchQuery(request, expectedSearch);
   });

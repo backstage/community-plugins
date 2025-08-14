@@ -30,6 +30,43 @@ backend.add(
 backend.start();
 ```
 
+#### Customization (alpha)
+
+If you need to customize how Confluence content is parsed or how search documents are shaped, this module exposes an alpha extension point. You can register a custom content parser and/or document transformer when adding the module:
+
+```ts
+// packages/backend/src/index.ts
+import { createBackend } from '@backstage/backend-defaults';
+
+const backend = createBackend();
+backend.add(import('@backstage/plugin-search-backend/alpha'));
+backend.add(
+  import(
+    '@backstage-community/plugin-search-backend-module-confluence-collator/alpha'
+  ).then(mod => ({
+    default: mod.default,
+    register(reg) {
+      reg.registerExtensionPoint(mod.confluenceCollatorExtensionPoint, {
+        setContentParser(parser) {
+          // optional – can be omitted if you only want a document transformer
+          parser;
+        },
+        setDocumentTransformer(transformer) {
+          // optional – can be omitted if you only want a content parser
+          transformer;
+        },
+      });
+    },
+  })),
+);
+backend.start();
+```
+
+- `setContentParser`: `(document) => string` – converts Confluence storage content to plaintext for indexing. The default implementation strips HTML tags. See `defaultConfluenceCollatorContentParser` for a starting point.
+- `setDocumentTransformer`: `(doc, raw) => Partial<doc>` – lets you add/override fields on the final indexable document. See `defaultConfluenceCollatorDocumentTransformer` for a starting point.
+
+Note: These extension points are alpha and may evolve in the future to ease potential response format changes without breaking existing implementations.
+
 ### Legacy backend
 
 #### Index Confluence Spaces to search
@@ -66,6 +103,8 @@ confluence:
   spaces: [] # It is highly recommended to safely list the spaces that you want to index, otherwise all spaces will be indexed.
   query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above.
   maxRequestsPerSecond: 5 # If your Confluence Server is getting a lot of API requests hit, you can use this parameter to specify the maximum number of API requests per second.
+  documentCacheEnabled: true # Enable caching of Confluence documents to reduce API calls. Default: true
+  documentCacheTtl: '24h' # How long to cache documents. Can be long as cache is keyed by Confluence version info. Default: 24h
 ```
 
 Documentation about CQL can be found [here](https://developer.atlassian.com/server/confluence/advanced-searching-using-cql)
@@ -77,7 +116,11 @@ Documentation about CQL can be found [here](https://developer.atlassian.com/serv
 - If only `query` is provided, the query will be applied to all accessible spaces. For example, if `query` is `type = page`, the resulting CQL will be `type = page`.
 - If neither `spaces` nor `query` is provided, all pages, blogposts, comments, and attachments from all accessible spaces will be indexed. The default CQL in this case is `type IN (page, blogpost, comment, attachment)`.
 
-The sections below will go into more details about the Base URL and Auth Methods.
+#### Document Caching
+
+Documents will be cached by default. The cache key includes the document version, so you can set a long `documentCacheTtl` if your cache storage allows it.
+
+> Note: Search queries are not cached.
 
 #### Base URL
 
