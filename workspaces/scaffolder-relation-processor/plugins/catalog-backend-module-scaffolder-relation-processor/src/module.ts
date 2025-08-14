@@ -42,11 +42,11 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
           'Registering the scaffolder-relation-processor catalog module',
         );
 
-        // Subscribe to software.template.update events
+        // Subscribe to relationProcessor.template:version_updated events
         if (events) {
           await events.subscribe({
             id: 'scaffolder-relation-processor',
-            topics: ['software.template.update'],
+            topics: ['relationProcessor.template:version_updated'],
             async onEvent(params) {
               const payload = params.eventPayload as {
                 entityRef: string;

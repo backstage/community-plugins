@@ -15,16 +15,13 @@
  */
 import type { Entity } from '@backstage/catalog-model';
 import type { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
-import type { EventsService } from '@backstage/plugin-events-node';
+import { mockServices } from '@backstage/backend-test-utils';
 
 import { ScaffolderRelationEntityProcessor } from './ScaffolderRelationEntityProcessor';
 
 describe('ScaffolderRelationEntityProcessor', () => {
   describe('preProcessEntity', () => {
-    const mockEventsService: jest.Mocked<EventsService> = {
-      publish: jest.fn(),
-      subscribe: jest.fn(),
-    };
+    const mockEventsService = mockServices.events.mock();
     const processor = new ScaffolderRelationEntityProcessor(mockEventsService);
     const location = { type: 'url', target: 'test-url' };
     const emit = jest.fn();
@@ -156,7 +153,7 @@ describe('ScaffolderRelationEntityProcessor', () => {
         },
       );
       expect(mockEventsService.publish).toHaveBeenCalledWith({
-        topic: 'software.template.update',
+        topic: 'relationProcessor.template:version_updated',
         eventPayload: {
           entityRef: 'template:default/test-template',
           previousVersion: '1.0.0',

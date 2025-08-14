@@ -49,7 +49,7 @@ export async function handleTemplateVersion(
   if (cachedData && cachedData.version < currentVersion) {
     if (eventsService) {
       await eventsService.publish({
-        topic: 'software.template.update',
+        topic: 'relationProcessor.template:version_updated',
         eventPayload: {
           entityRef,
           previousVersion: cachedData.version,
