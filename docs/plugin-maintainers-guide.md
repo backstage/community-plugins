@@ -8,6 +8,9 @@
     - [PR Reviews \& Merging](#pr-reviews--merging)
     - [Issue Triage](#issue-triage)
     - [Stepping Down as a Plugin Owner](#stepping-down-as-a-plugin-owner)
+  - [Archiving a Plugin](#archiving-a-plugin)
+    - [When to Archive](#when-to-archive)
+    - [How to Archive](#how-to-archive)
   - [Version Bumping](#version-bumping)
   - [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
@@ -47,7 +50,59 @@ If you are no longer maintaining a plugin, please take the following steps to fo
 
 3. If you are the last remaining CODEOWNER:
    - The `@backstage/community-plugins-maintainers` group will provide best-effort support for issues and maintenance. Without a dedicated owner, plugin updates and support may be slower or limited.
-   - To help with this, opt into automatic version bump PRs by creating an empty `.auto-version-bump` file in the plugin’s workspace (i.e., `workspaces/${WORKSPACE}/.auto-version-bump`).
+   - To help with this, opt into automatic version bump PRs by creating an empty `.auto-version-bump` file in the plugin's workspace (i.e., `workspaces/${WORKSPACE}/.auto-version-bump`).
+
+## Archiving a Plugin
+
+When a plugin is no longer maintained, it should be archived rather than abandoned. The archival process ensures that users are properly notified through npm deprecation warnings while preserving the code for historical reference through Git tags.
+
+### When to Archive
+
+Consider archiving a plugin when:
+
+- The plugin is no longer actively maintained
+- No current maintainer is available (and no one is stepping up)
+- The plugin has unresolved security vulnerabilities that won't be fixed
+- The plugin functionality has been superseded by better alternatives
+- The plugin is incompatible with current Backstage versions and won't be updated
+
+### How to Archive
+
+Follow these steps to archive a plugin or workspace:
+
+1. Run the archive script to designate the plugin(s) as archived:
+
+   ```bash
+   # Archive an entire workspace (defaults to "No longer maintained")
+   node scripts/archive.js workspace-name
+
+   # Archive an entire workspace with custom reason
+   node scripts/archive.js workspace-name "Custom reason"
+
+   # Archive a specific plugin within a workspace (use package name after @backstage-community/)
+   node scripts/archive.js workspace-name plugin-name "Custom reason"
+   ```
+
+   This will:
+
+   - Record Git tag references using `package.json` versions (`@backstage-community/plugin-example@1.2.3`)
+   - Add entries to `.github/archived-plugins.json` and `ARCHIVED_WORKSPACES.md`
+
+2. Dry run the following script to verify which packages would be deprecated:
+
+   ```bash
+   ./scripts/ci/deprecate-archived-plugins.sh --dry-run
+   ```
+
+3. Delete the workspace or plugin(s) from the repository.
+
+4. Open a PR with the changes including:
+
+   - Updated `.github/archived-plugins.json`
+   - Updated `ARCHIVED_WORKSPACES.md`
+   - Removed workspace/plugin
+
+5. Once the PR is merged, the GitHub Action will automatically deprecate the packages in `.github/archived-plugins.json` on npm. Note the `.github/archived-plugins.json` requires codeowner approval from `@backstage/community-plugins-maintainers`.
 
 ## Version Bumping
 

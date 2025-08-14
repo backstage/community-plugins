@@ -7,6 +7,7 @@
 *                                                                       @backstage/community-plugins-maintainers
 yarn.lock                                                               @backstage/community-plugins-maintainers @backstage-service
 */yarn.lock                                                             @backstage/community-plugins-maintainers @backstage-service
+.github/archived-plugins.json                                           @backstage/community-plugins-maintainers
 
 /workspaces/3scale                                                      @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr
 /workspaces/acr                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
