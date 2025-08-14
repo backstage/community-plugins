@@ -16,6 +16,7 @@
 
 import '@testing-library/jest-dom';
 
+// directly return the translation key for easier unit tests
 jest.mock('./hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,

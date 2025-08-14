@@ -2,7 +2,7 @@
 
 The Bookmarks plugin is a simple tool for saving and viewing links to your favorite websites, Google Docs, and other online resources directly within Backstage.
 
-Bookmarks are stored in the `spec` of a Backstage entity, making it easy to manage and access them within your Backstage environment. See [an example entity](../../examples/entities.yaml#L22-L31) that includes bookmarks.
+Bookmarks are stored in the `spec` of a Backstage entity, making it easy to manage and access them within your Backstage environment. See [an example entity](./examples/component/catalog-info.yaml#L12-L24) that includes bookmarks.
 
 ## Installation (old frontend system)
 
