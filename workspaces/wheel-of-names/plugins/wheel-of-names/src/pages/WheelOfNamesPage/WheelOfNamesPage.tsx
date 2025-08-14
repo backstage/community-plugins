@@ -80,30 +80,14 @@ export const WheelOfNamesPage = () => {
 
     const loadInitialParticipants = async () => {
       // Extract group parameters from URL
-      const groupParam = searchParams.get('group');
       const groupsParam = searchParams.get('groups');
 
-      if (!groupParam && !groupsParam) return;
+      if (!groupsParam) return;
 
       setIsLoading(true);
       try {
-        if (groupParam) {
-          // Load group members
-          const groupMembers = await entityService.fetchGroupMembers(
-            groupParam,
-          );
-          const groupParticipants = groupMembers.map(member => ({
-            id: member.metadata.uid!,
-            name: member.metadata.name,
-            displayName:
-              (member.spec as any)?.profile?.displayName ||
-              member.metadata.title ||
-              member.metadata.name,
-            fromGroup: groupParam,
-          }));
-          setParticipants(groupParticipants);
-        } else if (groupsParam) {
-          // Load multiple groups
+        if (groupsParam) {
+          // Load single or multiple groups
           const groupNames = groupsParam.split(',');
           const allParticipants: Participant[] = [];
           for (const groupName of groupNames) {
