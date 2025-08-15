@@ -4,6 +4,7 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { CacheService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
@@ -20,7 +21,7 @@ export function getRequestHeaders(token: string): {
 
 // @public (undocumented)
 export class RollbarApi {
-  constructor(accessToken: string, logger: LoggerService);
+  constructor(accessToken: string, logger: LoggerService, cache: CacheService);
   // (undocumented)
   getActivatedCounts(
     projectName: string,
@@ -196,7 +197,7 @@ export type RollbarProjectAccessToken = {
   name: string;
   scopes: RollbarProjectAccessTokenScope[];
   accessToken: string;
-  status: 'enabled' | string;
+  status: 'enabled' | 'expired' | string;
 };
 
 // @public (undocumented)
@@ -221,6 +222,8 @@ export type RollbarTopActiveItem = {
 
 // @public @deprecated (undocumented)
 export interface RouterOptions {
+  // (undocumented)
+  cache: CacheService;
   // (undocumented)
   config: Config;
   // (undocumented)
