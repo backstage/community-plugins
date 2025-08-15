@@ -15,7 +15,7 @@
  */
 
 import { useMemo } from 'react';
-import { UrlTree } from '../api/types';
+import { UrlTree } from '../types';
 import { PATH_SEPARATOR } from '../consts/consts';
 
 /** Flattened node type with key and value */

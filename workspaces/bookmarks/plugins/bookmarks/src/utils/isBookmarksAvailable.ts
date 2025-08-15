@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-/**
- * A Backstage plugin that helps you quickly access important links
- *
- * @packageDocumentation
- */
+import type { Entity } from '@backstage/catalog-model';
 
-export { bookmarksPlugin, EntityBookmarksContent } from './plugin';
-export {
-  AVAILABLE_LANGUAGES,
-  bookmarksTranslations,
-  bookmarksTranslationRef,
-} from './translations/translations';
-export { isBookmarksAvailable } from './utils/isBookmarksAvailable';
+/**
+ * Checks if the entity has the bookmarks object in the spec.
+ * Does not indicate that the object is a `UrlTree`
+ *
+ * @public
+ *
+ * @param entity - The entity to check
+ * @returns true there is a bookmarks object in the spec
+ */
+export const isBookmarksAvailable = (
+  entity: Entity,
+): entity is Entity & { spec: { bookmarks?: unknown } } => {
+  const bookmarks = entity?.spec?.bookmarks;
+  return (
+    typeof bookmarks === 'object' &&
+    bookmarks !== null &&
+    !Array.isArray(bookmarks) &&
+    Object.keys(bookmarks).length > 0
+  );
+};

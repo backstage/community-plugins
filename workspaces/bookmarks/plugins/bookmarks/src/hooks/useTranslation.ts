@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-/* istanbul ignore file */ // this is tested by Backstage's useTranslationRef tests
-
 import {
   useTranslationRef,
   TranslationFunction,
   TranslationRef,
 } from '@backstage/core-plugin-api/alpha';
-import { bookmarksTranslationRef } from '../translation';
+import { bookmarksTranslationRef } from '../translations/translations';
 
 type BookmarksMessages =
   typeof bookmarksTranslationRef extends TranslationRef<
@@ -31,6 +29,7 @@ type BookmarksMessages =
     ? TMessages
     : never;
 
+/* istanbul ignore next: this is tested by Backstage's useTranslationRef tests */
 export const useTranslation = (): {
   t: TranslationFunction<BookmarksMessages>;
 } => {

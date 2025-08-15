@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import { bookmarksPlugin } from './plugin';
+import { bookmarksPlugin, EntityBookmarksContent } from './plugin';
 
 describe('bookmarks', () => {
   it('should export plugin', () => {
     expect(bookmarksPlugin).toBeDefined();
+  });
+
+  it('should export EntityBookmarksContent', () => {
+    expect(EntityBookmarksContent).toBeDefined();
   });
 });

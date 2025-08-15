@@ -17,7 +17,7 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { screen } from '@testing-library/react';
-import { BookmarksTab } from './BookmarksTab';
+import { EntityBookmarksContent } from './EntityBookmarksContent';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: jest.fn(),
@@ -26,17 +26,19 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
 const validBookmarks = { foo: { bar: 'https://example.com' } };
 const useEntityMock = useEntity as jest.Mock;
 
-describe('BookmarksTab', () => {
+describe('EntityBookmarksContent', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('shows empty state when no bookmarks', async () => {
     useEntityMock.mockReturnValue({ entity: { spec: {} } });
-    await renderInTestApp(<BookmarksTab />);
-    expect(screen.getByText('bookmarksTab.notFound.title')).toBeInTheDocument();
+    await renderInTestApp(<EntityBookmarksContent />);
     expect(
-      screen.getByText('bookmarksTab.notFound.description'),
+      screen.getByText('entityBookmarksContent.notFound.title'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('entityBookmarksContent.notFound.description'),
     ).toBeInTheDocument();
   });
 
@@ -44,16 +46,18 @@ describe('BookmarksTab', () => {
     useEntityMock.mockReturnValue({
       entity: { spec: { bookmarks: { foo: 123 } } },
     });
-    await renderInTestApp(<BookmarksTab />);
-    expect(screen.getByText('bookmarksTab.invalid.title')).toBeInTheDocument();
+    await renderInTestApp(<EntityBookmarksContent />);
     expect(
-      screen.getByText('bookmarksTab.invalid.description'),
+      screen.getByText('entityBookmarksContent.invalid.title'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText('bookmarksTab.notFound.title'),
+      screen.getByText('entityBookmarksContent.invalid.description'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('entityBookmarksContent.notFound.title'),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText('bookmarksTab.notFound.description'),
+      screen.queryByText('entityBookmarksContent.notFound.description'),
     ).not.toBeInTheDocument();
   });
 
@@ -61,13 +65,13 @@ describe('BookmarksTab', () => {
     useEntityMock.mockReturnValue({
       entity: { spec: { bookmarks: validBookmarks } },
     });
-    await renderInTestApp(<BookmarksTab />);
+    await renderInTestApp(<EntityBookmarksContent />);
 
     expect(
-      screen.queryByText('bookmarksTab.invalid.title'),
+      screen.queryByText('entityBookmarksContent.invalid.title'),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText('bookmarksTab.notFound.title'),
+      screen.queryByText('entityBookmarksContent.notFound.title'),
     ).not.toBeInTheDocument();
   });
 });

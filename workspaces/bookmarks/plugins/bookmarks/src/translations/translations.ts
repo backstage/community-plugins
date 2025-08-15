@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
+import {
+  createTranslationRef,
+  createTranslationResource,
+} from '@backstage/core-plugin-api/alpha';
 
 /**
  * Bookmarks plugin translation ref
@@ -38,7 +41,7 @@ export const bookmarksTranslationRef = createTranslationRef({
       devModeWarning:
         'You may have to reload the page for the iframe to load correctly in development mode',
     },
-    bookmarksTab: {
+    entityBookmarksContent: {
       invalid: {
         title: 'Invalid bookmarks format',
         description: 'Ensure your bookmarks are structured correctly.',
@@ -48,5 +51,24 @@ export const bookmarksTranslationRef = createTranslationRef({
         description: "Add bookmarks to your entity's spec to see them here.",
       },
     },
+  },
+});
+
+/**
+ * Languages that are available for the Bookmarks plugin
+ *
+ * @public
+ */
+export const AVAILABLE_LANGUAGES = ['en', 'de'];
+
+/**
+ * Translations resource for the Bookmarks plugin
+ *
+ * @public
+ */
+export const bookmarksTranslations = createTranslationResource({
+  ref: bookmarksTranslationRef,
+  translations: {
+    de: async () => ({ default: (await import('./de')).de }),
   },
 });

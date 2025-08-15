@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-/**
- * A Backstage plugin that helps you quickly access important links
- *
- * @packageDocumentation
- */
+import { UrlTree } from '../types';
 
-export { bookmarksPlugin, EntityBookmarksContent } from './plugin';
-export {
-  AVAILABLE_LANGUAGES,
-  bookmarksTranslations,
-  bookmarksTranslationRef,
-} from './translations/translations';
-export { isBookmarksAvailable } from './utils/isBookmarksAvailable';
+/**
+ * Recursively check if a given object conforms to the UrlTree type
+ *
+ * @param tree - The object to validate
+ * @returns true if the object is a valid UrlTree, false otherwise
+ */
+export const isBookmarksTreeValid = (tree: unknown): tree is UrlTree => {
+  return (
+    typeof tree === 'object' &&
+    tree !== null &&
+    !Array.isArray(tree) &&
+    Object.values(tree).every(
+      value => typeof value === 'string' || isBookmarksTreeValid(value),
+    )
+  );
+};

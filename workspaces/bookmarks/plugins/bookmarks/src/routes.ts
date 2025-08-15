@@ -16,6 +16,6 @@
 
 import { createRouteRef } from '@backstage/core-plugin-api';
 
-export const entityRootRouteRef = createRouteRef({
-  id: 'bookmarks:entity-page',
+export const entityContentRouteRef = createRouteRef({
+  id: 'bookmarks:entity-content',
 });

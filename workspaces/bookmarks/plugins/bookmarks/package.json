@@ -28,6 +28,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/catalog-model": "^1.7.5",
     "@backstage/core-components": "^0.17.4",
     "@backstage/core-plugin-api": "^1.10.9",
     "@backstage/plugin-catalog-react": "^1.19.1",
@@ -50,7 +51,6 @@
     "@testing-library/react": "^16.3.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.3.0"

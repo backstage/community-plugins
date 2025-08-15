@@ -17,7 +17,7 @@
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import { useEffect, useState } from 'react';
-import { UrlTree } from '../../../api/types';
+import { UrlTree } from '../../../types';
 import { PATH_SEPARATOR } from '../../../consts/consts';
 import {
   FlattenedNode,
@@ -95,8 +95,7 @@ export const TableOfContents = ({
         setCurrentNode({ value: urlLookup[itemId], key: itemId });
       }}
       expandedItems={expandedItems}
-      onItemExpansionToggle={(_, itemId: string | null) => {
-        if (!itemId) return;
+      onItemExpansionToggle={(_, itemId: string) => {
         setExpandedItems(prev =>
           prev.includes(itemId)
             ? prev.filter(id => id !== itemId)

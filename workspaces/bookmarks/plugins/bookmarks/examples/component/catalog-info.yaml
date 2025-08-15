@@ -9,7 +9,6 @@ spec:
   system: examples
   providesApis: [example-grpc-api]
 
-  # added to demonstrate the bookmarks plugin - line numbers of this section are referenced in the README.md
   bookmarks:
     'Life story': https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic
     'My cool gadgets and gizmos':

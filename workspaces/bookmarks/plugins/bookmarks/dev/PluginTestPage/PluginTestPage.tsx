@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { Header, Page, Content } from '@backstage/core-components';
-
-import { BookmarksViewer } from '../BookmarksViewer/BookmarksViewer';
-import { UrlTree } from '../../api/types';
+import { Header, Page, TabbedLayout } from '@backstage/core-components';
+import { UrlTree } from '../../src/types';
 import { StrictMode } from 'react';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { EntityBookmarksContent } from '../../src/components/EntityBookmarksContent/EntityBookmarksContent';
+import { Entity } from '@backstage/catalog-model';
 
 const testData: UrlTree = {
   'Life story':
@@ -42,13 +43,24 @@ const testData: UrlTree = {
   },
 };
 
+const testEntity: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: { name: 'my-service' },
+  spec: { bookmarks: testData },
+};
+
 export const PluginTestPage = () => (
   <Page themeId="tool">
-    <Header title="Bookmark plugin demo" />
-    <Content>
-      <StrictMode>
-        <BookmarksViewer tree={testData} />
-      </StrictMode>
-    </Content>
+    <Header type="component — service" title="Bookmark plugin demo" />
+    <TabbedLayout>
+      <TabbedLayout.Route path="/" title="Bookmarks">
+        <EntityProvider entity={testEntity}>
+          <StrictMode>
+            <EntityBookmarksContent />
+          </StrictMode>
+        </EntityProvider>
+      </TabbedLayout.Route>
+    </TabbedLayout>
   </Page>
 );

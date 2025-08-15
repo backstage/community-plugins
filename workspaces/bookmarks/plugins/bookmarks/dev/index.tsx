@@ -1,9 +1,13 @@
 import { createDevApp } from '@backstage/dev-utils';
 import { bookmarksPlugin } from '../src/plugin';
-import { PluginTestPage } from '../src/components/PluginTestPage/PluginTestPage';
+import { PluginTestPage } from './PluginTestPage/PluginTestPage';
+import { bookmarksTranslations } from '../src';
+import { AVAILABLE_LANGUAGES } from '../src/translations/translations';
 
 createDevApp()
   .registerPlugin(bookmarksPlugin)
+  .addTranslationResource(bookmarksTranslations)
+  .setAvailableLanguages(AVAILABLE_LANGUAGES)
   .addPage({
     element: <PluginTestPage />,
     title: 'Root Page',

@@ -19,7 +19,7 @@ import {
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
-import { entityRootRouteRef } from './routes';
+import { entityContentRouteRef } from './routes';
 
 /**
  * Bookmarks plugin
@@ -29,22 +29,24 @@ import { entityRootRouteRef } from './routes';
 export const bookmarksPlugin = createPlugin({
   id: 'bookmarks',
   routes: {
-    entityRoot: entityRootRouteRef,
+    entityContent: entityContentRouteRef,
   },
 });
 
 /**
- * BookmarksTab extension for the contents of the Bookmarks tab
+ * EntityBookmarksContent extension for the contents of the Bookmarks tab
  *
  * @public
  */
-export const BookmarksTab = bookmarksPlugin.provide(
+export const EntityBookmarksContent = bookmarksPlugin.provide(
   createRoutableExtension({
-    name: 'BookmarksTab',
-    component: () =>
-      import('./components/BookmarksTab/BookmarksTab').then(
-        m => m.BookmarksTab,
-      ),
-    mountPoint: entityRootRouteRef,
+    name: 'EntityBookmarksContent',
+    component:
+      /* istanbul ignore next: very difficult to test this in Jest */
+      () =>
+        import(
+          './components/EntityBookmarksContent/EntityBookmarksContent'
+        ).then(m => m.EntityBookmarksContent),
+    mountPoint: entityContentRouteRef,
   }),
 );

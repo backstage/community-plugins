@@ -15,10 +15,10 @@
  */
 
 import { renderInTestApp } from '@backstage/test-utils';
-import { screen, fireEvent } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { TableOfContents } from './TableOfContents';
 import { PATH_SEPARATOR } from '../../../consts/consts';
-import type { UrlTree } from '../../../api/types';
+import type { UrlTree } from '../../../types';
 import type { FlattenedNode } from '../../../hooks/useFlattenTree';
 
 const tree: UrlTree = {
@@ -27,6 +27,9 @@ const tree: UrlTree = {
     Baz: 'https://example.com/baz',
   },
   Qux: 'https://example.com/qux',
+  Goo: {
+    SubGoo: 'https://example.com/sub-goo',
+  },
 };
 
 const currentNode: FlattenedNode = {
@@ -57,10 +60,39 @@ describe('TableOfContents', () => {
         setCurrentNode={jest.fn()}
       />,
     );
-    const fooItem = screen.getByText('Foo').closest('[role="treeitem"]');
-    // Simulate expand/collapse
-    fireEvent.click(fooItem!);
-    // Should still be in the document (expanded or collapsed)
-    expect(fooItem).toBeInTheDocument();
+    const gooItem = screen.getByText('Goo');
+
+    expect(screen.queryByText('SubGoo')).not.toBeInTheDocument();
+
+    act(() => {
+      gooItem.click();
+    });
+    expect(screen.getByText('SubGoo')).toBeVisible();
+
+    act(() => {
+      gooItem.click();
+    });
+    waitFor(() => {
+      expect(screen.queryByText('SubGoo')).not.toBeInTheDocument();
+    });
+  });
+
+  it('calls setCurrentNode when an item is clicked', async () => {
+    const setCurrentNodeMock = jest.fn();
+    await renderInTestApp(
+      <TableOfContents
+        tree={tree}
+        currentNode={currentNode}
+        setCurrentNode={setCurrentNodeMock}
+      />,
+    );
+    const barItem = screen.getByText('Bar');
+    act(() => {
+      barItem.click();
+    });
+    expect(setCurrentNodeMock).toHaveBeenCalledWith({
+      key: ['Foo', 'Bar'].join(PATH_SEPARATOR),
+      value: 'https://example.com/bar',
+    });
   });
 });

@@ -17,7 +17,7 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Button from '@mui/material/Button';
 import { ReactNode, memo, useMemo, useState } from 'react';
-import { UrlTree } from '../../api/types';
+import { UrlTree } from '../../types';
 import { TEST_IDS } from '../../consts/testids';
 import { FlattenedNode, useFlattenTree } from '../../hooks/useFlattenTree';
 import { useIsDesktop } from '../../hooks/useIsDesktop';
