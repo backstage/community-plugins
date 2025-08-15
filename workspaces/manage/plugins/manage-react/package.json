@@ -25,7 +25,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "plugins/manage-react"
+    "directory": "workspaces/manage/plugins/manage-react"
   },
   "keywords": [
     "backstage",
