@@ -103,6 +103,7 @@ yarn.lock                                                               @backsta
 /workspaces/sentry                                                      @backstage/community-plugins-maintainers
 /workspaces/servicenow                                                  @backstage/community-plugins-maintainers  @AndrienkoAleksandr @ciiay @PatAKnight @christoph-jerolimov
 /workspaces/shortcuts                                                   @backstage/community-plugins-maintainers
+/workspaces/shorturl                                                    @backstage/community-plugins-maintainers @avila-m-6 @shailahir
 /workspaces/sonarqube                                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/splunk                                                      @backstage/community-plugins-maintainers
 /workspaces/stack-overflow                                              @backstage/community-plugins-maintainers

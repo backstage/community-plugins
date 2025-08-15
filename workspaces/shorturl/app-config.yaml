@@ -1,0 +1,14 @@
+shorturl:
+  length: 6
+  alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+app:
+  title: ShortURL Example App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  auth:
+    dangerouslyDisableDefaultAuthPolicy: true
+  cors:
+    origin: http://localhost:3000
