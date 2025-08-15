@@ -59,6 +59,7 @@ import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
+  private readonly preferPermissionPolicy: boolean;
 
   public static async build(
     logger: LoggerService,
@@ -90,6 +91,10 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const conditionalPoliciesFile = configApi.getOptionalString(
       'permission.rbac.conditionalPoliciesFile',
     );
+
+    const preferPermissionPolicy =
+      configApi.getOptionalBoolean('permission.rbac.preferPermissionPolicy') ||
+      false;
 
     if (superUsers && superUsers.length > 0) {
       for (const user of superUsers) {
@@ -154,6 +159,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       enforcerDelegate,
       auditor,
       conditionalStorage,
+      preferPermissionPolicy,
       superUserList,
     );
   }
@@ -162,9 +168,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly enforcer: EnforcerDelegate,
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
+    preferPermissionPolicy: boolean,
     superUserList?: string[],
   ) {
     this.superUserList = superUserList;
+    this.preferPermissionPolicy = preferPermissionPolicy;
   }
 
   async handle(
@@ -222,25 +230,27 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       if (isResourcePermission(request.permission)) {
         const resourceType = request.permission.resourceType;
-
-        // handle conditions if they are present
-        if (user) {
-          const conditionResult = await this.handleConditions(
-            auditorEvent,
-            userEntityRef,
-            request,
-            roles,
-            user.info,
-          );
-          if (conditionResult) {
-            return conditionResult;
-          }
-        }
-
         // Let's set up higher priority for permission specified by name, than by resource type
         const obj = hasNamedPermission ? permissionName : resourceType;
+        // handle conditions if they are present
+        const conditionResult = await this.handleConditions(
+          auditorEvent,
+          userEntityRef,
+          request,
+          roles,
+          user.info,
+        );
 
-        status = await this.isAuthorized(userEntityRef, obj, action, roles);
+        if (this.preferPermissionPolicy) {
+          // Permission policy first
+          status = await this.isAuthorized(userEntityRef, obj, action, roles);
+          if (!status && conditionResult) {
+            return conditionResult;
+          }
+        } else {
+          if (conditionResult) return conditionResult;
+          status = await this.isAuthorized(userEntityRef, obj, action, roles);
+        }
       } else {
         // handle permission with 'basic' type
         status = await this.isAuthorized(
