@@ -30,9 +30,19 @@ export const ScorecardsGauge = (props: {
   description?: string;
   noWarning?: boolean;
   expanded?: boolean;
+  dense?: boolean;
+  hideDescription?: boolean;
 }) => {
-  const { checkResults, entity, title, description, noWarning, expanded } =
-    props;
+  const {
+    checkResults,
+    entity,
+    title,
+    description,
+    noWarning,
+    expanded,
+    dense = true,
+    hideDescription,
+  } = props;
 
   const api = useApi(techInsightsApiRef);
 
@@ -63,6 +73,8 @@ export const ScorecardsGauge = (props: {
         entity={entity}
         noWarning={noWarning}
         expanded={expanded}
+        dense={dense}
+        hideDescription={hideDescription}
       />
     </InfoCard>
   );
