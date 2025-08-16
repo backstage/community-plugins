@@ -46,8 +46,7 @@ const testData: UrlTree = {
 const testEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
-  metadata: { name: 'my-service' },
-  spec: { bookmarks: testData },
+  metadata: { bookmarks: testData, name: 'my-service' },
 };
 
 export const PluginTestPage = () => (

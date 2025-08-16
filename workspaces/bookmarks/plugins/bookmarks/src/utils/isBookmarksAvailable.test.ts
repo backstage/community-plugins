@@ -22,7 +22,6 @@ const entityExampleData: Entity = {
   kind: 'Component',
   metadata: {
     name: 'example-entity',
-    namespace: 'default',
   },
 };
 
@@ -30,7 +29,8 @@ describe('isBookmarksAvailable', () => {
   it('should return true if bookmarks object exists and is not empty', () => {
     const entity = {
       ...entityExampleData,
-      spec: {
+      metadata: {
+        name: 'example-entity',
         bookmarks: {
           bookmark1: 'https://example.com',
         },
@@ -40,12 +40,23 @@ describe('isBookmarksAvailable', () => {
   });
 
   it('should return false if bookmarks object does not exist', () => {
-    const entity = { ...entityExampleData, spec: {} };
+    const entity = {
+      ...entityExampleData,
+      metadata: {
+        name: 'example-entity',
+      },
+    };
     expect(isBookmarksAvailable(entity)).toBe(false);
   });
 
   it('should return false if bookmarks object is empty', () => {
-    const entity = { ...entityExampleData, spec: { bookmarks: {} } };
+    const entity = {
+      ...entityExampleData,
+      metadata: {
+        name: 'example-entity',
+        bookmarks: {},
+      },
+    };
     expect(isBookmarksAvailable(entity)).toBe(false);
   });
 
@@ -55,7 +66,10 @@ describe('isBookmarksAvailable', () => {
     for (const nonObject of nonObjects) {
       const entity = {
         ...entityExampleData,
-        spec: { bookmarks: nonObject },
+        metadata: {
+          name: 'example-entity',
+          bookmarks: nonObject,
+        },
       };
       expect(isBookmarksAvailable(entity)).toBe(false);
     }

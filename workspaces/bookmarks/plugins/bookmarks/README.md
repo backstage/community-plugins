@@ -2,7 +2,7 @@
 
 The Bookmarks plugin is a simple tool for saving and viewing links to your favorite websites, Google Docs, and other online resources directly within Backstage.
 
-Bookmarks are stored in the `spec` of a Backstage entity, making it easy to manage and access them within your Backstage Software Catalog.
+Bookmarks are stored in the `metadata` of a Backstage entity, making it easy to manage and access them within your Backstage Software Catalog.
 
 ![A screenshot of the Bookmarks plugin](https://i.imgur.com/guMtiax.png)
 
@@ -33,14 +33,14 @@ const serviceEntityPage = (
 );
 ```
 
-3. Add bookmarks to your entities by including them in the `spec` section of the entity YAML file:
+3. Add bookmarks to your entities by including them in the `metadata` section of the entity YAML file:
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
 kind: Component
+spec: # spec fields here...
 metadata:
   name: my-component
-spec:
   bookmarks:
     'Cool link': https://example.com/cool-link
 ```

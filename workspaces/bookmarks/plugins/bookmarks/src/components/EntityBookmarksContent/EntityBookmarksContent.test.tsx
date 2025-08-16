@@ -32,7 +32,7 @@ describe('EntityBookmarksContent', () => {
   });
 
   it('shows empty state when no bookmarks', async () => {
-    useEntityMock.mockReturnValue({ entity: { spec: {} } });
+    useEntityMock.mockReturnValue({ entity: { metadata: {} } });
     await renderInTestApp(<EntityBookmarksContent />);
     expect(
       screen.getByText('entityBookmarksContent.notFound.title'),
@@ -44,7 +44,7 @@ describe('EntityBookmarksContent', () => {
 
   it('shows invalid format state when bookmarks are invalid', async () => {
     useEntityMock.mockReturnValue({
-      entity: { spec: { bookmarks: { foo: 123 } } },
+      entity: { metadata: { bookmarks: { foo: 123 } } },
     });
     await renderInTestApp(<EntityBookmarksContent />);
     expect(
@@ -63,7 +63,7 @@ describe('EntityBookmarksContent', () => {
 
   it('renders BookmarksViewer when bookmarks are valid', async () => {
     useEntityMock.mockReturnValue({
-      entity: { spec: { bookmarks: validBookmarks } },
+      entity: { metadata: { bookmarks: validBookmarks } },
     });
     await renderInTestApp(<EntityBookmarksContent />);
 

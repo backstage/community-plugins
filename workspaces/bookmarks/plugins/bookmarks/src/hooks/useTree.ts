@@ -20,9 +20,9 @@ import { isBookmarksAvailable } from '../utils/isBookmarksAvailable';
 import { isBookmarksTreeValid } from '../utils/isBookmarksTreeValid';
 
 export enum USE_TREE_ERROR {
-  /** entity.spec.bookmarks exists but is invalid */
+  /** entity.metadata.bookmarks exists but is invalid */
   INVALID = 'invalid',
-  /** entity.spec.bookmarks does not exist */
+  /** entity.metadata.bookmarks does not exist */
   NOT_FOUND = 'not_found',
 }
 
@@ -44,9 +44,9 @@ export const useTree = (): UseTreeResult => {
     return { tree: null, error: USE_TREE_ERROR.NOT_FOUND };
   }
 
-  if (!isBookmarksTreeValid(entity.spec.bookmarks)) {
+  if (!isBookmarksTreeValid(entity.metadata.bookmarks)) {
     return { tree: null, error: USE_TREE_ERROR.INVALID };
   }
 
-  return { tree: entity.spec.bookmarks, error: null };
+  return { tree: entity.metadata.bookmarks, error: null };
 };

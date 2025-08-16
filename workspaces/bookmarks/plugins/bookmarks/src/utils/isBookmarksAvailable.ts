@@ -17,18 +17,18 @@
 import type { Entity } from '@backstage/catalog-model';
 
 /**
- * Checks if the entity has the bookmarks object in the spec.
+ * Checks if the entity has the bookmarks object in the metadata.
  * Does not indicate that the object is a `UrlTree`
  *
  * @public
  *
  * @param entity - The entity to check
- * @returns true there is a bookmarks object in the spec
+ * @returns true there is a bookmarks object in the metadata
  */
 export const isBookmarksAvailable = (
   entity: Entity,
-): entity is Entity & { spec: { bookmarks?: unknown } } => {
-  const bookmarks = entity?.spec?.bookmarks;
+): entity is Entity & { metadata: { bookmarks?: unknown } } => {
+  const bookmarks = entity?.metadata?.bookmarks;
   return (
     typeof bookmarks === 'object' &&
     bookmarks !== null &&

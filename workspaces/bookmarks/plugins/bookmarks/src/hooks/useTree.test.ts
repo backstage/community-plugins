@@ -32,7 +32,7 @@ describe('useTree', () => {
   it('returns tree when bookmarks are valid', () => {
     const validTree = { foo: { bar: 'https://example.com' } };
     mockUseEntity.mockReturnValue({
-      entity: { spec: { bookmarks: validTree } },
+      entity: { metadata: { bookmarks: validTree } },
     });
     const { result } = renderHook(() => useTree());
     expect(result.current).toEqual({ tree: validTree, error: null });
@@ -40,7 +40,7 @@ describe('useTree', () => {
 
   it('returns INVALID error when bookmarks are not a valid UrlTree', () => {
     mockUseEntity.mockReturnValue({
-      entity: { spec: { bookmarks: { longhorn: 4074 } } },
+      entity: { metadata: { bookmarks: { longhorn: 4074 } } },
     });
     const { result } = renderHook(() => useTree());
     expect(result.current).toEqual({
@@ -50,7 +50,7 @@ describe('useTree', () => {
   });
 
   it('returns NOT_FOUND error when bookmarks are missing', () => {
-    mockUseEntity.mockReturnValue({ entity: { spec: {} } });
+    mockUseEntity.mockReturnValue({ entity: { metadata: {} } });
     const { result } = renderHook(() => useTree());
     expect(result.current).toEqual({
       tree: null,
@@ -59,7 +59,7 @@ describe('useTree', () => {
   });
 
   it('returns NOT_FOUND error when bookmarks object is empty', () => {
-    mockUseEntity.mockReturnValue({ entity: { spec: { bookmarks: {} } } });
+    mockUseEntity.mockReturnValue({ entity: { metadata: { bookmarks: {} } } });
     const { result } = renderHook(() => useTree());
     expect(result.current).toEqual({
       tree: null,

@@ -22,7 +22,6 @@ const entityExampleData: Entity = {
   kind: 'Component',
   metadata: {
     name: 'example-entity',
-    namespace: 'default',
   },
 };
 
@@ -30,30 +29,35 @@ describe('isBookmarksTreeValid', () => {
   it('should return true for a valid UrlTree', () => {
     const entity = {
       ...entityExampleData,
-      spec: {
+      metadata: {
+        name: 'example-entity',
         bookmarks: {
           bookmark1: 'https://example.com',
           bookmark2: 'https://example.org',
         },
       },
     };
-    expect(isBookmarksTreeValid(entity.spec.bookmarks)).toBe(true);
+    expect(isBookmarksTreeValid(entity.metadata.bookmarks)).toBe(true);
   });
 
   it('should return false for an invalid UrlTree', () => {
     const entity = {
       ...entityExampleData,
-      spec: {
+      metadata: {
+        name: 'example-entity',
         bookmarks: {
           bookmark1: ['not-a-url'],
         },
       },
     };
-    expect(isBookmarksTreeValid(entity.spec.bookmarks)).toBe(false);
+    expect(isBookmarksTreeValid(entity.metadata.bookmarks)).toBe(false);
   });
 
   it('should return true for an empty UrlTree as it is technically valid', () => {
-    const entity = { ...entityExampleData, spec: { bookmarks: {} } };
-    expect(isBookmarksTreeValid(entity.spec.bookmarks)).toBe(true);
+    const entity = {
+      ...entityExampleData,
+      metadata: { name: 'example-entity', bookmarks: {} },
+    };
+    expect(isBookmarksTreeValid(entity.metadata.bookmarks)).toBe(true);
   });
 });

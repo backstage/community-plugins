@@ -48,7 +48,8 @@ export const bookmarksTranslationRef = createTranslationRef({
       },
       notFound: {
         title: 'No bookmarks found',
-        description: "Add bookmarks to your entity's spec to see them here.",
+        description:
+          "Add bookmarks to your entity's metadata to see them here.",
       },
     },
   },

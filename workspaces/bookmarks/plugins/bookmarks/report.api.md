@@ -29,7 +29,7 @@ readonly "bookmarkViewerFrame.devModeWarning": "You may have to reload the page 
 readonly "entityBookmarksContent.invalid.title": "Invalid bookmarks format";
 readonly "entityBookmarksContent.invalid.description": "Ensure your bookmarks are structured correctly.";
 readonly "entityBookmarksContent.notFound.title": "No bookmarks found";
-readonly "entityBookmarksContent.notFound.description": "Add bookmarks to your entity's spec to see them here.";
+readonly "entityBookmarksContent.notFound.description": "Add bookmarks to your entity's metadata to see them here.";
 }>;
 
 // @public
@@ -40,7 +40,7 @@ export const EntityBookmarksContent: () => JSX_2.Element;
 
 // @public
 export const isBookmarksAvailable: (entity: Entity) => entity is Entity & {
-    spec: {
+    metadata: {
         bookmarks?: unknown;
     };
 };
