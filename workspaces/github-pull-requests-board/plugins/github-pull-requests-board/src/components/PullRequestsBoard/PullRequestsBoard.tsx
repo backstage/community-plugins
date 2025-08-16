@@ -15,9 +15,7 @@
  */
 import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import PeopleIcon from '@material-ui/icons/People';
-
 import { Progress, InfoCard } from '@backstage/core-components';
 
 import { InfoCardHeader } from '../InfoCardHeader';
@@ -28,25 +26,37 @@ import { usePullRequestsByTeam } from '../../hooks/usePullRequestsByTeam';
 import { PRCardFormating } from '../../utils/types';
 import { shouldDisplayCard } from '../../utils/functions';
 import { DraftPrIcon } from '../icons/DraftPr';
-import { useUserRepositoriesAndTeam } from '../../hooks/useUserRepositoriesAndTeam';
 import UnarchiveIcon from '@material-ui/icons/Unarchive';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { useUserRepositoriesAndTeam } from '../../hooks/useUserRepositoriesAndTeam';
+import { Entity } from '@backstage/catalog-model';
 
 /** @public */
-export interface EntityTeamPullRequestsCardProps {
+export interface PullRequestsBoardProps {
+  /**
+   * List of entities to display pull requests for.
+   * If not provided, the board will use the current user's repositories and team.
+   */
+  entities: Entity[];
+
   pullRequestLimit?: number;
 }
 
-const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
-  const { pullRequestLimit } = props;
-  const [infoCardFormat, setInfoCardFormat] = useState<PRCardFormating[]>([]);
-  const { entity: teamEntity } = useEntity();
+/**
+ * A board component that displays pull requests for multiple entities.
+ * It aggregates pull requests from the provided entities and allows filtering by team, draft status, and archived repositories.
+ * @public
+ * */
+const PullRequestsBoard = (props: PullRequestsBoardProps) => {
+  const { entities, pullRequestLimit } = props;
+
   const {
-    loading: loadingReposAndTeam,
+    loading: loadingReposAndTeams,
     repositories,
     teamMembers,
     teamMembersOrganization,
-  } = useUserRepositoriesAndTeam(teamEntity);
+  } = useUserRepositoriesAndTeam(entities);
+  const [infoCardFormat, setInfoCardFormat] = useState<PRCardFormating[]>([]);
+
   const {
     loading: loadingPRs,
     pullRequests,
@@ -79,18 +89,13 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
             value: 'archivedRepo',
             ariaLabel: 'Show archived repos',
           },
-          {
-            icon: <FullscreenIcon />,
-            value: 'fullscreen',
-            ariaLabel: 'Set card to fullscreen',
-          },
         ]}
       />
     </InfoCardHeader>
   );
 
   const getContent = () => {
-    if (loadingReposAndTeam || loadingPRs) {
+    if (loadingReposAndTeams || loadingPRs) {
       return <Progress />;
     }
 
@@ -98,10 +103,7 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
       <Grid container spacing={2}>
         {pullRequests.length ? (
           pullRequests.map(({ title: columnTitle, content }) => (
-            <Wrapper
-              key={columnTitle}
-              fullscreen={infoCardFormat.includes('fullscreen')}
-            >
+            <Wrapper key={columnTitle} fullscreen>
               <Typography variant="overline">{columnTitle}</Typography>
               {content.map(
                 (
@@ -113,10 +115,10 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
                     author,
                     url,
                     latestReviews,
+                    commits,
                     repository,
                     isDraft,
                     labels,
-                    commits,
                   },
                   index,
                 ) =>
@@ -136,11 +138,11 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
                       author={author}
                       url={url}
                       reviews={latestReviews.nodes}
+                      status={commits.nodes}
                       repositoryName={repository.name}
                       repositoryIsArchived={repository.isArchived}
                       isDraft={isDraft}
                       labels={labels.nodes}
-                      status={commits.nodes}
                     />
                   ),
               )}
@@ -158,4 +160,4 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
   return <InfoCard title={header}>{getContent()}</InfoCard>;
 };
 
-export default EntityTeamPullRequestsCard;
+export default PullRequestsBoard;
