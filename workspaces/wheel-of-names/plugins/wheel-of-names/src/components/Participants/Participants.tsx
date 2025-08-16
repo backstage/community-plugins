@@ -20,6 +20,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
+// eslint-disable-next-line @backstage/no-undeclared-imports
 import { Entity } from '@backstage/catalog-model';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -50,25 +51,7 @@ import { useParticipantsStyles } from './Styles';
 import { ParticipantsList } from './List';
 import { EntityService } from './Service';
 import ClearIcon from '@material-ui/icons/Clear';
-
-export interface Participant {
-  id: string;
-  name: string;
-  displayName?: string;
-  fromGroup?: string;
-}
-
-interface EntitySpec {
-  profile?: {
-    displayName?: string;
-  };
-  [key: string]: any;
-}
-
-export interface ParticipantsProps {
-  onParticipantsChange: (participants: Participant[]) => void;
-  initialParticipants?: Participant[];
-}
+import { Participant, ParticipantsProps, EntitySpec } from '../../types';
 
 export const Participants = ({
   onParticipantsChange,
@@ -81,14 +64,14 @@ export const Participants = ({
     configApi.getOptionalNumber('wheelOfNames.searchLimit') || 10;
   const [entities, setEntities] = useState<Entity[]>([]);
   const [excludedUsers, setExcludedUsers] = useState<Set<string>>(new Set());
-  const [resolvedParticipants, setResolvedParticipants] = useState<
-    Array<{
-      id: string;
-      name: string;
-      displayName?: string;
-      fromGroup?: string;
-    }>
-  >(initialParticipants);
+  const [resolvedParticipants, setResolvedParticipants] =
+    useState<Participant[]>(initialParticipants);
+  useEffect(() => {
+    if (initialParticipants.length > 0) {
+      setResolvedParticipants(initialParticipants);
+      onParticipantsChange(initialParticipants);
+    }
+  }, [initialParticipants, onParticipantsChange]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [processingGroups, setProcessingGroups] = useState(false);
@@ -97,7 +80,6 @@ export const Participants = ({
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
-
   // New state variables for pagination
   const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);

@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-
-export interface Participant {
-  id: string;
-  name: string;
-  displayName: string;
-  fromGroup?: string;
-}
+import { Participant } from '../../../types';
 
 export const getUserDisplayName = (user?: Entity): string => {
   if (!user) return '';

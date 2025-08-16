@@ -23,6 +23,7 @@ import React, {
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import confetti from 'canvas-confetti';
+import { Participant, WheelProps } from '../../types';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -50,16 +51,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
   },
 }));
-
-interface Participant {
-  id: string;
-  name: string;
-  displayName?: string;
-}
-
-interface WheelProps {
-  participants: Participant[];
-}
 
 export const Wheel = ({ participants }: WheelProps) => {
   const classes = useStyles();
