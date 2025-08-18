@@ -16,7 +16,6 @@
 import { CatalogApi } from '@backstage/catalog-client';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
-  BulkMaturityCheckResponse,
   MaturityCheckResult,
   MaturityRank,
   MaturitySummary,

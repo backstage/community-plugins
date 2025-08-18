@@ -86,10 +86,10 @@ const MaturityCheckTableRow = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Grid container alignItems="center" spacing={2}>
-            <Grid item xs={3.5}>
+            <Grid item xs={3}>
               <Typography>{checkResult.check.name}</Typography>
             </Grid>
-            <Grid item xs={7}>
+            <Grid item xs={7.5}>
               <Typography className={check}>
                 {checkResult.check.description}
               </Typography>
