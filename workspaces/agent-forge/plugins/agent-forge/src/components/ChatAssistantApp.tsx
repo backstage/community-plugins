@@ -16,6 +16,7 @@
 
 /* eslint-disable react/react-in-jsx-scope*/
 
+import React from 'react';
 import ChatFeedback from './ChatFeedback';
 import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
@@ -33,6 +34,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { createTimestamp, delay, makeLinksClickable } from '../utils';
 import { ChatbotApi } from '../apis';
+import { Task } from '../a2a/schema';
 import useObservable from 'react-use/esm/useObservable';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -97,6 +99,7 @@ function ChatAssistantApp() {
   const [isInitialState, setIsInitialState] = useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showFormMode, setShowFormMode] = useState<boolean>(true);
 
   const [providerModelsMap] = useState<{
     [key: string]: string[];
@@ -104,7 +107,13 @@ function ChatAssistantApp() {
 
   const openChat = () => setIsOpen(true);
   const closeChat = () => setIsOpen(false);
-  const fullScreen = () => setIsFullScreen(prev => !prev);
+  const fullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+
+  const toggleFormMode = () => {
+    setShowFormMode(!showFormMode);
+  };
 
   const resetChatContext = () => {
     setNewContext(true);
@@ -232,14 +241,59 @@ function ChatAssistantApp() {
         startQuestion();
         addIntentionalTypingDelay();
         try {
-          const result = await chatbotApi.submitA2ATask(newContext, input);
+          const taskResult = await chatbotApi.submitA2ATask(newContext, input);
           setNewContext(false);
-          addBotMessage({
-            text: result,
-            suggestions: [],
-            isUser: false,
-            timestamp,
-          });
+
+          // Check if the task requires input
+          if (
+            taskResult.status.state === 'input-required' &&
+            taskResult.status.message?.metadata?.input_fields
+          ) {
+            // Extract text from the message parts
+            let resultText = '';
+            if (
+              taskResult.status.message.parts &&
+              taskResult.status.message.parts[0]
+            ) {
+              const part = taskResult.status.message.parts[0];
+              if (part.kind === 'text') {
+                resultText = part.text || '';
+              }
+            }
+
+            // Add message with form metadata AND the actual text
+            addBotMessage({
+              text: resultText,
+              suggestions: [],
+              isUser: false,
+              timestamp,
+              metadata: taskResult.status.message.metadata,
+            });
+          } else {
+            // Handle regular completed task
+            let resultText = '';
+            if (
+              taskResult.status.state === 'completed' &&
+              taskResult.artifacts
+            ) {
+              const part = taskResult.artifacts[0].parts[0];
+              if (part.kind === 'text') {
+                resultText = part.text;
+              }
+            } else if (taskResult.status.message) {
+              const part = taskResult.status.message.parts[0];
+              if (part.kind === 'text') {
+                resultText = part.text;
+              }
+            }
+
+            addBotMessage({
+              text: resultText,
+              suggestions: [],
+              isUser: false,
+              timestamp,
+            });
+          }
         } catch (error) {
           const err = error as Error;
           await addBotMessage({
@@ -264,15 +318,21 @@ function ChatAssistantApp() {
   }
 
   async function typeMessageToUser(message: Message): Promise<void> {
-    const words = message.text.split(' ') || [];
+    const messageText = message.text || '';
+    const words = messageText.split(' ') || [];
     const currentMessage = { ...message, text: '' };
     setMessages(prevMessages => [...prevMessages, currentMessage]);
     for (const word of words) {
       // await delay(10);
-      currentMessage.text += `${word} `;
       setMessages(prevMessages => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = currentMessage;
+        const lastMessage = newMessages[newMessages.length - 1];
+        if (lastMessage) {
+          newMessages[newMessages.length - 1] = {
+            ...lastMessage,
+            text: `${(lastMessage.text || '') + word} `,
+          };
+        }
         return newMessages;
       });
     }
@@ -294,7 +354,20 @@ function ChatAssistantApp() {
   async function addBotMessage(message: Message): Promise<void> {
     const { options = [] } = message;
     if (options.length <= 0) {
-      await typeMessageToUser(message);
+      // Check if message has metadata that requires form display
+      if (message.metadata?.input_fields) {
+        // Add message directly with metadata preserved
+        setMessages(prevMessages => [
+          ...prevMessages,
+          {
+            ...message,
+            timestamp: createTimestamp(),
+          },
+        ]);
+      } else {
+        // Use typing effect for regular messages
+        await typeMessageToUser(message);
+      }
       return;
     }
     setMessages(prevMessages => [
@@ -369,6 +442,8 @@ function ChatAssistantApp() {
           clearChat={resetChat}
           handleCloseChat={closeChat}
           handleFullScreenToggle={fullScreen}
+          onToggleFormMode={toggleFormMode}
+          showFormMode={showFormMode}
         />
         {isInitialState && !hasQuestion ? (
           <ChatTabs
@@ -403,6 +478,7 @@ function ChatAssistantApp() {
                 setMessages={setMessages}
                 handleOptionSelection={handleOptionSelection}
                 providerModelsMap={providerModelsMap}
+                showFormMode={showFormMode}
               />
             </Box>
           </>

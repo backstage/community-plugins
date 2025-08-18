@@ -71,22 +71,12 @@ export class ChatbotApi {
       const task: Task = taskResult?.result as Task;
 
       this.contextId = task.contextId;
-      const status = task.status.state;
-      let result: string | undefined = '';
-      if (status === 'completed') {
-        if (task.artifacts) {
-          const part = task.artifacts[0].parts[0] as TextPart;
-          result = part.text;
-        }
-      } else {
-        const part = task.status.message?.parts[0] as TextPart;
-        result = part.text;
-      }
 
-      return result;
+      // Return the full task response instead of just the text
+      return task;
     } catch (error) {
       // console.log(error)
-      return 'Error connecting to agent';
+      throw new Error('Error connecting to agent');
     }
   }
 
