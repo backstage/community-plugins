@@ -38,6 +38,7 @@ import React, { useState } from 'react';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { MaturityRankChip } from '../MaturityRankChip';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Props {
@@ -121,6 +122,24 @@ const MaturityCheckTableRow = ({
                     {checkResult.check.metadata?.solution}
                   </Typography>
                 </Stack>
+                {checkResult.result === false && (
+                  <Stack spacing={1} direction="row">
+                    <Tooltip title="Error: The fact(s) that caused this check to fail">
+                      <ErrorOutlineIcon color="error" />
+                    </Tooltip>
+                    <Typography variant="subtitle2" className={filters}>
+                      {Object.values(checkResult.facts)
+                        .filter(fact => fact.value !== true)
+                        .map((fact, index) => (
+                          <React.Fragment key={fact.id}>
+                            {index > 0 && <br />}
+                            <strong>{fact.description}:</strong>{' '}
+                            {String(fact.value)}
+                          </React.Fragment>
+                        ))}
+                    </Typography>
+                  </Stack>
+                )}
                 <Stack spacing={1} direction="row">
                   <Tooltip title="Update: Last time the maturity check was updated">
                     <AccessTimeIcon color="primary" />
@@ -198,7 +217,7 @@ export const MaturityCheckTable = ({
               {checks?.map(entry => (
                 <MaturityCheckTableRow
                   key={entry.check.id}
-                  updated={facts[entry.check.factIds[0]]?.timestamp}
+                  updated={facts[entry.check.factIds[0]].timestamp}
                   checkResult={entry}
                 />
               ))}
