@@ -50,7 +50,7 @@
     "@google-cloud/storage": "7.14.0",
     "@octokit/types": "13.6.1",
     "@octokit/plugin-rest-endpoint-methods": "13.2.2",
-    "@octokit/plugin-paginate-rest": "11.3.1",
+    "@octokit/plugin-paginate-rest": "11.4.1",
     "isomorphic-git": "1.27.1"
   },
   "prettier": "@backstage/cli/config/prettier",
