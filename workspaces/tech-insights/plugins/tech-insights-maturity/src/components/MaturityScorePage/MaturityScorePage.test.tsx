@@ -166,7 +166,7 @@ const result: MaturityScore = {
           description: 'Technical owners are currently present',
           id: 'technicalOwnersAreActive',
           type: 'boolean',
-          value: false,
+          value: 'maica@hotmail.com',
         },
       },
       result: false,
@@ -284,6 +284,11 @@ describe('<MaturityScorePage />', () => {
     ).toBeInTheDocument();
     expect(getByText(/ownership doc1/)).toBeInTheDocument(); // link 1
     expect(getByText(/ownership doc2/)).toBeInTheDocument(); // link 2
-    expect(getAllByText(/Updated 2\/22\/22/)).toHaveLength(3); //
+    expect(getAllByText(/2\/22\/22/)).toHaveLength(3); // Updated timestamp
+
+    // Failed Check
+    expect(
+      getByText(/Technical owners are currently present: maica@hotmail.com/),
+    ).toBeInTheDocument(); // display failed check fact
   });
 });

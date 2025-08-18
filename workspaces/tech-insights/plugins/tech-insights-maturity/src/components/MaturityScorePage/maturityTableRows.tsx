@@ -78,6 +78,10 @@ const MaturityCheckTableRow = ({
   });
 
   const { check, solution, filters } = useStyles();
+  const errorInfo = Object.values(checkResult.facts).filter(
+    fact => fact.value !== true && fact.value !== false,
+  );
+
   return (
     <div>
       <Accordion
@@ -123,7 +127,7 @@ const MaturityCheckTableRow = ({
                     {checkResult.check.metadata?.solution}
                   </Typography>
                 </Stack>
-                {checkResult.result === false && (
+                {errorInfo.length > 0 && (
                   <Stack spacing={1} direction="row">
                     <Tooltip title="Error: The fact(s) that caused this check to fail">
                       <ErrorOutlineIcon color="error" />
@@ -133,14 +137,12 @@ const MaturityCheckTableRow = ({
                       className={filters}
                       color="secondary"
                     >
-                      {Object.values(checkResult.facts)
-                        .filter(fact => fact.value !== true)
-                        .map((fact, index) => (
-                          <React.Fragment key={fact.id}>
-                            {index > 0 && <br />}
-                            {`${fact.description}: ${fact.value}`}
-                          </React.Fragment>
-                        ))}
+                      {errorInfo.map((fact, index) => (
+                        <React.Fragment key={fact.id}>
+                          {index > 0 && <br />}
+                          {`${fact.description}: ${fact.value}`}
+                        </React.Fragment>
+                      ))}
                     </Typography>
                   </Stack>
                 )}
