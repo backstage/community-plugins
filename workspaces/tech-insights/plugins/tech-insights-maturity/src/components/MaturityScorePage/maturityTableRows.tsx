@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { Link } from '@backstage/core-components';
 import {
   MaturityCheckResult,
@@ -127,50 +128,55 @@ const MaturityCheckTableRow = ({
                     <Tooltip title="Error: The fact(s) that caused this check to fail">
                       <ErrorOutlineIcon color="error" />
                     </Tooltip>
-                    <Typography variant="subtitle2" className={filters}>
+                    <Typography
+                      variant="subtitle2"
+                      className={filters}
+                      color="secondary"
+                    >
                       {Object.values(checkResult.facts)
                         .filter(fact => fact.value !== true)
                         .map((fact, index) => (
                           <React.Fragment key={fact.id}>
                             {index > 0 && <br />}
-                            <strong>{fact.description}:</strong>{' '}
-                            {String(fact.value)}
+                            {`${fact.description}: ${fact.value}`}
                           </React.Fragment>
                         ))}
                     </Typography>
                   </Stack>
                 )}
                 <Stack spacing={1} direction="row">
-                  <Tooltip title="Update: Last time the maturity check was updated">
-                    <AccessTimeIcon color="primary" />
+                  <Tooltip title="Reference: Consult the documentation linked here for more background info.">
+                    <MenuBookIcon color="primary" />
                   </Tooltip>
-                  <Typography variant="subtitle2" className={filters}>
-                    {updated ? `Updated ${updated}` : 'Not yet run'}
+                  <Typography>
+                    {checkResult.check.links?.map((link, index) => (
+                      <React.Fragment key={link.url}>
+                        {index > 0 && ', '}
+                        <Link to={link.url}>{link.title}</Link>
+                      </React.Fragment>
+                    ))}
                   </Typography>
                 </Stack>
               </Stack>
             </Grid>
             <Grid item xs={3}>
-              <Stack spacing={1} direction="row">
-                <Tooltip title="Category: The category for this check">
-                  <CategoryIcon color="primary" />
-                </Tooltip>
-                <Typography variant="subtitle1" className={filters}>
-                  {checkResult.check.metadata?.category}
-                </Typography>
-              </Stack>
-              <Stack spacing={1} direction="row">
-                <Tooltip title="Reference: Consult the documentation linked here for more background info.">
-                  <MenuBookIcon color="primary" />
-                </Tooltip>
-                <Typography>
-                  {checkResult.check.links?.map((link, index) => (
-                    <React.Fragment key={link.url}>
-                      {index > 0 && ', '}
-                      <Link to={link.url}>{link.title}</Link>
-                    </React.Fragment>
-                  ))}
-                </Typography>
+              <Stack spacing={0.2}>
+                <Stack spacing={1} direction="row">
+                  <Tooltip title="Category: The category for this check">
+                    <CategoryIcon color="primary" />
+                  </Tooltip>
+                  <Typography variant="subtitle1" className={filters}>
+                    {checkResult.check.metadata?.category}
+                  </Typography>
+                </Stack>
+                <Stack spacing={1} direction="row">
+                  <Tooltip title="Update: Last time the maturity check was updated">
+                    <AccessTimeIcon color="primary" />
+                  </Tooltip>
+                  <Typography variant="subtitle2" className={filters}>
+                    {updated ? `${updated.slice(0, 19)}` : 'Not yet run'}
+                  </Typography>
+                </Stack>
               </Stack>
             </Grid>
           </Grid>
