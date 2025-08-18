@@ -18,7 +18,7 @@ import useAsyncRetry from 'react-use/lib/useAsync';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { maturityApiRef } from '../../api';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { MaturityRankChip } from '../MaturityRankChip';
 
 type Props = {
   entity: Entity;
@@ -26,11 +26,13 @@ type Props = {
 
 export const MaturityRankWidget = ({ entity }: Props) => {
   const api = useApi(maturityApiRef);
+
   const { value, loading } = useAsyncRetry(
     async () => api.getMaturityRank(entity),
     [api, entity],
   );
 
   if (loading || !value) return <></>;
-  return <MaturityRankAvatar entity={entity} value={value} variant="chip" />;
+
+  return <MaturityRankChip entity={entity} value={value} />;
 };
