@@ -158,13 +158,10 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
 
   private async getRelatedComponents(
     entity: Entity,
-    filter?: {
-      kind: string;
-    },
   ): Promise<CompoundEntityRef[]> {
     switch (entity.kind) {
       case 'System':
-        return getEntityRelations(entity, RELATION_HAS_PART, filter);
+        return getEntityRelations(entity, RELATION_HAS_PART);
       case 'Domain':
         return await this.getRelatedComponentsByRefs(
           getEntityRelations(entity, RELATION_HAS_PART),
