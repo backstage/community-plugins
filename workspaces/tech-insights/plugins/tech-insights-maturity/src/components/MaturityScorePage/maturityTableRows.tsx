@@ -19,27 +19,26 @@ import {
   MaturityRank,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
+import Accordion from '@mui/material/Accordion';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import CancelTwoToneIcon from '@mui/icons-material/Cancel';
 import CategoryIcon from '@mui/icons-material/Category';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import MuiAccordionSummary, {
-  AccordionSummaryProps,
-} from '@mui/material/AccordionSummary';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { makeStyles, styled } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import type { SyntheticEvent } from 'react';
 import { useState } from 'react';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
+import { MaturityRankChip } from '../MaturityRankChip';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Props {
   checks: MaturityCheckResult[];
@@ -47,44 +46,6 @@ interface Props {
   rank: MaturityRank;
   category: Rank;
 }
-
-const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: 0,
-  },
-  '&:before': {
-    display: 'none',
-  },
-}));
-
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
-  flexDirection: 'row-reverse',
-  width: '100%',
-  paddingLeft: theme.spacing(2),
-  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-    transform: 'rotate(90deg)',
-  },
-  '& .MuiAccordionSummary-content': {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
-}));
 
 const MaturityCheckTableRow = ({
   checkResult,
@@ -117,19 +78,18 @@ const MaturityCheckTableRow = ({
   const { check, solution, filters } = useStyles();
   return (
     <div>
-      <Accordion expanded={expanded} onChange={handleChange()}>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+      <Accordion
+        expanded={expanded}
+        onChange={handleChange()}
+        elevation={2}
+        sx={{ border: '1px solid rgba(173, 172, 172, 0.26)' }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Grid container alignItems="center" spacing={2}>
-            <Grid item xs={3}>
-              <Stack direction="row" spacing={2} className={check}>
-                <MaturityRankAvatar
-                  value={{ rank: checkResult.check.metadata.rank }}
-                  size={25}
-                />
-                <Typography>{checkResult.check.id}</Typography>
-              </Stack>
+            <Grid item xs={3.5}>
+              <Typography>{checkResult.check.name}</Typography>
             </Grid>
-            <Grid item xs={7.5}>
+            <Grid item xs={7}>
               <Typography className={check}>
                 {checkResult.check.description}
               </Typography>
@@ -208,24 +168,28 @@ export const MaturityCheckTable = ({
 }: Props) => {
   // Expand only the next rank Category needed to level up
   const [expanded, setExpanded] = useState<boolean>(rank.rank + 1 === category);
+  if (checks.length === 0) return <></>;
+
   const handleChange = () => (_event: SyntheticEvent, newExpanded: boolean) => {
     setExpanded(newExpanded);
   };
 
-  if (checks.length === 0) return <></>;
-
   return (
     <div>
-      <Accordion expanded={expanded} onChange={handleChange()}>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <MaturityRankAvatar
-                value={{ rank: category, isMaxRank: category <= rank.rank }}
-                variant="chip"
-              />
-            </Grid>
-          </Grid>
+      <Accordion
+        expanded={expanded}
+        onChange={handleChange()}
+        elevation={1}
+        sx={{ border: '1.5px solid rgba(173, 172, 172, 0.26)' }}
+      >
+        <AccordionSummary
+          expandIcon={<ArrowDropDownIcon />}
+          aria-controls="panel2-content"
+          id="panel2-header"
+        >
+          <MaturityRankChip
+            value={{ rank: category, isMaxRank: category <= rank.rank }}
+          />
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={1}>
