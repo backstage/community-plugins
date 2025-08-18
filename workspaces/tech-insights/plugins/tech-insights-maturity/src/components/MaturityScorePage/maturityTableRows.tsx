@@ -79,7 +79,7 @@ const MaturityCheckTableRow = ({
 
   const { check, solution, filters } = useStyles();
   const errorInfo = Object.values(checkResult.facts).filter(
-    fact => fact.value !== true && fact.value !== false,
+    fact => fact.type !== 'boolean',
   );
 
   return (
@@ -127,7 +127,7 @@ const MaturityCheckTableRow = ({
                     {checkResult.check.metadata?.solution}
                   </Typography>
                 </Stack>
-                {errorInfo.length > 0 && (
+                {checkResult.result === false && errorInfo.length > 0 && (
                   <Stack spacing={1} direction="row">
                     <Tooltip title="Error: The fact(s) that caused this check to fail">
                       <ErrorOutlineIcon color="error" />
