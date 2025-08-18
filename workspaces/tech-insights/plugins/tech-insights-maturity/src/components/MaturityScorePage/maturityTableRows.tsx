@@ -90,7 +90,7 @@ const MaturityCheckTableRow = ({
         elevation={2}
         sx={{ border: '1px solid rgba(173, 172, 172, 0.26)' }}
       >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ArrowDropDownIcon />}>
           <Grid container alignItems="center" spacing={2}>
             <Grid item xs={3}>
               <Typography>{checkResult.check.name}</Typography>
@@ -211,7 +211,7 @@ export const MaturityCheckTable = ({
         sx={{ border: '1.5px solid rgba(173, 172, 172, 0.26)' }}
       >
         <AccordionSummary
-          expandIcon={<ArrowDropDownIcon />}
+          expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2-content"
           id="panel2-header"
         >
