@@ -63,7 +63,7 @@ Note: This only applies to entities of Kind: 'Component'
 ```tsx
 // packages/app/src/components/catalog/EntityPage.tsx
 
-import { EntityMaturityScorecardContent } from '@backstage-community/plugin-tech-insight-maturity';
+import { EntityMaturityScorecardContent } from '@backstage-community/plugin-tech-insights-maturity';
 
 const componentEntityPage = (
   <EntityLayoutWrapper>
