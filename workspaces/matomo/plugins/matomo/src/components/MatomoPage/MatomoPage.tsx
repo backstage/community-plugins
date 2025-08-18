@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 
 import { Entity } from '@backstage/catalog-model';

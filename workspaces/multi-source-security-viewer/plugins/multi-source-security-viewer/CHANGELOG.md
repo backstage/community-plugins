@@ -1,5 +1,34 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.6.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+
+## 0.6.0
+
+### Minor Changes
+
+- 237d0ce: Add isMultiCIAvaibleAndEnabled to display the plugin when the CI provider is defined and set as enabled in the annotation.
+
+### Patch Changes
+
+- Updated dependencies [237d0ce]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.4.0
+
+## 0.5.5
+
+### Patch Changes
+
+- 490b55b: Updated dependency `@backstage-community/plugin-jenkins` to `^0.21.0`.
+- eaedbb2: Updated dependency `@backstage-community/plugin-github-actions` to `^0.12.0`.
+- f9f35a4: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.12.0`.
+- 1d7d0ce: remove product theme from dev dependencies and dev app
+
 ## 0.5.4
 
 ### Patch Changes

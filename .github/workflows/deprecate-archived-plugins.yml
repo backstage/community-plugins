@@ -1,0 +1,19 @@
+name: Deprecate Archived Plugins
+
+on:
+  push:
+    paths:
+      - '.github/archived-plugins.json'
+    branches:
+      - main
+
+jobs:
+  deprecate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deprecate packages
+        run: ./scripts/ci/deprecate-archived-plugins.sh
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

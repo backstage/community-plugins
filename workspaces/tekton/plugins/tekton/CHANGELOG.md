@@ -1,5 +1,22 @@
 ### Dependencies
 
+## 3.27.3
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 3.27.2
+
+### Patch Changes
+
+- e7d7f3f: render loading when permission api is loading
+
 ## 3.27.1
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 ### Dependencies
 
+## 2.4.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- f25b944: remove product theme from dev dependencies and dev app
+
+## 2.4.0
+
+### Minor Changes
+
+- a517756: Backstage version bump to v1.41.1
+
 ## 2.3.1
 
 ### Patch Changes

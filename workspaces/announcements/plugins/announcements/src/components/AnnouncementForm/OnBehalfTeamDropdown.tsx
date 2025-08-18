@@ -52,7 +52,7 @@ export default function OnBehalfTeamDropdown({
   }, [identityApi]);
 
   const { entities: teams, loading: teamsLoading } = useCatalogEntities(
-    userOwns ?? [], // refs
+    userOwns, // refs
     '', // searchTerm
     25, // limit
     'Group', // kind
