@@ -116,6 +116,57 @@ const bulkCheckResult = [
   },
 ];
 
+const maturitySummary: MaturitySummary = {
+  rank: Rank.Silver,
+  maxRank: Rank.Gold,
+  points: 400,
+  isMaxRank: false,
+  progress: {
+    passedChecks: 3,
+    totalChecks: 4,
+    percentage: 75,
+  },
+  rankProgress: {
+    passedChecks: 0,
+    totalChecks: 1,
+    percentage: 0,
+  },
+  areaSummaries: [
+    {
+      area: 'Ownership',
+      progress: {
+        passedChecks: 2,
+        totalChecks: 3,
+        percentage: 67,
+      },
+      rankProgress: {
+        passedChecks: 0,
+        totalChecks: 1,
+        percentage: 0,
+      },
+      rank: Rank.Silver,
+      maxRank: Rank.Gold,
+      isMaxRank: false,
+    },
+    {
+      area: 'Operations',
+      progress: {
+        passedChecks: 1,
+        totalChecks: 1,
+        percentage: 100,
+      },
+      rankProgress: {
+        passedChecks: 1,
+        totalChecks: 1,
+        percentage: 100,
+      },
+      rank: Rank.Bronze,
+      maxRank: Rank.Bronze,
+      isMaxRank: true,
+    },
+  ],
+};
+
 const mockTeam: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Group',
@@ -173,62 +224,22 @@ describe('MaturityClient', () => {
     });
   });
 
+  describe('getMaturityScore', () => {
+    jest.spyOn(sdc, 'runChecks').mockResolvedValue(checkResults);
+    it('generates a maturity score for a given component', async () => {
+      const score = await sdc.getMaturityScore(entity);
+      expect(score.checks).toEqual(checkResults); // Ownership and Operations
+      expect(score.rank.rank).toEqual(2); // Silver
+      expect(score.rank.isMaxRank).toEqual(false);
+      expect(score.summary).toEqual(maturitySummary);
+    });
+  });
+
   describe('getMaturitySummary', () => {
     jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
 
     it('generates a maturity summary for a given system', async () => {
-      const expected: MaturitySummary = {
-        rank: Rank.Silver,
-        maxRank: Rank.Gold,
-        points: 400,
-        isMaxRank: false,
-        progress: {
-          passedChecks: 3,
-          totalChecks: 4,
-          percentage: 75,
-        },
-        rankProgress: {
-          passedChecks: 0,
-          totalChecks: 1,
-          percentage: 0,
-        },
-        areaSummaries: [
-          {
-            area: 'Ownership',
-            progress: {
-              passedChecks: 2,
-              totalChecks: 3,
-              percentage: 67,
-            },
-            rankProgress: {
-              passedChecks: 0,
-              totalChecks: 1,
-              percentage: 0,
-            },
-            rank: Rank.Silver,
-            maxRank: Rank.Gold,
-            isMaxRank: false,
-          },
-          {
-            area: 'Operations',
-            progress: {
-              passedChecks: 1,
-              totalChecks: 1,
-              percentage: 100,
-            },
-            rankProgress: {
-              passedChecks: 1,
-              totalChecks: 1,
-              percentage: 100,
-            },
-            rank: Rank.Bronze,
-            maxRank: Rank.Bronze,
-            isMaxRank: true,
-          },
-        ],
-      };
-
-      expect(await sdc.getMaturitySummary(mockSystem)).toEqual(expected);
+      expect(await sdc.getMaturitySummary(mockSystem)).toEqual(maturitySummary);
     });
   });
 });
