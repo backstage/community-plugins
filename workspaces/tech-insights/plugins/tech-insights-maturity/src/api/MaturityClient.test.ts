@@ -232,24 +232,4 @@ describe('MaturityClient', () => {
       expect(await sdc.getMaturitySummary(mockSystem)).toEqual(expected);
     });
   });
-
-  describe('getBulkMaturityCheckResults', () => {
-    jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
-
-    it('generates bulk maturity scores for a given user', async () => {
-      const expected: BulkMaturityCheckResponse = [
-        {
-          entity: 'component:default/mock-component',
-          checks: [
-            awsWarningsCheckResult,
-            productOwnershipCheckResult,
-            technicalOwnershipCheckResult,
-            activeOwnershipCheckResult,
-          ],
-          rank: Rank.Silver,
-          isMaxRank: false,
-        },
-      ];
-    });
-  });
 });
