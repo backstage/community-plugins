@@ -1756,32 +1756,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-analytics-module-ga@workspace:plugins/analytics-module-ga":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-analytics-module-ga@workspace:plugins/analytics-module-ga"
-  dependencies:
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.2"
-    "@backstage/core-components": "npm:^0.17.3"
-    "@backstage/core-plugin-api": "npm:^1.10.8"
-    "@backstage/dev-utils": "npm:^1.1.11"
-    "@backstage/frontend-plugin-api": "npm:^0.10.3"
-    "@testing-library/dom": "npm:^10.0.0"
-    "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^15.0.0"
-    "@types/react": "npm:^16.13.1 || ^17.0.0"
-    "@types/react-dom": "npm:^18.2.19"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-ga: "npm:^3.3.0"
-    react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  languageName: unknown
-  linkType: soft
-
 "@backstage-community/plugin-analytics-module-matomo@workspace:plugins/analytics-module-matomo":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-analytics-module-matomo@workspace:plugins/analytics-module-matomo"
@@ -18666,16 +18640,6 @@ __metadata:
   version: 2.1.0
   resolution: "react-ga4@npm:2.1.0"
   checksum: 10/e47edd040b7a272d35df732e08c4a8b6b14add659db04fb81a3a2cbde59bf34dc6eae9e0b8b4abd8937d11c837954773a6ba86feb2c605e5eb916f4c99e420c7
-  languageName: node
-  linkType: hard
-
-"react-ga@npm:^3.3.0":
-  version: 3.3.1
-  resolution: "react-ga@npm:3.3.1"
-  peerDependencies:
-    prop-types: ^15.6.0
-    react: ^15.6.2 || ^16.0 || ^17 || ^18
-  checksum: 10/5ba6ea74a364d3908777ea43dd479cb4b29e35604ba4df13246f3c4ff9c5214b00f2710c424ee05c5a40e05672ec9675c79c8d6a9f3abf661001bbac1d1f5704
   languageName: node
   linkType: hard
 
