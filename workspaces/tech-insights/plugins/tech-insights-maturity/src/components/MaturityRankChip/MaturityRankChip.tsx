@@ -32,7 +32,7 @@ export const MaturityRankChip = ({ className, entity, value }: Props) => {
   const rank = value.rank;
   const tooltip = value.isMaxRank
     ? 'All required tasks have been completed!'
-    : `Increase your rank by completing all ${Rank[rank + 1]} rank tasks!`;
+    : `Increase your rank by completing all ${Rank[rank]} rank tasks!`;
 
   const result = (
     <Tooltip title={tooltip} arrow>

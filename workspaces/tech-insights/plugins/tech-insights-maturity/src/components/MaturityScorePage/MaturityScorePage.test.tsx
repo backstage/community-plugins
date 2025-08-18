@@ -165,7 +165,7 @@ const result: MaturityScore = {
         technicalOwnersAreActive: {
           description: 'Technical owners are currently present',
           id: 'technicalOwnersAreActive',
-          type: 'boolean',
+          type: 'set',
           value: 'maica@hotmail.com',
         },
       },
