@@ -81,13 +81,6 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     };
   }
 
-  public async getChildMaturityCheckResults(
-    entity: Entity,
-  ): Promise<BulkMaturityCheckResponse> {
-    const entities = await this.getRelatedComponents(entity);
-    return await this.getBulkCheckResults(entities);
-  }
-
   public async getMaturitySummary(entity: Entity): Promise<MaturitySummary> {
     const checksResult = await this.getCheckResults(entity);
     return SDF.getMaturitySummary(checksResult);
@@ -165,10 +158,13 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
 
   private async getRelatedComponents(
     entity: Entity,
+    filter?: {
+      kind: string;
+    },
   ): Promise<CompoundEntityRef[]> {
     switch (entity.kind) {
       case 'System':
-        return getEntityRelations(entity, RELATION_HAS_PART);
+        return getEntityRelations(entity, RELATION_HAS_PART, filter);
       case 'Domain':
         return await this.getRelatedComponentsByRefs(
           getEntityRelations(entity, RELATION_HAS_PART),

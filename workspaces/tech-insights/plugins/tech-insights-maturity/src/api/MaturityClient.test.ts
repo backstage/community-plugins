@@ -117,22 +117,6 @@ const bulkCheckResult = [
   },
 ];
 
-const mockUser: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'User',
-  metadata: {
-    namespace: 'test',
-    name: 'mock-user',
-    title: 'Test User',
-  },
-  relations: [
-    {
-      type: 'memberOf',
-      targetRef: 'group:test/mock-team',
-    },
-  ],
-};
-
 const mockTeam: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Group',
@@ -266,10 +250,6 @@ describe('MaturityClient', () => {
           isMaxRank: false,
         },
       ];
-
-      expect(await sdc.getChildMaturityCheckResults(mockUser)).toEqual(
-        expected,
-      );
     });
   });
 });

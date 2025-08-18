@@ -44,9 +44,6 @@ export type MaturityApi = TechInsightsApi & {
   getBulkMaturityCheckResults(
     entities: Entity[],
   ): Promise<BulkMaturityCheckResponse>;
-  getChildMaturityCheckResults(
-    entity: Entity,
-  ): Promise<BulkMaturityCheckResponse>;
   getMaturitySummary(entity: Entity): Promise<MaturitySummary>;
   getBulkMaturitySummary(entities: Entity[]): Promise<BulkMaturitySummary>;
 };
