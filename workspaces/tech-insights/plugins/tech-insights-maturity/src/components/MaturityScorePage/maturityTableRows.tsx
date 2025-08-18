@@ -34,7 +34,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import type { SyntheticEvent } from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { MaturityRankChip } from '../MaturityRankChip';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -110,7 +110,7 @@ const MaturityCheckTableRow = ({
           </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={2} sx={{ paddingLeft: 2, paddingRight: 2 }}>
+          <Grid container spacing={1} sx={{ paddingLeft: 1, paddingRight: 1 }}>
             <Grid item xs={9}>
               <Stack spacing={1}>
                 <Stack spacing={1} direction="row">
@@ -132,25 +132,26 @@ const MaturityCheckTableRow = ({
               </Stack>
             </Grid>
             <Grid item xs={3}>
-              <Stack spacing={1}>
-                <Stack spacing={1} direction="row">
-                  <Tooltip title="Category: The category for this check">
-                    <CategoryIcon color="primary" />
-                  </Tooltip>
-                  <Typography variant="subtitle1" className={filters}>
-                    {checkResult.check.metadata?.category}
-                  </Typography>
-                </Stack>
-                <Stack spacing={1} direction="row">
-                  <Tooltip title="Reference: Consult the documentation linked here for more background info.">
-                    <MenuBookIcon color="primary" />
-                  </Tooltip>
-                  <Typography>
-                    <Link to={checkResult.check.links?.at(0)?.url ?? ''}>
-                      {checkResult.check.links?.at(0)?.title}
-                    </Link>
-                  </Typography>
-                </Stack>
+              <Stack spacing={1} direction="row">
+                <Tooltip title="Category: The category for this check">
+                  <CategoryIcon color="primary" />
+                </Tooltip>
+                <Typography variant="subtitle1" className={filters}>
+                  {checkResult.check.metadata?.category}
+                </Typography>
+              </Stack>
+              <Stack spacing={1} direction="row">
+                <Tooltip title="Reference: Consult the documentation linked here for more background info.">
+                  <MenuBookIcon color="primary" />
+                </Tooltip>
+                <Typography>
+                  {checkResult.check.links?.map((link, index) => (
+                    <React.Fragment key={link.url}>
+                      {index > 0 && ', '}
+                      <Link to={link.url}>{link.title}</Link>
+                    </React.Fragment>
+                  ))}
+                </Typography>
               </Stack>
             </Grid>
           </Grid>
