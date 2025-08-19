@@ -62,31 +62,46 @@ export type AnnouncementsList = {
 export const announcementUpdatePermission: BasicPermission;
 
 // @public
+export const AUDITOR_ACTION_CREATE = 'create';
+
+// @public
+export const AUDITOR_ACTION_DELETE = 'delete';
+
+// @public
+export const AUDITOR_ACTION_UPDATE = 'update';
+
+// @public
+export const AUDITOR_FETCH_EVENT_ID = 'announcements-fetch';
+
+// @public
+export const AUDITOR_MUTATE_EVENT_ID = 'announcements-mutate';
+
+// @public
 export type Category = {
   slug: string;
   title: string;
 };
 
 // @public
-export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create_announcement';
+export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create-announcement';
 
 // @public
-export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
+export const EVENTS_ACTION_CREATE_CATEGORY = 'create-category';
 
 // @public
 export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
 
 // @public
-export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
+export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete-announcement';
 
 // @public
-export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
+export const EVENTS_ACTION_DELETE_CATEGORY = 'delete-category';
 
 // @public
 export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
 
 // @public
-export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
+export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update-announcement';
 
 // @public
 export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
