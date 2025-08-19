@@ -13,26 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ActionContext } from '@backstage/plugin-scaffolder-node';
 
-import { get } from 'lodash';
-import { Value } from '../types';
-
-export const resolveSpec = (
-  spec: { [key: string]: Value } | undefined,
-  ctx: ActionContext<any>,
-) => {
-  if (!spec || Object.keys(spec).length === 0) {
-    return {};
-  }
-  return Object.keys(spec).reduce((acc, s) => {
-    const val = spec[s];
-    return {
-      ...acc,
-      ...{
-        [`${s}`]:
-          typeof val === 'string' ? spec[s] : get(ctx, val.readFromContext),
-      },
-    };
-  }, {});
-};
+/**
+ * @public
+ */
+export type Value = string | { readFromContext: string };
