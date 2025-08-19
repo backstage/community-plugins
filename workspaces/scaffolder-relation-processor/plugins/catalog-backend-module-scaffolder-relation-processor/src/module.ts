@@ -18,6 +18,7 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { eventsServiceRef } from '@backstage/plugin-events-node';
 
 import { ScaffolderRelationEntityProcessor } from './ScaffolderRelationEntityProcessor';
 
@@ -34,12 +35,33 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
       deps: {
         catalog: catalogProcessingExtensionPoint,
         logger: coreServices.logger,
+        events: eventsServiceRef,
       },
-      async init({ catalog, logger }) {
+      async init({ catalog, logger, events }) {
         logger.debug(
           'Registering the scaffolder-relation-processor catalog module',
         );
-        catalog.addProcessor(new ScaffolderRelationEntityProcessor());
+
+        // Subscribe to relationProcessor.template:version_updated events
+        if (events) {
+          await events.subscribe({
+            id: 'scaffolder-relation-processor',
+            topics: ['relationProcessor.template:version_updated'],
+            async onEvent(params) {
+              const payload = params.eventPayload as {
+                entityRef: string;
+                previousVersion: string;
+                currentVersion: string;
+              };
+              logger.info(
+                `Received template update event for ${payload.entityRef}: ` +
+                  `${payload.previousVersion} -> ${payload.currentVersion}`,
+              );
+            },
+          });
+        }
+
+        catalog.addProcessor(new ScaffolderRelationEntityProcessor(events));
       },
     });
   },
