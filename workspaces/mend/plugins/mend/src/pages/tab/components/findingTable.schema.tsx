@@ -18,6 +18,7 @@ enum FINDING_FIELD {
   STATUS = 'issue.status',
   ISSUE_TRACKING = 'issue.issueStatus',
   SCAN_ENGINE = 'kind',
+  PROJECT_NAME = 'projectName',
 }
 
 const tagSeverityColorMap: { [key: string]: TagColor } = {
@@ -118,6 +119,11 @@ const findingColumn = [
     field: FINDING_FIELD.SCAN_ENGINE,
     ...textColumn,
   },
+  {
+    title: 'Project Name',
+    field: FINDING_FIELD.PROJECT_NAME,
+    ...textColumn,
+  },
 ];
 
 const issueStatusLabel = {
@@ -208,6 +214,35 @@ export const findingTableColumnSchema = findingColumn.map(rowData => {
               width="auto"
               fontWeight={500}
             />
+          );
+        }
+        case FINDING_FIELD.PROJECT_NAME: {
+          return (
+            <Tooltip
+              tooltipContent={
+                <Typography
+                  component="span"
+                  display="block"
+                  style={{
+                    textTransform: 'none',
+                    lineHeight: '16px',
+                    padding: '8px',
+                  }}
+                  align="center"
+                  variant="overline"
+                >
+                  {value}
+                </Typography>
+              }
+            >
+              <Typography
+                component="span"
+                style={classes.ellipsis}
+                variant="body2"
+              >
+                {value}
+              </Typography>
+            </Tooltip>
           );
         }
         case FINDING_FIELD.ORIGIN: {

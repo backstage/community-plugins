@@ -26,6 +26,7 @@ import {
   CodeFindingSuccessResponseData,
   DependenciesFindingSuccessResponseData,
   ContainersFindingSuccessResponseData,
+  Finding,
 } from './data.service.types';
 import {
   mendReadPermission,
@@ -208,58 +209,64 @@ export async function createRouter(
       if (!data.length) {
         response.json({
           findingList: [],
-          projectName: '',
-          projectUuid: '',
+          projectList: [],
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
         return;
       }
 
-      const params = {
-        pathParams: {
-          uuid: data[0].uuid,
-        },
-      };
+      const findingList: Finding[] = [];
 
-      // get project findings
-      const findingResult = await Promise.all([
-        fetchQueryPagination<CodeFindingSuccessResponseData>(
-          (queryParam: PaginationQueryParams) =>
-            mendDataService.getCodeFinding({
-              ...params,
-              ...queryParam,
-            }),
-        ),
-        fetchQueryPagination<DependenciesFindingSuccessResponseData>(
-          (queryParam: PaginationQueryParams) =>
-            mendDataService.getDependenciesFinding({
-              ...params,
-              ...queryParam,
-            }),
-        ),
-        fetchQueryPagination<ContainersFindingSuccessResponseData>(
-          (queryParam: PaginationQueryParams) =>
-            mendDataService.getContainersFinding({
-              ...params,
-              ...queryParam,
-            }),
-        ),
-      ]);
+      for (const projectItem of data) {
+        const params = {
+          pathParams: {
+            uuid: projectItem.uuid,
+          },
+        };
 
-      const project = dataProjectParser(data, projectResult[2]);
-      const findingList = dataFindingParser(
-        findingResult[0].filter(item => !item.suppressed), // NOTE: Do not show suppressed item
-        findingResult[1].filter(
-          item => !(item.findingInfo.status === 'IGNORED'),
-        ), // NOTE: Do not show ignored item
-        findingResult[2], // ESC-51: Follow Jira activity
-      );
+        // get project findings
+        const findingResult = await Promise.all([
+          fetchQueryPagination<CodeFindingSuccessResponseData>(
+            (queryParam: PaginationQueryParams) =>
+              mendDataService.getCodeFinding({
+                ...params,
+                ...queryParam,
+              }),
+          ),
+          fetchQueryPagination<DependenciesFindingSuccessResponseData>(
+            (queryParam: PaginationQueryParams) =>
+              mendDataService.getDependenciesFinding({
+                ...params,
+                ...queryParam,
+              }),
+          ),
+          fetchQueryPagination<ContainersFindingSuccessResponseData>(
+            (queryParam: PaginationQueryParams) =>
+              mendDataService.getContainersFinding({
+                ...params,
+                ...queryParam,
+              }),
+          ),
+        ]);
+
+        const tempFindingList: Finding[] = dataFindingParser(
+          findingResult[0].filter(item => !item.suppressed), // NOTE: Do not show suppressed item
+          findingResult[1].filter(
+            item => !(item.findingInfo.status === 'IGNORED'),
+            projectItem,
+          ), // NOTE: Do not show ignored item
+          findingResult[2], // ESC-51: Follow Jira activity
+          projectItem.name,
+        );
+        findingList.push(...tempFindingList);
+      }
+
+      const projects = dataProjectParser(data, projectResult[2]);
 
       response.json({
         findingList,
-        projectName: project.projectList[0].entity.params.repo,
-        projectUuid: project.projectList[0].uuid,
+        projectList: projects,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });
