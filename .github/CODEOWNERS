@@ -29,6 +29,7 @@ yarn.lock                                                               @backsta
 /workspaces/azure-storage-explorer                                      @backstage/community-plugins-maintainers  @deepan10
 /workspaces/badges                                                      @backstage/community-plugins-maintainers
 /workspaces/bazaar                                                      @backstage/community-plugins-maintainers
+/workspaces/bitbucket-pull-requests                                     @backstage/community-plugins-maintainers  @mbruhin @smymoon
 /workspaces/bitrise                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                                                   @backstage/community-plugins-maintainers  @deepan10
 /workspaces/cicd-statistics                                             @backstage/community-plugins-maintainers
