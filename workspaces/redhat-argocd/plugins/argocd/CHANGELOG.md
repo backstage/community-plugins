@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.22.3
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
 ## 1.22.2
 
 ### Patch Changes
