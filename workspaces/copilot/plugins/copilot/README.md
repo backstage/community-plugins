@@ -54,8 +54,20 @@ To start using the GitHub Copilot Plugin, follow these steps:
 
    ```tsx
    import { CopilotSidebar } from '@backstage-community/plugin-copilot';
-   // Add the copilot sidebar
-   <SidebarScrollWrapper>
-     <CopilotSidebar />
-   </SidebarScrollWrapper>;
+
+   // Add the CopilotSidebar component somewhere inside your SidebarPage
+   export const Root = ({ children }: PropsWithChildren<{}>) => (
+     <SidebarPage>
+       <Sidebar>
+         {/* ... */}
+         <SidebarGroup label="Menu" icon={<MenuIcon />}>
+            {/* ... */}
+           <SidebarScrollWrapper>
+            <CopilotSidebar />
+           </SidebarScrollWrapper>
+            {/* ... */}
+        </SidebarGroup>
+        {/* ... */}
+     </SidebarPage>
+   );
    ```
