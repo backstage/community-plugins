@@ -5,3 +5,4 @@
 | Name         | Location          | Severity |
 | :----------- | :---------------- | :------- |
 | react-router | package.json:50:6 | error    |
+
