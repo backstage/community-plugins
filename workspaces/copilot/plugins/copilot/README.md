@@ -42,7 +42,7 @@ To start using the GitHub Copilot Plugin, follow these steps:
    import { CopilotIndexPage } from '@backstage-community/plugin-copilot';
 
    // Add the routes
-   <Route path="/copilot" element={<CopilotIndexPage />} />;
+   <Route path="/copilot" element={<CopilotIndexPage />} />
    ```
 
    **Root.tsx**:
