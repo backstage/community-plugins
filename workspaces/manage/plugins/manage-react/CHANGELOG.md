@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-react
 
+## 1.1.1
+
+### Patch Changes
+
+- 7593e17: Fixed erroneous repository.url in package.json
+
 ## 1.1.0
 
 ### Minor Changes

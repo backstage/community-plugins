@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.23.2
+
+### Patch Changes
+
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
 ## 1.23.1
 
 ### Patch Changes

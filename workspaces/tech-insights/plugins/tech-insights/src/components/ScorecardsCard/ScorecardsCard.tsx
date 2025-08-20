@@ -33,6 +33,7 @@ export const ScorecardsCard = (props: {
   onlyFailed?: boolean;
   expanded?: boolean;
   gauge?: boolean;
+  dense?: boolean;
 }) => {
   const {
     title,
@@ -42,6 +43,7 @@ export const ScorecardsCard = (props: {
     onlyFailed,
     gauge,
     expanded = !gauge,
+    dense = true,
   } = props;
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
@@ -83,6 +85,7 @@ export const ScorecardsCard = (props: {
       checkResults={filteredValue}
       noWarning={onlyFailed}
       expanded={expanded}
+      dense={dense}
     />
   ) : (
     <ScorecardInfo
@@ -92,6 +95,7 @@ export const ScorecardsCard = (props: {
       checkResults={filteredValue}
       noWarning={onlyFailed}
       expanded={expanded}
+      dense={dense}
     />
   );
 };

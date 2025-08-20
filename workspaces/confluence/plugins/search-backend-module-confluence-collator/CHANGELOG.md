@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.11.0
+
+### Minor Changes
+
+- 2fb111a: Backstage version bump to v1.41.1
+
+## 0.10.1
+
+### Patch Changes
+
+- 9b53e9b: Refined CQL query generation in the Confluence collator to correctly handle combinations of 'spaces' and 'query' parameters, preventing invalid queries when 'spaces' is empty but 'query' is present. Updated tests and documentation accordingly.
+
 ## 0.10.0
 
 ### Minor Changes

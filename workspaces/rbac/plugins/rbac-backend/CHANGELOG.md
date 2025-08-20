@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 7.2.0
+
+### Minor Changes
+
+- 2f4d9ff: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- e843699: Added missing configSchema into package.json
+- Updated dependencies [2f4d9ff]
+  - @backstage-community/plugin-rbac-common@1.19.0
+  - @backstage-community/plugin-rbac-node@1.13.0
+
 ## 7.1.0
 
 ### Minor Changes

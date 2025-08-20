@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-rbac",
-  "version": "1.42.2",
+  "version": "1.43.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -36,15 +36,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-rbac-common": "workspace:^",
-    "@backstage/catalog-model": "^1.7.4",
-    "@backstage/core-components": "^0.17.2",
-    "@backstage/core-plugin-api": "^1.10.7",
-    "@backstage/plugin-catalog": "^1.30.0",
-    "@backstage/plugin-catalog-common": "^1.1.4",
-    "@backstage/plugin-permission-common": "^0.9.0",
-    "@backstage/plugin-permission-react": "^0.4.34",
-    "@backstage/theme": "^0.6.6",
-    "@mui/icons-material": "5.16.14",
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.17.4",
+    "@backstage/core-plugin-api": "^1.10.9",
+    "@backstage/plugin-catalog": "^1.31.1",
+    "@backstage/plugin-catalog-common": "^1.1.5",
+    "@backstage/plugin-permission-common": "^0.9.1",
+    "@backstage/plugin-permission-react": "^0.4.36",
+    "@backstage/theme": "^0.6.7",
+    "@mui/icons-material": "5.18.0",
     "@mui/material": "^5.14.18",
     "@mui/styles": "^6.1.7",
     "@rjsf/core": "^5.21.2",
@@ -61,10 +61,10 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.1",
-    "@backstage/core-app-api": "^1.17.0",
-    "@backstage/dev-utils": "^1.1.10",
-    "@backstage/test-utils": "^1.7.8",
+    "@backstage/cli": "^0.33.1",
+    "@backstage/core-app-api": "^1.18.0",
+    "@backstage/dev-utils": "^1.1.12",
+    "@backstage/test-utils": "^1.7.10",
     "@playwright/test": "^1.52.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
@@ -78,7 +78,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0",
-    "start-server-and-test": "2.0.12"
+    "start-server-and-test": "2.0.13"
   },
   "files": [
     "dist"

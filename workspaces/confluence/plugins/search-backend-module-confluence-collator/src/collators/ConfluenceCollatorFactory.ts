@@ -270,11 +270,19 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
   private async getConfluenceQuery(): Promise<string> {
     const spaceList = await this.getSpacesConfig();
-    const spaceQuery = spaceList.map(s => `space="${s}"`).join(' or ');
-    let query = spaceQuery;
-    const additionalQuery = this.query;
-    if (additionalQuery !== '') {
+    const spaceQuery =
+      spaceList.length > 0
+        ? spaceList.map(s => `space="${s}"`).join(' or ')
+        : '';
+    const additionalQuery = this.query?.trim() ?? '';
+
+    let query = '';
+    if (spaceQuery && additionalQuery) {
       query = `(${spaceQuery}) and (${additionalQuery})`;
+    } else if (spaceQuery) {
+      query = spaceQuery;
+    } else if (additionalQuery) {
+      query = additionalQuery;
     }
     // If no query is provided, default to fetching all pages, blogposts, comments and attachments (which encompasses all content)
     // https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/#type

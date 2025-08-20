@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.7.1
+
+### Patch Changes
+
+- ede2f03: Updated `DashboardsCard` title styling to align with other components
+
 ## 0.7.0
 
 ### Minor Changes

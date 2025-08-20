@@ -1,5 +1,13 @@
 # @backstage-community/plugin-manage-module-tech-insights
 
+## 0.2.2
+
+### Patch Changes
+
+- 7593e17: Fixed erroneous repository.url in package.json
+- Updated dependencies [7593e17]
+  - @backstage-community/plugin-manage-react@1.1.1
+
 ## 0.2.1
 
 ### Patch Changes

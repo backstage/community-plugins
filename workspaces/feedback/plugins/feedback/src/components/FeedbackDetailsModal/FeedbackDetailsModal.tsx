@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Progress, useQueryParamState } from '@backstage/core-components';
@@ -107,7 +107,7 @@ export const FeedbackDetailsModal = () => {
     status: string | null;
     assignee: string | null;
     avatarUrls: {} | null;
-    element: React.JSX.Element | null;
+    element: JSX.Element | null;
   }>({ status: null, assignee: null, avatarUrls: null, element: null });
 
   const [isLoading, setIsLoading] = useState(true);

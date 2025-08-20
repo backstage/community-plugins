@@ -295,7 +295,7 @@ export const useAnnouncementsTranslation: () => any;
 
 // @public
 export const useCatalogEntities: (
-  refs: string[],
+  refs: string[] | undefined,
   searchTerm?: string,
   limit?: number,
   kind?: string | undefined,

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { CodeSnippet, EmptyState } from '@backstage/core-components';
 
@@ -23,6 +22,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import { styled, Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { ChangeEvent, useState } from 'react';
 
 const PREFIX = 'CustomEmptyState';
 
@@ -112,10 +112,10 @@ const JIRA_YAML = `metadata:
 export const CustomEmptyState = (props: {
   [key: string]: string | undefined;
 }) => {
-  const [expanded, setExpanded] = React.useState<string | false>('jira');
+  const [expanded, setExpanded] = useState<string | false>('jira');
 
   const handleChange =
-    (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+    (panel: string) => (event: ChangeEvent<{}>, isExpanded: boolean) => {
       event.preventDefault();
       setExpanded(isExpanded ? panel : false);
     };

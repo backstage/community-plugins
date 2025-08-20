@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-blackduck
 
+## 0.4.0
+
+### Minor Changes
+
+- 851ed92: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [851ed92]
+  - @backstage-community/plugin-blackduck-common@0.6.0
+  - @backstage-community/plugin-blackduck-node@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

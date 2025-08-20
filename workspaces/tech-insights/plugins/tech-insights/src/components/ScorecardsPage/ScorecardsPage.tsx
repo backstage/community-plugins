@@ -64,7 +64,11 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
       checks,
       result: filterWithResults
         ? result.filter(response => response.results.length > 0)
-        : result,
+        : result.filter(
+            response =>
+              (response.results?.length ?? 0) === 0 ||
+              response.results.every(r => r.result === false),
+          ),
     };
   }, [api, filterSelectedChecks, filterWithResults]);
 

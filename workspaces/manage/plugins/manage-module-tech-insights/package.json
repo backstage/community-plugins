@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-manage-module-tech-insights",
   "description": "Manage plugin - Tech Insights module",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "manage",
@@ -21,8 +21,8 @@
   "homepage": "https://backstage.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/manage-module-tech-insights"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/manage/plugins/manage-module-tech-insights"
   },
   "keywords": [
     "backstage",

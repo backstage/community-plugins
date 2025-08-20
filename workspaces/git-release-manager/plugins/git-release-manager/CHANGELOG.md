@@ -1,5 +1,11 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.8.0
+
+### Minor Changes
+
+- edf729c: Backstage version bump to v1.41.1
+
 ## 0.7.0
 
 ### Minor Changes

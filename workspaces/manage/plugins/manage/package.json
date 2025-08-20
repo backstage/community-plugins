@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-manage",
   "description": "Manage plugin - Shows a Manage page relevant to the user",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "manage",
@@ -24,8 +24,8 @@
   "homepage": "https://backstage.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/manage"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/manage/plugins/manage"
   },
   "keywords": [
     "backstage",

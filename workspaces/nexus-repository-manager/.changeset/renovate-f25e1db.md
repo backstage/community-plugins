@@ -2,4 +2,4 @@
 '@backstage-community/plugin-nexus-repository-manager': patch
 ---
 
-Aligned `formatDate` utility with `ADR012 using Luxon`.
+Updated dependency `@testing-library/jest-dom` to `6.7.0`.

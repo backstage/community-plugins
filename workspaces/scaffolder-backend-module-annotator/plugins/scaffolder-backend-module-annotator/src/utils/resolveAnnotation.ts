@@ -16,7 +16,7 @@
 import type { ActionContext } from '@backstage/plugin-scaffolder-node';
 
 import { get } from 'lodash';
-import { Value } from './resolveSpec';
+import { Value } from '../types';
 
 export const resolveAnnotation = (
   annotation: { [key: string]: Value } | undefined,
