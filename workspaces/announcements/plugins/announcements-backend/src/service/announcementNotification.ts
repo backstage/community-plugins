@@ -23,6 +23,7 @@ export const sendAnnouncementNotification = (
   if (!notifications) {
     return;
   }
+
   notifications.send({
     recipients: {
       type: 'broadcast',

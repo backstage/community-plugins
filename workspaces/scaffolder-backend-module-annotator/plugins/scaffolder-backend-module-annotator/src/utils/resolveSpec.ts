@@ -16,8 +16,7 @@
 import type { ActionContext } from '@backstage/plugin-scaffolder-node';
 
 import { get } from 'lodash';
-
-export type Value = string | { readFromContext: string };
+import { Value } from '../types';
 
 export const resolveSpec = (
   spec: { [key: string]: Value } | undefined,

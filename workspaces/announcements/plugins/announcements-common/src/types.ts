@@ -66,6 +66,8 @@ export type Announcement = {
   on_behalf_of?: string;
   /** Array of tags associated with the announcement */
   tags?: Tag[];
+  /** Whether the notificaion is enabled */
+  sendNotification: boolean;
 };
 
 /**
@@ -102,6 +104,8 @@ export type AnnouncementsFilters = {
   sortBy?: 'created_at' | 'start_at';
   /** Sorting order: "asc" for ascending or "desc" for descending */
   order?: 'asc' | 'desc';
+  /** Whether the notificaion is enabled */
+  sendNotification?: boolean;
 };
 
 /**

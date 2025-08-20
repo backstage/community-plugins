@@ -2,4 +2,4 @@
 '@backstage-community/plugin-scaffolder-backend-module-servicenow': patch
 ---
 
-Updated dependency `@hey-api/openapi-ts` to `0.80.5`.
+Updated dependency `@types/node-fetch` to `2.6.13`.

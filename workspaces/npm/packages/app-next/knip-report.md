@@ -28,3 +28,4 @@
 | @testing-library/user-event | package.json:57:6 | error    |
 | @testing-library/dom        | package.json:54:6 | error    |
 | @playwright/test            | package.json:53:6 | error    |
+

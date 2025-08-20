@@ -50,6 +50,7 @@ interface AnnouncementRequest {
   start_at: string;
   on_behalf_of?: string;
   tags?: string[];
+  sendNotification: boolean;
 }
 
 interface CategoryRequest {
@@ -202,14 +203,6 @@ export async function createRouter(
           ? req.body.tags.map(tag => slugify(tag.trim(), { lower: true }))
           : [];
 
-      const isSignalsEnabled =
-        (config.getOptionalBoolean('backend.signals.enabled') ?? false) &&
-        signals !== undefined;
-
-      const isAnnouncementNotificationsEnabled =
-        (config.getOptionalBoolean('backend.notifications.enabled') ?? false) &&
-        notifications !== undefined;
-
       const announcement =
         await persistenceContext.announcementsStore.insertAnnouncement({
           ...req.body,
@@ -228,10 +221,11 @@ export async function createRouter(
           metadata: { action: EVENTS_ACTION_CREATE_ANNOUNCEMENT },
         });
 
-        if (isSignalsEnabled) {
-          await signalAnnouncement(announcement, signals);
-        }
-        if (isAnnouncementNotificationsEnabled) {
+        await signalAnnouncement(announcement, signals);
+
+        const announcementNotificationsEnabled =
+          req.body?.sendNotification === true ? true : false;
+        if (announcementNotificationsEnabled) {
           sendAnnouncementNotification(announcement, notifications);
         }
       }

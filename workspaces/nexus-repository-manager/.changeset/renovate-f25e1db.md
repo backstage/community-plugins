@@ -2,4 +2,4 @@
 '@backstage-community/plugin-nexus-repository-manager': patch
 ---
 
-Updated dependency `@hey-api/openapi-ts` to `0.80.5`.
+Updated dependency `@testing-library/jest-dom` to `6.7.0`.

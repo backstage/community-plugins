@@ -2,4 +2,4 @@
 '@backstage-community/plugin-jfrog-artifactory': patch
 ---
 
-Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+Updated dependency `@testing-library/jest-dom` to `6.7.0`.
