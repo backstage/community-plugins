@@ -266,7 +266,7 @@ export async function createRouter(
 
       response.json({
         findingList,
-        projectList: projects,
+        ...projects,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });

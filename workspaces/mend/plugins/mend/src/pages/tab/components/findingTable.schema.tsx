@@ -85,6 +85,11 @@ const textColumn = {
 
 const findingColumn = [
   {
+    title: 'Project Name',
+    field: FINDING_FIELD.PROJECT_NAME,
+    ...textColumn,
+  },
+  {
     title: 'Severity',
     field: FINDING_FIELD.SEVERITY,
     ...textColumn,
@@ -117,11 +122,6 @@ const findingColumn = [
   {
     title: 'Scan Engine',
     field: FINDING_FIELD.SCAN_ENGINE,
-    ...textColumn,
-  },
-  {
-    title: 'Project Name',
-    field: FINDING_FIELD.PROJECT_NAME,
     ...textColumn,
   },
 ];

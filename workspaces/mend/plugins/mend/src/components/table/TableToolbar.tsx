@@ -4,21 +4,26 @@ import { Grid, Typography } from '@material-ui/core';
 
 type TableToolbarProps = {
   children: ReactNode;
+  ProjectFilterComponent: React.FC;
   title?: string;
   toolbar: any; // Allow any object structure here
 };
 
 export const TableToolbar = ({
   toolbar,
+  ProjectFilterComponent,
   children,
   title,
 }: TableToolbarProps) => {
   return (
     <Grid container alignItems="center" alignContent="center">
-      <Grid item xs={6}>
+      <Grid item xs={8}>
         {title && <Typography variant="h4">{title}</Typography>}
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={2}>
+        <ProjectFilterComponent />
+      </Grid>
+      <Grid item xs={2}>
         <MTableToolbar {...toolbar} />
       </Grid>
       <Grid item xs={12}>
