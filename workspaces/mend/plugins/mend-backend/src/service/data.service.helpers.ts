@@ -212,9 +212,18 @@ export const dataMatcher = (
 };
 
 /**
- * Extracts source URL info and share the object with key as combination of host and pathname  as a value with project object itself.
- * @param projects Array of projects
- * @returns Object with uuid as key and value as { projectObjs, sourceUrl, host, pathname  }
+ * Extracts the source URL details from each project and returns a dictionary
+ * where each key is a combination of the URL's host and pathname,
+ * and the value is an object containing the original project and the parsed source URL data.
+ *
+ * @param projects Array of ProjectStatisticsSuccessResponseData
+ * @returns A dictionary object with keys as `${host}${pathname}` strings extracted from sourceUrl and values as:
+ *          {
+ *            projectObjs: ProjectStatisticsSuccessResponseData[];
+              sourceUrl: string | null;
+              host: string | null;
+              pathname: string | null;
+ *          }
  */
 export function getSourceURLWiseProject(
   projects: ProjectStatisticsSuccessResponseData[],
@@ -259,7 +268,7 @@ export function getSourceURLWiseProject(
     {} as Record<
       string,
       {
-        projectObjs: [ProjectStatisticsSuccessResponseData];
+        projectObjs: ProjectStatisticsSuccessResponseData[];
         sourceUrl: string | null;
         host: string | null;
         pathname: string | null;
