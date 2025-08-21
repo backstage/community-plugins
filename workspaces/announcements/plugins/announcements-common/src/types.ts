@@ -67,7 +67,7 @@ export type Announcement = {
   /** Array of tags associated with the announcement */
   tags?: Tag[];
   /** Whether the notificaion is enabled */
-  sendNotification: boolean;
+  sendNotification?: boolean;
 };
 
 /**

@@ -65,7 +65,7 @@ export const AnnouncementForm = ({
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
     tags: initialData.tags?.map(tag => tag.slug) || undefined,
-    sendNotification: initialData.sendNotification,
+    sendNotification: initialData.sendNotification ?? false,
   });
   const [loading, setLoading] = useState(false);
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
