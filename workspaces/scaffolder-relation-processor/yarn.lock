@@ -2635,11 +2635,14 @@ __metadata:
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.3.1"
     "@backstage/backend-test-utils": "npm:^1.5.0"
+    "@backstage/catalog-client": "npm:^1.8.0"
     "@backstage/catalog-model": "npm:^1.7.4"
     "@backstage/cli": "npm:^0.32.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.4"
     "@backstage/plugin-catalog-node": "npm:^1.17.0"
     "@backstage/plugin-events-node": "npm:^0.4.13"
+    "@backstage/plugin-notifications-common": "npm:^0.0.10"
+    "@backstage/plugin-notifications-node": "npm:^0.2.17"
   languageName: unknown
   linkType: soft
 
@@ -2799,7 +2802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@npm:^1.10.0, @backstage/catalog-client@npm:^1.10.2":
+"@backstage/catalog-client@npm:^1.10.0, @backstage/catalog-client@npm:^1.10.2, @backstage/catalog-client@npm:^1.8.0":
   version: 1.10.2
   resolution: "@backstage/catalog-client@npm:1.10.2"
   dependencies:
@@ -3153,6 +3156,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-notifications-common@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "@backstage/plugin-notifications-common@npm:0.0.10"
+  dependencies:
+    "@backstage/config": "npm:^1.3.3"
+    "@material-ui/icons": "npm:^4.9.1"
+  checksum: 10/901d5eedfdae1b3bffad802287b7c616be24ba022a58951ae7c4164b69c7b58b2cb27a96f596926445ad613d3a0d7c16eeff7af02518c59a92fefa11801e3e67
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-notifications-node@npm:^0.2.17":
+  version: 0.2.17
+  resolution: "@backstage/plugin-notifications-node@npm:0.2.17"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.4.1"
+    "@backstage/catalog-client": "npm:^1.10.2"
+    "@backstage/catalog-model": "npm:^1.7.5"
+    "@backstage/plugin-notifications-common": "npm:^0.0.10"
+    "@backstage/plugin-signals-node": "npm:^0.1.22"
+    knex: "npm:^3.0.0"
+    uuid: "npm:^11.0.0"
+  checksum: 10/4753b68b760a714e82b7b777d140b7d974b4b7e0fefd2eeeb66b5be876c52c3042ba5645b15735a641de1cfc1184c56441a13934c70ac4569b20dc5b9f820020
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-permission-common@npm:^0.9.0, @backstage/plugin-permission-common@npm:^0.9.1":
   version: 0.9.1
   resolution: "@backstage/plugin-permission-common@npm:0.9.1"
@@ -3193,6 +3221,22 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.0"
     "@backstage/types": "npm:^1.2.1"
   checksum: 10/9a7c262a5e1fc2d1bc40a9738d6e29ba215867a10efa22c1c3e3b7847d2b6f7566fde4c22f6989933a47d2f1928ee7544ade4f88fb2e0956f4dde7cf02cb85a6
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-signals-node@npm:^0.1.22":
+  version: 0.1.22
+  resolution: "@backstage/plugin-signals-node@npm:0.1.22"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.4.1"
+    "@backstage/config": "npm:^1.3.3"
+    "@backstage/plugin-auth-node": "npm:^0.6.5"
+    "@backstage/plugin-events-node": "npm:^0.4.13"
+    "@backstage/types": "npm:^1.2.1"
+    express: "npm:^4.17.1"
+    uuid: "npm:^11.0.0"
+    ws: "npm:^8.18.0"
+  checksum: 10/377122fc58d67671b0c8c0ed00c750d9ccac727fc3efad383e63684c66af5c43c02f1b75a788fb3e23748c610b1d31e1d6c81d62918ecd0624b72ef7e1814a59
   languageName: node
   linkType: hard
 
@@ -4558,6 +4602,23 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/14ae257e9ca44e8ddbccdbdbb92a2e84b604ee32fdf6a18c1612222278dd7540d4a25a8877ed8881f5f2458b10226bfef93c9a4b904c0ef664a1cf0ab53226cb
+  languageName: node
+  linkType: hard
+
+"@material-ui/icons@npm:^4.9.1":
+  version: 4.11.3
+  resolution: "@material-ui/icons@npm:4.11.3"
+  dependencies:
+    "@babel/runtime": "npm:^7.4.4"
+  peerDependencies:
+    "@material-ui/core": ^4.0.0
+    "@types/react": ^16.8.6 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/be9bf988a8b23e0885ca0c1dc5a4960f6c28f401079dbc13f840f4bd738ef95965cb4f751d609cb6acc819e1c2f8a7293d0a6f26b3685a711506679e4834ab35
   languageName: node
   linkType: hard
 
@@ -22765,6 +22826,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/70dfe53f23ff4368d46e4c0b1d4ca734db2c4149c6f68bc62cb16fc21f753c47b35fcc6e582f3bdfba0eaeb1c488cddab3c2255755a5c3eecb251431e42b3ff6
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.0":
+  version: 8.18.3
+  resolution: "ws@npm:8.18.3"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/725964438d752f0ab0de582cd48d6eeada58d1511c3f613485b5598a83680bedac6187c765b0fe082e2d8cc4341fc57707c813ae780feee82d0c5efe6a4c61b6
   languageName: node
   linkType: hard
 
