@@ -32,4 +32,4 @@ export {
   NpmReleaseTableCard,
 } from './plugin';
 
-export { npmTranslations } from './translations';
+export { npmTranslationRef, npmTranslations } from './translations';

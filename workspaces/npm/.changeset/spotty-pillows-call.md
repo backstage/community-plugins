@@ -2,4 +2,4 @@
 '@backstage-community/plugin-npm': patch
 ---
 
-export translation file
+Export `npmTranslationRef` and `npmTranslations` also in the stable/'old' frontend system build.
