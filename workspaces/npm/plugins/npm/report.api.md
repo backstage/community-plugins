@@ -7,6 +7,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const EntityNpmInfoCard: () => JSX_2.Element;
@@ -36,4 +37,7 @@ export const NpmReleaseOverviewCard: () => JSX_2.Element;
 
 // @public @deprecated (undocumented)
 export const NpmReleaseTableCard: () => JSX_2.Element;
+
+// @alpha (undocumented)
+export const npmTranslations: TranslationResource<'plugin.npm.translation-ref'>;
 ```

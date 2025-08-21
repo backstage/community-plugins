@@ -31,3 +31,5 @@ export {
   NpmReleaseOverviewCard,
   NpmReleaseTableCard,
 } from './plugin';
+
+export { npmTranslations } from './translations';
