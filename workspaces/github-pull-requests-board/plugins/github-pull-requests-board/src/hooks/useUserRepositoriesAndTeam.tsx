@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   getProjectNameFromEntity,
@@ -24,8 +24,11 @@ import {
   getUserNameFromEntity,
 } from '../utils/functions';
 
-export function useUserRepositoriesAndTeam() {
-  const { entity: teamEntity } = useEntity();
+export function useUserRepositoriesAndTeam(teamEntities: Entity | Entity[]) {
+  const ownerEntities = Array.isArray(teamEntities)
+    ? teamEntities
+    : [teamEntities];
+
   const catalogApi = useApi(catalogApiRef);
   const [loading, setLoading] = useState<boolean>(true);
   const [teamData, setTeamData] = useState<{
@@ -36,14 +39,18 @@ export function useUserRepositoriesAndTeam() {
     teamMembers: [],
   });
 
+  const entitiesRefs = ownerEntities.map(e => stringifyEntityRef(e));
+
   const getTeamData = useCallback(async () => {
     setLoading(true);
 
     // get team repositories and members
     const entitiesList = await catalogApi.getEntities({
       filter: [
-        { 'relations.ownedBy': stringifyEntityRef(teamEntity) },
-        { 'relations.memberOf': stringifyEntityRef(teamEntity) },
+        { 'relations.ownedBy': entitiesRefs },
+        {
+          'relations.memberOf': entitiesRefs,
+        },
       ],
     });
 
@@ -66,7 +73,8 @@ export function useUserRepositoriesAndTeam() {
       teamMembers: [...new Set(teamMembersNames)],
     });
     setLoading(false);
-  }, [catalogApi, teamEntity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catalogApi, entitiesRefs.join(',')]);
 
   useEffect(() => {
     getTeamData();
@@ -76,6 +84,6 @@ export function useUserRepositoriesAndTeam() {
     loading,
     repositories: teamData.repositories,
     teamMembers: teamData.teamMembers,
-    teamMembersOrganization: getGithubOrganizationFromEntity(teamEntity),
+    teamMembersOrganization: getGithubOrganizationFromEntity(ownerEntities[0]),
   };
 }

@@ -13,28 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import React from 'react';
-import PullRequestsBoard from '../PullRequestsBoard';
-import { useEntity } from '@backstage/plugin-catalog-react';
-
-/** @public */
-export interface EntityTeamPullRequestsContentProps {
-  pullRequestLimit?: number;
-}
-
-const EntityTeamPullRequestsContent = (
-  props: EntityTeamPullRequestsContentProps,
-) => {
-  const { pullRequestLimit } = props;
-  const { entity: teamEntity } = useEntity();
-
-  return (
-    <PullRequestsBoard
-      entities={[teamEntity]}
-      pullRequestLimit={pullRequestLimit}
-    />
-  );
-};
-
-export default EntityTeamPullRequestsContent;
+export { default } from './PullRequestsBoard';
+export type { PullRequestsBoardProps } from './PullRequestsBoard';
