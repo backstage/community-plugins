@@ -39,6 +39,9 @@ async function main(args) {
   // Loop through workspaces
   for (const workspace of workspaces) {
     const currentWorkspacePath = resolve(workspacePath, workspace);
+    const { version } = JSON.parse(
+      await fs.readFile(join(currentWorkspacePath, 'backstage.json')),
+    );
     const { packages } = await getPackages(currentWorkspacePath);
 
     // Loop through packages in each workspace
@@ -50,11 +53,13 @@ async function main(args) {
           package: undefined,
           role: undefined,
           supported: undefined,
+          ['Tested with Backstage version']: undefined,
           alpha: undefined,
           readme: undefined,
         };
         frontendFeatureReport.package = pkg.packageJson.name;
         frontendFeatureReport.role = pkgRole;
+        frontendFeatureReport['Tested with Backstage version'] = version;
         frontendFeatureReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
         const apiReportPath = join(pkg.dir, 'report.api.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
