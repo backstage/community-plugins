@@ -15,15 +15,12 @@
  */
 
 import ReactDOM from 'react-dom/client';
-import { Navigate } from 'react-router';
 
 import { createApp } from '@backstage/frontend-defaults';
 
 import {
   ApiBlueprint,
-  PageBlueprint,
   createFrontendModule,
-  createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
@@ -32,18 +29,6 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import explorePlugin from '../src/alpha';
 
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
-
-const homePlugin = createFrontendPlugin({
-  pluginId: 'home',
-  extensions: [
-    PageBlueprint.make({
-      params: {
-        path: '/',
-        loader: async () => <Navigate to="/explore" />,
-      },
-    }),
-  ],
-});
 
 const components = [
   {
@@ -100,7 +85,7 @@ const catalogPluginOverrides = createFrontendModule({
 });
 
 const app = createApp({
-  features: [homePlugin, explorePlugin, catalogPlugin, catalogPluginOverrides],
+  features: [explorePlugin, catalogPlugin, catalogPluginOverrides],
 });
 
 const root = app.createRoot();
