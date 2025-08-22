@@ -45,10 +45,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
-    "@backstage/core-plugin-api": "^1.10.9"
+    "@backstage/core-plugin-api": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.0",
+    "@backstage/cli": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
