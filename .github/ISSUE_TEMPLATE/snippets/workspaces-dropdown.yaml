@@ -24,6 +24,7 @@ attributes:
     - bazaar
     - bitrise
     - blackduck
+    - bookmarks
     - cicd-statistics
     - cloudbuild
     - code-climate
