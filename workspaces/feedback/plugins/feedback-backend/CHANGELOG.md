@@ -1,5 +1,17 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 2.1.0
+
+### Minor Changes
+
+- 351aa49: Backstage version bump to v1.41.1
+
+## 2.0.3
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 2.0.2
 
 ### Patch Changes

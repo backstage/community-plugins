@@ -15,14 +15,12 @@
  */
 
 import { createDevApp } from '@backstage/dev-utils';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-import React from 'react';
-import { analyticsModuleSegment } from '../src';
+import { analyticsModuleSegment, SegmentAnalyticsApi } from '../src';
 import { Playground } from './Playground';
 
 createDevApp()
   .registerPlugin(analyticsModuleSegment)
-  .addThemes(getAllThemes())
+  .registerApi(SegmentAnalyticsApi)
   .addPage({
     path: '/segment',
     title: 'Segment Playground',

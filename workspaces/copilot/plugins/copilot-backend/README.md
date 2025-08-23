@@ -117,7 +117,7 @@ To ensure the GitHub Copilot plugin operates correctly within your organization 
 
 ```yaml
 copilot:
-  scheduler:
+  schedule:
     frequency:
       hours: 2
     timeout:
@@ -169,5 +169,5 @@ For more details on using the GitHub Copilot and Teams APIs, refer to the follow
 
 ## Links
 
-- [GitHub Copilot Plugin Frontend](https://github.com/backstage/backstage/tree/master/plugins/copilot)
+- [GitHub Copilot Plugin Frontend](https://github.com/backstage/community-plugins/tree/main/workspaces/copilot/plugins/copilot)
 - [Backstage Homepage](https://backstage.io)

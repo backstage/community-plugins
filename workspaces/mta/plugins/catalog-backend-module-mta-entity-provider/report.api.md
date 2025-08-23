@@ -4,10 +4,10 @@
 
 ```ts
 
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
-const catalogModuleMtaEntityProvider: BackendFeatureCompat;
+const catalogModuleMtaEntityProvider: BackendFeature;
 export default catalogModuleMtaEntityProvider;
 
 ```

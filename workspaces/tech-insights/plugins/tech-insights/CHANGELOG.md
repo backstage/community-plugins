@@ -1,5 +1,52 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.6.2
+
+### Patch Changes
+
+- 43064bf: Updated default non-dense behavior to include a description instead of reverting to tooltip
+- Updated dependencies [ba5bf7b]
+  - @backstage-community/plugin-tech-insights-common@0.7.1
+  - @backstage-community/plugin-tech-insights-react@1.2.1
+
+## 0.6.1
+
+### Patch Changes
+
+- d97a34e: Added support for alternate visualizations of boolean checks:
+
+  - Content lists can be rendered with smaller text size and reduced padding (option `dense`)
+  - Checks in the overview page can be rendered as a badge (option `badge`)
+  - Checks in the entity card can be rendered as a gauge (option `gauge`)
+
+## 0.6.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 01640b2: Makes minor change to API report.
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-react@1.2.0
+
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [ac739ca]
+  - @backstage-community/plugin-tech-insights-common@0.6.0
+  - @backstage-community/plugin-tech-insights-react@1.1.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.5.0
 
 ### Minor Changes

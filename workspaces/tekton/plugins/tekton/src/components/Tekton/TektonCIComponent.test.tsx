@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { render } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import { TektonCIComponent } from './TektonCIComponent';
 
@@ -53,14 +51,20 @@ describe('TektonComponent', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
   });
 
-  it('should render Permission alert if the user does not have view permission', () => {
+  it('should render Permission alert if the user does not have view permission', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
-    const { getByTestId } = render(<TektonCIComponent />);
+    const { getByTestId } = await renderInTestApp(<TektonCIComponent />);
     expect(getByTestId('no-permission-alert')).toBeInTheDocument();
   });
 
-  it('should render TektonComponent', () => {
-    const { getByText } = render(<TektonCIComponent />);
+  it('should render TektonComponent', async () => {
+    const { getByText } = await renderInTestApp(<TektonCIComponent />);
     expect(getByText(/No Pipeline Runs found/i)).not.toBeNull();
+  });
+
+  it('should render Process', async () => {
+    mockUsePermission.mockReturnValue({ loading: true, allowed: false });
+    const { getByTestId } = await renderInTestApp(<TektonCIComponent />);
+    expect(getByTestId('tekton-permission-progress')).toBeInTheDocument();
   });
 });

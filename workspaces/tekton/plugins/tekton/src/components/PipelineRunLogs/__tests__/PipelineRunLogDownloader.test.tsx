@@ -13,27 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import PipelineRunLogDownloader from '../PipelineRunLogDownloader';
 
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
-}));
-
 describe('PipelineRunLogDownloader', () => {
-  it('should not show download links', () => {
+  it('should not show download links', async () => {
     const { pipelineRun } = testPipelineRunPods;
-    render(
-      <PipelineRunLogDownloader
-        pods={[]}
-        pipelineRun={pipelineRun}
-        activeTask={undefined}
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PipelineRunLogDownloader
+          pods={[]}
+          pipelineRun={pipelineRun}
+          activeTask={undefined}
+        />
+      </TestApiProvider>,
     );
 
     expect(screen.queryByTestId('download-task-logs')).not.toBeInTheDocument();
@@ -42,14 +48,25 @@ describe('PipelineRunLogDownloader', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should return download links', () => {
+  it('should return download links', async () => {
     const { pipelineRun, pods } = testPipelineRunPods;
-    render(
-      <PipelineRunLogDownloader
-        pods={pods}
-        pipelineRun={pipelineRun}
-        activeTask={undefined}
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PipelineRunLogDownloader
+          pods={pods}
+          pipelineRun={pipelineRun}
+          activeTask={undefined}
+        />
+      </TestApiProvider>,
     );
 
     expect(screen.getByTestId('download-task-logs')).toBeInTheDocument();

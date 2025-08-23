@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { LegacyRef } from 'react';
+
+import { useState, useContext, useRef, useMemo, memo } from 'react';
 
 import { Tooltip } from '@patternfly/react-core';
 import {
@@ -51,6 +53,8 @@ import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import { PipelineVisualizationStepList } from './PipelineVisualizationStepList';
 
 import './PipelineTaskNode.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineTaskNodeProps = {
   element: Node;
@@ -64,12 +68,13 @@ const PipelineTaskNode = ({
   contextMenuOpen,
   ...rest
 }: PipelineTaskNodeProps) => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const { watchResourcesData } = React.useContext<TektonResourcesContextData>(
+  const [open, setOpen] = useState<boolean>(false);
+  const { watchResourcesData } = useContext<TektonResourcesContextData>(
     TektonResourcesContext,
   );
+  const { t } = useTranslationRef(tektonTranslationRef);
   const data = element.getData();
-  const triggerRef = React.useRef<SVGGElement | null>(null);
+  const triggerRef = useRef<SVGGElement | null>(null);
 
   const pipelineRun = data.pipelineRun;
   const [hover, hoverRef] = useHover();
@@ -93,7 +98,7 @@ const PipelineTaskNode = ({
   const taskStatus = getTaskStatus(data.pipelineRun, data.task);
 
   const stepStatusList: StepStatus[] = stepList.map((step: { name: string }) =>
-    createStepStatus(step, taskStatus),
+    createStepStatus(step, taskStatus, t),
   );
   const succeededStepsCount = stepStatusList.filter(
     ({ status }) => status === RunStatus.Succeeded,
@@ -104,7 +109,7 @@ const PipelineTaskNode = ({
       ? `${succeededStepsCount}/${stepStatusList.length}`
       : null;
 
-  const passedData = React.useMemo(() => {
+  const passedData = useMemo(() => {
     const newData = { ...data };
     Object.keys(newData).forEach(key => {
       if (newData[key] === undefined) {
@@ -174,7 +179,7 @@ const PipelineTaskNode = ({
       <g
         data-test={`task ${element.getLabel()}`}
         className="bs-tkn-pipeline-task-node"
-        ref={hoverRef as React.LegacyRef<SVGGElement>}
+        ref={hoverRef as LegacyRef<SVGGElement>}
       >
         <Tooltip
           position="bottom"
@@ -196,4 +201,4 @@ const PipelineTaskNode = ({
   );
 };
 
-export default React.memo(observer(PipelineTaskNode));
+export default memo(observer(PipelineTaskNode));

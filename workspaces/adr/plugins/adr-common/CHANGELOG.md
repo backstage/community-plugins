@@ -1,5 +1,29 @@
 # @backstage-community/plugin-adr-common
 
+## 0.10.0
+
+### Minor Changes
+
+- c5f6243: Backstage version bump to v1.41.1
+
+## 0.9.0
+
+### Minor Changes
+
+- e368185: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- fc4fa2c: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- e22d803: Backstage version bump to v1.38.1
+
 ## 0.6.0
 
 ### Minor Changes

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Content, Page } from '@backstage/core-components';
-import React from 'react';
+import { default as React } from 'react';
 import { AppListPage } from '../AppList/AppListPage';
 import { IstioConfigListPage } from '../IstioConfigList/IstioConfigListPage';
 import { OverviewPage } from '../Overview/OverviewPage';

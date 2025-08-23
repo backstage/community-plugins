@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IstioConfigList } from '../../types/IstioConfigList';
-import { ValidationStatus } from '../../types/IstioObjects';
-import { ControlPlaneMetricsMap, Metric } from '../../types/Metrics';
-import { TLSStatus } from '../../types/TLSStatus';
+import {
+  ControlPlaneMetricsMap,
+  IstioConfigList,
+  Metric,
+  TLSStatus,
+  ValidationStatus,
+} from '@backstage-community/plugin-kiali-common/types';
+
+export type NamespaceInfoStatus = {
+  inNotReady: string[];
+  inError: string[];
+  inWarning: string[];
+  inSuccess: string[];
+  notAvailable: string[];
+};
 
 export type NamespaceInfo = {
   name: string;
   cluster?: string;
   outboundPolicyMode?: string;
-  status?: NamespaceStatus;
+  status?: NamespaceInfoStatus;
   tlsStatus?: TLSStatus;
   istioConfig?: IstioConfigList;
   validations?: ValidationStatus;
@@ -32,12 +43,4 @@ export type NamespaceInfo = {
   annotations?: { [key: string]: string };
   controlPlaneMetrics?: ControlPlaneMetricsMap;
   isAmbient?: boolean;
-};
-
-export type NamespaceStatus = {
-  inNotReady: string[];
-  inError: string[];
-  inWarning: string[];
-  inSuccess: string[];
-  notAvailable: string[];
 };

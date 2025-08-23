@@ -4,13 +4,23 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
 export function createQuayRepositoryAction(): TemplateAction<
-  TemplateActionParameters,
-  JsonObject
+  {
+    name: string;
+    visibility: string;
+    description: string;
+    token: string;
+    baseUrl?: string | undefined;
+    namespace?: string | undefined;
+    repoKind?: string | undefined;
+  },
+  {
+    repositoryUrl: string;
+  },
+  'v2'
 >;
 
 // @public (undocumented)

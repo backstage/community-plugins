@@ -13,6 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  Health,
+  NamespaceAppHealth,
+  NamespaceServiceHealth,
+  NamespaceWorkloadHealth,
+  nsWideMTLSStatus,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  DEGRADED,
+  DurationInSeconds,
+  FAILURE,
+  HEALTHY,
+  IstioMetricsOptions,
+  NOT_READY,
+  SortField,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
   CardTab,
@@ -23,36 +40,16 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
-import React, { useRef, useState } from 'react';
+import { default as React, useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { isMultiCluster, serverConfig } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import {
-  DEGRADED,
-  FAILURE,
-  Health,
-  HEALTHY,
-  NamespaceAppHealth,
-  NamespaceServiceHealth,
-  NamespaceWorkloadHealth,
-  NOT_READY,
-} from '../../types/Health';
-import {
-  CanaryUpgradeStatus,
-  OutboundTrafficPolicy,
-} from '../../types/IstioObjects';
-import { IstiodResourceThresholds } from '../../types/IstioStatus';
-import { MessageType } from '../../types/MessageCenter';
-import { IstioMetricsOptions } from '../../types/MetricsOptions';
-import { SortField } from '../../types/SortFilters';
-import { nsWideMTLSStatus } from '../../types/TLSStatus';
 import { PromisesRegistry } from '../../utils/CancelablePromises';
-import { NamespaceInfo, NamespaceStatus } from './NamespaceInfo';
+import { NamespaceInfo, NamespaceInfoStatus } from './NamespaceInfo';
 import { OverviewCard } from './OverviewCard';
 import { switchType } from './OverviewHelper';
 import {
@@ -98,6 +95,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       kialiState.providers.activeProvider,
     );
   }
+
   const activeNsName = kialiState.namespaces.activeNamespaces.map(
     ns => ns.name,
   );
@@ -106,13 +104,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   const prevActiveNs = useRef(activeNsName);
   const promises = new PromisesRegistry();
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
-  const [outboundTrafficPolicy, setOutboundTrafficPolicy] =
-    React.useState<OutboundTrafficPolicy>({});
-  const [canaryUpgradeStatus, setCanaryUpgradeStatus] = React.useState<
-    CanaryUpgradeStatus | undefined
-  >(undefined);
-  const [istiodResourceThresholds, setIstiodResourceThresholds] =
-    React.useState<IstiodResourceThresholds>({ memory: 0, cpu: 0 });
   const [duration, setDuration] = React.useState<number>(
     FilterHelper.currentDuration(),
   );
@@ -124,6 +115,14 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   );
   const [activeNs, setActiveNs] = React.useState<NamespaceInfo[]>([]);
 
+  const setHealth = (ns: NamespaceInfo, i: number) => {
+    setNamespaces(prevNamespaces => {
+      const newNs = [...prevNamespaces];
+      newNs[i] = { ...newNs, ...ns };
+      return newNs;
+    });
+  };
+
   const sortedNamespaces = (nss: NamespaceInfo[]) => {
     nss.sort((a, b) => {
       if (a.name === serverConfig.istioNamespace) return -1;
@@ -133,47 +132,68 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     return nss;
   };
 
-  const fetchHealthChunk = async (chunk: NamespaceInfo[]): Promise<void> => {
+  const fetchHealthForCluster = async (
+    namespacesInfo: NamespaceInfo[],
+    cluster: string,
+    durationSec: DurationInSeconds,
+    type: OverviewType,
+  ): Promise<void> => {
     const apiFunc = switchType(
-      overviewType,
-      kialiClient.getNamespaceAppHealth,
-      kialiClient.getNamespaceServiceHealth,
-      kialiClient.getNamespaceWorkloadHealth,
+      type,
+      kialiClient.getClustersAppHealth,
+      kialiClient.getClustersServiceHealth,
+      kialiClient.getClustersWorkloadHealth,
+    );
+    const healthPromise: Promise<
+      | Map<string, NamespaceAppHealth>
+      | Map<string, NamespaceWorkloadHealth>
+      | Map<string, NamespaceServiceHealth>
+    > = apiFunc(
+      namespacesInfo
+        .filter(ns => ns.cluster === cluster)
+        .map(ns => ns.name)
+        .join(','),
+      durationSec,
+      cluster,
     );
 
-    return Promise.all(
-      chunk.map(async nsInfo => {
-        const healthPromise: Promise<
-          NamespaceAppHealth | NamespaceWorkloadHealth | NamespaceServiceHealth
-        > = apiFunc(nsInfo.name, duration, nsInfo.cluster);
-        return healthPromise.then(rs => ({ health: rs, nsInfo: nsInfo }));
-      }),
-    )
+    return healthPromise
       .then(results => {
-        results.forEach(result => {
-          const nsStatus: NamespaceStatus = {
+        namespacesInfo.forEach((nsInfo, index) => {
+          const nsStatus: NamespaceInfoStatus = {
             inNotReady: [],
             inError: [],
             inWarning: [],
             inSuccess: [],
             notAvailable: [],
           };
-          Object.keys(result.health).forEach(item => {
-            const health: Health = result.health[item];
-            const status = health.getGlobalStatus();
-            if (status === FAILURE) {
-              nsStatus.inError.push(item);
-            } else if (status === DEGRADED) {
-              nsStatus.inWarning.push(item);
-            } else if (status === HEALTHY) {
-              nsStatus.inSuccess.push(item);
-            } else if (status === NOT_READY) {
-              nsStatus.inNotReady.push(item);
-            } else {
-              nsStatus.notAvailable.push(item);
-            }
-          });
-          result.nsInfo.status = nsStatus;
+          if (
+            ((nsInfo.cluster && nsInfo.cluster === cluster) ||
+              !nsInfo.cluster) &&
+            results.get(nsInfo.name)
+          ) {
+            const resultObj = results.get(nsInfo.name);
+            // @ts-ignore
+            Object.keys(resultObj).forEach(k => {
+              // @ts-ignore
+              const health: Health = resultObj[k];
+              const status = health.getGlobalStatus();
+
+              if (status === FAILURE) {
+                nsStatus.inError.push(k);
+              } else if (status === DEGRADED) {
+                nsStatus.inWarning.push(k);
+              } else if (status === HEALTHY) {
+                nsStatus.inSuccess.push(k);
+              } else if (status === NOT_READY) {
+                nsStatus.inNotReady.push(k);
+              } else {
+                nsStatus.notAvailable.push(k);
+              }
+            });
+            nsInfo.status = nsStatus;
+            setHealth(nsInfo, index);
+          }
         });
       })
       .catch(err =>
@@ -183,18 +203,30 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       );
   };
 
+  const filterActiveNamespaces = (nss: NamespaceInfo[]) => {
+    return nss.filter(ns => activeNsName.includes(ns.name));
+  };
+
   const fetchHealth = (
-    nss: NamespaceInfo[],
     isAscending: boolean,
     sortField: SortField<NamespaceInfo>,
-  ): void => {
-    _.chunk(nss, 10).forEach(chunk => {
+    type: OverviewType,
+    nsList: NamespaceInfo[],
+  ) => {
+    const durationCurrent = FilterHelper.currentDuration();
+    const uniqueClusters = new Set<string>();
+    nsList.forEach(namespace => {
+      if (namespace.cluster) {
+        uniqueClusters.add(namespace.cluster);
+      }
+    });
+    uniqueClusters.forEach(cluster => {
       promises
-        .registerChained('healthchunks', undefined, () =>
-          fetchHealthChunk(chunk),
+        .registerChained('health', undefined, () =>
+          fetchHealthForCluster(nsList, cluster, durationCurrent, type),
         )
         .then(() => {
-          let newNamespaces = nss.slice();
+          let newNamespaces = namespaces.slice();
           if (sortField.id === 'health') {
             newNamespaces = Sorts.sortFunc(
               newNamespaces,
@@ -202,16 +234,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
               isAscending,
             );
           }
-          return newNamespaces;
-        })
-        .catch(error => {
-          kialiState.alertUtils!.add(
-            `Could not fetch health: ${getErrorString(error)}`,
-          );
-          if (error.isCanceled) {
-            return [];
-          }
-          return error;
+          setActiveNs(filterActiveNamespaces(newNamespaces));
+          return { namespaces: newNamespaces };
         });
     });
   };
@@ -265,63 +289,13 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     });
   };
 
-  const fetchOutboundTrafficPolicyMode = () => {
-    kialiClient
-      .getOutboundTrafficPolicyMode()
-      .then(response => {
-        setOutboundTrafficPolicy({ mode: response.mode });
-      })
-      .catch(error => {
-        kialiState.alertUtils!.addError(
-          'Error fetching Mesh OutboundTrafficPolicy.Mode.',
-          error,
-          'default',
-          MessageType.ERROR,
-        );
-      });
-  };
-
-  const fetchCanariesStatus = () =>
-    kialiClient
-      .getCanaryUpgradeStatus()
-      .then(response => {
-        setCanaryUpgradeStatus({
-          currentVersion: response.currentVersion,
-          upgradeVersion: response.upgradeVersion,
-          migratedNamespaces: response.migratedNamespaces,
-          pendingNamespaces: response.pendingNamespaces,
-        });
-      })
-      .catch(error => {
-        kialiState.alertUtils!.addError(
-          'Error fetching canary upgrade status.',
-          error,
-          'default',
-          MessageType.ERROR,
-        );
-      });
-
-  const fetchIstiodResourceThresholds = () => {
-    kialiClient
-      .getIstiodResourceThresholds()
-      .then(response => setIstiodResourceThresholds(response))
-      .catch(error => {
-        kialiState.alertUtils!.addError(
-          'Error fetching Istiod resource thresholds.',
-          error,
-          'default',
-          MessageType.ERROR,
-        );
-      });
-  };
-
   const fetchValidationResultForCluster = async (
     nss: NamespaceInfo[],
     cluster: string,
   ) => {
     return Promise.all([
       kialiClient.getConfigValidations(cluster),
-      kialiClient.getAllIstioConfigs([], [], false, '', '', cluster),
+      kialiClient.getAllIstioConfigs([], true, '', '', cluster),
     ])
       .then(results => {
         nss.forEach(nsInfo => {
@@ -334,6 +308,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
             nsInfo.validations = results[0][nsInfo.cluster][nsInfo.name];
           }
           if (nsInfo.cluster && nsInfo.cluster === cluster) {
+            // @ts-ignore
             nsInfo.istioConfig = results[1][nsInfo.name];
           }
         });
@@ -415,10 +390,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     );
   };
 
-  const filterActiveNamespaces = (nss: NamespaceInfo[]) => {
-    return nss.filter(ns => activeNsName.includes(ns.name));
-  };
-
   const fetchMetrics = async (nss: NamespaceInfo[]) => {
     // debounce async for back-pressure, ten by ten
     _.chunk(nss, 10).forEach(chunk => {
@@ -459,17 +430,13 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         const isAscending = FilterHelper.isCurrentSortAscending();
         const sortField = FilterHelper.currentSortField(Sorts.sortFields);
         const sortNs = sortedNamespaces(allNamespaces);
-        if (!props.entity) {
-          fetchHealth(sortNs, isAscending, sortField);
-          fetchTLS(sortNs, isAscending, sortField);
-          fetchValidations(sortNs, isAscending, sortField);
-          fetchOutboundTrafficPolicyMode();
-          fetchCanariesStatus();
-          fetchIstiodResourceThresholds();
-        }
+
+        fetchHealth(isAscending, sortField, overviewType, sortNs);
+        fetchTLS(sortNs, isAscending, sortField);
+        fetchValidations(sortNs, isAscending, sortField);
         fetchMetrics(sortNs);
-        promises.waitAll();
         setNamespaces(sortNs);
+        promises.waitAll();
       })
       .catch(error => {
         setErrorProvider(
@@ -507,12 +474,11 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       {props.entity ? (
         <div style={{ marginBottom: '20px', marginRight: '20px' }}>
           <TabbedCard title="Overview">
-            {activeNs.map(ns => (
+            {namespaces.map(ns => (
               <CardTab label={ns.name} key={`card_ns_${ns.name}`}>
                 <OverviewCard
                   entity
                   namespace={ns}
-                  canaryUpgradeStatus={canaryUpgradeStatus}
                   istioAPIEnabled={
                     kialiState.statusState.istioEnvironment.istioAPIEnabled
                   }
@@ -522,9 +488,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                   refreshInterval={kialiState.userSettings.refreshInterval}
                   certsInfo={kialiState.istioCertsInfo}
                   minTLS={kialiState.meshTLSStatus.minTLS}
-                  istiodResourceThresholds={istiodResourceThresholds}
                   istioStatus={kialiState.istioStatus}
-                  outboundTrafficPolicy={outboundTrafficPolicy}
                 />
               </CardTab>
             ))}
@@ -555,7 +519,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                     >
                       <OverviewCard
                         namespace={ns}
-                        canaryUpgradeStatus={canaryUpgradeStatus}
                         istioAPIEnabled={
                           kialiState.statusState.istioEnvironment
                             .istioAPIEnabled
@@ -568,9 +531,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                         }
                         certsInfo={kialiState.istioCertsInfo}
                         minTLS={kialiState.meshTLSStatus.minTLS}
-                        istiodResourceThresholds={istiodResourceThresholds}
                         istioStatus={kialiState.istioStatus}
-                        outboundTrafficPolicy={outboundTrafficPolicy}
                       />
                     </Grid>
                   ))}

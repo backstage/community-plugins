@@ -1,5 +1,66 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- 3f606e1: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [3f606e1]
+  - @backstage-community/plugin-copilot-common@0.11.0
+
+## 0.10.2
+
+### Patch Changes
+
+- aaf1d82: Updated error logging to ensure error is visible in logs
+
+## 0.10.1
+
+### Patch Changes
+
+- ba2b006: Updated configuration example in documentation
+
+## 0.10.0
+
+### Minor Changes
+
+- d3221bf: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [d3221bf]
+  - @backstage-community/plugin-copilot-common@0.10.0
+
+## 0.9.4
+
+### Patch Changes
+
+- 8c13857: Updated dependency `@octokit/rest` to `20.1.2`.
+
+## 0.9.3
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.9.2
+
+### Patch Changes
+
+- 0595499: Change to fetch correct enterprise seats instead of organisation seats in EnterpriseTask
+
+## 0.9.1
+
+### Patch Changes
+
+- cd78d85: - Upgraded to Backstage release 1.38
+  - Applied migration to the [New JXS Transform](https://backstage.io/docs/tutorials/jsx-transform-migration/)
+- Updated dependencies [cd78d85]
+  - @backstage-community/plugin-copilot-common@0.9.1
+
 ## 0.9.0
 
 ### Minor Changes

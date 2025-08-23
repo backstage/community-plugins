@@ -1,5 +1,60 @@
 ### Dependencies
 
+## 5.7.0
+
+### Minor Changes
+
+- 9740a42: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [9740a42]
+  - @backstage-community/plugin-ocm-common@3.11.0
+
+## 5.6.1
+
+### Patch Changes
+
+- 9bfafad: remove product theme from dev dependencies and dev app
+
+## 5.6.0
+
+### Minor Changes
+
+- f0a6ba7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f0a6ba7]
+  - @backstage-community/plugin-ocm-common@3.10.0
+
+## 5.5.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-ocm-common@3.9.1
+
+## 5.5.0
+
+### Minor Changes
+
+- fde918d: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [fde918d]
+  - @backstage-community/plugin-ocm-common@3.9.0
+
+## 5.4.4
+
+### Patch Changes
+
+- 1ac3b94: remove @spotify/prettier-config direct dependency
+- Updated dependencies [1ac3b94]
+  - @backstage-community/plugin-ocm-common@3.8.3
+
 ## 5.4.3
 
 ### Patch Changes

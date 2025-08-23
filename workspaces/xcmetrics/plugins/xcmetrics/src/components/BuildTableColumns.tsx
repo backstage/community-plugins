@@ -15,7 +15,6 @@
  */
 
 import Chip from '@material-ui/core/Chip';
-import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import { Build } from '../api';
 import { formatTime, formatDuration } from '../utils';

@@ -8,6 +8,7 @@ attributes:
     - acr
     - acs
     - adr
+    - agent-forge
     - airbrake
     - allure
     - amplication
@@ -23,6 +24,7 @@ attributes:
     - bazaar
     - bitrise
     - blackduck
+    - bookmarks
     - cicd-statistics
     - cloudbuild
     - code-climate
@@ -82,7 +84,6 @@ attributes:
     - quay
     - rbac
     - redhat-argocd
-    - redhat-resource-optimization
     - report-portal
     - rollbar
     - scaffolder-backend-module-annotator
@@ -92,6 +93,7 @@ attributes:
     - scaffolder-backend-module-sonarqube
     - scaffolder-relation-processor
     - sentry
+    - servicenow
     - shortcuts
     - sonarqube
     - splunk
@@ -103,6 +105,7 @@ attributes:
     - todo
     - topology
     - vault
+    - wheel-of-names
     - xcmetrics
   default: 0
 validations:

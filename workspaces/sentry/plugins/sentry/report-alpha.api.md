@@ -5,10 +5,10 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api/*';
+import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -23,7 +23,7 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'api:sentry': ExtensionDefinition<{
+    [x: `api:${string}`]: ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -38,7 +38,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:sentry/sentry-issues': ExtensionDefinition<{
+    [x: `entity-card:${string}/sentry-issues`]: ExtensionDefinition<{
       kind: 'entity-card';
       name: 'sentry-issues';
       config: {
@@ -79,7 +79,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:sentry/sentry-issues': ExtensionDefinition<{
+    [x: `entity-content:${string}/sentry-issues`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'sentry-issues';
       config: {
@@ -139,7 +139,9 @@ const _default: FrontendPlugin<
           | (string & {})
           | 'development'
           | 'deployment'
+          | 'overview'
           | 'documentation'
+          | 'operation'
           | 'observability'
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;

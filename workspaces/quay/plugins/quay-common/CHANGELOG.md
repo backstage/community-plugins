@@ -1,5 +1,41 @@
 # @backstage-community/plugin-quay-common
 
+## 1.10.0
+
+### Minor Changes
+
+- 78bb7a9: Backstage version bump to v1.41.1
+
+## 1.9.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.9.0
+
+### Minor Changes
+
+- 279c9ba: Backstage version bump to v1.39.1
+
+## 1.8.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
+## 1.8.0
+
+### Minor Changes
+
+- e172aba: Bump backstage version to v1.38.1
+
+## 1.7.2
+
+### Patch Changes
+
+- 16c57cc: chore: Remove usage of @spotify/prettier-config
+
 ## 1.7.1
 
 ### Patch Changes

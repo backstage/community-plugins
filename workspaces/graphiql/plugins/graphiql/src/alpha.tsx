@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import {
-  createApiExtension,
-  createExtension,
+  ApiBlueprint,
+  createExtensionBlueprint,
   createExtensionDataRef,
   createExtensionInput,
-  createNavItemExtension,
-  createPageExtension,
-  createPlugin,
-  createSchemaFromZod,
-  PortableSchema,
+  createFrontendPlugin,
+  NavItemBlueprint,
+  PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
   graphQlBrowseApiRef,
@@ -32,7 +29,7 @@ import {
   GraphQLEndpoint,
   GraphiQLIcon,
 } from '@backstage-community/plugin-graphiql';
-import { createApiFactory, IconComponent } from '@backstage/core-plugin-api';
+import { createApiFactory } from '@backstage/core-plugin-api';
 import { graphiQLRouteRef } from './route-refs';
 import {
   compatWrapper,
@@ -41,93 +38,81 @@ import {
 } from '@backstage/core-compat-api';
 
 /** @alpha */
-export const graphiqlPage = createPageExtension({
-  defaultPath: '/graphiql',
-  routeRef: convertLegacyRouteRef(graphiQLRouteRef),
-  loader: () =>
-    import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
+export const graphiqlPage = PageBlueprint.make({
+  params: {
+    defaultPath: '/graphiql',
+    routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+    loader: () =>
+      import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
+  },
 });
 
 /** @alpha */
-export const graphiqlNavItem = createNavItemExtension({
-  title: 'GraphiQL',
-  icon: GraphiQLIcon as IconComponent,
-  routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+export const graphiqlNavItem = NavItemBlueprint.make({
+  params: {
+    title: 'GraphiQL',
+    routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+    icon: GraphiQLIcon,
+  },
 });
 
 /** @internal */
-const endpointDataRef = createExtensionDataRef<GraphQLEndpoint>(
-  'graphiql.graphiql-endpoint',
-);
+const endpointDataRef = createExtensionDataRef<GraphQLEndpoint>().with({
+  id: 'graphiql.graphiql-endpoint',
+});
 
 /** @alpha */
-export const graphiqlBrowseApi = createApiExtension({
-  api: graphQlBrowseApiRef,
+export const graphiqlBrowseApi = ApiBlueprint.makeWithOverrides({
   inputs: {
-    endpoints: createExtensionInput({
-      endpoint: endpointDataRef,
-    }),
+    endpoints: createExtensionInput([endpointDataRef]),
   },
-  factory({ inputs }) {
-    return createApiFactory(
-      graphQlBrowseApiRef,
-      GraphQLEndpoints.from(inputs.endpoints.map(i => i.output.endpoint)),
-    );
+  factory(originalFactory, { inputs }) {
+    return originalFactory({
+      factory: createApiFactory(
+        graphQlBrowseApiRef,
+        GraphQLEndpoints.from(
+          inputs.endpoints.map(i => i.get(endpointDataRef)),
+        ),
+      ),
+    });
   },
 });
 
 /** @alpha */
-export function createGraphiQLEndpointExtension<TConfig extends {}>(options: {
-  namespace?: string;
-  name?: string;
-  configSchema?: PortableSchema<TConfig>;
-  disabled?: boolean;
-  factory: (options: { config: TConfig }) => { endpoint: GraphQLEndpoint };
-}) {
-  return createExtension({
-    kind: 'graphiql-endpoint',
-    namespace: options.namespace,
-    name: options.name,
-    attachTo: { id: 'api:graphiql/browse', input: 'endpoints' },
-    configSchema: options.configSchema,
-    disabled: options.disabled ?? false,
-    output: {
-      endpoint: endpointDataRef,
-    },
-    factory({ config }) {
-      return {
-        endpoint: options.factory({ config }).endpoint,
-      };
-    },
-  });
-}
+export const GraphiQLEndpointBlueprint = createExtensionBlueprint({
+  kind: 'graphiql-endpoint',
+  attachTo: { id: 'api:graphiql/browse', input: 'endpoints' },
+  output: [endpointDataRef],
+  factory(params: { endpoint: GraphQLEndpoint }) {
+    return [endpointDataRef(params.endpoint)];
+  },
+});
 
 /** @alpha */
-const graphiqlGitlabGraphiQLEndpointExtension = createGraphiQLEndpointExtension(
-  {
+const graphiqlGitlabGraphiQLEndpointExtension =
+  GraphiQLEndpointBlueprint.makeWithOverrides({
     name: 'gitlab',
     disabled: true,
-    configSchema: createSchemaFromZod(z =>
-      z
-        .object({
-          id: z.string().default('gitlab'),
-          title: z.string().default('GitLab'),
-          url: z.string().default('https://gitlab.com/api/graphql'),
-        })
-        .default({}),
-    ),
-    factory: ({ config }) => ({ endpoint: GraphQLEndpoints.create(config) }),
-  },
-);
+    config: {
+      schema: {
+        id: z => z.string().default('gitlab'),
+        title: z => z.string().default('GitLab'),
+        url: z => z.string().default('https://gitlab.com/api/graphql'),
+      },
+    },
+
+    factory: (originalFactory, { config }) =>
+      originalFactory({ endpoint: GraphQLEndpoints.create(config) }),
+  });
 
 /** @alpha */
-export default createPlugin({
-  id: 'graphiql',
+export default createFrontendPlugin({
+  pluginId: 'graphiql',
   extensions: [
     graphiqlPage,
+    graphiqlNavItem,
     graphiqlBrowseApi,
     graphiqlGitlabGraphiQLEndpointExtension,
-    graphiqlNavItem,
   ],
   routes: convertLegacyRouteRefs({
     root: graphiQLRouteRef,

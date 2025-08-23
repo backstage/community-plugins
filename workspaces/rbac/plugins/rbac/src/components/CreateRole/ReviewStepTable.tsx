@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { Fragment } from 'react';
 
 export const ReviewStepTable = ({
   columns,
@@ -44,7 +44,7 @@ export const ReviewStepTable = ({
         </thead>
         <tbody>
           {rows.map((row, rowIndex) => (
-            <React.Fragment key={rowIndex}>
+            <Fragment key={rowIndex}>
               <tr>
                 {columns.map(rowCol => (
                   <td
@@ -58,7 +58,7 @@ export const ReviewStepTable = ({
                 ))}
               </tr>
               <tr />
-            </React.Fragment>
+            </Fragment>
           ))}
         </tbody>
       </table>

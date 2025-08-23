@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ReactElement } from 'react';
+
+import { useState, useContext } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { V1Pod } from '@kubernetes/client-node';
 import { createStyles, Link, makeStyles, Theme } from '@material-ui/core';
 import DownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 import classNames from 'classnames';
 
-import { downloadLogFile } from '@janus-idp/shared-react';
-
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { ContainerScope } from '../../hooks/usePodLogsOfPipelineRun';
-import {
-  kubernetesProxyApiRef,
-  TektonResourcesContextData,
-} from '../../types/types';
+import { TektonResourcesContextData } from '../../types/types';
 import { getPodLogs } from '../../utils/log-downloader-utils';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
+import { downloadLogFile } from '../../utils/download-log-file-utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,17 +48,18 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const PodLogsDownloadLink: React.FC<{
+const PodLogsDownloadLink: FC<{
   pods: V1Pod[];
   fileName: string;
   downloadTitle: string;
-}> = ({ pods, fileName, downloadTitle, ...props }): React.ReactElement => {
+}> = ({ pods, fileName, downloadTitle, ...props }): ReactElement => {
   const classes = useStyles();
-  const [downloading, setDownloading] = React.useState<boolean>(false);
+  const [downloading, setDownloading] = useState<boolean>(false);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const { clusters, selectedCluster = 0 } =
-    React.useContext<TektonResourcesContextData>(TektonResourcesContext);
+    useContext<TektonResourcesContextData>(TektonResourcesContext);
   const currCluster = clusters.length > 0 ? clusters[selectedCluster] : '';
 
   const getLogs = (podScope: ContainerScope): Promise<{ text: string }> => {
@@ -76,7 +78,11 @@ const PodLogsDownloadLink: React.FC<{
       variant="body2"
       underline="none"
       disabled={downloading}
-      title={downloading ? 'downloading logs' : downloadTitle}
+      title={
+        downloading
+          ? t('pipelineRunLogs.podLogsDownloadLink.downloading')
+          : downloadTitle
+      }
       onClick={() => {
         setDownloading(true);
         getPodLogs(pods, getLogs, currCluster)
@@ -96,7 +102,7 @@ const PodLogsDownloadLink: React.FC<{
       {...props}
     >
       <DownloadIcon style={{ verticalAlign: '-0.180em' }} />
-      {downloadTitle || 'Download '}
+      {downloadTitle || t('pipelineRunLogs.podLogsDownloadLink.title')}
     </Link>
   );
 };

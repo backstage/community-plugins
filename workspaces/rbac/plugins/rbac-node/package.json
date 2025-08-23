@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-rbac-node",
   "description": "Node.js library for the rbac plugin",
-  "version": "1.10.1",
+  "version": "1.13.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -12,7 +12,6 @@
   },
   "backstage": {
     "role": "node-library",
-    "supported-versions": "^1.28.4",
     "pluginId": "rbac",
     "pluginPackages": [
       "@backstage-community/plugin-rbac",
@@ -34,14 +33,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
-    "@spotify/prettier-config": "^15.0.0"
+    "@backstage/cli": "^0.33.1"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.2.0"
+    "@backstage/backend-plugin-api": "^1.4.1"
   },
   "repository": {
     "type": "git",
@@ -53,11 +51,7 @@
   ],
   "author": "Red Hat",
   "bugs": "https://github.com/backstage/community-plugins/issues",
-  "keywords": [
-    "support:production",
-    "lifecycle:active"
-  ],
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

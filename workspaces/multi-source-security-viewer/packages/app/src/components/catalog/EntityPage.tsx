@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
@@ -74,7 +73,7 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 import {
-  isMultiCIAvailable,
+  isMultiCIAvailableAndEnabled,
   EntityMultiCIPipelinesContent,
 } from '@backstage-community/plugin-multi-source-security-viewer';
 
@@ -106,15 +105,12 @@ const cicdContent = (
     <EntitySwitch.Case if={isGithubActionsAvailable}>
       <EntityGithubActionsContent />
     </EntitySwitch.Case>
-
     <EntitySwitch.Case if={isJenkinsAvailable}>
       <EntityJenkinsContent />
     </EntitySwitch.Case>
-
     <EntitySwitch.Case if={isAzurePipelinesAvailable}>
       <EntityAzurePipelinesContent />
     </EntitySwitch.Case>
-
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"
@@ -136,7 +132,7 @@ const cicdContent = (
 
 const securityContent = (
   <EntitySwitch>
-    <EntitySwitch.Case if={isMultiCIAvailable}>
+    <EntitySwitch.Case if={isMultiCIAvailableAndEnabled}>
       <EntityMultiCIPipelinesContent />
     </EntitySwitch.Case>
 

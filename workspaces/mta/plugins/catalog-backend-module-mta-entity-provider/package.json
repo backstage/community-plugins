@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider",
   "description": "The mta-entity-provider backend module for the catalog plugin.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -31,18 +31,18 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/backend-dynamic-feature-service": "^0.2.15",
-    "@backstage/backend-plugin-api": "^0.6.18",
-    "@backstage/catalog-model": "^1.5.0",
-    "@backstage/config": "^1.2.0",
-    "@backstage/plugin-catalog-common": "^1.0.22",
-    "@backstage/plugin-catalog-node": "^1.12.4",
+    "@backstage/backend-dynamic-feature-service": "^0.6.1",
+    "@backstage/backend-plugin-api": "^1.2.1",
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/config": "^1.3.2",
+    "@backstage/plugin-catalog-common": "^1.1.3",
+    "@backstage/plugin-catalog-node": "^1.16.2",
     "openid-client": "^5.6.5",
     "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.6",
-    "@backstage/cli": "^0.26.11"
+    "@backstage/backend-test-utils": "^1.3.1",
+    "@backstage/cli": "^0.31.1"
   },
   "files": [
     "dist"

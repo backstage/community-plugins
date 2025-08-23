@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
+
+import { useEffect, Fragment } from 'react';
 
 import {
   Box,
@@ -45,6 +47,8 @@ import './PipelineRunRow.css';
 import classNames from 'classnames';
 
 import SignedBadgeIcon from '../Icons/SignedBadge';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) => ({
   plrRow: {
@@ -68,7 +72,7 @@ type PipelineRunRowProps = {
   startTime: string;
   isExpanded?: boolean;
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<OpenRowStatus>>;
+  setOpen: Dispatch<SetStateAction<OpenRowStatus>>;
 };
 
 type PipelineRunNameProps = { row: PipelineRunKind };
@@ -117,8 +121,9 @@ export const PipelineRunRow = ({
 }: PipelineRunRowProps) => {
   const classes = useStyles();
   const uid = row.metadata?.uid;
+  const { t } = useTranslationRef(tektonTranslationRef);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return setOpen((val: OpenRowStatus) => {
       return {
         ...val,
@@ -139,7 +144,7 @@ export const PipelineRunRow = ({
   };
 
   return (
-    <React.Fragment key={uid}>
+    <Fragment key={uid}>
       <TableRow className={classes.plrRow}>
         <TableCell>
           <IconButton
@@ -172,7 +177,7 @@ export const PipelineRunRow = ({
             '-'
           )}
         </TableCell>
-        <TableCell align="left">{pipelineRunDuration(row)}</TableCell>
+        <TableCell align="left">{pipelineRunDuration(row, t)}</TableCell>
         <TableCell align="left">
           <PipelineRunRowActions pipelineRun={row} />
         </TableCell>
@@ -186,6 +191,6 @@ export const PipelineRunRow = ({
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </Fragment>
   );
 };

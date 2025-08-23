@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext } from 'react';
 
 import { Select, SelectedItems } from '@backstage/core-components';
 
@@ -24,6 +24,8 @@ import './StatusSelector.css';
 import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles<Theme>(theme => ({
   label: {
@@ -34,33 +36,35 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-export const statusOptions = Object.entries(ComputedStatus)
-  .sort(([keyA], [keyB]) => {
-    if (keyA === keyB) {
-      return 0;
-    } else if (keyA < keyB) {
-      return -1;
-    }
-    return 1;
-  })
-  .map(([key, value]) => ({
-    value: key,
-    label: value,
-  }));
-
 export const StatusSelector = () => {
   const classes = useStyles();
-  const { selectedStatus, setSelectedStatus } = React.useContext(
+  const { selectedStatus, setSelectedStatus } = useContext(
     TektonResourcesContext,
   );
 
   const onStatusChange = (status: SelectedItems) => {
     setSelectedStatus(status as ComputedStatus);
   };
+  const { t } = useTranslationRef(tektonTranslationRef);
+  const statusOptions = Object.entries(ComputedStatus)
+    .sort(([keyA], [keyB]) => {
+      if (keyA === keyB) {
+        return 0;
+      } else if (keyA < keyB) {
+        return -1;
+      }
+      return 1;
+    })
+    .map(([key, value]) => ({
+      value: key,
+      label: t(`pipelineRunStatus.${key}` as any, { defaultValue: value }),
+    }));
 
   return (
     <div className="bs-tkn-status-selector">
-      <Typography className={classes.label}>Status</Typography>
+      <Typography className={classes.label}>
+        {t('statusSelector.label')}
+      </Typography>
       <Select
         onChange={onStatusChange}
         label=""

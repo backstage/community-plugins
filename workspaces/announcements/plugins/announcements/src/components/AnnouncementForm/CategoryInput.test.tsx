@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { SetStateAction } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
@@ -39,7 +39,7 @@ jest.mock('@backstage-community/plugin-announcements-react', () => ({
 
 describe('CategoryInput', () => {
   const mockSetForm: (
-    value: React.SetStateAction<{
+    value: SetStateAction<{
       category: string | undefined;
       id: string;
       publisher: string;
@@ -49,6 +49,7 @@ describe('CategoryInput', () => {
       created_at: string;
       active: boolean;
       start_at: string;
+      tags: string[] | undefined;
     }>,
   ) => void = jest.fn();
 
@@ -62,6 +63,7 @@ describe('CategoryInput', () => {
     created_at: 'created_at',
     active: true,
     start_at: 'start_at',
+    tags: ['kubernetes', 'go'],
   };
 
   const announcementsApiMock = { categories: jest.fn() };

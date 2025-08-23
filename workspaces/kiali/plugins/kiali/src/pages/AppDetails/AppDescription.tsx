@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Health } from '@backstage-community/plugin-kiali-common/func';
+import type { App } from '@backstage-community/plugin-kiali-common/types';
 import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { DetailDescription } from '../../components/DetailDescription/DetailDescription';
 import { HealthIndicator } from '../../components/Health/HealthIndicator';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
 import { isMultiCluster, serverConfig } from '../../config';
 import { cardsHeight, kialiStyle } from '../../styles/StyleUtils';
-import { App } from '../../types/App';
-import * as H from '../../types/Health';
 
 type AppDescriptionProps = {
   app?: App;
-  health?: H.Health;
+  health?: Health;
   view?: string;
 };
 

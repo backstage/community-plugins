@@ -14,4 +14,3 @@
  * limitations under the License.
  */
 export { createSonarQubeProjectAction } from './createSonarQubeProject';
-export type { TemplateActionParameters } from './createSonarQubeProject';

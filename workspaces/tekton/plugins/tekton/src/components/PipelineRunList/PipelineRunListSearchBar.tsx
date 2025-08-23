@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   FormControl,
   IconButton,
@@ -24,6 +22,8 @@ import {
 } from '@material-ui/core';
 import Clear from '@material-ui/icons/Clear';
 import Search from '@material-ui/icons/Search';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineRunListSearchBarProps = {
   value: string;
@@ -42,12 +42,13 @@ export const PipelineRunListSearchBar = ({
   onChange,
 }: PipelineRunListSearchBarProps) => {
   const classes = useStyles();
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <FormControl className={classes.formControl}>
       <Input
         aria-label="search"
-        placeholder="Search"
+        placeholder={t('pipelineRunList.searchBarPlaceholder')}
         autoComplete="off"
         onChange={event => onChange(event.target.value)}
         value={value}

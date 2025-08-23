@@ -1,5 +1,41 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.11.0
+
+### Minor Changes
+
+- 2fb111a: Backstage version bump to v1.41.1
+
+## 0.10.1
+
+### Patch Changes
+
+- 9b53e9b: Refined CQL query generation in the Confluence collator to correctly handle combinations of 'spaces' and 'query' parameters, preventing invalid queries when 'spaces' is empty but 'query' is present. Updated tests and documentation accordingly.
+
+## 0.10.0
+
+### Minor Changes
+
+- 106dd40: Add support for scoped API tokens when using Atlassian Cloud for the Confluence plugin.
+
+## 0.9.0
+
+### Minor Changes
+
+- 8298b36: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 3b26c6b: Backstage version bump to v1.38.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 7f9ae73: Added configurable rate limiting to the Confluence plugin to mitigate excessive requests and improve performance under high load. Administrators can now set limits on API calls to better control usage. Please refer to the documentation for configuration details.
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,73 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.9.0
+
+### Minor Changes
+
+- 8a9d386: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [8a9d386]
+  - @backstage-community/plugin-tech-radar-common@1.8.0
+
+## 1.8.0
+
+### Minor Changes
+
+- 44ef44f: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [44ef44f]
+  - @backstage-community/plugin-tech-radar-common@1.7.0
+
+## 1.7.1
+
+### Patch Changes
+
+- 701ce81: Wrapped timeline entry description in MarkdownContent to support markdown content
+
+## 1.7.0
+
+### Minor Changes
+
+- ae2b8d3: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [ae2b8d3]
+  - @backstage-community/plugin-tech-radar-common@1.6.0
+
+## 1.6.1
+
+### Patch Changes
+
+- b1d92df: Corrected link to detailed example
+
+## 1.6.0
+
+### Minor Changes
+
+- 462f8a9: The plugin now responds better to small screens. The number of columns in the legend adjusts based on screen width; it will have 3 columns on wide screens and 1 column on narrow screens. The columns will never overlap and the legend will not disappear on very narrow screens.
+
+## 1.5.0
+
+### Minor Changes
+
+- 65af06f: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [65af06f]
+  - @backstage-community/plugin-tech-radar-common@1.5.0
+
+## 1.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 1.4.0
 
 ### Minor Changes

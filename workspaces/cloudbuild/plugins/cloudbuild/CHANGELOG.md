@@ -1,5 +1,35 @@
 # @backstage-community/plugin-cloudbuild
 
+## 0.13.0
+
+### Minor Changes
+
+- 38d5196: Backstage version bump to v1.41.1
+
+## 0.12.0
+
+### Minor Changes
+
+- ff50d8b: Backstage version bump to v1.40.2
+
+## 0.11.0
+
+### Minor Changes
+
+- 2fde8e6: Backstage version bump to v1.39.0
+
+## 0.10.0
+
+### Minor Changes
+
+- f316206: Backstage version bump to v1.38.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.9.0
 
 ### Minor Changes

@@ -1,5 +1,142 @@
 ### Dependencies
 
+## 7.2.0
+
+### Minor Changes
+
+- 2f4d9ff: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- e843699: Added missing configSchema into package.json
+- Updated dependencies [2f4d9ff]
+  - @backstage-community/plugin-rbac-common@1.19.0
+  - @backstage-community/plugin-rbac-node@1.13.0
+
+## 7.1.0
+
+### Minor Changes
+
+- 8db28a0: Updated readme example on conditional policy yaml to be well formed (removed quotes)
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
+## 7.0.0
+
+### Major Changes
+
+- 2e732e8: **BREAKING**: Removal of the deprecated createRouter from @backstage/plugin-permission-backend. This results in a new requirement of having the permission plugin installed alongside the RBAC backend plugin.
+
+  Recent changes to the @backstage/plugin-permission-backend resulted in the deprecating and removal of `createRouter` which was primarily used as a way to start both the permission backend plugin and the RBAC backend plugin at the same time. This removal now results in the requirement of having the permission backend plugin installed separately to ensure that the RBAC backend plugin works accordingly.
+
+  Changes required to `packages/backend/src/index.ts`
+
+  ```diff
+  // permission plugin
+  + backend.add(import('@backstage/plugin-permission-backend'));
+  backend.add(import('@backstage-community/plugin-rbac-backend'));
+  ```
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+  - @backstage-community/plugin-rbac-node@1.12.0
+
+## 6.3.0
+
+### Minor Changes
+
+- a42945e: Introduce API to store additional plugin ID list
+- 3e3f346: Migrate rbac-backend to use permission registry service.
+
+### Patch Changes
+
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- Updated dependencies [a42945e]
+  - @backstage-community/plugin-rbac-common@1.17.0
+
+## 6.2.6
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
+## 6.2.5
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+  - @backstage-community/plugin-rbac-node@1.11.1
+
+## 6.2.4
+
+### Patch Changes
+
+- 298b1d4: Avoid unnecessary query to check 'relations' table in the role manager
+
+## 6.2.3
+
+### Patch Changes
+
+- 9436665: Reduce rbac-backend requests to credentials API.
+
+## 6.2.2
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
+## 6.2.1
+
+### Patch Changes
+
+- 10b9919: Avoid filter's args duplication.
+
+## 6.2.0
+
+### Minor Changes
+
+- e8755f6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e8755f6]
+  - @backstage-community/plugin-rbac-common@1.16.0
+  - @backstage-community/plugin-rbac-node@1.11.0
+
+## 6.1.1
+
+### Patch Changes
+
+- 10a0d31: Fixes an issue where the correct permission name was not selected while processing new conditional policies to be added. This scenario happens whenever a plugin exports multiple permissions that have different resource types but similar actions. What would end up happening is the first matched action would be the one selected during processing even though it was not the correct permission and used for the conditional policy. This problem has been fixed and now the correct permission name and action are selected.
+
+## 6.1.0
+
+### Minor Changes
+
+- d278b4c: Adds the ability to assign ownership to roles that can then be used to conditionally filter roles, permission policies, and conditional policies. The conditional filter can now be accomplished through the use of the new RBAC conditional rule `IS_OWNER`.
+
+  `IS_OWNER` can be used to grant limited access to the RBAC plugins where in admins might want leads to control their own team's access.
+
+  Removed the resource type from the `policy.entity.create` permission to prevent conditional rules being applied to the permission. At the moment, the plugins will still continue to work as expected. However, it is strongly recommended updating all permission policies that utilize the resource type `policy-entity` with the action `create` (ex. `role:default/some_role, policy-entity, create, allow` to `role:default/some_role, policy.entity.create, create, allow`) to prevent any future degradation in service. A migration has been supplied to automatically update all permission policies that have not originated from the CSV file. The CSV file was skipped as a duplication event could happen during reloads / restarts. This means that the CSV file will need to be updated manually to ensure that all references to the old permission policy, resource type `policy-entity` with an action of `create`, have been updated to the named permission `policy.entity.create` with an action of `create`.
+
+### Patch Changes
+
+- Updated dependencies [d278b4c]
+  - @backstage-community/plugin-rbac-common@1.15.0
+
 ## 6.0.1
 
 ### Patch Changes

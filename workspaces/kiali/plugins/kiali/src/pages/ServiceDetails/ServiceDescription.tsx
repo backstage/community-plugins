@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { AppWorkload } from '@backstage-community/plugin-kiali-common/types';
+import {
+  ServiceDetailsInfo,
+  WorkloadOverviewServiceView,
+} from '@backstage-community/plugin-kiali-common/types';
 import {
   Card,
   CardContent,
@@ -20,7 +25,8 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
+import { HistoryManager } from '../../app/History';
 import { DetailDescription } from '../../components/DetailDescription/DetailDescription';
 import { HealthIndicator } from '../../components/Health/HealthIndicator';
 import { Labels } from '../../components/Label/Labels';
@@ -31,8 +37,6 @@ import { LocalTime } from '../../components/Time/LocalTime';
 import { isMultiCluster, serverConfig } from '../../config';
 import { KialiIcon } from '../../config/KialiIcon';
 import { cardsHeight, kialiStyle } from '../../styles/StyleUtils';
-import { AppWorkload } from '../../types/App';
-import { ServiceDetailsInfo, WorkloadOverview } from '../../types/ServiceInfo';
 
 interface ServiceInfoDescriptionProps {
   namespace: string;
@@ -75,12 +79,13 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
 ) => {
   const apps: string[] = [];
   const workloads: AppWorkload[] = [];
-
+  const cluster = HistoryManager.getClusterName();
   if (props.serviceDetails) {
     if (props.serviceDetails.workloads) {
       props.serviceDetails.workloads
-        .sort((w1: WorkloadOverview, w2: WorkloadOverview) =>
-          w1.name < w2.name ? -1 : 1,
+        .sort(
+          (w1: WorkloadOverviewServiceView, w2: WorkloadOverviewServiceView) =>
+            w1.name < w2.name ? -1 : 1,
         )
         .forEach(wk => {
           if (wk.labels) {
@@ -216,10 +221,9 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
               </span>
             </Typography>
 
-            {props.serviceDetails?.cluster && isMultiCluster && (
+            {cluster && isMultiCluster && (
               <div key="cluster-icon" className={iconStyle}>
-                <PFBadge badge={PFBadges.Cluster} position="right" />{' '}
-                {props.serviceDetails.cluster}
+                <PFBadge badge={PFBadges.Cluster} position="right" /> {cluster}
               </div>
             )}
           </>
@@ -248,7 +252,7 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
           apps={apps}
           workloads={workloads}
           health={props.serviceDetails?.health}
-          cluster={props.serviceDetails?.cluster}
+          cluster={cluster}
           view={props.view}
         />
       </CardContent>

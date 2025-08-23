@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useGitTags } from './useGitTags';
 import { Entity } from '@backstage/catalog-model';

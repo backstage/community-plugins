@@ -59,6 +59,15 @@ export function validateRoleCondition(
     );
   }
 
+  if (
+    condition.resourceType === 'policy-entity' &&
+    condition.permissionMapping.includes('create')
+  ) {
+    throw new Error(
+      `Conditional policy can not be created for resource type 'policy-entity' with the permission action 'create'`,
+    );
+  }
+
   if (!condition.conditions) {
     throw new Error(`'conditions' must be specified in the role condition`);
   }

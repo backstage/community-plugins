@@ -15,7 +15,7 @@
  */
 import { Chip, Grid, Tooltip } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
-import React from 'react';
+import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import { homeCluster } from '../../../config';
 import { KialiAppState, KialiContext } from '../../../store';
@@ -29,7 +29,8 @@ export const KialiHeaderEntity = () => {
     <div style={{ marginLeft: '20px' }}>
       <Grid container spacing={0}>
         <Grid item xs={5}>
-          <NamespaceSelector />
+          {kialiState.namespaces.items &&
+            kialiState.namespaces.items?.length > 1 && <NamespaceSelector />}
         </Grid>
         <Grid item xs={6}>
           <div

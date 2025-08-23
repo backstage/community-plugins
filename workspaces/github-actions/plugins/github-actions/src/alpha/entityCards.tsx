@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isGithubActionsAvailable } from '../components/Router';
 
@@ -40,7 +39,7 @@ export const entityLatestGithubActionRunCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -67,7 +66,7 @@ export const entityLatestGithubActionsForBranchCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -94,7 +93,7 @@ export const entityRecentGithubActionsRunsCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
               dense: z.boolean().default(false),
               limit: z.number().default(5).optional(),
             })

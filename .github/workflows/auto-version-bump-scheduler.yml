@@ -1,0 +1,56 @@
+name: Auto Version Bump Scheduler
+
+on:
+  schedule:
+    # Run on Tuesdays at 13:00 UTC to check for Backstage releases
+    - cron: '0 13 * * 2'
+
+concurrency:
+  group: auto-version-bump-scheduler
+  cancel-in-progress: false
+
+jobs:
+  check-and-schedule:
+    runs-on: ubuntu-latest
+    outputs:
+      should_trigger: ${{ steps.check-releases.outputs.should_trigger }}
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: yarn install
+        run: yarn install --immutable
+
+      - name: Check for Backstage minor releases
+        id: check-releases
+        run: |
+          # This script checks for Backstage minor releases ≤7 days old
+          # and writes should_trigger directly to GITHUB_OUTPUT
+          node scripts/ci/trigger-auto-version-bump.js
+
+  trigger-auto-version-bump:
+    needs: check-and-schedule
+    if: needs.check-and-schedule.outputs.should_trigger == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Trigger auto-version-bump workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Triggering auto-version-bump workflow"
+          gh workflow run auto-version-bump.yml \
+            --repo ${{ github.repository }} \
+            --ref main

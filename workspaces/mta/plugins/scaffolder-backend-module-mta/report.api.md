@@ -4,7 +4,7 @@
 
 ```ts
 
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
@@ -14,10 +14,10 @@ name: string;
 url: string;
 branch: string;
 rootPath: string;
-}, JsonObject>;
+}, JsonObject, "v1">;
 
 // @public (undocumented)
-const mtaScaffolderModule: BackendFeatureCompat;
+const mtaScaffolderModule: BackendFeature;
 export default mtaScaffolderModule;
 
 ```

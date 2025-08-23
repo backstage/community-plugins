@@ -215,6 +215,9 @@ export class AzureDevOpsApi {
     );
   }
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   public async getRepoBuilds(
     projectName: string,
     repoName: string,
@@ -458,6 +461,9 @@ export class AzureDevOpsApi {
     }));
   }
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   public async getBuildDefinitions(
     projectName: string,
     definitionName: string,
@@ -545,6 +551,11 @@ export class AzureDevOpsApi {
         host,
         org,
       );
+
+      if (buildDefinitions.length === 0) {
+        return [];
+      }
+
       definitions = buildDefinitions
         .map(bd => bd.id)
         .filter((bd): bd is number => Boolean(bd));

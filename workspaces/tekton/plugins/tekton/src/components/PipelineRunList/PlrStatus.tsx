@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   pipelineRunFilterReducer,
   PipelineRunKind,
@@ -22,12 +20,23 @@ import {
 } from '@janus-idp/shared-react';
 
 import './PlrStatus.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PlrStatusProps = { obj: PipelineRunKind };
 
 const PlrStatus = ({ obj }: PlrStatusProps) => {
   const plrStatus = pipelineRunFilterReducer(obj);
-  return <Status status={plrStatus} className="bs-tkn-plrstatus" />;
+  const { t } = useTranslationRef(tektonTranslationRef);
+  return (
+    <Status
+      status={plrStatus}
+      displayStatusText={t(`pipelineRunStatus.${plrStatus}` as any, {
+        defaultValue: plrStatus,
+      })}
+      className="bs-tkn-plrstatus"
+    />
+  );
 };
 
 export default PlrStatus;

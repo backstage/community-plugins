@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   MarkdownContent,
   Progress,
@@ -60,8 +58,21 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
       month: 'short',
     })} ${date.getUTCFullYear()}, ${time}`;
   } else {
-    lastModified = 'No information';
+    lastModified = '--';
   }
+
+  const description =
+    role?.metadata?.description && role.metadata.description.length > 0
+      ? role.metadata.description
+      : '--';
+  const modifiedBy =
+    role?.metadata?.modifiedBy && role.metadata.modifiedBy.length > 0
+      ? role.metadata.modifiedBy
+      : '--';
+  const owner =
+    role?.metadata?.owner && role.metadata.owner.length > 0
+      ? role.metadata.owner
+      : '--';
 
   return (
     <Card
@@ -88,28 +99,33 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
           </div>
         ) : (
           <Grid container spacing={2}>
-            <Grid item xs={4} sm={8} lg={4}>
+            <Grid item xs={3} sm={6} lg={3}>
               <AboutField label="Description">
                 <MarkdownContent
                   className={classes.text}
-                  content={role?.metadata?.description ?? 'No description'}
+                  content={description}
                 />
               </AboutField>
             </Grid>
-            <Grid item xs={4} sm={8} lg={4}>
+            <Grid item xs={3} sm={6} lg={3}>
               <AboutField label="Modified By">
                 <MarkdownContent
                   className={classes.text}
-                  content={role?.metadata?.modifiedBy ?? 'No information'}
+                  content={modifiedBy}
                 />
               </AboutField>
             </Grid>
-            <Grid item xs={4} sm={8} lg={4}>
+            <Grid item xs={3} sm={6} lg={3}>
               <AboutField label="Last Modified">
                 <MarkdownContent
                   className={classes.text}
                   content={lastModified}
                 />
+              </AboutField>
+            </Grid>
+            <Grid item xs={3} sm={6} lg={3}>
+              <AboutField label="Owner">
+                <MarkdownContent className={classes.text} content={owner} />
               </AboutField>
             </Grid>
           </Grid>

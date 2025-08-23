@@ -25,6 +25,7 @@ import {
   CoreV1ApiCreateNamespaceRequest,
   KubeConfig,
 } from '@kubernetes/client-node';
+import { examples } from './createKubernetesNamespace.examples';
 
 const KUBERNETES_API_URL_ANNOTATION = 'kubernetes.io/api-server';
 const KUBERNETES_CLUSTER_TYPE = 'kubernetes-cluster';
@@ -45,7 +46,7 @@ type TemplateActionParameters = {
   clusterRef?: string;
   url?: string;
   token: string;
-  skipTLSVerify?: boolean;
+  skipTLSVerify: boolean;
   caData?: string;
   labels?: string;
 };
@@ -121,56 +122,49 @@ export const convertLabelsToObject = (
   return result;
 };
 
+/**
+ * @public
+ */
 export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
-  return createTemplateAction<TemplateActionParameters>({
+  return createTemplateAction({
     id: 'kubernetes:create-namespace',
     description: 'Creates a kubernetes namespace',
+    examples,
     schema: {
       input: {
-        type: 'object',
-        oneOf: [
-          { required: ['namespace', 'token', 'url'] },
-          { required: ['namespace', 'token', 'clusterRef'] },
-        ],
-        properties: {
-          namespace: {
-            title: 'Namespace name',
-            description: 'Name of the namespace to be created',
-            type: 'string',
-          },
-          clusterRef: {
-            title: 'Cluster entity reference',
-            description: 'Cluster resource entity reference from the catalog',
-            type: 'string',
-          },
-          url: {
-            title: 'Url',
-            description:
+        namespace: z =>
+          z.string().describe('Name of the namespace to be created'),
+        token: z => z.string().describe('Bearer token to authenticate with'),
+        clusterRef: z =>
+          z
+            .string()
+            .optional()
+            .describe('Cluster resource entity reference from the catalog'),
+        url: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'Url of the kubernetes API, will be used if clusterRef is not provided',
-            type: 'string',
-          },
-          token: {
-            title: 'Token',
-            description: 'Bearer token to authenticate with',
-            type: 'string',
-          },
-          skipTLSVerify: {
-            title: 'Skip TLS verification',
-            description:
+            ),
+        skipTLSVerify: z =>
+          z
+            .boolean()
+            .optional()
+            .default(false)
+            .describe(
               'Skip TLS certificate verification, not recommended to use in production environment, defaults to false',
-            type: 'boolean',
-          },
-          caData: {
-            title: 'CA Data',
-            description: 'Certificate Authority base64 encoded certificate',
-            type: 'string',
-          },
-          labels: {
-            title: 'Labels',
-            description: 'Labels that will be applied to the namespace.',
-            type: 'string',
-          },
-        },
+            ),
+        caData: z =>
+          z
+            .string()
+            .optional()
+            .describe('Certificate Authority base64 encoded certificate'),
+        labels: z =>
+          z
+            .string()
+            .optional()
+            .describe('Labels that will be applied to the namespace.'),
       },
     },
     async handler(ctx) {

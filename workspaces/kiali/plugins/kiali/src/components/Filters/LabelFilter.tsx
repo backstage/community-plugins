@@ -20,7 +20,7 @@ import {
   PopoverPosition,
   TextInput,
 } from '@patternfly/react-core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 

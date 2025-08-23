@@ -1,5 +1,35 @@
 # @backstage-community/plugin-puppetdb
 
+## 0.9.0
+
+### Minor Changes
+
+- b9d8596: Backstage version bump to v1.41.1
+
+## 0.8.0
+
+### Minor Changes
+
+- f5e78ff: Backstage version bump to v1.40.2
+
+## 0.7.0
+
+### Minor Changes
+
+- fbc2f06: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 6818351: Backstage version bump to v1.38.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.5.0
 
 ### Minor Changes

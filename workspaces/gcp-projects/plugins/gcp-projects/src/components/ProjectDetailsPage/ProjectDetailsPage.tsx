@@ -23,7 +23,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { useAsync, useMountEffect } from '@react-hookz/web';
 import { gcpApiRef } from '../../api';
 

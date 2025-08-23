@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import { Controller, Control, UseFormSetValue } from 'react-hook-form';
 import { FormValues } from '../../types';

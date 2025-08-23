@@ -1,5 +1,35 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.5.1
+
+### Patch Changes
+
+- Updated dependencies [ba5bf7b]
+  - @backstage-community/plugin-tech-insights-common@0.7.1
+
+## 2.5.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+
+## 2.4.0
+
+### Minor Changes
+
+- 375612d: Make FactRetrieverContext generic. This allows consumers to extend it with their own services while maintaining backwards compatibility.
+
+### Patch Changes
+
+- Updated dependencies [ac739ca]
+  - @backstage-community/plugin-tech-insights-common@0.6.0
+
 ## 2.3.0
 
 ### Minor Changes

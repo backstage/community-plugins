@@ -24,6 +24,20 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: another-registry-example
+  annotations:
+    azure-container-registry/registry-name: mysecondregistry
+    azure-container-registry/repository-name: samples/hello-world
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
   name: acr-not-found-example
   annotations:
     azure-container-registry/repository-name: samples/container-not-found

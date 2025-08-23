@@ -4,12 +4,9 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
-import { TemplateAction as TemplateAction_2 } from '@backstage/plugin-scaffolder-node/index';
+import { TemplateExample } from '@backstage/plugin-scaffolder-node';
 
-// Warning: (ae-missing-release-tag) "createAnnotatorAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const createAnnotatorAction: (
   actionId?: string,
@@ -19,7 +16,7 @@ export const createAnnotatorAction: (
     | (() => {
         annotations?:
           | {
-              [key: string]: string;
+              [key: string]: Value;
             }
           | undefined;
         labels?:
@@ -34,104 +31,78 @@ export const createAnnotatorAction: (
           | undefined;
       })
     | undefined,
+  examples?: TemplateExample[],
 ) => TemplateAction<
   {
-    labels?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    annotations?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    spec?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
+    labels?: Record<string, string> | undefined;
+    annotations?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
     entityFilePath?: string | undefined;
-    objectYaml?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
+    objectYaml?: Record<string, any> | undefined;
     writeToFile?: string | undefined;
   },
-  JsonObject
->;
-
-// Warning: (ae-missing-release-tag) "createScaffoldedFromAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const createScaffoldedFromAction: () => TemplateAction_2<
   {
-    labels?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    annotations?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    spec?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    entityFilePath?: string | undefined;
-    objectYaml?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    writeToFile?: string | undefined;
+    [x: string]: any;
   },
-  JsonObject
+  'v2'
 >;
 
-// Warning: (ae-missing-release-tag) "createTimestampAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
-export const createTimestampAction: () => TemplateAction_2<
+export const createScaffoldedFromAction: () => TemplateAction<
   {
-    labels?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    annotations?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
-    spec?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
+    labels?: Record<string, string> | undefined;
+    annotations?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
     entityFilePath?: string | undefined;
-    objectYaml?:
-      | {
-          [key: string]: string;
-        }
-      | undefined;
+    objectYaml?: Record<string, any> | undefined;
     writeToFile?: string | undefined;
   },
-  JsonObject
+  {
+    [x: string]: any;
+  },
+  'v2'
 >;
 
-// Warning: (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
-//
+// @public (undocumented)
+export const createTimestampAction: () => TemplateAction<
+  {
+    labels?: Record<string, string> | undefined;
+    annotations?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
+    entityFilePath?: string | undefined;
+    objectYaml?: Record<string, any> | undefined;
+    writeToFile?: string | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
+
+// @public (undocumented)
+export const createVersionAction: () => TemplateAction<
+  {
+    labels?: Record<string, string> | undefined;
+    annotations?: Record<string, string> | undefined;
+    spec?: Record<string, any> | undefined;
+    entityFilePath?: string | undefined;
+    objectYaml?: Record<string, any> | undefined;
+    writeToFile?: string | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
+
 // @alpha
 const scaffolderCustomActionsScaffolderModule: BackendFeature;
 export default scaffolderCustomActionsScaffolderModule;
 
-// Warnings were encountered during analysis:
-//
-// src/actions/annotator/annotator.d.ts:14:9 - (ae-forgotten-export) The symbol "Value" needs to be exported by the entry point index.d.ts
-// src/index.d.ts:2:29 - (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
+// @public (undocumented)
+export type Value =
+  | string
+  | {
+      readFromContext: string;
+    };
 ```

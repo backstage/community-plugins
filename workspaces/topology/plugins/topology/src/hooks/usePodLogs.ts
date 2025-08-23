@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import useAsyncRetry from 'react-use/lib/useAsyncRetry';
 import useInterval from 'react-use/lib/useInterval';
-
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { ContainerScope } from '../components/Topology/TopologySideBar/PodLogs/types';
-import { kubernetesProxyApiRef } from '../types/types';
 
 interface PodLogsOptions {
   podScope: ContainerScope;
@@ -33,9 +32,9 @@ export const usePodLogs = ({
   stopPolling,
   intervalMs = 5000,
 }: PodLogsOptions) => {
-  const [loadingData, setLoadingData] = React.useState<boolean>(true);
+  const [loadingData, setLoadingData] = useState<boolean>(true);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
-  const getLogs = React.useCallback(async (): Promise<{ text: string }> => {
+  const getLogs = useCallback(async (): Promise<{ text: string }> => {
     const { podName, podNamespace, containerName, clusterName } = podScope;
     return await kubernetesProxyApi.getPodLogs({
       podName: podName,
@@ -52,7 +51,7 @@ export const usePodLogs = ({
 
   useInterval(() => retry(), stopPolling ? null : intervalMs);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let mounted = true;
     if (!loading && mounted) {
       setLoadingData(prevState => {

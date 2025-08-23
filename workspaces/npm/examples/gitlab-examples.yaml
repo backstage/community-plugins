@@ -19,3 +19,24 @@ spec:
   lifecycle: production
   owner: guests
   system: backstage
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: gitlab-private-example
+  annotations:
+    npm/registry: gitlab-private
+    npm/package: '@gitlab-examples/semantic-release-npm'
+  links:
+    - url: https://gitlab.com/gitlab-examples
+      title: GitLab org
+    - url: https://gitlab.com/gitlab-examples/semantic-release-npm
+      title: GitLab repo
+    - url: https://gitlab.com/gitlab-examples/semantic-release-npm/-/packages
+      title: GitLab npm packages
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage

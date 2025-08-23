@@ -1,5 +1,23 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.7.0
+
+### Minor Changes
+
+- 644fc14: Backstage version bump to v1.41.1
+
+## 0.6.0
+
+### Minor Changes
+
+- e385ba7: Backstage version bump to v1.40.2
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.5.0
 
 ### Minor Changes

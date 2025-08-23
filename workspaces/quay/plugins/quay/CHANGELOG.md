@@ -1,5 +1,99 @@
 ### Dependencies
 
+## 1.23.2
+
+### Patch Changes
+
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 1.23.1
+
+### Patch Changes
+
+- d942f33: remove product theme from dev dependencies and dev app
+
+## 1.23.0
+
+### Minor Changes
+
+- 78bb7a9: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [78bb7a9]
+  - @backstage-community/plugin-quay-common@1.10.0
+
+## 1.22.1
+
+### Patch Changes
+
+- 19fe3ed: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
+## 1.22.0
+
+### Minor Changes
+
+- 0341770: Add more context for debugging access issues with Quay
+
+## 1.21.1
+
+### Patch Changes
+
+- 042cea7: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-quay-common@1.9.1
+
+## 1.21.0
+
+### Minor Changes
+
+- 279c9ba: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [279c9ba]
+  - @backstage-community/plugin-quay-common@1.9.0
+
+## 1.20.3
+
+### Patch Changes
+
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+
+## 1.20.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-quay-common@1.8.1
+
+## 1.20.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 1.20.0
+
+### Minor Changes
+
+- e172aba: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e172aba]
+  - @backstage-community/plugin-quay-common@1.8.0
+
+## 1.19.2
+
+### Patch Changes
+
+- 16c57cc: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [16c57cc]
+  - @backstage-community/plugin-quay-common@1.7.2
+
 ## 1.19.1
 
 ### Patch Changes

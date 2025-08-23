@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  ObjectValidation,
+  Pod,
+} from '@backstage-community/plugin-kiali-common/types';
 import { EmptyState } from '@backstage/core-components';
 import {
   Card,
@@ -21,14 +25,13 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
 import { SimpleTable, tRow } from '../../components/SimpleTable';
 import { LocalTime } from '../../components/Time/LocalTime';
 import { KialiIcon } from '../../config/KialiIcon';
 import { cardsHeight, kialiStyle } from '../../styles/StyleUtils';
-import { ObjectValidation, Pod } from '../../types/IstioObjects';
 import { PodStatus } from './PodStatus';
 
 type WorkloadPodsProps = {

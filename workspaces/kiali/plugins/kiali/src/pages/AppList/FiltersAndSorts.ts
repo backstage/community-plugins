@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ObjectReference } from '../../types/IstioObjects';
+import { ObjectReference } from '@backstage-community/plugin-kiali-common/types';
 
 export const compareObjectReference = (
   a: ObjectReference,
   b: ObjectReference,
 ): number => {
-  const cmpObjectType = a.objectType.localeCompare(b.objectType);
+  const cmpObjectType =
+    a.objectGVK.Kind.localeCompare(b.objectGVK.Kind) ||
+    a.objectGVK.Group.localeCompare(b.objectGVK.Group);
   if (cmpObjectType !== 0) {
     return cmpObjectType;
   }

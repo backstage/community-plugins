@@ -15,7 +15,6 @@
  */
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 import { TableState } from '../../api';
 import { StatusPage } from '../../types';
 import { VisibilityChip } from './VisibilityChip';

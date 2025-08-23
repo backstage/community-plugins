@@ -2,6 +2,9 @@ app:
   title: Tech insights Example App
   baseUrl: http://localhost:3000
 
+permission:
+  enabled: true
+
 organization:
   name: Tech insights Example
 

@@ -19,7 +19,6 @@ import { ErrorPanel, SubvalueCell, Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { EntityRatingsData } from '@backstage-community/plugin-entity-feedback-common';
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
 import { entityFeedbackApiRef } from '../../api';

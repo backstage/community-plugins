@@ -1,5 +1,41 @@
 ### Dependencies
 
+## 2.8.0
+
+### Minor Changes
+
+- a64a93a: Backstage version bump to v1.41.1
+
+## 2.7.1
+
+### Patch Changes
+
+- d73ba40: Adding regex:replace examples
+
+## 2.7.0
+
+### Minor Changes
+
+- 2833ad3: Backstage version bump to v1.39.0
+
+## 2.6.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.6.0
+
+### Minor Changes
+
+- fdc9f69: Backstage version bump to v1.38.1
+
+## 2.5.3
+
+### Patch Changes
+
+- 5ed7a38: chore: Remove usage of @spotify/prettier-config
+
 ## 2.5.2
 
 ### Patch Changes

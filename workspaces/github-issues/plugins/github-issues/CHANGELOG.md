@@ -1,5 +1,35 @@
 # @backstage-community/plugin-github-issues
 
+## 0.12.0
+
+### Minor Changes
+
+- cb2cb9c: Backstage version bump to v1.41.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 4b540a8: Backstage version bump to v1.40.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 8035eee: Backstage version bump to v1.39.0
+
+## 0.9.0
+
+### Minor Changes
+
+- c1cc759: Backstage version bump to v1.38.1
+
+## 0.8.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,5 +1,139 @@
 ### Dependencies
 
+## 3.27.5
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 3.27.4
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 3.27.3
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 3.27.2
+
+### Patch Changes
+
+- e7d7f3f: render loading when permission api is loading
+
+## 3.27.1
+
+### Patch Changes
+
+- e6d88ff: remove product theme from dev dependencies and dev app
+
+## 3.27.0
+
+### Minor Changes
+
+- 8e74b11: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [8e74b11]
+  - @backstage-community/plugin-tekton-common@1.11.0
+
+## 3.26.4
+
+### Patch Changes
+
+- 22e56c8: Apply a temporary fix for the horizontal bar issue under the Task Status column
+
+## 3.26.3
+
+### Patch Changes
+
+- f818001: Updated dependency `@types/lodash` to `4.17.20`.
+
+## 3.26.2
+
+### Patch Changes
+
+- 8fa8ece: Updated dependency `@types/lodash` to `4.17.17`.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-tekton-common@1.10.1
+
+## 3.26.1
+
+### Patch Changes
+
+- 87918c8: PipelineRun list status and duration support i18n
+- 65f826d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
+## 3.26.0
+
+### Minor Changes
+
+- 40d7a3b: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [40d7a3b]
+  - @backstage-community/plugin-tekton-common@1.10.0
+
+## 3.25.3
+
+### Patch Changes
+
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+
+## 3.25.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-tekton-common@1.9.1
+
+## 3.25.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 3.25.0
+
+### Minor Changes
+
+- 692fc75: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [692fc75]
+  - @backstage-community/plugin-tekton-common@1.9.0
+
+## 3.24.0
+
+### Minor Changes
+
+- 6828dde: Added i18n support
+
+## 3.23.0
+
+### Minor Changes
+
+- 1d5f33d: Enhance fetching pod logs
+
+## 3.22.2
+
+### Patch Changes
+
+- 0a0e19a: Fix issue where the SBOM link does not lead to the SBOM task in the pipeline run log dialog
+
 ## 3.22.1
 
 ### Patch Changes

@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useApi } from '@backstage/core-plugin-api';
-import * as React from 'react';
-import { PFColors } from '../../components/Pf/PfColors';
-import { kialiApiRef } from '../../services/Api';
-import { KialiAppState, KialiContext } from '../../store';
 import {
   durationToBounds,
   guardTimeRange,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  LineInfo,
+  MetricsObjectTypes,
+  Overlay,
+  OverlayInfo,
+  Span,
   TimeRange,
-} from '../../types/Common';
-import { MetricsObjectTypes } from '../../types/Metrics';
-import { Overlay, OverlayInfo } from '../../types/Overlay';
-import { Span, TracingQuery } from '../../types/Tracing';
-import { LineInfo } from '../../types/VictoryChartInfo';
+  TracingQuery,
+} from '@backstage-community/plugin-kiali-common/types';
+import { PFColors } from '../../components/Pf/PfColors';
+import { KialiApi } from '../../services/Api';
+import { KialiAppState } from '../../store';
 import { toOverlay } from '../../utils/VictoryChartsUtils';
 import { defaultMetricsDuration } from './Helper';
 
@@ -43,8 +45,6 @@ type FetchOptions = {
 export class SpanOverlay {
   private spans: Span[] = [];
   private lastFetchError = false;
-  private kialiClient = useApi(kialiApiRef);
-  private kialiState = React.useContext(KialiContext) as KialiAppState;
 
   constructor(public onChange: (overlay?: Overlay<JaegerLineInfo>) => void) {}
 
@@ -56,7 +56,7 @@ export class SpanOverlay {
     this.spans = spans;
   }
 
-  fetch(opts: FetchOptions) {
+  fetch(opts: FetchOptions, kialiClient: KialiApi, kialiState: KialiAppState) {
     const boundsMillis = guardTimeRange(opts.range, durationToBounds, b => b);
     const defaultFrom = new Date().getTime() - defaultMetricsDuration * 1000;
     const q: TracingQuery = {
@@ -78,10 +78,10 @@ export class SpanOverlay {
     const apiCall =
       // eslint-disable-next-line no-nested-ternary
       opts.targetKind === MetricsObjectTypes.APP
-        ? this.kialiClient.getAppSpans
+        ? kialiClient.getAppSpans
         : opts.targetKind === MetricsObjectTypes.SERVICE
-        ? this.kialiClient.getServiceSpans
-        : this.kialiClient.getWorkloadSpans;
+        ? kialiClient.getServiceSpans
+        : kialiClient.getWorkloadSpans;
     apiCall(opts.namespace, opts.target, q, opts.cluster)
       .then(res => {
         this.lastFetchError = false;
@@ -91,7 +91,7 @@ export class SpanOverlay {
       })
       .catch(err => {
         if (!this.lastFetchError) {
-          this.kialiState.alertUtils!.add(`Could not fetch spans., ${err}`);
+          kialiState.alertUtils!.add(`Could not fetch spans., ${err}`);
           this.lastFetchError = true;
         }
       });

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
@@ -192,10 +192,25 @@ export const WorkflowRunsCardView = ({
                       {run.id}
                     </Typography>
                   </Box>
-                  <WorkflowRunStatus
-                    status={run.status}
-                    conclusion={run.conclusion}
-                  />
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <WorkflowRunStatus
+                      status={run.status}
+                      conclusion={run.conclusion}
+                    />
+                  </Box>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Tooltip title={run.statusDate ?? ''}>
+                      <Box>{run.statusAge}</Box>
+                    </Tooltip>
+                  </Box>
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -307,6 +322,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
     owner,
     repo,
     branch: branch === 'all' ? undefined : branch,
+    fetchAllBranches: true,
   });
 
   const handleMenuChange = (

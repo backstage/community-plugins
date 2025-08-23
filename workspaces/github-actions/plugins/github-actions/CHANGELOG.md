@@ -1,5 +1,58 @@
 # @backstage-community/plugin-github-actions
 
+## 0.13.1
+
+### Patch Changes
+
+- e6e4a9d: Add workflow age field to help indicate when the workflow last ran
+
+## 0.13.0
+
+### Minor Changes
+
+- 624c181: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- b41b1f0: Change default branch to be that of the target repository instead of assuming it is using master.
+- 337f19a: Resolve visual issue caused by the centering of the Workflow Status was done inside the component instead of controlled by the wrapper object. This led to case where when viewing 'Workflow run details' the status was centered when all other content was left aligned.
+
+## 0.12.0
+
+### Minor Changes
+
+- 8b45679: Backstage version bump to v1.40.2
+
+## 0.11.1
+
+### Patch Changes
+
+- dd3519b: Fixed an issue where branches were fetched unnecessarily by certain components.
+
+## 0.11.0
+
+### Minor Changes
+
+- f1e2943: Backstage version bump to v1.39.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 5041897: Backstage version bump to v1.38.1
+
+## 0.9.2
+
+### Patch Changes
+
+- 58c5ad5: Start pagination at page 1 in `api.listBranches` to avoid duplicate branches in WorkflowRunsCard.
+
+## 0.9.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.9.0
 
 ### Minor Changes

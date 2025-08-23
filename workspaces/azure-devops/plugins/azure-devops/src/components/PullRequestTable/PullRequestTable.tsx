@@ -26,7 +26,7 @@ import {
   PullRequest,
   PullRequestStatus,
 } from '@backstage-community/plugin-azure-devops-common';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { AzurePullRequestsIcon } from '../AzurePullRequestsIcon';
 import { DateTime } from 'luxon';

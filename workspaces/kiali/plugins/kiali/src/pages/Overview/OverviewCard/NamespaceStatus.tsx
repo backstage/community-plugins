@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Paths } from '../../../config';
 import {
+  DEGRADED,
   DurationInSeconds,
+  FAILURE,
+  HEALTHY,
   IntervalInMilliseconds,
-} from '../../../types/Common';
-import { DEGRADED, FAILURE, HEALTHY, NOT_READY } from '../../../types/Health';
+  NOT_READY,
+} from '@backstage-community/plugin-kiali-common/types';
+import { Paths } from '../../../config';
 import { NamespaceInfo } from '../NamespaceInfo';
 import { switchType } from '../OverviewHelper';
 import { OverviewStatus } from '../OverviewStatus';
@@ -34,6 +36,7 @@ type NamespaceStatusProps = {
 
 export const NamespaceStatus = (props: NamespaceStatusProps) => {
   const ns = props.namespace;
+  const health = props.namespace.status;
   const targetPage = switchType(
     props.type,
     Paths.APPLICATIONS,
@@ -42,13 +45,13 @@ export const NamespaceStatus = (props: NamespaceStatusProps) => {
   );
   const name = ns.name;
   let nbItems = 0;
-  if (ns.status) {
+  if (health) {
     nbItems =
-      ns.status.inError.length +
-      ns.status.inWarning.length +
-      ns.status.inSuccess.length +
-      ns.status.notAvailable.length +
-      ns.status.inNotReady.length;
+      health.inError.length +
+      health.inWarning.length +
+      health.inSuccess.length +
+      health.notAvailable.length +
+      health.inNotReady.length;
   }
   let text: string;
   if (nbItems === 1) {

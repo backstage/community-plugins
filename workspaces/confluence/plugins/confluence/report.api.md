@@ -5,7 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
-import { default as React_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ReactNode } from 'react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 
@@ -22,12 +22,12 @@ export interface ConfluenceResultItemProps {
   result?: IndexableDocument;
 }
 
-// @public
-export const ConfluenceSearchIcon: () => React_2.JSX.Element;
+// @public (undocumented)
+export const ConfluenceSearchIcon: () => JSX_2.Element;
 
 // @public
 export const ConfluenceSearchResultListItem: ({
   result,
   highlight,
-}: ConfluenceResultItemProps) => React_2.JSX.Element | null;
+}: ConfluenceResultItemProps) => JSX_2.Element | null;
 ```

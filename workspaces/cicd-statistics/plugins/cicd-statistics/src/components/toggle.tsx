@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, PropsWithChildren } from 'react';
+import { useCallback, PropsWithChildren } from 'react';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 

@@ -1,5 +1,42 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.23.0
+
+### Minor Changes
+
+- 1c08f79: Upgrade backstage to 1.39.1
+
+## 1.22.2
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
+## 1.22.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+
+## 1.22.0
+
+### Minor Changes
+
+- 8cb76ee: Migrate types to kiali-common
+
+## 1.21.0
+
+### Minor Changes
+
+- f181693: Support kiali > 1.86
+- a428c5d: Upgrade backstage to version 1.38.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.20.1
 
 ### Patch Changes

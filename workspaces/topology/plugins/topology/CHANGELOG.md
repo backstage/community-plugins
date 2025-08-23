@@ -1,5 +1,64 @@
 ### Dependencies
 
+## 2.4.2
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 2.4.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- f25b944: remove product theme from dev dependencies and dev app
+
+## 2.4.0
+
+### Minor Changes
+
+- a517756: Backstage version bump to v1.41.1
+
+## 2.3.1
+
+### Patch Changes
+
+- 7bfeab1: remove product theme from dev dependencies and dev app
+
+## 2.3.0
+
+### Minor Changes
+
+- fe1d8aa: Backstage version bump to v1.40.2
+  Remove broken close button from display option chips in `TopologyToolbar`.
+
+## 2.2.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.2.1
+
+### Patch Changes
+
+- 6fb7a4d: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
+## 2.2.0
+
+### Minor Changes
+
+- f734003: Bump to backstage version 1.39.1
+
+## 2.1.0
+
+### Minor Changes
+
+- e35ad72: Backstage version bump to v1.38.1
+
 ## 2.0.1
 
 ### Patch Changes

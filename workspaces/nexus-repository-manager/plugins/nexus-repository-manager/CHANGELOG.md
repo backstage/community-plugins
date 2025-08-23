@@ -1,5 +1,55 @@
 ### Dependencies
 
+## 1.15.1
+
+### Patch Changes
+
+- 60a37cc: Updated dependency `@hey-api/openapi-ts` to `0.80.5`.
+
+## 1.15.0
+
+### Minor Changes
+
+- d7e6708: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- c6f0aec: remove product theme from dev dependencies and dev app
+- 333e98c: Aligned `formatDate` utility with `ADR012 using Luxon`.
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.14.2
+
+### Patch Changes
+
+- 7cfcb00: Updated dependency `@hey-api/openapi-ts` to `0.78.3`.
+
+## 1.14.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.14.0
+
+### Minor Changes
+
+- 227dae4: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- 19d4246: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+- 31b91ce: Updated dependency `@hey-api/openapi-ts` to `0.67.3`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- fd39ec9: Updated dependency `@hey-api/openapi-ts` to `0.72.2`.
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
+## 1.13.1
+
+### Patch Changes
+
+- 35b813d: Updated dependency `@hey-api/openapi-ts` to `0.66.7`.
+
 ## 1.13.0
 
 ### Minor Changes

@@ -10,6 +10,9 @@ workspace/acs:
 workspace/adr:
   - "Workspace\\s*adr"
 
+workspace/agent-forge:
+  - "Workspace\\s*agent-forge"
+
 workspace/airbrake:
   - "Workspace\\s*airbrake"
 
@@ -54,6 +57,9 @@ workspace/bitrise:
 
 workspace/blackduck:
   - "Workspace\\s*blackduck"
+
+workspace/bookmarks:
+  - "Workspace\\s*bookmarks"
 
 workspace/cicd-statistics:
   - "Workspace\\s*cicd-statistics"
@@ -232,9 +238,6 @@ workspace/rbac:
 workspace/redhat-argocd:
   - "Workspace\\s*redhat-argocd"
 
-workspace/redhat-resource-optimization:
-  - "Workspace\\s*redhat-resource-optimization"
-
 workspace/report-portal:
   - "Workspace\\s*report-portal"
 
@@ -261,6 +264,9 @@ workspace/scaffolder-relation-processor:
 
 workspace/sentry:
   - "Workspace\\s*sentry"
+
+workspace/servicenow:
+  - "Workspace\\s*servicenow"
 
 workspace/shortcuts:
   - "Workspace\\s*shortcuts"
@@ -294,6 +300,9 @@ workspace/topology:
 
 workspace/vault:
   - "Workspace\\s*vault"
+
+workspace/wheel-of-names:
+  - "Workspace\\s*wheel-of-names"
 
 workspace/xcmetrics:
   - "Workspace\\s*xcmetrics"

@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
+import {
+  KubernetesApi,
+  kubernetesApiRef,
+  kubernetesAuthProvidersApiRef,
+} from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { Box } from '@material-ui/core';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import {
   ArgoCDApi,
@@ -36,7 +37,6 @@ import {
   RevisionDetailsListOptions,
   RevisionDetailsOptions,
 } from '../src/api';
-import { kubernetesApiRef } from '../src/kubeApi';
 import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
@@ -97,6 +97,21 @@ export class MockArgoCDApiClient implements ArgoCDApi {
     return mockApplication;
   }
 }
+
+const mockKubernetesAuthProviderApiRef = {
+  decorateRequestBodyForAuth: async () => {
+    return {
+      entity: {
+        apiVersion: 'v1',
+        kind: 'xyz',
+        metadata: { name: 'hey' },
+      },
+    };
+  },
+  getCredentials: async () => {
+    return {};
+  },
+};
 
 class MockKubernetesClient implements KubernetesApi {
   readonly resources;
@@ -187,7 +202,6 @@ class MockKubernetesClient implements KubernetesApi {
 
 createDevApp()
   .registerPlugin(argocdPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider
@@ -196,6 +210,7 @@ createDevApp()
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
           [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
       >
         <EntityProvider entity={mockEntity}>

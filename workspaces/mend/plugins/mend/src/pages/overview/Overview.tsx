@@ -1,4 +1,3 @@
-import React from 'react';
 import { Page, Content } from '@backstage/core-components';
 import { useApi, fetchApiRef } from '@backstage/core-plugin-api';
 import { mendApiRef } from '../../api';

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { RequirePermission } from '@backstage/plugin-permission-react';
@@ -127,7 +126,6 @@ describe('Router component', () => {
     expect(mockedPrequirePermission).toHaveBeenCalledWith(
       expect.objectContaining({
         permission: expect.objectContaining({ name: 'policy.entity.create' }),
-        resourceRef: expect.stringContaining('policy-entity'),
       }),
       expect.anything(),
     );
@@ -152,13 +150,6 @@ describe('Router component', () => {
       </MemoryRouter>,
     );
 
-    expect(mockedPrequirePermission).toHaveBeenCalledWith(
-      expect.objectContaining({
-        permission: expect.objectContaining({ name: 'policy.entity.update' }),
-        resourceRef: expect.stringContaining('policy-entity'),
-      }),
-      expect.anything(),
-    );
     expect(screen.queryByText('EditRole')).toBeInTheDocument();
   });
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode, ComponentType } from 'react';
 import { Navigate, Route } from 'react-router-dom';
 
 import { createApp } from '@backstage/app-defaults';
@@ -48,8 +48,6 @@ import {
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
-
-import { getThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
@@ -92,7 +90,6 @@ const app = createApp({
       />
     ),
   },
-  themes: getThemes(),
 });
 
 const routes = (
@@ -132,8 +129,8 @@ const routes = (
   </FlatRoutes>
 );
 
-const AppRoot: React.ComponentType<{
-  children?: React.ReactNode;
+const AppRoot: ComponentType<{
+  children?: ReactNode;
 }> = app.createRoot(
   <>
     <AlertDisplay />

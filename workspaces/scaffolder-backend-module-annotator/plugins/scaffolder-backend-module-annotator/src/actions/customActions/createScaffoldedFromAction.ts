@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import { createAnnotatorAction } from '../annotator/annotator';
+import { examples } from './createScaffoldedFromAction.examples';
 
+/**
+ * @public
+ */
 export const createScaffoldedFromAction = () => {
   return createAnnotatorAction(
     'catalog:scaffolded-from',
@@ -27,5 +31,6 @@ export const createScaffoldedFromAction = () => {
         },
       };
     },
+    examples,
   );
 };

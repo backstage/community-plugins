@@ -1,5 +1,41 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- 70f97c5: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- 0775db8: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.16.0
+
+### Minor Changes
+
+- e86934c: Updated the SegmentAnalytics class .fromConfig signature to better conform with Backstage recommended API
+- 4ed9028: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+
+## 1.15.0
+
+### Minor Changes
+
+- 8b665f9: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- df57926: Updated dependency `@types/node` to `18.19.103`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+- 9d260e1: Updated dependency `@types/react` to `18.3.23`.
+
 ## 1.14.4
 
 ### Patch Changes

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import {
@@ -33,6 +32,7 @@ import { CreateAnnouncementPage } from './CreateAnnouncementPage';
 import { EditAnnouncementPage } from './EditAnnouncementPage';
 import { CategoriesPage } from './CategoriesPage';
 import { AdminPortal } from './Admin';
+import { MarkdownRendererTypeProps } from './MarkdownRenderer';
 
 type RouterProps = {
   themeId?: string;
@@ -47,6 +47,8 @@ type RouterProps = {
     name: string | undefined;
   };
   hideInactive?: boolean;
+  hideStartAt?: boolean;
+  markdownRenderer?: MarkdownRendererTypeProps;
 };
 
 export const Router = (props: RouterProps) => {
@@ -54,6 +56,8 @@ export const Router = (props: RouterProps) => {
     themeId: 'home',
     title: 'Announcements',
     hideInactive: false,
+    hideStartAt: false,
+    markdownRenderer: 'backstage',
     ...props,
   };
 

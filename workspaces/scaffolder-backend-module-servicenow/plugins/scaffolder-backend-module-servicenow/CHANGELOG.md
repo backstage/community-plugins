@@ -1,5 +1,60 @@
 ### Dependencies
 
+## 2.8.1
+
+### Patch Changes
+
+- 60a37cc: Updated dependency `@hey-api/openapi-ts` to `0.80.5`.
+
+## 2.8.0
+
+### Minor Changes
+
+- 6600461: Backstage version bump to v1.41.1
+
+## 2.7.1
+
+### Patch Changes
+
+- 7cfcb00: Updated dependency `@hey-api/openapi-ts` to `0.78.3`.
+- 042961c: add examples for action servicenow backend scaffolder
+
+## 2.7.0
+
+### Minor Changes
+
+- 4202946: Backstage version bump to v1.39.0
+
+## 2.6.4
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 2.6.3
+
+### Patch Changes
+
+- fd39ec9: Updated dependency `@hey-api/openapi-ts` to `0.72.2`.
+
+## 2.6.2
+
+### Patch Changes
+
+- 31b91ce: Updated dependency `@hey-api/openapi-ts` to `0.67.3`.
+
+## 2.6.1
+
+### Patch Changes
+
+- 35b813d: Updated dependency `@hey-api/openapi-ts` to `0.66.7`.
+
+## 2.6.0
+
+### Minor Changes
+
+- 1b241c5: Backstage version bump to v1.38.1
+
 ## 2.5.0
 
 ### Minor Changes

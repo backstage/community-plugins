@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import {
   ActionType,
   createAction,
   createStandardAction,
 } from 'typesafe-actions';
-import { Namespace } from '../types/Namespace';
 import { ActionKeys } from './ActionKeys';
 
 export const NamespaceActions = {

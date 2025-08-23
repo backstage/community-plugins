@@ -1,5 +1,33 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- 30e9f1b: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [30e9f1b]
+  - @backstage-community/plugin-entity-feedback-common@0.7.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 45ec160: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [45ec160]
+  - @backstage-community/plugin-entity-feedback-common@0.6.0
+
+## 0.9.0
+
+### Minor Changes
+
+- a3f300c: Support for Backstage Notifications added
+
 ## 0.8.0
 
 ### Minor Changes

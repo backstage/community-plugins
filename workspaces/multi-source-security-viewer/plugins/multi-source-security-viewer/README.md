@@ -21,7 +21,7 @@ This plugin enables you to visualize pipeline security information from multiple
 1. Install the plugin using the following command:
 
 ```
-yarn workspace app add @backstage-community/multi-source-security-viewer
+yarn workspace app add @backstage-community/plugin-multi-source-security-viewer
 ```
 
 To enable the PipelineRun list in the Security tab on the entity view page, add the following snippet in the packages/app/src/components/catalog/EntityPage.tsx.
@@ -50,6 +50,38 @@ To enable the PipelineRun list in the Security tab on the entity view page, add 
 +);
 ```
 
+The plugin will be displayed when the annotations of the CI provider will be present. This can also be additionally controlled by setting the following annotation on the component.
+
+```
+mssv/enabled: 'true'
+```
+
+If you choose to display the plugin when the annotation is present along with the CI provider annotations, use `isMultiCIAvailableAndEnabled` instead.
+
+```diff
++import {
++  isMultiCIAvailableAndEnabled,
++  EntityMultiCIPipelinesContent,
++} from '@backstage-community/plugin-multi-source-security-viewer';
++
++import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
++import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
++
++const securityContent = (
++  <EntitySwitch>
++    <EntitySwitch.Case if={isMultiCIAvailableAndEnabled}>
++      <EntityMultiCIPipelinesContent />
++    </EntitySwitch.Case>
++  </EntitySwitch>
++);
++
++const entityServicePage = (
++  <EntityLayout.Route path="/security" title="Security">
++    {securityContent}
++  </EntityLayout.Route>
++);
+```
+
 ## For users
 
 ### Using the plugin in Backstage
@@ -63,6 +95,7 @@ To enable the PipelineRun list in the Security tab on the entity view page, add 
 - [Jenkins](../../../jenkins/plugins/jenkins/README.md)
 - [Github Actions]([../../../github-actions/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#annotations)
+- [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
 ### Procedure
 

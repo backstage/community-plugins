@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
-import '@patternfly/patternfly/patternfly.css';
 
 import {
   configApiRef,
@@ -51,6 +51,7 @@ import {
   isAzurePipelinesAvailable,
 } from '@backstage-community/plugin-azure-devops';
 import { MssvAzureDevopsClient, mssvAzureDevopsApiRef } from './api/azure';
+import { MSSV_ENABLED_ANNOTATION } from '@backstage-community/plugin-multi-source-security-viewer-common';
 
 /** @public */
 export const multiSourceSecurityViewerPlugin = createPlugin({
@@ -127,12 +128,25 @@ export const multiSourceSecurityViewerPlugin = createPlugin({
   },
 });
 
-/** @public */
+/**
+ * @public
+ * Returns true if the CI provider annotations are set on component.
+ */
 export const isMultiCIAvailable = (entity: Entity): boolean =>
   isJenkinsAvailable(entity) ||
   isGitlabAvailable(entity) ||
   isGithubActionsAvailable(entity) ||
   isAzurePipelinesAvailable(entity);
+
+/**
+ * @public
+ * Returns true if CI provider and mssv annotations are set on component.
+ */
+export const isMultiCIAvailableAndEnabled = (entity: Entity): boolean =>
+  Boolean(
+    entity.metadata.annotations?.[MSSV_ENABLED_ANNOTATION] === 'true' &&
+      isMultiCIAvailable(entity),
+  );
 
 /** @public */
 export const EntityMultiCIPipelinesContent =

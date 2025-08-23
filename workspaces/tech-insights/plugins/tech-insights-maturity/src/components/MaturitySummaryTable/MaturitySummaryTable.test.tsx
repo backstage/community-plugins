@@ -32,7 +32,6 @@ import {
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 
-import React from 'react';
 import { MaturitySummaryTable } from './MaturitySummaryTable';
 import { MaturityApi, maturityApiRef } from '../../api';
 

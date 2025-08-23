@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, memo } from 'react';
 import useInterval from 'react-use/lib/useInterval';
 
 import {
@@ -37,6 +37,8 @@ import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { TaskStep } from '../../utils/taskRun-utils';
 import { calculateDuration } from '../../utils/tekton-utils';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,7 +69,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const StepTimeTicker = ({ step }: { step: TaskStep }) => {
-  const [time, setTime] = React.useState('');
+  const [time, setTime] = useState('');
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   useInterval(() => {
     if (!step.startedAt) {
@@ -75,7 +78,7 @@ const StepTimeTicker = ({ step }: { step: TaskStep }) => {
       return;
     }
 
-    setTime(calculateDuration(step.startedAt, step.endedAt));
+    setTime(calculateDuration(t, step.startedAt, step.endedAt));
   }, 1000);
 
   return <Typography variant="caption">{time}</Typography>;
@@ -135,9 +138,10 @@ type TaskStatusStepperProps = {
   };
 };
 
-export const TaskStatusStepper = React.memo((props: TaskStatusStepperProps) => {
+export const TaskStatusStepper = memo((props: TaskStatusStepperProps) => {
   const { steps, currentStepId, onUserStepChange } = props;
   const classes = useStyles(props);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <div className={classes.root}>
@@ -168,7 +172,9 @@ export const TaskStatusStepper = React.memo((props: TaskStatusStepperProps) => {
                   <div className={classes.labelWrapper}>
                     <Typography variant="subtitle2">{step.name}</Typography>
                     {isSkipped ? (
-                      <Typography variant="caption">Skipped</Typography>
+                      <Typography variant="caption">
+                        {t('pipelineRunLogs.taskStatusStepper.skipped')}
+                      </Typography>
                     ) : (
                       <StepTimeTicker step={step} />
                     )}

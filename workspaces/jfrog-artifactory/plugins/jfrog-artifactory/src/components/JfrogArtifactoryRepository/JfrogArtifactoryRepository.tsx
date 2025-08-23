@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAsync } from 'react-use';
 
 import { Link, Progress, Table } from '@backstage/core-components';
@@ -21,11 +21,10 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { Box, Chip, makeStyles } from '@material-ui/core';
 
-import { formatByteSize, formatDate } from '@janus-idp/shared-react';
-
 import { jfrogArtifactoryApiRef } from '../../api';
 import { Edge } from '../../types';
 import { columns, useStyles } from './tableHeading';
+import { formatByteSize, formatDate } from '../../utils';
 
 const useLocalStyles = makeStyles({
   chip: {
@@ -38,7 +37,7 @@ const useLocalStyles = makeStyles({
   },
 });
 
-export function JfrogArtifactoryRepository({ image }: RepositoryProps) {
+export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
   const jfrogArtifactoryClient = useApi(jfrogArtifactoryApiRef);
   const classes = useStyles();
   const localClasses = useLocalStyles();
@@ -46,7 +45,7 @@ export function JfrogArtifactoryRepository({ image }: RepositoryProps) {
   const titleprop = `Jfrog Artifactory repository: ${image}`;
 
   const { loading } = useAsync(async () => {
-    const tagsResponse = await jfrogArtifactoryClient.getTags(image);
+    const tagsResponse = await jfrogArtifactoryClient.getTags(image, target);
 
     setEdges(tagsResponse.data.versions.edges);
 
@@ -98,4 +97,5 @@ export function JfrogArtifactoryRepository({ image }: RepositoryProps) {
 
 interface RepositoryProps {
   image: string;
+  target?: string;
 }

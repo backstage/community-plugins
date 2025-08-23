@@ -6,7 +6,7 @@
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
-import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common/index';
+import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { Conditions } from '@backstage/plugin-permission-node';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
@@ -16,15 +16,15 @@ import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Permission } from '@backstage/plugin-permission-common';
-import { PermissionCondition } from '@backstage/plugin-permission-common/index';
-import { PermissionCriteria } from '@backstage/plugin-permission-common/index';
+import { PermissionCondition } from '@backstage/plugin-permission-common';
+import { PermissionCriteria } from '@backstage/plugin-permission-common';
 import { PermissionPolicy } from '@backstage/plugin-permission-node';
 import { PermissionRule } from '@backstage/plugin-permission-node';
 import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PlaylistMetadata } from '@backstage-community/plugin-playlist-common';
 import { PolicyDecision } from '@backstage/plugin-permission-common';
 import { PolicyQuery } from '@backstage/plugin-permission-node';
-import { ResourcePermission } from '@backstage/plugin-permission-common/index';
+import { ResourcePermission } from '@backstage/plugin-permission-common';
 
 // @public (undocumented)
 export const createPlaylistConditionalDecision: (

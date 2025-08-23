@@ -4,6 +4,8 @@ metadata:
   name: create-react-app-template-with-timestamp-entityRef
   title: Create React App Template
   description: Create a new CRA website project
+  annotations:
+    backstage.io/template-version: 0.0.1
   tags:
     - react
     - cra
@@ -21,6 +23,14 @@ spec:
           type: string
           description: Unique name of the component
           ui:field: EntityNamePicker
+        label:
+          title: Label
+          type: string
+          description: Custom label.
+        annotation:
+          title: Annotation
+          type: string
+          description: Custom annotation.
         description:
           title: Description
           type: string
@@ -72,8 +82,13 @@ spec:
           custom: ${{ parameters.label }}
           other: 'test-label'
         annotations:
-          custom.io/annotation: ${{ parameters.label }}
+          custom.io/annotation: ${{ parameters.annotation }}
           custom.io/other: 'value'
+
+    # this step is an example of using the `catalog:template:version` action
+    - id: version-templateRef
+      name: Append the version of this template to the entityRef
+      action: catalog:template:version
 
     # this step is an example of using the `catalog:scaffolded-from` action
     - id: append-templateRef

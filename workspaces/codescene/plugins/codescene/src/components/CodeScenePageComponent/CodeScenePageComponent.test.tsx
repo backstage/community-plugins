@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { CodeScenePageComponent } from './CodeScenePageComponent';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';

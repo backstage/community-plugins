@@ -28,12 +28,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
 import { DateTime } from 'luxon';
-import React from 'react';
 import { Job, Jobs, Step } from '../../api';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
@@ -221,6 +221,19 @@ export const WorkflowRunDetails = ({ entity }: { entity: Entity }) => {
                   status={details.value?.status || undefined}
                   conclusion={details.value?.conclusion || undefined}
                 />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                <Typography noWrap>Age</Typography>
+              </TableCell>
+              <TableCell>
+                <Tooltip title={details.value?.updated_at ?? ''}>
+                  <Typography noWrap>{`${(details.value?.updated_at
+                    ? DateTime.fromISO(details.value?.updated_at)
+                    : DateTime.now()
+                  ).toRelative()}`}</Typography>
+                </Tooltip>
               </TableCell>
             </TableRow>
             <TableRow>

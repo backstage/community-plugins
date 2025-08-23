@@ -13,6 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { evalTimeRange } from '@backstage-community/plugin-kiali-common/func';
+import {
+  AccessLog,
+  LogEntry,
+  Pod,
+  PodLogs,
+  Span,
+  TimeInMilliseconds,
+  TimeInSeconds,
+  TimeRange,
+  TracingQuery,
+} from '@backstage-community/plugin-kiali-common/types';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   Button,
@@ -32,7 +44,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Alert } from '@material-ui/lab';
 import memoize from 'micro-memoize';
 import moment from 'moment';
-import * as React from 'react';
+import { default as React } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAsyncFn, useDebounce } from 'react-use';
 import screenfull, { Screenfull } from 'screenfull';
@@ -45,14 +57,6 @@ import { ToolbarDropdown } from '../../components/ToolbarDropdown/ToolbarDropdow
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiApiRef } from '../../services/Api';
 import { kialiStyle } from '../../styles/StyleUtils';
-import {
-  evalTimeRange,
-  TimeInMilliseconds,
-  TimeInSeconds,
-  TimeRange,
-} from '../../types/Common';
-import { AccessLog, LogEntry, Pod, PodLogs } from '../../types/IstioObjects';
-import { Span, TracingQuery } from '../../types/Tracing';
 import { PromisesRegistry } from '../../utils/CancelablePromises';
 import { formatDuration } from '../../utils/tracing/TracingHelper';
 

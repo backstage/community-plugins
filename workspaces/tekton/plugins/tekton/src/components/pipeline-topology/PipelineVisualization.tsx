@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { PipelineRunKind, TaskRunKind } from '@janus-idp/shared-react';
 
 import { useDarkTheme } from '../../hooks/useDarkTheme';
@@ -22,6 +20,8 @@ import { getGraphDataModel } from '../../utils/pipeline-topology-utils';
 import { PipelineLayout } from './PipelineLayout';
 
 import './PipelineVisualization.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineVisualizationProps = {
   pipelineRun: PipelineRunKind | null;
@@ -35,12 +35,13 @@ export const PipelineVisualization = ({
   useDarkTheme();
 
   const model = getGraphDataModel(pipelineRun ?? undefined, taskRuns ?? []);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <>
       {!model || (model.nodes.length === 0 && model.edges.length === 0) ? (
         <div data-testid="pipeline-no-tasks">
-          This Pipeline Run has no tasks to visualize
+          {t('pipelineVisualization.noTasksDescription')}
         </div>
       ) : (
         <div

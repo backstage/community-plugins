@@ -34,7 +34,7 @@ Add the RBAC plugin packages as dependencies by running the following command.
 yarn workspace backend add @backstage-community/plugin-rbac-backend
 ```
 
-**NOTE**: If you are using Red Hat Developer Hub backend plugin is pre-installed and you do not need this step.
+**NOTE**: If you are using Red Hat Developer Hub, backend plugin is pre-installed and you do not need this step.
 
 ### Configuring the Backend
 
@@ -42,11 +42,11 @@ yarn workspace backend add @backstage-community/plugin-rbac-backend
 
 The RBAC plugin supports the integration with the new backend system.
 
-Add the RBAC plugin to the `packages/backend/src/index.ts` file and remove the Permission backend plugin and Allow All Permission policy module.
+Add the RBAC plugin to the `packages/backend/src/index.ts` file and remove the Allow All Permission policy module.
 
 ```diff
 // permission plugin
-- backend.add(import('@backstage/plugin-permission-backend/alpha'));
+backend.add(import('@backstage/plugin-permission-backend'));
 - backend.add(
 -    import('@backstage/plugin-permission-backend-module-allow-all-policy'),
 -  );
@@ -87,10 +87,14 @@ For more information on the available API endpoints accessible to the policy adm
 
 ### Configure plugins with permission
 
-In order for the RBAC UI to display available permissions provided by installed plugins, add the corresponding
-plugin IDs to the `app-config.yaml`.
+In order for the RBAC UI to display the available permissions provided by installed plugins, you must supply the corresponding list of plugin IDs. There are two ways to achieve this:
 
-You can specify the plugins with permission in your application configuration as follows:
+- Application configuration(`app-config.yaml`)
+- REST API
+
+#### Configure plugins with Application configuration
+
+You can specify the plugins with permissions in your application configuration as follows:
 
 ```YAML
 permission:
@@ -105,6 +109,40 @@ permission:
         - name: user:default/alice
         - name: group:default/admins
 ```
+
+#### Configure plugins with REST API
+
+You can specify the plugins with permissions using the corresponding [REST API](./docs/apis.md#plugin-ids-that-support-the-backstage-permission-framework).
+
+Curl Examples:
+
+Get the object containing the list of plugin IDs:
+
+```
+curl -X GET "http://localhost:7007/api/permission/plugins/id" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" -v
+```
+
+Add more plugin IDs:
+
+```
+curl -X POST "http://localhost:7007/api/permission/plugins/id" \
+  -d '{ "ids": [ "permission", "scaffolder" ] }' \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" -v
+```
+
+Remove plugin IDs:
+
+```
+curl -X DELETE "http://localhost:7007/api/permission/plugins/id" \
+  -d '{ "ids": [ "permission", "scaffolder" ] }' \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" -v
+```
+
+Notice: The REST API does not allow deletion of plugin IDs that were provided via application configuration, in order to prevent an inconsistent state after a deployment restart. These ID values can only be removed through the configuration file.
 
 For more information on the available permissions, refer to the [RBAC permissions documentation](./docs/permissions.md).
 
@@ -184,7 +222,7 @@ Example of the conditional policies file:
 ```yaml
 ---
 result: CONDITIONAL
-roleEntityRef: 'role:default/test'
+roleEntityRef: role:default/test
 pluginId: catalog
 resourceType: catalog-entity
 permissionMapping:
@@ -195,11 +233,11 @@ conditions:
   resourceType: catalog-entity
   params:
     claims:
-      - 'group:default/team-a'
-      - 'group:default/team-b'
+      - group:default/team-a
+      - group:default/team-b
 ---
 result: CONDITIONAL
-roleEntityRef: 'role:default/test'
+roleEntityRef: role:default/test
 pluginId: catalog
 resourceType: catalog-entity
 permissionMapping:
@@ -209,7 +247,7 @@ conditions:
   resourceType: catalog-entity
   params:
     claims:
-      - 'group:default/team-a'
+      - group:default/team-a
 ```
 
 Information about condition policies format you can find in the doc: [Conditional policies documentation](./docs/conditions.md). There is only one difference: yaml format compare to json. But yaml and json are back convertiable.

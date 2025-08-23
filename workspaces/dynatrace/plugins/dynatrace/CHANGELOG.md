@@ -1,5 +1,35 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.8.0
+
+### Minor Changes
+
+- dcc2795: Backstage version bump to v1.41.1
+
+## 10.7.0
+
+### Minor Changes
+
+- 34bb3c3: Backstage version bump to v1.40.2
+
+## 10.6.0
+
+### Minor Changes
+
+- 4b9b368: Backstage version bump to v1.39.0
+
+## 10.5.0
+
+### Minor Changes
+
+- f4c0154: Backstage version bump to v1.38.1
+
+## 10.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 10.4.0
 
 ### Minor Changes

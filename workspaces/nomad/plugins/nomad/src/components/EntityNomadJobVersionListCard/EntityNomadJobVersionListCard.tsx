@@ -25,7 +25,7 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Version, nomadApiRef } from '../../api';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {

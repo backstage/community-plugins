@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { GroupVersionKind } from '@backstage-community/plugin-kiali-common/types';
 import { Link } from '@backstage/core-components';
-import {
-  RouteFunc,
-  SubRouteRef,
-  useRouteRef,
-} from '@backstage/core-plugin-api';
-import * as React from 'react';
+import { SubRouteRef } from '@backstage/core-plugin-api';
+import { default as React } from 'react';
 import { isMultiCluster } from '../config';
 import {
   appDetailRouteRef,
   appsRouteRef,
   istioConfigDetailRouteRef,
   istioConfigRouteRef,
-  rootRouteRef,
   servicesDetailRouteRef,
   servicesRouteRef,
   workloadsDetailRouteRef,
   workloadsRouteRef,
 } from '../routes';
 
-type routeRefParams = undefined | { [key: string]: string };
+// type routeRefParams = undefined | { [key: string]: string };
 export const backstageRoutesObject: {
   [key: string]: { id: string; ref: SubRouteRef };
 } = {
@@ -68,13 +64,13 @@ interface BackstageLinkProps {
   name?: string;
   type: string;
   namespace?: string;
-  objectType?: string;
+  objectGVK?: GroupVersionKind;
   query?: string;
   children?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
-const getRef = (type: string, entity?: boolean, root?: boolean) => {
+/* const getRef = (type: string, entity?: boolean, root?: boolean) => {
   if (entity && root) {
     return rootRouteRef;
   }
@@ -84,16 +80,17 @@ const getRef = (type: string, entity?: boolean, root?: boolean) => {
   }
 
   return backstageRoutesObject[type].ref;
-};
+};*/
 
 export const BackstageObjectLink = (props: BackstageLinkProps) => {
-  const { name, type, objectType, namespace, query, cluster } = props;
-  const link: RouteFunc<routeRefParams> = useRouteRef(
+  const { name, type, query, cluster } = props;
+  /* const link: RouteFunc<routeRefParams> = useRouteRef(
     getRef(type, props.entity, props.root),
-  );
-  let to = '';
+  );*/
+  const to = '';
+  /*
   if (!props.root) {
-    const items: { [key: string]: string } = { namespace: namespace || '' };
+    const items: { [key: string]: string } = { namespace: '' };
 
     if (type && name) {
       items[backstageRoutesObject[type].id] = name;
@@ -101,20 +98,23 @@ export const BackstageObjectLink = (props: BackstageLinkProps) => {
     if (objectType) {
       items.objectType = objectType;
     }
-    to = link(items);
+    // link(items)
+    to = link();
   } else {
     to = link();
   }
+  console.log(to)
+  */
   const href = addQuery(to, cluster, query);
   return (
     <Link
       to={href}
       data-test={`${
         type ? backstageRoutesObject[type].id : ''
-      }-${namespace}-${name}`}
+      }-namespace-${name}`}
       {...props}
     >
-      {props.children || `${namespace}/${name}`}
+      {props.children || `namespace/${name}`}
     </Link>
   );
 };

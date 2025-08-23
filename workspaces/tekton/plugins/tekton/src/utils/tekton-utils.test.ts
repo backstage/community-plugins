@@ -31,6 +31,31 @@ import {
   totalPipelineRunTasks,
 } from './tekton-utils';
 
+const mockFunctionT: any = (key: string, options?: { count: number }) => {
+  if (key === 'pipelineRunDuration.lessThanSec') {
+    return 'less than a sec';
+  }
+  if (key === 'pipelineRunDuration.second') {
+    if (options?.count === 1) {
+      return '1 second';
+    }
+    return `${options?.count} seconds`;
+  }
+  if (key === 'pipelineRunDuration.minute') {
+    if (options?.count === 1) {
+      return '1 minute';
+    }
+    return `${options?.count} minutes`;
+  }
+  if (key === 'pipelineRunDuration.hour') {
+    if (options?.count === 1) {
+      return '1 hour';
+    }
+    return `${options?.count} hours`;
+  }
+  return key;
+};
+
 describe('tekton-utils', () => {
   it('getClusters should return the cluster', () => {
     const k8sObjects = {
@@ -137,48 +162,57 @@ describe('tekton-utils', () => {
   });
 
   it('should return the right duration strings', () => {
-    expect(getDuration(0, false)).toBe('less than a sec');
-    expect(getDuration(0, true)).toBe('less than a sec');
+    expect(getDuration(mockFunctionT, 0, false)).toBe('less than a sec');
+    expect(getDuration(mockFunctionT, 0, true)).toBe('less than a sec');
 
-    expect(getDuration(10, false)).toBe('10s');
-    expect(getDuration(10, true)).toBe('10 seconds');
+    expect(getDuration(mockFunctionT, 10, false)).toBe('10s');
+    expect(getDuration(mockFunctionT, 10, true)).toBe('10 seconds');
 
-    expect(getDuration(60, false)).toBe('1m');
-    expect(getDuration(60, true)).toBe('1 minute');
+    expect(getDuration(mockFunctionT, 60, false)).toBe('1m');
+    expect(getDuration(mockFunctionT, 60, true)).toBe('1 minute');
 
-    expect(getDuration(3600 + 2 * 60 + 3, false)).toBe('1h 2m 3s');
-    expect(getDuration(3600 + 2 * 60 + 3, true)).toBe(
+    expect(getDuration(mockFunctionT, 3600 + 2 * 60 + 3, false)).toBe(
+      '1h 2m 3s',
+    );
+    expect(getDuration(mockFunctionT, 3600 + 2 * 60 + 3, true)).toBe(
       '1 hour 2 minutes 3 seconds',
     );
 
-    expect(getDuration(48 * 3600 + 1, false)).toBe('48h 1s');
-    expect(getDuration(48 * 3600 + 1, true)).toBe('48 hours 1 second');
+    expect(getDuration(mockFunctionT, 48 * 3600 + 1, false)).toBe('48h 1s');
+    expect(getDuration(mockFunctionT, 48 * 3600 + 1, true)).toBe(
+      '48 hours 1 second',
+    );
   });
 
   it('should return definite duration', () => {
     let duration = calculateDuration(
+      mockFunctionT,
       '2020-05-22T11:57:53Z',
       '2020-05-22T11:57:57Z',
     );
     expect(duration).toEqual('4s');
     duration = calculateDuration(
+      mockFunctionT,
       '2020-05-22T11:57:53Z',
       '2020-05-22T11:57:57Z',
       true,
     );
     expect(duration).toEqual('4 seconds');
     duration = calculateDuration(
+      mockFunctionT,
       '2020-05-22T11:57:53Z',
       '2020-05-22T12:02:20Z',
     );
     expect(duration).toBe('4m 27s');
     duration = calculateDuration(
+      mockFunctionT,
       '2020-05-22T11:57:53Z',
       '2020-05-22T12:02:20Z',
       true,
     );
     expect(duration).toBe('4 minutes 27 seconds');
     duration = calculateDuration(
+      mockFunctionT,
       '2020-05-22T10:57:53Z',
       '2020-05-22T12:57:57Z',
     );
@@ -188,6 +222,7 @@ describe('tekton-utils', () => {
   it('should return expect duration for PipelineRun', () => {
     const duration = pipelineRunDuration(
       mockKubernetesPlrResponse.pipelineruns[0],
+      mockFunctionT,
     );
     expect(duration).not.toBeNull();
     expect(duration).toBe('2 minutes 9 seconds');
@@ -201,7 +236,7 @@ describe('tekton-utils', () => {
         startTime: '',
       },
     };
-    const duration = pipelineRunDuration(mockPipelineRun);
+    const duration = pipelineRunDuration(mockPipelineRun, mockFunctionT);
     expect(duration).not.toBeNull();
     expect(duration).toBe('-');
   });
@@ -214,7 +249,7 @@ describe('tekton-utils', () => {
         completionTime: '',
       },
     };
-    const duration = pipelineRunDuration(mockPipelineRun);
+    const duration = pipelineRunDuration(mockPipelineRun, mockFunctionT);
     expect(duration).not.toBeNull();
     expect(duration).toBe('-');
   });

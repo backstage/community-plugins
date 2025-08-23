@@ -1,5 +1,33 @@
 # @backstage-community/plugin-grafana
 
+## 0.7.1
+
+### Patch Changes
+
+- ede2f03: Updated `DashboardsCard` title styling to align with other components
+
+## 0.7.0
+
+### Minor Changes
+
+- e0159d4: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 4281062: Prevent dashboard queries on folderTitle from breaking
+
+## 0.6.0
+
+### Minor Changes
+
+- 993923a: Backstage version bump to v1.40.2
+
+## 0.5.0
+
+### Minor Changes
+
+- ec090b7: Backstage version bump to v1.39.0
+
 ## 0.4.0
 
 ### Minor Changes

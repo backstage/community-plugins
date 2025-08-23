@@ -5,10 +5,10 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api/*';
+import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -21,7 +21,7 @@ const plugin: FrontendPlugin<
   {},
   {},
   {
-    'api:linkerd': ExtensionDefinition<{
+    [x: `api:${string}`]: ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -36,7 +36,7 @@ const plugin: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:linkerd/edges-table': ExtensionDefinition<{
+    [x: `entity-card:${string}/edges-table`]: ExtensionDefinition<{
       kind: 'entity-card';
       name: 'edges-table';
       config: {
@@ -77,7 +77,7 @@ const plugin: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:linkerd/is-meshed': ExtensionDefinition<{
+    [x: `entity-card:${string}/is-meshed`]: ExtensionDefinition<{
       kind: 'entity-card';
       name: 'is-meshed';
       config: {
@@ -118,7 +118,7 @@ const plugin: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:linkerd': ExtensionDefinition<{
+    [x: `entity-content:${string}`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: undefined;
       config: {
@@ -178,7 +178,9 @@ const plugin: FrontendPlugin<
           | (string & {})
           | 'development'
           | 'deployment'
+          | 'overview'
           | 'documentation'
+          | 'operation'
           | 'observability'
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;

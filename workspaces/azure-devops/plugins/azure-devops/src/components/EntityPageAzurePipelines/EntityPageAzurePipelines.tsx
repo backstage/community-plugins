@@ -15,7 +15,6 @@
  */
 
 import { BuildTable } from '../BuildTable/BuildTable';
-import React from 'react';
 import { useBuildRuns } from '../../hooks';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { azureDevOpsPipelineReadPermission } from '@backstage-community/plugin-azure-devops-common';
@@ -33,7 +32,12 @@ export const EntityPageAzurePipelines = (props: { defaultLimit?: number }) => {
       resourceRef={stringifyEntityRef(entity)}
       errorPage={null}
     >
-      <BuildTable items={items} loading={loading} error={error} />
+      <BuildTable
+        items={items}
+        loading={loading}
+        error={error}
+        entity={entity}
+      />
     </RequirePermission>
   );
 };

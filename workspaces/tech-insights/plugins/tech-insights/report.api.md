@@ -10,10 +10,10 @@ import { BooleanCheck } from '@backstage-community/plugin-tech-insights-react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { jsonRulesEngineCheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PropsWithChildren } from 'react';
 import { ReactNode } from 'react';
 import { ResultCheckIconBaseComponentProps } from '@backstage-community/plugin-tech-insights-react';
@@ -38,6 +38,8 @@ export const EntityTechInsightsScorecardCard: (props: {
   filter?: ((check: Check) => boolean) | undefined;
   onlyFailed?: boolean | undefined;
   expanded?: boolean | undefined;
+  gauge?: boolean | undefined;
+  dense?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -46,6 +48,7 @@ export const EntityTechInsightsScorecardContent: (props: {
   description?: string | undefined;
   checksId?: string[] | undefined;
   filter?: ((check: Check) => boolean) | undefined;
+  dense?: boolean | undefined;
 }) => JSX_2.Element;
 
 export { InsightFacts };
@@ -62,16 +65,20 @@ export { ResultLinksMenuInfo };
 export const ScorecardInfo: (props: {
   checkResults: CheckResult[];
   title: ReactNode;
-  entity: Entity;
+  entity?: Entity | undefined;
   description?: string | undefined;
   noWarning?: boolean | undefined;
   expanded?: boolean | undefined;
+  dense?: boolean | undefined;
+  hideDescription?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const ScorecardsList: (props: {
   checkResults: CheckResult[];
   entity?: Entity | undefined;
+  dense?: boolean | undefined;
+  hideDescription?: boolean | undefined;
 }) => JSX_2.Element;
 
 export { TechInsightsApi };
@@ -106,7 +113,10 @@ export const techInsightsPlugin: BackstagePlugin<
 >;
 
 // @public (undocumented)
-export const TechInsightsScorecardPage: () => JSX_2.Element;
+export const TechInsightsScorecardPage: (props: {
+  badge?: boolean | undefined;
+  dense?: boolean | undefined;
+}) => JSX_2.Element;
 
 // (No @packageDocumentation comment for this package)
 ```

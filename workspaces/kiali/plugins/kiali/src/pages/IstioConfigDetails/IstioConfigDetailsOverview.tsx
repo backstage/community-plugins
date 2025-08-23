@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 import {
+  IstioConfigDetails,
+  ObjectReference,
+  ServiceReference,
+  ValidationMessage,
+  ValidationTypes,
+  WorkloadReference,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   Card,
   CardContent,
   List,
@@ -21,25 +29,19 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { HistoryManager } from '../../app/History';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge } from '../../components/Pf/PfBadges';
 import { LocalTime } from '../../components/Time/LocalTime';
 import { ValidationObjectSummary } from '../../components/Validations/ValidationObjectSummary';
-import { IstioTypes } from '../../components/VirtualList/Config';
+import { GVKToBadge } from '../../components/VirtualList/Config';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { IstioConfigDetails } from '../../types/IstioConfigDetails';
 import {
-  ObjectReference,
-  ServiceReference,
-  ValidationMessage,
-  ValidationTypes,
-  WorkloadReference,
-} from '../../types/IstioObjects';
-import {
+  getGVKTypeString,
   getIstioObject,
+  getIstioObjectGVK,
   getReconciliationCondition,
 } from '../../utils/IstioConfigUtils';
 import { IstioConfigReferences } from './IstioConfigReferences';
@@ -133,7 +135,11 @@ export const IstioConfigDetailsOverview = (
         {istioObject && istioObject.kind && (
           <PFBadge
             badge={
-              IstioTypes[istioObject.kind?.toLocaleLowerCase('en-US')].badge
+              GVKToBadge[
+                getGVKTypeString(
+                  getIstioObjectGVK(istioObject.apiVersion, istioObject.kind),
+                )
+              ]
             }
           />
         )}

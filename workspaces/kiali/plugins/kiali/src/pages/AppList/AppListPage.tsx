@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import type { AppListItem } from '@backstage-community/plugin-kiali-common/types';
+import { DRAWER, ENTITY } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import * as React from 'react';
-import { useRef } from 'react';
+import { default as React, useRef } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
 import { isMultiCluster } from '../../config';
@@ -29,8 +30,6 @@ import { getEntityNs, nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { AppListItem } from '../../types/AppList';
-import { DRAWER, ENTITY } from '../../types/types';
 import { NamespaceInfo } from '../Overview/NamespaceInfo';
 import { getNamespaces } from '../Overview/OverviewPage';
 import * as AppListClass from './AppListClass';
@@ -86,18 +85,22 @@ export const AppListPage = (props: {
   };
 
   const fetchApps = async (
-    nss: NamespaceInfo[],
+    clusters: string[],
     timeDuration: number,
   ): Promise<void> => {
     const health = 'true';
     const istioResources = 'true';
     return Promise.all(
-      nss.map(async nsInfo => {
-        return await kialiClient.getApps(nsInfo.name, {
-          rateInterval: `${String(timeDuration)}s`,
-          health: health,
-          istioResources: istioResources,
-        });
+      clusters.map(async cluster => {
+        return await kialiClient.getClustersApps(
+          activeNs.map(ns => ns).join(','),
+          {
+            rateInterval: `${String(timeDuration)}s`,
+            health: health,
+            istioResources: istioResources,
+          },
+          cluster,
+        );
       }),
     )
       .then(results => {
@@ -118,6 +121,7 @@ export const AppListPage = (props: {
   };
 
   const getNS = async () => {
+    const serverConfig = await kialiClient.getServerConfig();
     kialiClient.setAnnotation(
       KIALI_PROVIDER,
       props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
@@ -126,6 +130,10 @@ export const AppListPage = (props: {
     kialiClient
       .getNamespaces()
       .then(namespacesResponse => {
+        const uniqueClusters = new Set<string>();
+        Object.keys(serverConfig.clusters).forEach(cluster => {
+          uniqueClusters.add(cluster);
+        });
         const allNamespaces: NamespaceInfo[] = getNamespaces(
           namespacesResponse,
           namespaces,
@@ -134,7 +142,7 @@ export const AppListPage = (props: {
           activeNs.includes(ns.name),
         );
         setNamespaces(namespaceInfos);
-        fetchApps(namespaceInfos, duration);
+        fetchApps(Array.from(uniqueClusters), duration);
       })
       .catch(err =>
         setErrorProvider(

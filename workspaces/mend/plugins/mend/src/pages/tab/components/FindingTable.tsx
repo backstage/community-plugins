@@ -1,4 +1,3 @@
-import React from 'react';
 import { Finding } from '../../../models';
 import { Table } from '../../../components';
 import { FindingData } from '../../../queries';

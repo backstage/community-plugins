@@ -1,5 +1,39 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.9.0
+
+### Minor Changes
+
+- 30e9f1b: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [30e9f1b]
+  - @backstage-community/plugin-entity-feedback-common@0.7.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 45ec160: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [45ec160]
+  - @backstage-community/plugin-entity-feedback-common@0.6.0
+
+## 0.7.2
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes

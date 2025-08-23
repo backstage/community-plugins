@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { usePermission } from '@backstage/plugin-permission-react';
 import { renderInTestApp } from '@backstage/test-utils';
 
@@ -92,7 +90,7 @@ describe('MembersCard', () => {
         membersInfo={membersInfo}
       />,
     );
-    expect(queryByText('Users and groups (2 groups, 2 users)')).not.toBeNull();
+    expect(queryByText('2 groups, 2 users')).not.toBeNull();
     expect(queryByText('Calum Leavy')).not.toBeNull();
     expect(queryByText('Amelia Park')).not.toBeNull();
     expect(queryByText('Team B')).not.toBeNull();

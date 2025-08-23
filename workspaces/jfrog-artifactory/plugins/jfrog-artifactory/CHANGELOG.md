@@ -1,5 +1,67 @@
 ### Dependencies
 
+## 1.18.2
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 1.18.1
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.18.0
+
+### Minor Changes
+
+- 7731edd: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 4252a3f: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
+## 1.17.0
+
+### Minor Changes
+
+- 3b95346: Backstage version bump to v1.40.2
+
+## 1.16.0
+
+### Minor Changes
+
+- 3dab416: Adds the possibility to use multiple artifactory instances
+
+### Patch Changes
+
+- 7f18c19: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+
+## 1.15.3
+
+### Patch Changes
+
+- 66718a0: remove unused devDependencies
+
+## 1.15.2
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.15.1
+
+### Patch Changes
+
+- 172353e: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+
+## 1.15.0
+
+### Minor Changes
+
+- 10adaa0: Backstage version bump to v1.39.0
+
 ## 1.14.0
 
 ### Minor Changes

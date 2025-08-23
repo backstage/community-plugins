@@ -1,5 +1,29 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.8.0
+
+### Minor Changes
+
+- 428ce4d: Backstage version bump to v1.41.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 3d5c0b4: Backstage version bump to v1.40.2
+
+## 0.6.0
+
+### Minor Changes
+
+- ad15115: Backstage version bump to v1.39.0
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.5.0
 
 ### Minor Changes

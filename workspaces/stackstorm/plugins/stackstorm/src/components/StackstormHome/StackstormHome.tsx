@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Fragment } from 'react';
+import type { ReactNode } from 'react';
+
+import { Fragment } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import {
   Header,
@@ -33,7 +35,7 @@ import { ActionsList } from '../ActionsList';
 export type StackstormHomeProps = {
   title?: string;
   subtitle?: string;
-  headerButtons?: React.ReactNode[];
+  headerButtons?: ReactNode[];
 };
 
 export const StackstormHome = (props: StackstormHomeProps) => (

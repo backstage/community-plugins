@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -254,7 +252,7 @@ describe('AddMembersForm', () => {
     expect(screen.getByText(selectedMembersError)).toBeInTheDocument();
   });
 
-  it('is able to clear the search input after each selection', async () => {
+  it('keeps the search input after each selection', async () => {
     const user = userEvent.setup();
 
     const { findByText, getByRole } = render(
@@ -274,17 +272,10 @@ describe('AddMembersForm', () => {
     user.click(autocompleteInput);
 
     await userEvent.type(autocompleteInput, 'er1');
-    let memberOptions = getByRole('listbox');
+    const memberOptions = getByRole('listbox');
     await user.click(memberOptions);
     const memberOption1 = await findByText('er1');
     await user.click(memberOption1);
-    expect(autocompleteInput).toHaveValue('');
-    await userEvent.type(autocompleteInput, 'er2');
-    memberOptions = getByRole('listbox');
-    await user.click(memberOptions);
-    const memberOption2 = await screen.findByText('er2');
-
-    await user.click(memberOption2);
-    expect(autocompleteInput).toHaveValue('');
+    expect(autocompleteInput).toHaveValue('er1');
   });
 });

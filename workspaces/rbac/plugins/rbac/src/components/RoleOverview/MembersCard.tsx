@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
-import { usePermission } from '@backstage/plugin-permission-react';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import Box from '@mui/material/Box';
-
-import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { MembersInfo } from '../../hooks/useMembers';
 import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import { columns } from './MembersListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type MembersCardProps = {
   roleName: string;
@@ -42,8 +40,8 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
   return (
     <EditRole
       dataTestId={isAllowed ? 'update-members' : 'disable-update-members'}
+      canEdit={isAllowed}
       roleName={roleName}
-      disable={!isAllowed}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${1}`}
     />
   );
@@ -51,11 +49,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
-  const [searchText, setSearchText] = React.useState<string>();
-  const policyEntityPermissionResult = usePermission({
-    permission: policyEntityUpdatePermission,
-    resourceRef: policyEntityUpdatePermission.resourceType,
-  });
+  const [searchText, setSearchText] = useState<string>();
 
   const actions = [
     {
@@ -68,21 +62,14 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
       },
     },
     {
-      icon: () =>
-        getEditIcon(
-          policyEntityPermissionResult.allowed && canReadUsersAndGroups,
-          roleName,
-        ),
-      tooltip:
-        policyEntityPermissionResult.allowed && canReadUsersAndGroups
-          ? 'Edit'
-          : 'Unauthorized to edit',
+      icon: () => getEditIcon(canReadUsersAndGroups, roleName),
+      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
       isFreeAction: true,
       onClick: () => {},
     },
   ];
 
-  const filteredData = React.useMemo(
+  const filteredData = useMemo(
     () => filterTableData({ data, columns, searchText }),
     [data, searchText],
   );
@@ -98,27 +85,29 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && data?.length
-            ? `Users and groups (${getMembers(filteredData)})`
-            : 'Users and groups'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={data ?? []}
-        isLoading={loading}
-        columns={columns}
-        emptyContent={
-          <Box
-            data-testid="members-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={
+            !loading && data?.length
+              ? `${getMembers(filteredData)}`
+              : 'Users and groups'
+          }
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={data ?? []}
+          isLoading={loading}
+          columns={columns}
+          emptyContent={
+            <Box
+              data-testid="members-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };

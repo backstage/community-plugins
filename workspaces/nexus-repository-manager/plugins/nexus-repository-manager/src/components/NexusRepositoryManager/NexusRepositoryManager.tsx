@@ -1,16 +1,13 @@
-import React from 'react';
 import { useAsync } from 'react-use';
 
 import { Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { formatDate } from '@janus-idp/shared-react';
-
 import { NexusRepositoryManagerApiRef } from '../../api';
 import { useNexusRepositoryManagerAppData } from '../../hooks';
 import { ComponentXO } from '../../types';
-import { getFileSize, getHash, isPrimaryAsset } from '../../utils';
+import { getFileSize, getHash, isPrimaryAsset, formatDate } from '../../utils';
 import { ArtifactTable } from '../ArtifactTable';
 
 // Artifact types that we want to display: either classifiers (e.g. javadoc) or extensions (e.g. zip)

@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 
-import { render, screen } from '@testing-library/react';
+import { usePermission } from '@backstage/plugin-permission-react';
+
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 
 import EditRole from './EditRole';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 jest.mock('@backstage/catalog-model', () => ({
   ...jest.requireActual('@backstage/catalog-model'),
@@ -31,72 +37,77 @@ jest.mock('@backstage/catalog-model', () => ({
   }),
 }));
 
+jest.mock('@backstage/plugin-permission-react', () => ({
+  usePermission: jest.fn(),
+  RequirePermission: jest.fn(),
+}));
+
+const mockUsePermission = usePermission as jest.MockedFunction<
+  typeof usePermission
+>;
+
 describe('EditRole', () => {
-  it('renders the button as disabled when disable is true', () => {
+  const isAllowed = true;
+
+  it('renders the button as disabled when canEdit is true', () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     render(
       <Router>
-        <EditRole roleName="roleName" disable dataTestId="edit-role-btn" />
+        <EditRole roleName="roleName" canEdit={isAllowed} />
       </Router>,
     );
-
-    expect(screen.getByRole('link', { name: 'Update' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    expect(screen.getByRole('button', { name: 'Update' })).toBeDisabled();
   });
 
   it('renders the button with correct tooltip and enabled state', () => {
-    const tooltipText = 'Edit Role Tooltip';
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
+    const tooltipText = 'Update';
+    const dataTestIdText = 'edit-role-btn';
     render(
       <Router>
         <EditRole
           roleName="roleName"
-          disable={false}
-          dataTestId="edit-role-btn"
+          dataTestId={dataTestIdText}
+          canEdit={isAllowed}
           tooltip={tooltipText}
         />
       </Router>,
     );
 
     expect(screen.getByTestId('edit-role-btn')).toHaveAttribute(
-      'aria-label',
+      'title',
       tooltipText,
     );
-    expect(screen.getByRole('link', { name: 'Update' })).not.toHaveAttribute(
-      'aria-disabled',
-    );
+    expect(screen.getByRole('button', { name: 'Update' })).not.toBeDisabled();
   });
 
-  it('sets the correct link path when "to" prop is provided', () => {
+  it('sets the correct navigation path when "to" prop is provided', () => {
+    const mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     const toPath = '/custom/path';
     render(
       <Router>
-        <EditRole
-          roleName="roleName"
-          disable={false}
-          dataTestId="edit-role-btn"
-          to={toPath}
-        />
+        <EditRole roleName="roleName" canEdit={isAllowed} to={toPath} />
       </Router>,
     );
 
-    expect(screen.getByRole('link')).toHaveAttribute('href', toPath);
+    const button = screen.getByRole('button', { name: /update/i });
+    fireEvent.click(button);
+
+    expect(mockNavigate).toHaveBeenCalledWith(toPath);
   });
 
-  it('sets the correct default link path based on roleName', () => {
+  it('sets the correct default navigation path based on roleName', () => {
+    const mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     render(
       <Router>
-        <EditRole
-          roleName="roleName"
-          disable={false}
-          dataTestId="edit-role-btn"
-        />
+        <EditRole roleName="roleName" canEdit={isAllowed} />
       </Router>,
     );
+    const button = screen.getByRole('button', { name: /update/i });
+    fireEvent.click(button);
 
-    expect(screen.getByRole('link')).toHaveAttribute(
-      'href',
-      expect.stringContaining('/role/Role/default/roleName'),
-    );
+    expect(mockNavigate).toHaveBeenCalledWith('../role/Role/default/roleName');
   });
 });

@@ -16,7 +16,6 @@
 import { Content } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid } from '@material-ui/core';
-import React from 'react';
 import { baseStyle } from '../../styles/StyleUtils';
 import { IstioConfigCard } from '../Overview/IstioConfigCard';
 import { ListViewPage } from '../Overview/ListView/ListViewPage';
@@ -34,7 +33,7 @@ export const KialiEntity = () => {
               <OverviewPage entity={entity} />
             </Grid>
             <Grid xs={12}>
-              <ListViewPage />
+              <ListViewPage entity={entity} />
             </Grid>
           </Grid>
           <Grid xs={6}>

@@ -65,9 +65,36 @@ techdocs:
 
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: development
+  # session:
+  #   secret: ${AUTH_SESSION_SECRET}
   providers:
-    # See https://backstage.io/docs/auth/guest/provider
-    guest: {}
+    # Uncomment `userEntityRef` if you wish to resolve to a proper user in Backstage
+    # See https://backstage.io/docs/auth/guest/provider/#config
+    guest:
+      {}
+      # userEntityRef: user:default/guest
+      # dangerouslyAllowOutsideDevelopment: true
+    # Uncomment if using GitHub provider
+    # See https://backstage.io/docs/auth/github/provider#configuration
+    # github:
+    #   development:
+    #     clientId: ${AUTH_GITHUB_CLIENT_ID}
+    #     clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+    #     signIn:
+    #       resolvers:
+    #         - resolver: usernameMatchingUserEntityName
+    # Uncomment if using OIDC provider
+    # See https://backstage.io/docs/auth/oidc#the-configuration
+    # oidc:
+    #   development:
+    #     metadataUrl: ${AUTH_OIDC_METADATA_URL}
+    #     clientId: ${AUTH_OIDC_CLIENT_ID}
+    #     clientSecret: ${AUTH_OIDC_CLIENT_SECRET}
+    #     prompt: auto
+    #     signIn:
+    #       resolvers:
+    #         - resolver: emailMatchingUserEntityProfileEmail
 
 scaffolder:
   {}

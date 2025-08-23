@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import { JfrogArtifactoryPage, jfrogArtifactoryPlugin } from '../src/plugin';
 import { jfrogArtifactoryApiRef, JfrogArtifactoryApiV1 } from '../src/api';
@@ -53,7 +49,6 @@ const mockJfrogArtifactoryApi = new MockJfrogArtifactoryApi();
 
 createDevApp()
   .registerPlugin(jfrogArtifactoryPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

@@ -1,5 +1,83 @@
 ### Dependencies
 
+## 1.40.1
+
+### Patch Changes
+
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 1.40.0
+
+### Minor Changes
+
+- 1c08f79: Upgrade backstage to 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [1c08f79]
+  - @backstage-community/plugin-kiali-common@0.3.0
+  - @backstage-community/plugin-kiali-react@0.2.0
+
+## 1.39.2
+
+### Patch Changes
+
+- 1df9013: remove product theme from dev dependencies and dev app
+- Updated dependencies [1df9013]
+  - @backstage-community/plugin-kiali-react@0.1.2
+
+## 1.39.1
+
+### Patch Changes
+
+- e4f6d5f: Updated dependency `cytoscape` to `3.32.0`.
+- 5d0701f: Updated dependency `cytoscape` to `3.32.1`.
+
+## 1.39.0
+
+### Minor Changes
+
+- cdad6af: Create kiali-react component library
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+- Updated dependencies [9e58717]
+  - @backstage-community/plugin-kiali-react@0.1.1
+
+## 1.38.0
+
+### Minor Changes
+
+- 8cb76ee: Migrate types to kiali-common
+- fe9f230: Fix provider selector
+- e53d4ba: Create a common library
+
+### Patch Changes
+
+- 29fb22e: remove unused dependency `@playwright/test`
+- Updated dependencies [8cb76ee]
+  - @backstage-community/plugin-kiali-common@0.2.0
+
+## 1.37.0
+
+### Minor Changes
+
+- f181693: Support kiali > 1.86
+- a428c5d: Upgrade backstage to version 1.38.1
+
+### Patch Changes
+
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- d170116: Updated dependency `canvas` to `^3.0.0`.
+- 44ec099: Updated dependency `cytoscape` to `3.31.2`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+- 0d59491: Updated dependency `@patternfly/react-topology` to `5.4.1`.
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.36.4
 
 ### Patch Changes

@@ -18,7 +18,7 @@ import { Link } from '@backstage/core-components';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -54,18 +54,20 @@ export const RatingCard = ({
   title,
   titleIcon,
   link,
+  compact,
 }: {
   leftSlot: ReactNode;
   rightSlot: ReactNode;
   title?: string;
   titleIcon?: ReactNode;
   link: string;
+  compact?: boolean;
 }) => {
   const classes = useStyles();
 
   return (
     <Link to={link} color="inherit" underline="none">
-      <Grid item className={classes.root}>
+      <Grid item className={compact ? '' : classes.root}>
         <Grid item className={classes.upper}>
           <Grid item className={classes.left}>
             {leftSlot}
@@ -74,11 +76,13 @@ export const RatingCard = ({
             {rightSlot}
           </Grid>
         </Grid>
-        <Grid item className={classes.cardTitle}>
-          <Typography variant="body1" className={classes.wrapIcon}>
-            {titleIcon} {title}
-          </Typography>
-        </Grid>
+        {compact || (
+          <Grid item className={classes.cardTitle}>
+            <Typography variant="body1" className={classes.wrapIcon}>
+              {titleIcon} {title}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </Link>
   );

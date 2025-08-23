@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { JfrogArtifactoryRepository } from '../JfrogArtifactoryRepository';
@@ -22,7 +20,7 @@ import { useJfrogArtifactoryAppData } from '../useJfrogArtifactoryAppData';
 
 export const JfrogArtifactoryDashboardPage = () => {
   const { entity } = useEntity();
-  const { imageName } = useJfrogArtifactoryAppData({ entity });
+  const { imageName, targetProxy } = useJfrogArtifactoryAppData({ entity });
 
-  return <JfrogArtifactoryRepository image={imageName} />;
+  return <JfrogArtifactoryRepository image={imageName} target={targetProxy} />;
 };

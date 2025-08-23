@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
 import { ProjectDialog } from '../ProjectDialog';
 import { BazaarProject, FormValues } from '../../types';

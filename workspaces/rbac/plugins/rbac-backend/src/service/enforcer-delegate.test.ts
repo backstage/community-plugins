@@ -27,29 +27,20 @@ import {
 import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
-import { mockAuditorService } from '../../__fixtures__/mock-utils';
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
-};
+import {
+  catalogMock,
+  conditionalStorageMock,
+  mockAuditorService,
+} from '../../__fixtures__/mock-utils';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import {
+  PermissionInfo,
+  RoleConditionalPolicyDecision,
+} from '@backstage-community/plugin-rbac-common';
 
 const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   findRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
@@ -73,8 +64,13 @@ const config = mockServices.rootConfig({
     },
   },
 });
-const policy = ['user:default/tom', 'policy-entity', 'read', 'allow'];
-const secondPolicy = ['user:default/tim', 'catalog-entity', 'write', 'allow'];
+const policy = ['role:default/dev-team', 'policy-entity', 'read', 'allow'];
+const secondPolicy = [
+  'role:default/qa-team',
+  'catalog-entity',
+  'create',
+  'allow',
+];
 
 const groupingPolicy = ['user:default/tom', 'role:default/dev-team'];
 const secondGroupingPolicy = ['user:default/tim', 'role:default/qa-team'];
@@ -162,7 +158,7 @@ describe('EnforcerDelegate', () => {
     enfAddPoliciesSpy = jest.spyOn(enf, 'addPolicies');
 
     const rm = new BackstageRoleManager(
-      catalogApiMock,
+      catalogMock,
       logger,
       catalogDBClient,
       rbacDBClient,
@@ -183,6 +179,7 @@ describe('EnforcerDelegate', () => {
     return new EnforcerDelegate(
       enf,
       mockAuditorService,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
@@ -267,17 +264,69 @@ describe('EnforcerDelegate', () => {
       expect(policies.length).toEqual(0);
     });
 
-    it('should return filteredPolicy', async () => {
+    it('should return filtered policy by role name', async () => {
       const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
 
       // filter by policy assignment person
       const policies = await enfDelegate.getFilteredPolicy(
         0,
-        'user:default/tim',
+        'role:default/qa-team',
       );
 
       expect(policies.length).toEqual(1);
       expect(policies[0]).toEqual(secondPolicy);
+    });
+
+    it('should return filtered policy by policy name', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyName = policy[1];
+      const policies = await enfDelegate.getFilteredPolicy(0, '', policyName);
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(policy);
+    });
+
+    it('should return filtered policy by policy name with index offset', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyName = policy[1];
+      const policies = await enfDelegate.getFilteredPolicy(1, policyName);
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(policy);
+    });
+
+    it('should return filtered policy by policy action', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyAction = policy[2];
+      const policies = await enfDelegate.getFilteredPolicy(
+        0,
+        '',
+        '',
+        policyAction,
+      );
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(policy);
+    });
+
+    it('should return filtered policy by policy effect', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyEffect = policy[3];
+      const policies = await enfDelegate.getFilteredPolicy(
+        0,
+        '',
+        '',
+        '',
+        policyEffect,
+      );
+
+      expect(policies.length).toEqual(2);
+      expect(policies[0]).toEqual(policy);
+      expect(policies[1]).toEqual(secondPolicy);
     });
   });
 
@@ -293,7 +342,7 @@ describe('EnforcerDelegate', () => {
       expect(policies.length).toEqual(0);
     });
 
-    it('should return filteredPolicy', async () => {
+    it('should return filtered grouping policy by role member', async () => {
       const enfDelegate = await createEnfDelegate(
         [],
         [groupingPolicy, secondGroupingPolicy],
@@ -303,6 +352,39 @@ describe('EnforcerDelegate', () => {
       const policies = await enfDelegate.getFilteredGroupingPolicy(
         0,
         'user:default/tim',
+      );
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(secondGroupingPolicy);
+    });
+
+    it('should return filtered grouping policy by role name', async () => {
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy],
+      );
+
+      // filter by policy assignment person
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        0,
+        '',
+        'role:default/qa-team',
+      );
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(secondGroupingPolicy);
+    });
+
+    it('should return filtered grouping policy by role name with index offset', async () => {
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy],
+      );
+
+      // filter by policy assignment person
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        1,
+        'role:default/qa-team',
       );
 
       expect(policies.length).toEqual(1);
@@ -783,25 +865,65 @@ describe('EnforcerDelegate', () => {
 
     it('should update grouping policies: role should be renamed', async () => {
       const oldRoleName = 'role:default/dev-team';
+      const newRoleName = 'role:default/new-team-name';
+
+      const oldCondition = {
+        id: 1,
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        actions: ['read'],
+        roleEntityRef: oldRoleName,
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: {
+            claims: ['group:default/team-a'],
+          },
+        },
+      };
+      (
+        conditionalStorageMock.filterConditions as jest.Mock
+      ).mockReturnValueOnce([oldCondition]);
       roleMetadataStorageMock.findRoleMetadata = jest
         .fn()
-        .mockImplementation(async (): Promise<RoleMetadataDao> => {
-          return {
-            source: 'rest',
-            roleEntityRef: oldRoleName,
-            author: modifiedBy,
-            modifiedBy,
-            description: 'Role for dev engineers',
-            createdAt: '2024-03-01 00:23:41+00',
-          };
-        });
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+            _trx: Knex.Knex.Transaction,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === oldRoleName) {
+              return {
+                source: 'rest',
+                roleEntityRef: oldRoleName,
+                author: modifiedBy,
+                modifiedBy,
+                description: 'Role for dev engineers',
+                createdAt: '2024-03-01 00:23:41+00',
+              };
+            }
+            return undefined;
+          },
+        );
+
+      const secondGroupingPolicyWithOldRole = ['user:default/tim', oldRoleName];
+      const policyWithOldRole = [
+        oldRoleName,
+        'catalog-entity',
+        'delete',
+        'allow',
+      ];
+      const expectedPolicies = [
+        secondPolicy,
+        [newRoleName, 'policy-entity', 'read', 'allow'],
+        [newRoleName, 'catalog-entity', 'delete', 'allow'],
+      ];
 
       const enfDelegate = await createEnfDelegate(
-        [],
-        [groupingPolicy, secondGroupingPolicy],
+        [policy, secondPolicy, policyWithOldRole],
+        [groupingPolicy, secondGroupingPolicy, secondGroupingPolicyWithOldRole],
       );
 
-      const newRoleName = 'role:default/new-team-name';
       const groupingPolicyWithRenamedRole = ['user:default/tom', newRoleName];
       const secondGroupingPolicyWithRenamedRole = [
         'user:default/tim',
@@ -814,24 +936,33 @@ describe('EnforcerDelegate', () => {
         modifiedBy,
       };
       await enfDelegate.updateGroupingPolicies(
-        [groupingPolicy, secondGroupingPolicy],
+        [groupingPolicy, secondGroupingPolicyWithOldRole],
         [groupingPolicyWithRenamedRole, secondGroupingPolicyWithRenamedRole],
         roleMetadataDao,
       );
 
       const storedPolicies = await enfDelegate.getGroupingPolicy();
-      expect(storedPolicies.length).toEqual(2);
-      expect(storedPolicies[0]).toEqual(groupingPolicyWithRenamedRole);
-      expect(storedPolicies[1]).toEqual(secondGroupingPolicyWithRenamedRole);
+      expect(storedPolicies.length).toEqual(3);
+      expect(storedPolicies[0]).toEqual(secondGroupingPolicy); // different role remained unchanged
+      expect(storedPolicies[1]).toEqual(groupingPolicyWithRenamedRole);
+      expect(storedPolicies[2]).toEqual(secondGroupingPolicyWithRenamedRole);
 
       expect(enfRemoveGroupingPoliciesSpy).toHaveBeenCalledWith([
         groupingPolicy,
-        secondGroupingPolicy,
+        secondGroupingPolicyWithOldRole,
       ]);
       expect(enfAddGroupingPoliciesSpy).toHaveBeenCalledWith([
         groupingPolicyWithRenamedRole,
         secondGroupingPolicyWithRenamedRole,
       ]);
+
+      const updatedCondition: RoleConditionalPolicyDecision<PermissionInfo> = (
+        conditionalStorageMock.updateCondition as jest.Mock
+      ).mock.calls[0][1];
+      expect(updatedCondition).toEqual({
+        ...oldCondition,
+        roleEntityRef: newRoleName,
+      });
 
       const metadata = (roleMetadataStorageMock.updateRoleMetadata as jest.Mock)
         .mock.calls[0][0];
@@ -844,6 +975,7 @@ describe('EnforcerDelegate', () => {
       expect(metadata.modifiedBy).toEqual(modifiedBy);
       expect(metadata.roleEntityRef).toEqual(newRoleName);
       expect(metadata.source).toEqual('rest');
+      expect(await enfDelegate.getPolicy()).toEqual(expectedPolicies);
     });
 
     it('should update grouping policies: should be updated role description and source', async () => {

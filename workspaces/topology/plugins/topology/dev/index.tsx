@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
@@ -23,15 +21,12 @@ import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
-import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
-import { TopologyPage, topologyPlugin } from '../src/plugin';
 import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
-} from '../src/types/types';
+} from '@backstage/plugin-kubernetes-react';
+import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
+import { TopologyPage, topologyPlugin } from '../src/plugin';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -159,7 +154,6 @@ const mockKubernetesAuthProviderApiRef = {
 
 createDevApp()
   .registerPlugin(topologyPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

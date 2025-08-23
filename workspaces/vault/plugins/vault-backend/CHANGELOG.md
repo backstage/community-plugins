@@ -1,5 +1,55 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.12.0
+
+### Minor Changes
+
+- 97794d9: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [97794d9]
+  - @backstage-community/plugin-vault-node@0.9.0
+
+## 0.11.0
+
+### Minor Changes
+
+- f1eec5a: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [f1eec5a]
+  - @backstage-community/plugin-vault-node@0.8.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 07ed09f: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [07ed09f]
+  - @backstage-community/plugin-vault-node@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 6fed93a: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [6fed93a]
+  - @backstage-community/plugin-vault-node@0.6.0
+
+## 0.8.1
+
+### Patch Changes
+
+- bdf4d36: Add catalog plugins in devDependencies for development purposes.
+
 ## 0.8.0
 
 ### Minor Changes

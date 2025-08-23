@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
@@ -97,8 +96,18 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
       return getStatusDescription(d1).localeCompare(getStatusDescription(d2));
     },
     render: row => (
-      <Box display="flex" alignItems="center">
+      <Box display="flex" justifyContent="center" alignItems="center">
         <WorkflowRunStatus status={row.status} conclusion={row.conclusion} />
+      </Box>
+    ),
+  },
+  {
+    title: 'Age',
+    render: row => (
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <Tooltip title={row.statusDate ?? ''}>
+          <Box>{row.statusAge}</Box>
+        </Tooltip>
       </Box>
     ),
   },
@@ -184,6 +193,7 @@ export const WorkflowRunsTable = ({
       owner,
       repo,
       branch,
+      fetchAllBranches: false,
     });
 
   const githubHost = hostname || 'github.com';

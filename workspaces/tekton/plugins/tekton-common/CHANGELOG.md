@@ -1,5 +1,35 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.11.0
+
+### Minor Changes
+
+- 8e74b11: Backstage version bump to v1.41.1
+
+## 1.10.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.10.0
+
+### Minor Changes
+
+- 40d7a3b: Bump to backstage version 1.39.1
+
+## 1.9.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 692fc75: Backstage version bump to v1.38.1
+
 ## 1.8.1
 
 ### Patch Changes

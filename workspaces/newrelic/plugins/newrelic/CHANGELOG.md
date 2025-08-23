@@ -1,5 +1,41 @@
 # @backstage-community/plugin-newrelic
 
+## 0.12.0
+
+### Minor Changes
+
+- 37cc9e1: Backstage version bump to v1.41.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 5529c79: Added support for the new frontend system
+
+## 0.10.0
+
+### Minor Changes
+
+- 6e9072e: Backstage version bump to v1.40.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 74a383d: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 360460d: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes

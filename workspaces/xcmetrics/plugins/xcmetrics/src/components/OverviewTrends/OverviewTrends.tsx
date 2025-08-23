@@ -16,7 +16,7 @@
 
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Progress, Select } from '@backstage/core-components';
 import { Trend } from '../Trend';
 import Alert from '@material-ui/lab/Alert';

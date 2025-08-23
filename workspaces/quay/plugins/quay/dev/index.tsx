@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import { quayApiRef, QuayApiV1 } from '../src/api';
 import { QuayPage, quayPlugin } from '../src/plugin';
@@ -101,7 +97,6 @@ const mockPermissionApi = new MockPermissionApi();
 
 createDevApp()
   .registerPlugin(quayPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

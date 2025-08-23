@@ -1,5 +1,40 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- b5a8ecf: Added `sendPlainUserId` config, which controls whether hashing of userId should be disabled.
+- 70f97c5: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- 0775db8: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.16.0
+
+### Minor Changes
+
+- 4ed9028: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+
+## 1.15.0
+
+### Minor Changes
+
+- 8b665f9: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- df57926: Updated dependency `@types/node` to `18.19.103`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+
 ## 1.14.0
 
 ### Minor Changes

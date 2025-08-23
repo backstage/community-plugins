@@ -21,7 +21,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { DateTime } from 'luxon';
-import React from 'react';
 import { Assignees } from './Assignees';
 import { CommentsCount } from './CommentsCount';
 

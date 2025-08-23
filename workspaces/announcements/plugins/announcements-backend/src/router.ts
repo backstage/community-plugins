@@ -25,9 +25,6 @@ import {
   BasicPermission,
 } from '@backstage/plugin-permission-common';
 import {
-  announcementCreatePermission,
-  announcementDeletePermission,
-  announcementUpdatePermission,
   announcementEntityPermissions,
   EVENTS_TOPIC_ANNOUNCEMENTS,
   EVENTS_ACTION_CREATE_ANNOUNCEMENT,
@@ -35,8 +32,10 @@ import {
   EVENTS_ACTION_UPDATE_ANNOUNCEMENT,
   EVENTS_ACTION_CREATE_CATEGORY,
   EVENTS_ACTION_DELETE_CATEGORY,
+  EVENTS_ACTION_CREATE_TAG,
+  EVENTS_ACTION_DELETE_TAG,
+  MAX_TITLE_TAG_LENGTH,
 } from '@backstage-community/plugin-announcements-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
 
@@ -48,6 +47,8 @@ interface AnnouncementRequest {
   body: string;
   active: boolean;
   start_at: string;
+  on_behalf_of?: string;
+  tags?: string[];
 }
 
 interface CategoryRequest {
@@ -61,24 +62,27 @@ type GetAnnouncementsQueryParams = {
   active?: boolean;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  tags?: string[];
 };
 
 export async function createRouter(
   context: AnnouncementsContext,
 ): Promise<express.Router> {
   const {
+    config,
+    events,
+    httpAuth,
+    logger,
     persistenceContext,
     permissions,
-    httpAuth,
-    config,
-    logger,
-    events,
     signals,
   } = context;
 
-  const permissionIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: Object.values(announcementEntityPermissions),
-  });
+  const {
+    announcementCreatePermission,
+    announcementDeletePermission,
+    announcementUpdatePermission,
+  } = announcementEntityPermissions;
 
   const isRequestAuthorized = async (
     req: Request,
@@ -97,11 +101,13 @@ export async function createRouter(
 
   const router = Router();
   router.use(express.json());
-  router.use(permissionIntegrationRouter);
 
   router.get(
     '/announcements',
-    async (req: Request<{}, {}, {}, GetAnnouncementsQueryParams>, res) => {
+    async (
+      req: Request<{}, {}, {}, GetAnnouncementsQueryParams & { tags?: string }>,
+      res,
+    ) => {
       const {
         query: {
           category,
@@ -110,8 +116,11 @@ export async function createRouter(
           active,
           sortby = 'created_at',
           order = 'desc',
+          tags,
         },
       } = req;
+
+      const tagsFilter = tags ? tags.split(',') : undefined;
 
       const results = await persistenceContext.announcementsStore.announcements(
         {
@@ -123,6 +132,7 @@ export async function createRouter(
             ? sortby
             : 'created_at',
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
+          tags: tagsFilter,
         },
       );
 
@@ -184,14 +194,19 @@ export async function createRouter(
         throw new NotAllowedError('Unauthorized');
       }
 
+      // Normalize tags by slugifying each tag value
+      const validatedTags =
+        req.body.tags && Array.isArray(req.body.tags)
+          ? req.body.tags.map(tag => slugify(tag.trim(), { lower: true }))
+          : [];
+
       const announcement =
         await persistenceContext.announcementsStore.insertAnnouncement({
           ...req.body,
-          ...{
-            id: uuid(),
-            created_at: DateTime.now(),
-            start_at: DateTime.fromISO(req.body.start_at),
-          },
+          id: uuid(),
+          created_at: DateTime.now(),
+          start_at: DateTime.fromISO(req.body.start_at),
+          tags: validatedTags,
         });
 
       if (events) {
@@ -219,7 +234,17 @@ export async function createRouter(
 
       const {
         params: { id },
-        body: { title, excerpt, body, publisher, category, active, start_at },
+        body: {
+          title,
+          excerpt,
+          body,
+          publisher,
+          category,
+          active,
+          start_at,
+          on_behalf_of,
+          tags,
+        },
       } = req;
 
       const initialAnnouncement =
@@ -227,6 +252,12 @@ export async function createRouter(
       if (!initialAnnouncement) {
         return res.status(404).end();
       }
+
+      // Normalize tags by slugifying each tag value
+      const validatedTags =
+        tags && Array.isArray(tags)
+          ? tags.map(tag => slugify(tag.trim(), { lower: true }))
+          : [];
 
       const announcement =
         await persistenceContext.announcementsStore.updateAnnouncement({
@@ -239,15 +270,15 @@ export async function createRouter(
             category,
             active,
             start_at: DateTime.fromISO(start_at),
+            on_behalf_of,
+            tags: validatedTags,
           },
         });
 
       if (events) {
         events.publish({
           topic: EVENTS_TOPIC_ANNOUNCEMENTS,
-          eventPayload: {
-            announcement,
-          },
+          eventPayload: { announcement },
           metadata: { action: EVENTS_ACTION_UPDATE_ANNOUNCEMENT },
         });
       }
@@ -319,6 +350,101 @@ export async function createRouter(
             category: req.params.slug,
           },
           metadata: { action: EVENTS_ACTION_DELETE_CATEGORY },
+        });
+      }
+
+      return res.status(204).end();
+    },
+  );
+
+  router.get('/tags', async (_req, res) => {
+    const results = await persistenceContext.tagsStore.tags();
+    return res.json(results);
+  });
+
+  router.post(
+    '/tags',
+    async (req: Request<{}, {}, { title: string }, {}>, res) => {
+      if (!(await isRequestAuthorized(req, announcementCreatePermission))) {
+        throw new NotAllowedError('Unauthorized');
+      }
+
+      const { title } = req.body;
+
+      if (!title || typeof title !== 'string' || title.trim() === '') {
+        return res.status(400).json({ error: 'Title is required' });
+      }
+
+      if (title.length > MAX_TITLE_TAG_LENGTH) {
+        return res.status(400).json({ error: 'Title exceeds maximum length' });
+      }
+
+      const slug = slugify(title, { lower: true });
+
+      const existingTag = await persistenceContext.tagsStore.tagBySlug(slug);
+      if (existingTag) {
+        return res.status(409).json({ error: 'Tag already exists' });
+      }
+
+      const tag = {
+        title,
+        slug,
+      };
+
+      await persistenceContext.tagsStore.insert(tag);
+
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            tag: tag.slug,
+          },
+          metadata: { action: EVENTS_ACTION_CREATE_TAG },
+        });
+      }
+
+      return res.status(201).json(tag);
+    },
+  );
+
+  router.delete(
+    '/tags/:slug',
+    async (req: Request<{ slug: string }, {}, {}, {}>, res) => {
+      if (!(await isRequestAuthorized(req, announcementDeletePermission))) {
+        throw new NotAllowedError('Unauthorized');
+      }
+
+      const { slug } = req.params;
+
+      if (!slug || typeof slug !== 'string' || slug.trim() === '') {
+        return res.status(400).json({ message: 'Invalid tag slug' });
+      }
+
+      const announcementsByTag =
+        await persistenceContext.announcementsStore.announcements({
+          tags: [slug],
+        });
+
+      if (announcementsByTag.count) {
+        throw new NotAllowedError(
+          'Tag to delete is used in some announcements',
+        );
+      }
+
+      const existingTag = await persistenceContext.tagsStore.tagBySlug(slug);
+      if (!existingTag) {
+        return res.status(404).json({ message: 'Tag not found' });
+      }
+
+      await persistenceContext.tagsStore.delete(slug);
+
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            tag: slug,
+          },
+          metadata: { action: EVENTS_ACTION_DELETE_TAG },
         });
       }
 

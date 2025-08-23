@@ -3,6 +3,7 @@
 The SonarQube Plugin displays code statistics from [SonarCloud](https://sonarcloud.io) or [SonarQube](https://sonarqube.com).
 
 ![Sonar Card](./docs/sonar-card.png)
+![Sonar Related Entities Overview](./docs/sonar-related-entities.png)
 
 ## Getting Started
 
@@ -10,7 +11,7 @@ The SonarQube Plugin displays code statistics from [SonarCloud](https://sonarclo
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage-community/plugin-sonarqube
+yarn --cwd packages/app add @backstage-community/plugin-sonarqube @backstage-community/plugin-sonarqube-react
 ```
 
 2. Add the `EntitySonarQubeCard` to the EntityPage:
@@ -18,6 +19,7 @@ yarn --cwd packages/app add @backstage-community/plugin-sonarqube
 ```diff
   // packages/app/src/components/catalog/EntityPage.tsx
 + import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
++ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 
  ...
 
@@ -26,9 +28,13 @@ yarn --cwd packages/app add @backstage-community/plugin-sonarqube
      <Grid item md={6}>
        <EntityAboutCard variant="gridItem" />
      </Grid>
-+    <Grid item md={6}>
-+      <EntitySonarQubeCard variant="gridItem" />
-+    </Grid>
++    <EntitySwitch>
++      <EntitySwitch.Case if={isSonarQubeAvailable}>
++        <Grid item md={6}>
++          <EntitySonarQubeCard variant="gridItem" />
++        </Grid>
++      </EntitySwitch.Case>
++    </EntitySwitch>
    </Grid>
  );
 ```
@@ -55,14 +61,35 @@ The "Read more" link that shows in the MissingAnnotationEmptyState is also confi
  );
 ```
 
-3. Run the following commands in the root folder of the project to install and compile the changes.
+3. Add the `SonarQubeRelatedEntitiesOverview` to the EntityPage:
+
+```diff
+  // packages/app/src/components/catalog/EntityPage.tsx
++ import { SonarQubeRelatedEntitiesOverview } from '@backstage-community/plugin-sonarqube';
+
+ ...
+
+ const systemPage = (
+   <EntityLayout>
+
+ ...
+
++    <EntityLayout.Route path="/sonarqube" title="Code Quality">
++      <SonarQubeRelatedEntitiesOverview relationType={RELATION_HAS_PART} entityKind="component" />
++    </EntityLayout.Route>
++
+   </EntityLayout>
+ );
+```
+
+4. Run the following commands in the root folder of the project to install and compile the changes.
 
 ```yaml
 yarn install
 yarn tsc
 ```
 
-4. Add the `sonarqube.org/project-key` annotation to the `catalog-info.yaml` file of the target repo for which code quality analysis is needed.
+5. Add the `sonarqube.org/project-key` annotation to the `catalog-info.yaml` file of the target repo for which code quality analysis is needed.
 
 ```yaml
 apiVersion: backstage.io/v1alpha1

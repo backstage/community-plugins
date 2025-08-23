@@ -20,11 +20,12 @@ import {
   createAnnotatorAction,
   createScaffoldedFromAction,
   createTimestampAction,
+  createVersionAction,
 } from './actions';
 
 /***/
 /**
- * The annotator module for @backstage/plugin-scaffolder-backend.
+ * The annotator module for \@backstage/plugin-scaffolder-backend.
  *
  * @alpha
  */
@@ -40,6 +41,7 @@ export const scaffolderCustomActionsScaffolderModule = createBackendModule({
         scaffolder.addActions(createScaffoldedFromAction());
         scaffolder.addActions(createTimestampAction());
         scaffolder.addActions(createAnnotatorAction());
+        scaffolder.addActions(createVersionAction());
       },
     });
   },

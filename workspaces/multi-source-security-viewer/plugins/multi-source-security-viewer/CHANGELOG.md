@@ -1,5 +1,138 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.6.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+
+## 0.6.0
+
+### Minor Changes
+
+- 237d0ce: Add isMultiCIAvaibleAndEnabled to display the plugin when the CI provider is defined and set as enabled in the annotation.
+
+### Patch Changes
+
+- Updated dependencies [237d0ce]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.4.0
+
+## 0.5.5
+
+### Patch Changes
+
+- 490b55b: Updated dependency `@backstage-community/plugin-jenkins` to `^0.21.0`.
+- eaedbb2: Updated dependency `@backstage-community/plugin-github-actions` to `^0.12.0`.
+- f9f35a4: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.12.0`.
+- 1d7d0ce: remove product theme from dev dependencies and dev app
+
+## 0.5.4
+
+### Patch Changes
+
+- eaa39a4: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.17.0`.
+
+## 0.5.3
+
+### Patch Changes
+
+- 2564b07: Set all tooltip placements to left
+- 28e2aa1: Fixes disabled sbom link when step is present
+- b21ffcd: Updated dependency `@backstage-community/plugin-github-actions` to `^0.11.0`.
+
+## 0.5.2
+
+### Patch Changes
+
+- cfaaf7e: Updated dependency `@backstage-community/plugin-jenkins` to `^0.20.0`.
+
+## 0.5.1
+
+### Patch Changes
+
+- c8e1803: Use getAnnotationValuesFromEntity from azure-devops-common
+- 5ac4c60: Replaced `downloadLogFile` from `@janus-idp/shared-react` with a local version based on PatternFly’s `CodeEditor`, so the plugin no longer depends on `shared-react` for this utility.
+
+## 0.5.0
+
+### Minor Changes
+
+- 2284286: Bump version to 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [2284286]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.3.0
+
+## 0.4.3
+
+### Patch Changes
+
+- bec7d2b: Updated dependency `@backstage-community/plugin-jenkins` to `^0.19.0`.
+
+## 0.4.2
+
+### Patch Changes
+
+- ca224e7: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.10.0`.
+
+## 0.4.1
+
+### Patch Changes
+
+- ea85387: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.14.0`.
+- 496aa2f: Updated dependency `@backstage-community/plugin-github-actions` to `^0.10.0`.
+
+## 0.4.0
+
+### Minor Changes
+
+- 682570b: URL encode the repository slug
+
+## 0.3.2
+
+### Patch Changes
+
+- d346a7e: Include Azure Pipelines pre-requisite link
+
+## 0.3.1
+
+### Patch Changes
+
+- d4061d7: Fix issue where patternfly overrides plugin css
+
+## 0.3.0
+
+### Minor Changes
+
+- 5477f85: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [5477f85]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.2.0
+
+## 0.2.3
+
+### Patch Changes
+
+- 4b13a33: Fix installation documentation
+
+## 0.2.2
+
+### Patch Changes
+
+- bb1d492: Updated dependency `@backstage-community/plugin-jenkins` to `^0.18.0`.
+
+## 0.2.1
+
+### Patch Changes
+
+- 262f9d9: Updated dependency `@backstage-community/plugin-github-actions` to `^0.9.0`.
+
 ## 0.2.0
 
 ### Minor Changes

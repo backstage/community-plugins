@@ -177,9 +177,29 @@ export class ArgoCDService {
           options,
         );
         this.logger.warn(message);
+
+        return data;
       }
 
-      return data;
+      // Add instance metadata
+      const applications = {
+        ...data,
+        items:
+          data?.items?.map((app: Application) => {
+            return {
+              ...app,
+              metadata: {
+                ...app.metadata,
+                instance: {
+                  name: matchedInstance.name,
+                  url: matchedInstance.url,
+                },
+              },
+            };
+          }) || [],
+      };
+
+      return applications;
     } catch (error) {
       const baseMessage = formatOperationMessage(
         'Failed to retrieve ArgoCD Applications',
@@ -259,6 +279,7 @@ export class ArgoCDService {
    * @param {Object} [options] - Request options
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
    * @param {string} [options.appName] - Application name
+   * @param {string} [options.project] - The project the ArgoCD Application lives in
    * @returns {Promise<Application | void>} Application data or void if error occurs
    */
   async getApplication(
@@ -266,9 +287,10 @@ export class ArgoCDService {
     options?: {
       appNamespace?: string;
       appName?: string;
+      project?: string;
     },
   ): Promise<Application | void> {
-    const { appName, appNamespace } = options ?? {};
+    const { appName, appNamespace, project } = options ?? {};
     try {
       const matchedInstance = this.validateInstance(instanceName);
       const token =
@@ -277,6 +299,7 @@ export class ArgoCDService {
       const path = appName ? `applications/${appName}` : 'applications';
       const url = buildArgoUrl(matchedInstance.url, path, {
         ...(appNamespace && { appNamespace }),
+        ...(project && { project }),
       });
       const logMsg = formatOperationMessage(
         'Fetching Application',
@@ -286,7 +309,19 @@ export class ArgoCDService {
       this.logger.info(logMsg);
       const data = await makeArgoRequest(url, token);
 
-      return data;
+      // Add instance metadata
+      const application = {
+        ...data,
+        metadata: {
+          ...data.metadata,
+          instance: {
+            name: matchedInstance.name,
+            url: matchedInstance.url,
+          },
+        },
+      };
+
+      return application;
     } catch (error) {
       const baseMessage = formatOperationMessage(
         'Failed to fetch Application',

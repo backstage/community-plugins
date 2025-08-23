@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactNode } from 'react';
+import { MouseEvent, useState, ReactNode, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -34,12 +34,7 @@ import {
   LinkButton,
 } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { parseEntityRef } from '@backstage/catalog-model';
-import {
-  EntityDisplayName,
-  EntityPeekAheadPopover,
-  entityRouteRef,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -62,6 +57,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   IconButton,
   ListItemIcon,
   makeStyles,
@@ -72,12 +68,12 @@ import {
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
 import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
+import { MarkdownRendererTypeProps } from '../MarkdownRenderer/MarkdownRenderer';
 
 const useStyles = makeStyles(theme => {
   return {
     cardHeader: {
       color: theme?.palette?.text?.primary || '#000',
-      fontSize: '1.5rem',
     },
     pagination: {
       display: 'flex',
@@ -100,19 +96,19 @@ const AnnouncementCard = ({
   announcement,
   onDelete,
   options: { titleLength = 50 },
+  hideStartAt,
 }: {
   announcement: Announcement;
   onDelete: () => void;
   options: AnnouncementCardProps;
+  hideStartAt?: boolean;
 }) => {
   const classes = useStyles();
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const editAnnouncementLink = useRouteRef(announcementEditRouteRef);
-  const entityLink = useRouteRef(entityRouteRef);
   const { t } = useAnnouncementsTranslation();
 
-  const publisherRef = parseEntityRef(announcement.publisher);
   const title = (
     <Tooltip
       title={announcement.title}
@@ -131,11 +127,10 @@ const AnnouncementCard = ({
     <>
       <Typography variant="body2" color="textSecondary" component="span">
         {t('announcementsPage.card.by')}{' '}
-        <EntityPeekAheadPopover entityRef={announcement.publisher}>
-          <Link to={entityLink(publisherRef)}>
-            <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-          </Link>
-        </EntityPeekAheadPopover>
+        <EntityRefLink
+          entityRef={announcement.on_behalf_of || announcement.publisher}
+          hideIcon
+        />
         {announcement.category && (
           <>
             {' '}
@@ -152,15 +147,34 @@ const AnnouncementCard = ({
         , {DateTime.fromISO(announcement.created_at).toRelative()}
       </Typography>
       <Box>
-        <Typography variant="caption" color="textSecondary">
-          {formatAnnouncementStartTime(
-            announcement.start_at,
-            t('announcementsCard.occurred'),
-            t('announcementsCard.scheduled'),
-            t('announcementsCard.today'),
-          )}
-        </Typography>
+        {!hideStartAt && (
+          <Typography variant="caption" color="textSecondary">
+            {formatAnnouncementStartTime(
+              announcement.start_at,
+              t('announcementsCard.occurred'),
+              t('announcementsCard.scheduled'),
+              t('announcementsCard.today'),
+            )}
+          </Typography>
+        )}
       </Box>
+      {announcement.tags && announcement.tags.length > 0 && (
+        <Typography variant="body2" color="textSecondary">
+          <Box mt={1}>
+            {announcement.tags.map(tag => (
+              <Chip
+                key={tag.slug}
+                size="small"
+                label={tag.title}
+                component={Link}
+                to={`${announcementsLink()}?tags=${tag.slug}`}
+                clickable
+                style={{ marginRight: 4, marginBottom: 4 }}
+              />
+            ))}
+          </Box>
+        </Typography>
+      )}
     </>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =
@@ -169,12 +183,12 @@ const AnnouncementCard = ({
     usePermission({ permission: announcementUpdatePermission });
 
   const AnnouncementEditMenu = () => {
-    const [open, setOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState<undefined | HTMLElement>(
+    const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(
       undefined,
     );
 
-    const handleOpenEditMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleOpenEditMenu = (event: MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
       setOpen(true);
     };
@@ -240,26 +254,37 @@ const AnnouncementCard = ({
 const AnnouncementsGrid = ({
   maxPerPage,
   category,
+  tags,
   cardTitleLength,
   active,
   sortBy,
   order,
+  hideStartAt,
 }: {
   maxPerPage: number;
   category?: string;
+  tags?: string[];
   cardTitleLength?: number;
   active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  hideStartAt?: boolean;
 }) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
 
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const handleChange = (_event: any, value: number) => {
     setPage(value);
   };
+
+  const tagsParam = queryParams.get('tags');
+  const tagsFromUrl = useMemo(() => {
+    return tagsParam ? tagsParam.split(',') : undefined;
+  }, [tagsParam]);
 
   const {
     announcements,
@@ -271,11 +296,12 @@ const AnnouncementsGrid = ({
       max: maxPerPage,
       page: page,
       category,
+      tags: tags || tagsFromUrl,
       active,
       sortBy,
       order,
     },
-    { dependencies: [maxPerPage, page, category] },
+    { dependencies: [maxPerPage, page, category, tagsFromUrl] },
   );
 
   const { t } = useAnnouncementsTranslation();
@@ -322,6 +348,7 @@ const AnnouncementsGrid = ({
             announcement={announcement}
             onDelete={() => openDeleteDialog(announcement)}
             options={{ titleLength: cardTitleLength }}
+            hideStartAt={hideStartAt}
           />
         ))}
       </ItemCardGrid>
@@ -359,10 +386,13 @@ export type AnnouncementsPageProps = {
   subtitle?: ReactNode;
   maxPerPage?: number;
   category?: string;
+  tags?: string[];
   buttonOptions?: AnnouncementCreateButtonProps;
   cardOptions?: AnnouncementCardProps;
   hideContextMenu?: boolean;
   hideInactive?: boolean;
+  hideStartAt?: boolean;
+  markdownRenderer?: MarkdownRendererTypeProps;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
@@ -378,6 +408,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const {
     hideContextMenu,
     hideInactive,
+    hideStartAt,
     themeId,
     title,
     subtitle,
@@ -414,10 +445,12 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
         <AnnouncementsGrid
           maxPerPage={maxPerPage ?? 10}
           category={category ?? queryParams.get('category') ?? undefined}
+          tags={props.tags}
           cardTitleLength={cardOptions?.titleLength}
-          active={hideInactive ? true : false}
+          active={!!hideInactive}
           sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}
+          hideStartAt={hideStartAt}
         />
       </Content>
     </Page>

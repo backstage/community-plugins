@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { DateTime } from 'luxon';
 import {
@@ -21,48 +21,43 @@ import {
   Page,
   Header,
   Content,
-  MarkdownContent,
   InfoCard,
-  Link,
 } from '@backstage/core-components';
 import {
   useApi,
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import { parseEntityRef } from '@backstage/catalog-model';
-import {
-  EntityDisplayName,
-  EntityPeekAheadPopover,
-  entityRouteRef,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import {
+  MarkdownRenderer,
+  MarkdownRendererTypeProps,
+} from '../MarkdownRenderer';
 
 const AnnouncementDetails = ({
   announcement,
+  markdownRenderer,
 }: {
   announcement: Announcement;
+  markdownRenderer?: MarkdownRendererTypeProps;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
-  const entityLink = useRouteRef(entityRouteRef);
   const deepLink = {
     link: announcementsLink(),
     title: 'Back to announcements',
   };
-
-  const publisherRef = parseEntityRef(announcement.publisher);
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover entityRef={announcement.publisher}>
-        <Link to={entityLink(publisherRef)}>
-          <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-        </Link>
-      </EntityPeekAheadPopover>
+      <EntityRefLink
+        entityRef={announcement.on_behalf_of || announcement.publisher}
+        hideIcon
+      />
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>
   );
@@ -73,7 +68,10 @@ const AnnouncementDetails = ({
       subheader={subHeader}
       deepLink={deepLink}
     >
-      <MarkdownContent content={announcement.body} />
+      <MarkdownRenderer
+        content={announcement.body}
+        rendererType={markdownRenderer}
+      />
     </InfoCard>
   );
 };
@@ -82,6 +80,7 @@ type AnnouncementPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
+  markdownRenderer?: MarkdownRendererTypeProps;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
@@ -93,7 +92,7 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
   );
 
   let title = props.title;
-  let content: React.ReactNode;
+  let content: ReactNode;
 
   if (loading) {
     content = <Progress />;
@@ -101,7 +100,12 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
     content = <Alert severity="error">{error.message}</Alert>;
   } else {
     title = `${value!.title} – ${title}`;
-    content = <AnnouncementDetails announcement={value!} />;
+    content = (
+      <AnnouncementDetails
+        announcement={value!}
+        markdownRenderer={props.markdownRenderer}
+      />
+    );
 
     const lastSeen = announcementsApi.lastSeenDate();
     const announcementCreatedAt = DateTime.fromISO(value!.created_at);

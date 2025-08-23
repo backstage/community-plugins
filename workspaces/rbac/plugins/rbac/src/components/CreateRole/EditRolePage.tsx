@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -29,6 +28,7 @@ import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { useSelectedMembers } from '../../hooks/useSelectedMembers';
 import { RoleForm } from './RoleForm';
 import { RoleFormValues } from './types';
+import { capitalizeFirstLetter } from '../../utils/string-utils';
 
 export const EditRolePage = () => {
   const { roleName, roleNamespace, roleKind } = useParams();
@@ -54,12 +54,13 @@ export const EditRolePage = () => {
     namespace: roleNamespace || 'default',
     kind: roleKind || 'role',
     description: role?.metadata?.description ?? '',
+    owner: role?.metadata?.owner ?? '',
     selectedMembers,
     selectedPlugins: data
       .map(pp => pp.plugin)
       .filter((p, i, ar) => ar.indexOf(p) === i)
       .map(sp => ({
-        label: sp.charAt(0).toLocaleUpperCase('en-US') + sp.substring(1),
+        label: capitalizeFirstLetter(sp),
         value: sp,
       })),
     permissionPoliciesRows: data,

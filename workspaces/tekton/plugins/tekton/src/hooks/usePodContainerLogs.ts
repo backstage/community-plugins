@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useContext, useCallback, useEffect } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
 import { useApi } from '@backstage/core-plugin-api';
 import { ContainerScope } from '@backstage/plugin-kubernetes-react';
 
 import { V1Pod } from '@kubernetes/client-node';
-
-import {
-  kubernetesProxyApiRef,
-  TektonResourcesContextData,
-} from '../types/types';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
+import { TektonResourcesContextData } from '../types/types';
 import { TektonResourcesContext } from './TektonResourcesContext';
 
 interface PodContainerLogsOptions {
@@ -37,14 +34,15 @@ export const usePodContainerLogs = ({
   pod,
   containerName: cName,
 }: PodContainerLogsOptions) => {
-  const [loadingData, setLoadingData] = React.useState<boolean>(true);
-  const [, setPodInfo] = React.useState<string>(pod?.metadata?.name ?? '');
+  const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [, setPodInfo] = useState<string>(pod?.metadata?.name ?? '');
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
-  const { clusters, selectedCluster } =
-    React.useContext<TektonResourcesContextData>(TektonResourcesContext);
+  const { clusters, selectedCluster } = useContext<TektonResourcesContextData>(
+    TektonResourcesContext,
+  );
   const currCluster =
     (clusters.length > 0 && clusters[selectedCluster || 0]) || '';
-  const getLogs = React.useCallback(
+  const getLogs = useCallback(
     async (podScope: ContainerScope): Promise<{ text: string }> => {
       const {
         podName,
@@ -75,7 +73,7 @@ export const usePodContainerLogs = ({
     return null;
   }, [pod, getLogs]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let mounted = true;
     if (!loading && mounted) {
       setPodInfo(prevState => {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useLayoutEffect } from 'react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useDarkTheme } from '../../hooks/useDarkTheme';
@@ -25,13 +25,14 @@ import PipelineRunList from '../PipelineRunList/PipelineRunList';
 
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
+import { Progress } from '@backstage/core-components';
 
 const savedStylesheets = new Set<HTMLLinkElement>();
 
 export const TektonCIComponent = () => {
   useDarkTheme();
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const scalprumStyles = Array.from(
       document.querySelectorAll('link[rel="stylesheet"]'),
     ).filter(link =>
@@ -64,9 +65,16 @@ export const TektonCIComponent = () => {
     ModelsPlural.pods,
   ];
   const tektonResourcesContextData = useTektonObjectsResponse(watchedResources);
-  const hasViewPermission = useTektonViewPermission();
+  const viewPermissionData = useTektonViewPermission();
 
-  if (!hasViewPermission) {
+  if (viewPermissionData.loading) {
+    return (
+      <div data-testid="tekton-permission-progress">
+        <Progress />
+      </div>
+    );
+  }
+  if (!viewPermissionData.allowed) {
     return <PermissionAlert />;
   }
   return (

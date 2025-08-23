@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { createContext } from 'react';
 
 import { K8sResourcesContextData } from '../types/types';
 
-export const K8sResourcesContext = React.createContext<K8sResourcesContextData>(
-  { clusters: [], setSelectedCluster: () => {} },
-);
+export const K8sResourcesContext = createContext<K8sResourcesContextData>({
+  clusters: [],
+  setSelectedCluster: () => {},
+});

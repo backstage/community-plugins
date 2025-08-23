@@ -15,7 +15,7 @@
  */
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
-import React from 'react';
+import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { ilertApiRef } from '../api';
 import { AlertSource } from '../types';
@@ -24,10 +24,8 @@ export const useAlertSource = (integrationKey: string) => {
   const ilertApi = useApi(ilertApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [alertSource, setAlertSource] = React.useState<AlertSource | null>(
-    null,
-  );
-  const [isAlertSourceLoading, setIsAlertSourceLoading] = React.useState(false);
+  const [alertSource, setAlertSource] = useState<AlertSource | null>(null);
+  const [isAlertSourceLoading, setIsAlertSourceLoading] = useState(false);
 
   const fetchAlertSourceCall = async () => {
     try {

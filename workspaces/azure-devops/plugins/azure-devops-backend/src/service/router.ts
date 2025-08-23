@@ -16,7 +16,6 @@
 
 import {
   azureDevOpsGitTagReadPermission,
-  azureDevOpsPermissions,
   azureDevOpsPipelineReadPermission,
   azureDevOpsPullRequestDashboardReadPermission,
   azureDevOpsPullRequestReadPermission,
@@ -36,7 +35,6 @@ import { UrlReaderService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { InputError, NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import {
   HttpAuthService,
   LoggerService,
@@ -66,10 +64,6 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, reader, config, permissions, httpAuth } = options;
 
-  const permissionIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: azureDevOpsPermissions,
-  });
-
   const azureDevOpsApi =
     options.azureDevOpsApi ||
     AzureDevOpsApi.fromConfig(config, { logger, urlReader: reader });
@@ -79,8 +73,6 @@ export async function createRouter(
 
   const router = Router();
   router.use(express.json());
-
-  router.use(permissionIntegrationRouter);
 
   router.get('/health', (_req, res) => {
     res.status(200).json({ status: 'ok' });
@@ -115,6 +107,9 @@ export async function createRouter(
     res.status(200).json(buildList);
   });
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   router.get('/repo-builds/:projectName/:repoName', async (req, res) => {
     const { projectName, repoName } = req.params;
 
@@ -266,6 +261,9 @@ export async function createRouter(
     res.status(200).json(allTeams);
   });
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   router.get(
     '/build-definitions/:projectName/:definitionName',
     async (req, res) => {

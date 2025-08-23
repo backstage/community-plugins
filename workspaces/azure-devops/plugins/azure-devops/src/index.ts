@@ -29,8 +29,6 @@ export { AzurePullRequestsIcon } from './components/AzurePullRequestsIcon';
 
 export * from './api';
 
-export { getAnnotationValuesFromEntity } from './utils';
-
 export { FilterType } from './components/PullRequestsPage';
 export type {
   PullRequestColumnConfig,
@@ -45,3 +43,5 @@ export type {
   CreatedByTeamsFilter,
   AllFilter,
 } from './components/PullRequestsPage';
+
+export * from './deprecated';

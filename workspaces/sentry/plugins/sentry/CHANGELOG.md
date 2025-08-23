@@ -1,5 +1,35 @@
 # @backstage-community/plugin-sentry
 
+## 1.8.0
+
+### Minor Changes
+
+- fd82901: Backstage version bump to v1.41.1
+
+## 1.7.0
+
+### Minor Changes
+
+- 602f15f: Backstage version bump to v1.40.2
+
+## 1.6.0
+
+### Minor Changes
+
+- 151b665: Backstage version bump to v1.39.0
+
+## 1.5.0
+
+### Minor Changes
+
+- b166f2d: Backstage version bump to v1.38.1
+
+## 1.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 1.4.0
 
 ### Minor Changes

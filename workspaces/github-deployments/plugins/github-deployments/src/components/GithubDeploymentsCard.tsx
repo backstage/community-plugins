@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { GithubDeployment, githubDeploymentsApiRef } from '../api';
 import {

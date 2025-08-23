@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 
 const VirtualMachineIcon = ({
   style,
   x,
   y,
 }: {
-  style: React.CSSProperties;
+  style: CSSProperties;
   x: number;
   y: number;
-}): React.ReactElement => {
+}): ReactElement => {
   return (
     <svg
       viewBox="0 64 1170 1024"

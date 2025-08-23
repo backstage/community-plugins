@@ -1,5 +1,55 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.12.0
+
+### Minor Changes
+
+- 6911acd: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [6911acd]
+  - @backstage-community/plugin-lighthouse-common@0.9.0
+
+## 0.11.0
+
+### Minor Changes
+
+- a3fcab2: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [a3fcab2]
+  - @backstage-community/plugin-lighthouse-common@0.8.0
+
+## 0.10.0
+
+### Minor Changes
+
+- c2d01f5: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [c2d01f5]
+  - @backstage-community/plugin-lighthouse-common@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- c91184c: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [c91184c]
+  - @backstage-community/plugin-lighthouse-common@0.6.0
+
+## 0.8.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { Link, Table, type TableColumn } from '@backstage/core-components';
 
 import { Box, Chip, makeStyles } from '@material-ui/core';
 
-import { formatByteSize } from '@janus-idp/shared-react';
+import { formatByteSize } from '../../utils/format-byte-size/format-byte-size';
 
 import type { AssetHash } from '../../types';
 

@@ -33,8 +33,7 @@ export type RolesData = {
   modifiedBy: string;
   lastModified: string;
   actionsPermissionResults: {
-    delete: { allowed: boolean; loading: boolean };
-    edit: { allowed: boolean; loading: boolean };
+    edit: { allowed: boolean };
   };
   accessiblePlugins: string[];
 };
@@ -57,6 +56,14 @@ export type PermissionsDataSet = {
   policyString?: Set<string>;
   isResourced?: boolean;
   resourceType?: string;
+  usingResourceType?: boolean;
+};
+
+export type PluginInfoType = {
+  pluginId: string;
+  isResourced: boolean;
+  resourceType?: string;
+  permissionName: string;
   usingResourceType?: boolean;
 };
 

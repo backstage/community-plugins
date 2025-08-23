@@ -1,5 +1,35 @@
 # @backstage-community/plugin-splunk-on-call
 
+## 0.12.0
+
+### Minor Changes
+
+- d78487b: Backstage version bump to v1.41.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 032c8e9: Backstage version bump to v1.40.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 2f5c952: Backstage version bump to v1.39.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 8d69769: Backstage version bump to v1.38.1
+
+## 0.8.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.8.0
 
 ### Minor Changes

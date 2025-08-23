@@ -13,26 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Health } from '@backstage-community/plugin-kiali-common/func';
+import type { HealthItem } from '@backstage-community/plugin-kiali-common/types';
+import {
+  DEGRADED,
+  FAILURE,
+  HEALTHY,
+  TRAFFICSTATUS,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Typography } from '@material-ui/core';
-import * as React from 'react';
-import { KialiIcon } from '../../config';
-import * as H from '../../types/Health';
+import { default as React } from 'react';
+import { KialiIcon, serverConfig } from '../../config';
 import { PFColors } from '../Pf/PfColors';
 import { createIcon } from './Helper';
 
 interface HealthDetailsProps {
-  health: H.Health;
+  health: Health;
 }
 
 // @ts-ignore
 export const HealthDetails: React.FC<HealthDetailsProps> = (
   props: HealthDetailsProps,
 ) => {
-  const renderErrorRate = (
-    item: H.HealthItem,
-    idx: number,
-  ): React.ReactNode => {
-    const config = props.health.getStatusConfig();
+  const renderErrorRate = (item: HealthItem, idx: number): React.ReactNode => {
+    const config = props.health.getStatusConfig(serverConfig);
 
     const isValueInConfig =
       config && props.health.health.statusConfig
@@ -77,10 +81,10 @@ export const HealthDetails: React.FC<HealthDetailsProps> = (
             {config && isValueInConfig && (
               <li key="degraded_failure_config">
                 <span style={{ marginRight: '0.5rem' }}>
-                  {createIcon(H.DEGRADED)}
+                  {createIcon(DEGRADED)}
                 </span>
                 : {config.degraded === 0 ? '>' : '>='}
-                {config.degraded}% {createIcon(H.FAILURE)}:{' '}
+                {config.degraded}% {createIcon(FAILURE)}:{' '}
                 {config.degraded === 0 ? '>' : '>='}
                 {config.failure}%
               </li>
@@ -93,8 +97,8 @@ export const HealthDetails: React.FC<HealthDetailsProps> = (
     );
   };
 
-  const renderChildren = (item: H.HealthItem, idx: number): React.ReactNode => {
-    return item.title.startsWith(H.TRAFFICSTATUS) ? (
+  const renderChildren = (item: HealthItem, idx: number): React.ReactNode => {
+    return item.title.startsWith(TRAFFICSTATUS) ? (
       renderErrorRate(item, idx)
     ) : (
       <div key={idx}>
@@ -133,8 +137,8 @@ export const HealthDetails: React.FC<HealthDetailsProps> = (
   // @ts-ignore
 };
 
-export const renderTrafficStatus = (health: H.Health): React.ReactNode => {
-  const config = health.getStatusConfig();
+export const renderTrafficStatus = (health: Health): React.ReactNode => {
+  const config = health.getStatusConfig(serverConfig);
   const isValueInConfig =
     config && health.health.statusConfig
       ? health.health.statusConfig.value > 0
@@ -146,7 +150,7 @@ export const renderTrafficStatus = (health: H.Health): React.ReactNode => {
       ? item.children.filter(sub => {
           const showItem = sub.value && sub.value > 0;
 
-          return sub.status !== H.HEALTHY && showItem;
+          return sub.status !== HEALTHY && showItem;
         }).length > 0
       : false;
 
@@ -162,7 +166,7 @@ export const renderTrafficStatus = (health: H.Health): React.ReactNode => {
               {item.children.map((sub, _) => {
                 const showItem = sub.value && sub.value > 0;
 
-                return sub.status !== H.HEALTHY && showItem ? (
+                return sub.status !== HEALTHY && showItem ? (
                   <li key={sub.text}>
                     <span style={{ marginRight: '0.5rem' }}>
                       {createIcon(sub.status)}
@@ -177,10 +181,10 @@ export const renderTrafficStatus = (health: H.Health): React.ReactNode => {
               {config && isValueInConfig && (
                 <li key="degraded_failure_config">
                   <span style={{ marginRight: '0.5rem' }}>
-                    {createIcon(H.DEGRADED)}
+                    {createIcon(DEGRADED)}
                   </span>
                   : {config.degraded === 0 ? '>' : '>='}
-                  {config.degraded}% {createIcon(H.FAILURE)}:{' '}
+                  {config.degraded}% {createIcon(FAILURE)}:{' '}
                   {config.degraded === 0 ? '>' : '>='}
                   {config.failure}%
                 </li>

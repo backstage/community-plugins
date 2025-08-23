@@ -1,5 +1,24 @@
 # @backstage-community/plugin-copilot-common
 
+## 0.11.0
+
+### Minor Changes
+
+- 3f606e1: Backstage version bump to v1.41.1
+
+## 0.10.0
+
+### Minor Changes
+
+- d3221bf: Backstage version bump to v1.40.2
+
+## 0.9.1
+
+### Patch Changes
+
+- cd78d85: - Upgraded to Backstage release 1.38
+  - Applied migration to the [New JXS Transform](https://backstage.io/docs/tutorials/jsx-transform-migration/)
+
 ## 0.9.0
 
 ### Minor Changes

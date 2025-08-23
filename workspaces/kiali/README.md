@@ -125,17 +125,15 @@ Authentication methods:
 
 The following table describes the parameters that you can configure to enable the plugin under `catalog.providers.keycloakOrg.<ENVIRONMENT_NAME>` object in the `app-config.yaml` file:
 
-| Name   | Description                                   | Default Value | Required |
-| ------ | --------------------------------------------- | ------------- | -------- |
-| `name` | Name of the kiali provider, such as `default` | "default"     |
-
-Yes and unique
-| `url` | Location of the Kiali server, such as `https://localhost:4000` | "" | Yes |
-| `serviceAccountToken` | Service Account Token which is used for querying data from Kiali | "" | Yes if using token based authentication |
-| `skipTLSVerify` | Skip TLS certificate verification presented by the API server | false | No |
-| `caData` | Base64-encoded certificate authority bundle in PEM format | "" | No |
-| `caFile` | Filesystem path (on the host where the Backstage process is running) to a certificate authority bundle in PEM format | "" | No |
-| `sessionTime` | Time in seconds that session is enabled | 60 | No |
+| Name                  | Description                                                                                                          | Default Value | Required                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------- | --------------------------------------- |
+| `name`                | Name of the kiali provider, such as `default`                                                                        | "default"     | Yes and unique                          |
+| `url`                 | Location of the Kiali server, such as `https://localhost:4000`                                                       | ""            | Yes                                     |
+| `serviceAccountToken` | Service Account Token which is used for querying data from Kiali                                                     | ""            | Yes if using token based authentication |
+| `skipTLSVerify`       | Skip TLS certificate verification presented by the API server                                                        | false         | No                                      |
+| `caData`              | Base64-encoded certificate authority bundle in PEM format                                                            | ""            | No                                      |
+| `caFile`              | Filesystem path (on the host where the Backstage process is running) to a certificate authority bundle in PEM format | ""            | No                                      |
+| `sessionTime`         | Time in seconds that session is enabled                                                                              | 60            | No                                      |
 
 ## For users
 

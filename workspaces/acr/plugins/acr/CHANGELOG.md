@@ -1,5 +1,53 @@
 ### Dependencies
 
+## 1.16.0
+
+### Minor Changes
+
+- 4000b53: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.15.2
+
+### Patch Changes
+
+- 561b7b9: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
+## 1.15.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 1.15.0
+
+### Minor Changes
+
+- cc6712e: Backstage version bump to v1.39.0
+
+## 1.14.1
+
+### Patch Changes
+
+- 86fc9e2: remove product specific theme (dev dependency only)
+- 86fc9e2: remove react import
+
+## 1.14.0
+
+### Minor Changes
+
+- ba585fb: Backstage version bump to v1.38.1
+
+## 1.13.0
+
+### Minor Changes
+
+- 87e3c32: Added functionality to define multiple ACR registries within Backstage.
+- cfdcd07: Limit returned images to 100 and sort latest first.
+
 ## 1.12.1
 
 ### Patch Changes

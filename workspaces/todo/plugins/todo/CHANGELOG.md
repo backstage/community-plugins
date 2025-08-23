@@ -1,5 +1,47 @@
 # @backstage-community/plugin-todo
 
+## 0.11.1
+
+### Patch Changes
+
+- 1790453: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.11.0
+
+### Minor Changes
+
+- b26f0e3: Backstage version bump to v1.41.1
+
+## 0.10.0
+
+### Minor Changes
+
+- 6a96bb8: Backstage version bump to v1.40.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 0c5fa9b: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- d644a5e: todo documentation updated
+
+## 0.7.0
+
+### Minor Changes
+
+- 880d0ed: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.6.0
 
 ### Minor Changes

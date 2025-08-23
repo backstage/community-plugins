@@ -7,8 +7,8 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
-import { InfoCardVariants } from '@backstage/core-components/*';
-import { JSX as JSX_2 } from 'react';
+import { InfoCardVariants } from '@backstage/core-components';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
@@ -33,6 +33,7 @@ export const AnnouncementsCard: ({
   variant,
   sortBy,
   order,
+  hideStartAt,
 }: {
   title?: string | undefined;
   max?: number | undefined;
@@ -41,6 +42,7 @@ export const AnnouncementsCard: ({
   variant?: InfoCardVariants | undefined;
   sortBy?: 'created_at' | 'start_at' | undefined;
   order?: 'desc' | 'asc' | undefined;
+  hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -76,6 +78,8 @@ export const AnnouncementsPage: (props: {
       }
     | undefined;
   hideInactive?: boolean | undefined;
+  hideStartAt?: boolean | undefined;
+  markdownRenderer?: MarkdownRendererTypeProps | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -107,12 +111,16 @@ export type AnnouncementsTimelineProps = {
   order?: 'asc' | 'desc';
 };
 
+// @public
+export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
+
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {
   variant?: 'block' | 'floating' | undefined;
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
+  tags?: string[] | undefined;
 }) => JSX_2.Element | null;
 
 // (No @packageDocumentation comment for this package)

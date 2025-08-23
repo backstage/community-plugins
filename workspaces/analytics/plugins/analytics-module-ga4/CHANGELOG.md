@@ -1,5 +1,29 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.9.0
+
+### Minor Changes
+
+- 70f97c5: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 4ed9028: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 8b665f9: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.6.0
 
 ### Minor Changes

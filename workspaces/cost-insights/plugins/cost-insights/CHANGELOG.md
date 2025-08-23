@@ -1,5 +1,46 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.18.0
+
+### Minor Changes
+
+- ae26878: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [ae26878]
+  - @backstage-community/plugin-cost-insights-common@0.6.0
+
+## 0.17.0
+
+### Minor Changes
+
+- 364eea8: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.16.0
+
+### Minor Changes
+
+- 74ab831: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [74ab831]
+  - @backstage-community/plugin-cost-insights-common@0.5.0
+
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [6c0f6ee]
+  - @backstage-community/plugin-cost-insights-common@0.4.1
+
+## 0.15.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.15.0
 
 ### Minor Changes

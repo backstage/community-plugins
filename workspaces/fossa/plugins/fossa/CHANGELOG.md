@@ -1,5 +1,23 @@
 # @backstage-community/plugin-fossa
 
+## 0.7.0
+
+### Minor Changes
+
+- ef169da: Backstage version bump to v1.41.1
+
+## 0.6.0
+
+### Minor Changes
+
+- ad53b23: Backstage version bump to v1.40.2
+
+## 0.5.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.5.0
 
 ### Minor Changes

@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import {
+  DurationInSeconds,
+  Metric,
+  RichDataPoint,
+  VCLine,
+} from '@backstage-community/plugin-kiali-common/types';
+import { default as React } from 'react';
 import { SparklineChart } from '../../../components/Charts/SparklineChart';
 import { PFColors } from '../../../components/Pf/PfColors';
-import { DurationInSeconds } from '../../../types/Common';
-import { Metric } from '../../../types/Metrics';
-import { RichDataPoint, VCLine } from '../../../types/VictoryChartInfo';
 import { toLocaleStringWithConditionalDate } from '../../../utils/Date';
 import { getName } from '../../../utils/RateIntervals';
 import { toVCLine } from '../../../utils/VictoryChartsUtils';

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { DateTime } from 'luxon';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -43,6 +42,7 @@ import {
   ListItemText,
   Typography,
   Box,
+  Chip,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
@@ -50,6 +50,10 @@ import NewReleasesIcon from '@material-ui/icons/NewReleases';
 const useStyles = makeStyles({
   newAnnouncementIcon: {
     minWidth: '36px',
+  },
+  chipStyle: {
+    marginRight: 4,
+    marginBottom: 4,
   },
 });
 
@@ -61,6 +65,7 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  hideStartAt?: boolean;
 };
 
 export const AnnouncementsCard = ({
@@ -71,6 +76,7 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
+  hideStartAt,
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -127,7 +133,10 @@ export const AnnouncementsCard = ({
             </ListItemIcon>
             <ListItemText
               primary={
-                <Link to={viewAnnouncementLink({ id: announcement.id })}>
+                <Link
+                  to={viewAnnouncementLink({ id: announcement.id })}
+                  variant="inherit"
+                >
                   {announcement.title}
                 </Link>
               }
@@ -142,6 +151,7 @@ export const AnnouncementsCard = ({
                           to={`${announcementsLink()}?category=${
                             announcement.category.slug
                           }`}
+                          variant="inherit"
                         >
                           {announcement.category.title}
                         </Link>
@@ -150,15 +160,32 @@ export const AnnouncementsCard = ({
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     {announcement.excerpt}
-                  </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {formatAnnouncementStartTime(
-                      announcement.start_at,
-                      t('announcementsCard.occurred'),
-                      t('announcementsCard.scheduled'),
-                      t('announcementsCard.today'),
+                    {announcement.tags && announcement.tags.length > 0 && (
+                      <Box mt={1}>
+                        {announcement.tags.map(tag => (
+                          <Chip
+                            key={tag.slug}
+                            size="small"
+                            label={tag.title}
+                            component={Link}
+                            to={`${announcementsLink()}?tags=${tag.slug}`}
+                            clickable
+                            className={classes.chipStyle}
+                          />
+                        ))}
+                      </Box>
                     )}
                   </Typography>
+                  {!hideStartAt && (
+                    <Typography variant="caption" color="textSecondary">
+                      {formatAnnouncementStartTime(
+                        announcement.start_at,
+                        t('announcementsCard.occurred'),
+                        t('announcementsCard.scheduled'),
+                        t('announcementsCard.today'),
+                      )}
+                    </Typography>
+                  )}
                 </Box>
               }
             />{' '}
@@ -168,7 +195,7 @@ export const AnnouncementsCard = ({
           <ListItem>
             <ListItemText>
               {`${t('announcementsCard.noAnnouncements')} `}
-              <Link to={createAnnouncementLink()}>
+              <Link to={createAnnouncementLink()} variant="inherit">
                 {t('announcementsCard.addOne')}
               </Link>
               ?

@@ -40,12 +40,13 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
-import { mockAuditorService } from '../../__fixtures__/mock-utils';
+import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLog,
 } from '../../__fixtures__/auditor-test-utils';
 import { ActionType, PermissionEvents } from '../auditor/auditor';
+import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -100,28 +101,10 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
         return undefined;
       },
     ),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
-};
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
 };
 
 const mockAuthService = mockServices.auth();
@@ -187,6 +170,7 @@ describe('Connection', () => {
     enforcerDelegate = new EnforcerDelegate(
       enf,
       mockAuditorService,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
@@ -427,6 +411,22 @@ describe('Connection', () => {
       expect(enfAddPolicySpy).toHaveBeenCalledWith(...policies);
     });
 
+    // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+    it('should add new permissions but log warning about `policy-entity, create` permission', async () => {
+      enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
+
+      const policies = [
+        ['role:default/provider-role', 'policy-entity', 'create', 'allow'],
+      ];
+
+      await provider.applyPermissions(policies);
+      expect(enfAddPolicySpy).toHaveBeenCalledWith(...policies);
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        1,
+        `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${policies[0]} to use 'policy.entity.create' instead of 'policy-entity' from source test`,
+      );
+    });
+
     it('should remove old permissions', async () => {
       enfRemovePolicySpy = jest.spyOn(enforcerDelegate, 'removePolicy');
 
@@ -520,6 +520,7 @@ describe('connectRBACProviders', () => {
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       mockAuditorService,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
@@ -546,7 +547,7 @@ async function createEnforcer(
   const enf = await newEnforcer(theModel, adapter);
 
   const rm = new BackstageRoleManager(
-    catalogApiMock,
+    catalogMock,
     logger,
     catalogDBClient,
     rbacDBClient,

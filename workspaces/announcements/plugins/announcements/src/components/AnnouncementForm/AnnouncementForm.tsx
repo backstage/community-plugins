@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
+import { DateTime } from 'luxon';
+import slugify from 'slugify';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
+  announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
+
 import CategoryInput from './CategoryInput';
-import {
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Button,
-  Box,
-  Grid,
-  Typography,
-  Divider,
-} from '@material-ui/core';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
-import { DateTime } from 'luxon';
+import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
+import TagsInput from './TagsInput';
+
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -47,48 +53,86 @@ export const AnnouncementForm = ({
   onSubmit,
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
+  const announcementsApi = useApi(announcementsApiRef);
   const { t } = useAnnouncementsTranslation();
 
-  // Ensure `start_at` is properly formatted as an ISO date string
   const formattedStartAt = initialData.start_at
     ? DateTime.fromISO(initialData.start_at).toISODate()
     : DateTime.now().toISODate();
 
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
+    tags: initialData.tags?.map(tag => tag.slug) || undefined,
   });
   const [loading, setLoading] = useState(false);
+  const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
+    initialData.on_behalf_of || '',
+  );
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.id]: event.target.value,
     });
   };
 
-  const handleChangeActive = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.name]: event.target.checked,
     });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
 
     const userIdentity = await identityApi.getBackstageIdentity();
-    const createRequest = {
-      ...form,
-      ...{
-        publisher: userIdentity.userEntityRef,
-      },
+
+    if (form.tags && form.tags.length > 0) {
+      const existingTags = await announcementsApi.tags();
+
+      const processedTags = [];
+
+      for (const tagValue of form.tags) {
+        const slugifiedTag = slugify(tagValue.trim(), { lower: true });
+
+        if (existingTags.some(tag => tag.slug === slugifiedTag)) {
+          processedTags.push(slugifiedTag);
+        } else {
+          try {
+            await announcementsApi.createTag({ title: tagValue });
+            processedTags.push(slugifiedTag);
+          } catch (error) {
+            if (error.status === 409) {
+              processedTags.push(slugifiedTag);
+            } else {
+              throw error;
+            }
+          }
+        }
+      }
+
+      form.tags = processedTags;
+    }
+
+    const { id, created_at, ...announcementData } = form;
+
+    const createRequest: CreateAnnouncementRequest = {
+      ...announcementData,
+      publisher: userIdentity.userEntityRef,
+      on_behalf_of: onBehalfOfSelectedTeam,
     };
 
-    await onSubmit(createRequest);
-    setLoading(false);
+    try {
+      await onSubmit(createRequest);
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -99,6 +143,7 @@ export const AnnouncementForm = ({
             ? t('announcementForm.editAnnouncement')
             : t('announcementForm.newAnnouncement')}
         </Typography>
+        <Divider sx={{ mb: 3 }} />
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -113,6 +158,34 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <TextField
+                id="excerpt"
+                label={t('announcementForm.excerpt')}
+                value={form.excerpt}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                required
+                multiline
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Paper
+                variant="outlined"
+                sx={{ borderRadius: 2, borderColor: 'divider', p: 2 }}
+              >
+                <MDEditor
+                  value={form.body}
+                  style={{ minHeight: '30rem' }}
+                  onChange={value =>
+                    setForm({ ...form, ...{ body: value || '' } })
+                  }
+                />
+              </Paper>
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <CategoryInput
                 setForm={setForm}
@@ -122,6 +195,17 @@ export const AnnouncementForm = ({
             </Grid>
 
             <Grid item xs={12} sm={6}>
+              <OnBehalfTeamDropdown
+                selectedTeam={onBehalfOfSelectedTeam}
+                onChange={setOnBehalfOfSelectedTeam}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TagsInput setForm={setForm} form={form} />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}
@@ -140,29 +224,6 @@ export const AnnouncementForm = ({
             </Grid>
 
             <Grid item xs={12}>
-              <TextField
-                id="excerpt"
-                label={t('announcementForm.excerpt')}
-                value={form.excerpt}
-                onChange={handleChange}
-                variant="outlined"
-                fullWidth
-                required
-                multiline
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <MDEditor
-                value={form.body}
-                style={{ minHeight: '30rem' }}
-                onChange={value =>
-                  setForm({ ...form, ...{ body: value || '' } })
-                }
-              />
-            </Grid>
-
-            <Grid item xs={12}>
               <Divider />
             </Grid>
 
@@ -172,7 +233,7 @@ export const AnnouncementForm = ({
                   control={
                     <Switch
                       name="active"
-                      checked={form.active}
+                      checked={!!form.active}
                       onChange={handleChangeActive}
                       color="primary"
                     />

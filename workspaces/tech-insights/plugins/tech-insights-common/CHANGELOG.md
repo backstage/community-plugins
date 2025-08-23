@@ -1,5 +1,24 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.7.1
+
+### Patch Changes
+
+- ba5bf7b: Fix runBulkCheck logic to run when no entities are found
+
+## 0.7.0
+
+### Minor Changes
+
+- d6411fe: run bulk checks in chunks (a 750)
+- a01ae4e: Backstage version bump to v1.39.0
+
+## 0.6.0
+
+### Minor Changes
+
+- ac739ca: Adds permissions for use by the `tech-insights` apis.
+
 ## 0.5.0
 
 ### Minor Changes

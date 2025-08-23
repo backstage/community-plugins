@@ -1,5 +1,98 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.17.0
+
+### Minor Changes
+
+- 6d6b976: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [6d6b976]
+  - @backstage-community/plugin-sonarqube-react@0.9.0
+
+## 0.16.2
+
+### Patch Changes
+
+- 1eda234: Fix maximum update depth exceeded in SonarqubeRelatedEntitiesOverview
+
+## 0.16.1
+
+### Patch Changes
+
+- b64dc92: Fixed bug in SonarQubeRelatedEntitiesOverview where the projectInstance was always undefined
+- Updated dependencies [b64dc92]
+  - @backstage-community/plugin-sonarqube-react@0.8.1
+
+## 0.16.0
+
+### Minor Changes
+
+- b61e4a0: Improve the discoverability of Sonarqube dashboard URL in both sonarqube entity card & tabular view
+
+## 0.15.0
+
+### Minor Changes
+
+- ad4279b: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [ad4279b]
+  - @backstage-community/plugin-sonarqube-react@0.8.0
+
+## 0.14.0
+
+### Minor Changes
+
+- f032786: Make the tabular view more compact and sortable by gateway/last analyzed, improve translations
+- 3cdf95b: Added `SonarQubeRelatedEntitiesOverview` to show SonarQube results for related entites
+
+### Patch Changes
+
+- df41249: Support all entity kinds in the tabular view
+
+## 0.13.0
+
+### Minor Changes
+
+- f3284e7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f3284e7]
+  - @backstage-community/plugin-sonarqube-react@0.7.0
+
+## 0.12.1
+
+### Patch Changes
+
+- f737a01: Fixed handling of wrong component keys in getFindingSummaries
+
+## 0.12.0
+
+### Minor Changes
+
+- 8be1894: Upgraded to Backstage release 1.38
+
+### Patch Changes
+
+- Updated dependencies [8be1894]
+  - @backstage-community/plugin-sonarqube-react@0.6.0
+
+## 0.11.2
+
+### Patch Changes
+
+- 4cb6cb9: sonarqube plugin support i18n
+
+## 0.11.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.11.0
 
 ### Minor Changes

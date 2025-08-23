@@ -1,5 +1,48 @@
 # @backstage-community/plugin-copilot
 
+## 0.12.0
+
+### Minor Changes
+
+- 3f606e1: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [3f606e1]
+  - @backstage-community/plugin-copilot-common@0.11.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 4b09bc8: Adds support for the new frontend system
+
+## 0.10.0
+
+### Minor Changes
+
+- d3221bf: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [d3221bf]
+  - @backstage-community/plugin-copilot-common@0.10.0
+
+## 0.9.2
+
+### Patch Changes
+
+- cd78d85: - Upgraded to Backstage release 1.38
+  - Applied migration to the [New JXS Transform](https://backstage.io/docs/tutorials/jsx-transform-migration/)
+- Updated dependencies [cd78d85]
+  - @backstage-community/plugin-copilot-common@0.9.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 6232241: Ensure that date is converted to the local timezone before performing comparison
+
 ## 0.9.0
 
 ### Minor Changes

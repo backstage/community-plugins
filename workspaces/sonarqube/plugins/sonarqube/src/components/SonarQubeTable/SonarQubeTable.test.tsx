@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { SonarQubeTable } from './SonarQubeTable';
+import { renderInTestApp } from '@backstage/frontend-test-utils';
 
 jest.mock('@backstage/core-components', () => ({
   ...jest.requireActual('@backstage/core-components'),
@@ -41,8 +41,8 @@ describe('SonarQubeTable', () => {
     getColumns: jest.fn(() => mockColumns),
   }));
 
-  it('should render the table with valid tableContent', () => {
-    render(
+  it('should render the table with valid tableContent', async () => {
+    await renderInTestApp(
       <SonarQubeTable
         tableContent={mockTableContent}
         title="Test Table"
@@ -53,8 +53,8 @@ describe('SonarQubeTable', () => {
     expect(screen.getByText('Mocked Table Component')).toBeInTheDocument();
   });
 
-  it('should render emptyContent when tableContent is empty', () => {
-    render(
+  it('should render emptyContent when tableContent is empty', async () => {
+    await renderInTestApp(
       <SonarQubeTable
         tableContent={[]}
         title="Empty Table"
@@ -65,8 +65,10 @@ describe('SonarQubeTable', () => {
     expect(screen.getByText('No data available')).toBeInTheDocument();
   });
 
-  it('should render ErrorPanel when tableContent is undefined', () => {
-    render(<SonarQubeTable tableContent={undefined} title="Error Table" />);
+  it('should render ErrorPanel when tableContent is undefined', async () => {
+    await renderInTestApp(
+      <SonarQubeTable tableContent={undefined} title="Error Table" />,
+    );
 
     expect(screen.getByText('Mocked Error Panel')).toBeInTheDocument();
   });

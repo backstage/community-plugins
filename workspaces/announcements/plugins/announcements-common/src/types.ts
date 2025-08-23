@@ -27,6 +27,18 @@ export type Category = {
 };
 
 /**
+ * Represents a tag for organizing announcements
+ *
+ * @public
+ */
+export type Tag = {
+  /** Unique identifier for the tag */
+  slug: string;
+  /** Display name of the tag */
+  title: string;
+};
+
+/**
  * Represents an announcement
  *
  * @public
@@ -50,6 +62,10 @@ export type Announcement = {
   active: boolean;
   /** Date indicating when the announcement starts (is visible to end users) */
   start_at: string;
+  /** The team on whose behalf the announcement was published */
+  on_behalf_of?: string;
+  /** Array of tags associated with the announcement */
+  tags?: Tag[];
 };
 
 /**
@@ -76,6 +92,8 @@ export type AnnouncementsFilters = {
   offset?: number;
   /** Filter by category slug */
   category?: string;
+  /** Filter by tag */
+  tags?: string[];
   /** Page number for pagination */
   page?: number;
   /** Filter by active status */

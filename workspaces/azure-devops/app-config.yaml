@@ -55,6 +55,21 @@ catalog:
 
     # Local example scaffolder action
     - type: file
-      target: ../../examples/scaffolder.yaml
+      target: ../../examples/scaffolder/dotnetNew.yaml
+      rules:
+        - allow: [Template]
+    # Local example scaffolder action
+    - type: file
+      target: ../../examples/scaffolder/runAzurePipeline.yaml
+      rules:
+        - allow: [Template]
+    # Local example scaffolder action
+    - type: file
+      target: ../../examples/scaffolder/createAzurePipeline.yaml
+      rules:
+        - allow: [Template]
+      # Local example scaffolder action
+    - type: file
+      target: ../../examples/scaffolder/permitAzurePipeline.yaml
       rules:
         - allow: [Template]

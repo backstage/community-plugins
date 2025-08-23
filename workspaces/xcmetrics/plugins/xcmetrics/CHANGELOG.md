@@ -1,5 +1,35 @@
 # @backstage-community/plugin-xcmetrics
 
+## 0.10.0
+
+### Minor Changes
+
+- 1658061: Backstage version bump to v1.41.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 1a58a6c: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 2ce0f11: Backstage version bump to v1.39.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 00180f7: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.6.0
 
 ### Minor Changes

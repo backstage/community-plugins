@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type {
+  RichDataPoint,
+  VCDataPoint,
+  VCLines,
+} from '@backstage-community/plugin-kiali-common/types';
 import { useTheme } from '@material-ui/core/styles';
 import {
   Chart,
@@ -25,12 +30,7 @@ import {
   ChartThreshold,
   ChartVoronoiContainer,
 } from '@patternfly/react-charts';
-import * as React from 'react';
-import {
-  RichDataPoint,
-  VCDataPoint,
-  VCLines,
-} from '../../types/VictoryChartInfo';
+import { default as React } from 'react';
 import { addLegendEvent, VCEvent } from '../../utils/VictoryEvents';
 import { PFColors } from '../Pf/PfColors';
 import { CustomTooltip } from './CustomTooltip';

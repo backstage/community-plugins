@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ANNOTATION_SUPPORTED } from '@backstage-community/plugin-kiali-common';
 import { Entity } from '@backstage/catalog-model';
 import {
   CodeSnippet,
@@ -21,8 +22,6 @@ import {
   Page,
 } from '@backstage/core-components';
 import { Box } from '@material-ui/core';
-import React from 'react';
-import { ANNOTATION_SUPPORTED } from '../../components/Router';
 
 export const KialiNoResources = (props: { entity: Entity }) => {
   const annotationsKey = Object.keys(

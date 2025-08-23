@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { forwardRef } from 'react';
 
 import { errorApiRef } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
@@ -32,7 +32,7 @@ jest.mock('@mui/styles', () => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  Link: React.forwardRef<
+  Link: forwardRef<
     HTMLAnchorElement,
     { to: string; children?: React.ReactNode }
   >((props, ref) => (

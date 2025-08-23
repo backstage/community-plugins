@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
-import { usePermission } from '@backstage/plugin-permission-react';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import Box from '@mui/material/Box';
-
-import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -41,8 +39,8 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
   return (
     <EditRole
       dataTestId={isAllowed ? 'update-policies' : 'disable-update-policies'}
+      canEdit={isAllowed}
       roleName={roleName}
-      disable={!isAllowed}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${2}`}
     />
   );
@@ -54,13 +52,9 @@ export const PermissionsCard = ({
 }: PermissionsCardProps) => {
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
-  const [searchText, setSearchText] = React.useState<string>();
-  const permissionResult = usePermission({
-    permission: policyEntityUpdatePermission,
-    resourceRef: policyEntityUpdatePermission.resourceType,
-  });
+  const [searchText, setSearchText] = useState<string>();
 
-  const numberOfPolicies = React.useMemo(() => {
+  const numberOfPolicies = useMemo(() => {
     const filteredPermissions = filterTableData({ data, columns, searchText });
     let policies = 0;
     filteredPermissions.forEach(p => {
@@ -85,19 +79,17 @@ export const PermissionsCard = ({
       },
     },
     {
-      icon: () =>
-        getEditIcon(
-          permissionResult.allowed && canReadUsersAndGroups,
-          entityReference,
-        ),
-      tooltip:
-        permissionResult.allowed && canReadUsersAndGroups
-          ? 'Edit'
-          : 'Unauthorized to edit',
+      icon: () => getEditIcon(canReadUsersAndGroups, entityReference),
+      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
       isFreeAction: true,
       onClick: () => {},
     },
   ];
+
+  let title = 'Permission Policies';
+  if (!loading && data.length > 0) {
+    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
+  }
 
   return (
     <Box>
@@ -110,27 +102,25 @@ export const PermissionsCard = ({
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && data.length > 0
-            ? `Permission Policies (${numberOfPolicies})`
-            : 'Permission Policies'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={data}
-        columns={columns}
-        isLoading={loading}
-        emptyContent={
-          <Box
-            data-testid="permission-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={title}
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={data}
+          columns={columns}
+          isLoading={loading}
+          emptyContent={
+            <Box
+              data-testid="permission-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };

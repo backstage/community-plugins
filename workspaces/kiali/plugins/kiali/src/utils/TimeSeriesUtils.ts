@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AllPromLabelsValues, Labels, Metric } from '../types/Metrics';
+import {
+  AllPromLabelsValues,
+  Labels,
+  Metric,
+} from '@backstage-community/plugin-kiali-common/types';
 
 type KVMapper = (key: string, value: string) => string;
 export type LabelsInfo = {

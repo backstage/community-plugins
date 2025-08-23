@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { JSX } from 'react';
 import {
   SidebarItem,
   SidebarSubmenu,
@@ -30,7 +30,7 @@ import {
   Group as GroupIcon,
 } from '@mui/icons-material';
 
-export const Sidebar = (): React.JSX.Element => {
+export const Sidebar = (): JSX.Element => {
   const configApi = useApi(configApiRef);
 
   const enterpriseConfig = configApi.getOptionalString('copilot.enterprise');

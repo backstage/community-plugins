@@ -15,7 +15,6 @@
  */
 
 import { Link } from '@backstage/core-components';
-import React from 'react';
 
 export const Playground = () => {
   return (

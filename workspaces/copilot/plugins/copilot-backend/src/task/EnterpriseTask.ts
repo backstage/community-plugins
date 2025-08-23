@@ -140,7 +140,7 @@ export async function discoverEnterpriseMetrics({
         await db.batchInsertIdeChatEditorModels(chunk);
       });
 
-      const seats = await api.fetchOrganizationSeats();
+      const seats = await api.fetchEnterpriseSeats();
       const seatsToInsert = convertToSeatAnalysis(seats, type);
       await db.insertSeatAnalysys(seatsToInsert);
 
@@ -152,7 +152,8 @@ export async function discoverEnterpriseMetrics({
     }
   } catch (error) {
     logger.error(
-      `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${error}`,
+      '[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics',
+      error,
     );
     throw error;
   }

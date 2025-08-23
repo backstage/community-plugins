@@ -22,7 +22,6 @@ import {
 
 import { BuildTable } from './BuildTable';
 import { MemoryRouter } from 'react-router-dom';
-import React from 'react';
 
 export default {
   title: 'Plugins/Azure Devops/Build Table',

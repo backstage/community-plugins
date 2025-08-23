@@ -33,25 +33,11 @@ import {
   RoleEvents,
 } from '../src/service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-export const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
-};
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { PermissionDependentPluginStore } from '../src/database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from '../src/service/extendable-id-provider';
+import { convertGroupsToEntity, convertUsersToEntity } from './test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 export const conditionalStorageMock: ConditionalStorage = {
   filterConditions: jest.fn().mockImplementation(() => []),
@@ -64,6 +50,7 @@ export const conditionalStorageMock: ConditionalStorage = {
 
 export const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   findRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
@@ -75,6 +62,29 @@ export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollec
     getPluginConditionRules: jest.fn().mockImplementation(),
     getPluginPolicies: jest.fn().mockImplementation(),
     getMetadataByPluginId: jest.fn().mockImplementation(),
+  };
+
+export const permissionDependentPluginStoreMock: PermissionDependentPluginStore =
+  {
+    getPlugins: jest
+      .fn()
+      .mockImplementation(async () => [
+        { pluginId: 'jenkins' },
+        { pluginId: 'sonarqube' },
+      ]),
+    addPlugins: jest.fn().mockImplementation(),
+    deletePlugins: jest.fn().mockImplementation(),
+  };
+
+export const pluginIdProviderMock = {
+  getPluginIds: jest.fn().mockImplementation(() => []),
+};
+
+export const extendablePluginIdProviderMock: Partial<ExtendablePluginIdProvider> =
+  {
+    isConfiguredPluginId: jest.fn().mockImplementation(),
+    getPluginIds: jest.fn().mockImplementation(async () => ['catalog']),
+    handleConflictedPluginIds: jest.fn().mockImplementation(),
   };
 
 export const roleEventEmitterMock: RoleEventEmitter<RoleEvents> = {
@@ -114,7 +124,7 @@ export const dataBaseAdapterFactoryMock: Partial<CasbinDBAdapterFactory> = {
 };
 
 export const providerMock: RBACProvider = {
-  getProviderName: jest.fn().mockImplementation(),
+  getProviderName: jest.fn().mockImplementation(() => `testProvider`),
   connect: jest.fn().mockImplementation(),
   refresh: jest.fn().mockImplementation(),
 };
@@ -136,8 +146,44 @@ export const mockAuditorService = mockServices.auditor.mock({
 
 export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();
-export const mockUserInfoService = mockServices.userInfo();
-export const mockDiscovery = mockServices.discovery.mock();
+export const mockPermissionRegistry = mockServices.permissionsRegistry.mock({
+  getPermissionRuleset: jest.fn(resourceRef => {
+    return {
+      getRules: () => [
+        {
+          resourceRef,
+          rules: [],
+        },
+      ],
+      getRuleByName: jest.fn(),
+    };
+  }),
+});
+
+export const mockedAuthorize = jest.fn().mockImplementation(async () => [
+  {
+    result: AuthorizeResult.ALLOW,
+  },
+]);
+
+export const mockedAuthorizeConditional = jest
+  .fn()
+  .mockImplementation(async () => [
+    {
+      result: AuthorizeResult.ALLOW,
+    },
+  ]);
+
+export const mockPermissionEvaluator = {
+  authorize: mockedAuthorize,
+  authorizeConditional: mockedAuthorizeConditional,
+};
+
+export const testUsers = convertUsersToEntity();
+export const testGroups = convertGroupsToEntity();
+export const catalogMock = catalogServiceMock({
+  entities: [...testGroups, ...testUsers],
+});
 
 export const csvPermFile = resolve(
   __dirname,

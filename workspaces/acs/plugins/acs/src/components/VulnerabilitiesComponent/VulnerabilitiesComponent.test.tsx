@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { VulnerabilitiesComponent } from './VulnerabilitiesComponent';
-import { QueryACSData } from '../../common/QueryACSData';
+import { useFetchACSData } from '../../common/useFetchACSData';
 
-jest.mock('../../common/QueryACSData', () => ({
-  QueryACSData: jest.fn(),
+jest.mock('../../common/useFetchACSData', () => ({
+  useFetchACSData: jest.fn(),
 }));
 
 describe('VulnerabilitiesComponent', () => {
   test('displays loading state initially', () => {
-    (QueryACSData as jest.Mock).mockReturnValue({
-      result: null,
-      loaded: false,
-      error: null,
+    (useFetchACSData as jest.Mock).mockReturnValue({
+      result: { jsonData: [] },
+      isLoading: true,
+      error: false,
     });
 
     render(<VulnerabilitiesComponent deploymentName="Test" />);
@@ -37,10 +36,10 @@ describe('VulnerabilitiesComponent', () => {
   });
 
   test('displays error message when data fetch fails', () => {
-    (QueryACSData as jest.Mock).mockReturnValue({
-      result: null,
-      loaded: true,
-      error: new Error('Test error'),
+    (useFetchACSData as jest.Mock).mockReturnValue({
+      result: { jsonData: [] },
+      isLoading: false,
+      error: true,
     });
 
     render(<VulnerabilitiesComponent deploymentName="Test" />);

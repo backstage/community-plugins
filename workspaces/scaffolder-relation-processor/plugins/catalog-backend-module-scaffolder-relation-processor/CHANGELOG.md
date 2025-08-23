@@ -1,5 +1,23 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.6.0
+
+### Minor Changes
+
+- f0fbcb1: Backstage version bump to v1.41.1
+
+## 2.5.0
+
+### Minor Changes
+
+- 8d2a2f5: Backstage version bump to v1.39.0
+
+## 2.4.0
+
+### Minor Changes
+
+- 4de1e1a: Backstage version bump to v1.38.1
+
 ## 2.3.0
 
 ### Minor Changes

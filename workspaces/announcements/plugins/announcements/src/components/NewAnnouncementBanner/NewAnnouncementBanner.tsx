@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Link } from '@backstage/core-components';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
@@ -96,10 +96,17 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
 
   const message = (
     <>
-      <Typography component="span" className={classes.bannerIcon}>
+      <Typography
+        component="span"
+        className={classes.bannerIcon}
+        variant="inherit"
+      >
         📣
       </Typography>
-      <Link to={viewAnnouncementLink({ id: announcement.id })}>
+      <Link
+        to={viewAnnouncementLink({ id: announcement.id })}
+        variant="inherit"
+      >
         {announcement.title}
       </Link>
       &nbsp;– {announcement.excerpt}
@@ -139,10 +146,11 @@ type NewAnnouncementBannerProps = {
   max?: number;
   category?: string;
   active?: boolean;
+  tags?: string[];
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
-  const { max, category, active, variant } = props;
+  const { max, category, tags, active, variant } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
 
@@ -153,6 +161,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
   const { announcements, loading, error } = useAnnouncements({
     max: max ?? 1,
     category,
+    tags,
     active,
   });
   const lastSeen = announcementsApi.lastSeenDate();

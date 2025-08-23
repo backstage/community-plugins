@@ -1,5 +1,41 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 3.7.0
+
+### Minor Changes
+
+- 5ab6ba9: Backstage version bump to v1.41.1
+
+## 3.6.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
+## 3.6.0
+
+### Minor Changes
+
+- 2276885: Backstage version bump to v1.39.0
+
+## 3.5.0
+
+### Minor Changes
+
+- 321413c: Use the existing config values systemLabel and ownerLabel to ingest entities correctly
+
+## 3.4.0
+
+### Minor Changes
+
+- 5447deb: Backstage version bump to v1.38.1
+
+## 3.3.2
+
+### Patch Changes
+
+- f760ec9: provider will now catch errors per entity instead of crashing completely when one product is returned faulty from 3scale
+
 ## 3.3.1
 
 ### Patch Changes

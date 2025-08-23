@@ -1,0 +1,48 @@
+{
+  "name": "@backstage-community/plugin-manage-common",
+  "version": "1.1.0",
+  "license": "Apache-2.0",
+  "description": "Common functionalities for the manage plugin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/manage/plugins/manage-common"
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "manage",
+    "pluginPackages": [
+      "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-backend",
+      "@backstage-community/plugin-manage-common",
+      "@backstage-community/plugin-manage-node",
+      "@backstage-community/plugin-manage-react"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.4"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

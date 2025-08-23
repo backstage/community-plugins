@@ -17,19 +17,25 @@ import { ComputedStatus, TerminatedReasons } from '@janus-idp/shared-react';
 
 import { StepStatus, TaskStatus, TaskStatusStep } from '../types/taskRun';
 import { calculateDuration } from './tekton-utils';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../translation';
 
-const getMatchingStepDuration = (matchingStep?: TaskStatusStep) => {
+const getMatchingStepDuration = (
+  t: TranslationFunction<typeof tektonTranslationRef.T>,
+  matchingStep?: TaskStatusStep,
+) => {
   if (!matchingStep) return '';
 
   if (matchingStep.terminated) {
     return calculateDuration(
+      t,
       matchingStep.terminated.startedAt,
       matchingStep.terminated.finishedAt,
     );
   }
 
   if (matchingStep.running) {
-    return calculateDuration(matchingStep.running.startedAt);
+    return calculateDuration(t, matchingStep.running.startedAt);
   }
 
   return '';
@@ -52,6 +58,7 @@ const getMatchingStep = (
 export const createStepStatus = (
   step: { name: string },
   status: TaskStatus,
+  t: TranslationFunction<typeof tektonTranslationRef.T>,
 ): StepStatus => {
   let stepRunStatus = ComputedStatus.PipelineNotStarted;
   let duration = null;
@@ -69,10 +76,10 @@ export const createStepStatus = (
         matchingStep.terminated.reason === TerminatedReasons.Completed
           ? ComputedStatus.Succeeded
           : ComputedStatus.Failed;
-      duration = getMatchingStepDuration(matchingStep);
+      duration = getMatchingStepDuration(t, matchingStep);
     } else if (matchingStep.running) {
       stepRunStatus = ComputedStatus['In Progress'];
-      duration = getMatchingStepDuration(matchingStep);
+      duration = getMatchingStepDuration(t, matchingStep);
     } else if (matchingStep.waiting) {
       stepRunStatus = ComputedStatus.Pending;
     }
@@ -81,7 +88,8 @@ export const createStepStatus = (
     stepRunStatus = status.reason;
 
     duration =
-      getMatchingStepDuration(getMatchingStep(step, status)) || status.duration;
+      getMatchingStepDuration(t, getMatchingStep(step, status)) ||
+      status.duration;
   }
 
   return {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import { ElementType, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -36,15 +36,15 @@ import { useSeatMetrics } from '../../hooks/useSeatMetrics';
 import { useSeatMetricsByTeam } from '../../hooks/useSeatMetricsByTeam';
 
 type MetricsProps = {
-  Cards: React.ElementType<CardsProps>;
-  Charts: React.ElementType<ChartsProps>;
-  Filters: React.ElementType<FilterProps>;
+  Cards: ElementType<CardsProps>;
+  Charts: ElementType<ChartsProps>;
+  Filters: ElementType<FilterProps>;
 };
 
 type EngagementMetricsProps = {
-  Cards: React.ElementType<EngagementCardsProps>;
-  Charts: React.ElementType<EngagementChartsProps>;
-  Filters: React.ElementType<FilterProps>;
+  Cards: ElementType<EngagementCardsProps>;
+  Charts: ElementType<EngagementChartsProps>;
+  Filters: ElementType<FilterProps>;
 };
 
 const MainBox = styled(Box)(({ theme }) => ({

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { serverConfig } from '../../config';
 import {
   AllFilterTypes,
   FILTER_ACTION_APPEND,
   FilterType,
+  IstioConfigItem,
+  SortField,
   ToggleType,
-} from '../../types/Filters';
-import { IstioConfigItem } from '../../types/IstioConfigList';
-import { SortField } from '../../types/SortFilters';
+} from '@backstage-community/plugin-kiali-common/types';
+import { serverConfig } from '../../config';
 import { compareValidations } from '../ServiceList/FiltersAndSorts';
 
 export const sortFields: SortField<IstioConfigItem>[] = [
@@ -42,7 +42,7 @@ export const sortFields: SortField<IstioConfigItem>[] = [
     isNumeric: false,
     param: 'it',
     compare: (a: IstioConfigItem, b: IstioConfigItem): number => {
-      return a.type.localeCompare(b.type) || a.name.localeCompare(b.name);
+      return a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name);
     },
   },
   {
@@ -57,7 +57,7 @@ export const sortFields: SortField<IstioConfigItem>[] = [
       return (
         a.name.localeCompare(b.name) ||
         a.namespace.localeCompare(b.namespace) ||
-        a.type.localeCompare(b.type)
+        a.kind.localeCompare(b.kind)
       );
     },
   },

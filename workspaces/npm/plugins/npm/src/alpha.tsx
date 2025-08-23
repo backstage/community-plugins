@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   ApiBlueprint,
   createApiFactory,
@@ -30,7 +28,7 @@ import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApiRef, NpmBackendClient } from './api';
 
-export { npmTranslations } from './translations';
+export { npmTranslationRef, npmTranslations } from './translations';
 
 export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
@@ -118,7 +116,7 @@ export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'npm',
+  pluginId: 'npm',
   extensions: [
     npmBackendApi,
     entityNpmReleaseTableCard,

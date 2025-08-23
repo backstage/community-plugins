@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { configApiRef } from '@backstage/core-plugin-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { kubernetesApiRef } from '@backstage/plugin-kubernetes-react';
 import {
   MockConfigApi,
   MockPermissionApi,
@@ -30,7 +31,6 @@ import { screen, waitFor } from '@testing-library/react';
 
 import { mockApplication, mockEntity, mockRevision } from '../dev/__data__';
 import { argoCDApiRef } from './api';
-import { kubernetesApiRef } from './kubeApi';
 import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
@@ -79,7 +79,7 @@ describe('argocd', () => {
       appLocatorMethods: [],
     },
   });
-  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const Wrapper = ({ children }: { children: ReactNode }) => {
     return (
       <TestApiProvider
         apis={[
@@ -95,33 +95,13 @@ describe('argocd', () => {
   };
 
   it('should export plugin', () => {
-    const [argoApi, kubeAuthApi, kubeApi] = argocdPlugin.getApis();
+    const [argoApi] = argocdPlugin.getApis();
     expect(argocdPlugin).toBeDefined();
-    expect(kubeAuthApi).toBeDefined();
-    expect(kubeApi).toBeDefined();
 
     expect(
       argoApi.factory({
         identityApi: { getCredentials: () => {} },
         configApi: mockConfiguration,
-      }),
-    ).toBeDefined();
-
-    expect(
-      kubeAuthApi.factory({
-        gitlabAuthApi: {},
-        googleAuthApi: {},
-        microsoftAuthApi: {},
-        oktaAuthApi: {},
-        oneloginAuthApi: {},
-      }),
-    ).toBeDefined();
-
-    expect(
-      kubeApi.factory({
-        discoveryApi: {},
-        fetchApi: {},
-        kubernetesAuthApi: {},
       }),
     ).toBeDefined();
   });

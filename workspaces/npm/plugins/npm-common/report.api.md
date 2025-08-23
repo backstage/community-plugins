@@ -26,6 +26,7 @@ export class NpmRegistryClient {
     fetch?: typeof fetch;
     baseUrl?: string;
     token?: string;
+    extraRequestHeaders?: Record<string, string>;
   });
   // (undocumented)
   getPackageInfo(packageName: string): Promise<NpmRegistryPackageInfo>;

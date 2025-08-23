@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import { ElementType, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -24,9 +24,9 @@ import { InfoCard, Progress } from '@backstage/core-components';
 import { useSharedDateRange, useSharedTeam } from '../../contexts';
 
 type MetricsProps = {
-  Cards: React.ElementType<CardsProps>;
-  Charts: React.ElementType<ChartsProps>;
-  Filters: React.ElementType<FilterProps>;
+  Cards: ElementType<CardsProps>;
+  Charts: ElementType<ChartsProps>;
+  Filters: ElementType<FilterProps>;
 };
 
 const MainBox = styled(Box)(({ theme }) => ({

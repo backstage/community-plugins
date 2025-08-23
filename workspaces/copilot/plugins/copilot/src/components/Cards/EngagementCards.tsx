@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import Box from '@mui/material/Box';

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { useState } from 'react';
+import { DateTime } from 'luxon';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { githubActionsApiRef } from '../api/GithubActionsApi';
 import { useApi, errorApiRef } from '@backstage/core-plugin-api';
@@ -33,6 +34,8 @@ export type WorkflowRun = {
     };
   };
   status?: string;
+  statusDate?: string;
+  statusAge?: string;
   conclusion?: string;
   onReRunClick: () => void;
 };
@@ -43,12 +46,14 @@ export function useWorkflowRuns({
   repo,
   branch,
   initialPageSize = 6,
+  fetchAllBranches = true,
 }: {
   hostname?: string;
   owner: string;
   repo: string;
   branch?: string | undefined;
   initialPageSize?: number;
+  fetchAllBranches?: boolean;
 }) {
   const api = useApi(githubActionsApiRef);
 
@@ -80,7 +85,7 @@ export function useWorkflowRuns({
 
     const fetchBranches = async () => {
       let next = true;
-      let iteratePage = 0;
+      let iteratePage = 1;
       const branchSet: Branch[] = [];
 
       while (next) {
@@ -100,8 +105,11 @@ export function useWorkflowRuns({
       return branchSet;
     };
 
-    const branchSet = await fetchBranches();
-    setBranches(branchSet);
+    // Fetching branches is expensive and not needed in many cases
+    if (fetchAllBranches) {
+      const branchSet = await fetchBranches();
+      setBranches(branchSet);
+    }
 
     // GitHub API pagination count starts from 1
     const workflowRunsData = await api.listWorkflowRuns({
@@ -143,6 +151,12 @@ export function useWorkflowRuns({
         },
       },
       status: run.status ?? undefined,
+      statusDate: run.updated_at,
+      statusAge:
+        (run.updated_at
+          ? DateTime.fromISO(run.updated_at)
+          : DateTime.now()
+        ).toRelative() ?? undefined,
       conclusion: run.conclusion ?? undefined,
       url: run.url,
       githubUrl: run.html_url,

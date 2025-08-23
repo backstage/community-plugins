@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
-import * as React from 'react';
+import { default as React } from 'react';
 import fullIconDark from '../../assets/img/mtls-status-full-dark.svg';
 import fullIcon from '../../assets/img/mtls-status-full.svg';
 import hollowIconDark from '../../assets/img/mtls-status-partial-dark.svg';

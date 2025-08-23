@@ -13,35 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { evalTimeRange } from '@backstage-community/plugin-kiali-common/func';
+import {
+  ChartModel,
+  DashboardModel,
+  Direction,
+  ExternalLink,
+  GrafanaInfo,
+  IstioMetricsOptions,
+  KialiCrippledFeatures,
+  MetricsObjectTypes,
+  Overlay,
+  RawOrBucket,
+  Reporter,
+  TimeInMilliseconds,
+  TimeRange,
+} from '@backstage-community/plugin-kiali-common/types';
 import { useApi } from '@backstage/core-plugin-api';
 import { Checkbox, FormControlLabel, Toolbar } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { history, URLParam } from '../../app/History';
 import { Dashboard } from '../../components/Charts/Dashboard';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
-import {
-  evalTimeRange,
-  TimeInMilliseconds,
-  TimeRange,
-} from '../../types/Common';
-import {
-  ChartModel,
-  DashboardModel,
-  ExternalLink,
-} from '../../types/Dashboards';
-import { GrafanaInfo } from '../../types/GrafanaInfo';
-import { MetricsObjectTypes } from '../../types/Metrics';
-import {
-  Direction,
-  IstioMetricsOptions,
-  Reporter,
-} from '../../types/MetricsOptions';
-import { Overlay } from '../../types/Overlay';
-import { KialiCrippledFeatures } from '../../types/ServerConfig';
-import { RawOrBucket } from '../../types/VictoryChartInfo';
 import { MetricsReporter } from '../MetricsOptions/MetricsReporter';
 import {
   LabelsSettings,
@@ -212,13 +208,17 @@ export const IstioMetrics = (props: Props) => {
   const refresh = (): void => {
     fetchMetrics();
     if (tracingIntegration) {
-      spanOverlay.fetch({
-        namespace: props.namespace,
-        cluster: props.cluster,
-        target: props.object,
-        targetKind: props.objectType,
-        range: timeRange,
-      });
+      spanOverlay.fetch(
+        {
+          namespace: props.namespace,
+          cluster: props.cluster,
+          target: props.object,
+          targetKind: props.objectType,
+          range: timeRange,
+        },
+        kialiClient,
+        kialiState,
+      );
     }
   };
 

@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { Progress, Table, WarningPanel } from '@backstage/core-components';
 
-import { useDeleteDialog } from '@janus-idp/shared-react';
 import Box from '@mui/material/Box';
 
 import { useCheckIfLicensePluginEnabled } from '../../hooks/useCheckIfLicensePluginEnabled';
@@ -30,14 +29,17 @@ import { useToast } from '../ToastContext';
 import DeleteRoleDialog from './DeleteRoleDialog';
 import { columns } from './RolesListColumns';
 import { RolesListToolbar } from './RolesListToolbar';
+import { useDeleteDialog } from '../DeleteDialogContext';
 
 export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
-  const [searchText, setSearchText] = React.useState<string>();
+  const [searchText, setSearchText] = useState<string>();
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
-    useRoles();
+    useRoles(page, pageSize);
 
   const closeDialog = () => {
     setOpenDialog(false);
@@ -48,7 +50,7 @@ export const RolesList = () => {
   const onAlertClose = () => {
     setToastMessage('');
   };
-  const filteredRoles = React.useMemo(
+  const filteredRoles = useMemo(
     () => filterTableData({ data, columns, searchText }),
     [data, searchText],
   );
@@ -117,6 +119,11 @@ export const RolesList = () => {
           </Box>
         }
         onSearchChange={setSearchText}
+        onPageChange={setPage}
+        onRowsPerPageChange={newPageSize => {
+          setPageSize(newPageSize);
+          setPage(0);
+        }}
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}
       {openDialog && (

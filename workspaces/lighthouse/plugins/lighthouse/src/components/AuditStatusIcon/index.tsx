@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Audit } from '@backstage-community/plugin-lighthouse-common';
 import {
   StatusError,

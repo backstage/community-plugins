@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-scaffolder-backend-module-regex",
   "description": "The regex custom actions",
-  "version": "2.5.2",
+  "version": "2.8.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -10,7 +10,6 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "supported-versions": "1.32.5",
     "pluginId": "scaffolder",
     "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },
@@ -39,15 +38,13 @@
     "prettier:fix": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.2.0",
-    "@backstage/plugin-scaffolder-node": "^0.7.0",
-    "yaml": "^2.3.3",
-    "zod": "^3.22.4"
+    "@backstage/backend-plugin-api": "^1.4.1",
+    "@backstage/plugin-scaffolder-node": "^0.10.0",
+    "yaml": "^2.3.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.19",
-    "@spotify/prettier-config": "^15.0.0"
+    "@backstage/cli": "^0.33.1",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.1"
   },
   "files": [
     "dist",
@@ -60,8 +57,6 @@
     "directory": "workspaces/scaffolder-backend-module-regex/plugins/regex-actions"
   },
   "keywords": [
-    "support:production",
-    "lifecycle:active",
     "backstage",
     "backend-plugin-module"
   ],

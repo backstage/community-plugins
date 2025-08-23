@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import ClusterTable from '../ClusterTable/ClusterTable';
 import Button from '@material-ui/core/Button';

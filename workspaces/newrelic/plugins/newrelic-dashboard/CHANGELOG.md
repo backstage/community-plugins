@@ -1,5 +1,53 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.13.0
+
+### Minor Changes
+
+- 37cc9e1: Backstage version bump to v1.41.1
+
+## 0.12.0
+
+### Minor Changes
+
+- 36d6417: **BREAKING**: Plugin ID was previously incorrect as `newrelic`, so it's been updated to `newrelic-dashboard`. If you were referencing any extension in this plugin before, you'll now need to rename `newrelic` to `newrelic-dashboard`
+
+## 0.11.1
+
+### Patch Changes
+
+- 7e0e57c: change name of new relic dashboards tab
+
+## 0.11.0
+
+### Minor Changes
+
+- 5529c79: Added support for the new frontend system
+
+## 0.10.0
+
+### Minor Changes
+
+- 6e9072e: Backstage version bump to v1.40.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 74a383d: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 360460d: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- a99cd00: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes

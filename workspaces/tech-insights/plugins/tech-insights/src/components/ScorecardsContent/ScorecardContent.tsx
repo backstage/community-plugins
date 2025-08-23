@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Content, Page, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -38,8 +37,9 @@ export const ScorecardsContent = (props: {
   description?: string;
   checksId?: string[];
   filter?: (check: Check) => boolean;
+  dense?: boolean;
 }) => {
-  const { title, description, checksId, filter } = props;
+  const { title, description, checksId, filter, dense } = props;
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
@@ -65,6 +65,7 @@ export const ScorecardsContent = (props: {
           description={description}
           entity={entity}
           checkResults={filteredValues || []}
+          dense={dense}
         />
       </Content>
     </Page>

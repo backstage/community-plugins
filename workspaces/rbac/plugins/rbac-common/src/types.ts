@@ -45,6 +45,7 @@ export type RoleMetadata = {
   author?: string;
   lastModified?: string;
   createdAt?: string;
+  owner?: string;
 };
 
 /**
@@ -202,3 +203,11 @@ export class UnauthorizedError extends NotAllowedError {
     super('Unauthorized');
   }
 }
+
+/**
+ * @public
+ * List of plugins that are supports Backstage permission framework.
+ */
+export type PermissionDependentPluginList = {
+  ids: string[];
+};

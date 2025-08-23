@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { ProjectCard } from '../ProjectCard/ProjectCard';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';

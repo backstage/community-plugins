@@ -27,7 +27,7 @@ import { rootRouteRef } from './routes';
 
 /** @public */
 export const newRelicDashboardPlugin = createPlugin({
-  id: 'new-relic-dashboard',
+  id: 'newrelic-dashboard',
   routes: {
     root: rootRouteRef,
   },

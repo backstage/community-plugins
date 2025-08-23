@@ -1,5 +1,67 @@
 # @backstage-community/plugin-linguist
 
+## 0.10.0
+
+### Minor Changes
+
+- ec085f8: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [ec085f8]
+  - @backstage-community/plugin-linguist-common@0.10.0
+
+## 0.9.0
+
+### Minor Changes
+
+- b622118: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [b622118]
+  - @backstage-community/plugin-linguist-common@0.9.0
+
+## 0.8.1
+
+### Patch Changes
+
+- 226bccb: Updated the `createFrontendPlugin` call to use `pluginId` instead of the deprecated `id`
+
+## 0.8.0
+
+### Minor Changes
+
+- adc3ea9: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [adc3ea9]
+  - @backstage-community/plugin-linguist-common@0.8.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 4f1b9a6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [4f1b9a6]
+  - @backstage-community/plugin-linguist-common@0.7.0
+
+## 0.6.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.1
+
+### Patch Changes
+
+- 560005e: Added New Frontend System filter for the Language card to use `isLinguistAvailable` to control its visibility
+
 ## 0.6.0
 
 ### Minor Changes

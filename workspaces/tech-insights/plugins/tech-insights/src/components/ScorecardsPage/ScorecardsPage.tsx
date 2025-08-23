@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Content,
   ErrorPanel,
@@ -37,8 +37,9 @@ import Grid from '@material-ui/core/Grid';
 import { Filters } from './Filters';
 import { ExportCsv as exportCsv } from '@material-table/exporters';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
+import { ScorecardsBadge } from '../ScorecardsBadge';
 
-export const ScorecardsPage = () => {
+export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
   const api = useApi(techInsightsApiRef);
   const [filterSelectedChecks, setFilterSelectedChecks] = useState<Check[]>([]);
   const [filterWithResults, setFilterWithResults] = useState<boolean>(true);
@@ -50,6 +51,9 @@ export const ScorecardsPage = () => {
         exportFunc: (cols, datas) => exportCsv(cols, datas, 'tech-insights'),
       },
     ],
+    pageSize: props.badge ? 15 : 5,
+    pageSizeOptions: props.badge ? [15, 30, 100] : [5, 10, 20],
+    padding: `${props.dense ? 'dense' : 'default'}`,
   };
 
   const { value, loading, error } = useAsync(async () => {
@@ -60,7 +64,11 @@ export const ScorecardsPage = () => {
       checks,
       result: filterWithResults
         ? result.filter(response => response.results.length > 0)
-        : result,
+        : result.filter(
+            response =>
+              (response.results?.length ?? 0) === 0 ||
+              response.results.every(r => r.result === false),
+          ),
     };
   }, [api, filterSelectedChecks, filterWithResults]);
 
@@ -74,7 +82,12 @@ export const ScorecardsPage = () => {
       {
         field: 'results',
         title: 'Results',
-        render: row => <ScorecardsList checkResults={row.results} />,
+        render: row =>
+          props.badge ? (
+            <ScorecardsBadge checkResults={row.results} />
+          ) : (
+            <ScorecardsList checkResults={row.results} dense={props.dense} />
+          ),
         export: false,
       },
     ];
@@ -98,7 +111,7 @@ export const ScorecardsPage = () => {
     });
 
     return columns;
-  }, [value, filterSelectedChecks]);
+  }, [props, value, filterSelectedChecks]);
 
   if (error) {
     return <ErrorPanel error={error} />;

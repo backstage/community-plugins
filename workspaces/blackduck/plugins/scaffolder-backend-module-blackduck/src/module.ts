@@ -25,7 +25,7 @@ import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
  * @public
  */
 export const scaffolderModuleBlackduckModule = createBackendModule({
-  moduleId: 'scaffolder:backend:module:blackduck',
+  moduleId: 'blackduck',
   pluginId: 'scaffolder',
   register({ registerInit }) {
     registerInit({

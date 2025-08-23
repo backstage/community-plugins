@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  filterByName,
+  filterByNamespaces,
+  toIstioItems,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  ENTITY,
+  IstioConfigItem,
+  NamespaceInfo,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
 import { isMultiCluster } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { IstioConfigItem, toIstioItems } from '../../types/IstioConfigList';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
-import { ENTITY } from '../../types/types';
 import { getNamespaces } from '../Overview/OverviewPage';
 
 export const IstioConfigListPage = (props: {
@@ -49,23 +56,20 @@ export const IstioConfigListPage = (props: {
   const prevActiveNs = React.useRef(activeNs);
   const [loadingD, setLoading] = React.useState<boolean>(true);
 
-  const fetchIstioConfigs = async (nss: NamespaceInfo[]): Promise<void> => {
+  const fetchIstioConfigs = (
+    nsl: NamespaceInfo[],
+    cluster?: string,
+  ): Promise<void> => {
     return kialiClient
-      .getAllIstioConfigs(
-        nss.map(ns => {
-          return ns.name;
-        }),
-        [],
-        true,
-        '',
-        '',
-      )
+      .getAllIstioConfigs([], true, '', '', cluster)
       .then(results => {
-        let istioItems: IstioConfigItem[] = [];
-
-        nss.forEach(ns => {
-          istioItems = istioItems.concat(toIstioItems(results[ns.name]));
-        });
+        const istioItems = toIstioItems(
+          filterByNamespaces(
+            filterByName(results, []),
+            nsl.map(ns => ns.name),
+          ),
+          cluster,
+        );
 
         setIstioConfigs(istioItems);
       });
@@ -78,14 +82,15 @@ export const IstioConfigListPage = (props: {
     );
     kialiClient
       .getNamespaces()
-      .then(namespacesResponse => {
+      .then(async namespacesResponse => {
         const allNamespaces: NamespaceInfo[] = getNamespaces(
           namespacesResponse,
           namespaces,
         );
-        const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
-        setNamespaces(nsl);
-        fetchIstioConfigs(nsl);
+        // const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
+        // Check filter when entity
+        setNamespaces(allNamespaces);
+        fetchIstioConfigs(allNamespaces);
       })
       .catch(err =>
         setErrorProvider(

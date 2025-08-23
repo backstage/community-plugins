@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Table } from '@backstage/core-components';
 
 import Box from '@mui/material/Box';
@@ -51,6 +49,7 @@ export const AddedMembersTable = ({
           Selected users and groups appear here.
         </Box>
       }
+      options={{ emptyRowsWhenPaging: false }}
     />
   );
 };

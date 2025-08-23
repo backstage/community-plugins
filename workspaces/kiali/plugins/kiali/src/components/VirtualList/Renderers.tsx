@@ -13,6 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Health } from '@backstage-community/plugin-kiali-common/func';
+import {
+  ComponentStatus,
+  DRAWER,
+  ENTITY,
+  IstioConfigItem,
+  NamespaceInfo,
+  ServiceListItem,
+  ValidationStatus,
+  WorkloadListItem,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Link } from '@backstage/core-components';
 import {
   Button,
@@ -24,22 +35,17 @@ import {
 } from '@material-ui/core';
 // eslint-disable-next-line no-restricted-imports
 import { Close } from '@material-ui/icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiIcon, serverConfig } from '../../config';
 import { isWaypoint } from '../../helpers/LabelFilterHelper';
 import { infoStyle } from '../../pages/Overview/OverviewCard/CanaryUpgradeProgress';
 import { ControlPlaneBadge } from '../../pages/Overview/OverviewCard/ControlPlaneBadge';
 import { OverviewCardSparklineCharts } from '../../pages/Overview/OverviewCard/OverviewCardSparklineCharts';
-import { Health } from '../../types/Health';
-import { IstioConfigItem } from '../../types/IstioConfigList';
-import { ValidationStatus } from '../../types/IstioObjects';
-import { ComponentStatus } from '../../types/IstioStatus';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
-import { ServiceListItem } from '../../types/ServiceList';
-import { DRAWER, ENTITY } from '../../types/types';
-import { WorkloadListItem } from '../../types/Workload';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
-import { getReconciliationCondition } from '../../utils/IstioConfigUtils';
+import {
+  getIstioObjectGVK,
+  getReconciliationCondition,
+} from '../../utils/IstioConfigUtils';
 import { AppDetailsDrawer } from '../Drawers/AppDetailsDrawer';
 import { ServiceDetailsDrawer } from '../Drawers/ServiceDetailsDrawer';
 import { WorkloadDetailsDrawer } from '../Drawers/WorkloadDetailsDrawer';
@@ -50,13 +56,7 @@ import { PFBadge, PFBadges, PFBadgeType } from '../Pf/PfBadges';
 import { ValidationObjectSummary } from '../Validations/ValidationObjectSummary';
 import { ValidationServiceSummary } from '../Validations/ValidationServiceSummary';
 import { ValidationSummary } from '../Validations/ValidationSummary';
-import {
-  IstioTypes,
-  Renderer,
-  Resource,
-  SortResource,
-  TResource,
-} from './Config';
+import { Renderer, Resource, SortResource, TResource } from './Config';
 
 const topPosition = 'top';
 
@@ -179,6 +179,7 @@ export const item: Renderer<TResource> = (
       </TableCell>
     );
   }
+
   return (
     <TableCell
       key={`VirtuaItem_Item_${resource.namespace}_${resource.name}`}
@@ -193,10 +194,10 @@ export const item: Renderer<TResource> = (
         name={resource.name}
         namespace={resource.namespace}
         cluster={resource.cluster}
-        objectType={
+        objectGVK={
           config.name === 'istio'
-            ? IstioTypes[(resource as IstioConfigItem).type].url
-            : (resource as WorkloadListItem).type || undefined
+            ? getIstioObjectGVK('', (resource as IstioConfigItem).kind)
+            : undefined
         }
         key={key}
         className={linkColor}
@@ -317,12 +318,15 @@ export const details: Renderer<WorkloadListItem | ServiceListItem> = (
             <li
               key={
                 ir.namespace
-                  ? `${ir.objectType}_${ir.name}_${ir.namespace}`
+                  ? `${ir.objectGVK.Kind}_${ir.name}_${ir.namespace}`
                   : ir.name
               }
               style={{ marginBottom: '0.125rem' }}
             >
-              <PFBadge badge={PFBadges[ir.objectType]} position={topPosition} />
+              <PFBadge
+                badge={PFBadges[ir.objectGVK.Kind as string]}
+                position={topPosition}
+              />
               {ir.name}
             </li>
           ))}
@@ -427,8 +431,8 @@ export const workloadType: Renderer<WorkloadListItem> = (
 export const istioType: Renderer<IstioConfigItem> = (
   resource: IstioConfigItem,
 ) => {
-  const type = resource.type;
-  const object = IstioTypes[type];
+  const type = resource.kind;
+  const object = getIstioObjectGVK('', type).Kind;
 
   return (
     <TableCell
@@ -436,7 +440,7 @@ export const istioType: Renderer<IstioConfigItem> = (
       key={`VirtuaItem_IstioType_${resource.namespace}_${resource.name}`}
       style={{ verticalAlign: 'middle' }}
     >
-      {object.name}
+      {object}
     </TableCell>
   );
 };

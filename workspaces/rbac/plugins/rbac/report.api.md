@@ -4,13 +4,11 @@
 
 ```ts
 
-/// <reference types="react" />
-
 import { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { GroupEntity } from '@backstage/catalog-model';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PathParams } from '@backstage/core-plugin-api';
 import { PermissionAction } from '@backstage-community/plugin-rbac-common';
 import { PluginPermissionMetaData } from '@backstage-community/plugin-rbac-common';
@@ -55,7 +53,7 @@ export type RBACAPI = {
     getAssociatedPolicies: (entityReference: string) => Promise<RoleBasedPolicy[] | Response>;
     deleteRole: (role: string) => Promise<Response>;
     getRole: (role: string) => Promise<Role[] | Response>;
-    getMembers: () => Promise<MemberEntity[] | Response>;
+    getMembers: (page?: number, pageSize?: number) => Promise<MemberEntity[] | Response>;
     listPermissions: () => Promise<PluginPermissionMetaData[] | Response>;
     createRole: (role: Role) => Promise<RoleError | Response>;
     updateRole: (oldRole: Role, newRole: Role) => Promise<RoleError | Response>;

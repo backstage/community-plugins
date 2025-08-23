@@ -13,26 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  validationKey,
+  WorkloadHealth,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  ClusterWorkloadsResponse,
+  DRAWER,
+  ENTITY,
+  WorkloadListItem,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
-import * as React from 'react';
-import { useRef } from 'react';
+import { default as React, useRef } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
-import { isMultiCluster } from '../../config';
+import { isMultiCluster, serverConfig } from '../../config';
 import { useKialiEntityContext } from '../../dynamic/KialiContext';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { DRAWER, ENTITY } from '../../types/types';
-import { WorkloadListItem } from '../../types/Workload';
+import { hasMissingAuthPolicy } from '../../utils/IstioConfigUtils';
+import { sortIstioReferences } from '../AppList/FiltersAndSorts';
 import { NamespaceInfo } from '../Overview/NamespaceInfo';
 import { getNamespaces } from '../Overview/OverviewPage';
 
@@ -60,25 +69,70 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
   const prevDuration = useRef(duration);
   const [loadingData, setLoadingData] = React.useState<boolean>(true);
 
+  const getDeploymentItems = (
+    data: ClusterWorkloadsResponse,
+  ): WorkloadListItem[] => {
+    if (data.workloads) {
+      return data.workloads.map(deployment => ({
+        cluster: deployment.cluster,
+        namespace: deployment.namespace,
+        name: deployment.name,
+        type: deployment.type,
+        appLabel: deployment.appLabel,
+        versionLabel: deployment.versionLabel,
+        istioSidecar: deployment.istioSidecar,
+        istioAmbient: deployment.istioAmbient,
+        additionalDetailSample: deployment.additionalDetailSample,
+        health: WorkloadHealth.fromJson(
+          deployment.namespace,
+          deployment.name,
+          deployment.health,
+          {
+            rateInterval: duration,
+            hasSidecar: deployment.istioSidecar,
+            hasAmbient: deployment.istioAmbient,
+          },
+          serverConfig,
+        ),
+        labels: deployment.labels,
+        istioReferences: sortIstioReferences(deployment.istioReferences, true),
+        notCoveredAuthPolicy: hasMissingAuthPolicy(
+          validationKey(deployment.name, deployment.namespace),
+          data.validations,
+        ),
+      }));
+    }
+
+    return [];
+  };
+
   const fetchWorkloads = (
-    nss: NamespaceInfo[],
+    clusters: string[],
     timeDuration: number,
   ): Promise<void> => {
     return Promise.all(
-      nss.map(nsInfo => {
+      clusters.map(cluster => {
         return kialiClient
-          .getWorkloads(nsInfo.name, timeDuration)
+          .getClustersWorkloads(
+            activeNs.map(nss => nss).join(','),
+            {
+              health: 'true',
+              istioResources: 'true',
+              rateInterval: `${String(timeDuration)}s`,
+            },
+            cluster,
+          )
           .then(workloadsResponse => {
             return workloadsResponse;
           });
       }),
     )
       .then(results => {
-        let wkList: WorkloadListItem[] = [];
-        results.forEach(result => {
-          wkList = Array.from(wkList).concat(result);
+        let workloadsItems: WorkloadListItem[] = [];
+        results.forEach(response => {
+          workloadsItems = workloadsItems.concat(getDeploymentItems(response));
         });
-        setWorkloads(wkList);
+        setWorkloads(workloadsItems);
       })
       .catch(err => {
         kialiState.alertUtils?.add(
@@ -93,9 +147,14 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
       props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
         kialiState.providers.activeProvider,
     );
+    const uniqueClusters = new Set<string>();
+
+    Object.keys(serverConfig.clusters).forEach(cluster => {
+      uniqueClusters.add(cluster);
+    });
     if (kialiContext.data) {
       setNamespaces(kialiContext.data);
-      fetchWorkloads(kialiContext.data, duration);
+      await fetchWorkloads(Array.from(uniqueClusters), duration);
     } else {
       kialiClient
         .getNamespaces()
@@ -106,7 +165,7 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
           );
           const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
           setNamespaces(nsl);
-          fetchWorkloads(nsl, duration);
+          fetchWorkloads(Array.from(uniqueClusters), duration);
         })
         .catch(err => {
           setErrorProvider(

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IstioConfigItem } from '@backstage-community/plugin-kiali-common/types';
 import { EmptyState } from '@backstage/core-components';
 import {
   Card,
@@ -21,13 +22,16 @@ import {
   TableCellProps,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { cardsHeight } from '../../styles/StyleUtils';
-import { IstioConfigItem } from '../../types/IstioConfigList';
+import {
+  getGVKTypeString,
+  getIstioObjectGVK,
+} from '../../utils/IstioConfigUtils';
 import { PFBadge } from '../Pf/PfBadges';
 import { SimpleTable, tRow } from '../SimpleTable';
 import { ValidationObjectSummary } from '../Validations/ValidationObjectSummary';
-import { IstioTypes } from '../VirtualList/Config';
+import { GVKToBadge } from '../VirtualList/Config';
 
 type IstioConfigCardProps = {
   items: IstioConfigItem[];
@@ -56,9 +60,9 @@ export const IstioConfigCard: React.FC<IstioConfigCardProps> = (
 
   const rows: tRow = props.items
     .sort((a: IstioConfigItem, b: IstioConfigItem) => {
-      if (a.type < b.type) {
+      if (a.kind < b.kind) {
         return -1;
-      } else if (a.type > b.type) {
+      } else if (a.kind > b.kind) {
         return 1;
       }
       return a.name < b.name ? -1 : 1;
@@ -67,7 +71,16 @@ export const IstioConfigCard: React.FC<IstioConfigCardProps> = (
       return {
         cells: [
           <span key={item.name}>
-            <PFBadge badge={IstioTypes[item.type].badge} position="top" />
+            <PFBadge
+              badge={
+                GVKToBadge[
+                  getGVKTypeString(
+                    getIstioObjectGVK(item.apiVersion, item.kind),
+                  )
+                ]
+              }
+              position="top"
+            />
             {overviewLink(item)}
           </span>,
           <ValidationObjectSummary

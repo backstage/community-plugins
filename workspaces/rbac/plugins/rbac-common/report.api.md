@@ -4,6 +4,7 @@
 
 ```ts
 
+import { BasicPermission } from '@backstage/plugin-permission-common';
 import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { NotAllowedError } from '@backstage/errors';
 import { PermissionAttributes } from '@backstage/plugin-permission-common';
@@ -39,6 +40,11 @@ export type PermissionAction = (typeof PermissionActionValues)[number];
 // @public
 export const PermissionActionValues: readonly ["create", "read", "update", "delete", "use"];
 
+// @public
+export type PermissionDependentPluginList = {
+    ids: string[];
+};
+
 // @public (undocumented)
 export type PermissionInfo = {
     name: string;
@@ -66,7 +72,7 @@ export type Policy = {
 export type PolicyDetails = NamedPolicy | ResourcedPolicy;
 
 // @public
-export const policyEntityCreatePermission: ResourcePermission<"policy-entity">;
+export const policyEntityCreatePermission: BasicPermission;
 
 // @public
 export const policyEntityDeletePermission: ResourcePermission<"policy-entity">;
@@ -75,7 +81,7 @@ export const policyEntityDeletePermission: ResourcePermission<"policy-entity">;
 export type PolicyEntityPermission = ResourcePermission<typeof RESOURCE_TYPE_POLICY_ENTITY>;
 
 // @public
-export const policyEntityPermissions: ResourcePermission<"policy-entity">[];
+export const policyEntityPermissions: (ResourcePermission<"policy-entity"> | BasicPermission)[];
 
 // @public
 export const policyEntityReadPermission: ResourcePermission<"policy-entity">;
@@ -120,6 +126,7 @@ export type RoleMetadata = {
     author?: string;
     lastModified?: string;
     createdAt?: string;
+    owner?: string;
 };
 
 // @public

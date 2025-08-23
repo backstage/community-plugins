@@ -65,6 +65,7 @@ export interface SonarqubeInfoProvider {
 // @public
 export interface SonarqubeInstanceConfig {
   apiKey: string;
+  authType?: 'Bearer' | 'Basic';
   baseUrl: string;
   externalBaseUrl?: string;
   name: string;

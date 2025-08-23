@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-explore",
-  "version": "0.8.0",
+  "version": "0.12.0",
   "description": "A Backstage plugin for building an exploration page of your software ecosystem",
   "backstage": {
     "role": "frontend-plugin",
@@ -53,21 +53,22 @@
     "lint": "backstage-cli package lint",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "start": "backstage-cli package start",
+    "start": "backstage-cli package start --config ./dev/app-config.yaml",
     "test": "backstage-cli package test"
   },
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
     "@backstage-community/plugin-explore-react": "workspace:^",
-    "@backstage/catalog-client": "^1.9.1",
-    "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-components": "^0.17.0",
-    "@backstage/core-plugin-api": "^1.10.5",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/frontend-plugin-api": "^0.10.0",
-    "@backstage/plugin-catalog-react": "^1.16.0",
-    "@backstage/plugin-search-common": "^1.2.17",
-    "@backstage/plugin-search-react": "^1.8.7",
+    "@backstage/catalog-client": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-search-common": "backstage:^",
+    "@backstage/plugin-search-react": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
@@ -76,17 +77,17 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.0",
-    "@backstage/core-app-api": "^1.16.0",
-    "@backstage/dev-utils": "^1.1.8",
-    "@backstage/plugin-catalog": "^1.28.0",
-    "@backstage/test-utils": "^1.7.6",
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-app-api": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/pluralize": "^0.0.33",
     "@types/react-dom": "^18.2.19",
-    "canvas": "^2.11.2",
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
@@ -95,6 +96,7 @@
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router": "*",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   }
 }
