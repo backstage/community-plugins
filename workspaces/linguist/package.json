@@ -62,9 +62,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@backstage-community/plugin-linguist": "workspace:^",
-    "@backstage-community/plugin-linguist-backend": "workspace:^"
   }
 }

@@ -1586,7 +1586,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-linguist-backend@workspace:^, @backstage-community/plugin-linguist-backend@workspace:plugins/linguist-backend":
+"@backstage-community/plugin-linguist-backend@workspace:plugins/linguist-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-linguist-backend@workspace:plugins/linguist-backend"
   dependencies:
@@ -1633,7 +1633,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-linguist@workspace:^, @backstage-community/plugin-linguist@workspace:plugins/linguist":
+"@backstage-community/plugin-linguist@workspace:plugins/linguist":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-linguist@workspace:plugins/linguist"
   dependencies:
@@ -3968,8 +3968,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/linguist@workspace:."
   dependencies:
-    "@backstage-community/plugin-linguist": "workspace:^"
-    "@backstage-community/plugin-linguist-backend": "workspace:^"
     "@backstage/cli": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
