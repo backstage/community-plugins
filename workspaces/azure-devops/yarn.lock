@@ -5520,8 +5520,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/azure-devops@workspace:."
   dependencies:
-    "@backstage-community/plugin-azure-devops": "workspace:^"
-    "@backstage-community/plugin-azure-devops-backend": "workspace:^"
     "@backstage/cli": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
     "@backstage/repo-tools": "backstage:^"

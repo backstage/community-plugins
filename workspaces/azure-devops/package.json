@@ -58,9 +58,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@backstage-community/plugin-azure-devops": "workspace:^",
-    "@backstage-community/plugin-azure-devops-backend": "workspace:^"
   }
 }
