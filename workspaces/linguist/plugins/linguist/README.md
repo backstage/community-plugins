@@ -82,3 +82,43 @@ To setup the Linguist Card frontend you'll need to do the following steps:
 **Notes:**
 
 - The `if` prop is optional on the `EntitySwitch.Case`, you can remove it if you always want to see the tab even if the entity being viewed does not have the needed annotation
+
+## New Frontend System (Alpha)
+
+The Linguist plugin currently support the New Frontend System via an `/alpha` export, here's how to use it:
+
+### Use new frontend system
+
+1. Install the frontend plugin:
+
+   ```bash
+   # From your Backstage root directory
+   yarn --cwd packages/app add @backstage-community/plugin-linguist
+   ```
+
+2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+
+   After all other imports:
+
+   ```tsx
+   import linguistPlugin from '@backstage-community/plugin-linguist';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       linguistPlugin,
+       // ...
+     ],
+   });
+   ```
+
+   Alternatively you can simply use feature discover and skip the above step by adding the following yo your `app-config.yaml` file:
+
+   ```yaml
+   app:
+     packages: all
+   ```
