@@ -73,65 +73,81 @@ export async function handleTemplateVersion(
 }
 
 /**
- * Extracts unique owners from a list of entities by looking at their "ownedBy" relations
+ * Generates a catalog URL for an entity
  *
- * @param entities - Array of entities to extract owners from
- * @returns Set of unique owner references
+ * @param entity - The entity to generate URL for
+ * @returns The catalog URL path for the entity
  *
  * @internal
  */
-function extractUniqueOwnersFromEntities(entities: Entity[]): Set<string> {
-  const uniqueOwners = new Set<string>();
+function createEntityCatalogUrl(entity: Entity): string {
+  const namespace = entity.metadata.namespace || 'default';
+  return `/catalog/${namespace}/${entity.kind}/${entity.metadata.name}`.toLowerCase();
+}
+
+/**
+ * Groups entities by their owners using "ownedBy" relations
+ *
+ * @param entities - Array of entities to group by owners
+ * @returns Map where keys are owner references and values are arrays of entities owned by that owner
+ *
+ * @internal
+ */
+function groupEntitiesByOwners(entities: Entity[]): Map<string, Entity[]> {
+  const entitiesByOwner = new Map<string, Entity[]>();
+
   for (const entity of entities) {
     const ownedByRelations =
       entity.relations?.filter(rel => rel.type === 'ownedBy') || [];
 
     for (const relation of ownedByRelations) {
-      uniqueOwners.add(relation.targetRef);
+      const ownerRef = relation.targetRef;
+      if (!entitiesByOwner.has(ownerRef)) {
+        entitiesByOwner.set(ownerRef, []);
+      }
+      entitiesByOwner.get(ownerRef)!.push(entity);
     }
   }
-  return uniqueOwners;
+
+  return entitiesByOwner;
 }
 
 /**
- * Sends notifications to a set of owners about a template update
+ * Sends notifications to owners for each entity that should be updated
  *
  * @param notifications - Notification service to send notifications
- * @param uniqueOwners - Set of unique owner references to notify
- * @param payload - Template update payload containing entity ref and version info
+ * @param entitiesByOwner - Map of owner references to their entities that need updates
  *
  * @internal
  */
 async function sendNotificationsToOwners(
   notifications: NotificationService,
-  uniqueOwners: Set<string>,
-  payload: {
-    entityRef: string;
-    previousVersion: string;
-    currentVersion: string;
-  },
+  entitiesByOwner: Map<string, Entity[]>,
 ): Promise<void> {
-  for (const ownerRef of uniqueOwners) {
+  for (const [ownerRef, entities] of entitiesByOwner) {
     const recipients: NotificationRecipients = {
       type: 'entity',
       entityRef: ownerRef,
     };
 
-    const notificationPayload: NotificationPayload = {
-      title: `${payload.entityRef} is out of sync with template`,
-      description: `The template used to create ${payload.entityRef} has been updated to a new version. Review and update your entity to stay in sync with the template.`,
-      link: `/catalog/${payload.entityRef.replace(':', '/')}`,
-    };
+    for (const entity of entities) {
+      const catalogUrl = createEntityCatalogUrl(entity);
 
-    await notifications.send({
-      recipients,
-      payload: notificationPayload,
-    });
+      const notificationPayload: NotificationPayload = {
+        title: `${
+          entity.metadata.name.charAt(0).toUpperCase() +
+          entity.metadata.name.slice(1)
+        } is out of sync with template`,
+        description: `The template used to create ${entity.metadata.name} has been updated to a new version. Review and update your entity to stay in sync with the template.`,
+        link: catalogUrl,
+      };
+
+      await notifications.send({
+        recipients,
+        payload: notificationPayload,
+      });
+    }
   }
-
-  console.log(
-    `Successfully sent notifications for template update: ${payload.entityRef}`,
-  );
 }
 
 /**
@@ -154,41 +170,20 @@ export async function handleTemplateUpdateNotifications(
     currentVersion: string;
   },
 ): Promise<void> {
-  try {
-    const { token } = await auth.getPluginRequestToken({
-      onBehalfOf: await auth.getOwnServiceCredentials(),
-      targetPluginId: 'catalog',
-    });
+  const { token } = await auth.getPluginRequestToken({
+    onBehalfOf: await auth.getOwnServiceCredentials(),
+    targetPluginId: 'catalog',
+  });
 
-    const scaffoldedEntities = await catalogClient.getEntities(
-      {
-        filter: { 'spec.scaffoldedFrom': payload.entityRef },
-        fields: ['kind', 'metadata.namespace', 'metadata.name', 'relations'],
-      },
-      { token },
-    );
+  const scaffoldedEntities = await catalogClient.getEntities(
+    {
+      filter: { 'spec.scaffoldedFrom': payload.entityRef },
+      fields: ['kind', 'metadata.namespace', 'metadata.name', 'relations'],
+    },
+    { token },
+  );
 
-    if (scaffoldedEntities.items.length === 0) {
-      console.log(`No entities scaffolded from template ${payload.entityRef}`);
-      return;
-    }
+  const entitiesByOwner = groupEntitiesByOwners(scaffoldedEntities.items);
 
-    console.log(
-      `Found ${scaffoldedEntities.items.length} entities scaffolded from template ${payload.entityRef}`,
-    );
-
-    const uniqueOwners = extractUniqueOwnersFromEntities(
-      scaffoldedEntities.items,
-    );
-
-    console.log(
-      `Sending notifications to ${uniqueOwners.size} owners for template update`,
-    );
-
-    await sendNotificationsToOwners(notifications, uniqueOwners, payload);
-  } catch (error) {
-    console.log(
-      `Failed to send notifications for template update ${payload.entityRef}: ${error}`,
-    );
-  }
+  await sendNotificationsToOwners(notifications, entitiesByOwner);
 }
