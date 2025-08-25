@@ -24,6 +24,21 @@
   "sideEffects": false,
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
@@ -37,8 +52,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage/core-compat-api": "^0.4.4",
     "@backstage/core-components": "^0.17.3",
     "@backstage/core-plugin-api": "^1.10.8",
+    "@backstage/frontend-plugin-api": "^0.10.4",
     "@backstage/theme": "^0.6.6",
     "@backstage/types": "^1.2.1",
     "@material-ui/core": "^4.12.2",
