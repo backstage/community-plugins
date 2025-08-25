@@ -48,9 +48,9 @@ interface AnnouncementRequest {
   body: string;
   active: boolean;
   start_at: string;
+  sendNotification: boolean;
   on_behalf_of?: string;
   tags?: string[];
-  sendNotification: boolean;
 }
 
 interface CategoryRequest {
@@ -224,9 +224,9 @@ export async function createRouter(
         await signalAnnouncement(announcement, signals);
 
         const announcementNotificationsEnabled =
-          req.body?.sendNotification === true ? true : false;
+          req.body?.sendNotification === true;
         if (announcementNotificationsEnabled) {
-          sendAnnouncementNotification(announcement, notifications);
+          await sendAnnouncementNotification(announcement, notifications);
         }
       }
       return res.status(201).json(announcement);

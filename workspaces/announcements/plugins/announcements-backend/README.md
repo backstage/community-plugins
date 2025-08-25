@@ -7,6 +7,7 @@ The backend for the Announcements plugin. This plugin provides:
 - Integration with the [`@backstage/plugin-permission-backend`](https://github.com/backstage/backstage/tree/master/plugins/permission-backend) plugin
 - Integration with the [`@backstage/plugin-events-backend`](https://github.com/backstage/backstage/tree/master/plugins/events-backend) plugin
 - Integration with the [`@backstage/plugin-signals-backend`](https://github.com/backstage/backstage/tree/master/plugins/signals-backend) plugin
+- Integration with the [`@backstage/notifications-backend`](https://github.com/backstage/backstage/tree/master/plugins/notifications-backend) plugin
 
 ## Installation
 
@@ -106,28 +107,10 @@ return data;
 
 ### Notifications for Announcements
 
-Backstage’s Notification System empowers plugins and services to deliver alerts to users and is directly visible in the UI or via external channels. It supports two notification types:
-Broadcast: sent to all users.
-Entity: sent to specific users or groups (e.g., owners of an entity).
+Backstage’s Notification System empowers plugins and services to deliver alerts to users and is directly visible in the UI or via external channels. Visit the [docs](https://backstage.io/docs/notifications/) on notifications for more information.
 
 The Notification plugin delivers real-time alerting, with backend/frontend components to send and display notifications - including push signals.
-To trigger alerts when a new announcement appears, you can combine these systems: send a notification via the Notifications backend whenver an announcement is created.
+To trigger alerts when a new announcement appears, you can combine these systems: send a notification via the Notifications backend whenever an announcement is created.
 
-Signals and Announcement notifications are disabled by-default (enabled: false).
-It can be enabled in app-config.yaml file when required.
-
-To enable Signals, need to use below configuration under backend:
-
-```yaml
-backend:
-  signals:
-    enabled: true
-```
-
-To enable Announcement notifications, need to use below configuration under backend:
-
-```yaml
-backend:
-  notifications:
-    enabled: true
-```
+Announcement notifications are disabled by-default (enabled: false).
+Notifications can be sent if "sendNotification" option in the UI is enabled.

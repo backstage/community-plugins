@@ -21,20 +21,12 @@ import { RollbarApi } from '../api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
-export interface RouterOptions {
+interface RouterOptions {
   rollbarApi?: RollbarApi;
   logger: LoggerService;
   config: Config;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

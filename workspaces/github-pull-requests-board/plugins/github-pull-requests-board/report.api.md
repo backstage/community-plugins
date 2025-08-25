@@ -5,7 +5,9 @@
 ```ts
 /// <reference types="react" />
 
+import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
+import { default as React_2 } from 'react';
 
 // @public (undocumented)
 export const EntityTeamPullRequestsCard: (
@@ -25,6 +27,18 @@ export const EntityTeamPullRequestsContent: (
 
 // @public (undocumented)
 export interface EntityTeamPullRequestsContentProps {
+  // (undocumented)
+  pullRequestLimit?: number;
+}
+
+// @public
+export const PullRequestsBoard: (
+  props: PullRequestsBoardProps,
+) => React_2.JSX.Element;
+
+// @public (undocumented)
+export interface PullRequestsBoardProps {
+  entities: Entity[];
   // (undocumented)
   pullRequestLimit?: number;
 }
