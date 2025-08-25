@@ -17,10 +17,10 @@ export const TableToolbar = ({
 }: TableToolbarProps) => {
   return (
     <Grid container alignItems="center" alignContent="center">
-      <Grid item xs={8}>
+      <Grid item xs={7}>
         {title && <Typography variant="h4">{title}</Typography>}
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <ProjectFilterComponent />
       </Grid>
       <Grid item xs={2}>
