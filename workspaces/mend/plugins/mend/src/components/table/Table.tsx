@@ -1,6 +1,10 @@
 import type { ReactElement, ReactNode, Ref } from 'react';
-import { useRef, forwardRef } from 'react';
-import { Table as TableBackstage } from '@backstage/core-components';
+import { useRef, forwardRef, useState, useMemo } from 'react';
+import {
+  Table as TableBackstage,
+  SelectItem,
+} from '@backstage/core-components';
+import { ProjectFilterComponent } from './ProjectFilterComponent';
 import { makeStyles, SvgIcon } from '@material-ui/core';
 import { Project, Finding, Statistics } from '../../models';
 import { TableMessage } from './TableMessage';
@@ -59,6 +63,8 @@ type TableProps = {
   tableDataLoading: boolean;
   tableTitle: string;
   totalTitle: string;
+  projectList?: Project[] | null;
+  selectedProject?: string | null;
 };
 
 export const Table = ({
@@ -72,9 +78,45 @@ export const Table = ({
   tableDataLoading,
   tableTitle,
   totalTitle,
+  projectList = null,
+  selectedProject = null,
 }: TableProps) => {
   const classes = useStyles();
   const tableRef = useRef<MaterialTable>(null);
+
+  const ALL_OPTION = useMemo(() => ({ label: 'All', value: '__ALL__' }), []);
+  const projectNameOptionsWithoutAll = projectList
+    ? projectList.map(d => ({ label: d.name, value: d.name }))
+    : [];
+  const projectNameOptions: SelectItem[] = [
+    ALL_OPTION,
+    ...projectNameOptionsWithoutAll,
+  ];
+  const [projectNameFilter, setProjectNameFilter] = useState<string[]>([
+    selectedProject || ALL_OPTION.value,
+  ]);
+
+  const filteredData = useMemo(() => {
+    if (
+      projectNameFilter.length === 0 ||
+      projectNameFilter.includes(ALL_OPTION.value)
+    ) {
+      return tableData;
+    }
+    return tableData.filter(row => {
+      // Filter by Project Name multi-select
+      const projectName = (row as any).projectName;
+      if (
+        projectNameFilter.length > 0 &&
+        !projectNameFilter.includes(projectName)
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [tableData, ALL_OPTION, projectNameFilter]);
+
   return (
     <TableBackstage
       localization={{
@@ -113,7 +155,7 @@ export const Table = ({
       }}
       isLoading={tableDataLoading}
       columns={tableColumns}
-      data={tableData as (Project & Finding)[]} // Accept both types
+      data={filteredData as (Project & Finding)[]} // Accept both types
       icons={{
         ...tableBackstageIcons,
         Search: forwardRef((_, ref: Ref<SVGSVGElement>) => (
@@ -155,6 +197,15 @@ export const Table = ({
               dataLoading={tableDataLoading}
               headerTitle={headerTitle}
               toolbar={props}
+              ProjectFilterComponent={() => (
+                <ProjectFilterComponent
+                  projectList={projectList}
+                  projectNameFilter={projectNameFilter}
+                  setProjectNameFilter={setProjectNameFilter}
+                  projectNameOptions={projectNameOptions}
+                  ALL_OPTION={ALL_OPTION}
+                />
+              )}
               totalTitle={totalTitle}
               url={clientUrl}
             />
