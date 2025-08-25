@@ -28,32 +28,24 @@ const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
     onFilterChange(newStatus);
   };
 
+  const buttons = [
+    { value: 'OPEN', label: 'Open' },
+    { value: 'MERGED', label: 'Merged' },
+    { value: 'DECLINED', label: 'Declined' },
+    { value: 'ALL', label: 'All' },
+  ];
+
   return (
-    <ButtonGroup color="primary" aria-label="text primary button group">
-      <Button
-        onClick={() => handleStatusChange('OPEN')}
-        variant={status === 'Open' ? 'contained' : 'outlined'}
-      >
-        Open
-      </Button>
-      <Button
-        onClick={() => handleStatusChange('MERGED')}
-        variant={status === 'Merged' ? 'contained' : 'outlined'}
-      >
-        Merged
-      </Button>
-      <Button
-        onClick={() => handleStatusChange('DECLINED')}
-        variant={status === 'Declined' ? 'contained' : 'outlined'}
-      >
-        Declined
-      </Button>
-      <Button
-        onClick={() => handleStatusChange('ALL')}
-        variant={status === 'All' ? 'contained' : 'outlined'}
-      >
-        All
-      </Button>
+    <ButtonGroup color="primary" aria-label="pull request status filter">
+      {buttons.map(({ value, label }) => (
+        <Button
+          key={value}
+          onClick={() => handleStatusChange(value)}
+          variant={status === value ? 'contained' : 'outlined'}
+        >
+          {label}
+        </Button>
+      ))}
     </ButtonGroup>
   );
 };

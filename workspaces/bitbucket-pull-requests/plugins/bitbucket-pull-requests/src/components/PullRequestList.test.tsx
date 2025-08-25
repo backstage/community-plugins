@@ -62,12 +62,9 @@ describe('PullRequestList', () => {
 
     //  test the table header
     await waitFor(() => {
-      expect(screen.getByText('Bitbucket Pull Requests')).toBeInTheDocument();
-    });
-
-    // test the table title
-    await waitFor(() => {
-      expect(screen.getByText('testproject/testrepo')).toBeInTheDocument();
+      expect(
+        screen.getByText('Bitbucket Pull Requests (testproject/testrepo)'),
+      ).toBeInTheDocument();
     });
 
     // test each column title

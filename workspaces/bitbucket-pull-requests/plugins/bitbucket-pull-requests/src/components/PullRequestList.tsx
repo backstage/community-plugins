@@ -19,7 +19,6 @@ import {
   Content,
   TableColumn,
   Table,
-  ContentHeader,
   MarkdownContent,
   Link,
 } from '@backstage/core-components';
@@ -32,6 +31,7 @@ import { bitbucketApiRef, PullRequest } from '../api/BitbucketApi';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import Tooltip from '@material-ui/core/Tooltip';
 import StatusFilter from '../components/StatusFilter';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -41,11 +41,29 @@ const GetElapsedTime = ({ start }: { start: string }) =>
 const RenderStateIcon = ({ status }: { status: string }) => {
   switch (status) {
     case 'OPEN':
-      return <HourglassEmptyIcon color="primary" />;
+      return (
+        <Tooltip title="Open" placement="top">
+          <span>
+            <HourglassEmptyIcon color="primary" />
+          </span>
+        </Tooltip>
+      );
     case 'MERGED':
-      return <CheckCircleIcon style={{ color: 'green' }} />;
+      return (
+        <Tooltip title="Merged" placement="top">
+          <span>
+            <CheckCircleIcon color="action" />
+          </span>
+        </Tooltip>
+      );
     case 'DECLINED':
-      return <CancelIcon color="secondary" />;
+      return (
+        <Tooltip title="Declined" placement="top">
+          <span>
+            <CancelIcon color="error" />
+          </span>
+        </Tooltip>
+      );
     default:
       return null;
   }
@@ -63,6 +81,7 @@ const PullRequestDetailPanel = ({ rowData }: { rowData: PullRequest }) => (
 const PullRequestList: FC = () => {
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
   const [stateFilter, setStateFilter] = useState<string>('All');
+  const [loading, setLoading] = useState(true);
   const { entity } = useEntity();
   const project = isBitbucketSlugSet(entity);
   const bitbucketApi = useApi(bitbucketApiRef);
@@ -70,13 +89,17 @@ const PullRequestList: FC = () => {
   const repoName = project.split('/')[1];
 
   useEffect(() => {
+    setLoading(true);
     bitbucketApi
       .fetchPullRequestList(
         projectName,
         repoName,
         stateFilter !== 'All' ? stateFilter : undefined,
       )
-      .then(data => setPullRequests(data))
+      .then(data => {
+        setPullRequests(data);
+        setLoading(false);
+      })
       .catch(error => error);
   }, [stateFilter, projectName, repoName, bitbucketApi]);
 
@@ -137,14 +160,20 @@ const PullRequestList: FC = () => {
   return (
     <div>
       <Content>
-        <ContentHeader title="Bitbucket Pull Requests">
-          <StatusFilter onFilterChange={setStateFilter} />
-        </ContentHeader>
         <Table
-          title={project}
           columns={columns}
           data={pullRequests}
           detailPanel={PullRequestDetailPanel}
+          isLoading={loading}
+          title={
+            <Box display="flex" alignItems="center">
+              <Box mr={1} />
+              Bitbucket Pull Requests ({project})
+              <Box position="absolute" right={320} top={20}>
+                <StatusFilter onFilterChange={setStateFilter} />
+              </Box>
+            </Box>
+          }
         />
       </Content>
     </div>
