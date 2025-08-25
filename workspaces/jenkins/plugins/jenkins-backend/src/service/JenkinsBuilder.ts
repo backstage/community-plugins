@@ -153,8 +153,22 @@ export class JenkinsBuilder {
             projects: projects,
           });
         } catch (err) {
-          // Promise.any, used in the getProjects call returns an Aggregate error message with a useless error message 'AggregateError: All promises were rejected'
-          // extract useful information ourselves
+          // Get status and reason from the error handler and full job path correctly to display
+          const { status, reason } = this.handleError(err);
+          const jenkinsJobFullPath = `${
+            jenkinsInfo.baseUrl
+          }/job/${jenkinsInfo.fullJobNames.join('/').replace(/\//g, '/job/')}`;
+
+          const config = this.env.config;
+          response.status(status).json({
+            errorReason: reason,
+            connectionIssueMessage: config.getOptionalString(
+              'jenkins.connectionIssueMessage',
+            ),
+            jenkinsJobFullPath: jenkinsJobFullPath,
+          });
+
+          // Handle aggregate errors
           if (err.errors) {
             throw new Error(
               `Unable to fetch projects, for ${
@@ -283,8 +297,191 @@ export class JenkinsBuilder {
     return router;
   }
 
-  private jobFullNameParamToJobs(jobFullName: string): string[] {
+  public jobFullNameParamToJobs(jobFullName: string): string[] {
     // jobFullName may contain a list of job names separated by '/'
     return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
+  }
+
+  /**
+   * Handles error mapping for Jenkins API responses.
+   * Maps system errors (errno) and HTTP responses to appropriate status codes and messages.
+   *
+   * @param err - The error object to handle, can be a system error with errno/code or an HTTP response error
+   * @returns An object containing:
+   *          - status: HTTP status code (e.g., 400, 401, 403, 500)
+   *          - reason: Human-readable explanation of the error
+   * @public
+   */
+  public handleError(err: any): { status: number; reason: string } {
+    let status = 500;
+    let reason = 'Internal Server Error';
+
+    if (err.errno && err.code) {
+      ({ status, reason } = mapErrnoToHttpStatus(err.code || err.errno));
+    } else if (err.response) {
+      // Handle cases where statusCode or statusMessage might be undefined
+      status = err.response.statusCode || 500;
+      reason =
+        err.response.statusMessage ||
+        (err.response.statusCode
+          ? `HTTP Error ${err.response.statusCode}`
+          : 'Unknown Error');
+    }
+
+    return { status, reason };
+  }
+}
+
+/**
+ * Maps Node.js errno values to HTTP status codes and provides an explanation.
+ */
+function mapErrnoToHttpStatus(errno: string | number): {
+  status: number;
+  reason: string;
+} {
+  switch (errno) {
+    // 400 Bad Request family
+    case 'EINVAL': // Invalid argument
+    case -22:
+    case 'EADDRNOTAVAIL': // Address not available
+    case -99:
+    case 'EADDRINUSE': // Address already in use
+    case -98:
+    case 'EBADF': // Bad file descriptor
+    case -9:
+    case 'ENOTDIR': // Not a directory
+    case -20:
+    case 'EISDIR': // Is a directory
+    case -21:
+    case 'EMSGSIZE': // Message too long
+    case -90:
+    case 'ENAMETOOLONG': // Name too long
+    case -36:
+    case 'ENOTEMPTY': // Directory not empty
+    case -39:
+    case 'ENOSPC': // No space left on device
+    case -28:
+    case 'EROFS': // Read-only file system
+    case -30:
+    case 'ENODEV': // No such device
+    case -19:
+    case 'ENXIO': // No such device or address
+    case -6:
+    case 'EFAULT': // Bad address
+    case -14:
+      return {
+        status: 400,
+        reason:
+          'Bad Request: The request was invalid or contained invalid parameters.',
+      };
+
+    // 401 Unauthorized
+    case 'EPERM': // Operation not permitted
+    case -1:
+    case 'EAUTH': // Custom: Authentication error
+      return {
+        status: 401,
+        reason: 'Unauthorized: Authentication is required or has failed.',
+      };
+
+    // 403 Forbidden
+    case 'EACCES': // Permission denied
+    case -13:
+      return {
+        status: 403,
+        reason:
+          'Forbidden: You do not have permission to access this resource.',
+      };
+
+    // 404 Not Found
+    case 'ENOENT': // No such file or directory
+    case -2:
+      return {
+        status: 404,
+        reason: 'Not Found: The requested resource could not be found.',
+      };
+
+    // 408 Request Timeout
+    case 'ETIMEDOUT': // Connection timed out
+    case -3002:
+      return {
+        status: 408,
+        reason:
+          'Request Timeout: The server timed out waiting for the request.',
+      };
+
+    // 409 Conflict
+    case 'EEXIST': // File exists
+    case -17:
+      return {
+        status: 409,
+        reason:
+          'Conflict: The request could not be completed due to a conflict.',
+      };
+
+    // 410 Gone
+    case 'ENODATA': // No data available
+    case -61:
+      return {
+        status: 410,
+        reason: 'Gone: The requested resource is no longer available.',
+      };
+
+    // 429 Too Many Requests
+    case 'EAGAIN': // Resource temporarily unavailable
+    case -11:
+      return {
+        status: 429,
+        reason:
+          'Too Many Requests: You have sent too many requests in a given amount of time.',
+      };
+
+    // 500 Internal Server Error family
+    case 'EIO': // I/O error
+    case -5:
+    case 'ENOSYS': // Function not implemented
+    case -38:
+    case 'EPIPE': // Broken pipe
+    case -32:
+    case 'ESPIPE': // Illegal seek
+    case -29:
+      return {
+        status: 500,
+        reason:
+          'Internal Server Error: An unexpected error occurred on the server.',
+      };
+
+    // 502 Bad Gateway
+    case 'ENOTFOUND': // DNS lookup failed
+    case -3008:
+    case 'ECONNREFUSED': // Connection refused
+    case -3005:
+    case 'ECONNRESET': // Connection reset by peer
+    case -3004:
+    case 'EHOSTUNREACH': // No route to host
+    case -3006:
+    case 'ENETUNREACH': // Network is unreachable
+    case -3007:
+      return {
+        status: 502,
+        reason:
+          'Bad Gateway: The server received an invalid response from the upstream server.',
+      };
+
+    // 503 Service Unavailable
+    case 'EAI_AGAIN': // DNS lookup timed out
+    case -3001:
+    case 'EUNAVAILABLE': // Custom: Service unavailable
+      return {
+        status: 503,
+        reason:
+          'Service Unavailable: The server is currently unable to handle the request.',
+      };
+
+    default:
+      return {
+        status: 500,
+        reason: 'Internal Server Error: An unexpected error occurred.',
+      };
   }
 }

@@ -76,4 +76,32 @@ describe('<CITable />', () => {
       expect(getByText('My custom title!')).toBeVisible();
     });
   });
+
+  describe('when an error occurs', () => {
+    it('should render the error view', async () => {
+      const errorApi: Partial<JenkinsApi> = {
+        getProjects: () =>
+          Promise.resolve({
+            statusCode: 500,
+            errorReason: 'Internal Server Error',
+            connectionIssueMessage: 'Failed to connect to Jenkins',
+            jenkinsJobFullPath: 'jenkins/job/test',
+          }),
+      };
+
+      const { getByText } = await renderInTestApp(
+        <TestApiProvider apis={[[jenkinsApiRef, errorApi]]}>
+          <EntityProvider entity={entity}>
+            <CITable />
+          </EntityProvider>
+        </TestApiProvider>,
+        mountedRoutes,
+      );
+
+      expect(getByText('Failed to retrieve data')).toBeVisible();
+      expect(getByText('500: Internal Server Error')).toBeVisible();
+      expect(getByText('Failed to connect to Jenkins')).toBeVisible();
+      expect(getByText('jenkins/job/test')).toBeVisible();
+    });
+  });
 });
