@@ -24,5 +24,6 @@ To archive a workspace or plugin, use the `archive-workspace` script:
 
 ## Archived Items
 
-| Workspace | Package | Reason | Source |
-| --------- | ------- | ------ | ------ |
+| Workspace | Package                                           | Reason                                                    | Source                                                                                                                                                                                  |
+| --------- | ------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| analytics | `@backstage-community/plugin-analytics-module-ga` | Built for Universal Analytics, which has been deprecated. | [@backstage-community/plugin-analytics-module-ga@0.9.0](https://github.com/backstage/community-plugins/tree/@backstage-community/plugin-analytics-module-ga@0.9.0/workspaces/analytics) |
