@@ -14,6 +14,21 @@
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/servicenow/plugins/servicenow"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "servicenow",
