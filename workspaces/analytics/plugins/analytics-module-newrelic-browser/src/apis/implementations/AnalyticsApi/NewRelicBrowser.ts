@@ -24,9 +24,6 @@ import {
   AnalyticsEvent as NewAnalyticsEvent,
 } from '@backstage/frontend-plugin-api';
 import { BrowserAgent } from '@newrelic/browser-agent/loaders/browser-agent';
-import type { setAPI } from '@newrelic/browser-agent/loaders/api/api';
-
-type NewRelicAPI = ReturnType<typeof setAPI>;
 
 type NewRelicBrowserOptions = {
   endpoint: string;
@@ -50,7 +47,7 @@ type NewRelicBrowserOptions = {
  * @public
  */
 export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
-  private readonly agent: NewRelicAPI;
+  private readonly agent: BrowserAgent;
 
   private constructor(
     options: NewRelicBrowserOptions,
@@ -117,7 +114,7 @@ export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
     };
 
     // Initialize the agent
-    this.agent = new BrowserAgent(agentOptions) as unknown as NewRelicAPI;
+    this.agent = new BrowserAgent(agentOptions);
 
     // Check if identity has been provided
     if (identityApi) {

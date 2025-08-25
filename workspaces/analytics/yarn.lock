@@ -1784,7 +1784,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.8"
     "@backstage/dev-utils": "npm:^1.1.11"
     "@backstage/frontend-plugin-api": "npm:^0.10.3"
-    "@newrelic/browser-agent": "npm:^1.292.1"
+    "@newrelic/browser-agent": "npm:^1.295.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/react": "npm:^18.2.58"
@@ -4761,14 +4761,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@newrelic/browser-agent@npm:^1.292.1":
-  version: 1.294.0
-  resolution: "@newrelic/browser-agent@npm:1.294.0"
+"@newrelic/browser-agent@npm:^1.295.0":
+  version: 1.295.0
+  resolution: "@newrelic/browser-agent@npm:1.295.0"
   dependencies:
     fflate: "npm:0.8.2"
     rrweb: "npm:^2.0.0-alpha.18"
     web-vitals: "npm:4.2.4"
-  checksum: 10/5fcde0b288bd9f323a22b2a60ee10a0e20563e0d1c4c26fc4c75b1776db8dbca271f6fddf4276df613b2bfc25ace43b5c9aaa4bb75d2f8f31cde399302f2bfa8
+  checksum: 10/6c02f14dec7b10cc17641b7baa0b9a1cb8b46cda66951b9bbe518d9ee11c61d8b3c06a39ea1c2b7360a1b451f61d339af610857bafb3593a5f35d585b6f2fd50
   languageName: node
   linkType: hard
 
@@ -16708,15 +16708,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.7":
-  version: 3.3.7
-  resolution: "nanoid@npm:3.3.7"
-  bin:
-    nanoid: bin/nanoid.cjs
-  checksum: 10/ac1eb60f615b272bccb0e2b9cd933720dad30bf9708424f691b8113826bb91aca7e9d14ef5d9415a6ba15c266b37817256f58d8ce980c82b0ba3185352565679
-  languageName: node
-  linkType: hard
-
 "natural-compare@npm:^1.4.0":
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
@@ -18169,18 +18160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.1.0, postcss@npm:^8.4.33":
-  version: 8.4.38
-  resolution: "postcss@npm:8.4.38"
-  dependencies:
-    nanoid: "npm:^3.3.7"
-    picocolors: "npm:^1.0.0"
-    source-map-js: "npm:^1.2.0"
-  checksum: 10/6e44a7ed835ffa9a2b096e8d3e5dfc6bcf331a25c48aeb862dd54e3aaecadf814fa22be224fd308f87d08adf2299164f88c5fd5ab1c4ef6cbd693ceb295377f4
-  languageName: node
-  linkType: hard
-
-"postcss@npm:^8.4.38":
+"postcss@npm:^8.1.0, postcss@npm:^8.4.33, postcss@npm:^8.4.38":
   version: 8.5.6
   resolution: "postcss@npm:8.5.6"
   dependencies:
@@ -20234,13 +20214,6 @@ __metadata:
   version: 2.0.1
   resolution: "source-list-map@npm:2.0.1"
   checksum: 10/3918ffba5fe8447bc816800026fe707aab233d9d05a3487225d880e23b7e37ed455b4e1b844e05644f6ecc7c9b837c0cc32da54dd37f77c993370ebcdb049246
-  languageName: node
-  linkType: hard
-
-"source-map-js@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "source-map-js@npm:1.2.0"
-  checksum: 10/74f331cfd2d121c50790c8dd6d3c9de6be21926de80583b23b37029b0f37aefc3e019fa91f9a10a5e120c08135297e1ecf312d561459c45908cb1e0e365f49e5
   languageName: node
   linkType: hard
 
