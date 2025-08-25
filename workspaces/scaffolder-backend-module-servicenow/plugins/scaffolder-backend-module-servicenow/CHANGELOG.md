@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.8.2
+
+### Patch Changes
+
+- 14b24f1: Updated dependency `@types/node-fetch` to `2.6.13`.
+
 ## 2.8.1
 
 ### Patch Changes
