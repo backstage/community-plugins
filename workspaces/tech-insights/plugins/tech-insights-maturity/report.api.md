@@ -42,9 +42,6 @@ export type MaturityApi = TechInsightsApi & {
   getBulkMaturityCheckResults(
     entities: Entity[],
   ): Promise<BulkMaturityCheckResponse>;
-  getChildMaturityCheckResults(
-    entity: Entity,
-  ): Promise<BulkMaturityCheckResponse>;
   getMaturitySummary(entity: Entity): Promise<MaturitySummary>;
   getBulkMaturitySummary(entities: Entity[]): Promise<BulkMaturitySummary>;
 };
@@ -67,10 +64,6 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   ): Promise<BulkMaturityCheckResponse>;
   // (undocumented)
   getBulkMaturitySummary(entities: Entity[]): Promise<BulkMaturitySummary>;
-  // (undocumented)
-  getChildMaturityCheckResults(
-    entity: Entity,
-  ): Promise<BulkMaturityCheckResponse>;
   // (undocumented)
   getMaturityRank(entity: Entity): Promise<MaturityRank>;
   // (undocumented)

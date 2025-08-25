@@ -13,66 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
 import {
   MaturityProgress,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { Circle } from 'rc-progress';
-import type { JSX } from 'react';
 import getRankImg from '../../helpers/Rank';
 import { getNextRankColor, pluralize } from '../../helpers/utils';
-import { MaturityLink } from '../../helpers/MaturityLink';
-
-const ChipWrapper = ({
-  children,
-  rank,
-  size,
-  isMaxRank,
-}: {
-  children: JSX.Element;
-  rank: Rank;
-  size: number;
-  isMaxRank?: boolean;
-}) => {
-  let backgroundColor;
-  if (isMaxRank) {
-    backgroundColor = 'rgb(35, 180, 70, 1)';
-  }
-
-  return (
-    <Chip
-      avatar={children}
-      label={Rank[rank]}
-      style={{
-        height: size + 7,
-        backgroundColor,
-        margin: '0',
-      }}
-      clickable
-    />
-  );
-};
 
 type Props = {
   value: { rank: Rank; isMaxRank?: boolean };
   className?: string;
-  entity?: Entity;
   size?: number;
   progress?: MaturityProgress;
-  variant?: 'chip';
 };
 
-export const MaturityRankAvatar = ({
+export const MaturityRankIcon = ({
   className,
-  entity,
   progress,
   size = 27,
   value,
-  variant,
 }: Props) => {
   let result;
   const rank = value.rank;
@@ -90,7 +52,7 @@ export const MaturityRankAvatar = ({
     />
   );
 
-  let tooltip = '';
+  let tooltip = Rank[rank];
 
   // Wrap Avatar with a progress indicator if provided
   if (progress !== undefined) {
@@ -120,30 +82,6 @@ export const MaturityRankAvatar = ({
           style={{ width: size + size / 4, height: size + size / 4 }}
         />
         <div style={{ zIndex: 1, position: 'absolute' }}>{result}</div>
-      </div>
-    );
-  } else {
-    tooltip = Rank[rank];
-  }
-
-  // Wrap Avatar in Chip if specified
-  if (variant === 'chip') {
-    tooltip = value.isMaxRank
-      ? 'All required tasks have been completed!'
-      : `Increase your rank by completing all ${Rank[rank + 1]} rank tasks!`;
-
-    result = (
-      <ChipWrapper rank={rank} size={size} isMaxRank={value.isMaxRank}>
-        {result}
-      </ChipWrapper>
-    );
-  }
-
-  // Wrap with Entity link if Entity is provided
-  if (entity !== undefined) {
-    result = (
-      <div>
-        <MaturityLink entity={entity}>{result}</MaturityLink>
       </div>
     );
   }

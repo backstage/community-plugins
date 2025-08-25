@@ -16,7 +16,6 @@
 import { CatalogApi } from '@backstage/catalog-client';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
-  BulkMaturityCheckResponse,
   MaturityCheckResult,
   MaturityRank,
   MaturitySummary,
@@ -117,18 +116,53 @@ const bulkCheckResult = [
   },
 ];
 
-const mockUser: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'User',
-  metadata: {
-    namespace: 'test',
-    name: 'mock-user',
-    title: 'Test User',
+const maturitySummary: MaturitySummary = {
+  rank: Rank.Silver,
+  maxRank: Rank.Gold,
+  points: 400,
+  isMaxRank: false,
+  progress: {
+    passedChecks: 3,
+    totalChecks: 4,
+    percentage: 75,
   },
-  relations: [
+  rankProgress: {
+    passedChecks: 0,
+    totalChecks: 1,
+    percentage: 0,
+  },
+  areaSummaries: [
     {
-      type: 'memberOf',
-      targetRef: 'group:test/mock-team',
+      area: 'Ownership',
+      progress: {
+        passedChecks: 2,
+        totalChecks: 3,
+        percentage: 67,
+      },
+      rankProgress: {
+        passedChecks: 0,
+        totalChecks: 1,
+        percentage: 0,
+      },
+      rank: Rank.Silver,
+      maxRank: Rank.Gold,
+      isMaxRank: false,
+    },
+    {
+      area: 'Operations',
+      progress: {
+        passedChecks: 1,
+        totalChecks: 1,
+        percentage: 100,
+      },
+      rankProgress: {
+        passedChecks: 1,
+        totalChecks: 1,
+        percentage: 100,
+      },
+      rank: Rank.Bronze,
+      maxRank: Rank.Bronze,
+      isMaxRank: true,
     },
   ],
 };
@@ -190,86 +224,22 @@ describe('MaturityClient', () => {
     });
   });
 
+  describe('getMaturityScore', () => {
+    jest.spyOn(sdc, 'runChecks').mockResolvedValue(checkResults);
+    it('generates a maturity score for a given component', async () => {
+      const score = await sdc.getMaturityScore(entity);
+      expect(score.checks).toEqual(checkResults); // Ownership and Operations
+      expect(score.rank.rank).toEqual(2); // Silver
+      expect(score.rank.isMaxRank).toEqual(false);
+      expect(score.summary).toEqual(maturitySummary);
+    });
+  });
+
   describe('getMaturitySummary', () => {
     jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
 
     it('generates a maturity summary for a given system', async () => {
-      const expected: MaturitySummary = {
-        rank: Rank.Silver,
-        maxRank: Rank.Gold,
-        points: 400,
-        isMaxRank: false,
-        progress: {
-          passedChecks: 3,
-          totalChecks: 4,
-          percentage: 75,
-        },
-        rankProgress: {
-          passedChecks: 0,
-          totalChecks: 1,
-          percentage: 0,
-        },
-        areaSummaries: [
-          {
-            area: 'Ownership',
-            progress: {
-              passedChecks: 2,
-              totalChecks: 3,
-              percentage: 67,
-            },
-            rankProgress: {
-              passedChecks: 0,
-              totalChecks: 1,
-              percentage: 0,
-            },
-            rank: Rank.Silver,
-            maxRank: Rank.Gold,
-            isMaxRank: false,
-          },
-          {
-            area: 'Operations',
-            progress: {
-              passedChecks: 1,
-              totalChecks: 1,
-              percentage: 100,
-            },
-            rankProgress: {
-              passedChecks: 1,
-              totalChecks: 1,
-              percentage: 100,
-            },
-            rank: Rank.Bronze,
-            maxRank: Rank.Bronze,
-            isMaxRank: true,
-          },
-        ],
-      };
-
-      expect(await sdc.getMaturitySummary(mockSystem)).toEqual(expected);
-    });
-  });
-
-  describe('getBulkMaturityCheckResults', () => {
-    jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
-
-    it('generates bulk maturity scores for a given user', async () => {
-      const expected: BulkMaturityCheckResponse = [
-        {
-          entity: 'component:default/mock-component',
-          checks: [
-            awsWarningsCheckResult,
-            productOwnershipCheckResult,
-            technicalOwnershipCheckResult,
-            activeOwnershipCheckResult,
-          ],
-          rank: Rank.Silver,
-          isMaxRank: false,
-        },
-      ];
-
-      expect(await sdc.getChildMaturityCheckResults(mockUser)).toEqual(
-        expected,
-      );
+      expect(await sdc.getMaturitySummary(mockSystem)).toEqual(maturitySummary);
     });
   });
 });
