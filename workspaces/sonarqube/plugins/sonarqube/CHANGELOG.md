@@ -1,5 +1,16 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.18.0
+
+### Minor Changes
+
+- dcffece: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [dcffece]
+  - @backstage-community/plugin-sonarqube-react@0.10.0
+
 ## 0.17.0
 
 ### Minor Changes
