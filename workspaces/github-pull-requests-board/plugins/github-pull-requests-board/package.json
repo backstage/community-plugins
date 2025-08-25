@@ -72,6 +72,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.33.1",
+    "@backstage/dev-utils": "^1.1.12",
     "@backstage/frontend-test-utils": "^0.3.4",
     "@backstage/test-utils": "^1.7.10",
     "@testing-library/dom": "^10.0.0",

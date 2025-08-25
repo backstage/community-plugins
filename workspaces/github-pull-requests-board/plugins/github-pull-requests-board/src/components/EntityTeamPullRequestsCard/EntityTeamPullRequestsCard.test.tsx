@@ -32,6 +32,21 @@ jest.mock('../../hooks/useUserRepositoriesAndTeam', () => {
   };
 });
 
+jest.mock('@backstage/plugin-catalog-react', () => {
+  return {
+    useEntity: () => {
+      return {
+        entity: {
+          metadata: {
+            name: 'test-entity',
+            namespace: 'default',
+          },
+        },
+      };
+    },
+  };
+});
+
 jest.mock('../../hooks/usePullRequestsByTeam', () => {
   const buildPullRequest = ({
     prTitle,

@@ -58,6 +58,9 @@ workspace/bitrise:
 workspace/blackduck:
   - "Workspace\\s*blackduck"
 
+workspace/bookmarks:
+  - "Workspace\\s*bookmarks"
+
 workspace/cicd-statistics:
   - "Workspace\\s*cicd-statistics"
 

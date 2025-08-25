@@ -26,7 +26,7 @@ import { createRouter } from './service/router';
  * @public
  */
 export const rollbarPlugin = createBackendPlugin({
-  pluginId: 'azure-devops',
+  pluginId: 'rollbar',
   register(env) {
     env.registerInit({
       deps: {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ApiBlueprint, createApiFactory } from '@backstage/frontend-plugin-api';
+import { ApiBlueprint } from '@backstage/frontend-plugin-api';
 import { SonarQubeClient } from '../api';
 import { sonarQubeApiRef } from '@backstage-community/plugin-sonarqube-react';
 import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
@@ -22,8 +22,8 @@ import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
  * @alpha
  */
 export const sonarQubeApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: sonarQubeApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -35,5 +35,4 @@ export const sonarQubeApi = ApiBlueprint.make({
           fetchApi,
         }),
     }),
-  },
 });

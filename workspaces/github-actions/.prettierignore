@@ -3,3 +3,4 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
+.yarnrc.yml

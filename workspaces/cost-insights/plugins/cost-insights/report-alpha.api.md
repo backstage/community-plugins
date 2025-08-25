@@ -5,10 +5,9 @@
 ```ts
 /// <reference types="react" />
 
+import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
@@ -19,78 +18,22 @@ import { RouteRef } from '@backstage/frontend-plugin-api';
 const _default: FrontendPlugin<
   {
     root: RouteRef<undefined>;
-    growthAlerts: RouteRef<undefined>;
-    unlabeledDataflowAlerts: RouteRef<undefined>;
   },
   {},
   {
-    'entity-content:cost-insights/EntityCostInsightsContent': ExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'EntityCostInsightsContent';
-      config: {
-        path: string | undefined;
-        title: string | undefined;
-        filter: EntityPredicate | undefined;
-        group: string | false | undefined;
-      };
-      configInput: {
-        filter?: EntityPredicate | undefined;
-        title?: string | undefined;
-        path?: string | undefined;
-        group?: string | false | undefined;
-      };
-      output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-        | ConfigurableExtensionDataRef<
-            RouteRef<AnyRouteRefParams>,
-            'core.routing.ref',
-            {
-              optional: true;
-            }
-          >
-        | ConfigurableExtensionDataRef<
-            string,
-            'catalog.entity-content-title',
-            {}
-          >
-        | ConfigurableExtensionDataRef<
-            (entity: Entity) => boolean,
-            'catalog.entity-filter-function',
-            {
-              optional: true;
-            }
-          >
-        | ConfigurableExtensionDataRef<
-            string,
-            'catalog.entity-filter-expression',
-            {
-              optional: true;
-            }
-          >
-        | ConfigurableExtensionDataRef<
-            string,
-            'catalog.entity-content-group',
-            {
-              optional: true;
-            }
-          >;
+    'api:cost-insights': ExtensionDefinition<{
+      kind: 'api';
+      name: undefined;
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
+        AnyApiFactory,
+        'core.api.factory',
+        {}
+      >;
       inputs: {};
       params: {
-        loader: () => Promise<JSX.Element>;
-        defaultPath: string;
-        defaultTitle: string;
-        defaultGroup?:
-          | (string & {})
-          | 'overview'
-          | 'documentation'
-          | 'development'
-          | 'deployment'
-          | 'operation'
-          | 'observability'
-          | undefined;
-        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        factory: AnyApiFactory;
       };
     }>;
     'nav-item:cost-insights': ExtensionDefinition<{

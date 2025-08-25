@@ -4,12 +4,7 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
-import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
 export function getRequestHeaders(token: string): {
@@ -218,14 +213,4 @@ export type RollbarTopActiveItem = {
   };
   counts: number[];
 };
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  rollbarApi?: RollbarApi;
-}
 ```

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-dotnet
 
+## 0.6.0
+
+### Minor Changes
+
+- 8367480: Backstage version bump to v1.42.3
+
 ## 0.5.0
 
 ### Minor Changes

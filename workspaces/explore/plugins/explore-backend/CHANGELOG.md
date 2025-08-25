@@ -1,5 +1,19 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- deb9523: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- 02546ad: Internall update to use the yarn plugin for version management
+- Updated dependencies [02546ad]
+- Updated dependencies [deb9523]
+  - @backstage-community/plugin-explore-common@0.7.0
+  - @backstage-community/plugin-explore-node@0.8.0
+
 ## 0.8.0
 
 ### Minor Changes
