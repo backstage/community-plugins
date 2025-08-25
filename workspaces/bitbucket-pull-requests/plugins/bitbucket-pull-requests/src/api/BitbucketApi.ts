@@ -25,8 +25,8 @@ export type PullRequest = {
   id: number;
   title: string;
   author: string;
-  created_on: string;
-  updated_on: string;
+  createdDate: number;
+  updatedDate: number;
   state: string;
   description: string;
   url: string;
@@ -68,8 +68,8 @@ export class BitbucketApi {
       id: pr.id,
       title: pr.title,
       author: pr.author.user.name,
-      created_on: pr.createdDate,
-      updated_on: pr.updatedDate,
+      createdDate: pr.createdDate,
+      updatedDate: pr.updatedDate,
       state: pr.state,
       url: pr.links.self[0].href,
       description: pr.description,

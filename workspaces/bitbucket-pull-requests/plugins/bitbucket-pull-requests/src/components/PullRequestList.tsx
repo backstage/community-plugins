@@ -24,7 +24,7 @@ import {
 } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import { useApi } from '@backstage/core-plugin-api';
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { isBitbucketSlugSet } from '../utils/isBitbucketSlugSet';
 
 import { bitbucketApiRef, PullRequest } from '../api/BitbucketApi';
@@ -35,33 +35,33 @@ import Tooltip from '@material-ui/core/Tooltip';
 import StatusFilter from '../components/StatusFilter';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-const GetElapsedTime = ({ start }: { start: string }) =>
-  DateTime.fromISO(start).toRelative();
+const GetElapsedTime = ({ start }: { start: number }) =>
+  DateTime.fromMillis(start).toRelative();
 
 const RenderStateIcon = ({ status }: { status: string }) => {
   switch (status) {
     case 'OPEN':
       return (
         <Tooltip title="Open" placement="top">
-          <span>
+          <Typography component="span">
             <HourglassEmptyIcon color="primary" />
-          </span>
+          </Typography>
         </Tooltip>
       );
     case 'MERGED':
       return (
         <Tooltip title="Merged" placement="top">
-          <span>
+          <Typography component="span">
             <CheckCircleIcon color="action" />
-          </span>
+          </Typography>
         </Tooltip>
       );
     case 'DECLINED':
       return (
         <Tooltip title="Declined" placement="top">
-          <span>
+          <Typography component="span">
             <CancelIcon color="error" />
-          </span>
+          </Typography>
         </Tooltip>
       );
     default:
@@ -141,19 +141,19 @@ const PullRequestList: FC = () => {
 
     {
       title: 'CREATED',
-      field: 'created_on',
+      field: 'createdDate',
       highlight: true,
       width: '20%',
       render: (row: Partial<PullRequest>) => (
-        <GetElapsedTime start={row.created_on!} />
+        <GetElapsedTime start={row.createdDate!} />
       ),
     },
     {
       title: 'LAST UPDATED',
-      field: 'updated_on',
+      field: 'updatedDate',
       highlight: true,
       width: '20%',
-      render: rowData => <GetElapsedTime start={rowData.updated_on} />,
+      render: rowData => <GetElapsedTime start={rowData.updatedDate} />,
     },
   ];
 
@@ -168,7 +168,7 @@ const PullRequestList: FC = () => {
           title={
             <Box display="flex" alignItems="center">
               <Box mr={1} />
-              Bitbucket Pull Requests ({project})
+              Bitbucket Pull Requests
               <Box position="absolute" right={320} top={20}>
                 <StatusFilter onFilterChange={setStateFilter} />
               </Box>

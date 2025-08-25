@@ -9,6 +9,10 @@
 - Able to view Creator name, Created date and last update etc.
 - We can go to Particular PR by clicking ID.
 
+## Limitations
+
+This plugin currently only works with Bitbucket Data center. Bitbucket cloud uses a different API to get pull requests [documented here](https://developer.atlassian.com/cloud/bitbucket/rest/api-group-pullrequests/#api-repositories-workspace-repo-slug-pullrequests-get). Contributions are welcome to add support for Bitbucket cloud.
+
 ## How to add Bitbucket PR plugin to Backstage app
 
 1. Install the plugin into Backstage.

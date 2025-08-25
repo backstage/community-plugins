@@ -41,8 +41,8 @@ export const pullRequestsResponseStub = {
       title: 'Update README',
       description: 'This PR updates the README file with new instructions.',
       state: 'OPEN',
-      created_on: '2024-06-15T12:34:56.000Z',
-      updated_on: '2024-06-16T12:34:56.000Z',
+      createdDate: 1754922669866,
+      updatedDate: 1755776185223,
       source: {
         branch: {
           name: 'feature/update-readme',
@@ -102,8 +102,8 @@ export const pullRequestsResponseStub = {
       title: 'Add new feature',
       description: 'This PR adds a new feature.',
       state: 'MERGED',
-      created_on: '2024-06-18T12:00:00.000Z',
-      updated_on: '2024-06-20T12:00:00.000Z',
+      createdDate: 1754922669866,
+      updatedDate: 1755776185223,
       source: {
         branch: {
           name: 'feature/new-feature',
@@ -163,8 +163,8 @@ export const pullRequestsResponseStub = {
       title: 'Fix bug in feature',
       description: 'This PR fixes a bug in the new feature.',
       state: 'DECLINED',
-      created_on: '2024-06-19T12:00:00.000Z',
-      updated_on: '2024-06-20T12:00:00.000Z',
+      createdDate: 1754922669866,
+      updatedDate: 1755776185223,
       source: {
         branch: {
           name: 'bugfix/fix-bug',
