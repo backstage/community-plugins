@@ -135,6 +135,25 @@ The following table describes the parameters that you can configure to enable th
 | `caFile`              | Filesystem path (on the host where the Backstage process is running) to a certificate authority bundle in PEM format | ""            | No                                      |
 | `sessionTime`         | Time in seconds that session is enabled                                                                              | 60            | No                                      |
 
+#### Setting up the Kiali backend package
+
+1. Install the Kiali backend plugin using the following command:
+
+```console
+yarn workspace backend add @backstage-community/plugin-kiali-backend
+```
+
+2. Add the Kiali backend in the `packages/backend/src/index.ts` file as follows:
+
+```tsx title="packages/backend/src/index.ts"
+const backend = createBackend();
+
+// kiali
+backend.add(import('@backstage-community/plugin-kiali-backend'));
+
+backend.start();
+```
+
 ## For users
 
 We have 2 ways to consume the Kiali plugin, entity view or full view.
