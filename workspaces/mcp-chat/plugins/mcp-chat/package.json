@@ -1,0 +1,83 @@
+{
+  "name": "@backstage-community/plugin-mcp-chat",
+  "description": "A Backstage plugin that provides a chat interface for interacting with the MCP Servers.",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "mcp-chat",
+    "supported-versions": "1.40.0",
+    "pluginPackage": "@backstage-community/plugin-mcp-chat",
+    "pluginPackages": [
+      "@backstage-community/plugin-mcp-chat"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/core-components": "^0.17.3",
+    "@backstage/core-plugin-api": "^1.10.8",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/theme": "^0.6.6",
+    "@mui/icons-material": "^5.17.1",
+    "@mui/material": "^5.17.1",
+    "react-markdown": "^10.1.0",
+    "react-use": "^17.2.4"
+  },
+  "peerDependencies": {
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0",
+    "@backstage/dev-utils": "^1.1.11",
+    "@backstage/test-utils": "^1.7.8",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "files": [
+    "dist",
+    "app-config.yaml",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-chat/plugins/mcp-chat"
+  },
+  "keywords": [
+    "backstage-plugin",
+    "chat-interface",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-chat/plugins/mcp-chat",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "Lucifergene"
+  ],
+  "author": "Avik Kundu"
+}
