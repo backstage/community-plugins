@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: shortcuts-example-component
+  description: Example component for shortcuts plugin testing
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests

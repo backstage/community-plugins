@@ -1,10 +1,3 @@
-# [Backstage](https://backstage.io)
+# shortcuts
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-To start the app, run:
-
-```sh
-yarn install
-yarn start
-```
+This workspace contains a plugin that enables users to create shortcuts to pages within a Backstage app. See [here](./plugins/shortcuts/README) for more details on how to install and register this plugin.
