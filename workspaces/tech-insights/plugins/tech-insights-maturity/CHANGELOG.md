@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.4.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- Updated dependencies [ba5bf7b]
+  - @backstage-community/plugin-tech-insights-common@0.7.1
+  - @backstage-community/plugin-tech-insights-maturity-common@0.3.1
+  - @backstage-community/plugin-tech-insights-react@1.2.1
+
 ## 0.4.0
 
 ### Minor Changes

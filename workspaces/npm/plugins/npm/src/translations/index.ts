@@ -21,7 +21,7 @@ import { npmTranslationRef } from './ref';
 export { npmTranslationRef } from './ref';
 
 /**
- * @alpha
+ * @public
  */
 export const npmTranslations = createTranslationResource({
   ref: npmTranslationRef,

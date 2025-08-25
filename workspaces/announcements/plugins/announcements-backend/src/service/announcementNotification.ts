@@ -16,7 +16,7 @@
 import { NotificationService } from '@backstage/plugin-notifications-node';
 import { AnnouncementModel } from './model';
 
-export const sendAnnouncementNotification = (
+export const sendAnnouncementNotification = async (
   announcement: AnnouncementModel,
   notifications?: NotificationService,
 ) => {
@@ -24,7 +24,7 @@ export const sendAnnouncementNotification = (
     return;
   }
 
-  notifications.send({
+  await notifications.send({
     recipients: {
       type: 'broadcast',
     },

@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.27.5
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
 ## 3.27.4
 
 ### Patch Changes
