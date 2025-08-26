@@ -1713,7 +1713,7 @@ __metadata:
     "@mui/icons-material": "npm:5.18.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:5.18.0"
-    "@mui/x-tree-view": "npm:8.10.0"
+    "@mui/x-tree-view": "npm:8.10.2"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.7.0"
     "@testing-library/react": "npm:^16.3.0"
@@ -4554,7 +4554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/utils@npm:^7.2.0":
+"@mui/utils@npm:^7.3.1":
   version: 7.3.1
   resolution: "@mui/utils@npm:7.3.1"
   dependencies:
@@ -4574,27 +4574,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/x-internals@npm:8.10.0":
-  version: 8.10.0
-  resolution: "@mui/x-internals@npm:8.10.0"
+"@mui/x-internals@npm:8.10.2":
+  version: 8.10.2
+  resolution: "@mui/x-internals@npm:8.10.2"
   dependencies:
     "@babel/runtime": "npm:^7.28.2"
-    "@mui/utils": "npm:^7.2.0"
+    "@mui/utils": "npm:^7.3.1"
     reselect: "npm:^5.1.1"
     use-sync-external-store: "npm:^1.5.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/0857cee4d8606094bf17af80628089fdaee4bca7cc9f1527443a0b892aad83105fe7c37c3b03d9899d5ba4906a08e555b4b14e4138ec63f677d7eef738c28578
+  checksum: 10/a6100403ea0b91464f68fc4f7d1109b33b299f8dba6c190c2fb100ea94fb5d00027bc89dde6b30c4b4ce91a22c747a6a465883dd5cddf9ac1b184674f03b3931
   languageName: node
   linkType: hard
 
-"@mui/x-tree-view@npm:8.10.0":
-  version: 8.10.0
-  resolution: "@mui/x-tree-view@npm:8.10.0"
+"@mui/x-tree-view@npm:8.10.2":
+  version: 8.10.2
+  resolution: "@mui/x-tree-view@npm:8.10.2"
   dependencies:
     "@babel/runtime": "npm:^7.28.2"
-    "@mui/utils": "npm:^7.2.0"
-    "@mui/x-internals": "npm:8.10.0"
+    "@mui/utils": "npm:^7.3.1"
+    "@mui/x-internals": "npm:8.10.2"
     "@types/react-transition-group": "npm:^4.4.12"
     clsx: "npm:^2.1.1"
     prop-types: "npm:^15.8.1"
@@ -4613,7 +4613,7 @@ __metadata:
       optional: true
     "@emotion/styled":
       optional: true
-  checksum: 10/e1eb541ee3ef5c41a15d3c42d0bf7354b67d4893081de0c3087fb54048c9017db63c9f1e4f074379efba5890b01749e22b9378185d7ee907df48ab1aeef4392e
+  checksum: 10/7da976fc5b2e2eb3091707832083d0798eb36ab4b9e36c0fdca22d071acbef472ad1c2b717704c4898257939616fce3c0f0d5b9ff5b7456b4235c7767f700cca
   languageName: node
   linkType: hard
 
