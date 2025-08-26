@@ -39,17 +39,17 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.17.4",
+    "@backstage/core-components": "^0.17.5",
     "@backstage/core-plugin-api": "^1.10.9",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-react": "^1.19.1",
+    "@backstage/plugin-catalog-react": "^1.20.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.0.0",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/dev-utils": "^1.1.12",
+    "@backstage/cli": "^0.34.0",
+    "@backstage/dev-utils": "^1.1.13",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
