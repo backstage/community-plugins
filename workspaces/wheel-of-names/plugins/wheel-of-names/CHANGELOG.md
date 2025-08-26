@@ -1,5 +1,11 @@
 # @backstage-community/plugin-wheel-of-names
 
+## 0.2.2
+
+### Patch Changes
+
+- fc8493f: Correct looking up a group member's name as participant
+
 ## 0.2.1
 
 ### Patch Changes

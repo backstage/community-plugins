@@ -7,11 +7,13 @@
 *                                                                       @backstage/community-plugins-maintainers
 yarn.lock                                                               @backstage/community-plugins-maintainers @backstage-service
 */yarn.lock                                                             @backstage/community-plugins-maintainers @backstage-service
+.github/archived-plugins.json                                           @backstage/community-plugins-maintainers
 
 /workspaces/3scale                                                      @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr
 /workspaces/acr                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/acs                                                         @backstage/community-plugins-maintainers  @sachaudh @alwayshooin @dvail @maknop
 /workspaces/adr                                                         @backstage/community-plugins-maintainers  @kuangp
+/workspaces/agent-forge                                                 @backstage/community-plugins-maintainers  @sbraicu @sriaradhyula @subbaksh @suwhang-cisco
 /workspaces/airbrake                                                    @backstage/community-plugins-maintainers
 /workspaces/allure                                                      @backstage/community-plugins-maintainers
 /workspaces/amplication                                                 @backstage/community-plugins-maintainers  @itainathaniel
@@ -30,6 +32,7 @@ yarn.lock                                                               @backsta
 /workspaces/bazaar                                                      @backstage/community-plugins-maintainers
 /workspaces/bitrise                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                                                   @backstage/community-plugins-maintainers  @deepan10
+/workspaces/bookmarks                                                   @backstage/community-plugins-maintainers  @logonoff @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu
 /workspaces/cicd-statistics                                             @backstage/community-plugins-maintainers
 /workspaces/cloudbuild                                                  @backstage/community-plugins-maintainers
 /workspaces/code-climate                                                @backstage/community-plugins-maintainers
@@ -78,7 +81,7 @@ yarn.lock                                                               @backsta
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @ciiay @debsmita1 @jessicajhee
 /workspaces/nomad                                                       @backstage/community-plugins-maintainers
 /workspaces/noop                                                        @backstage/community-plugins-maintainers
-/workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
+/workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar @logonoff
 /workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
 /workspaces/odo                                                         @backstage/community-plugins-maintainers

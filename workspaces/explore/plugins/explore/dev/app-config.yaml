@@ -1,0 +1,12 @@
+app:
+  title: Backstage Example App
+  baseUrl: http://localhost:3000
+  extensions:
+    - 'nav-item:catalog': false
+    - 'page:explore':
+        config:
+          path: '/'
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007

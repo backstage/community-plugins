@@ -1,5 +1,22 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.19.0
+
+### Minor Changes
+
+- ceeadd1: **ALPHA BREAKING** The New Frontend System `CostInsightsProjectGrowthInstructionsPage` and `CostInsightsLabelDataflowInstructionsPage` have been removed and the new frontend system support refactored to work in the same way as the current implementation.
+
+## 0.18.0
+
+### Minor Changes
+
+- ae26878: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [ae26878]
+  - @backstage-community/plugin-cost-insights-common@0.6.0
+
 ## 0.17.0
 
 ### Minor Changes
