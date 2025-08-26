@@ -36,13 +36,13 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-client": "^1.10.2",
+    "@backstage/catalog-client": "^1.11.0",
     "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.17.4",
+    "@backstage/core-components": "^0.17.5",
     "@backstage/core-plugin-api": "^1.10.9",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-common": "^1.1.5",
-    "@backstage/plugin-catalog-react": "^1.19.1",
+    "@backstage/plugin-catalog-react": "^1.20.1",
     "@codemirror/language": "^6.0.0",
     "@codemirror/legacy-modes": "^6.1.0",
     "@codemirror/view": "^6.0.0",
@@ -57,9 +57,9 @@
     "yaml": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/dev-utils": "^1.1.12",
-    "@backstage/test-utils": "^1.7.10",
+    "@backstage/cli": "^0.34.0",
+    "@backstage/dev-utils": "^1.1.13",
+    "@backstage/test-utils": "^1.7.11",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
