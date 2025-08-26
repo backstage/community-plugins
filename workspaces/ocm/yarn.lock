@@ -2682,7 +2682,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.1"
     "@backstage/plugin-permission-node": "npm:^0.10.2"
     "@kubernetes/client-node": "npm:1.0.0-rc7"
-    "@openapitools/openapi-generator-cli": "npm:2.22.0"
+    "@openapitools/openapi-generator-cli": "npm:2.23.0"
     "@types/express": "npm:4.17.23"
     "@types/supertest": "npm:2.0.16"
     express: "npm:^4.18.2"
@@ -8981,9 +8981,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openapitools/openapi-generator-cli@npm:2.22.0, @openapitools/openapi-generator-cli@npm:^2.7.0":
-  version: 2.22.0
-  resolution: "@openapitools/openapi-generator-cli@npm:2.22.0"
+"@openapitools/openapi-generator-cli@npm:2.23.0, @openapitools/openapi-generator-cli@npm:^2.7.0":
+  version: 2.23.0
+  resolution: "@openapitools/openapi-generator-cli@npm:2.23.0"
   dependencies:
     "@nestjs/axios": "npm:4.0.1"
     "@nestjs/common": "npm:11.1.6"
@@ -9004,7 +9004,7 @@ __metadata:
     tslib: "npm:2.8.1"
   bin:
     openapi-generator-cli: main.js
-  checksum: 10/11bad66d4ad8a65503d1b07795aa48895e12bc8eab349ded15bd54b2fbf92b0ebf362a16fda8c625a75661dfb5df0caa28c5b9b9f5750404d173c02043ced8e4
+  checksum: 10/a7c63b100258a6a9ae6fb8f69e50edb808fee8dd86a54fb131a9aa25364d4418abb4732771df72ac0c85ded25764ce84beea4005dda9a4319cdee35db93345db
   languageName: node
   linkType: hard
 
