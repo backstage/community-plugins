@@ -52,6 +52,7 @@ proxy:
       Authorization: Bearer ${BITBUCKET_TOKEN}
       Accept: 'application/json'
       Content-Type: 'application/json'
+
 bitbucket:
   # Defaults to /bitbucket/api and can be omitted if proxy is configured for that url
   proxyPath: /bitbucket/api

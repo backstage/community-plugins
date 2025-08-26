@@ -16,7 +16,6 @@
 
 import { FC, useEffect, useState } from 'react';
 import {
-  Content,
   TableColumn,
   Table,
   MarkdownContent,
@@ -158,25 +157,21 @@ const PullRequestList: FC = () => {
   ];
 
   return (
-    <div>
-      <Content>
-        <Table
-          columns={columns}
-          data={pullRequests}
-          detailPanel={PullRequestDetailPanel}
-          isLoading={loading}
-          title={
-            <Box display="flex" alignItems="center">
-              <Box mr={1} />
-              Bitbucket Pull Requests
-              <Box position="absolute" right={320} top={20}>
-                <StatusFilter onFilterChange={setStateFilter} />
-              </Box>
-            </Box>
-          }
-        />
-      </Content>
-    </div>
+    <Table
+      columns={columns}
+      data={pullRequests}
+      detailPanel={PullRequestDetailPanel}
+      isLoading={loading}
+      title={
+        <Box display="flex" alignItems="center">
+          <Box mr={1} />
+          Bitbucket Pull Requests
+          <Box position="absolute" right={320} top={20}>
+            <StatusFilter onFilterChange={setStateFilter} />
+          </Box>
+        </Box>
+      }
+    />
   );
 };
 export default PullRequestList;
