@@ -31,14 +31,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.1",
+    "@backstage/backend-plugin-api": "^1.4.2",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-scaffolder-node": "^0.10.0",
+    "@backstage/plugin-scaffolder-node": "^0.11.0",
     "cross-fetch": "^4.0.0",
     "jenkins": "^1.1.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1"
+    "@backstage/cli": "^0.34.0"
   },
   "files": [
     "dist"
