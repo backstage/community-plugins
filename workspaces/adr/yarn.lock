@@ -7708,11 +7708,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^18.11.9":
-  version: 18.19.50
-  resolution: "@types/node@npm:18.19.50"
+  version: 18.19.123
+  resolution: "@types/node@npm:18.19.123"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10/d238bb877953fcecda830df140f8722b9ba9644ae63e810fe6fa40cab8285c42f9b34c9529f2144a6f8cfeee5b0ff7fefd9425261e41830157d6710d501b829d
+  checksum: 10/b5e6c524d9c8d03cb972bc31588a3a20f5a177d6cd1b97c2ba74e2260fe1d6218315ebbfbae8ccc7a78f55830ab3953b3793bcf74883f07a268253d49fa64efa
   languageName: node
   linkType: hard
 
@@ -7982,9 +7982,9 @@ __metadata:
   linkType: hard
 
 "@types/webpack-env@npm:^1.15.2":
-  version: 1.18.4
-  resolution: "@types/webpack-env@npm:1.18.4"
-  checksum: 10/a1c37f8eb93fa86077b2406d3b8dd50c7505cd2b6ec46044786aa9681b0114ad6c3c3cd6402f8ecce9e4de6626c2fd91e5acda62d5d450c1f531533c3812b7c0
+  version: 1.18.8
+  resolution: "@types/webpack-env@npm:1.18.8"
+  checksum: 10/f3932f3d6c2530f644cfc898eda1ab8182d6ae57f555c2f0179d813549b639078671b71e4041831fc306c5ebe61f5cdac794fe4ceae281fce8bf67e23661a488
   languageName: node
   linkType: hard
 
