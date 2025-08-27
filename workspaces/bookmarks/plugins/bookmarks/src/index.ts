@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiRef } from '@backstage/core-plugin-api';
-import {
-  KubernetesApi,
-  KubernetesAuthProvidersApi,
-} from '@backstage/plugin-kubernetes-react';
 
-export const kubernetesAuthProvidersApiRef =
-  createApiRef<KubernetesAuthProvidersApi>({
-    id: 'plugin.argocd-kubernetes-auth-providers.service',
-  });
+/**
+ * A Backstage plugin that helps you quickly access important links
+ *
+ * @packageDocumentation
+ */
 
-export const kubernetesApiRef = createApiRef<KubernetesApi>({
-  id: 'plugin.argocd-kubernetes.service',
-});
+export { bookmarksPlugin, EntityBookmarksContent } from './plugin';
+export {
+  AVAILABLE_LANGUAGES,
+  bookmarksTranslations,
+  bookmarksTranslationRef,
+} from './translations/translations';
+export { isBookmarksAvailable } from './utils/isBookmarksAvailable';

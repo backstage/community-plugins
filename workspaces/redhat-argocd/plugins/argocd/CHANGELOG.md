@@ -1,5 +1,17 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.22.4
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 1.22.3
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
 ## 1.22.2
 
 ### Patch Changes

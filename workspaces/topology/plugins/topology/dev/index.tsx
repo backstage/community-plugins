@@ -21,13 +21,12 @@ import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-
-import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
-import { TopologyPage, topologyPlugin } from '../src/plugin';
 import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
-} from '../src/types/types';
+} from '@backstage/plugin-kubernetes-react';
+import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
+import { TopologyPage, topologyPlugin } from '../src/plugin';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',

@@ -17,7 +17,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { renderHook } from '@testing-library/react';
 
-import { useKubernetesObjects } from '@janus-idp/shared-react';
+import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
 
 import { useArgocdRollouts } from '../useArgoRollouts';
 
@@ -25,7 +25,7 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: jest.fn(),
 }));
 
-jest.mock('@janus-idp/shared-react', () => ({
+jest.mock('@backstage/plugin-kubernetes-react', () => ({
   useKubernetesObjects: jest.fn(),
 }));
 

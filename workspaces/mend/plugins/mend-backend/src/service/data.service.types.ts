@@ -479,6 +479,8 @@ export type Finding = {
   name: string;
   origin: string;
   time: string;
+  projectId: string;
+  projectName: string;
   issue: {
     issueStatus: string;
     reporter: string;

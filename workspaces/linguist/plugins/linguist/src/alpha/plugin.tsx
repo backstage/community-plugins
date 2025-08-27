@@ -16,7 +16,6 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
@@ -41,8 +40,8 @@ export const entityLinguistCard = EntityCardBlueprint.make({
 
 /** @alpha */
 export const linguistApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: linguistApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -51,7 +50,6 @@ export const linguistApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new LinguistClient({ discoveryApi, fetchApi }),
     }),
-  },
 });
 
 /** @alpha */
