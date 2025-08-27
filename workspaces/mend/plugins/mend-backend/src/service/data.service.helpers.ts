@@ -140,7 +140,7 @@ export const dataProjectParser = (
   return projectData;
 };
 
-const parseEntityURL = (entityUrl?: string) => {
+export const parseEntityURL = (entityUrl?: string) => {
   try {
     if (!entityUrl) {
       return null;

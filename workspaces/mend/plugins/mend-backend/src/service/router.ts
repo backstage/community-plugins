@@ -16,6 +16,7 @@ import {
   dataMatcher,
   dataProjectParser,
   fetchQueryPagination,
+  parseEntityURL,
 } from './data.service.helpers';
 import { MendDataService } from './data.service';
 import { MendAuthSevice } from './auth.service';
@@ -206,10 +207,21 @@ export async function createRouter(
         items || projectResult[1],
       );
 
+      const entityURL = parseEntityURL(
+        projectResult[0].items[0]?.metadata?.annotations?.[
+          'backstage.io/source-location'
+        ],
+      );
+
+      const projectSourceUrl = entityURL?.host
+        ? `${entityURL.host}${entityURL.path}`
+        : '';
+
       if (!data.length) {
         response.json({
           findingList: [],
           projectList: [],
+          projectSourceUrl,
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
@@ -267,6 +279,7 @@ export async function createRouter(
       response.json({
         findingList,
         ...projects,
+        projectSourceUrl,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });

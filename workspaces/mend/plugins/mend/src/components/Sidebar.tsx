@@ -20,5 +20,5 @@ export const MendSidebar = () => {
     </SvgIcon>
   );
 
-  return <SidebarItem icon={icon} to="mend" text="mend.io" />;
+  return <SidebarItem icon={icon} to="mend" text="Mend.io" />;
 };

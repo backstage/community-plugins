@@ -16,6 +16,7 @@ type FindingSuccessResponseData = {
   clientUrl: string;
   findingList: Finding[];
   projectList: Project[];
+  projectSourceUrl: string;
 };
 
 export type FindingData = {
