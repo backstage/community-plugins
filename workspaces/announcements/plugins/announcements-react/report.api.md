@@ -250,6 +250,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'createAnnouncementPage.alertMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.edit': 'Edit';
     readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
+    readonly 'editAnnouncementPage.updatedMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';
     readonly 'newCategoryDialog.title': 'Title';
