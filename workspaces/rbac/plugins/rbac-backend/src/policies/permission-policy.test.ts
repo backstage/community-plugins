@@ -1811,15 +1811,19 @@ describe('Policy checks for conditional policies', () => {
 });
 
 describe('Policy checks with preferPermissionPolicy config', () => {
-  const allowReadAndCreatepolicies = [
+  const allowReadAndCreatePolicies = [
     // allow read for all resources
     ['role:default/all_resource_reader', 'catalog-entity', 'read', 'allow'],
     ['role:default/all_resource_reader', 'catalog-entity', 'create', 'allow'],
   ];
 
-  const allowCreateButDenyReadpolicies = [
+  const allowCreateButDenyReadPolicies = [
     // deny read for all resources
     ['role:default/all_resource_reader', 'catalog-entity', 'read', 'deny'],
+    ['role:default/all_resource_reader', 'catalog-entity', 'create', 'allow'],
+  ];
+
+  const allowOnlyCreateAndNoneReadPolicies = [
     ['role:default/all_resource_reader', 'catalog-entity', 'create', 'allow'],
   ];
 
@@ -1852,7 +1856,7 @@ describe('Policy checks with preferPermissionPolicy config', () => {
     const enfDelegate = await newEnforcerDelegate(
       adapter,
       config,
-      allowReadAndCreatepolicies,
+      allowReadAndCreatePolicies,
       groupPolicies,
     );
     const policy = await newPermissionPolicy(config, enfDelegate);
@@ -1879,7 +1883,7 @@ describe('Policy checks with preferPermissionPolicy config', () => {
     const enfDelegate = await newEnforcerDelegate(
       adapter,
       config,
-      allowCreateButDenyReadpolicies,
+      allowCreateButDenyReadPolicies,
       groupPolicies,
     );
     const policy = await newPermissionPolicy(config, enfDelegate);
@@ -1900,13 +1904,55 @@ describe('Policy checks with preferPermissionPolicy config', () => {
     expect(decision).toStrictEqual({ result: AuthorizeResult.DENY });
   });
 
+  it('should return conditional result for "catalog read operation" when preferPermissionPolicy is true (permission policy first) and there is no read policy value', async () => {
+    const config = newConfig(undefined, undefined, undefined, 'basic');
+    const adapter = await newAdapter(config);
+    const enfDelegate = await newEnforcerDelegate(
+      adapter,
+      config,
+      allowOnlyCreateAndNoneReadPolicies,
+      groupPolicies,
+    );
+    const policy = await newPermissionPolicy(config, enfDelegate);
+
+    // Mock conditionalStorage to return a conditional ALLOW for owned-reader
+    (
+      conditionalStorageMock.filterConditions as jest.Mock
+    ).mockResolvedValueOnce(conditionalPolicy);
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/mike', ['user:default/mike']), // user is owner
+    );
+    expect(decision).toStrictEqual({
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      result: AuthorizeResult.CONDITIONAL,
+      conditions: {
+        anyOf: [
+          {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['user:default/mike'],
+            },
+          },
+        ],
+      },
+    });
+  });
+
   it('should NOT allow read when preferPermissionPolicy is false by default (conditional policy first)', async () => {
     const config = newConfig();
     const adapter = await newAdapter(config);
     const enfDelegate = await newEnforcerDelegate(
       adapter,
       config,
-      allowReadAndCreatepolicies,
+      allowReadAndCreatePolicies,
       groupPolicies,
     );
     const policy = await newPermissionPolicy(config, enfDelegate);
