@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { ReactNode } from 'react';
+import { format } from 'date-fns';
 import { Link } from '@backstage/core-components';
 import {
   IndexableDocument,
@@ -24,15 +25,12 @@ import {
   Box,
   Breadcrumbs,
   Chip,
-  Divider,
-  ListItem,
   ListItemIcon,
   ListItemText,
   makeStyles,
   Typography,
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { ConfluenceSearchIcon } from '../icons';
 
 export const maxExcerptLength = 290;
 
@@ -43,14 +41,19 @@ const useStyles = makeStyles({
     marginBottom: '0.8rem',
     fontSize: '0.8rem',
   },
-  excerpt: {
-    lineHeight: '1.55',
-  },
   breadcrumbs: {
     marginTop: '1rem',
   },
   itemText: {
     wordBreak: 'break-all',
+    width: '100%',
+    marginBottom: '1rem',
+  },
+  item: {
+    display: 'flex',
+  },
+  flexContainer: {
+    flexWrap: 'wrap',
   },
 });
 
@@ -73,6 +76,7 @@ export type IndexableConfluenceDocument = IndexableDocument & {
  * @public
  */
 export interface ConfluenceResultItemProps {
+  lineClamp?: number;
   result?: IndexableDocument;
   highlight?: ResultHighlight;
   icon?: ReactNode;
@@ -86,6 +90,8 @@ export interface ConfluenceResultItemProps {
 export const ConfluenceSearchResultListItem = ({
   result,
   highlight,
+  icon,
+  lineClamp = 5,
 }: ConfluenceResultItemProps) => {
   const classes = useStyles();
   const document = result as IndexableConfluenceDocument;
@@ -119,10 +125,22 @@ export const ConfluenceSearchResultListItem = ({
   const excerpt = (
     <>
       <Typography className={classes.lastUpdated}>
-        Last Updated: {document.lastModifiedFriendly} by{' '}
-        {document.lastModifiedBy}
+        Last Updated:{' '}
+        {document.lastModifiedFriendly ??
+          format(new Date(document.lastModified), 'PPPppp')}{' '}
+        by {document.lastModifiedBy}
       </Typography>
-      <>
+      <Typography
+        component="span"
+        style={{
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: lineClamp,
+          overflow: 'hidden',
+        }}
+        color="textSecondary"
+        variant="body2"
+      >
         {highlight?.fields.text ? (
           <HighlightedSearchResultText
             text={`${
@@ -141,11 +159,11 @@ export const ConfluenceSearchResultListItem = ({
               .trim() + (result.text.length > maxExcerptLength ? '...' : '')
           }`
         )}
-      </>
+      </Typography>
 
       <Box className={classes.breadcrumbs}>
         <Breadcrumbs
-          separator={<NavigateNextIcon />}
+          separator={<NavigateNextIcon fontSize="small" />}
           maxItems={4}
           itemsBeforeCollapse={1}
           itemsAfterCollapse={2}
@@ -153,6 +171,7 @@ export const ConfluenceSearchResultListItem = ({
         >
           {document.ancestors?.map(ancestor => (
             <Chip
+              size="small"
               label={ancestor.title}
               component="a"
               href={ancestor.location}
@@ -168,20 +187,16 @@ export const ConfluenceSearchResultListItem = ({
   );
 
   return (
-    <>
-      <ListItem alignItems="center">
-        <ListItemIcon title="Confluence document">
-          <ConfluenceSearchIcon />
-        </ListItemIcon>
+    <div className={classes.item}>
+      {icon && <ListItemIcon>{icon}</ListItemIcon>}
+      <div className={classes.flexContainer}>
         <ListItemText
           primary={title}
           secondary={excerpt}
           className={classes.itemText}
           primaryTypographyProps={{ variant: 'h6' }}
         />
-      </ListItem>
-
-      <Divider component="li" />
-    </>
+      </div>
+    </div>
   );
 };

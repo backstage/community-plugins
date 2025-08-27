@@ -84,6 +84,7 @@ export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   };
   version: {
     by: {
+      displayName: string;
       publicName: string;
     };
     when: string;
@@ -358,7 +359,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
         spaceKey: data.space.key,
         spaceName: data.space.name,
         ancestors: ancestors,
-        lastModifiedBy: data.version.by.publicName,
+        lastModifiedBy:
+          data.version.by.publicName ?? data.version.by.displayName,
         lastModified: data.version.when,
         lastModifiedFriendly: data.version.friendlyWhen,
       },

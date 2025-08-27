@@ -51,6 +51,7 @@ export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   };
   version: {
     by: {
+      displayName: string;
       publicName: string;
     };
     when: string;
