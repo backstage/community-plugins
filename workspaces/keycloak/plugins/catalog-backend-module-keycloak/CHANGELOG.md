@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.14.0
+
+### Minor Changes
+
+- 46ce843: Backstage version bump to v1.42.4
+
 ## 3.13.1
 
 ### Patch Changes
