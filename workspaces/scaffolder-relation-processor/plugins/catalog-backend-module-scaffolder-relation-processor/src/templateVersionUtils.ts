@@ -23,6 +23,7 @@ import {
 import { AuthService } from '@backstage/backend-plugin-api';
 import { NotificationPayload } from '@backstage/plugin-notifications-common';
 import type { Entity } from '@backstage/catalog-model';
+import { TEMPLATE_VERSION_UPDATED_TOPIC } from './constants';
 
 /**
  * Cache structure for storing template version information
@@ -57,7 +58,7 @@ export async function handleTemplateVersion(
   if (cachedData && cachedData.version < currentVersion) {
     if (eventsService) {
       await eventsService.publish({
-        topic: 'relationProcessor.template:version_updated',
+        topic: TEMPLATE_VERSION_UPDATED_TOPIC,
         eventPayload: {
           entityRef,
           previousVersion: cachedData.version,
@@ -82,55 +83,35 @@ export async function handleTemplateVersion(
  */
 function createEntityCatalogUrl(entity: Entity): string {
   const namespace = entity.metadata.namespace || 'default';
-  return `/catalog/${namespace}/${entity.kind}/${entity.metadata.name}`.toLowerCase();
-}
+  const encodedNamespace = encodeURIComponent(namespace.toLowerCase());
+  const encodedKind = encodeURIComponent(entity.kind.toLowerCase());
+  const encodedName = encodeURIComponent(entity.metadata.name.toLowerCase());
 
-/**
- * Groups entities by their owners using "ownedBy" relations
- *
- * @param entities - Array of entities to group by owners
- * @returns Map where keys are owner references and values are arrays of entities owned by that owner
- *
- * @internal
- */
-function groupEntitiesByOwners(entities: Entity[]): Map<string, Entity[]> {
-  const entitiesByOwner = new Map<string, Entity[]>();
-
-  for (const entity of entities) {
-    const ownedByRelations =
-      entity.relations?.filter(rel => rel.type === 'ownedBy') || [];
-
-    for (const relation of ownedByRelations) {
-      const ownerRef = relation.targetRef;
-      if (!entitiesByOwner.has(ownerRef)) {
-        entitiesByOwner.set(ownerRef, []);
-      }
-      entitiesByOwner.get(ownerRef)!.push(entity);
-    }
-  }
-
-  return entitiesByOwner;
+  return `/catalog/${encodedNamespace}/${encodedKind}/${encodedName}`;
 }
 
 /**
  * Sends notifications to owners for each entity that should be updated
  *
  * @param notifications - Notification service to send notifications
- * @param entitiesByOwner - Map of owner references to their entities that need updates
+ * @param entities - Array of entities that need update notifications sent to their owners
  *
  * @internal
  */
 async function sendNotificationsToOwners(
   notifications: NotificationService,
-  entitiesByOwner: Map<string, Entity[]>,
+  entities: Entity[],
 ): Promise<void> {
-  for (const [ownerRef, entities] of entitiesByOwner) {
-    const recipients: NotificationRecipients = {
-      type: 'entity',
-      entityRef: ownerRef,
-    };
+  for (const entity of entities) {
+    const ownedByRelations =
+      entity.relations?.filter(rel => rel.type === 'ownedBy') || [];
 
-    for (const entity of entities) {
+    for (const relation of ownedByRelations) {
+      const recipients: NotificationRecipients = {
+        type: 'entity',
+        entityRef: relation.targetRef,
+      };
+
       const catalogUrl = createEntityCatalogUrl(entity);
 
       const notificationPayload: NotificationPayload = {
@@ -183,7 +164,5 @@ export async function handleTemplateUpdateNotifications(
     { token },
   );
 
-  const entitiesByOwner = groupEntitiesByOwners(scaffoldedEntities.items);
-
-  await sendNotificationsToOwners(notifications, entitiesByOwner);
+  await sendNotificationsToOwners(notifications, scaffoldedEntities.items);
 }

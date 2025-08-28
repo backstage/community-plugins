@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './relations';
-export * from './types';
-export * from './constants';
-export { catalogModuleScaffolderRelationProcessor as default } from './module';
-export * from './ScaffolderRelationEntityProcessor';
+
+/**
+ * Topic for template version update events
+ *
+ * @public
+ */
+export const TEMPLATE_VERSION_UPDATED_TOPIC =
+  'relationProcessor.template:version_updated';

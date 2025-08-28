@@ -24,6 +24,7 @@ import { CatalogClient } from '@backstage/catalog-client';
 
 import { ScaffolderRelationEntityProcessor } from './ScaffolderRelationEntityProcessor';
 import { handleTemplateUpdateNotifications } from './templateVersionUtils';
+import { TEMPLATE_VERSION_UPDATED_TOPIC } from './constants';
 
 /**
  * Catalog processor that adds link relation between scaffolder templates and their generated entities
@@ -54,7 +55,7 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
         if (events) {
           await events.subscribe({
             id: 'scaffolder-relation-processor',
-            topics: ['relationProcessor.template:version_updated'],
+            topics: [TEMPLATE_VERSION_UPDATED_TOPIC],
             async onEvent(params) {
               const payload = params.eventPayload as {
                 entityRef: string;

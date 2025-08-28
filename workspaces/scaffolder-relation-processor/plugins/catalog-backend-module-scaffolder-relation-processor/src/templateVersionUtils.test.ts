@@ -17,7 +17,7 @@
 import type { Entity } from '@backstage/catalog-model';
 import { CatalogClient } from '@backstage/catalog-client';
 import type { NotificationService } from '@backstage/plugin-notifications-node';
-import type { AuthService } from '@backstage/backend-plugin-api';
+import { mockServices } from '@backstage/backend-test-utils';
 
 import { handleTemplateUpdateNotifications } from './templateVersionUtils';
 
@@ -27,7 +27,7 @@ jest.mock('@backstage/catalog-client');
 describe('templateVersionUtils', () => {
   let mockCatalogClient: jest.Mocked<CatalogClient>;
   let mockNotificationService: jest.Mocked<NotificationService>;
-  let mockAuthService: jest.Mocked<AuthService>;
+  let mockAuthService = mockServices.auth.mock();
 
   beforeEach(() => {
     jest.clearAllMocks();
