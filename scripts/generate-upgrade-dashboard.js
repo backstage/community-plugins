@@ -88,13 +88,14 @@ function getVersionDifference(currentVersion, latestVersion) {
 
 // categorize workspaces by how outdated they are
 function categorizeWorkspaces(workspaces, latestVersion) {
-  const tiers = { tier1: [], tier2: [], tier3: [] };
+  const tiers = { tier1: [], tier2: [], tier3: [], tier4: [] };
 
   workspaces.forEach(workspace => {
     const versionDiff = getVersionDifference(workspace.version, latestVersion);
     if (versionDiff >= 3) tiers.tier1.push(workspace);
     else if (versionDiff === 2) tiers.tier2.push(workspace);
     else if (versionDiff === 1) tiers.tier3.push(workspace);
+    else tiers.tier4.push(workspace);
   });
 
   // sort each tier by workspace name
@@ -105,15 +106,19 @@ function categorizeWorkspaces(workspaces, latestVersion) {
   return tiers;
 }
 
+// generate markdown summary for a tier
+function generateTierSummary(workspaces, emoji, title) {
+  if (workspaces.length === 0) return '';
+  return `- ${emoji} ${title}: **${workspaces.length}**\n`;
+}
+
 // generate markdown table for a tier
-function generateTierTable(workspaces, emoji, title, description) {
+function generateTierTable(workspaces, emoji, title) {
   if (workspaces.length === 0) return '';
 
-  let output = `## ${emoji} ${title}${
-    description ? ` – ${description}` : ''
-  }\n\n`;
+  let output = `## ${emoji} ${title}\n\n`;
   output += '| Workspace | Current Version |\n';
-  output += '|-----------|----------------|\n';
+  output += '|-----------|-----------------|\n';
   workspaces.forEach(workspace => {
     output += `| ${workspace.name} | ${workspace.version} |\n`;
   });
@@ -125,33 +130,32 @@ function generateDashboard(tiers, latestVersion) {
   let output =
     'Tracking workspaces not on the latest Backstage minor version\n\n';
   output += `**Latest Version:** ${latestVersion}\n\n`;
-
-  output += generateTierTable(
-    tiers.tier1,
-    '🔴',
-    '≥ 3 minor versions behind',
-    '',
-  );
-  output += generateTierTable(tiers.tier2, '🟠', '2 minor versions behind', '');
-  output += generateTierTable(tiers.tier3, '🟡', '1 minor version behind', '');
+  output += '---\n\n';
 
   const totalOutdated =
     tiers.tier1.length + tiers.tier2.length + tiers.tier3.length;
   if (totalOutdated === 0) {
-    output += '## 🎉 All workspaces are up to date!\n\n';
+    output += '## Summary: All workspaces are up to date! 🎉\n\n';
+  } else {
+    output += `## Summary: Outdated workspaces: ${totalOutdated}\n\n`;
   }
 
-  output += '---\n\n### Summary\n\n';
-  output += `- **Total outdated workspaces:** ${totalOutdated}\n`;
-  output += `- **≥ 3 minor versions behind:** ${tiers.tier1.length}\n`;
-  output += `- **2 minor versions behind:** ${tiers.tier2.length}\n`;
-  output += `- **1 minor version behind:** ${tiers.tier3.length}\n\n`;
+  output += generateTierSummary(tiers.tier1, '🔴', '≥ 3 minor versions behind');
+  output += generateTierSummary(tiers.tier2, '🟠', '2 minor versions behind');
+  output += generateTierSummary(tiers.tier3, '🟡', '1 minor version behind');
+  output += generateTierSummary(tiers.tier4, '🟢', 'up to date');
+  output += '\n';
+
+  output += generateTierTable(tiers.tier1, '🔴', '≥ 3 minor versions behind');
+  output += generateTierTable(tiers.tier2, '🟠', '2 minor versions behind');
+  output += generateTierTable(tiers.tier3, '🟡', '1 minor version behind');
+  output += generateTierTable(tiers.tier4, '🟢', 'up to date');
 
   output += `*Dashboard generated on ${
     new Date().toISOString().split('T')[0]
   }*\n`;
 
-  return output.trim();
+  return output;
 }
 
 // main function
