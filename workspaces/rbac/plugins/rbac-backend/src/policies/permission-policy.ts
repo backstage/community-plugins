@@ -208,12 +208,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
       // handle permission with 'resource' type
-      const hasNamedPermission =
-        await this.hasImplicitPermissionSpecifiedByName(
-          permissionName,
-          action,
-          roles,
-        );
+      const hasNamedPermission = await this.hasImplicitPermission(
+        permissionName,
+        action,
+        roles,
+      );
 
       // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
       if (
@@ -242,9 +241,15 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         );
 
         if (this.preferPermissionPolicy) {
+          const hasResourcedPermission = await this.hasImplicitPermission(
+            resourceType,
+            action,
+            roles,
+          );
           // Permission policy first
-          status = await this.isAuthorized(userEntityRef, obj, action, roles);
-          if (!status && conditionResult) {
+          if (hasNamedPermission || hasResourcedPermission) {
+            status = await this.isAuthorized(userEntityRef, obj, action, roles);
+          } else if (conditionResult) {
             return conditionResult;
           }
         } else {
@@ -274,7 +279,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     }
   }
 
-  private async hasImplicitPermissionSpecifiedByName(
+  private async hasImplicitPermission(
     permissionName: string,
     action: string,
     roles: string[],
