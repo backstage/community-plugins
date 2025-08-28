@@ -49,5 +49,9 @@ export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
   ): Promise<Entity>;
 }
 
+// @public
+export const TEMPLATE_VERSION_UPDATED_TOPIC =
+  'relationProcessor.template:version_updated';
+
 // (No @packageDocumentation comment for this package)
 ```
