@@ -112,5 +112,4 @@ Backstage’s Notification System empowers plugins and services to deliver alert
 The Notification plugin delivers real-time alerting, with backend/frontend components to send and display notifications - including push signals.
 To trigger alerts when a new announcement appears, you can combine these systems: send a notification via the Notifications backend whenever an announcement is created.
 
-Announcement notifications are disabled by-default (enabled: false).
-Notifications can be sent if "sendNotification" option in the UI is enabled.
+Announcement notifications are disabled by-default. Notifications can be sent if "sendNotification" option in the UI is enabled.
