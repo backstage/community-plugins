@@ -154,10 +154,15 @@ export const parseEntityURL = (entityUrl?: string) => {
       return null;
     }
     const url = new URL(matches[0]);
-    const fn = match('/:org/:repo', { end: false });
-    const extractedContent = fn(url.pathname);
+    const hostname = url.host.toLowerCase();
+    let matcher = match('/:org/:repo', { end: false });
+
+    if (hostname === 'dev.azure.com') {
+      matcher = match('/:org/:project/_git/:repo', { end: false });
+    }
+    const extractedContent = matcher(url.pathname);
     if (extractedContent) {
-      return { ...extractedContent, host: url.host };
+      return { ...extractedContent, host: hostname };
     }
     return null;
   } catch (error) {
@@ -238,14 +243,13 @@ export function getSourceURLWiseProject(
 
       if (sourceUrlTag && typeof sourceUrlTag.value === 'string') {
         sourceUrl = sourceUrlTag.value;
-        let urlString = sourceUrl;
-        // Prepend protocol if missing for URL parsing
-        if (!/^https?:\/\//i.test(urlString)) {
-          urlString = `https://${urlString}`;
-        }
+        const urlString = sourceUrl.startsWith('http')
+          ? sourceUrl
+          : `https://${sourceUrl}`;
+
         try {
           const urlObj = new URL(urlString);
-          host = urlObj.host;
+          host = urlObj.host.toLocaleLowerCase();
           // Remove leading/trailing slashes and split
           pathname = urlObj.pathname;
         } catch (e) {
