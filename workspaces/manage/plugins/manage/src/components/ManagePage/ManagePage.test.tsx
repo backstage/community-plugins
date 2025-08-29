@@ -30,7 +30,7 @@ import {
   manageApiRef,
 } from '@backstage-community/plugin-manage-react';
 
-import { ManagePageImpl } from './ManagePage';
+import { ManagePageImpl } from './ManagePageOld';
 import { ManageTabsImpl } from '../ManageTabs';
 
 const starredEntities: StarredEntitiesApi = {
@@ -55,7 +55,7 @@ describe('ManagePage', () => {
     const mockApi: ManageApi = {
       getProviders: () => [],
       getOwnersAndEntities: async () => ({
-        owners: { groups: [], ownedEntityRefs: [] },
+        owners: { groups: [], ownerEntityRefs: [], user: undefined },
         ownedEntities: [],
       }),
       kindOrder: [],
@@ -92,7 +92,11 @@ describe('ManagePage', () => {
     const mockApi: ManageApi = {
       getProviders: () => [],
       getOwnersAndEntities: async () => ({
-        owners: { groups: [], ownedEntityRefs: ['user:default/guest'] },
+        owners: {
+          groups: [],
+          ownerEntityRefs: ['user:default/guest'],
+          user: undefined,
+        },
         ownedEntities: [
           {
             apiVersion: 'backstage.io/v1alpha1',

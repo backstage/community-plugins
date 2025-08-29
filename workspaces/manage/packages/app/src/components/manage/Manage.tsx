@@ -17,12 +17,12 @@ import {
   MANAGE_KIND_COMMON,
   ManageTabs,
   OrganizationGraph,
-} from '@backstage-community/plugin-manage';
+} from '@backstage-community/plugin-manage/legacy';
 import {
   manageTechInsightsColumns,
   ManageTechInsightsCards,
   ManageTechInsightsGrid,
-} from '@backstage-community/plugin-manage-module-tech-insights';
+} from '@backstage-community/plugin-manage-module-tech-insights/legacy';
 
 export function Manage() {
   return (

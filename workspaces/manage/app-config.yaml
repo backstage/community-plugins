@@ -1,6 +1,62 @@
 app:
   title: Tech insights Example App
   baseUrl: http://localhost:3000
+  packages:
+    include:
+      - '@backstage/plugin-app-visualizer'
+      - '@backstage/plugin-catalog-graph'
+      - '@backstage-community/plugin-manage'
+      - '@backstage-community/plugin-manage-module-tech-insights'
+  extensions:
+    - manage-tab:app/foo-tab2:
+        config:
+          title: Second tab
+    - manage-card-widget:app/foo-widget1:
+        config:
+          attachTo:
+            - component
+            - system
+            - $entities
+    - manage-content-widget:tech-insights/cards:
+        config:
+          attachTo:
+            - component
+            - $entities
+    - manage-content-widget:tech-insights/grid:
+        config:
+          attachTo:
+            - system
+    - manage-column:tech-insights/checks:
+        config:
+          attachTo:
+            - tab: '$entities'
+              multi: false
+            - tab: 'component'
+              multi: false
+            - system
+            - api
+
+manage:
+  title: Manage my things
+  subtitle: Things I own and work with
+  showStarred: true
+  enableWholeOrganization: true
+  order:
+    tabs:
+      - entities
+      - starred-entities
+      - my-tab-1
+      - organization
+      - my-tab-2
+    cards: []
+    contentAbove:
+      - app/foo-widget1
+      - app/foo-widget2
+      - tech-insights/checks
+    contentBelow:
+    columns:
+      - app/foo-column
+      - tech-insights/checks
 
 organization:
   name: Tech insights Example

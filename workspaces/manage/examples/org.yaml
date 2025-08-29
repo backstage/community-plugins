@@ -19,7 +19,32 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
+  name: sub-guests
+spec:
+  type: team
+  children: [sub-sub-guests]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: sub-sub-guests
+spec:
+  type: team
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
   name: employees
+spec:
+  type: team
+  children:
+    - developers
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: developers
 spec:
   type: team
   children: []
@@ -31,7 +56,7 @@ metadata:
 spec:
   type: team
   children:
-    - guests
+    - untrusted
     - employees
 ---
 apiVersion: backstage.io/v1alpha1
@@ -41,3 +66,12 @@ metadata:
 spec:
   type: team
   children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: untrusted
+spec:
+  type: team
+  children:
+    - guests

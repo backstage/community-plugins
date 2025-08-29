@@ -26,7 +26,7 @@ import {
 import {
   createManageTechInsightsApiFactory,
   manageTechInsightsApiRef,
-} from '@backstage-community/plugin-manage-module-tech-insights';
+} from '@backstage-community/plugin-manage-module-tech-insights/legacy';
 import { createManageApiFactory } from '@backstage-community/plugin-manage-react';
 
 export const apis: AnyApiFactory[] = [

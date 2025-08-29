@@ -97,7 +97,8 @@ export function ManageGaugeGrid(props: ManageGaugeGridProps) {
 
   const content = (
     <Grid
-      columnSpacing={2}
+      spacing={0}
+      sx={{ gap: 2 }}
       marginBottom={2}
       {...containerProps}
       className={noBottomMargin ? gridRootWithoutBottomMargin : undefined}
@@ -110,7 +111,7 @@ export function ManageGaugeGrid(props: ManageGaugeGridProps) {
         return (
           <Grid item key={i} padding={0} className={gridItem}>
             <div className={box} style={{ borderLeftColor: color }}>
-              <Grid container spacing={0} padding={1} columnSpacing={1}>
+              <Grid container spacing={0} sx={{ gap: 2 }} padding={1}>
                 <Grid item>
                   <Typography variant="body2" className={percentText}>
                     {Math.round(value)}%

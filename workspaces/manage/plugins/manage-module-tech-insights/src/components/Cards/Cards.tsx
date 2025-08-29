@@ -20,7 +20,6 @@ import Box from '@mui/material/Box';
 import Grid, { GridOwnProps } from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 
-import { useApi } from '@backstage/core-plugin-api';
 import { GaugePropsGetColor } from '@backstage/core-components';
 import {
   useCurrentKinds,
@@ -32,14 +31,15 @@ import {
 
 import {
   ResponsesForCheck,
+  useManageTechInsights,
   useManageTechInsightsForEntities,
 } from '../ManageProvider/ManageProviderTechInsights';
-import { manageTechInsightsApiRef } from '../../api';
+
 import {
   isTitleAsObject,
   ManageTechInsightsMapTitle,
   ManageTechInsightsTitle,
-} from '../../title';
+} from '../../title/title';
 import { useAccordionTitle } from '../../utils';
 
 const useStyles = makeStyles({
@@ -116,9 +116,8 @@ export function ManageTechInsightsCards(props: ManageTechInsightsCardsProps) {
   const { checks, responsesForCheck } =
     useManageTechInsightsForEntities(entities);
 
-  const { getPercentColor, mapTitle: defaultMapTitle } = useApi(
-    manageTechInsightsApiRef,
-  );
+  const { getPercentColor, mapTitle: defaultMapTitle } =
+    useManageTechInsights();
 
   const mapTitle = props.mapTitle ?? defaultMapTitle;
 
@@ -141,7 +140,13 @@ export function ManageTechInsightsCards(props: ManageTechInsightsCardsProps) {
   );
 
   const grid = (
-    <Grid columnSpacing={2} marginBottom={2} {...containerProps} container>
+    <Grid
+      spacing={0}
+      sx={{ gap: 2 }}
+      marginBottom={2}
+      {...containerProps}
+      container
+    >
       {checks.map(({ check, uniq }) => (
         <Grid item key={uniq} padding={0}>
           <GaugeCard

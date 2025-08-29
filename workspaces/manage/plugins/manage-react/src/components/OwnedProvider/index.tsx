@@ -19,6 +19,7 @@ import { OwnedProvider } from './OwnedProvider';
 
 export {
   useOwnedKinds,
+  useOwnersAndEntities,
   useOwnedEntities,
   useManagedEntities,
   useOwners,

@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import type { Check } from '@backstage-community/plugin-tech-insights-common';
 import type { ProgressColor } from '@backstage-community/plugin-manage-react';
 
 import type { ManageTechInsights } from './ManageTechInsights';
 import { ManageProviderTechInsights } from '../components/ManageProvider';
 import { ManageTechInsightsMapTitle } from '../title';
-
-function defaultGetPercentColor(percent: number): ProgressColor {
-  if (percent >= 100) return 'success';
-  else if (percent > 50) return 'warning';
-  return 'error';
-}
+import { defaultGetPercentColor, defaultMapTitle } from './defaults';
 
 /**
  * Options for the {@link DefaultManageTechInsightsApi}.
@@ -51,11 +46,6 @@ export interface DefaultManageApiOptions {
    */
   mapTitle?: ManageTechInsightsMapTitle;
 }
-
-const defaultMapTitle: ManageTechInsightsMapTitle = check => ({
-  title: check.name,
-  tooltip: check.description,
-});
 
 /**
  * Default implementation of the {@link ManageTechInsights} API.

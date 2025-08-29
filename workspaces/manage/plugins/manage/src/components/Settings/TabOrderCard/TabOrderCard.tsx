@@ -16,15 +16,13 @@
 import { useCallback, useMemo } from 'react';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 
 import { ReorderableTabs } from '@backstage-community/plugin-manage-react';
 
-import { useSetTabsOrder } from '../../TabsOrder';
+import { useSetTabsOrder, useRemoveTabsOrder } from '../../TabsOrder';
 import { useSettings } from '../SettingsProvider';
+import { SettingsCard } from '../SettingsCard/SettingsCard';
 
 /**
  * The TabOrder card that is displayed in the default settings page.
@@ -35,10 +33,11 @@ export function TabOrderCard() {
   const { tabs } = useSettings();
 
   const setTabOrder = useSetTabsOrder();
+  const removeTabOrder = useRemoveTabsOrder();
 
   const onReset = useCallback(() => {
-    setTabOrder([]);
-  }, [setTabOrder]);
+    removeTabOrder();
+  }, [removeTabOrder]);
 
   const orderedTabs = useMemo(
     () => tabs.map(tab => ({ id: tab.path, title: tab.title })),
@@ -46,21 +45,21 @@ export function TabOrderCard() {
   );
 
   return (
-    <Card>
-      <CardHeader
-        title="Tab order"
-        subheader="Reorder the tabs to your liking by dragging them"
-        action={
+    <SettingsCard
+      setting={{
+        title: 'Tab order',
+        subtitle: 'Reorder the tabs to your liking by dragging them',
+        action: (
           <Button aria-label="reset" onClick={onReset}>
             Reset
           </Button>
-        }
-      />
-      <CardContent>
-        <Box>
-          <ReorderableTabs tabs={orderedTabs} onChange={setTabOrder} />
-        </Box>
-      </CardContent>
-    </Card>
+        ),
+        element: (
+          <Box>
+            <ReorderableTabs tabs={orderedTabs} onChange={setTabOrder} />
+          </Box>
+        ),
+      }}
+    />
   );
 }

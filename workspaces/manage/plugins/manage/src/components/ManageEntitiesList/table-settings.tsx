@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createUserSettingsContext } from '@backstage-community/plugin-manage-react';
 
-const entitesTablePageSizeFeature = '$manage-page-entities-table';
-const entitesTablePageSizeKey = 'page-size';
+import {
+  createUserSettingsContext,
+  userSettingsKeys,
+} from '@backstage-community/plugin-manage-react';
 
 export const defaultPageSize = 10;
+
+const [feature, key] = userSettingsKeys['entities-table-page-size'];
 
 export const {
   Provider: EntitiesTablePageSizeProvider,
   useSetting: useEntitesTablePageSize,
   useSetSetting: useSetEntitesTablePageSize,
-} = createUserSettingsContext(
-  entitesTablePageSizeFeature,
-  entitesTablePageSizeKey,
-  {
-    defaultValue: defaultPageSize,
-    coerce: value =>
-      typeof value === 'number' && !isNaN(value) ? value : defaultPageSize,
-  },
-);
+} = createUserSettingsContext(feature, key, {
+  defaultValue: defaultPageSize,
+  coerce: value =>
+    typeof value === 'number' && !isNaN(value) ? value : defaultPageSize,
+});

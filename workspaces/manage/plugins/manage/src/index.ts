@@ -16,6 +16,8 @@
 
 export * from './plugin';
 
+export { managePlugin as default } from './plugin';
+
 export type {
   TableRow,
   ManageEntitiesTableProps,
@@ -51,6 +53,7 @@ export type {
 
 export { MANAGE_KIND_COMMON } from './components/ManageTabs';
 
+export type { Setting } from './components/Settings';
 export {
   DefaultSettings,
   KindOrderCard,

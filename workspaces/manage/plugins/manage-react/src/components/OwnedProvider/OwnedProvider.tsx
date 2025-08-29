@@ -23,8 +23,9 @@ import {
   useStarredEntities,
 } from '@backstage/plugin-catalog-react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { ErrorPanel, Progress } from '@backstage/core-components';
+import { ErrorPanel } from '@backstage/core-components';
 
+import { Progress } from '../Progress';
 import { useKindOrder } from '../KindOrder';
 import { arrayify, joinKinds } from '../../utils';
 import { defaultKinds } from './types';
@@ -73,7 +74,11 @@ export function OwnedProvider(props: PropsWithChildren<OwnedProviderProps>) {
   const value = useMemo(
     (): OwnedEntitiesProviderContext => ({
       kinds,
-      owners: asyncState.value?.owners ?? { groups: [], ownedEntityRefs: [] },
+      owners: asyncState.value?.owners ?? {
+        groups: [],
+        ownerEntityRefs: [],
+        user: undefined,
+      },
       entities: asyncState.value?.ownedEntities ?? [],
       starredEntities: starredEntities.value ?? [],
     }),
@@ -82,6 +87,7 @@ export function OwnedProvider(props: PropsWithChildren<OwnedProviderProps>) {
 
   if (asyncState.loading || starredEntities.loading) {
     return <Progress />;
+    // return <Progress  />;
   } else if (asyncState.error) {
     return <ErrorPanel error={asyncState.error} />;
   }
@@ -131,6 +137,19 @@ export function useOwnedKinds(onlyOwned = false): string[] {
       return ownedEntities.has(lcKind);
     });
   }, [onlyOwned, kinds, ownedEntities]);
+}
+
+/**
+ * Returns all owned entities and owners.
+ *
+ * @public
+ */
+export function useOwnersAndEntities(): {
+  owners: Owners;
+  entities: Entity[];
+} {
+  const { entities, owners } = useContext(ctx);
+  return { entities, owners };
 }
 
 /**

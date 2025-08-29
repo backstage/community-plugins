@@ -93,6 +93,23 @@ export function useCurrentKinds(
 }
 
 /**
+ * Returns the current tab as the name of a kind, or '$starred' or '$entities'.
+ *
+ * @public
+ */
+export function useCurrentTab() {
+  const currentKind = useCurrentKind();
+
+  if (currentKind === KindStarred) {
+    return '$starred';
+  }
+  if (!currentKind) {
+    return '$entities';
+  }
+  return currentKind;
+}
+
+/**
  *
  * Returns the title for the current kind, e.g. "components" or
  * "starred entities".
