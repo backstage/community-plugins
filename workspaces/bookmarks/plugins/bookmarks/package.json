@@ -55,8 +55,10 @@
     "react-router-dom": "~6.27.0"
   },
   "files": [
+    "config.d.ts",
     "dist"
   ],
+  "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",

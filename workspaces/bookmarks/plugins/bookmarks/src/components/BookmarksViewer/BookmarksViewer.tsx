@@ -27,6 +27,7 @@ import { BookmarkMobileView } from './helpers/BookmarkMobileView';
 import { BookmarkViewerFrame } from './helpers/BookmarkViewerFrame';
 import { NavButton } from './helpers/NavButton';
 import { TableOfContents } from './helpers/TableOfContents';
+import { useCustomProtocol } from '../../hooks/useCustomProtocol';
 
 /** Props for layout components */
 export type BookmarkViewerLayoutProps = {
@@ -43,6 +44,8 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
     flattenedTree[0],
   );
   const { t } = useTranslation();
+
+  const { src, href } = useCustomProtocol(currentNode.value);
 
   const isDesktop = useIsDesktop();
   const View = isDesktop ? BookmarkDesktopView : BookmarkMobileView;
@@ -79,7 +82,7 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
     ) : null;
   }, [flattenedTree, setCurrentNode, currentFlattenedIndex]);
 
-  const viewer = <BookmarkViewerFrame src={currentNode.value} />;
+  const viewer = <BookmarkViewerFrame src={src} />;
 
   const toc = (
     <TableOfContents
@@ -91,7 +94,7 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
 
   const openInNewTab = (
     <Button
-      href={currentNode.value}
+      href={href}
       target="_blank"
       rel="noopener"
       sx={{ mb: 2 }}

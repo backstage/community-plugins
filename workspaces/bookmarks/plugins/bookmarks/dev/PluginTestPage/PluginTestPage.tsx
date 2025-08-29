@@ -22,8 +22,7 @@ import { EntityBookmarksContent } from '../../src/components/EntityBookmarksCont
 import { Entity } from '@backstage/catalog-model';
 
 const testData: UrlTree = {
-  'Life story':
-    'https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic',
+  'Life story': 'gdoc:1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw', // gdoc defined in app-config.yaml
   'My cool gadgets and gizmos': {
     'fortune cowsay lolcat': 'https://logonoff.co/projects/fcl/index.html',
     'XP tour': 'https://logonoff.co/projects/windowsxptour/index.html',
