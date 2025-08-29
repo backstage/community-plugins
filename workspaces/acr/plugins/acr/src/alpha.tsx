@@ -78,6 +78,6 @@ export const acrImagesEntityContent: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'acr',
+  pluginId: 'acr',
   extensions: [acrApi, acrImagesEntityContent],
 });

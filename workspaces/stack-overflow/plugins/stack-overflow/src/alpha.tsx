@@ -46,7 +46,7 @@ const stackOverflowSearchResultListItem = SearchResultListItemBlueprint.make({
 
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'stack-overflow',
+  pluginId: 'stack-overflow',
   // TODO: Migrate homepage cards when the declarative homepage plugin supports them
   extensions: [stackOverflowApi, stackOverflowSearchResultListItem],
 });
