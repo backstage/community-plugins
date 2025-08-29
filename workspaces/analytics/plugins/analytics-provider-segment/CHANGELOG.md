@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.18.0
+
+### Minor Changes
+
+- d03671a: - Added support for App version and Backstage version tracking in analytics events
+  - New configuration options: `appVersion` and `backstageVersion` for enhanced analytics segmentation
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
 ## 1.17.0
 
 ### Minor Changes
