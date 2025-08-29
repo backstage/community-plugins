@@ -27,7 +27,7 @@ import {
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'grafana',
+  pluginId: 'grafana',
   extensions: [
     grafanaApiExtension,
     entityGrafanaAlertsCard,
