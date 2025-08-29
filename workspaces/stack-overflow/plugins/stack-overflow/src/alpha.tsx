@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { configApiRef, createApiFactory } from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendPlugin,
@@ -24,13 +24,12 @@ import { StackOverflowClient, stackOverflowApiRef } from './api';
 
 /** @alpha */
 const stackOverflowApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: stackOverflowApiRef,
       deps: { configApi: configApiRef },
       factory: ({ configApi }) => StackOverflowClient.fromConfig(configApi),
     }),
-  },
 });
 
 /** @alpha */
@@ -46,7 +45,7 @@ const stackOverflowSearchResultListItem = SearchResultListItemBlueprint.make({
 
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'stack-overflow',
+  pluginId: 'stack-overflow',
   // TODO: Migrate homepage cards when the declarative homepage plugin supports them
   extensions: [stackOverflowApi, stackOverflowSearchResultListItem],
 });

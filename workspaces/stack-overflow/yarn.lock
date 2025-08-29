@@ -1553,9 +1553,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-stack-overflow-backend@workspace:plugins/stack-overflow-backend"
   dependencies:
-    "@backstage/backend-test-utils": "npm:^1.8.0"
-    "@backstage/cli": "npm:^0.34.1"
-    "@backstage/plugin-search-backend-module-stack-overflow-collator": "npm:^0.3.12"
+    "@backstage/backend-test-utils": "backstage:^"
+    "@backstage/cli": "backstage:^"
+    "@backstage/plugin-search-backend-module-stack-overflow-collator": "backstage:^"
     "@types/node-fetch": "npm:^2.5.12"
     node-fetch: "npm:^2.6.7"
     qs: "npm:^6.9.4"
@@ -1567,15 +1567,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-stack-overflow@workspace:plugins/stack-overflow"
   dependencies:
-    "@backstage/cli": "npm:^0.34.1"
-    "@backstage/config": "npm:^1.3.3"
-    "@backstage/core-components": "npm:^0.17.5"
-    "@backstage/core-plugin-api": "npm:^1.10.9"
-    "@backstage/frontend-plugin-api": "npm:^0.11.0"
-    "@backstage/plugin-home-react": "npm:^0.1.29"
-    "@backstage/plugin-search-common": "npm:^1.2.19"
-    "@backstage/plugin-search-react": "npm:^1.9.3"
-    "@backstage/test-utils": "npm:^1.7.11"
+    "@backstage/cli": "backstage:^"
+    "@backstage/config": "backstage:^"
+    "@backstage/core-components": "backstage:^"
+    "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/plugin-home-react": "backstage:^"
+    "@backstage/plugin-search-common": "backstage:^"
+    "@backstage/plugin-search-react": "backstage:^"
+    "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@testing-library/dom": "npm:^10.0.0"
@@ -1724,7 +1724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-test-utils@npm:^1.8.0":
+"@backstage/backend-test-utils@backstage:^::backstage=1.42.4&npm=1.8.0, @backstage/backend-test-utils@npm:^1.8.0":
   version: 1.8.0
   resolution: "@backstage/backend-test-utils@npm:1.8.0"
   dependencies:
@@ -1810,7 +1810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.34.1":
+"@backstage/cli@backstage:^::backstage=1.42.4&npm=0.34.1, @backstage/cli@npm:^0.34.1":
   version: 0.34.1
   resolution: "@backstage/cli@npm:0.34.1"
   dependencies:
@@ -1977,7 +1977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config@npm:^1.3.3":
+"@backstage/config@backstage:^::backstage=1.42.4&npm=1.3.3, @backstage/config@npm:^1.3.3":
   version: 1.3.3
   resolution: "@backstage/config@npm:1.3.3"
   dependencies:
@@ -2016,7 +2016,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.17.5":
+"@backstage/core-components@backstage:^::backstage=1.42.4&npm=0.17.5, @backstage/core-components@npm:^0.17.5":
   version: 0.17.5
   resolution: "@backstage/core-components@npm:0.17.5"
   dependencies:
@@ -2070,7 +2070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.10.9":
+"@backstage/core-plugin-api@backstage:^::backstage=1.42.4&npm=1.10.9, @backstage/core-plugin-api@npm:^1.10.9":
   version: 1.10.9
   resolution: "@backstage/core-plugin-api@npm:1.10.9"
   dependencies:
@@ -2091,7 +2091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/e2e-test-utils@npm:^0.1.1":
+"@backstage/e2e-test-utils@backstage:^::backstage=1.42.4&npm=0.1.1, @backstage/e2e-test-utils@npm:^0.1.1":
   version: 0.1.1
   resolution: "@backstage/e2e-test-utils@npm:0.1.1"
   dependencies:
@@ -2126,7 +2126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.11.0":
+"@backstage/frontend-plugin-api@backstage:^::backstage=1.42.4&npm=0.11.0, @backstage/frontend-plugin-api@npm:^0.11.0":
   version: 0.11.0
   resolution: "@backstage/frontend-plugin-api@npm:0.11.0"
   dependencies:
@@ -2223,7 +2223,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-home-react@npm:^0.1.29":
+"@backstage/plugin-home-react@backstage:^::backstage=1.42.4&npm=0.1.29, @backstage/plugin-home-react@npm:^0.1.29":
   version: 0.1.29
   resolution: "@backstage/plugin-home-react@npm:0.1.29"
   dependencies:
@@ -2298,7 +2298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-backend-module-stack-overflow-collator@npm:^0.3.12":
+"@backstage/plugin-search-backend-module-stack-overflow-collator@backstage:^::backstage=1.42.4&npm=0.3.12, @backstage/plugin-search-backend-module-stack-overflow-collator@npm:^0.3.12":
   version: 0.3.12
   resolution: "@backstage/plugin-search-backend-module-stack-overflow-collator@npm:0.3.12"
   dependencies:
@@ -2329,7 +2329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-common@npm:^1.2.19":
+"@backstage/plugin-search-common@backstage:^::backstage=1.42.4&npm=1.2.19, @backstage/plugin-search-common@npm:^1.2.19":
   version: 1.2.19
   resolution: "@backstage/plugin-search-common@npm:1.2.19"
   dependencies:
@@ -2339,7 +2339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-react@npm:^1.9.3":
+"@backstage/plugin-search-react@backstage:^::backstage=1.42.4&npm=1.9.3, @backstage/plugin-search-react@npm:^1.9.3":
   version: 1.9.3
   resolution: "@backstage/plugin-search-react@npm:1.9.3"
   dependencies:
@@ -2376,7 +2376,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/repo-tools@npm:^0.15.1":
+"@backstage/repo-tools@backstage:^::backstage=1.42.4&npm=0.15.1, @backstage/repo-tools@npm:^0.15.1":
   version: 0.15.1
   resolution: "@backstage/repo-tools@npm:0.15.1"
   dependencies:
@@ -2442,7 +2442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/test-utils@npm:^1.7.11":
+"@backstage/test-utils@backstage:^::backstage=1.42.4&npm=1.7.11, @backstage/test-utils@npm:^1.7.11":
   version: 1.7.11
   resolution: "@backstage/test-utils@npm:1.7.11"
   dependencies:
@@ -3358,9 +3358,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/stack-overflow@workspace:."
   dependencies:
-    "@backstage/cli": "npm:^0.34.1"
-    "@backstage/e2e-test-utils": "npm:^0.1.1"
-    "@backstage/repo-tools": "npm:^0.15.1"
+    "@backstage/cli": "backstage:^"
+    "@backstage/e2e-test-utils": "backstage:^"
+    "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.27.1"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^10.0.0"
