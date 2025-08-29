@@ -17,7 +17,6 @@ import {
   configApiRef,
   errorApiRef,
   ApiBlueprint,
-  createApiFactory,
 } from '@backstage/frontend-plugin-api';
 import { scmAuthApiRef } from '@backstage/integration-react';
 import { githubIssuesApiRef, githubIssuesApi } from '../api';
@@ -26,8 +25,8 @@ import { githubIssuesApiRef, githubIssuesApi } from '../api';
  * @alpha
  */
 export const githubIssuesApiExtension = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: githubIssuesApiRef,
       deps: {
         configApi: configApiRef,
@@ -37,5 +36,4 @@ export const githubIssuesApiExtension = ApiBlueprint.make({
       factory: ({ configApi, scmAuthApi, errorApi }) =>
         githubIssuesApi(scmAuthApi, configApi, errorApi),
     }),
-  },
 });
