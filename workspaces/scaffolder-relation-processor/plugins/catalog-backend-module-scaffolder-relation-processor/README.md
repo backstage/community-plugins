@@ -32,6 +32,11 @@ backend.start();
 
 Catalog entities containing the `spec.scaffoldedFrom` field will have a relation link be formed between it and the `template` corresponding to the entity ref in the `spec.scaffoldedFrom` field.
 
+> [!NOTE]
+> This plugin only processes entities that **already have** the `spec.scaffoldedFrom` field. It does not add this field to entities. If you are creating new entities through scaffolder templates and expect them to have scaffold relations, you need to ensure that the `spec.scaffoldedFrom` field is added during the scaffolding process.
+For automatic addition of the `spec.scaffoldedFrom` field, consider using the [`scaffolder-backend-module-annotator`](https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-annotator) plugin, which provides a `catalog:scaffolded-from` action that can be used in your scaffolder templates to automatically add this field to generated entities.
+>
+
 This link can be viewed in the `relations` field of the Raw YAML view of a catalog entity when inspecting an entity. In the entity with the `spec.scaffoldedFrom` field, the relation type is `scaffoldedFrom` with a target pointing to the value of the `spec.scaffoldedFrom` field. Conversely, for the target template, it will have a relation type of `ScaffolderOf` with a target pointing to the entity with the `spec.scaffoldedFrom` field.
 
 These relations should also appear on the `EntityCatalogGraphView` component from the `@backstage/plugin-catalog-graph` package (only if the entity corresponding to the entity ref exists in the catalog).
