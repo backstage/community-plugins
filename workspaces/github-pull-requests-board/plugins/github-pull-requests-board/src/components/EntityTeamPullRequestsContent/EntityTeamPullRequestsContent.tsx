@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import PullRequestsBoard from '../PullRequestsBoard';
 import { useEntity } from '@backstage/plugin-catalog-react';
 

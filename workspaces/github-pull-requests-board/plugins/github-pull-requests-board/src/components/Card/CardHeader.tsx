@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { Typography, Box, Tooltip, Chip } from '@material-ui/core';
 import { getElapsedTime, decorateCommitStatus } from '../../utils/functions';
 import { UserHeader } from '../UserHeader';
