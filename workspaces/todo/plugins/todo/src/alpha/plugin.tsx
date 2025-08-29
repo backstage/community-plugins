@@ -16,7 +16,6 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendPlugin,
   identityApiRef,
   discoveryApiRef,
@@ -32,8 +31,8 @@ import { rootRouteRef } from '../routes';
 
 /** @alpha */
 export const todoApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: todoApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -42,15 +41,14 @@ export const todoApi = ApiBlueprint.make({
       factory: ({ discoveryApi, identityApi }) =>
         new TodoClient({ discoveryApi, identityApi }),
     }),
-  },
 });
 
 /** @alpha */
 export const todoEntityContent = EntityContentBlueprint.make({
   name: 'todoEntityContent',
   params: {
-    defaultPath: '/todo',
-    defaultTitle: 'Todo',
+    path: '/todo',
+    title: 'Todo',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/TodoList').then(m => compatWrapper(<m.TodoList />)),
