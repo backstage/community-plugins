@@ -34,11 +34,11 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.9.0",
-    "@backstage/plugin-search-common": "^1.2.18"
+    "@backstage/plugin-permission-common": "backstage:^",
+    "@backstage/plugin-search-common": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.0"
+    "@backstage/cli": "backstage:^"
   },
   "files": [
     "dist"
