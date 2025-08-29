@@ -72,6 +72,6 @@ export const vaultEntityContent: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'vault',
+  pluginId: 'vault',
   extensions: [vaultApi, vaultEntityContent],
 });
