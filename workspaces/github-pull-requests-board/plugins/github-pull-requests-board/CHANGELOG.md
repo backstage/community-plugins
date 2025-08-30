@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.8.1
+
+### Patch Changes
+
+- c2b33a1: Decouple entities from the board logic for reuse the board on other places
+
 ## 0.8.0
 
 ### Minor Changes
