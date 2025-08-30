@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { resolve } from 'path';
+import fs from 'fs';
+import { resolve, join } from 'path';
 import * as url from 'url';
 import * as codeowners from 'codeowners-utils';
 import { listWorkspaces } from './list-workspaces.js';
@@ -61,6 +62,60 @@ async function main() {
     const chunk = maintainerWorkspaces.slice(i, i + chunkSize);
     console.log(`${JSON.stringify(chunk)}\n`);
   }
+
+  const maintainerWorkspacesReport = [];
+  for (const workspace of maintainerWorkspaces) {
+    const workspacePath = resolve(rootPath, 'workspaces');
+    const currentWorkspacePath = resolve(workspacePath, workspace);
+
+    // version
+    const backstageFile = join(currentWorkspacePath, 'backstage.json');
+    let version = '';
+    if (fs.existsSync(backstageFile)) {
+      const file = fs.readFileSync(backstageFile);
+      const json = JSON.parse(file);
+      version = json.version;
+    }
+
+    // auto bump
+    const bumpFile = join(currentWorkspacePath, '.auto-version-bump');
+    const usesAutoVersionBump = fs.existsSync(bumpFile);
+
+    // yarn plugin
+    const yarnPluginFile = join(
+      currentWorkspacePath,
+      '.yarn/plugins/@yarnpkg/plugin-backstage.cjs',
+    );
+    const usesYarnPlugin = fs.existsSync(yarnPluginFile);
+
+    // bcp.json
+    const bcpFile = join(currentWorkspacePath, 'bcp.json');
+    const usesBcp = fs.existsSync(bcpFile);
+    let usesBcpKnipReports = false;
+    let usesBcpAutoVersionBump = false;
+    let usedBcpListDeprecations = false;
+    if (usesBcp) {
+      const file = fs.readFileSync(bcpFile);
+      const json = JSON.parse(file);
+      usesBcpKnipReports = json.knip - reports;
+      usesBcpAutoVersionBump = json.auto - version - bump;
+      usedBcpListDeprecations = json.list - deprecations;
+    }
+
+    const report = {
+      workspace,
+      version,
+      usesAutoVersionBump,
+      usesYarnPlugin,
+      usesBcp,
+      usesBcpKnipReports,
+      usesBcpAutoVersionBump,
+      usedBcpListDeprecations,
+    };
+    maintainerWorkspacesReport.push(report);
+  }
+
+  console.table(maintainerWorkspacesReport);
 }
 
 main(process.argv.slice(2)).catch(error => {
