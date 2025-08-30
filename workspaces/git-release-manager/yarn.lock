@@ -699,13 +699,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-git-release-manager@workspace:plugins/git-release-manager"
   dependencies:
-    "@backstage/cli": "npm:^0.34.0"
-    "@backstage/core-app-api": "npm:^1.18.0"
-    "@backstage/core-components": "npm:^0.17.5"
-    "@backstage/core-plugin-api": "npm:^1.10.9"
-    "@backstage/dev-utils": "npm:^1.1.13"
-    "@backstage/integration": "npm:^1.17.1"
-    "@backstage/test-utils": "npm:^1.7.11"
+    "@backstage/cli": "backstage:^"
+    "@backstage/core-app-api": "backstage:^"
+    "@backstage/core-components": "backstage:^"
+    "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/dev-utils": "backstage:^"
+    "@backstage/integration": "backstage:^"
+    "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -823,9 +823,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.34.0":
-  version: 0.34.0
-  resolution: "@backstage/cli@npm:0.34.0"
+"@backstage/cli@backstage:^::backstage=1.42.3&npm=0.34.0, @backstage/cli@npm:^0.34.0":
+  version: 0.34.1
+  resolution: "@backstage/cli@npm:0.34.1"
   dependencies:
     "@backstage/catalog-model": "npm:^1.7.5"
     "@backstage/cli-common": "npm:^0.1.15"
@@ -963,7 +963,7 @@ __metadata:
       optional: true
   bin:
     backstage-cli: bin/backstage-cli
-  checksum: 10/87dd44b1ed01cfd665cde8585e97271d863046a003f63dd56c7a42b18ffbbdc884c7b57173f8e455b946e92262c5df63b23181bf365532d4c2d274e652c77e51
+  checksum: 10/480fca2199f86593d7b126015c9ea64633f6786801e773d0dd8ad82f496b152f187011525c6216279385d0655f490ae035d25eacc00ef0386ef07edf0e04ee6a
   languageName: node
   linkType: hard
 
@@ -1001,7 +1001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-app-api@npm:^1.18.0":
+"@backstage/core-app-api@backstage:^::backstage=1.42.3&npm=1.18.0, @backstage/core-app-api@npm:^1.18.0":
   version: 1.18.0
   resolution: "@backstage/core-app-api@npm:1.18.0"
   dependencies:
@@ -1050,7 +1050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.17.5":
+"@backstage/core-components@backstage:^::backstage=1.42.3&npm=0.17.5, @backstage/core-components@npm:^0.17.5":
   version: 0.17.5
   resolution: "@backstage/core-components@npm:0.17.5"
   dependencies:
@@ -1104,7 +1104,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.10.9":
+"@backstage/core-plugin-api@backstage:^::backstage=1.42.3&npm=1.10.9, @backstage/core-plugin-api@npm:^1.10.9":
   version: 1.10.9
   resolution: "@backstage/core-plugin-api@npm:1.10.9"
   dependencies:
@@ -1125,7 +1125,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/dev-utils@npm:^1.1.13":
+"@backstage/dev-utils@backstage:^::backstage=1.42.3&npm=1.1.13, @backstage/dev-utils@npm:^1.1.13":
   version: 1.1.13
   resolution: "@backstage/dev-utils@npm:1.1.13"
   dependencies:
@@ -1152,7 +1152,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/e2e-test-utils@npm:^0.1.1":
+"@backstage/e2e-test-utils@backstage:^::backstage=1.42.3&npm=0.1.1, @backstage/e2e-test-utils@npm:^0.1.1":
   version: 0.1.1
   resolution: "@backstage/e2e-test-utils@npm:0.1.1"
   dependencies:
@@ -1306,7 +1306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^1.17.1":
+"@backstage/integration@backstage:^::backstage=1.42.3&npm=1.17.1, @backstage/integration@npm:^1.17.1":
   version: 1.17.1
   resolution: "@backstage/integration@npm:1.17.1"
   dependencies:
@@ -1499,7 +1499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/repo-tools@npm:^0.15.1":
+"@backstage/repo-tools@backstage:^::backstage=1.42.3&npm=0.15.1, @backstage/repo-tools@npm:^0.15.1":
   version: 0.15.1
   resolution: "@backstage/repo-tools@npm:0.15.1"
   dependencies:
@@ -1565,7 +1565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/test-utils@npm:^1.7.11":
+"@backstage/test-utils@backstage:^::backstage=1.42.3&npm=1.7.11, @backstage/test-utils@npm:^1.7.11":
   version: 1.7.11
   resolution: "@backstage/test-utils@npm:1.7.11"
   dependencies:
@@ -2400,9 +2400,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/git-release-manager@workspace:."
   dependencies:
-    "@backstage/cli": "npm:^0.34.0"
-    "@backstage/e2e-test-utils": "npm:^0.1.1"
-    "@backstage/repo-tools": "npm:^0.15.1"
+    "@backstage/cli": "backstage:^"
+    "@backstage/e2e-test-utils": "backstage:^"
+    "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.27.1"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^10.0.0"
