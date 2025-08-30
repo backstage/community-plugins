@@ -19,7 +19,6 @@ import {
   NavItemBlueprint,
   createFrontendPlugin,
   ApiBlueprint,
-  createApiFactory,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
@@ -34,19 +33,18 @@ import { ExampleCostInsightsClient } from '../example';
 
 /** @alpha */
 export const CostInsightsApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: costInsightsApiRef,
       deps: {},
       factory: ({}) => new ExampleCostInsightsClient(),
     }),
-  },
 });
 
 /** @alpha */
 export const CostInsightsPage = PageBlueprint.make({
   params: {
-    defaultPath: '/cost-insights',
+    path: '/cost-insights',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('./router').then(m => compatWrapper(<m.CostInsightsRouter />)),
@@ -57,8 +55,8 @@ export const CostInsightsPage = PageBlueprint.make({
 export const EntityCostInsightsContent = EntityContentBlueprint.make({
   name: 'EntityCostInsightsContent',
   params: {
-    defaultPath: '/cost-insights',
-    defaultTitle: 'Cost Insights',
+    path: '/cost-insights',
+    title: 'Cost Insights',
     loader: () =>
       import('../components/EntityCosts').then(m =>
         compatWrapper(<m.EntityCosts />),
