@@ -19,7 +19,7 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { Entity } from '@backstage/catalog-model';
 import { useUserRepositoriesAndTeam } from './useUserRepositoriesAndTeam';
-import React from 'react';
+import type { ReactNode } from 'react';
 
 const mockTeamEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -159,7 +159,7 @@ describe('useUserRepositoriesAndTeam', () => {
     jest.clearAllMocks();
   });
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({ children }: { children: ReactNode }) => (
     <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
       {children}
     </TestApiProvider>
