@@ -116,6 +116,27 @@ const mockGroups: Entity[] = [
       },
     ],
   },
+  {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Group',
+    metadata: {
+      name: 'operations',
+      uid: 'group-2',
+      title: 'Operations Team',
+    },
+    spec: {
+      type: 'team',
+      profile: {
+        displayName: 'Operations Team',
+      },
+    },
+    relations: [
+      {
+        type: 'hasMember',
+        targetRef: 'user:default/user-18',
+      },
+    ],
+  },
 ];
 
 // Create a mock catalog API
@@ -147,6 +168,21 @@ const mockCatalogApi = {
 
           const memberNames = memberRefs.map(ref => ref.split('/')[1]);
 
+          const groupMembers = mockUsers.filter(user =>
+            memberNames.includes(user.metadata.name),
+          );
+
+          return { items: groupMembers };
+        }
+
+        if (groupName === 'operations') {
+          const memberRefs =
+            mockGroups
+              .find(group => group.metadata.name === 'operations')
+              ?.relations!.filter(rel => rel.type === 'hasMember')
+              .map(rel => rel.targetRef) || [];
+
+          const memberNames = memberRefs.map(ref => ref.split('/')[1]);
           const groupMembers = mockUsers.filter(user =>
             memberNames.includes(user.metadata.name),
           );

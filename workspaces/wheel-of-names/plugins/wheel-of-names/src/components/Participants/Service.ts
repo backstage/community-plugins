@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// eslint-disable-next-line @backstage/no-undeclared-imports
 import { Entity } from '@backstage/catalog-model';
 import { CatalogApi, QueryEntitiesRequest } from '@backstage/catalog-client';
 import { createParticipant } from './utils/participantUtils';
+import { Participant } from '../../types';
 
 export class EntityService {
   private catalogApi: CatalogApi;
@@ -66,14 +68,7 @@ export class EntityService {
   async resolveParticipants(
     selectedEntities: Entity[],
     excludedUsers: Set<string>,
-  ): Promise<
-    Array<{
-      id: string;
-      name: string;
-      displayName: string;
-      fromGroup?: string;
-    }>
-  > {
+  ): Promise<Participant[]> {
     const participants = [];
 
     for (const entity of selectedEntities) {
