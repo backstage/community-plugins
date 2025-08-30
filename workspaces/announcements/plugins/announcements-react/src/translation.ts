@@ -139,6 +139,7 @@ export const announcementsTranslationRef = createTranslationRef({
     },
     editAnnouncementPage: {
       updatedMessage: 'Announcement updated.',
+      updatedMessageWithNewCategory: 'with new category',
       notFoundMessage: 'Unable to find announcement',
       edit: 'Edit',
     },
