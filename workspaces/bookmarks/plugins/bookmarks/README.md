@@ -47,6 +47,20 @@ metadata:
 
 4. Done! Enjoy your bookmarks by visiting the updated entity page in Backstage through your company catalog.
 
+## Configuration
+
+You can configure custom protocols for bookmarks in your `app-config.yaml` file. This allows you to define how certain types of links should be handled, including their iframe and link URLs.
+
+For example, to add support for Google Docs, you can add the following configuration:
+
+```yaml
+bookmarks:
+  customProtocols:
+    gdoc:
+      iframeBaseUrl: https://docs.google.com/document/d/%s/mobilebasic
+      linkBaseUrl: https://docs.google.com/document/d/%s/edit
+```
+
 ## Usage
 
 Once installed, you can view bookmarks by navigating to the "Bookmarks" tab in the entity page of your Backstage application.
