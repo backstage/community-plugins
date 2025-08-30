@@ -27,8 +27,8 @@ import { isJenkinsAvailable } from '../components/Router';
 export const entityJenkinsProjects = EntityContentBlueprint.make({
   name: 'projects',
   params: {
-    defaultPath: 'jenkins',
-    defaultTitle: 'Jenkins',
+    path: 'jenkins',
+    title: 'Jenkins',
     filter: isJenkinsAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
