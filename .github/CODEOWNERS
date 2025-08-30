@@ -17,10 +17,10 @@ yarn.lock                                                               @backsta
 /workspaces/airbrake                                                    @backstage/community-plugins-maintainers
 /workspaces/allure                                                      @backstage/community-plugins-maintainers
 /workspaces/amplication                                                 @backstage/community-plugins-maintainers  @itainathaniel
-/workspaces/analytics                                                   @backstage/community-plugins-maintainers
+/workspaces/analytics                                                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen @jmezach @AndrienkoAleksandr @PatAKnight @dzemanov @christoph-jerolimov @karthikjeeyar @rohitkrai03
 /workspaces/analytics/plugins/analytics-module-matomo                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen
 /workspaces/analytics/plugins/analytics-module-newrelic-browser         @backstage/community-plugins-maintainers  @jmezach
-/workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov
+/workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov @christoph-jerolimov @karthikjeeyar @rohitkrai03
 /workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking @gaelgoth
 /workspaces/apache-airflow                                              @backstage/community-plugins-maintainers
 /workspaces/apollo-explorer                                             @backstage/community-plugins-maintainers
