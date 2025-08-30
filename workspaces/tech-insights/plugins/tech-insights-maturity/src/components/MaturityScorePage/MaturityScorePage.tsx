@@ -55,7 +55,7 @@ export const MaturityScorePage = () => {
   }
 
   return (
-    <Grid container>
+    <Grid container spacing={1}>
       <Grid item md={3}>
         <MaturityRankInfoCard summary={value.summary} />
       </Grid>
