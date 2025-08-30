@@ -23,14 +23,15 @@ import { useApi } from '@backstage/core-plugin-api';
 
 export function useTopActiveItems(entity: Entity) {
   const api = useApi(rollbarApiRef);
-  const { organization, project } = useProjectSlugFromEntity(entity);
+  const { organization, project, environment } =
+    useProjectSlugFromEntity(entity);
   const { value, loading, error } = useAsync(() => {
     if (!project) {
       return Promise.resolve([]);
     }
 
     return api
-      .getTopActiveItems(project, 168)
+      .getTopActiveItems(project, 168, environment)
       .then(data =>
         data.sort((a, b) => b.item.occurrences - a.item.occurrences),
       );
