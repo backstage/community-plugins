@@ -50,6 +50,7 @@ describe('CategoryInput', () => {
       active: boolean;
       start_at: string;
       tags: string[] | undefined;
+      sendNotification: boolean;
     }>,
   ) => void = jest.fn();
 
@@ -64,6 +65,7 @@ describe('CategoryInput', () => {
     active: true,
     start_at: 'start_at',
     tags: ['kubernetes', 'go'],
+    sendNotification: false,
   };
 
   const announcementsApiMock = { categories: jest.fn() };

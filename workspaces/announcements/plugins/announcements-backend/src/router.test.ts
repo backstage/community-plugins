@@ -59,6 +59,10 @@ describe('createRouter', () => {
     issueUserCookie: jest.fn(),
   };
 
+  const mockNotificationService = {
+    send: jest.fn().mockImplementation(async () => {}),
+  };
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -71,10 +75,12 @@ describe('createRouter', () => {
       permissions: mockPermissions,
       permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth: mockHttpAuth,
+      notifications: mockNotificationService,
     };
 
     const router = await createRouter(announcementsContext);
     app = express().use(router);
+    mockNotificationService.send.mockClear();
   });
 
   beforeEach(() => {
