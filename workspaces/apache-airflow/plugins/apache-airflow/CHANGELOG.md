@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.11.0
+
+### Minor Changes
+
+- 7b1e5fa: Backstage version bump to v1.42.4
+
 ## 0.10.0
 
 ### Minor Changes
