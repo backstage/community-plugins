@@ -34,16 +34,16 @@
     "directory": "workspaces/analytics/plugins/analytics-module-matomo"
   },
   "dependencies": {
-    "@backstage/core-plugin-api": "^1.10.9"
+    "@backstage/core-plugin-api": "backstage:^"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.1",
-    "@backstage/core-app-api": "^1.18.0",
-    "@backstage/core-components": "^0.17.5",
-    "@backstage/dev-utils": "^1.1.13",
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-app-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
     "@testing-library/jest-dom": "6.7.0",
     "@types/node": "22.15.29",
     "cross-fetch": "4.0.0",
