@@ -44,7 +44,7 @@ spec:
                   title: Password
                   type: string
                   description: SonarQube password
-                  ui:widget: password
+                  ui:field: Secret
         name:
           title: Name
           type: string
