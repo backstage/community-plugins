@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 import {
-  AnalyticsApi,
-  AnalyticsEvent,
+  AnalyticsApi as LegacyAnalyticsApi,
+  AnalyticsEvent as LegacyAnalyticsEvent,
   ConfigApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
+import {
+  AnalyticsEvent,
+  AnalyticsImplementation,
+} from '@backstage/frontend-plugin-api';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 
 /**
  * Segment provider for the Backstage Analytics API.
  * @public
  */
-export class SegmentAnalytics implements AnalyticsApi {
+export class SegmentAnalytics
+  implements LegacyAnalyticsApi, AnalyticsImplementation
+{
   private readonly analytics: AnalyticsBrowser;
   private readonly testMode: boolean;
   private readonly maskIP: boolean;
@@ -99,7 +105,7 @@ export class SegmentAnalytics implements AnalyticsApi {
     );
   }
 
-  async captureEvent(event: AnalyticsEvent) {
+  async captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent) {
     // Don't capture events in test mode.
     if (this.testMode) {
       return;

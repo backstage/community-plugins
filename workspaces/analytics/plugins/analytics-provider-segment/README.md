@@ -43,6 +43,9 @@ This plugin contains no other functionality.
    ];
    ```
 
+   Note: if you are using Backstage's new frontend system, you can skip this
+   step. Installing the package in your app is enough: no API wiring necessary.
+
 2. Configure the plugin in your `app-config.yaml`:
 
 The following is the minimum configuration required to start sending analytics
