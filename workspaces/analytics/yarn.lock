@@ -731,6 +731,7 @@ __metadata:
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@testing-library/jest-dom": "npm:6.8.0"
     "@types/node": "npm:22.15.29"
     cross-fetch: "npm:4.0.0"

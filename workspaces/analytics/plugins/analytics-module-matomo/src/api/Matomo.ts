@@ -15,10 +15,14 @@
  */
 import {
   AnalyticsApi,
-  AnalyticsEvent,
+  AnalyticsEvent as LegacyAnalyticsEvent,
   ConfigApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
+import {
+  AnalyticsImplementation,
+  AnalyticsEvent,
+} from '@backstage/frontend-plugin-api';
 
 import { loadMatomo } from './loadMatomo';
 
@@ -30,7 +34,7 @@ declare const window: Window &
 /**
  * @public
  */
-export class MatomoAnalytics implements AnalyticsApi {
+export class MatomoAnalytics implements AnalyticsApi, AnalyticsImplementation {
   private constructor(options: {
     matomoUrl: string;
     siteId: number;
@@ -81,13 +85,13 @@ export class MatomoAnalytics implements AnalyticsApi {
     });
   }
 
-  captureEvent(event: AnalyticsEvent) {
+  captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent) {
     const { context, action, subject, value } = event;
     // REF: https://github.com/backstage/community-plugins/blob/main/workspaces/analytics/plugins/analytics-module-ga/src/apis/implementations/AnalyticsApi/GoogleAnalytics.ts#L160
     // REF: https://matomo.org/faq/reports/implement-event-tracking-with-matomo/
     window._paq.push([
       'trackEvent',
-      context.extension || 'App',
+      context.extensionId || context.extension || 'App',
       action,
       subject,
       value,
