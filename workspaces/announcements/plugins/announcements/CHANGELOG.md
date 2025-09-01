@@ -1,5 +1,19 @@
 # @backstage-community/plugin-announcements
 
+## 0.11.0
+
+### Minor Changes
+
+- e121abb: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- d70723f: Allow creating new announcement category for edit
+- Updated dependencies [e121abb]
+- Updated dependencies [d70723f]
+  - @backstage-community/plugin-announcements-common@0.8.0
+  - @backstage-community/plugin-announcements-react@0.10.0
+
 ## 0.10.2
 
 ### Patch Changes
