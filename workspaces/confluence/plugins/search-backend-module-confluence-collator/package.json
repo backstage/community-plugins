@@ -33,6 +33,7 @@
     "@backstage/config": "backstage:^",
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-search-common": "backstage:^",
+    "@backstage/types": "backstage:^",
     "node-fetch": "^2.6.7",
     "p-limit": "^3.1.0",
     "p-throttle": "^4.1.1"
