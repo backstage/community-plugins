@@ -4,20 +4,55 @@
 
 ```ts
 import { AnalyticsApi } from '@backstage/core-plugin-api';
-import { AnalyticsEvent } from '@backstage/core-plugin-api';
+import { AnalyticsEvent } from '@backstage/frontend-plugin-api';
+import { AnalyticsEvent as AnalyticsEvent_2 } from '@backstage/core-plugin-api';
+import { AnalyticsImplementation } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationFactory } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Config } from '@backstage/config';
 import { ConfigApi } from '@backstage/core-plugin-api';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 
 // @public
 export const analyticsModuleSegment: BackstagePlugin<{}, {}, {}>;
 
+// @public (undocumented)
+const analyticsProviderSegmentPlugin: OverridableFrontendPlugin<
+  {},
+  {},
+  {
+    'analytics:analytics-provider-segment': ExtensionDefinition<{
+      kind: 'analytics';
+      name: undefined;
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<
+        AnalyticsImplementationFactory<{}>,
+        'core.analytics.factory',
+        {}
+      >;
+      inputs: {};
+      params: <
+        TDeps extends {
+          [x: string]: unknown;
+        },
+      >(
+        params: AnalyticsImplementationFactory<TDeps>,
+      ) => ExtensionBlueprintParams<AnalyticsImplementationFactory<{}>>;
+    }>;
+  }
+>;
+export default analyticsProviderSegmentPlugin;
+
 // @public
-export class SegmentAnalytics implements AnalyticsApi {
+export class SegmentAnalytics implements AnalyticsApi, AnalyticsImplementation {
   // (undocumented)
-  captureEvent(event: AnalyticsEvent): Promise<void>;
+  captureEvent(event: AnalyticsEvent | AnalyticsEvent_2): Promise<void>;
   static fromConfig(
     config: ConfigApi,
     options?: {
