@@ -61,7 +61,7 @@ type GetAnnouncementsQueryParams = {
   page?: number;
   max?: number;
   active?: boolean;
-  sortby?: 'created_at' | 'start_at';
+  sortby?: 'created_at' | 'start_at' | 'until_date';
   order?: 'asc' | 'desc';
   current?: boolean;
   tags?: string[];
