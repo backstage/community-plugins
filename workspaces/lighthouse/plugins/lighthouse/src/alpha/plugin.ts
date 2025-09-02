@@ -21,6 +21,9 @@ import {
   lighthousePage,
 } from './extensions';
 
+/**
+ * @alpha
+ */
 export const lighthousePlugin = createFrontendPlugin({
   pluginId: 'lighthouse',
   extensions: [
