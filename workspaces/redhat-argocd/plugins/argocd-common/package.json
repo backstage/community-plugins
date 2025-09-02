@@ -33,7 +33,7 @@
     "@kubernetes/client-node": "^0.22.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1"
+    "@backstage/cli": "^0.34.0"
   },
   "files": [
     "dist"
