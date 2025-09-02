@@ -26,7 +26,10 @@ import {
 import { rootRouteRef } from '../plugin';
 import { lighthouseApiRef } from '../api';
 import { LighthouseRestApi } from '@backstage-community/plugin-lighthouse-common';
-import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import {
+  EntityCardBlueprint,
+  EntityContentBlueprint,
+} from '@backstage/plugin-catalog-react/alpha';
 import { isLighthouseAvailable } from '../Router';
 import Highlight from '@material-ui/icons/Highlight';
 
@@ -66,5 +69,16 @@ export const lighthouseEntityCard = EntityCardBlueprint.make({
       import('../components/Cards/LastLighthouseAuditCard').then(m =>
         compatWrapper(<m.LastLighthouseAuditCard />),
       ),
+  },
+});
+
+export const lighthouseEntityContent = EntityContentBlueprint.make({
+  name: 'lighthouse',
+  params: {
+    path: '/lighthouse',
+    title: 'Lighthouse',
+    filter: isLighthouseAvailable,
+    loader: async () =>
+      import('../Router').then(m => compatWrapper(<m.EmbeddedRouter />)),
   },
 });

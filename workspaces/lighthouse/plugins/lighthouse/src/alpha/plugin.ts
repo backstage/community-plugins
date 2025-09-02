@@ -17,6 +17,7 @@ import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   lighthouseApi,
   lighthouseEntityCard,
+  lighthouseEntityContent,
   lighthouseNavItem,
   lighthousePage,
 } from './extensions';
@@ -31,5 +32,6 @@ export const lighthousePlugin = createFrontendPlugin({
     lighthouseApi,
     lighthouseEntityCard,
     lighthouseNavItem,
+    lighthouseEntityContent,
   ],
 });
