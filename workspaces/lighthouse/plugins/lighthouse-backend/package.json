@@ -42,6 +42,7 @@
     "lint": "backstage-cli package lint",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
     "test": "backstage-cli package test"
   },
   "dependencies": {
@@ -56,7 +57,11 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/cli": "backstage:^"
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^"
   },
   "configSchema": "config.d.ts"
 }
