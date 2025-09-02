@@ -82,6 +82,74 @@ const lighthousePlugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
+    'entity-content:lighthouse/lighthouse': ExtensionDefinition<{
+      kind: 'entity-content';
+      name: 'lighthouse';
+      config: {
+        path: string | undefined;
+        title: string | undefined;
+        filter: EntityPredicate | undefined;
+        group: string | false | undefined;
+      };
+      configInput: {
+        filter?: EntityPredicate | undefined;
+        title?: string | undefined;
+        path?: string | undefined;
+        group?: string | false | undefined;
+      };
+      output:
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<string, 'core.routing.path', {}>
+        | ExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
+        | ExtensionDataRef<
+            string,
+            'catalog.entity-content-group',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+      params: {
+        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+        path: string;
+        defaultTitle?: [Error: "Use the 'title' param instead"] | undefined;
+        title: string;
+        defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
+        group?:
+          | (string & {})
+          | 'development'
+          | 'deployment'
+          | 'overview'
+          | 'documentation'
+          | 'operation'
+          | 'observability'
+          | undefined;
+        loader: () => Promise<JSX.Element>;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+      };
+    }>;
     'nav-item:lighthouse': ExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
