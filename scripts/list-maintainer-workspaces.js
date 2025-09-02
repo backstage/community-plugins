@@ -77,10 +77,6 @@ async function main() {
       version = json.version;
     }
 
-    // auto bump
-    const bumpFile = join(currentWorkspacePath, '.auto-version-bump');
-    const usesAutoVersionBump = fs.existsSync(bumpFile);
-
     // yarn plugin
     const yarnPluginFile = join(
       currentWorkspacePath,
@@ -97,15 +93,14 @@ async function main() {
     if (usesBcp) {
       const file = fs.readFileSync(bcpFile);
       const json = JSON.parse(file);
-      usesBcpKnipReports = json.knip - reports;
-      usesBcpAutoVersionBump = json.auto - version - bump;
-      usedBcpListDeprecations = json.list - deprecations;
+      usesBcpKnipReports = json['knip-reports'] || false;
+      usesBcpAutoVersionBump = json['auto-version-bump'] || false;
+      usedBcpListDeprecations = json['list-deprecations'] || false;
     }
 
     const report = {
       workspace,
       version,
-      usesAutoVersionBump,
       usesYarnPlugin,
       usesBcp,
       usesBcpKnipReports,
