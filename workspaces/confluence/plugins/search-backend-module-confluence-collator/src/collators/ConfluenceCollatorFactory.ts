@@ -68,6 +68,7 @@ export type ConfluenceCollatorFactoryOptions = {
   query?: string;
   parallelismLimit?: number;
   maxRequestsPerSecond?: number;
+  type?: string;
   logger: LoggerService;
 };
 
@@ -130,6 +131,7 @@ export interface IndexableConfluenceDocument extends IndexableDocument {
  * @public
  */
 export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
+  public readonly type: string;
   private readonly baseUrl: string | undefined;
   private readonly auth: string | undefined;
   private readonly token: string | undefined;
@@ -140,13 +142,13 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly query: string | undefined;
   private readonly parallelismLimit: number | undefined;
   private readonly logger: LoggerService;
-  public readonly type: string = 'confluence';
   private readonly fetch: (
     url: RequestInfo,
     init?: RequestInit,
   ) => Promise<Response>;
 
   private constructor(options: ConfluenceCollatorFactoryOptions) {
+    this.type = options.type ?? 'confluence';
     this.baseUrl = options.baseUrl;
     this.auth = options.auth;
     this.token = options.token;
@@ -172,19 +174,23 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     }
   }
 
-  static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
-    const baseUrl = config.getString('confluence.baseUrl');
-    const auth = config.getOptionalString('confluence.auth.type') ?? 'bearer';
-    const token = config.getOptionalString('confluence.auth.token');
-    const email = config.getOptionalString('confluence.auth.email');
-    const username = config.getOptionalString('confluence.auth.username');
-    const password = config.getOptionalString('confluence.auth.password');
-    const spaces = config.getOptionalStringArray('confluence.spaces') ?? [];
-    const query = config.getOptionalString('confluence.query') ?? '';
+  static fromConfig(
+    config: Config,
+    options: ConfluenceCollatorFactoryOptions,
+    instanceKey = 'default',
+    type = 'confluence',
+  ) {
+    const conf = config.getConfig(`confluence.${instanceKey}`);
+    const baseUrl = conf.getString('baseUrl');
+    const auth = conf.getOptionalString('auth.type') ?? 'bearer';
+    const token = conf.getOptionalString('auth.token');
+    const email = conf.getOptionalString('auth.email');
+    const username = conf.getOptionalString('auth.username');
+    const password = conf.getOptionalString('auth.password');
+    const spaces = conf.getOptionalStringArray('spaces') ?? [];
+    const query = conf.getOptionalString('query') ?? '';
 
-    const parallelismLimit = config.getOptionalNumber(
-      'confluence.parallelismLimit',
-    );
+    const parallelismLimit = conf.getOptionalNumber('parallelismLimit');
 
     if ((auth === 'basic' || auth === 'bearer') && !token) {
       throw new Error(
@@ -215,9 +221,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       spaces,
       query,
       parallelismLimit,
-      maxRequestsPerSecond: config.getOptionalNumber(
-        'confluence.maxRequestsPerSecond',
-      ),
+      maxRequestsPerSecond: conf.getOptionalNumber('maxRequestsPerSecond'),
+      type,
     });
   }
   async getCollator() {
