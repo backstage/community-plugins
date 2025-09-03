@@ -24,7 +24,7 @@ import {
   mendReadPermission,
   mendConditions,
   createMendProjectConditionalDecision,
-} from '@mend/backstage-plugin-mend-backend';
+} from '@backstage-community/plugin-mend-backend';
 // ... other polices
 export class OrganizationPolicy implements PermissionPolicy {
   async handle(
