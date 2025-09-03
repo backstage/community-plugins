@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { SchedulerService } from '@backstage/backend-plugin-api';
 import { CATALOG_FILTER_EXISTS, CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { LighthouseRestApi } from '@backstage-community/plugin-lighthouse-common';
@@ -31,7 +31,7 @@ export interface CreateLighthouseSchedulerOptions {
   logger: LoggerService;
   config: Config;
   discovery: DiscoveryService;
-  scheduler?: PluginTaskScheduler;
+  scheduler?: SchedulerService;
   catalogClient: CatalogApi;
   auth: AuthService;
 }

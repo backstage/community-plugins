@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { lighthousePlugin } from './plugin';
 
-import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
-import { HumanDuration } from '@backstage/types';
-
-export interface Config {
-  /**
-   * Configuration options for the Lighthouse backend plugin.
-   */
-  lighthouse?: {
-    /**
-     * Schedule of the audit
-     */
-    schedule?: HumanDuration | SchedulerServiceTaskScheduleDefinitionConfig;
-  };
-}
+export default lighthousePlugin;
