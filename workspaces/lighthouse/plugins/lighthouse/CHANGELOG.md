@@ -1,5 +1,13 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.13.1
+
+### Patch Changes
+
+- a1ec06f: Added support for the new frontend system.
+- Updated dependencies [a1ec06f]
+  - @backstage-community/plugin-lighthouse-common@0.10.1
+
 ## 0.13.0
 
 ### Minor Changes
