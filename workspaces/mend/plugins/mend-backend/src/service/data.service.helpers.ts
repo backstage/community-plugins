@@ -120,9 +120,11 @@ export const dataProjectParser = (
         applicationName: organizationData[next.uuid].applicationName,
         applicationUuid: next.applicationUuid,
         lastScan: next.statistics[FINDING_TYPE.LAST_SCAN].lastScanTime,
-        languages: Object.entries(next.statistics.LIBRARY_TYPE_HISTOGRAM).sort(
-          (a, b) => b[1] - a[1],
-        ),
+        languages: next.statistics?.LIBRARY_TYPE_HISTOGRAM
+          ? Object.entries(next.statistics.LIBRARY_TYPE_HISTOGRAM).sort(
+              (a, b) => b[1] - a[1],
+            )
+          : ([] as [string, number][]),
       };
 
       prev.projectList.unshift(project);
