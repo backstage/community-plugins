@@ -34,7 +34,7 @@ function getWorkspaceDirs() {
       }
 
       const bcpContent = JSON.parse(fs.readFileSync(bcpFile, 'utf8'));
-      return bcpContent['auto-version-bump'] === true;
+      return bcpContent.autoVersionBump === true;
     } catch (error) {
       console.warn(`Warning: Error processing ${dirPath}: ${error.message}`);
       return false;
