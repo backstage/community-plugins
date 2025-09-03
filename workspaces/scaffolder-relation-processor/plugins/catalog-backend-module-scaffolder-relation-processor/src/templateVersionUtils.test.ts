@@ -19,7 +19,15 @@ import { CatalogClient } from '@backstage/catalog-client';
 import type { NotificationService } from '@backstage/plugin-notifications-node';
 import { mockServices } from '@backstage/backend-test-utils';
 
-import { handleTemplateUpdateNotifications } from './templateVersionUtils';
+import {
+  handleTemplateUpdateNotifications,
+  readScaffolderRelationProcessorConfig,
+} from './templateVersionUtils';
+import {
+  DEFAULT_NOTIFICATION_DESCRIPTION,
+  DEFAULT_NOTIFICATION_ENABLED,
+  DEFAULT_NOTIFICATION_TITLE,
+} from './constants';
 
 // Mock external dependencies
 jest.mock('@backstage/catalog-client');
@@ -28,6 +36,15 @@ describe('templateVersionUtils', () => {
   let mockCatalogClient: jest.Mocked<CatalogClient>;
   let mockNotificationService: jest.Mocked<NotificationService>;
   let mockAuthService = mockServices.auth.mock();
+  const mockProcessorConfig = {
+    notifications: {
+      enabled: DEFAULT_NOTIFICATION_ENABLED,
+      message: {
+        title: DEFAULT_NOTIFICATION_TITLE,
+        description: DEFAULT_NOTIFICATION_DESCRIPTION,
+      },
+    },
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -95,6 +112,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -173,6 +191,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -206,6 +225,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -222,6 +242,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -244,6 +265,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -297,6 +319,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -335,6 +358,7 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
+        mockProcessorConfig,
         payload,
       );
 
@@ -350,6 +374,37 @@ describe('templateVersionUtils', () => {
           link: '/catalog/default/component/simple-service',
         },
       });
+    });
+  });
+
+  describe('readScaffolderRelationProcessorConfig', () => {
+    it('should return default values when config is empty', () => {
+      const config = mockServices.rootConfig();
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual(mockProcessorConfig);
+    });
+
+    it('should use custom config values when provided', () => {
+      const customProcessorConfig = {
+        notifications: {
+          enabled: true,
+          message: {
+            title: 'Custom notification title',
+            description: 'Custom notification description',
+          },
+        },
+      };
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolderRelationProcessor: customProcessorConfig,
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual(customProcessorConfig);
     });
   });
 });
