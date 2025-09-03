@@ -1,5 +1,11 @@
 # @backstage-community/plugin-lighthouse-common
 
+## 0.10.1
+
+### Patch Changes
+
+- a1ec06f: Marked `lighthouse.baseUrl` configuration as required.
+
 ## 0.10.0
 
 ### Minor Changes
