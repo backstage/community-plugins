@@ -34,7 +34,8 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
   "scripts": {
     "build": "backstage-cli package build",
@@ -49,5 +50,6 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"
-  }
+  },
+  "configSchema": "config.d.ts"
 }

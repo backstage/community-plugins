@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
-import { HumanDuration } from '@backstage/types';
-
 export interface Config {
   /**
-   * Configuration options for the Lighthouse backend plugin.
+   * Configuration options for the Lighthouse plugin.
    */
-  lighthouse?: {
-    /**
-     * Schedule of the audit
-     */
-    schedule?: HumanDuration | SchedulerServiceTaskScheduleDefinitionConfig;
+  lighthouse: {
+    baseUrl: string;
   };
 }
