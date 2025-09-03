@@ -24,6 +24,7 @@ import { CatalogClient } from '@backstage/catalog-client';
 
 import { ScaffolderRelationEntityProcessor } from './ScaffolderRelationEntityProcessor';
 import { handleTemplateUpdateNotifications } from './templateVersionUtils';
+import { readScaffolderRelationProcessorConfig } from './templateVersionUtils';
 import { TEMPLATE_VERSION_UPDATED_TOPIC } from './constants';
 
 /**
@@ -39,20 +40,31 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
       deps: {
         catalog: catalogProcessingExtensionPoint,
         logger: coreServices.logger,
+        config: coreServices.rootConfig,
         events: eventsServiceRef,
         notifications: notificationService,
         auth: coreServices.auth,
         discovery: coreServices.discovery,
       },
-      async init({ catalog, logger, events, notifications, auth, discovery }) {
+      async init({
+        catalog,
+        logger,
+        config,
+        events,
+        notifications,
+        auth,
+        discovery,
+      }) {
         logger.debug(
           'Registering the scaffolder-relation-processor catalog module',
         );
 
+        const processorConfig = readScaffolderRelationProcessorConfig(config);
+
         const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-        // Subscribe to relationProcessor.template:version_updated events
-        if (events) {
+        // Only subscribe to events if notifications are enabled
+        if (processorConfig.notifications?.enabled) {
           await events.subscribe({
             id: 'scaffolder-relation-processor',
             topics: [TEMPLATE_VERSION_UPDATED_TOPIC],
@@ -72,6 +84,7 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
                 catalogClient,
                 notifications,
                 auth,
+                processorConfig,
                 payload,
               );
             },

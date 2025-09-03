@@ -23,7 +23,15 @@ import {
 import { AuthService } from '@backstage/backend-plugin-api';
 import { NotificationPayload } from '@backstage/plugin-notifications-common';
 import type { Entity } from '@backstage/catalog-model';
-import { TEMPLATE_VERSION_UPDATED_TOPIC } from './constants';
+import {
+  DEFAULT_NOTIFICATION_DESCRIPTION,
+  DEFAULT_NOTIFICATION_ENABLED,
+  DEFAULT_NOTIFICATION_TITLE,
+  ENTITY_NAME_TEMPLATE_VAR,
+  TEMPLATE_VERSION_UPDATED_TOPIC,
+} from './constants';
+import { ScaffolderRelationProcessorConfig } from './types';
+import type { Config } from '@backstage/config';
 
 /**
  * Cache structure for storing template version information
@@ -95,12 +103,14 @@ function createEntityCatalogUrl(entity: Entity): string {
  *
  * @param notifications - Notification service to send notifications
  * @param entities - Array of entities that need update notifications sent to their owners
+ * @param config - Configuration for notification title and description
  *
  * @internal
  */
 async function sendNotificationsToOwners(
   notifications: NotificationService,
   entities: Entity[],
+  config: ScaffolderRelationProcessorConfig,
 ): Promise<void> {
   for (const entity of entities) {
     const ownedByRelations =
@@ -114,12 +124,28 @@ async function sendNotificationsToOwners(
 
       const catalogUrl = createEntityCatalogUrl(entity);
 
+      const entityName = entity.metadata.name;
+      const entityNameRegex = new RegExp(ENTITY_NAME_TEMPLATE_VAR, 'g');
+
+      const titleReplaced =
+        config.notifications?.message.title?.replace(
+          entityNameRegex,
+          entityName,
+        ) || '';
+
+      // Capitalize the first word of the title
+      const title =
+        titleReplaced.charAt(0).toUpperCase() + titleReplaced.slice(1);
+
+      const description =
+        config.notifications?.message.description?.replace(
+          entityNameRegex,
+          entityName,
+        ) || '';
+
       const notificationPayload: NotificationPayload = {
-        title: `${
-          entity.metadata.name.charAt(0).toUpperCase() +
-          entity.metadata.name.slice(1)
-        } is out of sync with template`,
-        description: `The template used to create ${entity.metadata.name} has been updated to a new version. Review and update your entity to stay in sync with the template.`,
+        title,
+        description,
         link: catalogUrl,
       };
 
@@ -137,6 +163,7 @@ async function sendNotificationsToOwners(
  * @param catalogClient - Catalog client to query for entities
  * @param notifications - Notification service to send notifications
  * @param auth - Auth service to get authentication token
+ * @param processorConfig - Parsed scaffolder relation processor config
  * @param payload - Template update payload containing entity ref and version info
  *
  * @internal
@@ -145,6 +172,7 @@ export async function handleTemplateUpdateNotifications(
   catalogClient: CatalogClient,
   notifications: NotificationService,
   auth: AuthService,
+  processorConfig: ScaffolderRelationProcessorConfig,
   payload: {
     entityRef: string;
     previousVersion: string;
@@ -164,5 +192,40 @@ export async function handleTemplateUpdateNotifications(
     { token },
   );
 
-  await sendNotificationsToOwners(notifications, scaffoldedEntities.items);
+  await sendNotificationsToOwners(
+    notifications,
+    scaffoldedEntities.items,
+    processorConfig,
+  );
+}
+
+/**
+ * Reads and parses the scaffolder relation processor configuration
+ *
+ * @param config - Backstage config
+ * @returns Parsed config with defaults
+ *
+ * @internal
+ */
+export function readScaffolderRelationProcessorConfig(
+  config: Config,
+): ScaffolderRelationProcessorConfig {
+  return {
+    notifications: {
+      enabled:
+        config.getOptionalBoolean(
+          'scaffolderRelationProcessor.notifications.enabled',
+        ) ?? DEFAULT_NOTIFICATION_ENABLED,
+      message: {
+        title:
+          config.getOptionalString(
+            'scaffolderRelationProcessor.notifications.message.title',
+          ) ?? DEFAULT_NOTIFICATION_TITLE,
+        description:
+          config.getOptionalString(
+            'scaffolderRelationProcessor.notifications.message.description',
+          ) ?? DEFAULT_NOTIFICATION_DESCRIPTION,
+      },
+    },
+  };
 }

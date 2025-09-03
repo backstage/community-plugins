@@ -21,3 +21,31 @@
  */
 export const TEMPLATE_VERSION_UPDATED_TOPIC =
   'relationProcessor.template:version_updated';
+
+/**
+ * Template variable name for entity name in notification messages
+ *
+ * @public
+ */
+export const ENTITY_NAME_TEMPLATE_VAR = 'ENTITY_NAME';
+
+/**
+ * Default template update notification title
+ *
+ * @public
+ */
+export const DEFAULT_NOTIFICATION_TITLE = `${ENTITY_NAME_TEMPLATE_VAR} is out of sync with template`;
+
+/**
+ * Default template update notification description
+ *
+ * @public
+ */
+export const DEFAULT_NOTIFICATION_DESCRIPTION = `The template used to create ${ENTITY_NAME_TEMPLATE_VAR} has been updated to a new version. Review and update your entity to stay in sync with the template.`;
+
+/**
+ * Default notification enabled
+ *
+ * @public
+ */
+export const DEFAULT_NOTIFICATION_ENABLED = false;
