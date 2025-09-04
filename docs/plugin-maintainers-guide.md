@@ -50,7 +50,7 @@ If you are no longer maintaining a plugin, please take the following steps to fo
 
 3. If you are the last remaining CODEOWNER:
    - The `@backstage/community-plugins-maintainers` group will provide best-effort support for issues and maintenance. Without a dedicated owner, plugin updates and support may be slower or limited.
-   - To help with this, opt into automatic version bump PRs by creating an empty `.auto-version-bump` file in the plugin's workspace (i.e., `workspaces/${WORKSPACE}/.auto-version-bump`).
+   - To help with this, opt into automatic version bump PRs by adding `"autoVersionBump": true` to your `bcp.json` file in the plugin's workspace (i.e., `workspaces/${WORKSPACE}/bcp.json`).
 
 ## Archiving a Plugin
 
@@ -110,7 +110,7 @@ Plugin owners are expected to run the Version Bump script for their workspace. T
 
 ## Opt-in to Automatic Version Bump PRs
 
-Plugin owners can opt in to automatic version bump PRs by creating an empty .auto-version-bump file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers` .
+Plugin owners can opt in to automatic version bump PRs by adding `"autoVersionBump": true` to their `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers`.
 
 These automated PRs are intended as a convenience to open the version bump for you. As the plugin maintainer, you would still be required to:
 
@@ -120,7 +120,7 @@ These automated PRs are intended as a convenience to open the version bump for y
 
 ## Opt-in to Knip Reports Check
 
-Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knip-reports": true }`. This ensures that knip reports in your workspace stay up to date.
+Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knipReports": true }`. This ensures that knip reports in your workspace stay up to date.
 
 [Knip](https://knip.dev/) is a tool that helps with clean-up and maintenance by identifying unused dependencies within workspaces. Regularly reviewing and addressing these reports can significantly improve code quality and reduce bloat.
 
