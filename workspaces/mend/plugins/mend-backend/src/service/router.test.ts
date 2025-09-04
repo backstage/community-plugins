@@ -24,7 +24,7 @@ describe('createRouter', () => {
     jest.spyOn(jwt, 'decode').mockImplementation(() => ({
       integratorEmail: 'DUMMY_INTEGRATOR_EMAIL',
       userKey: 'DUMMY_USER_KEY',
-      wsEnvUrl: 'DUMMY_WS_ENV_URL',
+      wsEnvUrl: 'https://ws.example.com',
     }));
     const router = await createRouter({
       logger: mockServices.logger.mock(),
