@@ -1,4 +1,4 @@
-# mend.io - backend
+# Mend.io - backend
 
 > [!IMPORTANT]
 > New Backend System
@@ -49,6 +49,6 @@ export class OrganizationPolicy implements PermissionPolicy {
 // ...
 ```
 
-**Add the mend.io frontend plugin**
+**Add the Mend.io frontend plugin**
 
 See the [mend frontend plugin instructions](../mend/README.md).
