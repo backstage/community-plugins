@@ -19,6 +19,8 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  Typography,
+  Tooltip,
 } from '@material-ui/core';
 import { SelectItem } from '@backstage/core-components';
 import type { MenuProps as MUIMenuProps } from '@material-ui/core/Menu';
@@ -139,70 +141,94 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
   };
 
   return (
-    <FormControl
-      variant="outlined"
-      margin="dense"
-      style={{ minWidth: '30%' }}
-      size="small"
+    <Tooltip
+      title={
+        <Typography
+          component="span"
+          display="block"
+          style={{
+            textTransform: 'none',
+            lineHeight: '16px',
+            fontWeight: 'revert',
+            padding: '5px',
+          }}
+          align="center"
+          variant="overline"
+        >
+          For this repository multiple projects exist within Mend. You can
+          filter for these projects you are interested in by project name.
+          <br />
+          e.g. to investigate results of a specific branch.
+        </Typography>
+      }
+      arrow
+      placement="right"
     >
-      <InputLabel id="multiple-project-filter-label">
-        Filter by Project Name
-      </InputLabel>
-      <Select
-        labelId="multiple-project-filter-label"
-        id="multiple-project-filter"
-        multiple
-        value={projectNameFilter}
-        onChange={handleProjectNameChange}
-        input={
-          <OutlinedInput
-            id="select-multiple-project"
-            label="Filter by Project Name"
-          />
-        }
-        SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 10 } }}
-        renderValue={selected => {
-          const values = Array.isArray(selected)
-            ? (selected as string[])
-            : [String(selected)];
-          return (
-            <Box display="flex" flexWrap="wrap">
-              {values.map(value =>
-                value === ALL_OPTION.value ? (
-                  <Chip
-                    key={ALL_OPTION.value}
-                    label={ALL_OPTION.label}
-                    style={{ margin: 2 }}
-                  />
-                ) : (
-                  <Chip
-                    key={value}
-                    label={value}
-                    onMouseDown={e => e.stopPropagation()}
-                    onDelete={() => handleChipDelete(value)}
-                    style={{ margin: 2 }}
-                  />
-                ),
-              )}
-            </Box>
-          );
-        }}
-        MenuProps={selectMenuProps}
+      <FormControl
+        variant="outlined"
+        margin="dense"
+        style={{ minWidth: '30%' }}
+        size="small"
       >
-        {projectNameOptions.map(item => (
-          <MenuItem key={item.label} value={item.value}>
-            <Checkbox
-              checked={projectNameFilter.includes(item.value.toString())}
-              color="primary"
+        <InputLabel id="multiple-project-filter-label">
+          Filter by Project Name
+        </InputLabel>
+        <Select
+          labelId="multiple-project-filter-label"
+          id="multiple-project-filter"
+          multiple
+          value={projectNameFilter}
+          onChange={handleProjectNameChange}
+          input={
+            <OutlinedInput
+              id="select-multiple-project"
+              label="Filter by Project Name"
             />
-            {item.value === ALL_OPTION.value ? (
-              <ListItemText primary={item.label} />
-            ) : (
-              <ListItemText primary={item.label} />
-            )}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+          }
+          SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 10 } }}
+          renderValue={selected => {
+            const values = Array.isArray(selected)
+              ? (selected as string[])
+              : [String(selected)];
+            return (
+              <Box display="flex" flexWrap="wrap">
+                {values.map(value =>
+                  value === ALL_OPTION.value ? (
+                    <Chip
+                      key={ALL_OPTION.value}
+                      label={ALL_OPTION.label}
+                      style={{ margin: 2 }}
+                    />
+                  ) : (
+                    <Chip
+                      key={value}
+                      label={value}
+                      onMouseDown={e => e.stopPropagation()}
+                      onDelete={() => handleChipDelete(value)}
+                      style={{ margin: 2 }}
+                    />
+                  ),
+                )}
+              </Box>
+            );
+          }}
+          MenuProps={selectMenuProps}
+        >
+          {projectNameOptions.map(item => (
+            <MenuItem key={item.label} value={item.value}>
+              <Checkbox
+                checked={projectNameFilter.includes(item.value.toString())}
+                color="primary"
+              />
+              {item.value === ALL_OPTION.value ? (
+                <ListItemText primary={item.label} />
+              ) : (
+                <ListItemText primary={item.label} />
+              )}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Tooltip>
   );
 };
