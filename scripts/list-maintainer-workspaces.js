@@ -93,9 +93,9 @@ async function main() {
     if (usesBcp) {
       const file = fs.readFileSync(bcpFile);
       const json = JSON.parse(file);
-      usesBcpKnipReports = json.knipReports || false;
-      usesBcpAutoVersionBump = json.autoVersionBump || false;
-      usedBcpListDeprecations = json.listDeprecations || false;
+      usesBcpKnipReports = json.knipReports;
+      usesBcpAutoVersionBump = json.autoVersionBump;
+      usedBcpListDeprecations = json.listDeprecations;
     }
 
     const report = {
