@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.8.1
+
+### Patch Changes
+
+- e172f18: Updated dependency `@openapitools/openapi-generator-cli` to `2.22.0`.
+- 4eb04de: Updated dependency `@openapitools/openapi-generator-cli` to `2.23.0`.
+- 8e7ffac: Updated dependency `@openapitools/openapi-generator-cli` to `2.23.1`.
+
 ## 5.8.0
 
 ### Minor Changes
