@@ -31,7 +31,6 @@ describe('createRouter', () => {
       config: new ConfigReader({
         mend: {
           activationKey: 'DUMMY_ACTIVATION_KEY',
-          baseUrl: 'DUMMY_BASE_URL',
         },
       }),
       discovery: mockServices.discovery(),

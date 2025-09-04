@@ -59,7 +59,6 @@ yarn --cwd packages/backend add @backstage-community/plugin-mend-backend
 
 ```yaml
 mend:
-  baseUrl: ${API_URL_HERE}
   activationKey: ${YOUR_ACTIVATION_KEY_HERE}
 ```
 

@@ -51,6 +51,9 @@ enum ROUTE {
   FINDING = '/finding',
 }
 
+// To change the Mend API Version
+const MEND_API_VERSION: string = 'v3.0';
+
 /** @internal */
 export async function createRouter(
   options: RouterOptions,
@@ -79,12 +82,11 @@ export async function createRouter(
       });
   };
 
-  const baseUrl = config.getString('mend.baseUrl');
   const activationKey = config.getString('mend.activationKey');
 
   // Init api service
   const mendDataService = new MendDataService({
-    baseUrl,
+    apiVersion: MEND_API_VERSION,
     activationKey,
   });
 
