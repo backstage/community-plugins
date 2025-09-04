@@ -60,10 +60,15 @@ export const AnnouncementForm = ({
     ? DateTime.fromISO(initialData.start_at).toISODate()
     : DateTime.now().toISODate();
 
+  const formattedUntilDate = initialData.until_date
+    ? DateTime.fromISO(initialData.until_date).toISODate()
+    : DateTime.now().plus({ days: 7 }).toISODate();
+
   const [form, setForm] = useState({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
+    until_date: formattedUntilDate || '',
     tags: initialData.tags?.map(tag => tag.slug) || undefined,
   });
   const [loading, setLoading] = useState(false);
@@ -214,12 +219,36 @@ export const AnnouncementForm = ({
                 value={form.start_at}
                 InputLabelProps={{ shrink: true }}
                 required
+                fullWidth
                 onChange={e =>
                   setForm({
                     ...form,
                     start_at: e.target.value,
                   })
                 }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TextField
+                variant="outlined"
+                label={t('announcementForm.untilDate')}
+                id="until_date"
+                type="date"
+                value={form.until_date}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    until_date: e.target.value,
+                  })
+                }
+                inputProps={{
+                  min: DateTime.fromISO(form.start_at)
+                    .plus({ days: 1 })
+                    .toISODate(),
+                }}
               />
             </Grid>
 

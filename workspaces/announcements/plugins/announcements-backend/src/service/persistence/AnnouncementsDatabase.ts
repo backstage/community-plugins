@@ -29,21 +29,26 @@ const announcementsTable = 'announcements';
  */
 type AnnouncementUpsert = Omit<
   Announcement,
-  'category' | 'tags' | 'created_at' | 'start_at'
+  'category' | 'tags' | 'created_at' | 'start_at' | 'until_date'
 > & {
   category?: string;
   tags?: string[];
   created_at: DateTime;
   start_at: DateTime;
+  until_date: DateTime;
 };
 
 /**
  * @internal
  */
-type DbAnnouncement = Omit<Announcement, 'category' | 'tags' | 'start_at'> & {
+type DbAnnouncement = Omit<
+  Announcement,
+  'category' | 'tags' | 'start_at' | 'until_date'
+> & {
   category?: string;
   tags?: string | string[];
   start_at: string;
+  until_date: string;
 };
 
 /**
@@ -122,6 +127,7 @@ const announcementUpsertToDB = (
     created_at: announcement.created_at.toSQL()!,
     active: announcement.active,
     start_at: announcement.start_at.toSQL()!,
+    until_date: announcement.until_date.toSQL()!,
     on_behalf_of: announcement.on_behalf_of,
     tags:
       announcement.tags && announcement.tags.length > 0
@@ -158,6 +164,7 @@ const DBToAnnouncementWithCategory = (
     created_at: timestampToDateTime(announcementDb.created_at),
     active: announcementDb.active,
     start_at: timestampToDateTime(announcementDb.start_at),
+    until_date: timestampToDateTime(announcementDb.until_date),
     on_behalf_of: announcementDb.on_behalf_of,
   };
 };
@@ -180,6 +187,7 @@ export class AnnouncementsDatabase {
       tags,
       sortBy = 'created_at',
       order = 'desc',
+      current,
     } = request;
 
     const filterState = <TRecord extends {}, TResult>(
@@ -190,6 +198,10 @@ export class AnnouncementsDatabase {
       }
       if (active) {
         qb.where('active', active);
+      }
+      if (current) {
+        const today = DateTime.now().toISO();
+        qb.where('start_at', '<=', today).andWhere('until_date', '>=', today);
       }
       if (tags?.length) {
         tags.forEach(tag => {
@@ -222,6 +234,7 @@ export class AnnouncementsDatabase {
         'categories.title as category_title',
         'active',
         'start_at',
+        'until_date',
         'on_behalf_of',
         'tags',
       )
@@ -301,6 +314,7 @@ export class AnnouncementsDatabase {
           'categories.title as category_title',
           'active',
           'start_at',
+          'until_date',
           'on_behalf_of',
           'tags',
         )
