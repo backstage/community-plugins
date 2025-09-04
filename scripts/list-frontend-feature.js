@@ -24,9 +24,6 @@ import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-const BACKSTAGE_PLUGIN =
-  "import { FrontendPlugin } from '@backstage/frontend-plugin-api';";
-
 async function main(args) {
   const rootPath = resolve(__dirname, '..');
   const workspacePath = resolve(rootPath, 'workspaces');
@@ -63,7 +60,7 @@ async function main(args) {
         frontendFeatureReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
         const apiReportPath = join(pkg.dir, 'report.api.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
-        if (apiReport.includes(BACKSTAGE_PLUGIN)) {
+        if (reportHasNFSReferences(apiReport)) {
           frontendFeatureReport.supported = true;
           frontendFeatureReport.alpha = false;
         }
@@ -73,7 +70,7 @@ async function main(args) {
           const apiReportAlpha = (
             await fs.readFile(apiReportAlphaPath)
           ).toString();
-          if (apiReportAlpha.includes(BACKSTAGE_PLUGIN)) {
+          if (reportHasNFSReferences(apiReportAlpha)) {
             frontendFeatureReport.supported = true;
             frontendFeatureReport.alpha = true;
           }
@@ -118,3 +115,13 @@ main(process.argv.slice(2)).catch(error => {
   console.error(error.stack || error);
   process.exit(1);
 });
+
+function reportHasNFSReferences(apiReport) {
+  return apiReport
+    .split('\n')
+    .some(
+      line =>
+        line.includes(`from '@backstage/frontend-plugin-api'`) &&
+        line.includes('FrontendPlugin'),
+    );
+}
