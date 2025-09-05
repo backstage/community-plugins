@@ -176,9 +176,20 @@ const DBToAnnouncementWithCategory = (
 export class AnnouncementsDatabase {
   constructor(private readonly db: Knex) {}
 
+  async deactivateExpiredAnnouncements(): Promise<void> {
+    const now = DateTime.utc().toSQL();
+    await this.db<DbAnnouncement>(announcementsTable)
+      .where('active', true)
+      .whereNotNull('until_date')
+      .where('until_date', '<', now)
+      .update({ active: false });
+  }
+
   async announcements(
     request: AnnouncementsFilters,
   ): Promise<AnnouncementModelsList> {
+    await this.deactivateExpiredAnnouncements();
+
     const {
       category,
       offset,
