@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.19.0
+
+### Minor Changes
+
+- 3d6351f: Backstage version bump to v1.42.4
+
 ## 1.18.0
 
 ### Minor Changes
