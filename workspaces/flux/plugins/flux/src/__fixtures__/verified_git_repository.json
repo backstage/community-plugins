@@ -1,0 +1,70 @@
+{
+  "apiVersion": "source.toolkit.fluxcd.io/v1",
+  "kind": "GitRepository",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"source.toolkit.fluxcd.io/v1\",\"kind\":\"GitRepository\",\"metadata\":{\"annotations\":{},\"labels\":{\"backstage.io/kubernetes-id\":\"catalogue-service\"},\"name\":\"podinfo\",\"namespace\":\"backstage\"},\"spec\":{\"interval\":\"10m\",\"ref\":{\"branch\":\"master\"},\"url\":\"https://github.com/stefanprodan/podinfo\",\"verify\":{\"mode\":\"head\",\"secretRef\":{\"name\":\"pgp-public-keys\"}}}}\n"
+    },
+    "creationTimestamp": "2023-06-29T13:50:21Z",
+    "finalizers": ["finalizers.fluxcd.io"],
+    "generation": 1,
+    "labels": {
+      "backstage.io/kubernetes-id": "catalogue-service"
+    },
+    "name": "podinfo",
+    "namespace": "backstage",
+    "resourceVersion": "690736",
+    "uid": "45314994-3b63-4dad-87b3-61341b617fea"
+  },
+  "spec": {
+    "interval": "10m",
+    "ref": {
+      "branch": "master"
+    },
+    "timeout": "60s",
+    "url": "https://github.com/stefanprodan/podinfo",
+    "verify": {
+      "mode": "head",
+      "secretRef": {
+        "name": "pgp-public-keys"
+      }
+    }
+  },
+  "status": {
+    "artifact": {
+      "digest": "sha256:c894e5fad8e3a51ba4be72ada4beef3ee7be99f66770fd6f16488982bd226de8",
+      "lastUpdateTime": "2023-06-29T13:50:23Z",
+      "path": "gitrepository/backstage/podinfo/dd3869b1a177432b60ea1e3ba99c10fc9db850fa.tar.gz",
+      "revision": "master@sha1:dd3869b1a177432b60ea1e3ba99c10fc9db850fa",
+      "size": 80066,
+      "url": "http://source-controller.flux-system.svc.cluster.local./gitrepository/backstage/podinfo/dd3869b1a177432b60ea1e3ba99c10fc9db850fa.tar.gz"
+    },
+    "conditions": [
+      {
+        "lastTransitionTime": "2023-06-29T13:50:23Z",
+        "message": "stored artifact for revision 'master@sha1:dd3869b1a177432b60ea1e3ba99c10fc9db850fa'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastTransitionTime": "2023-06-29T13:50:23Z",
+        "message": "stored artifact for revision 'master@sha1:dd3869b1a177432b60ea1e3ba99c10fc9db850fa'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "ArtifactInStorage"
+      },
+      {
+        "lastTransitionTime": "2023-06-29T13:50:23Z",
+        "message": "verified signature of commit 'dd3869b1a177432b60ea1e3ba99c10fc9db850fa'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "SourceVerified"
+      }
+    ],
+    "observedGeneration": 1
+  }
+}
