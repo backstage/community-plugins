@@ -9,4 +9,5 @@
 
 ### Patch Changes
 
+- 9ddd404: Remove broken prepublish script
 - 766bc60: Updated dependency `@mui/x-tree-view` to `8.10.2`.
