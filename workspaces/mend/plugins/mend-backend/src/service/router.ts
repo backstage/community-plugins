@@ -35,6 +35,7 @@ import {
   permissionIntegrationRouter,
   type FilterProps,
 } from '../permission';
+import { MEND_API_VERSION } from '../constants';
 
 /** @internal */
 export type RouterOptions = {
@@ -50,9 +51,6 @@ enum ROUTE {
   PROJECT = '/project',
   FINDING = '/finding',
 }
-
-// To change the Mend API Version
-const MEND_API_VERSION: string = 'v3.0';
 
 /** @internal */
 export async function createRouter(
@@ -77,8 +75,13 @@ export async function createRouter(
 
     MendAuthSevice.connect()
       .then(next)
-      .catch(() => {
-        response.status(401).json({ error: 'Oops! Unauthorized' });
+      .catch(err => {
+        const errorMessage =
+          err instanceof Error ? err?.message : err?.statusText;
+        logger.error(errorMessage || 'Oops! Unauthorized');
+        response
+          .status(err?.status || 401)
+          .json({ error: err?.statusText || 'Oops! Unauthorized' });
       });
   };
 

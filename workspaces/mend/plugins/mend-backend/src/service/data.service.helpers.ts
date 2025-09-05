@@ -14,6 +14,7 @@ import {
   StatisticsEngine,
   StatisticsName,
 } from './data.service.types';
+import { AZURE_HOST_NAME } from '../constants';
 
 enum FINDING_TYPE {
   DEPENDENCIES = 'ALERTS',
@@ -159,7 +160,7 @@ export const parseEntityURL = (entityUrl?: string) => {
     const hostname = url.host.toLowerCase();
     let matcher = match('/:org/:repo', { end: false });
 
-    if (hostname === 'dev.azure.com') {
+    if (hostname === AZURE_HOST_NAME) {
       matcher = match('/:org/:project/_git/:repo', { end: false });
     }
     const extractedContent = matcher(url.pathname);

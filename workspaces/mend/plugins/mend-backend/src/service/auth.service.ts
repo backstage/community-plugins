@@ -74,8 +74,6 @@ export class MendAuthSevice {
       MendAuthSevice.clientUrl = wsEnvUrl;
     } catch (err) {
       // Log and reset to safe defaults, then rethrow so callers can decide how to handle it
-      // eslint-disable-next-line no-console
-      console.error('Failed to initialize MendAuthSevice configuration:', err);
       MendAuthSevice.baseUrl = '';
       MendAuthSevice.clientEmail = '';
       MendAuthSevice.clientKey = '';
@@ -99,12 +97,8 @@ export class MendAuthSevice {
         return Promise.resolve();
       })
       .catch(err => {
-        // eslint-disable-next-line no-console
-        console.error('Login request failed:', err);
         this.refreshToken = '';
-        return Promise.reject(
-          err instanceof Error ? err : new Error(String(err)),
-        );
+        return Promise.reject(err);
       });
   }
 
@@ -127,14 +121,10 @@ export class MendAuthSevice {
         return Promise.resolve();
       })
       .catch(err => {
-        // eslint-disable-next-line no-console
-        console.error('Refresh access token request failed:', err);
         this.authToken = '';
         this.clientName = '';
         this.clientUuid = '';
-        return Promise.reject(
-          err instanceof Error ? err : new Error(String(err)),
-        );
+        return Promise.reject(err);
       });
   }
 
@@ -142,11 +132,7 @@ export class MendAuthSevice {
     return MendAuthSevice.login()
       .then(() => MendAuthSevice.refreshAccessToken())
       .catch(err => {
-        // eslint-disable-next-line no-console
-        console.error('Failed to establish Mend authentication:', err);
-        return Promise.reject(
-          err instanceof Error ? err : new Error(String(err)),
-        );
+        return Promise.reject(err);
       });
   }
 
