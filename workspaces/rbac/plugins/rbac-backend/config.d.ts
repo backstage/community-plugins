@@ -63,6 +63,11 @@ export interface Config {
        * @visibility frontend
        */
       maxDepth?: number;
+      /**
+       * Prioritize permission policy over conditional policy, defaults to false.
+       * @visibility frontend
+       */
+      preferPermissionPolicy?: boolean;
     };
   };
 }

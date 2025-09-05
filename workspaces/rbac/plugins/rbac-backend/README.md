@@ -279,3 +279,18 @@ More information about group hierarchy can be found in the doc: [Group hierarchy
 ### Optional RBAC provider module support
 
 We also include the ability to create and load in RBAC backend plugin modules that can be used to make connections to third part access management tools. For more information, consult the [RBAC Providers documentation](./docs/providers.md).
+
+### Optional configuration to prefer permission policy over conditional
+
+Controls the evaluation order between permission policies and conditional policies for resource permissions.
+
+- **Default**: `false`: conditional policies take precedence when present.
+- **When `true`**: evaluate the permission policy first. If it denies and a matching conditional policy exists, the conditional decision is applied.
+- **When `false`**: if a matching conditional policy exists, apply it immediately; otherwise evaluate the permission policy.
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    preferPermissionPolicy: true
+```
