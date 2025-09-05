@@ -21,7 +21,6 @@ import {
 import { Knex } from 'knex';
 import { initializePersistenceContext } from './persistenceContext';
 import { DateTime } from 'luxon';
-import { time } from 'console';
 
 function createDatabaseManager(client: Knex, skipMigrations: boolean = false) {
   return {

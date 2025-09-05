@@ -101,7 +101,7 @@ export type AnnouncementsFilters = {
   /** Filter by active status */
   active?: boolean;
   /** Field to sort by (e.g., "created_at", "start_at") */
-  sortBy?: 'created_at' | 'start_at' | 'until_date';
+  sortBy?: 'created_at' | 'start_at';
   /** Sorting order: "asc" for ascending or "desc" for descending */
   order?: 'asc' | 'desc';
   /** Filter by current status (current date falls between start and until) */

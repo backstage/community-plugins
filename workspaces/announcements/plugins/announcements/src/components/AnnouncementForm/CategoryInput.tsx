@@ -34,7 +34,6 @@ type CategoryInputProps = {
       excerpt: string;
       body: string;
       created_at: string;
-      until_date: string;
       active: boolean;
       start_at: string;
       until_date: string;
@@ -49,7 +48,6 @@ type CategoryInputProps = {
     excerpt: string;
     body: string;
     created_at: string;
-    until_date: string;
     active: boolean;
     start_at: string;
     until_date: string;

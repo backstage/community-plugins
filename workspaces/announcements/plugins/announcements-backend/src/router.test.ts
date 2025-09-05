@@ -27,7 +27,6 @@ import {
 } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
-import { c } from 'msw/lib/glossary-2792c6da';
 
 describe('createRouter', () => {
   let app: express.Express;
