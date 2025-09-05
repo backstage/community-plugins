@@ -5,7 +5,6 @@
 ### Patch Changes
 
 - 6597245: Updated dependency `@mui/x-tree-view` to `8.11.0`.
-- 8f49719: Updated dependency `react-router-dom` to `~6.30.0`.
 
 ## 0.1.0
 
