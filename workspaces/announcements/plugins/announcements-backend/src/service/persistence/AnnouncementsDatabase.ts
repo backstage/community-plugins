@@ -201,7 +201,9 @@ export class AnnouncementsDatabase {
       }
       if (current) {
         const today = DateTime.now().toISO();
-        qb.where('start_at', '<=', today).andWhere('until_date', '>=', today);
+        qb.where('start_at', '<=', today).andWhere(q =>
+          q.whereNull('until_date').orWhere('until_date', '>=', today),
+        );
       }
       if (tags?.length) {
         tags.forEach(tag => {
