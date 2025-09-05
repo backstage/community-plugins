@@ -142,6 +142,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.tags': 'Tags';
     readonly 'admin.announcementsContent.table.created_at': 'Created';
     readonly 'admin.announcementsContent.table.start_at': 'Start';
+    readonly 'admin.announcementsContent.table.until_date': 'Until';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
     readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
