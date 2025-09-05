@@ -30,6 +30,7 @@ export interface AnnouncementsApi {
     active?: boolean;
     sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -74,6 +75,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     active,
     sortBy,
     order,
+    current,
     tags,
   }: {
     max?: number;
@@ -83,6 +85,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     active?: boolean;
     sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -142,9 +145,9 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.tags': 'Tags';
     readonly 'admin.announcementsContent.table.created_at': 'Created';
     readonly 'admin.announcementsContent.table.start_at': 'Start';
-    readonly 'admin.announcementsContent.table.until_date': 'Until';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.table.until_date': 'Until';
     readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.cancelButton': 'Cancel';
