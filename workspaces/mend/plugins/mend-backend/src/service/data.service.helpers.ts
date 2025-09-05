@@ -14,6 +14,7 @@ import {
   StatisticsEngine,
   StatisticsName,
 } from './data.service.types';
+import { AZURE_HOST_NAME } from '../constants';
 
 enum FINDING_TYPE {
   DEPENDENCIES = 'ALERTS',
@@ -120,9 +121,11 @@ export const dataProjectParser = (
         applicationName: organizationData[next.uuid].applicationName,
         applicationUuid: next.applicationUuid,
         lastScan: next.statistics[FINDING_TYPE.LAST_SCAN].lastScanTime,
-        languages: Object.entries(next.statistics.LIBRARY_TYPE_HISTOGRAM).sort(
-          (a, b) => b[1] - a[1],
-        ),
+        languages: next.statistics?.LIBRARY_TYPE_HISTOGRAM
+          ? Object.entries(next.statistics.LIBRARY_TYPE_HISTOGRAM).sort(
+              (a, b) => b[1] - a[1],
+            )
+          : ([] as [string, number][]),
       };
 
       prev.projectList.unshift(project);
@@ -140,7 +143,7 @@ export const dataProjectParser = (
   return projectData;
 };
 
-const parseEntityURL = (entityUrl?: string) => {
+export const parseEntityURL = (entityUrl?: string) => {
   try {
     if (!entityUrl) {
       return null;
@@ -154,10 +157,15 @@ const parseEntityURL = (entityUrl?: string) => {
       return null;
     }
     const url = new URL(matches[0]);
-    const fn = match('/:org/:repo', { end: false });
-    const extractedContent = fn(url.pathname);
+    const hostname = url.host.toLowerCase();
+    let matcher = match('/:org/:repo', { end: false });
+
+    if (hostname === AZURE_HOST_NAME) {
+      matcher = match('/:org/:project/_git/:repo', { end: false });
+    }
+    const extractedContent = matcher(url.pathname);
     if (extractedContent) {
-      return { ...extractedContent, host: url.host };
+      return { ...extractedContent, host: hostname };
     }
     return null;
   } catch (error) {
@@ -238,14 +246,13 @@ export function getSourceURLWiseProject(
 
       if (sourceUrlTag && typeof sourceUrlTag.value === 'string') {
         sourceUrl = sourceUrlTag.value;
-        let urlString = sourceUrl;
-        // Prepend protocol if missing for URL parsing
-        if (!/^https?:\/\//i.test(urlString)) {
-          urlString = `https://${urlString}`;
-        }
+        const urlString = sourceUrl.startsWith('http')
+          ? sourceUrl
+          : `https://${sourceUrl}`;
+
         try {
           const urlObj = new URL(urlString);
-          host = urlObj.host;
+          host = urlObj.host.toLocaleLowerCase();
           // Remove leading/trailing slashes and split
           pathname = urlObj.pathname;
         } catch (e) {

@@ -16,6 +16,7 @@ import {
   dataMatcher,
   dataProjectParser,
   fetchQueryPagination,
+  parseEntityURL,
 } from './data.service.helpers';
 import { MendDataService } from './data.service';
 import { MendAuthSevice } from './auth.service';
@@ -34,6 +35,7 @@ import {
   permissionIntegrationRouter,
   type FilterProps,
 } from '../permission';
+import { MEND_API_VERSION } from '../constants';
 
 /** @internal */
 export type RouterOptions = {
@@ -73,17 +75,21 @@ export async function createRouter(
 
     MendAuthSevice.connect()
       .then(next)
-      .catch(() => {
-        response.status(401).json({ error: 'Oops! Unauthorized' });
+      .catch(err => {
+        const errorMessage =
+          err instanceof Error ? err?.message : err?.statusText;
+        logger.error(errorMessage || 'Oops! Unauthorized');
+        response
+          .status(err?.status || 401)
+          .json({ error: err?.statusText || 'Oops! Unauthorized' });
       });
   };
 
-  const baseUrl = config.getString('mend.baseUrl');
   const activationKey = config.getString('mend.activationKey');
 
   // Init api service
   const mendDataService = new MendDataService({
-    baseUrl,
+    apiVersion: MEND_API_VERSION,
     activationKey,
   });
 
@@ -206,10 +212,21 @@ export async function createRouter(
         items || projectResult[1],
       );
 
+      const entityURL = parseEntityURL(
+        projectResult[0].items[0]?.metadata?.annotations?.[
+          'backstage.io/source-location'
+        ],
+      );
+
+      const projectSourceUrl = entityURL?.host
+        ? `${entityURL.host}${entityURL.path}`
+        : '';
+
       if (!data.length) {
         response.json({
           findingList: [],
           projectList: [],
+          projectSourceUrl,
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
@@ -267,6 +284,7 @@ export async function createRouter(
       response.json({
         findingList,
         ...projects,
+        projectSourceUrl,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });
