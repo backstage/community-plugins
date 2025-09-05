@@ -29,7 +29,6 @@ import {
   GraphQLEndpoint,
   GraphiQLIcon,
 } from '@backstage-community/plugin-graphiql';
-import { createApiFactory } from '@backstage/core-plugin-api';
 import { graphiQLRouteRef } from './route-refs';
 import {
   compatWrapper,
@@ -40,7 +39,7 @@ import {
 /** @alpha */
 export const graphiqlPage = PageBlueprint.make({
   params: {
-    defaultPath: '/graphiql',
+    path: '/graphiql',
     routeRef: convertLegacyRouteRef(graphiQLRouteRef),
     loader: () =>
       import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
@@ -67,14 +66,16 @@ export const graphiqlBrowseApi = ApiBlueprint.makeWithOverrides({
     endpoints: createExtensionInput([endpointDataRef]),
   },
   factory(originalFactory, { inputs }) {
-    return originalFactory({
-      factory: createApiFactory(
-        graphQlBrowseApiRef,
-        GraphQLEndpoints.from(
-          inputs.endpoints.map(i => i.get(endpointDataRef)),
-        ),
-      ),
-    });
+    return originalFactory(defineParams =>
+      defineParams({
+        api: graphQlBrowseApiRef,
+        deps: {},
+        factory: () =>
+          GraphQLEndpoints.from(
+            inputs.endpoints.map(i => i.get(endpointDataRef)),
+          ),
+      }),
+    );
   },
 });
 

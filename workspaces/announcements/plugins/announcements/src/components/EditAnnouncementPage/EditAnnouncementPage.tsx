@@ -15,6 +15,7 @@
  */
 import { ReactNode } from 'react';
 import useAsync from 'react-use/esm/useAsync';
+import slugify from 'slugify';
 import { Page, Header, Content, Progress } from '@backstage/core-components';
 import {
   alertApiRef,
@@ -27,6 +28,7 @@ import {
   announcementsApiRef,
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
+  useCategories,
 } from '@backstage-community/plugin-announcements-react';
 import { Alert } from '@material-ui/lab';
 
@@ -43,18 +45,38 @@ export const EditAnnouncementPage = (props: EditAnnouncementPageProps) => {
   const { value, loading, error } = useAsync(async () =>
     announcementsApi.announcementByID(id),
   );
+  const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
 
   let title = props.title;
   let content: ReactNode = <Progress />;
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
+    const { category } = request;
+
+    const slugs = categories.map(c => c.slug);
+    let updateMsg = t('editAnnouncementPage.updatedMessage') as string;
+
     try {
+      if (category) {
+        const categorySlug = slugify(category, {
+          lower: true,
+        });
+
+        if (slugs.indexOf(categorySlug) === -1) {
+          updateMsg = updateMsg.replace('.', '');
+          updateMsg = `${updateMsg} ${t(
+            'editAnnouncementPage.updatedMessageWithNewCategory',
+          )} ${category}.`;
+
+          await announcementsApi.createCategory({
+            title: category,
+          });
+        }
+      }
+
       await announcementsApi.updateAnnouncement(id, request);
-      alertApi.post({
-        message: t('editAnnouncementPage.updatedMessage'),
-        severity: 'success',
-      });
+      alertApi.post({ message: updateMsg, severity: 'success' });
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }

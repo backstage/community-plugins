@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.11.0
+
+### Minor Changes
+
+- f1dab24: Backstage version bump to v1.42.3
+
 ## 2.10.0
 
 ### Minor Changes

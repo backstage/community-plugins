@@ -1,5 +1,13 @@
 # @backstage-community/plugin-tech-radar-backend
 
+## 1.9.1
+
+### Patch Changes
+
+- 99e80be: Backstage version bump to v1.42.4
+- Updated dependencies [99e80be]
+  - @backstage-community/plugin-tech-radar-common@1.9.1
+
 ## 1.9.0
 
 ### Minor Changes

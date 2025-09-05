@@ -1,5 +1,11 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.8.0
+
+### Minor Changes
+
+- 0087cb5: Backstage version bump to v1.42.3
+
 ## 0.7.0
 
 ### Minor Changes
