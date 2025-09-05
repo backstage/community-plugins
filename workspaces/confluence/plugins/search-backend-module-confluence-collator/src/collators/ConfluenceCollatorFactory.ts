@@ -17,13 +17,36 @@ import {
   DocumentCollatorFactory,
   IndexableDocument,
 } from '@backstage/plugin-search-common';
-import { Config } from '@backstage/config';
+import type { Config } from '@backstage/config';
 import { Readable } from 'stream';
 import pLimit from 'p-limit';
 import { CacheService, LoggerService } from '@backstage/backend-plugin-api';
 import { ConfluenceClient } from '../client';
 import { readDurationFromConfig } from '@backstage/config';
 import { durationToMilliseconds } from '@backstage/types';
+import type { ConfluenceDocument } from '../client';
+import { defaultConfluenceCollatorContentParser } from './defaultConfluenceCollatorContentParser';
+
+/**
+ * Parses the content of a Confluence document into plaintext for indexing.
+ *
+ * Note: Targets the current XML/HTML storage format. This API may evolve to
+ * support future response formats without breaking existing implementations.
+ * @alpha
+ */
+export type ConfluenceCollatorContentParser = (
+  document: ConfluenceDocument,
+) => string;
+
+/**
+ * Transforms the indexable document before it is emitted to the indexer.
+ * Return a partial document to merge with the default mapping.
+ * @alpha
+ */
+export type ConfluenceCollatorDocumentTransformer = (
+  doc: IndexableConfluenceDocument,
+  raw: ConfluenceDocument,
+) => Partial<IndexableConfluenceDocument>;
 
 /**
  * Options for {@link ConfluenceCollatorFactory}
@@ -44,6 +67,10 @@ export type ConfluenceCollatorFactoryOptions = {
   logger: LoggerService;
   cache?: CacheService;
   documentCacheTtl?: number; // ms
+  /** @alpha */
+  contentParser?: ConfluenceCollatorContentParser;
+  /** @alpha */
+  documentTransformer?: ConfluenceCollatorDocumentTransformer;
 };
 
 /**
@@ -82,6 +109,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly query: string | undefined;
   private readonly parallelismLimit: number | undefined;
   private readonly logger: LoggerService;
+  private readonly contentParser: ConfluenceCollatorContentParser;
+  private readonly documentTransformer?: ConfluenceCollatorDocumentTransformer;
   public readonly type: string = 'confluence';
 
   private constructor(options: ConfluenceCollatorFactoryOptions) {
@@ -102,6 +131,11 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       cache: options.cache,
       documentCacheTtl: options.documentCacheTtl,
     });
+
+    // Default content parser converts HTML/XML storage to plaintext
+    this.contentParser =
+      options.contentParser ?? defaultConfluenceCollatorContentParser;
+    this.documentTransformer = options.documentTransformer;
   }
 
   static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
@@ -270,22 +304,28 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       });
     });
 
+    const baseDoc: IndexableConfluenceDocument = {
+      title: data.title,
+      text: this.contentParser(data),
+      location: `${data._links.base}${data._links.webui}`,
+      spaceKey: data.space.key,
+      spaceName: data.space.name,
+      ancestors: ancestors,
+      lastModifiedBy: data.version.by.publicName,
+      lastModified: data.version.when,
+      lastModifiedFriendly: data.version.friendlyWhen,
+    };
+
+    const transformed: Partial<IndexableConfluenceDocument> | undefined =
+      this.documentTransformer?.(baseDoc, data);
+
     return [
       {
-        title: data.title,
-        text: this.stripHtml(data.body.storage.value),
-        location: `${data._links.base}${data._links.webui}`,
-        spaceKey: data.space.key,
-        spaceName: data.space.name,
-        ancestors: ancestors,
-        lastModifiedBy: data.version.by.publicName,
-        lastModified: data.version.when,
-        lastModifiedFriendly: data.version.friendlyWhen,
+        ...baseDoc,
+        ...(transformed ?? {}),
       },
     ];
   }
 
-  private stripHtml(input: string): string {
-    return input.replace(/(<([^>]+)>)/gi, '');
-  }
+  // no-op
 }

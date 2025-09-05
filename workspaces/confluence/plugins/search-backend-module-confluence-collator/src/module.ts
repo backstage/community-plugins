@@ -16,10 +16,33 @@
 import {
   coreServices,
   createBackendModule,
+  createExtensionPoint,
 } from '@backstage/backend-plugin-api';
 import { readSchedulerServiceTaskScheduleDefinitionFromConfig } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
-import { ConfluenceCollatorFactory } from './collators';
+import {
+  ConfluenceCollatorFactory,
+  type ConfluenceCollatorContentParser,
+  type ConfluenceCollatorDocumentTransformer,
+} from './collators';
+
+/** @alpha */
+export interface ConfluenceCollatorExtensionPoint {
+  setContentParser(parser: ConfluenceCollatorContentParser): void;
+  setDocumentTransformer(
+    transformer: ConfluenceCollatorDocumentTransformer,
+  ): void;
+}
+
+/**
+ * Extension point used to customize the Confluence collator parsing and document transformation.
+ * Implementers should be aware that Confluence may return XML/HTML storage today and JSON formats in the future.
+ * @alpha
+ */
+export const confluenceCollatorExtensionPoint =
+  createExtensionPoint<ConfluenceCollatorExtensionPoint>({
+    id: 'search.confluenceCollator',
+  });
 
 /**
  * Search backend module for the Confluence index.
@@ -30,6 +53,28 @@ export const searchModuleConfluenceCollator = createBackendModule({
   pluginId: 'search',
   moduleId: 'confluence-collator',
   register(reg) {
+    let contentParser: ConfluenceCollatorContentParser | undefined;
+    let documentTransformer: ConfluenceCollatorDocumentTransformer | undefined;
+
+    reg.registerExtensionPoint(confluenceCollatorExtensionPoint, {
+      setContentParser(parser) {
+        if (contentParser) {
+          throw new Error(
+            'Confluence collator content parser may only be set once',
+          );
+        }
+        contentParser = parser;
+      },
+      setDocumentTransformer(transformer) {
+        if (documentTransformer) {
+          throw new Error(
+            'Confluence collator document transformer may only be set once',
+          );
+        }
+        documentTransformer = transformer;
+      },
+    });
+
     reg.registerInit({
       deps: {
         config: coreServices.rootConfig,
@@ -60,6 +105,8 @@ export const searchModuleConfluenceCollator = createBackendModule({
           schedule: scheduler.createScheduledTaskRunner(schedule),
           factory: ConfluenceCollatorFactory.fromConfig(config, {
             logger: logger,
+            contentParser,
+            documentTransformer,
           }),
         });
       },
