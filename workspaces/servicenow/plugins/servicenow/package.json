@@ -5,14 +5,27 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/servicenow/plugins/servicenow"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "backstage": {
     "role": "frontend-plugin",
@@ -36,8 +49,10 @@
   "dependencies": {
     "@backstage-community/plugin-servicenow-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-compat-api": "^0.4.4",
     "@backstage/core-components": "^0.17.4",
     "@backstage/core-plugin-api": "^1.10.9",
+    "@backstage/frontend-plugin-api": "^0.10.4",
     "@backstage/plugin-catalog-react": "^1.19.1",
     "@backstage/theme": "^0.6.7",
     "@mui/icons-material": "^5.15.17",
