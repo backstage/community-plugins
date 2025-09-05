@@ -5,11 +5,14 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { isServicenowAvailable } from '@backstage-community/plugin-servicenow-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public
 export const isMyProfile: (entity: Entity) => boolean;
+
+export { isServicenowAvailable };
 
 // @public
 export const ServicenowPage: () => JSX_2.Element;

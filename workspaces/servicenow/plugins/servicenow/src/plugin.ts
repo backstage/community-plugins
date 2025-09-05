@@ -21,18 +21,17 @@ import {
   fetchApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
+import {
+  Entity,
+  parseEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 
 import { rootRouteRef } from './routes';
 import {
   serviceNowApiRef,
   ServiceNowBackendClient,
 } from './api/ServiceNowBackendClient';
-
-import {
-  Entity,
-  parseEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
 
 /**
  * Servicenow Plugin
@@ -71,10 +70,9 @@ export const ServicenowPage = servicenowPlugin.provide(
 );
 
 /**
- * @public
  * Check if the current entity is the logged-in user
+ * @public
  */
-
 export const isMyProfile = (entity: Entity): boolean => {
   const currentUserRef = localStorage.getItem('userEntityRef');
   if (!currentUserRef) return false;

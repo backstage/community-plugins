@@ -51,5 +51,8 @@
     "backstage",
     "plugin"
   ],
-  "bugs": "https://github.com/backstage/community-plugins/issues"
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.5"
+  }
 }
