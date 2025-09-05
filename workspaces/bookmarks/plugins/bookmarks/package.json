@@ -52,7 +52,7 @@
     "@types/react-dom": "^18",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "~6.27.0"
+    "react-router-dom": "~6.30.0"
   },
   "files": [
     "dist"
