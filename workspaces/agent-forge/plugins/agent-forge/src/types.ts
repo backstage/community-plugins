@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 export interface Message {
-  text: string;
+  text?: string; // Make optional to support A2A messages
+  parts?: Array<{
+    kind: string;
+    text?: string;
+    [key: string]: any;
+  }>; // Add A2A parts support
   isUser: boolean;
   options?: string[];
   suggestions?: string[];
@@ -22,11 +27,52 @@ export interface Message {
   renderOptions?: boolean; // Add this line
   metadata?: {
     user_input?: boolean;
-    input_fields?: {
-      field_name: string;
-      field_description: string;
-      field_values?: string[];
-    }[];
+    form_explanation?: string;
+    input_fields?:
+      | {
+          // Legacy structure
+          field_name: string;
+          field_description: string;
+          field_values?: string[];
+        }[]
+      | {
+          // New structure
+          fields: {
+            name: string;
+            type: string;
+            title: string;
+            description: string;
+            required: boolean;
+            status: string;
+            provided_value?: string | boolean | number;
+          }[];
+          summary: {
+            total_required: number;
+            total_optional: number;
+            provided_required: number;
+            provided_optional: number;
+            missing_required: number;
+          };
+          tool_info?: {
+            name: string;
+            description: string;
+            operation: string;
+          };
+          context?: {
+            missing_required_count: number;
+            total_fields_count: number;
+            extracted_count: number;
+            conversation_context: {
+              original_query: string;
+              tool_name: string;
+              timestamp: number;
+              a2a_context_id: string;
+              stable_conversation_id: string;
+            };
+            is_followup: boolean;
+            stable_conversation_id: string;
+          };
+        };
   };
 }
 
@@ -43,11 +89,52 @@ export type AnswerResponse = {
   answer: string;
   metadata?: {
     user_input?: boolean;
-    input_fields?: {
-      field_name: string;
-      field_description: string;
-      field_values?: string[];
-    }[];
+    form_explanation?: string;
+    input_fields?:
+      | {
+          // Legacy structure
+          field_name: string;
+          field_description: string;
+          field_values?: string[];
+        }[]
+      | {
+          // New structure
+          fields: {
+            name: string;
+            type: string;
+            title: string;
+            description: string;
+            required: boolean;
+            status: string;
+            provided_value?: string | boolean | number;
+          }[];
+          summary: {
+            total_required: number;
+            total_optional: number;
+            provided_required: number;
+            provided_optional: number;
+            missing_required: number;
+          };
+          tool_info?: {
+            name: string;
+            description: string;
+            operation: string;
+          };
+          context?: {
+            missing_required_count: number;
+            total_fields_count: number;
+            extracted_count: number;
+            conversation_context: {
+              original_query: string;
+              tool_name: string;
+              timestamp: number;
+              a2a_context_id: string;
+              stable_conversation_id: string;
+            };
+            is_followup: boolean;
+            stable_conversation_id: string;
+          };
+        };
   };
 };
 
@@ -62,11 +149,52 @@ export interface IQuestionResponse {
   suggestions?: string[];
   metadata?: {
     user_input?: boolean;
-    input_fields?: {
-      field_name: string;
-      field_description: string;
-      field_values?: string[];
-    }[];
+    form_explanation?: string;
+    input_fields?:
+      | {
+          // Legacy structure
+          field_name: string;
+          field_description: string;
+          field_values?: string[];
+        }[]
+      | {
+          // New structure
+          fields: {
+            name: string;
+            type: string;
+            title: string;
+            description: string;
+            required: boolean;
+            status: string;
+            provided_value?: string | boolean | number;
+          }[];
+          summary: {
+            total_required: number;
+            total_optional: number;
+            provided_required: number;
+            provided_optional: number;
+            missing_required: number;
+          };
+          tool_info?: {
+            name: string;
+            description: string;
+            operation: string;
+          };
+          context?: {
+            missing_required_count: number;
+            total_fields_count: number;
+            extracted_count: number;
+            conversation_context: {
+              original_query: string;
+              tool_name: string;
+              timestamp: number;
+              a2a_context_id: string;
+              stable_conversation_id: string;
+            };
+            is_followup: boolean;
+            stable_conversation_id: string;
+          };
+        };
   };
 }
 
