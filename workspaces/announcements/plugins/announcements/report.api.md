@@ -128,10 +128,5 @@ export const NewAnnouncementBanner: (props: {
   tags?: string[] | undefined;
 }) => JSX_2.Element | null;
 
-// Warnings were encountered during analysis:
-//
-// src/components/AnnouncementsTimeline/AnnouncementsTimeline.d.ts:40:72 - (tsdoc-malformed-html-name) Invalid HTML element: Expecting an HTML name
-// src/components/AnnouncementsTimeline/AnnouncementsTimeline.d.ts:40:79 - (tsdoc-malformed-html-name) Invalid HTML element: Expecting an HTML name
-
 // (No @packageDocumentation comment for this package)
 ```

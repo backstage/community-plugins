@@ -73,7 +73,7 @@ export type AnnouncementsTimelineProps = {
    */
   order?: 'asc' | 'desc';
   /**
-   * Whether to show current announcements only (current if start_at <= now <= until_date).
+   * Whether to show current announcements or not.
    * Default: false
    */
   current?: boolean;
