@@ -182,6 +182,7 @@ export const announcementsTranslationRef = createTranslationRef({
           inactive: 'Inactive',
           created_at: 'Created',
           start_at: 'Start',
+          until_date: 'Until',
         },
       },
       categoriesContent: {
