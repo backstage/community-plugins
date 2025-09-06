@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.2.0
+
+### Minor Changes
+
+- 0d3e031: Added support for the new frontend system
+
 ## 1.1.1
 
 ### Patch Changes
