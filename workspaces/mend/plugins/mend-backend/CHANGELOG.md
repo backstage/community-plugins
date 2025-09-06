@@ -1,5 +1,16 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.7.0
+
+### Minor Changes
+
+- d85e394: Removed the `baseUrl` field from the Backstage configuration; now derived using the `activationKey`.
+  Enhanced drill-down functionality to filter projects on the Findings Overview page using the `sourceUrl`.
+  Added support for displaying projects with `sourceUrl` from GitLab, Bitbucket, and Azure Repos.
+  Updated branding text from `mend.io` to `Mend.io`.
+  Improved and repositioned the Project Name multi-select filter on the Findings Overview page.
+  Added tooltip for the Project Name multi-select filter.
+
 ## 0.6.0
 
 ### Minor Changes
