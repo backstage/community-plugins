@@ -47,6 +47,7 @@ interface AnnouncementRequest {
   body: string;
   active: boolean;
   start_at: string;
+  until_date: string;
   on_behalf_of?: string;
   tags?: string[];
 }
@@ -62,6 +63,7 @@ type GetAnnouncementsQueryParams = {
   active?: boolean;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
   tags?: string[];
 };
 
@@ -116,6 +118,7 @@ export async function createRouter(
           active,
           sortby = 'created_at',
           order = 'desc',
+          current,
           tags,
         },
       } = req;
@@ -132,6 +135,7 @@ export async function createRouter(
             ? sortby
             : 'created_at',
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
+          current,
           tags: tagsFilter,
         },
       );
@@ -206,6 +210,7 @@ export async function createRouter(
           id: uuid(),
           created_at: DateTime.now(),
           start_at: DateTime.fromISO(req.body.start_at),
+          until_date: DateTime.fromISO(req.body.until_date),
           tags: validatedTags,
         });
 
@@ -242,6 +247,7 @@ export async function createRouter(
           category,
           active,
           start_at,
+          until_date,
           on_behalf_of,
           tags,
         },
@@ -270,6 +276,7 @@ export async function createRouter(
             category,
             active,
             start_at: DateTime.fromISO(start_at),
+            until_date: DateTime.fromISO(until_date),
             on_behalf_of,
             tags: validatedTags,
           },

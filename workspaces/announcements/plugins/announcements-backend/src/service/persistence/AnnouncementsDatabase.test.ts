@@ -65,6 +65,7 @@ describe('AnnouncementsDatabase', () => {
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       active: true,
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
     });
 
@@ -81,6 +82,7 @@ describe('AnnouncementsDatabase', () => {
       created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
       active: 1,
       start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+      until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
     });
   });
@@ -95,6 +97,7 @@ describe('AnnouncementsDatabase', () => {
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       active: true,
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
     });
 
@@ -114,6 +117,7 @@ describe('AnnouncementsDatabase', () => {
           created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           active: 1,
           start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+          until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
         },
       ],
@@ -130,6 +134,7 @@ describe('AnnouncementsDatabase', () => {
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       active: true,
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
     });
 
@@ -142,6 +147,7 @@ describe('AnnouncementsDatabase', () => {
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       active: false,
       start_at: DateTime.fromISO('2025-02-01T13:00:00.708Z'),
+      until_date: DateTime.fromISO('2025-03-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
     });
 
@@ -161,6 +167,7 @@ describe('AnnouncementsDatabase', () => {
           created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           active: 0,
           start_at: timestampToDateTime('2025-02-01T13:00:00.708Z'),
+          until_date: timestampToDateTime('2025-03-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
         },
       ],
@@ -177,6 +184,7 @@ describe('AnnouncementsDatabase', () => {
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       active: true,
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
     });
 
@@ -222,6 +230,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -235,6 +244,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -248,6 +258,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -272,6 +283,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
           {
@@ -288,6 +300,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],
@@ -304,6 +317,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -316,6 +330,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:09.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -337,6 +352,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],
@@ -353,6 +369,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -365,6 +382,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -377,6 +395,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -389,6 +408,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -410,6 +430,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],
@@ -426,6 +447,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: false,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -438,6 +460,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -450,6 +473,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: false,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -462,6 +486,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -483,6 +508,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
           {
@@ -496,6 +522,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],
@@ -512,6 +539,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -524,6 +552,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-27T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-19T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-19T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -546,6 +575,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-19T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-19T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
           {
@@ -559,6 +589,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],
@@ -575,6 +606,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -587,6 +619,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-27T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-19T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -609,6 +642,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
           {
@@ -622,6 +656,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-19T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],
@@ -638,6 +673,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-25T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-17T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-17T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -650,6 +686,7 @@ describe('AnnouncementsDatabase', () => {
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
         active: true,
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
       });
 
@@ -672,6 +709,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
           {
@@ -685,6 +723,7 @@ describe('AnnouncementsDatabase', () => {
             created_at: timestampToDateTime('2023-10-25T15:28:08.539Z'),
             active: 1,
             start_at: timestampToDateTime('2025-01-17T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
           },
         ],

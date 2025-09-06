@@ -118,6 +118,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     active,
     sortBy,
     order,
+    current,
     tags,
   }: {
     max?: number;
@@ -127,6 +128,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     active?: boolean;
     sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList> {
     const params = new URLSearchParams();
     if (category) {
@@ -149,6 +151,9 @@ export class AnnouncementsClient implements AnnouncementsApi {
     }
     if (order) {
       params.append('order', order.toString());
+    }
+    if (current) {
+      params.append('current', current.toString());
     }
 
     return this.fetch<AnnouncementsList>(`/announcements?${params.toString()}`);

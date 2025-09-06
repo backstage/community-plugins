@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { DateTime } from 'luxon';
+
+exports.up = async function (knex) {
+  await knex.schema.alterTable('announcements', function (table) {
+    table.timestamp('until_date').nullable();
+  });
+};
 
 /**
- * A model representing an Announcement on the backend.
- *
- * @internal
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
  */
-export type AnnouncementModel = Omit<
-  Announcement,
-  'created_at' | 'start_at' | 'until_date'
-> & {
-  created_at: DateTime;
-  start_at: DateTime;
-  until_date: DateTime;
+exports.down = async function (knex) {
+  await knex.schema.alterTable('announcements', function (table) {
+    table.dropColumn('until_date');
+  });
 };

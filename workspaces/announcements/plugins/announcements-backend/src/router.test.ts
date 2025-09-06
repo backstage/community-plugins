@@ -92,6 +92,7 @@ describe('createRouter', () => {
           publisher: 'user:default/name',
           created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
           start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+          until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
         },
       ]);
 
@@ -105,6 +106,7 @@ describe('createRouter', () => {
         active: undefined,
         sortBy: 'created_at', // Default sortBy
         order: 'desc', // Default order
+        current: undefined,
       });
 
       expect(response.body).toEqual([
@@ -116,6 +118,7 @@ describe('createRouter', () => {
           publisher: 'user:default/name',
           created_at: '2022-11-02T15:28:08.539+00:00',
           start_at: '2022-11-02T15:28:08.539+00:00',
+          until_date: '2022-12-02T15:28:08.539+00:00',
         },
       ]);
     });
@@ -129,6 +132,7 @@ describe('createRouter', () => {
           publisher: 'user:default/name',
           created_at: DateTime.fromISO('2025-01-01T15:28:08.539Z'),
           start_at: DateTime.fromISO('2025-01-01T15:28:08.539Z'),
+          until_date: DateTime.fromISO('2025-02-01T15:28:08.539Z'),
         },
         {
           id: 'uuid2',
@@ -138,6 +142,7 @@ describe('createRouter', () => {
           publisher: 'user:default/name',
           created_at: DateTime.fromISO('2025-01-02T15:28:08.539Z'),
           start_at: DateTime.fromISO('2025-01-02T15:28:08.539Z'),
+          until_date: DateTime.fromISO('2025-02-02T15:28:08.539Z'),
         },
       ]);
 
@@ -164,6 +169,7 @@ describe('createRouter', () => {
           publisher: 'user:default/name',
           created_at: '2025-01-01T15:28:08.539+00:00',
           start_at: '2025-01-01T15:28:08.539+00:00',
+          until_date: '2025-02-01T15:28:08.539+00:00',
         },
         {
           id: 'uuid2',
@@ -173,6 +179,7 @@ describe('createRouter', () => {
           publisher: 'user:default/name',
           created_at: '2025-01-02T15:28:08.539+00:00',
           start_at: '2025-01-02T15:28:08.539+00:00',
+          until_date: '2025-02-02T15:28:08.539+00:00',
         },
       ]);
     });
@@ -187,6 +194,7 @@ describe('createRouter', () => {
             publisher: 'user:default/name',
             created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
             start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            until_date: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
             tags: [{ slug: 'tag1', title: 'Tag 1' }],
           },
         ],
@@ -203,6 +211,7 @@ describe('createRouter', () => {
         active: undefined,
         sortBy: 'created_at',
         order: 'desc',
+        current: undefined,
         tags: ['tag1'],
       });
 
@@ -223,6 +232,7 @@ describe('createRouter', () => {
             publisher: 'user:default/name',
             created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
             start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            until_date: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
             tags: [
               { slug: 'tag1', title: 'Tag 1' },
               { slug: 'tag2', title: 'Tag 2' },
@@ -242,6 +252,7 @@ describe('createRouter', () => {
         active: undefined,
         sortBy: 'created_at',
         order: 'desc',
+        current: undefined,
         tags: ['tag1', 'tag2'],
       });
 
@@ -270,6 +281,7 @@ describe('createRouter', () => {
         active: undefined,
         sortBy: 'created_at',
         order: 'desc',
+        current: undefined,
         tags: ['nonexistent'],
       });
 
