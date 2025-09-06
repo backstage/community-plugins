@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.11.1
+
+### Patch Changes
+
+- 92b9e8c: Fix a bug in the Edit announcement page where the page does not update the announcement if the announcement is missing a category
+
 ## 0.11.0
 
 ### Minor Changes
