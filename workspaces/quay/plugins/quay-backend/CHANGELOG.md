@@ -1,5 +1,16 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.6.0
+
+### Minor Changes
+
+- f1dab24: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [f1dab24]
+  - @backstage-community/plugin-quay-common@1.11.0
+
 ## 1.5.0
 
 ### Minor Changes

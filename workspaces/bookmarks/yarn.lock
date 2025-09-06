@@ -702,7 +702,7 @@ __metadata:
     "@mui/icons-material": "npm:5.18.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:5.18.0"
-    "@mui/x-tree-view": "npm:8.10.2"
+    "@mui/x-tree-view": "npm:8.11.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.7.0"
     "@testing-library/react": "npm:^16.3.0"
@@ -3631,9 +3631,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/x-internals@npm:8.10.2":
-  version: 8.10.2
-  resolution: "@mui/x-internals@npm:8.10.2"
+"@mui/x-internals@npm:8.11.0":
+  version: 8.11.0
+  resolution: "@mui/x-internals@npm:8.11.0"
   dependencies:
     "@babel/runtime": "npm:^7.28.2"
     "@mui/utils": "npm:^7.3.1"
@@ -3641,17 +3641,17 @@ __metadata:
     use-sync-external-store: "npm:^1.5.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/a6100403ea0b91464f68fc4f7d1109b33b299f8dba6c190c2fb100ea94fb5d00027bc89dde6b30c4b4ce91a22c747a6a465883dd5cddf9ac1b184674f03b3931
+  checksum: 10/be506292ecccc3776ccb3e03353771a26747847127df91d3acec4256e14a6246bb1b596a99df3dee4145b799e854b0452bdd15da3b4d56da80d517a9a6873502
   languageName: node
   linkType: hard
 
-"@mui/x-tree-view@npm:8.10.2":
-  version: 8.10.2
-  resolution: "@mui/x-tree-view@npm:8.10.2"
+"@mui/x-tree-view@npm:8.11.0":
+  version: 8.11.0
+  resolution: "@mui/x-tree-view@npm:8.11.0"
   dependencies:
     "@babel/runtime": "npm:^7.28.2"
     "@mui/utils": "npm:^7.3.1"
-    "@mui/x-internals": "npm:8.10.2"
+    "@mui/x-internals": "npm:8.11.0"
     "@types/react-transition-group": "npm:^4.4.12"
     clsx: "npm:^2.1.1"
     prop-types: "npm:^15.8.1"
@@ -3670,7 +3670,7 @@ __metadata:
       optional: true
     "@emotion/styled":
       optional: true
-  checksum: 10/7da976fc5b2e2eb3091707832083d0798eb36ab4b9e36c0fdca22d071acbef472ad1c2b717704c4898257939616fce3c0f0d5b9ff5b7456b4235c7767f700cca
+  checksum: 10/67e235247440991d9b6e063b68822453584023c9c2b1d66db6a861b1cbbc03be417d221f8d71363fa57787881f023126b66047e41e1d1ec4bc07622991bc283c
   languageName: node
   linkType: hard
 

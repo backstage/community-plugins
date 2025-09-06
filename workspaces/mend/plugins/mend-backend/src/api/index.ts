@@ -89,7 +89,7 @@ function toJson(response: Response): Promise<any> {
   }
 
   return response.json().then(json => {
-    return response.ok ? json : Promise.reject(json);
+    return response.ok ? json : Promise.reject(response);
   });
 }
 

@@ -26,7 +26,7 @@ import { linkerdApi } from './api';
  * The Linkerd plugin with support for new frontend system
  */
 export const plugin = createFrontendPlugin({
-  id: 'linkerd',
+  pluginId: 'linkerd',
   extensions: [
     linkerdApi,
     IsMeshedEntityCard,

@@ -26,7 +26,7 @@ import { rootRouteRef } from './plugin';
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'jenkins',
+  pluginId: 'jenkins',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
   }),
