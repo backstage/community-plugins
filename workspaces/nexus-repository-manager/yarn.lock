@@ -1749,7 +1749,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
     "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
-    "@hey-api/openapi-ts": "npm:0.80.5"
+    "@hey-api/openapi-ts": "npm:0.82.3"
     "@material-ui/core": "npm:^4.9.13"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:^4.0.0-alpha.45"
@@ -3504,35 +3504,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/json-schema-ref-parser@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@hey-api/json-schema-ref-parser@npm:1.0.6"
+"@hey-api/codegen-core@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@hey-api/codegen-core@npm:0.0.1"
+  peerDependencies:
+    typescript: ">=5.5.3"
+  checksum: 10/7ef72f8d571ae4fed9f47d6a0f5ee4e0bbbdff0f43893f559d7d669b32764ada7bcb701a4c9d837d4ab6ee50c8504c9402e1e7d2fc21edaa3766796897e1deaf
+  languageName: node
+  linkType: hard
+
+"@hey-api/json-schema-ref-parser@npm:1.0.7":
+  version: 1.0.7
+  resolution: "@hey-api/json-schema-ref-parser@npm:1.0.7"
   dependencies:
     "@jsdevtools/ono": "npm:^7.1.3"
     "@types/json-schema": "npm:^7.0.15"
     js-yaml: "npm:^4.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/a55c59f0ad6933b0ede43b462eb30320fdb3da6ef186fa5c47c681b4ee59fa2f54642fe982f897eef0d6a631d521fcfbea237036f3833255fd17f96c0ee021db
+  checksum: 10/f386f284f4e576c6e98f83dc76f8c3459ffb447fd6bc61eead05fdf48951ed4e5ee3d6d163c9e0226d99d8a73c4dfe4f816dff9d5b55f5b7bf707a5eaee27926
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.80.5":
-  version: 0.80.5
-  resolution: "@hey-api/openapi-ts@npm:0.80.5"
+"@hey-api/openapi-ts@npm:0.82.3":
+  version: 0.82.3
+  resolution: "@hey-api/openapi-ts@npm:0.82.3"
   dependencies:
-    "@hey-api/json-schema-ref-parser": "npm:1.0.6"
+    "@hey-api/codegen-core": "npm:^0.0.1"
+    "@hey-api/json-schema-ref-parser": "npm:1.0.7"
     ansi-colors: "npm:4.1.3"
     c12: "npm:2.0.1"
     color-support: "npm:1.1.3"
     commander: "npm:13.0.0"
     handlebars: "npm:4.7.8"
+    js-yaml: "npm:4.1.0"
     open: "npm:10.1.2"
     semver: "npm:7.7.2"
   peerDependencies:
-    typescript: ^5.5.3
+    typescript: ">=5.5.3"
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 10/b1135a85207666f2f6f8ec84614fa8e2141d726b5a22f163812fb940efc2f75a1c7a2ce524f6f0a102e1ff21db82262754ac440caea6515db7cb654c26dcc31f
+  checksum: 10/3689df99ec82c4ee4da8eab04c5227479d0bc2d23225d22bc4feb402e6a477dd3a30b47c13df4a02eded2f85a62712d44110f17c6dd10db6448d8ddc26495116
   languageName: node
   linkType: hard
 
@@ -14455,6 +14466,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "js-yaml@npm:4.1.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
+  languageName: node
+  linkType: hard
+
 "js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.6.1, js-yaml@npm:^3.8.3":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
@@ -14464,17 +14486,6 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/9e22d80b4d0105b9899135365f746d47466ed53ef4223c529b3c0f7a39907743fdbd3c4379f94f1106f02755b5e90b2faaf84801a891135544e1ea475d1a1379
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "js-yaml@npm:4.1.0"
-  dependencies:
-    argparse: "npm:^2.0.1"
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
   languageName: node
   linkType: hard
 
