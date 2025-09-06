@@ -62,6 +62,7 @@ export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   };
   version: {
     by: {
+      displayName: string;
       publicName: string;
       email?: string;
       accountStatus?: string;
