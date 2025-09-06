@@ -16,3 +16,4 @@
 
 /** @public */
 export const ROLLBAR_ANNOTATION = 'rollbar.com/project-slug';
+export const ROLLBAR_ENVIRONMENT_ANNOTATION = 'rollbar.com/environment';
