@@ -62,7 +62,7 @@ export const AnnouncementForm = ({
 
   const formattedUntilDate = initialData.until_date
     ? DateTime.fromISO(initialData.until_date).toISODate()
-    : DateTime.now().plus({ days: 7 }).toISODate();
+    : DateTime.now().endOf('day').plus({ days: 7 }).toISODate();
 
   const [form, setForm] = useState({
     ...initialData,
