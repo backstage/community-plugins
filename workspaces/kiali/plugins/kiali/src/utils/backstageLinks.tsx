@@ -16,7 +16,12 @@
 import { GroupVersionKind } from '@backstage-community/plugin-kiali-common/types';
 import { Link } from '@backstage/core-components';
 import { SubRouteRef } from '@backstage/core-plugin-api';
+import { Drawer, IconButton } from '@material-ui/core';
+import Close from '@material-ui/icons/Close';
 import { default as React } from 'react';
+import { AppDetailsDrawer } from '../components/Drawers/AppDetailsDrawer';
+import { ServiceDetailsDrawer } from '../components/Drawers/ServiceDetailsDrawer';
+import { WorkloadDetailsDrawer } from '../components/Drawers/WorkloadDetailsDrawer';
 import { isMultiCluster } from '../config';
 import {
   appDetailRouteRef,
@@ -68,6 +73,7 @@ interface BackstageLinkProps {
   query?: string;
   children?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  useDrawer?: boolean; // New prop to control drawer behavior
 }
 
 /* const getRef = (type: string, entity?: boolean, root?: boolean) => {
@@ -82,10 +88,93 @@ interface BackstageLinkProps {
   return backstageRoutesObject[type].ref;
 };*/
 
-export const BackstageObjectLink = (props: BackstageLinkProps) => {
-  const { name, type, query, cluster, namespace, objectGVK } = props;
+// Component for drawer content
+const DrawerContent = ({
+  toggleDrawer,
+  type,
+  name,
+  namespace,
+}: {
+  toggleDrawer: (isOpen: boolean) => void;
+  type: string;
+  name: string;
+  namespace: string;
+}) => {
+  return (
+    <div style={{ padding: '10px', minWidth: '400px' }} data-test="drawer">
+      <div style={{ paddingBottom: '30px' }}>
+        <IconButton
+          key="dismiss"
+          id="close_drawer"
+          title="Close the drawer"
+          onClick={() => toggleDrawer(false)}
+          color="inherit"
+          style={{ right: '0', position: 'absolute', top: '5px' }}
+        >
+          <Close />
+        </IconButton>
+      </div>
+      <div />
+      <div>
+        {type === 'workloads' && (
+          <WorkloadDetailsDrawer namespace={namespace} workload={name} />
+        )}
+        {type === 'services' && (
+          <ServiceDetailsDrawer namespace={namespace} service={name} />
+        )}
+        {type === 'applications' && (
+          <AppDetailsDrawer namespace={namespace} app={name} />
+        )}
+      </div>
+    </div>
+  );
+};
 
-  // Generate the URL based on the type and parameters
+export const BackstageObjectLink = (props: BackstageLinkProps) => {
+  const { name, type, query, cluster, namespace, objectGVK, useDrawer } = props;
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+
+  // If useDrawer is true and we have the required props, show drawer behavior
+  if (useDrawer && name && namespace && type && !props.root) {
+    return (
+      <>
+        <Link
+          component="button"
+          onClick={e => {
+            e.preventDefault();
+            setIsDrawerOpen(true);
+          }}
+          data-test={`${
+            type ? backstageRoutesObject[type].id : ''
+          }-namespace-${name}`}
+          style={{
+            textDecoration: 'underline',
+            color: 'inherit',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            font: 'inherit',
+          }}
+        >
+          {props.children || name}
+        </Link>
+        <Drawer
+          anchor="right"
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+        >
+          <DrawerContent
+            toggleDrawer={setIsDrawerOpen}
+            type={type}
+            name={name}
+            namespace={namespace}
+          />
+        </Drawer>
+      </>
+    );
+  }
+
+  // Original link behavior
   let to = '';
 
   if (!props.root) {

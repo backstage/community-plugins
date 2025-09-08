@@ -199,7 +199,7 @@ export const AppListPage = (props: {
           rows={allApps}
           type="applications"
           hiddenColumns={hiddenColumns}
-          view={props.view || DRAWER}
+          view={props.view}
           loading={loadingD}
         />
       </>
