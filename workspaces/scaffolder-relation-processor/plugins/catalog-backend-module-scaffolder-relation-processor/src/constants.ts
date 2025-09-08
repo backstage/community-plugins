@@ -27,7 +27,7 @@ export const TEMPLATE_VERSION_UPDATED_TOPIC =
  *
  * @public
  */
-export const ENTITY_NAME_TEMPLATE_VAR = 'ENTITY_NAME';
+export const ENTITY_NAME_TEMPLATE_VAR = '$ENTITY_NAME';
 
 /**
  * Default template update notification title

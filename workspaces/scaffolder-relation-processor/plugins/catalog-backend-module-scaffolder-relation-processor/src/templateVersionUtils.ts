@@ -125,10 +125,13 @@ async function sendNotificationsToOwners(
       const catalogUrl = createEntityCatalogUrl(entity);
 
       const entityName = entity.metadata.name;
-      const entityNameRegex = new RegExp(ENTITY_NAME_TEMPLATE_VAR, 'g');
+      const entityNameRegex = new RegExp(
+        ENTITY_NAME_TEMPLATE_VAR.replace(/\$/g, '\\$'),
+        'g',
+      );
 
       const titleReplaced =
-        config.notifications?.message.title?.replace(
+        config.notifications?.message.title.replace(
           entityNameRegex,
           entityName,
         ) || '';
@@ -138,7 +141,7 @@ async function sendNotificationsToOwners(
         titleReplaced.charAt(0).toUpperCase() + titleReplaced.slice(1);
 
       const description =
-        config.notifications?.message.description?.replace(
+        config.notifications?.message.description.replace(
           entityNameRegex,
           entityName,
         ) || '';
