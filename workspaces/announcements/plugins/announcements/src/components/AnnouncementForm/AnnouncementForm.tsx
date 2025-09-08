@@ -233,7 +233,7 @@ export const AnnouncementForm = ({
               <TextField
                 variant="outlined"
                 label={t('announcementForm.untilDate')}
-                id="until_date"
+                id="until-date"
                 type="date"
                 value={form.until_date}
                 InputLabelProps={{ shrink: true }}
