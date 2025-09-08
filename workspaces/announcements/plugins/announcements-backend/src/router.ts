@@ -188,7 +188,7 @@ export async function createRouter(
           },
           metadata: { action: EVENTS_ACTION_DELETE_ANNOUNCEMENT },
         });
-    
+      }
       return res.status(204).end();
     },
   );
