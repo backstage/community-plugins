@@ -80,6 +80,7 @@ export const AnnouncementsPage: (props: {
   hideInactive?: boolean | undefined;
   hideStartAt?: boolean | undefined;
   markdownRenderer?: MarkdownRendererTypeProps | undefined;
+  defaultActive?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
