@@ -397,6 +397,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
           res.status
         }", "${await res.text()}"`,
       );
+      
 
       throw new Error(`Request failed with ${res.status} ${res.statusText}`);
     }
