@@ -1,5 +1,3 @@
-# @@backstage-community/plugin-servicenow-common
+# @backstage-community/plugin-servicenow-common
 
-Welcome to the common package for the servicenow plugin!
-
-_This plugin was created through the Backstage CLI_
+Please visit https://github.com/backstage/community-plugins/tree/main/workspaces/servicenow for more information about the ServiceNow plugin for Backstage
