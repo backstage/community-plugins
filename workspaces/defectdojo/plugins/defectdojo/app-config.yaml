@@ -1,0 +1,37 @@
+app:
+  title: DefectDojo Plugin Development
+  baseUrl: http://localhost:3000
+
+organization:
+  name: DefectDojo Plugin
+
+backend:
+  auth:
+    keys:
+      - secret: ${BACKEND_SECRET}
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  providers:
+    # See https://backstage.io/docs/auth/guest/provider
+    guest: {}
+
+# DefectDojo plugin configuration
+defectdojo:
+  baseUrl: ${DEFECTDOJO_BASE_URL}
+  token: ${DEFECTDOJO_TOKEN}
+  requestTimeoutMs: 30000
+  maxPages: 100
