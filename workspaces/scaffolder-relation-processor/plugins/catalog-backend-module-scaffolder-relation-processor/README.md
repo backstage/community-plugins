@@ -65,7 +65,7 @@ This plugin includes a notification feature that automatically notifies entity o
 
 ### Prerequisites
 
-To use the notification feature, you need to have the `@backstage/plugin-notifications-backend` Backstage plugin installed and configured.
+To use the notification feature, you need to have the [`@backstage/plugin-notifications-backend`](https://github.com/backstage/backstage/tree/master/plugins/notifications-backend) Backstage plugin installed and configured.
 
 ### Configuration
 
@@ -84,21 +84,21 @@ scaffolderRelationProcessor:
   notifications:
     enabled: true # Set to false to disable notifications
     message:
-      title: 'Custom title for ENTITY_NAME'
+      title: 'Custom title for $ENTITY_NAME'
       description: 'Custom description'
 ```
 
 #### Configuration Options
 
 - `enabled` (boolean): Whether to enable template update notifications. Default: `false`
-- `message.title` (string): The notification title. Supports `ENTITY_NAME` template variable. Default: `'ENTITY_NAME is out of sync with template'`
-- `message.description` (string): The notification description. Supports `ENTITY_NAME` template variable. Default: `'The template used to create ENTITY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.'`
+- `message.title` (string): The notification title. Supports `$ENTITY_NAME` template variable. Default: `'$ENTITY_NAME is out of sync with template'`
+- `message.description` (string): The notification description. Supports `$ENTITY_NAME` template variable. Default: `'The template used to create $ENTITY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.'`
 
 #### Template Variables
 
 Both the title and description support the following template variables:
 
-- `ENTITY_NAME`: The name of the entity that was scaffolded from the updated template
+- `$ENTITY_NAME`: The name of the entity that was scaffolded from the updated template
 
 ### Example Notification Flow
 
