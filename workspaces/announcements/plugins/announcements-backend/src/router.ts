@@ -38,6 +38,7 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
+import { sendAnnouncementNotification } from './service/announcementNotification';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -47,6 +48,7 @@ interface AnnouncementRequest {
   body: string;
   active: boolean;
   start_at: string;
+  sendNotification: boolean;
   on_behalf_of?: string;
   tags?: string[];
 }
@@ -76,6 +78,7 @@ export async function createRouter(
     persistenceContext,
     permissions,
     signals,
+    notifications,
   } = context;
 
   const {
@@ -219,6 +222,11 @@ export async function createRouter(
         });
 
         await signalAnnouncement(announcement, signals);
+        const announcementNotificationsEnabled =
+          req.body?.sendNotification === true;
+        if (announcementNotificationsEnabled) {
+          await sendAnnouncementNotification(announcement, notifications);
+        }
       }
 
       return res.status(201).json(announcement);
