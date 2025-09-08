@@ -264,7 +264,7 @@ export const ServiceListPage = (props: {
           rows={allServices}
           type="services"
           hiddenColumns={hiddenColumns}
-          view={props.view}
+          view={props.view || DRAWER}
           loading={loadingD}
         />
       </>

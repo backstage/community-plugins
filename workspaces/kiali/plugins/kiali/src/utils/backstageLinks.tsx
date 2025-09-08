@@ -83,28 +83,53 @@ interface BackstageLinkProps {
 };*/
 
 export const BackstageObjectLink = (props: BackstageLinkProps) => {
-  const { name, type, query, cluster } = props;
-  /* const link: RouteFunc<routeRefParams> = useRouteRef(
-    getRef(type, props.entity, props.root),
-  );*/
-  const to = '';
-  /*
-  if (!props.root) {
-    const items: { [key: string]: string } = { namespace: '' };
+  const { name, type, query, cluster, namespace, objectGVK } = props;
 
-    if (type && name) {
-      items[backstageRoutesObject[type].id] = name;
+  // Generate the URL based on the type and parameters
+  let to = '';
+
+  if (!props.root) {
+    if (type && name && namespace) {
+      // Generate detail page URLs
+      switch (type) {
+        case 'workloads':
+          to = `/workloads/${namespace}/${name}`;
+          break;
+        case 'services':
+          to = `/services/${namespace}/${name}`;
+          break;
+        case 'applications':
+          to = `/applications/${namespace}/${name}`;
+          break;
+        case 'istio':
+          if (objectGVK) {
+            to = `/istio/${namespace}/${objectGVK.kind}/${name}`;
+          }
+          break;
+        default:
+          to = '';
+      }
     }
-    if (objectType) {
-      items.objectType = objectType;
-    }
-    // link(items)
-    to = link();
   } else {
-    to = link();
+    // Generate section URLs
+    switch (type) {
+      case 'workloads':
+        to = '/workloads';
+        break;
+      case 'services':
+        to = '/services';
+        break;
+      case 'applications':
+        to = '/applications';
+        break;
+      case 'istio':
+        to = '/istio';
+        break;
+      default:
+        to = '';
+    }
   }
-  console.log(to)
-  */
+
   const href = addQuery(to, cluster, query);
   return (
     <Link
