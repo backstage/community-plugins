@@ -23,7 +23,6 @@ import {
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import { compatWrapper } from '@backstage/core-compat-api';
 import {
   serviceNowApiRef,
   ServiceNowBackendClient,
@@ -59,9 +58,9 @@ export const entityServicenowContent = EntityContentBlueprint.make({
     defaultTitle: 'ServiceNow',
     filter: isServicenowAvailable,
     loader: () =>
-      import('../components/Servicenow').then(m =>
-        compatWrapper(<m.EntityServicenowContent />),
-      ),
+      import('../components/Servicenow').then(m => (
+        <m.EntityServicenowContent />
+      )),
   },
 });
 
