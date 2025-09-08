@@ -17,17 +17,17 @@ export default catalogModuleScaffolderRelationProcessor;
 
 // @public
 export const DEFAULT_NOTIFICATION_DESCRIPTION =
-  'The template used to create ENTITY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.';
+  'The template used to create $ENTITY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.';
 
 // @public
 export const DEFAULT_NOTIFICATION_ENABLED = false;
 
 // @public
 export const DEFAULT_NOTIFICATION_TITLE =
-  'ENTITY_NAME is out of sync with template';
+  '$ENTITY_NAME is out of sync with template';
 
 // @public
-export const ENTITY_NAME_TEMPLATE_VAR = 'ENTITY_NAME';
+export const ENTITY_NAME_TEMPLATE_VAR = '$ENTITY_NAME';
 
 // @public
 export const RELATION_SCAFFOLDED_FROM = 'scaffoldedFrom';
