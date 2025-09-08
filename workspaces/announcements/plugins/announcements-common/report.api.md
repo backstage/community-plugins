@@ -18,6 +18,7 @@ export type Announcement = {
   start_at: string;
   on_behalf_of?: string;
   tags?: Tag[];
+  sendNotification?: boolean;
 };
 
 // @public
@@ -43,6 +44,7 @@ export type AnnouncementsFilters = {
   active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  sendNotification?: boolean;
 };
 
 // @public
