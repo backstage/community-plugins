@@ -198,10 +198,10 @@ export async function createRouter(
         throw new NotAllowedError('Unauthorized');
       }
 
-      const start_at = DateTime.fromISO(req.body.start_at);
-      const until_date = DateTime.fromISO(req.body.until_date);
+      const startAt = DateTime.fromISO(req.body.start_at);
+      const untilDate = DateTime.fromISO(req.body.until_date);
 
-      if (until_date < start_at) {
+      if (untilDate < startAt) {
         return res
           .status(400)
           .json({ error: 'until_date cannot be before start_at' });
