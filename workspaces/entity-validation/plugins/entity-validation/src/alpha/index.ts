@@ -15,4 +15,3 @@
  */
 
 export * from './entityPages';
-export * from './entityContent';
