@@ -15,8 +15,8 @@
  */
 import {
   createApiFactory,
+  createComponentExtension,
   createPlugin,
-  createRoutableExtension,
   discoveryApiRef,
   fetchApiRef,
   identityApiRef,
@@ -57,17 +57,27 @@ export const servicenowPlugin = createPlugin({
 });
 
 /**
- * Servicenow Page
+ * Servicenow entity content that shows an incident table with a
+ * filter similar to the catalog table
  * @public
  */
-export const ServicenowPage = servicenowPlugin.provide(
-  createRoutableExtension({
-    name: 'ServicenowPage',
-    component: () =>
-      import('./components/Servicenow').then(m => m.ServicenowContent),
-    mountPoint: rootRouteRef,
+export const EntityServicenowContent = servicenowPlugin.provide(
+  createComponentExtension({
+    name: 'EntityServicenowContent',
+    component: {
+      lazy: () =>
+        import('./components/Servicenow').then(m => m.EntityServicenowContent),
+    },
   }),
 );
+
+/**
+ * @deprecated please use `EntityServicenowCard` instead, this page
+ * might be removed in future releases or replaced with a page
+ * that lists the incidents assigned to the current user.
+ * @public
+ */
+export const ServicenowPage = EntityServicenowContent;
 
 /**
  * Check if the current entity is the logged-in user

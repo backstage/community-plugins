@@ -10,11 +10,14 @@ import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public
+export const EntityServicenowContent: () => JSX_2.Element;
+
+// @public
 export const isMyProfile: (entity: Entity) => boolean;
 
 export { isServicenowAvailable };
 
-// @public
+// @public @deprecated (undocumented)
 export const ServicenowPage: () => JSX_2.Element;
 
 // @public

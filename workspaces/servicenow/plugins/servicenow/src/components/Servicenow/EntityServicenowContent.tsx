@@ -22,8 +22,19 @@ import {
   useEntity,
 } from '@backstage/plugin-catalog-react';
 import { Table } from '@backstage/core-components';
+
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import TableBody from '@mui/material/TableBody';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
 import TablePagination from '@mui/material/TablePagination';
+
+import {
+  Order,
+  SortingOrderEnum,
+  ServiceAnnotationFieldName,
+} from '@backstage-community/plugin-servicenow-common';
 
 import { IncidentsFilter } from './IncidentsFilter';
 import { IncidentsListColumns } from './IncidentsListColumns';
@@ -34,24 +45,15 @@ import {
   type IncidentsData,
   type IncidentTableField,
 } from '../../types';
-import {
-  Order,
-  SortingOrderEnum,
-  ServiceAnnotationFieldName,
-} from '@backstage-community/plugin-servicenow-common';
 import { buildIncidentQueryParams } from '../../utils/queryParamsUtils';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useQueryState } from '../../hooks/useQueryState';
 import { useQueryArrayState } from '../../hooks/useQueryArrayState';
 import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import useUserEmail from '../../hooks/useUserEmail';
-import CircularProgress from '@mui/material/CircularProgress';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 
-export const ServicenowContent = () => {
+export const EntityServicenowContent = () => {
   const { entity } = useEntity();
   const serviceNowApi = useApi(serviceNowApiRef);
 
