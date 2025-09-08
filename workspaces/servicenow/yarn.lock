@@ -2544,9 +2544,11 @@ __metadata:
     "@backstage/catalog-model": "npm:^1.7.5"
     "@backstage/cli": "npm:^0.33.1"
     "@backstage/core-app-api": "npm:^1.18.0"
+    "@backstage/core-compat-api": "npm:^0.4.4"
     "@backstage/core-components": "npm:^0.17.4"
     "@backstage/core-plugin-api": "npm:^1.10.9"
     "@backstage/dev-utils": "npm:^1.1.12"
+    "@backstage/frontend-plugin-api": "npm:^0.10.4"
     "@backstage/plugin-catalog-react": "npm:^1.19.1"
     "@backstage/test-utils": "npm:^1.7.10"
     "@backstage/theme": "npm:^0.6.7"
@@ -3970,9 +3972,9 @@ __metadata:
   linkType: hard
 
 "@electric-sql/pglite@npm:^0.3.0":
-  version: 0.3.5
-  resolution: "@electric-sql/pglite@npm:0.3.5"
-  checksum: 10/ac4f07ba2737768440fed8a4ac23b864a9d40115518a82b4de5cd166a5d8d18a5b010c762d8092701b0afb1da2540012498a28f17991d060ca8c55b45348e241
+  version: 0.3.7
+  resolution: "@electric-sql/pglite@npm:0.3.7"
+  checksum: 10/e76b99a06bdba55c3249f2e4fc17fce043460509943b73c14c2ad558854ff4cc752ccb8d438cd7340866b76b3031e3bc37085032decfbaaf871dcd9d07d732df
   languageName: node
   linkType: hard
 

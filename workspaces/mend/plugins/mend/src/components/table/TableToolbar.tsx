@@ -17,14 +17,22 @@ export const TableToolbar = ({
 }: TableToolbarProps) => {
   return (
     <Grid container alignItems="center" alignContent="center">
-      <Grid item xs={7}>
+      <Grid item xs={12}>
         {title && <Typography variant="h4">{title}</Typography>}
       </Grid>
-      <Grid item xs={3}>
-        <ProjectFilterComponent />
-      </Grid>
-      <Grid item xs={2}>
-        <MTableToolbar {...toolbar} />
+      <Grid
+        container
+        item
+        xs={12}
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Grid item xs={9}>
+          <ProjectFilterComponent />
+        </Grid>
+        <Grid item xs={3}>
+          <MTableToolbar {...toolbar} />
+        </Grid>
       </Grid>
       <Grid item xs={12}>
         {children}

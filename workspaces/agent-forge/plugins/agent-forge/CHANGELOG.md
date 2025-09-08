@@ -1,5 +1,11 @@
 # @backstage-community/plugin-agent-forge
 
+## 0.3.0
+
+### Minor Changes
+
+- 775d709: Backstage version bump to v1.42.3
+
 ## 0.2.0
 
 ### Minor Changes

@@ -18,9 +18,9 @@ export const FindingTable = ({
   return (
     <Table
       clientName={findingData?.clientName}
-      clientUrl={`${findingData?.clientUrl}/app/orgs/${findingData?.clientName}/projects`}
+      clientUrl={`${findingData?.clientUrl}/app/orgs/${findingData?.clientName}/projects?filter_prj_sum_tbl_tags=contains:${findingData?.projectSourceUrl}`}
       getStatistics={data => getFindingStatistics(data as Finding[])}
-      headerTitle="mend.io"
+      headerTitle="Mend.io"
       tableColumns={findingTableColumnSchema}
       tableData={findingData?.findingList as Finding[]}
       tableDataError={findingDataError}

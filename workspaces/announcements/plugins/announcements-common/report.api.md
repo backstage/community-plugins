@@ -19,6 +19,7 @@ export type Announcement = {
   until_date: string;
   on_behalf_of?: string;
   tags?: Tag[];
+  sendNotification?: boolean;
 };
 
 // @public
@@ -45,6 +46,7 @@ export type AnnouncementsFilters = {
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
   current?: boolean;
+  sendNotification?: boolean;
 };
 
 // @public

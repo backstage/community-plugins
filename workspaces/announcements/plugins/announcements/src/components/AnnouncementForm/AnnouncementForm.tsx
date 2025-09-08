@@ -70,6 +70,7 @@ export const AnnouncementForm = ({
     start_at: formattedStartAt || '',
     until_date: formattedUntilDate || '',
     tags: initialData.tags?.map(tag => tag.slug) || undefined,
+    sendNotification: initialData.sendNotification ?? false,
   });
   const [loading, setLoading] = useState(false);
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
@@ -268,6 +269,17 @@ export const AnnouncementForm = ({
                     />
                   }
                   label={t('announcementForm.active')}
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      name="sendNotification"
+                      checked={form.sendNotification}
+                      onChange={handleChangeActive}
+                      color="primary"
+                    />
+                  }
+                  label="Send Notification"
                 />
                 <Button
                   variant="contained"

@@ -37,6 +37,7 @@ type CategoryInputProps = {
       active: boolean;
       start_at: string;
       until_date: string;
+      sendNotification: boolean;
     }>,
   ) => void;
   form: {
@@ -51,6 +52,7 @@ type CategoryInputProps = {
     active: boolean;
     start_at: string;
     until_date: string;
+    sendNotification: boolean;
   };
   initialValue: string;
 };

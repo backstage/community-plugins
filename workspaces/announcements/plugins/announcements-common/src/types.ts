@@ -68,6 +68,8 @@ export type Announcement = {
   on_behalf_of?: string;
   /** Array of tags associated with the announcement */
   tags?: Tag[];
+  /** Whether the notification is enabled */
+  sendNotification?: boolean;
 };
 
 /**
@@ -106,6 +108,8 @@ export type AnnouncementsFilters = {
   order?: 'asc' | 'desc';
   /** Filter by current status (current date falls between start and until) */
   current?: boolean;
+  /** Whether the notification is enabled */
+  sendNotification?: boolean;
 };
 
 /**
