@@ -92,13 +92,13 @@ const _default: FrontendPlugin<
         defaultPath: string;
         defaultTitle: string;
         defaultGroup?:
+          | (string & {})
           | 'overview'
           | 'documentation'
           | 'development'
           | 'deployment'
           | 'operation'
           | 'observability'
-          | (string & {})
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
