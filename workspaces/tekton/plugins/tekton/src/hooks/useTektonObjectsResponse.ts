@@ -23,15 +23,10 @@ import {
   ComputedStatus,
   useDebounceCallback,
   useDeepCompareMemoize,
-  useKubernetesObjects,
 } from '@janus-idp/shared-react';
 
-import {
-  kubernetesApiRef,
-  kubernetesAuthProvidersApiRef,
-  TektonResourcesContextData,
-  TektonResponseData,
-} from '../types/types';
+import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
+import { TektonResourcesContextData, TektonResponseData } from '../types/types';
 import { useAllWatchResources } from './useAllWatchResources';
 import { useResourcesClusters } from './useResourcesClusters';
 
@@ -39,11 +34,7 @@ export const useTektonObjectsResponse = (
   watchedResource: string[],
 ): TektonResourcesContextData => {
   const { entity } = useEntity();
-  const { kubernetesObjects, loading, error } = useKubernetesObjects(
-    entity,
-    kubernetesApiRef,
-    kubernetesAuthProvidersApiRef,
-  );
+  const { kubernetesObjects, loading, error } = useKubernetesObjects(entity);
   const [selectedCluster, setSelectedCluster] = useState<number>(0);
   const [selectedStatus, setSelectedStatus] = useState<ComputedStatus>(
     'All' as ComputedStatus,

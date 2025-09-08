@@ -1,5 +1,21 @@
 ### Dependencies
 
+## 1.43.0
+
+### Minor Changes
+
+- 2f4d9ff: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+- Updated dependencies [2f4d9ff]
+  - @backstage-community/plugin-rbac-common@1.19.0
+
 ## 1.42.2
 
 ### Patch Changes

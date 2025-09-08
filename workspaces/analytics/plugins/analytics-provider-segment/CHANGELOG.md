@@ -1,5 +1,34 @@
 ### Dependencies
 
+## 1.19.0
+
+### Minor Changes
+
+- 3d6351f: Backstage version bump to v1.42.4
+
+## 1.18.0
+
+### Minor Changes
+
+- d03671a: - Added support for App version and Backstage version tracking in analytics events
+  - New configuration options: `appVersion` and `backstageVersion` for enhanced analytics segmentation
+
+### Patch Changes
+
+- 1171227: Updated dependency `@types/react` to `18.3.24`.
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 1.17.0
+
+### Minor Changes
+
+- 70f97c5: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- 0775db8: remove devDependency on '@redhat-developer/red-hat-developer-hub-theme'
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
 ## 1.16.0
 
 ### Minor Changes

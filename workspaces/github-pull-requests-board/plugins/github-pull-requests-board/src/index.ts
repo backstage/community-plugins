@@ -17,5 +17,7 @@ export {
   EntityTeamPullRequestsCard,
   EntityTeamPullRequestsContent,
 } from './plugin';
+export { default as PullRequestsBoard } from './components/PullRequestsBoard';
 export type { EntityTeamPullRequestsCardProps } from './components/EntityTeamPullRequestsCard';
 export type { EntityTeamPullRequestsContentProps } from './components/EntityTeamPullRequestsContent';
+export type { PullRequestsBoardProps } from './components/PullRequestsBoard';

@@ -16,6 +16,7 @@ import {
   dataMatcher,
   dataProjectParser,
   fetchQueryPagination,
+  parseEntityURL,
 } from './data.service.helpers';
 import { MendDataService } from './data.service';
 import { MendAuthSevice } from './auth.service';
@@ -26,6 +27,7 @@ import {
   CodeFindingSuccessResponseData,
   DependenciesFindingSuccessResponseData,
   ContainersFindingSuccessResponseData,
+  Finding,
 } from './data.service.types';
 import {
   mendReadPermission,
@@ -33,6 +35,7 @@ import {
   permissionIntegrationRouter,
   type FilterProps,
 } from '../permission';
+import { MEND_API_VERSION } from '../constants';
 
 /** @internal */
 export type RouterOptions = {
@@ -72,17 +75,21 @@ export async function createRouter(
 
     MendAuthSevice.connect()
       .then(next)
-      .catch(() => {
-        response.status(401).json({ error: 'Oops! Unauthorized' });
+      .catch(err => {
+        const errorMessage =
+          err instanceof Error ? err?.message : err?.statusText;
+        logger.error(errorMessage || 'Oops! Unauthorized');
+        response
+          .status(err?.status || 401)
+          .json({ error: err?.statusText || 'Oops! Unauthorized' });
       });
   };
 
-  const baseUrl = config.getString('mend.baseUrl');
   const activationKey = config.getString('mend.activationKey');
 
   // Init api service
   const mendDataService = new MendDataService({
-    baseUrl,
+    apiVersion: MEND_API_VERSION,
     activationKey,
   });
 
@@ -96,7 +103,7 @@ export async function createRouter(
       const credentials = await httpAuth.credentials(request);
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: credentials,
-        targetPluginId: 'plugin.catalog.service',
+        targetPluginId: 'catalog',
       });
 
       // entity to project match
@@ -156,7 +163,7 @@ export async function createRouter(
       const credentials = await httpAuth.credentials(request);
       const { token } = await auth.getPluginRequestToken({
         onBehalfOf: credentials,
-        targetPluginId: 'plugin.catalog.service',
+        targetPluginId: 'catalog',
       });
 
       // entity to project match
@@ -205,61 +212,79 @@ export async function createRouter(
         items || projectResult[1],
       );
 
+      const entityURL = parseEntityURL(
+        projectResult[0].items[0]?.metadata?.annotations?.[
+          'backstage.io/source-location'
+        ],
+      );
+
+      const projectSourceUrl = entityURL?.host
+        ? `${entityURL.host}${entityURL.path}`
+        : '';
+
       if (!data.length) {
         response.json({
           findingList: [],
-          projectName: '',
-          projectUuid: '',
+          projectList: [],
+          projectSourceUrl,
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
         return;
       }
 
-      const params = {
-        pathParams: {
-          uuid: data[0].uuid,
-        },
-      };
+      const findingList: Finding[] = [];
 
-      // get project findings
-      const findingResult = await Promise.all([
-        fetchQueryPagination<CodeFindingSuccessResponseData>(
-          (queryParam: PaginationQueryParams) =>
-            mendDataService.getCodeFinding({
-              ...params,
-              ...queryParam,
-            }),
-        ),
-        fetchQueryPagination<DependenciesFindingSuccessResponseData>(
-          (queryParam: PaginationQueryParams) =>
-            mendDataService.getDependenciesFinding({
-              ...params,
-              ...queryParam,
-            }),
-        ),
-        fetchQueryPagination<ContainersFindingSuccessResponseData>(
-          (queryParam: PaginationQueryParams) =>
-            mendDataService.getContainersFinding({
-              ...params,
-              ...queryParam,
-            }),
-        ),
-      ]);
+      for (const projectItem of data) {
+        const params = {
+          pathParams: {
+            uuid: projectItem.uuid,
+          },
+        };
 
-      const project = dataProjectParser(data, projectResult[2]);
-      const findingList = dataFindingParser(
-        findingResult[0].filter(item => !item.suppressed), // NOTE: Do not show suppressed item
-        findingResult[1].filter(
-          item => !(item.findingInfo.status === 'IGNORED'),
-        ), // NOTE: Do not show ignored item
-        findingResult[2], // ESC-51: Follow Jira activity
-      );
+        // get project findings
+        const findingResult = await Promise.all([
+          fetchQueryPagination<CodeFindingSuccessResponseData>(
+            (queryParam: PaginationQueryParams) =>
+              mendDataService.getCodeFinding({
+                ...params,
+                ...queryParam,
+              }),
+          ),
+          fetchQueryPagination<DependenciesFindingSuccessResponseData>(
+            (queryParam: PaginationQueryParams) =>
+              mendDataService.getDependenciesFinding({
+                ...params,
+                ...queryParam,
+              }),
+          ),
+          fetchQueryPagination<ContainersFindingSuccessResponseData>(
+            (queryParam: PaginationQueryParams) =>
+              mendDataService.getContainersFinding({
+                ...params,
+                ...queryParam,
+              }),
+          ),
+        ]);
+
+        const tempFindingList: Finding[] = dataFindingParser(
+          findingResult[0].filter(item => !item.suppressed), // NOTE: Do not show suppressed item
+          findingResult[1].filter(
+            item => !(item.findingInfo.status === 'IGNORED'),
+            projectItem,
+          ), // NOTE: Do not show ignored item
+          findingResult[2], // ESC-51: Follow Jira activity
+          projectItem.name,
+        );
+        findingList.push(...tempFindingList);
+      }
+
+      const projects = dataProjectParser(data, projectResult[2]);
 
       response.json({
         findingList,
-        projectName: project.projectList[0].entity.params.repo,
-        projectUuid: project.projectList[0].uuid,
+        ...projects,
+        projectSourceUrl,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });

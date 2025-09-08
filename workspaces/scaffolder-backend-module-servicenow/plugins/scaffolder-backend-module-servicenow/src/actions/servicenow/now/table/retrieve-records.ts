@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createTemplateAction,
-  type TemplateAction,
-} from '@backstage/plugin-scaffolder-node';
-
-import { z } from 'zod';
+import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
 import {
   ApiError,
@@ -30,70 +25,6 @@ import { updateOpenAPIConfig } from './helpers';
 
 import { examples } from './retrieve-records.example';
 
-/**
- * Schema for the input to the `retrieveRecords` action.
- *
- * @see {@link https://developer.servicenow.com/dev.do#!/reference/api/vancouver/rest/c_TableAPI}
- */
-const schemaInput = z.object({
-  tableName: z
-    .string()
-    .min(1)
-    .describe('Name of the table from which to retrieve the records'),
-  sysparmQuery: z
-    .string()
-    .optional()
-    .describe('An encoded query string used to filter the results'),
-  sysparmDisplayValue: z
-    .enum(['true', 'false', 'all'])
-    .optional()
-    .describe(
-      'Return field display values (true), actual values (false), or both (all) (default: false)',
-    ),
-  sysparmExcludeReferenceLink: z
-    .boolean()
-    .optional()
-    .describe(
-      'True to exclude Table API links for reference fields (default: false)',
-    ),
-  sysparmSuppressPaginationHeader: z
-    .boolean()
-    .optional()
-    .describe('True to suppress pagination header (default: false)'),
-  sysparmFields: z
-    .array(z.string().min(1))
-    .optional()
-    .describe('An array of fields to return in the response'),
-  sysparmLimit: z
-    .number()
-    .optional()
-    .describe(
-      'The maximum number of results returned per page (default: 10,000)',
-    ),
-  sysparmView: z
-    .string()
-    .optional()
-    .describe(
-      'Render the response according to the specified UI view (overridden by sysparm_fields)',
-    ),
-  sysparmQueryCategory: z
-    .string()
-    .optional()
-    .describe(
-      'Name of the query category (read replica category) to use for queries',
-    ),
-  sysparmQueryNoDomain: z
-    .boolean()
-    .optional()
-    .describe(
-      'True to access data across domains if authorized (default: false)',
-    ),
-  sysparmNoCount: z
-    .boolean()
-    .optional()
-    .describe('Do not execute a select count(*) on table (default: false)'),
-});
-
 const id = 'servicenow:now:table:retrieveRecords';
 
 /**
@@ -102,9 +33,7 @@ const id = 'servicenow:now:table:retrieveRecords';
  * @param options - options to configure the action
  * @returns TemplateAction - an action handler
  */
-export const retrieveRecordsAction = (
-  options: CreateActionOptions,
-): TemplateAction => {
+export const retrieveRecordsAction = (options: CreateActionOptions) => {
   const { config } = options;
 
   return createTemplateAction({
@@ -112,12 +41,81 @@ export const retrieveRecordsAction = (
     examples,
     description: 'Retrieves multiple records for the specified table',
     schema: {
-      input: schemaInput,
+      input: {
+        tableName: z =>
+          z
+            .string()
+            .min(1)
+            .describe('Name of the table from which to retrieve the records'),
+        sysparmQuery: z =>
+          z
+            .string()
+            .optional()
+            .describe('An encoded query string used to filter the results'),
+        sysparmDisplayValue: z =>
+          z
+            .enum(['true', 'false', 'all'])
+            .optional()
+            .describe(
+              'Return field display values (true), actual values (false), or both (all) (default: false)',
+            ),
+        sysparmExcludeReferenceLink: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to exclude Table API links for reference fields (default: false)',
+            ),
+        sysparmSuppressPaginationHeader: z =>
+          z
+            .boolean()
+            .optional()
+            .describe('True to suppress pagination header (default: false)'),
+        sysparmFields: z =>
+          z
+            .array(z.string().min(1))
+            .optional()
+            .describe('An array of fields to return in the response'),
+        sysparmLimit: z =>
+          z
+            .number()
+            .optional()
+            .describe(
+              'The maximum number of results returned per page (default: 10,000)',
+            ),
+        sysparmView: z =>
+          z
+            .string()
+            .optional()
+            .describe(
+              'Render the response according to the specified UI view (overridden by sysparm_fields)',
+            ),
+        sysparmQueryCategory: z =>
+          z
+            .string()
+            .optional()
+            .describe(
+              'Name of the query category (read replica category) to use for queries',
+            ),
+        sysparmQueryNoDomain: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to access data across domains if authorized (default: false)',
+            ),
+        sysparmNoCount: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'Do not execute a select count(*) on table (default: false)',
+            ),
+      },
     },
 
     async handler(ctx) {
-      // FIXME: remove the type assertion once backstage properly infers the type
-      const input = ctx.input as z.infer<typeof schemaInput>;
+      const input = ctx.input;
 
       updateOpenAPIConfig(OpenAPI, config);
 

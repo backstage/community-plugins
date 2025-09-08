@@ -59,11 +59,15 @@ backend.add(
         apiVersion: 'backstage.io/v1alpha1',
         kind: 'Component',
         metadata: {
-          name: 'sample',
-          title: 'Sample Component',
+          name: 'example-entity',
+          annotations: {
+            'matomo.io/site-id': '3',
+          },
         },
         spec: {
+          lifecycle: 'experimental',
           type: 'service',
+          owner: 'guest',
         },
       },
     ],

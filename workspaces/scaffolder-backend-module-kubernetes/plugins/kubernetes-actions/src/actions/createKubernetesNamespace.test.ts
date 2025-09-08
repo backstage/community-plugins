@@ -88,6 +88,7 @@ describe('kubernetes:create-namespace', () => {
         namespace: 'foo',
         clusterRef: 'resource:foo',
         token: 'TOKEN',
+        skipTLSVerify: false,
       },
     });
 
@@ -116,6 +117,7 @@ describe('kubernetes:create-namespace', () => {
         namespace: entityName,
         clusterRef: entityName,
         token: 'TOKEN',
+        skipTLSVerify: false,
       },
     });
 
@@ -143,6 +145,7 @@ describe('kubernetes:create-namespace', () => {
           namespace: entityName,
           clusterRef: entityName,
           token: 'TOKEN',
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow(error);
@@ -158,6 +161,7 @@ describe('kubernetes:create-namespace', () => {
         input: {
           namespace: 'foo',
           token: 'TOKEN',
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow('Cluster reference or url are required');
@@ -172,6 +176,7 @@ describe('kubernetes:create-namespace', () => {
           url: 'https://example.com',
           clusterRef: 'foo',
           token: 'TOKEN',
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow(
@@ -187,6 +192,7 @@ describe('kubernetes:create-namespace', () => {
           namespace: 'error',
           url: 'https://kube-api:5000',
           token: 'TOKEN',
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow(
@@ -202,6 +208,7 @@ describe('kubernetes:create-namespace', () => {
           namespace: 'foo',
           token: 'TOKEN',
           url: 'bar',
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow('"bar" is an invalid url');
@@ -215,6 +222,7 @@ describe('kubernetes:create-namespace', () => {
           namespace: 'foo',
           token: 'TOKEN',
           url: '',
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow('Cluster reference or url are required');
@@ -228,6 +236,7 @@ describe('kubernetes:create-namespace', () => {
           namespace: 'foo',
           token: 'TOKEN',
           url: undefined,
+          skipTLSVerify: false,
         },
       });
     }).rejects.toThrow('Cluster reference or url are required');

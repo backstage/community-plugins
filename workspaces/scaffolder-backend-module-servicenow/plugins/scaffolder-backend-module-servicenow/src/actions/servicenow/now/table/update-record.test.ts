@@ -141,7 +141,7 @@ describe('updateRecord', () => {
   it('should throw an error if the user is not authenticated', async () => {
     const input = {
       tableName: 'incident',
-      valid: 'valid-sys-id',
+      sysId: 'valid-sys-id',
     };
 
     const context = {

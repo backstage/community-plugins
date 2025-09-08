@@ -16,7 +16,6 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
@@ -30,8 +29,8 @@ import { newRelicDashboardApiRef, NewRelicDashboardClient } from '../api';
 
 /** @alpha */
 export const newRelicApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: newRelicDashboardApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -40,15 +39,14 @@ export const newRelicApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new NewRelicDashboardClient({ discoveryApi, fetchApi }),
     }),
-  },
 });
 
 /** @alpha */
 export const newRelicDashboardEntityContent = EntityContentBlueprint.make({
   name: 'EntityNewRelicDashboardContent',
   params: {
-    defaultPath: '/newrelic-dashboard',
-    defaultTitle: 'New Relic Dashboard',
+    path: '/newrelic-dashboard',
+    title: 'New Relic Dashboard',
     loader: () => import('../Router').then(m => compatWrapper(<m.Router />)),
   },
 });
@@ -66,7 +64,7 @@ export const newRelicDashboardCard = EntityCardBlueprint.make({
 
 /** @alpha */
 export default createFrontendPlugin({
-  pluginId: 'newrelic',
+  pluginId: 'newrelic-dashboard',
   extensions: [
     newRelicApi,
     newRelicDashboardEntityContent,

@@ -1,5 +1,28 @@
 ### Dependencies
 
+## 1.24.0
+
+### Minor Changes
+
+- f1dab24: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [f1dab24]
+  - @backstage-community/plugin-quay-common@1.11.0
+
+## 1.23.2
+
+### Patch Changes
+
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 1.23.1
+
+### Patch Changes
+
+- d942f33: remove product theme from dev dependencies and dev app
+
 ## 1.23.0
 
 ### Minor Changes

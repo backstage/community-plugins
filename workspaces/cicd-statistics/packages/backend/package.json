@@ -21,17 +21,17 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
-    "@backstage/backend-defaults": "^0.11.1",
-    "@backstage/backend-plugin-api": "^1.4.1",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/config": "^1.3.3",
-    "@backstage/plugin-app-backend": "^0.5.4",
-    "@backstage/plugin-auth-backend": "^0.25.2",
-    "@backstage/plugin-auth-backend-module-gitlab-provider": "^0.3.5",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.10",
-    "@backstage/plugin-auth-node": "^0.6.5",
-    "@backstage/plugin-catalog-backend": "^3.0.0",
-    "@backstage/plugin-proxy-backend": "^0.6.4",
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/plugin-app-backend": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-gitlab-provider": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-auth-node": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-proxy-backend": "backstage:^",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "dockerode": "^3.3.1",
@@ -40,7 +40,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1"
+    "@backstage/cli": "backstage:^"
   },
   "files": [
     "dist"

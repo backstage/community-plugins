@@ -66,11 +66,24 @@ confluence:
   spaces: [] # It is highly recommended to safely list the spaces that you want to index, otherwise all spaces will be indexed.
   query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above.
   maxRequestsPerSecond: 5 # If your Confluence Server is getting a lot of API requests hit, you can use this parameter to specify the maximum number of API requests per second.
+  documentCacheEnabled: false # Enable caching of Confluence documents to reduce API calls. Default: false
+  documentCacheTtl: '24h' # How long to cache documents. Can be long as cache is keyed by Confluence version info. Default: 24h
 ```
 
 Documentation about CQL can be found [here](https://developer.atlassian.com/server/confluence/advanced-searching-using-cql)
 
-The sections below will go into more details about the Base URL and Auth Methods.
+**Behavior of `spaces` and `query`:**
+
+- If both `spaces` and `query` are provided, they will be combined with an `AND` operator. For example, if `spaces` is `["SPACE1", "SPACE2"]` and `query` is `type = page`, the resulting CQL will be `(space="SPACE1" or space="SPACE2") and (type = page)`.
+- If only `spaces` is provided, only pages from those spaces will be indexed. For example, if `spaces` is `["SPACE1", "SPACE2"]`, the resulting CQL will be `space="SPACE1" or space="SPACE2"`.
+- If only `query` is provided, the query will be applied to all accessible spaces. For example, if `query` is `type = page`, the resulting CQL will be `type = page`.
+- If neither `spaces` nor `query` is provided, all pages, blogposts, comments, and attachments from all accessible spaces will be indexed. The default CQL in this case is `type IN (page, blogpost, comment, attachment)`.
+
+#### Document Caching
+
+Documents can be cached, by setting config `documentCacheEnabled: true`. The cache key includes the document version, so you can set a long `documentCacheTtl` if your cache storage allows it.
+
+> Note: Search queries are not cached.
 
 #### Base URL
 

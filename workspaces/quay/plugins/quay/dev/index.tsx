@@ -19,8 +19,6 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
 
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import { quayApiRef, QuayApiV1 } from '../src/api';
 import { QuayPage, quayPlugin } from '../src/plugin';
 import { labels } from './__data__/labels';
@@ -99,7 +97,6 @@ const mockPermissionApi = new MockPermissionApi();
 
 createDevApp()
   .registerPlugin(quayPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

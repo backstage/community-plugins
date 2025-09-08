@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rollbar-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 56382c8: **BREAKING** Removes `rollbar-backend` legacy backend support. The plugin now uses the [new Backstage backend system](https://backstage.io/docs/plugins/new-backend-system/).
+
 ## 0.5.0
 
 ### Minor Changes

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  createApiFactory,
-  discoveryApiRef,
-  fetchApiRef,
-} from '@backstage/core-plugin-api';
+import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendPlugin,
@@ -43,8 +39,8 @@ import {
 
 /** @alpha */
 export const copilotApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: copilotApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -53,13 +49,12 @@ export const copilotApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new CopilotClient({ discoveryApi, fetchApi }),
     }),
-  },
 });
 
 /** @alpha */
 export const copilotPage = PageBlueprint.make({
   params: {
-    defaultPath: '/copilot',
+    path: '/copilot',
     routeRef: convertLegacyRouteRef(copilotRouteRef),
     loader: () =>
       import('../components/Pages').then(m =>

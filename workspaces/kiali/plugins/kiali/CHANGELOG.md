@@ -1,5 +1,37 @@
 ### Dependencies
 
+## 1.41.0
+
+### Minor Changes
+
+- 7989c3b: Issue #4995 related with cookie token. Make it configurable
+
+## 1.40.1
+
+### Patch Changes
+
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 1.40.0
+
+### Minor Changes
+
+- 1c08f79: Upgrade backstage to 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [1c08f79]
+  - @backstage-community/plugin-kiali-common@0.3.0
+  - @backstage-community/plugin-kiali-react@0.2.0
+
+## 1.39.2
+
+### Patch Changes
+
+- 1df9013: remove product theme from dev dependencies and dev app
+- Updated dependencies [1df9013]
+  - @backstage-community/plugin-kiali-react@0.1.2
+
 ## 1.39.1
 
 ### Patch Changes

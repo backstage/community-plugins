@@ -12,18 +12,15 @@ import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RestEndpointMethodTypes } from '@octokit/rest';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { ScmAuthApi } from '@backstage/integration-react';
-
 // @public (undocumented)
 export type Branch = {
   name: string;
 };
-
 // @public (undocumented)
 export type Branches = {
   default_branch: string;
   branches: Branch[];
 };
-
 // @public (undocumented)
 export enum BuildStatus {
   // (undocumented)
@@ -35,33 +32,27 @@ export enum BuildStatus {
   // (undocumented)
   'success' = 0,
 }
-
 // @public (undocumented)
 export const EntityGithubActionsContent: (props: RouterProps) => JSX_2.Element;
-
 // @public (undocumented)
 export const EntityLatestGithubActionRunCard: (props: {
   branch?: string | undefined;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
-
 // @public (undocumented)
 export const EntityLatestGithubActionsForBranchCard: (props: {
   branch?: string | undefined;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
-
 // @public (undocumented)
 export const EntityRecentGithubActionsRunsCard: (props: {
   branch?: string | undefined;
   dense?: boolean | undefined;
-  limit?: number | undefined;
+  limit?: number | undefined /** @public */;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
-
 // @public (undocumented)
 export const GITHUB_ACTIONS_ANNOTATION = 'github.com/project-slug';
-
 // @public
 export type GithubActionsApi = {
   listWorkflowRuns: (options: {
@@ -130,10 +121,8 @@ export type GithubActionsApi = {
     RestEndpointMethodTypes['repos']['get']['response']['data']['default_branch']
   >;
 };
-
 // @public (undocumented)
 export const githubActionsApiRef: ApiRef<GithubActionsApi>;
-
 // @public
 export class GithubActionsClient implements GithubActionsApi {
   constructor(options: { configApi: ConfigApi; scmAuthApi: ScmAuthApi });
@@ -211,7 +200,6 @@ export class GithubActionsClient implements GithubActionsApi {
     runId: number;
   }): Promise<any>;
 }
-
 // @public (undocumented)
 const githubActionsPlugin: BackstagePlugin<
   {
@@ -222,12 +210,10 @@ const githubActionsPlugin: BackstagePlugin<
 >;
 export { githubActionsPlugin };
 export { githubActionsPlugin as plugin };
-
 // @public (undocumented)
 const isGithubActionsAvailable: (entity: Entity) => boolean;
 export { isGithubActionsAvailable };
 export { isGithubActionsAvailable as isPluginApplicableToEntity };
-
 // @public (undocumented)
 export type Job = {
   html_url?: string;
@@ -239,25 +225,21 @@ export type Job = {
   name: string;
   steps?: Step[];
 };
-
 // @public (undocumented)
 export type Jobs = {
   total_count: number;
   jobs: Job[];
 };
-
 // @public (undocumented)
 export const LatestWorkflowRunCard: (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => JSX_2.Element;
-
 // @public (undocumented)
 export const LatestWorkflowsForBranchCard: (props: {
   branch?: string;
   variant?: InfoCardVariants;
 }) => JSX_2.Element;
-
 // @public (undocumented)
 export const RecentWorkflowRunsCard: (props: {
   branch?: string;
@@ -265,16 +247,13 @@ export const RecentWorkflowRunsCard: (props: {
   limit?: number;
   variant?: InfoCardVariants;
 }) => JSX_2.Element;
-
 // @public (undocumented)
 export const Router: (props: RouterProps) => JSX_2.Element;
-
 // @public (undocumented)
 export interface RouterProps {
   // (undocumented)
   view?: 'cards' | 'table';
 }
-
 // @public (undocumented)
 export type Step = {
   name: string;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PropsWithChildren, FunctionComponent } from 'react';
+import { PropsWithChildren, FunctionComponent } from 'react';
 import { Typography, Box, IconButton } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 

@@ -1,5 +1,40 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.23.0
+
+### Minor Changes
+
+- 3131da0: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [3131da0]
+  - @backstage-community/plugin-redhat-argocd-common@1.8.0
+
+## 1.22.4
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 1.22.3
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 1.22.2
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.22.1
+
+### Patch Changes
+
+- 80baed2: remove product theme from dev dependencies and dev app
+
 ## 1.22.0
 
 ### Minor Changes
