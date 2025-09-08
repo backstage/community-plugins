@@ -247,6 +247,7 @@ export const AnnouncementForm = ({
                 }
                 inputProps={{
                   min: DateTime.fromISO(form.start_at)
+                    .endOf('day')
                     .plus({ days: 1 })
                     .toISODate(),
                 }}
