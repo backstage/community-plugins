@@ -710,7 +710,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "npm:^0.10.4"
     "@backstage/frontend-test-utils": "npm:^0.2.0"
     "@backstage/plugin-catalog-common": "backstage:^"
-    "@backstage/plugin-catalog-react": "npm:1.19.1"
+    "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
@@ -761,7 +761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@backstage:^::backstage=1.42.3&npm=1.11.0, @backstage/catalog-client@npm:^1.10.2, @backstage/catalog-client@npm:^1.11.0":
+"@backstage/catalog-client@backstage:^::backstage=1.42.3&npm=1.11.0, @backstage/catalog-client@npm:^1.11.0":
   version: 1.11.0
   resolution: "@backstage/catalog-client@npm:1.11.0"
   dependencies:
@@ -1414,7 +1414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-test-utils@npm:^0.3.4, @backstage/frontend-test-utils@npm:^0.3.5":
+"@backstage/frontend-test-utils@npm:^0.3.5":
   version: 0.3.5
   resolution: "@backstage/frontend-test-utils@npm:0.3.5"
   dependencies:
@@ -1569,48 +1569,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:1.19.1":
-  version: 1.19.1
-  resolution: "@backstage/plugin-catalog-react@npm:1.19.1"
-  dependencies:
-    "@backstage/catalog-client": "npm:^1.10.2"
-    "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/core-compat-api": "npm:^0.4.4"
-    "@backstage/core-components": "npm:^0.17.4"
-    "@backstage/core-plugin-api": "npm:^1.10.9"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/frontend-plugin-api": "npm:^0.10.4"
-    "@backstage/frontend-test-utils": "npm:^0.3.4"
-    "@backstage/integration-react": "npm:^1.2.9"
-    "@backstage/plugin-catalog-common": "npm:^1.1.5"
-    "@backstage/plugin-permission-common": "npm:^0.9.1"
-    "@backstage/plugin-permission-react": "npm:^0.4.36"
-    "@backstage/types": "npm:^1.2.1"
-    "@backstage/version-bridge": "npm:^1.0.11"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
-    "@material-ui/lab": "npm:4.0.0-alpha.61"
-    "@react-hookz/web": "npm:^24.0.0"
-    classnames: "npm:^2.2.6"
-    lodash: "npm:^4.17.21"
-    material-ui-popup-state: "npm:^1.9.3"
-    qs: "npm:^6.9.4"
-    react-use: "npm:^17.2.4"
-    yaml: "npm:^2.0.0"
-    zen-observable: "npm:^0.10.0"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/223f5b7140c263ee71518603faac0e4a10407580b4545b8cba36d5375ad3b89a08ef2c3b993da4c9b08f6669638c1d3d7191ce1bc3e8b2fbd563d9b1859ee56a
-  languageName: node
-  linkType: hard
-
-"@backstage/plugin-catalog-react@npm:^1.19.1, @backstage/plugin-catalog-react@npm:^1.20.1":
+"@backstage/plugin-catalog-react@backstage:^::backstage=1.42.3&npm=1.20.1, @backstage/plugin-catalog-react@npm:^1.19.1, @backstage/plugin-catalog-react@npm:^1.20.1":
   version: 1.20.1
   resolution: "@backstage/plugin-catalog-react@npm:1.20.1"
   dependencies:
