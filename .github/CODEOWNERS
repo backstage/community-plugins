@@ -42,6 +42,7 @@ yarn.lock                                                               @backsta
 /workspaces/confluence                                                  @backstage/community-plugins-maintainers  @fjudith
 /workspaces/copilot                                                     @backstage/community-plugins-maintainers  @esw-afabiano
 /workspaces/cost-insights                                               @backstage/community-plugins-maintainers  @backstage/silver-lining
+/workspaces/defectdojo                                                  @backstage/community-plugins-maintainers  @sebaparedero14
 /workspaces/dynatrace                                                   @backstage/community-plugins-maintainers
 /workspaces/entity-feedback                                             @backstage/community-plugins-maintainers  @kuangp
 /workspaces/entity-validation                                           @backstage/community-plugins-maintainers
