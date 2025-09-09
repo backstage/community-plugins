@@ -139,6 +139,7 @@ export const BackstageObjectLink = (props: BackstageLinkProps) => {
     return (
       <>
         <Link
+          to="#"
           component="button"
           onClick={e => {
             e.preventDefault();
@@ -192,7 +193,7 @@ export const BackstageObjectLink = (props: BackstageLinkProps) => {
           break;
         case 'istio':
           if (objectGVK) {
-            to = `/istio/${namespace}/${objectGVK.kind}/${name}`;
+            to = `/istio/${namespace}/${objectGVK.Kind}/${name}`;
           }
           break;
         default:

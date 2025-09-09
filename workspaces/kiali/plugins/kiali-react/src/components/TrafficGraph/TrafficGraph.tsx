@@ -43,7 +43,10 @@ export const TrafficGraph = (props: { model: Model }) => {
   const [renderKey, setRenderKey] = useState(0);
 
   useEffect(() => {
-    if (props.model.nodes.length > 0 || props.model.edges.length > 0) {
+    if (
+      (props.model.nodes && props.model.nodes.length > 0) ||
+      (props.model.edges && props.model.edges.length > 0)
+    ) {
       // Force layout when updating the model
       controller.fromModel(props.model, true);
       // Auto-fit the graph to screen after loading
