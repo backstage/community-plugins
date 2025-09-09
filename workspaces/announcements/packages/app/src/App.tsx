@@ -39,6 +39,7 @@ import {
 } from '@backstage-community/plugin-announcements';
 import { Home } from './components/HomePage';
 import { SignalsDisplay } from '@backstage/plugin-signals';
+import { NotificationsPage } from '@backstage/plugin-notifications';
 
 const app = createApp({
   apis,
@@ -73,6 +74,8 @@ const routes = (
     <Route path="/search" element={<SearchPage />}>
       {searchPage}
     </Route>
+
+    <Route path="/notifications" element={<NotificationsPage />} />
 
     <Route path="/settings" element={<UserSettingsPage />} />
   </FlatRoutes>

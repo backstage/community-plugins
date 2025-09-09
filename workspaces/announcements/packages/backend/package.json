@@ -33,6 +33,7 @@
     "@backstage/plugin-catalog-backend": "^3.0.1",
     "@backstage/plugin-catalog-backend-module-logs": "^0.1.13",
     "@backstage/plugin-events-backend": "^0.5.5",
+    "@backstage/plugin-notifications-backend": "^0.5.9",
     "@backstage/plugin-permission-backend": "^0.7.3",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.11",
     "@backstage/plugin-permission-common": "^0.9.1",
