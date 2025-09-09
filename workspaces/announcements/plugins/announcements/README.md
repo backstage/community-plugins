@@ -92,12 +92,12 @@ app:
 
 ## Customization
 
-### Defaulting new announcements to active
+### Defaulting new announcements to inactive
 
-It is possible to specify the initial value of the `active` switch displayed in the new announcement form, by passing a `defaultActive` prop to the `AnnouncementsPage`.
+It is possible to set the initial value of the `active` switch, displayed in the new announcement form, as false by passing a `defaultInactive` prop to the `AnnouncementsPage`.
 
 ```ts
-<AnnouncementsPage defaultActive />
+<AnnouncementsPage defaultInactive />
 ```
 
 ### Overriding the AnnouncementCard

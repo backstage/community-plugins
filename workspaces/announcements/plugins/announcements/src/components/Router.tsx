@@ -49,7 +49,7 @@ type RouterProps = {
   hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
-  defaultActive?: boolean;
+  defaultInactive?: boolean;
 };
 
 export const Router = (props: RouterProps) => {
