@@ -16,7 +16,6 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
@@ -32,8 +31,8 @@ import { isServicenowAvailable } from '@backstage-community/plugin-servicenow-co
 
 /** @alpha */
 export const servicenowApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: serviceNowApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -43,7 +42,6 @@ export const servicenowApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi, identityApi }) =>
         new ServiceNowBackendClient(discoveryApi, fetchApi, identityApi),
     }),
-  },
 });
 
 /**
@@ -54,8 +52,8 @@ export const servicenowApi = ApiBlueprint.make({
 export const entityServicenowContent = EntityContentBlueprint.make({
   name: 'EntityServicenowContent',
   params: {
-    defaultPath: 'servicenow',
-    defaultTitle: 'ServiceNow',
+    path: 'servicenow',
+    title: 'ServiceNow',
     filter: isServicenowAvailable,
     loader: () =>
       import('../components/Servicenow').then(m => (
