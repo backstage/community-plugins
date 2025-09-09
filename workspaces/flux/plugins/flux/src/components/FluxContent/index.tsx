@@ -15,7 +15,11 @@
  */
 import { Content, Header, Page } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core';
-import { FluxRuntimeCard } from '../FluxRuntimeCard';
+import { EntityFluxGitRepositoriesCard } from '../EntityFluxGitRepositoriesCard';
+import { EntityFluxHelmRepositoriesCard } from '../EntityFluxHelmRepositoriesCard';
+import { EntityFluxOCIRepositoriesCard } from '../EntityFluxOCIRepositoriesCard';
+import { EntityFluxKustomizationsCard } from '../EntityFluxKustomizationsCard';
+import { EntityFluxHelmReleasesCard } from '../EntityFluxHelmReleasesCard';
 import { RequireKubernetesPermissions } from '../../RequireKubernetesPermissions';
 
 const useStyles = makeStyles(() => ({
@@ -24,7 +28,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export interface FluxRuntimePageProps {
+export interface FluxContentProps {
   /**
    * Title
    */
@@ -44,7 +48,7 @@ export interface FluxRuntimePageProps {
  *
  * @public
  */
-export function FluxRuntimePage(props: FluxRuntimePageProps) {
+export function FluxContent(props: FluxContentProps) {
   const { title = 'Flux Runtime' } = props;
   const classes = useStyles();
 
@@ -53,7 +57,11 @@ export function FluxRuntimePage(props: FluxRuntimePageProps) {
       <Header title={title} />
       <Content className={classes.overflowXScroll}>
         <RequireKubernetesPermissions>
-          <FluxRuntimeCard />
+          <EntityFluxKustomizationsCard />
+          <EntityFluxHelmReleasesCard />
+          <EntityFluxGitRepositoriesCard />
+          <EntityFluxHelmRepositoriesCard />
+          <EntityFluxOCIRepositoriesCard />
         </RequireKubernetesPermissions>
       </Content>
     </Page>

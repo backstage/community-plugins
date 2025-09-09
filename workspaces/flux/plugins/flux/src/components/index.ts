@@ -19,3 +19,4 @@ export * from './EntityFluxOCIRepositoriesCard';
 export * from './EntityFluxKustomizationsCard';
 export * from './EntityFluxHelmRepositoriesCard';
 export * from './FluxRuntimeCard';
+export * from './FluxContent';
