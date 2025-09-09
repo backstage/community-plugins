@@ -11,7 +11,7 @@ It provides an API that connects to your ServiceNow instance and returns inciden
    This plugin is installed via the `@backstage-community/plugin-servicenow-backend` package. To install it to your backend package, run the following command:
 
    ```bash
-   # From your root directory
+   # From your Backstage root directory
    yarn --cwd packages/backend add @backstage-community/plugin-servicenow-backend
    ```
 
