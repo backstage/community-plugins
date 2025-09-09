@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.2.0
+
+### Minor Changes
+
+- c344bc0: Allow links to be added to bookmarks that have different embed and "Open in new tab" URLs
+
 ## 0.1.2
 
 ### Patch Changes
