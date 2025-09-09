@@ -19,5 +19,13 @@ export const bitbucketPlugin: BackstagePlugin<
 // @public
 export const EntityBitbucketPullRequestsContent: () => JSX_2.Element;
 
-// (No @packageDocumentation comment for this package)
+// @public
+export const HomePagePullRequestsCard: ({
+  buildStatus,
+}?: HomePagePullRequestsCardProps) => JSX_2.Element;
+
+// @public
+export interface HomePagePullRequestsCardProps {
+  buildStatus?: boolean;
+}
 ```

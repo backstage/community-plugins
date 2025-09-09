@@ -19,6 +19,8 @@ import {
   createApiFactory,
   discoveryApiRef,
   createRoutableExtension,
+  identityApiRef,
+  configApiRef,
 } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
 import { bitbucketApiRef, BitbucketApi } from './api/BitbucketApi';
@@ -32,8 +34,13 @@ export const bitbucketPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: bitbucketApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => new BitbucketApi({ discoveryApi }),
+      deps: {
+        discoveryApi: discoveryApiRef,
+        identityApi: identityApiRef,
+        configApi: configApiRef,
+      },
+      factory: ({ discoveryApi, identityApi, configApi }) =>
+        new BitbucketApi({ discoveryApi, identityApi, configApi }),
     }),
   ],
   routes: {
@@ -52,3 +59,6 @@ export const EntityBitbucketPullRequestsContent = bitbucketPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+export { HomePagePullRequestsCard } from './components/HomePage/HomePagePullRequestsCard';
+export type { HomePagePullRequestsCardProps } from './components/HomePage/HomePagePullRequestsCard';
