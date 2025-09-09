@@ -38,6 +38,7 @@
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-kubernetes": "backstage:^",
     "@backstage/plugin-kubernetes-common": "backstage:^",
+    "@backstage/plugin-permission-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",

@@ -31,9 +31,9 @@ import {
   WorkloadsByEntityRequest,
   CustomObjectsByEntityRequest,
 } from '@backstage/plugin-kubernetes-common';
-import { TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import {
-  weaveworksFluxPlugin,
+  fluxPlugin,
   EntityFluxHelmReleasesCard,
   EntityFluxGitRepositoriesCard,
   EntityFluxOCIRepositoriesCard,
@@ -59,6 +59,8 @@ import {
   getDeploymentsPath,
 } from '../src/hooks/useGetDeployments';
 import { Namespace } from '../src/objects';
+import { FluxContent } from '../src/components/FluxContent';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -324,6 +326,64 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
 }
 
 createDevApp()
+  .addPage({
+    title: 'Flux Resources',
+    path: '/flux',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestHelmRelease(
+                'prometheus1',
+                'kube-prometheus-stack',
+                '6.3.5',
+                'True',
+                false,
+              ),
+              newTestHelmRelease(
+                'prometheus2',
+                'kube-prometheus-stack',
+                '6.3.5',
+                'True',
+                false,
+              ),
+              newTestHelmRelease(
+                'prometheus3',
+                'kube-prometheus-stack',
+                '6.3.5',
+                'False',
+                true,
+              ),
+              newTestHelmRelease('redis1', 'redis', '7.0.1', 'False', false),
+              newTestHelmRelease('redis2', 'redis', '7.0.1', 'True', true),
+              newTestHelmRelease('http-api', 'redis', '1.2.5', 'False', false),
+              newTestHelmRelease(
+                'queue-runner',
+                'redis',
+                '1.0.1',
+                'True',
+                false,
+              ),
+            ]),
+          ],
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+          [permissionApiRef, mockApis.permission()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <FluxContent />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
   .addPage({
     title: 'Helm Releases',
     path: '/helm-releases',
@@ -785,5 +845,5 @@ createDevApp()
       </TestApiProvider>
     ),
   })
-  .registerPlugin(weaveworksFluxPlugin)
+  .registerPlugin(fluxPlugin)
   .render();

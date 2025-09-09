@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fluxPlugin } from './plugin';
+import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-describe('weaveworks-flux', () => {
-  it('should export plugin', () => {
-    expect(fluxPlugin).toBeDefined();
-  });
+/** @alpha */
+export const fluxTranslationRef = createTranslationRef({
+  id: 'flux',
+  messages: {
+    fluxContentCard: {
+      permissionAlert: {
+        title: 'Permission required',
+        message:
+          "Flux content requires authorization on Kubernetes objects, contact your portal administrator to give you the 'kubernetes.clusters.read' and 'kubernetes.resources.read' permission.",
+      },
+    },
+  },
 });
