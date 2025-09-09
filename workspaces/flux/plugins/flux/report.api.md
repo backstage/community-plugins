@@ -11,63 +11,67 @@ import { RouteRef } from '@backstage/core-plugin-api';
 export const EntityFluxDeploymentsCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxGitRepositoriesCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxHelmReleasesCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxHelmRepositoriesCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxImagePoliciesCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxKustomizationsCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxOCIRepositoriesCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const EntityFluxSourcesCard: ({
   many,
 }: {
-  many?: boolean;
+  many?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public
 export const FluxIcon: () => JSX_2.Element;
 
 // @public
-export const FluxRuntimeCard: ({ many }: { many?: boolean }) => JSX_2.Element;
+export const FluxRuntimeCard: ({
+  many,
+}: {
+  many?: boolean | undefined;
+}) => JSX_2.Element;
 
 // Warning: (ae-forgotten-export) The symbol "FluxRuntimePage_2" needs to be exported by the entry point index.d.ts
 //
