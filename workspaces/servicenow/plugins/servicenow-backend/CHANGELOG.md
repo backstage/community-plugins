@@ -15,7 +15,7 @@
 
 ### Major Changes
 
-- 3d708ba: First version of Servicenow plugin
+- 3d708ba: First version of ServiceNow plugin
 
 ### Patch Changes
 

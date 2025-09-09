@@ -20,8 +20,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 
-import { IncidentsListColumns } from './IncidentsListColumns';
 import type { Order } from '@backstage-community/plugin-servicenow-common';
+
+import { IncidentsListColumns } from './IncidentsListColumns';
 import { IncidentTableField } from '../../types';
 
 type IncidentsTableHeaderProps = {

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
+
+import { ServiceAnnotationFieldName } from './types';
 
 /**
- * Common functionalities for the servicenow plugin.
- *
- * @packageDocumentation
+ * Check if the current entity has a ServiceNow annotation.
+ * @public
  */
-
-export * from './types';
-export * from './utils';
+export const isServicenowAvailable = (entity: Entity): boolean => {
+  return Boolean(entity.metadata.annotations?.[ServiceAnnotationFieldName]);
+};

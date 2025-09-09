@@ -2532,6 +2532,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-servicenow-common@workspace:plugins/servicenow-common"
   dependencies:
+    "@backstage/catalog-model": "npm:^1.7.5"
     "@backstage/cli": "npm:^0.33.1"
   languageName: unknown
   linkType: soft

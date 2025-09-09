@@ -15,23 +15,28 @@
  */
 
 import { EntityProvider, catalogApiRef } from '@backstage/plugin-catalog-react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { TestApiProvider } from '@backstage/test-utils';
-import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicenow-common';
-import { MemoryRouter } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@material-ui/core';
-import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
-
-import userEvent from '@testing-library/user-event';
-import { ServicenowContent } from './ServicenowContent';
 import {
   identityApiRef,
   alertApiRef,
   errorApiRef,
 } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
+import { TestApiProvider } from '@backstage/test-utils';
+import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicenow-common';
+
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+import { MemoryRouter } from 'react-router-dom';
+
+import { ThemeProvider, createTheme } from '@material-ui/core';
+
 import { of } from 'rxjs';
+
+import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import { mockRefinedIncidentData } from '../../__fixtures__/mockRefinedIncidentData';
+
+import { EntityServicenowContent } from './EntityServicenowContent';
 
 const mockEntity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -112,7 +117,7 @@ describe('ServicenowContent', () => {
             ]}
           >
             <EntityProvider entity={mockEntity}>
-              <ServicenowContent />
+              <EntityServicenowContent />
             </EntityProvider>
           </TestApiProvider>
         </ThemeProvider>
@@ -156,7 +161,7 @@ describe('ServicenowContent', () => {
             ]}
           >
             <EntityProvider entity={mockEntity}>
-              <ServicenowContent />
+              <EntityServicenowContent />
             </EntityProvider>
           </TestApiProvider>
         </ThemeProvider>
@@ -198,7 +203,7 @@ describe('ServicenowContent', () => {
             ]}
           >
             <EntityProvider entity={mockEntity}>
-              <ServicenowContent />
+              <EntityServicenowContent />
             </EntityProvider>
           </TestApiProvider>
         </ThemeProvider>
@@ -231,7 +236,7 @@ describe('ServicenowContent', () => {
             ]}
           >
             <EntityProvider entity={mockEntity}>
-              <ServicenowContent />
+              <EntityServicenowContent />
             </EntityProvider>
           </TestApiProvider>
         </ThemeProvider>
