@@ -15,6 +15,3 @@
  */
 
 import '@testing-library/jest-dom';
-
-// @ts-ignore
-window.HTMLCanvasElement.prototype.getContext = () => {};
