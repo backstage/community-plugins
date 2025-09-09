@@ -25,7 +25,7 @@ import { rootRouteRef } from './routes';
  * The Flux plugin.
  * @public
  */
-export const weaveworksFluxPlugin = createPlugin({
+export const fluxPlugin = createPlugin({
   id: 'weaveworks-flux',
   routes: {
     root: rootRouteRef,
@@ -36,7 +36,7 @@ export const weaveworksFluxPlugin = createPlugin({
  * Card used to show the state of Flux HelmReleases for an Entity.
  * @public
  */
-export const EntityFluxHelmReleasesCard = weaveworksFluxPlugin.provide(
+export const EntityFluxHelmReleasesCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxHelmReleasesCard',
     component: {
@@ -52,7 +52,7 @@ export const EntityFluxHelmReleasesCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux GitRepositories for an Entity.
  * @public
  */
-export const EntityFluxGitRepositoriesCard = weaveworksFluxPlugin.provide(
+export const EntityFluxGitRepositoriesCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxGitRepositoriesCard',
     component: {
@@ -68,7 +68,7 @@ export const EntityFluxGitRepositoriesCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux OCIRepositories for an Entity.
  * @public
  */
-export const EntityFluxOCIRepositoriesCard = weaveworksFluxPlugin.provide(
+export const EntityFluxOCIRepositoriesCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxOCIRepositoriesCard',
     component: {
@@ -84,7 +84,7 @@ export const EntityFluxOCIRepositoriesCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux HelmRepositories for an Entity.
  * @public
  */
-export const EntityFluxHelmRepositoriesCard = weaveworksFluxPlugin.provide(
+export const EntityFluxHelmRepositoriesCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxHelmRepositoriesCard',
     component: {
@@ -100,7 +100,7 @@ export const EntityFluxHelmRepositoriesCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux Kustomizations for an Entity.
  * @public
  */
-export const EntityFluxKustomizationsCard = weaveworksFluxPlugin.provide(
+export const EntityFluxKustomizationsCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxHelmRepositoriesCard',
     component: {
@@ -116,7 +116,7 @@ export const EntityFluxKustomizationsCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux Kustomizations for an Entity.
  * @public
  */
-export const EntityFluxDeploymentsCard = weaveworksFluxPlugin.provide(
+export const EntityFluxDeploymentsCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxDeploymentsCard',
     component: {
@@ -132,7 +132,7 @@ export const EntityFluxDeploymentsCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux Sources for an Entity.
  * @public
  */
-export const EntityFluxSourcesCard = weaveworksFluxPlugin.provide(
+export const EntityFluxSourcesCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxSourcesCard',
     component: {
@@ -148,7 +148,7 @@ export const EntityFluxSourcesCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Image Policies for an Entity.
  * @public
  */
-export const EntityFluxImagePoliciesCard = weaveworksFluxPlugin.provide(
+export const EntityFluxImagePoliciesCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'EntityFluxImagePoliciesCard',
     component: {
@@ -164,7 +164,7 @@ export const EntityFluxImagePoliciesCard = weaveworksFluxPlugin.provide(
  * Card used to show the state of Flux Runtime.
  * @public
  */
-export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
+export const FluxRuntimeCard = fluxPlugin.provide(
   createComponentExtension({
     name: 'FluxRuntimeCard',
     component: {
@@ -178,7 +178,7 @@ export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
  * Page used to show Flux Controllers / Deployments in Flux Runtime
  * @public
  */
-export const FluxRuntimePage = weaveworksFluxPlugin.provide(
+export const FluxRuntimePage = fluxPlugin.provide(
   createRoutableExtension({
     name: 'FluxRuntimePage',
     component: () =>
@@ -191,7 +191,7 @@ export const FluxRuntimePage = weaveworksFluxPlugin.provide(
  * Export for Flux Icon to use in nav
  * @public
  */
-export const FluxIcon = weaveworksFluxPlugin.provide(
+export const FluxIcon = fluxPlugin.provide(
   createComponentExtension({
     name: 'FluxIcon',
     component: {

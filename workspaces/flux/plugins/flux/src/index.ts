@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 export {
-  weaveworksFluxPlugin,
+  fluxPlugin,
   EntityFluxHelmReleasesCard,
   EntityFluxGitRepositoriesCard,
   EntityFluxOCIRepositoriesCard,

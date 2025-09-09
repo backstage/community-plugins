@@ -67,6 +67,15 @@ export const EntityFluxSourcesCard: ({
 export const FluxIcon: () => JSX_2.Element;
 
 // @public
+export const fluxPlugin: BackstagePlugin<
+  {
+    root: RouteRef<undefined>;
+  },
+  {},
+  {}
+>;
+
+// @public
 export const FluxRuntimeCard: ({
   many,
 }: {
@@ -77,15 +86,6 @@ export const FluxRuntimeCard: ({
 //
 // @public
 export const FluxRuntimePage: FluxRuntimePage_2;
-
-// @public
-export const weaveworksFluxPlugin: BackstagePlugin<
-  {
-    root: RouteRef<undefined>;
-  },
-  {},
-  {}
->;
 
 // (No @packageDocumentation comment for this package)
 ```

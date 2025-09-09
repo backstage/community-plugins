@@ -690,6 +690,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-kubernetes": "backstage:^"
     "@backstage/plugin-kubernetes-common": "backstage:^"
+    "@backstage/plugin-permission-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
@@ -1548,7 +1549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-react@npm:^0.4.36":
+"@backstage/plugin-permission-react@backstage:^::backstage=1.42.3&npm=0.4.36, @backstage/plugin-permission-react@npm:^0.4.36":
   version: 0.4.36
   resolution: "@backstage/plugin-permission-react@npm:0.4.36"
   dependencies:
