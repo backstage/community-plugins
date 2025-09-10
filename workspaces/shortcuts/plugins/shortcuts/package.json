@@ -52,10 +52,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-compat-api": "^0.4.4",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
-    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "0.10.4",
     "@backstage/theme": "backstage:^",
     "@backstage/types": "backstage:^",
     "@material-ui/core": "^4.12.2",
