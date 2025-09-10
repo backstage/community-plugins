@@ -190,7 +190,13 @@ export async function handleTemplateUpdateNotifications(
   const scaffoldedEntities = await catalogClient.getEntities(
     {
       filter: { 'spec.scaffoldedFrom': payload.entityRef },
-      fields: ['kind', 'metadata.namespace', 'metadata.name', 'relations'],
+      fields: [
+        'kind',
+        'metadata.namespace',
+        'metadata.name',
+        'metadata.title',
+        'relations',
+      ],
     },
     { token },
   );
@@ -216,17 +222,15 @@ export function readScaffolderRelationProcessorConfig(
   return {
     notifications: {
       enabled:
-        config.getOptionalBoolean(
-          'scaffolderRelationProcessor.notifications.enabled',
-        ) ?? DEFAULT_NOTIFICATION_ENABLED,
+        config.getOptionalBoolean('scaffolder.notifications.enabled') ??
+        DEFAULT_NOTIFICATION_ENABLED,
       message: {
         title:
-          config.getOptionalString(
-            'scaffolderRelationProcessor.notifications.message.title',
-          ) ?? DEFAULT_NOTIFICATION_TITLE,
+          config.getOptionalString('scaffolder.notifications.message.title') ??
+          DEFAULT_NOTIFICATION_TITLE,
         description:
           config.getOptionalString(
-            'scaffolderRelationProcessor.notifications.message.description',
+            'scaffolder.notifications.message.description',
           ) ?? DEFAULT_NOTIFICATION_DESCRIPTION,
       },
     },

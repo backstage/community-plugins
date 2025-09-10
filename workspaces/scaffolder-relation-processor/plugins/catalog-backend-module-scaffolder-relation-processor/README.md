@@ -76,7 +76,7 @@ To use the notification feature, you need to have the [`@backstage/plugin-notifi
 Add the following configuration to your `app-config.yaml` to enable and customize the notification feature:
 
 ```yaml
-scaffolderRelationProcessor:
+scaffolder:
   notifications:
     enabled: true # Set to false to disable notifications
 ```
@@ -84,7 +84,7 @@ scaffolderRelationProcessor:
 Or, if you also wish to configure the notification title and description with custom text:
 
 ```yaml
-scaffolderRelationProcessor:
+scaffolder:
   notifications:
     enabled: true # Set to false to disable notifications
     message:
@@ -102,7 +102,7 @@ scaffolderRelationProcessor:
 
 Both the title and description support the following template variables:
 
-- `$ENTITY_NAME`: The name of the entity that was scaffolded from the updated template
+- `$ENTITY_NAME`: The title (or name, in case title does not exist) of the entity that was scaffolded from the updated template
 
 ### Example Notification Flow
 
