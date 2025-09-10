@@ -40,7 +40,6 @@ import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
 import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 import { DrawerProvider } from './DrawerContext';
-import { ConstructionOutlined } from '@mui/icons-material';
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({

@@ -24,7 +24,6 @@ import {
   RevisionInfo,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { ArgoResources } from '../types/resources';
-import { ConstructionOutlined } from '@mui/icons-material';
 
 export const enum ArgoCdLabels {
   appSelector = 'argocd/app-selector',
