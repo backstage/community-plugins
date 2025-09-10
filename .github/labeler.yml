@@ -52,6 +52,9 @@ workspace/badges:
 workspace/bazaar:
   - "Workspace\\s*bazaar"
 
+workspace/bitbucket-pull-requests:
+  - "Workspace\\s*bitbucket-pull-requests"
+
 workspace/bitrise:
   - "Workspace\\s*bitrise"
 
