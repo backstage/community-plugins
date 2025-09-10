@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 export interface Config {
-  scaffolderRelationProcessor?: {
+  scaffolder?: {
     /**
      * Configuration for template update notifications
      * @visibility frontend

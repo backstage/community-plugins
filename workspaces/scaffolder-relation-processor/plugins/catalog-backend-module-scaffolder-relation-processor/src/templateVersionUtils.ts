@@ -124,7 +124,7 @@ async function sendNotificationsToOwners(
 
       const catalogUrl = createEntityCatalogUrl(entity);
 
-      const entityName = entity.metadata.name;
+      const entityName = entity.metadata.title ?? entity.metadata.name;
       const entityNameRegex = new RegExp(
         ENTITY_NAME_TEMPLATE_VAR.replace(/\$/g, '\\$'),
         'g',
