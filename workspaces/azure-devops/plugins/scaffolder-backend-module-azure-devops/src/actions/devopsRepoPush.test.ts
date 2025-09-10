@@ -21,6 +21,7 @@ import { ConfigReader } from '@backstage/config';
 jest.mock('@backstage/plugin-scaffolder-node', () => ({
   ...jest.requireActual('@backstage/plugin-scaffolder-node'),
   commitAndPushBranch: jest.fn(),
+  addFiles: jest.fn(),
 }));
 
 import { createAzureDevOpsPushRepoAction } from './devopsRepoPush';
