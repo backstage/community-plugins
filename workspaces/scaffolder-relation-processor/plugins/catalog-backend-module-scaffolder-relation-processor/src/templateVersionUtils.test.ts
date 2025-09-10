@@ -404,7 +404,7 @@ describe('templateVersionUtils', () => {
       };
       const config = mockServices.rootConfig({
         data: {
-          scaffolderRelationProcessor: customProcessorConfig,
+          scaffolder: customProcessorConfig,
         },
       });
 
