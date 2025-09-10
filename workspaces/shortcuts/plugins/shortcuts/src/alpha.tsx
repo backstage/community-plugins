@@ -17,7 +17,6 @@
 import {
   createFrontendPlugin,
   ApiBlueprint,
-  createApiFactory,
   storageApiRef,
   FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
@@ -25,14 +24,13 @@ import { DefaultShortcutsApi, shortcutsApiRef } from './api';
 
 /** @alpha */
 const shortcutsApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: shortcutsApiRef,
       deps: { storageApi: storageApiRef },
       factory: ({ storageApi }) =>
         new DefaultShortcutsApi(storageApi.forBucket('shortcuts')),
     }),
-  },
 });
 
 /** @alpha */
