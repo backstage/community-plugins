@@ -18,6 +18,7 @@ import { useDrawerContext } from '../../../DrawerContext';
 import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { isAppHelmChartType } from '../../../../../utils/utils';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import Metadata from '../../../../Common/Metadata';
 import MetadataItem from '../../../../Common/MetadataItem';
 import MetadataItemWithTooltip from '../../../../Common/MetadataItemWithTooltip';
@@ -52,10 +53,14 @@ const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
 
 const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
   const { entity } = useEntity();
-  const { application, latestRevision, revisionsMap, appHistory } =
+  const configApi = useApi(configApiRef);
+  const showFullDeploymentHistory = configApi.getOptionalBoolean(
+    'argocd.fullDeploymentHistory',
+  );
+
+  const { application, latestRevision, revisions, appHistory } =
     useDrawerContext();
   const classes = useDeploymentInfoStyles();
-
   const ImageLinks = () => {
     const images = application?.status?.summary?.images;
     return images.map(image => {
@@ -88,7 +93,7 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
               application={application}
               entity={entity}
               latestRevision={latestRevision}
-              revisionsMap={revisionsMap}
+              revisions={revisions}
             />
           </MetadataItem>
         ) : (
@@ -98,10 +103,11 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
       {appHistory.length > 0 && (
         <DeploymentHistory
           application={application}
-          revisionsMap={revisionsMap}
+          revisions={revisions}
           appHistory={appHistory}
           styleClasses={classes}
           annotations={entity?.metadata?.annotations}
+          showFullDeploymentHistory={showFullDeploymentHistory}
         />
       )}
     </>

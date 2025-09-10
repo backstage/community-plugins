@@ -34,7 +34,7 @@ import { Entity } from '@backstage/catalog-model';
 interface CommitLinkProps {
   entity: Entity;
   application: Application;
-  revisionsMap: { [key: string]: RevisionInfo };
+  revisions: RevisionInfo[];
   latestRevision: History;
   showAuthor?: boolean;
 }
@@ -53,7 +53,7 @@ const useCommitStyles = makeStyles<Theme>(theme => ({
 const AppCommitLink: FC<CommitLinkProps> = ({
   entity,
   application,
-  revisionsMap,
+  revisions,
   latestRevision,
   showAuthor = false,
 }) => {
@@ -65,7 +65,7 @@ const AppCommitLink: FC<CommitLinkProps> = ({
     latestRevision?.revisions?.[0] ?? latestRevision?.revision ?? '';
 
   const revisionInfo = latestRevisionSha
-    ? revisionsMap?.[latestRevisionSha]
+    ? revisions?.find(r => r?.revisionID === latestRevisionSha)
     : undefined;
 
   const repoUrl =
@@ -91,7 +91,7 @@ const AppCommitLink: FC<CommitLinkProps> = ({
     );
   };
 
-  return revisionsMap && latestRevision ? (
+  return revisions && latestRevision ? (
     <div className={classes.commitContainer}>
       <Chip
         data-testid={`${latestRevisionSha.slice(0, 5)}-commit-link`}

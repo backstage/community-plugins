@@ -39,7 +39,7 @@ describe('DrawerContext', () => {
     const { container } = render(
       <DrawerProvider
         application={null as unknown as Application}
-        revisionsMap={{}}
+        revisions={[]}
       >
         <MockComponent />
       </DrawerProvider>,
@@ -50,7 +50,7 @@ describe('DrawerContext', () => {
 
   it('should render the mock element with correct data', () => {
     render(
-      <DrawerProvider application={mockApplication} revisionsMap={{}}>
+      <DrawerProvider application={mockApplication} revisions={[]}>
         <MockComponent />
       </DrawerProvider>,
     );
