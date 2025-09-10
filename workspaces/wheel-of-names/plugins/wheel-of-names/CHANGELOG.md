@@ -1,5 +1,11 @@
 # @backstage-community/plugin-wheel-of-names
 
+## 0.3.1
+
+### Patch Changes
+
+- 6b0772e: Updated installation instructions
+
 ## 0.3.0
 
 ### Minor Changes
