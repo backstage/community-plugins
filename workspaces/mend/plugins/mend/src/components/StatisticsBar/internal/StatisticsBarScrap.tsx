@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { numberToShortText } from '../../../utils';
 import { StatisticsBarScrapProps } from '../statisticsBar.types';
 import { linearGradient } from '../statisticsBar.helpers';

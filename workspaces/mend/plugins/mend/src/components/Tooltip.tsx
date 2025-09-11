@@ -1,10 +1,8 @@
 import type { ReactElement } from 'react';
 import { useRef, useState, useCallback } from 'react';
-import {
-  makeStyles,
-  Theme,
-  Tooltip as MaterialTooltip,
-} from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+import MaterialTooltip from '@mui/material/Tooltip';
+import { makeStyles } from '@mui/styles';
 import { useResize } from '../hooks';
 
 type ExtendedClassesProps = {
@@ -31,16 +29,20 @@ const useStyles = makeStyles<
 >(theme => ({
   tooltip: ({ extendedClasses }) => ({
     backgroundColor:
-      theme.palette.type === 'light'
+      theme.palette.mode === 'light'
         ? '#232F3E'
         : theme.palette.background.default,
     ...extendedClasses?.tooltip,
+    marginBottom: '0.8rem',
   }),
   arrow: {
     color:
-      theme.palette.type === 'light'
+      theme.palette.mode === 'light'
         ? '#232F3E'
         : theme.palette.background.default,
+    overflow: 'inherit',
+    bottom: 0,
+    marginBottom: '-0.25em',
   },
 }));
 
@@ -90,7 +92,7 @@ export const Tooltip = ({
       disableHoverListener={isDisabled}
       placement="top"
       arrow
-      interactive
+      disableInteractive
     >
       <span className={additionalClasses.contentWrapper} ref={node}>
         {children}

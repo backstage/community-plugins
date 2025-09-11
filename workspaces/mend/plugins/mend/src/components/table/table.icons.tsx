@@ -1,21 +1,21 @@
 import type { Ref } from 'react';
 import { forwardRef } from 'react';
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import ViewColumn from '@material-ui/icons/ViewColumn';
-import Retry from '@material-ui/icons/Replay';
-import Resize from '@material-ui/icons/Height';
+import AddBox from '@mui/icons-material/AddBox';
+import ArrowUpward from '@mui/icons-material/ArrowUpward';
+import Check from '@mui/icons-material/Check';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import Clear from '@mui/icons-material/Clear';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import Edit from '@mui/icons-material/Edit';
+import FilterList from '@mui/icons-material/FilterList';
+import FirstPage from '@mui/icons-material/FirstPage';
+import LastPage from '@mui/icons-material/LastPage';
+import Remove from '@mui/icons-material/Remove';
+import SaveAlt from '@mui/icons-material/SaveAlt';
+import ViewColumn from '@mui/icons-material/ViewColumn';
+import Retry from '@mui/icons-material/Replay';
+import Resize from '@mui/icons-material/Height';
 
 export const tableBackstageIcons = {
   Add: forwardRef((props, ref: Ref<SVGSVGElement>) => (

@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react';
-import {
-  Card as Containter,
-  CardContent,
-  CardHeader,
-  CircularProgress,
-  Divider,
-  makeStyles,
-} from '@material-ui/core';
+import Container from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
+
+import { makeStyles } from '@mui/styles';
 
 type CardProps = {
   children: ReactNode;
@@ -40,12 +39,12 @@ export const Card = ({ children, loading, title }: CardProps): ReactNode => {
   const classes = useStyles();
 
   return (
-    <Containter className={classes.container}>
+    <Container className={classes.container}>
       <CardHeader className={classes.header} title={title} />
       <Divider />
       <CardContent className={classes.content}>
         {loading ? <CircularProgress /> : children}
       </CardContent>
-    </Containter>
+    </Container>
   );
 };
