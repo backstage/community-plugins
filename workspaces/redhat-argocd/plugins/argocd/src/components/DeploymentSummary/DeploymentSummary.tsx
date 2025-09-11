@@ -133,9 +133,11 @@ const DeploymentSummary = () => {
               latestRevision,
               entity?.metadata?.annotations || {},
             );
+        const latestRevisionLinkText =
+          latestRevision === '' ? '-' : latestRevision?.substring(0, 7);
         return (
           <Link href={commitUrl} target="_blank" rel="noopener">
-            {latestRevision?.substring(0, 7) ?? '-'}
+            {latestRevisionLinkText}
           </Link>
         );
       },
