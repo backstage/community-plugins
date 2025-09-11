@@ -20,21 +20,8 @@ import {
   createApiFactory,
   createPlugin,
   createRoutableExtension,
-  discoveryApiRef,
-  fetchApiRef,
-  gitlabAuthApiRef,
-  googleAuthApiRef,
   identityApiRef,
-  microsoftAuthApiRef,
-  oktaAuthApiRef,
-  oneloginAuthApiRef,
 } from '@backstage/core-plugin-api';
-import {
-  kubernetesApiRef,
-  KubernetesAuthProviders,
-  kubernetesAuthProvidersApiRef,
-  KubernetesBackendClient,
-} from '@backstage/plugin-kubernetes-react';
 
 import { ArgoCDApiClient, argoCDApiRef } from './api';
 import { rootRouteRef } from './routes';
@@ -58,51 +45,6 @@ export const argocdPlugin = createPlugin({
           useNamespacedApps: Boolean(
             configApi.getOptionalBoolean('argocd.namespacedApps'),
           ),
-        }),
-    }),
-    createApiFactory({
-      api: kubernetesAuthProvidersApiRef,
-      deps: {
-        gitlabAuthApi: gitlabAuthApiRef,
-        googleAuthApi: googleAuthApiRef,
-        microsoftAuthApi: microsoftAuthApiRef,
-        oktaAuthApi: oktaAuthApiRef,
-        oneloginAuthApi: oneloginAuthApiRef,
-      },
-      factory: ({
-        gitlabAuthApi,
-        googleAuthApi,
-        microsoftAuthApi,
-        oktaAuthApi,
-        oneloginAuthApi,
-      }) => {
-        const oidcProviders = {
-          gitlab: gitlabAuthApi,
-          google: googleAuthApi,
-          microsoft: microsoftAuthApi,
-          okta: oktaAuthApi,
-          onelogin: oneloginAuthApi,
-        };
-
-        return new KubernetesAuthProviders({
-          microsoftAuthApi,
-          googleAuthApi,
-          oidcProviders,
-        });
-      },
-    }),
-    createApiFactory({
-      api: kubernetesApiRef,
-      deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
-        kubernetesAuthProvidersApi: kubernetesAuthProvidersApiRef,
-      },
-      factory: ({ discoveryApi, fetchApi, kubernetesAuthProvidersApi }) =>
-        new KubernetesBackendClient({
-          discoveryApi,
-          fetchApi,
-          kubernetesAuthProvidersApi,
         }),
     }),
   ],
