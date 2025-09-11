@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.11.0
+
+### Minor Changes
+
+- 4a3e603: Added support for an `until_date` field in announcements and introduced a new `current` filter.
+
+### Patch Changes
+
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+
 ## 0.10.0
 
 ### Minor Changes

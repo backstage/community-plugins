@@ -1,5 +1,20 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- 4a3e603: Added support for an `until_date` field in announcements and introduced a new `current` filter.
+- 4a89fd8: With these changes, notifications can be enabled whenever new announcement is created. Announcement notifications are disabled by-default. For details, about notification, please refer [`Notifications`](https://backstage.io/docs/notifications/) docs.
+
+  announcements: integration with notifications #4378
+
+### Patch Changes
+
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+
 ## 0.10.0
 
 ### Minor Changes
