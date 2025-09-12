@@ -43,6 +43,14 @@ jq -r '
         echo "    Message: $message"
     else
         echo "Deprecating: $package_name"
+
+        # Validate package exists and is accessible before deprecating
+        if ! npm view "$package_name" version &>/dev/null; then
+            echo "Error: Cannot view package $package_name"
+            continue
+        fi
+
+        echo "Running: npm deprecate $package_name \"$message\""
         npm deprecate "$package_name" "$message"
         echo "Done: $package_name"
     fi
