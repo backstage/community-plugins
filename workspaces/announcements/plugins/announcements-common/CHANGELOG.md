@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.9.1
+
+### Patch Changes
+
+- 2007a96: Fixed #5322 that caused `500` errors when fetching existing announcements with null `until_date`.
+
 ## 0.9.0
 
 ### Minor Changes
