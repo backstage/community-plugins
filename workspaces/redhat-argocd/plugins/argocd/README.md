@@ -14,6 +14,20 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
+### ArgoCD frontend
+
+Import the `kubernetesPlugin` in your `App.tsx` and add it to your app's `plugins` array:
+
+```typescript
+import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
+
+const app = createApp({
+  // ...
+  plugins: [kubernetesPlugin],
+  // ...
+});
+```
+
 ### Argo CD backend
 
 Please see [the backend documentation](../argocd-backend/README.md) for more information.
@@ -125,7 +139,7 @@ You can use the following code to grant the ClusterRole for custom resources:
 yarn workspace app add @backstage-community/plugin-redhat-argocd
 ```
 
-2. Add deployment summary and deployment lifecycle compoennt to the `entityPage.tsx` source file:
+2. Add deployment summary and deployment lifecycle component to the `entityPage.tsx` source file:
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
