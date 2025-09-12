@@ -55,6 +55,37 @@ describe('AnnouncementsDatabase', () => {
     });
   });
 
+  it('should handle an announcement without until_date (open-ended)', async () => {
+    await store.insertAnnouncement({
+      id: 'open-ended',
+      publisher: 'publisher',
+      title: 'title',
+      excerpt: 'excerpt',
+      body: 'body',
+      created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
+      start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      // no until_date provided
+      on_behalf_of: 'group:default/team-a',
+    });
+
+    const announcement = await store.announcementByID('open-ended');
+    expect(announcement).toEqual({
+      id: 'open-ended',
+      publisher: 'publisher',
+      title: 'title',
+      excerpt: 'excerpt',
+      body: 'body',
+      category: undefined,
+      tags: [],
+      created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+      active: 1,
+      start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+      until_date: null,
+      on_behalf_of: 'group:default/team-a',
+    });
+  });
+
   it('should return an announcement by id', async () => {
     await store.insertAnnouncement({
       id: 'id',

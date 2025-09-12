@@ -62,8 +62,8 @@ export type Announcement = {
   active: boolean;
   /** Date indicating when the announcement starts (is visible to end users) */
   start_at: string;
-  /** Date indicating when the announcement should show until, using current filters */
-  until_date: string;
+  /** Date indicating when the announcement should show until, using current filters. If omitted, the announcement is open-ended. */
+  until_date?: string | null;
   /** The team on whose behalf the announcement was published */
   on_behalf_of?: string;
   /** Array of tags associated with the announcement */

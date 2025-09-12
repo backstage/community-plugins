@@ -268,7 +268,9 @@ export const AnnouncementsContent = () => {
       field: 'until_date',
       type: 'date',
       render: rowData =>
-        DateTime.fromISO(rowData.until_date).toFormat('M/d/yyyy'),
+        rowData?.until_date
+          ? DateTime.fromISO(rowData.until_date).toFormat('M/d/yyyy')
+          : '-',
     },
     {
       title: (
