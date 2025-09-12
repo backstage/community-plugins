@@ -9,9 +9,18 @@
     "main": "dist/index.cjs.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/defectdojo/plugins/defectdojo-backend"
+  },
   "backstage": {
     "role": "backend-plugin",
-    "pluginId": "defectdojo"
+    "pluginId": "defectdojo",
+    "pluginPackages": [
+      "@backstage-community/plugin-defectdojo",
+      "@backstage-community/plugin-defectdojo-backend"
+    ]
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include @backstage-community/defectdojo --include @backstage-community/plugin-defectdojo-backend --parallel -v -i run start",

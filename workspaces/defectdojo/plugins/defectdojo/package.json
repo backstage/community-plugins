@@ -9,9 +9,18 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/defectdojo/plugins/defectdojo"
+  },
   "backstage": {
     "role": "frontend-plugin",
-    "pluginId": "defectdojo"
+    "pluginId": "defectdojo",
+    "pluginPackages": [
+      "@backstage-community/plugin-defectdojo",
+      "@backstage-community/plugin-defectdojo-backend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
