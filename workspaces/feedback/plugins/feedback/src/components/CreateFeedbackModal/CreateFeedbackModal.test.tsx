@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 
 import { fireEvent } from '@testing-library/react';
 
 import { FeedbackAPI, feedbackApiRef } from '../../api';
-import { CreateFeedbackModal } from './CreateFeedbackModal';
 import { mockErrorList, mockExperienceList } from '../../mocks';
+import { CreateFeedbackModal } from './CreateFeedbackModal';
 
 describe('Create Feedback Modal', () => {
   const feedbackApi: Partial<FeedbackAPI> = {

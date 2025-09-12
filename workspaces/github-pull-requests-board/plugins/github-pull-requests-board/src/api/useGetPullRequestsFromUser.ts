@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useRef } from 'react';
 
 import {
   GraphQlUserPullRequests,
@@ -28,7 +28,7 @@ export const useGetPullRequestsFromUser = () => {
   const graphql =
     useOctokitGraphQl<GraphQlUserPullRequests<PullRequestsNumberAndOwner[]>>();
 
-  const fn = React.useRef(
+  const fn = useRef(
     async (
       userLogin: string,
       organization?: string,

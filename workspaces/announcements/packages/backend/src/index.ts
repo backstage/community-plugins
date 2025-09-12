@@ -26,6 +26,9 @@ backend.add(import('@backstage/plugin-events-backend'));
 // signals
 backend.add(import('@backstage/plugin-signals-backend'));
 
+// notifications
+backend.add(import('@backstage/plugin-notifications-backend'));
+
 // auth plugin
 backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));

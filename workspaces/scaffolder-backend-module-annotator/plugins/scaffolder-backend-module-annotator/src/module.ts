@@ -25,7 +25,7 @@ import {
 
 /***/
 /**
- * The annotator module for @backstage/plugin-scaffolder-backend.
+ * The annotator module for \@backstage/plugin-scaffolder-backend.
  *
  * @alpha
  */

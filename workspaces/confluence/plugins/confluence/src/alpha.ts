@@ -51,7 +51,7 @@ const confluenceSearchFilterResultType = SearchFilterResultTypeBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'confluence',
+  pluginId: 'confluence',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
   }),

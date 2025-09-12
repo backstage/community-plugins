@@ -1,5 +1,17 @@
 # @backstage-community/plugin-azure-devops-common
 
+## 0.14.0
+
+### Minor Changes
+
+- 8367480: Backstage version bump to v1.42.3
+
+## 0.13.0
+
+### Minor Changes
+
+- 1634963: Backstage version bump to v1.41.1
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,24 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.14.1
+
+### Patch Changes
+
+- a1ec06f: Added development environment for starting the plugin in isolation.
+- Updated dependencies [a1ec06f]
+  - @backstage-community/plugin-lighthouse-common@0.10.1
+
+## 0.14.0
+
+### Minor Changes
+
+- 51df1cb: Backstage version bump to v1.42.4
+
+### Patch Changes
+
+- Updated dependencies [51df1cb]
+  - @backstage-community/plugin-lighthouse-common@0.10.0
+
 ## 0.13.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-badges
 
+## 0.11.1
+
+### Patch Changes
+
+- 2681d87: Fixes a bug where badge style and color query parameters were not passed when badge obfuscation was enabled, causing badge style filtering to not work in the UI.
+
+## 0.11.0
+
+### Minor Changes
+
+- dad55b1: Backstage version bump to v1.41.1
+
 ## 0.10.0
 
 ### Minor Changes

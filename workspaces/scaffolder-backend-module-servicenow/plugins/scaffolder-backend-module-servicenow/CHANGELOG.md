@@ -1,5 +1,37 @@
 ### Dependencies
 
+## 2.9.0
+
+### Minor Changes
+
+- 38fc9aa: Backstage version bump to v1.42.5
+
+## 2.8.2
+
+### Patch Changes
+
+- 14b24f1: Updated dependency `@types/node-fetch` to `2.6.13`.
+- af98d48: Updated dependency `@hey-api/openapi-ts` to `0.82.4`.
+
+## 2.8.1
+
+### Patch Changes
+
+- 60a37cc: Updated dependency `@hey-api/openapi-ts` to `0.80.5`.
+
+## 2.8.0
+
+### Minor Changes
+
+- 6600461: Backstage version bump to v1.41.1
+
+## 2.7.1
+
+### Patch Changes
+
+- 7cfcb00: Updated dependency `@hey-api/openapi-ts` to `0.78.3`.
+- 042961c: add examples for action servicenow backend scaffolder
+
 ## 2.7.0
 
 ### Minor Changes

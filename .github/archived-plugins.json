@@ -1,0 +1,13 @@
+{
+  "archived": [
+    {
+      "pluginName": "@backstage-community/plugin-analytics-module-ga",
+      "version": "0.9.0",
+      "workspace": "analytics",
+      "plugin": "analytics-module-ga",
+      "gitTag": "@backstage-community/plugin-analytics-module-ga@0.9.0",
+      "reason": "Built for Universal Analytics, which has been deprecated",
+      "archivedDate": "2025-08-18"
+    }
+  ]
+}

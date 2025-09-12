@@ -80,7 +80,7 @@ export type RollbarProjectAccessToken = {
   name: string;
   scopes: RollbarProjectAccessTokenScope[];
   accessToken: string;
-  status: 'enabled' | string;
+  status: 'enabled' | 'expired' | string;
 };
 
 /** @public */

@@ -25,6 +25,7 @@ export const mockEntity: Entity = {
       'jenkins.io/job-full-name': 'calculator-app-pipeline',
       'github.com/project-slug': 'test-project',
       'gitlab.com/project-id': '112757',
+      'mssv/enabled': 'true',
       'dev.azure.com/project': 'some-project',
       'dev.azure.com/build-definition': 'some-build',
       'dev.azure.com/host-org': 'dev.azure.com/test-project',

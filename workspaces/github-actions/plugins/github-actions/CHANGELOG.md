@@ -1,5 +1,17 @@
 # @backstage-community/plugin-github-actions
 
+## 0.14.0
+
+### Minor Changes
+
+- 0493206: Backstage version bump to v1.42.3
+
+## 0.13.1
+
+### Patch Changes
+
+- e6e4a9d: Add workflow age field to help indicate when the workflow last ran
+
 ## 0.13.0
 
 ### Minor Changes

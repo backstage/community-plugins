@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
@@ -87,7 +86,7 @@ const techdocsContent = (
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
   // You can for example enforce that all components of type 'service' should use GitHubActions
-  <EntitySwitch>
+  (<EntitySwitch>
     {/*
       Here you can add support for different CI/CD services, for example
       using @backstage-community/plugin-github-actions as follows:
@@ -95,7 +94,6 @@ const cicdContent = (
         <EntityGithubActionsContent />
       </EntitySwitch.Case>
      */}
-
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"
@@ -112,7 +110,7 @@ const cicdContent = (
         }
       />
     </EntitySwitch.Case>
-  </EntitySwitch>
+  </EntitySwitch>)
 );
 
 const entityWarningContent = (

@@ -52,11 +52,17 @@ workspace/badges:
 workspace/bazaar:
   - "Workspace\\s*bazaar"
 
+workspace/bitbucket-pull-requests:
+  - "Workspace\\s*bitbucket-pull-requests"
+
 workspace/bitrise:
   - "Workspace\\s*bitrise"
 
 workspace/blackduck:
   - "Workspace\\s*blackduck"
+
+workspace/bookmarks:
+  - "Workspace\\s*bookmarks"
 
 workspace/cicd-statistics:
   - "Workspace\\s*cicd-statistics"

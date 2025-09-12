@@ -1,5 +1,51 @@
 # @backstage-community/plugin-announcements
 
+## 0.12.0
+
+### Minor Changes
+
+- 4a3e603: Added support for an `until_date` field in announcements and introduced a new `current` filter.
+- 4a89fd8: With these changes, notifications can be enabled whenever new announcement is created. Announcement notifications are disabled by-default. For details, about notification, please refer [`Notifications`](https://backstage.io/docs/notifications/) docs.
+
+  announcements: integration with notifications #4378
+
+### Patch Changes
+
+- 92b9e8c: Fix a bug in the Edit announcement page where the page does not update the announcement if the announcement is missing a category
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+  - @backstage-community/plugin-announcements-react@0.11.0
+
+## 0.11.0
+
+### Minor Changes
+
+- e121abb: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- d70723f: Allow creating new announcement category for edit
+- Updated dependencies [e121abb]
+- Updated dependencies [d70723f]
+  - @backstage-community/plugin-announcements-common@0.8.0
+  - @backstage-community/plugin-announcements-react@0.10.0
+
+## 0.10.2
+
+### Patch Changes
+
+- 7ad0cd0: Fixes an issue where an empty list of userOwnershipRefs causes excessive api calls to the catalog when creating a new announcement.
+- Updated dependencies [7ad0cd0]
+  - @backstage-community/plugin-announcements-react@0.9.1
+
+## 0.10.1
+
+### Patch Changes
+
+- 0ab4439: Updated the New Frontend System NavItem to use the `RecordVoiceOverIcon` instead of the `NotificationsIcon` to avoid confusion with the Backstage Notifications NavItem
+- 1a08ba6: Fixed an issue where your would get a "Routing context not available" error when using the New Frontend System
+
 ## 0.10.0
 
 ### Minor Changes

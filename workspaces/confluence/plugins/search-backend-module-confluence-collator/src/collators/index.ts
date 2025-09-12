@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 export {
-  type ConfluenceDocumentMetadata,
-  type ConfluenceDocumentList,
-  type ConfluenceDocument,
   type ConfluenceCollatorFactoryOptions,
   type IndexableAncestorRef,
   type IndexableConfluenceDocument,

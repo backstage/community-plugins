@@ -72,6 +72,11 @@ export type AnnouncementsTimelineProps = {
    * Default: 'desc'
    */
   order?: 'asc' | 'desc';
+  /**
+   * Whether to show current announcements or not.
+   * Default: false
+   */
+  current?: boolean;
 };
 
 /**
@@ -105,6 +110,11 @@ const DEFAULT_SORTBY = 'created_at';
 const DEFAULT_ORDER = 'desc';
 
 /**
+ * Default setting for only displaying current annoucenments.
+ */
+const DEFAULT_CURRENT = false;
+
+/**
  * Timeline of most recent announcements.
  *
  * @param options - The options for the announcements timeline.
@@ -117,6 +127,7 @@ export const AnnouncementsTimeline = ({
   hideInactive = DEFAULT_INACTIVE,
   sortBy = DEFAULT_SORTBY,
   order = DEFAULT_ORDER,
+  current = DEFAULT_CURRENT,
 }: AnnouncementsTimelineProps) => {
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
 
@@ -125,6 +136,7 @@ export const AnnouncementsTimeline = ({
     active: hideInactive,
     sortBy,
     order,
+    current,
   });
   const { t } = useAnnouncementsTranslation();
 

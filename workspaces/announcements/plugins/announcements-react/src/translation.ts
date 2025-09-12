@@ -27,6 +27,7 @@ export const announcementsTranslationRef = createTranslationRef({
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
       startAt: 'Announcement start date',
+      untilDate: 'Announcement end date',
       onBehalfOf: 'On behalf of',
       categoryInput: {
         create: 'Create',
@@ -139,6 +140,7 @@ export const announcementsTranslationRef = createTranslationRef({
     },
     editAnnouncementPage: {
       updatedMessage: 'Announcement updated.',
+      updatedMessageWithNewCategory: 'with new category',
       notFoundMessage: 'Unable to find announcement',
       edit: 'Edit',
     },
@@ -180,6 +182,7 @@ export const announcementsTranslationRef = createTranslationRef({
           inactive: 'Inactive',
           created_at: 'Created',
           start_at: 'Start',
+          until_date: 'Until',
         },
       },
       categoriesContent: {

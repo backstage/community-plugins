@@ -50,6 +50,38 @@ To enable the PipelineRun list in the Security tab on the entity view page, add 
 +);
 ```
 
+The plugin will be displayed when the annotations of the CI provider will be present. This can also be additionally controlled by setting the following annotation on the component.
+
+```
+mssv/enabled: 'true'
+```
+
+If you choose to display the plugin when the annotation is present along with the CI provider annotations, use `isMultiCIAvailableAndEnabled` instead.
+
+```diff
++import {
++  isMultiCIAvailableAndEnabled,
++  EntityMultiCIPipelinesContent,
++} from '@backstage-community/plugin-multi-source-security-viewer';
++
++import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
++import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
++
++const securityContent = (
++  <EntitySwitch>
++    <EntitySwitch.Case if={isMultiCIAvailableAndEnabled}>
++      <EntityMultiCIPipelinesContent />
++    </EntitySwitch.Case>
++  </EntitySwitch>
++);
++
++const entityServicePage = (
++  <EntityLayout.Route path="/security" title="Security">
++    {securityContent}
++  </EntityLayout.Route>
++);
+```
+
 ## For users
 
 ### Using the plugin in Backstage

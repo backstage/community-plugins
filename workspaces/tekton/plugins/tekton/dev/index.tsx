@@ -19,6 +19,9 @@ import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   KubernetesApi,
+  kubernetesApiRef,
+  kubernetesProxyApiRef,
+  kubernetesAuthProvidersApiRef,
   KubernetesProxyApi,
 } from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
@@ -32,11 +35,6 @@ import {
 } from '../src/__fixtures__/advancedClusterSecurityData';
 import { enterpriseContractResult } from '../src/__fixtures__/enterpriseContractData';
 import { TektonCI, tektonPlugin } from '../src/plugin';
-import {
-  kubernetesApiRef,
-  kubernetesAuthProvidersApiRef,
-  kubernetesProxyApiRef,
-} from '../src/types/types';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',

@@ -1,5 +1,36 @@
 ### Dependencies
 
+## 3.14.1
+
+### Patch Changes
+
+- 9872171: Updated dependency `@keycloak/keycloak-admin-client` to `26.3.3`.
+
+## 3.14.0
+
+### Minor Changes
+
+- 46ce843: Backstage version bump to v1.42.4
+
+## 3.13.1
+
+### Patch Changes
+
+- 069adf6: Updated dependency `@keycloak/keycloak-admin-client` to `26.3.2`.
+
+## 3.13.0
+
+### Minor Changes
+
+- 804e03a: Backstage version bump to v1.41.1
+
+## 3.12.2
+
+### Patch Changes
+
+- 1d0b86f: Updated dependency `@keycloak/keycloak-admin-client` to `26.3.1`.
+- f818001: Updated dependency `@types/lodash` to `4.17.20`.
+
 ## 3.12.1
 
 ### Patch Changes
