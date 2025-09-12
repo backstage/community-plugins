@@ -27,5 +27,5 @@ export type AnnouncementModel = Omit<
 > & {
   created_at: DateTime;
   start_at: DateTime;
-  until_date: DateTime;
+  until_date?: DateTime | null;
 };

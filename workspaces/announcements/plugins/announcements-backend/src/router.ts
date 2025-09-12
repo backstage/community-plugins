@@ -48,7 +48,7 @@ interface AnnouncementRequest {
   body: string;
   active: boolean;
   start_at: string;
-  until_date: string;
+  until_date?: string;
   sendNotification: boolean;
   on_behalf_of?: string;
   tags?: string[];
@@ -201,9 +201,11 @@ export async function createRouter(
       }
 
       const startAt = DateTime.fromISO(req.body.start_at);
-      const untilDate = DateTime.fromISO(req.body.until_date);
+      const untilDate = req.body.until_date
+        ? DateTime.fromISO(req.body.until_date)
+        : undefined;
 
-      if (untilDate < startAt) {
+      if (untilDate && untilDate < startAt) {
         return res
           .status(400)
           .json({ error: 'until_date cannot be before start_at' });
@@ -221,7 +223,7 @@ export async function createRouter(
           id: uuid(),
           created_at: DateTime.now(),
           start_at: DateTime.fromISO(req.body.start_at),
-          until_date: DateTime.fromISO(req.body.until_date),
+          until_date: untilDate,
           tags: validatedTags,
         });
 
@@ -269,7 +271,7 @@ export async function createRouter(
         },
       } = req;
 
-      if (until_date < start_at) {
+      if (until_date && until_date < start_at) {
         return res
           .status(400)
           .json({ error: 'until_date cannot be before start_at' });
@@ -298,7 +300,7 @@ export async function createRouter(
             category,
             active,
             start_at: DateTime.fromISO(start_at),
-            until_date: DateTime.fromISO(until_date),
+            until_date: until_date ? DateTime.fromISO(until_date) : undefined,
             on_behalf_of,
             tags: validatedTags,
           },
