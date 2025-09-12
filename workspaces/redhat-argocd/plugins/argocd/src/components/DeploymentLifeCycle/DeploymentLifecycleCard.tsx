@@ -53,14 +53,14 @@ const useCardStyles = makeStyles<Theme>(theme =>
 
 interface DeploymentLifecycleCardProps {
   app: Application;
-  revisionsMap: { [key: string]: RevisionInfo };
+  revisions: RevisionInfo[];
   onclick?: () => void;
 }
 
 const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   app,
   onclick,
-  revisionsMap,
+  revisions,
 }) => {
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
@@ -110,7 +110,7 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
               <AppCommitLink
                 application={app}
                 entity={entity}
-                revisionsMap={revisionsMap}
+                revisions={revisions}
                 latestRevision={latestRevision}
               />
             </MetadataItemWithTooltip>

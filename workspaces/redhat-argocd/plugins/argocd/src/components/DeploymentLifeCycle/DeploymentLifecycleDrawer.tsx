@@ -73,7 +73,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 }) => {
   const {
     application: app,
-    revisionsMap,
+    revisions,
     appHistory,
     latestRevision,
   } = useDrawerContext();
@@ -138,7 +138,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                   <AppCommitLink
                     application={app}
                     entity={entity}
-                    revisionsMap={revisionsMap}
+                    revisions={revisions}
                     latestRevision={latestRevision}
                     showAuthor
                   />
