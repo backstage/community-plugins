@@ -27,7 +27,7 @@ import {
   DEFAULT_NOTIFICATION_DESCRIPTION,
   DEFAULT_NOTIFICATION_ENABLED,
   DEFAULT_NOTIFICATION_TITLE,
-  ENTITY_NAME_TEMPLATE_VAR,
+  ENTITY_DISPLAY_NAME_TEMPLATE_VAR,
   TEMPLATE_VERSION_UPDATED_TOPIC,
 } from './constants';
 import { ScaffolderRelationProcessorConfig } from './types';
@@ -126,7 +126,7 @@ async function sendNotificationsToOwners(
 
       const entityName = entity.metadata.title ?? entity.metadata.name;
       const entityNameRegex = new RegExp(
-        ENTITY_NAME_TEMPLATE_VAR.replace(/\$/g, '\\$'),
+        ENTITY_DISPLAY_NAME_TEMPLATE_VAR.replace(/\$/g, '\\$'),
         'g',
       );
 

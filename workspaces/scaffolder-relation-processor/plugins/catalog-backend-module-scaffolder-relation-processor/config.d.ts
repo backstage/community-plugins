@@ -32,14 +32,14 @@ export interface Config {
        */
       message?: {
         /**
-         * The notification title. Supports $ENTITY_NAME template variable.
-         * @default '$ENTITY_NAME is out of sync with template'
+         * The notification title. Supports $ENTITY_DISPLAY_NAME template variable.
+         * @default '$ENTITY_DISPLAY_NAME is out of sync with template'
          * @visibility frontend
          */
         title?: string;
         /**
-         * The notification description. Supports $ENTITY_NAME template variable.
-         * @default 'The template used to create $ENTITY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.'
+         * The notification description. Supports $ENTITY_DISPLAY_NAME template variable.
+         * @default 'The template used to create $ENTITY_DISPLAY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.'
          * @visibility frontend
          */
         description?: string;

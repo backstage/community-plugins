@@ -27,21 +27,21 @@ export const TEMPLATE_VERSION_UPDATED_TOPIC =
  *
  * @public
  */
-export const ENTITY_NAME_TEMPLATE_VAR = '$ENTITY_NAME';
+export const ENTITY_DISPLAY_NAME_TEMPLATE_VAR = '$ENTITY_DISPLAY_NAME';
 
 /**
  * Default template update notification title
  *
  * @public
  */
-export const DEFAULT_NOTIFICATION_TITLE = `${ENTITY_NAME_TEMPLATE_VAR} is out of sync with template`;
+export const DEFAULT_NOTIFICATION_TITLE = `${ENTITY_DISPLAY_NAME_TEMPLATE_VAR} is out of sync with template`;
 
 /**
  * Default template update notification description
  *
  * @public
  */
-export const DEFAULT_NOTIFICATION_DESCRIPTION = `The template used to create ${ENTITY_NAME_TEMPLATE_VAR} has been updated to a new version. Review and update your entity to stay in sync with the template.`;
+export const DEFAULT_NOTIFICATION_DESCRIPTION = `The template used to create ${ENTITY_DISPLAY_NAME_TEMPLATE_VAR} has been updated to a new version. Review and update your entity to stay in sync with the template.`;
 
 /**
  * Default notification enabled
