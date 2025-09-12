@@ -13,48 +13,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Page, Header, Content } from '@backstage/core-components';
-import { createDevApp } from '@backstage/dev-utils';
+
+import ReactDOM from 'react-dom/client';
+
+import { createApp } from '@backstage/frontend-defaults';
+import { TestApiProvider } from '@backstage/frontend-test-utils';
+
 import {
-  entityValidationPlugin,
-  EntityValidationPage,
-  EntityValidationContent,
-} from '../src/plugin';
-import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
+  PageBlueprint,
+  createFrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 
-import Typography from '@material-ui/core/Typography';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 
-const EmbedExamplePage = () => {
-  return (
-    <Page themeId="tool">
-      <Header title="Embed Example" />
-      <Content>
-        <EntityValidationContent
-          contentHead={<Typography variant="h6">Entity Validation</Typography>}
-        />
-      </Content>
-    </Page>
-  );
+import entityValidationPlugin from '../src/alpha';
+import { EntityValidationContent } from '../src/components/EntityValidationPage';
+
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import { identityApiRef } from '@backstage/core-plugin-api';
+
+const devPagesPlugin = createFrontendPlugin({
+  pluginId: 'entity-validation-dev-pages',
+  extensions: [
+    PageBlueprint.make({
+      name: 'embed-example',
+      params: {
+        defaultPath: '/entity-validation-embed',
+        loader: () =>
+          import('@backstage/core-components').then(
+            ({ Page, Header, Content }) => (
+              <Page themeId="tool">
+                <Header title="Embed Example" />
+                <Content>
+                  <EntityValidationContent />
+                </Content>
+              </Page>
+            ),
+          ),
+      },
+    }),
+  ],
+});
+
+const mockEntities = [
+  {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'example-service',
+      annotations: {
+        'backstage.io/managed-by-location': 'file:/path/to/catalog-info.yaml',
+      },
+    },
+    spec: {
+      type: 'service',
+      lifecycle: 'production',
+      owner: 'guest',
+    },
+  },
+];
+
+const catalogApi = catalogApiMock({ entities: mockEntities });
+
+const mockIdentityApi = {
+  getProfileInfo: () => Promise.resolve({ displayName: 'Test User' }),
+  getBackstageIdentity: () =>
+    Promise.resolve({
+      type: 'user' as const,
+      userEntityRef: 'user:default/testuser',
+      ownershipEntityRefs: [] as string[],
+    }),
+  getCredentials: () => Promise.resolve({ token: 'mock-token' }),
+  signOut: () => Promise.resolve(),
 };
 
-createDevApp()
-  .registerPlugin(entityValidationPlugin)
-  .registerApi({
-    api: catalogApiRef,
-    deps: {},
-    factory: () =>
-      ({
-        getEntities: () => ({}),
-      } as CatalogApi),
-  })
-  .addPage({
-    element: <EntityValidationPage />,
-    title: 'Root Page',
-    path: '/entity-validation',
-  })
-  .addPage({
-    element: <EmbedExamplePage />,
-    title: 'Embedded Page',
-    path: '/entity-validation-embed',
-  })
-  .render();
+const app = createApp({
+  features: [devPagesPlugin, entityValidationPlugin],
+});
+
+const root = app.createRoot();
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <TestApiProvider
+    apis={[
+      [catalogApiRef, catalogApi],
+      [identityApiRef, mockIdentityApi],
+    ]}
+  >
+    {root}
+  </TestApiProvider>,
+);
