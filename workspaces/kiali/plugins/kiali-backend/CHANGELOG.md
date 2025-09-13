@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.25.0
+
+### Minor Changes
+
+- d0926d5: Upgrade backstage 1.42.5
+
 ## 1.24.0
 
 ### Minor Changes
