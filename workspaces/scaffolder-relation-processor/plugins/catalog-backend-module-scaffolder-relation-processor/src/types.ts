@@ -25,3 +25,18 @@ export type ScaffoldedFromSpec = {
     scaffoldedFrom: string;
   };
 };
+
+/**
+ * Configuration interface for scaffolder relation processor notifications
+ *
+ * @public
+ */
+export interface ScaffolderRelationProcessorConfig {
+  notifications?: {
+    enabled: boolean;
+    message: {
+      title: string;
+      description: string;
+    };
+  };
+}
