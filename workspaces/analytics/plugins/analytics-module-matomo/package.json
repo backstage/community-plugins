@@ -34,7 +34,8 @@
     "directory": "workspaces/analytics/plugins/analytics-module-matomo"
   },
   "dependencies": {
-    "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"

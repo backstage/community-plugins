@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 import {
-  analyticsApiRef,
+  AnalyticsImplementationBlueprint,
   configApiRef,
-  createApiFactory,
+  createFrontendModule,
   identityApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
 import { MatomoAnalytics } from './api';
 
-export { matomoModule as default } from './module';
-export { analyticsModuleMatomoPlugin } from './plugin';
-export * from './api';
+const matomoImplementation = AnalyticsImplementationBlueprint.make({
+  name: 'matomo',
+  params: defineParams =>
+    defineParams({
+      deps: { configApi: configApiRef, identityApi: identityApiRef },
+      factory: ({ configApi, identityApi }) =>
+        MatomoAnalytics.fromConfig(configApi, { identityApi }),
+    }),
+});
+
 /**
- * API factory method for matomo
- *
  * @public
  */
-export const MatomoAnalyticsApi = createApiFactory({
-  api: analyticsApiRef,
-  deps: { configApi: configApiRef, identityApi: identityApiRef },
-  factory: ({ configApi, identityApi }) =>
-    MatomoAnalytics.fromConfig(configApi, {
-      identityApi,
-    }),
+export const matomoModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [matomoImplementation],
 });
