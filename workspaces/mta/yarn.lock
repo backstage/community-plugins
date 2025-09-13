@@ -4646,17 +4646,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-backend@npm:^0.5.55":
-  version: 0.5.55
-  resolution: "@backstage/plugin-permission-backend@npm:0.5.55"
+"@backstage/plugin-permission-backend@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@backstage/plugin-permission-backend@npm:0.6.0"
   dependencies:
     "@backstage/backend-common": "npm:^0.25.0"
-    "@backstage/backend-plugin-api": "npm:^1.2.1"
+    "@backstage/backend-plugin-api": "npm:^1.3.0"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-auth-node": "npm:^0.6.1"
+    "@backstage/plugin-auth-node": "npm:^0.6.2"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
-    "@backstage/plugin-permission-node": "npm:^0.9.0"
+    "@backstage/plugin-permission-node": "npm:^0.9.1"
     "@types/express": "npm:^4.17.6"
     dataloader: "npm:^2.0.0"
     express: "npm:^4.17.1"
@@ -4664,7 +4664,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     yn: "npm:^4.0.0"
     zod: "npm:^3.22.4"
-  checksum: 10/6a1bf0268cfeb2b80b603eb292e207cb1b572cc238d6dcff21e420dbab9c124c88c2896bb40afcff6395939ef9c0cfc10f5800bc05873a4a035e6358ba75abbc
+  checksum: 10/00698984f9d86aa162f916a08543c504f74de2d44dc6a60d5f8194bb8d634a13e071e151b9e733daf8873a5abb6a9a0f736396880dd1a68a57185b713d06b943
   languageName: node
   linkType: hard
 
@@ -15648,7 +15648,7 @@ __metadata:
     "@backstage/plugin-auth-node": "npm:^0.6.1"
     "@backstage/plugin-catalog-backend": "npm:^1.32.0"
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.6"
-    "@backstage/plugin-permission-backend": "npm:^0.5.55"
+    "@backstage/plugin-permission-backend": "npm:^0.6.0"
     "@backstage/plugin-permission-backend-module-allow-all-policy": "npm:^0.2.6"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
     "@backstage/plugin-permission-node": "npm:^0.9.0"
