@@ -35,192 +35,424 @@ export const entityStub = {
   },
 };
 export const pullRequestsResponseStub = {
+  size: 4,
+  limit: 25,
+  isLastPage: true,
   values: [
     {
-      id: 1,
-      title: 'Update README',
-      description: 'This PR updates the README file with new instructions.',
+      id: 712,
+      version: 17,
+      title: 'Feature implementation for homepage',
+      description:
+        '* install the plugin\n* plugin customisation\n* add the home page card\n* add custom changes\n* add prompts',
       state: 'OPEN',
-      createdDate: 1754922669866,
-      updatedDate: 1755776185223,
-      source: {
-        branch: {
-          name: 'feature/update-readme',
-        },
-        commit: {
-          hash: 'abc123',
-        },
+      open: true,
+      closed: false,
+      draft: true,
+      createdDate: 1755776870558,
+      updatedDate: 1756441122639,
+      fromRef: {
+        id: 'refs/heads/feature-homepage',
+        displayId: 'feature-homepage',
+        latestCommit: 'e4082d48d2a0658cf58e64cd4a18dda03068e909',
+        type: 'BRANCH',
         repository: {
-          name: 'my-repo',
-          full_name: 'my-team/my-repo',
-        },
-      },
-      destination: {
-        branch: {
-          name: 'main',
-        },
-        commit: {
-          hash: 'def456',
-        },
-        repository: {
-          name: 'my-repo',
-          full_name: 'my-team/my-repo',
-        },
-      },
-      author: {
-        display_name: 'John Doe',
-        uuid: '{user-uuid}',
-        links: {
-          avatar: {
-            href: 'https://bitbucket.org/account/johndoe/avatar/32/',
+          slug: 'example-project',
+          id: 12257,
+          name: 'example-project',
+          hierarchyId: 'd4fa1fd449795cf37c5f',
+          scmId: 'git',
+          state: 'AVAILABLE',
+          statusMessage: 'Available',
+          forkable: true,
+          project: {
+            key: 'EXAMPLE',
+            id: 9072,
+            name: 'Example Project',
+            description: 'This is an example project description',
+            public: false,
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/projects/EXAMPLE',
+                },
+              ],
+            },
+          },
+          public: false,
+          archived: false,
+          links: {
+            clone: [
+              {
+                href: 'https://bitbucket.example.com/scm/example/example-project.git',
+                name: 'http',
+              },
+              {
+                href: 'ssh://git@bitbucket.example.com:7999/example/example-project.git',
+                name: 'ssh',
+              },
+            ],
+            self: [
+              {
+                href: 'https://bitbucket.example.com/projects/EXAMPLE/repos/example-project/browse',
+              },
+            ],
           },
         },
+      },
+      toRef: {
+        id: 'refs/heads/main',
+        displayId: 'main',
+        latestCommit: '133ff72b24434c7caa24913e64e2908377b65d64',
+        type: 'BRANCH',
+        repository: {
+          slug: 'example-project',
+          id: 12257,
+          name: 'example-project',
+          hierarchyId: 'd4fa1fd449795cf37c5f',
+          scmId: 'git',
+          state: 'AVAILABLE',
+          statusMessage: 'Available',
+          forkable: true,
+          project: {
+            key: 'EXAMPLE',
+            id: 9072,
+            name: 'Example Project',
+            description: 'This is an example project description',
+            public: false,
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/projects/EXAMPLE',
+                },
+              ],
+            },
+          },
+          public: false,
+          archived: false,
+          links: {
+            clone: [
+              {
+                href: 'https://bitbucket.example.com/scm/example/example-project.git',
+                name: 'http',
+              },
+              {
+                href: 'ssh://git@bitbucket.example.com:7999/example/example-project.git',
+                name: 'ssh',
+              },
+            ],
+            self: [
+              {
+                href: 'https://bitbucket.example.com/projects/EXAMPLE/repos/example-project/browse',
+              },
+            ],
+          },
+        },
+      },
+      locked: false,
+      author: {
+        user: {
+          name: 'user1',
+          emailAddress: 'user1@example.com',
+          active: true,
+          displayName: 'Example User 1',
+          id: 2173,
+          slug: 'user1',
+          type: 'NORMAL',
+          links: {
+            self: [
+              {
+                href: 'https://bitbucket.example.com/users/user1',
+              },
+            ],
+          },
+        },
+        role: 'AUTHOR',
+        approved: false,
+        status: 'UNAPPROVED',
       },
       reviewers: [
         {
-          display_name: 'Jane Smith',
-          uuid: '{reviewer-uuid}',
-          approved: false,
-          links: {
-            avatar: {
-              href: 'https://bitbucket.org/account/janesmith/avatar/32/',
+          user: {
+            name: 'user2',
+            emailAddress: 'user2@example.com',
+            active: true,
+            displayName: 'Example User 2',
+            id: 1860,
+            slug: 'user2',
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/users/user2',
+                },
+              ],
             },
           },
+          role: 'REVIEWER',
+          approved: false,
+          status: 'UNAPPROVED',
+        },
+        {
+          user: {
+            name: 'user3',
+            emailAddress: 'user3@example.com',
+            active: true,
+            displayName: 'Example User 3',
+            id: 7151,
+            slug: 'user3',
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/users/user3',
+                },
+              ],
+            },
+          },
+          role: 'REVIEWER',
+          approved: false,
+          status: 'UNAPPROVED',
         },
       ],
+      participants: [
+        {
+          user: {
+            name: 'service-user',
+            emailAddress: '',
+            active: true,
+            displayName: 'Service User',
+            id: 19196,
+            slug: 'service-user',
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/users/service-user',
+                },
+              ],
+            },
+          },
+          role: 'PARTICIPANT',
+          approved: false,
+          status: 'UNAPPROVED',
+        },
+      ],
+      properties: {
+        mergeResult: {
+          outcome: 'CONFLICTED',
+          current: true,
+        },
+        resolvedTaskCount: 0,
+        commentCount: 1,
+        openTaskCount: 0,
+      },
       links: {
-        self: {
-          href: 'https://bitbucket.org/my-team/my-repo/pull-requests/1',
-        },
-        html: {
-          href: 'https://bitbucket.org/my-team/my-repo/pull-requests/1',
-        },
+        self: [
+          {
+            href: 'https://bitbucket.example.com/projects/EXAMPLE/repos/example-project/pull-requests/712',
+          },
+        ],
       },
     },
     {
-      id: 2,
-      title: 'Add new feature',
-      description: 'This PR adds a new feature.',
-      state: 'MERGED',
-      createdDate: 1754922669866,
-      updatedDate: 1755776185223,
-      source: {
-        branch: {
-          name: 'feature/new-feature',
-        },
-        commit: {
-          hash: 'ghi789',
-        },
+      id: 662,
+      version: 52,
+      title: 'Feature/PROJ-255 new template implementation',
+      description: 'new template for the project',
+      state: 'OPEN',
+      open: true,
+      closed: false,
+      draft: false,
+      createdDate: 1751004936553,
+      updatedDate: 1756127376779,
+      fromRef: {
+        id: 'refs/heads/feature/PROJ-255-new-template',
+        displayId: 'feature/PROJ-255-new-template',
+        latestCommit: '45b7853f48dfbf958201b99933eb5884e1ce550f',
+        type: 'BRANCH',
         repository: {
-          name: 'my-repo',
-          full_name: 'my-team/my-repo',
-        },
-      },
-      destination: {
-        branch: {
-          name: 'main',
-        },
-        commit: {
-          hash: 'jkl012',
-        },
-        repository: {
-          name: 'my-repo',
-          full_name: 'my-team/my-repo',
-        },
-      },
-      author: {
-        display_name: 'John Doe',
-        uuid: '{user-uuid}',
-        links: {
-          avatar: {
-            href: 'https://bitbucket.org/account/johndoe/avatar/32/',
-          },
-        },
-      },
-      reviewers: [
-        {
-          display_name: 'Jane Smith',
-          uuid: '{reviewer-uuid}',
-          approved: true,
-          links: {
-            avatar: {
-              href: 'https://bitbucket.org/account/janesmith/avatar/32/',
+          slug: 'example-project',
+          id: 12257,
+          name: 'example-project',
+          hierarchyId: 'd4fa1fd449795cf37c5f',
+          scmId: 'git',
+          state: 'AVAILABLE',
+          statusMessage: 'Available',
+          forkable: true,
+          project: {
+            key: 'EXAMPLE',
+            id: 9072,
+            name: 'Example Project',
+            description: 'This is an example project description',
+            public: false,
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/projects/EXAMPLE',
+                },
+              ],
             },
           },
-        },
-      ],
-      links: {
-        self: {
-          href: 'https://bitbucket.org/my-team/my-repo/pull-requests/2',
-        },
-        html: {
-          href: 'https://bitbucket.org/my-team/my-repo/pull-requests/2',
-        },
-      },
-    },
-    {
-      id: 3,
-      title: 'Fix bug in feature',
-      description: 'This PR fixes a bug in the new feature.',
-      state: 'DECLINED',
-      createdDate: 1754922669866,
-      updatedDate: 1755776185223,
-      source: {
-        branch: {
-          name: 'bugfix/fix-bug',
-        },
-        commit: {
-          hash: 'mno345',
-        },
-        repository: {
-          name: 'my-repo',
-          full_name: 'my-team/my-repo',
-        },
-      },
-      destination: {
-        branch: {
-          name: 'main',
-        },
-        commit: {
-          hash: 'pqr678',
-        },
-        repository: {
-          name: 'my-repo',
-          full_name: 'my-team/my-repo',
-        },
-      },
-      author: {
-        display_name: 'John Doe',
-        uuid: '{user-uuid}',
-        links: {
-          avatar: {
-            href: 'https://bitbucket.org/account/johndoe/avatar/32/',
+          public: false,
+          archived: false,
+          links: {
+            clone: [
+              {
+                href: 'https://bitbucket.example.com/scm/example/example-project.git',
+                name: 'http',
+              },
+              {
+                href: 'ssh://git@bitbucket.example.com:7999/example/example-project.git',
+                name: 'ssh',
+              },
+            ],
+            self: [
+              {
+                href: 'https://bitbucket.example.com/projects/EXAMPLE/repos/example-project/browse',
+              },
+            ],
           },
         },
       },
+      toRef: {
+        id: 'refs/heads/main',
+        displayId: 'main',
+        latestCommit: '133ff72b24434c7caa24913e64e2908377b65d64',
+        type: 'BRANCH',
+        repository: {
+          slug: 'example-project',
+          id: 12257,
+          name: 'example-project',
+          hierarchyId: 'd4fa1fd449795cf37c5f',
+          scmId: 'git',
+          state: 'AVAILABLE',
+          statusMessage: 'Available',
+          forkable: true,
+          project: {
+            key: 'EXAMPLE',
+            id: 9072,
+            name: 'Example Project',
+            description: 'This is an example project description',
+            public: false,
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/projects/EXAMPLE',
+                },
+              ],
+            },
+          },
+          public: false,
+          archived: false,
+          links: {
+            clone: [
+              {
+                href: 'https://bitbucket.example.com/scm/example/example-project.git',
+                name: 'http',
+              },
+              {
+                href: 'ssh://git@bitbucket.example.com:7999/example/example-project.git',
+                name: 'ssh',
+              },
+            ],
+            self: [
+              {
+                href: 'https://bitbucket.example.com/projects/EXAMPLE/repos/example-project/browse',
+              },
+            ],
+          },
+        },
+      },
+      locked: false,
+      author: {
+        user: {
+          name: 'user4',
+          emailAddress: 'user4@example.com',
+          active: true,
+          displayName: 'Example User 4',
+          id: 16498,
+          slug: 'user4',
+          type: 'NORMAL',
+          links: {
+            self: [
+              {
+                href: 'https://bitbucket.example.com/users/user4',
+              },
+            ],
+          },
+        },
+        role: 'AUTHOR',
+        approved: false,
+        status: 'UNAPPROVED',
+      },
       reviewers: [
         {
-          display_name: 'Jane Smith',
-          uuid: '{reviewer-uuid}',
+          user: {
+            name: 'user5',
+            emailAddress: 'user5@example.com',
+            active: true,
+            displayName: 'Example User 5',
+            id: 1643,
+            slug: 'user5',
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/users/user5',
+                },
+              ],
+            },
+          },
+          role: 'REVIEWER',
           approved: false,
-          links: {
-            avatar: {
-              href: 'https://bitbucket.org/account/janesmith/avatar/32/',
-            },
-          },
+          status: 'UNAPPROVED',
         },
       ],
+      participants: [
+        {
+          user: {
+            name: 'service-user',
+            emailAddress: '',
+            active: true,
+            displayName: 'Service User',
+            id: 19196,
+            slug: 'service-user',
+            type: 'NORMAL',
+            links: {
+              self: [
+                {
+                  href: 'https://bitbucket.example.com/users/service-user',
+                },
+              ],
+            },
+          },
+          role: 'PARTICIPANT',
+          approved: false,
+          status: 'UNAPPROVED',
+        },
+      ],
+      properties: {
+        mergeResult: {
+          outcome: 'CONFLICTED',
+          current: true,
+        },
+        resolvedTaskCount: 0,
+        commentCount: 26,
+        openTaskCount: 0,
+      },
       links: {
-        self: {
-          href: 'https://bitbucket.org/my-team/my-repo/pull-requests/3',
-        },
-        html: {
-          href: 'https://bitbucket.org/my-team/my-repo/pull-requests/3',
-        },
+        self: [
+          {
+            href: 'https://bitbucket.example.com/projects/EXAMPLE/repos/example-project/pull-requests/662',
+          },
+        ],
       },
     },
   ],
-  page: 1,
-  pagelen: 10,
-  size: 3,
+  start: 0,
 };
