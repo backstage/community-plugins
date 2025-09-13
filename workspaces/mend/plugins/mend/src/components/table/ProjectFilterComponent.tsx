@@ -9,22 +9,22 @@
  * State is owned by the parent; this component receives current selections and
  * a setter via props and renders accordingly.
  */
-import {
-  Box,
-  Checkbox,
-  Chip,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Typography,
-  Tooltip,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import { SelectItem } from '@backstage/core-components';
-import type { MenuProps as MUIMenuProps } from '@material-ui/core/Menu';
-import type { ChangeEvent } from 'react';
+import type { MenuProps as MUIMenuProps } from '@mui/material/Menu';
+import type { SelectChangeEvent } from '@mui/material/Select';
+import Cancel from '@mui/icons-material/Cancel';
+import { useTheme } from '@mui/material/styles';
 /**
  * Props for ProjectFilterComponent.
  *
@@ -52,8 +52,7 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 /**
  * MUI Menu props for consistent dropdown placement and max height.
- * Note: getContentAnchorEl is set to null to anchor the menu to the bottom
- * edge of the select input (for MUI v4 behavior).
+ * anchor the menu using anchorOrigin and transformOrigin.
  */
 const selectMenuProps: Partial<MUIMenuProps> = {
   PaperProps: {
@@ -61,8 +60,6 @@ const selectMenuProps: Partial<MUIMenuProps> = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
     },
   },
-  // Ensure the menu appears anchored to the bottom edge of the select input
-  getContentAnchorEl: null,
   anchorOrigin: {
     vertical: 'bottom',
     horizontal: 'left',
@@ -84,6 +81,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
   projectNameOptions,
   ALL_OPTION,
 }) => {
+  const theme = useTheme();
   // If there is no project data or only trivial options (e.g., ALL + placeholder),
   // do not render the filter.
   if (!projectList || projectNameOptions.length <= 2) {
@@ -97,7 +95,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
    * - Selecting another value while ALL is active removes ALL.
    * - Clearing all selections reverts to ALL.
    */
-  const handleProjectNameChange = (event: ChangeEvent<{ value: unknown }>) => {
+  const handleProjectNameChange = (event: SelectChangeEvent<string[]>) => {
     // SelectedItems can be string or string[]
     const selected = event.target.value;
     const selectedArray = Array.isArray(selected) ? selected : [selected];
@@ -146,7 +144,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
         <Typography
           component="span"
           display="block"
-          style={{
+          sx={{
             textTransform: 'none',
             lineHeight: '16px',
             fontWeight: 'revert',
@@ -161,7 +159,6 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
           e.g. to investigate results of a specific branch.
         </Typography>
       }
-      arrow
       placement="right"
     >
       <FormControl
@@ -185,7 +182,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
               label="Filter by Project Name"
             />
           }
-          SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 10 } }}
+          SelectDisplayProps={{ style: { paddingTop: 12, paddingBottom: 20 } }}
           renderValue={selected => {
             const values = Array.isArray(selected)
               ? (selected as string[])
@@ -194,18 +191,31 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
               <Box display="flex" flexWrap="wrap">
                 {values.map(value =>
                   value === ALL_OPTION.value ? (
-                    <Chip
-                      key={ALL_OPTION.value}
-                      label={ALL_OPTION.label}
-                      style={{ margin: 2 }}
-                    />
+                    <Chip key={ALL_OPTION.value} label={ALL_OPTION.label} />
                   ) : (
                     <Chip
                       key={value}
                       label={value}
                       onMouseDown={e => e.stopPropagation()}
                       onDelete={() => handleChipDelete(value)}
-                      style={{ margin: 2 }}
+                      deleteIcon={<Cancel sx={{ marginRight: 1 }} />}
+                      sx={{
+                        '& [class*="MuiChip-deleteIcon"]': {
+                          // default icon color
+                          color:
+                            theme.palette.mode === 'dark'
+                              ? 'rgba(255, 255, 255, 0.26)'
+                              : 'rgba(0, 0, 0, 0.26)',
+                          transition: 'color 0.3s ease',
+                        },
+                        '&:hover [class*="MuiChip-deleteIcon"]': {
+                          // icon color on chip hover
+                          color:
+                            theme.palette.mode === 'dark'
+                              ? 'rgba(255, 255, 255, 0.40)'
+                              : 'gray',
+                        },
+                      }}
                     />
                   ),
                 )}

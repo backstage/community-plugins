@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 import { Tag, Tooltip } from '../../../components';
 import { useResize } from '../../../hooks';
 

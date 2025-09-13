@@ -1,4 +1,5 @@
-import { Typography, makeStyles } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 import { numberToShortText } from '../../utils';
 
 type TableBarProps = {
