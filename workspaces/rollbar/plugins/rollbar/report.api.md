@@ -37,6 +37,7 @@ export interface RollbarApi {
   getTopActiveItems(
     project: string,
     hours?: number,
+    environment?: string,
   ): Promise<RollbarTopActiveItem[]>;
 }
 
