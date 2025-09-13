@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.12.2
+
+### Patch Changes
+
+- 20ccec6: Fallback to document modified by display name if public name is not defined
+
 ## 0.12.1
 
 ### Patch Changes
