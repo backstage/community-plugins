@@ -13540,13 +13540,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/luxon@npm:^2.0.4":
-  version: 2.4.0
-  resolution: "@types/luxon@npm:2.4.0"
-  checksum: 10/f5e5a9b10d7a76974ea03e1af7d6704edd1ce0bed1c1543461871e9bf173bbaafc92e19fe93a308ae02bd485bd4382e3fcbaabe4921adbcb344b29a85ba70f10
-  languageName: node
-  linkType: hard
-
 "@types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
   version: 3.4.2
   resolution: "@types/luxon@npm:3.4.2"
@@ -15655,7 +15648,7 @@ __metadata:
     "@backstage/plugin-techdocs-backend": "npm:^2.0.3"
     "@types/express": "npm:^4.17.6"
     "@types/express-serve-static-core": "npm:^4.17.5"
-    "@types/luxon": "npm:^2.0.4"
+    "@types/luxon": "npm:^3.0.0"
     app: "link:../app"
     better-sqlite3: "npm:^9.0.0"
     node-gyp: "npm:^10.0.0"
