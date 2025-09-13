@@ -1,0 +1,59 @@
+{
+  "apiVersion": "source.toolkit.fluxcd.io/v1",
+  "kind": "GitRepository",
+  "metadata": {
+    "creationTimestamp": "2023-06-30T08:46:33Z",
+    "finalizers": ["finalizers.fluxcd.io"],
+    "generation": 1,
+    "labels": {
+      "backstage.io/kubernetes-id": "catalogue-service"
+    },
+    "name": "podinfo",
+    "namespace": "backstage",
+    "resourceVersion": "952298",
+    "uid": "8ed938dc-8bcd-481c-ae53-39739cfc1737"
+  },
+  "spec": {
+    "interval": "10m",
+    "ref": {
+      "branch": "master"
+    },
+    "timeout": "60s",
+    "url": "https://github.com/stefanprodan/podinfo",
+    "verify": {
+      "mode": "head",
+      "secretRef": {
+        "name": "pgp-public-keys"
+      }
+    }
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2023-06-30T08:46:59Z",
+        "message": "building artifact",
+        "observedGeneration": 1,
+        "reason": "Progressing",
+        "status": "True",
+        "type": "Reconciling"
+      },
+      {
+        "lastTransitionTime": "2023-06-30T08:46:59Z",
+        "message": "building artifact",
+        "observedGeneration": 1,
+        "reason": "Progressing",
+        "status": "Unknown",
+        "type": "Ready"
+      },
+      {
+        "lastTransitionTime": "2023-06-30T08:46:35Z",
+        "message": "signature verification of commit 'dd3869b1a177432b60ea1e3ba99c10fc9db850fa' failed: unable to verify commit with any of the given key rings",
+        "observedGeneration": 1,
+        "reason": "InvalidCommitSignature",
+        "status": "False",
+        "type": "SourceVerified"
+      }
+    ],
+    "observedGeneration": -1
+  }
+}
