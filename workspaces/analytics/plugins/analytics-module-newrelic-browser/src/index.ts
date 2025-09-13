@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export * from './apis/implementations/AnalyticsApi';
+export { newRelicBrowserModule as default } from './module';
