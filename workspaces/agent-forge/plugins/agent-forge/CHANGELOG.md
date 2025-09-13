@@ -1,5 +1,11 @@
 # @backstage-community/plugin-agent-forge
 
+## 0.3.1
+
+### Patch Changes
+
+- 2e2218e: Updated dependency `cross-env` to `^10.0.0`.
+
 ## 0.3.0
 
 ### Minor Changes
