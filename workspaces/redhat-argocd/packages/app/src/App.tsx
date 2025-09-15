@@ -53,11 +53,9 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
 import { searchPage } from './components/search/SearchPage';
-import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
 
 const app = createApp({
   apis,
-  plugins: [kubernetesPlugin],
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,

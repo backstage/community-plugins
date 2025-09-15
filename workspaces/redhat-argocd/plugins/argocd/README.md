@@ -14,19 +14,9 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
-### ArgoCD frontend
+### Kubernetes plugin
 
-Import the `kubernetesPlugin` in your `App.tsx` and add it to your app's `plugins` array:
-
-```typescript
-import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
-
-const app = createApp({
-  // ...
-  plugins: [kubernetesPlugin],
-  // ...
-});
-```
+Please install and configure the frontend and backend Kubernetes plugins by following the [installation](https://backstage.io/docs/features/kubernetes/installation/) and [configuration](https://backstage.io/docs/features/kubernetes/configuration/) guides.
 
 ### Argo CD backend
 
