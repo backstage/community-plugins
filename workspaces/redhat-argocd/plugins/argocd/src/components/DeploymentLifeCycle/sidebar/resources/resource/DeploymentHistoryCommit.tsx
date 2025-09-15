@@ -47,6 +47,7 @@ export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
         width: '50rem',
         marginBottom: '5px',
       }}
+      data-testid={`commit-sha-${revisionSha}`}
     >
       <CardContent>
         <Typography
