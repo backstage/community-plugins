@@ -14,30 +14,10 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
-
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+/**
+ * Ternary conditional function.
+ *
+ * Can be used to avoid nested ternary conditions in JSX
+ */
+export const iff = (condition: boolean, then: any, otherwise: any) =>
+  condition ? then : otherwise;

@@ -19,7 +19,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service';
 import { readServiceNowConfig } from './config';
-import { ServiceNowConfig } from '../config';
+import { Config as ServiceNowConfig } from '../config';
 
 /**
  * servicenowPlugin backend plugin

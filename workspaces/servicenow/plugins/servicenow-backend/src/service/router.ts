@@ -19,7 +19,7 @@ import { HttpAuthService, LoggerService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
 import { DefaultServiceNowClient } from '../service-now-rest/client';
-import { ServiceNowConfig } from '../../config';
+import { Config as ServiceNowConfig } from '../../config';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -65,6 +65,55 @@ export async function createRouter(
       // Log the full error and throw a generic one
       logger.error('Failed to fetch incidents from ServiceNow', error);
       throw new Error('Failed to fetch incidents from ServiceNow');
+    }
+  });
+
+  router.get('/cmdb/business-application/:appcode', async (req, res) => {
+    const appCode = req.params.appcode;
+    try {
+      const incidents = await client.getBusinessApplication(appCode);
+      res.json(incidents);
+    } catch (error) {
+      if (error instanceof InputError) {
+        throw error;
+      }
+
+      // Log the full error and throw a generic one
+      logger.error(
+        'Failed to fetch business-application from ServiceNow',
+        error,
+      );
+      throw new Error('Failed to fetch business-application from ServiceNow');
+    }
+  });
+  router.get('/cmdb/user/:userid', async (req, res) => {
+    const userId = req.params.userid;
+    try {
+      const incidents = await client.getUserDetails(userId);
+      res.json(incidents);
+    } catch (error) {
+      if (error instanceof InputError) {
+        throw error;
+      }
+
+      // Log the full error and throw a generic one
+      logger.error('Failed to fetch user from ServiceNow', error);
+      throw new Error('Failed to fetch user from ServiceNow');
+    }
+  });
+  router.get('/cmdb/infra/:appcode', async (req, res) => {
+    const appCode = req.params.appcode;
+    try {
+      const incidents = await client.getInfraDetails(appCode);
+      res.json(incidents);
+    } catch (error) {
+      if (error instanceof InputError) {
+        throw error;
+      }
+
+      // Log the full error and throw a generic one
+      logger.error('Failed to fetch infrastructure from ServiceNow', error);
+      throw new Error('Failed to fetch infrastructure from ServiceNow');
     }
   });
 

@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
+import { ServiceNowUser } from '../../../api/cmdb/types';
 
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+export const mockUser1: ServiceNowUser = {
+  name: 'John Doe',
+  email: 'jdoe@example.com',
+  user_name: 'testuuid',
+};
+export const mockUser2: ServiceNowUser = {
+  name: 'Jane Doe',
+  email: 'jadoe@example.com',
+  user_name: 'testuuid2',
+};

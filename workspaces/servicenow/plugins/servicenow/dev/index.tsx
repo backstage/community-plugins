@@ -28,6 +28,8 @@ import { mockComponentEntity } from '../src/__fixtures__/mockEntity';
 import { mockServicenowApi } from '../src/__fixtures__/mockServicenowApi';
 
 import { servicenowPlugin, EntityServicenowContent } from '../src/plugin';
+import { InfraDetailsComponent } from '../src/components/ServiceDetailsCard/components/InfraDetailsPage/InfraDetailsPage';
+import { ServiceDetailsCard } from '../src/components/ServiceDetailsCard/components/ServiceDetailsCard/ServiceDetailsCard';
 
 const mockIdentityApi = {
   getUserId: () => 'test-user',
@@ -98,6 +100,12 @@ createDevApp()
             <TabbedLayout>
               <TabbedLayout.Route path="/" title="ServiceNow">
                 <EntityServicenowContent />
+              </TabbedLayout.Route>
+              <TabbedLayout.Route path="/cmdb" title="CMDB">
+                <ServiceDetailsCard />
+              </TabbedLayout.Route>
+              <TabbedLayout.Route path="/infra-details" title="Infra Details">
+                <InfraDetailsComponent />
               </TabbedLayout.Route>
             </TabbedLayout>
           </Page>
