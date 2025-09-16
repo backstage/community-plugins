@@ -24,6 +24,8 @@ import MetadataItem from '../../../../Common/MetadataItem';
 import MetadataItemWithTooltip from '../../../../Common/MetadataItemWithTooltip';
 import AppCommitLink from '../../../../Common/AppCommitLink';
 import { DeploymentHistory } from './DeploymentHistory';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../../translations/ref';
 
 const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
   latestDeploymentContainer: {
@@ -73,14 +75,20 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
       );
     });
   };
+
+  const { t } = useTranslationRef(argocdTranslationRef);
   return (
     <>
       <Metadata>
         <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
         {appHistory.length > 0 ? (
           <MetadataItemWithTooltip
-            title="Image(s)"
-            tooltipText="These are the images for all the deployments in the ArgoCD application."
+            title={t(
+              'deploymentLifeCycle.sideBar.resource.deploymentMetadata.metadataItemWithTooltip.title',
+            )}
+            tooltipText={t(
+              'deploymentLifeCycle.sideBar.resource.deploymentMetadata.metadataItemWithTooltip.tooltipText',
+            )}
           >
             <ImageLinks />
           </MetadataItemWithTooltip>

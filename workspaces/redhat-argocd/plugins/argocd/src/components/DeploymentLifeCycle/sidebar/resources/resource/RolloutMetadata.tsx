@@ -20,6 +20,8 @@ import { RolloutUI } from '../../../../../types/revision';
 import RolloutStatus from '../../rollouts/RolloutStatus';
 import Metadata from '../../../../Common/Metadata';
 import MetadataItem from '../../../../Common/MetadataItem';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../../translations/ref';
 
 const RolloutMetadata = ({ resource }: { resource: Resource }) => {
   const { rollouts } = useArgoResources();
@@ -31,6 +33,8 @@ const RolloutMetadata = ({ resource }: { resource: Resource }) => {
     ? 'Canary'
     : 'BlueGreen';
 
+  const { t } = useTranslationRef(argocdTranslationRef);
+
   if (!rollout) {
     return null;
   }
@@ -39,8 +43,18 @@ const RolloutMetadata = ({ resource }: { resource: Resource }) => {
     <>
       <Metadata>
         <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
-        <MetadataItem title="Strategy">{rolloutStrategy}</MetadataItem>
-        <MetadataItem title="Status">
+        <MetadataItem
+          title={t(
+            'deploymentLifeCycle.sideBar.resource.rolloutMetadata.strategy',
+          )}
+        >
+          {rolloutStrategy}
+        </MetadataItem>
+        <MetadataItem
+          title={t(
+            'deploymentLifeCycle.sideBar.resource.rolloutMetadata.status',
+          )}
+        >
           <RolloutStatus status={rollout?.status?.phase as any} />
         </MetadataItem>
       </Metadata>

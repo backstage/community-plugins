@@ -59,6 +59,17 @@ export const ArgoCDMessages = {
         deploymentHistoryCommit: {
           deployedText: 'deployed - WORKING',
         },
+        deploymentMetadata: {
+          metadataItemWithTooltip: {
+            title: 'Images - WORKING',
+            tooltipText:
+              'These are the images for all the deployments in the ArgoCD application. - WORKING',
+          },
+        },
+        rolloutMetadata: {
+          strategy: 'Strategy - WORKING',
+          status: 'Status - WORKING',
+        },
         filterBy: {
           SearchByName: 'Name - WORKING',
           Kind: 'Kind - WORKING',
