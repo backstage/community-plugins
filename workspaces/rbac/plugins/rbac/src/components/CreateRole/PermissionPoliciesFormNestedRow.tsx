@@ -27,6 +27,7 @@ import Badge from '@mui/material/Badge';
 import { ConditionRulesData, ConditionsData } from '../ConditionalAccess/types';
 import { ConditionalAccessSidebar } from '../ConditionalAccess/ConditionalAccessSidebar';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const PermissionPoliciesFormNestedRow = ({
   plugin,
@@ -65,12 +66,12 @@ const PermissionPoliciesFormNestedRow = ({
   onRemovePermission: (index: number) => void;
   onAddConditions: (index: number, conditions?: ConditionsData) => void;
 }) => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const tooltipTitle = () => (
     <div>
       <Typography component="p" align="center">
-        Use advanced customized permissions to allow access to specific parts of
-        the selected resource type.
+        {t('permissionPolicies.advancedPermissionsTooltip')}
       </Typography>
     </div>
   );
@@ -103,7 +104,9 @@ const PermissionPoliciesFormNestedRow = ({
             {permissionPolicy.permission}
             {permissionPolicy.resourceType ? (
               <Tooltip
-                title={`resource type: ${permissionPolicy.resourceType}`}
+                title={t('permissionPolicies.resourceTypeTooltip' as any, {
+                  resourceType: permissionPolicy.resourceType,
+                })}
                 placement="top"
               >
                 <IconButton aria-label="info" size="small">

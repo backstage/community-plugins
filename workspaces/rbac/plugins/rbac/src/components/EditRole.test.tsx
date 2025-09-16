@@ -21,6 +21,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 
+import { mockUseTranslation } from '../test-utils/mockTranslations';
+
+jest.mock('../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
 import EditRole from './EditRole';
 
 jest.mock('react-router-dom', () => ({

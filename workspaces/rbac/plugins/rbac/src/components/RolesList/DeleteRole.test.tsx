@@ -16,6 +16,12 @@
 import { usePermission } from '@backstage/plugin-permission-react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
 import DeleteRole from './DeleteRole';
 import { useDeleteDialog } from '../DeleteDialogContext';
 

@@ -17,6 +17,8 @@ import type { FocusEventHandler, ChangeEventHandler } from 'react';
 
 import TextField from '@mui/material/TextField';
 
+import { useTranslation } from '../../hooks/useTranslation';
+
 type RoleDetailsFormProps = {
   name: string;
   description?: string;
@@ -34,6 +36,8 @@ export const RoleDetailsForm = ({
   handleBlur,
   handleChange,
 }: RoleDetailsFormProps) => {
+  const { t } = useTranslation();
+
   return (
     <div
       style={{
@@ -44,12 +48,12 @@ export const RoleDetailsForm = ({
     >
       <TextField
         required
-        label="Name"
+        label={t('roleForm.fields.name.label')}
         variant="outlined"
         id="role-name"
         data-testid="role-name"
         aria-labelledby="name"
-        helperText={nameError ?? 'Enter name of the role'}
+        helperText={nameError ?? t('roleForm.fields.name.helperText')}
         value={name}
         name="name"
         onChange={handleChange}
@@ -57,9 +61,9 @@ export const RoleDetailsForm = ({
         error={!!nameError}
       />
       <TextField
-        label="Description"
+        label={t('roleForm.fields.description.label')}
         variant="outlined"
-        helperText="Enter a brief description about the role (The purpose of the role)"
+        helperText={t('roleForm.fields.description.helperText')}
         value={description}
         data-testid="role-description"
         id="role-description"
@@ -70,9 +74,9 @@ export const RoleDetailsForm = ({
         multiline
       />
       <TextField
-        label="Owner"
+        label={t('roleForm.fields.owner.label')}
         variant="outlined"
-        helperText="Optional: Enter a user or group who will have permission to edit this role and create additional roles. In the next step, specify which users they can assign to their roles and which plugins they can grant access to. If left blank, automatically assigns the author at creation."
+        helperText={t('roleForm.fields.owner.helperText')}
         value={owner}
         data-testid="role-owner"
         id="role-owner"

@@ -27,6 +27,8 @@ import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 
 import { useRole } from '../../hooks/useRole';
+import { useTranslation } from '../../hooks/useTranslation';
+import { useLanguage } from '../../hooks/useLanguage';
 
 const useStyles = makeStyles({
   text: {
@@ -39,6 +41,8 @@ type AboutCardProps = {
 };
 
 export const AboutCard = ({ roleName }: AboutCardProps) => {
+  const { t } = useTranslation();
+  const locale = useLanguage();
   const classes = useStyles();
   const { role, roleError, loading } = useRole(roleName);
   if (loading) {
@@ -48,13 +52,13 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
   let lastModified = role?.metadata?.lastModified;
   if (lastModified) {
     const date = new Date(lastModified);
-    const time = date.toLocaleString('en-US', {
+    const time = date.toLocaleString(locale ?? 'en', {
       hour: '2-digit' as const,
       minute: '2-digit' as const,
       hour12: false,
       timeZone: 'UTC',
     });
-    lastModified = `${date.getUTCDate()} ${date.toLocaleString('default', {
+    lastModified = `${date.getUTCDate()} ${date.toLocaleString(locale ?? 'en', {
       month: 'short',
     })} ${date.getUTCFullYear()}, ${time}`;
   } else {
@@ -83,7 +87,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
         marginBottom: '10px',
       }}
     >
-      <CardHeader title="About" />
+      <CardHeader title={t('common.about')} />
       <CardContent
         sx={{
           flex: 1,
@@ -93,14 +97,14 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
           <div style={{ paddingBottom: '16px' }}>
             <WarningPanel
               message={roleError?.message}
-              title="Something went wrong while fetching role"
+              title={t('errors.fetchRole')}
               severity="error"
             />
           </div>
         ) : (
           <Grid container spacing={2}>
             <Grid item xs={3} sm={6} lg={3}>
-              <AboutField label="Description">
+              <AboutField label={t('common.description')}>
                 <MarkdownContent
                   className={classes.text}
                   content={description}
@@ -108,7 +112,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
               </AboutField>
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
-              <AboutField label="Modified By">
+              <AboutField label={t('common.modifiedBy')}>
                 <MarkdownContent
                   className={classes.text}
                   content={modifiedBy}
@@ -116,7 +120,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
               </AboutField>
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
-              <AboutField label="Last Modified">
+              <AboutField label={t('common.lastModified')}>
                 <MarkdownContent
                   className={classes.text}
                   content={lastModified}
@@ -124,7 +128,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
               </AboutField>
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
-              <AboutField label="Owner">
+              <AboutField label={t('common.owner')}>
                 <MarkdownContent className={classes.text} content={owner} />
               </AboutField>
             </Grid>

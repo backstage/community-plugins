@@ -18,6 +18,18 @@ import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
 
+// CRITICAL: Import mocks BEFORE components
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: () => 'en',
+}));
+
+// Component imports AFTER mocks
 import { MemberEntity } from '../../types';
 import { AddMembersForm } from './AddMembersForm';
 

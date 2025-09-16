@@ -15,11 +15,19 @@
  */
 import { fireEvent, render } from '@testing-library/react';
 
+// CRITICAL: Import mocks BEFORE components
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+jest.mock('../ConditionalAccess/ConditionsFormRowFields');
+
+// Component imports AFTER mocks
 import { mockTransformedConditionRules } from '../../__fixtures__/mockTransformedConditionRules';
 import { ConditionsForm } from './ConditionsForm';
 import * as ConditionsFormRowFields from './ConditionsFormRowFields';
-
-jest.mock('../ConditionalAccess/ConditionsFormRowFields');
 
 describe('ConditionsForm', () => {
   const selPluginResourceType = 'catalog-entity';

@@ -15,6 +15,7 @@
  */
 import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 import { parseEntityRef } from '@backstage/catalog-model';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 
 import { RBACAPI } from '../api/RBACBackendClient';
 import {
@@ -23,17 +24,19 @@ import {
   UpdatedConditionsData,
 } from '../types';
 import { NavigateFunction } from 'react-router-dom';
+import { rbacTranslationRef } from '../translations';
 
 export const createPermissions = async (
   newPermissions: RoleBasedPolicy[],
   rbacApi: RBACAPI,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
   errorMsgPrefix?: string,
 ) => {
   if (newPermissions.length > 0) {
     const permissionsRes = await rbacApi.createPolicies(newPermissions);
     if ((permissionsRes as unknown as RoleError).error) {
       throw new Error(
-        `${errorMsgPrefix || 'Unable to create the permission policies.'} ${
+        `${errorMsgPrefix || t('common.unableToCreatePermissionPolicies')} ${
           (permissionsRes as unknown as RoleError).error.message
         }`,
       );
@@ -45,6 +48,7 @@ export const removePermissions = async (
   name: string,
   deletePermissions: RoleBasedPolicy[],
   rbacApi: RBACAPI,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ) => {
   if (deletePermissions.length > 0) {
     const permissionsRes = await rbacApi.deletePolicies(
@@ -53,7 +57,7 @@ export const removePermissions = async (
     );
     if ((permissionsRes as unknown as RoleError).error) {
       throw new Error(
-        `Unable to delete the permission policies. ${
+        `${t('common.unableToDeletePermissionPolicies')} ${
           (permissionsRes as unknown as RoleError).error.message
         }`,
       );
@@ -64,6 +68,7 @@ export const removePermissions = async (
 export const removeConditions = async (
   deleteConditions: number[],
   rbacApi: RBACAPI,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ) => {
   if (deleteConditions.length > 0) {
     const promises = deleteConditions.map(cid =>
@@ -77,7 +82,7 @@ export const removeConditions = async (
 
     if (cpErr.length > 0) {
       throw new Error(
-        `Unable to remove conditions from the role. ${cpErr.join('\n')}`,
+        `${t('common.unableToRemoveConditions')} ${cpErr.join('\n')}`,
       );
     }
   }
@@ -86,6 +91,7 @@ export const removeConditions = async (
 export const modifyConditions = async (
   updateConditions: UpdatedConditionsData,
   rbacApi: RBACAPI,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ) => {
   if (updateConditions.length > 0) {
     const promises = updateConditions.map(({ id, updateCondition }) =>
@@ -98,7 +104,9 @@ export const modifyConditions = async (
       .filter(m => m);
 
     if (cpErr.length > 0) {
-      throw new Error(`Unable to update conditions. ${cpErr.join('\n')}`);
+      throw new Error(
+        `${t('common.unableToUpdateConditions')} ${cpErr.join('\n')}`,
+      );
     }
   }
 };
@@ -106,6 +114,7 @@ export const modifyConditions = async (
 export const createConditions = async (
   newConditions: RoleBasedConditions[],
   rbacApi: RBACAPI,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
   errorMsgPrefix?: string,
 ) => {
   if (newConditions.length > 0) {
@@ -121,7 +130,7 @@ export const createConditions = async (
     if (cpErr.length > 0) {
       throw new Error(
         `${
-          errorMsgPrefix || 'Unable to add conditions to the role.'
+          errorMsgPrefix || t('common.unableToAddConditions')
         } ${cpErr.join('\n')}`,
       );
     }
@@ -130,6 +139,7 @@ export const createConditions = async (
 
 export const navigateTo = (
   navigate: NavigateFunction,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
   roleName?: string,
   rName?: string,
   action?: string,
@@ -140,7 +150,10 @@ export const navigateTo = (
     currentRoleName && action
       ? {
           state: {
-            toastMessage: `Role ${currentRoleName} ${action} successfully`,
+            toastMessage: t('common.roleActionSuccessfully' as any, {
+              roleName: currentRoleName,
+              action,
+            }),
           },
         }
       : undefined;

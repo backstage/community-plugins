@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function capitalizeFirstLetter(word: string, locale?: string) {
-  return word.charAt(0).toLocaleUpperCase(locale || 'en') + word.slice(1);
-}
+import { useApi } from '@backstage/core-plugin-api';
+import { appLanguageApiRef } from '@backstage/core-plugin-api/alpha';
 
-export { capitalizeFirstLetter };
+export const useLanguage = (): string =>
+  useApi(appLanguageApiRef).getLanguage().language;

@@ -16,6 +16,11 @@
 import { useParams } from 'react-router-dom';
 
 import { render, screen } from '@testing-library/react';
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { useSelectedMembers } from '../../hooks/useSelectedMembers';

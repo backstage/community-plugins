@@ -18,7 +18,7 @@ import { PermissionCondition } from '@backstage/plugin-permission-common';
 import { RJSFValidationError } from '@rjsf/utils';
 
 import {
-  conditionButtons,
+  getConditionButtons,
   criterias,
 } from '../components/ConditionalAccess/const';
 import {
@@ -29,6 +29,8 @@ import {
   NestedCriteriaErrors,
   NotConditionType,
 } from '../components/ConditionalAccess/types';
+import { rbacTranslationRef } from '../translations';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 
 export const ruleOptionDisabled = (
   ruleOption: string,
@@ -37,9 +39,11 @@ export const ruleOptionDisabled = (
   return !!(conditions || []).find(con => con.rule === ruleOption);
 };
 
-export const nestedConditionButtons = conditionButtons.filter(
-  button => button.val !== 'condition',
-);
+export const nestedConditionButtons = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) => {
+  return getConditionButtons(t).filter(button => button.val !== 'condition');
+};
 
 export const extractNestedConditions = (
   conditions: Condition[],

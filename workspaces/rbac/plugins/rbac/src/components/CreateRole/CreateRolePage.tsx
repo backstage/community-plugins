@@ -28,9 +28,11 @@ import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity } from '../../types';
 import { RoleForm } from './RoleForm';
 import { RoleFormValues } from './types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const CreateRolePage = () => {
   const rbacApi = useApi(rbacApiRef);
+  const { t } = useTranslation();
   const {
     loading: membersLoading,
     value: members,
@@ -61,15 +63,15 @@ export const CreateRolePage = () => {
 
   return canReadUsersAndGroups ? (
     <Page themeId="tool">
-      <Header title="Create role" type="RBAC" typeLink=".." />
+      <Header title={t('page.createRole')} type="RBAC" typeLink=".." />
       <Content>
         <RoleForm
           initialValues={initialValues}
           titles={{
-            formTitle: 'Create Role',
-            nameAndDescriptionTitle: 'Enter name and description of role ',
-            usersAndGroupsTitle: 'Add users and groups',
-            permissionPoliciesTitle: 'Add permission policies',
+            formTitle: t('roleForm.titles.createRole'),
+            nameAndDescriptionTitle: t('roleForm.titles.nameAndDescription'),
+            usersAndGroupsTitle: t('roleForm.titles.usersAndGroups'),
+            permissionPoliciesTitle: t('roleForm.titles.permissionPolicies'),
           }}
           membersData={{
             members: Array.isArray(members) ? members : ([] as MemberEntity[]),
@@ -83,6 +85,6 @@ export const CreateRolePage = () => {
       </Content>
     </Page>
   ) : (
-    <ErrorPage statusMessage="Unauthorized to create role" />
+    <ErrorPage statusMessage={t('errors.unauthorized')} />
   );
 };

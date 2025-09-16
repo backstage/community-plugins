@@ -21,6 +21,7 @@ import { PluginsDropdownOption } from './PluginsDropdownOption';
 import TextField from '@mui/material/TextField';
 import { FormikErrors } from 'formik';
 import { RoleFormValues } from './types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 type PluginsDropdownProps = {
   allPlugins: SelectedPlugin[];
@@ -45,6 +46,7 @@ const PluginsDropdown = ({
   onRemoveAllPlugins,
   selectedPluginsError,
 }: PluginsDropdownProps) => {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState('');
   useEffect(() => {
     if (selectedPlugins.length === allPlugins.length - 1)
@@ -65,7 +67,7 @@ const PluginsDropdown = ({
       multiple
       disableCloseOnSelect
       getOptionLabel={option => option.label}
-      noOptionsText="No plugins found."
+      noOptionsText={t('permissionPolicies.noPluginsFound')}
       style={{ width: '30%', flexGrow: '1' }}
       value={selectedPlugins || null}
       onChange={(_e, selPlugins, reason, selOption) => {
@@ -92,7 +94,7 @@ const PluginsDropdown = ({
       renderInput={(params: any) => (
         <TextField
           {...params}
-          label="Select plugins"
+          label={t('permissionPolicies.selectPlugins')}
           variant="outlined"
           error={!!selectedPluginsError}
           helperText={selectedPluginsError ?? ''}

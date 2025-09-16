@@ -41,6 +41,7 @@ import {
 import { criterias } from './const';
 import { CustomArrayField } from './CustomArrayField';
 import { RulesDropdownOption } from './RulesDropdownOption';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   AccessConditionsErrors,
   ComplexErrors,
@@ -145,6 +146,7 @@ export const ConditionsFormRowFields = ({
   nestedConditionRuleIndex,
   updateRules,
 }: ConditionFormRowFieldsProps) => {
+  const { t } = useTranslation();
   const isNotSimpleCondition =
     criteria === criterias.not && !nestedConditionCriteria;
   const theme = useTheme();
@@ -415,9 +417,9 @@ export const ConditionsFormRowFields = ({
         renderInput={(params: any) => (
           <TextField
             {...params}
-            label="Rule"
+            label={t('common.rule')}
             variant="outlined"
-            placeholder="Select a rule"
+            placeholder={t('common.selectRule')}
             required
           />
         )}

@@ -26,16 +26,18 @@ export const filterTableData = <T extends Record<string, any>>({
   data,
   columns,
   searchText,
+  locale = 'en',
 }: {
   data: T[];
   columns: TableColumn<T>[];
   searchText?: string | null;
+  locale?: string;
 }): T[] => {
   if (!data || !data.length || !columns || !columns.length || !searchText) {
     return data || [];
   }
 
-  const upperCaseSearch = searchText.toLocaleUpperCase('en-US');
+  const upperCaseSearch = searchText.toLocaleUpperCase(locale);
 
   return data.filter(row => {
     const fieldValues = columns.map(column =>
@@ -45,7 +47,7 @@ export const filterTableData = <T extends Record<string, any>>({
     return fieldValues.some(fieldValue =>
       fieldValue
         ?.toString()
-        .toLocaleUpperCase('en-US')
+        .toLocaleUpperCase(locale)
         .includes(upperCaseSearch),
     );
   });

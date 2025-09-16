@@ -22,29 +22,35 @@ import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
 import { RoleFormValues, SelectedMember } from './types';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { rbacTranslationRef } from '../../translations';
 
-export const reviewStepMemebersTableColumns = () => [
-  {
-    title: 'Name',
-    field: 'label',
-    type: 'string',
-  },
-  {
-    title: 'Type',
-    field: 'type',
-    type: 'string',
-  },
-  {
-    title: 'Members',
-    field: 'members',
-    type: 'numeric',
-    align: 'left',
-    render: (mem: number) => {
-      if (mem || mem === 0) return mem;
-      return '-';
+export const reviewStepMemebersTableColumns = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) => {
+  return [
+    {
+      title: t('common.name'),
+      field: 'label',
+      type: 'string',
     },
-  },
-];
+    {
+      title: t('common.type'),
+      field: 'type',
+      type: 'string',
+    },
+    {
+      title: t('common.members'),
+      field: 'members',
+      type: 'numeric',
+      align: 'left',
+      render: (mem: number) => {
+        if (mem || mem === 0) return mem;
+        return '-';
+      },
+    },
+  ];
+};
 
 export const selectedMembersColumns = (
   selectedMembers: SelectedMember[],
@@ -53,6 +59,7 @@ export const selectedMembersColumns = (
     value: any,
     shouldValidate?: boolean,
   ) => Promise<FormikErrors<RoleFormValues>> | Promise<void>,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ): TableColumn<SelectedMember>[] => {
   const onRemove = (etag: string) => {
     const updatedMembers = selectedMembers.filter(
@@ -63,7 +70,7 @@ export const selectedMembersColumns = (
 
   return [
     {
-      title: 'Name',
+      title: t('common.name'),
       field: 'label',
       type: 'string',
       render: props => {
@@ -76,27 +83,27 @@ export const selectedMembersColumns = (
       },
     },
     {
-      title: 'Type',
+      title: t('common.type'),
       field: 'type',
       type: 'string',
     },
     {
-      title: 'Members',
+      title: t('common.members'),
       field: 'members',
       type: 'numeric',
       align: 'left',
       emptyValue: '-',
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       sorting: false,
       render: (mem: SelectedMember) => {
         return (
           <Box key={mem.etag}>
             <IconButton
               onClick={() => onRemove(mem.etag)}
-              aria-label="Remove"
-              title="Remove member"
+              aria-label={t('common.remove')}
+              title={t('common.removeMember')}
               style={{ padding: '0.5rem', borderRadius: '50%' }}
               sx={{ '&:hover': { borderRadius: '50%' } }}
             >

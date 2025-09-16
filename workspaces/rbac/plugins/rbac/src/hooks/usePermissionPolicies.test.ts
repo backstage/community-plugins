@@ -18,6 +18,22 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { mockConditions } from '../__fixtures__/mockConditions';
 import { mockPermissionPolicies } from '../__fixtures__/mockPermissionPolicies';
 import { mockAssociatedPolicies } from '../__fixtures__/mockPolicies';
+
+// CRITICAL: Import mocks AFTER fixtures, BEFORE components
+import {
+  mockUseLanguage,
+  mockUseTranslation,
+} from '../test-utils/mockTranslations';
+
+jest.mock('./useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
+
+jest.mock('./useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+// Component imports AFTER mocks
 import { usePermissionPolicies } from './usePermissionPolicies';
 
 jest.mock('@backstage/core-plugin-api', () => ({
@@ -71,7 +87,7 @@ describe('usePermissionPolicies', () => {
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.error).toEqual({
-        message: 'Error fetching policies. Unauthorized',
+        message: 'Error fetching the policies. Unauthorized',
         name: '403',
       });
     });

@@ -32,6 +32,7 @@ import {
   removeConditions,
   removePermissions,
 } from './role-form-utils';
+import { mockT } from '../test-utils/mockTranslations';
 
 jest.mock('../api/RBACBackendClient');
 
@@ -70,7 +71,7 @@ describe('RBAC Permissions Functions', () => {
         .fn()
         .mockResolvedValue({ status: 200 } as Response);
 
-      await createPermissions(newPermissions, mockRbacApi);
+      await createPermissions(newPermissions, mockRbacApi, mockT as any);
       expect(mockRbacApi.createPolicies).toHaveBeenCalledWith(newPermissions);
     });
 
@@ -82,7 +83,7 @@ describe('RBAC Permissions Functions', () => {
         .mockResolvedValue({ error: { message: errorMsg, name: 'Not found' } });
 
       await expect(
-        createPermissions(newPermissions, mockRbacApi),
+        createPermissions(newPermissions, mockRbacApi, mockT as any),
       ).rejects.toThrow(
         `Unable to create the permission policies. ${errorMsg}`,
       );
@@ -97,7 +98,12 @@ describe('RBAC Permissions Functions', () => {
         .fn()
         .mockResolvedValue({ status: 204 } as Response);
 
-      await removePermissions(name, deletePermissions, mockRbacApi);
+      await removePermissions(
+        name,
+        deletePermissions,
+        mockRbacApi,
+        mockT as any,
+      );
       expect(mockRbacApi.deletePolicies).toHaveBeenCalledWith(
         name,
         deletePermissions,
@@ -113,7 +119,7 @@ describe('RBAC Permissions Functions', () => {
         .mockResolvedValue({ error: { message: errorMsg, name: 'Not found' } });
 
       await expect(
-        removePermissions(name, deletePermissions, mockRbacApi),
+        removePermissions(name, deletePermissions, mockRbacApi, mockT as any),
       ).rejects.toThrow(
         `Unable to delete the permission policies. ${errorMsg}`,
       );
@@ -127,7 +133,7 @@ describe('RBAC Permissions Functions', () => {
         .fn()
         .mockResolvedValue({ status: 204 } as Response);
 
-      await removeConditions(deleteConditions, mockRbacApi);
+      await removeConditions(deleteConditions, mockRbacApi, mockT as any);
       deleteConditions.forEach(cid => {
         expect(mockRbacApi.deleteConditionalPolicies).toHaveBeenCalledWith(cid);
       });
@@ -145,7 +151,7 @@ describe('RBAC Permissions Functions', () => {
         });
 
       await expect(
-        removeConditions(deleteConditions, mockRbacApi),
+        removeConditions(deleteConditions, mockRbacApi, mockT as any),
       ).rejects.toThrow(
         `Unable to remove conditions from the role. ${errorMsg}`,
       );
@@ -164,7 +170,7 @@ describe('RBAC Permissions Functions', () => {
         .fn()
         .mockResolvedValue({ status: 200 } as Response);
 
-      await modifyConditions(updateConditions, mockRbacApi);
+      await modifyConditions(updateConditions, mockRbacApi, mockT as any);
       updateConditions.forEach(({ id, updateCondition }) => {
         expect(mockRbacApi.updateConditionalPolicies).toHaveBeenCalledWith(
           id,
@@ -186,7 +192,7 @@ describe('RBAC Permissions Functions', () => {
       });
 
       await expect(
-        modifyConditions(updateConditions, mockRbacApi),
+        modifyConditions(updateConditions, mockRbacApi, mockT as any),
       ).rejects.toThrow(`Unable to update conditions. ${errorMsg}`);
     });
   });
@@ -198,7 +204,7 @@ describe('RBAC Permissions Functions', () => {
         .fn()
         .mockResolvedValue({ status: 200 } as Response);
 
-      await createConditions(newConditions, mockRbacApi);
+      await createConditions(newConditions, mockRbacApi, mockT as any);
       newConditions.forEach(cpp => {
         expect(mockRbacApi.createConditionalPermission).toHaveBeenCalledWith(
           cpp,
@@ -214,7 +220,7 @@ describe('RBAC Permissions Functions', () => {
       });
 
       await expect(
-        createConditions(newConditions, mockRbacApi),
+        createConditions(newConditions, mockRbacApi, mockT as any),
       ).rejects.toThrow(`Unable to add conditions to the role. ${errorMsg}`);
     });
   });

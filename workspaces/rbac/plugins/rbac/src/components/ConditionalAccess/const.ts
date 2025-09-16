@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { ConditionsData } from './types';
+import { rbacTranslationRef } from '../../translations';
 
 export const criterias = {
   condition: 'condition' as keyof ConditionsData,
@@ -22,16 +24,20 @@ export const criterias = {
   not: 'not' as keyof ConditionsData,
 };
 
-export const criteriasLabels = {
-  [criterias.condition]: 'Condition',
-  [criterias.allOf]: 'AllOf',
-  [criterias.anyOf]: 'AnyOf',
-  [criterias.not]: 'Not',
-};
+export const getCriteriasLabels = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) => ({
+  [criterias.condition]: t('conditionalAccess.condition'),
+  [criterias.allOf]: t('conditionalAccess.allOf'),
+  [criterias.anyOf]: t('conditionalAccess.anyOf'),
+  [criterias.not]: t('conditionalAccess.not'),
+});
 
-export const conditionButtons = [
-  { val: criterias.condition, label: criteriasLabels[criterias.condition] },
-  { val: criterias.allOf, label: criteriasLabels[criterias.allOf] },
-  { val: criterias.anyOf, label: criteriasLabels[criterias.anyOf] },
-  { val: criterias.not, label: criteriasLabels[criterias.not] },
+export const getConditionButtons = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) => [
+  { val: criterias.condition, label: t('conditionalAccess.condition') },
+  { val: criterias.allOf, label: t('conditionalAccess.allOf') },
+  { val: criterias.anyOf, label: t('conditionalAccess.anyOf') },
+  { val: criterias.not, label: t('conditionalAccess.not') },
 ];

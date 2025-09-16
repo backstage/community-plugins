@@ -15,7 +15,14 @@
  */
 
 import { renderHook } from '@testing-library/react-hooks';
+import { mockUseTranslation } from '../test-utils/mockTranslations';
+
+jest.mock('./useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
 import { usePermission } from '@backstage/plugin-permission-react';
+
 import { useActionPermissionTooltip } from './useActionPermissionTooltip';
 
 jest.mock('@backstage/plugin-permission-react');

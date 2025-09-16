@@ -23,6 +23,21 @@ import { MockTranslationApi } from '@backstage/test-utils/alpha';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useFormik } from 'formik';
 
+// CRITICAL: Import mocks BEFORE components
+import {
+  mockUseTranslation,
+  mockUseLanguage,
+} from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
+
+// Component imports AFTER mocks
 import { RoleForm } from './RoleForm';
 
 jest.mock('@mui/styles', () => ({
