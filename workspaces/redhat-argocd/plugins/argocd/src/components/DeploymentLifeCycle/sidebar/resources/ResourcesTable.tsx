@@ -27,7 +27,7 @@ import {
 
 import { ResourcesTableBody } from './ResourcesTableBody';
 import { ResourcesTableHeader } from './ResourcesTableHeader';
-import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
+import { getResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { ResourcesFilterBy } from './filters/ResourcesFilterBy';
 import {
   Order,
@@ -39,6 +39,8 @@ import {
   sortValues,
 } from '../../../../utils/utils';
 import { useArgoResources } from '../rollouts/RolloutContext';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../translations/ref';
 
 interface ResourcesTableProps {
   resources: Resource[];
@@ -213,6 +215,9 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     </div>
   );
 
+  const { t } = useTranslationRef(argocdTranslationRef);
+  const resourcesColumnHeaders = getResourcesColumnHeaders(t);
+
   return (
     <>
       {toolbar}
@@ -228,7 +233,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
             <ResourcesTableBody rows={visibleRows} />
             {emptyRows > 0 && (
               <TableRow style={{ height: 55 * emptyRows }}>
-                <TableCell colSpan={ResourcesColumnHeaders.length} />
+                <TableCell colSpan={resourcesColumnHeaders.length} />
               </TableRow>
             )}
             <TableRow className={classes.footer}>
@@ -251,9 +256,9 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
         ) : (
           <tbody>
             <tr>
-              <td colSpan={ResourcesColumnHeaders.length}>
+              <td colSpan={resourcesColumnHeaders.length}>
                 <div data-testid="no-resources" className={classes.empty}>
-                  No Resources found
+                  {t('deploymentLifeCycle.sideBar.resource.table.noneFound')}
                 </div>
               </td>
             </tr>
