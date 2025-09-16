@@ -69,6 +69,10 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-search": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
