@@ -53,6 +53,9 @@ export const ArgoCDMessages = {
         table: {
           noneFound: 'No Resources found - WORKING',
         },
+        deploymentHistory: {
+          bodyText: 'Deployment History - WORKING',
+        },
         filterBy: {
           SearchByName: 'Name - WORKING',
           Kind: 'Kind - WORKING',
