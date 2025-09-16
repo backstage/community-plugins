@@ -20,6 +20,7 @@ import { Content, Header, Page } from '@backstage/core-components';
 import { render, screen } from '@testing-library/react';
 
 import { mockMembers } from '../../__fixtures__/mockMembers';
+
 import { CreateRolePage } from './CreateRolePage';
 
 jest.mock('@backstage/core-plugin-api', () => ({
