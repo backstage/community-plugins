@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.19.0
+
+### Minor Changes
+
+- 7253010: Backstage version bump to v1.42.5
+
 ## 1.18.2
 
 ### Patch Changes

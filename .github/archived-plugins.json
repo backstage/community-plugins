@@ -6,7 +6,7 @@
       "workspace": "analytics",
       "plugin": "analytics-module-ga",
       "gitTag": "@backstage-community/plugin-analytics-module-ga@0.9.0",
-      "reason": "Built for Universal Analytics, which has been deprecated",
+      "reason": "Built for Universal Analytics, which has now been deprecated",
       "archivedDate": "2025-08-18"
     }
   ]

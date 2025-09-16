@@ -19,7 +19,6 @@
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
-    "prepublish": "node replace-style-injection-paths.js",
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
@@ -36,7 +35,7 @@
     "@mui/icons-material": "5.18.0",
     "@mui/material": "^5.18.0",
     "@mui/system": "5.18.0",
-    "@mui/x-tree-view": "8.10.2"
+    "@mui/x-tree-view": "8.11.1"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
@@ -56,8 +55,10 @@
     "react-router-dom": "~6.27.0"
   },
   "files": [
+    "config.d.ts",
     "dist"
   ],
+  "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",

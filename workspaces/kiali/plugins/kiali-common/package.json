@@ -70,7 +70,7 @@
     "typestyle": "^2.4.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.1",
+    "@backstage/cli": "^0.34.1",
     "@types/lodash": "^4.14.151"
   },
   "files": [

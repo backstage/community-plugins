@@ -73,10 +73,10 @@ export const EditAnnouncementPage = (props: EditAnnouncementPageProps) => {
             title: category,
           });
         }
-
-        await announcementsApi.updateAnnouncement(id, request);
-        alertApi.post({ message: updateMsg, severity: 'success' });
       }
+
+      await announcementsApi.updateAnnouncement(id, request);
+      alertApi.post({ message: updateMsg, severity: 'success' });
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }

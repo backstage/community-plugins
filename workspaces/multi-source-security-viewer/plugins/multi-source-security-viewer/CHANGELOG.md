@@ -1,5 +1,17 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.7.2
+
+### Patch Changes
+
+- 35a44d1: Updated dependency `@backstage-community/plugin-github-actions` to `^0.14.0`.
+
+## 0.7.1
+
+### Patch Changes
+
+- 4c61e72: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.19.0`.
+
 ## 0.7.0
 
 ### Minor Changes

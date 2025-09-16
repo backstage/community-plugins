@@ -33,6 +33,7 @@ export const AnnouncementsCard: ({
   variant,
   sortBy,
   order,
+  current,
   hideStartAt,
 }: {
   title?: string | undefined;
@@ -42,6 +43,7 @@ export const AnnouncementsCard: ({
   variant?: InfoCardVariants | undefined;
   sortBy?: 'created_at' | 'start_at' | undefined;
   order?: 'desc' | 'asc' | undefined;
+  current?: boolean | undefined;
   hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
@@ -100,6 +102,7 @@ export const AnnouncementsTimeline: ({
   hideInactive,
   sortBy,
   order,
+  current,
 }: AnnouncementsTimelineProps) => JSX_2.Element;
 
 // @public
@@ -110,6 +113,7 @@ export type AnnouncementsTimelineProps = {
   hideInactive?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
 };
 
 // @public
@@ -121,6 +125,7 @@ export const NewAnnouncementBanner: (props: {
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
+  current?: boolean | undefined;
   tags?: string[] | undefined;
 }) => JSX_2.Element | null;
 

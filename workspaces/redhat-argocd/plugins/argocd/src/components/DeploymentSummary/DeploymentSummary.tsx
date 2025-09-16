@@ -123,16 +123,21 @@ const DeploymentSummary = () => {
         const repoUrl =
           row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
 
+        // Depending on how many sources there could be multiple revisions.
+        const latestRevision =
+          latestRev?.revision ?? latestRev?.revisions?.pop() ?? '';
         const commitUrl = isAppHelmChartType(row)
           ? repoUrl
           : getCommitUrl(
               repoUrl,
-              latestRev?.revision ?? '',
+              latestRevision,
               entity?.metadata?.annotations || {},
             );
+        const latestRevisionLinkText =
+          latestRevision === '' ? '-' : latestRevision?.substring(0, 7);
         return (
           <Link href={commitUrl} target="_blank" rel="noopener">
-            {latestRev?.revision?.substring(0, 7) ?? '-'}
+            {latestRevisionLinkText}
           </Link>
         );
       },

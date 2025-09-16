@@ -16,11 +16,10 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
-
 import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
@@ -33,7 +32,7 @@ import {
   getArgoCdAppConfig,
   getInstanceName,
   getUniqueRevisions,
-  mapRevisions,
+  removeDuplicateRevisions,
 } from '../../utils/utils';
 
 import PermissionAlert from '../Common/PermissionAlert';
@@ -65,6 +64,7 @@ const DeploymentLifecycle = () => {
   const classes = useDrawerStyles();
 
   const api = useApi(argoCDApiRef);
+  const configApi = useApi(configApiRef);
 
   const { instances, intervalMs } = useArgocdConfig();
   const instanceName = getInstanceName(entity) || instances?.[0]?.name;
@@ -84,18 +84,24 @@ const DeploymentLifecycle = () => {
 
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string>();
-  const [, setRevisions] = useState<{
-    [key: string]: RevisionInfo;
-  }>();
-  const revisionCache = useRef<{ [key: string]: RevisionInfo }>({});
+  const [, setRevisions] = useState<RevisionInfo[]>();
+  const revisionCache = useRef<RevisionInfo[]>([]);
+  const keepDuplicateRevisions = configApi.getOptionalBoolean(
+    'argocd.fullDeploymentHistory',
+  );
 
   const uniqRevisions: string[] = useMemo(
     () => getUniqueRevisions(apps),
     [apps],
   );
 
+  // Even if we allow duplicates revisions in the data because of multiple deployments
+  // we need to check if the number of unique revisions have changed
+  const uniqCachedRevisions = removeDuplicateRevisions(
+    revisionCache.current,
+  ).map(r => r.revisionID);
   useEffect(() => {
-    if (uniqRevisions.length !== Object.keys(revisionCache.current).length) {
+    if (uniqRevisions.length !== uniqCachedRevisions.length) {
       api
         .getRevisionDetailsList({
           apps: apps,
@@ -103,7 +109,11 @@ const DeploymentLifecycle = () => {
           revisionIDs: uniqRevisions,
         })
         .then(data => {
-          revisionCache.current = mapRevisions(uniqRevisions, data);
+          // By default, the data returned can contain copies of the same revision, depending on
+          // the amount of deployments.
+          revisionCache.current = keepDuplicateRevisions
+            ? data
+            : removeDuplicateRevisions(data);
           setRevisions(revisionCache.current);
         })
         .catch(e => {
@@ -111,7 +121,15 @@ const DeploymentLifecycle = () => {
           console.warn(e);
         });
     }
-  }, [api, apps, entity, instanceName, uniqRevisions]);
+  }, [
+    api,
+    apps,
+    entity,
+    instanceName,
+    uniqRevisions,
+    keepDuplicateRevisions,
+    uniqCachedRevisions,
+  ]);
 
   const toggleDrawer = () => setOpen(e => !e);
 
@@ -150,7 +168,7 @@ const DeploymentLifecycle = () => {
           <DeploymentLifecycleCard
             app={app}
             key={app.metadata.uid ?? idx}
-            revisionsMap={revisionCache.current}
+            revisions={revisionCache.current}
             onclick={() => {
               toggleDrawer();
               setActiveItem(app.metadata.name);
@@ -160,7 +178,7 @@ const DeploymentLifecycle = () => {
       </div>
       <DrawerProvider
         application={activeApp as Application}
-        revisionsMap={revisionCache.current}
+        revisions={revisionCache.current}
       >
         <ArgoResourcesProvider application={activeApp}>
           <DeploymentLifecycleDrawer
