@@ -56,6 +56,9 @@ export const ArgoCDMessages = {
         deploymentHistory: {
           bodyText: 'Deployment History - WORKING',
         },
+        deploymentHistoryCommit: {
+          deployedText: 'deployed - WORKING',
+        },
         filterBy: {
           SearchByName: 'Name - WORKING',
           Kind: 'Kind - WORKING',
