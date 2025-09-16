@@ -1,5 +1,16 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.24.0
+
+### Minor Changes
+
+- d13d63f: Fix issue where Revision data did not render for multi-source apps
+- 1f13ecc: add new config showFullDeploymentHistory that allows for duplicate revisions to get shown
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
 ## 1.23.0
 
 ### Minor Changes
