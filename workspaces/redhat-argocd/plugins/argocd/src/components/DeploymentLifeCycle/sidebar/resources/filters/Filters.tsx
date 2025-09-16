@@ -17,37 +17,54 @@ import { SelectOption, SelectList } from '@patternfly/react-core';
 import { ResourcesFilters, FiltersType } from '../../../../../types/resources';
 import {
   HealthStatus,
+  SyncStatusCode,
   SyncStatuses,
 } from '@backstage-community/plugin-redhat-argocd-common';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../../translations/ref';
 
-export const resourcesFiltersMenuItems = () => (
+export const resourcesFiltersMenuItems = (
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+) => (
   <SelectList data-testid="filter-resources-items">
     {(
       Object.keys(ResourcesFilters) as Array<keyof typeof ResourcesFilters>
     ).map(filterKey => (
       <SelectOption data-testid={filterKey} key={filterKey} value={filterKey}>
-        {ResourcesFilters[filterKey]}
+        {t(`deploymentLifeCycle.sideBar.resource.filterBy.${filterKey}`)}
       </SelectOption>
     ))}
   </SelectList>
 );
 
-export const healthStatusMenuItems = (filters: FiltersType) => (
-  <SelectList data-testid="filter-health-items">
-    {Object.keys(HealthStatus).map(statusKey => (
-      <SelectOption
-        hasCheckbox
-        key={statusKey}
-        value={statusKey}
-        isSelected={filters.HealthStatus.includes(statusKey)}
-      >
-        {statusKey}
-      </SelectOption>
-    ))}
-  </SelectList>
-);
+export const healthStatusMenuItems = (
+  filters: FiltersType,
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+) => {
+  return (
+    <SelectList data-testid="filter-health-items">
+      {Object.keys(HealthStatus).map(statusKey => (
+        <SelectOption
+          hasCheckbox
+          key={statusKey}
+          value={statusKey}
+          isSelected={filters.HealthStatus.includes(statusKey)}
+        >
+          {t(
+            `deploymentLifeCycle.sideBar.resource.filterBy.healthStatusSelectOptions.${
+              statusKey as keyof typeof HealthStatus
+            }`,
+          )}
+        </SelectOption>
+      ))}
+    </SelectList>
+  );
+};
 
-export const syncStatusMenuItems = (filters: FiltersType) => (
+export const syncStatusMenuItems = (
+  filters: FiltersType,
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+) => (
   <SelectList data-testid="filter-sync-items">
     {Object.keys(SyncStatuses).map(statusKey => (
       <SelectOption
@@ -56,7 +73,11 @@ export const syncStatusMenuItems = (filters: FiltersType) => (
         value={statusKey}
         isSelected={filters.SyncStatus.includes(statusKey)}
       >
-        {statusKey}
+        {t(
+          `deploymentLifeCycle.sideBar.resource.filterBy.syncStatusSelectOptions.${
+            statusKey as SyncStatusCode
+          }`,
+        )}
       </SelectOption>
     ))}
   </SelectList>

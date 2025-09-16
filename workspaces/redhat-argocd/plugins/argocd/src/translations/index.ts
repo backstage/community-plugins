@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../translations/ref';
-
-const PermissionAlert = () => {
-  const { t } = useTranslationRef(argocdTranslationRef);
-
-  return (
-    <Alert severity="warning" data-testid="no-permission-alert">
-      <AlertTitle>{t('common.permissionAlert.alertTitle')}</AlertTitle>
-      {t('common.permissionAlert.alertText')}
-    </Alert>
-  );
-};
-export default PermissionAlert;

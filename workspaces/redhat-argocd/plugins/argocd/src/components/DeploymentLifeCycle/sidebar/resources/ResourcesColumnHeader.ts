@@ -14,30 +14,38 @@
  * limitations under the License.
  */
 import { TableColumn } from '@backstage/core-components';
+import { TranslationFunction } from 'backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../translations/ref';
 
-export const ResourcesColumnHeaders: TableColumn[] = [
-  {
-    id: 'expander',
-    title: '',
-  },
-  {
-    id: 'name',
-    title: 'Name',
-  },
-  {
-    id: 'kind',
-    title: 'Kind',
-  },
-  {
-    id: 'created-at',
-    title: 'Created at',
-  },
-  {
-    id: 'sync-status',
-    title: 'Sync status',
-  },
-  {
-    id: 'health-status',
-    title: 'Health status',
-  },
-];
+export const getResourcesColumnHeaders = (
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+): TableColumn[] => {
+  return [
+    {
+      id: 'expander',
+      title: '',
+    },
+    {
+      id: 'name',
+      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.name'),
+    },
+    {
+      id: 'kind',
+      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.kind'),
+    },
+    {
+      id: 'created-at',
+      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.createdAt'),
+    },
+    {
+      id: 'sync-status',
+      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.syncStatus'),
+    },
+    {
+      id: 'health-status',
+      title: t(
+        'deploymentLifeCycle.sideBar.resource.columnHeader.healthStatus',
+      ),
+    },
+  ];
+};

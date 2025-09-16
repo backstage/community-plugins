@@ -22,8 +22,10 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 
-import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
+import { getResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { Order } from '@backstage-community/plugin-redhat-argocd-common';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../translations/ref';
 
 interface ResourcesTableHeaderProps {
   onRequestSort: (
@@ -60,10 +62,13 @@ export const ResourcesTableHeader: FC<ResourcesTableHeaderProps> = ({
       onRequestSort(event, property, id);
     };
 
+  const { t } = useTranslationRef(argocdTranslationRef);
+  const resourcesColumnHeaders = getResourcesColumnHeaders(t);
+
   return (
     <TableHead>
       <TableRow>
-        {ResourcesColumnHeaders.map((headCell, index) => {
+        {resourcesColumnHeaders.map((headCell, index) => {
           return (
             <TableCell
               key={headCell.id as string}
