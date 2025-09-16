@@ -59,7 +59,7 @@ export const StackOverflowSearchResultListItem = (
 
   return (
     <>
-      <ListItem alignItems="center">
+      <Box display="flex" alignItems="center">
         {props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
         <Box flexWrap="wrap">
           <ListItemText
@@ -98,7 +98,7 @@ export const StackOverflowSearchResultListItem = (
               <Chip key={tag} label={`Tag: ${tag}`} size="small" />
             ))}
         </Box>
-      </ListItem>
+      </Box>
       <Divider />
     </>
   );
