@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,12 @@ describe('templateVersionUtils', () => {
   let mockAuthService = mockServices.auth.mock();
   const mockProcessorConfig = {
     notifications: {
-      enabled: DEFAULT_NOTIFICATION_ENABLED,
-      message: {
-        title: DEFAULT_NOTIFICATION_TITLE,
-        description: DEFAULT_NOTIFICATION_DESCRIPTION,
+      templateUpdate: {
+        enabled: DEFAULT_NOTIFICATION_ENABLED,
+        message: {
+          title: DEFAULT_NOTIFICATION_TITLE,
+          description: DEFAULT_NOTIFICATION_DESCRIPTION,
+        },
       },
     },
   };
@@ -395,10 +397,12 @@ describe('templateVersionUtils', () => {
     it('should use custom config values when provided', () => {
       const customProcessorConfig = {
         notifications: {
-          enabled: true,
-          message: {
-            title: 'Custom notification title',
-            description: 'Custom notification description',
+          templateUpdate: {
+            enabled: true,
+            message: {
+              title: 'Custom notification title',
+              description: 'Custom notification description',
+            },
           },
         },
       };

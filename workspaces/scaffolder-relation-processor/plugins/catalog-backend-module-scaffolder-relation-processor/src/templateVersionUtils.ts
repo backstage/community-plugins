@@ -131,7 +131,7 @@ async function sendNotificationsToOwners(
       );
 
       const titleReplaced =
-        config.notifications?.message.title.replace(
+        config.notifications?.templateUpdate?.message.title.replace(
           entityNameRegex,
           entityName,
         ) || '';
@@ -141,7 +141,7 @@ async function sendNotificationsToOwners(
         titleReplaced.charAt(0).toUpperCase() + titleReplaced.slice(1);
 
       const description =
-        config.notifications?.message.description.replace(
+        config.notifications?.templateUpdate?.message.description.replace(
           entityNameRegex,
           entityName,
         ) || '';
@@ -221,17 +221,21 @@ export function readScaffolderRelationProcessorConfig(
 ): ScaffolderRelationProcessorConfig {
   return {
     notifications: {
-      enabled:
-        config.getOptionalBoolean('scaffolder.notifications.enabled') ??
-        DEFAULT_NOTIFICATION_ENABLED,
-      message: {
-        title:
-          config.getOptionalString('scaffolder.notifications.message.title') ??
-          DEFAULT_NOTIFICATION_TITLE,
-        description:
-          config.getOptionalString(
-            'scaffolder.notifications.message.description',
-          ) ?? DEFAULT_NOTIFICATION_DESCRIPTION,
+      templateUpdate: {
+        enabled:
+          config.getOptionalBoolean(
+            'scaffolder.notifications.templateUpdate.enabled',
+          ) ?? DEFAULT_NOTIFICATION_ENABLED,
+        message: {
+          title:
+            config.getOptionalString(
+              'scaffolder.notifications.templateUpdate.message.title',
+            ) ?? DEFAULT_NOTIFICATION_TITLE,
+          description:
+            config.getOptionalString(
+              'scaffolder.notifications.templateUpdate.message.description',
+            ) ?? DEFAULT_NOTIFICATION_DESCRIPTION,
+        },
       },
     },
   };

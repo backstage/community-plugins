@@ -78,7 +78,8 @@ Add the following configuration to your `app-config.yaml` to enable and customiz
 ```yaml
 scaffolder:
   notifications:
-    enabled: true # Set to false to disable notifications
+    templateUpdate:
+      enabled: true # Set to false to disable notifications
 ```
 
 Or, if you also wish to configure the notification title and description with custom text:
@@ -86,10 +87,11 @@ Or, if you also wish to configure the notification title and description with cu
 ```yaml
 scaffolder:
   notifications:
-    enabled: true # Set to false to disable notifications
-    message:
-      title: 'Custom title for $ENTITY_DISPLAY_NAME'
-      description: 'Custom description'
+    templateUpdate:
+      enabled: true # Set to false to disable notifications
+      message:
+        title: 'Custom title for $ENTITY_DISPLAY_NAME'
+        description: 'Custom description'
 ```
 
 #### Configuration Options
@@ -114,4 +116,4 @@ Both the title and description support the following template variables:
 
 ### Disabling Notifications
 
-To disable the notification feature, set `scaffolderRelationProcessor.notifications.enabled` to `false` in your configuration, or simply omit the entire `scaffolderRelationProcessor` section from your config (notifications are disabled by default).
+To disable the notification feature, set `scaffolder.notifications.templateUpdate.enabled` to `false` in your configuration, or simply omit the entire `scaffolder.notifications.templateUpdate` section from your config (notifications are disabled by default).

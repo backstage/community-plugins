@@ -64,7 +64,7 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
         const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
         // Only subscribe to events if notifications are enabled
-        if (processorConfig.notifications?.enabled) {
+        if (processorConfig.notifications?.templateUpdate?.enabled) {
           await events.subscribe({
             id: 'scaffolder-relation-processor',
             topics: [TEMPLATE_VERSION_UPDATED_TOPIC],

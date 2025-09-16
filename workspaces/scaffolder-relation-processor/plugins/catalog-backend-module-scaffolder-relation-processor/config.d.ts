@@ -16,33 +16,39 @@
 export interface Config {
   scaffolder?: {
     /**
-     * Configuration for template update notifications
+     * Configuration for notifications
      * @visibility frontend
      */
     notifications?: {
       /**
-       * Whether to enable template update notifications
-       * @default false
+       * Configuration for template update notifications
        * @visibility frontend
        */
-      enabled?: boolean;
-      /**
-       * Custom message configuration for notifications
-       * @visibility frontend
-       */
-      message?: {
+      templateUpdate?: {
         /**
-         * The notification title. Supports $ENTITY_DISPLAY_NAME template variable.
-         * @default '$ENTITY_DISPLAY_NAME is out of sync with template'
+         * Whether to enable template update notifications
+         * @default false
          * @visibility frontend
          */
-        title?: string;
+        enabled?: boolean;
         /**
-         * The notification description. Supports $ENTITY_DISPLAY_NAME template variable.
-         * @default 'The template used to create $ENTITY_DISPLAY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.'
+         * Custom message configuration for notifications
          * @visibility frontend
          */
-        description?: string;
+        message?: {
+          /**
+           * The notification title. Supports $ENTITY_DISPLAY_NAME template variable.
+           * @default '$ENTITY_DISPLAY_NAME is out of sync with template'
+           * @visibility frontend
+           */
+          title?: string;
+          /**
+           * The notification description. Supports $ENTITY_DISPLAY_NAME template variable.
+           * @default 'The template used to create $ENTITY_DISPLAY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.'
+           * @visibility frontend
+           */
+          description?: string;
+        };
       };
     };
   };
