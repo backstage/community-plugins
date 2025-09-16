@@ -21,6 +21,8 @@ import {
   Application,
   History,
 } from '@backstage-community/plugin-redhat-argocd-common';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../../translations/ref';
 
 type DeploymentHistoryCommitProps = {
   deploymentHistory: History;
@@ -37,6 +39,8 @@ export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
   commitUrl,
   revisionSha,
 }) => {
+  const { t } = useTranslationRef(argocdTranslationRef);
+
   return (
     <Card
       elevation={2}
@@ -64,7 +68,10 @@ export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
           >
             {revisionSha.slice(0, 7)}
           </Link>{' '}
-          deployed {moment(deploymentHistory.deployedAt).local().fromNow()}
+          {t(
+            'deploymentLifeCycle.sideBar.resource.deploymentHistoryCommit.deployedText',
+          )}{' '}
+          {moment(deploymentHistory.deployedAt).local().fromNow()}
         </Typography>
       </CardContent>
     </Card>
