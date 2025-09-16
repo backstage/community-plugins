@@ -6,14 +6,18 @@ on:
       - '.github/archived-plugins.json'
     branches:
       - main
-  # Temporary for testing
-  workflow_dispatch:
 
 jobs:
   deprecate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Deprecate packages
         run: ./scripts/ci/deprecate-archived-plugins.sh
