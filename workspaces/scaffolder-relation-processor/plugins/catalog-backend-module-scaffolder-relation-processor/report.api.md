@@ -67,10 +67,12 @@ export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
 export interface ScaffolderRelationProcessorConfig {
   // (undocumented)
   notifications?: {
-    enabled: boolean;
-    message: {
-      title: string;
-      description: string;
+    templateUpdate?: {
+      enabled: boolean;
+      message: {
+        title: string;
+        description: string;
+      };
     };
   };
 }
