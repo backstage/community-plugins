@@ -15,5 +15,6 @@
  */
 export * from './relations';
 export * from './types';
+export * from './constants';
 export { catalogModuleScaffolderRelationProcessor as default } from './module';
 export * from './ScaffolderRelationEntityProcessor';

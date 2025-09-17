@@ -5,13 +5,29 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
+import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorEmit } from '@backstage/plugin-catalog-node';
 import { Entity } from '@backstage/catalog-model';
+import type { EventsService } from '@backstage/plugin-events-node';
 import type { LocationSpec } from '@backstage/plugin-catalog-common';
 
 // @public
 const catalogModuleScaffolderRelationProcessor: BackendFeature;
 export default catalogModuleScaffolderRelationProcessor;
+
+// @public
+export const DEFAULT_NOTIFICATION_DESCRIPTION =
+  'The template used to create $ENTITY_DISPLAY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.';
+
+// @public
+export const DEFAULT_NOTIFICATION_ENABLED = false;
+
+// @public
+export const DEFAULT_NOTIFICATION_TITLE =
+  '$ENTITY_DISPLAY_NAME is out of sync with template';
+
+// @public
+export const ENTITY_DISPLAY_NAME_TEMPLATE_VAR = '$ENTITY_DISPLAY_NAME';
 
 // @public
 export const RELATION_SCAFFOLDED_FROM = 'scaffoldedFrom';
@@ -28,6 +44,7 @@ export type ScaffoldedFromSpec = {
 
 // @public (undocumented)
 export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
+  constructor(eventsService?: EventsService | undefined);
   // (undocumented)
   getProcessorName(): string;
   // (undocumented)
@@ -36,7 +53,33 @@ export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
     _location: LocationSpec,
     emit: CatalogProcessorEmit,
   ): Promise<Entity>;
+  // (undocumented)
+  preProcessEntity(
+    entity: Entity,
+    _location: LocationSpec,
+    _emit: CatalogProcessorEmit,
+    _originLocation: LocationSpec,
+    cache: CatalogProcessorCache,
+  ): Promise<Entity>;
 }
+
+// @public
+export interface ScaffolderRelationProcessorConfig {
+  // (undocumented)
+  notifications?: {
+    templateUpdate?: {
+      enabled: boolean;
+      message: {
+        title: string;
+        description: string;
+      };
+    };
+  };
+}
+
+// @public
+export const TEMPLATE_VERSION_UPDATED_TOPIC =
+  'relationProcessor.template:version_updated';
 
 // (No @packageDocumentation comment for this package)
 ```

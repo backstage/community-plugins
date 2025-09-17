@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,3 +25,20 @@ export type ScaffoldedFromSpec = {
     scaffoldedFrom: string;
   };
 };
+
+/**
+ * Configuration interface for scaffolder relation processor notifications
+ *
+ * @public
+ */
+export interface ScaffolderRelationProcessorConfig {
+  notifications?: {
+    templateUpdate?: {
+      enabled: boolean;
+      message: {
+        title: string;
+        description: string;
+      };
+    };
+  };
+}
