@@ -20,6 +20,21 @@ import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
  * This is the main source of truth for translations.
  */
 export const ArgoCDMessages = {
+  appStatus: {
+    appHealthStatus: {
+      Healthy: 'Healthy - WORKING',
+      Suspended: 'Suspended - WORKING',
+      Degraded: 'Degraded - WORKING',
+      Progressing: 'Progressing - WORKING',
+      Missing: 'Missing - WORKING',
+      Unknown: 'Unknown - WORKING',
+    },
+    appSyncStatus: {
+      Unknown: 'Unknown - WORKING',
+      Synced: 'Synced - WORKING',
+      OutOfSync: 'OutOfSync - WORKING',
+    },
+  },
   common: {
     appServer: {
       title: 'This is the local cluster where Argo CD is installed. - WORKING',
@@ -149,6 +164,19 @@ export const ArgoCDMessages = {
       instance: 'Instance - WORKING',
       revision: 'Revision - WORKING',
       resources: 'Resources - WORKING',
+    },
+  },
+  deploymentSummary: {
+    deploymentSummary: {
+      tableTitle: 'Deployment Summary - WORKING',
+      columns: {
+        instance: 'Instance - WORKING',
+        server: 'Server - WORKING',
+        revision: 'Revision - WORKING',
+        lastDeployed: 'Last deployed - WORKING',
+        syncStatus: 'Sync status - WORKING',
+        healthStatus: 'Health status - WORKING',
+      },
     },
   },
 };

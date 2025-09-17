@@ -22,23 +22,39 @@ import {
   SyncStatusCode,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { SyncIcon } from './StatusIcons';
+import {
+  TranslationFunction,
+  useTranslationRef,
+} from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../translations/ref';
+
+const getSyncStatusTranslation = (
+  status: SyncStatusCode,
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+) => {
+  return t(`appStatus.appSyncStatus.${status}`);
+};
 
 const AppSyncStatus: FC<{
   app: Application;
   isChip?: boolean;
 }> = ({ app, isChip = false }) => {
+  const { t } = useTranslationRef(argocdTranslationRef);
   return isChip ? (
     <Chip
       data-testid="app-sync-status-chip"
       size="small"
       variant="outlined"
       icon={<SyncIcon status={app?.status?.sync?.status as SyncStatusCode} />}
-      label={app?.status?.sync?.status}
+      label={getSyncStatusTranslation(
+        app?.status?.sync?.status as SyncStatusCode,
+        t,
+      )}
     />
   ) : (
     <>
       <SyncIcon status={app?.status?.sync?.status as SyncStatusCode} />{' '}
-      {app?.status?.sync?.status}
+      {getSyncStatusTranslation(app?.status?.sync?.status as SyncStatusCode, t)}
     </>
   );
 };
