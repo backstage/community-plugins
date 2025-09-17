@@ -15,6 +15,7 @@ export const useUpdateApplication = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   const updateApplication = async (application: Application) => {
+    // Don't catch errors here - let AuthenticationError propagate for redirect
     return await api.updateApplication(application);
   };
 
@@ -26,8 +27,10 @@ export const useUpdateApplication = (onSuccess?: () => void) => {
         onSuccess();
       }
     },
-    onError: () => {
-      throw new Error('Error updating application');
+    onError: _error => {
+      // Handle errors without throwing, which could cause navigation issues
+      // Don't log to console due to ESLint rules
+      // Don't throw here to prevent navigation issues
     },
   });
 
@@ -38,11 +41,17 @@ export const useFetchTargets = () => {
   const api = useApi(mtaApiRef);
   const { isLoading, error, data, isError } = useQuery<Target[]>({
     queryKey: ['targets'],
-    queryFn: () => api.getTargets(),
+    queryFn: async () => {
+      // Don't catch errors here - let AuthenticationError propagate for redirect
+      return await api.getTargets();
+    },
+    // Disable automatic refetching to prevent navigation issues
+    refetchOnWindowFocus: false,
+    retry: false, // Don't retry on 401 errors
   });
 
   return {
-    targets: data,
+    targets: data || [], // Ensure we always return an array
     isFetching: isLoading,
     fetchError: error,
     isError: isError,
@@ -67,11 +76,12 @@ export const useAnalyzeApplication = (
     selectedApp,
     analysisOptions,
   }: AnalyzeApplicationParams) => {
+    // Don't catch errors here - let AuthenticationError propagate for redirect
     return await api.analyzeMTAApplications(selectedApp, analysisOptions);
   };
 
   const mutation = useMutation<
-    AnalyzeApplicationParams | URL,
+    AnalyzeApplicationParams | URL | any,
     Error,
     AnalyzeApplicationParams
   >({
@@ -82,6 +92,12 @@ export const useAnalyzeApplication = (
         queryClient.invalidateQueries();
       }
     },
+    onError: error => {
+      // Handle errors without causing navigation issues
+      if (options?.onError) {
+        options.onError(error);
+      }
+    },
   });
 
   return mutation;
@@ -90,16 +106,22 @@ export const useFetchIdentities = () => {
   const api = useApi(mtaApiRef);
   const { isLoading, error, data, isError, refetch } = useQuery<Identity[]>({
     queryKey: ['credentials'],
-    queryFn: () => api.getIdentities(),
+    queryFn: async () => {
+      // Don't catch errors here - let AuthenticationError propagate for redirect
+      return await api.getIdentities();
+    },
     select: identityData => [
       { id: 999999, name: 'None', kind: 'source' },
       { id: 9999999, name: 'None', kind: 'maven' },
-      ...identityData,
+      ...(identityData || []), // Handle case where identityData might be undefined
     ],
+    // Disable automatic refetching to prevent navigation issues
+    refetchOnWindowFocus: false,
+    retry: false, // Don't retry on 401 errors
   });
 
   return {
-    identities: data,
+    identities: data || [], // Ensure we always return an array
     isFetching: isLoading,
     fetchError: error,
     isError: isError,
@@ -109,21 +131,35 @@ export const useFetchIdentities = () => {
 
 export const useFetchAppTasks = (id: number) => {
   const api = useApi(mtaApiRef);
-  const { error, data, isError, isFetching } = useQuery<TaskDashboard[]>({
-    queryKey: ['tasks'],
-    queryFn: () => api.getTasks(),
-    select: tasks =>
-      tasks
+  const { error, data, isError, isFetching, refetch } = useQuery<
+    TaskDashboard[]
+  >({
+    queryKey: ['tasks', id], // Include id in the query key for better caching
+    queryFn: async () => {
+      // Don't catch errors here - let AuthenticationError propagate for redirect
+      return await api.getTasks();
+    },
+    select: tasks => {
+      // Safely handle the case where tasks might be undefined
+      if (!tasks || !Array.isArray(tasks)) return [];
+
+      return tasks
         .filter(task => {
-          return task.application.id === id && task.kind === 'analyzer';
+          return task?.application?.id === id && task?.kind === 'analyzer';
         })
-        .reverse(),
-    refetchInterval: 10000,
+        .reverse();
+    },
+    // Restore polling while still allowing AuthenticationError to propagate
+    refetchInterval: 10000, // Poll every 10 seconds
+    refetchOnWindowFocus: true,
+    retry: false, // Don't retry on 401 errors
   });
+
   return {
     tasks: data || [],
     isFetching: isFetching,
     fetchError: error,
     isError: isError,
+    refetch, // Expose refetch function for manual refreshing
   };
 };

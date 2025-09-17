@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Tab, Tabs, makeStyles } from '@material-ui/core';
+import { Grid, Button, Paper, Typography, makeStyles } from '@material-ui/core';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { AnalysisPage } from '../AnalysisPage/AnalysisPage';
@@ -11,18 +11,30 @@ import AnalysisStatusPage from '../AnalysisPage/AnalysisStatusPage';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1, // Ensures the container takes full height
-    width: '100%', // Ensures the container takes full width
+    flexGrow: 1,
+    width: '100%',
   },
-  tabPanel: {
-    display: 'block', // Ensures the tab panel is always visible when selected
-    width: '100%', // Ensures the tab panel takes full width
-    minHeight: 500, // Adjust this value based on your content needs
-    flex: '1 0 auto', // Prevents flex items from shrinking
+  sectionContainer: {
+    marginBottom: theme.spacing(4),
   },
-  tabBar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
+  sectionHeader: {
+    padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    display: 'flex',
+    marginBottom: theme.spacing(2),
+  },
+  button: {
+    marginRight: theme.spacing(2),
+    '&.active': {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+    },
   },
 }));
 
@@ -58,10 +70,12 @@ export const MTAApplicationManager = () => {
     }
   }, [entity, catalogApi]);
 
-  const [tab, setTab] = React.useState(0);
+  const [activeSection, setActiveSection] = useState<'details' | 'analysis'>(
+    'details',
+  );
 
-  const handleTabChange = (newValue: any) => {
-    setTab(newValue);
+  const handleSectionChange = (section: 'details' | 'analysis') => {
+    setActiveSection(section);
   };
 
   if (!entity) {
@@ -77,42 +91,59 @@ export const MTAApplicationManager = () => {
 
   return (
     <Grid container direction="column" className={classes.root}>
-      <Grid item xs={12} className={classes.tabBar}>
-        <Tabs
-          variant="fullWidth"
-          value={tab}
-          onChange={(_, value) => handleTabChange(value)}
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="application tabs"
-        >
-          <Tab label="Application Details" />
-          <Tab label="Analysis" />
-        </Tabs>
-        {tab === 0 && (
-          <Grid
-            container
-            spacing={2}
-            style={{ marginTop: '2vh', minHeight: '100vh' }}
+      <Grid item xs={12}>
+        <div className={classes.buttonContainer}>
+          <Button
+            variant="contained"
+            color={activeSection === 'details' ? 'primary' : 'default'}
+            className={classes.button}
+            onClick={() => handleSectionChange('details')}
+            data-testid="application-details-button"
           >
-            <ApplicationDetailsHeader
-              application={application}
-              setApplication={setApplication}
-              isWaiting={isWaiting}
-              setIsWaiting={setIsWaiting}
-            />
-            <ApplicationDetails />
-          </Grid>
+            Application Details
+          </Button>
+          <Button
+            variant="contained"
+            color={activeSection === 'analysis' ? 'primary' : 'default'}
+            className={classes.button}
+            onClick={() => handleSectionChange('analysis')}
+            data-testid="analysis-button"
+          >
+            Analysis
+          </Button>
+        </div>
+
+        {activeSection === 'details' && (
+          <Paper className={classes.sectionContainer}>
+            <div className={classes.sectionHeader}>
+              <Typography variant="h5" className={classes.sectionTitle}>
+                Application Details
+              </Typography>
+            </div>
+            <Grid container spacing={2}>
+              <ApplicationDetailsHeader
+                application={application}
+                setApplication={setApplication}
+                isWaiting={isWaiting}
+                setIsWaiting={setIsWaiting}
+              />
+              <ApplicationDetails />
+            </Grid>
+          </Paper>
         )}
-        {tab === 1 && (
-          <Grid
-            container
-            spacing={2}
-            style={{ marginTop: '2vh', minHeight: '100vh' }}
-          >
-            <AnalysisPage />
-            <AnalysisStatusPage application={application} />
-          </Grid>
+
+        {activeSection === 'analysis' && (
+          <Paper className={classes.sectionContainer}>
+            <div className={classes.sectionHeader}>
+              <Typography variant="h5" className={classes.sectionTitle}>
+                Analysis
+              </Typography>
+            </div>
+            <Grid container spacing={2}>
+              <AnalysisPage />
+              <AnalysisStatusPage application={application} />
+            </Grid>
+          </Paper>
         )}
       </Grid>
     </Grid>
