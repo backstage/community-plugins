@@ -16,6 +16,7 @@
   },
   "backstage": {
     "role": "backend-plugin",
+    "supported-versions": "1.39.1",
     "pluginId": "mta",
     "pluginPackages": [
       "@backstage-community/backstage-plugin-mta-backend"
@@ -50,7 +51,7 @@
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.8.2",
-    "@backstage/cli": "^0.31.1",
+    "@backstage/cli": "^0.32.0",
     "@backstage/plugin-auth-backend": "^0.24.4",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.6",
     "@types/supertest": "^2.0.12",

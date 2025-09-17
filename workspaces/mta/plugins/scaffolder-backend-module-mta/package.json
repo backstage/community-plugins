@@ -17,6 +17,7 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
+    "supported-versions": "1.39.1",
     "pluginId": "scaffolder",
     "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },
@@ -37,7 +38,7 @@
     "openid-client": "^5.6.5"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.1"
+    "@backstage/cli": "^0.32.0"
   },
   "files": [
     "dist"
