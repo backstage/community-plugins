@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, Typography, SvgIcon } from '@material-ui/core';
 import { tableIconMap, TableIcon } from './table.icons';
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { AlertStatusSummary } from './AlertStatusSummary';
 import { render } from '@testing-library/react';
 import { Alert, AlertStatus } from '../../types';

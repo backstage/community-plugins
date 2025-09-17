@@ -22,7 +22,7 @@ import { rootCatalogCicdStatsRouteRef } from './plugin';
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'cicd-statistics',
+  pluginId: 'cicd-statistics',
   routes: convertLegacyRouteRefs({
     entityContent: rootCatalogCicdStatsRouteRef,
   }),

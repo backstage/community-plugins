@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { DateTime } from 'luxon';
 import { Box, Typography } from '@material-ui/core';
@@ -126,7 +126,7 @@ export function ReleaseTime({ releaseStat }: ReleaseTimeProps) {
   );
 }
 
-function Wrapper({ children }: { children: React.ReactNode }) {
+function Wrapper({ children }: { children: ReactNode }) {
   return (
     <Box
       style={{

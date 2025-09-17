@@ -15,7 +15,7 @@
  */
 
 import Typography from '@material-ui/core/Typography';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { ResponseStep } from '../types/types';
 

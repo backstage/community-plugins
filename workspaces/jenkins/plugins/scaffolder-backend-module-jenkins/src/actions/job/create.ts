@@ -29,52 +29,27 @@ import Jenkins from 'jenkins';
  * @returns Empty response, in case of error an exception will be thrown by jenkins client
  */
 export function createJob(jenkins: Jenkins, config: RootConfigService) {
-  return createTemplateAction<{
-    jobName: string;
-    jobXml: string;
-    folderName: string;
-    configPath: string;
-    serverUrl: string;
-  }>({
+  return createTemplateAction({
     id: 'jenkins:job:create',
     description: 'Create a job jenkins given a name and gitlab repo',
     schema: {
       input: {
-        type: 'object',
-        required: ['jobName'],
-        properties: {
-          jobName: {
-            title: 'Jenkins job name',
-            description: 'Name of jenkins item',
-            type: 'string',
-          },
-          jobXml: {
-            title: 'Jenkins job xml',
-            description: 'XML of job used by jenkins to create the job',
-            type: 'string',
-          },
-          folderName: {
-            type: 'string',
-            title: 'Folder of jobName',
-          },
-          configPath: {
-            type: 'string',
-            title: 'Path to config file of job',
-          },
-          serverUrl: {
-            type: 'string',
-            title: 'URL',
-          },
-        },
+        serverUrl: z => z.string({ description: 'URL' }).optional(),
+        configPath: z =>
+          z.string({ description: 'Path to config file of job' }).optional(),
+        jobName: z => z.string({ description: 'Name of jenkins item' }),
+        jobXml: z =>
+          z
+            .string({
+              description: 'XML of job used by jenkins to create the job',
+            })
+            .optional(),
+        folderName: z => z.string().optional(),
       },
     },
     async handler(ctx) {
       ctx.logger.info(`Creating jenkins job ${ctx.input.jobName}`);
 
-      ctx.logger.debug(
-        'Trying to create job jenkins with this xml {}',
-        ctx.input.jobXml,
-      );
       const { configPath, folderName, serverUrl } = ctx.input;
 
       let jobXml = ctx.input.jobXml;

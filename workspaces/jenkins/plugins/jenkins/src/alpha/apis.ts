@@ -15,7 +15,6 @@
  */
 import {
   ApiBlueprint,
-  createApiFactory,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
@@ -26,8 +25,8 @@ import { jenkinsApiRef, JenkinsClient } from '../api';
  */
 export const jenkinsApi = ApiBlueprint.make({
   name: 'jenkins',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: jenkinsApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -36,5 +35,4 @@ export const jenkinsApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new JenkinsClient({ discoveryApi, fetchApi }),
     }),
-  },
 });

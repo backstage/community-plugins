@@ -60,7 +60,17 @@ You can use the following code to grant the ClusterRole for custom resources:
 
 > Tip: You can use the [prepared manifest for a read-only ClusterRole](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/redhat-argocd/plugins/argocd/manifests/clusterrole.yaml), which provides access for both Kubernetes plugin and Argo CD plugin.
 
-##### Annotations
+### Frontend-specific Configurations
+
+By default this plugin removes duplicate entries being shown in the "Deployment history" section.
+To view the full deployment history you set the following:
+
+```yaml
+argocd:
+  fullDeploymentHistory: true # false by default
+```
+
+### Annotations
 
 - The following annotation is added to the entity's `catalog-info.yaml` file to identify whether an entity contains the Kubernetes resources:
 
@@ -89,7 +99,7 @@ You can use the following code to grant the ClusterRole for custom resources:
     backstage.io/kubernetes-label-selector: 'app=my-app,component=front-end'
   ```
 
-##### Labels
+### Labels
 
 - The following label is added to the resources so that the Kubernetes plugin gets the Kubernetes resources from the requested entity:
 

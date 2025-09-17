@@ -16,7 +16,6 @@
 import {
   configApiRef,
   ApiBlueprint,
-  createApiFactory,
   discoveryApiRef,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
@@ -26,8 +25,8 @@ import { sentryApiRef, ProductionSentryApi } from '../api';
  * @alpha
  */
 export const sentryApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: sentryApiRef,
       deps: {
         configApi: configApiRef,
@@ -41,5 +40,4 @@ export const sentryApi = ApiBlueprint.make({
           identityApi,
         ),
     }),
-  },
 });

@@ -18,7 +18,6 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { codeCoverageApiRef } from '../../api';
 import { FileEntry } from '../../types';

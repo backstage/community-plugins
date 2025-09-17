@@ -1,4 +1,3 @@
-import React from 'react';
 import { Project } from '../../../models';
 import { Table } from '../../../components';
 import { ProjectData } from '../../../queries';

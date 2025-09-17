@@ -60,6 +60,8 @@ You can also pass a `filter` function to both `EntityTechInsightsScorecardConten
 
 To only show failed checks, you can pass the boolean `onlyFailed` to these components.
 
+If you prefer a condensed list (with smaller text size and less padding) in `EntityTechInsightsScorecardContent`, you can pass the boolean `dense`.
+
 If you want to show checks in the overview of an entity use `EntityTechInsightsScorecardCard`.
 
 ```tsx
@@ -88,6 +90,29 @@ const overviewContent = (
 );
 ```
 
+If you want to display checks as a gauge visualization, pass the boolean `gauge` to `EntityTechInsightsScorecardCard`.
+
+```tsx
+// packages/app/src/components/catalog/EntityPage.tsx
+
+import { EntityTechInsightsScorecardCard } from '@backstage-community/plugin-tech-insights';
+
+const overviewContent = (
+  <Grid container spacing={3} alignItems="stretch">
+    ...
+    <Grid item md={4}>
+      <EntityTechInsightsScorecardCard
+        title="Customized title for the scorecard"
+        description="Small description about scorecards"
+        gauge
+      />
+    </Grid>
+  </Grid>
+);
+```
+
+![Gauge Scorecard Example](docs/gauge-scorecard-overview.png)
+
 ## Boolean Scorecard Example
 
 If you follow the [Backend Example](../tech-insights-backend#backend-example), once the needed facts have been generated the default boolean scorecard will look like this:
@@ -112,6 +137,12 @@ const routes = (
   </FlatRoutes>
 );
 ```
+
+To show a condensed list (with smaller text size and less padding), you can pass the boolean `dense`.
+
+If you want to display checks as a badge visualization, pass the boolean `badge` to `TechInsightsScorecardPage`.
+
+![Badge Scorecard Overview](./docs/badge-scorecard-overview.png)
 
 Then add it to the navigation menu
 

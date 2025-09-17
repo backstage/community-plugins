@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 2.9.0
+
+### Minor Changes
+
+- 55a3c53: Backstage version bump to v1.42.5
+
+## 2.8.0
+
+### Minor Changes
+
+- e9ce512: Backstage version bump to v1.41.1
+
+## 2.7.2
+
+### Patch Changes
+
+- 9b408bd: chore: add examples for action sonarqube:create-project. Fixes #3897
+
 ## 2.7.1
 
 ### Patch Changes

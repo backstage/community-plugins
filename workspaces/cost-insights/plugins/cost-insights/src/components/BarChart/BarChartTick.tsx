@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { BarChartLabel } from './BarChartLabel';
 
 type BarChartTickProps = {

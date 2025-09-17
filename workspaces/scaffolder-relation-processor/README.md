@@ -1,10 +1,7 @@
-# [Backstage](https://backstage.io)
+# Scaffolder Relation Processor
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains a plugin that creates relations between scaffolder templates and the catalog entities they generate.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [catalog-backend-module-scaffolder-relation-processor](./plugins/catalog-backend-module-scaffolder-relation-processor/README.md): Backend module that provides a catalog entity processor to create relations based on the `spec.scaffoldedFrom` field, linking scaffolder templates to their generated entities.

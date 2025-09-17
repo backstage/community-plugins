@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { CostGrowth } from './CostGrowth';
 import { ChangeThreshold, Currency, CurrencyType, Duration } from '../../types';

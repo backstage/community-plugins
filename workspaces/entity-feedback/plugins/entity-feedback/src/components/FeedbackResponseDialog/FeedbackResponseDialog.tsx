@@ -33,7 +33,7 @@ import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 
 import { entityFeedbackApiRef } from '../../api';

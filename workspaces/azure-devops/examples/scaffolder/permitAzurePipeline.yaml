@@ -1,0 +1,109 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: create-and-permit-pipeline-example
+  title: Create and permit Azure Pipeline Example
+spec:
+  type: service
+  parameters:
+    - title: Choose a location
+      required:
+        - repoUrl
+        - pipelineYamlFile
+        - pipelineName
+        - organization
+        - project
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - dev.azure.com
+        organization:
+          title: Azure DevOps Organization
+          type: string
+          description: The name of the Azure DevOps organization
+        project:
+          title: Azure DevOps Project
+          type: string
+          description: The name of the Azure DevOps project
+        pipelineName:
+          title: Pipeline Name
+          type: string
+          description: The name for the pipeline you want to create
+        pipelineFolder:
+          title: Pipeline Folder
+          type: string
+          default: /
+          description: The folder for the pipeline you want to create
+        pipelineYamlFile:
+          title: Pipeline YAML File
+          type: string
+          description: The path to the pipeline YAML file
+        branch:
+          title: Branch
+          type: string
+          default: main
+          description: The branch of the pipeline's repository
+        pipelineAgentPoolName:
+          title: Agent Pool Name
+          type: string
+          default: Azure Pipelines
+          description: The name of the agent pool to use for the pipeline
+        serviceConnection:
+          title: Service Connection ID
+          type: string
+          description: The ID of the service connection to authorize
+          ui:help: The service connection that the pipeline needs access to
+        resourceType:
+          title: Resource Type
+          type: string
+          default: endpoint
+          enum:
+            - endpoint
+            - repository
+            - variablegroup
+          description: The type of resource to authorize
+
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+    - id: createAzurePipeline
+      name: Create Azure Pipeline
+      action: azure:pipeline:create
+      input:
+        organization: ${{ parameters.organization }}
+        project: ${{ parameters.project }}
+        name: ${{ parameters.pipelineName }}
+        folder: ${{ parameters.pipelineFolder }}
+        yamlPath: ${{ parameters.pipelineYamlFile }}
+        repositoryUrl: ${{ parameters.repoUrl }}
+        branch: ${{ parameters.branch }}
+
+    - id: permitAzurePipeline
+      name: permit Pipeline
+      action: azure:pipeline:permit
+      input:
+        organization: ${{ parameters.organization }}
+        project: ${{ parameters.project }}
+        repository: ${{ (parameters.repoUrl | parseRepoUrl).repo }}
+        pipelineId: ${{ steps.createAzurePipeline.output.pipelineId }}
+        resourceId: ${{ parameters.serviceConnection }}
+        resourceType: ${{ parameters.resourceType }}
+        authorized: true
+
+  output:
+    links:
+      - title: Open Pipeline in DevOps
+        icon: catalog
+        url: ${{ steps.createAzurePipeline.output.pipelineUrl }}
+    text:
+      - title: Pipeline Details
+        content: |
+          **Pipeline Created Successfully!**
+
+          - Pipeline ID: ${{ steps.createAzurePipeline.output.pipelineId }}
+          - Resource Authorized: ${{ parameters.resourceType }} (${{ parameters.serviceConnection }})

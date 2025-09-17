@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select, { SelectProps } from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';

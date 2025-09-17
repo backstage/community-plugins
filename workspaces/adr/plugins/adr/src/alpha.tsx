@@ -16,7 +16,6 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
   discoveryApiRef,
   fetchApiRef,
   createFrontendPlugin,
@@ -74,8 +73,8 @@ export const adrSearchResultListItemExtension =
 export const adrEntityContentExtension = EntityContentBlueprint.make({
   name: 'entity',
   params: {
-    defaultPath: '/adrs',
-    defaultTitle: 'ADRs',
+    path: '/adrs',
+    title: 'ADRs',
     filter: isAdrAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () => {
@@ -90,8 +89,8 @@ export const adrEntityContentExtension = EntityContentBlueprint.make({
 /** @alpha */
 export const adrApiExtension = ApiBlueprint.make({
   name: 'adr-api',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: adrApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -101,12 +100,11 @@ export const adrApiExtension = ApiBlueprint.make({
         return new AdrClient({ discoveryApi, fetchApi });
       },
     }),
-  },
 });
 
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'adr',
+  pluginId: 'adr',
   extensions: [
     adrSearchResultListItemExtension,
     adrEntityContentExtension,

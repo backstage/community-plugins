@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createServiceFactory,
-  createServiceRef,
-  coreServices,
-} from '@backstage/backend-plugin-api';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { DefaultAnnouncementsService } from './DefaultAnnouncementsService';
 
 /**
  * Options for making announcement requests.
@@ -41,27 +35,3 @@ export interface AnnouncementsService {
    */
   announcements(options?: AnnouncementRequestOptions): Promise<Announcement[]>;
 }
-
-/**
- * Reference to the Announcements Service, providing functionality for managing announcements.
- *
- * @public
- *
- * @deprecated - Use announcementsServiceRef from '@backstage-community/plugin-announcements-node' instead
- */
-export const announcementsService = createServiceRef<AnnouncementsService>({
-  id: 'announcements.service',
-  scope: 'plugin',
-  defaultFactory: async service =>
-    createServiceFactory({
-      service,
-      deps: {
-        discovery: coreServices.discovery,
-      },
-      factory({ discovery }) {
-        return DefaultAnnouncementsService.create({
-          discovery,
-        });
-      },
-    }),
-});

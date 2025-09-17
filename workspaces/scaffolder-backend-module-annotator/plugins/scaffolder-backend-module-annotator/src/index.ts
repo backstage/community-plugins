@@ -15,10 +15,11 @@
  */
 
 /**
- * The annotator module for @backstage/plugin-scaffolder-backend.
+ * The annotator module for \@backstage/plugin-scaffolder-backend.
  *
  * @packageDocumentation
  */
 
 export * from './actions';
+export type { Value } from './types';
 export { scaffolderCustomActionsScaffolderModule as default } from './module';

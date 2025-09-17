@@ -6,6 +6,9 @@
 import { BasicPermission } from '@backstage/plugin-permission-common';
 
 // @public
+export const MSSV_ENABLED_ANNOTATION = 'mssv/enabled';
+
+// @public
 export const mssvPermissions: BasicPermission[];
 
 // @public

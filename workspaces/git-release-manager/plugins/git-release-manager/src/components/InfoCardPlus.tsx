@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { TEST_IDS } from '../test-helpers/test-ids';
 import { InfoCard } from '@backstage/core-components';
@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 /** @public */
-export const InfoCardPlus = (props: { children?: React.ReactNode }) => {
+export const InfoCardPlus = (props: { children?: ReactNode }) => {
   const classes = useStyles();
 
   return (

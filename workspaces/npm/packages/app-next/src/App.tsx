@@ -28,7 +28,7 @@ import npmPlugin from '@backstage-community/plugin-npm/alpha';
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
   params: {
-    defaultPath: '/',
+    path: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
   },
 });

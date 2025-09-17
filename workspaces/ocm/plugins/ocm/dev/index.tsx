@@ -27,7 +27,6 @@ import {
 import { SearchApi, searchApiRef } from '@backstage/plugin-search-react';
 
 import { Grid } from '@material-ui/core';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import {
   ClusterAvailableResourceCard,
@@ -99,7 +98,6 @@ createDevApp()
     }),
   )
   .registerPlugin(ocmPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: <OcmPage />,
     title: 'Clusters',

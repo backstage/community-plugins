@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { UnlabeledDataflowAlertCard } from '../components/UnlabeledDataflowAlertCard';
 import { Alert, AlertStatus, UnlabeledDataflowData } from '../types';
 

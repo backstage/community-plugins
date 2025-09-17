@@ -126,7 +126,7 @@ const MaturityCheckTableRow = ({
                   value={{ rank: checkResult.check.metadata.rank }}
                   size={25}
                 />
-                <Typography>{checkResult.check.id}</Typography>
+                <Typography>{checkResult.check.name}</Typography>
               </Stack>
             </Grid>
             <Grid item xs={7.5}>

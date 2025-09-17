@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import pluralize from 'pluralize';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';

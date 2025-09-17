@@ -50,6 +50,7 @@ app:
       host: ${ANALYTICS_MATOMO_INSTANCE_URL}
       siteId: ${ANALYTICS_MATOMO_SITE_ID}
       identity: optional # (optional) to enable user tracking. Is disabled by default
+      sendPlainUserId: optional # (optional) to not hash User ID when user tracking is enabled. User ID is hashed by default.
 ```
 
 4. Update CSP in your `app-config.yaml`:(optional)

@@ -16,8 +16,6 @@
 
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-import React from 'react';
-
 export const OctopusDeployIcon = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 140 140">
     <defs>

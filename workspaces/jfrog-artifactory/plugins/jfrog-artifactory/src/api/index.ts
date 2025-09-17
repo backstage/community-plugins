@@ -25,7 +25,7 @@ import { TagsResponse } from '../types';
 const DEFAULT_PROXY_PATH = '/jfrog-artifactory/api';
 
 export interface JfrogArtifactoryApiV1 {
-  getTags(repo: string): Promise<TagsResponse>;
+  getTags(repo: string, target?: string): Promise<TagsResponse>;
 }
 
 export const jfrogArtifactoryApiRef = createApiRef<JfrogArtifactoryApiV1>({
@@ -52,11 +52,13 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     this.identityApi = options.identityApi;
   }
 
-  private async getBaseUrl() {
+  private async getBaseUrl(target?: string) {
     const proxyPath =
       this.configApi.getOptionalString('jfrogArtifactory.proxyPath') ||
       DEFAULT_PROXY_PATH;
-    return `${await this.discoveryApi.getBaseUrl('proxy')}${proxyPath}`;
+    return `${await this.discoveryApi.getBaseUrl('proxy')}${
+      target ?? proxyPath
+    }`;
   }
 
   private async fetcher(url: string, query: string) {
@@ -77,8 +79,8 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     return await response.json();
   }
 
-  async getTags(repo: string) {
-    const proxyUrl = await this.getBaseUrl();
+  async getTags(repo: string, target?: string) {
+    const proxyUrl = await this.getBaseUrl(target);
     const tagQuery = {
       query:
         'query ($filter: VersionFilter!, $first: Int, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } } }',

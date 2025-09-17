@@ -56,6 +56,34 @@ To get started, first you need a running instance of Vault. You can follow [this
      }
    ```
 
+### Use new frontend system
+
+1. Install the frontend plugin:
+
+   ```sh
+   yarn workspace app add @backstage-community/plugin-vault
+   ```
+
+2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+
+   After all other imports:
+
+   ```tsx
+   import vaultPlugin from '@backstage-community/plugin-vault/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       vaultPlugin,
+       // ...
+     ],
+   });
+   ```
+
 ## Integration with the Catalog
 
 The plugin can be integrated into each Component in the catalog. To allow listing the available secrets a new annotation must be added to the `catalog-info.yaml`:

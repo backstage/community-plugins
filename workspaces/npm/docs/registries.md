@@ -110,6 +110,18 @@ npm:
       token: ...
 ```
 
+Use `PRIVATE-TOKEN` header instead:
+
+```yaml
+# app-config.yaml
+npm:
+  registries:
+    - name: gitlab-private
+      url: https://gitlab.com/api/v4/packages/npm
+      extraRequestHeaders:
+        PRIVATE-TOKEN: ${NPM_PRIVATE_GITLAB_TOKEN} # glpat-...
+```
+
 ## Other npm registries
 
 Other npm registries should work the same way.

@@ -19,7 +19,6 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ROLLBAR_ANNOTATION } from '../constants';
 import { EntityPageRollbar } from './EntityPageRollbar/EntityPageRollbar';

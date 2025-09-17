@@ -4,6 +4,11 @@ This is a [Backend Plugin](https://backstage.io/docs/plugins/backend-plugin/) co
 It contains the following actions:
 
 - `azure:pipeline:run`: run a azure pipeline for a project, with pipeline id
+- `azure:pipeline:create`: Create a new Azure pipeline in a project.
+- `azure:pipeline:permit`: Permit or deny a pipeline for a resource.
+- `azure:repository:clone`: Clone an Azure repository for the context of the scaffolder
+- `azure:repository:push`: Push changes back to Azure repository
+- `azure:pr:create`: Create a new Pull Request
 
 ## Installation
 
@@ -192,4 +197,279 @@ spec:
           **pipelineRunStatus:** `${{ steps['runAzurePipeline'].output.pipelineRunStatus }}` }}
           **pipelineRunId:** `${{ steps['runAzurePipeline'].output.pipelineRunId }}` }}
           **pipeline output:** `${{ steps['runAzurePipeline'].output.pipelineOutput['myOutputVar'].value }}` }}
+```
+
+### Example: Create Azure Pipeline
+
+```yaml
+spec:
+  steps:
+    - id: createAzurePipeline
+      name: Create Pipeline
+      action: azure:pipeline:create
+      input:
+        organization: ${{ (parameters.repoUrl | parseRepoUrl)['organization'] }}
+        project: ${{ (parameters.repoUrl | parseRepoUrl)['project'] }}
+        repository: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+        pipelineName: MyNewPipeline
+        pipelineYamlFile: azure-pipelines.yml
+        branch: main
+  output:
+    links:
+      - title: Open Pipeline
+        url: ${{ steps['createAzurePipeline'].output.pipelineUrl }}
+```
+
+### Example: Create Azure Pipeline on alternative host to dev.azure.com
+
+```yaml
+spec:
+  steps:
+    - id: createAzurePipeline
+      name: create Azure Devops Pipeline
+      action: azure:pipeline:create
+      input:
+        host: azure.com
+        organization: org
+        repository: repo
+        pipelineName: pipeline
+        pipelineYamlFile: pipeline.yaml
+        project: project
+  output:
+    links:
+      - title: Open Pipeline
+        url: ${{ steps['createAzurePipeline'].output.pipelineUrl }}
+```
+
+### Example: Create Azure Pipeline from a target branch
+
+```yaml
+spec:
+  steps:
+    - id: createAzurePipeline
+      name: Create Azure Devops Pipeline
+      action: azure:pipeline:create
+      input:
+        organization: org
+        repository: repo
+        pipelineName: pipeline
+        pipelineYamlFile: pipeline.yaml
+        project: project
+        branch: branch
+```
+
+### Example: Create Azure Pipeline inside a folder
+
+```yaml
+spec:
+  steps:
+    - id: createAzurePipeline
+      name: Create Azure Devops Pipeline
+      action: azure:pipeline:create
+      input:
+        organization: org
+        repository: repo
+        pipelineName: pipeline
+        pipelineYamlFile: pipeline.yaml
+        project: project
+        pipelineFolder: folder
+```
+
+### Example: Create Azure Pipeline with custom token
+
+```yaml
+spec:
+  parameters:
+    #[...]
+    properties:
+      repoUrl:
+        ui:field: RepoUrlPicker
+        ui:options:
+          #[...]
+          requestUserCredentials:
+            secretsKey: USER_OAUTH_TOKEN
+            additionalScopes:
+              azure: []
+      pipelineId:
+        title: Pipeline Id
+        type: string
+        description: The Id for the pipeline you want to execute
+  steps:
+    - id: createAzurePipeline
+      name: Create Azure Devops Pipeline (custom token)
+      action: azure:pipeline:create
+      input:
+        #[...]
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Create Azure Pipeline with custom agent pool
+
+```yaml
+spec:
+  steps:
+    - id: createAzurePipeline
+      name: Create Azure Devops Pipeline (custom agent pool)
+      action: azure:pipeline:create
+      input:
+        organization: org
+        repository: repo
+        pipelineName: pipeline
+        pipelineYamlFile: pipeline.yaml
+        project: project
+        pipelineAgentPoolName: my-agent-pool
+```
+
+### Example: Permit Azure Pipeline
+
+```yaml
+spec:
+  steps:
+    - id: permitAzurePipeline
+      name: Permit Pipeline
+      action: azure:pipeline:permit
+      input:
+        organization: ${{ (parameters.repoUrl | parseRepoUrl)['organization'] }}
+        project: ${{ (parameters.repoUrl | parseRepoUrl)['project'] }}
+        pipelineId: ${{ parameters.pipelineId }}
+        resourceId: ${{ parameters.resourceId }}
+        resourceType: endpoint
+        authorized: true
+```
+
+> [!WARNING]  
+> The `azure:pipeline:permit` action uses the Azure DevOps REST API version `7.1-preview.1` by default.  
+> You can override this by setting the `apiVersion` input parameter as shown above.  
+> The action only supports API version `7.1-preview.1` or newer; older versions are not compatible.
+
+### Example: Pipeline Creation and Permit Azure Pipeline
+
+```yaml
+spec:
+  steps:
+    - id: createAzurePipeline
+      action: azure:pipeline:create
+      name: Create Azure Devops Pipeline
+      input:
+        organization: org
+        repository: repo
+        pipelineName: pipeline
+        pipelineYamlFile: pipeline.yaml
+        project: project
+    - id: permitPipelineResources
+      action: azure:pipeline:permit
+      name: Authorize Pipeline Resources
+      input:
+        organization: org
+        project: project
+        pipelineId: ${{ steps.createPipeline.output.pipelineId }}
+        resourceId: ${{ parameters.serviceConnectionId }}
+        resourceType: endpoint
+        authorized: true
+```
+
+### Example: Multiple Resource Authorization for Single Pipeline
+
+```yaml
+spec:
+  steps:
+    - id: permitServiceConnection
+      action: azure:pipeline:permit
+      name: Authorize Service Connection
+      input:
+        organization: org
+        project: project
+        pipelineId: '777'
+        resourceId: service-connection-id
+        resourceType: endpoint
+        authorized: true
+    - id: permitSharedRepo
+      action: azure:pipeline:permit
+      name: Authorize Shared Repository
+      input:
+        organization: org
+        project: project
+        pipelineId: '777'
+        resourceId: shared-templates-repo
+        resourceType: repository
+        authorized: true
+    - id: permitVariables
+      action: azure:pipeline:permit
+      name: Authorize Variable Group
+      input:
+        organization: org
+        project: project
+        pipelineId: '777'
+        resourceId: '15'
+        resourceType: variablegroup
+        authorized: true
+```
+
+### Example: Clone an Azure Git Repository
+
+```yaml
+spec:
+  steps:
+    - id: cloneAzureRepo
+      name: git clone
+      action: azure:repository:clone
+      input:
+        remoteUrl: 'https://dev.azure.com/{organization}/{project}/_git/{repository}'
+        branch: 'main'
+        targetPath: ./work
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Push changes made back to Git Repository
+
+```yaml
+spec:
+  steps:
+    - id: pushAzureRepoRepos
+      name: git push
+      action: azure:repository:push
+      input:
+        branch: scaffolder/new-branch
+        sourcePath: ./work
+        gitCommitMessage: My changes
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Create a new Simple Pull Request
+
+```yaml
+spec:
+  steps:
+    - id: createPR
+      name: Create PR
+      action: azure:pr:create
+      input:
+        organization: org
+        repoName: repo
+        title: My PR
+        project: my-project
+        description: 'Created by Backstage Scaffolder'
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Create a new Pull Request
+
+```yaml
+spec:
+  steps:
+    - id: createPR
+      name: Create PR
+      action: azure:pr:create
+      input:
+        organization: org
+        sourceBranch: scaffolder/new-branch
+        targetBranch: 'main'
+        repoName: repo
+        title: My PR
+        project: my-project
+        supportsIterations: true
+        description: 'Created by Backstage Scaffolder'
+        autoComplete: true
+        workItemId: 12345
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
 ```

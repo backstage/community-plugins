@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 import {
-  AuthService,
   BackstageCredentials,
   BackstageUserPrincipal,
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { NotFoundError } from '@backstage/errors';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 
 import {
   NpmAnnotation,
@@ -34,21 +33,17 @@ import { Config } from '../../config';
 
 export type Options = {
   logger: LoggerService;
-  auth: AuthService;
   config: RootConfigService;
-  // TODO update CatalogService
-  catalog: typeof catalogServiceRef.T;
+  catalog: CatalogService;
 };
 
 export class NpmRegistryServiceImpl implements NpmRegistryService {
   private readonly logger: LoggerService;
-  private readonly auth: AuthService;
   private readonly config: RootConfigService;
-  private readonly catalog: typeof catalogServiceRef.T;
+  private readonly catalog: CatalogService;
 
   constructor(options: Options) {
     this.logger = options.logger;
-    this.auth = options.auth;
     this.config = options.config;
     this.catalog = options.catalog;
   }
@@ -57,13 +52,7 @@ export class NpmRegistryServiceImpl implements NpmRegistryService {
     entityRef: string,
     options: { credentials: BackstageCredentials<BackstageUserPrincipal> },
   ): Promise<NpmRegistryPackageInfo> {
-    const { token } = await this.auth.getPluginRequestToken({
-      onBehalfOf: options.credentials,
-      targetPluginId: 'catalog',
-    });
-    const entity = await this.catalog.getEntityByRef(entityRef, {
-      token,
-    });
+    const entity = await this.catalog.getEntityByRef(entityRef, options);
     if (!entity) {
       throw new NotFoundError(`No entity found for ref '${entityRef}'`);
     }
@@ -100,6 +89,7 @@ export class NpmRegistryServiceImpl implements NpmRegistryService {
       // TODO pass apiFetch.fetch
       baseUrl: registry?.url,
       token: registry?.token,
+      extraRequestHeaders: registry?.extraRequestHeaders,
     });
     const packageInfo = await client.getPackageInfo(packageName);
     return packageInfo;

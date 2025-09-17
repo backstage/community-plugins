@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, Tooltip, Theme } from '@material-ui/core';
 import { StatisticsBarSegmentProps } from '../statisticsBar.types';
 import { linearGradient } from '../statisticsBar.helpers';

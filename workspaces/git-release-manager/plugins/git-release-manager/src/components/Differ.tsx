@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { grey } from '@material-ui/core/colors';
 import Typography from '@material-ui/core/Typography';
 import CallSplitIcon from '@material-ui/icons/CallSplit';

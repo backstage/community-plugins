@@ -15,7 +15,6 @@
  */
 
 import {
-  createApiFactory,
   discoveryApiRef,
   fetchApiRef,
   identityApiRef,
@@ -61,7 +60,7 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
   },
   factory(originalFactory, { config }) {
     return originalFactory({
-      defaultPath: '/tech-radar',
+      path: '/tech-radar',
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
         import('./components').then(m =>
@@ -73,8 +72,8 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
 
 /** @alpha */
 export const techRadarApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: techRadarApiRef,
       deps: {
         identityApi: identityApiRef,
@@ -89,12 +88,11 @@ export const techRadarApi = ApiBlueprint.make({
         });
       },
     }),
-  },
 });
 
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'tech-radar',
+  pluginId: 'tech-radar',
   extensions: [techRadarPage, techRadarApi, techRadarNavItem],
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,

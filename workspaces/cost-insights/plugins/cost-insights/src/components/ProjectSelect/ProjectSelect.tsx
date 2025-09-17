@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ChangeEvent } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import {
@@ -41,7 +41,7 @@ export const ProjectSelect = ({
       ((a.name ?? a.id) as string).localeCompare((b.name ?? b.id) as string),
     );
 
-  const handleOnChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+  const handleOnChange = (e: ChangeEvent<{ value: unknown }>) => {
     onSelect(e.target.value as string);
   };
 

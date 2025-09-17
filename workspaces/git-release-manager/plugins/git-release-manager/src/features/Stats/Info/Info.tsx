@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Paper } from '@material-ui/core';
 
 import { InDepth } from './InDepth/InDepth';

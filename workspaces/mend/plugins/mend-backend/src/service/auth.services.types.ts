@@ -1,5 +1,5 @@
 export type MendConfig = {
-  baseUrl: string;
+  apiVersion: string;
   activationKey: string;
 };
 

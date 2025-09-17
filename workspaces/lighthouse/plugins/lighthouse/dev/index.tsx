@@ -14,16 +14,55 @@
  * limitations under the License.
  */
 
-import { createDevApp } from '@backstage/dev-utils';
-import { lighthousePlugin } from '../src/plugin';
-import { lighthouseApiRef } from '../src';
-import { LighthouseRestApi } from '@backstage-community/plugin-lighthouse-common';
+import ReactDOM from 'react-dom/client';
+import { createApp } from '@backstage/frontend-defaults';
+import lighthousePlugin from '../src/alpha';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { LIGHTHOUSE_WEBSITE_URL_ANNOTATION } from '../constants';
 
-createDevApp()
-  .registerPlugin(lighthousePlugin)
-  .registerApi({
-    api: lighthouseApiRef,
-    deps: {},
-    factory: () => new LighthouseRestApi('http://localhost:3003'),
-  })
-  .render();
+const entities = [
+  {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'example',
+      annotations: {
+        'backstage.io/managed-by-location': 'file:/path/to/catalog-info.yaml',
+        [LIGHTHOUSE_WEBSITE_URL_ANNOTATION]: 'https://backstage.io',
+      },
+    },
+    spec: {
+      type: 'service',
+      lifecycle: 'production',
+      owner: 'guest',
+    },
+  },
+];
+
+const catalogApi = catalogApiMock({ entities });
+
+const catalogPluginOverrides = createFrontendModule({
+  pluginId: 'catalog',
+  extensions: [
+    ApiBlueprint.make({
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => catalogApi,
+        }),
+    }),
+  ],
+});
+
+export const app = createApp({
+  features: [catalogPlugin, catalogPluginOverrides, lighthousePlugin],
+});
+const root = app.createRoot();
+ReactDOM.createRoot(document.getElementById('root')!).render(root);

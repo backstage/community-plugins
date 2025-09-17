@@ -15,6 +15,8 @@
          serviceAccountToken: ${KIALI_SERVICE_ACCOUNT_TOKEN}
          # Optional. defaults false
          skipTLSVerify: true
+         # Optional. defaults kiali-token-Kubernetes
+         tokenName: 'kiali-token-Kubernetes'
          # Optional
          caData: ${KIALI_CONFIG_CA_DATA}
          # Optional. Local path to CA file

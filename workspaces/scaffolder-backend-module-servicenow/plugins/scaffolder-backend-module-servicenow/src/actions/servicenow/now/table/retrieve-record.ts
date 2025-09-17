@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createTemplateAction,
-  type TemplateAction,
-} from '@backstage/plugin-scaffolder-node';
-
-import yaml from 'yaml';
-import { z } from 'zod';
+import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
 import {
   ApiError,
@@ -29,70 +23,9 @@ import {
 import { CreateActionOptions, ServiceNowResponses } from '../../../types';
 import { updateOpenAPIConfig } from './helpers';
 
-/**
- * Schema for the input to the `retrieveRecord` action.
- *
- * @see {@link https://developer.servicenow.com/dev.do#!/reference/api/vancouver/rest/c_TableAPI}
- */
-const schemaInput = z.object({
-  tableName: z
-    .string()
-    .min(1)
-    .describe('Name of the table from which to retrieve the record'),
-  sysId: z
-    .string()
-    .min(1)
-    .describe('Unique identifier of the record to retrieve'),
-  sysparmDisplayValue: z
-    .enum(['true', 'false', 'all'])
-    .optional()
-    .describe(
-      'Return field display values (true), actual values (false), or both (all) (default: false)',
-    ),
-  sysparmExcludeReferenceLink: z
-    .boolean()
-    .optional()
-    .describe(
-      'True to exclude Table API links for reference fields (default: false)',
-    ),
-  sysparmFields: z
-    .array(z.string().min(1))
-    .optional()
-    .describe('An array of fields to return in the response'),
-  sysparmView: z
-    .string()
-    .optional()
-    .describe(
-      'Render the response according to the specified UI view (overridden by sysparm_fields)',
-    ),
-  sysparmQueryNoDomain: z
-    .boolean()
-    .optional()
-    .describe(
-      'True to access data across domains if authorized (default: false)',
-    ),
-});
+import { examples } from './retrieve-record.example';
 
 const id = 'servicenow:now:table:retrieveRecord';
-
-const examples = [
-  {
-    description: 'Retrieve a record from the incident table',
-    example: yaml.stringify({
-      steps: [
-        {
-          id: 'retrieveRecord',
-          action: id,
-          name: 'Retrieve Record',
-          input: {
-            tableName: 'incident',
-            sysId: '8e67d33b97d1b5108686b680f053af2b',
-          },
-        },
-      ],
-    }),
-  },
-];
 
 /**
  * Creates an action handler that retrieves the record identified by the specified sys_id from the specified table.
@@ -100,9 +33,7 @@ const examples = [
  * @param options - options to configure the action
  * @returns TemplateAction - an action handler
  */
-export const retrieveRecordAction = (
-  options: CreateActionOptions,
-): TemplateAction => {
+export const retrieveRecordAction = (options: CreateActionOptions) => {
   const { config } = options;
 
   return createTemplateAction({
@@ -111,12 +42,55 @@ export const retrieveRecordAction = (
     description:
       'Retrieves the record identified by the specified sys_id from the specified table',
     schema: {
-      input: schemaInput,
+      input: {
+        tableName: z =>
+          z
+            .string()
+            .min(1)
+            .describe('Name of the table from which to retrieve the record'),
+        sysId: z =>
+          z
+            .string()
+            .min(1)
+            .describe('Unique identifier of the record to retrieve'),
+        sysparmDisplayValue: z =>
+          z
+            .enum(['true', 'false', 'all'])
+            .optional()
+            .describe(
+              'Return field display values (true), actual values (false), or both (all) (default: false)',
+            ),
+        sysparmExcludeReferenceLink: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to exclude Table API links for reference fields (default: false)',
+            ),
+        sysparmFields: z =>
+          z
+            .array(z.string().min(1))
+            .optional()
+            .describe('An array of fields to return in the response'),
+        sysparmView: z =>
+          z
+            .string()
+            .optional()
+            .describe(
+              'Render the response according to the specified UI view (overridden by sysparm_fields)',
+            ),
+        sysparmQueryNoDomain: z =>
+          z
+            .boolean()
+            .optional()
+            .describe(
+              'True to access data across domains if authorized (default: false)',
+            ),
+      },
     },
 
     async handler(ctx) {
-      // FIXME: remove the type assertion once backstage properly infers the type
-      const input = ctx.input as z.infer<typeof schemaInput>;
+      const input = ctx.input;
 
       updateOpenAPIConfig(OpenAPI, config);
 

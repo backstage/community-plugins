@@ -1,5 +1,69 @@
 ### Dependencies
 
+## 3.27.6
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
+## 3.27.5
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 3.27.4
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 3.27.3
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 3.27.2
+
+### Patch Changes
+
+- e7d7f3f: render loading when permission api is loading
+
+## 3.27.1
+
+### Patch Changes
+
+- e6d88ff: remove product theme from dev dependencies and dev app
+
+## 3.27.0
+
+### Minor Changes
+
+- 8e74b11: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [8e74b11]
+  - @backstage-community/plugin-tekton-common@1.11.0
+
+## 3.26.4
+
+### Patch Changes
+
+- 22e56c8: Apply a temporary fix for the horizontal bar issue under the Task Status column
+
+## 3.26.3
+
+### Patch Changes
+
+- f818001: Updated dependency `@types/lodash` to `4.17.20`.
+
 ## 3.26.2
 
 ### Patch Changes

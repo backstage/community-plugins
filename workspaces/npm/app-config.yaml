@@ -122,6 +122,10 @@ npm:
       url: https://npm.pkg.github.com
     - name: gitlab
       url: https://gitlab.com/api/v4/packages/npm
+    - name: gitlab-private
+      url: https://gitlab.com/api/v4/packages/npm
+      extraRequestHeaders:
+        PRIVATE-TOKEN: ${NPM_PRIVATE_GITLAB_TOKEN}
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

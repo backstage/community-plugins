@@ -32,7 +32,30 @@ When you have an instance running that Backstage can hook into, first install th
 yarn --cwd packages/app add @backstage-community/plugin-lighthouse
 ```
 
-Modify your app routes in `App.tsx` to include the `LighthousePage` component exported from the plugin, for example:
+If you have [Feature Discovery](https://backstage.io/docs/frontend-system/architecture/app#feature-discovery) enabled, no additional configuration is required. Otherwise, you should be able to enable the plugin in your `packages/app/src/App.tsx`:
+
+```diff
++ import lighthousePlugin from '@backstage-community/plugin-lighthouse';
+
+
+  ...
+
+  export const app = createApp({
+    features: [
+      catalogPlugin,
+      catalogImportPlugin,
+      userSettingsPlugin,
++     lighthousePlugin,
+    // ...
+    ],
+  });
+```
+
+That's it!
+
+### Legacy Frontend
+
+If you are using the legacy frontend, modify your app routes in `App.tsx` to include the `LighthousePage` component exported from the plugin, for example:
 
 ```tsx
 // In packages/app/src/App.tsx

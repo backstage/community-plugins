@@ -46,7 +46,7 @@ import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
@@ -134,7 +134,7 @@ export const AnnouncementsContent = () => {
         if (slugs.indexOf(categorySlug) === -1) {
           alertMsg = alertMsg.replace('.', '');
           alertMsg = `${alertMsg} ${t(
-            'admin.announcementsContent.alertMessage',
+            'admin.announcementsContent.alertMessageWithNewCategory',
           )} ${category}.`;
 
           await announcementsApi.createCategory({
@@ -213,6 +213,14 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
+        <Typography>{t('admin.announcementsContent.table.tags')}</Typography>
+      ),
+      sorting: true,
+      field: 'tags',
+      render: rowData => rowData.tags?.map(tag => tag.title).join(', ') || '',
+    },
+    {
+      title: (
         <Typography>{t('admin.announcementsContent.table.status')}</Typography>
       ),
       sorting: true,
@@ -252,14 +260,29 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
+        <Typography>
+          {t('admin.announcementsContent.table.until_date')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'until_date',
+      type: 'date',
+      render: rowData =>
+        rowData?.until_date
+          ? DateTime.fromISO(rowData.until_date).toFormat('M/d/yyyy')
+          : '-',
+    },
+    {
+      title: (
         <Typography>{t('admin.announcementsContent.table.actions')}</Typography>
       ),
       render: rowData => {
         return (
-          <>
+          <Box display="flex" flexDirection="row">
             <IconButton
               aria-label="preview"
               onClick={() => onTitleClick(rowData)}
+              size="small"
             >
               <PreviewIcon fontSize="small" data-testid="preview" />
             </IconButton>
@@ -268,6 +291,7 @@ export const AnnouncementsContent = () => {
               aria-label="edit"
               disabled={loadingUpdatePermission || !canUpdateAnnouncement}
               onClick={() => onEdit(rowData)}
+              size="small"
             >
               <EditIcon fontSize="small" data-testid="edit-icon" />
             </IconButton>
@@ -276,10 +300,11 @@ export const AnnouncementsContent = () => {
               aria-label="delete"
               disabled={loadingDeletePermission || !canDeleteAnnouncement}
               onClick={() => openDeleteDialog(rowData)}
+              size="small"
             >
               <DeleteIcon fontSize="small" data-testid="delete-icon" />
             </IconButton>
-          </>
+          </Box>
         );
       },
     },

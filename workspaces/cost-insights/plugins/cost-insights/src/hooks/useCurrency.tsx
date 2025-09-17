@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
+import {
+  createContext,
   Dispatch,
   SetStateAction,
   useState,
@@ -29,9 +30,9 @@ export type CurrencyContextProps = {
   setCurrency: Dispatch<SetStateAction<Currency>>;
 };
 
-export const CurrencyContext = React.createContext<
-  CurrencyContextProps | undefined
->(undefined);
+export const CurrencyContext = createContext<CurrencyContextProps | undefined>(
+  undefined,
+);
 
 export const CurrencyProvider = ({ children }: PropsWithChildren<{}>) => {
   const config = useConfig();

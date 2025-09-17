@@ -58,6 +58,26 @@ app:
       # highlight-end
 ```
 
+### Version Tracking
+
+To include version information in your analytics events (helpful for version-based filtering in dashboards), you can configure:
+
+```yaml title="app-config.yaml"
+app:
+  analytics:
+    segment:
+      writeKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      appVersion: '1.2.3' # Your Backstage app version
+      backstageVersion: '1.17.0' # Backstage framework version
+```
+
+When configured, these version fields will be included in all analytics events sent to Segment, allowing you to:
+
+- Filter analytics dashboards by app version
+- Track feature adoption across different versions
+- Monitor user behavior changes between versions
+- Create version-specific analytics reports
+
 ## Debugging and Testing
 
 In pre-production environments, you may wish to set additional configurations

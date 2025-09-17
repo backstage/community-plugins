@@ -69,7 +69,7 @@ export const DashboardsTable = ({
         entity,
       )}" selector are displayed.`}
     >
-      <Typography>{opts.title || 'Dashboards'}</Typography>
+      <Typography variant="h5">{opts.title || 'Dashboards'}</Typography>
     </Tooltip>
   );
 

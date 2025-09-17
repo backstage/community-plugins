@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { capitalize } from '@material-ui/core/utils';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';

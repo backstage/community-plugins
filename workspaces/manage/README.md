@@ -18,5 +18,5 @@ To start the Backstage App, run:
 
 ```sh
 yarn install
-yarn dev
+yarn start
 ```

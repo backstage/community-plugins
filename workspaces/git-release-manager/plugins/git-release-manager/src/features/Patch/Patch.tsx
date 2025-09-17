@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Typography, Box } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 

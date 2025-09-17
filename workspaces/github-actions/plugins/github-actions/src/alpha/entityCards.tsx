@@ -39,7 +39,7 @@ export const entityLatestGithubActionRunCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -66,7 +66,7 @@ export const entityLatestGithubActionsForBranchCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -93,7 +93,7 @@ export const entityRecentGithubActionsRunsCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
               dense: z.boolean().default(false),
               limit: z.number().default(5).optional(),
             })

@@ -16,7 +16,6 @@
 
 import { CostInsightsHeader } from './CostInsightsHeader';
 import { renderInTestApp, TestApiRegistry } from '@backstage/test-utils';
-import React from 'react';
 import { ApiProvider } from '@backstage/core-app-api';
 import { IdentityApi, identityApiRef } from '@backstage/core-plugin-api';
 

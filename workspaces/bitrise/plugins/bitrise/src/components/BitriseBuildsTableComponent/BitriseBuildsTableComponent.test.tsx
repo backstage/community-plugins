@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { bitriseApiRef } from '../../plugin';
 import { BitriseClientApi } from '../../api/bitriseApi.client';
 import { setupServer } from 'msw/node';

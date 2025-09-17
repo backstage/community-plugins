@@ -1,11 +1,11 @@
-import React from 'react';
+import type { MouseEvent } from 'react';
 import { IconButton, makeStyles, SvgIcon, useTheme } from '@material-ui/core';
 
 type TablePaginationActionsProps = {
   count: number;
   page: number;
   rowsPerPage: number;
-  onPageChange: (e: React.MouseEvent<HTMLButtonElement>, value: number) => void;
+  onPageChange: (e: MouseEvent<HTMLButtonElement>, value: number) => void;
 };
 
 const FirstPageIcon = () => (
@@ -81,23 +81,19 @@ export const TablePaginationActions = ({
 }: TablePaginationActionsProps) => {
   const theme = useTheme();
 
-  const handleFirstPageButtonClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleFirstPageButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, 0);
   };
 
-  const handleBackButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBackButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, page - 1);
   };
 
-  const handleNextButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleNextButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, page + 1);
   };
 
-  const handleLastPageButtonClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleLastPageButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 

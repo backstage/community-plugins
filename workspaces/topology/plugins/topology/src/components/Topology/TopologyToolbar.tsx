@@ -138,14 +138,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
                     {filters?.map(
                       filter =>
                         filter.isSelected && (
-                          <Label
-                            key={filter.value}
-                            isCompact
-                            variant="outline"
-                            onClose={() =>
-                              onDisplayOptionChange(undefined, filter.value)
-                            }
-                          >
+                          <Label key={filter.value} isCompact variant="outline">
                             {filter.content}
                           </Label>
                         ),

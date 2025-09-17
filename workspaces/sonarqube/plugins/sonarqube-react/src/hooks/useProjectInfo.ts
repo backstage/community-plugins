@@ -35,6 +35,25 @@ export const useProjectInfo = (
   projectInstance: string | undefined;
   projectKey: string | undefined;
 } => {
+  return getProjectInfo(entity);
+};
+
+/**
+ * Try to parse sonarqube information from an entity.
+ *
+ * If part or all info are not found, they will default to undefined
+ *
+ * Note: This function exists to avoid rule of hooks:
+ * Do not call Hooks inside conditions or loops.
+ *
+ * @public
+ * @param entity - entity to find the sonarqube information from.
+ * @returns a ProjectInfo properly populated.
+ */
+export function getProjectInfo(entity: Entity): {
+  projectInstance: string | undefined;
+  projectKey: string | undefined;
+} {
   let projectInstance = undefined;
   let projectKey = undefined;
   const annotation =
@@ -55,4 +74,4 @@ export const useProjectInfo = (
     }
   }
   return { projectInstance, projectKey };
-};
+}

@@ -8,11 +8,11 @@ import { ApiRef } from '@backstage/core-plugin-api';
 import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import { GaugeCardProps } from '@backstage-community/plugin-manage-react';
 import { GridOwnProps } from '@mui/material/Grid';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import type { ManageColumnModule } from '@backstage-community/plugin-manage-react';
 import type { ManageModuleApi } from '@backstage-community/plugin-manage-react';
 import type { ProgressColor } from '@backstage-community/plugin-manage-react';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
 import type { ReactNode } from 'react';
 
 // @public
@@ -49,7 +49,7 @@ export class DefaultManageTechInsightsApi implements ManageTechInsights {
 // @public (undocumented)
 export function ManageProviderTechInsights(
   props: PropsWithChildren<{}>,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface ManageTechInsights extends ManageModuleApi {
@@ -64,7 +64,7 @@ export const manageTechInsightsApiRef: ApiRef<ManageTechInsights>;
 // @public
 export function ManageTechInsightsCards(
   props: ManageTechInsightsCardsProps,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface ManageTechInsightsCardsProps {
@@ -95,7 +95,7 @@ export function manageTechInsightsColumns(
 // @public
 export function ManageTechInsightsGrid(
   props: ManageTechInsightsGridProps,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface ManageTechInsightsGridProps {

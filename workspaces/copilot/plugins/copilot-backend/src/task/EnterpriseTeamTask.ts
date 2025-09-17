@@ -54,6 +54,12 @@ export async function discoverEnterpriseTeamMetrics({
       `[discoverEnterpriseTeamMetrics] Fetched ${teams.length} teams`,
     );
 
+    // Fetch seat analysis
+    const seats = await api.fetchEnterpriseSeats();
+    logger.info(
+      `[discoverEnterpriseTeamMetrics] Fetched ${seats.length} seats from enterprise`,
+    );
+
     for (const team of teams) {
       try {
         logger.info(
@@ -160,8 +166,6 @@ export async function discoverEnterpriseTeamMetrics({
             await db.batchInsertIdeChatEditorModels(chunk);
           });
 
-          // Fetch seat analysis
-          const seats = await api.fetchEnterpriseSeats();
           const seatsToInsert = convertToTeamSeatAnalysis(
             seats,
             type,
@@ -179,14 +183,13 @@ export async function discoverEnterpriseTeamMetrics({
         }
       } catch (error) {
         logger.error(
-          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`,
+          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}`,
+          error,
         );
       }
     }
   } catch (error) {
-    logger.error(
-      `[discoverEnterpriseTeamMetrics] Error fetching teams: ${error}`,
-    );
+    logger.error('[discoverEnterpriseTeamMetrics] Error fetching teams', error);
     throw error;
   }
 }

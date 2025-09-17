@@ -17,4 +17,5 @@ export {
   multiSourceSecurityViewerPlugin,
   EntityMultiCIPipelinesContent,
   isMultiCIAvailable,
+  isMultiCIAvailableAndEnabled,
 } from './plugin';

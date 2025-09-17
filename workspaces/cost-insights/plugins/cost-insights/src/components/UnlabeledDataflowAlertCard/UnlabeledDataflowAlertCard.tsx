@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import pluralize from 'pluralize';
 import Box from '@material-ui/core/Box';
 import { BarChart, BarChartLegend } from '../BarChart';

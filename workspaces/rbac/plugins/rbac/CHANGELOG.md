@@ -1,5 +1,36 @@
 ### Dependencies
 
+## 1.43.0
+
+### Minor Changes
+
+- 2f4d9ff: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+- Updated dependencies [2f4d9ff]
+  - @backstage-community/plugin-rbac-common@1.19.0
+
+## 1.42.2
+
+### Patch Changes
+
+- 2e28d31: hide permissions for uninstalled plugins
+
+## 1.42.1
+
+### Patch Changes
+
+- a2e5d4e: Added optional pagination support to getMembers API
+- aec6bc2: docs(rbac): Removing Janus IDP dynamic plugin installation instructions, switching to relative paths for doc links
+- ac39bff: removed shared-react dependencies
+- 4719a0e: Fix to remove entire permission when no policy is selected.
+
 ## 1.42.0
 
 ### Minor Changes

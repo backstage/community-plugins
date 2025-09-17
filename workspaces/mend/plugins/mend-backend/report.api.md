@@ -4,17 +4,16 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common/index';
+import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { Conditions } from '@backstage/plugin-permission-node';
-import { PermissionCondition } from '@backstage/plugin-permission-common/index';
-import { PermissionCriteria } from '@backstage/plugin-permission-common/index';
+import { PermissionCondition } from '@backstage/plugin-permission-common';
+import { PermissionCriteria } from '@backstage/plugin-permission-common';
 import { PermissionRule } from '@backstage/plugin-permission-node';
 import { ResourcePermission } from '@backstage/plugin-permission-common';
-import { ResourcePermission as ResourcePermission_2 } from '@backstage/plugin-permission-common/index';
 
 // @public (undocumented)
 export const createMendProjectConditionalDecision: (
-  permission: ResourcePermission_2<RESOURCE_TYPE>,
+  permission: ResourcePermission<RESOURCE_TYPE>,
   conditions: PermissionCriteria<PermissionCondition<RESOURCE_TYPE>>,
 ) => ConditionalPolicyDecision;
 

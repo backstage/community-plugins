@@ -1,5 +1,17 @@
 # @backstage-community/plugin-redhat-argocd-common
 
+## 1.8.0
+
+### Minor Changes
+
+- 3131da0: Backstage version bump to v1.42.3
+
+## 1.7.0
+
+### Minor Changes
+
+- a0dba77: Backstage version bump to v1.41.1
+
 ## 1.6.1
 
 ### Patch Changes

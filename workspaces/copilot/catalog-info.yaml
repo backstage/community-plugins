@@ -1,9 +1,0 @@
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: copilot
-  description: An example of a Backstage application.
-spec:
-  type: website
-  owner: john@example.com
-  lifecycle: experimental

@@ -1,12 +1,12 @@
-import React from 'react';
+import type { ReactNode, CSSProperties, FC } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 
 type TablePaperProps = {
-  children: React.ReactNode[];
-  style: React.CSSProperties;
+  children: ReactNode[];
+  style: CSSProperties;
 };
 
-export const TablePaper: React.FC<TablePaperProps> = ({ children, style }) => {
+export const TablePaper: FC<TablePaperProps> = ({ children, style }) => {
   return (
     <Grid direction="column" xs={12}>
       {[

@@ -30,48 +30,22 @@ export function createBlackduckProjectAction(
 ) {
   // For more information on how to define custom actions, see
   //   https://backstage.io/docs/features/software-templates/writing-custom-actions
-  return createTemplateAction<{
-    projectName: string;
-    projectVersion?: string;
-    versionPhase?: string;
-    versionDistribution?: string;
-    instanceName?: string;
-  }>({
+  return createTemplateAction({
     id: 'blackduck:create:project',
     description: 'Create a Blackduck project',
     schema: {
       input: {
-        type: 'object',
-        required: ['projectName'],
-        properties: {
-          projectName: {
-            title: 'Project Name',
-            description: 'Name of the project to be created',
-            type: 'string',
-          },
-          projectVersion: {
-            title: 'Project Version',
-            description: 'Version of the project to be created',
-            type: 'string',
-          },
-          versionPhase: {
-            title: 'Version Phase',
-            description: 'Phase Dev / QA / Prod',
-            type: 'string',
-          },
-          versionDistribution: {
-            title: 'Version Distribution',
-            description: 'Distribution Internal / External',
-            type: 'string',
-          },
-          instanceName: {
-            title: 'Instance',
-            description: 'Name of the Instance',
-            type: 'string',
-          },
-        },
+        projectName: z =>
+          z.string({ description: 'Name of the project to be created' }),
+        projectVersion: z =>
+          z.string({ description: 'Version of the project to be created' }),
+        versionPhase: z => z.string({ description: 'Phase Dev / QA / Prod' }),
+        versionDistribution: z =>
+          z.string({ description: 'Distribution Internal / External' }),
+        instanceName: z => z.string({ description: 'Name of the Instance' }),
       },
     },
+
     async handler(ctx) {
       const {
         projectName,

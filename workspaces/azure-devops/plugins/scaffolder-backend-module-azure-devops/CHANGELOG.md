@@ -1,5 +1,35 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.14.0
+
+### Minor Changes
+
+- 1e1ece3: Add new actions for Azure DevOps: Git Clone, Push and Create new Pull Request
+
+## 0.13.0
+
+### Minor Changes
+
+- 8367480: Backstage version bump to v1.42.3
+
+## 0.12.0
+
+### Minor Changes
+
+- 1634963: Backstage version bump to v1.41.1
+
+## 0.11.1
+
+### Patch Changes
+
+- 1fc5b4b: Add new action (azure:pipeline:permit) to Authorize the necessary pipeline resources (e.g., Service Connections, repositories) by executing azure:pipeline:permit; this step ensures that the pipeline has all the required permissions to automatically access the protected resources.
+
+## 0.11.0
+
+### Minor Changes
+
+- 1e109cd: Backstage version bump to v1.40.2
+
 ## 0.10.1
 
 ### Patch Changes

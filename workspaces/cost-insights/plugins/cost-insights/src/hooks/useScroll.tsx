@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
+import {
+  createContext,
   Dispatch,
   SetStateAction,
   useState,
@@ -29,9 +30,9 @@ export type ScrollContextProps = {
   setScroll: Dispatch<SetStateAction<ScrollTo>>;
 };
 
-export const ScrollContext = React.createContext<
-  ScrollContextProps | undefined
->(undefined);
+export const ScrollContext = createContext<ScrollContextProps | undefined>(
+  undefined,
+);
 
 export const ScrollProvider = ({ children }: PropsWithChildren<{}>) => {
   const [scroll, setScroll] = useState<ScrollTo>(null);

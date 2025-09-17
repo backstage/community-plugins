@@ -1,4 +1,4 @@
-import React from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { makeStyles, Typography } from '@material-ui/core';
 import { Tag, Tooltip } from '../../../components';
 import { useResize } from '../../../hooks';
@@ -50,13 +50,13 @@ export const ProjectTableLanguages = ({
 }: {
   items: [string, number][];
 }) => {
-  const languagesNode = React.useRef<HTMLDivElement | null>(null);
-  const indicatorNode = React.useRef<HTMLDivElement | null>(null);
-  const [displayingLength, setDisplayingLength] = React.useState(0);
+  const languagesNode = useRef<HTMLDivElement | null>(null);
+  const indicatorNode = useRef<HTMLDivElement | null>(null);
+  const [displayingLength, setDisplayingLength] = useState(0);
 
   const classes = useStyles();
 
-  const compare = React.useCallback(() => {
+  const compare = useCallback(() => {
     const allChildren: HTMLElement[] | null = languagesNode?.current?.children
       ?.length
       ? Array.from(languagesNode?.current?.children).map(

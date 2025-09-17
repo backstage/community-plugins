@@ -14,5 +14,5 @@ To start the app, run:
 2. Run following commands
    ```sh
    yarn install
-   yarn dev
+   yarn start
    ```

@@ -15,7 +15,6 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import React from 'react';
 import { useTopActiveItems } from '../../hooks/useTopActiveItems';
 import { RollbarTopItemsTable } from '../RollbarTopItemsTable/RollbarTopItemsTable';
 

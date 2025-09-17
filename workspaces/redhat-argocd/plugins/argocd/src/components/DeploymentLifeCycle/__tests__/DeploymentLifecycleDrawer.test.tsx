@@ -55,7 +55,7 @@ describe('DeploymentLifecycleDrawer', () => {
     (useArgoResources as jest.Mock).mockReturnValue({ rollouts: [] });
     (useDrawerContext as jest.Mock).mockReturnValue({
       application: mockApplication,
-      revisionsMap: {},
+      revisions: [],
       appHistory: mockApplication?.status?.history,
       latestRevision: mockApplication?.status?.history?.[1],
     });
@@ -96,7 +96,7 @@ describe('DeploymentLifecycleDrawer', () => {
   test('should not render the application drawer component', () => {
     (useDrawerContext as jest.Mock).mockReturnValue({
       application: null as unknown as Application,
-      revisionsMap: {},
+      revisions: [{}],
     });
 
     render(<DeploymentLifecycleDrawer isOpen onClose={() => jest.fn()} />);
@@ -124,7 +124,7 @@ describe('DeploymentLifecycleDrawer', () => {
     };
     (useDrawerContext as jest.Mock).mockReturnValue({
       application: helmApplication,
-      revisionsMap: {},
+      revisions: [{}],
     });
 
     render(<DeploymentLifecycleDrawer isOpen onClose={() => jest.fn()} />, {
@@ -140,13 +140,13 @@ describe('DeploymentLifecycleDrawer', () => {
 
     (useDrawerContext as jest.Mock).mockReturnValue({
       application: mockApplication,
-      revisionsMap: {
-        '90f9758b7033a4bbb7c33a35ee474d61091644bc': {
+      revisions: [
+        {
           author: 'test user',
           message: 'commit message',
           date: new Date(),
         },
-      },
+      ],
       appHistory: mockApplication.status.history,
       latestRevision: mockApplication.status.history?.[1],
     });
@@ -176,7 +176,7 @@ describe('DeploymentLifecycleDrawer', () => {
 
     (useDrawerContext as jest.Mock).mockReturnValue({
       application: remoteApplication,
-      revisionsMap: {},
+      revisions: [{}],
       appHistory: mockApplication.status.history,
       latestRevision: mockApplication.status.history?.[1],
     });
@@ -204,7 +204,7 @@ describe('DeploymentLifecycleDrawer', () => {
 
     (useDrawerContext as jest.Mock).mockReturnValue({
       application: remoteApplication,
-      revisionsMap: {},
+      revisions: [{}],
     });
 
     render(<DeploymentLifecycleDrawer isOpen onClose={jest.fn()} />, {

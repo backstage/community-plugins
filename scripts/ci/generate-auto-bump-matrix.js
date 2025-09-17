@@ -22,9 +22,23 @@ const workspacesDir = path.resolve('workspaces');
 function getWorkspaceDirs() {
   return fs.readdirSync(workspacesDir).filter(entry => {
     const dirPath = path.join(workspacesDir, entry);
-    const bumpFile = path.join(dirPath, '.auto-version-bump');
+    const bcpFile = path.join(dirPath, 'bcp.json');
 
-    return fs.statSync(dirPath).isDirectory() && fs.existsSync(bumpFile);
+    try {
+      if (!fs.statSync(dirPath).isDirectory()) {
+        return false;
+      }
+
+      if (!fs.existsSync(bcpFile)) {
+        return false;
+      }
+
+      const bcpContent = JSON.parse(fs.readFileSync(bcpFile, 'utf8'));
+      return bcpContent.autoVersionBump === true;
+    } catch (error) {
+      console.warn(`Warning: Error processing ${dirPath}: ${error.message}`);
+      return false;
+    }
   });
 }
 

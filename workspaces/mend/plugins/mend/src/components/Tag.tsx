@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Chip, makeStyles, Theme } from '@material-ui/core';
 
 export enum TagColor {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { BitriseBuildsComponent } from './BitriseBuildsComponent';
 import { renderInTestApp } from '@backstage/test-utils';
 

@@ -1,4 +1,5 @@
-import React from 'react';
+import type { ReactElement } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import {
   makeStyles,
   Theme,
@@ -16,8 +17,8 @@ type ExtendedClassesProps = {
 };
 
 type TooltipProps = {
-  children: string | React.ReactElement;
-  tooltipContent: string | React.ReactElement;
+  children: string | ReactElement;
+  tooltipContent: string | ReactElement;
   isAlwaysVisible?: boolean;
   extendedClasses?: ExtendedClassesProps;
 };
@@ -57,11 +58,11 @@ export const Tooltip = ({
   isAlwaysVisible = true,
   extendedClasses = {},
 }: TooltipProps) => {
-  const node = React.useRef<HTMLDivElement | null>(null);
+  const node = useRef<HTMLDivElement | null>(null);
 
-  const [isEllipsis, setIsEllipsis] = React.useState(false);
+  const [isEllipsis, setIsEllipsis] = useState(false);
 
-  const compare = React.useCallback(() => {
+  const compare = useCallback(() => {
     const firstChild = node?.current?.children?.length
       ? Array.from(node?.current?.children)?.[0]
       : null;

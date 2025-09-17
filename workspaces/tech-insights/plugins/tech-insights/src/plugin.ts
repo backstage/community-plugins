@@ -74,6 +74,32 @@ export const ScorecardsList = techInsightsPlugin.provide(
 /**
  * @public
  */
+export const ScorecardBadge = techInsightsPlugin.provide(
+  createComponentExtension({
+    name: 'ScorecardBadge',
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsBadge').then(m => m.ScorecardsBadge),
+    },
+  }),
+);
+
+/**
+ * @public
+ */
+export const ScorecardGauge = techInsightsPlugin.provide(
+  createComponentExtension({
+    name: 'ScorecardGauge',
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsGauge').then(m => m.ScorecardsGauge),
+    },
+  }),
+);
+
+/**
+ * @public
+ */
 export const EntityTechInsightsScorecardContent = techInsightsPlugin.provide(
   createRoutableExtension({
     name: 'EntityTechInsightsScorecardContent',

@@ -1,5 +1,50 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.20.0
+
+### Minor Changes
+
+- e47a75c: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [e47a75c]
+  - @backstage-community/plugin-cost-insights-common@0.7.0
+
+## 0.19.0
+
+### Minor Changes
+
+- ceeadd1: **ALPHA BREAKING** The New Frontend System `CostInsightsProjectGrowthInstructionsPage` and `CostInsightsLabelDataflowInstructionsPage` have been removed and the new frontend system support refactored to work in the same way as the current implementation.
+
+## 0.18.0
+
+### Minor Changes
+
+- ae26878: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [ae26878]
+  - @backstage-community/plugin-cost-insights-common@0.6.0
+
+## 0.17.0
+
+### Minor Changes
+
+- 364eea8: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.16.0
+
+### Minor Changes
+
+- 74ab831: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [74ab831]
+  - @backstage-community/plugin-cost-insights-common@0.5.0
+
 ## 0.15.2
 
 ### Patch Changes

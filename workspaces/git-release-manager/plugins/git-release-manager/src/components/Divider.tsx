@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Box, Divider as MaterialDivider } from '@material-ui/core';
 
 import { TEST_IDS } from '../test-helpers/test-ids';

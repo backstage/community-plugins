@@ -22,7 +22,6 @@ import { Header, Page, TabbedLayout } from '@backstage/core-components';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 import { mockEntity } from '../src/__fixtures__/entity';
 import { mssvJenkinsApiRef } from '../src/api/jenkins';
 import { mockPipelineRuns } from '../src/__fixtures__/pipelineruns';
@@ -109,7 +108,6 @@ class MockMssvAzureDevopsClient implements MssvApi {
 }
 
 createDevApp()
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

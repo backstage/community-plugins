@@ -19,6 +19,7 @@ export const mockRevision: RevisionInfo = {
   author: 'author-name',
   date: new Date('2023-10-10T05:28:38Z'),
   message: 'First release',
+  revisionID: '90f9758b7033a4bbb7c33a35ee474d61091644bc',
 };
 
 export const mockRevisionTwo = {

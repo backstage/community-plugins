@@ -1,5 +1,23 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.10.0
+
+### Minor Changes
+
+- 7eb926b: Adding a sessionReplay config block to the plugin options, allowing users to enable/disable session replay and set options like sampling rate, error sampling rate, masking selectors, and block selectors.
+
+## 0.9.0
+
+### Minor Changes
+
+- 3d6351f: Backstage version bump to v1.42.4
+
+## 0.8.0
+
+### Minor Changes
+
+- 70f97c5: Backstage version bump to v1.40.2
+
 ## 0.7.0
 
 ### Minor Changes

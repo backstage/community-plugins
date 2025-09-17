@@ -1,3 +1,4 @@
 {
-  "knip-reports": true
+  "autoVersionBump": false,
+  "knipReports": true
 }

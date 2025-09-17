@@ -192,10 +192,25 @@ export const WorkflowRunsCardView = ({
                       {run.id}
                     </Typography>
                   </Box>
-                  <WorkflowRunStatus
-                    status={run.status}
-                    conclusion={run.conclusion}
-                  />
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <WorkflowRunStatus
+                      status={run.status}
+                      conclusion={run.conclusion}
+                    />
+                  </Box>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Tooltip title={run.statusDate ?? ''}>
+                      <Box>{run.statusAge}</Box>
+                    </Tooltip>
+                  </Box>
                   <Box
                     display="flex"
                     flexDirection="column"

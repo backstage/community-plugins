@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { createContext, PropsWithChildren, useMemo } from 'react';
+import { useContext, createContext, PropsWithChildren, useMemo } from 'react';
 
 export interface SettingsContext {
   tabs: { path: string; title: string }[];
@@ -35,7 +35,7 @@ export function SettingsProvider({
 }
 
 export function useSettings() {
-  const settings = React.useContext(ctx);
+  const settings = useContext(ctx);
   if (!settings) {
     throw new Error('No settings provider found');
   }

@@ -22,7 +22,6 @@ import {
   EntityProvider,
 } from '@backstage/plugin-catalog-react';
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
 import { EntityFossaCard, fossaPlugin } from '../src';
 import { FindingSummary, FossaApi, fossaApiRef } from '../src/api';
 import { FossaPage } from '../src/components/FossaPage';

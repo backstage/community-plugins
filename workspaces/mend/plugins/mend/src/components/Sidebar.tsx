@@ -1,4 +1,3 @@
-import React from 'react';
 import { SvgIcon } from '@material-ui/core';
 import { SidebarItem } from '@backstage/core-components';
 
@@ -21,5 +20,5 @@ export const MendSidebar = () => {
     </SvgIcon>
   );
 
-  return <SidebarItem icon={icon} to="mend" text="mend.io" />;
+  return <SidebarItem icon={icon} to="mend" text="Mend.io" />;
 };

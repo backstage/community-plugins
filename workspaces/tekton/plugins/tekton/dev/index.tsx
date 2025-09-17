@@ -19,12 +19,13 @@ import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   KubernetesApi,
+  kubernetesApiRef,
+  kubernetesProxyApiRef,
+  kubernetesAuthProvidersApiRef,
   KubernetesProxyApi,
 } from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import { mockKubernetesPlrResponse } from '../src/__fixtures__/1-pipelinesData';
 import {
@@ -34,11 +35,6 @@ import {
 } from '../src/__fixtures__/advancedClusterSecurityData';
 import { enterpriseContractResult } from '../src/__fixtures__/enterpriseContractData';
 import { TektonCI, tektonPlugin } from '../src/plugin';
-import {
-  kubernetesApiRef,
-  kubernetesAuthProvidersApiRef,
-  kubernetesProxyApiRef,
-} from '../src/types/types';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -204,7 +200,6 @@ const mockKubernetesAuthProviderApiRef = {
 };
 
 createDevApp()
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider
