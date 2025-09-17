@@ -35,7 +35,7 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
-    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "test": "NODE_OPTIONS='--no-node-snapshot --experimental-vm-modules' backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
@@ -53,7 +53,7 @@
     "@backstage/plugin-catalog-node": "^1.18.0",
     "@backstage/plugin-permission-common": "^0.9.1",
     "@backstage/plugin-permission-node": "^0.10.3",
-    "@kubernetes/client-node": "1.0.0-rc7",
+    "@kubernetes/client-node": "1.1.2",
     "express": "^4.18.2",
     "semver": "^7.5.4"
   },
