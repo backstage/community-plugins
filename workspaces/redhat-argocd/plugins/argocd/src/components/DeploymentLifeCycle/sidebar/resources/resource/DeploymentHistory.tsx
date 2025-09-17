@@ -52,7 +52,9 @@ export const DeploymentHistory: FC<DeploymentHistoryProps> = ({
   return (
     <>
       <Typography color="textPrimary" variant="body1">
-        {t('deploymentLifeCycle.sideBar.resource.deploymentHistory.bodyText')}
+        {t(
+          'deploymentLifecycle.sidebar.resources.resource.deploymentHistory.bodyText',
+        )}
       </Typography>
       <Box className={styleClasses.deploymentHistory}>
         {history.flatMap(dep => {

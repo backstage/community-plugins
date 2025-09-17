@@ -25,6 +25,8 @@ import {
   Theme,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../translations/ref';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +57,7 @@ export const ResourcesKebabMenuOptions = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const { t } = useTranslationRef(argocdTranslationRef);
 
   return (
     <>
@@ -80,10 +83,14 @@ export const ResourcesKebabMenuOptions = () => {
         }}
       >
         <MenuItem onClick={handleClose} className={classes.menuItem}>
-          Refresh
+          {t(
+            'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh',
+          )}
         </MenuItem>
         <MenuItem onClick={handleClose} className={classes.menuItem}>
-          Sync
+          {t(
+            'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.sync',
+          )}
         </MenuItem>
       </Menu>
     </>

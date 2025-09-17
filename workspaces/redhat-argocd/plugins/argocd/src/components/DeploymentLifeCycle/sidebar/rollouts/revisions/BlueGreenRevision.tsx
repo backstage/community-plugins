@@ -23,6 +23,8 @@ import AnalysisRuns from './AnalysisRuns/AnalysisRuns';
 import RevisionImage from './RevisionImage';
 import RevisionStatus from './RevisionStatus';
 import RevisionType from './RevisionType';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../../translations/ref';
 
 interface RevisionCardProps {
   revision: Revision;
@@ -37,6 +39,7 @@ const BlueGreenRevision: FC<RevisionCardProps> = ({ revision }) => {
     isPreviewRevision,
   } = useBlueGreenMetadata({ revision });
   const { analysisRuns = [] } = revision || {};
+  const { t } = useTranslationRef(argocdTranslationRef);
 
   if (!revision) {
     return null;
@@ -52,14 +55,34 @@ const BlueGreenRevision: FC<RevisionCardProps> = ({ revision }) => {
         <Grid container>
           <Grid item xs={6}>
             <Typography color="textPrimary" gutterBottom>
-              {`Revision ${revisionNumber}`}
+              {`${t(
+                'deploymentLifecycle.sidebar.rollouts.revisions.blueGreenRevision.revision',
+              )} ${revisionNumber}`}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Box sx={{ width: '100%' }} textAlign="end">
-              {isStableRevision && <RevisionType label="Stable" />}
-              {isActiveRevision && <RevisionType label="Active" />}
-              {isPreviewRevision && <RevisionType label="Preview" />}
+              {isStableRevision && (
+                <RevisionType
+                  label={t(
+                    'deploymentLifecycle.sidebar.rollouts.revisions.blueGreenRevision.stable',
+                  )}
+                />
+              )}
+              {isActiveRevision && (
+                <RevisionType
+                  label={t(
+                    'deploymentLifecycle.sidebar.rollouts.revisions.blueGreenRevision.active',
+                  )}
+                />
+              )}
+              {isPreviewRevision && (
+                <RevisionType
+                  label={t(
+                    'deploymentLifecycle.sidebar.rollouts.revisions.blueGreenRevision.preview',
+                  )}
+                />
+              )}
             </Box>
           </Grid>
         </Grid>

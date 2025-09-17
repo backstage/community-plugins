@@ -45,14 +45,14 @@ const RolloutMetadata = ({ resource }: { resource: Resource }) => {
         <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
         <MetadataItem
           title={t(
-            'deploymentLifeCycle.sideBar.resource.rolloutMetadata.strategy',
+            'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.strategy',
           )}
         >
           {rolloutStrategy}
         </MetadataItem>
         <MetadataItem
           title={t(
-            'deploymentLifeCycle.sideBar.resource.rolloutMetadata.status',
+            'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.status',
           )}
         >
           <RolloutStatus status={rollout?.status?.phase as any} />

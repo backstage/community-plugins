@@ -69,7 +69,7 @@ export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
             {revisionSha.slice(0, 7)}
           </Link>{' '}
           {t(
-            'deploymentLifeCycle.sideBar.resource.deploymentHistoryCommit.deployedText',
+            'deploymentLifecycle.sidebar.resources.resource.deploymentHistoryCommit.deployedText',
           )}{' '}
           {moment(deploymentHistory.deployedAt).local().fromNow()}
         </Typography>

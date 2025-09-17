@@ -24,6 +24,8 @@ import BlueGreenRevision from './revisions/BlueGreenRevision';
 import CanaryRevision from './revisions/CanaryRevision';
 import MetadataItem from '../../../Common/MetadataItem';
 import Metadata from '../../../Common/Metadata';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../translations/ref';
 
 const useRevisionStyles = makeStyles((theme: Theme) => ({
   revisionContainer: {
@@ -49,6 +51,7 @@ interface RolloutProps {
 const Rollout: FC<RolloutProps> = ({ rollout }) => {
   const classes = useRevisionStyles();
   const [isFirstRender, setIsFirstRender] = useState(true);
+  const { t } = useTranslationRef(argocdTranslationRef);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -69,7 +72,9 @@ const Rollout: FC<RolloutProps> = ({ rollout }) => {
 
   return (
     <Metadata>
-      <MetadataItem title="Revisions">
+      <MetadataItem
+        title={t('deploymentLifecycle.sidebar.rollouts.rollOut.title')}
+      >
         <Box className={classes.revisionContainer}>
           {[...rollout.revisions].map((revision: Revision) => {
             return rollout.spec?.strategy?.canary ? (

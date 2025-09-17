@@ -221,7 +221,12 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
   return (
     <>
       {toolbar}
-      <Table aria-labelledby="Resources" className={classes.table}>
+      <Table
+        aria-labelledby={t(
+          'deploymentLifecycle.sidebar.resources.resourcesTable.ariaLabelledBy',
+        )}
+        className={classes.table}
+      >
         <ResourcesTableHeader
           order={order}
           orderBy={orderBy}
@@ -258,7 +263,9 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
             <tr>
               <td colSpan={resourcesColumnHeaders.length}>
                 <div data-testid="no-resources" className={classes.empty}>
-                  {t('deploymentLifeCycle.sideBar.resource.table.noneFound')}
+                  {t(
+                    'deploymentLifecycle.sidebar.resources.resourcesTable.noneFound',
+                  )}
                 </div>
               </td>
             </tr>
