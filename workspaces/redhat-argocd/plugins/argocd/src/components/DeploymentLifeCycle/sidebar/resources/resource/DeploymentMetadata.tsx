@@ -84,10 +84,10 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
         {appHistory.length > 0 ? (
           <MetadataItemWithTooltip
             title={t(
-              'deploymentLifeCycle.sideBar.resource.deploymentMetadata.metadataItemWithTooltip.title',
+              'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.metadataItemWithTooltip.title',
             )}
             tooltipText={t(
-              'deploymentLifeCycle.sideBar.resource.deploymentMetadata.metadataItemWithTooltip.tooltipText',
+              'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.metadataItemWithTooltip.tooltipText',
             )}
           >
             <ImageLinks />

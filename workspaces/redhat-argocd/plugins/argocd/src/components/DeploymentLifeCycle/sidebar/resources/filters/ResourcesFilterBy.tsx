@@ -137,7 +137,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
           {resourcesFilterBy === 'SearchByName' && (
             <SearchInput
               aria-label={t(
-                'deploymentLifeCycle.sideBar.resource.filterBy.searchByNameInput',
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.searchByNameInput',
               )}
               onChange={(_, value) =>
                 setFilters(prev => ({
@@ -151,7 +151,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
               }
               style={{ height: '36px', width: '200px' }}
               placeholder={t(
-                'deploymentLifeCycle.sideBar.resource.filterBy.searchByNameInput',
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.searchByNameInput',
               )}
             />
           )}
@@ -171,7 +171,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
           {resourcesFilterBy === 'HealthStatus' && (
             <Select
               aria-label={t(
-                'deploymentLifeCycle.sideBar.resource.filterBy.HealthStatus',
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.HealthStatus',
               )}
               toggle={toggleRef => (
                 <MenuToggle
@@ -184,7 +184,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                   style={{ width: '260px' }}
                 >
                   {t(
-                    'deploymentLifeCycle.sideBar.resource.filterBy.healthStatusInput',
+                    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusInput',
                   )}{' '}
                   {filters.HealthStatus.length > 0 && (
                     <Badge isRead>{filters.HealthStatus.length}</Badge>
@@ -220,7 +220,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                   style={{ width: '240px' }}
                 >
                   {t(
-                    'deploymentLifeCycle.sideBar.resource.filterBy.syncStatusInput',
+                    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusInput',
                   )}{' '}
                   {filters.SyncStatus.length > 0 && (
                     <Badge isRead>{filters.SyncStatus.length}</Badge>
@@ -256,7 +256,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                   isExpanded={isKindFilterExpanded}
                   style={{ width: '200px' }}
                 >
-                  {t('deploymentLifeCycle.sideBar.resource.filterBy.kindInput')}{' '}
+                  {t(
+                    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.kindInput',
+                  )}{' '}
                   {filters.Kind.length > 0 && (
                     <Badge isRead>{filters.Kind.length}</Badge>
                   )}

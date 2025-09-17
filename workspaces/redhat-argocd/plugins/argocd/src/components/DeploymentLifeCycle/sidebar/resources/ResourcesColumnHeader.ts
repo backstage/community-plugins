@@ -27,24 +27,32 @@ export const getResourcesColumnHeaders = (
     },
     {
       id: 'name',
-      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.name'),
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.name',
+      ),
     },
     {
       id: 'kind',
-      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.kind'),
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.kind',
+      ),
     },
     {
       id: 'created-at',
-      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.createdAt'),
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.createdAt',
+      ),
     },
     {
       id: 'sync-status',
-      title: t('deploymentLifeCycle.sideBar.resource.columnHeader.syncStatus'),
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.syncStatus',
+      ),
     },
     {
       id: 'health-status',
       title: t(
-        'deploymentLifeCycle.sideBar.resource.columnHeader.healthStatus',
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.healthStatus',
       ),
     },
   ];

@@ -40,6 +40,8 @@ import Metadata from '../Common/Metadata';
 import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
 import MetadataItemWithTooltip from '../Common/MetadataItemWithTooltip';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../translations/ref';
 
 const useCardStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -65,9 +67,9 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory[appHistory.length - 1];
-
   const classes = useCardStyles();
   const { entity } = useEntity();
+  const { t } = useTranslationRef(argocdTranslationRef);
 
   if (!app) {
     return null;
@@ -92,9 +94,15 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
 
       <CardContent>
         <Metadata direction={{ sm: 'column' }} gap={{ sm: 'gapMd' }}>
-          <MetadataItem title="Instance">{appName}</MetadataItem>
+          <MetadataItem
+            title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
+          >
+            {appName}
+          </MetadataItem>
 
-          <MetadataItem title="Server">
+          <MetadataItem
+            title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
+          >
             <AppServerLink application={app} />
           </MetadataItem>
 
@@ -105,7 +113,9 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
           {!isAppHelmChartType(app) ? (
             <MetadataItemWithTooltip
               title="Commit"
-              tooltipText="The commit SHA shown below is the latest commit from the first defined Application source."
+              tooltipText={t(
+                'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
+              )}
             >
               <AppCommitLink
                 application={app}
@@ -118,8 +128,11 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
             <></>
           )}
 
-          <MetadataItem title="Resources">
-            {app.status.resources?.length ?? 0} resources deployed
+          <MetadataItem
+            title={t('deploymentLifecycle.deploymentLifecycleCard.resources')}
+          >
+            {app.status.resources?.length ?? 0}{' '}
+            {t('deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed')}
           </MetadataItem>
         </Metadata>
       </CardContent>

@@ -31,7 +31,9 @@ export const resourcesFiltersMenuItems = (
       Object.keys(ResourcesFilters) as Array<keyof typeof ResourcesFilters>
     ).map(filterKey => (
       <SelectOption data-testid={filterKey} key={filterKey} value={filterKey}>
-        {t(`deploymentLifeCycle.sideBar.resource.filterBy.${filterKey}`)}
+        {t(
+          `deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.${filterKey}`,
+        )}
       </SelectOption>
     ))}
   </SelectList>
@@ -51,7 +53,7 @@ export const healthStatusMenuItems = (
           isSelected={filters.HealthStatus.includes(statusKey)}
         >
           {t(
-            `deploymentLifeCycle.sideBar.resource.filterBy.healthStatusSelectOptions.${
+            `deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.${
               statusKey as keyof typeof HealthStatus
             }`,
           )}
@@ -74,7 +76,7 @@ export const syncStatusMenuItems = (
         isSelected={filters.SyncStatus.includes(statusKey)}
       >
         {t(
-          `deploymentLifeCycle.sideBar.resource.filterBy.syncStatusSelectOptions.${
+          `deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusSelectOptions.${
             statusKey as SyncStatusCode
           }`,
         )}

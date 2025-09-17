@@ -69,10 +69,14 @@ export const getResourceFilterTranslation = (
   t: TranslationFunction<typeof argocdTranslationRef.T>,
 ): string => {
   if (!key) {
-    return t('deploymentLifeCycle.sideBar.resource.filterBy.Unset');
+    return t(
+      'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.Unset',
+    );
   }
 
-  return t(`deploymentLifeCycle.sideBar.resource.filterBy.${key}`);
+  return t(
+    `deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.${key}`,
+  );
 };
 export interface FiltersType {
   SearchByName: string[];

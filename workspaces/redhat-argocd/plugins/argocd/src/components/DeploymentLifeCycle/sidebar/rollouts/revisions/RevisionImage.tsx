@@ -16,9 +16,13 @@
 import { Typography } from '@material-ui/core';
 
 import { ReplicaSet } from '../../../../../types/resources';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../../../../../translations/ref';
 
 const RevisionImage = ({ revision }: { revision: ReplicaSet }) => {
   const image = revision.spec?.template?.spec?.containers?.[0]?.image;
+  const { t } = useTranslationRef(argocdTranslationRef);
+
   if (!image) {
     return null;
   }
@@ -26,7 +30,10 @@ const RevisionImage = ({ revision }: { revision: ReplicaSet }) => {
   return (
     <div style={{ maxWidth: '95%' }}>
       <Typography variant="body2" color="textPrimary">
-        Traffic to image {image}
+        {t(
+          'deploymentLifecycle.sidebar.rollouts.revisions.revisionImage.textPrimary',
+        )}{' '}
+        {image}
       </Typography>
     </div>
   );
