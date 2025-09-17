@@ -1,9 +1,0 @@
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage-mta-plugins
-  description: A collection of backstage plugins for MTA.
-spec:
-  type: website
-  owner: ibolton@redhat.com
-  lifecycle: experimental

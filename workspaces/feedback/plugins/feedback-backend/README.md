@@ -79,6 +79,10 @@ feedback:
         # set hostType: CLOUD to make api work
         # default value is SERVER
         hostType: CLOUD
+        # (optional) When using a scoped API token with Jira cloud, provide the API host
+        # in the format https://api.atlassian.com/ex/jira/<cloudId>
+        # Defaults to the value of host if not set.
+        apiHost: ${JIRA_API_HOST_URL}
 
     email:
       ## Email integration uses nodemailer to send emails

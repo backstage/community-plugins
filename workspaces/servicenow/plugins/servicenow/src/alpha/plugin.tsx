@@ -16,28 +16,23 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
-  PageBlueprint,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
-import {
-  compatWrapper,
-  convertLegacyRouteRef,
-} from '@backstage/core-compat-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import {
   serviceNowApiRef,
   ServiceNowBackendClient,
 } from '../api/ServiceNowBackendClient';
 
-import { rootRouteRef } from '../routes';
+import { isServicenowAvailable } from '@backstage-community/plugin-servicenow-common';
 
 /** @alpha */
 export const servicenowApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: serviceNowApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -47,23 +42,28 @@ export const servicenowApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi, identityApi }) =>
         new ServiceNowBackendClient(discoveryApi, fetchApi, identityApi),
     }),
-  },
 });
 
-/** @alpha */
-export const servicenowPage = PageBlueprint.make({
+/**
+ * Servicenow entity content that shows an incident table with a
+ * filter similar to the catalog table
+ * @alpha
+ */
+export const entityServicenowContent = EntityContentBlueprint.make({
+  name: 'EntityServicenowContent',
   params: {
-    defaultPath: '/servicenow',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
+    path: 'servicenow',
+    title: 'ServiceNow',
+    filter: isServicenowAvailable,
     loader: () =>
-      import('../components/Servicenow').then(m =>
-        compatWrapper(<m.ServicenowContent />),
-      ),
+      import('../components/Servicenow').then(m => (
+        <m.EntityServicenowContent />
+      )),
   },
 });
 
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'servicenow',
-  extensions: [servicenowApi, servicenowPage],
+  extensions: [servicenowApi, entityServicenowContent],
 });

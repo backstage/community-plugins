@@ -2,13 +2,11 @@
 
 This document describes the configuration for the ServiceNow backend plugin.
 
-## Prerequisites
+## ServiceNow Authentication
 
-You need to have a ServiceNow developer instance. You can request a new one from the [ServiceNow Developer Portal](https://developer.servicenow.com/dev.do#!/learn/learning-plans/washingtondc/new_to_servicenow/app_store_learnv2_buildmyfirstapp_washingtondc_personal_developer_instances).
+To use the ServiceNow backend plugin, you need to configure it in your `app-config.yaml` file.
 
-## `app-config.yaml`
-
-To use the ServiceNow backend plugin, you need to configure it in your `app-config.yaml` file. The plugin supports both Basic Authentication and OAuth with grant types "password" and "client_credentials".
+The plugin supports both Basic Authentication and OAuth with grant types "password" and "client_credentials".
 
 ### Basic Authentication
 

@@ -16,6 +16,7 @@ export type Announcement = {
   created_at: string;
   active: boolean;
   start_at: string;
+  until_date?: string | null;
   on_behalf_of?: string;
   tags?: Tag[];
   sendNotification?: boolean;
@@ -44,6 +45,7 @@ export type AnnouncementsFilters = {
   active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
   sendNotification?: boolean;
 };
 

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.12.1
+
+### Patch Changes
+
+- 7d5b162: Added note regarding the need to install the Linguist Backend plugin for the Linguist Tags Catalog Processor to work
+
 ## 0.12.0
 
 ### Minor Changes

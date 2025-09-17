@@ -77,6 +77,7 @@ describe('AnnouncementsTimeline', () => {
           created_at: '2022-01-01',
           active: true,
           start_at: '2025-01-01',
+          until_date: '2025-02-01',
         },
         {
           id: '2',
@@ -87,6 +88,7 @@ describe('AnnouncementsTimeline', () => {
           created_at: '2022-01-02',
           active: true,
           start_at: '2022-01-02',
+          until_date: '2022-02-02',
         },
       ],
     };

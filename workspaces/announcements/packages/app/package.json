@@ -34,6 +34,7 @@
     "@backstage/plugin-catalog-import": "^0.13.4",
     "@backstage/plugin-catalog-react": "^1.20.1",
     "@backstage/plugin-home": "^0.8.11",
+    "@backstage/plugin-notifications": "^0.5.8",
     "@backstage/plugin-org": "^0.6.43",
     "@backstage/plugin-permission-react": "^0.4.36",
     "@backstage/plugin-search": "^1.4.29",

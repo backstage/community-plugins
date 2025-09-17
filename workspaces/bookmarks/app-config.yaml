@@ -1,3 +1,9 @@
+bookmarks:
+  customProtocols:
+    gdoc:
+      iframeBaseUrl: https://docs.google.com/document/d/%s/mobilebasic
+      linkBaseUrl: https://docs.google.com/document/d/%s/edit
+
 app:
   title: Scaffolded Backstage App
   baseUrl: http://localhost:3000

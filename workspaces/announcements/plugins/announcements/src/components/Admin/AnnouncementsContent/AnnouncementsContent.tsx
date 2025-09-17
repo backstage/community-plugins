@@ -260,6 +260,20 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
+        <Typography>
+          {t('admin.announcementsContent.table.until_date')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'until_date',
+      type: 'date',
+      render: rowData =>
+        rowData?.until_date
+          ? DateTime.fromISO(rowData.until_date).toFormat('M/d/yyyy')
+          : '-',
+    },
+    {
+      title: (
         <Typography>{t('admin.announcementsContent.table.actions')}</Typography>
       ),
       render: rowData => {

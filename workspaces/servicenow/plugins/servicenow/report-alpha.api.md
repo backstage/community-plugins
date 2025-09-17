@@ -7,14 +7,18 @@
 
 import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
+import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: FrontendPlugin<
+const _default: OverridableFrontendPlugin<
   {},
   {},
   {
@@ -23,40 +27,84 @@ const _default: FrontendPlugin<
       name: undefined;
       config: {};
       configInput: {};
-      output: ConfigurableExtensionDataRef<
-        AnyApiFactory,
-        'core.api.factory',
-        {}
-      >;
+      output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
       inputs: {};
-      params: {
-        factory: AnyApiFactory;
-      };
+      params: <
+        TApi,
+        TImpl extends TApi,
+        TDeps extends {
+          [x: string]: unknown;
+        },
+      >(
+        params: ApiFactory<TApi, TImpl, TDeps>,
+      ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'page:servicenow': ExtensionDefinition<{
-      kind: 'page';
-      name: undefined;
+    'entity-content:servicenow/EntityServicenowContent': ExtensionDefinition<{
+      kind: 'entity-content';
+      name: 'EntityServicenowContent';
       config: {
         path: string | undefined;
+        title: string | undefined;
+        filter: EntityPredicate | undefined;
+        group: string | false | undefined;
       };
       configInput: {
+        filter?: EntityPredicate | undefined;
+        title?: string | undefined;
         path?: string | undefined;
+        group?: string | false | undefined;
       };
       output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<string, 'core.routing.path', {}>
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
+        | ExtensionDataRef<
+            string,
+            'catalog.entity-content-group',
             {
               optional: true;
             }
           >;
       inputs: {};
       params: {
-        defaultPath: string;
+        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+        path: string;
+        defaultTitle?: [Error: "Use the 'title' param instead"] | undefined;
+        title: string;
+        defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
+        group?:
+          | (string & {})
+          | 'overview'
+          | 'documentation'
+          | 'development'
+          | 'deployment'
+          | 'operation'
+          | 'observability'
+          | undefined;
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
   }
