@@ -13,13 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-import { TOPOLOGY_FILTERS } from '../const';
+import { SHOW_POD_COUNT_FILTER_ID } from '../const';
 import { DisplayFilters, FilterContextType } from '../types/types';
+import { useTranslation } from './useTranslation';
 
 export const useFilterContextValues = (): FilterContextType => {
-  const [filters, setFilters] = useState<DisplayFilters>(TOPOLOGY_FILTERS);
+  const { t } = useTranslation();
+
+  const topologyFilters = useMemo(
+    () => [
+      {
+        value: SHOW_POD_COUNT_FILTER_ID,
+        content: t('filters.showPodCount'),
+        isSelected: false,
+        isDisabled: false,
+      },
+    ],
+    [t],
+  );
+
+  const [filters, setFilters] = useState<DisplayFilters>(topologyFilters);
 
   return { filters, setAppliedTopologyFilters: setFilters };
 };

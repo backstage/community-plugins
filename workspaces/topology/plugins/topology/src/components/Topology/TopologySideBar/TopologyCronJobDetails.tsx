@@ -16,35 +16,40 @@
 import type { FC } from 'react';
 
 import { V1CronJob } from '@kubernetes/client-node';
-import { Timestamp, TimestampFormat } from '@patternfly/react-core';
+import { LocalizedTimestamp } from '../../LocalizedTimestamp';
 
+import { useTranslation } from '../../../hooks/useTranslation';
 import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 import TopologyWorkloadDetails from './TopologyWorkloadDetails';
 
 const TopologyCronJobDetails: FC<{ resource: V1CronJob }> = ({ resource }) => {
+  const { t } = useTranslation();
   return (
     <TopologyWorkloadDetails resource={resource}>
-      <TopologySideBarDetailsItem label="Schedule">
+      <TopologySideBarDetailsItem label={t('details.schedule')}>
         {resource.spec?.schedule}
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Concurrency policy">
+      <TopologySideBarDetailsItem label={t('details.concurrencyPolicy')}>
         {resource.spec?.concurrencyPolicy}
       </TopologySideBarDetailsItem>
       <TopologySideBarDetailsItem
-        label="Starting deadline seconds"
-        emptyText="Not configured"
+        label={t('details.startingDeadlineSeconds')}
+        emptyText={t('details.notConfigured')}
       >
         {resource.spec?.startingDeadlineSeconds &&
           (resource.spec.startingDeadlineSeconds > 1
-            ? `${resource.spec.startingDeadlineSeconds} seconds`
-            : `${resource.spec.startingDeadlineSeconds} second`)}
+            ? `${resource.spec.startingDeadlineSeconds} ${t('time.seconds')}`
+            : `${resource.spec.startingDeadlineSeconds} ${t('time.seconds')}`)}
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Last schedule time" emptyText="-">
+      <TopologySideBarDetailsItem
+        label={t('details.lastScheduleTime')}
+        emptyText="-"
+      >
         {resource.status?.lastScheduleTime && (
-          <Timestamp
+          <LocalizedTimestamp
             date={resource.status?.lastScheduleTime}
-            dateFormat={TimestampFormat.medium}
-            timeFormat={TimestampFormat.short}
+            dateStyle="medium"
+            timeStyle="short"
           />
         )}
       </TopologySideBarDetailsItem>

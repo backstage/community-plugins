@@ -16,9 +16,11 @@
 import ResourceName from '../../../../common/components/ResourceName';
 import { RouteModel } from '../../../../models';
 import { RouteData } from '../../../../types/route';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import TopologyResourcesTabPanelItem from '../TopologyResourcesTabPaneltem';
 
 const RouteListSidebar = ({ routesData }: { routesData: RouteData[] }) => {
+  const { t } = useTranslation();
   return (
     <TopologyResourcesTabPanelItem
       resourceLabel={RouteModel.labelPlural}
@@ -39,7 +41,9 @@ const RouteListSidebar = ({ routesData }: { routesData: RouteData[] }) => {
             </span>
             {routeData.url && (
               <>
-                <span className="bs-topology-text-muted">Location:</span>
+                <span className="bs-topology-text-muted">
+                  {t('common.location')}:
+                </span>
                 <a
                   href={routeData.url}
                   target="_blank"

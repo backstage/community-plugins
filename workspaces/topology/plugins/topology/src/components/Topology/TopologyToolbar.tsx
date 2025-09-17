@@ -28,12 +28,14 @@ import {
 
 import { FilterContext } from '../../hooks/FilterContext';
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 type TopologyToolbarProps = {
   showFilters: boolean;
 };
 
 const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
+  const { t } = useTranslation();
   const { clusters: k8sClusters, setSelectedCluster: setClusterContext } =
     useContext(K8sResourcesContext);
 
@@ -87,11 +89,11 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
   return (
     <>
       <ToolbarItem variant="label" id="cluster-filter">
-        Cluster
+        {t('toolbar.cluster')}
       </ToolbarItem>
       <ToolbarItem>
         <Select
-          aria-label="Select Cluster"
+          aria-label={t('toolbar.selectCluster')}
           onOpenChange={onClusterFilterToggle}
           onSelect={onClusterChange}
           isOpen={clusterFilterIsExpanded}
@@ -101,7 +103,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
               isExpanded={clusterFilterIsExpanded}
               onClick={() => onClusterFilterToggle(!clusterFilterIsExpanded)}
             >
-              {clusterSelected || 'Select Cluster'}
+              {clusterSelected || t('toolbar.selectCluster')}
             </MenuToggle>
           )}
         >
@@ -121,7 +123,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
       {showFilters && (
         <ToolbarItem>
           <Select
-            aria-label="Display options"
+            aria-label={t('toolbar.displayOptions')}
             onOpenChange={onDisplayOptionsToggle}
             onSelect={(event, value) => onDisplayOptionChange(event, value)}
             isOpen={displayOptionsIsExpanded}
@@ -134,7 +136,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
                 }
               >
                 {(filters ?? []).filter(f => f?.isSelected)?.length > 0 ? (
-                  <LabelGroup aria-label="Current display options">
+                  <LabelGroup aria-label={t('toolbar.currentDisplayOptions')}>
                     {filters?.map(
                       filter =>
                         filter.isSelected && (
@@ -145,7 +147,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
                     )}
                   </LabelGroup>
                 ) : (
-                  'Display options'
+                  t('toolbar.displayOptions')
                 )}
               </MenuToggle>
             )}

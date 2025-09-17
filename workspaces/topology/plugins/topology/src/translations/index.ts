@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { topologyPlugin, TopologyPage } from './plugin';
-export { topologyTranslations, topologyTranslationRef } from './translations';
-export { useTranslation } from './hooks/useTranslation';
-export { useLanguage } from './hooks/useLanguage';
-export { Trans } from './components/Trans';
+import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { topologyTranslationRef } from './ref';
+
+export const topologyTranslations = createTranslationResource({
+  ref: topologyTranslationRef,
+  translations: {
+    de: () => import('./de'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+    es: () => import('./es'),
+    // Add more languages as needed
+  },
+});
+
+export { topologyTranslationRef };

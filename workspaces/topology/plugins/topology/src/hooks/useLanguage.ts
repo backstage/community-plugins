@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { topologyPlugin, TopologyPage } from './plugin';
-export { topologyTranslations, topologyTranslationRef } from './translations';
-export { useTranslation } from './hooks/useTranslation';
-export { useLanguage } from './hooks/useLanguage';
-export { Trans } from './components/Trans';
+import { useApi } from '@backstage/core-plugin-api';
+import { appLanguageApiRef } from '@backstage/core-plugin-api/alpha';
+
+export const useLanguage = (): string =>
+  useApi(appLanguageApiRef).getLanguage().language;

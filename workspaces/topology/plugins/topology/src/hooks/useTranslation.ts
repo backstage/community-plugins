@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { topologyPlugin, TopologyPage } from './plugin';
-export { topologyTranslations, topologyTranslationRef } from './translations';
-export { useTranslation } from './hooks/useTranslation';
-export { useLanguage } from './hooks/useLanguage';
-export { Trans } from './components/Trans';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { topologyTranslationRef } from '../translations';
+
+export const useTranslation = () => {
+  const { t: originalT } = useTranslationRef(topologyTranslationRef);
+
+  const t = (key: string, params?: Record<string, any>) => {
+    return originalT(key as any, params as any);
+  };
+
+  return { t };
+};

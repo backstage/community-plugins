@@ -19,7 +19,12 @@ import { V1Pod } from '@kubernetes/client-node';
 import { fireEvent, render } from '@testing-library/react';
 
 import { mockKubernetesResponse } from '../../../../__fixtures__/1-deployments';
+import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
 import { PodLogsDialog } from './PodLogsDialog';
+
+jest.mock('../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 import { RequirePermission } from '@backstage/plugin-permission-react';
 
 jest.mock('@backstage/plugin-permission-react', () => ({

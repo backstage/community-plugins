@@ -16,9 +16,10 @@
 import type { PropsWithChildren } from 'react';
 
 import { V1OwnerReference } from '@kubernetes/client-node';
-import { Timestamp, TimestampFormat } from '@patternfly/react-core';
+import { LocalizedTimestamp } from '../../LocalizedTimestamp';
 
 import { K8sWorkloadResource } from '../../../types/types';
+import { useTranslation } from '../../../hooks/useTranslation';
 import TopologyResourceLabels from './TopologyResourceLabels';
 import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 
@@ -26,15 +27,20 @@ const TopologyWorkloadDetails = ({
   resource,
   children,
 }: PropsWithChildren<{ resource: K8sWorkloadResource }>) => {
+  const { t } = useTranslation();
+
   return (
     <dl style={{ maxWidth: '100%' }}>
-      <TopologySideBarDetailsItem label="Name">
+      <TopologySideBarDetailsItem label={t('details.name')}>
         {resource.metadata?.name}
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Namespace">
+      <TopologySideBarDetailsItem label={t('details.namespace')}>
         {resource.metadata?.namespace}
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Labels" emptyText="No labels">
+      <TopologySideBarDetailsItem
+        label={t('details.labels')}
+        emptyText={t('details.noLabels')}
+      >
         {resource.metadata?.labels && (
           <TopologyResourceLabels
             labels={resource.metadata.labels}
@@ -43,8 +49,8 @@ const TopologyWorkloadDetails = ({
         )}
       </TopologySideBarDetailsItem>
       <TopologySideBarDetailsItem
-        label="Annotations"
-        emptyText="No annotations"
+        label={t('details.annotations')}
+        emptyText={t('details.noAnnotations')}
       >
         {resource.metadata?.annotations && (
           <TopologyResourceLabels
@@ -54,14 +60,17 @@ const TopologyWorkloadDetails = ({
         )}
       </TopologySideBarDetailsItem>
       {children}
-      <TopologySideBarDetailsItem label="Created at">
-        <Timestamp
+      <TopologySideBarDetailsItem label={t('details.createdAt')}>
+        <LocalizedTimestamp
           date={resource.metadata?.creationTimestamp}
-          dateFormat={TimestampFormat.medium}
-          timeFormat={TimestampFormat.short}
+          dateStyle="medium"
+          timeStyle="short"
         />
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Owner" emptyText="No owner">
+      <TopologySideBarDetailsItem
+        label={t('common.owner')}
+        emptyText={t('details.noOwner')}
+      >
         {resource.metadata?.ownerReferences && (
           <ul data-testid="owner-list">
             <div>

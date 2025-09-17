@@ -16,8 +16,13 @@
 import { render } from '@testing-library/react';
 
 import { workloadNodeData } from '../../../../__fixtures__/workloadNodeData';
+import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
 import { RouteData } from '../../../../types/route';
 import RouteListSidebar from './RouteListSidebar';
+
+jest.mock('../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('RouteListSidebar', () => {
   it('should render host URL, Route if exists', () => {

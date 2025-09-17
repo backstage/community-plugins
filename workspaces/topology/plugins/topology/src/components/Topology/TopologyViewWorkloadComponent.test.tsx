@@ -21,7 +21,12 @@ import { render } from '@testing-library/react';
 
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
 import { useWorkloadsWatcher } from '../../hooks/useWorkloadWatcher';
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
 import TopologyViewWorkloadComponent from './TopologyViewWorkloadComponent';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('../../hooks/useWorkloadWatcher', () => ({
   useWorkloadsWatcher: jest.fn(),

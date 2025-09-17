@@ -17,22 +17,24 @@ import type { FC } from 'react';
 
 import { V1Job } from '@kubernetes/client-node';
 
+import { useTranslation } from '../../../hooks/useTranslation';
 import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 import TopologyWorkloadDetails from './TopologyWorkloadDetails';
 
 const TopologyJobDetails: FC<{ resource: V1Job }> = ({ resource }) => {
+  const { t } = useTranslation();
   return (
     <TopologyWorkloadDetails resource={resource}>
-      <TopologySideBarDetailsItem label="Desired completions">
+      <TopologySideBarDetailsItem label={t('details.desiredCompletions')}>
         {resource.spec?.completions}
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Parallelism">
+      <TopologySideBarDetailsItem label={t('details.parallelism')}>
         {resource.spec?.parallelism}
       </TopologySideBarDetailsItem>
-      <TopologySideBarDetailsItem label="Active deadline seconds">
+      <TopologySideBarDetailsItem label={t('details.activeDeadlineSeconds')}>
         {resource.spec?.activeDeadlineSeconds
-          ? `${resource.spec.activeDeadlineSeconds} second`
-          : 'Not configured'}
+          ? `${resource.spec.activeDeadlineSeconds} ${t('time.seconds')}`
+          : t('details.notConfigured')}
       </TopologySideBarDetailsItem>
     </TopologyWorkloadDetails>
   );

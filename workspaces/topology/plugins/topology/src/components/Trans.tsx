@@ -13,8 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { topologyPlugin, TopologyPage } from './plugin';
-export { topologyTranslations, topologyTranslationRef } from './translations';
-export { useTranslation } from './hooks/useTranslation';
-export { useLanguage } from './hooks/useLanguage';
-export { Trans } from './components/Trans';
+import { useTranslation } from '../hooks/useTranslation';
+import { topologyTranslationRef } from '../translations';
+
+type Messages = typeof topologyTranslationRef.T;
+
+interface TransProps<TMessages extends { [key in string]: string }> {
+  message: keyof TMessages;
+  params?: any;
+}
+
+export const Trans = ({ message, params }: TransProps<Messages>) => {
+  const { t } = useTranslation();
+  return t(message, params);
+};

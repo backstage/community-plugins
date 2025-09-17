@@ -29,6 +29,7 @@ import {
   podStatus,
 } from '../../utils/workload-node-utils';
 import { AllPodStatus, podColor } from './pod';
+import { useTranslation } from '../../hooks/useTranslation';
 
 import './PodStatus.css';
 
@@ -80,7 +81,35 @@ const PodStatus = ({
   subTitleComponent,
   data,
 }: PodStatusProps) => {
+  const { t } = useTranslation();
   const [updateOnEnd, setUpdateOnEnd] = useState<boolean>(false);
+
+  const translatePodStatus = (status: string) => {
+    switch (status) {
+      case AllPodStatus.Running:
+        return t('status.running');
+      case AllPodStatus.Pending:
+        return t('status.pending');
+      case AllPodStatus.Succeeded:
+        return t('status.succeeded');
+      case AllPodStatus.Failed:
+        return t('status.failed');
+      case AllPodStatus.Unknown:
+        return t('status.unknown');
+      case AllPodStatus.Terminating:
+        return t('status.terminating');
+      case AllPodStatus.CrashLoopBackOff:
+        return t('status.crashLoopBackOff');
+      case AllPodStatus.Warning:
+        return t('status.warning');
+      case AllPodStatus.NotReady:
+        return t('status.notReady');
+      case AllPodStatus.ErrImagePull:
+        return t('status.error');
+      default:
+        return status; // fallback to original status if no translation found
+    }
+  };
   const forceUpdate = useForceUpdate();
   const prevVData = useRef<PodData[] | null>(null);
   const chartTriggerRef = useRef<SVGGElement | null>(null);
@@ -123,7 +152,7 @@ const PodStatus = ({
   const chartDonut = useMemo(() => {
     return (
       <ChartDonut
-        ariaTitle={`${title}${subTitle && ` ${subTitle}`}`}
+        ariaTitle={subTitle ? `${title} ${subTitle}` : title}
         animate={{
           duration: prevVData.current ? ANIMATION_DURATION : 0,
           onEnd: updateOnEnd ? forceUpdate : undefined,
@@ -191,7 +220,7 @@ const PodStatus = ({
                   {`${Math.round(d.y)}`}
                 </span>
               )}
-              {d.x}
+              {translatePodStatus(d.x)}
             </div>
           ) : null;
         })}
