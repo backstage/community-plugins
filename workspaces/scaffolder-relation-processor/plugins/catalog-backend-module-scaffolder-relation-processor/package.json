@@ -40,7 +40,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "1.4.2",
+    "@backstage/backend-plugin-api": "^1.4.2",
     "@backstage/catalog-client": "^1.11.0",
     "@backstage/catalog-model": "^1.7.5",
     "@backstage/plugin-catalog-node": "^1.18.0",
