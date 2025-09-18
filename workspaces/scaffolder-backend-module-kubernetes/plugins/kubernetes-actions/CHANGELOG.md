@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.10.1
+
+### Patch Changes
+
+- 416ee3c: Update @kubernetes/client-node to 1.1.2
+
 ## 2.10.0
 
 ### Minor Changes
