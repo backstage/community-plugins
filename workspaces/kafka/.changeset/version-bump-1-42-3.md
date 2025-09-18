@@ -3,4 +3,4 @@
 '@backstage-community/plugin-kafka-backend': minor
 ---
 
-Backstage version bump to v1.42.3
+Backstage version bump to v1.42.5
