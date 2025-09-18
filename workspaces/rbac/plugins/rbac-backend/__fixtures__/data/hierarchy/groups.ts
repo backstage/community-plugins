@@ -16,6 +16,7 @@
 export const GROUPS_FOR_TESTS = [
   {
     name: 'thor_group_0',
+    namespace: null,
     title: 'Thor Group 0',
     children: [],
     parent: null,
@@ -23,6 +24,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'wasp_group_0',
+    namespace: null,
     title: 'Wasp Group 0',
     children: [],
     parent: null,
@@ -30,6 +32,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'captain_america_group_0',
+    namespace: null,
     title: 'Captain America Group 0',
     children: [],
     parent: 'captain_america_group_1',
@@ -37,6 +40,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'captain_america_group_1',
+    namespace: null,
     title: 'Captain America Group 1',
     children: [],
     parent: null,
@@ -44,6 +48,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hawkeye_group_0',
+    namespace: null,
     title: 'Hawkeye Group 0',
     children: [],
     parent: 'hawkeye_group_1',
@@ -51,6 +56,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hawkeye_group_1',
+    namespace: null,
     title: 'Hawkeye Group 1',
     children: [],
     parent: null,
@@ -58,6 +64,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'quicksilver_group_0',
+    namespace: null,
     title: 'Quicksilver Group 0',
     children: [],
     parent: 'quicksilver_group_1',
@@ -65,6 +72,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'quicksilver_group_1',
+    namespace: null,
     title: 'Quicksilver Group 1',
     children: [],
     parent: null,
@@ -72,6 +80,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'scarlet_witch_group_0',
+    namespace: null,
     title: 'Scarlet Witch Group 0',
     children: [],
     parent: 'scarlet_witch_group_1',
@@ -79,6 +88,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'scarlet_witch_group_1',
+    namespace: null,
     title: 'Scarlet Witch Group 1',
     children: [],
     parent: null,
@@ -86,6 +96,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'swordsman_group_0',
+    namespace: null,
     title: 'Swordsman Group 0',
     children: [],
     parent: null,
@@ -93,6 +104,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hercules_group_0',
+    namespace: null,
     title: 'Hercules Group 0',
     children: [],
     parent: null,
@@ -100,6 +112,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'black_panther_group_0',
+    namespace: null,
     title: 'Black Panther Group 0',
     children: [],
     parent: null,
@@ -107,6 +120,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'vision_group_0',
+    namespace: null,
     title: 'Vision Group 0',
     children: [],
     parent: null,
@@ -114,6 +128,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'black_knight_group_a',
+    namespace: null,
     title: 'Black Knight Group A',
     children: [],
     parent: null,
@@ -121,6 +136,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'black_knight_group_b',
+    namespace: null,
     title: 'Black Knight Group B',
     children: [],
     parent: null,
@@ -128,6 +144,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'black_widow_group_a',
+    namespace: null,
     title: 'Black Widow Group A',
     children: [],
     parent: null,
@@ -135,6 +152,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'black_widow_group_b',
+    namespace: null,
     title: 'Black Widow Group B',
     children: [],
     parent: null,
@@ -142,6 +160,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'mantis_group_a',
+    namespace: null,
     title: 'Mantis Group A',
     children: [],
     parent: null,
@@ -149,6 +168,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'mantis_group_b',
+    namespace: null,
     title: 'Mantis Group B',
     children: [],
     parent: null,
@@ -156,6 +176,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'beast_group_a',
+    namespace: null,
     title: 'Beast Group A',
     children: [],
     parent: null,
@@ -163,6 +184,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'beast_group_b',
+    namespace: null,
     title: 'Beast Group B',
     children: [],
     parent: null,
@@ -170,6 +192,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'moondragon_group_a_0',
+    namespace: null,
     title: 'Moondragon Group A 0',
     children: [],
     parent: 'moondragon_group_a_1',
@@ -177,6 +200,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'moondragon_group_a_1',
+    namespace: null,
     title: 'Moondragon Group A 1',
     children: [],
     parent: null,
@@ -184,6 +208,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'moondragon_group_b_0',
+    namespace: null,
     title: 'Moondragon Group B 0',
     children: [],
     parent: 'moondragon_group_b_1',
@@ -191,6 +216,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'moondragon_group_b_1',
+    namespace: null,
     title: 'Moondragon Group B 1',
     children: [],
     parent: null,
@@ -198,6 +224,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hellcat_group_a_0',
+    namespace: null,
     title: 'Hellcat Group A 0',
     children: [],
     parent: 'hellcat_group_a_1',
@@ -205,6 +232,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hellcat_group_a_1',
+    namespace: null,
     title: 'Hellcat Group A 1',
     children: [],
     parent: null,
@@ -212,6 +240,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hellcat_group_b_0',
+    namespace: null,
     title: 'Hellcat Group B 0',
     children: [],
     parent: 'hellcat_group_b_1',
@@ -219,6 +248,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'hellcat_group_b_1',
+    namespace: null,
     title: 'Hellcat Group B 1',
     children: [],
     parent: null,
@@ -226,6 +256,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'captain_marvel_group_a_0',
+    namespace: null,
     title: 'Captain Marvel Group A 0',
     children: [],
     parent: 'captain_marvel_group_a_1',
@@ -233,6 +264,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'captain_marvel_group_a_1',
+    namespace: null,
     title: 'Captain Marvel Group A 1',
     children: [],
     parent: null,
@@ -240,6 +272,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'captain_marvel_group_b_0',
+    namespace: null,
     title: 'Captain Marvel Group B 0',
     children: [],
     parent: 'captain_marvel_group_b_1',
@@ -247,6 +280,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'captain_marvel_group_b_1',
+    namespace: null,
     title: 'Captain Marvel Group B 1',
     children: [],
     parent: null,
@@ -254,6 +288,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'falcon_group_a_0',
+    namespace: null,
     title: 'Falcon Group A 0',
     children: [],
     parent: 'falcon_group_a_1',
@@ -261,6 +296,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'falcon_group_a_1',
+    namespace: null,
     title: 'Falcon Group A 1',
     children: [],
     parent: null,
@@ -268,6 +304,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'falcon_group_b_0',
+    namespace: null,
     title: 'Falcon Group B 0',
     children: [],
     parent: 'falcon_group_b_1',
@@ -275,6 +312,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'falcon_group_b_1',
+    namespace: null,
     title: 'Falcon Group B 1',
     children: [],
     parent: null,
@@ -282,6 +320,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'wonder_man_group_0',
+    namespace: null,
     title: 'Wonder Man Group 0',
     children: [],
     parent: 'wonder_man_group_1',
@@ -289,6 +328,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'wonder_man_group_1',
+    namespace: null,
     title: 'Wonder Man Group 1',
     children: [],
     parent: 'wonder_man_group_0',
@@ -296,6 +336,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'tigra_group_0',
+    namespace: null,
     title: 'Tigra Group 0',
     children: [],
     parent: 'tigra_group_1',
@@ -303,6 +344,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'tigra_group_1',
+    namespace: null,
     title: 'Tigra Group 1',
     children: [],
     parent: 'tigra_group_0',
@@ -310,6 +352,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'she_hulk_group_0',
+    namespace: null,
     title: 'She-Hulk Group 0',
     children: [],
     parent: 'she_hulk_group_1',
@@ -317,6 +360,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'she_hulk_group_1',
+    namespace: null,
     title: 'She-Hulk Group 1',
     children: [],
     parent: 'she_hulk_group_0',
@@ -324,6 +368,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'starfox_group_0',
+    namespace: null,
     title: 'Starfox Group 0',
     children: [],
     parent: 'starfox_group_1',
@@ -331,6 +376,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'starfox_group_1',
+    namespace: null,
     title: 'Starfox Group 1',
     children: [],
     parent: 'starfox_group_0',
@@ -338,6 +384,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'mockingbird_group_0',
+    namespace: null,
     title: 'Mockingbird Group 0',
     children: [],
     parent: 'mockingbird_group_1',
@@ -345,6 +392,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'mockingbird_group_1',
+    namespace: null,
     title: 'Mockingbird Group 1',
     children: [],
     parent: 'mockingbird_group_0',
@@ -352,6 +400,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'war_machine_group_0',
+    namespace: null,
     title: 'War Machine Group 0',
     children: [],
     parent: 'war_machine_group_1',
@@ -359,6 +408,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'war_machine_group_1',
+    namespace: null,
     title: 'War Machine Group 1',
     children: [],
     parent: 'war_machine_group_0',
@@ -366,6 +416,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'namor_group_a_0',
+    namespace: null,
     title: 'Namor Group A 0',
     children: [],
     parent: 'namor_group_a_1',
@@ -373,6 +424,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'namor_group_a_1',
+    namespace: null,
     title: 'Namor Group A 1',
     children: [],
     parent: 'namor_group_a_0',
@@ -380,6 +432,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'namor_group_b_0',
+    namespace: null,
     title: 'Namor Group B 0',
     children: [],
     parent: 'namor_group_b_1',
@@ -387,6 +440,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'namor_group_b_1',
+    namespace: null,
     title: 'Namor Group B 1',
     children: [],
     parent: 'namor_group_b_0',
@@ -394,6 +448,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'thing_group_a_0',
+    namespace: null,
     title: 'Thing Group A 0',
     children: [],
     parent: 'thing_group_a_1',
@@ -401,6 +456,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'thing_group_a_1',
+    namespace: null,
     title: 'Thing Group A 1',
     children: [],
     parent: 'thing_group_a_0',
@@ -408,6 +464,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'thing_group_b_0',
+    namespace: null,
     title: 'Thing Group B 0',
     children: [],
     parent: 'thing_b_1',
@@ -415,6 +472,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'thing_group_b_1',
+    namespace: null,
     title: 'Thing Group B 1',
     children: [],
     parent: 'thing_b_0',
@@ -422,6 +480,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'doctor_druid_group_a_0',
+    namespace: null,
     title: 'Doctor Druid Group A 0',
     children: [],
     parent: 'doctor_druid_group_a_1',
@@ -429,6 +488,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'doctor_druid_group_a_1',
+    namespace: null,
     title: 'Doctor Druid Group A 1',
     children: [],
     parent: 'doctor_druid_group_a_0',
@@ -436,6 +496,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'doctor_druid_group_b_0',
+    namespace: null,
     title: 'Doctor Druid Group B 0',
     children: [],
     parent: 'doctor_druid_group_b_1',
@@ -443,6 +504,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'doctor_druid_group_b_1',
+    namespace: null,
     title: 'Doctor Druid Group B 1',
     children: [],
     parent: 'doctor_druid_group_b_0',
@@ -450,6 +512,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'firebird_group_a_0',
+    namespace: null,
     title: 'Firebird Group A 0',
     children: [],
     parent: 'firebird_group_a_1',
@@ -457,6 +520,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'firebird_group_a_1',
+    namespace: null,
     title: 'Firebird Group A 1',
     children: [],
     parent: 'firebird_group_a_0',
@@ -464,6 +528,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'firebird_group_b_0',
+    namespace: null,
     title: 'Firebird Group B 0',
     children: [],
     parent: 'firebird_group_b_1',
@@ -471,6 +536,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'firebird_group_b_1',
+    namespace: null,
     title: 'Firebird Group B 1',
     children: [],
     parent: 'firebird_group_b_0',
@@ -478,6 +544,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'valkyrie_group_a_0',
+    namespace: null,
     title: 'Valkyrie Group A 0',
     children: [],
     parent: 'valkyrie_group_a_1',
@@ -485,6 +552,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'valkyrie_group_a_1',
+    namespace: null,
     title: 'Valkyrie Group A 1',
     children: [],
     parent: null,
@@ -492,6 +560,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'valkyrie_group_b_0',
+    namespace: null,
     title: 'Valkyrie Group B 0',
     children: [],
     parent: 'valkyrie_group_b_1',
@@ -499,6 +568,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'valkyrie_group_b_1',
+    namespace: null,
     title: 'Valkyrie Group B 1',
     children: [],
     parent: 'valkyrie_group_b_0',
@@ -506,6 +576,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'nova_group_a_0',
+    namespace: null,
     title: 'Nova Group A 0',
     children: [],
     parent: 'nova_group_a_1',
@@ -513,6 +584,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'nova_group_a_1',
+    namespace: null,
     title: 'Nova Group A 1',
     children: [],
     parent: null,
@@ -520,6 +592,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'nova_group_b_0',
+    namespace: null,
     title: 'Nova Group B 0',
     children: [],
     parent: 'nova_group_b_1',
@@ -527,6 +600,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'nova_group_b_1',
+    namespace: null,
     title: 'Nova Group B 1',
     children: [],
     parent: 'nova_group_b_0',
@@ -534,6 +608,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'storm_group_a_0',
+    namespace: null,
     title: 'Storm Group A 0',
     children: [],
     parent: 'storm_group_a_1',
@@ -541,6 +616,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'storm_group_a_1',
+    namespace: null,
     title: 'Storm Group A 1',
     children: [],
     parent: null,
@@ -548,6 +624,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'storm_group_b_0',
+    namespace: null,
     title: 'Storm Group B 0',
     children: [],
     parent: 'storm_group_b_1',
@@ -555,6 +632,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'storm_group_b_1',
+    namespace: null,
     title: 'Storm Group B 1',
     children: [],
     parent: 'storm_group_b_0',
@@ -562,6 +640,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'daredevil_group_a_0',
+    namespace: null,
     title: 'Daredevil Group A 0',
     children: [],
     parent: 'daredevil_group_a_1',
@@ -569,6 +648,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'daredevil_group_a_1',
+    namespace: null,
     title: 'Daredevil Group A 1',
     children: [],
     parent: null,
@@ -576,6 +656,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'daredevil_group_b_0',
+    namespace: null,
     title: 'Daredevil Group B 0',
     children: [],
     parent: 'daredevil_group_b_1',
@@ -583,6 +664,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'daredevil_group_b_1',
+    namespace: null,
     title: 'Daredevil Group B 1',
     children: [],
     parent: 'daredevil_group_b_0',
@@ -590,6 +672,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'spiderman_group_0',
+    namespace: null,
     title: 'Spiderman Group 0',
     children: [],
     parent: 'spiderman_group_1',
@@ -597,6 +680,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'spiderman_group_1',
+    namespace: null,
     title: 'Spiderman Group 1',
     children: [],
     parent: null,
@@ -604,6 +688,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'moon_knight_group_0',
+    namespace: null,
     title: 'Moon Knight Group 0',
     children: [],
     parent: 'moon_knight_group_1',
@@ -611,6 +696,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'moon_knight_group_1',
+    namespace: null,
     title: 'Moon Knight Group 1',
     children: [],
     parent: null,
@@ -618,6 +704,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'cable_group_0',
+    namespace: null,
     title: 'Cable Group 0',
     children: [],
     parent: null,
@@ -625,6 +712,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'ghost_rider_group_0',
+    namespace: null,
     title: 'Ghost Rider Group 0',
     children: [],
     parent: null,
@@ -632,6 +720,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'admin',
+    namespace: null,
     title: 'Admin',
     children: [],
     parent: null,
@@ -639,6 +728,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-a',
+    namespace: null,
     title: 'Team A',
     children: [],
     parent: 'root-group',
@@ -646,6 +736,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-b',
+    namespace: null,
     title: 'Team B',
     children: [],
     parent: 'team-a',
@@ -653,6 +744,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-C',
+    namespace: null,
     title: 'Team C',
     children: [],
     parent: 'team-a',
@@ -660,6 +752,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-d',
+    namespace: null,
     title: 'Team D',
     children: [],
     parent: 'team-a',
@@ -667,6 +760,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-e',
+    namespace: null,
     title: 'Team E',
     children: [],
     parent: 'team-f',
@@ -674,6 +768,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-f',
+    namespace: null,
     title: 'Team F',
     children: [],
     parent: 'team-e',
@@ -681,6 +776,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-g',
+    namespace: null,
     title: 'Team G',
     children: [],
     parent: 'team-f',
@@ -688,6 +784,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-z',
+    namespace: null,
     title: 'Team Z',
     children: [],
     parent: null,
@@ -695,6 +792,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-y',
+    namespace: null,
     title: 'Team Y',
     children: [],
     parent: 'team-z',
@@ -702,6 +800,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'team-x',
+    namespace: null,
     title: 'Team X',
     children: [],
     parent: null,
@@ -709,6 +808,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'root-group',
+    namespace: null,
     title: 'Root Group',
     children: [],
     parent: null,
@@ -716,6 +816,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'data_admin',
+    namespace: null,
     title: 'Data Admin',
     children: [],
     parent: null,
@@ -727,6 +828,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'data_read_admin',
+    namespace: null,
     title: 'Data Read Admin',
     children: [],
     parent: 'data_parent_admin',
@@ -734,6 +836,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'data_parent_admin',
+    namespace: null,
     title: 'Data Parent Admin',
     children: [],
     parent: null,
@@ -741,6 +844,7 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'test-group',
+    namespace: null,
     title: 'Test Group',
     children: [],
     parent: null,
@@ -748,9 +852,42 @@ export const GROUPS_FOR_TESTS = [
   },
   {
     name: 'qa',
+    namespace: null,
     title: 'QA Group',
     children: [],
     parent: null,
     hasMember: ['user:default/mike'],
+  },
+  {
+    name: 'team-hr',
+    namespace: null,
+    title: 'HR Group',
+    children: [],
+    parent: 'team-management',
+    hasMember: ['user:default/sally'],
+  },
+  {
+    name: 'team-management',
+    namespace: null,
+    title: 'Management Group',
+    children: [],
+    parent: 'group:hq/team-management',
+    hasMember: [],
+  },
+  {
+    name: 'team-management',
+    namespace: 'hq',
+    title: 'Management Group',
+    children: [],
+    parent: 'team-administration',
+    hasMember: [],
+  },
+  {
+    name: 'team-administration',
+    namespace: 'hq',
+    title: 'Administration Group',
+    children: [],
+    parent: 'group:default/root-group',
+    hasMember: [],
   },
 ];

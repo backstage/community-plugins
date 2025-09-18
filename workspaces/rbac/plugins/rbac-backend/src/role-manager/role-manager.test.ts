@@ -164,7 +164,12 @@ describe('BackstageRoleManager', () => {
           filter: {
             kind: 'Group',
           },
-          fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
+          fields: [
+            'kind',
+            'metadata.name',
+            'metadata.namespace',
+            'spec.parent',
+          ],
         },
         {
           token: 'mock-service-token:{"sub":"plugin:test","target":"catalog"}',

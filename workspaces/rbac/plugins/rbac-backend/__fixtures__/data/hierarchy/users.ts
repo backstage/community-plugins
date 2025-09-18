@@ -348,4 +348,10 @@ export const USERS_FOR_TEST = [
     displayName: 'Bob',
     email: 'bob@example.com',
   },
+  {
+    name: 'sally',
+    memberOf: ['group:default/hr'],
+    displayName: 'Sally',
+    email: 'sally@example.com',
+  },
 ];

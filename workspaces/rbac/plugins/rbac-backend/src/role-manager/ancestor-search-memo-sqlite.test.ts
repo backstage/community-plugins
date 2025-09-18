@@ -25,11 +25,12 @@ const mockAuthService = mockServices.auth();
 describe('ancestor-search-memo', () => {
   const testUserGroups = convertGroupsToEntity([
     {
-      name: 'team-d',
-      title: 'Team D',
-      parent: 'team-a',
+      name: 'team-hr',
+      namespace: null,
+      title: 'HR Group',
       children: [],
-      hasMember: ['user:default/george', 'user:default/john'],
+      parent: 'team-management',
+      hasMember: ['user:default/sally'],
     },
   ]);
 
@@ -37,7 +38,7 @@ describe('ancestor-search-memo', () => {
 
   beforeEach(() => {
     asm = new AncestorSearchMemoSQLite(
-      'user:default/george',
+      'user:default/sally',
       catalogMock,
       mockAuthService,
     );
@@ -58,7 +59,12 @@ describe('ancestor-search-memo', () => {
   });
 
   describe('traverseGroups', () => {
-    // user:default/george -> group:default/team-d -> group:default/team-a -> group:default/root-group
+    // user:default/sally
+    // |- group:default/team-hr
+    // |- group:default/team-management
+    // |- group:hq/team-management
+    // |- group:hq/team-administration
+    // |- group:default/root-group
     it('should build a graph for a particular user', async () => {
       const userGroupsTest = await asm.getUserASMGroups();
 
@@ -68,18 +74,25 @@ describe('ancestor-search-memo', () => {
         asm.traverse(group as GroupEntity, allGroupsTest as GroupEntity[], 0),
       );
 
-      expect(asm.hasEntityRef('group:default/team-d')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-a')).toBeTruthy();
+      expect(asm.hasEntityRef('group:default/team-hr')).toBeTruthy();
+      expect(asm.hasEntityRef('group:default/team-management')).toBeTruthy();
+      expect(asm.hasEntityRef('group:hq/team-management')).toBeTruthy();
+      expect(asm.hasEntityRef('group:hq/team-administration')).toBeTruthy();
       expect(asm.hasEntityRef('group:default/root-group')).toBeTruthy();
       expect(asm.hasEntityRef('group:default/team-b')).toBeFalsy();
     });
 
-    // maxDepth of one                                  stops here
-    //                                                       |
-    // user:default/george -> group:default/team-d -> group:default/team-a -> group:default/root-group
+    // maxDepth of one
+    //
+    // user:default/sally
+    // |- group:default/team-hr
+    // |- group:default/team-management <- stops here
+    // |- group:hq/team-management
+    // |- group:hq/team-administration
+    // |- group:default/root-group
     it('should build the graph but stop based on the maxDepth', async () => {
       const asmMaxDepth = new AncestorSearchMemoSQLite(
-        'user:default/george',
+        'user:default/sally',
         catalogMock,
         mockAuthService,
         1,
@@ -97,8 +110,14 @@ describe('ancestor-search-memo', () => {
         ),
       );
 
-      expect(asmMaxDepth.hasEntityRef('group:default/team-d')).toBeTruthy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-a')).toBeTruthy();
+      expect(asmMaxDepth.hasEntityRef('group:default/team-hr')).toBeTruthy();
+      expect(
+        asmMaxDepth.hasEntityRef('group:default/team-management'),
+      ).toBeTruthy();
+      expect(asmMaxDepth.hasEntityRef('group:hq/team-management')).toBeFalsy();
+      expect(
+        asmMaxDepth.hasEntityRef('group:hq/team-administration'),
+      ).toBeFalsy();
       expect(asmMaxDepth.hasEntityRef('group:default/root-group')).toBeFalsy();
       expect(asmMaxDepth.hasEntityRef('group:default/team-b')).toBeFalsy();
     });
