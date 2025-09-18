@@ -330,6 +330,10 @@ export const topologyMessages = {
   },
 };
 
+/**
+ * Translation reference for the Topology plugin.
+ * @public
+ */
 export const topologyTranslationRef = createTranslationRef({
   id: 'plugin.topology',
   messages: topologyMessages,

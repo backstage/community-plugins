@@ -16,6 +16,10 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { topologyTranslationRef } from '../translations';
 
+/**
+ * Hook returning a translation function for the Topology plugin.
+ * @public
+ */
 export const useTranslation = () => {
   const { t: originalT } = useTranslationRef(topologyTranslationRef);
 

@@ -18,3 +18,4 @@ export { topologyTranslations, topologyTranslationRef } from './translations';
 export { useTranslation } from './hooks/useTranslation';
 export { useLanguage } from './hooks/useLanguage';
 export { Trans } from './components/Trans';
+export type { TransProps, Messages } from './components/Trans';

@@ -10,6 +10,9 @@ import { RouteRef } from '@backstage/core-plugin-api';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
+// @public
+export type Messages = typeof topologyTranslationRef.T;
+
 // @public (undocumented)
 export const TopologyPage: () => JSX_2.Element;
 
@@ -22,9 +25,7 @@ export const topologyPlugin: BackstagePlugin<
   {}
 >;
 
-// Warning: (ae-missing-release-tag) "topologyTranslationRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const topologyTranslationRef: TranslationRef<
   'plugin.topology',
   {
@@ -306,30 +307,34 @@ export const topologyTranslationRef: TranslationRef<
   }
 >;
 
-// Warning: (ae-missing-release-tag) "topologyTranslations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const topologyTranslations: TranslationResource<'plugin.topology'>;
 
-// Warning: (ae-forgotten-export) The symbol "TransProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "Messages" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "Trans" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const Trans: ({
   message,
   params,
   components,
 }: TransProps<Messages>) => any;
 
-// Warning: (ae-missing-release-tag) "useLanguage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
+export interface TransProps<
+  TMessages extends {
+    [key in string]: string;
+  },
+> {
+  // (undocumented)
+  components?: Record<string, ComponentType<any>>;
+  // (undocumented)
+  message: keyof TMessages;
+  // (undocumented)
+  params?: any;
+}
+
+// @public
 export const useLanguage: () => string;
 
-// Warning: (ae-missing-release-tag) "useTranslation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const useTranslation: () => {
   t: (key: string, params?: Record<string, any>) => any;
 };

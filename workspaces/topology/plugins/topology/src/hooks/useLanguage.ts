@@ -16,5 +16,9 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { appLanguageApiRef } from '@backstage/core-plugin-api/alpha';
 
+/**
+ * Hook returning the current UI language code.
+ * @public
+ */
 export const useLanguage = (): string =>
   useApi(appLanguageApiRef).getLanguage().language;

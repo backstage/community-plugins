@@ -17,14 +17,26 @@ import type { ComponentType, ReactNode } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { topologyTranslationRef } from '../translations';
 
-type Messages = typeof topologyTranslationRef.T;
+/**
+ * Message map type for the Topology plugin translations.
+ * @public
+ */
+export type Messages = typeof topologyTranslationRef.T;
 
-interface TransProps<TMessages extends { [key in string]: string }> {
+/**
+ * Props for the Trans component.
+ * @public
+ */
+export interface TransProps<TMessages extends { [key in string]: string }> {
   message: keyof TMessages;
   params?: any;
   components?: Record<string, ComponentType<any>>;
 }
 
+/**
+ * Render a translated message, optionally replacing placeholders with components.
+ * @public
+ */
 export const Trans = ({
   message,
   params,
