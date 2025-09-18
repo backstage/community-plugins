@@ -39,7 +39,7 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
     const { items } = await this.catalogApi.getEntities(
       {
         filter: { kind: 'Group' },
-        fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
+        fields: ['kind', 'metadata.name', 'metadata.namespace', 'spec.parent'],
       },
       { token },
     );
@@ -54,7 +54,7 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
     const { items } = await this.catalogApi.getEntities(
       {
         filter: { kind: 'Group', 'relations.hasMember': this.userEntityRef },
-        fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
+        fields: ['kind', 'metadata.name', 'metadata.namespace', 'spec.parent'],
       },
       { token },
     );
@@ -62,16 +62,11 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
   }
 
   traverse(group: Entity, allGroups: Entity[], current_depth: number) {
-    const groupRef = stringifyEntityRef({
-      kind: 'group',
-      name: group.metadata.name,
-      namespace: group.metadata.namespace,
-    });
+    const groupRef = stringifyEntityRef(group);
+
     if (!super.hasEntityRef(groupRef)) {
       super.setNode(groupRef);
     }
-
-    const groupCompound = parseEntityRef(groupRef);
 
     if (this.maxDepth !== undefined && current_depth >= this.maxDepth) {
       return;
@@ -86,17 +81,12 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
     const parentRef = stringifyEntityRef(
       parseEntityRef(parent, {
         defaultKind: 'group',
-        defaultNamespace: groupCompound.namespace,
+        defaultNamespace: group.metadata.namespace,
       }),
     );
 
     const parentGroup = allGroups.find(
-      g =>
-        stringifyEntityRef({
-          kind: 'group',
-          name: g.metadata.name,
-          namespace: g.metadata.namespace,
-        }) === parentRef,
+      g => stringifyEntityRef(g) === parentRef,
     );
 
     if (parentGroup) {
