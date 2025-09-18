@@ -41,7 +41,6 @@ import { styled } from '@mui/styles';
 import type { Permission } from '@backstage/plugin-permission-common';
 
 import { useTranslation } from '../../../hooks/useTranslation';
-import { Trans } from '../../Trans';
 
 const StyledBox = styled(Box)(() => ({
   display: 'flex',
@@ -79,13 +78,23 @@ export const MissingPermissionPage = ({
               {t('permissions.missingPermission')}
             </Typography>
             <Typography variant="body1">
-              <Trans
-                message="permissions.missingPermissionDescription"
-                params={{
-                  permissions: permissionNames,
+              {(() => {
+                const TOKEN = '__PERMS__';
+                const sentence = t('permissions.missingPermissionDescription', {
+                  permissions: TOKEN,
                   permissionText,
-                }}
-              />
+                });
+                const [before, after] = sentence.split(TOKEN);
+                return (
+                  <>
+                    {before}
+                    <StyledTypography component="span">
+                      {permissionNames}
+                    </StyledTypography>
+                    {after}
+                  </>
+                );
+              })()}
             </Typography>
             <Button
               style={{ textTransform: 'none' }}

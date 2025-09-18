@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ComponentType, ReactNode } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { topologyTranslationRef } from '../translations';
 
@@ -21,9 +22,50 @@ type Messages = typeof topologyTranslationRef.T;
 interface TransProps<TMessages extends { [key in string]: string }> {
   message: keyof TMessages;
   params?: any;
+  components?: Record<string, ComponentType<any>>;
 }
 
-export const Trans = ({ message, params }: TransProps<Messages>) => {
+export const Trans = ({
+  message,
+  params,
+  components,
+}: TransProps<Messages>) => {
   const { t } = useTranslation();
-  return t(message, params);
+  const translatedText = t(message, params);
+
+  // If no components are provided, return simple text
+  if (!components) {
+    return translatedText;
+  }
+
+  // Parse the translated text and replace component placeholders
+  let result: ReactNode = translatedText;
+
+  Object.entries(components).forEach(([key, Component]) => {
+    const placeholder = `<${key}>`;
+    const closingTag = `</${key}>`;
+
+    if (typeof result === 'string' && result.includes(placeholder)) {
+      const parts = result.split(placeholder);
+      const newResult: ReactNode[] = [];
+
+      parts.forEach((part, index) => {
+        if (index === 0) {
+          newResult.push(part);
+        } else {
+          const [content, ...rest] = part.split(closingTag);
+          newResult.push(
+            <Component key={`${key}-${index}`}>{content}</Component>,
+          );
+          if (rest.length > 0) {
+            newResult.push(rest.join(closingTag));
+          }
+        }
+      });
+
+      result = newResult;
+    }
+  });
+
+  return <>{result}</>;
 };
