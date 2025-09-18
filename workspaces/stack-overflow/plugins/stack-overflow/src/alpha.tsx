@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-import { configApiRef, createApiFactory } from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
+import {
+  SearchFilterResultTypeBlueprint,
+  SearchResultListItemBlueprint,
+} from '@backstage/plugin-search-react/alpha';
 import { StackOverflowClient, stackOverflowApiRef } from './api';
+import { StackOverflowIcon } from './icons';
 
 /** @alpha */
 const stackOverflowApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: stackOverflowApiRef,
       deps: { configApi: configApiRef },
       factory: ({ configApi }) => StackOverflowClient.fromConfig(configApi),
     }),
-  },
 });
 
 /** @alpha */
@@ -44,9 +47,22 @@ const stackOverflowSearchResultListItem = SearchResultListItemBlueprint.make({
   },
 });
 
+const stackOverflowSearchFilterResultType =
+  SearchFilterResultTypeBlueprint.make({
+    params: {
+      name: 'Stack Overflow',
+      value: 'stack-overflow',
+      icon: <StackOverflowIcon />,
+    },
+  });
+
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'stack-overflow',
+  pluginId: 'stack-overflow',
   // TODO: Migrate homepage cards when the declarative homepage plugin supports them
-  extensions: [stackOverflowApi, stackOverflowSearchResultListItem],
+  extensions: [
+    stackOverflowApi,
+    stackOverflowSearchResultListItem,
+    stackOverflowSearchFilterResultType,
+  ],
 });

@@ -1,12 +1,18 @@
 # Stack Overflow
 
-A plugin that provides stack overflow specific functionality that can be used in different ways (e.g. for homepage and search) to compose your Backstage App.
+A [Backstage](https://backstage.io/) plugin that integrates Stack Overflow content into your Backstage app. Use it to surface relevant Stack Overflow questions and answers in search results or display them on your homepage.
 
-## Getting started
+> Note: For Stack Overflow specific search results to be returned, it needs to be indexed. Use the [Stack Overflow Search Backend Module](https://github.com/backstage/backstage/blob/master/plugins/search-backend-module-stack-overflow-collator/README.md) to index Stack Overflow Questions to search.
 
-Before we begin, make sure:
+## Installation
 
-- You have created your own standalone Backstage app using @backstage/create-app and not using a fork of the backstage repository. If you haven't setup Backstage already, start [here](https://backstage.io/docs/getting-started/).
+To install the Stack Overflow plugin in your Backstage app, run the following command in your app's root directory:
+
+```sh
+yarn --cwd packages/app add @backstage/plugin-stack-overflow
+```
+
+After installing, follow the configuration steps below to get started.
 
 To use any of the functionality this plugin provides, you need to start by configuring your App with the following config:
 
@@ -15,15 +21,29 @@ stackoverflow:
   baseUrl: https://api.stackexchange.com/2.2 # alternative: your internal stack overflow instance
 ```
 
-## Areas of Responsibility
+### New Frontend System
 
-This stack overflow frontend plugin is primarily responsible for the following:
+If you have [Feature Discovery](https://backstage.io/docs/frontend-system/architecture/app#feature-discovery) enabled, no additional configuration is required. Otherwise, you should be able to enable the plugin in your `packages/app/src/App.tsx`:
 
-- Exposing various stack-overflow related components like `<StackOverflowSearchResultListItem />` which can be used for composing the search page, and `<HomePageStackOverflowQuestions/>` which can be used for composing the homepage.
+```diff
++ import stackOverflowPlugin from '@backstage-community/plugin-stack-overflow';
 
-#### Use specific search result list item for Stack Overflow Question
+  ...
 
-> Note: For Stack Overflow specific search results to be returned, it needs to be indexed. Use the [stack-overflow-backend plugin](https://github.com/backstage/backstage/blob/master/plugins/stack-overflow-backend/README.md) to index Stack Overflow Questions to search.
+  export const app = createApp({
+    features: [
+      catalogPlugin,
+      catalogImportPlugin,
+      userSettingsPlugin,
++     stackOverflowPlugin,
+    // ...
+    ],
+  });
+```
+
+That's it!
+
+### Legacy Frontend System
 
 When you have your `packages/app/src/components/search/SearchPage.tsx` file ready to make modifications, add the following code snippet to add the `StackOverflowSearchResultListItem` when the type of the search results are `stack-overflow`.
 
@@ -37,7 +57,7 @@ When you have your `packages/app/src/components/search/SearchPage.tsx` file read
   );
 ```
 
-#### Use Stack Overflow Questions on your homepage
+## Use Stack Overflow Questions on your homepage
 
 Before you are able to add the stack overflow question component to your homepage, you need to go through the [homepage getting started guide](https://backstage.io/docs/getting-started/homepage). When its ready, add the following code snippet to your `packages/app/src/components/home/HomePage.tsx` file.
 
@@ -52,3 +72,5 @@ Before you are able to add the stack overflow question component to your homepag
   />
 </Grid>
 ```
+
+**Note**: This is currently unavailable in the new frontend system.

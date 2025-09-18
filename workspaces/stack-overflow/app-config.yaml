@@ -1,0 +1,8 @@
+app:
+  title: Stack Overflow Example App
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+stackoverflow:
+  baseUrl: https://api.stackexchange.com/2.2
