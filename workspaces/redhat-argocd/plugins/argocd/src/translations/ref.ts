@@ -61,7 +61,7 @@ export const ArgoCDMessages = {
         },
         resource: {
           deploymentHistory: {
-            bodyText: 'Deployment History',
+            bodyText: 'Deployment history',
           },
           deploymentHistoryCommit: {
             deployedText: 'deployed',
@@ -147,7 +147,7 @@ export const ArgoCDMessages = {
       },
     },
     deploymentLifecycle: {
-      title: 'Deployment Lifecycle',
+      title: 'Deployment lifecycle',
       subtitle:
         'Review deployed components/systems in the namespace using ArgoCD plugin',
     },
