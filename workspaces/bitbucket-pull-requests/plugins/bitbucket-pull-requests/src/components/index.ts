@@ -13,17 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * Bitbucket Pull Requests plugin for Backstage
- *
- * @packageDocumentation
- */
-
-export {
-  bitbucketPlugin,
-  EntityBitbucketPullRequestsContent,
-  HomePagePullRequestsCard,
-} from './plugin';
-
-export type { HomePagePullRequestsCardProps } from './components/HomePage/HomePagePullRequestsCard';
+export { HomePagePullRequestsCard } from './HomePage/HomePagePullRequestsCard';

@@ -70,6 +70,49 @@ metadata:
     bitbucket.com/project-slug: <example-bitbucket-project-name>/<example-bitbucket-repo-name>
 ```
 
-## Links
+## Adding Bitbucket Pull Requests to your Homepage
 
-- [Backstage](https://backstage.io)
+This plugin also provides a homepage component that displays your Bitbucket pull requests directly on your Backstage homepage.
+
+![Bitbucket homepage component](./docs/bitbucket_homepage.png)
+
+### Features
+
+- View pull requests assigned to you or authored by you in a tabbed interface
+- Shows PR ID, title, repository, branch, author/reviewers information, and build status (can be disabled)
+
+### How to add to your Homepage
+
+1. Make sure you've installed this plugin and configured the proxy as described above.
+
+2. Make sure you've installed the homepage plugin and configured it as described in the [official documentation](https://github.com/backstage/backstage/tree/master/plugins/home#readme).
+
+3. Add the component to your homepage:
+
+```tsx
+// packages/app/src/components/home/HomePage.tsx
+import { HomePagePullRequestsCard } from '@backstage-community/plugin-bitbucket-pull-requests';
+
+export const HomePage = () => (
+  <Page themeId="home">
+    <Content>
+      <Grid container spacing={3}>
+        {/* Other homepage components */}
+        <Grid item xs={12} md={6}>
+          {/* Default: includes build status column */}
+          <HomePagePullRequestsCard />
+
+          {/* Or disable the build status column */}
+          {/* <HomePagePullRequestsCard buildStatus={false} /> */}
+        </Grid>
+      </Grid>
+    </Content>
+  </Page>
+);
+```
+
+### Props
+
+| Prop          | Type    | Default | Description                                                            |
+| ------------- | ------- | ------- | ---------------------------------------------------------------------- |
+| `buildStatus` | boolean | `true`  | Whether to show build status column and fetch build status information |
