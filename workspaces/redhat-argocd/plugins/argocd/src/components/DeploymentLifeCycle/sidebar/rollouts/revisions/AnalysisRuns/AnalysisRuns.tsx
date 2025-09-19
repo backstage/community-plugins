@@ -20,15 +20,14 @@ import moment from 'moment';
 
 import { AnalysisRun } from '../../../../../../types/analysisRuns';
 import AnalysisRunStatus from './AnalysisRunStatus';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../../translations/ref';
+import { useTranslation } from '../../../../../../hooks/useTranslation';
 
 interface AnalysisRunsProps {
   analysisruns: AnalysisRun[];
 }
 
 const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   if (!analysisruns || analysisruns?.length === 0) {
     return null;

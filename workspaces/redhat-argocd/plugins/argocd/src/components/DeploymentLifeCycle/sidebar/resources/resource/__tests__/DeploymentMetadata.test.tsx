@@ -26,6 +26,11 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { configApiRef, ApiRef } from '@backstage/core-plugin-api';
 import { Config } from '@backstage/config';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 const resource: Resource = {
   group: 'apps',

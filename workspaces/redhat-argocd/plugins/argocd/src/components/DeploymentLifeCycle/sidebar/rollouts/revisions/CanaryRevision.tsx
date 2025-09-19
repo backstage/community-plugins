@@ -34,8 +34,7 @@ import AnalysisRuns from './AnalysisRuns/AnalysisRuns';
 import ProgressBar from './ProgressBar';
 import RevisionStatus from './RevisionStatus';
 import RevisionType from './RevisionType';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 interface RevisionCardProps {
   revision: Revision;
@@ -59,7 +58,7 @@ const CanaryRevision: FC<RevisionCardProps> = ({
   const { percentage, isStableRevision, isCanaryRevision } = useCanaryMetadata({
     revision,
   });
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   if (!revision) {
     return null;

@@ -25,8 +25,7 @@ import {
   Theme,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../translations/ref';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +56,7 @@ export const ResourcesKebabMenuOptions = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   return (
     <>

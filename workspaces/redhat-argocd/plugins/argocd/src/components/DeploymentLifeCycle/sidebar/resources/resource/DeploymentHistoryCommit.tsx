@@ -21,8 +21,7 @@ import {
   Application,
   History,
 } from '@backstage-community/plugin-redhat-argocd-common';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 type DeploymentHistoryCommitProps = {
   deploymentHistory: History;
@@ -39,7 +38,7 @@ export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
   commitUrl,
   revisionSha,
 }) => {
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   return (
     <Card

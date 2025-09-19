@@ -38,8 +38,7 @@ import {
 } from '../../utils/utils';
 import AppSyncStatus from '../AppStatus/AppSyncStatus';
 import { AppHealthIcon } from '../AppStatus/StatusIcons';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../translations/ref';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const DeploymentSummary = () => {
   const { entity } = useEntity();
@@ -79,7 +78,7 @@ const DeploymentSummary = () => {
       : `${appBaseUrl}/applications/${row.metadata.name}`;
   };
 
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
   // Translated text
   const tableTitle = t('deploymentSummary.deploymentSummary.tableTitle');
   const columnTitles = {

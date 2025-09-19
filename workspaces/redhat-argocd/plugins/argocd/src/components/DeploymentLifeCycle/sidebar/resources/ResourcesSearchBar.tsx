@@ -22,8 +22,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../translations/ref';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -47,7 +46,7 @@ export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
   onSearchClear,
 }) => {
   const classes = useStyles();
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   return (
     <TextField

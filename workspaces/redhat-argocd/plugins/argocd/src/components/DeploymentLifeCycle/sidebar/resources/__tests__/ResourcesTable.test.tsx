@@ -18,7 +18,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ResourcesTable } from '../ResourcesTable';
 import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { useArgoResources } from '../../rollouts/RolloutContext';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
 
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 jest.mock('../../../sidebar/rollouts/RolloutContext', () => ({
   ...jest.requireActual('../../../sidebar/rollouts/RolloutContext'),
   useArgoResources: jest.fn(),

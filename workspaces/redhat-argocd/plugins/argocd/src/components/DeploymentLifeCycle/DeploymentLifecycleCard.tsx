@@ -40,8 +40,7 @@ import Metadata from '../Common/Metadata';
 import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
 import MetadataItemWithTooltip from '../Common/MetadataItemWithTooltip';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../translations/ref';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const useCardStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -69,7 +68,7 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   const latestRevision = appHistory[appHistory.length - 1];
   const classes = useCardStyles();
   const { entity } = useEntity();
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   if (!app) {
     return null;

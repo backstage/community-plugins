@@ -16,6 +16,11 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { ResourcesSearchBar } from '../ResourcesSearchBar';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('ResourcesSearchBar Component', () => {
   const mockOnChange = jest.fn();

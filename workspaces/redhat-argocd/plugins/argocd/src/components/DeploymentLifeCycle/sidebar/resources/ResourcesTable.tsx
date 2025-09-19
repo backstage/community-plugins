@@ -39,8 +39,7 @@ import {
   sortValues,
 } from '../../../../utils/utils';
 import { useArgoResources } from '../rollouts/RolloutContext';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../translations/ref';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 interface ResourcesTableProps {
   resources: Resource[];
@@ -215,7 +214,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     </div>
   );
 
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
   const resourcesColumnHeaders = getResourcesColumnHeaders(t);
 
   return (

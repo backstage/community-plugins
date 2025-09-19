@@ -24,8 +24,7 @@ import BlueGreenRevision from './revisions/BlueGreenRevision';
 import CanaryRevision from './revisions/CanaryRevision';
 import MetadataItem from '../../../Common/MetadataItem';
 import Metadata from '../../../Common/Metadata';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../translations/ref';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 const useRevisionStyles = makeStyles((theme: Theme) => ({
   revisionContainer: {
@@ -51,7 +50,7 @@ interface RolloutProps {
 const Rollout: FC<RolloutProps> = ({ rollout }) => {
   const classes = useRevisionStyles();
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
