@@ -24,8 +24,10 @@ import Box from '@mui/material/Box';
 import { MembersInfo } from '../../hooks/useMembers';
 import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
+import { useTranslation } from '../../hooks/useTranslation';
+import { useLanguage } from '../../hooks/useLanguage';
 import EditRole from '../EditRole';
-import { columns } from './MembersListColumns';
+import { getColumns } from './MembersListColumns';
 import { StyledTableWrapper } from './StyledTableWrapper';
 
 type MembersCardProps = {
@@ -48,13 +50,15 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 };
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
+  const { t } = useTranslation();
+  const locale = useLanguage();
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
   const [searchText, setSearchText] = useState<string>();
 
   const actions = [
     {
       icon: getRefreshIcon,
-      tooltip: 'Refresh',
+      tooltip: t('common.refresh'),
       isFreeAction: true,
       onClick: () => {
         retry.roleRetry();
@@ -63,15 +67,17 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     },
     {
       icon: () => getEditIcon(canReadUsersAndGroups, roleName),
-      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
+      tooltip: canReadUsersAndGroups
+        ? t('common.edit')
+        : t('common.unauthorizedToEdit'),
       isFreeAction: true,
       onClick: () => {},
     },
   ];
-
+  const columns = useMemo(() => getColumns(t), [t]);
   const filteredData = useMemo(
-    () => filterTableData({ data, columns, searchText }),
-    [data, searchText],
+    () => filterTableData({ data, columns, searchText, locale }),
+    [data, searchText, locale, columns],
   );
 
   return (
@@ -80,7 +86,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
         <Box style={{ paddingBottom: '16px' }}>
           <WarningPanel
             message={(error as Error)?.message || (error as Error)?.name}
-            title="Something went wrong while fetching the users and groups"
+            title={t('errors.fetchUsersAndGroups')}
             severity="error"
           />
         </Box>
@@ -89,22 +95,26 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
         <Table
           title={
             !loading && data?.length
-              ? `${getMembers(filteredData)}`
-              : 'Users and groups'
+              ? `${getMembers(filteredData, t)}`
+              : t('table.headers.usersAndGroups')
           }
           actions={actions}
           options={{ padding: 'default', search: true, paging: true }}
           data={data ?? []}
           isLoading={loading}
-          columns={columns}
+          columns={getColumns(t)}
           emptyContent={
             <Box
               data-testid="members-table-empty"
               sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
             >
-              No records found
+              {t('common.noRecordsFound')}
             </Box>
           }
+          localization={{
+            toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+            pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+          }}
           onSearchChange={setSearchText}
         />
       </StyledTableWrapper>

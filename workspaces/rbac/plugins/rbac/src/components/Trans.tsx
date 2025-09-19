@@ -13,8 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function capitalizeFirstLetter(word: string, locale?: string) {
-  return word.charAt(0).toLocaleUpperCase(locale || 'en') + word.slice(1);
+import { useTranslation } from '../hooks/useTranslation';
+import { rbacTranslationRef } from '../translations';
+
+type Messages = typeof rbacTranslationRef.T;
+
+interface TransProps<TMessages extends { [key in string]: string }> {
+  message: keyof TMessages;
+  params?: any;
 }
 
-export { capitalizeFirstLetter };
+export const Trans = ({ message, params }: TransProps<Messages>) => {
+  const { t } = useTranslation();
+  return t(message, params);
+};

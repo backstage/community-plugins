@@ -20,11 +20,17 @@ import { Content, Header, Page } from '@backstage/core-components';
 import { render, screen } from '@testing-library/react';
 
 import { mockMembers } from '../../__fixtures__/mockMembers';
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
+
 import { CreateRolePage } from './CreateRolePage';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn(),
+}));
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
 }));
 
 jest.mock('react-use', () => ({

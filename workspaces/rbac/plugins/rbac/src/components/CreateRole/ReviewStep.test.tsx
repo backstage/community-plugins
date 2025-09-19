@@ -15,9 +15,17 @@
  */
 import { render, screen } from '@testing-library/react';
 
-import { ReviewStep } from './ReviewStep';
-
 import '@testing-library/jest-dom';
+
+// CRITICAL: Import mocks BEFORE components
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+// Component imports AFTER mocks
+import { ReviewStep } from './ReviewStep';
 
 describe('ReviewStep', () => {
   const mockValues = {

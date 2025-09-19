@@ -18,6 +18,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { render, screen } from '@testing-library/react';
+import { mockUseTranslation } from '../test-utils/mockTranslations';
 
 import { Router } from './Router';
 
@@ -28,6 +29,10 @@ const configMock = {
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn(() => configMock),
+}));
+
+jest.mock('../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
 }));
 
 jest.mock('./RbacPage', () => ({

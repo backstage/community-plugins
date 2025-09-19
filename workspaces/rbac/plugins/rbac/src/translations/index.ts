@@ -13,8 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function capitalizeFirstLetter(word: string, locale?: string) {
-  return word.charAt(0).toLocaleUpperCase(locale || 'en') + word.slice(1);
-}
+import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { rbacTranslationRef } from './ref';
 
-export { capitalizeFirstLetter };
+/**
+ * @public
+ */
+export const rbacTranslations = createTranslationResource({
+  ref: rbacTranslationRef,
+  translations: {
+    de: () => import('./de'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+    es: () => import('./es'),
+  },
+});
+
+export { rbacTranslationRef };

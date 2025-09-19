@@ -17,11 +17,26 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 
+// CRITICAL: Import mocks BEFORE components
+import {
+  mockUseLanguage,
+  mockUseTranslation,
+} from '../../test-utils/mockTranslations';
+
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
+
+jest.mock('../ConditionalAccess/ConditionsFormRowFields');
+
+// Component imports AFTER mocks
 import { mockTransformedConditionRules } from '../../__fixtures__/mockTransformedConditionRules';
 import * as ConditionsFormRowFields from '../ConditionalAccess/ConditionsFormRowFields';
 import PermissionPoliciesFormRow from './PermissionPoliciesFormRow';
-
-jest.mock('../ConditionalAccess/ConditionsFormRowFields');
 
 describe('PermissionPoliciesFormRow', () => {
   const mockProps = {

@@ -27,13 +27,18 @@ import DownloadCSVLink from '../DownloadUserStatistics';
 import { SnackbarAlert } from '../SnackbarAlert';
 import { useToast } from '../ToastContext';
 import DeleteRoleDialog from './DeleteRoleDialog';
-import { columns } from './RolesListColumns';
+import { getColumns } from './RolesListColumns';
 import { RolesListToolbar } from './RolesListToolbar';
 import { useDeleteDialog } from '../DeleteDialogContext';
+import { useTranslation } from '../../hooks/useTranslation';
+import { useLanguage } from '../../hooks/useLanguage';
 
 export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
+  const { t } = useTranslation();
+  const locale = useLanguage();
+
   useLocationToast(setToastMessage);
   const [searchText, setSearchText] = useState<string>();
   const [page, setPage] = useState(0);
@@ -50,22 +55,22 @@ export const RolesList = () => {
   const onAlertClose = () => {
     setToastMessage('');
   };
+  const columns = getColumns(t, locale);
   const filteredRoles = useMemo(
-    () => filterTableData({ data, columns, searchText }),
-    [data, searchText],
+    () => filterTableData({ data, columns, searchText, locale }),
+    [data, searchText, columns, locale],
   );
 
   const getErrorWarning = () => {
-    const errorTitleBase = 'Something went wrong while fetching the';
     const errorWarningArr = [
-      { message: error?.rolesError, title: `${errorTitleBase} roles` },
+      { message: error?.rolesError, title: t('errors.fetchRoles') },
       {
         message: error?.policiesError,
-        title: `${errorTitleBase} permission policies`,
+        title: t('errors.fetchPolicies'),
       },
       {
         message: error?.roleConditionError,
-        title: `${errorTitleBase} role conditions`,
+        title: t('errors.fetchConditions'),
       },
     ];
 
@@ -103,8 +108,10 @@ export const RolesList = () => {
       <Table
         title={
           !loading && data?.length
-            ? `All roles (${filteredRoles.length})`
-            : `All roles`
+            ? t('table.titleWithCount' as any, {
+                count: filteredRoles.length.toString(),
+              })
+            : t('table.title')
         }
         options={{ padding: 'default', search: true, paging: true }}
         data={data}
@@ -115,7 +122,7 @@ export const RolesList = () => {
             data-testid="roles-table-empty"
             sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
           >
-            No records found
+            {t('table.emptyContent')}
           </Box>
         }
         onSearchChange={setSearchText}
@@ -123,6 +130,10 @@ export const RolesList = () => {
         onRowsPerPageChange={newPageSize => {
           setPageSize(newPageSize);
           setPage(0);
+        }}
+        localization={{
+          toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+          pagination: { labelRowsSelect: t('table.labelRowsSelect') },
         }}
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}

@@ -32,6 +32,8 @@ import ArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PermissionPoliciesFormNestedRow from './PermissionPoliciesFormNestedRow';
 import Link from '@mui/material/Link';
+import { useTranslation } from '../../hooks/useTranslation';
+import { useLanguage } from '../../hooks/useLanguage';
 
 type PermissionPoliciesFormRowProps = {
   rowData: any;
@@ -67,6 +69,8 @@ const PermissionPoliciesFormRow = ({
   onRemovePlugin,
   onAddConditions,
 }: PermissionPoliciesFormRowProps) => {
+  const { t } = useTranslation();
+  const locale = useLanguage();
   const [currentOpen, setCurrentOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -94,10 +98,10 @@ const PermissionPoliciesFormRow = ({
 
   const getPermissionCellLabel = (plugin: string) => {
     if (permissionPoliciesRows.find(ppr => ppr.plugin === plugin)) {
-      return 'Edit...';
+      return t('common.editCell');
     }
 
-    return 'Select...';
+    return t('common.selectCell');
   };
 
   return (
@@ -113,7 +117,7 @@ const PermissionPoliciesFormRow = ({
           }}
         >
           <IconButton
-            aria-label="expand-row"
+            aria-label={t('common.expandRow')}
             size="small"
             onClick={() => setCurrentOpen(!currentOpen)}
             data-testid={`expand-row-${rowData.plugin}`}
@@ -136,7 +140,7 @@ const PermissionPoliciesFormRow = ({
         </TableCell>
         <TableCell align="right" sx={{ borderBottom: 'none' }}>
           <IconButton
-            aria-label="remove"
+            aria-label={t('common.remove').toLocaleLowerCase(locale ?? 'en')}
             size="small"
             onClick={() => onRemovePlugin(rowData.plugin)}
           >

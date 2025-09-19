@@ -17,29 +17,35 @@ import { getRulesNumber } from '../../utils/create-role-utils';
 import { getPolicyString } from '../../utils/rbac-utils';
 import { ConditionsData } from '../ConditionalAccess/types';
 import { RowPolicy } from './types';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { rbacTranslationRef } from '../../translations';
 
-export const selectedPermissionPoliciesColumn = () => [
-  {
-    title: 'Plugin',
-    field: 'plugin',
-  },
-  {
-    title: 'Permission',
-    field: 'permission',
-  },
-  {
-    title: 'Policies',
-    field: 'policies',
-    render: (policies: RowPolicy[]) => getPolicyString(policies),
-  },
-  {
-    title: 'Conditional',
-    field: 'conditions',
-    render: (conditions: ConditionsData) => {
-      const totalRules = getRulesNumber(conditions);
-      return totalRules
-        ? `${totalRules} ${totalRules > 1 ? 'rules' : 'rule'}`
-        : '-';
+export const selectedPermissionPoliciesColumn = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) => {
+  return [
+    {
+      title: t('permissionPolicies.plugin'),
+      field: 'plugin',
     },
-  },
-];
+    {
+      title: t('permissionPolicies.permission'),
+      field: 'permission',
+    },
+    {
+      title: t('permissionPolicies.policies'),
+      field: 'policies',
+      render: (policies: RowPolicy[]) => getPolicyString(policies),
+    },
+    {
+      title: t('permissionPolicies.conditional'),
+      field: 'conditions',
+      render: (conditions: ConditionsData) => {
+        const totalRules = getRulesNumber(conditions);
+        return totalRules
+          ? `${totalRules} ${totalRules > 1 ? t('permissionPolicies.rules') : t('permissionPolicies.rule')}`
+          : '-';
+      },
+    },
+  ];
+};

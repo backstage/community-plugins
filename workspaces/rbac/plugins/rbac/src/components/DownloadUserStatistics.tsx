@@ -20,9 +20,11 @@ import { useApi } from '@backstage/core-plugin-api';
 import Button from '@mui/material/Button';
 
 import { licensedUsersApiRef } from '../api/LicensedUsersClient';
+import { useTranslation } from '../hooks/useTranslation';
 
 function DownloadCSVLink() {
   const licensedUsersClient = useApi(licensedUsersApiRef);
+  const { t } = useTranslation();
   const handleDownload = async (
     event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
   ) => {
@@ -42,7 +44,7 @@ function DownloadCSVLink() {
         // Create a temporary link to trigger the download
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'licensed-users.csv';
+        a.download = t('common.csvFilename');
         document.body.appendChild(a);
         a.click();
 
@@ -70,7 +72,7 @@ function DownloadCSVLink() {
       }}
       size="small"
     >
-      Download User List
+      {t('common.exportCSV')}
     </Button>
   );
 }
