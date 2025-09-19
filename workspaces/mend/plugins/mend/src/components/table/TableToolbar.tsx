@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { MTableToolbar } from '@material-table/core';
-import { Grid, Typography } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 type TableToolbarProps = {
   children: ReactNode;
@@ -16,7 +17,12 @@ export const TableToolbar = ({
   title,
 }: TableToolbarProps) => {
   return (
-    <Grid container alignItems="center" alignContent="center">
+    <Grid
+      container
+      alignItems="center"
+      alignContent="center"
+      sx={{ paddingLeft: 2 }}
+    >
       <Grid item xs={12}>
         {title && <Typography variant="h4">{title}</Typography>}
       </Grid>
@@ -26,6 +32,9 @@ export const TableToolbar = ({
         xs={12}
         alignItems="center"
         justifyContent="space-between"
+        margin={0}
+        paddingBottom={1}
+        paddingTop={1}
       >
         <Grid item xs={9}>
           <ProjectFilterComponent />

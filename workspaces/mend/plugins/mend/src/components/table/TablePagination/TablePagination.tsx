@@ -1,8 +1,7 @@
 import type { MouseEvent, ChangeEventHandler } from 'react';
-import {
-  TablePagination as MaterialTablePagination,
-  makeStyles,
-} from '@material-ui/core';
+import MaterialTablePagination from '@mui/material/TablePagination';
+import type { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { TablePaginationActions } from './TablePaginationActions';
 
 type TablePaginationProps = {
@@ -20,11 +19,11 @@ type TablePaginationProps = {
   >;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   root: {
-    color: theme.palette.type === 'light' ? '#232F3E' : 'white',
+    color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
     backgroundColor:
-      theme.palette.type === 'light'
+      theme.palette.mode === 'light'
         ? 'white'
         : theme.palette.background.default,
   },
@@ -35,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     flex: 'none',
   },
   selectIcon: {
-    color: theme.palette.type === 'light' ? '#232F3E' : 'white',
+    color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
   },
 }));
 

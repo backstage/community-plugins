@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import {
   Tag,

@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { styled, Typography } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { Tag, TagColor, type TableRowProjectProps } from '../../../components';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import { ProjectTableLanguages } from './ProjectTableLanguages';
@@ -32,7 +33,7 @@ export const tagColorMap = {
 };
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
-  color: theme?.palette?.type === 'light' ? '#073C8C' : 'white',
+  color: theme?.palette?.mode === 'light' ? '#073C8C' : 'white',
 }));
 
 const classes: Record<string, CSSProperties> = {

@@ -1,5 +1,10 @@
 import type { MouseEvent } from 'react';
-import { IconButton, makeStyles, SvgIcon, useTheme } from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import SvgIcon from '@mui/material/SvgIcon';
+
+import { makeStyles } from '@mui/styles';
 
 type TablePaginationActionsProps = {
   count: number;
@@ -56,7 +61,7 @@ const ArrowRight = () => (
   </SvgIcon>
 );
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   container: {
     display: 'flex',
     gap: '8px',
@@ -66,7 +71,7 @@ const useStyles = makeStyles(theme => ({
   },
   buttonContainer: {
     padding: '0',
-    color: theme.palette.type === 'light' ? '#073C8C' : 'white',
+    color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
     '&:disabled': {
       color: '#C4C6CB',
     },
@@ -106,6 +111,7 @@ export const TablePaginationActions = ({
         disabled={page === 0}
         aria-label="first page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
@@ -114,6 +120,7 @@ export const TablePaginationActions = ({
         disabled={page === 0}
         aria-label="previous page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
       </IconButton>
@@ -123,6 +130,7 @@ export const TablePaginationActions = ({
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <ArrowLeft /> : <ArrowRight />}
       </IconButton>
@@ -131,6 +139,7 @@ export const TablePaginationActions = ({
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>

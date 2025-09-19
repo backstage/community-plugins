@@ -1,15 +1,14 @@
-import {
-  Card as MaterialCard,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  Link,
-  makeStyles,
-  SvgIcon,
-  Typography,
-} from '@material-ui/core';
+import MaterialCard from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import CardHeader from '@mui/material/CardHeader';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import SvgIcon from '@mui/material/SvgIcon';
+import Typography from '@mui/material/Typography';
+import type { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { Statistics } from '../models';
 import { numberToShortText } from '../utils';
 import { Card } from './Card';
@@ -23,7 +22,7 @@ type TotalProps = {
   url: string;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   container: {
     border: '1px solid #dfdfdf',
     boxShadow: '0px 2px 4px 0px #00000026',
@@ -33,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor:
-      theme.palette.type === 'light'
+      theme.palette.mode === 'light'
         ? '#F5F6F8'
         : theme.palette.background.default,
   },
@@ -81,7 +80,16 @@ export const Total = ({
       <CardHeader className={classes.header} title={title} />
       <Divider />
       <CardContent className={classes.content}>
-        <Grid container direction="row" style={{ paddingBottom: '1rem' }}>
+        <Grid
+          container
+          direction="row"
+          sx={{
+            padding: 2,
+            paddingRight: 0,
+            flexWrap: { xs: 'wrap', lg: 'nowrap' },
+          }}
+          gap={2}
+        >
           <Grid item lg={2} md={12}>
             <Card title="Total Findings" loading={dataLoading}>
               <Typography
