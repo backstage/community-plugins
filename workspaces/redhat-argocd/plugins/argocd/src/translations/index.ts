@@ -13,3 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+
+import { argocdTranslationRef } from './ref';
+
+/**
+ * The translation resource for the ArgoCD plugin
+ */
+export const argocdTranslations = createTranslationResource({
+  ref: argocdTranslationRef,
+  translations: {},
+});
+
+export { argocdTranslationRef };

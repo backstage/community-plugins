@@ -19,3 +19,4 @@ export {
   ArgocdDeploymentSummary,
 } from './plugin';
 export { isArgocdConfigured } from './utils/isArgocdConfigured';
+export { argocdTranslations, argocdTranslationRef } from './translations';
