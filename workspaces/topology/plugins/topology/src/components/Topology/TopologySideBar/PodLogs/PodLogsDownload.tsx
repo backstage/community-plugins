@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import DownloadIcon from '@mui/icons-material/GetApp';
 
 import { downloadLogFile } from '../../../../utils/download-log-file-utils';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 type PodLogsDownloadProps = {
   logText?: string;
@@ -24,6 +25,8 @@ type PodLogsDownloadProps = {
 };
 
 const PodLogsDownload = ({ logText, fileName }: PodLogsDownloadProps) => {
+  const { t } = useTranslation();
+
   return logText ? (
     <IconButton
       aria-label="download logs"
@@ -32,7 +35,7 @@ const PodLogsDownload = ({ logText, fileName }: PodLogsDownloadProps) => {
       color="primary"
     >
       <DownloadIcon fontSize="small" />
-      Download
+      {t('logs.download')}
     </IconButton>
   ) : null;
 };

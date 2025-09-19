@@ -20,7 +20,16 @@ import {
   workloadNode,
   workloadNode2,
 } from '../../../__fixtures__/workloadNodeData';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
 import TopologyDetailsTabPanel from './TopologyDetailsTabPanel';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
+
+jest.mock('../../../hooks/useLanguage', () => ({
+  useLanguage: () => 'en',
+}));
 
 describe('TopologyDetailsTabPanel', () => {
   it('Should render workload node details', () => {

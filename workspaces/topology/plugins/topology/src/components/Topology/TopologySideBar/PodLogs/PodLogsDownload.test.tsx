@@ -17,7 +17,12 @@ import type { PropsWithChildren } from 'react';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 
+import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
 import PodLogsDownload from './PodLogsDownload';
+
+jest.mock('../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 import { downloadLogFile } from '../../../../utils/download-log-file-utils';
 
 jest.mock('@mui/material', () => ({

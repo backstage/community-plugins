@@ -40,6 +40,8 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/styles';
 import type { Permission } from '@backstage/plugin-permission-common';
 
+import { useTranslation } from '../../../hooks/useTranslation';
+
 const StyledBox = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'center',
@@ -57,7 +59,15 @@ type MissingPermissionPageProps = { permissions: Permission[] };
 export const MissingPermissionPage = ({
   permissions,
 }: MissingPermissionPageProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const permissionNames = permissions.map(perm => perm.name).join(', ');
+
+  const permissionText =
+    permissions.length === 1
+      ? t('permissions.permission')
+      : t('permissions.permissions');
 
   return (
     <StyledBox>
@@ -65,26 +75,26 @@ export const MissingPermissionPage = ({
         <Grid item xs={4} md={4}>
           <Stack spacing={3} alignItems="flex-start">
             <Typography variant="h3" style={{ fontWeight: 400 }}>
-              Missing Permission
+              {t('permissions.missingPermission')}
             </Typography>
             <Typography variant="body1">
-              To view Topology, your administrator must grant you{' '}
-              {permissions.map((perm, i) => {
-                const isLast = i === permissions.length - 1;
-                const isSecondLast = i === permissions.length - 2;
-                let separator = ', ';
-                if (isSecondLast) separator = ' and ';
-                if (isLast) separator = ' ';
+              {(() => {
+                const TOKEN = '__PERMS__';
+                const sentence = t('permissions.missingPermissionDescription', {
+                  permissions: TOKEN,
+                  permissionText,
+                });
+                const [before, after] = sentence.split(TOKEN);
                 return (
                   <>
-                    <StyledTypography key={perm.name} component="span">
-                      {perm.name}
+                    {before}
+                    <StyledTypography component="span">
+                      {permissionNames}
                     </StyledTypography>
-                    {separator}
+                    {after}
                   </>
                 );
-              })}
-              {permissions.length === 1 ? 'permission' : 'permissions'}.
+              })()}
             </Typography>
             <Button
               style={{ textTransform: 'none' }}
@@ -92,7 +102,7 @@ export const MissingPermissionPage = ({
               color="primary"
               onClick={() => navigate(-1)}
             >
-              Go back
+              {t('permissions.goBack')}
             </Button>
           </Stack>
         </Grid>
