@@ -26,35 +26,35 @@ export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
  *
  * @public
  */
-export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create_announcement';
+export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create-announcement';
 
 /**
  * Event action for updating an announcement
  *
  * @public
  */
-export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
+export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update-announcement';
 
 /**
  * Event action for deleting an announcement
  *
  * @public
  */
-export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
+export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete-announcement';
 
 /**
  * Event action for creating a category
  *
  * @public
  */
-export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
+export const EVENTS_ACTION_CREATE_CATEGORY = 'create-category';
 
 /**
  * Event action for deleting a category
  *
  * @public
  */
-export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
+export const EVENTS_ACTION_DELETE_CATEGORY = 'delete-category';
 
 /**
  * Event action for creating a tag
@@ -83,3 +83,37 @@ export const SIGNALS_CHANNEL_ANNOUNCEMENTS = 'announcements:new';
  * @public
  */
 export const MAX_TITLE_TAG_LENGTH = 100;
+
+/**
+ * Announcement mutate event ID for auditor mutations
+ *
+ * @public
+ */
+export const AUDITOR_MUTATE_EVENT_ID = 'announcements-mutate';
+
+/**
+ * Event action for creating an announcement
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_CREATE = 'create';
+
+/**
+ * Event action for updating an announcement
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_UPDATE = 'update';
+
+/**
+ * Event action for deleting an announcement
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_DELETE = 'delete';
+/**
+ * Announcement fetch event ID for auditor read/query operations
+ *
+ * @public
+ */
+export const AUDITOR_FETCH_EVENT_ID = 'announcements-fetch';
