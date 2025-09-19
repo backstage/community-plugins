@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  argocdPlugin,
-  ArgocdDeploymentLifecycle,
-  ArgocdDeploymentSummary,
-} from './plugin';
-export { isArgocdConfigured } from './utils/isArgocdConfigured';
-export { argocdTranslations, argocdTranslationRef } from './translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../translations';
+
+/**
+ * Hook using translation function for ArgoCD plugin
+ */
+export const useTranslation = () => {
+  const { t: originalT } = useTranslationRef(argocdTranslationRef);
+
+  const t = (key: string, params?: Record<string, any>) => {
+    return originalT(key as any, params as any);
+  };
+
+  return { t };
+};

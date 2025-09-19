@@ -40,6 +40,7 @@ import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
 import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 import { DrawerProvider } from './DrawerContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -60,6 +61,7 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
 );
 
 const DeploymentLifecycle = () => {
+  const { t } = useTranslation();
   const { entity } = useEntity();
   const classes = useDrawerStyles();
 
@@ -156,11 +158,11 @@ const DeploymentLifecycle = () => {
   return (
     <>
       <Typography variant="h2" gutterBottom>
-        Deployment lifecycle
+        {t('deploymentLifecycle.deploymentLifecycle.title')}
       </Typography>
 
       <Typography variant="subtitle1" gutterBottom>
-        Review deployed components/systems in the namespace using ArgoCD plugin
+        {t('deploymentLifecycle.deploymentLifecycle.subtitle')}
       </Typography>
 
       <div className={classes.lifecycle}>

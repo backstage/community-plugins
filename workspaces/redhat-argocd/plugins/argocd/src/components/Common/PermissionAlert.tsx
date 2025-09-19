@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 import { Alert, AlertTitle } from '@material-ui/lab';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const PermissionAlert = () => {
+  const { t } = useTranslation();
+
   return (
     <Alert severity="warning" data-testid="no-permission-alert">
-      <AlertTitle>Permission required</AlertTitle>
-      To view argocd plugin, contact your administrator to give you the
-      argocd.view.read permission.
+      <AlertTitle>{t('common.permissionAlert.alertTitle')}</AlertTitle>
+      {t('common.permissionAlert.alertText')}
     </Alert>
   );
 };

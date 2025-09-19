@@ -16,6 +16,11 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { ResourcesKebabMenuOptions } from '../ResourcesKebabMenuOptions';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('ResourcesKebabMenuOptions Component', () => {
   it('should render the kebab menu icon button', () => {

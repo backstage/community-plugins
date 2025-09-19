@@ -19,6 +19,11 @@ import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { getRolloutUIResources } from '../../../../../../utils/rollout-utils';
 import { useArgoResources } from '../../../rollouts/RolloutContext';
 import RolloutMetadata from '../RolloutMetadata';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('../../../rollouts/RolloutContext', () => ({
   ...jest.requireActual('../../../rollouts/RolloutContext'),

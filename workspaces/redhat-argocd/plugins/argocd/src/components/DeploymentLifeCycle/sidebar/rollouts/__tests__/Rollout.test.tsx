@@ -19,6 +19,7 @@ import { mockArgoResources } from '../../../../../../dev/__data__/argoRolloutsOb
 import { Revision, RolloutUI } from '../../../../../types/revision';
 import { getRolloutUIResources } from '../../../../../utils/rollout-utils';
 import Rollout from '../Rollout';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
 
 const [canaryRollout, blueGreenRollout] = getRolloutUIResources(
   mockArgoResources,
@@ -46,6 +47,10 @@ jest.mock(
 jest.mock('../revisions/BlueGreenRevision', () => () => (
   <div data-testid="bluegreen-revision" />
 ));
+
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 const canaryRolloutWithRevisions: RolloutUI = {
   ...canaryRollout,
