@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend
 
+## 0.8.0
+
+### Minor Changes
+
+- c97a8de: Migrated plugin to Material UI 5 and Added More Pagination Option for the Table
+
 ## 0.7.0
 
 ### Minor Changes
