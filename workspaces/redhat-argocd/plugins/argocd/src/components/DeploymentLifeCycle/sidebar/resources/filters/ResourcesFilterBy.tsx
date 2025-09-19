@@ -269,7 +269,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
               onOpenChange={isOpen => setIsKindFilterExpanded(isOpen)}
               isOpen={isKindFilterExpanded}
             >
-              {kindFilterMenuItems(allKinds, filters, t)}
+              {kindFilterMenuItems(allKinds, filters)}
             </Select>
           )}
         </ToolbarFilter>

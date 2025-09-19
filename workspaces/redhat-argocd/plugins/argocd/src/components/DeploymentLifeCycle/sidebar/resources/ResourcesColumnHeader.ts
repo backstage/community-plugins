@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 import { TableColumn } from '@backstage/core-components';
-import { TranslationFunction } from 'backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../translations/ref';
 
-export const getResourcesColumnHeaders = (
-  t: TranslationFunction<typeof argocdTranslationRef.T>,
-): TableColumn[] => {
+export const getResourcesColumnHeaders = (t: Function): TableColumn[] => {
   return [
     {
       id: 'expander',
