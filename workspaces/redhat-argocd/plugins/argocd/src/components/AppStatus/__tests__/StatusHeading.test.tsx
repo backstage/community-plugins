@@ -18,6 +18,11 @@ import { render, screen } from '@testing-library/react';
 import { mockApplication } from '../../../../dev/__data__';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import StatusHeading from '../StatusHeading';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('StatusHeading', () => {
   test('should not render if the application is not available', () => {

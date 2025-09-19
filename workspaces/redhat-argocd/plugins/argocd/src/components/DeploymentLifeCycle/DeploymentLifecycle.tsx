@@ -40,8 +40,7 @@ import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
 import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 import { DrawerProvider } from './DrawerContext';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../translations/ref';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -62,7 +61,7 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
 );
 
 const DeploymentLifecycle = () => {
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
   const { entity } = useEntity();
   const classes = useDrawerStyles();
 

@@ -22,11 +22,9 @@ import {
   HealthStatus,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { AppHealthIcon } from './StatusIcons';
-import {
-  TranslationFunction,
-  useTranslationRef,
-} from '@backstage/core-plugin-api/alpha';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { argocdTranslationRef } from '../../translations/ref';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const getHealthStatusTranslation = (
   status: HealthStatus,
@@ -39,7 +37,7 @@ const AppHealthStatus: FC<{ app: Application; isChip?: boolean }> = ({
   app,
   isChip = false,
 }) => {
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   return isChip ? (
     <Chip

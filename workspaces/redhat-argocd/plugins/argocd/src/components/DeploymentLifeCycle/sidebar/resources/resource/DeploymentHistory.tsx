@@ -23,8 +23,7 @@ import {
   History,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { DeploymentHistoryCommit } from './DeploymentHistoryCommit';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 type DeploymentHistoryProps = {
   application: Application;
@@ -47,7 +46,7 @@ export const DeploymentHistory: FC<DeploymentHistoryProps> = ({
   const { spec } = application || {};
   const sources = spec?.sources || (spec?.source ? [spec.source] : []);
   const displayedRevisions = new Set<string>();
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   return (
     <>

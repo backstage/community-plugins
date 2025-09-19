@@ -24,8 +24,7 @@ import MetadataItem from '../../../../Common/MetadataItem';
 import MetadataItemWithTooltip from '../../../../Common/MetadataItemWithTooltip';
 import AppCommitLink from '../../../../Common/AppCommitLink';
 import { DeploymentHistory } from './DeploymentHistory';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
   latestDeploymentContainer: {
@@ -76,7 +75,7 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
     });
   };
 
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
   return (
     <>
       <Metadata>

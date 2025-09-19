@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../translations/ref';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const PermissionAlert = () => {
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   return (
     <Alert severity="warning" data-testid="no-permission-alert">

@@ -20,8 +20,7 @@ import { RolloutUI } from '../../../../../types/revision';
 import RolloutStatus from '../../rollouts/RolloutStatus';
 import Metadata from '../../../../Common/Metadata';
 import MetadataItem from '../../../../Common/MetadataItem';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 const RolloutMetadata = ({ resource }: { resource: Resource }) => {
   const { rollouts } = useArgoResources();
@@ -33,7 +32,7 @@ const RolloutMetadata = ({ resource }: { resource: Resource }) => {
     ? 'Canary'
     : 'BlueGreen';
 
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   if (!rollout) {
     return null;

@@ -40,8 +40,7 @@ import Metadata from '../Common/Metadata';
 import MetadataItem from '../Common/MetadataItem';
 import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../translations/ref';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface DeploymentLifecycleDrawerProps {
   isOpen: boolean;
@@ -85,7 +84,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 
   const firstRevision = appHistory?.[0];
   const createdAt = firstRevision?.deployedAt;
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   if (!app) {
     return null;

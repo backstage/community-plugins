@@ -16,12 +16,11 @@
 import { Typography } from '@material-ui/core';
 
 import { ReplicaSet } from '../../../../../types/resources';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 const RevisionImage = ({ revision }: { revision: ReplicaSet }) => {
   const image = revision.spec?.template?.spec?.containers?.[0]?.image;
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   if (!image) {
     return null;

@@ -40,8 +40,7 @@ import {
   getResourceFilterTranslation,
 } from '../../../../../types/resources';
 import { useDarkTheme } from '../../../../../hooks/useDarkTheme';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../../translations/ref';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 interface ResourcesFilterByProps {
   filters: FiltersType;
@@ -66,7 +65,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
   const [isKindFilterExpanded, setIsKindFilterExpanded] =
     useState<boolean>(false);
 
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
 
   useDarkTheme();
 

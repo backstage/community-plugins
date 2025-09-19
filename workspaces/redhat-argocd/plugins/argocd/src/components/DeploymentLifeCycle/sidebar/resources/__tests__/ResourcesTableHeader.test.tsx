@@ -18,13 +18,20 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { ResourcesTableHeader } from '../ResourcesTableHeader';
 import { Order } from '@backstage-community/plugin-redhat-argocd-common';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('../ResourcesColumnHeader', () => ({
-  ResourcesColumnHeaders: [
-    { id: 'name', title: 'Name', defaultSort: 'asc' },
-    { id: 'type', title: 'Type', defaultSort: 'desc' },
-    { id: 'expander', title: '', defaultSort: false },
-  ],
+  getResourcesColumnHeaders: () => {
+    return [
+      { id: 'name', title: 'Name', defaultSort: 'asc' },
+      { id: 'type', title: 'Type', defaultSort: 'desc' },
+      { id: 'expander', title: '', defaultSort: false },
+    ];
+  },
 }));
 
 describe('ResourcesTableHeader Component', () => {

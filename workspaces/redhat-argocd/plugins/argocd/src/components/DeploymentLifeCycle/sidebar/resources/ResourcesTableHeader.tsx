@@ -24,8 +24,7 @@ import {
 
 import { getResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { Order } from '@backstage-community/plugin-redhat-argocd-common';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { argocdTranslationRef } from '../../../../translations/ref';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 interface ResourcesTableHeaderProps {
   onRequestSort: (
@@ -61,10 +60,8 @@ export const ResourcesTableHeader: FC<ResourcesTableHeaderProps> = ({
     (property: string, id: string) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property, id);
     };
-
-  const { t } = useTranslationRef(argocdTranslationRef);
+  const { t } = useTranslation();
   const resourcesColumnHeaders = getResourcesColumnHeaders(t);
-
   return (
     <TableHead>
       <TableRow>
