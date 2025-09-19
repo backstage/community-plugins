@@ -1581,7 +1581,7 @@ __metadata:
     "@backstage/plugin-catalog-node": "npm:^1.18.0"
     "@backstage/plugin-events-node": "npm:^0.4.14"
     "@backstage/plugin-notifications-common": "npm:^0.1.0"
-    "@backstage/plugin-notifications-node": "npm:0.2.18"
+    "@backstage/plugin-notifications-node": "npm:^0.2.18"
   languageName: unknown
   linkType: soft
 
