@@ -152,7 +152,7 @@ async function removeWorkspaceFromCompatibility(workspace) {
 
   const lines = content.split('\n');
   const filteredLines = lines.filter(line => {
-    if (line.startsWith('|| ')) {
+    if (line.startsWith('| ')) {
       const workspacePattern = new RegExp(
         `/workspaces/${workspace.replace(
           /[.*+?^${}()|[\]\\]/g,
