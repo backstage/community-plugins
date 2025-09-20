@@ -21,7 +21,10 @@ import {
 } from '@backstage/core-plugin-api';
 import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
 
-export { analyticsModuleSegment } from './plugin';
+export {
+  analyticsModuleSegment,
+  analyticsProviderSegmentPlugin as default,
+} from './plugin';
 export * from './apis/implementations/AnalyticsApi';
 /**
  * @public
