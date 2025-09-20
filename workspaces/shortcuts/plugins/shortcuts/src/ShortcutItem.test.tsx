@@ -71,4 +71,73 @@ describe('ShortcutItem', () => {
       expect(screen.getByText('MT')).toBeInTheDocument();
     });
   });
+
+  it('handles external URLs correctly', async () => {
+    const mockOpen = jest.fn();
+    Object.defineProperty(window, 'open', {
+      value: mockOpen,
+      writable: true,
+    });
+
+    const externalShortcut: Shortcut = {
+      id: 'external',
+      url: 'https://example.com',
+      title: 'External Link',
+    };
+
+    await renderInTestApp(
+      <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
+        <ShortcutItem
+          api={api}
+          shortcut={externalShortcut}
+          allowExternalLinks
+        />
+      </SidebarOpenStateProvider>,
+    );
+
+    const shortcutElement = screen.getByText('External Link');
+    shortcutElement.click();
+
+    expect(mockOpen).toHaveBeenCalledWith(
+      'https://example.com',
+      '_blank',
+      'noopener,noreferrer',
+    );
+  });
+
+  it('treats same-origin URLs as internal', async () => {
+    const mockOpen = jest.fn();
+    Object.defineProperty(window, 'open', {
+      value: mockOpen,
+      writable: true,
+    });
+
+    Object.defineProperty(window, 'location', {
+      value: {
+        origin: 'http://localhost:3000',
+      },
+      writable: true,
+    });
+
+    const sameOriginShortcut: Shortcut = {
+      id: 'same-origin',
+      url: 'http://localhost:3000/test',
+      title: 'Same Origin Link',
+    };
+
+    await renderInTestApp(
+      <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
+        <ShortcutItem
+          api={api}
+          shortcut={sameOriginShortcut}
+          allowExternalLinks
+        />
+      </SidebarOpenStateProvider>,
+    );
+
+    const shortcutElement = screen.getByText('Same Origin Link');
+    shortcutElement.click();
+
+    expect(mockOpen).not.toHaveBeenCalled();
+  });
 });
