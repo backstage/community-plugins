@@ -47,6 +47,8 @@ metadata:
     rollbar.com/project-slug: organization-name/project-name
     # -- or just ---
     rollbar.com/project-slug: project-name
+    # -- optional (default: production) ---
+    rollbar.com/environment: environment-name
 ```
 
 6. Run app with `yarn start` and navigate to `/rollbar` or a catalog entity
