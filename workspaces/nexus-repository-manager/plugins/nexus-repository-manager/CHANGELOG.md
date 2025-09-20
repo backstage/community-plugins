@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.15.2
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+- af98d48: Updated dependency `@hey-api/openapi-ts` to `0.82.4`.
+
 ## 1.15.1
 
 ### Patch Changes
