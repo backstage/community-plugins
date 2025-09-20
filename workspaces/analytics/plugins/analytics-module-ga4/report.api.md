@@ -8,7 +8,12 @@ import { AnalyticsApi as AnalyticsApi_2 } from '@backstage/frontend-plugin-api';
 import { AnalyticsEvent } from '@backstage/core-plugin-api';
 import { AnalyticsEvent as AnalyticsEvent_2 } from '@backstage/frontend-plugin-api';
 import { Config } from '@backstage/config';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+
+// @public (undocumented)
+const ga4Module: FrontendModule;
+export default ga4Module;
 
 // @public
 export class GoogleAnalytics4 implements AnalyticsApi, AnalyticsApi_2 {
