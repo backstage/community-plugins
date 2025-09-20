@@ -72,6 +72,10 @@ import {
   ArgocdDeploymentSummary,
   isArgocdConfigured,
 } from '@backstage-community/plugin-redhat-argocd';
+import {
+  EntityKubernetesContent,
+  isKubernetesAvailable,
+} from '@backstage/plugin-kubernetes';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
@@ -170,6 +174,14 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/cd" title="CD">
       {cdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      path="/kubernetes"
+      title="Kubernetes"
+      if={isKubernetesAvailable}
+    >
+      <EntityKubernetesContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">

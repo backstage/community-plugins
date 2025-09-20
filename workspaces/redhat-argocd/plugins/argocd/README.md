@@ -14,6 +14,10 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
+### Kubernetes plugin
+
+Please install and configure the frontend and backend Kubernetes plugins by following the [installation](https://backstage.io/docs/features/kubernetes/installation/) and [configuration](https://backstage.io/docs/features/kubernetes/configuration/) guides.
+
 ### Argo CD backend
 
 Please see [the backend documentation](../argocd-backend/README.md) for more information.
@@ -135,7 +139,7 @@ argocd:
 yarn workspace app add @backstage-community/plugin-redhat-argocd
 ```
 
-2. Add deployment summary and deployment lifecycle compoennt to the `entityPage.tsx` source file:
+2. Add deployment summary and deployment lifecycle component to the `entityPage.tsx` source file:
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
