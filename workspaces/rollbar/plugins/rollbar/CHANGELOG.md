@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rollbar
 
+## 0.8.1
+
+### Patch Changes
+
+- 8db5951: Allow custom project environment name
+
 ## 0.8.0
 
 ### Minor Changes
