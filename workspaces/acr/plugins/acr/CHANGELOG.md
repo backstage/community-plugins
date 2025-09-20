@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.16.1
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
 ## 1.16.0
 
 ### Minor Changes
