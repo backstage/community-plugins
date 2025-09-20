@@ -68,7 +68,15 @@ export interface JenkinsApi {
     filter: {
       branch?: string;
     };
-  }): Promise<Project[]>;
+  }): Promise<
+    | Project[]
+    | {
+        statusCode: number;
+        errorReason?: string;
+        connectionIssueMessage?: string;
+        jenkinsJobFullPath?: string;
+      }
+  >;
   // (undocumented)
   retry(options: {
     entity: CompoundEntityRef;
@@ -110,7 +118,15 @@ export class JenkinsClient implements JenkinsApi {
     filter: {
       branch?: string;
     };
-  }): Promise<Project[]>;
+  }): Promise<
+    | Project[]
+    | {
+        statusCode: number;
+        errorReason?: string;
+        connectionIssueMessage?: string;
+        jenkinsJobFullPath?: string;
+      }
+  >;
   // (undocumented)
   retry(options: {
     entity: CompoundEntityRef;
