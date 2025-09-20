@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Theme } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import {
