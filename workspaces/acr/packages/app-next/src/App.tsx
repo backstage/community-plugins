@@ -28,7 +28,7 @@ import acrPlugin from '@backstage-community/plugin-acr/alpha';
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
   params: {
-    defaultPath: '/',
+    path: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
   },
 });
@@ -37,7 +37,7 @@ export const app = createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
-    userSettingsPlugin as any,
+    userSettingsPlugin,
     acrPlugin,
     createFrontendModule({
       pluginId: 'app',
