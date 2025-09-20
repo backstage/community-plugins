@@ -166,6 +166,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
     active,
     current,
   });
+
   const lastSeen = announcementsApi.lastSeenDate();
 
   const { lastSignal } = useSignal<AnnouncementSignal>(
