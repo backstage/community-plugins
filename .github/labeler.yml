@@ -214,9 +214,6 @@ workspace/ocm:
 workspace/octopus-deploy:
   - "Workspace\\s*octopus-deploy"
 
-workspace/odo:
-  - "Workspace\\s*odo"
-
 workspace/opencost:
   - "Workspace\\s*opencost"
 
