@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.42.0
+
+### Minor Changes
+
+- d0926d5: Upgrade backstage 1.42.5
+
+### Patch Changes
+
+- Updated dependencies [d0926d5]
+  - @backstage-community/plugin-kiali-common@0.4.0
+  - @backstage-community/plugin-kiali-react@0.3.0
+
 ## 1.41.0
 
 ### Minor Changes
