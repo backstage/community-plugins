@@ -201,6 +201,7 @@ export const item: Renderer<TResource> = (
         }
         key={key}
         className={linkColor}
+        useDrawer
       >
         {resource.name}
       </BackstageObjectLink>
