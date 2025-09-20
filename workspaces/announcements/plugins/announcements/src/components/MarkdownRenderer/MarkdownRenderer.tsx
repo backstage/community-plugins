@@ -53,6 +53,33 @@ const useStyles = makeStyles(theme => ({
       paddingLeft: theme.spacing(1),
       color: theme.palette.text.secondary,
     },
+    '& table': {
+      '& thead th': {
+        color: theme.palette.text.primary,
+        backgroundColor:
+          theme.palette.type === 'dark'
+            ? theme.palette.background.default
+            : theme.palette.background.paper,
+      },
+      '& th, & td': {
+        border: 0,
+      },
+      '& tbody tr:nth-of-type(odd)': {
+        backgroundColor:
+          theme.palette.type === 'dark'
+            ? theme.palette.action.selected
+            : theme.palette.action.hover,
+      },
+      '& tbody tr:nth-of-type(even)': {
+        backgroundColor:
+          theme.palette.type === 'dark'
+            ? theme.palette.background.paper
+            : theme.palette.background.paper,
+      },
+      '& tbody td': {
+        borderTop: `1px solid ${theme.palette.divider}`,
+      },
+    },
   },
 }));
 
