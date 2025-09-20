@@ -62,7 +62,7 @@ type GetAnnouncementsQueryParams = {
   category?: string;
   page?: number;
   max?: number;
-  active?: boolean;
+  active?: string;
   sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
   current?: boolean;
@@ -133,7 +133,7 @@ export async function createRouter(
           category,
           max,
           offset: page ? (page - 1) * (max ?? 10) : undefined,
-          active,
+          active: active === 'true',
           sortBy: ['created_at', 'start_at'].includes(sortby)
             ? sortby
             : 'created_at',
@@ -312,6 +312,15 @@ export async function createRouter(
           eventPayload: { announcement },
           metadata: { action: EVENTS_ACTION_UPDATE_ANNOUNCEMENT },
         });
+      }
+
+      if (!initialAnnouncement.active && active) {
+        await signalAnnouncement(announcement, signals);
+        const announcementNotificationsEnabled =
+          req.body?.sendNotification === true;
+        if (announcementNotificationsEnabled) {
+          await sendAnnouncementNotification(announcement, notifications);
+        }
       }
 
       return res.status(200).json(announcement);
