@@ -5,16 +5,14 @@
 ```ts
 
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
 export function createMTAApplicationAction(opts: any): TemplateAction<    {
-name: string;
-url: string;
-branch: string;
-rootPath: string;
-}, JsonObject, "v1">;
+[x: string]: any;
+}, {
+[x: string]: any;
+}, "v2">;
 
 // @public (undocumented)
 const mtaScaffolderModule: BackendFeature;
