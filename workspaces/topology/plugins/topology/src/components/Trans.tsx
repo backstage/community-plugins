@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import { topologyTranslationRef } from '../translations';
 
 /**
  * Message map type for the Topology plugin translations.
- * @public
+ * @internal
  */
 export type Messages = typeof topologyTranslationRef.T;
 
 /**
  * Props for the Trans component.
- * @public
+ * @internal
  */
 export interface TransProps<TMessages extends { [key in string]: string }> {
   message: keyof TMessages;
@@ -35,7 +35,7 @@ export interface TransProps<TMessages extends { [key in string]: string }> {
 
 /**
  * Render a translated message, optionally replacing placeholders with components.
- * @public
+ * @internal
  */
 export const Trans = ({
   message,
@@ -45,12 +45,10 @@ export const Trans = ({
   const { t } = useTranslation();
   const translatedText = t(message, params);
 
-  // If no components are provided, return simple text
   if (!components) {
     return translatedText;
   }
 
-  // Parse the translated text and replace component placeholders
   let result: ReactNode = translatedText;
 
   Object.entries(components).forEach(([key, Component]) => {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { useLanguage } from '../hooks/useLanguage';
 
@@ -36,7 +35,7 @@ export const LocalizedTimestamp: React.FC<LocalizedTimestampProps> = ({
 
   const dateObj = typeof date === 'string' ? new Date(date) : date;
 
-  // Map language codes to proper locale codes
+  // Map language codes to widely supported locale codes
   const getLocale = (lang: string): string => {
     switch (lang) {
       case 'fr':

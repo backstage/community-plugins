@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 export { topologyPlugin, TopologyPage } from './plugin';
-export { topologyTranslations, topologyTranslationRef } from './translations';
-export { useTranslation } from './hooks/useTranslation';
-export { useLanguage } from './hooks/useLanguage';
-export { Trans } from './components/Trans';
-export type { TransProps, Messages } from './components/Trans';
+export { topologyTranslations } from './translations';

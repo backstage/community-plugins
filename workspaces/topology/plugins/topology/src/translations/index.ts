@@ -27,8 +27,8 @@ export const topologyTranslations = createTranslationResource({
     fr: () => import('./fr'),
     it: () => import('./it'),
     es: () => import('./es'),
-    // Add more languages as needed
   },
 });
 
+// @internal
 export { topologyTranslationRef };

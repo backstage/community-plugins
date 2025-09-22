@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import {
+  useTranslationRef,
+  TranslationFunction,
+  TranslationRef,
+} from '@backstage/core-plugin-api/alpha';
 import { topologyTranslationRef } from '../translations';
 
-/**
- * Hook returning a translation function for the Topology plugin.
- * @public
- */
-export const useTranslation = () => {
-  const { t: originalT } = useTranslationRef(topologyTranslationRef);
+type TopologyMessages = typeof topologyTranslationRef extends TranslationRef<
+  string,
+  infer TMessages extends { [x: string]: string }
+>
+  ? TMessages
+  : never;
 
-  const t = (key: string, params?: Record<string, any>) => {
-    return originalT(key as any, params as any);
-  };
-
-  return { t };
+export const useTranslation = (): {
+  t: TranslationFunction<TopologyMessages>;
+} => {
+  return useTranslationRef(topologyTranslationRef);
 };

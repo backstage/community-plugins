@@ -41,6 +41,7 @@ import { styled } from '@mui/styles';
 import type { Permission } from '@backstage/plugin-permission-common';
 
 import { useTranslation } from '../../../hooks/useTranslation';
+import { Trans } from '../../Trans';
 
 const StyledBox = styled(Box)(() => ({
   display: 'flex',
@@ -50,10 +51,6 @@ const StyledBox = styled(Box)(() => ({
   minWidth: '100%',
 }));
 
-const StyledTypography = styled(Typography)(() => ({
-  fontWeight: 600,
-})) as typeof Typography;
-
 type MissingPermissionPageProps = { permissions: Permission[] };
 
 export const MissingPermissionPage = ({
@@ -62,7 +59,9 @@ export const MissingPermissionPage = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const permissionNames = permissions.map(perm => perm.name).join(', ');
+  const permissionNames = `**${permissions
+    .map(perm => perm.name)
+    .join('**, **')}**`;
 
   const permissionText =
     permissions.length === 1
@@ -78,23 +77,13 @@ export const MissingPermissionPage = ({
               {t('permissions.missingPermission')}
             </Typography>
             <Typography variant="body1">
-              {(() => {
-                const TOKEN = '__PERMS__';
-                const sentence = t('permissions.missingPermissionDescription', {
-                  permissions: TOKEN,
+              <Trans
+                message="permissions.missingPermissionDescription"
+                params={{
+                  permissions: permissionNames,
                   permissionText,
-                });
-                const [before, after] = sentence.split(TOKEN);
-                return (
-                  <>
-                    {before}
-                    <StyledTypography component="span">
-                      {permissionNames}
-                    </StyledTypography>
-                    {after}
-                  </>
-                );
-              })()}
+                }}
+              />
             </Typography>
             <Button
               style={{ textTransform: 'none' }}
