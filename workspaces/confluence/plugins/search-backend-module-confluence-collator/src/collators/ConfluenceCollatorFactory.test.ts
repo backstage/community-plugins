@@ -51,11 +51,13 @@ const testSearchQuery = (
 describe('ConfluenceCollatorFactory', () => {
   const config = new ConfigReader({
     confluence: {
-      baseUrl: BASE_URL,
-      auth: {
-        type: 'basic',
-        token: 'AA',
-        email: 'user@example.com',
+      default: {
+        baseUrl: BASE_URL,
+        auth: {
+          type: 'basic',
+          token: 'AA',
+          email: 'user@example.com',
+        },
       },
     },
   });
@@ -75,10 +77,12 @@ describe('ConfluenceCollatorFactory', () => {
     // missing email
     const malformedBasicAuthConfig = new ConfigReader({
       confluence: {
-        baseUrl: BASE_URL,
-        auth: {
-          type: 'basic',
-          token: 'AA',
+        default: {
+          baseUrl: BASE_URL,
+          auth: {
+            type: 'basic',
+            token: 'AA',
+          },
         },
       },
     });
@@ -89,10 +93,12 @@ describe('ConfluenceCollatorFactory', () => {
     // missing password
     const malformedUserpassAuthConfig = new ConfigReader({
       confluence: {
-        baseUrl: BASE_URL,
-        auth: {
-          type: 'userpass',
-          username: 'user',
+        default: {
+          baseUrl: BASE_URL,
+          auth: {
+            type: 'userpass',
+            username: 'user',
+          },
         },
       },
     });
@@ -106,9 +112,11 @@ describe('ConfluenceCollatorFactory', () => {
     // missing token
     const malformedBearerAuthConfig = new ConfigReader({
       confluence: {
-        baseUrl: BASE_URL,
-        auth: {
-          type: 'bearer',
+        default: {
+          baseUrl: BASE_URL,
+          auth: {
+            type: 'bearer',
+          },
         },
       },
     });
@@ -133,7 +141,6 @@ describe('ConfluenceCollatorFactory', () => {
     const expectedSearch = {
       limit: '1000',
       status: 'current',
-      expand: 'version',
       cql: 'type IN (page, blogpost, comment, attachment)',
     };
     testSearchQuery(request, expectedSearch);
@@ -142,14 +149,16 @@ describe('ConfluenceCollatorFactory', () => {
   it('combines values from `spaces` & `query` when both are present in config', async () => {
     const configWithQuery = new ConfigReader({
       confluence: {
-        baseUrl: BASE_URL,
-        auth: {
-          type: 'basic',
-          token: 'AA',
-          email: 'user@example.com',
+        default: {
+          baseUrl: BASE_URL,
+          auth: {
+            type: 'basic',
+            token: 'AA',
+            email: 'user@example.com',
+          },
+          spaces: ['SPACE1', 'SPACE2'],
+          query: 'type = page',
         },
-        spaces: ['SPACE1', 'SPACE2'],
-        query: 'type = page',
       },
     });
     const factoryWithConfig = ConfluenceCollatorFactory.fromConfig(
@@ -171,7 +180,6 @@ describe('ConfluenceCollatorFactory', () => {
     const expectedSearch = {
       limit: '1000',
       status: 'current',
-      expand: 'version',
       cql: '(space="SPACE1" or space="SPACE2") and (type = page)',
     };
     testSearchQuery(request, expectedSearch);
@@ -180,13 +188,15 @@ describe('ConfluenceCollatorFactory', () => {
   it('uses only spaces when only spaces is present in config', async () => {
     const configWithSpacesOnly = new ConfigReader({
       confluence: {
-        baseUrl: BASE_URL,
-        auth: {
-          type: 'basic',
-          token: 'AA',
-          email: 'user@example.com',
+        default: {
+          baseUrl: BASE_URL,
+          auth: {
+            type: 'basic',
+            token: 'AA',
+            email: 'user@example.com',
+          },
+          spaces: ['SPACE1', 'SPACE2'],
         },
-        spaces: ['SPACE1', 'SPACE2'],
       },
     });
     const factoryWithConfig = ConfluenceCollatorFactory.fromConfig(
@@ -208,7 +218,6 @@ describe('ConfluenceCollatorFactory', () => {
       limit: '1000',
       status: 'current',
       cql: 'space="SPACE1" or space="SPACE2"',
-      expand: 'version',
     };
     testSearchQuery(request, expectedSearch);
   });
@@ -216,13 +225,15 @@ describe('ConfluenceCollatorFactory', () => {
   it('uses only query when only query is present in config', async () => {
     const configWithQueryOnly = new ConfigReader({
       confluence: {
-        baseUrl: BASE_URL,
-        auth: {
-          type: 'basic',
-          token: 'AA',
-          email: 'user@example.com',
+        default: {
+          baseUrl: BASE_URL,
+          auth: {
+            type: 'basic',
+            token: 'AA',
+            email: 'user@example.com',
+          },
+          query: 'type = page',
         },
-        query: 'type = page',
       },
     });
     const factoryWithConfig = ConfluenceCollatorFactory.fromConfig(
@@ -243,8 +254,7 @@ describe('ConfluenceCollatorFactory', () => {
     const expectedSearch = {
       limit: '1000',
       status: 'current',
-      cql: 'type = page',
-      expand: 'version',
+      cql: '() and (type = page)',
     };
     testSearchQuery(request, expectedSearch);
   });
