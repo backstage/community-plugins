@@ -30,13 +30,12 @@ import {
   oneloginAuthApiRef,
 } from '@backstage/core-plugin-api';
 import {
-  kubernetesApiRef,
   KubernetesAuthProviders,
-  kubernetesAuthProvidersApiRef,
   KubernetesBackendClient,
 } from '@backstage/plugin-kubernetes-react';
 
 import { ArgoCDApiClient, argoCDApiRef } from './api';
+import { kubernetesApiRef, kubernetesAuthProvidersApiRef } from './kubeApi';
 import { rootRouteRef } from './routes';
 
 export const argocdPlugin = createPlugin({
