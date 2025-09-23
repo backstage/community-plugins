@@ -1,5 +1,16 @@
 # @backstage-community/plugin-report-portal
 
+## 1.5.0
+
+### Minor Changes
+
+- 2b5f93e: - fix: handle startTime in both formats number/string
+
+### Patch Changes
+
+- Updated dependencies [2b5f93e]
+  - @backstage-community/plugin-report-portal-common@1.2.0
+
 ## 1.4.0
 
 ### Minor Changes
