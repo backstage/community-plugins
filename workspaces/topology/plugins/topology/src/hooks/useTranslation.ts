@@ -15,7 +15,6 @@
  */
 import {
   useTranslationRef,
-  TranslationFunction,
   TranslationRef,
 } from '@backstage/core-plugin-api/alpha';
 import { topologyTranslationRef } from '../translations';
@@ -28,7 +27,13 @@ type TopologyMessages = typeof topologyTranslationRef extends TranslationRef<
   : never;
 
 export const useTranslation = (): {
-  t: TranslationFunction<TopologyMessages>;
+  t: (key: keyof TopologyMessages, options?: Record<string, unknown>) => string;
 } => {
-  return useTranslationRef(topologyTranslationRef);
+  const { t } = useTranslationRef(topologyTranslationRef);
+  return {
+    t: t as unknown as (
+      key: keyof TopologyMessages,
+      options?: Record<string, unknown>,
+    ) => string,
+  };
 };
