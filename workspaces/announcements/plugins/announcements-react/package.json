@@ -39,10 +39,10 @@
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-app-api": "^1.18.0",
-    "@backstage/core-plugin-api": "^1.10.9",
+    "@backstage/core-app-api": "^1.19.0",
+    "@backstage/core-plugin-api": "^1.11.0",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-react": "^1.20.1",
+    "@backstage/plugin-catalog-react": "^1.21.1",
     "luxon": "^3.4.4",
     "react-use": "^17.2.4"
   },
@@ -50,7 +50,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.0",
+    "@backstage/cli": "^0.34.3",
     "@backstage/test-utils": "^1.7.11",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^12.1.3",
