@@ -20,7 +20,7 @@ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-reac
 /**
  * @alpha
  */
-export const entitySonarQubeCard: any = EntityCardBlueprint.make({
+export const entitySonarQubeCard = EntityCardBlueprint.make({
   name: 'card',
   params: {
     filter: isSonarQubeAvailable,
