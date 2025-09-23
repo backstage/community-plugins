@@ -145,7 +145,12 @@ import {
 
 ...
 
-const myCustomDecorator: AdrContentDecorator = ({ content }) => {
+const myCustomDecorator: AdrContentDecorator = ({ content, filename }) => {
+  if (filename?.includes('security')) {
+    // Apply security-specific formatting
+    return { content: applySecurityFormatting(content) };
+  }
+
   return { content: applyCustomContentTransformation(content) };
 };
 
