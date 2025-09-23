@@ -35,9 +35,9 @@
     "directory": "workspaces/rollbar"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.0",
+    "@backstage/cli": "^0.34.3",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.14.0",
+    "@backstage/repo-tools": "^0.15.2",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
