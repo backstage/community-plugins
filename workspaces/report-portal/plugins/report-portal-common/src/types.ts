@@ -94,9 +94,9 @@ export type LaunchDetails = {
   uuid: string;
   name: string;
   number: number;
-  startTime: number;
-  endTime: number;
-  lastModified: number;
+  startTime: number | string;
+  endTime: number | string;
+  lastModified: number | string;
   status: string;
   statistics: {
     executions: {
