@@ -186,4 +186,70 @@ describe('ShortcutForm', () => {
       expect(props.onClose).toHaveBeenCalled();
     });
   });
+
+  it('includes openInNewTab when checkbox is checked', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+        ]}
+      >
+        <ShortcutForm allowExternalLinks {...props} />
+      </TestApiProvider>,
+    );
+
+    const urlInput = screen.getByPlaceholderText('Enter a URL');
+    const titleInput = screen.getByPlaceholderText('Enter a display name');
+    const openInNewTabCheckbox = screen.getByLabelText('Open in new tab');
+
+    fireEvent.change(urlInput, {
+      target: { value: 'https://example.com' },
+    });
+    fireEvent.change(titleInput, { target: { value: 'Example Site' } });
+    fireEvent.click(openInNewTabCheckbox);
+
+    fireEvent.click(screen.getByText('Save'));
+    await waitFor(() => {
+      expect(props.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Example Site',
+          url: 'https://example.com',
+          openInNewTab: true,
+        }),
+        expect.anything(),
+      );
+    });
+  });
+
+  it('defaults openInNewTab to false when checkbox is not checked', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+        ]}
+      >
+        <ShortcutForm allowExternalLinks {...props} />
+      </TestApiProvider>,
+    );
+
+    const urlInput = screen.getByPlaceholderText('Enter a URL');
+    const titleInput = screen.getByPlaceholderText('Enter a display name');
+
+    fireEvent.change(urlInput, {
+      target: { value: 'https://example.com' },
+    });
+    fireEvent.change(titleInput, { target: { value: 'Example Site' } });
+
+    fireEvent.click(screen.getByText('Save'));
+    await waitFor(() => {
+      expect(props.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Example Site',
+          url: 'https://example.com',
+          openInNewTab: false,
+        }),
+        expect.anything(),
+      );
+    });
+  });
 });

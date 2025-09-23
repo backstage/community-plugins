@@ -19,9 +19,11 @@ export type Shortcut = {
   id: string;
   url: string;
   title: string;
+  openInNewTab?: boolean;
 };
 
 export type FormValues = {
   url: string;
   title: string;
+  openInNewTab?: boolean;
 };

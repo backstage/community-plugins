@@ -25,7 +25,7 @@ import { ShortcutIcon } from './ShortcutIcon';
 import { EditShortcut } from './EditShortcut';
 import { ShortcutApi } from './api';
 import { Shortcut } from './types';
-import { SidebarItem } from '@backstage/core-components';
+import { SidebarItem, Link } from '@backstage/core-components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,6 +57,10 @@ const getIconText = (title: string) =>
         .slice(0, 2)
         .toUpperCase();
 
+const isExternalUrl = (url: string) => {
+  return /^https?:\/\//.test(url);
+};
+
 type Props = {
   shortcut: Shortcut;
   api: ShortcutApi;
@@ -76,27 +80,62 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
     setAnchorEl(undefined);
   };
 
+  const handleLinkClick = (event: MouseEvent<HTMLDivElement>) => {
+    const shouldOpenInNewTab =
+      shortcut.openInNewTab ||
+      (isExternalUrl(shortcut.url) && allowExternalLinks);
+
+    if (shouldOpenInNewTab) {
+      event.preventDefault();
+      window.open(shortcut.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      const shouldOpenInNewTab =
+        shortcut.openInNewTab ||
+        (isExternalUrl(shortcut.url) && allowExternalLinks);
+
+      if (shouldOpenInNewTab) {
+        window.open(shortcut.url, '_blank', 'noopener,noreferrer');
+      }
+    }
+  };
+
   const text = getIconText(shortcut.title);
   const color = api.getColor(shortcut.url);
+
+  const shouldOpenInNewTab =
+    shortcut.openInNewTab ||
+    (isExternalUrl(shortcut.url) && allowExternalLinks);
 
   return (
     <>
       <Tooltip title={shortcut.title} enterDelay={500}>
-        <SidebarItem
-          className={classes.root}
-          to={shortcut.url}
-          text={shortcut.title}
-          icon={() => <ShortcutIcon text={text} color={color} />}
+        <div
+          onClick={handleLinkClick}
+          onKeyDown={handleKeyPress}
+          role="button"
+          tabIndex={0}
         >
-          <IconButton
-            id="edit"
-            data-testid="edit"
-            onClick={handleClick}
-            className={classes.button}
+          <SidebarItem
+            className={classes.root}
+            to={shouldOpenInNewTab ? '#' : shortcut.url}
+            text={shortcut.title}
+            icon={() => <ShortcutIcon text={text} color={color} />}
           >
-            <EditIcon className={classes.icon} />
-          </IconButton>
-        </SidebarItem>
+            <IconButton
+              id="edit"
+              data-testid="edit"
+              onClick={handleClick}
+              className={classes.button}
+            >
+              <EditIcon className={classes.icon} />
+            </IconButton>
+          </SidebarItem>
+        </div>
       </Tooltip>
       <EditShortcut
         onClose={handleClose}

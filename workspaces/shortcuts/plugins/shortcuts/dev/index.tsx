@@ -19,7 +19,7 @@ import { shortcutsPlugin, Shortcuts } from '../src/plugin';
 createDevApp()
   .registerPlugin(shortcutsPlugin)
   .addPage({
-    element: <Shortcuts />,
+    element: <Shortcuts allowExternalLinks />,
     title: 'Root Page',
   })
   .render();

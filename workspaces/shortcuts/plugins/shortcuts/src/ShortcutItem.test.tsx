@@ -71,4 +71,110 @@ describe('ShortcutItem', () => {
       expect(screen.getByText('MT')).toBeInTheDocument();
     });
   });
+
+  it('opens external link in new tab when openInNewTab is true', async () => {
+    const externalShortcut: Shortcut = {
+      id: 'id',
+      url: 'https://example.com',
+      title: 'External Site',
+      openInNewTab: true,
+    };
+
+    // Mock window.open
+    const mockOpen = jest.fn();
+    Object.defineProperty(window, 'open', {
+      value: mockOpen,
+      writable: true,
+    });
+
+    await renderInTestApp(
+      <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
+        <ShortcutItem api={api} shortcut={externalShortcut} />
+      </SidebarOpenStateProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('External Site')).toBeInTheDocument();
+    });
+
+    // Click the shortcut item
+    const shortcutDiv = screen.getByText('External Site').closest('div');
+    shortcutDiv?.click();
+
+    expect(mockOpen).toHaveBeenCalledWith(
+      'https://example.com',
+      '_blank',
+      'noopener,noreferrer',
+    );
+  });
+
+  it('auto-detects external URLs and opens in new tab when allowExternalLinks is true', async () => {
+    const externalShortcut: Shortcut = {
+      id: 'id',
+      url: 'https://example.com',
+      title: 'External Site',
+    };
+
+    // Mock window.open
+    const mockOpen = jest.fn();
+    Object.defineProperty(window, 'open', {
+      value: mockOpen,
+      writable: true,
+    });
+
+    await renderInTestApp(
+      <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
+        <ShortcutItem
+          api={api}
+          shortcut={externalShortcut}
+          allowExternalLinks
+        />
+      </SidebarOpenStateProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('External Site')).toBeInTheDocument();
+    });
+
+    // Click the shortcut item
+    const shortcutDiv = screen.getByText('External Site').closest('div');
+    shortcutDiv?.click();
+
+    expect(mockOpen).toHaveBeenCalledWith(
+      'https://example.com',
+      '_blank',
+      'noopener,noreferrer',
+    );
+  });
+
+  it('does not open in new tab for internal URLs', async () => {
+    const internalShortcut: Shortcut = {
+      id: 'id',
+      url: '/internal-page',
+      title: 'Internal Page',
+    };
+
+    // Mock window.open
+    const mockOpen = jest.fn();
+    Object.defineProperty(window, 'open', {
+      value: mockOpen,
+      writable: true,
+    });
+
+    await renderInTestApp(
+      <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
+        <ShortcutItem api={api} shortcut={internalShortcut} />
+      </SidebarOpenStateProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Internal Page')).toBeInTheDocument();
+    });
+
+    // Click the shortcut item
+    const shortcutDiv = screen.getByText('Internal Page').closest('div');
+    shortcutDiv?.click();
+
+    expect(mockOpen).not.toHaveBeenCalled();
+  });
 });

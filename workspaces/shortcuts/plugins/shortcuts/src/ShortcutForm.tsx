@@ -21,6 +21,8 @@ import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
 import { FormValues } from './types';
 import { shortcutsApiRef } from './api';
@@ -59,6 +61,7 @@ export const ShortcutForm = ({
   const { current: originalValues } = useRef({
     url: formValues?.url ?? '',
     title: formValues?.title ?? '',
+    openInNewTab: formValues?.openInNewTab ?? false,
   });
   const {
     handleSubmit,
@@ -159,6 +162,23 @@ export const ShortcutForm = ({
               label="Display Name"
               variant="outlined"
               autoComplete="off"
+            />
+          )}
+        />
+        <Controller
+          name="openInNewTab"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...field}
+                  checked={field.value || false}
+                  color="primary"
+                />
+              }
+              label="Open in new tab"
+              className={classes.field}
             />
           )}
         />

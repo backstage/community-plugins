@@ -46,6 +46,12 @@ export const SidebarComponent = () => (
 
 To allow external links to be added as shortcut, you can add `allowExternalLinks` property to the `<Shortcuts />` component.
 
+### New Tab Support
+
+The shortcuts plugin supports opening links in a new tab. When creating or editing a shortcut, you can check the "Open in new tab" option to have that shortcut open in a new browser tab.
+
+Additionally, when `allowExternalLinks` is enabled, external URLs (starting with `http://` or `https://`) will automatically open in a new tab to keep users within the Backstage application while still providing access to external resources.
+
 The plugin exports a `shortcutApiRef` but the plugin includes a default implementation of the `ShortcutApi` that uses `localStorage` to store each user's shortcuts.
 
 To overwrite the default implementation add it to the App's `apis.ts`:
