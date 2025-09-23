@@ -45,11 +45,11 @@
   },
   "dependencies": {
     "@backstage-community/plugin-manage-react": "workspace:^",
-    "@backstage/catalog-model": "^1.7.4",
-    "@backstage/core-components": "^0.17.3",
-    "@backstage/core-plugin-api": "^1.10.8",
-    "@backstage/plugin-catalog-graph": "^0.4.20",
-    "@backstage/plugin-catalog-react": "^1.19.0",
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.18.1",
+    "@backstage/core-plugin-api": "^1.11.0",
+    "@backstage/plugin-catalog-graph": "^0.5.1",
+    "@backstage/plugin-catalog-react": "^1.21.1",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
@@ -61,10 +61,10 @@
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.0",
-    "@backstage/plugin-catalog": "^1.31.0",
-    "@backstage/test-utils": "^1.7.9",
-    "@backstage/types": "^1.2.1",
+    "@backstage/cli": "^0.34.3",
+    "@backstage/plugin-catalog": "^1.31.3",
+    "@backstage/test-utils": "^1.7.11",
+    "@backstage/types": "^1.2.2",
     "@types/react": "^18.3.12"
   },
   "files": [
