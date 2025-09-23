@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 7.3.0
+
+### Minor Changes
+
+- 5260b5c: support config to set permission vs conditional policy evaluation order
+
 ## 7.2.0
 
 ### Minor Changes
