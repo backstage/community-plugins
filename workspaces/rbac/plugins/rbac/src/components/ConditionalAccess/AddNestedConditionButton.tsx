@@ -17,8 +17,9 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { useTranslation } from '../../hooks/useTranslation';
+import { MarkdownContent } from '@backstage/core-components';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { useTranslation } from '../../hooks/useTranslation';
 import { rbacTranslationRef } from '../../translations';
 
 export const tooltipTitle = (
@@ -26,7 +27,9 @@ export const tooltipTitle = (
 ) => (
   <div>
     <Typography variant="body1" component="p" align="center">
-      {t('conditionalAccess.nestedConditionTooltip')}
+      <MarkdownContent
+        content={t('conditionalAccess.nestedConditionTooltip')}
+      />
     </Typography>
     <Typography variant="body1" component="p" align="center">
       {t('conditionalAccess.nestedConditionExample')}

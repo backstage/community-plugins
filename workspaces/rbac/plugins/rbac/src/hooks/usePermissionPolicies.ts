@@ -108,9 +108,9 @@ export const usePermissionPolicies = (
 
   const data = useMemo(() => {
     return Array.isArray(policies)
-      ? getPermissionsData(policies, allPermissionPolicies, undefined, locale)
+      ? getPermissionsData(policies, allPermissionPolicies, t, locale)
       : [];
-  }, [allPermissionPolicies, policies, locale]);
+  }, [allPermissionPolicies, policies, locale, t]);
 
   const conditionsData = useMemo(() => {
     const cpp = Array.isArray(conditionalPolicies) ? conditionalPolicies : [];

@@ -18,6 +18,7 @@ import { rbacTranslationRef } from './ref';
 
 const rbacTranslationIt = createTranslationMessages({
   ref: rbacTranslationRef,
+  full: true,
   messages: {
     'page.title': 'RBAC',
     'page.createRole': 'Crea ruolo',
@@ -34,7 +35,7 @@ const rbacTranslationIt = createTranslationMessages({
     'toolbar.createButton': 'Crea',
     'toolbar.warning.title': 'Impossibile creare il ruolo.',
     'toolbar.warning.message':
-      'Per abilitare il pulsante crea/modifica ruolo, assicurati che gli utenti/gruppi richiesti siano disponibili nel catalogo poiché un ruolo non può essere creato senza utenti/gruppi e il ruolo associato al tuo utente dovrebbe avere le politiche di permesso menzionate',
+      'Per abilitare il pulsante crea/modifica ruolo, assicurati che gli utenti/gruppi richiesti siano disponibili nel catalogo poiché un ruolo non può essere creato senza utenti/gruppi e anche il ruolo associato al tuo utente dovrebbe avere le politiche di permesso menzionate <link>qui</link>.',
     'toolbar.warning.linkText': 'qui',
     'toolbar.warning.note': 'Nota',
     'toolbar.warning.noteText':
@@ -92,11 +93,8 @@ const rbacTranslationIt = createTranslationMessages({
       "Opzionale: Inserisci un utente o gruppo che avrà il permesso di modificare questo ruolo e creare ruoli aggiuntivi. Nel prossimo passo, specifica quali utenti possono assegnare ai loro ruoli e a quali plugin possono concedere accesso. Se lasciato vuoto, assegna automaticamente l'autore alla creazione.",
     'deleteDialog.title': 'Elimina ruolo',
     'deleteDialog.question': 'Eliminare questo ruolo?',
-    'deleteDialog.confirmation': 'Sei sicuro di voler eliminare il ruolo',
-    'deleteDialog.warning':
-      "L'eliminazione di questo ruolo è irreversibile e rimuoverà la sua funzionalità dal sistema. Procedi con cautela.",
-    'deleteDialog.impact':
-      "Gli {{members}} associati a questo ruolo perderanno l'accesso a tutte le {{permissions}} politiche di permesso specificate in questo ruolo.",
+    'deleteDialog.confirmation':
+      "Sei sicuro di voler eliminare il ruolo **{{roleName}}**?\n\nEliminare questo ruolo è irreversibile e rimuoverà la sua funzionalità dal sistema. Procedi con cautela.\n\nGli **{{members}}** associati a questo ruolo perderanno l'accesso a tutte le **{{permissions}} politiche di permesso** specificate in questo ruolo.",
     'deleteDialog.roleNameLabel': 'Nome del ruolo',
     'deleteDialog.roleNameHelper': 'Digita il nome del ruolo per confermare',
     'deleteDialog.deleteButton': 'Elimina',
@@ -160,8 +158,8 @@ const rbacTranslationIt = createTranslationMessages({
     'common.unableToFetchMembers': 'Impossibile recuperare i membri: {{error}}',
     'common.roleAction': '{{action}} ruolo',
     'common.membersCount': '{{count}} membri',
-    'common.parentGroup': '{{count}} gruppo padre',
-    'common.childGroups': '{{count}} gruppi figli',
+    'common.parentGroupCount': '{{count}} gruppo padre',
+    'common.childGroupsCount': '{{count}} gruppi figli',
     'common.searchAndSelectUsersGroups':
       'Cerca e seleziona utenti e gruppi da aggiungere. Gli utenti e gruppi selezionati appariranno nella tabella sottostante.',
     'common.noUsersAndGroupsFound': 'Nessun utente e gruppo trovato.',
@@ -185,15 +183,14 @@ const rbacTranslationIt = createTranslationMessages({
     'conditionalAccess.addNestedCondition': 'Aggiungi condizione annidata',
     'conditionalAccess.addRule': 'Aggiungi regola',
     'conditionalAccess.nestedConditionTooltip':
-      "Le condizioni annidate sono regole di 1 livello all'interno di una condizione principale. Ti permettono di consentire l'accesso appropriato utilizzando permessi dettagliati basati su varie condizioni. Puoi aggiungere più condizioni annidate.",
+      "Le condizioni annidate sono **regole di 1 livello all'interno di una condizione principale**. Ti permettono di consentire un accesso appropriato utilizzando permessi dettagliati basati su varie condizioni. Puoi aggiungere più condizioni annidate.",
     'conditionalAccess.nestedConditionExample':
       "Ad esempio, puoi consentire l'accesso a tutti i tipi di entità nella condizione principale e utilizzare una condizione annidata per limitare l'accesso alle entità di proprietà dell'utente.",
     'dialog.cancelRoleCreation': 'Annulla creazione ruolo',
     'dialog.exitRoleCreation': 'Uscire dalla creazione del ruolo?',
     'dialog.exitRoleEditing': 'Uscire dalla modifica del ruolo?',
     'dialog.exitWarning':
-      'Uscire da questa pagina eliminerà permanentemente le informazioni inserite.',
-    'dialog.exitConfirmation': 'Sei sicuro di voler uscire?',
+      '\n\nUscire da questa pagina scarterà permanentemente le informazioni inserite.\n\nSei sicuro di voler uscire?',
     'dialog.discard': 'Scarta',
     'dialog.cancel': 'Annulla',
     'permissionPolicies.helperText':

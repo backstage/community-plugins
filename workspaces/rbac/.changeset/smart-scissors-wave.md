@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-rbac': patch
+'@backstage-community/plugin-rbac': minor
 ---
 
-add translation support to RBAC
+Add internationalization (i18n) support with German, French, Italian, and Spanish translations.

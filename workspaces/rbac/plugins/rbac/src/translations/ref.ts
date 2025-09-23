@@ -39,7 +39,7 @@ export const rbacMessages = {
     warning: {
       title: 'Unable to create role.',
       message:
-        'To enable create/edit role button, make sure required users/groups are available in catalog as a role cannot be created without users/groups and also the role associated with your user should have the permission policies mentioned',
+        'To enable create/edit role button, make sure required users/groups are available in catalog as a role cannot be created without users/groups and also the role associated with your user should have the permission policies mentioned <link>here</link>.',
       linkText: 'here',
       note: 'Note',
       noteText:
@@ -112,11 +112,8 @@ export const rbacMessages = {
   deleteDialog: {
     title: 'Delete Role',
     question: 'Delete this role?',
-    confirmation: 'Are you sure you want to delete the role',
-    warning:
-      'Deleting this role is irreversible and will remove its functionality from the system. Proceed with caution.',
-    impact:
-      'The {{members}} associated with this role will lose access to all the {{permissions}} permission policies specified in this role.',
+    confirmation:
+      'Are you sure you want to delete the role **{{roleName}}**?\n\nDeleting this role is irreversible and will remove its functionality from the system. Proceed with caution.\n\nThe **{{members}}** associated with this role will lose access to all the **{{permissions}} permission policies** specified in this role.',
     roleNameLabel: 'Role name',
     roleNameHelper: 'Type the name of the role to confirm',
     deleteButton: 'Delete',
@@ -131,8 +128,7 @@ export const rbacMessages = {
     exitRoleCreation: 'Exit role creation?',
     exitRoleEditing: 'Exit role editing?',
     exitWarning:
-      'Exiting this page will permanently discard the information you entered.',
-    exitConfirmation: 'Are you sure you want to exit?',
+      '\n\nExiting this page will permanently discard the information you entered.\n\nAre you sure you want to exit?',
     discard: 'Discard',
     cancel: 'Cancel',
   },
@@ -144,7 +140,7 @@ export const rbacMessages = {
     addNestedCondition: 'Add nested condition',
     addRule: 'Add rule',
     nestedConditionTooltip:
-      'Nested conditions are 1 layer rules within a main condition. It lets you allow appropriate access by using detailed permissions based on various conditions. You can add multiple nested conditions.',
+      'Nested conditions are **1 layer rules within a main condition**. It lets you allow appropriate access by using detailed permissions based on various conditions. You can add multiple nested conditions.',
     nestedConditionExample:
       'For example, you can allow access to all entity types in the main condition and use a nested condition to limit the access to entities owned by the user.',
   },
@@ -226,8 +222,8 @@ export const rbacMessages = {
     unableToFetchMembers: 'Unable to fetch members: {{error}}',
     roleAction: '{{action}} role',
     membersCount: '{{count}} members',
-    parentGroup: '{{count}} parent group',
-    childGroups: '{{count}} child groups',
+    parentGroupCount: '{{count}} parent group',
+    childGroupsCount: '{{count}} child groups',
     searchAndSelectUsersGroups:
       'Search and select users and groups to be added. Selected users and groups will appear in the table below.',
     noUsersAndGroupsFound: 'No users and groups found.',

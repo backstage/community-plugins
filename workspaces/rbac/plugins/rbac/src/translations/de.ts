@@ -18,6 +18,7 @@ import { rbacTranslationRef } from './ref';
 
 const rbacTranslationDe = createTranslationMessages({
   ref: rbacTranslationRef,
+  full: true,
   messages: {
     'page.title': 'RBAC',
     'page.createRole': 'Rolle erstellen',
@@ -34,7 +35,7 @@ const rbacTranslationDe = createTranslationMessages({
     'toolbar.createButton': 'Erstellen',
     'toolbar.warning.title': 'Rolle kann nicht erstellt werden.',
     'toolbar.warning.message':
-      'Um die Erstellen/Bearbeiten-Rollen-Schaltfläche zu aktivieren, stellen Sie sicher, dass die erforderlichen Benutzer/Gruppen im Katalog verfügbar sind, da eine Rolle nicht ohne Benutzer/Gruppen erstellt werden kann und die mit Ihrem Benutzer verknüpfte Rolle die Berechtigungsrichtlinien haben sollte, die hier erwähnt werden',
+      'Um die Schaltfläche Rolle erstellen/bearbeiten zu aktivieren, stellen Sie sicher, dass die erforderlichen Benutzer/Gruppen im Katalog verfügbar sind, da eine Rolle nicht ohne Benutzer/Gruppen erstellt werden kann, und dass die Rolle, die mit Ihrem Benutzer verknüpft ist, die Berechtigungsrichtlinien <link>hier</link> erwähnt.',
     'toolbar.warning.linkText': 'hier',
     'toolbar.warning.note': 'Hinweis',
     'toolbar.warning.noteText':
@@ -91,11 +92,7 @@ const rbacTranslationDe = createTranslationMessages({
     'deleteDialog.title': 'Rolle löschen',
     'deleteDialog.question': 'Diese Rolle löschen?',
     'deleteDialog.confirmation':
-      'Sind Sie sicher, dass Sie die Rolle löschen möchten',
-    'deleteDialog.warning':
-      'Das Löschen dieser Rolle ist unwiderruflich und wird ihre Funktionalität aus dem System entfernen. Gehen Sie vorsichtig vor.',
-    'deleteDialog.impact':
-      'Die {{members}} die mit dieser Rolle verknüpft sind, verlieren den Zugriff auf alle {{permissions}} Berechtigungsrichtlinien, die in dieser Rolle angegeben sind.',
+      'Bist du sicher, dass du die Rolle **{{roleName}}** löschen möchtest?\n\nDas Löschen dieser Rolle ist irreversibel und entfernt ihre Funktionalität aus dem System. Bitte vorsichtig vorgehen.\n\nDie **{{members}}**, die mit dieser Rolle verbunden sind, verlieren den Zugriff auf alle in dieser Rolle angegebenen **{{permissions}} Berechtigungsrichtlinien**.',
     'deleteDialog.roleNameLabel': 'Rollenname',
     'deleteDialog.roleNameHelper':
       'Geben Sie den Namen der Rolle zur Bestätigung ein',
@@ -162,8 +159,8 @@ const rbacTranslationDe = createTranslationMessages({
       'Mitglieder können nicht abgerufen werden: {{error}}',
     'common.roleAction': '{{action}} Rolle',
     'common.membersCount': '{{count}} Mitglieder',
-    'common.parentGroup': '{{count}} übergeordnete Gruppe',
-    'common.childGroups': '{{count}} untergeordnete Gruppen',
+    'common.parentGroupCount': '{{count}} übergeordnete Gruppe',
+    'common.childGroupsCount': '{{count}} untergeordnete Gruppen',
     'common.searchAndSelectUsersGroups':
       'Suchen und wählen Sie Benutzer und Gruppen aus, die hinzugefügt werden sollen. Ausgewählte Benutzer und Gruppen werden in der Tabelle unten angezeigt.',
     'common.noUsersAndGroupsFound': 'Keine Benutzer und Gruppen gefunden.',
@@ -188,15 +185,14 @@ const rbacTranslationDe = createTranslationMessages({
       'Verschachtelte Bedingung hinzufügen',
     'conditionalAccess.addRule': 'Regel hinzufügen',
     'conditionalAccess.nestedConditionTooltip':
-      'Verschachtelte Bedingungen sind 1-Ebenen-Regeln innerhalb einer Hauptbedingung. Sie ermöglichen es Ihnen, angemessenen Zugriff zu gewähren, indem Sie detaillierte Berechtigungen basierend auf verschiedenen Bedingungen verwenden. Sie können mehrere verschachtelte Bedingungen hinzufügen.',
+      'Verschachtelte Bedingungen sind **1-Layer-Regeln innerhalb einer Hauptbedingung**. Sie ermöglichen es Ihnen, angemessenen Zugriff zu gewähren, indem Sie detaillierte Berechtigungen basierend auf verschiedenen Bedingungen verwenden. Sie können mehrere verschachtelte Bedingungen hinzufügen.',
     'conditionalAccess.nestedConditionExample':
       'Sie können beispielsweise Zugriff auf alle Entitätstypen in der Hauptbedingung gewähren und eine verschachtelte Bedingung verwenden, um den Zugriff auf Entitäten zu beschränken, die dem Benutzer gehören.',
     'dialog.cancelRoleCreation': 'Rollenerstellung abbrechen',
     'dialog.exitRoleCreation': 'Rollenerstellung beenden?',
     'dialog.exitRoleEditing': 'Rollenbearbeitung beenden?',
     'dialog.exitWarning':
-      'Das Verlassen dieser Seite verwirft dauerhaft die eingegebenen Informationen.',
-    'dialog.exitConfirmation': 'Sind Sie sicher, dass Sie beenden möchten?',
+      '\n\nDas Verlassen dieser Seite verwirft dauerhaft die von Ihnen eingegebenen Informationen.\n\nMöchten Sie wirklich beenden?',
     'dialog.discard': 'Verwerfen',
     'dialog.cancel': 'Abbrechen',
     'permissionPolicies.helperText':

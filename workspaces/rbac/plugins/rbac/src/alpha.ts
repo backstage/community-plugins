@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  useTranslationRef,
-  TranslationFunction,
-} from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../translations';
 
 /**
  * @alpha
+ * Translation resources for the RBAC plugin
  */
-export const useTranslation = (): {
-  t: TranslationFunction<typeof rbacTranslationRef.T>;
-} => useTranslationRef(rbacTranslationRef);
+export * from './translations';

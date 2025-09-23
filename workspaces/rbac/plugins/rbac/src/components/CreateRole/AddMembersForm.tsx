@@ -63,10 +63,10 @@ const getDescription = (
           ? t('common.membersCount' as any, { count: memberCount })
           : '',
         parentCount > 0
-          ? t('common.parentGroup' as any, { count: parentCount })
+          ? t('common.parentGroupCount' as any, { count: parentCount })
           : '',
         childCount > 0
-          ? t('common.childGroups' as any, { count: childCount })
+          ? t('common.childGroupsCount' as any, { count: childCount })
           : '',
       ]
         .filter(Boolean) // Remove any empty strings
@@ -121,8 +121,7 @@ export const AddMembersForm = ({
     }
 
     return membersOptions.slice(0, 99);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [membersOptions, search]);
+  }, [membersOptions, search, locale]);
 
   const handleIsOptionEqualToValue = (
     option: SelectedMember,

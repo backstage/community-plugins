@@ -20,6 +20,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Typography from '@mui/material/Typography';
 
 import { useTranslation } from '../../hooks/useTranslation';
+import { Trans } from '../Trans';
 
 export const RolesListToolbar = ({
   createRoleAllowed,
@@ -41,13 +42,19 @@ export const RolesListToolbar = ({
           >
             {t('toolbar.warning.title')}
           </AlertTitle>
-          {t('toolbar.warning.message')}{' '}
-          <Link
-            to="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
-            target="_blank"
-          >
-            {t('toolbar.warning.linkText')}
-          </Link>
+          <Trans
+            message="toolbar.warning.message"
+            params={{
+              link: (
+                <Link
+                  to="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
+                  target="_blank"
+                >
+                  {t('toolbar.warning.linkText')}
+                </Link>
+              ),
+            }}
+          />
           <Typography sx={{ mt: 1 }} fontSize="small">
             <Typography component="span" fontWeight="bold" fontSize="small">
               {t('toolbar.warning.note')}

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RbacPage, rbacTranslations } from '@backstage-community/plugin-rbac';
+import { RbacPage } from '@backstage-community/plugin-rbac';
+import { rbacTranslations } from '@backstage-community/plugin-rbac/alpha';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';

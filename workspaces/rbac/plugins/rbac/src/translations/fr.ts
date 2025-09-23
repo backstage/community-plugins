@@ -18,6 +18,7 @@ import { rbacTranslationRef } from './ref';
 
 const rbacTranslationFr = createTranslationMessages({
   ref: rbacTranslationRef,
+  full: true,
   messages: {
     'page.title': 'RBAC',
     'page.createRole': 'Créer un rôle',
@@ -34,7 +35,7 @@ const rbacTranslationFr = createTranslationMessages({
     'toolbar.createButton': 'Créer',
     'toolbar.warning.title': 'Impossible de créer un rôle.',
     'toolbar.warning.message':
-      'Pour activer le bouton créer/modifier le rôle, assurez-vous que les utilisateurs/groupes requis sont disponibles dans le catalogue car un rôle ne peut pas être créé sans utilisateurs/groupes et le rôle associé à votre utilisateur doit avoir les politiques de permission mentionnées',
+      'Pour activer le bouton créer/modifier le rôle, assurez-vous que les utilisateurs/groupes requis sont disponibles dans le catalogue car un rôle ne peut pas être créé sans utilisateurs/groupes et que le rôle associé à votre utilisateur doit avoir les politiques de permissions mentionnées <link>ici</link>.',
     'toolbar.warning.linkText': 'ici',
     'toolbar.warning.note': 'Note',
     'toolbar.warning.noteText':
@@ -95,11 +96,8 @@ const rbacTranslationFr = createTranslationMessages({
       "Optionnel : Entrez un utilisateur ou un groupe qui aura la permission de modifier ce rôle et de créer des rôles supplémentaires. À l'étape suivante, spécifiez quels utilisateurs ils peuvent assigner à leurs rôles et quels plugins ils peuvent accorder l'accès. Si laissé vide, assigne automatiquement l'auteur lors de la création.",
     'deleteDialog.title': 'Supprimer le rôle',
     'deleteDialog.question': 'Supprimer ce rôle ?',
-    'deleteDialog.confirmation': 'Êtes-vous sûr de vouloir supprimer le rôle',
-    'deleteDialog.warning':
-      'La suppression de ce rôle est irréversible et supprimera sa fonctionnalité du système. Procédez avec prudence.',
-    'deleteDialog.impact':
-      "Les {{members}} associés à ce rôle perdront l'accès à toutes les {{permissions}} politiques de permission spécifiées dans ce rôle.",
+    'deleteDialog.confirmation':
+      "Êtes-vous sûr de vouloir supprimer le rôle **{{roleName}}**?\n\nSupprimer ce rôle est irréversible et supprimera sa fonctionnalité du système. Procédez avec prudence.\n\nLes **{{members}}** associés à ce rôle perdront l'accès à toutes les **{{permissions}} politiques de permission** spécifiées dans ce rôle.",
     'deleteDialog.roleNameLabel': 'Nom du rôle',
     'deleteDialog.roleNameHelper': 'Tapez le nom du rôle pour confirmer',
     'deleteDialog.deleteButton': 'Supprimer',
@@ -165,8 +163,8 @@ const rbacTranslationFr = createTranslationMessages({
       'Impossible de récupérer les membres : {{error}}',
     'common.roleAction': '{{action}} rôle',
     'common.membersCount': '{{count}} membres',
-    'common.parentGroup': 'groupe parent',
-    'common.childGroups': 'groupes enfants',
+    'common.parentGroupCount': '{{count}} groupe parent',
+    'common.childGroupsCount': '{{count}} groupes enfants',
     'common.searchAndSelectUsersGroups':
       'Recherchez et sélectionnez les utilisateurs et groupes à ajouter. Les utilisateurs et groupes sélectionnés apparaîtront dans le tableau ci-dessous.',
     'common.noUsersAndGroupsFound': 'Aucun utilisateur et groupe trouvé.',
@@ -190,15 +188,14 @@ const rbacTranslationFr = createTranslationMessages({
     'conditionalAccess.addNestedCondition': 'Ajouter une condition imbriquée',
     'conditionalAccess.addRule': 'Ajouter une règle',
     'conditionalAccess.nestedConditionTooltip':
-      "Les conditions imbriquées sont des règles de 1 niveau dans une condition principale. Elles vous permettent d'autoriser un accès approprié en utilisant des permissions détaillées basées sur diverses conditions. Vous pouvez ajouter plusieurs conditions imbriquées.",
+      "Les conditions imbriquées sont des **règles de 1 couche au sein d'une condition principale**. Elles vous permettent de permettre un accès approprié en utilisant des permissions détaillées basées sur diverses conditions. Vous pouvez ajouter plusieurs conditions imbriquées.",
     'conditionalAccess.nestedConditionExample':
       "Par exemple, vous pouvez autoriser l'accès à tous les types d'entités dans la condition principale et utiliser une condition imbriquée pour limiter l'accès aux entités appartenant à l'utilisateur.",
     'dialog.cancelRoleCreation': 'Annuler la création de rôle',
     'dialog.exitRoleCreation': 'Quitter la création de rôle ?',
     'dialog.exitRoleEditing': 'Quitter la modification de rôle ?',
     'dialog.exitWarning':
-      'Quitter cette page supprimera définitivement les informations que vous avez saisies.',
-    'dialog.exitConfirmation': 'Êtes-vous sûr de vouloir quitter ?',
+      '\n\nQuitter cette page supprimera définitivement les informations que vous avez saisies.\n\nÊtes-vous sûr de vouloir quitter ?',
     'dialog.discard': 'Ignorer',
     'dialog.cancel': 'Annuler',
     'permissionPolicies.helperText':

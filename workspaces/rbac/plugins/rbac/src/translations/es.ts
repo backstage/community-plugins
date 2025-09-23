@@ -18,6 +18,7 @@ import { rbacTranslationRef } from './ref';
 
 const rbacTranslationEs = createTranslationMessages({
   ref: rbacTranslationRef,
+  full: true,
   messages: {
     'page.title': 'RBAC',
     'page.createRole': 'Crear rol',
@@ -34,7 +35,7 @@ const rbacTranslationEs = createTranslationMessages({
     'toolbar.createButton': 'Crear',
     'toolbar.warning.title': 'No se puede crear el rol.',
     'toolbar.warning.message':
-      'Para habilitar el botón crear/editar rol, asegúrate de que los usuarios/grupos requeridos estén disponibles en el catálogo ya que un rol no puede ser creado sin usuarios/grupos y el rol asociado con tu usuario debe tener las políticas de permisos mencionadas',
+      'Para habilitar el botón crear/editar rol, asegúrate de que los usuarios/grupos requeridos estén disponibles en el catálogo, ya que no se puede crear un rol sin usuarios/grupos y también el rol asociado con tu usuario debe tener las políticas de permisos mencionadas <link>aquí</link>.',
     'toolbar.warning.linkText': 'aquí',
     'toolbar.warning.note': 'Nota',
     'toolbar.warning.noteText':
@@ -89,11 +90,8 @@ const rbacTranslationEs = createTranslationMessages({
       'Opcional: Ingresa un usuario o grupo que tendrá permiso para editar este rol y crear roles adicionales. En el siguiente paso, especifica qué usuarios pueden asignar a sus roles y a qué plugins pueden otorgar acceso. Si se deja en blanco, asigna automáticamente el autor en la creación.',
     'deleteDialog.title': 'Eliminar rol',
     'deleteDialog.question': '¿Eliminar este rol?',
-    'deleteDialog.confirmation': '¿Estás seguro de que quieres eliminar el rol',
-    'deleteDialog.warning':
-      'Eliminar este rol es irreversible y eliminará su funcionalidad del sistema. Procede con precaución.',
-    'deleteDialog.impact':
-      'Los {{members}} asociados con este rol perderán acceso a todas las {{permissions}} políticas de permisos especificadas en este rol.',
+    'deleteDialog.confirmation':
+      '¿Estás seguro de que quieres eliminar el rol **{{roleName}}**?\n\nEliminar este rol es irreversible y eliminará su funcionalidad del sistema. Procede con precaución.\n\nLos **{{members}}** asociados con este rol perderán el acceso a todas las **{{permissions}} políticas de permisos** especificadas en este rol.',
     'deleteDialog.roleNameLabel': 'Nombre del rol',
     'deleteDialog.roleNameHelper': 'Escribe el nombre del rol para confirmar',
     'deleteDialog.deleteButton': 'Eliminar',
@@ -157,8 +155,8 @@ const rbacTranslationEs = createTranslationMessages({
       'No se pueden obtener los miembros: {{error}}',
     'common.roleAction': '{{action}} rol',
     'common.membersCount': '{{count}} miembros',
-    'common.parentGroup': '{{count}} grupo padre',
-    'common.childGroups': '{{count}} grupos hijos',
+    'common.parentGroupCount': '{{count}} grupo padre',
+    'common.childGroupsCount': '{{count}} grupos hijos',
     'common.searchAndSelectUsersGroups':
       'Busque y seleccione usuarios y grupos para agregar. Los usuarios y grupos seleccionados aparecerán en la tabla a continuación.',
     'common.noUsersAndGroupsFound': 'No se encontraron usuarios y grupos.',
@@ -182,15 +180,14 @@ const rbacTranslationEs = createTranslationMessages({
     'conditionalAccess.addNestedCondition': 'Agregar condición anidada',
     'conditionalAccess.addRule': 'Agregar regla',
     'conditionalAccess.nestedConditionTooltip':
-      'Las condiciones anidadas son reglas de 1 nivel dentro de una condición principal. Te permiten permitir el acceso apropiado usando permisos detallados basados en varias condiciones. Puedes agregar múltiples condiciones anidadas.',
+      'Las condiciones anidadas son **reglas de 1 nivel dentro de una condición principal**. Te permiten permitir un acceso apropiado utilizando permisos detallados basados en varias condiciones. Puedes agregar múltiples condiciones anidadas.',
     'conditionalAccess.nestedConditionExample':
       'Por ejemplo, puedes permitir el acceso a todos los tipos de entidades en la condición principal y usar una condición anidada para limitar el acceso a las entidades propiedad del usuario.',
     'dialog.cancelRoleCreation': 'Cancelar creación de rol',
     'dialog.exitRoleCreation': '¿Salir de la creación de rol?',
     'dialog.exitRoleEditing': '¿Salir de la edición de rol?',
     'dialog.exitWarning':
-      'Salir de esta página descartará permanentemente la información que ingresaste.',
-    'dialog.exitConfirmation': '¿Estás seguro de que quieres salir?',
+      '\n\nSalir de esta página descartará permanentemente la información que ingresaste.\n\n¿Estás seguro de que quieres salir?',
     'dialog.discard': 'Descartar',
     'dialog.cancel': 'Cancelar',
     'permissionPolicies.helperText':

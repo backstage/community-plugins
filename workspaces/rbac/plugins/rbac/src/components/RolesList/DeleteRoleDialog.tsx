@@ -29,6 +29,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { MarkdownContent } from '@backstage/core-components';
 
 import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 
@@ -41,7 +42,6 @@ import {
 import { useToast } from '../ToastContext';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../hooks/useLanguage';
-import { Trans } from '../Trans';
 
 type DeleteRoleDialogProps = {
   open: boolean;
@@ -111,6 +111,14 @@ const DeleteRoleDialog = ({
     }
   };
 
+  const content = t('deleteDialog.confirmation' as any, {
+    roleName,
+    members: getMembers(propOptions.memberRefs, t).toLocaleLowerCase(
+      locale ?? 'en',
+    ),
+    permissions: propOptions.permissions.toString(),
+  });
+
   return (
     <Dialog maxWidth="md" open={open} onClose={closeDialog}>
       <DialogTitle
@@ -158,25 +166,7 @@ const DeleteRoleDialog = ({
         </Box>
       </DialogTitle>
       <DialogContent sx={{ backgroundColor: dialogBackgroundColor }}>
-        {t('deleteDialog.confirmation')}{' '}
-        <Typography component="span" sx={{ fontWeight: 'bold' }}>
-          {roleName}
-        </Typography>{' '}
-        ?
-        <br />
-        <br />
-        {t('deleteDialog.warning')}
-        <br />
-        <br />
-        <Trans
-          message="deleteDialog.impact"
-          params={{
-            members: getMembers(propOptions.memberRefs, t).toLocaleLowerCase(
-              locale,
-            ),
-            permissions: `${propOptions.permissions} permission policies`,
-          }}
-        />
+        <MarkdownContent content={content} />
         <br />
         <TextField
           name="delete-role"

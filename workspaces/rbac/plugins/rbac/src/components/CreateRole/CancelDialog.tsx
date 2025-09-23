@@ -23,6 +23,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined';
+import { MarkdownContent } from '@backstage/core-components';
 import { useTranslation } from '../../hooks/useTranslation';
 
 type CancelDialogProps = {
@@ -94,9 +95,7 @@ const CancelDialog = ({
           </Box>
         </DialogTitle>
         <DialogContent sx={{ p: 2 }}>
-          {t('dialog.exitWarning')}
-          <br />
-          {t('dialog.exitConfirmation')}
+          <MarkdownContent content={t('dialog.exitWarning')} />
         </DialogContent>
         <DialogActions
           sx={{

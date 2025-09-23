@@ -82,31 +82,15 @@ export const getMembersString = (
     users: number;
     groups: number;
   },
-  t?: TranslationFunction<typeof rbacTranslationRef.T>,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ): string => {
   let membersString = '';
   if (res.groups > 0) {
-    // eslint-disable-next-line no-nested-ternary
-    const groupsText =
-      res.groups > 1
-        ? t
-          ? t('common.groups')
-          : 'groups'
-        : t
-          ? t('common.group')
-          : 'group';
+    const groupsText = res.groups > 1 ? t('common.groups') : t('common.group');
     membersString = `${res.groups} ${groupsText}`;
   }
   if (res.users > 0) {
-    // eslint-disable-next-line no-nested-ternary
-    const usersText =
-      res.users > 1
-        ? t
-          ? t('common.users')
-          : 'users'
-        : t
-          ? t('common.user')
-          : 'user';
+    const usersText = res.users > 1 ? t('common.users') : t('common.user');
     membersString = membersString.concat(
       membersString.length > 0 ? ', ' : '',
       `${res.users} ${usersText}`,
@@ -117,10 +101,10 @@ export const getMembersString = (
 
 export const getMembers = (
   members: (string | MembersData | SelectedMember)[],
-  t?: TranslationFunction<typeof rbacTranslationRef.T>,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ): string => {
   if (!members || members.length === 0) {
-    return t ? t('common.noMembers') : 'No members';
+    return t('common.noMembers');
   }
 
   const res = members.reduce(
@@ -204,7 +188,7 @@ const getAllPolicies = (
   permission: string,
   allowedPolicies: RowPolicy[],
   policies: PolicyDetails[],
-  t?: TranslationFunction<typeof rbacTranslationRef.T>,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
   locale = 'en-US',
 ) => {
   const deniedPolicies = policies?.reduce((acc, p) => {
@@ -218,8 +202,7 @@ const getAllPolicies = (
       )
     ) {
       acc.push({
-        policy:
-          capitalizeFirstLetter(p.policy) || (t ? t('common.use') : 'Use'),
+        policy: capitalizeFirstLetter(p.policy) || t('common.use'),
         effect: 'deny',
       });
     }
@@ -231,7 +214,7 @@ const getAllPolicies = (
 export const getPermissionsData = (
   policies: RoleBasedPolicy[],
   permissionPolicies: PluginPermissionMetaData[],
-  t?: TranslationFunction<typeof rbacTranslationRef.T>,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
   locale = 'en',
 ): PermissionsData[] => {
   const data = policies.reduce(
@@ -247,11 +230,9 @@ export const getPermissionsData = (
           acc.push({
             permission: pluginInfo.permissionName,
             plugin: pluginInfo.pluginId,
-            policyString: policyString.add(
-              policyTitleCase || (t ? t('common.use') : 'Use'),
-            ),
+            policyString: policyString.add(policyTitleCase || t('common.use')),
             policies: policiesSet.add({
-              policy: policyTitleCase || (t ? t('common.use') : 'Use'),
+              policy: policyTitleCase || t('common.use'),
               effect: policy.effect,
             }),
             isResourced: pluginInfo.isResourced,
