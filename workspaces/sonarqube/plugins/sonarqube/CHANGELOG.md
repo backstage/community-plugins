@@ -1,5 +1,13 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.18.1
+
+### Patch Changes
+
+- 9d3c263: Fixed bug in `SonarQubeRelatedEntitiesOverview` table component where the sorting of columns does not work properly when
+  there are components without an annotation
+- 130e6f7: Fixed the typings for the SonarQube entity card, which previously prevented correct overriding.
+
 ## 0.18.0
 
 ### Minor Changes
