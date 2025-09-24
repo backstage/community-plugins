@@ -223,18 +223,14 @@ app:
           variant: 'starred' # (Optional) defaults to "like-dislike"
           title: 'Rating Table' # (Optional) defaults to "Entity Ratings"
           allEntities: true # (Optional) defaults to "false"
-    # Example disabling the Kafka entity card
+    # Example disabling the entity feedback content
     - 'entity-content:entity-feedback': false
-    # Example customizing the Kafka entity content
+    # Example customizing the entity feedback content
     - 'entity-content:entity-feedback':
         config:
           path: '/feedbacks'
           title: 'Feedbacks'
 ```
-
-## Features
-
-- List topics offsets and consumer group offsets for configured services.
 
 ## Local Development
 
