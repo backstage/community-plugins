@@ -20,6 +20,7 @@ export const AnnouncementsAdminPortal: (
         themeId?: string | undefined;
         title?: string | undefined;
         subtitle?: string | undefined;
+        defaultInactive?: boolean | undefined;
       }
     | undefined,
 ) => JSX_2.Element;
