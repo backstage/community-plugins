@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.10.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
 ## 0.9.1
 
 ### Patch Changes
