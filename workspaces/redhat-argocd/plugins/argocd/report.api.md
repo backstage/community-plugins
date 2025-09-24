@@ -104,11 +104,17 @@ export const argocdTranslationRef: TranslationRef<
     readonly 'deploymentLifecycle.deploymentLifecycleCard.tooltipText': string;
     readonly 'deploymentLifecycle.deploymentLifecycleCard.instance': string;
     readonly 'deploymentLifecycle.deploymentLifecycleCard.server': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleCard.namespace': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleCard.commit': string;
     readonly 'deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed': string;
     readonly 'deploymentLifecycle.deploymentLifecycleDrawer.resources': string;
     readonly 'deploymentLifecycle.deploymentLifecycleDrawer.revision': string;
     readonly 'deploymentLifecycle.deploymentLifecycleDrawer.instance': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleDrawer.namespace': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleDrawer.commit': string;
     readonly 'deploymentLifecycle.deploymentLifecycleDrawer.iconButtonTitle': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleDrawer.cluster': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue': string;
     readonly 'deploymentSummary.deploymentSummary.tableTitle': string;
     readonly 'deploymentSummary.deploymentSummary.columns.syncStatus': string;
     readonly 'deploymentSummary.deploymentSummary.columns.healthStatus': string;
