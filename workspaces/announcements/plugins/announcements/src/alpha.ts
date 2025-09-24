@@ -22,6 +22,10 @@ import { announcementsApiExtension } from './alpha/apis';
 import { entityAnnouncementsCard } from './alpha/entityCards';
 import { announcementsNavItem } from './alpha/navItems';
 import { announcementsPage } from './alpha/pages';
+import {
+  announcementsSearchResultListItem,
+  announcementsSearchFilterResultType,
+} from './alpha/search';
 import { rootRouteRef } from './routes';
 
 /**
@@ -37,5 +41,7 @@ export default createFrontendPlugin({
     entityAnnouncementsCard,
     announcementsPage,
     announcementsNavItem,
+    announcementsSearchResultListItem,
+    announcementsSearchFilterResultType,
   ],
 }) as FrontendPlugin;
