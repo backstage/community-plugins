@@ -154,6 +154,8 @@ export const ArgoCDMessages = {
     deploymentLifecycleCard: {
       instance: 'Instance',
       server: 'Server',
+      namespace: 'Namespace',
+      commit: 'Commit',
       tooltipText:
         'The commit SHA shown below is the latest commit from the first defined Application source.',
       resources: 'Resources',
@@ -162,8 +164,12 @@ export const ArgoCDMessages = {
     deploymentLifecycleDrawer: {
       iconButtonTitle: 'Close the drawer',
       instance: 'Instance',
+      cluster: 'Cluster',
+      namespace: 'Namespace',
+      commit: 'Commit',
       revision: 'Revision',
       resources: 'Resources',
+      instanceDefaultValue: 'default',
     },
   },
   deploymentSummary: {

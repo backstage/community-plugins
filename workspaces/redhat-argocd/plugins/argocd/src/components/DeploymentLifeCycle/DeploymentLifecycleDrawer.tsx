@@ -130,19 +130,34 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                   'deploymentLifecycle.deploymentLifecycleDrawer.instance',
                 )}
               >
-                {app?.metadata?.instance?.name ?? 'default'}
+                {app?.metadata?.instance?.name ??
+                  t(
+                    'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue',
+                  )}
               </MetadataItem>
 
-              <MetadataItem title="Cluster">
+              <MetadataItem
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.cluster',
+                )}
+              >
                 <AppServerLink application={app} />
               </MetadataItem>
 
-              <MetadataItem title="Namespace">
+              <MetadataItem
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.namespace',
+                )}
+              >
                 <AppNamespace app={app} />
               </MetadataItem>
 
               {!isAppHelmChartType(app) ? (
-                <MetadataItem title="Commit">
+                <MetadataItem
+                  title={t(
+                    'deploymentLifecycle.deploymentLifecycleDrawer.commit',
+                  )}
+                >
                   <AppCommitLink
                     application={app}
                     entity={entity}

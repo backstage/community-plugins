@@ -105,13 +105,15 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
             <AppServerLink application={app} />
           </MetadataItem>
 
-          <MetadataItem title="Namespace">
+          <MetadataItem
+            title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}
+          >
             <AppNamespace app={app} />
           </MetadataItem>
 
           {!isAppHelmChartType(app) ? (
             <MetadataItemWithTooltip
-              title="Commit"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.commit')}
               tooltipText={t(
                 'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
               )}
