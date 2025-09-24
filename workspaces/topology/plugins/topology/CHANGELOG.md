@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.5.0
+
+### Minor Changes
+
+- c850e6d: Backstage version bump to v1.42.5
+
 ## 2.4.2
 
 ### Patch Changes
