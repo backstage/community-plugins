@@ -20,6 +20,7 @@ import { argocdTranslationRef } from './ref';
 
 /**
  * The translation resource for the ArgoCD plugin
+ * @alpha
  */
 export const argocdTranslations = createTranslationResource({
   ref: argocdTranslationRef,

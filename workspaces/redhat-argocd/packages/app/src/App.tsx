@@ -53,7 +53,7 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
 import { searchPage } from './components/search/SearchPage';
-import { argocdTranslations } from '@backstage-community/plugin-redhat-argocd';
+import { argocdTranslations } from '@backstage-community/plugin-redhat-argocd/alpha';
 
 const app = createApp({
   apis,
