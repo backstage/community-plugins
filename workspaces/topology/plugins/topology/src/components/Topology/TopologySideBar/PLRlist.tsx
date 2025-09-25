@@ -28,13 +28,55 @@ import PLRlastUpdated from './PLRlastUpdated';
 import TopologyResourcesTabPanelItem from './TopologyResourcesTabPaneltem';
 
 import './PLRlist.css';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 type PLRlistProps = {
   pipelines: PipelineKind[];
   pipelineRuns: PipelineRunKind[];
 };
 
+const TranslatedPipelineStatus = ({
+  status,
+  translateFn,
+}: {
+  status: string | null;
+  translateFn: (status: string | null) => string;
+}) => {
+  if (!status) return <>-</>;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <Status status={status} iconOnly />
+      <span>{translateFn(status)}</span>
+    </div>
+  );
+};
+
 const PLRlist = ({ pipelines, pipelineRuns }: PLRlistProps) => {
+  const { t } = useTranslation();
+
+  const translatePipelineStatus = (status: string | null) => {
+    if (!status) return '-';
+
+    switch (status.toLowerCase()) {
+      case 'running':
+        return t('status.running');
+      case 'pending':
+        return t('status.pending');
+      case 'succeeded':
+        return t('status.succeeded');
+      case 'failed':
+        return t('status.failed');
+      case 'unknown':
+        return t('status.unknown');
+      case 'cancelled':
+      case 'canceled':
+        return t('status.cancelled');
+      default:
+        return status; // fallback to original status if no translation found
+    }
+  };
+
   return (
     <TopologyResourcesTabPanelItem
       resourceLabel={PipelineRunModel.labelPlural}
@@ -75,14 +117,21 @@ const PLRlist = ({ pipelines, pipelineRuns }: PLRlistProps) => {
                   additionalClassNames="hidden-xs"
                   noStatusBackground
                 >
-                  {status ? <Status status={status} /> : '-'}
+                  <TranslatedPipelineStatus
+                    status={status}
+                    translateFn={translatePipelineStatus}
+                  />
                 </ResourceStatus>
               </span>
             </li>
           );
         })
       ) : (
-        <li className="item bs-topology-text-muted">{`No ${PipelineRunModel.labelPlural} found`}</li>
+        <li className="item bs-topology-text-muted">
+          {t('resources.noResourcesFound', {
+            resourceType: PipelineRunModel.labelPlural,
+          })}
+        </li>
       )}
     </TopologyResourcesTabPanelItem>
   );

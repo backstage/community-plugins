@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// CRITICAL: Import mocks BEFORE components
-import { mockUseTranslation } from '../../test-utils/mockTranslations';
+import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { topologyTranslationRef } from './ref';
 
-jest.mock('../../hooks/useTranslation', () => ({
-  useTranslation: mockUseTranslation,
-}));
-
-// Component imports AFTER mocks
-import { render } from '@testing-library/react';
-import { TopologyEmptyState } from './TopologyEmptyState';
-
-describe('TopologyEmptyState', () => {
-  it('should render TopologyEmptyState', () => {
-    const { getByText } = render(<TopologyEmptyState />);
-    expect(getByText('No resources found')).toBeInTheDocument();
-  });
+/**
+ * Translation resources for the Topology plugin.
+ * @public
+ */
+export const topologyTranslations = createTranslationResource({
+  ref: topologyTranslationRef,
+  translations: {
+    de: () => import('./de'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+    es: () => import('./es'),
+  },
 });
+
+// @internal
+export { topologyTranslationRef };

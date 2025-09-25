@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { topologyPlugin, TopologyPage } from './plugin';
+export { topologyTranslations } from './translations';

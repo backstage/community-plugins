@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// CRITICAL: Import mocks BEFORE components
-import { mockUseTranslation } from '../../test-utils/mockTranslations';
+import { useApi } from '@backstage/core-plugin-api';
+import { appLanguageApiRef } from '@backstage/core-plugin-api/alpha';
 
-jest.mock('../../hooks/useTranslation', () => ({
-  useTranslation: mockUseTranslation,
-}));
-
-// Component imports AFTER mocks
-import { render } from '@testing-library/react';
-import { TopologyEmptyState } from './TopologyEmptyState';
-
-describe('TopologyEmptyState', () => {
-  it('should render TopologyEmptyState', () => {
-    const { getByText } = render(<TopologyEmptyState />);
-    expect(getByText('No resources found')).toBeInTheDocument();
-  });
-});
+/**
+ * Hook returning the current UI language code.
+ * @internal
+ */
+export const useLanguage = (): string =>
+  useApi(appLanguageApiRef).getLanguage().language;
