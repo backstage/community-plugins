@@ -13,21 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
-import { topologyTranslationRef } from './ref';
-
-/**
- * Translation resources for the Topology plugin.
- * @alpha
- */
-export const topologyTranslations = createTranslationResource({
-  ref: topologyTranslationRef,
-  translations: {
-    de: () => import('./de'),
-    fr: () => import('./fr'),
-    it: () => import('./it'),
-    es: () => import('./es'),
-  },
-});
-
-export { topologyTranslationRef };
+export { topologyTranslations, topologyTranslationRef } from './translations';

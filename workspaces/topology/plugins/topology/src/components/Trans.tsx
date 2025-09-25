@@ -19,13 +19,11 @@ import { topologyTranslationRef } from '../translations';
 
 /**
  * Message map type for the Topology plugin translations.
- * @internal
  */
 export type Messages = typeof topologyTranslationRef.T;
 
 /**
  * Props for the Trans component.
- * @internal
  */
 export interface TransProps<TMessages extends { [key in string]: string }> {
   message: keyof TMessages;
@@ -35,7 +33,6 @@ export interface TransProps<TMessages extends { [key in string]: string }> {
 
 /**
  * Render a translated message, optionally replacing placeholders with components.
- * @internal
  */
 export const Trans = ({
   message,

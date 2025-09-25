@@ -27,7 +27,7 @@ import {
 } from '@backstage/plugin-kubernetes-react';
 import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
 import { TopologyPage, topologyPlugin } from '../src/plugin';
-import { topologyTranslations } from '../src';
+import { topologyTranslations } from '../src/translations';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
