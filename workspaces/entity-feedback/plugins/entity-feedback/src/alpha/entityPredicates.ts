@@ -14,28 +14,38 @@
  * limitations under the License.
  */
 
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 
-export const catalogApi = catalogApiMock({
-  entities: [
+/**
+ * @alpha
+ */
+export const entityFeedbackAllPredicate: EntityPredicate = {
+  $all: [
     {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
-      metadata: {
-        name: 'random-name',
-      },
-      spec: {
-        lifecycle: 'production',
-        type: 'service',
-        owner: 'guest',
+      $not: {
+        kind: 'location',
       },
     },
     {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'User',
-      metadata: {
-        name: 'guest',
+      $not: {
+        kind: 'user',
+      },
+    },
+    {
+      $not: {
+        kind: 'group',
       },
     },
   ],
-});
+};
+
+export const entityFeedbackOwnerPredicate: EntityPredicate = {
+  $any: [
+    {
+      kind: 'user',
+    },
+    {
+      kind: 'group',
+    },
+  ],
+};

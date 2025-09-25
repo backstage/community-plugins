@@ -19,6 +19,10 @@ import { compatWrapper } from '@backstage/core-compat-api';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import {
+  entityFeedbackAllPredicate,
+  entityFeedbackOwnerPredicate,
+} from './entityPredicates';
 
 /**
  * @alpha
@@ -46,7 +50,7 @@ export const entityRatingsButtonsCard = EntityCardBlueprint.makeWithOverrides({
     const { variant, title, requestResponse, dialogTitle, dialogResponses } =
       config;
     return originalFactory({
-      filter: 'kind:component',
+      filter: entityFeedbackAllPredicate,
       async loader() {
         const { LikeDislikeButtons } = await import(
           '../components/LikeDislikeButtons'
@@ -87,7 +91,7 @@ export const entityRatingsTableCard = EntityCardBlueprint.makeWithOverrides({
   factory(originalFactory, { config }) {
     const { variant, title, allEntities } = config;
     return originalFactory({
-      filter: 'kind:component',
+      filter: entityFeedbackOwnerPredicate,
       async loader() {
         const { LikeDislikeRatingsTable } = await import(
           '../components/LikeDislikeRatingsTable'
