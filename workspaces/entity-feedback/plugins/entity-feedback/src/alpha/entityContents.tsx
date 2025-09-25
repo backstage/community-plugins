@@ -22,6 +22,7 @@ import {
 } from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../routes';
+import { entityFeedbackAllPredicate } from './entityPredicates';
 
 /**
  * @alpha
@@ -31,7 +32,7 @@ export const entityFeedbackEntityContent = EntityContentBlueprint.make({
     path: '/feedback',
     title: 'Feedback',
     routeRef: convertLegacyRouteRef(rootRouteRef),
-    filter: 'kind:component',
+    filter: entityFeedbackAllPredicate,
     async loader() {
       const { FeedbackResponseTable } = await import(
         '../components/FeedbackResponseTable'
