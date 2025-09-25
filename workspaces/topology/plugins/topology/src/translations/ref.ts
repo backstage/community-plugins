@@ -183,7 +183,7 @@ export const topologyMessages = {
 
 /**
  * Translation reference for the Topology plugin.
- * @internal
+ * @alpha
  */
 export const topologyTranslationRef = createTranslationRef({
   id: 'plugin.topology',

@@ -6,7 +6,6 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @public (undocumented)
 export const TopologyPage: () => JSX_2.Element;
@@ -19,9 +18,6 @@ export const topologyPlugin: BackstagePlugin<
   {},
   {}
 >;
-
-// @public
-export const topologyTranslations: TranslationResource<'plugin.topology'>;
 
 // (No @packageDocumentation comment for this package)
 ```
