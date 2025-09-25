@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.11.1
+
+### Patch Changes
+
+- d5b74e9: Migrate the `entity-feedback` plugin to the new frontend system.
+
 ## 0.11.0
 
 ### Minor Changes
