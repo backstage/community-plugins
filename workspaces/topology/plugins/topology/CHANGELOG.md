@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.6.0
+
+### Minor Changes
+
+- 561e5d1: Add i18n support
+
 ## 2.5.0
 
 ### Minor Changes
