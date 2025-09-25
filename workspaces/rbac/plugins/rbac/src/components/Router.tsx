@@ -27,6 +27,7 @@ import { EditRolePage } from './CreateRole/EditRolePage';
 import { RbacPage } from './RbacPage';
 import { RoleOverviewPage } from './RoleOverview/RoleOverviewPage';
 import { ToastContextProvider } from './ToastContext';
+import { useTranslation } from '../hooks/useTranslation';
 
 /**
  *
@@ -34,14 +35,15 @@ import { ToastContextProvider } from './ToastContext';
  */
 export const Router = ({ useHeader = true }: { useHeader?: boolean }) => {
   const config = useApi(configApiRef);
+  const { t } = useTranslation();
   const isRBACPluginEnabled = config.getOptionalBoolean('permission.enabled');
 
   if (!isRBACPluginEnabled) {
     return (
       <ErrorPage
         status="404"
-        statusMessage="Enable the RBAC backend plugin to use this feature."
-        additionalInfo="To enable RBAC, set `permission.enabled` to `true` in the app-config file."
+        statusMessage={t('errors.rbacDisabled')}
+        additionalInfo={t('errors.rbacDisabledInfo')}
       />
     );
   }

@@ -44,7 +44,8 @@ import { ComplexConditionRow } from './ComplexConditionRow';
 import { ComplexConditionRowButtons } from './ComplexConditionRowButtons';
 import { ConditionRule } from './ConditionRule';
 import { ConditionsFormRowFields } from './ConditionsFormRowFields';
-import { conditionButtons, criterias } from './const';
+import { getConditionButtons, criterias } from './const';
+import { useTranslation } from '../../hooks/useTranslation';
 import { CriteriaToggleButton } from './CriteriaToggleButton';
 import {
   ComplexErrors,
@@ -66,6 +67,7 @@ export const ConditionsFormRow = ({
   setErrors,
   setRemoveAllClicked,
 }: ConditionFormRowProps) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const [nestedConditionRow, setNestedConditionRow] = useState<Condition[]>([]);
   const [notConditionType, setNotConditionType] = useState<NotConditionType>(
@@ -413,7 +415,7 @@ export const ConditionsFormRow = ({
                 height: '100%',
               }}
             >
-              {nestedConditionButtons.map(({ val, label }) => (
+              {nestedConditionButtons(t).map(({ val, label }) => (
                 <CriteriaToggleButton
                   key={`nested-criteria-${val}`}
                   val={val}
@@ -425,7 +427,7 @@ export const ConditionsFormRow = ({
             </ToggleButtonGroup>
             {criteria !== criterias.not && (
               <IconButton
-                title="Remove nested condition"
+                title={t('common.removeNestedCondition')}
                 sx={{
                   color: theme.palette.grey[500],
                   flexGrow: 0,
@@ -552,7 +554,7 @@ export const ConditionsFormRow = ({
           width: '80%',
         }}
       >
-        {conditionButtons.map(({ val, label }) => (
+        {getConditionButtons(t).map(({ val, label }) => (
           <CriteriaToggleButton
             key={`criteria-${val}`}
             val={val}
@@ -606,7 +608,7 @@ export const ConditionsFormRow = ({
               <FormControlLabel
                 value={NotConditionType.SimpleCondition}
                 control={<Radio color="primary" />}
-                label="Add rule"
+                label={t('common.addRule')}
                 sx={{
                   marginTop: theme.spacing(1),
                 }}

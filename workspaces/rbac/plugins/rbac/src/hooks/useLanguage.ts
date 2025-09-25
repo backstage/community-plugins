@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function capitalizeFirstLetter(word: string, locale?: string) {
-  return word.charAt(0).toLocaleUpperCase(locale || 'en') + word.slice(1);
-}
+import { useApi } from '@backstage/core-plugin-api';
+import { appLanguageApiRef } from '@backstage/core-plugin-api/alpha';
 
-export { capitalizeFirstLetter };
+export const useLanguage = (): string =>
+  useApi(appLanguageApiRef).getLanguage().language;

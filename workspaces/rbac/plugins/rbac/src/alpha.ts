@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function capitalizeFirstLetter(word: string, locale?: string) {
-  return word.charAt(0).toLocaleUpperCase(locale || 'en') + word.slice(1);
-}
 
-export { capitalizeFirstLetter };
+/**
+ * @alpha
+ * Translation resources for the RBAC plugin
+ */
+export * from './translations';
