@@ -19,7 +19,11 @@ import { mockArgoResources } from '../../../../../../../dev/__data__/argoRollout
 import { Revision } from '../../../../../../types/revision';
 import { getRolloutUIResources } from '../../../../../../utils/rollout-utils';
 import CanaryRevision from '../CanaryRevision';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
 
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 const mockRollout = getRolloutUIResources(mockArgoResources, 'quarkus-app')[0];
 
 const revision = mockRollout.revisions[0];

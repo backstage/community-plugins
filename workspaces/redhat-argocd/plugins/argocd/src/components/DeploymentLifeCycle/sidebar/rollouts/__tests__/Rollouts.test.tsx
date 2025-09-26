@@ -19,6 +19,11 @@ import { mockArgoResources } from '../../../../../../dev/__data__/argoRolloutsOb
 import { getRolloutUIResources } from '../../../../../utils/rollout-utils';
 import { useArgoResources } from '../RolloutContext';
 import Rollouts from '../Rollouts';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('../RolloutContext', () => ({
   ...jest.requireActual('../RolloutContext'),

@@ -18,6 +18,11 @@ import { render, screen } from '@testing-library/react';
 import { mockArgoResources } from '../../../../../../../dev/__data__/argoRolloutsObjects';
 import { ReplicaSet } from '../../../../../../types/resources';
 import RevisionImage from '../RevisionImage';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('RevisionImage', () => {
   it('renders the image name when it is present in the revision', () => {
