@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 import { useMemo } from 'react';
-import pluralize from 'pluralize';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
+import { useKubernetesObjects } from '@janus-idp/shared-react';
+import pluralize from 'pluralize';
 
+import { kubernetesApiRef, kubernetesAuthProvidersApiRef } from '../kubeApi';
 import {
   ArgoCDkindPluralMap,
   ArgoCDResourcesKind,
@@ -27,7 +28,11 @@ import {
 export const useArgocdRollouts = (): ArgoResources => {
   const { entity } = useEntity();
 
-  const { kubernetesObjects } = useKubernetesObjects(entity);
+  const { kubernetesObjects } = useKubernetesObjects(
+    entity,
+    kubernetesApiRef,
+    kubernetesAuthProvidersApiRef,
+  );
 
   const initalArgoResources = useMemo<ArgoResources>(
     () =>
