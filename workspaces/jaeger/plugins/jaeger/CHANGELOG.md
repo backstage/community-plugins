@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jaeger
 
+## 0.10.0
+
+### Minor Changes
+
+- d7008aa: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [d7008aa]
+  - @backstage-community/plugin-jaeger-common@0.10.0
+
 ## 0.9.0
 
 ### Minor Changes
