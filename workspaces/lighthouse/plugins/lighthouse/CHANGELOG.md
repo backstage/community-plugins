@@ -1,5 +1,16 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.14.0
+
+### Minor Changes
+
+- 950260b: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [950260b]
+  - @backstage-community/plugin-lighthouse-common@0.11.0
+
 ## 0.13.1
 
 ### Patch Changes
