@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.9.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+
 ## 0.8.2
 
 ### Patch Changes
