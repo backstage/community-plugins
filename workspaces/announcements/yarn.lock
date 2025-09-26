@@ -2048,7 +2048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.34.2":
+"@backstage/cli@npm:^0.34.3":
   version: 0.34.3
   resolution: "@backstage/cli@npm:0.34.3"
   dependencies:
@@ -2380,13 +2380,13 @@ __metadata:
   linkType: hard
 
 "@backstage/config@npm:^1.3.3":
-  version: 1.3.3
-  resolution: "@backstage/config@npm:1.3.3"
+  version: 1.3.4
+  resolution: "@backstage/config@npm:1.3.4"
   dependencies:
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.1"
+    "@backstage/types": "npm:^1.2.2"
     ms: "npm:^2.1.3"
-  checksum: 10/95f3e2a8fca274157e7fdeafd15285f2626ac98df4fcb7fdaca9e21b64eecf4c92b6a3c20ad5cff9d7c12ec750a969e8cd23fc3e18534c1803ef7c6b45c3ba04
+  checksum: 10/0e4d51f1661c5c65af7dcc4e425bbda19bd54c4d8fc8b14e7c73f398ceaabd00c8fd61ffc883114e9f1f597db70b8f38ac9cc009cbfc271c249b3c6d5d11fe3a
   languageName: node
   linkType: hard
 
@@ -14795,9 +14795,9 @@ __metadata:
   resolution: "app-next@workspace:packages/app-next"
   dependencies:
     "@backstage-community/plugin-announcements": "workspace:^"
-    "@backstage/cli": "npm:^0.34.2"
+    "@backstage/cli": "npm:^0.34.3"
     "@backstage/core-compat-api": "npm:^0.5.2"
-    "@backstage/core-components": "npm:^0.18.0"
+    "@backstage/core-components": "npm:^0.18.1"
     "@backstage/core-plugin-api": "npm:^1.11.0"
     "@backstage/frontend-defaults": "npm:^0.3.1"
     "@backstage/frontend-plugin-api": "npm:^0.12.0"
