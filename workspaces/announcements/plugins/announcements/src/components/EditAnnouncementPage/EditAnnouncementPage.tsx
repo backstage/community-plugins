@@ -81,7 +81,11 @@ export const EditAnnouncementPage = (props: EditAnnouncementPageProps) => {
       }
 
       await announcementsApi.updateAnnouncement(id, request);
-      alertApi.post({ message: updateMsg, severity: 'success' });
+      alertApi.post({
+        message: updateMsg,
+        severity: 'success',
+        display: 'transient',
+      });
       navigate(rootPage());
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
