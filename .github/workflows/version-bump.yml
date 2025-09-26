@@ -120,6 +120,9 @@ jobs:
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }} ${{ inputs.version-bump-type || 'minor' }}
+      - name: Run prettier:fix
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn prettier:fix        
       - name: 'Commit changes'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         run: |

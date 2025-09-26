@@ -1,5 +1,12 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.25.0
+
+### Minor Changes
+
+- bb1fa55: Add i18n support
+- 9de3869: Revert back to using custom K8s API ref to prevent duplicate factory issue
+
 ## 1.24.0
 
 ### Minor Changes

@@ -17,12 +17,14 @@ import type { FC } from 'react';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface AppServerLinkProps {
   application: Application;
 }
 
 const AppServerLink: FC<AppServerLinkProps> = ({ application }) => {
+  const { t } = useTranslation();
   if (!application) {
     return null;
   }
@@ -32,7 +34,7 @@ const AppServerLink: FC<AppServerLinkProps> = ({ application }) => {
       {application?.spec?.destination?.server ===
       'https://kubernetes.default.svc' ? (
         <Tooltip
-          title="This is the local cluster where Argo CD is installed."
+          title={t('common.appServer.title')}
           data-testid="local-cluster-tooltip"
         >
           <Typography>(in-cluster) </Typography>

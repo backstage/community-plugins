@@ -26,12 +26,16 @@ import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import DeploymentLifecycle from '../DeploymentLifecycle';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 import { argoCDApiRef } from '../../../api';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
 
 jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
 }));
 jest.mock('@backstage/plugin-permission-react', () => ({
   usePermission: jest.fn(),
+}));
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
 }));
 
 const mockUsePermission = usePermission as jest.MockedFunction<

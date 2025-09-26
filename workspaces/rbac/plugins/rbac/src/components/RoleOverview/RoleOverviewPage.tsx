@@ -26,10 +26,12 @@ import { useToast } from '../ToastContext';
 import { AboutCard } from './AboutCard';
 import { MembersCard } from './MembersCard';
 import { PermissionsCard } from './PermissionsCard';
+import { useTranslation } from '../../hooks/useTranslation';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { policyEntityReadPermission } from '@backstage-community/plugin-rbac-common';
 
 export const RoleOverviewPage = () => {
+  const { t } = useTranslation();
   const { roleName, roleNamespace, roleKind } = useParams();
   const { toastMessage, setToastMessage } = useToast();
   const membersInfo = useMembers(`${roleKind}:${roleNamespace}/${roleName}`);
@@ -53,7 +55,7 @@ export const RoleOverviewPage = () => {
           typeLink=".."
         />
         <TabbedLayout>
-          <TabbedLayout.Route path="" title="Overview">
+          <TabbedLayout.Route path="" title={t('common.overview')}>
             <Grid container direction="row" spacing={2}>
               <Grid item lg={12} xs={12}>
                 <AboutCard

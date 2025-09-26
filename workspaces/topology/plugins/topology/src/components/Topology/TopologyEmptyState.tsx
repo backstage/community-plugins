@@ -20,6 +20,8 @@ import {
   EmptyStateVariant,
 } from '@patternfly/react-core';
 
+import { useTranslation } from '../../hooks/useTranslation';
+
 type TopologyEmptyStateProps = {
   title?: string;
   description?: string;
@@ -29,16 +31,20 @@ export const TopologyEmptyState = ({
   title,
   description,
 }: TopologyEmptyStateProps) => {
+  const { t } = useTranslation();
+
   return (
     <EmptyState
       variant={EmptyStateVariant.full}
       isFullHeight
       className="pf-topology-visualization-surface"
-      titleText={title || 'No resources found'}
+      titleText={title || t('emptyState.noResourcesFound')}
       icon={TopologyIcon}
       headingLevel="h3"
     >
-      <EmptyStateBody>{description}</EmptyStateBody>
+      <EmptyStateBody>
+        {description || t('emptyState.noResourcesDescription')}
+      </EmptyStateBody>
     </EmptyState>
   );
 };

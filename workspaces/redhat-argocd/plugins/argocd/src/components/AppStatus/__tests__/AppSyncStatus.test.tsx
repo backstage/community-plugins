@@ -17,6 +17,11 @@ import { render, screen } from '@testing-library/react';
 
 import { mockApplication } from '../../../../dev/__data__';
 import AppSyncStatus from '../AppSyncStatus';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('AppSyncStatus', () => {
   test('should return default component', () => {

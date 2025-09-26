@@ -1,11 +1,7 @@
 import { BackendDynamicPluginInstaller } from '@backstage/backend-dynamic-feature-service';
-import { MTAProvider } from '../provider/MTAEntityProvider';
+import { catalogModuleMtaEntityProvider } from '../module';
 
 export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
-  kind: 'legacy',
-  async catalog(builder, env) {
-    builder.addEntityProvider(
-      MTAProvider.newProvider(env.config, env.logger, env.scheduler),
-    );
-  },
+  kind: 'new',
+  install: () => [catalogModuleMtaEntityProvider],
 };

@@ -28,6 +28,11 @@ import {
 import DeploymentLifecycleDrawer from '../DeploymentLifecycleDrawer';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 import { useDrawerContext } from '../DrawerContext';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({

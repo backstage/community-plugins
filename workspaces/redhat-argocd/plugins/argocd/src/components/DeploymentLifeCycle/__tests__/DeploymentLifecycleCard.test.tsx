@@ -22,6 +22,11 @@ import {
   Source,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import DeploymentLifecycleCard from '../DeploymentLifecycleCard';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
