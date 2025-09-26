@@ -18,6 +18,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { ResourcesTableRow } from '../ResourcesTableRow';
 import { useArgoResources } from '../../rollouts/RolloutContext';
+import { mockUseTranslation } from '../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('../ResourcesSyncStatus', () => ({
   ResourceSyncStatus: jest.fn(() => <div>Mocked Sync Status</div>),

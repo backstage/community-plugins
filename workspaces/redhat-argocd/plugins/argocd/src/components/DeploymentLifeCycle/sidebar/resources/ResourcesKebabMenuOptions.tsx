@@ -61,7 +61,9 @@ export const ResourcesKebabMenuOptions = () => {
   return (
     <>
       <IconButton
-        aria-label="more"
+        aria-label={t(
+          'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.iconButton.ariaLabel',
+        )}
         aria-controls="kebab-menu"
         aria-haspopup="true"
         onClick={handleClick}

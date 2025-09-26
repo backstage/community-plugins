@@ -103,7 +103,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
     <>
       <ToolbarItem>
         <Select
-          aria-label="ResourcesFilters"
+          aria-label={t(
+            'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.resourceFilters',
+          )}
           id="ResourcesFilters"
           toggle={toggleRef => (
             <MenuToggle
@@ -210,7 +212,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         >
           {resourcesFilterBy === 'SyncStatus' && (
             <Select
-              aria-label="Sync Status"
+              aria-label={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.syncStatus',
+              )}
               toggle={toggleRef => (
                 <MenuToggle
                   ref={toggleRef}
@@ -247,7 +251,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         >
           {resourcesFilterBy === 'Kind' && (
             <Select
-              aria-label="Kind"
+              aria-label={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.kind',
+              )}
               toggle={toggleRef => (
                 <MenuToggle
                   ref={toggleRef}

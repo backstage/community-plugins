@@ -79,7 +79,13 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
   return (
     <>
       <Metadata>
-        <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
+        <MetadataItem
+          title={t(
+            'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.namespace',
+          )}
+        >
+          {resource?.namespace}
+        </MetadataItem>
         {appHistory.length > 0 ? (
           <MetadataItemWithTooltip
             title={t(
@@ -95,7 +101,11 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
           <></>
         )}
         {!isAppHelmChartType(application) ? (
-          <MetadataItem title="Commit">
+          <MetadataItem
+            title={t(
+              'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.commit',
+            )}
+          >
             <AppCommitLink
               application={application}
               entity={entity}

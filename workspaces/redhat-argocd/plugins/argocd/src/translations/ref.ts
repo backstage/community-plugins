@@ -59,6 +59,9 @@ export const ArgoCDMessages = {
           ariaLabelledBy: 'Resources',
           noneFound: 'No Resources found',
         },
+        resourcesTableRow: {
+          ariaLabel: 'expand row',
+        },
         resource: {
           deploymentHistory: {
             bodyText: 'Deployment history',
@@ -72,13 +75,22 @@ export const ArgoCDMessages = {
               tooltipText:
                 'These are the images for all the deployments in the ArgoCD application.',
             },
+            namespace: 'Namespace',
+            commit: 'Commit',
           },
           rolloutMetadata: {
+            namespace: 'Namespace',
             strategy: 'Strategy',
             status: 'Status',
           },
+          resourceMetadata: {
+            namespace: 'Namespace',
+          },
         },
         resourcesKebabMenuOptions: {
+          iconButton: {
+            ariaLabel: 'more',
+          },
           refresh: 'Refresh',
           sync: 'Sync',
         },
@@ -97,6 +109,11 @@ export const ArgoCDMessages = {
             healthStatusInput: 'Filter by Health status',
             syncStatusInput: 'Filter by Sync status',
             kindInput: 'Filter by Kind',
+            ariaLabels: {
+              resourceFilters: 'Resource Filters',
+              syncStatus: 'Sync status',
+              kind: 'Kind',
+            },
             healthStatusSelectOptions: {
               Healthy: 'Healthy',
               Suspended: 'Suspended',
