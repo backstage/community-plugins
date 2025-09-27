@@ -52,7 +52,13 @@ import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
 import { DateTime } from 'luxon';
 
-export const AnnouncementsContent = () => {
+type AnnouncementsContentProps = {
+  defaultInactive?: boolean;
+};
+
+export const AnnouncementsContent = ({
+  defaultInactive,
+}: AnnouncementsContentProps) => {
   const alertApi = useApi(alertApiRef);
   const announcementsApi = useApi(announcementsApiRef);
   const navigate = useNavigate();
@@ -328,7 +334,7 @@ export const AnnouncementsContent = () => {
         {showCreateAnnouncementForm && (
           <Grid item xs={12}>
             <AnnouncementForm
-              initialData={{} as Announcement}
+              initialData={{ active: !defaultInactive } as Announcement}
               onSubmit={onSubmit}
             />
           </Grid>
