@@ -64,7 +64,11 @@ export function useBuilds({ branch }: { branch?: string } = {}) {
         filter: { branch },
       });
 
-      setTotal(build.length);
+      if (Array.isArray(build)) {
+        setTotal(build.length);
+      } else {
+        setTotal(0);
+      }
 
       return build;
     } catch (e) {

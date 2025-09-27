@@ -83,17 +83,107 @@ export const CITableView = ({
   );
 };
 
+function CITableErrorView({
+  statusCode,
+  errorReason,
+  connectionIssueMessage,
+  jenkinsJobFullPath,
+}: {
+  statusCode?: number;
+  errorReason?: string;
+  connectionIssueMessage?: string;
+  jenkinsJobFullPath?: string;
+}) {
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      mt={4}
+    >
+      <Typography variant="h5" color="error" gutterBottom>
+        Failed to retrieve data
+      </Typography>
+      <Typography
+        variant="body1"
+        color="textSecondary"
+        style={{ fontWeight: 'bold', marginBottom: 16 }}
+      >
+        {statusCode}: {errorReason || 'Unknown error'}
+      </Typography>
+      <Typography
+        variant="body1"
+        color="textSecondary"
+        style={{ fontWeight: 'bold', marginBottom: 16 }}
+      >
+        {jenkinsJobFullPath}
+      </Typography>
+      {connectionIssueMessage && (
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          style={{
+            fontWeight: 'bold',
+            padding: '16px 24px',
+            background: '#5c5252ff', // Material-UI grey[400] - darker grey
+            borderRadius: 4,
+            border: '1px solid #a3a3a3ff', // Material-UI grey[600] - darker border
+            marginTop: 8,
+            maxWidth: 600,
+            textAlign: 'center',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)', // slightly stronger shadow
+          }}
+        >
+          {connectionIssueMessage}
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
 type CITableProps = {
   title?: string;
   columns?: TableColumn<Project>[];
 };
 
+type ProjectStatus = {
+  statusCode: number;
+  errorReason?: string;
+  connectionIssueMessage?: string;
+  jenkinsJobFullPath?: string;
+};
+
+function isProjectsStatus(x: unknown): x is ProjectStatus {
+  return !!x && typeof x === 'object' && 'statusCode' in x;
+}
+
 export const CITable = ({ title, columns }: CITableProps) => {
   const [tableProps, { setPage, retry, setPageSize }] = useBuilds();
+
+  const projects = tableProps.projects;
+
+  if (isProjectsStatus(projects)) {
+    const {
+      statusCode,
+      errorReason,
+      connectionIssueMessage,
+      jenkinsJobFullPath,
+    } = projects;
+    return (
+      <CITableErrorView
+        statusCode={statusCode}
+        errorReason={errorReason}
+        connectionIssueMessage={connectionIssueMessage}
+        jenkinsJobFullPath={jenkinsJobFullPath}
+      />
+    );
+  }
 
   return (
     <CITableView
       {...tableProps}
+      projects={projects}
       title={title}
       columns={columns || ([] as TableColumn<Project>[])}
       retry={retry}

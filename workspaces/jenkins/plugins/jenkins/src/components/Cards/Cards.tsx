@@ -111,7 +111,7 @@ export const LatestRunCard = (props: {
 }) => {
   const { branch = 'master', variant, title } = props;
   const [{ projects, loading, error }] = useBuilds({ branch });
-  const latestRun = projects?.[0];
+  const latestRun = Array.isArray(projects) ? projects[0] : undefined;
   return (
     <InfoCard title={renderLatestRunCardTitle(branch, title)} variant={variant}>
       {!error ? (
