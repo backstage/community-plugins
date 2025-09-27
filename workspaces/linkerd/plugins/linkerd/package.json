@@ -60,7 +60,7 @@
     "reactflow": "^11.11.0"
   },
   "peerDependencies": {
-    "@backstage/plugin-kubernetes": "^0.12.10",
+    "@backstage/plugin-kubernetes": "^0.12.11",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
