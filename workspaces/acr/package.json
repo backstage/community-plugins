@@ -88,7 +88,7 @@
     "@backstage/integration-react": "1.2.9",
     "@backstage/release-manifests": "0.0.13",
     "@backstage/repo-tools": "0.15.1",
-    "@techdocs/cli": "1.9.7",
+    "@techdocs/cli": "1.9.8",
     "@backstage/test-utils": "1.7.11",
     "@backstage/theme": "0.6.8",
     "@backstage/types": "1.2.1",
