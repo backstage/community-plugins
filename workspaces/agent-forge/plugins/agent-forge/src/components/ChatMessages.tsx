@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo, useState } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import WebexLogo from '../icons/jarvis.png';
 import TypingIndicator from './TypingIndicator';
 import { FeedbackButton } from './FeedbackButton';
@@ -30,6 +30,8 @@ import Snackbar from '@mui/material/Snackbar';
 import useAsync from 'react-use/esm/useAsync';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { isProviderField, isModelField } from '../utils/helpers';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
 
 interface ChatMessagesProps {
   handleMessageSubmit: (msg?: string) => void;
@@ -45,6 +47,7 @@ interface ChatMessagesProps {
     React.SetStateAction<{ [key: number]: Feedback }>
   >;
   providerModelsMap: { [key: string]: string[] };
+  showFormMode?: boolean;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
@@ -59,26 +62,49 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   handleOptionSelection,
   setFeedback,
   providerModelsMap,
+  showFormMode = true,
 }) => {
   const handleTabClick = (m: string) => {
     handleMessageSubmit(m);
   };
   const styles = useStyles();
 
-  const initialFormData = useMemo(
-    () =>
-      messages.reduce((acc, message, index) => {
-        acc[index] =
-          message.metadata?.input_fields?.reduce((fieldAcc, field) => {
-            fieldAcc[field.field_name] = '';
-            return fieldAcc;
-          }, {} as Record<string, string>) || {};
-        return acc;
-      }, {} as Record<number, Record<string, string>>),
-    [messages],
-  );
+  const initialFormData = useMemo(() => {
+    const data: { [key: number]: { [key: string]: string } } = {};
+    messages.forEach((message, index) => {
+      if (message.metadata?.input_fields) {
+        if (Array.isArray(message.metadata.input_fields)) {
+          // Legacy structure
+          message.metadata.input_fields.forEach(input => {
+            if (!data[index]) data[index] = {};
+            data[index][input.field_name] = '';
+          });
+        } else if (message.metadata.input_fields.fields) {
+          // New structure
+          data[index] = {};
+          message.metadata.input_fields.fields.forEach(field => {
+            // Set initial value from provided_value if available, otherwise empty string
+            if (
+              field.provided_value !== undefined &&
+              field.provided_value !== null
+            ) {
+              data[index][field.name] = field.provided_value.toString();
+            } else {
+              data[index][field.name] = '';
+            }
+          });
+        }
+      }
+    });
+    return data;
+  }, [messages]);
 
   const [formData, setFormData] = useState(initialFormData);
+
+  // Update form data when messages change to handle new provided_value
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, [initialFormData]);
   const [copyConfirm, setCopyConfirm] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState('');
 
@@ -86,23 +112,25 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     setCopyConfirm(false);
   };
 
-  const handleInputChange = (
-    index: number,
-    fieldName: string,
-    value: string,
-  ) => {
-    setFormData(prevData => ({
-      ...prevData,
-      [index]: {
-        ...prevData[index],
-        [fieldName]: value,
-      },
-    }));
+  const handleInputChange = useCallback(
+    (index: number, fieldName: string, value: string) => {
+      setFormData(prevData => {
+        const newData = {
+          ...prevData,
+          [index]: {
+            ...prevData[index],
+            [fieldName]: value,
+          },
+        };
+        return newData;
+      });
 
-    if (isProviderField(fieldName)) {
-      setSelectedProvider(value);
-    }
-  };
+      if (isProviderField(fieldName)) {
+        setSelectedProvider(value);
+      }
+    },
+    [],
+  );
 
   const filterModels = (models: string[], provider: string) => {
     return providerModelsMap[provider] || models;
@@ -125,7 +153,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
 
     if (message.isUser)
       // eslint-disable-next-line
-      return <UserMessage message={message.text} key={index} />;
+      return <UserMessage message={message.text || ''} key={index} />;
     return (
       <Box
         key={index}
@@ -145,92 +173,365 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             </Box>
             <div className={styles.timestamp}>{message.timestamp}</div>
           </Box>
-          {message.text?.split('\n').map((line, idx) => (
-            <MarkdownContent
-              key={idx}
-              content={line}
-              transformLinkUri={uri => (uri.startsWith('http') ? uri : '')}
-              linkTarget="_blank"
-            />
-          ))}
 
-          {message.metadata?.input_fields &&
-            message.metadata?.input_fields?.length > 0 && (
+          {/* Show message text only when no form is displayed OR when showFormMode is false */}
+          {(() => {
+            const messageText =
+              message.text ||
+              (message.parts &&
+                message.parts[0] &&
+                message.parts[0].kind === 'text' &&
+                message.parts[0].text);
+            const hasForm =
+              message.metadata?.input_fields &&
+              (Array.isArray(message.metadata.input_fields)
+                ? message.metadata.input_fields.length > 0
+                : message.metadata.input_fields.fields?.length > 0);
+
+            // Only show text if there's no form OR if showFormMode is false (text-only mode)
+            return messageText && (!hasForm || !showFormMode)
+              ? messageText
+                  .split('\n')
+                  .map((line, idx) => (
+                    <MarkdownContent
+                      key={idx}
+                      content={line}
+                      transformLinkUri={uri =>
+                        uri.startsWith('http') ? uri : ''
+                      }
+                      linkTarget="_blank"
+                    />
+                  ))
+              : null;
+          })()}
+
+          {/* Show form if input_fields metadata exists AND showFormMode is true */}
+          {showFormMode &&
+            message.metadata?.input_fields &&
+            (Array.isArray(message.metadata.input_fields)
+              ? message.metadata.input_fields.length > 0
+              : message.metadata.input_fields.fields?.length > 0) && (
               <Box mb={3} mt={1}>
-                <form
-                  onSubmit={event => {
-                    event.preventDefault();
-                    handleMessageSubmit(JSON.stringify(formData[index]));
-                  }}
-                >
-                  {message.metadata?.input_fields.map((input, i) => {
-                    const field_name = input.field_name
-                      .split('_')
-                      .map(
-                        word =>
-                          word.charAt(0).toLocaleUpperCase() + word.slice(1),
-                      )
-                      .join(' ');
-
-                    if (isModelField(input.field_name)) {
-                      input.field_values = filterModels(
-                        input.field_values || [],
-                        selectedProvider,
-                      );
-                    }
-
-                    return (
-                      <Box key={i}>
-                        <TextField
-                          fullWidth
-                          id={field_name}
-                          label={field_name}
-                          variant={
-                            input.field_values && input.field_values.length > 0
-                              ? 'outlined'
-                              : 'standard'
-                          }
-                          helperText={input.field_description}
-                          size="small"
-                          select={
-                            input.field_values && input.field_values.length > 0
-                          }
-                          onChange={e => {
-                            // console.log(`Field Name: ${field_name}, Value: ${e.target.value}`);
-                            handleInputChange(
-                              index,
-                              field_name,
-                              e.target.value,
-                            );
-                          }}
-                          sx={{ marginBottom: 2 }}
-                        >
-                          {input.field_values &&
-                            input.field_values.length > 0 &&
-                            input.field_values.map((fieldValue, idx) => (
-                              <MenuItem
-                                key={idx}
-                                value={fieldValue}
-                                disabled={
-                                  isModelField(field_name) && !selectedProvider
-                                }
-                                onClick={() => {}}
-                              >
-                                {fieldValue}
-                              </MenuItem>
-                            ))}
-                        </TextField>
-                      </Box>
-                    );
-                  })}
-                  <Button
-                    type="submit"
-                    sx={{ marginTop: 2 }}
-                    variant="outlined"
+                {/* Legacy form structure */}
+                {Array.isArray(message.metadata.input_fields) && (
+                  <form
+                    onSubmit={event => {
+                      event.preventDefault();
+                      handleMessageSubmit(JSON.stringify(formData[index]));
+                    }}
                   >
-                    Submit
-                  </Button>
-                </form>
+                    {message.metadata.input_fields.map((input, i) => {
+                      const field_name = input.field_name
+                        .split('_')
+                        .map(
+                          word =>
+                            word.charAt(0).toLocaleUpperCase() + word.slice(1),
+                        )
+                        .join(' ');
+
+                      if (isModelField(input.field_name)) {
+                        input.field_values = filterModels(
+                          input.field_values || [],
+                          selectedProvider,
+                        );
+                      }
+
+                      return (
+                        <Box key={i}>
+                          <TextField
+                            fullWidth
+                            id={field_name}
+                            label={field_name}
+                            variant={
+                              input.field_values &&
+                              input.field_values.length > 0
+                                ? 'outlined'
+                                : 'standard'
+                            }
+                            helperText={input.field_description}
+                            size="small"
+                            select={
+                              input.field_values &&
+                              input.field_values.length > 0
+                            }
+                            onChange={e => {
+                              handleInputChange(
+                                index,
+                                field_name,
+                                e.target.value,
+                              );
+                            }}
+                            sx={{ marginBottom: 2 }}
+                          >
+                            {input.field_values &&
+                              input.field_values.length > 0 &&
+                              input.field_values.map((fieldValue, idx) => (
+                                <MenuItem
+                                  key={idx}
+                                  value={fieldValue}
+                                  disabled={
+                                    isModelField(field_name) &&
+                                    !selectedProvider
+                                  }
+                                  onClick={() => {}}
+                                >
+                                  {fieldValue}
+                                </MenuItem>
+                              ))}
+                          </TextField>
+                        </Box>
+                      );
+                    })}
+                    <Button
+                      type="submit"
+                      sx={{ marginTop: 2 }}
+                      variant="outlined"
+                    >
+                      Submit
+                    </Button>
+                  </form>
+                )}
+
+                {/* New form structure */}
+                {!Array.isArray(message.metadata.input_fields) &&
+                  message.metadata.input_fields?.fields && (
+                    <Box>
+                      {/* Form explanation */}
+                      {message.metadata.form_explanation && (
+                        <Box
+                          mb={2}
+                          p={2}
+                          sx={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                          }}
+                        >
+                          <Typography variant="body1">
+                            {message.metadata.form_explanation.replace(
+                              /^"|"$/g,
+                              '',
+                            )}
+                          </Typography>
+                        </Box>
+                      )}
+
+                      {/* Tool info header */}
+                      {message.metadata.input_fields.tool_info && (
+                        <Box
+                          mb={2}
+                          p={2}
+                          sx={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            sx={{ color: 'white', mb: 1 }}
+                          >
+                            {message.metadata.input_fields.tool_info.operation}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                          >
+                            {
+                              message.metadata.input_fields.tool_info
+                                .description
+                            }
+                          </Typography>
+                          {message.metadata.input_fields.summary && (
+                            <Box mt={1} display="flex" gap={2} flexWrap="wrap">
+                              <Chip
+                                label={`Required: ${message.metadata.input_fields.summary.missing_required} missing`}
+                                color="error"
+                                size="small"
+                                variant="outlined"
+                              />
+                              <Chip
+                                label={`Optional: ${message.metadata.input_fields.summary.total_optional}`}
+                                color="info"
+                                size="small"
+                                variant="outlined"
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      )}
+
+                      <form
+                        onSubmit={event => {
+                          event.preventDefault();
+                          handleMessageSubmit(JSON.stringify(formData[index]));
+                        }}
+                      >
+                        {message.metadata.input_fields.fields.map(
+                          (field, i) => {
+                            const isRequired = field.required;
+                            const isMissing = field.status === 'missing';
+                            const isBoolean = field.type === 'boolean';
+
+                            return (
+                              <Box key={i} mb={2}>
+                                {isBoolean ? (
+                                  // Use Material-UI Select for boolean fields
+                                  <Box>
+                                    <Typography
+                                      component="label"
+                                      variant="body2"
+                                      sx={{
+                                        display: 'block',
+                                        color: 'rgba(0, 0, 0, 0.87)',
+                                        marginBottom: 1,
+                                        fontWeight: 500,
+                                      }}
+                                    >
+                                      {field.title}
+                                    </Typography>
+                                    <FormControl fullWidth size="small">
+                                      <Select
+                                        value={
+                                          formData[index]?.[field.name] || ''
+                                        }
+                                        onChange={e => {
+                                          handleInputChange(
+                                            index,
+                                            field.name,
+                                            e.target.value,
+                                          );
+                                        }}
+                                        sx={{
+                                          backgroundColor:
+                                            'rgba(255, 255, 255, 0.05)',
+                                          '& .MuiOutlinedInput-root': {
+                                            '&:hover': {
+                                              backgroundColor:
+                                                'rgba(255, 255, 255, 0.08)',
+                                            },
+                                            '&.Mui-focused': {
+                                              backgroundColor:
+                                                'rgba(255, 255, 255, 0.1)',
+                                            },
+                                          },
+                                          '& .MuiSelect-icon': {
+                                            color: 'rgba(255, 255, 255, 0.7)',
+                                          },
+                                          '& .MuiInputBase-input': {
+                                            color: 'rgba(255, 255, 255, 0.87)',
+                                          },
+                                        }}
+                                      >
+                                        <MenuItem value="">
+                                          Select a value
+                                        </MenuItem>
+                                        <MenuItem value="true">true</MenuItem>
+                                        <MenuItem value="false">false</MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                    {field.description && (
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          color: 'rgba(0, 0, 0, 0.6)',
+                                          display: 'block',
+                                          marginTop: 0.5,
+                                          marginLeft: '14px',
+                                        }}
+                                      >
+                                        {field.description}
+                                      </Typography>
+                                    )}
+                                  </Box>
+                                ) : (
+                                  // Use Material-UI TextField for non-boolean fields
+                                  <TextField
+                                    fullWidth
+                                    id={field.name}
+                                    label={field.title}
+                                    variant="outlined"
+                                    helperText={field.description}
+                                    size="small"
+                                    required={isRequired}
+                                    error={isRequired && isMissing}
+                                    value={formData[index]?.[field.name] || ''}
+                                    sx={{
+                                      marginBottom: 1,
+                                      '& .MuiOutlinedInput-root': {
+                                        backgroundColor:
+                                          'rgba(255, 255, 255, 0.05)',
+                                        '&:hover': {
+                                          backgroundColor:
+                                            'rgba(255, 255, 255, 0.08)',
+                                        },
+                                        '&.Mui-focused': {
+                                          backgroundColor:
+                                            'rgba(255, 255, 255, 0.1)',
+                                        },
+                                      },
+                                      '& .MuiInputLabel-root': {
+                                        color: 'rgba(255, 255, 255, 0.7)',
+                                      },
+                                      '& .MuiInputBase-input': {
+                                        color: 'white',
+                                      },
+                                      '& .MuiFormHelperText-root': {
+                                        color: 'rgba(255, 255, 255, 0.6)',
+                                      },
+                                    }}
+                                    onChange={e => {
+                                      handleInputChange(
+                                        index,
+                                        field.name,
+                                        e.target.value,
+                                      );
+                                    }}
+                                  />
+                                )}
+                              </Box>
+                            );
+                          },
+                        )}
+
+                        <Box display="flex" gap={2} mt={3}>
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{
+                              backgroundColor: '#9345E1',
+                              '&:hover': {
+                                backgroundColor: '#7a3bc7',
+                              },
+                            }}
+                          >
+                            Submit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outlined"
+                            onClick={() => {
+                              // Reset form data for this message
+                              setFormData(prevData => ({
+                                ...prevData,
+                                [index]: {},
+                              }));
+                            }}
+                            sx={{
+                              borderColor: 'rgba(0, 0, 0, 0.4)',
+                              color: 'rgba(0, 0, 0, 0.87)',
+                              '&:hover': {
+                                borderColor: 'rgba(0, 0, 0, 0.6)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                              },
+                            }}
+                          >
+                            Reset
+                          </Button>
+                        </Box>
+                      </form>
+                    </Box>
+                  )}
               </Box>
             )}
 
@@ -284,7 +585,14 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 handleFeedback={fb => handleFeedback(index, fb)}
                 handleCopyToClipBoard={() => {
                   setCopyConfirm(true);
-                  window.navigator.clipboard.writeText(message.text);
+                  const textToCopy =
+                    message.text ||
+                    (message.parts &&
+                      message.parts[0] &&
+                      message.parts[0].kind === 'text' &&
+                      message.parts[0].text) ||
+                    '';
+                  window.navigator.clipboard.writeText(textToCopy);
                 }}
               />
             </div>
@@ -357,9 +665,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   return (
     <>
       <div className={styles.chat} ref={chatContainerRef}>
-        {messages.map((message, index) =>
-          renderMessage(message, index, handleInputChange),
-        )}
+        {messages.map((message, index) => {
+          return renderMessage(message, index, handleInputChange);
+        })}
         {isTyping && (
           <Box>
             <Box display="flex" alignItems="center">
@@ -443,5 +751,4 @@ const UserMessage = ({ message }: UserMessageProps) => {
     </Box>
   );
 };
-
 export default ChatMessages;
