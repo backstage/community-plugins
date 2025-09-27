@@ -96,6 +96,7 @@ Before using this plugin, you need to have CAIPE running locally or have access 
 #### Quick Start with Docker
 
 1. **Configure Agent Secrets and LLM Providers**
+
    - Set up your API keys and credentials for the agents you plan to use
    - Configure your preferred LLM provider
 
