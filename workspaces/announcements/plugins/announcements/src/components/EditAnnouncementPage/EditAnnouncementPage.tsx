@@ -20,6 +20,7 @@ import { Page, Header, Content, Progress } from '@backstage/core-components';
 import {
   alertApiRef,
   useApi,
+  useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
 import { AnnouncementForm } from '../AnnouncementForm';
@@ -31,6 +32,8 @@ import {
   useCategories,
 } from '@backstage-community/plugin-announcements-react';
 import { Alert } from '@material-ui/lab';
+import { rootRouteRef } from '../../routes';
+import { useNavigate } from 'react-router-dom';
 
 type EditAnnouncementPageProps = {
   themeId: string;
@@ -47,6 +50,8 @@ export const EditAnnouncementPage = (props: EditAnnouncementPageProps) => {
   );
   const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
+  const navigate = useNavigate();
+  const rootPage = useRouteRef(rootRouteRef);
 
   let title = props.title;
   let content: ReactNode = <Progress />;
@@ -76,7 +81,12 @@ export const EditAnnouncementPage = (props: EditAnnouncementPageProps) => {
       }
 
       await announcementsApi.updateAnnouncement(id, request);
-      alertApi.post({ message: updateMsg, severity: 'success' });
+      alertApi.post({
+        message: updateMsg,
+        severity: 'success',
+        display: 'transient',
+      });
+      navigate(rootPage());
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }
