@@ -268,7 +268,7 @@ export class DatabaseHandler {
     const result = await this.db<MetricDbRow>('copilot_metrics')
       .where('type', type)
       .whereBetween('day', [startDate, endDate])
-      .whereNotNull('team_name')
+      .whereNot('team_name', '')
       .distinct('team_name')
       .orderBy('team_name', 'asc')
       .select('team_name');
@@ -382,7 +382,7 @@ export class DatabaseHandler {
     try {
       const query = await this.db<MetricDbRow>('metrics')
         .where('type', type)
-        .where('team_name', teamName ?? null)
+        .where('team_name', teamName ?? '')
         .orderBy('day', 'desc')
         .first('day');
       return query ? query.day : undefined;
@@ -398,7 +398,7 @@ export class DatabaseHandler {
     try {
       const query = this.db('copilot_metrics')
         .where('type', type)
-        .where('team_name', teamName ?? null)
+        .where('team_name', teamName ?? '')
         .orderBy('day', 'desc')
         .first('day');
       const res = await query;
@@ -415,7 +415,7 @@ export class DatabaseHandler {
     try {
       const query = this.db('copilot_metrics')
         .where('type', type)
-        .where('team_name', teamName ?? null)
+        .where('team_name', teamName ?? '')
         .orderBy('day', 'asc')
         .first('day');
       const res = await query;
@@ -431,15 +431,9 @@ export class DatabaseHandler {
     type: MetricsType,
     teamName?: string,
   ): Promise<MetricDbRow[]> {
-    if (teamName) {
-      return await this.db<MetricDbRow>('metrics')
-        .where('type', type)
-        .where('team_name', teamName)
-        .whereBetween('day', [startDate, endDate]);
-    }
-    return this.db<MetricDbRow>('metrics')
+    return await this.db<MetricDbRow>('metrics')
       .where('type', type)
-      .whereNull('team_name')
+      .where('team_name', teamName ?? '')
       .whereBetween('day', [startDate, endDate]);
   }
 
@@ -554,7 +548,7 @@ export class DatabaseHandler {
     type: MetricsType,
     teamName?: string,
   ): Promise<MetricDbRow[]> {
-    let query = this.db('copilot_metrics as cm')
+    const query = this.db('copilot_metrics as cm')
       .select(
         'cm.day',
         'cm.type',
@@ -588,26 +582,22 @@ export class DatabaseHandler {
       .join('ide_completions', join => {
         join
           .on('ide_completions.day', '=', 'cm.day')
-          .andOn('ide_completions.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn(
+          .andOn('ide_completions.type', '=', 'cm.type')
+          .andOn(
             'ide_completions.team_name',
             '=',
-            this.db.raw('?', [teamName]),
+            this.db.raw('?', [teamName ?? '']),
           );
-        } else {
-          join.andOnNull('ide_completions.team_name');
-        }
       })
       .join('ide_chats', join => {
         join
           .on('ide_chats.day', '=', 'cm.day')
-          .andOn('ide_chats.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn('ide_chats.team_name', '=', this.db.raw('?', [teamName]));
-        } else {
-          join.andOnNull('ide_chats.team_name');
-        }
+          .andOn('ide_chats.type', '=', 'cm.type')
+          .andOn(
+            'ide_chats.team_name',
+            '=',
+            this.db.raw('?', [teamName ?? '']),
+          );
       })
       .join(
         this.db.raw(
@@ -622,12 +612,8 @@ export class DatabaseHandler {
         join => {
           join
             .on('icelm.day', '=', 'cm.day')
-            .andOn('icelm.type', '=', 'cm.type');
-          if (teamName) {
-            join.andOn('icelm.team_name', '=', this.db.raw('?', [teamName]));
-          } else {
-            join.andOnNull('icelm.team_name');
-          }
+            .andOn('icelm.type', '=', 'cm.type')
+            .andOn('icelm.team_name', '=', this.db.raw('?', [teamName ?? '']));
         },
       )
       .join(
@@ -637,24 +623,17 @@ export class DatabaseHandler {
       FROM ide_chat_editors_model GROUP BY day, type, team_name) as icem`,
         ),
         join => {
-          join.on('icem.day', '=', 'cm.day').andOn('icem.type', '=', 'cm.type');
-          if (teamName) {
-            join.andOn('icem.team_name', '=', this.db.raw('?', [teamName]));
-          } else {
-            join.andOnNull('icem.team_name');
-          }
+          join
+            .on('icem.day', '=', 'cm.day')
+            .andOn('icem.type', '=', 'cm.type')
+            .andOn('icem.team_name', '=', this.db.raw('?', [teamName ?? '']));
         },
       )
       .where('cm.type', type)
+      .where('cm.team_name', teamName ?? '')
       .whereBetween('cm.day', [startDate, endDate])
       .groupBy('cm.day', 'cm.type', 'cm.team_name')
       .orderBy('cm.day', 'asc');
-
-    if (teamName) {
-      query = query.where('cm.team_name', teamName);
-    } else {
-      query = query.whereNull('cm.team_name');
-    }
 
     return await query;
   }
@@ -665,7 +644,7 @@ export class DatabaseHandler {
     type: MetricsType,
     teamName?: string,
   ): Promise<Breakdown[]> {
-    let query = this.db<Breakdown>('copilot_metrics as cm')
+    const query = this.db<Breakdown>('copilot_metrics as cm')
       .select(
         'cm.day',
         'icleml.editor as editor',
@@ -691,25 +670,16 @@ export class DatabaseHandler {
         join => {
           join
             .on('icleml.day', '=', 'cm.day')
-            .andOn('icleml.type', '=', 'cm.type');
-          if (teamName) {
-            join.andOn('icleml.team_name', '=', this.db.raw('?', [teamName]));
-          } else {
-            join.andOnNull('icleml.team_name');
-          }
+            .andOn('icleml.type', '=', 'cm.type')
+            .andOn('icleml.team_name', '=', this.db.raw('?', [teamName ?? '']));
         },
       )
       .whereBetween('cm.day', [startDate, endDate])
       .where('icleml.model', 'default')
       .where('cm.type', type)
+      .where('cm.team_name', teamName ?? '')
       .groupBy('cm.day', 'icleml.editor', 'icleml.language')
       .orderBy('cm.day', 'asc');
-
-    if (teamName) {
-      query = query.where('cm.team_name', teamName);
-    } else {
-      query = query.whereNull('cm.team_name');
-    }
 
     return await query;
   }
