@@ -74,6 +74,7 @@ To configure the plugin to connect to CAIPE agents, you need to configure the ba
 ```yaml
 agentForge:
   baseUrl: http://127.0.0.1:8000
+  showOptions: true
 ```
 
 The plugin can display pre-defined options based on the agent's available skills. To enable this feature, set the `showOptions` configuration to true:
