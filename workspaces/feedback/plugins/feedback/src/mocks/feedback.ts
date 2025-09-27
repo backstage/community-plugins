@@ -43,3 +43,4 @@ export const mockExperienceList = [
   'Needs Improvement',
   'Other',
 ];
+export const mockEmptyList = [];
