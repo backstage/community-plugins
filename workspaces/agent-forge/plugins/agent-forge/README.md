@@ -74,10 +74,7 @@ To configure the plugin to connect to CAIPE agents, you need to configure the ba
 ```yaml
 agentForge:
   baseUrl: http://127.0.0.1:8000
-<<<<<<< HEAD
   showOptions: true
-=======
->>>>>>> 6f47b7100 (docs: add CAIPE AgentForge Backstage plugin documentation)
 ```
 
 The plugin can display pre-defined options based on the agent's available skills. To enable this feature, set the `showOptions` configuration to true:
@@ -101,9 +98,13 @@ Before using this plugin, you need to have CAIPE running locally or have access 
 
 1. **Configure Agent Secrets and LLM Providers**
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 6f47b7100 (docs: add CAIPE AgentForge Backstage plugin documentation)
+=======
+
+>>>>>>> 9b722fec3 (docs: fix yarn prettier)
    - Set up your API keys and credentials for the agents you plan to use
    - Configure your preferred LLM provider
 
