@@ -87,6 +87,8 @@ Follow these steps to archive a plugin or workspace:
 
    - Record Git tag references using `package.json` versions (`@backstage-community/plugin-example@1.2.3`)
    - Add entries to `.github/archived-plugins.json` and `ARCHIVED_WORKSPACES.md`
+   - Remove entries from `docs/README.md`
+   - If archiving an entire workspace, remove entries from `.github/ISSUE_TEMPLATE/1-bug.yaml`, `.github/ISSUE_TEMPLATE/2-feature.yaml`, `.github/ISSUE_TEMPLATE/snippets/workspaces-dropdown.yaml`, `.github/labeler.yml`, `.github/CODEOWNERS`, and `docs/compatibility/compatibility.md`
 
 2. Dry run the following script to verify which packages would be deprecated:
 
@@ -94,7 +96,7 @@ Follow these steps to archive a plugin or workspace:
    ./scripts/ci/deprecate-archived-plugins.sh --dry-run
    ```
 
-3. Delete the workspace or plugin(s) from the repository.
+3. Delete the workspace or plugin(s) from the repository. Ensure that any relevant documentation has been appropriately updated to reflect the removal of the workspace/plugin.
 
 4. Open a PR with the changes including:
 
