@@ -27,6 +27,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
+import { AUDITOR_FETCH_EVENT_ID } from '@backstage-community/plugin-announcements-common';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -62,6 +63,12 @@ describe('createRouter', () => {
   const mockNotificationService = {
     send: jest.fn().mockImplementation(async () => {}),
   };
+  const auditorSuccessMock = jest.fn().mockResolvedValue(undefined);
+  const auditorFailMock = jest.fn().mockResolvedValue(undefined);
+  const auditorCreateEventMock = jest.fn().mockImplementation(async () => ({
+    success: auditorSuccessMock,
+    fail: auditorFailMock,
+  }));
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -76,6 +83,7 @@ describe('createRouter', () => {
       permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth: mockHttpAuth,
       notifications: mockNotificationService,
+      auditor: { createEvent: auditorCreateEventMock } as any,
     };
 
     const router = await createRouter(announcementsContext);
@@ -84,8 +92,16 @@ describe('createRouter', () => {
   });
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    auditorCreateEventMock.mockImplementation(async () => ({
+      success: auditorSuccessMock,
+      fail: auditorFailMock,
+    }));
   });
+
+  const expectAuditorSuccess = () => {
+    expect(auditorSuccessMock).toHaveBeenCalled();
+    expect(auditorFailMock).not.toHaveBeenCalled();
+  };
 
   describe('GET /announcements', () => {
     it('returns ok', async () => {
@@ -114,6 +130,15 @@ describe('createRouter', () => {
         order: 'desc', // Default order
         current: undefined,
       });
+
+      expect(auditorCreateEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_FETCH_EVENT_ID,
+          severityLevel: 'low',
+          meta: expect.objectContaining({ queryType: 'all' }),
+        }),
+      );
+      expectAuditorSuccess();
 
       expect(response.body).toEqual([
         {
@@ -188,6 +213,7 @@ describe('createRouter', () => {
           until_date: '2025-02-02T15:28:08.539+00:00',
         },
       ]);
+      expectAuditorSuccess();
     });
     it('filters announcements by single tag', async () => {
       announcementsMock.mockReturnValueOnce({
@@ -225,6 +251,7 @@ describe('createRouter', () => {
       expect(response.body.results[0].tags).toEqual([
         { slug: 'tag1', title: 'Tag 1' },
       ]);
+      expectAuditorSuccess();
     });
 
     it('filters announcements by multiple tags', async () => {
@@ -267,6 +294,7 @@ describe('createRouter', () => {
         { slug: 'tag1', title: 'Tag 1' },
         { slug: 'tag2', title: 'Tag 2' },
       ]);
+      expectAuditorSuccess();
     });
 
     it('returns empty results when no announcements match tags', async () => {
@@ -293,6 +321,7 @@ describe('createRouter', () => {
 
       expect(response.body.results).toHaveLength(0);
       expect(response.body.count).toEqual(0);
+      expectAuditorSuccess();
     });
   });
 });
