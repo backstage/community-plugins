@@ -85,7 +85,6 @@ body:
         - npm
         - ocm
         - octopus-deploy
-        - odo
         - opencost
         - periskop
         - pingidentity
