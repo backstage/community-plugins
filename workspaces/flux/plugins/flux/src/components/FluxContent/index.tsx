@@ -44,12 +44,12 @@ export interface FluxContentProps {
 }
 
 /**
- * Main Page of Flux Runtime
+ * Main Page of Flux Resources
  *
  * @public
  */
 export function FluxContent(props: FluxContentProps) {
-  const { title = 'Flux Runtime' } = props;
+  const { title = 'Flux Resources' } = props;
   const classes = useStyles();
 
   return (

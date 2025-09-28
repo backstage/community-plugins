@@ -15,7 +15,7 @@
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { FluxContext } from '../FluxContext';
 import { useKustomizations } from '../../hooks';
 import {
   FluxDeploymentsTable,
@@ -61,7 +61,7 @@ export const EntityFluxKustomizationsCard = ({
 }: {
   many?: boolean;
 }) => (
-  <WeaveGitOpsContext>
+  <FluxContext>
     <KustomizationPanel many={many} />
-  </WeaveGitOpsContext>
+  </FluxContext>
 );

@@ -20,18 +20,14 @@ import {
   QueryClientConfig,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { ThemeProvider } from 'styled-components';
-import { theme } from '../theme';
 
-export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
+export const FluxContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {
     queryCache: new QueryCache(),
   };
   const queryClient = new QueryClient(queryOptions);
 
   return (
-    <ThemeProvider theme={theme()}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };

@@ -15,7 +15,7 @@
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { FluxContext } from '../FluxContext';
 import { useImagePolicies } from '../../hooks';
 import {
   FluxImagePoliciesTable,
@@ -61,7 +61,7 @@ export const EntityFluxImagePoliciesCard = ({
 }: {
   many?: boolean;
 }) => (
-  <WeaveGitOpsContext>
+  <FluxContext>
     <ImagePolicyPanel many={many} />
-  </WeaveGitOpsContext>
+  </FluxContext>
 );
