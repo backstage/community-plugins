@@ -15,6 +15,8 @@ The GitHub Copilot Plugin enhances your Backstage experience by providing featur
 - **Enterprise and Organization Integration**: Seamlessly integrate functionalities for GitHub Enterprise and GitHub Organizations.
 - **Team Metrics Comparison**: Select a team and compare its metrics with the overall data, offering more insights into individual team performance.
 
+_GitHub APIs will only show metrics for teams of 5 or more active users per day_
+
 ## Setup
 
 The following sections will help you get the GitHub Copilot Plugin setup and running.
@@ -42,15 +44,32 @@ To start using the GitHub Copilot Plugin, follow these steps:
    import { CopilotIndexPage } from '@backstage-community/plugin-copilot';
 
    // Add the routes
-   <Route path="/copilot" element={<CopilotIndexPage />} />;
+   const routes = (
+     <FlatRoutes>
+       // ...
+       <Route path="/copilot" element={<CopilotIndexPage />} />
+     </FlatRoutes>
+   );
    ```
 
    **Root.tsx**:
 
    ```tsx
    import { CopilotSidebar } from '@backstage-community/plugin-copilot';
-   // Add the copilot sidebar
-   <SidebarScrollWrapper>
-     <CopilotSidebar />
-   </SidebarScrollWrapper>;
+
+   // Add the CopilotSidebar component somewhere inside your SidebarPage
+   export const Root = ({ children }: PropsWithChildren<{}>) => (
+     <SidebarPage>
+       <Sidebar>
+         {/* ... */}
+         <SidebarGroup label="Menu" icon={<MenuIcon />}>
+            {/* ... */}
+           <SidebarScrollWrapper>
+            <CopilotSidebar />
+           </SidebarScrollWrapper>
+            {/* ... */}
+        </SidebarGroup>
+        {/* ... */}
+     </SidebarPage>
+   );
    ```

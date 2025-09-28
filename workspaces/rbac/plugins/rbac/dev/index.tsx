@@ -38,6 +38,7 @@ import { mockPolicies } from '../src/__fixtures__/mockPolicies';
 import { RBACAPI, rbacApiRef } from '../src/api/RBACBackendClient';
 import { RbacPage, rbacPlugin } from '../src/plugin';
 import { MemberEntity, RoleBasedConditions, RoleError } from '../src/types';
+import { rbacTranslations } from '../src/translations';
 
 class MockRBACApi implements RBACAPI {
   readonly resources;
@@ -171,6 +172,9 @@ const mockConfigApi = new MockConfigApi({
 
 createDevApp()
   .registerPlugin(rbacPlugin)
+  .addTranslationResource(rbacTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setDefaultLanguage('en')
   .addPage({
     element: (
       <TestApiProvider

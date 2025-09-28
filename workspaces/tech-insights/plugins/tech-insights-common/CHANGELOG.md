@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.7.1
+
+### Patch Changes
+
+- ba5bf7b: Fix runBulkCheck logic to run when no entities are found
+
 ## 0.7.0
 
 ### Minor Changes

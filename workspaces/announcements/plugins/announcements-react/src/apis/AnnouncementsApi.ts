@@ -48,6 +48,7 @@ export interface AnnouncementsApi {
     active?: boolean;
     sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList>;
   announcementByID(id: string): Promise<Announcement>;
 

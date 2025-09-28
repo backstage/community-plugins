@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 import { createPlugin } from '@backstage/core-plugin-api';
+import {
+  createSearchResultListItemExtension,
+  SearchResultListItemExtensionProps,
+} from '@backstage/plugin-search-react';
+import { ConfluenceResultItemProps } from './search/ConfluenceSearchResultListItem';
 
 /**
  * The Backstage plugin that holds Confluence specific components
@@ -23,3 +28,19 @@ import { createPlugin } from '@backstage/core-plugin-api';
 export const confluencePlugin = createPlugin({
   id: 'confluence',
 });
+
+/**
+ * @public
+ */
+export const ConfluenceSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<ConfluenceResultItemProps>,
+) => JSX.Element | null = confluencePlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'ConfluenceSearchResultListItem',
+    component: () =>
+      import('./search/ConfluenceSearchResultListItem').then(
+        m => m.ConfluenceSearchResultListItem,
+      ),
+    predicate: result => result.type === 'confluence',
+  }),
+);

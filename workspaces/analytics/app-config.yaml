@@ -6,6 +6,18 @@ app:
     matomo:
       host: ${MATOMO_HOST}
       siteId: ${MATOMO_SITE_ID}
+    newRelic:
+      # New Relic browser monitoring config
+      endpoint: 'bam.nr-data.net'
+      accountId: '1234567890'
+      applicationId: '1234567890'
+      licenseKey: '1234567890'
+      distributedTracingEnabled: true
+      cookiesEnabled: true
+      sessionReplay:
+        enabled: true
+        samplingRate: 100
+        errorSamplingRate: 100
 
 backend:
   baseUrl: http://localhost:7007

@@ -41,47 +41,11 @@ This plugin supports dynamic mount points via Backstage’s dynamic plugin syste
 ### Backend plugin configuration
 
 ```yaml
-pluginConfig:
-  servicenow:
-    instanceUrl: ${SERVICENOW_BASE_URL}
-    basicAuth:
-      username: ${SERVICENOW_USERNAME}
-      password: ${SERVICENOW_PASSWORD}
-```
-
-### Frontend plugin configuration
-
-```yaml
-dynamicPlugins:
-  frontend:
-    backstage-community.plugin-servicenow:
-      entityTabs:
-        - path: /servicenow
-          title: ServiceNow
-          mountPoint: entity.page.servicenow
-        - path: /my-servicenow
-          title: My ServiceNow tickets
-          mountPoint: entity.page.my-servicenow
-      mountPoints:
-        - mountPoint: entity.page.servicenow/cards
-          importName: ServicenowPage
-          config:
-            layout:
-              gridColumn: 1 / -1
-              height: 75vh
-            if:
-              anyOf:
-                - hasAnnotation: servicenow.com/entity-id
-        - mountPoint: entity.page.my-servicenow/cards
-          importName: ServicenowPage
-          config:
-            layout:
-              gridColumn: 1 / -1
-              height: 75vh
-            if:
-              allOf:
-                - isKind: user
-                - isMyProfile
+servicenow:
+  instanceUrl: ${SERVICENOW_BASE_URL}
+  basicAuth:
+    username: ${SERVICENOW_USERNAME}
+    password: ${SERVICENOW_PASSWORD}
 ```
 
 ## Condition Function

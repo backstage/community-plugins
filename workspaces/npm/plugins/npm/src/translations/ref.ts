@@ -17,7 +17,7 @@
 import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 /**
- * @alpha
+ * @public
  */
 export const npmTranslationRef = createTranslationRef({
   id: 'plugin.npm.translation-ref',

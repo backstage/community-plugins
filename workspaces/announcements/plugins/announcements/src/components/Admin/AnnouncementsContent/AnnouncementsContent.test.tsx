@@ -71,6 +71,7 @@ describe('AnnouncementsContent', () => {
           created_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
         },
         {
           id: '2',
@@ -81,6 +82,7 @@ describe('AnnouncementsContent', () => {
           created_at: DateTime.now().toISO(),
           active: false,
           start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
         },
       ],
     };

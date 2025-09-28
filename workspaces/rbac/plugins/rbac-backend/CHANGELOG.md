@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 7.4.0
+
+### Minor Changes
+
+- 232a84d: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [232a84d]
+  - @backstage-community/plugin-rbac-common@1.20.0
+  - @backstage-community/plugin-rbac-node@1.14.0
+
+## 7.3.0
+
+### Minor Changes
+
+- 5260b5c: support config to set permission vs conditional policy evaluation order
+
 ## 7.2.0
 
 ### Minor Changes

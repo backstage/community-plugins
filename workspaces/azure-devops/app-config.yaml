@@ -1,6 +1,7 @@
 app:
   title: Azure DevOps Example App
   baseUrl: http://localhost:3000
+  packages: all
 
 organization:
   name: Azure DevOps Example

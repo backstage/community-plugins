@@ -37,6 +37,11 @@ export interface Config {
      */
     refreshInterval?: number;
     /**
+     * Support for showing full deployment history (duplicates not removed)
+     * @visibility frontend
+     */
+    fullDeploymentHistory?: boolean;
+    /**
      * The base url of the ArgoCD instance.
      * @visibility frontend
      */

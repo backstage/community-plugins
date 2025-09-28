@@ -5,9 +5,9 @@
 ```ts
 /// <reference types="react" />
 
-import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
@@ -15,20 +15,18 @@ import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-rea
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha (undocumented)
-const _default: FrontendPlugin<
+const _default: OverridableFrontendPlugin<
   {
     entityContent: RouteRef<undefined>;
   },
   {},
   {
-    [
-      x: `search-filter-result-type:${string}/confluence-results-type`
-    ]: ExtensionDefinition<{
+    'search-filter-result-type:confluence/confluence-results-type': ExtensionDefinition<{
       kind: 'search-filter-result-type';
       name: 'confluence-results-type';
       config: {};
       configInput: {};
-      output: ConfigurableExtensionDataRef<
+      output: ExtensionDataRef<
         {
           value: string;
           name: string;
@@ -40,9 +38,7 @@ const _default: FrontendPlugin<
       inputs: {};
       params: SearchFilterResultTypeBlueprintParams;
     }>;
-    [
-      x: `search-result-list-item:${string}/search-result`
-    ]: ExtensionDefinition<{
+    'search-result-list-item:confluence/search-result': ExtensionDefinition<{
       kind: 'search-result-list-item';
       name: 'search-result';
       config: {
@@ -51,7 +47,7 @@ const _default: FrontendPlugin<
       configInput: {
         noTrack?: boolean | undefined;
       };
-      output: ConfigurableExtensionDataRef<
+      output: ExtensionDataRef<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;

@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.41.0
+
+### Minor Changes
+
+- 7989c3b: Issue #4995 related with cookie token. Make it configurable
+
 ## 1.40.1
 
 ### Patch Changes

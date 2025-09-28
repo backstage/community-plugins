@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.24.0
+
+### Minor Changes
+
+- 7989c3b: Issue #4995 related with cookie token. Make it configurable
+
 ## 1.23.0
 
 ### Minor Changes

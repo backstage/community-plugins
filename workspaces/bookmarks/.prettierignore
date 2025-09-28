@@ -1,0 +1,6 @@
+.vscode
+coverage
+dist
+dist-types
+knip-report.md
+report.api.md

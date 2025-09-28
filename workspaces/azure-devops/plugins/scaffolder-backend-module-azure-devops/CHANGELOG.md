@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.14.0
+
+### Minor Changes
+
+- 1e1ece3: Add new actions for Azure DevOps: Git Clone, Push and Create new Pull Request
+
+## 0.13.0
+
+### Minor Changes
+
+- 8367480: Backstage version bump to v1.42.3
+
 ## 0.12.0
 
 ### Minor Changes

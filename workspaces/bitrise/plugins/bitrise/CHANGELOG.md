@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bitrise
 
+## 0.7.0
+
+### Minor Changes
+
+- 2cc24ee: Backstage version bump to v1.42.3
+
 ## 0.6.0
 
 ### Minor Changes

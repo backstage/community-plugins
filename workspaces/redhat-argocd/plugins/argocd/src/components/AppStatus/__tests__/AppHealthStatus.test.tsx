@@ -16,7 +16,12 @@
 import { render, screen } from '@testing-library/react';
 
 import { mockApplication } from '../../../../dev/__data__';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
 import AppHealthStatus from '../AppHealthStatus';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('AppHealthStatus', () => {
   test('should return default component', () => {

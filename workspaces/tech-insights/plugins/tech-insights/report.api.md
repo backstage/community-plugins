@@ -39,6 +39,7 @@ export const EntityTechInsightsScorecardCard: (props: {
   onlyFailed?: boolean | undefined;
   expanded?: boolean | undefined;
   gauge?: boolean | undefined;
+  dense?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -69,6 +70,7 @@ export const ScorecardInfo: (props: {
   noWarning?: boolean | undefined;
   expanded?: boolean | undefined;
   dense?: boolean | undefined;
+  hideDescription?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)

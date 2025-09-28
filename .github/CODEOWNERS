@@ -9,17 +9,18 @@ yarn.lock                                                               @backsta
 */yarn.lock                                                             @backstage/community-plugins-maintainers @backstage-service
 .github/archived-plugins.json                                           @backstage/community-plugins-maintainers
 
-/workspaces/3scale                                                      @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr
+/workspaces/3scale                                                      @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/acr                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/acs                                                         @backstage/community-plugins-maintainers  @sachaudh @alwayshooin @dvail @maknop
 /workspaces/adr                                                         @backstage/community-plugins-maintainers  @kuangp
+/workspaces/agent-forge                                                 @backstage/community-plugins-maintainers  @sbraicu @sriaradhyula @subbaksh @suwhang-cisco
 /workspaces/airbrake                                                    @backstage/community-plugins-maintainers
 /workspaces/allure                                                      @backstage/community-plugins-maintainers
 /workspaces/amplication                                                 @backstage/community-plugins-maintainers  @itainathaniel
-/workspaces/analytics                                                   @backstage/community-plugins-maintainers
+/workspaces/analytics                                                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen @jmezach @AndrienkoAleksandr @PatAKnight @dzemanov @christoph-jerolimov @karthikjeeyar @rohitkrai03
 /workspaces/analytics/plugins/analytics-module-matomo                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen
 /workspaces/analytics/plugins/analytics-module-newrelic-browser         @backstage/community-plugins-maintainers  @jmezach
-/workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov
+/workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov @christoph-jerolimov @karthikjeeyar @rohitkrai03
 /workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking @gaelgoth
 /workspaces/apache-airflow                                              @backstage/community-plugins-maintainers
 /workspaces/apollo-explorer                                             @backstage/community-plugins-maintainers
@@ -29,8 +30,10 @@ yarn.lock                                                               @backsta
 /workspaces/azure-storage-explorer                                      @backstage/community-plugins-maintainers  @deepan10
 /workspaces/badges                                                      @backstage/community-plugins-maintainers
 /workspaces/bazaar                                                      @backstage/community-plugins-maintainers
+/workspaces/bitbucket-pull-requests                                     @backstage/community-plugins-maintainers  @mbruhin @smymoon
 /workspaces/bitrise                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                                                   @backstage/community-plugins-maintainers  @deepan10
+/workspaces/bookmarks                                                   @backstage/community-plugins-maintainers  @logonoff @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @hopehadfield
 /workspaces/cicd-statistics                                             @backstage/community-plugins-maintainers
 /workspaces/cloudbuild                                                  @backstage/community-plugins-maintainers
 /workspaces/code-climate                                                @backstage/community-plugins-maintainers
@@ -64,7 +67,7 @@ yarn.lock                                                               @backsta
 /workspaces/jenkins                                                     @backstage/community-plugins-maintainers
 /workspaces/jfrog-artifactory                                           @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                                       @backstage/community-plugins-maintainers  @andrewthauer
-/workspaces/keycloak                                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov
+/workspaces/keycloak                                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/kiali                                                       @backstage/community-plugins-maintainers  @aljesusg @josunect @leandroberetta
 /workspaces/lighthouse                                                  @backstage/community-plugins-maintainers
 /workspaces/linguist                                                    @backstage/community-plugins-maintainers  @awanlin
@@ -79,13 +82,13 @@ yarn.lock                                                               @backsta
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @ciiay @debsmita1 @jessicajhee
 /workspaces/nomad                                                       @backstage/community-plugins-maintainers
 /workspaces/noop                                                        @backstage/community-plugins-maintainers
-/workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
-/workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
+/workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar @logonoff
+/workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff @dzemanov
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
 /workspaces/odo                                                         @backstage/community-plugins-maintainers
 /workspaces/opencost                                                    @backstage/community-plugins-maintainers
 /workspaces/periskop                                                    @backstage/community-plugins-maintainers
-/workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee
+/workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
 /workspaces/puppetdb                                                    @backstage/community-plugins-maintainers
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo
@@ -94,12 +97,12 @@ yarn.lock                                                               @backsta
 /workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
-/workspaces/scaffolder-backend-module-annotator                         @backstage/community-plugins-maintainers  @debsmita1
-/workspaces/scaffolder-backend-module-kubernetes                        @backstage/community-plugins-maintainers  @debsmita1
-/workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
-/workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
-/workspaces/scaffolder-backend-module-sonarqube                         @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
-/workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight
+/workspaces/scaffolder-backend-module-annotator                         @backstage/community-plugins-maintainers  @debsmita1 @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
+/workspaces/scaffolder-backend-module-kubernetes                        @backstage/community-plugins-maintainers  @debsmita1 @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
+/workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
+/workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
+/workspaces/scaffolder-backend-module-sonarqube                         @backstage/community-plugins-maintainers  @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
+/workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
 /workspaces/sentry                                                      @backstage/community-plugins-maintainers
 /workspaces/servicenow                                                  @backstage/community-plugins-maintainers  @AndrienkoAleksandr @ciiay @PatAKnight @christoph-jerolimov
 /workspaces/shortcuts                                                   @backstage/community-plugins-maintainers

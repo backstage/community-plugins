@@ -7,6 +7,8 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const EntityNpmInfoCard: () => JSX_2.Element;
@@ -36,4 +38,39 @@ export const NpmReleaseOverviewCard: () => JSX_2.Element;
 
 // @public @deprecated (undocumented)
 export const NpmReleaseTableCard: () => JSX_2.Element;
+
+// @public (undocumented)
+export const npmTranslationRef: TranslationRef<
+  'plugin.npm.translation-ref',
+  {
+    readonly 'infoCard.title': 'NPM package {{packageName}}';
+    readonly 'infoCard.latestVersion': 'Latest version';
+    readonly 'infoCard.publishedAt': 'Published at';
+    readonly 'infoCard.license': 'License';
+    readonly 'infoCard.description': 'Description';
+    readonly 'infoCard.keywords': 'Keywords';
+    readonly 'infoCard.registryName': 'Registry name';
+    readonly 'infoCard.npmRepository': 'NPM repository';
+    readonly 'infoCard.codeRepository': 'Code repository';
+    readonly 'infoCard.issueTracker': 'Issue tracker';
+    readonly 'infoCard.homepage': 'Homepage';
+    readonly 'releaseOverviewCard.title': 'Current Tags';
+    readonly 'releaseOverviewCard.toolbar.searchPlaceholder': 'Search';
+    readonly 'releaseOverviewCard.columns.tag': 'Tag';
+    readonly 'releaseOverviewCard.columns.version': 'Version';
+    readonly 'releaseOverviewCard.columns.published': 'Published';
+    readonly 'releaseTableCard.title': 'Current Tags';
+    readonly 'releaseTableCard.toolbar.searchPlaceholder': 'Search';
+    readonly 'releaseTableCard.columns.tag': 'Tag';
+    readonly 'releaseTableCard.columns.version': 'Version';
+    readonly 'releaseTableCard.columns.published': 'Published';
+    readonly 'versionHistoryCard.title': 'Version History';
+    readonly 'versionHistoryCard.toolbar.searchPlaceholder': 'Search';
+    readonly 'versionHistoryCard.columns.version': 'Version';
+    readonly 'versionHistoryCard.columns.published': 'Published';
+  }
+>;
+
+// @public (undocumented)
+export const npmTranslations: TranslationResource<'plugin.npm.translation-ref'>;
 ```

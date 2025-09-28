@@ -1,5 +1,22 @@
 ### Dependencies
 
+## 1.45.0
+
+### Minor Changes
+
+- 232a84d: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [232a84d]
+  - @backstage-community/plugin-rbac-common@1.20.0
+
+## 1.44.0
+
+### Minor Changes
+
+- 3719f79: Add internationalization (i18n) support with German, French, Italian, and Spanish translations.
+
 ## 1.43.0
 
 ### Minor Changes

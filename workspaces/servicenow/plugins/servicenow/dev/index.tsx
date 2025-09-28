@@ -15,18 +15,19 @@
  */
 
 import { createDevApp } from '@backstage/dev-utils';
-import { servicenowPlugin, ServicenowPage } from '../src/plugin';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Header, Page, TabbedLayout } from '@backstage/core-components';
-import { mockComponentEntity } from '../src/__fixtures__/mockEntity';
 import {
   BackstageUserIdentity,
   identityApiRef,
 } from '@backstage/core-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
 import { serviceNowApiRef } from '../src/api/ServiceNowBackendClient';
+import { mockComponentEntity } from '../src/__fixtures__/mockEntity';
 import { mockServicenowApi } from '../src/__fixtures__/mockServicenowApi';
+
+import { servicenowPlugin, EntityServicenowContent } from '../src/plugin';
 
 const mockIdentityApi = {
   getUserId: () => 'test-user',
@@ -96,7 +97,7 @@ createDevApp()
             />
             <TabbedLayout>
               <TabbedLayout.Route path="/" title="ServiceNow">
-                <ServicenowPage />
+                <EntityServicenowContent />
               </TabbedLayout.Route>
             </TabbedLayout>
           </Page>

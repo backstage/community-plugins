@@ -128,6 +128,7 @@ export const ScorecardInfo = (props: {
   noWarning?: boolean;
   expanded?: boolean;
   dense?: boolean;
+  hideDescription?: boolean;
 }) => {
   const {
     checkResults,
@@ -137,6 +138,7 @@ export const ScorecardInfo = (props: {
     noWarning,
     expanded = true,
     dense,
+    hideDescription = dense,
   } = props;
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
@@ -169,8 +171,8 @@ export const ScorecardInfo = (props: {
     <ScorecardsList
       checkResults={checkResults}
       entity={entity}
-      hideDescription
       dense={dense}
+      hideDescription={hideDescription}
     />,
     expanded,
     `${

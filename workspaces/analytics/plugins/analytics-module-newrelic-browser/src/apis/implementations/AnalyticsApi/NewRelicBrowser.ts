@@ -24,9 +24,6 @@ import {
   AnalyticsEvent as NewAnalyticsEvent,
 } from '@backstage/frontend-plugin-api';
 import { BrowserAgent } from '@newrelic/browser-agent/loaders/browser-agent';
-import type { setAPI } from '@newrelic/browser-agent/loaders/api/api';
-
-type NewRelicAPI = ReturnType<typeof setAPI>;
 
 type NewRelicBrowserOptions = {
   endpoint: string;
@@ -35,6 +32,14 @@ type NewRelicBrowserOptions = {
   licenseKey: string;
   distributedTracingEnabled: boolean;
   cookiesEnabled: boolean;
+  sessionReplay?: {
+    enabled?: boolean;
+    samplingRate?: number;
+    errorSamplingRate?: number;
+    maskTextSelector?: string;
+    maskAllInputs?: boolean;
+    blockSelector?: string;
+  };
 };
 
 /**
@@ -42,7 +47,7 @@ type NewRelicBrowserOptions = {
  * @public
  */
 export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
-  private readonly agent: NewRelicAPI;
+  private readonly agent: BrowserAgent;
 
   private constructor(
     options: NewRelicBrowserOptions,
@@ -60,6 +65,36 @@ export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
         },
         ajax: {
           deny_list: [options.endpoint],
+        },
+        session_replay: {
+          enabled: options.sessionReplay?.enabled || false,
+          block_selector: options.sessionReplay?.blockSelector || '',
+          mask_text_selector: options.sessionReplay?.maskTextSelector || '',
+          sampling_rate: options.sessionReplay?.samplingRate || 0,
+          error_sampling_rate: options.sessionReplay?.errorSamplingRate || 0,
+          mask_all_inputs: options.sessionReplay?.maskAllInputs || false,
+          collect_fonts: true,
+          inline_images: false,
+          inline_stylesheet: true,
+          fix_stylesheets: true,
+          preload: true,
+          mask_input_options: {
+            color: true,
+            date: true,
+            datetime_local: true,
+            email: true,
+            month: true,
+            number: true,
+            range: true,
+            search: true,
+            tel: true,
+            text: true,
+            time: true,
+            url: true,
+            week: true,
+            select: true,
+            textarea: true,
+          },
         },
       },
       info: {
@@ -79,7 +114,7 @@ export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
     };
 
     // Initialize the agent
-    this.agent = new BrowserAgent(agentOptions) as unknown as NewRelicAPI;
+    this.agent = new BrowserAgent(agentOptions);
 
     // Check if identity has been provided
     if (identityApi) {
@@ -117,6 +152,9 @@ export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
         false,
       cookiesEnabled:
         newRelicBrowserConfig.getOptionalBoolean('cookiesEnabled') ?? false,
+      sessionReplay: {
+        ...newRelicBrowserConfig.getOptionalConfig('sessionReplay')?.get(),
+      }, // Ensure we get the session replay config as plain object
     };
     return new NewRelicBrowser(
       browserOptions,

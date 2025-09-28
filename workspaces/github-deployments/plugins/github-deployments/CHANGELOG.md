@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.11.0
+
+### Minor Changes
+
+- b17cb0a: Backstage version bump to v1.42.3
+
 ## 0.10.0
 
 ### Minor Changes

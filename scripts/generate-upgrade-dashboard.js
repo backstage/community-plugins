@@ -105,15 +105,19 @@ function categorizeWorkspaces(workspaces, latestVersion) {
   return tiers;
 }
 
+// generate markdown summary for a tier
+function generateTierSummary(count, emoji, title) {
+  if (count === 0) return '';
+  return `- ${emoji} ${title}: **${count}**\n`;
+}
+
 // generate markdown table for a tier
-function generateTierTable(workspaces, emoji, title, description) {
+function generateTierTable(workspaces, emoji, title) {
   if (workspaces.length === 0) return '';
 
-  let output = `## ${emoji} ${title}${
-    description ? ` – ${description}` : ''
-  }\n\n`;
+  let output = `## ${emoji} ${title}\n\n`;
   output += '| Workspace | Current Version |\n';
-  output += '|-----------|----------------|\n';
+  output += '|-----------|-----------------|\n';
   workspaces.forEach(workspace => {
     output += `| ${workspace.name} | ${workspace.version} |\n`;
   });
@@ -121,37 +125,36 @@ function generateTierTable(workspaces, emoji, title, description) {
 }
 
 // generate the dashboard output
-function generateDashboard(tiers, latestVersion) {
+function generateDashboard(workspaces, tiers, latestVersion) {
   let output =
     'Tracking workspaces not on the latest Backstage minor version\n\n';
   output += `**Latest Version:** ${latestVersion}\n\n`;
-
-  output += generateTierTable(
-    tiers.tier1,
-    '🔴',
-    '≥ 3 minor versions behind',
-    '',
-  );
-  output += generateTierTable(tiers.tier2, '🟠', '2 minor versions behind', '');
-  output += generateTierTable(tiers.tier3, '🟡', '1 minor version behind', '');
+  output += '---\n\n';
 
   const totalOutdated =
     tiers.tier1.length + tiers.tier2.length + tiers.tier3.length;
   if (totalOutdated === 0) {
-    output += '## 🎉 All workspaces are up to date!\n\n';
+    output += '## Summary: All workspaces are up to date! 🎉\n\n';
+  } else {
+    output += `## Summary: Outdated workspaces: ${totalOutdated}\n\n`;
   }
+  const totalUpToDate = workspaces.length - totalOutdated;
 
-  output += '---\n\n### Summary\n\n';
-  output += `- **Total outdated workspaces:** ${totalOutdated}\n`;
-  output += `- **≥ 3 minor versions behind:** ${tiers.tier1.length}\n`;
-  output += `- **2 minor versions behind:** ${tiers.tier2.length}\n`;
-  output += `- **1 minor version behind:** ${tiers.tier3.length}\n\n`;
+  output += generateTierSummary(tiers.tier1.length, '🔴', '≥ 3 minor versions behind');
+  output += generateTierSummary(tiers.tier2.length, '🟠', '2 minor versions behind');
+  output += generateTierSummary(tiers.tier3.length, '🟡', '1 minor version behind');
+  output += generateTierSummary(totalUpToDate, '🟢', 'up to date');
+  output += '\n';
+
+  output += generateTierTable(tiers.tier1, '🔴', '≥ 3 minor versions behind');
+  output += generateTierTable(tiers.tier2, '🟠', '2 minor versions behind');
+  output += generateTierTable(tiers.tier3, '🟡', '1 minor version behind');
 
   output += `*Dashboard generated on ${
     new Date().toISOString().split('T')[0]
   }*\n`;
 
-  return output.trim();
+  return output;
 }
 
 // main function
@@ -159,7 +162,7 @@ async function main() {
   const latestVersion = await getLatestBackstageVersion();
   const workspaces = await getWorkspaceVersions();
   const tiers = categorizeWorkspaces(workspaces, latestVersion);
-  const dashboard = generateDashboard(tiers, latestVersion);
+  const dashboard = generateDashboard(workspaces, tiers, latestVersion);
 
   console.log(dashboard);
 }

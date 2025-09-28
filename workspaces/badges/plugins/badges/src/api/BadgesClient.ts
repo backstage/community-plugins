@@ -57,6 +57,7 @@ export class BadgesClient implements BadgesApi {
       });
       const entityUuidBadgeSpecsUrl = await this.getEntityUuidBadgeSpecsUrl(
         entityUuid,
+        badgeOptions,
       );
 
       const response = await this.fetchApi.fetch(entityUuidBadgeSpecsUrl);
@@ -98,11 +99,20 @@ export class BadgesClient implements BadgesApi {
     return await responseEntityUuid.json();
   }
 
-  private async getEntityUuidBadgeSpecsUrl(entityUuid: {
-    uuid: string;
-  }): Promise<string> {
+  private async getEntityUuidBadgeSpecsUrl(
+    entityUuid: { uuid: string },
+    badgeOptions: BadgeStyleOptions,
+  ): Promise<string> {
     const baseUrl = await this.discoveryApi.getBaseUrl('badges');
-    return `${baseUrl}/entity/${entityUuid}/badge-specs`;
+    const queries: string[] = [];
+    if (badgeOptions.style) {
+      queries.push(`style=${badgeOptions.style}`);
+    }
+    if (badgeOptions.color) {
+      queries.push(`color=${badgeOptions.color}`);
+    }
+    const queryString = queries.length > 0 ? `?${queries.join('&')}` : '';
+    return `${baseUrl}/entity/${entityUuid}/badge-specs${queryString}`;
   }
 
   private async getEntityBadgeSpecsUrl(

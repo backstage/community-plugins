@@ -22,6 +22,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { BaseNode } from '@patternfly/react-topology';
 
+import { useTranslation } from '../../../hooks/useTranslation';
 import TopologyDetailsTabPanel from './TopologyDetailsTabPanel';
 import TopologyResourcesTabPanel from './TopologyResourcesTabPanel';
 
@@ -47,6 +48,7 @@ const TabPanel = (props: PropsWithChildren<TabPanelProps>) => {
 type TopologySideBarBodyProps = { node: BaseNode };
 
 const TopologySideBarBody = ({ node }: TopologySideBarBodyProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState(0);
   const handleChange = (_event: ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -56,8 +58,8 @@ const TopologySideBarBody = ({ node }: TopologySideBarBodyProps) => {
     <div>
       <div className="topology-side-bar-tabs">
         <Tabs value={value} onChange={handleChange} indicatorColor="primary">
-          <Tab label="Details" className="tab-button" />
-          <Tab label="Resources" className="tab-button" />
+          <Tab label={t('sideBar.details')} className="tab-button" />
+          <Tab label={t('sideBar.resources')} className="tab-button" />
         </Tabs>
         <Divider />
       </div>

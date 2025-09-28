@@ -19,38 +19,11 @@ import {
 } from '@backstage/plugin-search-common';
 import { Config } from '@backstage/config';
 import { Readable } from 'stream';
-import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
 import pLimit from 'p-limit';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import pThrottle from 'p-throttle';
-
-/**
- * Document metadata
- *
- * @public
- */
-export type ConfluenceDocumentMetadata = {
-  id: string;
-  title: string;
-  status: string;
-
-  _links: {
-    base?: string; // not available when listing documents with search API
-    webui: string;
-  };
-};
-
-/**
- * List of documents
- *
- * @public
- */
-export type ConfluenceDocumentList = {
-  results: ConfluenceDocumentMetadata[];
-  _links: {
-    next: string;
-  };
-};
+import { CacheService, LoggerService } from '@backstage/backend-plugin-api';
+import { ConfluenceClient } from '../client';
+import { readDurationFromConfig } from '@backstage/config';
+import { durationToMilliseconds } from '@backstage/types';
 
 /**
  * Options for {@link ConfluenceCollatorFactory}
@@ -69,34 +42,8 @@ export type ConfluenceCollatorFactoryOptions = {
   parallelismLimit?: number;
   maxRequestsPerSecond?: number;
   logger: LoggerService;
-};
-
-/**
- * Document
- *
- * @public
- */
-export type ConfluenceDocument = ConfluenceDocumentMetadata & {
-  body: {
-    storage: {
-      value: string;
-    };
-  };
-  version: {
-    by: {
-      publicName: string;
-    };
-    when: string;
-    friendlyWhen: string;
-  };
-  space: {
-    key: string;
-    name: string;
-    _links: {
-      webui: string;
-    };
-  };
-  ancestors: ConfluenceDocumentMetadata[];
+  cache?: CacheService;
+  documentCacheTtl?: number; // ms
 };
 
 /**
@@ -130,46 +77,31 @@ export interface IndexableConfluenceDocument extends IndexableDocument {
  * @public
  */
 export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
-  private readonly baseUrl: string | undefined;
-  private readonly auth: string | undefined;
-  private readonly token: string | undefined;
-  private readonly email: string | undefined;
-  private readonly username: string | undefined;
-  private readonly password: string | undefined;
+  private readonly confluenceClient: ConfluenceClient;
   private readonly spaces: string[] | undefined;
   private readonly query: string | undefined;
   private readonly parallelismLimit: number | undefined;
   private readonly logger: LoggerService;
   public readonly type: string = 'confluence';
-  private readonly fetch: (
-    url: RequestInfo,
-    init?: RequestInit,
-  ) => Promise<Response>;
 
   private constructor(options: ConfluenceCollatorFactoryOptions) {
-    this.baseUrl = options.baseUrl;
-    this.auth = options.auth;
-    this.token = options.token;
-    this.email = options.email;
-    this.username = options.username;
-    this.password = options.password;
     this.spaces = options.spaces;
     this.query = options.query;
     this.parallelismLimit = options.parallelismLimit;
     this.logger = options.logger.child({ documentType: this.type });
 
-    if (options.maxRequestsPerSecond) {
-      const throttle = pThrottle({
-        limit: options.maxRequestsPerSecond,
-        interval: 1000,
-      });
-      this.fetch = throttle(async (url: RequestInfo, init?: RequestInit) => {
-        const response = await fetch(url, init);
-        return response;
-      });
-    } else {
-      this.fetch = fetch;
-    }
+    this.confluenceClient = new ConfluenceClient({
+      baseUrl: options.baseUrl!,
+      auth: options.auth!,
+      token: options.token,
+      email: options.email,
+      username: options.username,
+      password: options.password,
+      maxRequestsPerSecond: options.maxRequestsPerSecond,
+      logger: options.logger,
+      cache: options.cache,
+      documentCacheTtl: options.documentCacheTtl,
+    });
   }
 
   static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
@@ -204,6 +136,19 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       );
     }
 
+    const documentCacheEnabled =
+      config.getOptionalBoolean('confluence.documentCacheEnabled') ?? false;
+    const documentCacheTtl = (() => {
+      try {
+        const dur = readDurationFromConfig(config, {
+          key: 'confluence.documentCacheTtl',
+        });
+        return durationToMilliseconds(dur);
+      } catch {
+        return undefined;
+      }
+    })();
+
     return new ConfluenceCollatorFactory({
       ...options,
       baseUrl,
@@ -218,6 +163,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       maxRequestsPerSecond: config.getOptionalNumber(
         'confluence.maxRequestsPerSecond',
       ),
+      cache: documentCacheEnabled ? options.cache : undefined,
+      documentCacheTtl: documentCacheEnabled ? documentCacheTtl : undefined,
     });
   }
   async getCollator() {
@@ -226,18 +173,18 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
   async *execute(): AsyncGenerator<IndexableConfluenceDocument> {
     const query = await this.getConfluenceQuery();
-    const documentsList = await this.getDocuments(query);
+    const documentsList = await this.confluenceClient.searchDocuments(query);
 
     this.logger.debug(`Document list: ${JSON.stringify(documentsList)}`);
 
-    const limit = pLimit(this.parallelismLimit || 15);
+    const limit = pLimit(this.parallelismLimit ?? 15);
     const documentsInfo = documentsList.map(document =>
       limit(async () => {
         try {
-          return this.getDocumentInfo(document);
+          return this.getDocumentInfo(document.url, document.versionWhen);
         } catch (err) {
           this.logger.warn(
-            `error while indexing document "${document}": ${err}`,
+            `Error while indexing document "${document.url}" (version: "${document.versionWhen}"): ${err}`,
           );
         }
 
@@ -295,51 +242,24 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     return query;
   }
 
-  private async getDocuments(query: string): Promise<string[]> {
-    const documentsList = [];
-
-    this.logger.info(`Exploring documents using query: ${query}`);
-
-    let next = true;
-    let requestUrl = `${this.baseUrl}/rest/api/content/search?limit=1000&status=current&cql=${query}`;
-    while (next) {
-      const data = await this.get<ConfluenceDocumentList>(requestUrl);
-      if (!data.results) {
-        break;
-      }
-
-      documentsList.push(
-        ...data.results.map(
-          result => `${this.baseUrl}/rest/api/content/${result.id}`,
-        ),
-      );
-
-      if (data._links.next) {
-        requestUrl = `${this.baseUrl}${data._links.next}`;
-      } else {
-        next = false;
-      }
-    }
-
-    return documentsList;
-  }
-
   private async getDocumentInfo(
     documentUrl: string,
+    versionWhen?: string,
   ): Promise<IndexableConfluenceDocument[]> {
     this.logger.debug(`Fetching document content: "${documentUrl}"`);
 
-    const data = await this.get<ConfluenceDocument>(
-      `${documentUrl}?expand=body.storage,space,ancestors,version`,
+    const data = await this.confluenceClient.getDocument(
+      documentUrl,
+      versionWhen,
     );
-    if (!data.status || data.status !== 'current') {
+    if (!data) {
       return [];
     }
 
     const ancestors: IndexableAncestorRef[] = [
       {
         title: data.space.name,
-        location: `${data._links.base}${data.space._links.webui}`,
+        location: `${data._links.base}${data._links.webui}`,
       },
     ];
 
@@ -358,7 +278,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
         spaceKey: data.space.key,
         spaceName: data.space.name,
         ancestors: ancestors,
-        lastModifiedBy: data.version.by.publicName,
+        lastModifiedBy:
+          data.version.by.publicName ?? data.version.by.displayName,
         lastModified: data.version.when,
         lastModifiedFriendly: data.version.friendlyWhen,
       },
@@ -367,42 +288,5 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
   private stripHtml(input: string): string {
     return input.replace(/(<([^>]+)>)/gi, '');
-  }
-
-  private getAuthorizationHeader(): string {
-    switch (this.auth) {
-      case 'bearer':
-        return `Bearer ${this.token}`;
-      case 'basic': {
-        const buffer = Buffer.from(`${this.email}:${this.token}`, 'utf8');
-        return `Basic ${buffer.toString('base64')}`;
-      }
-      case 'userpass': {
-        const buffer = Buffer.from(`${this.username}:${this.password}`, 'utf8');
-        return `Basic ${buffer.toString('base64')}`;
-      }
-      default:
-        throw new Error(`Unknown auth method '${this.auth}' provided`);
-    }
-  }
-
-  private async get<T = any>(requestUrl: string): Promise<T> {
-    const res = await this.fetch(requestUrl, {
-      method: 'get',
-      headers: {
-        Authorization: this.getAuthorizationHeader(),
-      },
-    });
-
-    if (!res.ok) {
-      this.logger.warn(
-        `non-ok response from confluence: "${requestUrl}", status: "${
-          res.status
-        }", "${await res.text()}"`,
-      );
-
-      throw new Error(`Request failed with ${res.status} ${res.statusText}`);
-    }
-    return await res.json();
   }
 }

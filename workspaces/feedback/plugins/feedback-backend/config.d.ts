@@ -32,6 +32,11 @@ export interface Config {
          */
         host?: string;
         /**
+         * The hostname or URL of the JIRA API for the organization, if different from the value set in host.
+         * @visibility frontend
+         */
+        apiHost?: string;
+        /**
          * The access token for authenticating with JIRA.
          * @visibility secret
          */

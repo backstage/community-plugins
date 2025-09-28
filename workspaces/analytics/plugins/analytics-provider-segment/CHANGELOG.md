@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 1.19.1
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
+## 1.19.0
+
+### Minor Changes
+
+- 3d6351f: Backstage version bump to v1.42.4
+
+## 1.18.0
+
+### Minor Changes
+
+- d03671a: - Added support for App version and Backstage version tracking in analytics events
+  - New configuration options: `appVersion` and `backstageVersion` for enhanced analytics segmentation
+
+### Patch Changes
+
+- 1171227: Updated dependency `@types/react` to `18.3.24`.
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
 ## 1.17.0
 
 ### Minor Changes

@@ -25,6 +25,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope internal",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -47,7 +48,7 @@
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.9",
     "@backstage/plugin-catalog-backend-module-unprocessed": "^0.6.1",
     "@backstage/plugin-scaffolder": "^1.32.0",
-    "@backstage/plugin-scaffolder-backend": "^2.0.0",
+    "@backstage/plugin-scaffolder-backend": "^2.1.1",
     "@backstage/repo-tools": "^0.14.0",
     "@changesets/cli": "^2.28.1",
     "@eslint/js": "^9.19.0",

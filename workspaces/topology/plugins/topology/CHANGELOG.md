@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 2.6.0
+
+### Minor Changes
+
+- 561e5d1: Add i18n support
+
+## 2.5.0
+
+### Minor Changes
+
+- c850e6d: Backstage version bump to v1.42.5
+
+## 2.4.2
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
 ## 2.4.1
 
 ### Patch Changes

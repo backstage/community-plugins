@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.9.0
+
+### Minor Changes
+
+- bf29c61: Backstage version bump to v1.42.4
+
 ## 1.8.0
 
 ### Minor Changes

@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
-import {
-  DefaultAzureDevOpsCredentialsProvider,
-  ScmIntegrationRegistry,
-} from '@backstage/integration';
+import { ScmIntegrationRegistry } from '@backstage/integration';
 import { examples } from './devopsRunPipeline.examples';
 
-import { InputError } from '@backstage/errors';
-import {
-  getBearerHandler,
-  getPersonalAccessTokenHandler,
-  WebApi,
-} from 'azure-devops-node-api';
+import { WebApi } from 'azure-devops-node-api';
 import {
   RunPipelineParameters,
   RunState,
 } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
+import { getAuthHandler } from './helpers';
 /**
- * Creates an `acme:example` Scaffolder action.
- *
- * @remarks
- *
- * See {@link https://example.com} for more information.
+ * Creates an `azure:pipeline:run` Scaffolder action.
  *
  * @public
  */
@@ -128,20 +117,11 @@ export function createAzureDevopsRunPipelineAction(options: {
       } = ctx.input;
 
       const url = `https://${host}/${organization}`;
-      const credentialProvider =
-        DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
-      const credentials = await credentialProvider.getCredentials({ url: url });
-
-      if (credentials === undefined && ctx.input.token === undefined) {
-        throw new InputError(
-          `No credentials provided ${url}, please check your integrations config`,
-        );
-      }
-
-      const authHandler =
-        ctx.input.token || credentials?.type === 'pat'
-          ? getPersonalAccessTokenHandler(ctx.input.token ?? credentials!.token)
-          : getBearerHandler(credentials!.token);
+      const authHandler = await getAuthHandler(
+        integrations,
+        url,
+        ctx.input.token,
+      );
 
       const webApi = new WebApi(url, authHandler);
       const client = await webApi.getPipelinesApi();

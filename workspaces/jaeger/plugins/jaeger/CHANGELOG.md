@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jaeger
 
+## 0.9.0
+
+### Minor Changes
+
+- 9ceb32b: Backstage version bump to v1.42.4
+
+### Patch Changes
+
+- Updated dependencies [9ceb32b]
+  - @backstage-community/plugin-jaeger-common@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes

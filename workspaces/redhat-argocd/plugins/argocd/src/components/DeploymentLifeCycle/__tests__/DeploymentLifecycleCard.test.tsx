@@ -22,6 +22,11 @@ import {
   Source,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import DeploymentLifecycleCard from '../DeploymentLifecycleCard';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
@@ -56,7 +61,7 @@ describe('DeploymentLifecylceCard', () => {
     render(
       <DeploymentLifecycleCard
         app={null as unknown as Application}
-        revisionsMap={{}}
+        revisions={[]}
       />,
     );
 
@@ -65,12 +70,12 @@ describe('DeploymentLifecylceCard', () => {
     ).not.toBeInTheDocument();
   });
   test('should render if the application card', () => {
-    render(<DeploymentLifecycleCard app={mockApplication} revisionsMap={{}} />);
+    render(<DeploymentLifecycleCard app={mockApplication} revisions={[]} />);
     expect(screen.getByTestId('quarkus-app-dev-card')).toBeInTheDocument();
   });
 
   test('application header should link to external link', () => {
-    render(<DeploymentLifecycleCard app={mockApplication} revisionsMap={{}} />);
+    render(<DeploymentLifecycleCard app={mockApplication} revisions={[]} />);
     const link = screen.getByTestId('quarkus-app-dev-link');
     fireEvent.click(link);
 
@@ -81,7 +86,7 @@ describe('DeploymentLifecylceCard', () => {
   });
 
   test('should render incluster tooltip', () => {
-    render(<DeploymentLifecycleCard app={mockApplication} revisionsMap={{}} />);
+    render(<DeploymentLifecycleCard app={mockApplication} revisions={[]} />);
 
     fireEvent.mouseDown(screen.getByText('(in-cluster)'));
     expect(screen.getByTestId('local-cluster-tooltip')).toBeInTheDocument();
@@ -98,9 +103,7 @@ describe('DeploymentLifecylceCard', () => {
         },
       },
     };
-    render(
-      <DeploymentLifecycleCard app={remoteApplication} revisionsMap={{}} />,
-    );
+    render(<DeploymentLifecycleCard app={remoteApplication} revisions={[]} />);
 
     expect(screen.queryByText('(in-cluster)')).not.toBeInTheDocument();
     expect(
@@ -120,9 +123,7 @@ describe('DeploymentLifecylceCard', () => {
     };
     global.open = jest.fn();
 
-    render(
-      <DeploymentLifecycleCard app={remoteApplication} revisionsMap={{}} />,
-    );
+    render(<DeploymentLifecycleCard app={remoteApplication} revisions={[]} />);
     const commitLink = screen.getByTestId('90f97-commit-link');
     fireEvent.click(commitLink);
 
@@ -142,13 +143,14 @@ describe('DeploymentLifecylceCard', () => {
     render(
       <DeploymentLifecycleCard
         app={mockApplication}
-        revisionsMap={{
-          '90f9758b7033a4bbb7c33a35ee474d61091644bc': {
+        revisions={[
+          {
+            revisionID: '90f9758b7033a4bbb7c33a35ee474d61091644bc',
             author: 'test user',
             message: 'commit message',
             date: new Date(),
           },
-        }}
+        ]}
       />,
     );
 
@@ -180,7 +182,7 @@ test('application card should not contain commit section for helm based applicat
     },
   };
 
-  render(<DeploymentLifecycleCard app={helmApplication} revisionsMap={{}} />);
+  render(<DeploymentLifecycleCard app={helmApplication} revisions={[]} />);
 
   const commitLink = screen.queryByText('Commit');
   expect(commitLink).not.toBeInTheDocument();

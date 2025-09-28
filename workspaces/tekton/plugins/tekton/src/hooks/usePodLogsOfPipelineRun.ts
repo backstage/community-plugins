@@ -15,13 +15,11 @@
  */
 import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { V1Container, V1Pod } from '@kubernetes/client-node';
 
-import {
-  kubernetesProxyApiRef,
-  TektonResourcesContextData,
-} from '../types/types';
+import { TektonResourcesContextData } from '../types/types';
 import { TektonResourcesContext } from './TektonResourcesContext';
 
 export interface ContainerScope {

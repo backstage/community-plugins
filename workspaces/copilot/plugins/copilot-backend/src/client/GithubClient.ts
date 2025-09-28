@@ -119,13 +119,75 @@ export class GithubClient implements GithubApi {
 
   async fetchEnterpriseTeams(): Promise<TeamInfo[]> {
     const octokit = await this.getEnterpriseOctokit();
-    const path = `/enterprises/${this.copilotConfig.enterprise}/teams`;
 
     try {
-      const teams = await octokit.paginate(`GET ${path}`, {
-        per_page: 100, // Maximum allowed per page
-      });
-      return teams as TeamInfo[];
+      const teams: TeamInfo[] = [];
+      let cursor: string | null = null;
+      let hasNextPage = true;
+
+      while (hasNextPage) {
+        const query = `
+          query($enterprise: String!, $cursor: String) {
+            enterprise(slug: $enterprise) {
+              organizations(first: 100) {
+                nodes {
+                  teams(first: 100, after: $cursor) {
+                    pageInfo {
+                      hasNextPage
+                      endCursor
+                    }
+                    nodes {
+                      id
+                      databaseId
+                      slug
+                      name
+                      members {
+                        totalCount
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        const variables = {
+          enterprise: this.copilotConfig.enterprise,
+          cursor,
+        };
+
+        const response: any = await octokit.graphql(query, variables);
+
+        // Flatten teams from all organizations in the enterprise
+        const allTeams = response.enterprise.organizations.nodes.flatMap(
+          (org: any) => org.teams.nodes,
+        );
+
+        // Filter teams with 5 or more members
+        const filteredTeams = allTeams
+          .filter((team: any) => team.members.totalCount >= 5)
+          .map((team: any) => ({
+            id: team.databaseId,
+            slug: team.slug,
+            name: team.name,
+          }));
+
+        teams.push(...filteredTeams);
+
+        // Check if any organization has more teams to fetch
+        hasNextPage = response.enterprise.organizations.nodes.some(
+          (org: any) => org.teams.pageInfo.hasNextPage,
+        );
+
+        if (hasNextPage) {
+          cursor = response.enterprise.organizations.nodes.find(
+            (org: any) => org.teams.pageInfo.hasNextPage,
+          )?.teams.pageInfo.endCursor;
+        }
+      }
+
+      return teams;
     } catch (error) {
       throw ResponseError.fromResponse(error.response || error);
     }
@@ -174,13 +236,59 @@ export class GithubClient implements GithubApi {
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {
     const octokit = await this.getOrganizationOctokit();
-    const path = `/orgs/${this.copilotConfig.organization}/teams`;
 
     try {
-      const teams = await octokit.paginate(`GET ${path}`, {
-        per_page: 100, // Maximum allowed per page
-      });
-      return teams as TeamInfo[];
+      const teams: TeamInfo[] = [];
+      let cursor: string | null = null;
+      let hasNextPage = true;
+
+      while (hasNextPage) {
+        const query = `
+          query($org: String!, $cursor: String) {
+            organization(login: $org) {
+              teams(first: 100, after: $cursor) {
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+                nodes {
+                  id
+                  databaseId
+                  slug
+                  name
+                  members {
+                    totalCount
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        const variables = {
+          org: this.copilotConfig.organization,
+          cursor,
+        };
+
+        const response: any = await octokit.graphql(query, variables);
+        const teamsData = response.organization.teams;
+
+        // Filter teams with 5 or more members
+        const filteredTeams = teamsData.nodes
+          .filter((team: any) => team.members.totalCount >= 5)
+          .map((team: any) => ({
+            id: team.databaseId,
+            slug: team.slug,
+            name: team.name,
+          }));
+
+        teams.push(...filteredTeams);
+
+        hasNextPage = teamsData.pageInfo.hasNextPage;
+        cursor = teamsData.pageInfo.endCursor;
+      }
+
+      return teams;
     } catch (error) {
       throw ResponseError.fromResponse(error.response || error);
     }

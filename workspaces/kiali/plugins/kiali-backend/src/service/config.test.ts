@@ -40,6 +40,36 @@ describe('Configuration', () => {
         urlExternal: undefined,
         serviceAccountToken: undefined,
         skipTLSVerify: false,
+        tokenName: 'kiali-token-Kubernetes',
+        sessionTime: undefined,
+        caData: undefined,
+        caFile: undefined,
+      },
+    ]);
+  });
+
+  it('should return KialiDetails object from configuration with the tokenName if passed', async () => {
+    const configuration = new ConfigReader({
+      kiali: {
+        providers: [
+          {
+            name: 'default',
+            url: 'https://localhost:4000',
+            tokenName: 'kiali-token-EXAMPLE',
+          },
+        ],
+      },
+    });
+
+    const result = readKialiConfigs(configuration, logger);
+    expect(result).toStrictEqual([
+      {
+        name: 'default',
+        url: 'https://localhost:4000/',
+        urlExternal: undefined,
+        serviceAccountToken: undefined,
+        skipTLSVerify: false,
+        tokenName: 'kiali-token-EXAMPLE',
         sessionTime: undefined,
         caData: undefined,
         caFile: undefined,

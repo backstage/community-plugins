@@ -32,7 +32,6 @@ import {
   getResourceCreateTimestamp,
   sortValues,
   removeDuplicateRevisions,
-  mapRevisions,
 } from '../utils';
 
 describe('Utils', () => {
@@ -468,21 +467,25 @@ describe('Utils', () => {
           author: 'user-a',
           date: date,
           message: 'commit sent to repo',
+          revisionID: 'abc123',
         },
         {
           author: 'user-a',
           date: date,
           message: 'commit sent to repo',
+          revisionID: 'abc123',
         },
         {
           author: 'user-a',
           date: date,
           message: 'commit sent to repo',
+          revisionID: 'abc123',
         },
         {
           author: 'user-b',
           date: date,
           message: 'fixes bug issue',
+          revisionID: 'def456',
         },
       ];
 
@@ -491,110 +494,15 @@ describe('Utils', () => {
           author: 'user-a',
           date: date,
           message: 'commit sent to repo',
+          revisionID: 'abc123',
         },
         {
           author: 'user-b',
           date: date,
           message: 'fixes bug issue',
-        },
-      ]);
-    });
-  });
-
-  describe('mapRevisions', () => {
-    const date =
-      'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)';
-    const mockRevisions = ['abc123', 'def456', 'ghi789'];
-    const mockRevisionData = [
-      {
-        revisionID: 'abc123',
-        author: 'user a',
-        message: 'submitted fix',
-        date,
-      },
-      {
-        revisionID: 'abc123',
-        author: 'user a',
-        message: 'submitted fix',
-        date,
-      },
-      {
-        revisionID: 'abc123',
-        author: 'user a',
-        message: 'submitted fix',
-        date,
-      },
-      {
-        revisionID: 'def456',
-        author: 'user a',
-        message: 'adds new feature',
-        date,
-      },
-      {
-        revisionID: 'def456',
-        author: 'user a',
-        message: 'adds new feature',
-        date,
-      },
-      {
-        revisionID: 'ghi789',
-        author: 'user b',
-        message: 'fixes bug',
-        date,
-      },
-    ];
-
-    it('should map revisions by revisionID if available', () => {
-      expect(mapRevisions(mockRevisions, mockRevisionData as any)).toEqual({
-        abc123: {
-          author: 'user a',
-          date: 'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)',
-          message: 'submitted fix',
-          revisionID: 'abc123',
-        },
-        def456: {
-          author: 'user a',
-          date: 'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)',
-          message: 'adds new feature',
           revisionID: 'def456',
         },
-        ghi789: {
-          author: 'user b',
-          date: 'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)',
-          message: 'fixes bug',
-          revisionID: 'ghi789',
-        },
-      });
-    });
-
-    it('should map revisions by index if revisionID is not available', () => {
-      const mockRevisionDataWithoutRevisionID = mockRevisionData.map(r => {
-        return {
-          author: r.author,
-          message: r.message,
-          date: r.date,
-        };
-      });
-
-      expect(
-        mapRevisions(mockRevisions, mockRevisionDataWithoutRevisionID as any),
-      ).toEqual({
-        abc123: {
-          author: 'user a',
-          date: 'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)',
-          message: 'submitted fix',
-        },
-        def456: {
-          author: 'user a',
-          date: 'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)',
-          message: 'adds new feature',
-        },
-        ghi789: {
-          author: 'user b',
-          date: 'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)',
-          message: 'fixes bug',
-        },
-      });
+      ]);
     });
   });
 });

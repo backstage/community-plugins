@@ -36,6 +36,10 @@ describe('buildAnnouncementsContext', () => {
       publish: jest.fn(),
     };
 
+    const mockNotificationService = {
+      send: jest.fn().mockImplementation(async () => {}),
+    };
+    const notifications = mockNotificationService;
     const context = await buildAnnouncementsContext({
       config,
       database,
@@ -45,6 +49,7 @@ describe('buildAnnouncementsContext', () => {
       permissions,
       permissionsRegistry,
       signals,
+      notifications,
     });
 
     const persistenceContext = await initializePersistenceContext(database);
@@ -58,6 +63,7 @@ describe('buildAnnouncementsContext', () => {
       permissionsRegistry,
       persistenceContext,
       signals,
+      notifications,
     });
   });
 });

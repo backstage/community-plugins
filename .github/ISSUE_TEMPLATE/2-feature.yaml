@@ -32,8 +32,10 @@ body:
         - azure-storage-explorer
         - badges
         - bazaar
+        - bitbucket-pull-requests
         - bitrise
         - blackduck
+        - bookmarks
         - cicd-statistics
         - cloudbuild
         - code-climate

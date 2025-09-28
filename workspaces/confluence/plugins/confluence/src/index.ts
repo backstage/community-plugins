@@ -20,7 +20,6 @@
  * limitations under the License.
  */
 
-export { confluencePlugin } from './plugin';
+export { confluencePlugin, ConfluenceSearchResultListItem } from './plugin';
 export { ConfluenceSearchIcon } from './icons';
-export { ConfluenceSearchResultListItem } from './search/ConfluenceSearchResultListItem';
 export type { ConfluenceResultItemProps } from './search/ConfluenceSearchResultListItem';

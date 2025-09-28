@@ -6,6 +6,9 @@ The Linguist Tags Processor can be added into your catalog as a way to incorpora
 
 ## Setup
 
+> [!IMPORTANT]
+> You must install and configure the [Linguist Backend plugin](../linguist-backend/README.md) before you'll be able to use this Catalog Processor.
+
 To setup the Linguist Tags Processor you'll need to first run this command to add the package:
 
 ```sh

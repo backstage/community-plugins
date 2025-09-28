@@ -1,5 +1,19 @@
 # @backstage-community/plugin-rollbar-backend
 
+## 0.7.0
+
+### Minor Changes
+
+- b6879b9: **BREAKING** The `RollbarApi` now requires the `CacheService` when being constructed.
+
+  Also added feature to expire cached Rollbar project state when using the new backend system.
+
+## 0.6.0
+
+### Minor Changes
+
+- 56382c8: **BREAKING** Removes `rollbar-backend` legacy backend support. The plugin now uses the [new Backstage backend system](https://backstage.io/docs/plugins/new-backend-system/).
+
 ## 0.5.0
 
 ### Minor Changes

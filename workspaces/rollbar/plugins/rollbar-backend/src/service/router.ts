@@ -18,23 +18,16 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { Config } from '@backstage/config';
 import { RollbarApi } from '../api';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import { CacheService, LoggerService } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
-export interface RouterOptions {
+interface RouterOptions {
   rollbarApi?: RollbarApi;
   logger: LoggerService;
   config: Config;
+  cache: CacheService;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -48,7 +41,7 @@ export async function createRouter(
 
   if (options.rollbarApi || accessToken) {
     const rollbarApi =
-      options.rollbarApi || new RollbarApi(accessToken, logger);
+      options.rollbarApi || new RollbarApi(accessToken, logger, options.cache);
 
     router.use(express.json());
 

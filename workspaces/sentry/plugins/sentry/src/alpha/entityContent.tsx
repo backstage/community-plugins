@@ -27,8 +27,8 @@ import { isSentryAvailable } from '../components';
 export const entitySentryContent = EntityContentBlueprint.make({
   name: 'sentry-issues',
   params: {
-    defaultPath: '/sentry',
-    defaultTitle: 'Sentry',
+    path: '/sentry',
+    title: 'Sentry',
     filter: isSentryAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>

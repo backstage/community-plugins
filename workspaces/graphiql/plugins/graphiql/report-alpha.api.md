@@ -6,20 +6,22 @@
 /// <reference types="react" />
 
 import { AnyApiFactory } from '@backstage/core-plugin-api';
-import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/core-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprint } from '@backstage/frontend-plugin-api';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { GraphQLEndpoint } from '@backstage-community/plugin-graphiql';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: FrontendPlugin<
+const _default: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
   },
@@ -28,11 +30,7 @@ const _default: FrontendPlugin<
     'api:graphiql': ExtensionDefinition<{
       config: {};
       configInput: {};
-      output: ConfigurableExtensionDataRef<
-        AnyApiFactory,
-        'core.api.factory',
-        {}
-      >;
+      output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
       inputs: {
         endpoints: ExtensionInput<
           ConfigurableExtensionDataRef<
@@ -48,9 +46,15 @@ const _default: FrontendPlugin<
       };
       kind: 'api';
       name: undefined;
-      params: {
-        factory: AnyApiFactory;
-      };
+      params: <
+        TApi,
+        TImpl extends TApi,
+        TDeps extends {
+          [x: string]: unknown;
+        },
+      >(
+        params: ApiFactory<TApi, TImpl, TDeps>,
+      ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
     'graphiql-endpoint:graphiql/gitlab': ExtensionDefinition<{
       config: {
@@ -63,14 +67,20 @@ const _default: FrontendPlugin<
         title?: string | undefined;
         url?: string | undefined;
       };
-      output: ConfigurableExtensionDataRef<
+      output: ExtensionDataRef<
         GraphQLEndpoint,
         'graphiql.graphiql-endpoint',
         {}
       >;
       inputs: {
         [x: string]: ExtensionInput<
-          AnyExtensionDataRef,
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
           {
             optional: boolean;
             singleton: boolean;
@@ -88,7 +98,7 @@ const _default: FrontendPlugin<
       name: undefined;
       config: {};
       configInput: {};
-      output: ConfigurableExtensionDataRef<
+      output: ExtensionDataRef<
         {
           title: string;
           icon: IconComponent;
@@ -114,9 +124,9 @@ const _default: FrontendPlugin<
         path?: string | undefined;
       };
       output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<string, 'core.routing.path', {}>
+        | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
             {
@@ -125,7 +135,8 @@ const _default: FrontendPlugin<
           >;
       inputs: {};
       params: {
-        defaultPath: string;
+        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+        path: string;
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
@@ -138,7 +149,7 @@ export default _default;
 export const graphiqlBrowseApi: ExtensionDefinition<{
   config: {};
   configInput: {};
-  output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
   inputs: {
     endpoints: ExtensionInput<
       ConfigurableExtensionDataRef<
@@ -154,23 +165,24 @@ export const graphiqlBrowseApi: ExtensionDefinition<{
   };
   kind: 'api';
   name: undefined;
-  params: {
-    factory: AnyApiFactory;
-  };
+  params: <
+    TApi,
+    TImpl extends TApi,
+    TDeps extends {
+      [x: string]: unknown;
+    },
+  >(
+    params: ApiFactory<TApi, TImpl, TDeps>,
+  ) => ExtensionBlueprintParams<AnyApiFactory>;
 }>;
 
 // @alpha (undocumented)
 export const GraphiQLEndpointBlueprint: ExtensionBlueprint<{
   kind: 'graphiql-endpoint';
-  name: undefined;
   params: {
     endpoint: GraphQLEndpoint;
   };
-  output: ConfigurableExtensionDataRef<
-    GraphQLEndpoint,
-    'graphiql.graphiql-endpoint',
-    {}
-  >;
+  output: ExtensionDataRef<GraphQLEndpoint, 'graphiql.graphiql-endpoint', {}>;
   inputs: {};
   config: {};
   configInput: {};
@@ -183,7 +195,7 @@ export const graphiqlNavItem: ExtensionDefinition<{
   name: undefined;
   config: {};
   configInput: {};
-  output: ConfigurableExtensionDataRef<
+  output: ExtensionDataRef<
     {
       title: string;
       icon: IconComponent;
@@ -211,9 +223,9 @@ export const graphiqlPage: ExtensionDefinition<{
     path?: string | undefined;
   };
   output:
-    | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-    | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-    | ConfigurableExtensionDataRef<
+    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+    | ExtensionDataRef<string, 'core.routing.path', {}>
+    | ExtensionDataRef<
         RouteRef<AnyRouteRefParams>,
         'core.routing.ref',
         {
@@ -222,7 +234,8 @@ export const graphiqlPage: ExtensionDefinition<{
       >;
   inputs: {};
   params: {
-    defaultPath: string;
+    defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+    path: string;
     loader: () => Promise<JSX.Element>;
     routeRef?: RouteRef<AnyRouteRefParams> | undefined;
   };

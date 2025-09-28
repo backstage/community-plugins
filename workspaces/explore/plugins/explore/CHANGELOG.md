@@ -1,5 +1,20 @@
 # @backstage-community/plugin-explore
 
+## 0.12.0
+
+### Minor Changes
+
+- deb9523: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- 13c0def: Migrate the explore api, index page, and nav item to the new frontend system.
+- 02546ad: Internall update to use the yarn plugin for version management
+- Updated dependencies [02546ad]
+- Updated dependencies [deb9523]
+  - @backstage-community/plugin-explore-common@0.7.0
+  - @backstage-community/plugin-explore-react@0.7.0
+
 ## 0.11.0
 
 ### Minor Changes

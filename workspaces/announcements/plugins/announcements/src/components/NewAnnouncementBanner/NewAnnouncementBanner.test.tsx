@@ -58,6 +58,7 @@ describe('NewAnnouncementBanner', () => {
           created_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
         },
       ],
     };
@@ -81,6 +82,7 @@ describe('NewAnnouncementBanner', () => {
           created_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
         },
       ],
     });

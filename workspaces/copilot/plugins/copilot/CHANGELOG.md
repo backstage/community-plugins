@@ -1,5 +1,22 @@
 # @backstage-community/plugin-copilot
 
+## 0.13.1
+
+### Patch Changes
+
+- 726097f: Update README.md with better installation instructions to prevent silly copy/paste errors that are exposed by the new frontend system
+
+## 0.13.0
+
+### Minor Changes
+
+- 5deb1e7: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [5deb1e7]
+  - @backstage-community/plugin-copilot-common@0.12.0
+
 ## 0.12.0
 
 ### Minor Changes

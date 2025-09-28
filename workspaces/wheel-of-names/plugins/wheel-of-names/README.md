@@ -15,7 +15,7 @@ To install this plugin in your Backstage application:
 
 ```bash
 # From your Backstage root directory
-yarn add --cwd packages/app @backstage-community/plugin-wheel-of-names
+yarn --cwd packages/app add @backstage-community/plugin-wheel-of-names
 ```
 
 ## Configuration
