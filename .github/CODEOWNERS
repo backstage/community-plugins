@@ -48,7 +48,7 @@ yarn.lock                                                               @backsta
 /workspaces/explore                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/feedback                                                    @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
 /workspaces/firehydrant                                                 @backstage/community-plugins-maintainers
-/workspaces/flux                                                        @backstage/community-plugins-maintainers  @fjudith @leveillee
+/workspaces/flux                                                        @backstage/community-plugins-maintainers  @fjudith @fleveillee
 /workspaces/fossa                                                       @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/gcalendar                                                   @backstage/community-plugins-maintainers
 /workspaces/gcp-projects                                                @backstage/community-plugins-maintainers
