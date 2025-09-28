@@ -258,22 +258,24 @@ export const VerifiedStatus = ({
 }: {
   resource: VerifiableSource;
 }): JSX.Element | null => {
+  const classes = useStyles();
+
   if (!resource.isVerifiable) return null;
 
   const condition = findVerificationCondition(resource);
 
-  let color;
+  let className;
   if (condition?.status === 'True') {
-    color = '#27AE60';
+    className = classNames(classes.verifiedOK, classes.verifiedIconSize);
   } else if (condition?.status === 'False') {
-    color = '#BC3B1D';
+    className = classNames(classes.verifiedError, classes.verifiedIconSize);
   } else if (!condition?.status) {
-    color = '#FEF071';
+    className = classNames(classes.verifiedWarning, classes.verifiedIconSize);
   }
 
   return (
     <Tooltip title={condition?.message || 'pending verification'}>
-      <VerifiedUserIcon style={{ color, height: '16px' }} />
+      <VerifiedUserIcon className={className} />
     </Tooltip>
   );
 };

@@ -15,7 +15,7 @@
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard, TableColumn } from '@backstage/core-components';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { FluxContext } from '../FluxContext';
 import { useOCIRepositories } from '../../hooks';
 import {
   gitOciDefaultColumns,
@@ -62,7 +62,7 @@ export const EntityFluxOCIRepositoriesCard = ({
 }: {
   many?: boolean;
 }) => (
-  <WeaveGitOpsContext>
+  <FluxContext>
     <OCIRepositoryPanel many={many} />
-  </WeaveGitOpsContext>
+  </FluxContext>
 );

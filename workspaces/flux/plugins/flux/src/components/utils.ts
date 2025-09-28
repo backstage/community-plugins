@@ -51,6 +51,21 @@ export const useStyles = makeStyles(theme => ({
     padding: 0,
     margin: '-5px 0',
   },
+  verifiedIconSize: {
+    height: '0.8em',
+  },
+  verifiedIconSizeForImg: {
+    height: '1.2em',
+  },
+  verifiedOK: {
+    fill: theme.palette.status.ok || '#27AE60',
+  },
+  verifiedError: {
+    fill: theme.palette.status.error || '#BC3B1D',
+  },
+  verifiedWarning: {
+    fill: theme.palette.status.warning || '#FEF071',
+  },
 }));
 
 export interface VerifiableSource {

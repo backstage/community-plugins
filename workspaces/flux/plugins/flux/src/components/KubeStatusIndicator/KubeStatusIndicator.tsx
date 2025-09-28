@@ -14,25 +14,68 @@
  * limitations under the License.
  */
 import _ from 'lodash';
-import styled from 'styled-components';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import {
   StatusAborted,
   StatusError,
   StatusOK,
   StatusPending,
 } from '@backstage/core-components';
-import { colors } from '../typedefs/styled';
-import Flex from './Flex';
-import { Condition } from '../objects';
-import reconcile from '../images/reconcile.svg';
+import { Condition } from '../../objects';
+import Flex from '../Flex';
 import { Tooltip } from '@material-ui/core';
+import classNames from 'classnames';
+import { PropsWithChildren } from 'react';
+import { ReconcilingIcon } from './icons/ReconcilingIcon';
 
-type Props = {
-  className?: string;
-  conditions: Condition[];
-  short?: boolean;
-  suspended?: boolean;
-};
+const useStyles = makeStyles(theme => ({
+  status: {
+    alignItems: 'baseline',
+    display: 'flex',
+  },
+  statusIcon: {
+    flexShrink: 0,
+    position: 'relative',
+    top: '0.125em',
+    marginRight: theme.spacing(1),
+  },
+  statusIconSize: {
+    width: '0.8em',
+    height: '0.8em',
+  },
+  statusIconSizeForImg: {
+    width: '1.2em',
+    height: '1.2em',
+  },
+  reconciling: {
+    fill: theme.palette.status.running || '#00b3ec',
+  },
+}));
+
+export function StatusReconciling(props: PropsWithChildren<{}>) {
+  const { children, ...otherProps } = props;
+  const classes = useStyles(otherProps);
+  return (
+    <Typography
+      component="span"
+      className={classNames(classes.status)}
+      aria-label="Status running"
+      aria-hidden="true"
+      {...otherProps}
+    >
+      <ReconcilingIcon
+        dataTestId="status-running"
+        className={classNames(
+          classes.reconciling,
+          classes.statusIcon,
+          classes.statusIconSizeForImg,
+        )}
+      />
+      {children}
+    </Typography>
+  );
+}
 
 export enum IconType {
   Error,
@@ -118,7 +161,6 @@ export function computeMessage(conditions: Condition[]) {
 
 type IndicatorInfo = {
   icon: IconType;
-  color: keyof typeof colors;
   type: ReadyType;
 };
 
@@ -129,7 +171,6 @@ export const getIndicatorInfo = (
   if (suspended)
     return {
       icon: IconType.Suspended,
-      color: 'feedbackOriginal',
       type: ReadyType.Suspended,
     };
   const ready = computeReady(conditions);
@@ -137,61 +178,27 @@ export const getIndicatorInfo = (
     return {
       type: ReadyType.Reconciling,
       icon: IconType.Reconcile,
-      color: 'primary',
     };
   if (ready === ReadyType.PendingAction)
     return {
       type: ReadyType.PendingAction,
       icon: IconType.Pending,
-      color: 'feedbackOriginal',
     };
 
   if (ready === ReadyType.Ready)
     return {
       type: ReadyType.Ready,
       icon: IconType.Check,
-      color: 'successOriginal',
     };
   if (ready === ReadyType.None)
     return {
       type: ReadyType.None,
       icon: IconType.Remove,
-      color: 'neutral20',
     };
   return {
     type: ReadyType.NotReady,
     icon: IconType.Failed,
-    color: 'alertOriginal',
   };
-};
-
-const getBackstageIcon = (color: string) => {
-  switch (color) {
-    case 'successOriginal':
-      return <StatusOK />;
-
-    case 'alertOriginal':
-      return <StatusError />;
-
-    case 'feedbackOriginal':
-      return <StatusPending />;
-
-    case 'neutral20':
-      return <StatusAborted />;
-
-    case 'primary':
-      return (
-        <img
-          alt="reconcile"
-          width="13px"
-          style={{ marginLeft: '-2px', marginRight: '6px' }}
-          src={reconcile}
-        />
-      );
-
-    default:
-      return undefined;
-  }
 };
 
 export type SpecialObject = 'DaemonSet';
@@ -245,30 +252,52 @@ export function createSyntheticCondition(
   }
 }
 
-function KubeStatusIndicator({
-  className,
-  conditions,
-  short,
-  suspended,
-}: Props) {
-  const { type, color } = getIndicatorInfo(suspended as boolean, conditions);
+export interface KubeStatusIndicatorProps {
+  suspended: boolean;
+  short?: boolean;
+  conditions: Condition[];
+}
 
-  let text = computeMessage(conditions);
-  if (short || suspended) text = type;
-
-  const ready = _.find(conditions, c => c.type === ReadyType.Ready);
+export function KubeStatusIndicator(props: KubeStatusIndicatorProps) {
+  const classes = useStyles();
+  const ready = _.find(props.conditions, c => c.type === ReadyType.Ready);
 
   return (
     <Tooltip title={ready?.message || ''}>
       <div>
-        <Flex start className={className} align>
-          {getBackstageIcon(color)} {text}
+        <Flex start className={classes} align>
+          <BackstageStatusIcon {...props} />
         </Flex>
       </div>
     </Tooltip>
   );
 }
 
-export default styled(KubeStatusIndicator).attrs({
-  className: KubeStatusIndicator.name,
-})``;
+export function BackstageStatusIcon({
+  suspended,
+  conditions,
+}: {
+  suspended: boolean;
+  conditions: Condition[];
+}) {
+  if (suspended) {
+    return <StatusPending>Suspended</StatusPending>;
+  }
+  const ready = computeReady(conditions);
+  switch (ready) {
+    case ReadyType.Reconciling:
+      return <StatusReconciling>Reconciling</StatusReconciling>;
+    case ReadyType.PendingAction:
+      return <StatusPending>Pending</StatusPending>;
+    case ReadyType.Ready:
+      return <StatusOK>Ready</StatusOK>;
+    case ReadyType.None:
+      return <StatusAborted>Aborted</StatusAborted>;
+    case ReadyType.Suspended:
+      return <StatusPending>Suspended</StatusPending>;
+    case ReadyType.NotReady:
+      return <StatusError>Not ready</StatusError>;
+    default:
+      return <StatusError>Failed</StatusError>;
+  }
+}

@@ -16,7 +16,7 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useFluxSources } from '../../hooks';
 import { FluxSourcesTable, sourceDefaultColumns } from './FluxSourcesTable';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { FluxContext } from '../FluxContext';
 import { InfoCard, TableColumn } from '@backstage/core-components';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 
@@ -58,7 +58,7 @@ const SourcesPanel = ({ many }: { many?: boolean }) => {
  * @public
  */
 export const EntityFluxSourcesCard = ({ many = true }: { many?: boolean }) => (
-  <WeaveGitOpsContext>
+  <FluxContext>
     <SourcesPanel many={many} />
-  </WeaveGitOpsContext>
+  </FluxContext>
 );

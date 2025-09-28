@@ -16,7 +16,7 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
 import { useHelmReleases } from '../../hooks/query';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { FluxContext } from '../FluxContext';
 import {
   FluxDeploymentsTable,
   defaultColumns,
@@ -61,7 +61,7 @@ export const EntityFluxHelmReleasesCard = ({
 }: {
   many?: boolean;
 }) => (
-  <WeaveGitOpsContext>
+  <FluxContext>
     <HelmReleasePanel many={many} />
-  </WeaveGitOpsContext>
+  </FluxContext>
 );
