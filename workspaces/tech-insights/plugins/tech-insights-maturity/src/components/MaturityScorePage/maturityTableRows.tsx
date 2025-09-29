@@ -92,13 +92,7 @@ const MaturityCheckTableRow = ({
         <AccordionSummary expandIcon={<ArrowDropDownIcon />}>
           <Grid container alignItems="center" spacing={2}>
             <Grid item xs={3}>
-              <Stack direction="row" spacing={2} className={check}>
-                <MaturityRankAvatar
-                  value={{ rank: checkResult.check.metadata.rank }}
-                  size={25}
-                />
-                <Typography>{checkResult.check.name}</Typography>
-              </Stack>
+              <Typography>{checkResult.check.name}</Typography>
             </Grid>
             <Grid item xs={7.5}>
               <Typography className={check}>
