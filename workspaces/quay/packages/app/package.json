@@ -22,7 +22,7 @@
     "@backstage-community/plugin-quay": "workspace:^",
     "@backstage/app-defaults": "^1.6.5",
     "@backstage/catalog-model": "^1.7.5",
-    "@backstage/cli": "^0.34.0",
+    "@backstage/cli": "^0.34.1",
     "@backstage/core-app-api": "^1.18.0",
     "@backstage/core-components": "^0.17.5",
     "@backstage/core-plugin-api": "^1.10.9",

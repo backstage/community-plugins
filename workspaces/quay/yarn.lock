@@ -1652,7 +1652,7 @@ __metadata:
     "@backstage-community/plugin-quay-common": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.12.0"
     "@backstage/backend-plugin-api": "npm:^1.4.2"
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/config": "npm:^1.3.3"
     "@backstage/plugin-catalog-node": "npm:^1.18.0"
     "@backstage/plugin-permission-common": "npm:^0.9.1"
@@ -1669,7 +1669,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-quay-common@workspace:plugins/quay-common"
   dependencies:
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/plugin-permission-common": "npm:^0.9.1"
     "@types/react": "npm:^18.2.58"
     react: "npm:^17.0.0 || ^18.0.0"
@@ -1687,7 +1687,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-quay-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/core-app-api": "npm:^1.18.0"
     "@backstage/core-components": "npm:^0.17.5"
     "@backstage/core-plugin-api": "npm:^1.10.9"
@@ -1726,7 +1726,7 @@ __metadata:
   resolution: "@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.2"
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/plugin-scaffolder-node": "npm:^0.11.0"
     "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.3.2"
     yaml: "npm:^2.6.0"
@@ -1990,20 +1990,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.34.0":
-  version: 0.34.0
-  resolution: "@backstage/cli@npm:0.34.0"
+"@backstage/cli@npm:^0.34.1":
+  version: 0.34.3
+  resolution: "@backstage/cli@npm:0.34.3"
   dependencies:
     "@backstage/catalog-model": "npm:^1.7.5"
     "@backstage/cli-common": "npm:^0.1.15"
     "@backstage/cli-node": "npm:^0.2.14"
     "@backstage/config": "npm:^1.3.3"
-    "@backstage/config-loader": "npm:^1.10.2"
+    "@backstage/config-loader": "npm:^1.10.3"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/eslint-plugin": "npm:^0.1.11"
-    "@backstage/integration": "npm:^1.17.1"
+    "@backstage/integration": "npm:^1.18.0"
     "@backstage/release-manifests": "npm:^0.0.13"
-    "@backstage/types": "npm:^1.2.1"
+    "@backstage/types": "npm:^1.2.2"
     "@manypkg/get-packages": "npm:^1.1.3"
     "@module-federation/enhanced": "npm:^0.9.0"
     "@octokit/graphql": "npm:^5.0.0"
@@ -2130,7 +2130,7 @@ __metadata:
       optional: true
   bin:
     backstage-cli: bin/backstage-cli
-  checksum: 10/87dd44b1ed01cfd665cde8585e97271d863046a003f63dd56c7a42b18ffbbdc884c7b57173f8e455b946e92262c5df63b23181bf365532d4c2d274e652c77e51
+  checksum: 10/0e8561cc19e58bb0bfa47f9eeb1ce124e583194b1ac34a4ff978db4bd2a478cd5273a4fd1435e47844316f7c2178e6164ea5d31fc3bf2eb5ac35c58766550de2
   languageName: node
   linkType: hard
 
@@ -2157,6 +2157,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/config-loader@npm:^1.10.3":
+  version: 1.10.4
+  resolution: "@backstage/config-loader@npm:1.10.4"
+  dependencies:
+    "@backstage/cli-common": "npm:^0.1.15"
+    "@backstage/config": "npm:^1.3.4"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/types": "npm:^1.2.2"
+    "@types/json-schema": "npm:^7.0.6"
+    ajv: "npm:^8.10.0"
+    chokidar: "npm:^3.5.2"
+    fs-extra: "npm:^11.2.0"
+    json-schema: "npm:^0.4.0"
+    json-schema-merge-allof: "npm:^0.8.1"
+    json-schema-traverse: "npm:^1.0.0"
+    lodash: "npm:^4.17.21"
+    minimist: "npm:^1.2.5"
+    typescript-json-schema: "npm:^0.65.0"
+    yaml: "npm:^2.0.0"
+  checksum: 10/047fdf9fd7493d9314c705ca8954333a8c7b9bfa1b83233b80b8cb401e9e852b3e801ea4b745ed6a5e5c40cb65a1cb5c9b77425e1a0122f3807da7cf3505e996
+  languageName: node
+  linkType: hard
+
 "@backstage/config@npm:^1.3.3":
   version: 1.3.3
   resolution: "@backstage/config@npm:1.3.3"
@@ -2165,6 +2188,17 @@ __metadata:
     "@backstage/types": "npm:^1.2.1"
     ms: "npm:^2.1.3"
   checksum: 10/95f3e2a8fca274157e7fdeafd15285f2626ac98df4fcb7fdaca9e21b64eecf4c92b6a3c20ad5cff9d7c12ec750a969e8cd23fc3e18534c1803ef7c6b45c3ba04
+  languageName: node
+  linkType: hard
+
+"@backstage/config@npm:^1.3.4":
+  version: 1.3.4
+  resolution: "@backstage/config@npm:1.3.4"
+  dependencies:
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/types": "npm:^1.2.2"
+    ms: "npm:^2.1.3"
+  checksum: 10/0e4d51f1661c5c65af7dcc4e425bbda19bd54c4d8fc8b14e7c73f398ceaabd00c8fd61ffc883114e9f1f597db70b8f38ac9cc009cbfc271c249b3c6d5d11fe3a
   languageName: node
   linkType: hard
 
@@ -2503,6 +2537,24 @@ __metadata:
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
   checksum: 10/05e4b5b9666cc393d3a46ae0793511f61a45682e5a89a70b4bc19619a57c830ef90dc5066a1b4a3e6a1be2fe51cd660673a8ef7d6e542b5acc43ed3c3e591cde
+  languageName: node
+  linkType: hard
+
+"@backstage/integration@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "@backstage/integration@npm:1.18.0"
+  dependencies:
+    "@azure/identity": "npm:^4.0.0"
+    "@azure/storage-blob": "npm:^12.5.0"
+    "@backstage/config": "npm:^1.3.3"
+    "@backstage/errors": "npm:^1.2.7"
+    "@octokit/auth-app": "npm:^4.0.0"
+    "@octokit/rest": "npm:^19.0.3"
+    cross-fetch: "npm:^4.0.0"
+    git-url-parse: "npm:^15.0.0"
+    lodash: "npm:^4.17.21"
+    luxon: "npm:^3.0.0"
+  checksum: 10/64fe197230666d2ece8b1d41a92287fe52bc89312e8d16baa3ffa1a92c33aa858fae34f86c4ef939f63a0f01e04fe24ece21119e55e4d96078279f162ab5db54
   languageName: node
   linkType: hard
 
@@ -4038,6 +4090,13 @@ __metadata:
   version: 1.2.1
   resolution: "@backstage/types@npm:1.2.1"
   checksum: 10/e3e65835b9db31d3f697e2d62fbcf52a3a6373e9f75fa8429e61f0a455880d4c32cdf996b22e85165e1a5b108604267281624befebcf9ae692c8844675925f14
+  languageName: node
+  linkType: hard
+
+"@backstage/types@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@backstage/types@npm:1.2.2"
+  checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
   languageName: node
   linkType: hard
 
@@ -5621,7 +5680,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/quay@workspace:."
   dependencies:
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/e2e-test-utils": "npm:^0.1.1"
     "@backstage/repo-tools": "npm:^0.15.1"
     "@changesets/cli": "npm:^2.27.1"
@@ -12780,7 +12839,7 @@ __metadata:
     "@backstage-community/plugin-quay": "workspace:^"
     "@backstage/app-defaults": "npm:^1.6.5"
     "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/core-app-api": "npm:^1.18.0"
     "@backstage/core-components": "npm:^0.17.5"
     "@backstage/core-plugin-api": "npm:^1.10.9"
@@ -13438,7 +13497,7 @@ __metadata:
     "@backstage-community/plugin-scaffolder-backend-module-quay": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.12.0"
     "@backstage/backend-plugin-api": "npm:^1.4.2"
-    "@backstage/cli": "npm:^0.34.0"
+    "@backstage/cli": "npm:^0.34.1"
     "@backstage/config": "npm:^1.3.3"
     "@backstage/plugin-app-backend": "npm:^0.5.5"
     "@backstage/plugin-auth-backend": "npm:^0.25.3"
