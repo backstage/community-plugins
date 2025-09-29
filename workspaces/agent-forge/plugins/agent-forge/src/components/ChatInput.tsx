@@ -46,9 +46,14 @@ function ChatInput({
       sx={{
         boxShadow: 4,
         background: 'var(--input-bg)',
+        '& .MuiInputBase-input::placeholder': {
+          color: 'var(--input-text)',
+          opacity: 0.7,
+        },
       }}
       multiline
-      maxRows={2}
+      minRows={3}
+      maxRows={8}
       onKeyUp={(e: React.KeyboardEvent<HTMLDivElement>) => {
         e.preventDefault();
         if (!e.shiftKey && e.key === 'Enter') handleMessageSubmit();
@@ -61,9 +66,11 @@ function ChatInput({
           paddingLeft: 2,
           borderRadius: '10px',
           borderWidth: '2px',
-          borderColor: '#889099',
+          borderColor: 'var(--tab-text)',
           borderStyle: 'solid',
-          color: '#000',
+          color: 'var(--input-text)',
+          resize: 'vertical',
+          minHeight: '80px',
         },
         endAdornment: (
           <IconButton

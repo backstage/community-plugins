@@ -78,7 +78,7 @@ function ChatHeader({
     <div className={styles.chatPanelHeaderBG}>
       <div className={styles.chatPanelHeader}>
         <div className={headerStyles.chatHeaderTitle}>
-          <h1>Chat Assistant</h1>
+          <h1>CAIPE Chat Assistant</h1>
           <a
             href="https://cisco-eti.atlassian.net/l/cp/EtLAxo7U"
             target="_blank"

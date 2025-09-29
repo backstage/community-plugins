@@ -189,20 +189,13 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 : message.metadata.input_fields.fields?.length > 0);
 
             // Only show text if there's no form OR if showFormMode is false (text-only mode)
-            return messageText && (!hasForm || !showFormMode)
-              ? messageText
-                  .split('\n')
-                  .map((line, idx) => (
-                    <MarkdownContent
-                      key={idx}
-                      content={line}
-                      transformLinkUri={uri =>
-                        uri.startsWith('http') ? uri : ''
-                      }
-                      linkTarget="_blank"
-                    />
-                  ))
-              : null;
+            return messageText && (!hasForm || !showFormMode) ? (
+              <MarkdownContent
+                content={messageText}
+                transformLinkUri={uri => (uri.startsWith('http') ? uri : '')}
+                linkTarget="_blank"
+              />
+            ) : null;
           })()}
 
           {/* Show form if input_fields metadata exists AND showFormMode is true */}

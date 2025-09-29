@@ -1,12 +1,12 @@
 app:
   title: Agent Forge
-  baseUrl: http://localhost:3000
+  baseUrl: http://localhost:3001
 
 organization:
   name: Cisco
 
 agentForge:
-  baseUrl: http://127.0.0.1:8000
+  baseUrl: http://10.99.255.178:8000
   showOptions: true
 
 backend:

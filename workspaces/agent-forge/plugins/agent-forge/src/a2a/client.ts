@@ -101,7 +101,8 @@ export class A2AClient {
           "Fetched Agent Card does not contain a valid 'url' for the service endpoint.",
         );
       }
-      this.serviceEndpointUrl = agentCard.url; // Cache the service endpoint URL from the agent card
+      // Use the configured base URL instead of the URL from agent card
+      this.serviceEndpointUrl = this.agentBaseUrl;
       return agentCard;
     } catch (error) {
       console.error('Error fetching or parsing Agent Card:');

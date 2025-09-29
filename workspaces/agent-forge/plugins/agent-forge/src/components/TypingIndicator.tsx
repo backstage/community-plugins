@@ -15,14 +15,29 @@
  */
 
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
+import useStyles from './useStyles';
 
 function TypingIndicator() {
+  const styles = useStyles();
+
   return (
-    <Box width="100%" marginBottom={2}>
-      <Skeleton animation="pulse" />
-      <Skeleton animation="wave" />
-      <Skeleton animation="pulse" />
+    <Box
+      width="100%"
+      marginBottom={2}
+      className={styles.typingIndicatorContainer}
+    >
+      <div
+        className={styles.typingBar}
+        style={{ width: '100%', height: '12px', marginBottom: '8px' }}
+      />
+      <div
+        className={styles.typingBar}
+        style={{ width: '100%', height: '12px', marginBottom: '8px' }}
+      />
+      <div
+        className={styles.typingBar}
+        style={{ width: '100%', height: '12px' }}
+      />
     </Box>
   );
 }

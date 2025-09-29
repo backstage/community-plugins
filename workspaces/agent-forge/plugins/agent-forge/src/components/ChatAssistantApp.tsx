@@ -480,9 +480,9 @@ function ChatAssistantApp() {
             <Box
               display="flex"
               justifyContent="center"
-              width={isFullScreen ? '80%' : '100%'}
+              width="100%"
               height="100%"
-              margin={isFullScreen ? 'auto' : '2px'}
+              margin="2px"
             >
               <ChatFeedback
                 handleMessageSubmit={handleMessageSubmit}

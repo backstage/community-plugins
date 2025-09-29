@@ -1,53 +1,44 @@
 /*app.css*/
 body.light-mode {
-  --background: #ffffff;
-  --input-container: #ffffff;
-  --bot-response: #f8f9fa;
-  --user-response: #e3f2fd;
-  --greeting-text-color: #212121;
-  --tab-bg: #ffffff;
-  --tab-text: #3A9BFF;
-  --tab-hover-bg: linear-gradient(to right, #3A9BFF, #2E7CE8);
-  --tab-hover-text: #ffffff;
-  --assistant-message-bg: #3A9BFF;
-  --assistant-message-text: #ffffff;
-  --feedback-button-bg: linear-gradient(to right, #3A9BFF, #2E7CE8);
-  --feedback-button-text: #ffffff;
+  --background: white;
+  --input-container: #282828;
+  --bot-response: #e9e9e9;
+  --user-response: #a7e4fa;
+  --greeting-text-color: #282828;
+  --tab-bg: white;
+  --tab-text: #0078d4;
+  --tab-hover-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --tab-hover-text: rgb(255, 255, 255);
+  --assistant-message-bg: #282828;
+  --assistant-message-text: white;
+  --feedback-button-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --feedback-button-text: white;
   --input-bg: #ffffff;
-  --input-text: #212121;
-  --bot-message-text: #212121;
-  --user-message-text: #212121;
-  --timestamp-color: #757575;
-  --separator-color: #e0e0e0;
+  --input-text: #4d4b4b;
   --typing-indicator-color: #00BFFF;
 }
 
 body.dark-mode {
-  --background: #121212;
-  --input-container: #1e1e1e;
-  --bot-response: #1e1e1e;
-  --user-response: #2d2d2d;
-  --greeting-text-color: #ffffff;
-  --tab-bg: #1e1e1e;
-  --tab-outline: #3A9BFF;
-  --tab-text: #3A9BFF;
-  --tab-hover-bg: linear-gradient(to right, #3A9BFF, #2E7CE8);
-  --tab-hover-text: #ffffff;
-  --assistant-message-bg: #3A9BFF;
-  --assistant-message-text: #ffffff;
+  --background: #1d1d1d;
+  --input-container: linear-gradient(to right, #1896d1, #0c4d6b);
+  --bot-response: #3a3939;
+  --user-response: #525151;
+  --greeting-text-color: white;
+  --tab-bg: #2d2d2d;
+  --tab-text: #0078d4;
+  --tab-hover-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --tab-hover-text: rgb(255, 255, 255);
+  --assistant-message-bg: #282828;
+  --assistant-message-text: white;
   --outline-color: #424242;
-  --feedback-button-bg: #3A9BFF;
-  --feedback-button-text: #ffffff;
-  --input-bg: #ffffff;
-  --input-text: #212121;
+  --feedback-button-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --feedback-button-text: white;
+  --input-bg: #1e1e1e;
+  --input-text: #ffffff;
   --feedback-option-bg: #2d2d2d;
   --feedback-option-text: #ffffff;
-  --feedback-option-selected-bg: #3A9BFF;
-  --feedback-option-selected-border: #3A9BFF;
-  --bot-message-text: #ffffff;
-  --user-message-text: #ffffff;
-  --timestamp-color: #b0b0b0;
-  --separator-color: #424242;
+  --feedback-option-selected-bg: #0078d4;
+  --feedback-option-selected-border: #0078d4;
   --typing-indicator-color: #00BFFF;
 }
 
@@ -492,35 +483,67 @@ body.dark-mode .bot-message {
   margin-top: 10px;
 }
 
-/* Light mode styling for Skeleton components */
+/* Custom typing indicator bars - dark mode friendly */
+.typing-bar {
+  background-color: var(--typing-indicator-color, #00BFFF);
+  border-radius: 6px;
+  opacity: 0.2;
+  animation: typingPulse 3s ease-in-out infinite;
+}
+
+.typing-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-bar:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.typing-bar:nth-child(3) {
+  animation-delay: 1s;
+}
+
+@keyframes typingPulse {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+/* Light mode styling for Skeleton components (fallback) */
 body.light-mode .MuiSkeleton-root {
-  background-color: var(--typing-indicator-color, #3A9BFF) !important;
+  background-color: var(--typing-indicator-color, #00BFFF) !important;
   opacity: 0.3;
 }
 
 body.light-mode .MuiSkeleton-pulse {
-  background-color: var(--typing-indicator-color, #3A9BFF) !important;
+  background-color: var(--typing-indicator-color, #00BFFF) !important;
   opacity: 0.3;
 }
 
 body.light-mode .MuiSkeleton-wave {
-  background-color: var(--typing-indicator-color, #3A9BFF) !important;
+  background-color: var(--typing-indicator-color, #00BFFF) !important;
   opacity: 0.3;
 }
 
-/* Dark mode styling for Skeleton components */
+/* Dark mode styling for Skeleton components (fallback) */
 body.dark-mode .MuiSkeleton-root {
-  background-color: var(--typing-indicator-color, #3A9BFF) !important;
+  background-color: var(--typing-indicator-color, #00BFFF) !important;
   opacity: 0.3;
 }
 
 body.dark-mode .MuiSkeleton-pulse {
-  background-color: var(--typing-indicator-color, #3A9BFF) !important;
+  background-color: var(--typing-indicator-color, #00BFFF) !important;
   opacity: 0.3;
 }
 
 body.dark-mode .MuiSkeleton-wave {
-  background-color: var(--typing-indicator-color, #3A9BFF) !important;
+  background-color: var(--typing-indicator-color, #00BFFF) !important;
   opacity: 0.3;
 }
 
