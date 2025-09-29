@@ -18,6 +18,21 @@ This plugin contains no other functionality.
 
 1. Wire up the API implementation to your App in `packages/app/src/apis.ts`:
 
+   If your App is built using the New Frontend System, it's enough to supply this
+   plugin to `createApp()`:
+
+   ```tsx
+   import analyticsProviderSegmentPlugin from '@backstage-community/plugin-analytics-provider-segment/alpha';
+
+   const app = createApp({
+     features: [analyticsProviderSegmentPlugin],
+   });
+   ```
+
+   This can be skipped entirely if you have feature discovery enabled.
+
+   For all other Backstage apps, wire up the API implementation like this:
+
    ```tsx title="packages/app/src/apis.ts"
    /* highlight-add-start */
    import { SegmentAnalytics } from '@backstage-community/plugin-analytics-provider-segment';
@@ -42,9 +57,6 @@ This plugin contains no other functionality.
      /* highlight-add-end */
    ];
    ```
-
-   Note: if you are using Backstage's new frontend system, you can skip this
-   step. Installing the package in your app is enough: no API wiring necessary.
 
 2. Configure the plugin in your `app-config.yaml`:
 
