@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-common
 
+## 0.11.0
+
+### Minor Changes
+
+- f5374b3: Backstage version bump to v1.43.2
+
 ## 0.10.0
 
 ### Minor Changes
