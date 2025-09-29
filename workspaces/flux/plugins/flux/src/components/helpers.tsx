@@ -266,11 +266,11 @@ export const VerifiedStatus = ({
 
   let className;
   if (condition?.status === 'True') {
-    className = classNames(classes.verifiedOK, classes.verifiedIconSize);
+    className = classNames(classes.verifiedOK, classes.statusIconSize);
   } else if (condition?.status === 'False') {
-    className = classNames(classes.verifiedError, classes.verifiedIconSize);
+    className = classNames(classes.verifiedError, classes.statusIconSize);
   } else if (!condition?.status) {
-    className = classNames(classes.verifiedWarning, classes.verifiedIconSize);
+    className = classNames(classes.verifiedWarning, classes.statusIconSize);
   }
 
   return (

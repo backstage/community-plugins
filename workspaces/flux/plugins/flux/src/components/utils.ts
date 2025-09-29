@@ -51,12 +51,6 @@ export const useStyles = makeStyles(theme => ({
     padding: 0,
     margin: '-5px 0',
   },
-  verifiedIconSize: {
-    height: '0.8em',
-  },
-  verifiedIconSizeForImg: {
-    height: '1.2em',
-  },
   verifiedOK: {
     fill: theme.palette.status.ok || '#27AE60',
   },
@@ -65,6 +59,27 @@ export const useStyles = makeStyles(theme => ({
   },
   verifiedWarning: {
     fill: theme.palette.status.warning || '#FEF071',
+  },
+  status: {
+    alignItems: 'baseline',
+    display: 'flex',
+  },
+  statusIcon: {
+    flexShrink: 0,
+    position: 'relative',
+    top: '0.125em',
+    marginRight: theme.spacing(1),
+  },
+  statusIconSize: {
+    width: '0.8em',
+    height: '0.8em',
+  },
+  statusIconSizeForImg: {
+    width: '1.2em',
+    height: '1.2em',
+  },
+  reconciling: {
+    fill: theme.palette.status.running || '#00b3ec',
   },
 }));
 
