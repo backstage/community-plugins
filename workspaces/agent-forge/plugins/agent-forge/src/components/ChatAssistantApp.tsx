@@ -21,7 +21,6 @@ import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
 import ChatTabs from './ChatTabs';
 import { useState, useEffect, useRef, useMemo } from 'react';
-import WebexLogo from '../icons/jarvis.png';
 import useStyles from './useStyles';
 import { ChatSuggestionOptions } from './ChatSuggestionOptions';
 import { Message, Feedback, UserResponse } from '../types';
@@ -35,6 +34,7 @@ import { ChatbotApi } from '../apis';
 import useObservable from 'react-use/esm/useObservable';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { DEFAULT_BOT_CONFIG } from '../constants';
 
 interface IChatFeedback {
   [key: number]: Feedback;
@@ -45,6 +45,10 @@ function ChatAssistantApp() {
   const styles = useStyles();
   const config = useApi(configApiRef);
   const appThemeApi = useApi(appThemeApiRef);
+  const botName =
+    config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
+  const botIcon =
+    config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
   const logEnabled = false;
   const activeThemeId = useObservable(
     appThemeApi.activeThemeId$(),
@@ -203,7 +207,7 @@ function ChatAssistantApp() {
         resetChatContext();
         await delay(500);
         addBotMessage({
-          text: 'Cleaning up previous chat. Minimizing Jarvis...',
+          text: `Cleaning up previous chat. Minimizing ${botName}...`,
           isUser: false,
           timestamp,
         });
@@ -214,7 +218,7 @@ function ChatAssistantApp() {
       case UserResponse.NEW:
         resetChatContext();
         addBotMessage({
-          text: 'I am Jarvis, your AI Platform Engineer. How can I help you today?',
+          text: `I am ${botName}, your AI Platform Engineer. How can I help you today?`,
           // Add welcome message suggestions:
           suggestions: [],
           isUser: false,
@@ -331,9 +335,9 @@ function ChatAssistantApp() {
         className={`${styles.buttonOpenChat}`}
       >
         <img
-          src={WebexLogo}
+          src={botIcon}
           style={{ width: 100, height: 100, objectFit: 'contain' }}
-          alt="Click this Webex Logo to open AgentForge"
+          alt={`Click this ${botName} Logo to open AgentForge`}
         />
       </Button>
     );

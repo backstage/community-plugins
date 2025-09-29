@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable react/react-in-jsx-scope */
+
 import { useMemo, useState } from 'react';
-import WebexLogo from '../icons/jarvis.png';
 import TypingIndicator from './TypingIndicator';
 import { FeedbackButton } from './FeedbackButton';
 import Chip from '@mui/material/Chip';
@@ -28,8 +29,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import useAsync from 'react-use/esm/useAsync';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  identityApiRef,
+  useApi,
+  configApiRef,
+} from '@backstage/core-plugin-api';
 import { isProviderField, isModelField } from '../utils/helpers';
+import { DEFAULT_BOT_CONFIG } from '../constants';
 
 interface ChatMessagesProps {
   handleMessageSubmit: (msg?: string) => void;
@@ -64,6 +70,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     handleMessageSubmit(m);
   };
   const styles = useStyles();
+  const config = useApi(configApiRef);
+  const botName =
+    config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
+  const botIcon =
+    config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
 
   const initialFormData = useMemo(
     () =>
@@ -140,8 +151,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         <div className={styles.botMessage}>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" alignItems="center">
-              <img src={WebexLogo} alt="Bot logo" className={styles.botLogo} />
-              <Typography sx={{ fontWeight: 700 }}>Jarvis</Typography>
+              <img src={botIcon} alt="Bot logo" className={styles.botLogo} />
+              <Typography sx={{ fontWeight: 700 }}>{botName}</Typography>
             </Box>
             <div className={styles.timestamp}>{message.timestamp}</div>
           </Box>
@@ -363,8 +374,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         {isTyping && (
           <Box>
             <Box display="flex" alignItems="center">
-              <img src={WebexLogo} alt="Bot logo" className={styles.botLogo} />
-              <Typography sx={{ fontWeight: 700 }}>Jarvis</Typography>
+              <img src={botIcon} alt="Bot logo" className={styles.botLogo} />
+              <Typography sx={{ fontWeight: 700 }}>{botName}</Typography>
             </Box>
             <TypingIndicator />
           </Box>

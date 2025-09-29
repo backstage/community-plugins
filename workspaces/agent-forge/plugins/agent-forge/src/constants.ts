@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface Config {
-  agentForge: {
-    /**
-     * @visibility frontend
-     */
-    baseUrl: string;
-    /**
-     * The info page URL for the AI bot (right next to the bot name)
-     * @visibility frontend
-     */
-    infoPage?: string;
-    /**
-     * The name of the AI bot to display in the UI
-     * @visibility frontend
-     */
-    botName?: string;
-    /**
-     * The icon URL or path for the AI bot
-     * @visibility frontend
-     */
-    botIcon?: string;
-  };
-}
+
+import DefaultBotIcon from './icons/jarvis.png';
+
+export const DEFAULT_BOT_CONFIG = {
+  name: 'Jarvis',
+  icon: DefaultBotIcon,
+  infoPage: 'https://cisco-eti.atlassian.net/l/cp/EtLAxo7U',
+} as const;
