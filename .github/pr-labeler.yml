@@ -1,0 +1,311 @@
+workspace/3scale:
+  - "workspaces/3scale/**"
+
+workspace/acr:
+  - "workspaces/acr/**"
+
+workspace/acs:
+  - "workspaces/acs/**"
+
+workspace/adr:
+  - "workspaces/adr/**"
+
+workspace/agent-forge:
+  - "workspaces/agent-forge/**"
+
+workspace/airbrake:
+  - "workspaces/airbrake/**"
+
+workspace/allure:
+  - "workspaces/allure/**"
+
+workspace/amplication:
+  - "workspaces/amplication/**"
+
+workspace/analytics:
+  - "workspaces/analytics/**"
+
+workspace/announcements:
+  - "workspaces/announcements/**"
+
+workspace/apache-airflow:
+  - "workspaces/apache-airflow/**"
+
+workspace/apollo-explorer:
+  - "workspaces/apollo-explorer/**"
+
+workspace/azure-devops:
+  - "workspaces/azure-devops/**"
+
+workspace/azure-resources:
+  - "workspaces/azure-resources/**"
+
+workspace/azure-sites:
+  - "workspaces/azure-sites/**"
+
+workspace/azure-storage-explorer:
+  - "workspaces/azure-storage-explorer/**"
+
+workspace/badges:
+  - "workspaces/badges/**"
+
+workspace/bazaar:
+  - "workspaces/bazaar/**"
+
+workspace/bitbucket-pull-requests:
+  - "workspaces/bitbucket-pull-requests/**"
+
+workspace/bitrise:
+  - "workspaces/bitrise/**"
+
+workspace/blackduck:
+  - "workspaces/blackduck/**"
+
+workspace/bookmarks:
+  - "workspaces/bookmarks/**"
+
+workspace/cicd-statistics:
+  - "workspaces/cicd-statistics/**"
+
+workspace/cloudbuild:
+  - "workspaces/cloudbuild/**"
+
+workspace/code-climate:
+  - "workspaces/code-climate/**"
+
+workspace/code-coverage:
+  - "workspaces/code-coverage/**"
+
+workspace/codescene:
+  - "workspaces/codescene/**"
+
+workspace/confluence:
+  - "workspaces/confluence/**"
+
+workspace/copilot:
+  - "workspaces/copilot/**"
+
+workspace/cost-insights:
+  - "workspaces/cost-insights/**"
+
+workspace/dynatrace:
+  - "workspaces/dynatrace/**"
+
+workspace/entity-feedback:
+  - "workspaces/entity-feedback/**"
+
+workspace/entity-validation:
+  - "workspaces/entity-validation/**"
+
+workspace/explore:
+  - "workspaces/explore/**"
+
+workspace/feedback:
+  - "workspaces/feedback/**"
+
+workspace/firehydrant:
+  - "workspaces/firehydrant/**"
+
+workspace/fossa:
+  - "workspaces/fossa/**"
+
+workspace/gcalendar:
+  - "workspaces/gcalendar/**"
+
+workspace/gcp-projects:
+  - "workspaces/gcp-projects/**"
+
+workspace/git-release-manager:
+  - "workspaces/git-release-manager/**"
+
+workspace/github-actions:
+  - "workspaces/github-actions/**"
+
+workspace/github-deployments:
+  - "workspaces/github-deployments/**"
+
+workspace/github-discussions:
+  - "workspaces/github-discussions/**"
+
+workspace/github-issues:
+  - "workspaces/github-issues/**"
+
+workspace/github-pull-requests-board:
+  - "workspaces/github-pull-requests-board/**"
+
+workspace/gitops-profiles:
+  - "workspaces/gitops-profiles/**"
+
+workspace/gocd:
+  - "workspaces/gocd/**"
+
+workspace/grafana:
+  - "workspaces/grafana/**"
+
+workspace/graphiql:
+  - "workspaces/graphiql/**"
+
+workspace/graphql-voyager:
+  - "workspaces/graphql-voyager/**"
+
+workspace/ilert:
+  - "workspaces/ilert/**"
+
+workspace/jaeger:
+  - "workspaces/jaeger/**"
+
+workspace/jenkins:
+  - "workspaces/jenkins/**"
+
+workspace/jfrog-artifactory:
+  - "workspaces/jfrog-artifactory/**"
+
+workspace/kafka:
+  - "workspaces/kafka/**"
+
+workspace/keycloak:
+  - "workspaces/keycloak/**"
+
+workspace/kiali:
+  - "workspaces/kiali/**"
+
+workspace/lighthouse:
+  - "workspaces/lighthouse/**"
+
+workspace/linguist:
+  - "workspaces/linguist/**"
+
+workspace/linkerd:
+  - "workspaces/linkerd/**"
+
+workspace/manage:
+  - "workspaces/manage/**"
+
+workspace/matomo:
+  - "workspaces/matomo/**"
+
+workspace/mend:
+  - "workspaces/mend/**"
+
+workspace/microsoft-calendar:
+  - "workspaces/microsoft-calendar/**"
+
+workspace/mta:
+  - "workspaces/mta/**"
+
+workspace/multi-source-security-viewer:
+  - "workspaces/multi-source-security-viewer/**"
+
+workspace/newrelic:
+  - "workspaces/newrelic/**"
+
+workspace/nexus-repository-manager:
+  - "workspaces/nexus-repository-manager/**"
+
+workspace/nomad:
+  - "workspaces/nomad/**"
+
+workspace/npm:
+  - "workspaces/npm/**"
+
+workspace/ocm:
+  - "workspaces/ocm/**"
+
+workspace/octopus-deploy:
+  - "workspaces/octopus-deploy/**"
+
+workspace/odo:
+  - "workspaces/odo/**"
+
+workspace/opencost:
+  - "workspaces/opencost/**"
+
+workspace/periskop:
+  - "workspaces/periskop/**"
+
+workspace/pingidentity:
+  - "workspaces/pingidentity/**"
+
+workspace/playlist:
+  - "workspaces/playlist/**"
+
+workspace/puppetdb:
+  - "workspaces/puppetdb/**"
+
+workspace/quay:
+  - "workspaces/quay/**"
+
+workspace/rbac:
+  - "workspaces/rbac/**"
+
+workspace/redhat-argocd:
+  - "workspaces/redhat-argocd/**"
+
+workspace/report-portal:
+  - "workspaces/report-portal/**"
+
+workspace/rollbar:
+  - "workspaces/rollbar/**"
+
+workspace/scaffolder-backend-module-annotator:
+  - "workspaces/scaffolder-backend-module-annotator/**"
+
+workspace/scaffolder-backend-module-kubernetes:
+  - "workspaces/scaffolder-backend-module-kubernetes/**"
+
+workspace/scaffolder-backend-module-regex:
+  - "workspaces/scaffolder-backend-module-regex/**"
+
+workspace/scaffolder-backend-module-servicenow:
+  - "workspaces/scaffolder-backend-module-servicenow/**"
+
+workspace/scaffolder-backend-module-sonarqube:
+  - "workspaces/scaffolder-backend-module-sonarqube/**"
+
+workspace/scaffolder-relation-processor:
+  - "workspaces/scaffolder-relation-processor/**"
+
+workspace/sentry:
+  - "workspaces/sentry/**"
+
+workspace/servicenow:
+  - "workspaces/servicenow/**"
+
+workspace/shortcuts:
+  - "workspaces/shortcuts/**"
+
+workspace/sonarqube:
+  - "workspaces/sonarqube/**"
+
+workspace/splunk:
+  - "workspaces/splunk/**"
+
+workspace/stack-overflow:
+  - "workspaces/stack-overflow/**"
+
+workspace/stackstorm:
+  - "workspaces/stackstorm/**"
+
+workspace/tech-insights:
+  - "workspaces/tech-insights/**"
+
+workspace/tech-radar:
+  - "workspaces/tech-radar/**"
+
+workspace/tekton:
+  - "workspaces/tekton/**"
+
+workspace/todo:
+  - "workspaces/todo/**"
+
+workspace/topology:
+  - "workspaces/topology/**"
+
+workspace/vault:
+  - "workspaces/vault/**"
+
+workspace/wheel-of-names:
+  - "workspaces/wheel-of-names/**"
+
+workspace/xcmetrics:
+  - "workspaces/xcmetrics/**"

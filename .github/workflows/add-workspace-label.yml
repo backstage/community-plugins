@@ -1,18 +1,31 @@
-name: Add Workspace Label to Issues
+name: Add Workspace Label to Issues and PRs
 on:
   issues:
     types: [opened, edited]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 
 permissions:
   issues: write
+  pull-requests: write
   contents: read
 
 jobs:
-  triage:
+  triage-issues:
+    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
     steps:
     - uses: github/issue-labeler@c1b0f9f52a63158c4adc09425e858e87b32e9685 #v3.4
       with:
         configuration-path: .github/labeler.yml
         enable-versioned-regex: 0
+        repo-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+
+  label-prs:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@v5
+      with:
+        configuration-path: .github/pr-labeler.yml
         repo-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
