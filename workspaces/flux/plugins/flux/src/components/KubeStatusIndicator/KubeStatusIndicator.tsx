@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import _ from 'lodash';
-import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {
   StatusAborted,
@@ -28,30 +27,7 @@ import { Tooltip } from '@material-ui/core';
 import classNames from 'classnames';
 import { PropsWithChildren } from 'react';
 import { ReconcilingIcon } from './icons/ReconcilingIcon';
-
-const useStyles = makeStyles(theme => ({
-  status: {
-    alignItems: 'baseline',
-    display: 'flex',
-  },
-  statusIcon: {
-    flexShrink: 0,
-    position: 'relative',
-    top: '0.125em',
-    marginRight: theme.spacing(1),
-  },
-  statusIconSize: {
-    width: '0.8em',
-    height: '0.8em',
-  },
-  statusIconSizeForImg: {
-    width: '1.2em',
-    height: '1.2em',
-  },
-  reconciling: {
-    fill: theme.palette.status.running || '#00b3ec',
-  },
-}));
+import { useStyles } from '../utils';
 
 export function StatusReconciling(props: PropsWithChildren<{}>) {
   const { children, ...otherProps } = props;
