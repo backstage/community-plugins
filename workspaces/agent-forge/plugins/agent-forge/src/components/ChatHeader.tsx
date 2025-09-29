@@ -83,7 +83,7 @@ function ChatHeader({
         <div className={headerStyles.chatHeaderTitle}>
           <h1>CAIPE Chat Assistant</h1>
           <a
-            href="https://cisco-eti.atlassian.net/l/cp/EtLAxo7U"
+            href="https://cnoe-io.github.io/ai-platform-engineering/"
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-flex' }}
