@@ -15,6 +15,21 @@ yarn --cwd packages/app add @backstage-community/plugin-analytics-module-newreli
 
 2. Wire up the API implementation to your App:
 
+If your App is built using the New Frontend System, it's enough to supply this
+module to `createApp()`:
+
+```tsx
+import newRelicBrowserModule from '@backstage-community/plugin-analytics-module-newrelic-browser/alpha';
+
+const app = createApp({
+  features: [newRelicBrowserModule],
+});
+```
+
+This can be skipped entirely if you have feature discovery enabled.
+
+For all other Backstage apps, wire up the API implementation like this:
+
 ```tsx
 // packages/app/src/apis.ts
 import {
@@ -36,9 +51,6 @@ export const apis: AnyApiFactory[] = [
   }),
 ];
 ```
-
-Note: if you are using Backstage's new frontend system, you can skip this step.
-Installing the package in your app is enough: no API wiring necessary.
 
 3. Configure the plugin in your `app-config.yaml`:
 
