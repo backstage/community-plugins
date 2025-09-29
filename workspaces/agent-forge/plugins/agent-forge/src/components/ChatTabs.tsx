@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable react/react-in-jsx-scope */
 
 /* eslint-disable react/react-in-jsx-scope*/
 
-import logo from '../icons/caipe.png';
-import useStyles from './useStyles';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { DEFAULT_BOT_CONFIG } from '../constants';
+import useStyles from './useStyles';
 
 interface ChatTabsProps {
   handleMessageSubmit: (msg?: string) => void;
@@ -39,6 +41,9 @@ function ChatTabs({
   };
 
   const styles = useStyles();
+  const config = useApi(configApiRef);
+  const botIcon =
+    config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
 
   if (isFullScreen) {
     return (
@@ -54,7 +59,7 @@ function ChatTabs({
         padding={4}
       >
         <div className={styles.greetingSection}>
-          <img className={styles.greetingLogo} src={logo} alt="Logo" />
+          <img className={styles.greetingLogo} src={botIcon} alt="Logo" />
           <div className={styles.greetingText}>Hi there.</div>
         </div>
         <Grid
@@ -100,7 +105,7 @@ function ChatTabs({
       }}
     >
       <div className={styles.greetingSection}>
-        <img className={styles.greetingLogo} src={logo} alt="Logo" />
+        <img className={styles.greetingLogo} src={botIcon} alt="Logo" />
       </div>
       <div className={styles.tabs}>
         {suggestions.map(s => (

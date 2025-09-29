@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
-import clearIcon from '../icons/clear-icon.png';
-import useStyles from './useStyles';
-import { useHeaderStyles } from './useHeaderStyles';
-import MoreInfoIcon from '../icons/more-info.svg';
-import './App.css';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { useState } from 'react';
+import { DEFAULT_BOT_CONFIG } from '../constants';
+import clearIcon from '../icons/clear-icon.png';
+import MoreInfoIcon from '../icons/more-info.svg';
+import './App.css';
+import { useHeaderStyles } from './useHeaderStyles';
+import useStyles from './useStyles';
 
 // SVG icons with white contours
 const FormIcon = () => (
@@ -72,6 +74,13 @@ function ChatHeader({
   const styles = useStyles();
   const headerStyles = useHeaderStyles();
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const config = useApi(configApiRef);
+  const botName =
+    config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
+  const infoPage =
+    config.getOptionalString('agentForge.infoPage') ||
+    DEFAULT_BOT_CONFIG.infoPage;
+
   const goFullScreen = () => {
     setIsFullScreen(!isFullScreen);
     handleFullScreenToggle();

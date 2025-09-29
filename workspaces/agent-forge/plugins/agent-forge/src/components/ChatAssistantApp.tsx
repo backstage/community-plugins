@@ -17,27 +17,27 @@
 /* eslint-disable react/react-in-jsx-scope*/
 
 // React import removed - using new JSX transform
-import { useState, useEffect, useRef, useMemo } from 'react';
-import ChatFeedback from './ChatFeedback';
-import ChatHeader from './ChatHeader';
-import ChatInput from './ChatInput';
-import ChatTabs from './ChatTabs';
-import WebexLogo from '../icons/caipe.png';
-import useStyles from './useStyles';
-import { ChatSuggestionOptions } from './ChatSuggestionOptions';
-import { Message, Feedback, UserResponse } from '../types';
 import {
   appThemeApiRef,
   configApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
-import { createTimestamp, delay, makeLinksClickable } from '../utils';
-import { ChatbotApi } from '../apis';
-import useObservable from 'react-use/esm/useObservable';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import useObservable from 'react-use/esm/useObservable';
+import { ChatbotApi } from '../apis';
+import { DEFAULT_BOT_CONFIG } from '../constants';
+import { Feedback, Message, UserResponse } from '../types';
+import { createTimestamp, delay, makeLinksClickable } from '../utils';
+import ChatFeedback from './ChatFeedback';
+import ChatHeader from './ChatHeader';
+import ChatInput from './ChatInput';
+import { ChatSuggestionOptions } from './ChatSuggestionOptions';
+import ChatTabs from './ChatTabs';
+import useStyles from './useStyles';
 
 interface IChatFeedback {
   [key: number]: Feedback;
@@ -48,6 +48,10 @@ function ChatAssistantApp() {
   const styles = useStyles();
   const config = useApi(configApiRef);
   const appThemeApi = useApi(appThemeApiRef);
+  const botName =
+    config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
+  const botIcon =
+    config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
   const logEnabled = false;
   const activeThemeId = useObservable(
     appThemeApi.activeThemeId$(),
@@ -523,9 +527,9 @@ function ChatAssistantApp() {
         className={`${styles.buttonOpenChat}`}
       >
         <img
-          src={WebexLogo}
+          src={botIcon}
           style={{ width: 100, height: 100, objectFit: 'contain' }}
-          alt="Click this Webex Logo to open AgentForge"
+          alt={`Click this ${botName} Logo to open AgentForge`}
         />
       </Button>
     );

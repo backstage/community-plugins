@@ -13,25 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import WebexLogo from '../icons/caipe.png';
-import TypingIndicator from './TypingIndicator';
-import { FeedbackButton } from './FeedbackButton';
-import Chip from '@mui/material/Chip';
-import { Feedback, Message } from '../types';
-import useStyles from './useStyles';
+
+/* eslint-disable react/react-in-jsx-scope */
+
 import { MarkdownContent } from '@backstage/core-components';
+import {
+  configApiRef,
+  identityApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import useAsync from 'react-use/esm/useAsync';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { isProviderField, isModelField } from '../utils/helpers';
-import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import useAsync from 'react-use/esm/useAsync';
+import { DEFAULT_BOT_CONFIG } from '../constants';
+import { Feedback, Message } from '../types';
+import { isModelField, isProviderField } from '../utils/helpers';
+import { FeedbackButton } from './FeedbackButton';
+import TypingIndicator from './TypingIndicator';
+import useStyles from './useStyles';
 
 interface ChatMessagesProps {
   handleMessageSubmit: (msg?: string) => void;
@@ -68,6 +75,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     handleMessageSubmit(m);
   };
   const styles = useStyles();
+  const config = useApi(configApiRef);
+  const botName =
+    config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
+  const botIcon =
+    config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
 
   const initialFormData = useMemo(() => {
     const data: { [key: number]: { [key: string]: string } } = {};
@@ -168,8 +180,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         <div className={styles.botMessage}>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" alignItems="center">
-              <img src={WebexLogo} alt="Bot logo" className={styles.botLogo} />
-              <Typography sx={{ fontWeight: 700 }}>CAIPE</Typography>
+              <img src={botIcon} alt="Bot logo" className={styles.botLogo} />
+              <Typography sx={{ fontWeight: 700 }}>{botName}</Typography>
             </Box>
             <div className={styles.timestamp}>{message.timestamp}</div>
           </Box>
@@ -664,8 +676,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         {isTyping && (
           <Box>
             <Box display="flex" alignItems="center">
-              <img src={WebexLogo} alt="Bot logo" className={styles.botLogo} />
-              <Typography sx={{ fontWeight: 700 }}>CAIPE</Typography>
+              <img src={botIcon} alt="Bot logo" className={styles.botLogo} />
+              <Typography sx={{ fontWeight: 700 }}>{botName}</Typography>
             </Box>
             <TypingIndicator />
           </Box>
