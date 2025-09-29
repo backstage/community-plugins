@@ -81,6 +81,13 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     };
   }
 
+  public async getChildMaturityCheckResults(
+    entity: Entity,
+  ): Promise<BulkMaturityCheckResponse> {
+    const entities = await this.getRelatedComponents(entity);
+    return await this.getBulkCheckResults(entities);
+  }
+
   public async getMaturitySummary(entity: Entity): Promise<MaturitySummary> {
     const checksResult = await this.getCheckResults(entity);
     return SDF.getMaturitySummary(checksResult);
