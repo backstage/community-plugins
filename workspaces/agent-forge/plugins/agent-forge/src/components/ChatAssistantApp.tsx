@@ -265,15 +265,20 @@ function ChatAssistantApp() {
   // Add system message when API error occurs
   useEffect(() => {
     if (apiError && messages.length === 0) {
-      setMessages([
-        {
-          text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${apiError}`,
-          isUser: false,
-          timestamp: createTimestamp(),
-        },
-      ]);
+      const errorMessage = {
+        text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${
+          apiError === 'Failed to fetch'
+            ? `Failed to fetch Agent card from ${backendUrl}`
+            : apiError
+        }`,
+        isUser: false,
+        timestamp: createTimestamp(),
+      };
+      setMessages([errorMessage]);
+      // Set initial state to false so the error message is displayed
+      setIsInitialState(false);
     }
-  }, [apiError, messages.length]);
+  }, [apiError, messages.length, backendUrl]);
 
   async function handleOptionSelection(_confirmation: string): Promise<void> {}
 
@@ -310,7 +315,7 @@ function ChatAssistantApp() {
         resetChatContext();
         await delay(500);
         addBotMessage({
-          text: 'Cleaning up previous chat. Minimizing Jarvis...',
+          text: 'Cleaning up previous chat. Minimizing CAIPE...',
           isUser: false,
           timestamp,
         });
@@ -321,7 +326,7 @@ function ChatAssistantApp() {
       case UserResponse.NEW:
         resetChatContext();
         addBotMessage({
-          text: 'I am Jarvis, your AI Platform Engineer. How can I help you today?',
+          text: 'I am CAIPE, your AI Platform Engineer. How can I help you today?',
           // Add welcome message suggestions:
           suggestions: [],
           isUser: false,

@@ -88,7 +88,7 @@ function ChatHeader({
             rel="noopener noreferrer"
             style={{ display: 'inline-flex' }}
           >
-            <img src={MoreInfoIcon} alt="Learn more about JARVIS" />
+            <img src={MoreInfoIcon} alt="Learn more about CAIPE" />
           </a>
         </div>
         <Box display="flex" flexDirection="row" alignItems="center" rowGap={2}>

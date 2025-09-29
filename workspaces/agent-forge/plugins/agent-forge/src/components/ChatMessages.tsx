@@ -169,7 +169,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           <Box display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" alignItems="center">
               <img src={WebexLogo} alt="Bot logo" className={styles.botLogo} />
-              <Typography sx={{ fontWeight: 700 }}>Jarvis</Typography>
+              <Typography sx={{ fontWeight: 700 }}>CAIPE</Typography>
             </Box>
             <div className={styles.timestamp}>{message.timestamp}</div>
           </Box>
@@ -665,7 +665,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           <Box>
             <Box display="flex" alignItems="center">
               <img src={WebexLogo} alt="Bot logo" className={styles.botLogo} />
-              <Typography sx={{ fontWeight: 700 }}>Jarvis</Typography>
+              <Typography sx={{ fontWeight: 700 }}>CAIPE</Typography>
             </Box>
             <TypingIndicator />
           </Box>
