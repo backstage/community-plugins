@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import WebexLogo from '../icons/jarvis.png';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import WebexLogo from '../icons/caipe.png';
 import TypingIndicator from './TypingIndicator';
 import { FeedbackButton } from './FeedbackButton';
 import Chip from '@mui/material/Chip';

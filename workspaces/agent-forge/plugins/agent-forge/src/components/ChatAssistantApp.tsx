@@ -16,12 +16,13 @@
 
 /* eslint-disable react/react-in-jsx-scope*/
 
+// React import removed - using new JSX transform
+import { useState, useEffect, useRef, useMemo } from 'react';
 import ChatFeedback from './ChatFeedback';
 import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
 import ChatTabs from './ChatTabs';
-import { useState, useEffect, useRef, useMemo } from 'react';
-import WebexLogo from '../icons/jarvis.png';
+import WebexLogo from '../icons/caipe.png';
 import useStyles from './useStyles';
 import { ChatSuggestionOptions } from './ChatSuggestionOptions';
 import { Message, Feedback, UserResponse } from '../types';
@@ -51,6 +52,28 @@ function ChatAssistantApp() {
     appThemeApi.activeThemeId$(),
     appThemeApi.getActiveThemeId(),
   );
+
+  // Enhanced theme detection with fallback
+  const isDarkMode =
+    activeThemeId === 'dark' ||
+    (typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  // Listen for system theme changes as additional fallback
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => {
+        // The useObservable will handle the actual theme update
+        // This is just for system preference changes when Backstage theme is not set
+      };
+
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+    return undefined;
+  }, []);
   const logWithContext = (message: string) => {
     // TODO: we should find a better way to handle this down the road
     if (logEnabled) {
@@ -426,11 +449,7 @@ function ChatAssistantApp() {
   }
 
   return (
-    <div
-      className={`App ${
-        activeThemeId === 'dark' ? styles.darkMode : styles.lightMode
-      }`}
-    >
+    <div className={`App ${isDarkMode ? styles.darkMode : styles.lightMode}`}>
       <div
         className={`${styles.chatPanel} ${isOpen ? 'open' : ''} ${
           isFullScreen ? styles.chatPanelMaximized : ''

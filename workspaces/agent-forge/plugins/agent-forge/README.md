@@ -41,13 +41,13 @@ To start using the Agent-Forge Plugin, follow these steps:
 
    ```bash
    # From your Backstage root directory
-   yarn --cwd packages/app add @backstage-community/plugin-agent-forge
+   yarn --cwd packages/app add @caipe/plugin-agent-forge
    ```
 
 2. **Configure App.tsx**:
 
    ```tsx
-   import { ChatAssistantPage } from '@backstage-community/plugin-agent-forge';
+   import { ChatAssistantPage } from '@caipe/plugin-agent-forge';
 
    ...
 

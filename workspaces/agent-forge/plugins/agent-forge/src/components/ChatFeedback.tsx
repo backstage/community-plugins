@@ -18,7 +18,7 @@ import { Message, Feedback } from '../types';
 import ChatMessages from './ChatMessages';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { ChatbotApi } from '../apis';
-import React from 'react';
+// React import removed - using new JSX transform
 
 interface ChatFeedbackProps {
   handleMessageSubmit: (msg?: string) => void;

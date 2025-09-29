@@ -16,7 +16,7 @@
 
 /* eslint-disable react/react-in-jsx-scope*/
 
-import logo from '../icons/jarvis.png';
+import logo from '../icons/caipe.png';
 import useStyles from './useStyles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';

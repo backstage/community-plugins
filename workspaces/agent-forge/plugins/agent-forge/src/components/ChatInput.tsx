@@ -45,7 +45,7 @@ function ChatInput({
       disabled={disabled}
       sx={{
         boxShadow: 4,
-        background: '#fff',
+        background: 'var(--input-bg)',
       }}
       multiline
       maxRows={2}
