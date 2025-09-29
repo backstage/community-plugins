@@ -37,6 +37,7 @@ import { ChatbotApi } from '../apis';
 import useObservable from 'react-use/esm/useObservable';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 interface IChatFeedback {
   [key: number]: Feedback;
@@ -102,13 +103,9 @@ function ChatAssistantApp() {
   const identityApi = useApi(identityApiRef);
   const showOptions = config.getOptionalBoolean('agentForge.showOptions');
 
-  const chatbotApi = useMemo(
-    () => new ChatbotApi(backendUrl, { identityApi }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [backendUrl],
-  );
-  const chatContainerRef = useRef<HTMLDivElement>(null);
-  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // State declarations must come before useMemo
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState<boolean>(true);
   const [newContext, setNewContext] = useState<boolean>(true);
   const [feedback, setFeedback] = useState<IChatFeedback>({});
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -121,6 +118,25 @@ function ChatAssistantApp() {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showFormMode, setShowFormMode] = useState<boolean>(true);
+
+  const chatbotApi = useMemo(() => {
+    try {
+      const api = new ChatbotApi(backendUrl, { identityApi });
+      // Reset connection status when API is created
+      setIsConnected(true);
+      setApiError(null);
+      return api;
+    } catch (error) {
+      setApiError('Failed to initialize chat service');
+      setIsConnected(false);
+      return null;
+    }
+  }, [backendUrl, identityApi]);
+
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef<boolean>(true);
+  const previousThemeId = useRef<string | undefined>(activeThemeId);
 
   const [providerModelsMap] = useState<{
     [key: string]: string[];
@@ -210,9 +226,54 @@ function ChatAssistantApp() {
   ]);
 
   useEffect(() => {
-    resetChatContext();
+    // Check if this is a theme change
+    const isThemeChange =
+      previousThemeId.current !== undefined &&
+      previousThemeId.current !== activeThemeId;
+
+    if (isInitialMount.current && !isThemeChange) {
+      resetChatContext();
+      isInitialMount.current = false;
+    } else if (isThemeChange) {
+      // Don't reset anything on theme change
+    }
+
+    // Update the previous theme ID
+    previousThemeId.current = activeThemeId;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeThemeId]);
+
+  // Test connection when chatbotApi is available
+  useEffect(() => {
+    if (chatbotApi) {
+      // Test the connection by trying to get skill examples
+      chatbotApi
+        .getSkillExamples()
+        .then(() => {
+          setIsConnected(true);
+          setApiError(null);
+        })
+        .catch(error => {
+          setIsConnected(false);
+          setApiError(
+            error.message || 'Failed to connect to CAIPE Multi-Agent System',
+          );
+        });
+    }
+  }, [chatbotApi]);
+
+  // Add system message when API error occurs
+  useEffect(() => {
+    if (apiError && messages.length === 0) {
+      setMessages([
+        {
+          text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${apiError}`,
+          isUser: false,
+          timestamp: createTimestamp(),
+        },
+      ]);
+    }
+  }, [apiError, messages.length]);
 
   async function handleOptionSelection(_confirmation: string): Promise<void> {}
 
@@ -221,6 +282,16 @@ function ChatAssistantApp() {
     if (!input) {
       return;
     }
+
+    if (!chatbotApi) {
+      await addBotMessage({
+        text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. Please check your configuration and try again.`,
+        isUser: false,
+        timestamp: createTimestamp(),
+      });
+      return;
+    }
+
     setIsInitialState(false);
 
     await addUserMessage({ text: input, isUser: true });
@@ -317,8 +388,10 @@ function ChatAssistantApp() {
           }
         } catch (error) {
           const err = error as Error;
+          setApiError(err.message);
+          setIsConnected(false);
           await addBotMessage({
-            text: `Error submitting question: ${err.message}`,
+            text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${err.message}`,
             isUser: false,
             timestamp: createTimestamp(),
           });
@@ -423,12 +496,17 @@ function ChatAssistantApp() {
         return UserResponse.CONTINUE;
     }
   }
-  if (showOptions && suggestions.length === 0) {
-    chatbotApi.getSkillExamples().then(value => {
-      if (value) {
-        setSuggestions(value);
-      }
-    });
+  if (showOptions && suggestions.length === 0 && chatbotApi) {
+    chatbotApi
+      .getSkillExamples()
+      .then(value => {
+        if (value) {
+          setSuggestions(value);
+        }
+      })
+      .catch(() => {
+        // Don't show error toast for suggestions as it's not critical
+      });
   }
 
   if (!isOpen) {
@@ -461,14 +539,56 @@ function ChatAssistantApp() {
           handleFullScreenToggle={fullScreen}
           onToggleFormMode={toggleFormMode}
           showFormMode={showFormMode}
+          isConnected={isConnected}
         />
-        {isInitialState && !hasQuestion ? (
+        {!chatbotApi && (
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="100%"
+            padding={4}
+            textAlign="center"
+          >
+            <h3
+              style={{
+                color: 'var(--greeting-text-color)',
+                marginBottom: '16px',
+              }}
+            >
+              CAIPE Multi-Agent System Disconnected
+            </h3>
+            <Typography
+              variant="body1"
+              style={{
+                color: 'var(--greeting-text-color)',
+                marginBottom: '16px',
+              }}
+            >
+              {apiError ||
+                'Unable to connect to the CAIPE Multi-Agent System. Please check your configuration.'}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => window.location.reload()}
+              style={{
+                backgroundColor: 'var(--tab-text)',
+                color: 'white',
+              }}
+            >
+              Retry Connection
+            </Button>
+          </Box>
+        )}
+        {chatbotApi && isInitialState && !hasQuestion && (
           <ChatTabs
             isFullScreen={isFullScreen}
             handleMessageSubmit={handleMessageSubmit}
             suggestions={suggestions}
           />
-        ) : (
+        )}
+        {chatbotApi && !(isInitialState && !hasQuestion) && (
           <>
             {messages.length > 0 && (
               <div className={styles.todayContainer}>

@@ -22,6 +22,7 @@ import MoreInfoIcon from '../icons/more-info.svg';
 import './App.css';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 // SVG icons with white contours
 const FormIcon = () => (
@@ -57,6 +58,7 @@ interface ChatHeaderProps {
   handleFullScreenToggle: () => void;
   showFormMode: boolean;
   onToggleFormMode: () => void;
+  isConnected?: boolean;
 }
 
 function ChatHeader({
@@ -65,6 +67,7 @@ function ChatHeader({
   handleFullScreenToggle,
   showFormMode,
   onToggleFormMode,
+  isConnected = true,
 }: ChatHeaderProps) {
   const styles = useStyles();
   const headerStyles = useHeaderStyles();
@@ -89,49 +92,75 @@ function ChatHeader({
           </a>
         </div>
         <Box display="flex" flexDirection="row" alignItems="center" rowGap={2}>
-          <IconButton
-            sx={{ color: '#fff' }}
-            onClick={goFullScreen}
-            style={{ display: isFullScreen ? 'none' : 'block' }}
-            title="Toggle Full Screen"
+          {/* Connection Status Indicator */}
+          <Tooltip
+            title={
+              isConnected
+                ? 'Connected to CAIPE Multi-Agent System'
+                : 'Disconnected from CAIPE Multi-Agent System'
+            }
           >
-            ⛶
-          </IconButton>
-          <IconButton
-            sx={{ color: '#fff' }}
-            onClick={goFullScreen}
-            style={{ display: isFullScreen ? 'block' : 'none' }}
-            title="Exit Full Screen"
-          >
-            ▣
-          </IconButton>
-          <IconButton
-            sx={{
-              color: '#fff',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '4px',
-            }}
-            onClick={onToggleFormMode}
+            <Box
+              sx={{
+                color: isConnected ? '#4CAF50' : '#F44336',
+                fontSize: '16px',
+                marginRight: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              {isConnected ? '🟢' : '🔴'}
+            </Box>
+          </Tooltip>
+          <Tooltip title="Toggle Full Screen">
+            <IconButton
+              sx={{ color: '#fff' }}
+              onClick={goFullScreen}
+              style={{ display: isFullScreen ? 'none' : 'block' }}
+            >
+              ⛶
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Exit Full Screen">
+            <IconButton
+              sx={{ color: '#fff' }}
+              onClick={goFullScreen}
+              style={{ display: isFullScreen ? 'block' : 'none' }}
+            >
+              ▣
+            </IconButton>
+          </Tooltip>
+          <Tooltip
             title={showFormMode ? 'Show Text Chat' : 'Show Form Display'}
           >
-            {showFormMode ? <FormIcon /> : <ChatIcon />}
-          </IconButton>
-          <IconButton onClick={clearChat} title="Clear Chat">
-            <img
-              style={{ width: 24, height: 24 }}
-              src={clearIcon}
-              alt="Clear Chat"
-            />
-          </IconButton>
-          <IconButton
-            sx={{ color: '#fff' }}
-            onClick={handleCloseChat}
-            title="Close Chat"
-          >
-            ×
-          </IconButton>
+            <IconButton
+              sx={{
+                color: '#fff',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '4px',
+              }}
+              onClick={onToggleFormMode}
+            >
+              {showFormMode ? <FormIcon /> : <ChatIcon />}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Clear Chat">
+            <IconButton onClick={clearChat}>
+              <img
+                style={{ width: 24, height: 24 }}
+                src={clearIcon}
+                alt="Clear Chat"
+              />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Close Chat">
+            <IconButton sx={{ color: '#fff' }} onClick={handleCloseChat}>
+              ×
+            </IconButton>
+          </Tooltip>
         </Box>
       </div>
     </div>
