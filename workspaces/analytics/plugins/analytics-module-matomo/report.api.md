@@ -11,7 +11,6 @@ import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Config } from '@backstage/config';
 import { ConfigApi } from '@backstage/core-plugin-api';
-import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
@@ -39,10 +38,6 @@ export const MatomoAnalyticsApi: ApiFactory<
     identityApi: IdentityApi;
   }
 >;
-
-// @public (undocumented)
-const matomoModule: FrontendModule;
-export default matomoModule;
 
 // (No @packageDocumentation comment for this package)
 ```

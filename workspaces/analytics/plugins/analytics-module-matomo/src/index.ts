@@ -21,7 +21,6 @@ import {
 } from '@backstage/core-plugin-api';
 import { MatomoAnalytics } from './api';
 
-export { matomoModule as default } from './module';
 export { analyticsModuleMatomoPlugin } from './plugin';
 export * from './api';
 /**
