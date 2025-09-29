@@ -35,7 +35,10 @@ async function main() {
 
   // Generate PR labeler configuration (based on file changes)
   const prLabelMappings = workspaces
-    .map(w => `workspace/${w}:\n  - "workspaces/${w}/**"`)
+    .map(
+      w =>
+        `workspace/${w}:\n- changed-files:\n  - any-glob-to-any-file: ['workspaces/${w}/**']`,
+    )
     .join('\n\n');
 
   await fs.writeFile(githubIssueLabelerConfigPath, issueLabelMappings);
