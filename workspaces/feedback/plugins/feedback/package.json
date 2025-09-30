@@ -71,7 +71,7 @@
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/backstage/community-plugins.git",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/feedback/plugins/feedback"
   },
   "keywords": [
