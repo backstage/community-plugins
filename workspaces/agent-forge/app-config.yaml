@@ -3,7 +3,7 @@ app:
   baseUrl: http://localhost:3001
 
 organization:
-  name: Cisco
+  name: Acme
 
 agentForge:
   baseUrl: http://10.99.255.178:8000
