@@ -286,10 +286,6 @@ workspace/octopus-deploy:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/octopus-deploy/**']
 
-workspace/odo:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/odo/**']
-
 workspace/opencost:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/opencost/**']
