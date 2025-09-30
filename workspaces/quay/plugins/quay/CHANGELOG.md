@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.24.1
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+
 ## 1.24.0
 
 ### Minor Changes
