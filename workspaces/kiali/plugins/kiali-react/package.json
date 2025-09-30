@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-kiali-react",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "Apache-2.0",
   "description": "Web library for the kiali plugin",
   "main": "src/index.ts",
