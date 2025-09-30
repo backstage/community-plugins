@@ -15,7 +15,7 @@ body.light-mode {
   --feedback-button-text: white;
   --input-bg: #ffffff;
   --input-text: #4d4b4b;
-  --typing-indicator-color: #00BFFF;
+  --typing-indicator-color: #00bfff;
 }
 
 body.dark-mode {
@@ -39,7 +39,7 @@ body.dark-mode {
   --feedback-option-text: #ffffff;
   --feedback-option-selected-bg: #0078d4;
   --feedback-option-selected-border: #0078d4;
-  --typing-indicator-color: #00BFFF;
+  --typing-indicator-color: #00bfff;
 }
 
 body.light-mode .chat-panel {
@@ -90,7 +90,10 @@ body.dark-mode .user-message {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
   position: relative;
   /* For pseudo-element positioning */
 }
@@ -293,7 +296,9 @@ body.dark-mode .tab-button::before {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 /* Style for the chat container */
@@ -386,23 +391,23 @@ body.dark-mode .user-message {
 
 /* Style for hyperlinks inside bot messages */
 .bot-message a {
-  color: #3A9BFF;
+  color: #3a9bff;
   text-decoration: underline;
 }
 
 /* Optional: Add a hover effect for the links */
 .bot-message a:hover {
-  color: #2E7CE8;
+  color: #2e7ce8;
   text-decoration: underline;
 }
 
 /* Dark mode hyperlink colors */
 body.dark-mode .bot-message a {
-  color: #3A9BFF;
+  color: #3a9bff;
 }
 
 body.dark-mode .bot-message a:hover {
-  color: #2E7CE8;
+  color: #2e7ce8;
 }
 
 body.dark-mode .bot-message {
@@ -485,7 +490,7 @@ body.dark-mode .bot-message {
 
 /* Custom typing indicator bars - dark mode friendly */
 .typing-bar {
-  background-color: var(--typing-indicator-color, #00BFFF);
+  background-color: var(--typing-indicator-color, #00bfff);
   border-radius: 6px;
   opacity: 0.2;
   animation: typingPulse 3s ease-in-out infinite;
@@ -517,33 +522,33 @@ body.dark-mode .bot-message {
 
 /* Light mode styling for Skeleton components (fallback) */
 body.light-mode .MuiSkeleton-root {
-  background-color: var(--typing-indicator-color, #00BFFF) !important;
+  background-color: var(--typing-indicator-color, #00bfff) !important;
   opacity: 0.3;
 }
 
 body.light-mode .MuiSkeleton-pulse {
-  background-color: var(--typing-indicator-color, #00BFFF) !important;
+  background-color: var(--typing-indicator-color, #00bfff) !important;
   opacity: 0.3;
 }
 
 body.light-mode .MuiSkeleton-wave {
-  background-color: var(--typing-indicator-color, #00BFFF) !important;
+  background-color: var(--typing-indicator-color, #00bfff) !important;
   opacity: 0.3;
 }
 
 /* Dark mode styling for Skeleton components (fallback) */
 body.dark-mode .MuiSkeleton-root {
-  background-color: var(--typing-indicator-color, #00BFFF) !important;
+  background-color: var(--typing-indicator-color, #00bfff) !important;
   opacity: 0.3;
 }
 
 body.dark-mode .MuiSkeleton-pulse {
-  background-color: var(--typing-indicator-color, #00BFFF) !important;
+  background-color: var(--typing-indicator-color, #00bfff) !important;
   opacity: 0.3;
 }
 
 body.dark-mode .MuiSkeleton-wave {
-  background-color: var(--typing-indicator-color, #00BFFF) !important;
+  background-color: var(--typing-indicator-color, #00bfff) !important;
   opacity: 0.3;
 }
 
@@ -650,7 +655,10 @@ body.dark-mode .MuiSkeleton-wave {
   color: #303030;
   /* Text color for non-selected state */
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
 
 .feedback-reason.selected {
@@ -705,7 +713,10 @@ body.dark-mode .feedback-reason {
   color: #ffffff;
   /* Light grey text color for non-selected state */
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
 
 body.dark-mode .feedback-reason.selected {
