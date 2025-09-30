@@ -31,7 +31,9 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "commit": "git-cz",
+    "commitlint": "commitlint --from HEAD~1 --to HEAD --verbose"
   },
   "dependencies": {
     "@agentic-profile/a2a-client": "^0.6.2",
@@ -66,10 +68,19 @@
     "react": "^18",
     "react-dom": "^18",
     "react-router-dom": "^6",
-    "uuidv4": "6.2.13"
+    "uuidv4": "6.2.13",
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "files": [
     "dist",
     "config.d.ts"
-  ]
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
