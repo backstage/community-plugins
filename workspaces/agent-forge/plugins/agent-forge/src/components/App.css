@@ -90,10 +90,7 @@ body.dark-mode .user-message {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
-  transition:
-    background-color 0.3s,
-    color 0.3s,
-    border-color 0.3s;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   position: relative;
   /* For pseudo-element positioning */
 }
@@ -296,9 +293,7 @@ body.dark-mode .tab-button::before {
   cursor: pointer;
   text-align: center;
   font-size: 16px;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Style for the chat container */
@@ -655,10 +650,7 @@ body.dark-mode .MuiSkeleton-wave {
   color: #303030;
   /* Text color for non-selected state */
   cursor: pointer;
-  transition:
-    background-color 0.3s,
-    color 0.3s,
-    border-color 0.3s;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .feedback-reason.selected {
@@ -713,10 +705,7 @@ body.dark-mode .feedback-reason {
   color: #ffffff;
   /* Light grey text color for non-selected state */
   cursor: pointer;
-  transition:
-    background-color 0.3s,
-    color 0.3s,
-    border-color 0.3s;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 body.dark-mode .feedback-reason.selected {
