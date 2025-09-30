@@ -23,7 +23,7 @@ import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-async function main() {
+async function main(args) {
   const rootPath = resolve(__dirname, '..');
 
   // Get `CODEOWNERS` entries
@@ -53,6 +53,13 @@ async function main() {
     }
   }
 
+  // Check if --json flag is provided
+  if (args.includes('--json')) {
+    console.log(JSON.stringify(maintainerWorkspaces));
+    return;
+  }
+
+  // Default behavior - detailed output
   // How many workspaces do we own?
   console.log(`Workspace count: ${maintainerWorkspaces.length} \n`);
 
