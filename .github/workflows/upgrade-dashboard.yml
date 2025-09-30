@@ -5,8 +5,13 @@ permissions:
   issues: write
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'workspaces/*/backstage.json'
   schedule:
-    - cron: '0 6 * * *'  # run at 6 AM UTC every day
+    - cron: '0 6 * * MON'  # run at 6 AM UTC every week on Monday
   workflow_dispatch: # allow manual triggers
 
 jobs:
