@@ -75,7 +75,7 @@
     "@types/lodash": "4.17.20",
     "cross-fetch": "4.0.0",
     "msw": "1.3.5",
-    "start-server-and-test": "2.0.13"
+    "start-server-and-test": "2.1.2"
   },
   "files": [
     "app-config.dynamic.yaml",
