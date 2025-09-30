@@ -260,17 +260,18 @@ function ChatAssistantApp() {
         .catch(error => {
           setIsConnected(false);
           setApiError(
-            error.message || 'Failed to connect to CAIPE Multi-Agent System',
+            error.message ||
+              `Failed to connect to ${botName} Multi-Agent System`,
           );
         });
     }
-  }, [chatbotApi]);
+  }, [chatbotApi, botName]);
 
   // Add system message when API error occurs
   useEffect(() => {
     if (apiError && messages.length === 0) {
       const errorMessage = {
-        text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${
+        text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${
           apiError === 'Failed to fetch'
             ? `Failed to fetch Agent card from ${backendUrl}`
             : apiError
@@ -282,7 +283,7 @@ function ChatAssistantApp() {
       // Set initial state to false so the error message is displayed
       setIsInitialState(false);
     }
-  }, [apiError, messages.length, backendUrl]);
+  }, [apiError, messages.length, backendUrl, botName]);
 
   async function handleOptionSelection(_confirmation: string): Promise<void> {}
 
@@ -294,7 +295,7 @@ function ChatAssistantApp() {
 
     if (!chatbotApi) {
       await addBotMessage({
-        text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. Please check your configuration and try again.`,
+        text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`,
         isUser: false,
         timestamp: createTimestamp(),
       });
@@ -319,7 +320,7 @@ function ChatAssistantApp() {
         resetChatContext();
         await delay(500);
         addBotMessage({
-          text: 'Cleaning up previous chat. Minimizing CAIPE...',
+          text: `Cleaning up previous chat. Minimizing ${botName}...`,
           isUser: false,
           timestamp,
         });
@@ -330,7 +331,7 @@ function ChatAssistantApp() {
       case UserResponse.NEW:
         resetChatContext();
         addBotMessage({
-          text: 'I am CAIPE, your AI Platform Engineer. How can I help you today?',
+          text: `I am ${botName}, your AI Platform Engineer. How can I help you today?`,
           // Add welcome message suggestions:
           suggestions: [],
           isUser: false,
@@ -400,7 +401,7 @@ function ChatAssistantApp() {
           setApiError(err.message);
           setIsConnected(false);
           await addBotMessage({
-            text: `🚫 **CAIPE Multi-Agent System Disconnected**\n\nI'm unable to connect to the CAIPE Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${err.message}`,
+            text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. This could be due to:\n\n• Network connectivity issues\n• Service configuration problems\n• Agent card accessibility issues\n\nPlease check your configuration and try again. If the problem persists, contact your system administrator.\n\n**Error Details:** ${err.message}`,
             isUser: false,
             timestamp: createTimestamp(),
           });
@@ -566,7 +567,7 @@ function ChatAssistantApp() {
                 marginBottom: '16px',
               }}
             >
-              CAIPE Multi-Agent System Disconnected
+              {botName} Multi-Agent System Disconnected
             </h3>
             <Typography
               variant="body1"
@@ -576,7 +577,7 @@ function ChatAssistantApp() {
               }}
             >
               {apiError ||
-                'Unable to connect to the CAIPE Multi-Agent System. Please check your configuration.'}
+                `Unable to connect to the ${botName} Multi-Agent System. Please check your configuration.`}
             </Typography>
             <Button
               variant="contained"

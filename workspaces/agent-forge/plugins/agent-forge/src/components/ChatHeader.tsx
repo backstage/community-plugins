@@ -90,14 +90,14 @@ function ChatHeader({
     <div className={styles.chatPanelHeaderBG}>
       <div className={styles.chatPanelHeader}>
         <div className={headerStyles.chatHeaderTitle}>
-          <h1>CAIPE Chat Assistant</h1>
+          <h1>{botName}</h1>
           <a
-            href="https://cnoe-io.github.io/ai-platform-engineering/"
+            href={infoPage}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-flex' }}
           >
-            <img src={MoreInfoIcon} alt="Learn more about CAIPE" />
+            <img src={MoreInfoIcon} alt={`Learn more about ${botName}`} />
           </a>
         </div>
         <Box display="flex" flexDirection="row" alignItems="center" rowGap={2}>
@@ -105,8 +105,8 @@ function ChatHeader({
           <Tooltip
             title={
               isConnected
-                ? 'Connected to CAIPE Multi-Agent System'
-                : 'Disconnected from CAIPE Multi-Agent System'
+                ? `Connected to ${botName} Multi-Agent System`
+                : `Disconnected from ${botName} Multi-Agent System`
             }
           >
             <Box

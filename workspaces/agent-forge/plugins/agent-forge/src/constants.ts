@@ -17,7 +17,7 @@
 import DefaultBotIcon from './icons/jarvis.png';
 
 export const DEFAULT_BOT_CONFIG = {
-  name: 'Jarvis',
+  name: 'CAIPE',
   icon: DefaultBotIcon,
-  infoPage: 'https://cisco-eti.atlassian.net/l/cp/EtLAxo7U',
+  infoPage: 'https://cnoe-io.github.io/ai-platform-engineering',
 } as const;

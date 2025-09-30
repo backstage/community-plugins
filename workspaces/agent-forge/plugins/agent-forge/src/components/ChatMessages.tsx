@@ -180,7 +180,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         <div className={styles.botMessage}>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" alignItems="center">
-              <img src={botIcon} alt="Bot logo" className={styles.botLogo} />
+              <img
+                src={botIcon}
+                alt={`${botName} logo`}
+                className={styles.botLogo}
+              />
               <Typography sx={{ fontWeight: 700 }}>{botName}</Typography>
             </Box>
             <div className={styles.timestamp}>{message.timestamp}</div>
@@ -676,7 +680,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         {isTyping && (
           <Box>
             <Box display="flex" alignItems="center">
-              <img src={botIcon} alt="Bot logo" className={styles.botLogo} />
+              <img
+                src={botIcon}
+                alt={`${botName} logo`}
+                className={styles.botLogo}
+              />
               <Typography sx={{ fontWeight: 700 }}>{botName}</Typography>
             </Box>
             <TypingIndicator />

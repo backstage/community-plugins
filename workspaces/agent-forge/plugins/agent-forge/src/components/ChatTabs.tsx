@@ -44,6 +44,8 @@ function ChatTabs({
   const config = useApi(configApiRef);
   const botIcon =
     config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
+  const botName =
+    config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
 
   if (isFullScreen) {
     return (
@@ -59,7 +61,11 @@ function ChatTabs({
         padding={4}
       >
         <div className={styles.greetingSection}>
-          <img className={styles.greetingLogo} src={botIcon} alt="Logo" />
+          <img
+            className={styles.greetingLogo}
+            src={botIcon}
+            alt={`${botName} Logo`}
+          />
           <div className={styles.greetingText}>Hi there.</div>
         </div>
         <Grid
