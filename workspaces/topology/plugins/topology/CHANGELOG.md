@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.6.1
+
+### Patch Changes
+
+- 1defa96: Fix rendering of markdown on the missing permission page
+
 ## 2.6.0
 
 ### Minor Changes
