@@ -7,6 +7,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const isTektonCIAvailable: (entity: Entity) => boolean;
@@ -82,6 +83,9 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunDuration.second_other': '{{count}} seconds';
   }
 >;
+
+// @alpha
+export const tektonTranslations: TranslationResource<'tekton'>;
 
 // (No @packageDocumentation comment for this package)
 ```

@@ -19,6 +19,7 @@ import { tektonTranslationRef } from './ref';
 
 /**
  * The translation resource for the Tekton plugin
+ * @alpha
  */
 export const tektonTranslations = createTranslationResource({
   ref: tektonTranslationRef,
