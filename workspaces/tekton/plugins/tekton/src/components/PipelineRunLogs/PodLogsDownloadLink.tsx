@@ -30,7 +30,7 @@ import { ContainerScope } from '../../hooks/usePodLogsOfPipelineRun';
 import { TektonResourcesContextData } from '../../types/types';
 import { getPodLogs } from '../../utils/log-downloader-utils';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 import { downloadLogFile } from '../../utils/download-log-file-utils';
 
 const useStyles = makeStyles((theme: Theme) =>

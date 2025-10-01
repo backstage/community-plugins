@@ -21,7 +21,7 @@ import { PipelineLayout } from './PipelineLayout';
 
 import './PipelineVisualization.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineVisualizationProps = {
   pipelineRun: PipelineRunKind | null;
