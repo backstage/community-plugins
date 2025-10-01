@@ -30,18 +30,21 @@
  * limitations under the License.
  */
 
+import { useNavigate } from 'react-router-dom';
+
+import type { Permission } from '@backstage/plugin-permission-common';
+import { MarkdownContent } from '@backstage/core-components';
+
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import MissingPermissionImg from '../../../imgs/MissingPermission.svg';
-import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/styles';
-import type { Permission } from '@backstage/plugin-permission-common';
+
+import MissingPermissionImg from '../../../imgs/MissingPermission.svg';
 
 import { useTranslation } from '../../../hooks/useTranslation';
-import { Trans } from '../../Trans';
 
 const StyledBox = styled(Box)(() => ({
   display: 'flex',
@@ -77,12 +80,11 @@ export const MissingPermissionPage = ({
               {t('permissions.missingPermission')}
             </Typography>
             <Typography variant="body1">
-              <Trans
-                message="permissions.missingPermissionDescription"
-                params={{
+              <MarkdownContent
+                content={t('permissions.missingPermissionDescription', {
                   permissions: permissionNames,
                   permissionText,
-                }}
+                })}
               />
             </Typography>
             <Button
