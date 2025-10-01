@@ -2,4 +2,4 @@
 '@backstage-community/plugin-tekton': minor
 ---
 
-Standardize internalization in Tekton plugin
+Standardize i18n in Tekton plugin
