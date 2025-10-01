@@ -84,7 +84,7 @@ export const tektonTranslationRef: TranslationRef<
   }
 >;
 
-// @alpha
+// @public
 export const tektonTranslations: TranslationResource<'tekton'>;
 
 // (No @packageDocumentation comment for this package)
