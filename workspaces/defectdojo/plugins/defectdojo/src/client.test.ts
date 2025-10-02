@@ -14,70 +14,38 @@
  * limitations under the License.
  */
 import { DefectDojoClient } from './client';
-import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 
-// Mock the discovery and identity APIs
+// Mock the discovery and fetch APIs
 const mockDiscoveryApi: Partial<DiscoveryApi> = {
   getBaseUrl: jest.fn(),
 };
 
-const mockIdentityApi: Partial<IdentityApi> = {
-  getCredentials: jest.fn(),
+const mockFetchApi: Partial<FetchApi> = {
+  fetch: jest.fn(),
 };
-
-// Mock fetch globally
-global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 
 describe('DefectDojoClient', () => {
   let client: DefectDojoClient;
-  let mockFetch: jest.MockedFunction<typeof fetch>;
+  let mockFetch: jest.MockedFunction<any>;
 
   beforeEach(() => {
     client = new DefectDojoClient(
       mockDiscoveryApi as DiscoveryApi,
-      mockIdentityApi as IdentityApi,
+      mockFetchApi as FetchApi,
     );
-    mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+    mockFetch = mockFetchApi.fetch as jest.MockedFunction<any>;
 
     // Setup default mocks
     (
       mockDiscoveryApi.getBaseUrl as jest.MockedFunction<any>
     )?.mockResolvedValue('http://localhost:7007/api/defectdojo');
-    (
-      mockIdentityApi.getCredentials as jest.MockedFunction<any>
-    )?.mockResolvedValue({ token: 'test-token' });
 
     jest.clearAllMocks();
   });
 
   describe('makeRequest', () => {
-    it('should make authenticated requests', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ id: 123, name: 'Test Product' }),
-      };
-      mockFetch.mockResolvedValue(mockResponse as unknown as Response);
-
-      await client.getProduct(123);
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:7007/api/defectdojo/v1/products/123',
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer test-token',
-          },
-        },
-      );
-    });
-
-    it('should make requests without auth token when not available', async () => {
-      (
-        mockIdentityApi.getCredentials as jest.MockedFunction<any>
-      )?.mockResolvedValue({ token: undefined });
-
+    it('should make requests with proper headers', async () => {
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({ id: 123, name: 'Test Product' }),

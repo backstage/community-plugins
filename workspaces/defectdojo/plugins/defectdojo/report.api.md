@@ -6,7 +6,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
-import { IdentityApi } from '@backstage/core-plugin-api';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public
@@ -30,7 +30,7 @@ export const defectdojoApiRef: ApiRef<DefectDojoApi>;
 
 // @public
 export class DefectDojoClient implements DefectDojoApi {
-  constructor(discoveryApi: DiscoveryApi, identityApi: IdentityApi);
+  constructor(discoveryApi: DiscoveryApi, fetchApi: FetchApi);
   // (undocumented)
   getEngagements(productId: number): Promise<DefectDojoEngagement[]>;
   // (undocumented)

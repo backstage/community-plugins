@@ -17,7 +17,7 @@ import {
   createPlugin,
   createApiFactory,
   discoveryApiRef,
-  identityApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { defectdojoApiRef, DefectDojoClient } from './client';
 
@@ -30,9 +30,9 @@ export const defectdojoPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: defectdojoApiRef,
-      deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
-      factory: ({ discoveryApi, identityApi }) =>
-        new DefectDojoClient(discoveryApi, identityApi),
+      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new DefectDojoClient(discoveryApi, fetchApi),
     }),
   ],
 });

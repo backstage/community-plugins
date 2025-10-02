@@ -16,7 +16,7 @@
 import {
   createApiRef,
   DiscoveryApi,
-  IdentityApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 
 /**
@@ -87,19 +87,17 @@ export const defectdojoApiRef = createApiRef<DefectDojoApi>({
 export class DefectDojoClient implements DefectDojoApi {
   constructor(
     private readonly discoveryApi: DiscoveryApi,
-    private readonly identityApi: IdentityApi,
+    private readonly fetchApi: FetchApi,
   ) {}
 
   private async makeRequest<T>(path: string): Promise<T> {
     const baseUrl = await this.discoveryApi.getBaseUrl('defectdojo');
-    const { token } = await this.identityApi.getCredentials();
 
-    const response = await fetch(`${baseUrl}${path}`, {
+    const response = await this.fetchApi.fetch(`${baseUrl}${path}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
 
