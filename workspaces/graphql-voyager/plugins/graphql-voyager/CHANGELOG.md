@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphql-voyager
 
+## 0.11.0
+
+### Minor Changes
+
+- 978f65a: Backstage version bump to v1.43.2
+
 ## 0.10.0
 
 ### Minor Changes
