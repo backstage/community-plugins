@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.13.0
+
+### Minor Changes
+
+- 5827ca1: Fire signal or notification only on active announcement
+
 ## 0.12.0
 
 ### Minor Changes
