@@ -1,5 +1,21 @@
 ### Dependencies
 
+## 1.42.0
+
+### Minor Changes
+
+- d0926d5: Upgrade backstage 1.42.5
+
+### Patch Changes
+
+- 396515d: Fix for graph loading issue – it was not rendering when the page was first displayed, only after a refresh.
+  Added detail pages as a drawer that opens when clicking on each workload, service, or application link.
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- Updated dependencies [396515d]
+- Updated dependencies [d0926d5]
+  - @backstage-community/plugin-kiali-react@0.3.0
+  - @backstage-community/plugin-kiali-common@0.4.0
+
 ## 1.41.0
 
 ### Minor Changes
