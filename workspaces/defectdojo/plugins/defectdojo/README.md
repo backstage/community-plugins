@@ -4,17 +4,54 @@ Frontend plugin for Backstage that provides UI components to display security fi
 
 ## Installation
 
+### New Frontend System (Recommended)
+
+If you're using the new Backstage frontend system, install the plugin as follows:
+
 1. Install the plugin in your Backstage application:
 
 ```bash
 # From the root of your Backstage application
-yarn add --cwd packages/app @backstage-community/plugin-defectdojo-frontend
+yarn add --cwd packages/app @backstage-community/plugin-defectdojo
+```
+
+2. Add the plugin to your frontend application in `packages/app/src/index.tsx`:
+
+```typescript
+import defectdojoPlugin from '@backstage-community/plugin-defectdojo/alpha';
+
+export default createApp({
+  features: [
+    // ... other features
+    defectdojoPlugin,
+  ],
+});
+```
+
+3. Add the component to entity pages using the `EntityLayout` or directly in your custom pages:
+
+```typescript
+import { DefectDojoOverview } from '@backstage-community/plugin-defectdojo';
+
+// In your entity page or custom page
+<DefectDojoOverview />;
+```
+
+### Legacy Frontend System
+
+If you're using the legacy frontend system:
+
+1. Install the plugin in your Backstage application:
+
+```bash
+# From the root of your Backstage application
+yarn add --cwd packages/app @backstage-community/plugin-defectdojo
 ```
 
 2. Add the plugin to your frontend application in `packages/app/src/App.tsx`:
 
 ```typescript
-import { defectdojoPlugin } from '@backstage-community/plugin-defectdojo-frontend';
+import { defectdojoPlugin } from '@backstage-community/plugin-defectdojo';
 
 // In the API configuration
 const apis: AnyApiFactory[] = [
@@ -26,7 +63,7 @@ const apis: AnyApiFactory[] = [
 3. Add the component to entity pages in `packages/app/src/components/catalog/EntityPage.tsx`:
 
 ```typescript
-import { DefectDojoOverview } from '@backstage-community/plugin-defectdojo-frontend';
+import { DefectDojoOverview } from '@backstage-community/plugin-defectdojo';
 
 // In the component page
 const overviewContent = (
