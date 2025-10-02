@@ -16,6 +16,7 @@
 import {
   createFrontendPlugin,
   ApiBlueprint,
+  createApiFactory,
   discoveryApiRef,
   fetchApiRef,
   type FrontendPlugin,
@@ -29,8 +30,9 @@ import { defectdojoApiRef, DefectDojoClient } from './client';
  * @alpha
  */
 const defectdojoApi = ApiBlueprint.make({
-  params: defineParams =>
-    defineParams({
+  name: 'defectdojoApi',
+  params: {
+    factory: createApiFactory({
       api: defectdojoApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -39,6 +41,7 @@ const defectdojoApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new DefectDojoClient(discoveryApi, fetchApi),
     }),
+  },
 });
 
 /**
@@ -46,7 +49,7 @@ const defectdojoApi = ApiBlueprint.make({
  * @alpha
  */
 const plugin: FrontendPlugin = createFrontendPlugin({
-  pluginId: 'defectdojo',
+  id: 'defectdojo',
   extensions: [defectdojoApi],
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,

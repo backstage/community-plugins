@@ -46,11 +46,12 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.17.5",
-    "@backstage/core-plugin-api": "^1.10.9",
-    "@backstage/frontend-plugin-api": "^0.9.5",
-    "@backstage/plugin-catalog-react": "^1.13.5",
-    "@backstage/theme": "^0.6.8",
+    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
