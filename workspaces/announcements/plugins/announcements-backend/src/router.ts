@@ -236,11 +236,13 @@ export async function createRouter(
           metadata: { action: EVENTS_ACTION_CREATE_ANNOUNCEMENT },
         });
 
-        await signalAnnouncement(announcement, signals);
-        const announcementNotificationsEnabled =
-          req.body?.sendNotification === true;
-        if (announcementNotificationsEnabled) {
-          await sendAnnouncementNotification(announcement, notifications);
+        if (announcement.active) {
+          await signalAnnouncement(announcement, signals);
+          const announcementNotificationsEnabled =
+            req.body?.sendNotification === true;
+          if (announcementNotificationsEnabled) {
+            await sendAnnouncementNotification(announcement, notifications);
+          }
         }
       }
 
