@@ -48,7 +48,6 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-compat-api": "^0.5.5",
     "@backstage/core-components": "^0.17.5",
     "@backstage/core-plugin-api": "^1.10.9",
     "@backstage/frontend-plugin-api": "^0.9.5",
