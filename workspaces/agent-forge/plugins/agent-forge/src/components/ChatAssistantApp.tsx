@@ -58,12 +58,16 @@ function ChatAssistantApp() {
     appThemeApi.getActiveThemeId(),
   );
 
+  // Local theme state for chat assistant
+  const [localTheme, setLocalTheme] = useState<'light' | 'dark' | null>(null);
+
   // Enhanced theme detection with fallback
-  const isDarkMode =
-    activeThemeId === 'dark' ||
-    (typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const isDarkMode = localTheme
+    ? localTheme === 'dark'
+    : activeThemeId === 'dark' ||
+      (typeof window !== 'undefined' &&
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   // Listen for system theme changes as additional fallback
   useEffect(() => {
@@ -154,6 +158,16 @@ function ChatAssistantApp() {
 
   const toggleFormMode = () => {
     setShowFormMode(prev => !prev);
+  };
+
+  const toggleTheme = () => {
+    setLocalTheme(prev => {
+      if (prev === null) {
+        // If no local theme is set, toggle based on current detected theme
+        return isDarkMode ? 'light' : 'dark';
+      }
+      return prev === 'dark' ? 'light' : 'dark';
+    });
   };
 
   const resetChatContext = () => {
@@ -550,6 +564,8 @@ function ChatAssistantApp() {
           onToggleFormMode={toggleFormMode}
           showFormMode={showFormMode}
           isConnected={isConnected}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
         />
         {!chatbotApi && (
           <Box

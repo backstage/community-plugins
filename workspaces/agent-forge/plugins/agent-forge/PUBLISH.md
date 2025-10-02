@@ -48,7 +48,6 @@
 ## Package Details
 
 - **Package Name**: `@caipe/plugin-agent-forge`
-- **Current Version**: `0.3.3`
 - **npm Package URL**: https://www.npmjs.com/package/@caipe/plugin-agent-forge
 - **Registry**: https://www.npmjs.com/settings/caipe/packages
 - **Access**: Public

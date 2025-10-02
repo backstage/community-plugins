@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import DefaultBotIcon from './icons/jarvis.png';
+import DefaultBotIcon from './icons/caipe.png';
 
 export const DEFAULT_BOT_CONFIG = {
   name: 'CAIPE',
