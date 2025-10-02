@@ -1,5 +1,27 @@
 ### Dependencies
 
+## 1.20.0
+
+### Minor Changes
+
+- 2258b1a: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 13b3e1f: Added support for Backstage's New Frontend System.
+
+  If you're migrating to the new frontend system, you no longer need to wire up an API implementation in `apis.ts`. Instead, pass the plugin in to the `createApp()` function:
+
+  ```tsx
+  import analyticsProviderSegmentPlugin from '@backstage-community/plugin-analytics-provider-segment/alpha';
+
+  const app = createApp({
+    features: [analyticsProviderSegmentPlugin],
+  });
+  ```
+
+  This can be skipped if you have feature discovery enabled.
+
 ## 1.19.1
 
 ### Patch Changes
