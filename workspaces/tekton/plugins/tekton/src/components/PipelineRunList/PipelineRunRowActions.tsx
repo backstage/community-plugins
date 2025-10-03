@@ -43,7 +43,7 @@ import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import PipelineRunOutputDialog from '../PipelineRunOutput/PipelineRunOutputDialog';
 import PipelineRunSBOMLink from './PipelineRunSBOMLink';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
   pipelineRun,

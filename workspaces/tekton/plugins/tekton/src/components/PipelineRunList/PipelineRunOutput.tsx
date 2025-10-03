@@ -34,7 +34,7 @@ import { PipelineRunKind, TaskRunKind } from '@janus-idp/shared-react';
 import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { TektonResourcesContextData } from '../../types/types';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 type PipelineRunOutputProps = {

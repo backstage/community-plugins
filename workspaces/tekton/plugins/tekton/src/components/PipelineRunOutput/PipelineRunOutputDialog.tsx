@@ -35,7 +35,7 @@ import { tektonGroupColor } from '../../types/types';
 import PipelineRunOutput from '../PipelineRunList/PipelineRunOutput';
 import ResourceBadge from '../PipelineRunList/ResourceBadge';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -57,7 +57,7 @@ import { PipelineRunListSearchBar } from './PipelineRunListSearchBar';
 import { PipelineRunTableBody } from './PipelineRunTableBody';
 import { EnhancedTableHead } from './PipelineTableHeader';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type WrapperInfoCardProps = {
   allErrors?: ClusterErrors;
