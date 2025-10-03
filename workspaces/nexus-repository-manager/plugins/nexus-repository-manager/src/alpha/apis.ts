@@ -14,8 +14,8 @@ import {
  * @alpha
  */
 export const nexusRepositoryManagerApi = ApiBlueprint.make({
-  params: definedParams =>
-    definedParams({
+  params: defineParams =>
+    defineParams({
       api: NexusRepositoryManagerApiRef,
       deps: {
         configApi: configApiRef,
