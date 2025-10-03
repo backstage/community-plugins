@@ -1703,7 +1703,7 @@ __metadata:
     express-promise-router: "npm:^4.1.0"
     js-yaml: "npm:^4.1.0"
     knex: "npm:^3.0.0"
-    knex-mock-client: "npm:2.0.1"
+    knex-mock-client: "npm:3.0.2"
     lodash: "npm:^4.17.21"
     msw: "npm:1.3.5"
     qs: "npm:6.14.0"
@@ -21769,14 +21769,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knex-mock-client@npm:2.0.1":
-  version: 2.0.1
-  resolution: "knex-mock-client@npm:2.0.1"
+"knex-mock-client@npm:3.0.2":
+  version: 3.0.2
+  resolution: "knex-mock-client@npm:3.0.2"
   dependencies:
     lodash.clonedeep: "npm:^4.5.0"
   peerDependencies:
     knex: ">=2.0.0"
-  checksum: 10/97ecdb7c007199f280aad7dd31a7c874836768f03165cec2a444820cd0bdcd4c356a1844688fff67112372e03e65597bf234764a5c30591b9c7f14ed406547e8
+  checksum: 10/3a02580af5bff4f744927df3113ce3a380971525856fd07bb952c79da79afc8f613462b8bb679cd260d86856013b565060a3491abfe7dd1a981326e8ded5fb85
   languageName: node
   linkType: hard
 
