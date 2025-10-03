@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 import { createApp } from '@backstage/frontend-defaults';
-import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import { navModule } from './modules/nav';
 import { SignInPage } from '@backstage/core-components';
 import {
   createFrontendModule,
   SignInPageBlueprint,
 } from '@backstage/frontend-plugin-api';
-import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import announcementsPlugin from '@backstage-community/plugin-announcements/alpha';
 import { homeModule } from './modules/home';
+import SignalsDisplay from '@backstage/plugin-signals/alpha';
+import announcementsPlugin from '@backstage-community/plugin-announcements/alpha';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import notificationsPlugin from '@backstage/plugin-notifications/alpha';
+import searchApi from '@backstage/plugin-search/alpha';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import visualizerPlugin from '@backstage/plugin-app-visualizer';
 
 const signInPage = SignInPageBlueprint.make({
   params: {
@@ -38,8 +41,11 @@ export default createApp({
     catalogPlugin,
     homeModule,
     navModule,
-    userSettingsPlugin,
     notificationsPlugin,
+    searchApi,
+    SignalsDisplay,
+    userSettingsPlugin,
+    visualizerPlugin,
     createFrontendModule({
       pluginId: 'app',
       extensions: [signInPage],

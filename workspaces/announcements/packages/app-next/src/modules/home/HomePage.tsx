@@ -30,14 +30,12 @@ import { Link as RouterLink } from 'react-router-dom';
 export const HomePage = () => {
   return (
     <>
-      <Header
-        title="Announcements Plugin Showcase"
-        subtitle="Explore features, admin tooling, and developer integration examples"
-      >
+      <Header title="Announcements Plugin Showcase" subtitle="Dev App">
         <SupportButton title="About the Announcements plugin">
           This page demonstrates the primary UI surfaces of the announcements
           plugin and provides quick navigation to administration areas. Use it
-          as a reference when embedding features into your own Backstage app.
+          as a reference when embedding Announcements into your Backstage
+          instance.
         </SupportButton>
       </Header>
       <Content>
