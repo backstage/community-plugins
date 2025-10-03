@@ -1,5 +1,16 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.21.0
+
+### Minor Changes
+
+- 1d90def: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [1d90def]
+  - @backstage-community/plugin-cost-insights-common@0.8.0
+
 ## 0.20.0
 
 ### Minor Changes
