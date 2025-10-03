@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 3.29.0
+
+### Minor Changes
+
+- 99b0588: Standardize i18n in Tekton plugin
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- 773c07a: Fix broken url in package.json
+
 ## 3.28.0
 
 ### Minor Changes
