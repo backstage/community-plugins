@@ -3084,6 +3084,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-app-visualizer@npm:^0.1.23":
+  version: 0.1.23
+  resolution: "@backstage/plugin-app-visualizer@npm:0.1.23"
+  dependencies:
+    "@backstage/core-components": "npm:^0.18.0"
+    "@backstage/core-plugin-api": "npm:^1.11.0"
+    "@backstage/frontend-plugin-api": "npm:^0.12.0"
+    "@material-ui/core": "npm:^4.12.2"
+    "@material-ui/icons": "npm:^4.9.1"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/7ec0a25ba4e841d2196b0c53c385d724d704810378ad92421538017e7c307ecf510318f324f6397a57b24138587356bcc6f6e9c8ce7efa51e09ae620b1685432
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-app@npm:^0.3.0":
   version: 0.3.0
   resolution: "@backstage/plugin-app@npm:0.3.0"
@@ -14803,6 +14824,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "npm:^0.12.0"
     "@backstage/frontend-test-utils": "npm:^0.3.6"
     "@backstage/integration-react": "npm:^1.2.10"
+    "@backstage/plugin-app-visualizer": "npm:^0.1.23"
     "@backstage/plugin-catalog": "npm:^1.31.3"
     "@backstage/plugin-notifications": "npm:^0.5.9"
     "@backstage/plugin-org": "npm:^0.6.44"

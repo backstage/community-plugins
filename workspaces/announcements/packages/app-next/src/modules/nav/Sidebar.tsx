@@ -33,6 +33,7 @@ import {
   UserSettingsSignInAvatar,
   Settings as SidebarSettings,
 } from '@backstage/plugin-user-settings';
+import { SidebarSearchModal } from '@backstage/plugin-search';
 
 export const SidebarContent = NavContentBlueprint.make({
   params: {
@@ -49,7 +50,7 @@ export const SidebarContent = NavContentBlueprint.make({
           />
 
           <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-            {/* <SidebarSearchModal /> TODO: Use extension https://github.com/backstage/community-plugins/pull/5490 */}
+            <SidebarSearchModal />
           </SidebarGroup>
           <SidebarGroup label="Menu" icon={<MenuIcon />}>
             <SidebarScrollWrapper>
