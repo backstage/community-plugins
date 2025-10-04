@@ -22,8 +22,8 @@ import Grid from '@mui/material/Grid';
 import CardContent from '@mui/material/CardContent';
 import { MaturitySummaryCardContent } from './MaturitySummaryCardContent';
 import { MaturityHelp } from '../../helpers/MaturityHelp';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
 import { maturityApiRef } from '../../api';
+import { MaturityRankChip } from '../MaturityRankChip';
 
 export const MaturitySummaryInfoCard = () => {
   const { entity } = useEntity();
@@ -45,7 +45,7 @@ export const MaturitySummaryInfoCard = () => {
             <MaturityHelp />
           </Grid>
           <Grid item md={5}>
-            <MaturityRankAvatar value={value} entity={entity} variant="chip" />
+            <MaturityRankChip value={value} entity={entity} />
           </Grid>
         </Grid>
       }

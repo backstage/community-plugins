@@ -24,7 +24,7 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import { Line } from 'rc-progress';
 import { getNextRankColor, pluralize } from './utils';
-import { MaturityRankAvatar } from '../components/MaturityRankAvatar';
+import { MaturityRankIcon } from '../components/MaturityRankIcon';
 
 type Props = {
   areaSummary: MaturitySummaryByArea;
@@ -67,7 +67,7 @@ export const AreaProgress = ({ areaSummary, variant }: Props) => {
     result = (
       <Stack key={area}>
         <Stack direction="row" spacing={1}>
-          <MaturityRankAvatar value={areaSummary} size={logoSize} />
+          <MaturityRankIcon value={areaSummary} size={logoSize} />
           <Typography variant={fontVariant} gutterBottom color="textPrimary">
             {area}
           </Typography>
