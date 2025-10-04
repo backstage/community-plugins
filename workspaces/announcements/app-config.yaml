@@ -1,6 +1,10 @@
 app:
   title: Announcements Dev App
   baseUrl: http://localhost:3000
+  extensions:
+    - nav-item:announcements # using the extension provided by the plugin
+    - nav-item:catalog
+    - nav-item:user-settings: false
 
 permission:
   enabled: true
