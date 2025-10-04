@@ -29,13 +29,14 @@ const announcementsTable = 'announcements';
  */
 type AnnouncementUpsert = Omit<
   Announcement,
-  'category' | 'tags' | 'created_at' | 'start_at' | 'until_date'
+  'category' | 'tags' | 'created_at' | 'start_at' | 'until_date' | 'updated_at'
 > & {
   category?: string;
   tags?: string[];
   created_at: DateTime;
   start_at: DateTime;
   until_date?: DateTime;
+  updated_at: DateTime;
 };
 
 /**
@@ -124,6 +125,7 @@ const announcementUpsertToDB = (
     body: announcement.body,
     publisher: announcement.publisher,
     created_at: announcement.created_at.toSQL()!,
+    updated_at: announcement.updated_at.toSQL()!,
     active: announcement.active,
     start_at: announcement.start_at.toSQL()!,
     until_date: announcement.until_date
@@ -168,6 +170,7 @@ const DBToAnnouncementWithCategory = (
     until_date: announcementDb.until_date
       ? timestampToDateTime(announcementDb.until_date)
       : null,
+    updated_at: timestampToDateTime(announcementDb.updated_at),
     on_behalf_of: announcementDb.on_behalf_of,
   };
 };
