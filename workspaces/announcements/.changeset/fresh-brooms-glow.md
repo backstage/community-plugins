@@ -5,4 +5,4 @@
 '@backstage-community/plugin-announcements': minor
 ---
 
-Added updated_at field, extended sorting capabilities Announcements Banner"
+Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
