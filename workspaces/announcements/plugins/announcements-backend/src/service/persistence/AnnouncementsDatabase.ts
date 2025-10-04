@@ -245,6 +245,7 @@ export class AnnouncementsDatabase {
         'until_date',
         'on_behalf_of',
         'tags',
+        'updated_at',
       )
       .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
@@ -325,6 +326,7 @@ export class AnnouncementsDatabase {
           'until_date',
           'on_behalf_of',
           'tags',
+          'updated_at',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)
