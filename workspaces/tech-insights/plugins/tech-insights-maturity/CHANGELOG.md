@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.4.2
+
+### Patch Changes
+
+- 98fb7ac: Display the check name in the maturity results table instead of the id
+
 ## 0.4.1
 
 ### Patch Changes
