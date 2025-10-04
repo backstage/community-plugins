@@ -176,7 +176,7 @@ describe('AnnouncementsDatabase', () => {
       updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
     });
 
-    const time = DateTime.now();
+    const time = DateTime.utc().startOf('millisecond');
 
     await store.updateAnnouncement({
       id: 'id',
@@ -210,7 +210,7 @@ describe('AnnouncementsDatabase', () => {
           start_at: timestampToDateTime('2025-02-01T13:00:00.708Z'),
           until_date: timestampToDateTime('2025-03-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
-          updated_at: time,
+          updated_at: timestampToDateTime(time.toISO()),
         },
       ],
     });
