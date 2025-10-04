@@ -57,6 +57,29 @@ const getIconText = (title: string) =>
         .slice(0, 2)
         .toUpperCase();
 
+const isExternalUrl = (url: string): boolean => {
+  // Relative URLs are always internal
+  if (/^\//.test(url)) {
+    return false;
+  }
+
+  // If it's not a full http(s) url, treat as internal
+  if (!/^https?:\/\//.test(url)) {
+    return false;
+  }
+
+  try {
+    const urlObj = new URL(url);
+    const currentOrigin = window.location.origin;
+
+    // Treat urls with same origins as internal
+    return urlObj.origin !== currentOrigin;
+  } catch {
+    // If URL parsing fails, treat as external
+    return true;
+  }
+};
+
 type Props = {
   shortcut: Shortcut;
   api: ShortcutApi;
@@ -78,25 +101,46 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
 
   const text = getIconText(shortcut.title);
   const color = api.getColor(shortcut.url);
+  const isExternal = isExternalUrl(shortcut.url);
 
   return (
     <>
       <Tooltip title={shortcut.title} enterDelay={500}>
-        <SidebarItem
-          className={classes.root}
-          to={shortcut.url}
-          text={shortcut.title}
-          icon={() => <ShortcutIcon text={text} color={color} />}
-        >
-          <IconButton
-            id="edit"
-            data-testid="edit"
-            onClick={handleClick}
-            className={classes.button}
+        {isExternal ? (
+          <SidebarItem
+            className={classes.root}
+            text={shortcut.title}
+            icon={() => <ShortcutIcon text={text} color={color} />}
+            onClick={() =>
+              window.open(shortcut.url, '_blank', 'noopener,noreferrer')
+            }
           >
-            <EditIcon className={classes.icon} />
-          </IconButton>
-        </SidebarItem>
+            <IconButton
+              id="edit"
+              data-testid="edit"
+              onClick={handleClick}
+              className={classes.button}
+            >
+              <EditIcon className={classes.icon} />
+            </IconButton>
+          </SidebarItem>
+        ) : (
+          <SidebarItem
+            className={classes.root}
+            to={shortcut.url}
+            text={shortcut.title}
+            icon={() => <ShortcutIcon text={text} color={color} />}
+          >
+            <IconButton
+              id="edit"
+              data-testid="edit"
+              onClick={handleClick}
+              className={classes.button}
+            >
+              <EditIcon className={classes.icon} />
+            </IconButton>
+          </SidebarItem>
+        )}
       </Tooltip>
       <EditShortcut
         onClose={handleClose}
