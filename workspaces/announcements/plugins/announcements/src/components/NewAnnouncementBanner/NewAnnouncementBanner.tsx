@@ -148,10 +148,11 @@ type NewAnnouncementBannerProps = {
   active?: boolean;
   current?: boolean;
   tags?: string[];
+  sortBy?: 'created_at' | 'updated_at';
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
-  const { max, category, tags, active, variant, current } = props;
+  const { max, category, tags, active, variant, current, sortBy } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
 
@@ -165,6 +166,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
     tags,
     active,
     current,
+    sortBy,
   });
   const lastSeen = announcementsApi.lastSeenDate();
 

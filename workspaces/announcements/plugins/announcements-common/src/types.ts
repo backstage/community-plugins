@@ -70,6 +70,8 @@ export type Announcement = {
   tags?: Tag[];
   /** Whether the notification is enabled */
   sendNotification?: boolean;
+  /** Timestamp when the announcement was last updated */
+  updated_at: string;
 };
 
 /**
@@ -102,8 +104,8 @@ export type AnnouncementsFilters = {
   page?: number;
   /** Filter by active status */
   active?: boolean;
-  /** Field to sort by (e.g., "created_at", "start_at") */
-  sortBy?: 'created_at' | 'start_at';
+  /** Field to sort by (e.g., "created_at", "start_at", "updated_at") */
+  sortBy?: 'created_at' | 'start_at' | 'updated_at';
   /** Sorting order: "asc" for ascending or "desc" for descending */
   order?: 'asc' | 'desc';
   /** Filter by current status (current date falls between start and until) */

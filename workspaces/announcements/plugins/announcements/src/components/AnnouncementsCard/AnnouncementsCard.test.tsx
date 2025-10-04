@@ -94,6 +94,7 @@ describe('AnnouncementsCard', () => {
           active: true,
           start_at: '2025-01-01',
           until_date: '2025-02-01',
+          updated_at: '2025-01-01',
         },
         {
           id: '2',
@@ -105,6 +106,7 @@ describe('AnnouncementsCard', () => {
           active: true,
           start_at: '2025-01-02',
           until_date: '2025-02-02',
+          updated_at: '2025-01-01',
         },
       ],
     };
@@ -132,6 +134,7 @@ describe('AnnouncementsCard', () => {
           active: true,
           start_at: today,
           until_date: DateTime.now().plus({ days: 7 }).toISODate(),
+          updated_at: today,
         },
       ],
     };
@@ -154,6 +157,7 @@ describe('AnnouncementsCard', () => {
           active: true,
           start_at: '2025-01-01',
           until_date: '2025-02-01',
+          updated_at: '2025-01-01',
         },
       ],
     };

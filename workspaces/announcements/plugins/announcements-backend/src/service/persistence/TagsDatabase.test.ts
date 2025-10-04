@@ -149,6 +149,7 @@ describe('TagsDatabase', () => {
       created_at: new Date().toISOString(),
       start_at: new Date().toISOString(),
       tags: JSON.stringify(['used-tag']),
+      updated_at: new Date().toISOString(),
     });
 
     await expect(tagsStore.delete('used-tag')).rejects.toThrow(

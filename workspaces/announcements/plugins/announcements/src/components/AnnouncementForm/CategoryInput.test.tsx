@@ -52,6 +52,7 @@ describe('CategoryInput', () => {
       until_date: string;
       tags: string[] | undefined;
       sendNotification: boolean;
+      updated_at: string;
     }>,
   ) => void = jest.fn();
 
@@ -68,6 +69,7 @@ describe('CategoryInput', () => {
     until_date: 'until_date',
     tags: ['kubernetes', 'go'],
     sendNotification: false,
+    updated_at: 'updated_at',
   };
 
   const announcementsApiMock = { categories: jest.fn() };

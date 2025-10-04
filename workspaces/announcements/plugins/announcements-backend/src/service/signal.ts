@@ -51,6 +51,7 @@ export const signalAnnouncement = async (
         until_date: announcement.until_date
           ? announcement.until_date.toString()
           : null,
+        updated_at: announcement.updated_at.toString(),
       },
     },
   });

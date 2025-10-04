@@ -20,6 +20,7 @@ export type Announcement = {
   on_behalf_of?: string;
   tags?: Tag[];
   sendNotification?: boolean;
+  updated_at: string;
 };
 
 // @public
@@ -43,7 +44,7 @@ export type AnnouncementsFilters = {
   tags?: string[];
   page?: number;
   active?: boolean;
-  sortBy?: 'created_at' | 'start_at';
+  sortBy?: 'created_at' | 'start_at' | 'updated_at';
   order?: 'asc' | 'desc';
   current?: boolean;
   sendNotification?: boolean;
