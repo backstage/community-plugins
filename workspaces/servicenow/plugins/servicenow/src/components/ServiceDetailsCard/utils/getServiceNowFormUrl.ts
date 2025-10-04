@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
-
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+/** @public */
+export const getServiceNowFormUrl = (
+  hostname: string,
+  app_id: string,
+): string => {
+  const url = new URL('/nav_to.do', hostname);
+  url.searchParams.append(
+    'uri',
+    `/cmdb_ci_business_app.do?sysparm_query=u_application_id=${app_id}`,
+  );
+  return url.toString();
+};

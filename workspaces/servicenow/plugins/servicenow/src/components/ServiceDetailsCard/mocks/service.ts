@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
+import { BusinessApplication } from '../../../api/cmdb/types';
 
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+export const mockService: BusinessApplication = {
+  sys_id: '',
+  name: 'Test Application',
+  u_application_id: 'APP-001',
+  business_criticality: 'C1',
+  owned_by: {
+    link: '#',
+    value: 'testuuid',
+  },
+  u_delegate: {
+    link: '#',
+    value: 'testuuid2',
+  },
+  u_support_contact_email: 'mail@example.com',
+};
