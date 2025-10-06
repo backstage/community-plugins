@@ -50,7 +50,7 @@ const _default: OverridableFrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -60,7 +60,7 @@ const _default: OverridableFrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -115,7 +115,7 @@ const _default: OverridableFrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -125,7 +125,7 @@ const _default: OverridableFrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -177,24 +177,24 @@ const _default: OverridableFrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          branch?: string | undefined;
           limit?: number | undefined;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         props?:
           | {
-              branch?: string | undefined;
               dense?: boolean | undefined;
               limit?: number | undefined;
+              branch?: string | undefined;
             }
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -247,11 +247,11 @@ const _default: OverridableFrontendPlugin<
       name: 'workflow-runs';
       config: {
         filter: EntityPredicate | undefined;
-        type: 'summary' | 'content' | 'info' | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         filter?: EntityPredicate | undefined;
-        type?: 'summary' | 'content' | 'info' | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -339,10 +339,10 @@ const _default: OverridableFrontendPlugin<
         defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
         group?:
           | (string & {})
-          | 'overview'
-          | 'documentation'
           | 'development'
           | 'deployment'
+          | 'overview'
+          | 'documentation'
           | 'operation'
           | 'observability'
           | undefined;
