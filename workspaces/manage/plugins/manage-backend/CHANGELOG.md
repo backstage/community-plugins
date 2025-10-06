@@ -1,5 +1,17 @@
 # @backstage-community/plugin-manage-backend
 
+## 1.2.0
+
+### Minor Changes
+
+- e40ad8c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [e40ad8c]
+  - @backstage-community/plugin-manage-common@1.2.0
+  - @backstage-community/plugin-manage-node@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
