@@ -1,5 +1,12 @@
 # app
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [fb8d89f]
+  - @backstage-community/plugin-github-discussions@0.6.0
+
 ## 0.0.5
 
 ### Patch Changes

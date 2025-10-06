@@ -1,5 +1,16 @@
 # @backstage-community/plugin-github-discussions
 
+## 0.6.0
+
+### Minor Changes
+
+- fb8d89f: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [fb8d89f]
+  - @backstage-community/plugin-github-discussions-common@0.7.0
+
 ## 0.5.0
 
 ### Minor Changes
