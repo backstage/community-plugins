@@ -1,6 +1,6 @@
 ---
-'@backstage-community/plugin-mcp-chat-backend': major
-'@backstage-community/plugin-mcp-chat': major
+'@backstage-community/plugin-mcp-chat-backend': minor
+'@backstage-community/plugin-mcp-chat': minor
 ---
 
 Initial stable release

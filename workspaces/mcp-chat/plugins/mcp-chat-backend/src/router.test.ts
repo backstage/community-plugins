@@ -19,6 +19,7 @@ import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
 import { MCPClientService } from './services/MCPClientService';
+import { MCPServerType } from './types';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -109,7 +110,7 @@ describe('createRouter', () => {
           {
             id: 'brave-search',
             name: 'Brave Search',
-            type: 'stdio' as const,
+            type: MCPServerType.STDIO,
             status: {
               valid: true,
               connected: true,
@@ -118,7 +119,7 @@ describe('createRouter', () => {
           {
             id: 'backstage-server',
             name: 'Backstage Server',
-            type: 'sse' as const,
+            type: MCPServerType.SSE,
             status: {
               valid: true,
               connected: true,

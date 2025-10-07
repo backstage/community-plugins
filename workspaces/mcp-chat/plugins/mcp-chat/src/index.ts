@@ -24,6 +24,7 @@ export type {
   MCPServerStatusData,
   ProviderStatusData,
   MCPServer,
+  MCPServerType,
   Provider,
   ProviderConnectionStatus,
 } from './types';

@@ -16,7 +16,7 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { MCPClientServiceImpl } from './MCPClientServiceImpl';
-import { ChatResponse, ToolCall } from '../types';
+import { ChatResponse, ToolCall, MCPServerType } from '../types';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js');
 jest.mock('@modelcontextprotocol/sdk/client/streamableHttp.js');
@@ -325,7 +325,7 @@ describe('MCPClientServiceImpl', () => {
         {
           id: 'test-server',
           name: 'test-server',
-          type: 'stdio' as const,
+          type: MCPServerType.STDIO,
           scriptPath: '/path/to/script.py',
           args: ['--verbose'],
         },
@@ -355,7 +355,7 @@ describe('MCPClientServiceImpl', () => {
         {
           id: 'http-server',
           name: 'http-server',
-          type: 'streamable-http' as const,
+          type: MCPServerType.STREAMABLE_HTTP,
           url: 'https://example.com/mcp',
           headers: { Authorization: 'Bearer token' },
         },
@@ -386,7 +386,7 @@ describe('MCPClientServiceImpl', () => {
         {
           id: 'fs-server',
           name: 'fs-server',
-          type: 'stdio' as const,
+          type: MCPServerType.STDIO,
           npxCommand: '@modelcontextprotocol/server-filesystem',
           args: ['/tmp'],
         },
@@ -416,7 +416,7 @@ describe('MCPClientServiceImpl', () => {
         {
           id: 'failing-server',
           name: 'failing-server',
-          type: 'stdio' as const,
+          type: MCPServerType.STDIO,
           scriptPath: '/failing.py',
         },
       ];

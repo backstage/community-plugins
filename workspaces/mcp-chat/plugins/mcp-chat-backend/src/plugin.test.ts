@@ -17,6 +17,7 @@ import { startTestBackend, mockServices } from '@backstage/backend-test-utils';
 import { mcpChatPlugin } from './plugin';
 import request from 'supertest';
 import { TestBackend } from '@backstage/backend-test-utils';
+import { MCPServerType } from './types';
 
 jest.mock('./services/MCPClientServiceImpl', () => ({
   MCPClientServiceImpl: jest.fn().mockImplementation(() => ({
@@ -24,7 +25,7 @@ jest.mock('./services/MCPClientServiceImpl', () => ({
       {
         id: 'test-server',
         name: 'test-server',
-        type: 'stdio',
+        type: MCPServerType.STDIO,
         scriptPath: '/path/to/test-script.py',
         status: {
           valid: true,
@@ -70,7 +71,7 @@ jest.mock('./services/MCPClientServiceImpl', () => ({
         {
           id: 'test-server',
           name: 'test-server',
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           scriptPath: '/path/to/test-script.py',
           status: {
             valid: true,

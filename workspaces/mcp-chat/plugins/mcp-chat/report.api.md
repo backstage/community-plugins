@@ -84,7 +84,7 @@ export interface MCPServer {
     error?: string;
   };
   // (undocumented)
-  type: 'stdio' | 'sse' | 'streamable-http';
+  type: MCPServerType;
   // (undocumented)
   url?: string;
 }
@@ -101,6 +101,16 @@ export interface MCPServerStatusData {
   total: number;
   // (undocumented)
   valid: number;
+}
+
+// @public
+export enum MCPServerType {
+  // (undocumented)
+  SSE = 'sse',
+  // (undocumented)
+  STDIO = 'stdio',
+  // (undocumented)
+  STREAMABLE_HTTP = 'streamable-http',
 }
 
 // @public (undocumented)

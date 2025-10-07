@@ -1,7 +1,7 @@
 {
   "name": "@internal/mcp-chat",
   "description": "A Backstage plugin that provides a chat interface for interacting with the MCP Servers.",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "engines": {
     "node": "20 || 22"
   },

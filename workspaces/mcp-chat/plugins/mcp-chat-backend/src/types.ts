@@ -21,6 +21,13 @@
 /** Valid roles for chat messages */
 export const VALID_ROLES = ['user', 'assistant', 'system', 'tool'] as const;
 
+/** MCP server connection types */
+export enum MCPServerType {
+  STDIO = 'stdio',
+  SSE = 'sse',
+  STREAMABLE_HTTP = 'streamable-http',
+}
+
 // =============================================================================
 // MCP Server Configuration Types
 // =============================================================================
@@ -32,7 +39,7 @@ export const VALID_ROLES = ['user', 'assistant', 'system', 'tool'] as const;
 export interface BaseServerConfig {
   id: string;
   name: string;
-  type: 'stdio' | 'sse' | 'streamable-http';
+  type: MCPServerType;
 
   // STDIO connection options
   scriptPath?: string;

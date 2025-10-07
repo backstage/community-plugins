@@ -20,6 +20,7 @@ import {
   validateConfig,
   validateMessages,
 } from './utils';
+import { MCPServerType } from './types';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js', () => ({
   Client: jest.fn(),
@@ -55,7 +56,7 @@ describe('Utils', () => {
           name: 'Test Server',
           scriptPath: '/path/to/script',
           args: ['--arg1', '--arg2'],
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           env: undefined,
           headers: undefined,
           npxCommand: undefined,
@@ -120,7 +121,7 @@ describe('Utils', () => {
 
       const result = loadServerConfigs(mockConfig);
 
-      expect(result[0].type).toBe('streamable-http');
+      expect(result[0].type).toBe(MCPServerType.STREAMABLE_HTTP);
     });
 
     it('should infer streamable-http type when type is explicitly set', () => {
@@ -131,7 +132,7 @@ describe('Utils', () => {
               {
                 id: 'server1',
                 name: 'HTTP Server',
-                type: 'streamable-http',
+                type: MCPServerType.STREAMABLE_HTTP,
                 scriptPath: '/path/to/script',
               },
             ],
@@ -141,7 +142,7 @@ describe('Utils', () => {
 
       const result = loadServerConfigs(mockConfig);
 
-      expect(result[0].type).toBe('streamable-http');
+      expect(result[0].type).toBe(MCPServerType.STREAMABLE_HTTP);
     });
 
     it('should handle empty server configurations', () => {

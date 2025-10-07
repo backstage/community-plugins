@@ -19,7 +19,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ActiveMcpServers } from './ActiveMcpServers';
-import { MCPServer } from '../../types';
+import { MCPServer, MCPServerType } from '../../types';
 
 const renderWithTheme = (component: ReactElement) => {
   const theme = createTheme();
@@ -31,21 +31,21 @@ const mockServers: MCPServer[] = [
     id: '1',
     name: 'test-server-1',
     enabled: true,
-    type: 'stdio' as const,
+    type: MCPServerType.STDIO,
     status: { valid: true, connected: true },
   },
   {
     id: '2',
     name: 'test-server-2',
     enabled: false,
-    type: 'sse' as const,
+    type: MCPServerType.SSE,
     status: { valid: true, connected: false },
   },
   {
     id: '3',
     name: 'invalid-server',
     enabled: true,
-    type: 'stdio' as const,
+    type: MCPServerType.STDIO,
     status: { valid: false, connected: false, error: 'Configuration error' },
   },
 ];
@@ -172,7 +172,7 @@ describe('ActiveMcpServers', () => {
   describe('error handling', () => {
     it('handles servers with missing status gracefully', () => {
       const serversWithoutStatus = [
-        { id: '1', name: 'server1', enabled: true, type: 'stdio' as const },
+        { id: '1', name: 'server1', enabled: true, type: MCPServerType.STDIO },
       ] as any;
 
       expect(() =>
@@ -216,7 +216,7 @@ describe('ActiveMcpServers', () => {
         id: `${i + 1}`,
         name: `server-${i + 1}`,
         enabled: i % 2 === 0,
-        type: 'stdio' as const,
+        type: MCPServerType.STDIO,
         status: { valid: true, connected: i % 3 === 0 },
       }));
 
@@ -238,7 +238,7 @@ describe('ActiveMcpServers', () => {
           id: '1',
           name: 'very-long-server-name-that-might-cause-layout-issues',
           enabled: true,
-          type: 'stdio' as const,
+          type: MCPServerType.STDIO,
           status: { valid: true, connected: true },
         },
       ];

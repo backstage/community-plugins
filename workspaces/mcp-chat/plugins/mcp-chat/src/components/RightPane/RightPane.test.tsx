@@ -19,6 +19,7 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { RightPane } from './RightPane';
 import { mcpChatApiRef } from '../../api';
+import { MCPServerType } from '../../types';
 
 jest.mock('./ActiveMcpServers', () => ({
   ActiveMcpServers: ({ mcpServers, onServerToggle }: any) => (
@@ -102,7 +103,7 @@ const defaultProps = {
       id: '1',
       name: 'test-server',
       enabled: true,
-      type: 'stdio' as const,
+      type: MCPServerType.STDIO,
       status: {
         valid: true,
         connected: true,
@@ -112,7 +113,7 @@ const defaultProps = {
       id: '2',
       name: 'another-server',
       enabled: false,
-      type: 'stdio' as const,
+      type: MCPServerType.STDIO,
       status: {
         valid: true,
         connected: false,
@@ -312,21 +313,21 @@ describe('RightPane', () => {
           id: '1',
           name: 'server1',
           enabled: true,
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           status: { valid: true, connected: true },
         },
         {
           id: '2',
           name: 'server2',
           enabled: true,
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           status: { valid: true, connected: true },
         },
         {
           id: '3',
           name: 'server3',
           enabled: false,
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           status: { valid: true, connected: false },
         },
       ];

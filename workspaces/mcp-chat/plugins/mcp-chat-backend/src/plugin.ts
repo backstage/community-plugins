@@ -47,10 +47,6 @@ export const mcpChatPlugin = createBackendPlugin({
             mcpClientService,
           }),
         );
-        httpRouter.addAuthPolicy({
-          path: '/',
-          allow: 'unauthenticated',
-        });
       },
     });
   },

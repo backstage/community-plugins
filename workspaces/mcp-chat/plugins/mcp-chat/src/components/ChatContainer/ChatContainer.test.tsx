@@ -20,6 +20,7 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatContainer, type ChatContainerRef } from './ChatContainer';
 import { mcpChatApiRef } from '../../api';
+import { MCPServerType } from '../../types';
 
 const mockScrollIntoView = jest.fn();
 Object.defineProperty(Element.prototype, 'scrollIntoView', {
@@ -64,7 +65,7 @@ const defaultProps = {
       id: '1',
       name: 'test-server',
       enabled: true,
-      type: 'stdio',
+      type: MCPServerType.STDIO,
       hasUrl: false,
       hasNpxCommand: true,
       hasScriptPath: false,
@@ -203,9 +204,9 @@ describe('ChatContainer', () => {
 
     it('includes only enabled MCP servers in API call', async () => {
       const mcpServers = [
-        { id: '1', name: 'server1', enabled: true, type: 'stdio' },
-        { id: '2', name: 'server2', enabled: false, type: 'stdio' },
-        { id: '3', name: 'server3', enabled: true, type: 'stdio' },
+        { id: '1', name: 'server1', enabled: true, type: MCPServerType.STDIO },
+        { id: '2', name: 'server2', enabled: false, type: MCPServerType.STDIO },
+        { id: '3', name: 'server3', enabled: true, type: MCPServerType.STDIO },
       ];
 
       renderChatContainer({ mcpServers });
@@ -287,7 +288,10 @@ describe('ChatContainer', () => {
         expect(input).toBeDisabled();
       });
 
-      ref.current?.cancelOngoingRequest();
+      // Wrap the cancellation in act to handle state updates
+      await waitFor(() => {
+        ref.current?.cancelOngoingRequest();
+      });
 
       await waitFor(() => {
         expect(input).not.toBeDisabled();

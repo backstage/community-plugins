@@ -15,6 +15,16 @@
  */
 
 /**
+ * MCP server connection types
+ * @public
+ */
+export enum MCPServerType {
+  STDIO = 'stdio',
+  SSE = 'sse',
+  STREAMABLE_HTTP = 'streamable-http',
+}
+
+/**
  * @public
  */
 export interface ProviderStatusData {
@@ -70,7 +80,7 @@ export interface MCPServer {
   // For SSE connections
   url?: string;
   // Connection type
-  type: 'stdio' | 'sse' | 'streamable-http';
+  type: MCPServerType;
   status: {
     valid: boolean;
     connected: boolean;

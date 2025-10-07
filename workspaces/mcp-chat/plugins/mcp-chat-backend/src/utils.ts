@@ -17,7 +17,7 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { ServerConfig, VALID_ROLES } from './types';
+import { ServerConfig, VALID_ROLES, MCPServerType } from './types';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 export function loadServerConfigs(config: RootConfigService): ServerConfig[] {
@@ -32,10 +32,16 @@ export function loadServerConfigs(config: RootConfigService): ServerConfig[] {
       .getOptionalConfig('env')
       ?.get() as Record<string, string> | undefined;
 
-    const type =
-      serverConfig.getOptionalString('type') || serverConfig.has('url')
-        ? 'streamable-http'
-        : 'stdio';
+    const typeString = serverConfig.getOptionalString('type');
+    let type: MCPServerType;
+
+    if (typeString === 'sse') {
+      type = MCPServerType.SSE;
+    } else if (typeString === 'streamable-http' || serverConfig.has('url')) {
+      type = MCPServerType.STREAMABLE_HTTP;
+    } else {
+      type = MCPServerType.STDIO;
+    }
 
     return {
       id: serverConfig.getString('id'),

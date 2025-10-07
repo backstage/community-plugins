@@ -38,6 +38,7 @@ import {
   ProviderStatusData,
   QueryResponse,
   ServerTool,
+  MCPServerType,
 } from '../types';
 
 export type Options = {
@@ -124,7 +125,7 @@ export class MCPClientServiceImpl implements MCPClientService {
 
         let transport;
 
-        if (serverConfig.type === 'streamable-http') {
+        if (serverConfig.type === MCPServerType.STREAMABLE_HTTP) {
           // Streamable HTTP connection
           if (!serverConfig.url) {
             throw new Error(
@@ -145,7 +146,7 @@ export class MCPClientServiceImpl implements MCPClientService {
             new URL(serverConfig.url),
             transportOptions,
           );
-        } else if (serverConfig.type === 'sse') {
+        } else if (serverConfig.type === MCPServerType.SSE) {
           // SSE connection
           if (!serverConfig.url) {
             throw new Error(

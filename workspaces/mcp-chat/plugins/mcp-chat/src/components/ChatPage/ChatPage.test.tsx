@@ -20,6 +20,7 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatPage } from './ChatPage';
 import { mcpChatApiRef } from '../../api';
+import { MCPServerType } from '../../types';
 
 const mockChatContainer = jest.fn();
 const mockRightPane = jest.fn();
@@ -64,7 +65,9 @@ jest.mock('../RightPane', () => ({
 
 // Default mock for hooks
 const mockUseMcpServers = jest.fn(() => ({
-  mcpServers: [{ id: '1', name: 'test-server', enabled: true, type: 'stdio' }],
+  mcpServers: [
+    { id: '1', name: 'test-server', enabled: true, type: MCPServerType.STDIO },
+  ],
   error: null,
   handleServerToggle: jest.fn(),
 }));
@@ -108,7 +111,12 @@ describe('ChatPage', () => {
     // Reset mocks to default values
     mockUseMcpServers.mockReturnValue({
       mcpServers: [
-        { id: '1', name: 'test-server', enabled: true, type: 'stdio' },
+        {
+          id: '1',
+          name: 'test-server',
+          enabled: true,
+          type: MCPServerType.STDIO,
+        },
       ],
       error: null,
       handleServerToggle: jest.fn(),

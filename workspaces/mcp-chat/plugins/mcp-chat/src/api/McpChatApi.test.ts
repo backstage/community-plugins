@@ -16,12 +16,13 @@
 
 import { ResponseError } from '@backstage/errors';
 import { McpChat } from './McpChatApi';
-import type {
+import {
   ChatMessage,
   ChatResponse,
   MCPServerStatusData,
   ProviderStatusData,
   ToolsResponse,
+  MCPServerType,
 } from '../types';
 
 describe('McpChatApi', () => {
@@ -170,7 +171,7 @@ describe('McpChatApi', () => {
         {
           id: '1',
           name: 'test-server',
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           status: {
             valid: true,
             connected: true,
@@ -218,7 +219,7 @@ describe('McpChatApi', () => {
       serverConfigs: [
         {
           name: 'test-server',
-          type: 'stdio',
+          type: MCPServerType.STDIO,
           hasUrl: false,
           hasNpxCommand: true,
           hasScriptPath: false,

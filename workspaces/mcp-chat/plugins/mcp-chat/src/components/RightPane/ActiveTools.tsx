@@ -71,7 +71,7 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
             fontSize: '1rem',
           }}
         >
-          Active Tools
+          MCP Servers List
         </Typography>
       </Box>
       <Box

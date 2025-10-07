@@ -18,7 +18,7 @@ import { ReactElement } from 'react';
 import { render, screen } from '@testing-library/react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ActiveTools } from './ActiveTools';
-import { MCPServer, Tool } from '../../types';
+import { MCPServer, Tool, MCPServerType } from '../../types';
 
 const mockTheme = createTheme({
   palette: {
@@ -41,14 +41,14 @@ describe('ActiveTools', () => {
       id: 'filesystem',
       name: 'filesystem',
       enabled: true,
-      type: 'stdio',
+      type: MCPServerType.STDIO,
       status: { valid: true, connected: true },
     },
     {
       id: 'database',
       name: 'database',
       enabled: true,
-      type: 'stdio',
+      type: MCPServerType.STDIO,
       status: { valid: true, connected: true },
     },
   ];
@@ -93,7 +93,7 @@ describe('ActiveTools', () => {
     it('renders component header', () => {
       renderWithTheme(<ActiveTools {...defaultProps} />);
 
-      expect(screen.getByText('Active Tools')).toBeInTheDocument();
+      expect(screen.getByText('MCP Servers List')).toBeInTheDocument();
     });
 
     it('displays available tools', () => {

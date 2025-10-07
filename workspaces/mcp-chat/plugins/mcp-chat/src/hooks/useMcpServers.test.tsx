@@ -18,21 +18,21 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { mcpChatApiRef } from '../api';
 import { useMcpServers } from './useMcpServers';
-import { MCPServer } from '../types';
+import { MCPServer, MCPServerType } from '../types';
 
 describe('useMcpServers', () => {
   const mockServers: MCPServer[] = [
     {
       id: 'server-1',
       name: 'Test Server 1',
-      type: 'stdio',
+      type: MCPServerType.STDIO,
       status: { valid: true, connected: true },
       enabled: true,
     },
     {
       id: 'server-2',
       name: 'Test Server 2',
-      type: 'sse',
+      type: MCPServerType.SSE,
       url: 'http://localhost:7007',
       status: { valid: true, connected: false },
       enabled: true,

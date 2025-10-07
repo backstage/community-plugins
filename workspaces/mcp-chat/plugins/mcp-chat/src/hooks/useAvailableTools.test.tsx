@@ -18,7 +18,7 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { mcpChatApiRef } from '../api';
 import { useAvailableTools } from './useAvailableTools';
-import { MCPServer, Tool } from '../types';
+import { MCPServer, Tool, MCPServerType } from '../types';
 
 describe('useAvailableTools', () => {
   const mockTools: Tool[] = [
@@ -52,14 +52,14 @@ describe('useAvailableTools', () => {
     {
       id: 'server-1',
       name: 'server-1',
-      type: 'stdio',
+      type: MCPServerType.STDIO,
       status: { valid: true, connected: true },
       enabled: true,
     },
     {
       id: 'server-2',
       name: 'server-2',
-      type: 'sse',
+      type: MCPServerType.SSE,
       url: 'http://localhost:7007',
       status: { valid: true, connected: true },
       enabled: true,

@@ -48,7 +48,7 @@ export interface Config {
      * MCP (Model Context Protocol) servers configuration
      * @visibility backend
      */
-    mcpServers: Array<{
+    mcpServers?: Array<{
       /**
        * Unique identifier for the MCP server
        * @visibility backend
@@ -94,7 +94,7 @@ export interface Config {
        * @visibility backend
        * @enum { 'stdio' | 'sse' | 'streamable-http' }
        */
-      type?: 'stdio' | 'sse' | 'streamable-http';
+      type?: 'stdio' | 'sse' | 'streamable-http'; // Note: Use MCPServerType enum in code
     }>;
     /**
      * Custom system prompt for the AI assistant

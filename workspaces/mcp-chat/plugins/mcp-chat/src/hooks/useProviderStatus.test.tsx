@@ -161,7 +161,9 @@ describe('useProviderStatus', () => {
       };
       mockMcpChatApi.getProviderStatus.mockResolvedValue(updatedData);
 
-      result.current.refetch();
+      await waitFor(() => {
+        result.current.refetch();
+      });
 
       await waitFor(() =>
         expect(result.current.providerStatusData).toEqual(updatedData),
@@ -182,7 +184,9 @@ describe('useProviderStatus', () => {
         new Error(errorMessage),
       );
 
-      result.current.refetch();
+      await waitFor(() => {
+        result.current.refetch();
+      });
 
       await waitFor(() => expect(result.current.error).toBe(errorMessage));
       expect(result.current.providerStatusData).toBeNull();
