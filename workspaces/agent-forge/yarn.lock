@@ -716,7 +716,6 @@ __metadata:
     "@testing-library/user-event": "npm:^14.5.2"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
-    axios: "npm:^1.7.2"
     cross-env: "npm:^10.0.0"
     msw: "npm:^2.3.5"
     react: "npm:^18"
@@ -6944,7 +6943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.2, axios@npm:^1.7.4":
+"axios@npm:^1.7.4":
   version: 1.12.2
   resolution: "axios@npm:1.12.2"
   dependencies:
