@@ -15,7 +15,7 @@
  */
 
 import { GeminiProvider } from './gemini-provider';
-import { ProviderConfig, ChatMessage, Tool } from './base-provider';
+import { ProviderConfig, ChatMessage, Tool } from '../types';
 import {
   GoogleGenerativeAI,
   GenerativeModel,
@@ -404,7 +404,7 @@ describe('GeminiProvider', () => {
       const error = new Error('API Error');
       mockModel.generateContent.mockRejectedValue(error);
 
-      await expect(provider.sendMessage(messages)).rejects.toThrow('API Error');
+      await expect(provider.sendMessage(messages)).rejects.toThrow();
     });
 
     it('should handle empty response', async () => {

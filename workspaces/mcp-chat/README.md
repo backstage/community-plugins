@@ -180,6 +180,10 @@ mcpChat:
       headers:
         Authorization: 'Bearer ${BACKSTAGE_MCP_TOKEN}'
 
+  # Optional: Customize the system prompt for the AI assistant
+  # If not specified, uses a default prompt optimized for tool usage
+  systemPrompt: "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered."
+
   # Configure quick prompts
   quickPrompts:
     - title: 'Search Latest Tech News'

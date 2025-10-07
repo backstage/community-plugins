@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider, ProviderConfig } from './base-provider';
+import { LLMProvider } from './base-provider';
+import { ProviderConfig } from '../types';
 import { OpenAIProvider } from './openai-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
@@ -34,10 +35,6 @@ export class ProviderFactory {
 
       case 'ollama':
         return new OllamaProvider(config);
-
-      case 'custom':
-        // Custom uses OpenAI-compatible format
-        return new OpenAIProvider(config);
 
       default:
         throw new Error(`Unsupported provider: ${config.type}`);
@@ -90,13 +87,6 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       // No API key needed for Ollama
       baseUrl:
         providerConfig.getOptionalString('baseUrl') || 'http://localhost:11434',
-      model: model,
-    },
-
-    custom: {
-      type: 'custom',
-      apiKey: token,
-      baseUrl: providerConfig.getOptionalString('baseUrl'),
       model: model,
     },
   };

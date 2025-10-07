@@ -24,7 +24,7 @@ import { OpenAIProvider } from './openai-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
-import { ProviderConfig } from './base-provider';
+import { ProviderConfig } from '../types';
 
 describe('ProviderFactory', () => {
   describe('createProvider', () => {
@@ -34,7 +34,6 @@ describe('ProviderFactory', () => {
         { type: 'claude', expectedClass: ClaudeProvider },
         { type: 'gemini', expectedClass: GeminiProvider },
         { type: 'ollama', expectedClass: OllamaProvider },
-        { type: 'custom', expectedClass: OpenAIProvider },
       ];
 
       testCases.forEach(({ type, expectedClass }) => {
@@ -171,27 +170,6 @@ describe('getProviderConfig', () => {
 
     expect(() => getProviderConfig(mockConfig)).toThrow(
       'API key is required for provider: openai',
-    );
-  });
-
-  it('should throw error for custom provider id not in allowed list', () => {
-    const mockProviderConfig = {
-      getString: jest.fn().mockImplementation((key: string) => {
-        if (key === 'id') return 'custom';
-        if (key === 'model') return 'custom-model';
-        throw new Error(`Unexpected key: ${key}`);
-      }),
-      getOptionalString: jest.fn().mockImplementation((key: string) => {
-        if (key === 'token') return 'api-key';
-        if (key === 'baseUrl') return undefined;
-        return undefined;
-      }),
-    } as any;
-
-    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
-
-    expect(() => getProviderConfig(mockConfig)).toThrow(
-      'Unsupported provider id: custom. Allowed values are: openai, claude, gemini, ollama',
     );
   });
 

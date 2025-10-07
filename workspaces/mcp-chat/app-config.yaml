@@ -55,6 +55,7 @@ mcpChat:
       url: 'http://localhost:7007/api/mcp-actions/v1'
       headers:
         Authorization: 'Bearer ${BACKSTAGE_API_TOKEN}'
+  systemPrompt: "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered."
   quickPrompts:
     - title: 'Web Search & Research'
       description: 'Find the latest information, documentation, and best practices'

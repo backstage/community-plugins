@@ -28,17 +28,15 @@ import {
   getProviderInfo,
 } from '../providers/provider-factory';
 import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
-import {
-  ChatMessage,
-  LLMProvider,
-  Tool,
-  ToolCall,
-} from '../providers/base-provider';
+import { LLMProvider } from '../providers/base-provider';
 import { MCPClientService } from './MCPClientService';
 import {
+  ChatMessage,
+  Tool,
   MCPServer,
   MCPServerStatusData,
   ProviderStatusData,
+  QueryResponse,
   ServerTool,
 } from '../types';
 
@@ -55,12 +53,16 @@ export class MCPClientServiceImpl implements MCPClientService {
   private tools: ServerTool[] = [];
   private connected = false;
   private mcpServers: Promise<MCPServer[]> | null = null;
+  private readonly systemPrompt: string;
 
   constructor(options: Options) {
     this.logger = options.logger;
     this.config = options.config;
     this.llmProvider = this.initializeLLMProvider();
     this.mcpServers = this.initializeMCPServers();
+    this.systemPrompt =
+      this.config.getOptionalString('mcpChat.systemPrompt') ||
+      "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.";
   }
 
   private initializeLLMProvider(): LLMProvider {
@@ -225,11 +227,11 @@ export class MCPClientServiceImpl implements MCPClientService {
             description: tool.description ?? '', // Ensure string
             parameters: tool.inputSchema,
           },
-          serverId: serverConfig.name, // Track which server this tool belongs to
+          serverId: serverConfig.id, // Track which server this tool belongs to
         }));
 
         allTools.push(...serverTools);
-        this.mcpClients.set(serverConfig.name, client);
+        this.mcpClients.set(serverConfig.id, client);
 
         // Record successful connection
         serverResults.push({
@@ -292,18 +294,13 @@ export class MCPClientServiceImpl implements MCPClientService {
   async processQuery(
     messagesInput: any[],
     enabledTools: string[] = [],
-  ): Promise<{
-    reply: string;
-    toolCalls: ToolCall[];
-    toolResponses: any[];
-  }> {
+  ): Promise<QueryResponse> {
     // Only add system message if one doesn't already exist
     const messages: ChatMessage[] = [...messagesInput];
     if (messages.length === 0 || messages[0].role !== 'system') {
       messages.unshift({
         role: 'system',
-        content:
-          "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.",
+        content: this.systemPrompt,
       });
     }
 

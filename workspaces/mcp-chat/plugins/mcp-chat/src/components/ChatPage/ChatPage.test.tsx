@@ -141,7 +141,7 @@ describe('ChatPage', () => {
             expect.objectContaining({ name: 'test-server' }),
           ]),
           messages: [],
-          setMessages: expect.any(Function),
+          onMessagesChange: expect.any(Function),
         }),
       );
     });

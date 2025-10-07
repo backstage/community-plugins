@@ -180,6 +180,10 @@ mcpChat:
       headers:
         Authorization: 'Bearer ${BACKSTAGE_MCP_TOKEN}'
 
+  # Optional: Customize the system prompt for the AI assistant
+  # If not specified, uses a default prompt optimized for tool usage
+  systemPrompt: "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered."
+
   # Configure quick prompts
   quickPrompts:
     - title: 'Search Latest Tech News'
@@ -197,6 +201,37 @@ mcpChat:
       prompt: 'Describe the "example-app" microservice in our Backstage catalog'
       category: Catalog
 ```
+
+### System Prompt Configuration
+
+The `systemPrompt` configuration allows you to customize the AI assistant's behavior and personality. This optional setting controls how the assistant responds and approaches tasks.
+
+**Default Behavior:**
+If not specified, the plugin uses this default prompt:
+
+```
+You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.
+```
+
+**Custom Examples:**
+
+```yaml
+# Concise and technical
+systemPrompt: 'You are a technical assistant. Provide concise, actionable responses.'
+
+# Domain-specific expertise
+systemPrompt: 'You are a Kubernetes expert. When answering questions, prioritize best practices for cloud-native deployments and provide specific kubectl commands when helpful.'
+
+# Security-focused
+systemPrompt: 'You are a security-focused DevOps assistant. Always consider security implications and suggest secure alternatives when applicable.'
+```
+
+**Tips:**
+
+- Keep prompts focused and clear
+- Mention specific domains or expertise when relevant
+- Include instructions about response format if needed
+- The system prompt affects all AI interactions in the plugin
 
 For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, SSE, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
 

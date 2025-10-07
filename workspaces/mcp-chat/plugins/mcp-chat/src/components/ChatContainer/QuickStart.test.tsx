@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TestApiProvider } from '@backstage/test-utils';
@@ -229,56 +229,27 @@ describe('QuickStart', () => {
   });
 
   describe('Interaction Handling', () => {
-    it('accepts onSuggestionClick prop', () => {
+    it('calls onSuggestionClick when suggestion card is clicked', () => {
+      const onSuggestionClick = jest.fn();
       renderWithProviders(
-        <QuickStart onSuggestionClick={mockOnSuggestionClick} />,
+        <QuickStart onSuggestionClick={onSuggestionClick} />,
         mockConfigApiWithSuggestions,
       );
 
-      expect(screen.getByText('Code Analysis')).toBeInTheDocument();
-    });
+      // Find the card container by its title text and simulate click
+      const suggestionTitle = screen.getByText('Code Analysis');
+      // The Card component is rendered, we need to traverse up to find the clickable element
+      const cardContent = suggestionTitle.closest('[class*="MuiCardContent"]');
+      const card = cardContent?.parentElement;
 
-    it('handles missing onSuggestionClick gracefully', () => {
-      expect(() => {
-        renderWithProviders(
-          <QuickStart onSuggestionClick={undefined as any} />,
-          mockConfigApiWithSuggestions,
-        );
-      }).not.toThrow();
-    });
-  });
+      expect(card).toBeTruthy();
+      if (card) {
+        fireEvent.click(card);
+      }
 
-  describe('Component Props', () => {
-    it('handles all required props', () => {
-      expect(() => {
-        renderWithProviders(
-          <QuickStart onSuggestionClick={mockOnSuggestionClick} />,
-          mockConfigApiWithSuggestions,
-        );
-      }).not.toThrow();
-    });
-
-    it('validates suggestion structure', () => {
-      const invalidConfigApi = {
-        getOptionalConfigArray: jest.fn().mockReturnValue([
-          {
-            getString: jest.fn().mockImplementation((key: string) => {
-              if (key === 'title') return 'Valid Title';
-              if (key === 'description') return 'Valid Description';
-              if (key === 'prompt') return 'Valid Prompt';
-              if (key === 'category') return 'Valid Category';
-              return '';
-            }),
-          },
-        ]),
-      };
-
-      expect(() => {
-        renderWithProviders(
-          <QuickStart onSuggestionClick={mockOnSuggestionClick} />,
-          invalidConfigApi,
-        );
-      }).not.toThrow();
+      expect(onSuggestionClick).toHaveBeenCalledWith(
+        'Analyze my code for potential improvements',
+      );
     });
   });
 });

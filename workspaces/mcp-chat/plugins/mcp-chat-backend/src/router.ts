@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { MCPClientService } from './services/MCPClientService';
@@ -68,23 +69,21 @@ export async function createRouter({
     }
 
     if (enabledTools && !Array.isArray(enabledTools)) {
-      return res.status(400).json({ error: 'enabledTools must be an array' });
+      throw new InputError('enabledTools must be an array');
     }
 
     if (
       enabledTools &&
       enabledTools.some((tool: any) => typeof tool !== 'string')
     ) {
-      return res
-        .status(400)
-        .json({ error: 'All enabledTools must be strings' });
+      throw new InputError('All enabledTools must be strings');
     }
 
     const { reply, toolCalls, toolResponses } =
       await mcpClientService.processQuery(messages, enabledTools);
 
     if (toolCalls.length > 0) {
-      const toolsUsed = toolCalls?.map(call => call.function.name);
+      const toolsUsed = toolCalls.map(call => call.function.name);
 
       return res.json({
         role: 'assistant',

@@ -706,4 +706,222 @@ describe('Utils', () => {
       ).rejects.toThrow('Tool execution failed');
     });
   });
+
+  describe('validateConfig - systemPrompt validation', () => {
+    it('should accept valid systemPrompt', () => {
+      const mockConfig = {
+        getOptionalConfigArray: jest.fn((key: string) => {
+          if (key === 'mcpChat.providers') {
+            return [
+              {
+                getString: jest.fn((innerKey: string) => {
+                  if (innerKey === 'id') return 'openai';
+                  if (innerKey === 'model') return 'gpt-4';
+                  return 'test-value';
+                }),
+                getOptionalString: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.mcpServers') {
+            return [
+              {
+                getString: jest.fn(),
+                getOptionalString: jest.fn(),
+                getOptionalConfig: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.quickPrompts') {
+            return [];
+          }
+          return [];
+        }),
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'mcpChat.systemPrompt') {
+            return 'You are a helpful assistant specialized in DevOps.';
+          }
+          return undefined;
+        }),
+      } as any;
+
+      expect(() => validateConfig(mockConfig)).not.toThrow();
+    });
+
+    it('should accept undefined systemPrompt', () => {
+      const mockConfig = {
+        getOptionalConfigArray: jest.fn((key: string) => {
+          if (key === 'mcpChat.providers') {
+            return [
+              {
+                getString: jest.fn((innerKey: string) => {
+                  if (innerKey === 'id') return 'openai';
+                  if (innerKey === 'model') return 'gpt-4';
+                  return 'test-value';
+                }),
+                getOptionalString: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.mcpServers') {
+            return [
+              {
+                getString: jest.fn(),
+                getOptionalString: jest.fn(),
+                getOptionalConfig: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.quickPrompts') {
+            return [];
+          }
+          return [];
+        }),
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'mcpChat.systemPrompt') {
+            return undefined;
+          }
+          return undefined;
+        }),
+      } as any;
+
+      expect(() => validateConfig(mockConfig)).not.toThrow();
+    });
+
+    it('should reject empty systemPrompt', () => {
+      const mockConfig = {
+        getOptionalConfigArray: jest.fn((key: string) => {
+          if (key === 'mcpChat.providers') {
+            return [
+              {
+                getString: jest.fn((innerKey: string) => {
+                  if (innerKey === 'id') return 'openai';
+                  if (innerKey === 'model') return 'gpt-4';
+                  return 'test-value';
+                }),
+                getOptionalString: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.mcpServers') {
+            return [
+              {
+                getString: jest.fn(),
+                getOptionalString: jest.fn(),
+                getOptionalConfig: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.quickPrompts') {
+            return [];
+          }
+          return [];
+        }),
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'mcpChat.systemPrompt') {
+            return '';
+          }
+          return undefined;
+        }),
+      } as any;
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'systemPrompt cannot be empty or whitespace-only',
+      );
+    });
+
+    it('should reject whitespace-only systemPrompt', () => {
+      const mockConfig = {
+        getOptionalConfigArray: jest.fn((key: string) => {
+          if (key === 'mcpChat.providers') {
+            return [
+              {
+                getString: jest.fn((innerKey: string) => {
+                  if (innerKey === 'id') return 'openai';
+                  if (innerKey === 'model') return 'gpt-4';
+                  return 'test-value';
+                }),
+                getOptionalString: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.mcpServers') {
+            return [
+              {
+                getString: jest.fn(),
+                getOptionalString: jest.fn(),
+                getOptionalConfig: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.quickPrompts') {
+            return [];
+          }
+          return [];
+        }),
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'mcpChat.systemPrompt') {
+            return '   \n\t  ';
+          }
+          return undefined;
+        }),
+      } as any;
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'systemPrompt cannot be empty or whitespace-only',
+      );
+    });
+
+    it('should reject non-string systemPrompt', () => {
+      const mockConfig = {
+        getOptionalConfigArray: jest.fn((key: string) => {
+          if (key === 'mcpChat.providers') {
+            return [
+              {
+                getString: jest.fn((innerKey: string) => {
+                  if (innerKey === 'id') return 'openai';
+                  if (innerKey === 'model') return 'gpt-4';
+                  return 'test-value';
+                }),
+                getOptionalString: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.mcpServers') {
+            return [
+              {
+                getString: jest.fn(),
+                getOptionalString: jest.fn(),
+                getOptionalConfig: jest.fn(),
+                has: jest.fn(),
+              },
+            ];
+          }
+          if (key === 'mcpChat.quickPrompts') {
+            return [];
+          }
+          return [];
+        }),
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'mcpChat.systemPrompt') {
+            return 123 as any;
+          }
+          return undefined;
+        }),
+      } as any;
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'systemPrompt must be a string',
+      );
+    });
+  });
 });

@@ -14,56 +14,7 @@
  * limitations under the License.
  */
 import { ResponseError } from '@backstage/errors';
-
-export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string | null;
-  tool_calls?: any[];
-  tool_call_id?: string;
-}
-
-export interface Tool {
-  type: 'function';
-  function: {
-    // OpenAI function calling format
-    name: string;
-    description: string;
-    parameters: any;
-  };
-}
-
-export interface ToolCall {
-  id: string;
-  type: 'function';
-  function: {
-    name: string;
-    arguments: string;
-  };
-}
-
-export interface ChatResponse {
-  choices: [
-    {
-      message: {
-        role: 'assistant';
-        content: string | null;
-        tool_calls?: ToolCall[];
-      };
-    },
-  ];
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
-export interface ProviderConfig {
-  type: string;
-  apiKey?: string; // Made optional for providers like Ollama
-  baseUrl: string;
-  model: string;
-}
+import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
 
 // Abstract base class for all LLM providers
 export abstract class LLMProvider {

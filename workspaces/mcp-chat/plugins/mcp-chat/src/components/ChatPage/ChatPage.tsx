@@ -63,6 +63,10 @@ export const ChatPage = () => {
     setMessages([]);
   };
 
+  const handleMessagesChange = (newMessages: Message[]) => {
+    setMessages(newMessages);
+  };
+
   return (
     <Page themeId="tool">
       <Content noPadding>
@@ -107,7 +111,7 @@ export const ChatPage = () => {
                   sidebarCollapsed={sidebarCollapsed}
                   mcpServers={mcpServers}
                   messages={messages}
-                  setMessages={setMessages}
+                  onMessagesChange={handleMessagesChange}
                 />
 
                 {/* Sidebar - Right Side */}

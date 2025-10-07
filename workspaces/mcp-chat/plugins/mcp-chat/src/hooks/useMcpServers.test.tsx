@@ -23,15 +23,15 @@ import { MCPServer } from '../types';
 describe('useMcpServers', () => {
   const mockServers: MCPServer[] = [
     {
-      id: '1',
-      name: 'server-1',
+      id: 'server-1',
+      name: 'Test Server 1',
       type: 'stdio',
       status: { valid: true, connected: true },
       enabled: true,
     },
     {
-      id: '2',
-      name: 'server-2',
+      id: 'server-2',
+      name: 'Test Server 2',
       type: 'sse',
       url: 'http://localhost:7007',
       status: { valid: true, connected: false },
@@ -78,17 +78,21 @@ describe('useMcpServers', () => {
     });
     const { result } = renderHook(() => useMcpServers(), { wrapper: Wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
+
     act(() => {
       result.current.handleServerToggle('server-1');
     });
+
     expect(
-      result.current.mcpServers.find(s => s.name === 'server-1')?.enabled,
+      result.current.mcpServers.find(s => s.id === 'server-1')?.enabled,
     ).toBe(false);
+
     act(() => {
       result.current.handleServerToggle('server-1');
     });
+
     expect(
-      result.current.mcpServers.find(s => s.name === 'server-1')?.enabled,
+      result.current.mcpServers.find(s => s.id === 'server-1')?.enabled,
     ).toBe(true);
   });
 
@@ -99,17 +103,19 @@ describe('useMcpServers', () => {
     const { result } = renderHook(() => useMcpServers(), { wrapper: Wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     const newServers = [
-      { ...mockServers[0], name: 'server-1a' },
-      { ...mockServers[1], name: 'server-2a' },
+      { ...mockServers[0], name: 'Updated Server 1' },
+      { ...mockServers[1], name: 'Updated Server 2' },
     ];
     mockMcpChatApi.getMCPServerStatus.mockResolvedValue({
       servers: newServers,
     });
+
     act(() => {
       result.current.refetch();
     });
+
     await waitFor(() =>
-      expect(result.current.mcpServers[0].name).toBe('server-1a'),
+      expect(result.current.mcpServers[0].name).toBe('Updated Server 1'),
     );
   });
 

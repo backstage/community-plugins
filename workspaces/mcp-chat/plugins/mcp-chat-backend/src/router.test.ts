@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
+import { InputError } from '@backstage/errors';
 import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
@@ -39,6 +40,23 @@ describe('createRouter', () => {
 
     app = express();
     app.use(router);
+
+    // Add error handling middleware
+    app.use(
+      (
+        err: any,
+        _req: express.Request,
+        res: express.Response,
+        _next: express.NextFunction,
+      ) => {
+        if (err instanceof InputError) {
+          return res
+            .status(400)
+            .json({ error: { name: err.name, message: err.message } });
+        }
+        return res.status(500).json({ error: err.message });
+      },
+    );
   });
 
   describe('GET /provider/status', () => {
@@ -338,8 +356,9 @@ describe('createRouter', () => {
         .send({ messages: validMessages, enabledTools: 'not-array' });
 
       expect(response.status).toBe(400);
-      expect(response.body).toEqual({
-        error: 'enabledTools must be an array',
+      expect(response.body.error).toMatchObject({
+        name: 'InputError',
+        message: 'enabledTools must be an array',
       });
     });
 
@@ -349,8 +368,9 @@ describe('createRouter', () => {
         .send({ messages: validMessages, enabledTools: [123, 'valid'] });
 
       expect(response.status).toBe(400);
-      expect(response.body).toEqual({
-        error: 'All enabledTools must be strings',
+      expect(response.body.error).toMatchObject({
+        name: 'InputError',
+        message: 'All enabledTools must be strings',
       });
     });
 

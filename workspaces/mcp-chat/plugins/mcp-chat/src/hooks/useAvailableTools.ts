@@ -41,22 +41,20 @@ export const useAvailableTools = (
       return [];
     }
 
-    try {
-      const toolsResponse = await mcpChatApi.getAvailableTools();
-      return toolsResponse.availableTools;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to fetch available tools';
-      // eslint-disable-next-line no-console
-      console.error('Failed to fetch tools:', err);
-      throw new Error(errorMessage);
-    }
+    const toolsResponse = await mcpChatApi.getAvailableTools();
+    return toolsResponse.availableTools;
   }, [mcpChatApi, mcpServers]);
+
+  const getErrorMessage = () => {
+    if (!error) return null;
+    if (error instanceof Error) return error.message;
+    return 'Failed to fetch available tools';
+  };
 
   return {
     availableTools: availableTools || [],
     isLoading,
-    error: error?.message || null,
+    error: getErrorMessage(),
     refetch,
   };
 };

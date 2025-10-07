@@ -24,7 +24,7 @@ export interface UseMcpServersReturn {
   isLoading: boolean;
   error: string | null;
   refetch: () => void;
-  handleServerToggle: (serverName: string) => void;
+  handleServerToggle: (serverId: string) => void;
 }
 
 export const useMcpServers = (): UseMcpServersReturn => {
@@ -36,28 +36,20 @@ export const useMcpServers = (): UseMcpServersReturn => {
     error,
     retry: refetch,
   } = useAsyncRetry(async () => {
-    try {
-      const mcpServerStatus = await mcpChatApi.getMCPServerStatus();
-      const servers =
-        mcpServerStatus.servers?.map((server: MCPServer) => ({
-          ...server,
-          enabled: true, // Default all servers to enabled
-        })) || [];
-      setMcpServers(servers);
-      return servers;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load MCP servers';
-      // eslint-disable-next-line no-console
-      console.error('Failed to load MCP servers:', err);
-      throw new Error(errorMessage);
-    }
+    const mcpServerStatus = await mcpChatApi.getMCPServerStatus();
+    const servers =
+      mcpServerStatus.servers?.map((server: MCPServer) => ({
+        ...server,
+        enabled: true, // Default all servers to enabled
+      })) || [];
+    setMcpServers(servers);
+    return servers;
   }, [mcpChatApi]);
 
-  const handleServerToggle = useCallback((serverName: string) => {
+  const handleServerToggle = useCallback((serverId: string) => {
     setMcpServers(prev =>
       prev.map(server =>
-        server.name === serverName
+        server.id === serverId
           ? { ...server, enabled: !server.enabled }
           : server,
       ),

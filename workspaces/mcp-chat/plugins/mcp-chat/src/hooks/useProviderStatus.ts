@@ -33,17 +33,7 @@ export const useProviderStatus = (): UseProviderStatusReturn => {
     loading: isLoading,
     error,
     retry: refetch,
-  } = useAsyncRetry(async () => {
-    try {
-      return await mcpChatApi.getProviderStatus();
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to fetch provider status';
-      // eslint-disable-next-line no-console
-      console.error('Failed to fetch provider status:', err);
-      throw new Error(errorMessage);
-    }
-  }, [mcpChatApi]);
+  } = useAsyncRetry(async () => mcpChatApi.getProviderStatus(), [mcpChatApi]);
 
   return {
     providerStatusData: providerStatusData || null,

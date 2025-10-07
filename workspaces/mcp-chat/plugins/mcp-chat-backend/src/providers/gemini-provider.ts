@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LLMProvider } from './base-provider';
 import {
-  LLMProvider,
   ChatMessage,
   Tool,
   ChatResponse,
   ToolCall,
   ProviderConfig,
-} from './base-provider';
+} from '../types';
 import {
   GoogleGenerativeAI,
   GenerativeModel,

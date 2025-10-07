@@ -15,7 +15,7 @@
  */
 
 import { OllamaProvider } from './ollama-provider';
-import { ProviderConfig, ChatMessage, Tool } from './base-provider';
+import { ProviderConfig, ChatMessage, Tool } from '../types';
 import { Ollama } from 'ollama';
 
 // Mock the Ollama library

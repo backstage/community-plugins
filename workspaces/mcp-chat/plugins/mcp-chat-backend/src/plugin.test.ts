@@ -241,7 +241,10 @@ describe('mcpChatPlugin', () => {
         })
         .expect(400);
 
-      expect(response.body.error).toBe('enabledTools must be an array');
+      expect(response.body.error).toMatchObject({
+        name: 'InputError',
+        message: 'enabledTools must be an array',
+      });
     });
 
     it('should reject non-string enabledTools', async () => {
@@ -253,7 +256,10 @@ describe('mcpChatPlugin', () => {
         })
         .expect(400);
 
-      expect(response.body.error).toBe('All enabledTools must be strings');
+      expect(response.body.error).toMatchObject({
+        name: 'InputError',
+        message: 'All enabledTools must be strings',
+      });
     });
   });
 

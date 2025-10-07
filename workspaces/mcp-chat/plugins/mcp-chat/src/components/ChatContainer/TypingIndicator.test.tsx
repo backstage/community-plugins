@@ -54,159 +54,18 @@ const renderWithTheme = (component: React.ReactElement, theme = mockTheme) => {
 };
 
 describe('TypingIndicator', () => {
-  describe('Basic Rendering', () => {
-    it('renders without crashing', () => {
-      renderWithTheme(<TypingIndicator />);
+  it('renders with all required elements', () => {
+    renderWithTheme(<TypingIndicator />);
 
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-
-    it('displays the bot icon', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
-    });
-
-    it('shows typing message', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-
-    it('renders avatar with correct size', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      const avatar = document.querySelector('.MuiAvatar-root');
-      expect(avatar).toBeInTheDocument();
-    });
+    expect(screen.getByText('Hang on...')).toBeInTheDocument();
+    expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
+    expect(document.querySelector('.MuiAvatar-root')).toBeInTheDocument();
   });
 
-  describe('Animation Elements', () => {
-    it('renders three animated dots', () => {
-      renderWithTheme(<TypingIndicator />);
+  it('applies dark theme colors correctly', () => {
+    renderWithTheme(<TypingIndicator />, darkTheme);
 
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-      expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
-    });
-
-    it('applies correct animation styles', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-
-    it('has different animation delays for dots', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-  });
-
-  describe('Theme Integration', () => {
-    it('applies light theme colors correctly', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      const botIcon = screen.getByTestId('bot-icon');
-      expect(botIcon).toBeInTheDocument();
-    });
-
-    it('applies dark theme colors correctly', () => {
-      renderWithTheme(<TypingIndicator />, darkTheme);
-
-      const botIcon = screen.getByTestId('bot-icon');
-      expect(botIcon).toHaveStyle('color: rgb(255, 255, 255)');
-    });
-
-    it('uses theme spacing correctly', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-
-    it('applies theme background colors', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-  });
-
-  describe('Dark Mode Support', () => {
-    it('renders correctly in dark mode', () => {
-      renderWithTheme(<TypingIndicator />, darkTheme);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-      expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
-    });
-
-    it('uses dark mode avatar colors', () => {
-      renderWithTheme(<TypingIndicator />, darkTheme);
-
-      const avatar = document.querySelector('.MuiAvatar-root');
-      expect(avatar).toBeInTheDocument();
-    });
-
-    it('applies dark mode text colors', () => {
-      renderWithTheme(<TypingIndicator />, darkTheme);
-
-      const text = screen.getByText('Hang on...');
-      expect(text).toBeInTheDocument();
-    });
-  });
-
-  describe('Component Structure', () => {
-    it('has correct component hierarchy', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-
-    it('uses Material-UI components correctly', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      expect(screen.getByText('Hang on...')).toBeInTheDocument();
-    });
-
-    it('applies correct card styling', () => {
-      renderWithTheme(<TypingIndicator />);
-
-      const text = screen.getByText('Hang on...');
-      expect(text.closest('[class*="MuiCard"]')).toBeInTheDocument();
-    });
-  });
-
-  describe('Component Props', () => {
-    it('accepts no props gracefully', () => {
-      expect(() => {
-        renderWithTheme(<TypingIndicator />);
-      }).not.toThrow();
-    });
-
-    it('is a functional component', () => {
-      const component = renderWithTheme(<TypingIndicator />);
-      expect(component).toBeDefined();
-    });
-  });
-
-  describe('Performance', () => {
-    it('renders efficiently', () => {
-      const startTime = globalThis.performance.now();
-      renderWithTheme(<TypingIndicator />);
-      const endTime = globalThis.performance.now();
-
-      expect(endTime - startTime).toBeLessThan(100);
-    });
-
-    it('handles multiple renders', () => {
-      const { rerender } = renderWithTheme(<TypingIndicator />);
-
-      expect(() => {
-        rerender(
-          <ThemeProvider theme={mockTheme}>
-            <TypingIndicator />
-          </ThemeProvider>,
-        );
-      }).not.toThrow();
-    });
+    const botIcon = screen.getByTestId('bot-icon');
+    expect(botIcon).toHaveStyle('color: rgb(255, 255, 255)');
   });
 });

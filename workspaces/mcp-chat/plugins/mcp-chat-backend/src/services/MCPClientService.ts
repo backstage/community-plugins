@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ToolCall } from '../providers/base-provider';
 import {
   MCPServer,
   MCPServerStatusData,
   ProviderStatusData,
+  QueryResponse,
   ServerTool,
 } from '../types';
 
@@ -28,11 +28,7 @@ export interface MCPClientService {
   processQuery(
     messagesInput: any[],
     enabledTools: string[],
-  ): Promise<{
-    reply: string;
-    toolCalls: ToolCall[];
-    toolResponses: any[];
-  }>;
+  ): Promise<QueryResponse>;
 
   getAvailableTools(): ServerTool[];
   getProviderStatus(): Promise<ProviderStatusData>;

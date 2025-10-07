@@ -16,7 +16,7 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { MCPClientServiceImpl } from './MCPClientServiceImpl';
-import { ChatResponse, ToolCall } from '../providers/base-provider';
+import { ChatResponse, ToolCall } from '../types';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js');
 jest.mock('@modelcontextprotocol/sdk/client/streamableHttp.js');
@@ -446,6 +446,146 @@ describe('MCPClientServiceImpl', () => {
 
       const tools = service.getAvailableTools();
       expect(Array.isArray(tools)).toBe(true);
+    });
+  });
+
+  describe('System Prompt Configuration', () => {
+    it('should use custom system prompt when configured', async () => {
+      const customPrompt = 'You are a specialized assistant for DevOps tasks.';
+      mockConfig.getOptionalString.mockImplementation((key: string) => {
+        if (key === 'mcpChat.systemPrompt') {
+          return customPrompt;
+        }
+        return undefined;
+      });
+
+      const mockResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Response content',
+            },
+          },
+        ],
+      };
+
+      mockLLMProvider.sendMessage.mockResolvedValue(mockResponse);
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.processQuery([{ role: 'user', content: 'Hello' }], []);
+
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            role: 'system',
+            content: customPrompt,
+          }),
+        ]),
+        expect.any(Array),
+      );
+    });
+
+    it('should use default system prompt when not configured', async () => {
+      mockConfig.getOptionalString.mockImplementation((key: string) => {
+        if (key === 'mcpChat.systemPrompt') {
+          return undefined;
+        }
+        return undefined;
+      });
+
+      const mockResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Response content',
+            },
+          },
+        ],
+      };
+
+      mockLLMProvider.sendMessage.mockResolvedValue(mockResponse);
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.processQuery([{ role: 'user', content: 'Hello' }], []);
+
+      const defaultPrompt =
+        "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.";
+
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            role: 'system',
+            content: defaultPrompt,
+          }),
+        ]),
+        expect.any(Array),
+      );
+    });
+
+    it('should not override existing system message', async () => {
+      const customPrompt = 'Custom system prompt';
+      const userProvidedSystemMessage = 'User provided system message';
+
+      mockConfig.getOptionalString.mockImplementation((key: string) => {
+        if (key === 'mcpChat.systemPrompt') {
+          return customPrompt;
+        }
+        return undefined;
+      });
+
+      const mockResponse: ChatResponse = {
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Response content',
+            },
+          },
+        ],
+      };
+
+      mockLLMProvider.sendMessage.mockResolvedValue(mockResponse);
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.processQuery(
+        [
+          { role: 'system', content: userProvidedSystemMessage },
+          { role: 'user', content: 'Hello' },
+        ],
+        [],
+      );
+
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            role: 'system',
+            content: userProvidedSystemMessage,
+          }),
+        ]),
+        expect.any(Array),
+      );
+
+      // Verify that custom prompt was NOT added
+      const sentMessages = mockLLMProvider.sendMessage.mock.calls[0][0];
+      const systemMessages = sentMessages.filter(
+        (msg: any) => msg.role === 'system',
+      );
+      expect(systemMessages).toHaveLength(1);
+      expect(systemMessages[0].content).toBe(userProvidedSystemMessage);
     });
   });
 });

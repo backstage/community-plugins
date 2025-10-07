@@ -126,7 +126,7 @@ describe('ActiveMcpServers', () => {
       );
       fireEvent.click(connectedServer);
 
-      expect(onServerToggle).toHaveBeenCalledWith('test-server-1');
+      expect(onServerToggle).toHaveBeenCalledWith('1');
     });
 
     it('does not call onServerToggle for disconnected servers', () => {

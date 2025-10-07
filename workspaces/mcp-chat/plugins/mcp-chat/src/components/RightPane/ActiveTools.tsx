@@ -85,7 +85,7 @@ export const ActiveTools: React.FC<ActiveToolsProps> = ({
           .filter(server => server.enabled)
           .map(server => {
             const serverTools = availableTools.filter(
-              tool => tool.serverId === server.name,
+              tool => tool.serverId === server.id,
             );
 
             return (

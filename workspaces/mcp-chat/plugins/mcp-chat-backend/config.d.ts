@@ -96,5 +96,10 @@ export interface Config {
        */
       type?: 'stdio' | 'sse' | 'streamable-http';
     }>;
+    /**
+     * Custom system prompt for the AI assistant
+     * @visibility backend
+     */
+    systemPrompt?: string;
   };
 }

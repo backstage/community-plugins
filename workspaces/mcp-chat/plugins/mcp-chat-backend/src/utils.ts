@@ -227,6 +227,17 @@ export const validateConfig = (config: RootConfigService) => {
       }
     }
   }
+
+  // Validate systemPrompt if present
+  const systemPrompt = config.getOptionalString('mcpChat.systemPrompt');
+  if (systemPrompt !== undefined) {
+    if (typeof systemPrompt !== 'string') {
+      throw new Error('systemPrompt must be a string');
+    }
+    if (systemPrompt.trim() === '') {
+      throw new Error('systemPrompt cannot be empty or whitespace-only');
+    }
+  }
 };
 
 /**

@@ -43,7 +43,7 @@ interface Message {
 }
 
 interface MCPServer {
-  id?: string;
+  id: string;
   name: string;
   enabled: boolean;
   type?: string;
@@ -56,7 +56,7 @@ interface ChatContainerProps {
   sidebarCollapsed: boolean;
   mcpServers: MCPServer[];
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  onMessagesChange: (messages: Message[]) => void;
 }
 
 export interface ChatContainerRef {
@@ -64,7 +64,7 @@ export interface ChatContainerRef {
 }
 
 export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
-  ({ sidebarCollapsed, mcpServers, messages, setMessages }, ref) => {
+  ({ sidebarCollapsed, mcpServers, messages, onMessagesChange }, ref) => {
     const theme = useTheme();
     const mcpChatApi = useApi(mcpChatApiRef);
     const [inputValue, setInputValue] = useState('');
@@ -123,7 +123,7 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
         isUser: true,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, newMessage]);
+      onMessagesChange([...messages, newMessage]);
       setIsTyping(true);
 
       try {
@@ -140,9 +140,10 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
         ];
 
         // Get enabled tools from MCP servers
+        // Backend uses server IDs to filter tools (tool.serverId matches serverConfig.id)
         const enabledTools = mcpServers
           .filter(server => server.enabled)
-          .map(server => server.name);
+          .map(server => server.id);
 
         const response = await mcpChatApi.sendChatMessage(
           apiMessages,
@@ -167,7 +168,7 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
           toolsUsed: response.toolsUsed || [],
           toolResponses: response.toolResponses || [],
         };
-        setMessages(prev => [...prev, botResponse]);
+        onMessagesChange([...messages, newMessage, botResponse]);
       } catch (err) {
         // Check if error is due to abortion
         if (err instanceof Error && err.name === 'AbortError') {
@@ -205,7 +206,7 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
           toolsUsed: [],
           toolResponses: [],
         };
-        setMessages(prev => [...prev, errorResponse]);
+        onMessagesChange([...messages, newMessage, errorResponse]);
       }
     };
 

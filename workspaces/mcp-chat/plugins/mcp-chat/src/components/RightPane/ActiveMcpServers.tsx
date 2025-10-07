@@ -24,7 +24,7 @@ import { MCPServer } from '../../types';
 
 interface ActiveMcpServersProps {
   mcpServers: MCPServer[];
-  onServerToggle: (serverName: string) => void;
+  onServerToggle: (serverId: string) => void;
 }
 
 const getChipBackgroundColor = (server: MCPServer, theme: any) => {
@@ -110,7 +110,7 @@ export const ActiveMcpServers = ({
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         {mcpServers.map(server => (
           <Tooltip
-            key={server.name}
+            key={server.id}
             title={
               server.status?.connected
                 ? `Click to ${server.enabled ? 'disable' : 'enable'} ${
@@ -125,7 +125,7 @@ export const ActiveMcpServers = ({
               clickable={server.status?.connected}
               onClick={
                 server.status?.connected
-                  ? () => onServerToggle(server.name)
+                  ? () => onServerToggle(server.id)
                   : undefined
               }
               icon={

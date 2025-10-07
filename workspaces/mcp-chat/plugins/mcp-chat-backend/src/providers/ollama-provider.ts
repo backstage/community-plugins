@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider, ChatMessage, Tool, ChatResponse } from './base-provider';
+import { LLMProvider } from './base-provider';
+import { ChatMessage, Tool, ChatResponse } from '../types';
 import { Ollama } from 'ollama';
 
 export class OllamaProvider extends LLMProvider {

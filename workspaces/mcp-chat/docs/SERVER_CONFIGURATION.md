@@ -10,6 +10,8 @@ All server configurations are defined in the `mcpServers` array in your `app-con
 - `name`: Display name in the UI
 - Connection-specific properties (detailed below)
 
+Additionally, you can customize the AI assistant's behavior using the optional `systemPrompt` configuration at the `mcpChat` level (see [main README](../README.md) for details).
+
 ### Universal Properties
 
 These properties can be added to **any** MCP server configuration:
