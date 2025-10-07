@@ -177,8 +177,8 @@ const _default: OverridableFrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          branch?: string | undefined;
           limit?: number | undefined;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
@@ -188,8 +188,8 @@ const _default: OverridableFrontendPlugin<
         props?:
           | {
               dense?: boolean | undefined;
-              branch?: string | undefined;
               limit?: number | undefined;
+              branch?: string | undefined;
             }
           | undefined;
       } & {
