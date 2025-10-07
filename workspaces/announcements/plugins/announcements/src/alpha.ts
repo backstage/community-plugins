@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import {
-  createFrontendPlugin,
-  FrontendPlugin,
-} from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { announcementsApiExtension } from './alpha/apis';
 import { entityAnnouncementsCard } from './alpha/entityCards';
 import { announcementsNavItem } from './alpha/navItems';
 import { announcementsPage } from './alpha/pages';
 import {
-  announcementsSearchResultListItem,
   announcementsSearchFilterResultType,
+  announcementsSearchResultListItem,
 } from './alpha/search';
 import { rootRouteRef } from './routes';
 
@@ -44,4 +41,4 @@ export default createFrontendPlugin({
     announcementsSearchResultListItem,
     announcementsSearchFilterResultType,
   ],
-}) as FrontendPlugin;
+});
