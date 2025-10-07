@@ -26,7 +26,8 @@ import {
   IncidentPick,
   PaginatedIncidents,
 } from '@backstage-community/plugin-servicenow-common';
-import { OAuthConfig, ServiceNowConfig } from '../../config';
+import { OAuthConfig, BasicAuthConfig } from '../../oauthConfig';
+import { Config as ServiceNowConfig } from '../../config';
 
 export type IncidentQueryParams = {
   userEmail?: string;
@@ -47,6 +48,7 @@ export interface ServiceNowClient {
 export class DefaultServiceNowClient implements ServiceNowClient {
   private readonly instanceUrl: string;
   private readonly config: ServiceNowConfig;
+  private readonly cmdbBaseUrl: string;
   private readonly logger: LoggerService;
   private oauthClient?: ClientCredentials | ResourceOwnerPassword;
 
@@ -72,7 +74,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     }
 
     if (config.servicenow?.oauth) {
-      this.setupOAuthClient(config.servicenow.oauth);
+      this.setupOAuthClient(config.servicenow.oauth as OAuthConfig);
     }
 
     if (config.servicenow?.basicAuth) {
@@ -80,6 +82,9 @@ export class DefaultServiceNowClient implements ServiceNowClient {
         'Basic authentication is configured for ServiceNow. This is not recommended for production environments.',
       );
     }
+
+    logger.warn(`config: ${JSON.stringify(config)}`);
+    this.cmdbBaseUrl = config?.servicenow?.cmdbBaseUrl || '';
   }
 
   private setupOAuthClient(oauth: OAuthConfig) {
@@ -133,7 +138,8 @@ export class DefaultServiceNowClient implements ServiceNowClient {
 
   private async getAuthHeaders(): Promise<{ Authorization: string }> {
     if (this.config.servicenow?.basicAuth) {
-      const { username, password } = this.config.servicenow.basicAuth;
+      const { username, password } = this.config.servicenow
+        .basicAuth as BasicAuthConfig;
       const encodedCredentials = Buffer.from(
         `${username}:${password}`,
       ).toString('base64');
@@ -302,5 +308,102 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     if (users && users.length > 0) return users[0].sys_id;
 
     throw new Error(`User with email ${email} not found in ServiceNow.`);
+  }
+
+  async getBusinessApplication(appCode: string) {
+    try {
+      const apiUrl = new URL(
+        'cmdb_ci_business_app',
+        `${this.cmdbBaseUrl}api/now/table/`,
+      );
+      apiUrl.searchParams.append(
+        'sysparm_query',
+        `u_application_id=${appCode}`,
+      );
+      const response = await axios.get(apiUrl.toString(), {
+        headers: {
+          Authorization: `${this.config.servicenow?.cmdbToken}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.status >= 400 && response.status < 600) {
+        throw new Error('Failed to fetch application details');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      this.logger.error(
+        `Failed to fetch application details: ${error.message}`,
+        {
+          error,
+        },
+      );
+      throw new Error(`Failed to fetch application details: ${error.message}`);
+    }
+  }
+
+  async getUserDetails(userId: string) {
+    try {
+      const apiUrl = new URL(
+        `sys_user/${userId}`,
+        `${this.cmdbBaseUrl}api/now/table/`,
+      );
+
+      const response = await axios.get(apiUrl.toString(), {
+        headers: {
+          Authorization: `${this.config.servicenow?.cmdbToken}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.status >= 400 && response.status < 600) {
+        throw new Error('Failed to fetch user details');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      this.logger.error(`Failed to fetch user details: ${error.message}`, {
+        error,
+      });
+      throw new Error(`Failed to fetch user details: ${error.message}`);
+    }
+  }
+
+  async getInfraDetails(appCode: string) {
+    try {
+      const apiUrl = new URL(
+        `cmdb_rel_ci`,
+        `${this.cmdbBaseUrl}api/now/table/`,
+      );
+      apiUrl.searchParams.append(
+        'sysparm_query',
+        `parent.u_business_app.u_application_idSTARTSWITH${appCode}^type.nameSTARTSWITHHosted on::Hosts^GROUPBYchild.name`,
+      );
+      apiUrl.searchParams.append(
+        'sysparm_fields',
+        'parent.name,parent.sys_class_name,u_display,child.name,sys_updated_on',
+      );
+      const response = await axios.get(apiUrl.toString(), {
+        headers: {
+          Authorization: `${this.config.servicenow?.cmdbToken}`,
+          Accept: 'application/json',
+        },
+      });
+      if (response.status >= 400 && response.status < 600) {
+        throw new Error('Failed to fetch user details');
+      }
+      return response.data;
+    } catch (error: any) {
+      this.logger.error(
+        `Failed to fetch infrastructure details: ${error.message}`,
+        {
+          error,
+        },
+      );
+      throw new Error(
+        `Failed to fetch infrastructure details: ${error.message}`,
+      );
+    }
   }
 }

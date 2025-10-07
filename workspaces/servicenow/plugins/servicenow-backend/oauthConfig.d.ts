@@ -14,30 +14,25 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
+type BaseOAuthConfig = {
+  clientId: string;
+  clientSecret: string;
+  tokenUrl?: string;
+};
 
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+type ClientCredentialsGrant = BaseOAuthConfig & {
+  grantType: 'client_credentials';
+};
+
+type PasswordGrant = BaseOAuthConfig & {
+  grantType: 'password';
+  username: string;
+  password: string;
+};
+
+export type OAuthConfig = ClientCredentialsGrant | PasswordGrant;
+
+export type BasicAuthConfig = {
+  username: string;
+  password: string;
+};

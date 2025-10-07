@@ -24,7 +24,7 @@ import express from 'express';
 import request from 'supertest';
 
 import { mockErrorHandler, mockServices } from '@backstage/backend-test-utils';
-import { ServiceNowConfig } from '../../config';
+import { Config as ServiceNowConfig } from '../../config';
 import { createRouter } from './router';
 
 const mockFetchIncidents = jest.fn();
@@ -49,6 +49,8 @@ describe('createRouter', () => {
     mockServiceNowConfig = {
       servicenow: {
         instanceUrl: 'https://mock-instance.service-now.com',
+        cmdbBaseUrl: 'https://mock-instance.service-now.com',
+        cmdbToken: 'mock-secret-token',
       },
     };
 

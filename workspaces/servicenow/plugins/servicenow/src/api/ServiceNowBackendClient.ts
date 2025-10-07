@@ -21,9 +21,17 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import { IncidentsData, PaginatedIncidentsData } from '../types';
+import {
+  ServiceNowCMDBResponse,
+  ServiceNowInfraResponse,
+  ServiceNowUserResponse,
+} from './cmdb/types';
 
 export interface ServiceNowBackendAPI {
   getIncidents(queryParams: URLSearchParams): Promise<PaginatedIncidentsData>;
+  getBusinessApplication(appCode: string): Promise<ServiceNowCMDBResponse>;
+  getUserDetails(userId: string): Promise<ServiceNowUserResponse>;
+  getInfraDetails(appCode: string): Promise<ServiceNowInfraResponse>;
 }
 
 export const serviceNowApiRef = createApiRef<ServiceNowBackendAPI>({
@@ -37,11 +45,15 @@ export class ServiceNowBackendClient implements ServiceNowBackendAPI {
     private readonly identityApi: IdentityApi,
   ) {}
 
+  async getBaseUrl() {
+    return await this.discoveryApi.getBaseUrl('servicenow');
+  }
+
   private async fetchFromServiceNow<T>(
     path: string,
     queryParams?: URLSearchParams,
   ): Promise<{ items: T; totalCount: number }> {
-    const proxyBase = await this.discoveryApi.getBaseUrl('servicenow');
+    const proxyBase = await this.getBaseUrl();
     const url = `${proxyBase}${path}${queryParams ? `?${queryParams}` : ''}`;
 
     const { token } = await this.identityApi.getCredentials();
@@ -66,6 +78,36 @@ export class ServiceNowBackendClient implements ServiceNowBackendAPI {
 
     const incidents = incidentsPickToIncidentsData(items);
     return { incidents, totalCount };
+  }
+  async getBusinessApplication(appCode: string) {
+    const apiUrl = `${await this.getBaseUrl()}/cmdb/business-application/${appCode}`;
+    const response = await this.fetchApi.fetch(apiUrl);
+
+    if (response.status >= 400 && response.status < 600) {
+      throw new Error('Failed to fetch application details');
+    }
+
+    return (await response.json()) as ServiceNowCMDBResponse;
+  }
+
+  async getUserDetails(userId: string) {
+    const apiUrl = `${await this.getBaseUrl()}/cmdb/user/${userId}`;
+    const response = await this.fetchApi.fetch(apiUrl);
+    if (response.status >= 400 && response.status < 600) {
+      throw new Error('Failed to fetch user details');
+    }
+
+    return (await response.json()) as ServiceNowUserResponse;
+  }
+
+  async getInfraDetails(appCode: string) {
+    const apiUrl = `${await this.getBaseUrl()}/cmdb/infra/${appCode}`;
+    const response = await this.fetchApi.fetch(apiUrl);
+    if (response.status >= 400 && response.status < 600) {
+      throw new Error('Failed to fetch user details');
+    }
+
+    return (await response.json()) as ServiceNowInfraResponse;
   }
 }
 
