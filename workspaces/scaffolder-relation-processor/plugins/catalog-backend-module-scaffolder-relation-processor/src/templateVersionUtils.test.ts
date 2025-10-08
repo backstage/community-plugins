@@ -35,7 +35,7 @@ jest.mock('@backstage/catalog-client');
 describe('templateVersionUtils', () => {
   let mockCatalogClient: jest.Mocked<CatalogClient>;
   let mockNotificationService: jest.Mocked<NotificationService>;
-  let mockAuthService = mockServices.auth.mock();
+  const mockAuthService = mockServices.auth();
   const mockProcessorConfig = {
     notifications: {
       templateUpdate: {
@@ -51,21 +51,15 @@ describe('templateVersionUtils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockCatalogClient = {
-      getEntities: jest.fn(),
-      getEntityByRef: jest.fn(),
-    } as any;
+    mockCatalogClient = jest.mocked(
+      new CatalogClient({
+        discoveryApi: mockServices.discovery(),
+      }),
+    );
 
     mockNotificationService = {
       send: jest.fn().mockResolvedValue(undefined),
-    } as any;
-
-    mockAuthService = {
-      getPluginRequestToken: jest
-        .fn()
-        .mockResolvedValue({ token: 'mock-token' }),
-      getOwnServiceCredentials: jest.fn().mockResolvedValue('mock-credentials'),
-    } as any;
+    };
   });
 
   describe('handleTemplateUpdateNotifications', () => {
@@ -118,11 +112,6 @@ describe('templateVersionUtils', () => {
         payload,
       );
 
-      expect(mockAuthService.getPluginRequestToken).toHaveBeenCalledWith({
-        onBehalfOf: 'mock-credentials',
-        targetPluginId: 'catalog',
-      });
-
       expect(mockCatalogClient.getEntities).toHaveBeenCalledWith(
         {
           filter: { 'spec.scaffoldedFrom': payload.entityRef },
@@ -134,7 +123,9 @@ describe('templateVersionUtils', () => {
             'relations',
           ],
         },
-        { token: 'mock-token' },
+        {
+          token: 'mock-service-token:{"sub":"plugin:test","target":"catalog"}',
+        },
       );
 
       // Should send 3 individual notifications (one per entity)
@@ -415,6 +406,151 @@ describe('templateVersionUtils', () => {
       const result = readScaffolderRelationProcessorConfig(config);
 
       expect(result).toEqual(customProcessorConfig);
+    });
+
+    it('should handle missing scaffolder.notifications section', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            // notifications section is missing
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual(mockProcessorConfig);
+    });
+
+    it('should handle missing scaffolder.notifications.templateUpdate section', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            notifications: {
+              // templateUpdate section is missing
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual(mockProcessorConfig);
+    });
+
+    it('should handle missing scaffolder.notifications.templateUpdate.message section', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            notifications: {
+              templateUpdate: {
+                enabled: true,
+                // message section is missing
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual({
+        notifications: {
+          templateUpdate: {
+            enabled: true,
+            message: {
+              title: DEFAULT_NOTIFICATION_TITLE,
+              description: DEFAULT_NOTIFICATION_DESCRIPTION,
+            },
+          },
+        },
+      });
+    });
+
+    it('should handle null config values', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            notifications: {
+              templateUpdate: {
+                enabled: null,
+                message: {
+                  title: null,
+                  description: null,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual(mockProcessorConfig);
+    });
+
+    it('should handle malformed config structure', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            notifications: {
+              templateUpdate: {
+                // Missing enabled field
+                message: {
+                  title: 'Test Title',
+                  description: 'Test Description',
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual({
+        notifications: {
+          templateUpdate: {
+            enabled: DEFAULT_NOTIFICATION_ENABLED,
+            message: {
+              title: 'Test Title',
+              description: 'Test Description',
+            },
+          },
+        },
+      });
+    });
+
+    it('should handle partial message configuration', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            notifications: {
+              templateUpdate: {
+                enabled: true,
+                message: {
+                  title: 'Custom Title',
+                  // description is missing
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result).toEqual({
+        notifications: {
+          templateUpdate: {
+            enabled: true,
+            message: {
+              title: 'Custom Title',
+              description: DEFAULT_NOTIFICATION_DESCRIPTION,
+            },
+          },
+        },
+      });
     });
   });
 });
