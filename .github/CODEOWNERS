@@ -85,7 +85,6 @@ yarn.lock                                                               @backsta
 /workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar @logonoff
 /workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff @dzemanov
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
-/workspaces/odo                                                         @backstage/community-plugins-maintainers
 /workspaces/opencost                                                    @backstage/community-plugins-maintainers
 /workspaces/periskop                                                    @backstage/community-plugins-maintainers
 /workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee @AndrienkoAleksandr @dzemanov @lholmquist @PatAKnight @djanickova
