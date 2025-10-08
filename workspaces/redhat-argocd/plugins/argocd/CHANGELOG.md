@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.25.1
+
+### Patch Changes
+
+- 1d422c1: export alpha module in scalprum config
+
 ## 1.25.0
 
 ### Minor Changes
