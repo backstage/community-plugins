@@ -95,7 +95,8 @@
   "scalprum": {
     "name": "backstage-community.plugin-redhat-argocd",
     "exposedModules": {
-      "PluginRoot": "./src/index.ts"
+      "PluginRoot": "./src/index.ts",
+      "Alpha": "./src/alpha.ts"
     }
   },
   "configSchema": "config.d.ts",
