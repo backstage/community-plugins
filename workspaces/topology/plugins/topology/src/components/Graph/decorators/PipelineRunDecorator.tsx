@@ -20,9 +20,9 @@ import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 import {
   getLatestPipelineRun,
   getTaskRunsForPipelineRun,
-  pipelineRunStatus,
-  Status,
-} from '@janus-idp/shared-react';
+  getPipelineRunStatus,
+} from '@aonic-ui/pipelines';
+import { Status } from '@aonic-ui/core';
 
 import { PipelinesData } from '../../../types/pipeline';
 import PipelineDecoratorBubble from './PipelineDecoratorBubble';
@@ -51,7 +51,7 @@ export const PipelineRunDecorator = ({
     pipelinesData.taskRuns,
   );
 
-  const status = pipelineRunStatus(latestPipelineRun);
+  const status = getPipelineRunStatus(latestPipelineRun);
   const statusIcon = <Status status={status} iconOnly />;
 
   const ariaLabel = `PipelineRun status is ${status}`;

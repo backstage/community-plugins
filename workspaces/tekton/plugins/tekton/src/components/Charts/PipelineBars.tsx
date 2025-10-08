@@ -25,7 +25,7 @@ import {
   PipelineRunKind,
   TaskStatusTooltip,
   TaskStatusTypes,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { getTaskStatusOfPLR } from '../../utils/tekton-utils';

@@ -30,7 +30,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Timestamp, Tooltip } from '@patternfly/react-core';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 
 import { TEKTON_SIGNED_ANNOTATION } from '../../consts/tekton-const';
 import { OpenRowStatus, tektonGroupColor } from '../../types/types';

@@ -15,7 +15,7 @@
  */
 import { useMemo } from 'react';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 
 import { PipelineRunScanResults } from '../types/types';
 

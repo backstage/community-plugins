@@ -23,7 +23,7 @@ import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/
 import { t_color_orange_40 as highColor } from '@patternfly/react-tokens/dist/js/t_color_orange_40';
 import classNames from 'classnames';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 
 import { usePipelineRunScanResults } from '../../hooks/usePipelineRunScanResults';
 import CriticalRiskIcon from '../Icons/CriticalRiskIcon';

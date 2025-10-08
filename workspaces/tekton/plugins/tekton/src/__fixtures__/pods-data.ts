@@ -15,7 +15,7 @@
  */
 import { V1Pod } from '@kubernetes/client-node';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 
 export const testPipelineRun: PipelineRunKind = {
   apiVersion: 'tekton.dev/v1',

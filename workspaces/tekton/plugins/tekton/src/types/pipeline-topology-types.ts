@@ -24,7 +24,7 @@ import {
   PipelineRunKind,
   PipelineTask,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { AddNodeDirection, NodeType } from '../consts/pipeline-topology-const';
 

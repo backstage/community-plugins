@@ -19,13 +19,13 @@ import {
   ComputedStatus,
   pipelineRunFilterReducer,
   PipelineRunKind,
-  pipelineRunStatus,
+  getPipelineRunStatus,
   PipelineTask,
   PipelineTaskWithStatus,
   PLRTaskRuns,
   SucceedConditionReason,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import {
   TEKTON_PIPELINE_RUN,
@@ -107,7 +107,7 @@ const appendTaskStatus = (mTask: PipelineTaskWithStatus) => {
       status: { reason: ComputedStatus.Pending, conditions: [] },
     };
   } else if (mTask.status?.conditions) {
-    task.status.reason = pipelineRunStatus(mTask) || ComputedStatus.Pending;
+    task.status.reason = getPipelineRunStatus(mTask) || ComputedStatus.Pending;
   } else if (mTask.status && !mTask.status.reason) {
     task.status.reason = ComputedStatus.Pending;
   }

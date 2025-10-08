@@ -25,12 +25,12 @@ import {
   getTaskRunsForPipelineRun,
   pipelineRunFilterReducer,
   PipelineRunKind,
-  pipelineRunStatus,
+  getPipelineRunStatus,
   SucceedConditionReason,
   TaskRunKind,
   TaskStatusTypes,
   updateTaskStatus,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { getPipelineRunScanResults } from '../hooks/usePipelineRunScanResults';
 import { PipelineRunGVK, TaskRunGVK } from '../models';
@@ -312,7 +312,10 @@ export const pipelineRunDuration = (
   const completionTime = run.status?.completionTime;
 
   // Duration cannot be computed if start time is missing or a completed/failed pipeline/task has no end time
-  if (!startTime || (!completionTime && pipelineRunStatus(run) !== 'Running')) {
+  if (
+    !startTime ||
+    (!completionTime && getPipelineRunStatus(run) !== 'Running')
+  ) {
     return '-';
   }
   return calculateDuration(t, startTime, completionTime, true);

@@ -1,11 +1,9 @@
 /**
-* NOTE: These styles are derived from janus-idp/shared-react/src/components/pipeline/HorizontalStackedBars.css.
-* At the time of this writing there are plans to migrate that library somewhere else.
-* This is a TEMPORARY fix. Once the library is migrated and updated we should check if these styles can be removed.
-* If the issue still persists, report it in the new library.
+* NOTE: These styles are now using aonic-ui class names.
+* These styles can be removed once the HorizontalStackedBars component from aonic-ui is properly imported.
 * **/
 
-.bs-shared-horizontal-stacked-bars {
+.aonic-horizontal-stacked-bars {
   --bar-gap: 3px;
   display: block;
   height: 100%;
@@ -14,11 +12,11 @@
   cursor: pointer;
 }
 
-.bs-shared-horizontal-stacked-bars.is-inline {
+.aonic-horizontal-stacked-bars.is-inline {
   display: inline-block;
 }
 
-.bs-shared-horizontal-stacked-bars__bars {
+.aonic-horizontal-stacked-bars__bars {
   display: flex !important;
   flex-direction: row;
   height: 100%;
@@ -26,7 +24,7 @@
   width: calc(100% + var(--bar-gap));
 }
 
-.bs-shared-horizontal-stacked-bars__data-bar {
+.aonic-horizontal-stacked-bars__data-bar {
   --bar-gap-neg: calc(var(--bar-gap) * -1);
   box-shadow: inset var(--bar-gap-neg) 0 0 #fff;
   height: 100%;

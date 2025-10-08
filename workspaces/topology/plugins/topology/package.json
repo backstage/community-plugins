@@ -45,6 +45,8 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@aonic-ui/core": "^0.2.0",
+    "@aonic-ui/pipelines": "^3.2.0",
     "@backstage/catalog-model": "^1.7.5",
     "@backstage/core-components": "^0.18.1",
     "@backstage/core-plugin-api": "^1.11.0",
@@ -54,7 +56,6 @@
     "@backstage/plugin-permission-common": "^0.9.1",
     "@backstage/plugin-permission-react": "^0.4.36",
     "@backstage/theme": "^0.6.8",
-    "@janus-idp/shared-react": "^2.18.0",
     "@kubernetes/client-node": "1.1.2",
     "@mui/icons-material": "5.18.0",
     "@mui/lab": "5.0.0-alpha.177",

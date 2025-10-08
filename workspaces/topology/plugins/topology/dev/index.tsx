@@ -21,10 +21,11 @@ import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
+
 import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
-} from '@backstage/plugin-kubernetes-react';
+} from '../src/types/types';
 import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
 import { TopologyPage, topologyPlugin } from '../src/plugin';
 import { topologyTranslations } from '../src/translations';

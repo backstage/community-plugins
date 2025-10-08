@@ -17,7 +17,7 @@ import { act } from 'react';
 
 import { renderHook, waitFor } from '@testing-library/react';
 
-import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
+import { useKubernetesObjects } from '@aonic-ui/core';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { kubernetesObjects } from '../__fixtures__/kubernetesObject';
@@ -26,7 +26,7 @@ import { useTektonObjectsResponse } from './useTektonObjectsResponse';
 
 const watchedResources = [ModelsPlural.pipelineruns, ModelsPlural.taskruns];
 
-jest.mock('@backstage/plugin-kubernetes-react', () => ({
+jest.mock('@aonic-ui/core', () => ({
   useKubernetesObjects: jest.fn(),
   useDeepCompareMemoize: (val: any) => val,
   useDebounceCallback: (val: any) => jest.fn(val),

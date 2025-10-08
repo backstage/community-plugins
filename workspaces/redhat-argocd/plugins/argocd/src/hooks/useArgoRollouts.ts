@@ -15,7 +15,7 @@
  */
 import { useMemo } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useKubernetesObjects } from '@janus-idp/shared-react';
+import { useKubernetesObjects } from '@aonic-ui/core';
 import pluralize from 'pluralize';
 
 import { kubernetesApiRef, kubernetesAuthProvidersApiRef } from '../kubeApi';

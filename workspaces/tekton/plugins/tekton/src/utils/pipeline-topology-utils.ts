@@ -32,7 +32,7 @@ import {
   PipelineTaskParam,
   PipelineTaskWithStatus,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { DAG, Vertex } from '../components/pipeline-topology/dag';
 import {

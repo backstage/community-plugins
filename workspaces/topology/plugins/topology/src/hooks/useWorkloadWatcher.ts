@@ -17,10 +17,7 @@ import { useState, useContext, useCallback, useEffect } from 'react';
 
 import { Model } from '@patternfly/react-topology';
 
-import {
-  useDebounceCallback,
-  useDeepCompareMemoize,
-} from '@janus-idp/shared-react';
+import { useDebounceCallback, useDeepCompareMemoize } from '@aonic-ui/core';
 
 import { updateTopologyDataModel } from '../data-transforms/updateTopologyDataModel';
 import { K8sResourcesContextData, K8sResponseData } from '../types/types';

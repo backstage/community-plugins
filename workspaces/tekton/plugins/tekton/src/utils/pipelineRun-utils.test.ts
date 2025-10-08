@@ -17,7 +17,8 @@ import {
   ComputedStatus,
   SucceedConditionReason,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+  PipelineRunKind,
+} from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { appendPipelineRunStatus, getPLRTaskRuns } from './pipelineRun-utils';
@@ -27,12 +28,12 @@ describe('pipelineRun-utils', () => {
     const pipelineRun = mockKubernetesPlrResponse.pipelineruns[0];
     const pipelineRunWithoutStatus = { ...pipelineRun };
     const plrTaskRuns = getPLRTaskRuns(
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
       mockKubernetesPlrResponse.pipelineruns[0].metadata.name,
     );
 
     const taskList = appendPipelineRunStatus(
-      pipelineRunWithoutStatus,
+      pipelineRunWithoutStatus as PipelineRunKind,
       plrTaskRuns,
     );
     expect(
@@ -42,12 +43,12 @@ describe('pipelineRun-utils', () => {
 
   it('should append pipelineRun running status for all the tasks', () => {
     const plrTaskRuns = getPLRTaskRuns(
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
       mockKubernetesPlrResponse.pipelineruns[0].metadata.name,
     );
 
     const taskList = appendPipelineRunStatus(
-      mockKubernetesPlrResponse.pipelineruns[0],
+      mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind,
       plrTaskRuns,
     );
     expect(
@@ -61,7 +62,10 @@ describe('pipelineRun-utils', () => {
       ...pipelineRun.status.conditions[0],
       reason: SucceedConditionReason.PipelineRunPending,
     };
-    const taskList = appendPipelineRunStatus(pipelineRun, {});
+    const taskList = appendPipelineRunStatus(
+      pipelineRun as PipelineRunKind,
+      {},
+    );
     expect(
       taskList.filter(t => t.status.reason === ComputedStatus.Idle),
     ).toHaveLength(pipelineRun.status.pipelineSpec.tasks.length);
@@ -73,7 +77,10 @@ describe('pipelineRun-utils', () => {
       ...pipelineRun.status.conditions[0],
       reason: SucceedConditionReason.PipelineRunCancelled,
     };
-    const taskList = appendPipelineRunStatus(pipelineRun, {});
+    const taskList = appendPipelineRunStatus(
+      pipelineRun as PipelineRunKind,
+      {},
+    );
     expect(
       taskList.filter(t => t.status.reason === ComputedStatus.Cancelled),
     ).toHaveLength(pipelineRun.status.pipelineSpec.tasks.length);
@@ -82,20 +89,27 @@ describe('pipelineRun-utils', () => {
   it('should append status to only pipeline tasks if isFinallyTasks is false', () => {
     const pipelineRun = { ...mockKubernetesPlrResponse.pipelineruns[1] };
     const plrTaskRuns = getPLRTaskRuns(
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
       pipelineRun.metadata.name,
     );
-    const taskList = appendPipelineRunStatus(pipelineRun, plrTaskRuns);
+    const taskList = appendPipelineRunStatus(
+      pipelineRun as PipelineRunKind,
+      plrTaskRuns,
+    );
     expect(taskList).toHaveLength(3);
   });
 
   it('should append status to only finally tasks if isFinallyTasks is true', () => {
     const pipelineRun = { ...mockKubernetesPlrResponse.pipelineruns[1] };
     const plrTaskRuns = getPLRTaskRuns(
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
       pipelineRun.metadata.name,
     );
-    const taskList = appendPipelineRunStatus(pipelineRun, plrTaskRuns, true);
+    const taskList = appendPipelineRunStatus(
+      pipelineRun as PipelineRunKind,
+      plrTaskRuns,
+      true,
+    );
     expect(taskList).toHaveLength(1);
   });
 
@@ -105,7 +119,11 @@ describe('pipelineRun-utils', () => {
       mockKubernetesPlrResponse.taskruns as TaskRunKind[],
       pipelineRun.metadata.name,
     );
-    const taskList = appendPipelineRunStatus(pipelineRun, plrTaskRuns, true);
+    const taskList = appendPipelineRunStatus(
+      pipelineRun as PipelineRunKind,
+      plrTaskRuns,
+      true,
+    );
     expect(taskList).toHaveLength(0);
   });
 });

@@ -17,7 +17,7 @@ import {
   ComputedStatus,
   PipelineRunKind,
   PipelineTaskWithStatus,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { createStepStatus } from './pipeline-step-utils';

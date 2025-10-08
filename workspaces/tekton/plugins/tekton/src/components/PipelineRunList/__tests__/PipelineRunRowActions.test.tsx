@@ -26,7 +26,7 @@ import {
   within,
 } from '@testing-library/react';
 
-import { ComputedStatus, PipelineRunKind } from '@janus-idp/shared-react';
+import { ComputedStatus, PipelineRunKind } from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../../../__fixtures__/1-pipelinesData';
 import { TektonResourcesContext } from '../../../hooks/TektonResourcesContext';

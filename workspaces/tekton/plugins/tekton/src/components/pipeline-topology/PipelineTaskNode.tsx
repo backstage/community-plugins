@@ -37,7 +37,7 @@ import {
 // eslint-disable-next-line @backstage/no-undeclared-imports
 import { observer } from 'mobx-react';
 
-import { PipelineTaskWithStatus, TaskRunKind } from '@janus-idp/shared-react';
+import { PipelineTaskWithStatus, TaskRunKind } from '@aonic-ui/pipelines';
 
 import { NodeType } from '../../consts/pipeline-topology-const';
 import {

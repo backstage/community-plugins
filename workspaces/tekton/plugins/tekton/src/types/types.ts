@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+import { createApiRef } from '@backstage/core-plugin-api';
+import {
+  KubernetesApi,
+  KubernetesAuthProvidersApi,
+  KubernetesProxyApi,
+} from '@backstage/plugin-kubernetes-react';
 import { Dispatch, SetStateAction } from 'react';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@aonic-ui/pipelines';
 
 export const tektonGroupColor = '#38812f';
 
@@ -67,3 +73,16 @@ export type PipelineRunScanResults = {
     low: number;
   };
 };
+
+export const kubernetesAuthProvidersApiRef =
+  createApiRef<KubernetesAuthProvidersApi>({
+    id: 'plugin.tekton-kubernetes-auth-providers.service',
+  });
+
+export const kubernetesApiRef = createApiRef<KubernetesApi>({
+  id: 'plugin.tekton-kubernetes.service',
+});
+
+export const kubernetesProxyApiRef = createApiRef<KubernetesProxyApi>({
+  id: 'plugin.topology-kubernetes.proxy-service',
+});

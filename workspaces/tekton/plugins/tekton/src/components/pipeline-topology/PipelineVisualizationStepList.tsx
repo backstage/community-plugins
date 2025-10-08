@@ -16,7 +16,7 @@
 import { RunStatus } from '@patternfly/react-topology';
 import classNames from 'classnames';
 
-import { Status } from '@janus-idp/shared-react';
+import { Status } from '@aonic-ui/core';
 
 import { StepStatus } from '../../types/taskRun';
 

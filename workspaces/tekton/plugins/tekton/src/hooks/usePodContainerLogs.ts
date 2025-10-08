@@ -20,8 +20,10 @@ import { useApi } from '@backstage/core-plugin-api';
 import { ContainerScope } from '@backstage/plugin-kubernetes-react';
 
 import { V1Pod } from '@kubernetes/client-node';
-import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
-import { TektonResourcesContextData } from '../types/types';
+import {
+  kubernetesProxyApiRef,
+  TektonResourcesContextData,
+} from '../types/types';
 import { TektonResourcesContext } from './TektonResourcesContext';
 
 interface PodContainerLogsOptions {

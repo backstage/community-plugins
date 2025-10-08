@@ -17,8 +17,8 @@ import {
   PipelineKind,
   PipelineRunKind,
   pipelineRunStatus,
-  Status,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
+import { Status } from '@aonic-ui/core';
 
 import ResourceName from '../../../common/components/ResourceName';
 import ResourceStatus from '../../../common/components/ResourceStatus';

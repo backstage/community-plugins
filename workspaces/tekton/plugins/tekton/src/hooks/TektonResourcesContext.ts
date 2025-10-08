@@ -15,7 +15,7 @@
  */
 import { createContext } from 'react';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@aonic-ui/pipelines';
 
 import { TektonResourcesContextData } from '../types/types';
 
