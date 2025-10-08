@@ -109,7 +109,9 @@ describe('PipelineRunRowActions', () => {
   it('should render the icon space holder', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[0]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind
+        }
       />,
     );
 
@@ -119,7 +121,9 @@ describe('PipelineRunRowActions', () => {
   it('should render the internal sbom link', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[3]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[3] as PipelineRunKind
+        }
       />,
     );
 
@@ -129,7 +133,9 @@ describe('PipelineRunRowActions', () => {
   it('should open sbom logs modal when the view SBOM link is clicked', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[3]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[3] as PipelineRunKind
+        }
       />,
     );
 
@@ -149,7 +155,9 @@ describe('PipelineRunRowActions', () => {
   it('should render the external sbom link', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[4]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[4] as PipelineRunKind
+        }
       />,
     );
 
@@ -161,7 +169,9 @@ describe('PipelineRunRowActions', () => {
 
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[1]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[1] as PipelineRunKind
+        }
       />,
     );
 
@@ -174,7 +184,9 @@ describe('PipelineRunRowActions', () => {
   it('should not open sbom logs modal when the view external SBOM link is clicked', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[4]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[4] as PipelineRunKind
+        }
       />,
     );
 
@@ -196,7 +208,9 @@ describe('PipelineRunRowActions', () => {
   it('should disable the view output action', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[1]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[1] as PipelineRunKind
+        }
       />,
     );
 
@@ -210,7 +224,9 @@ describe('PipelineRunRowActions', () => {
   it('should enable the view output action', async () => {
     await renderInTestApp(
       <TestPipelineRunRowActions
-        pipelineRun={mockKubernetesPlrResponse.pipelineruns[2]}
+        pipelineRun={
+          mockKubernetesPlrResponse.pipelineruns[2] as PipelineRunKind
+        }
       />,
     );
 

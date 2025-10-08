@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { renderHook } from '@testing-library/react';
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { usePipelineRunScanResults } from './usePipelineRunScanResults';
@@ -26,7 +27,9 @@ jest.mock('@backstage/core-plugin-api', () => ({
 describe('usePipelineRunVulnerabilities', () => {
   it('should return vulnerabilities when SCAN_OUTPUT is set', () => {
     const { result } = renderHook(() =>
-      usePipelineRunScanResults(mockKubernetesPlrResponse.pipelineruns[2]),
+      usePipelineRunScanResults(
+        mockKubernetesPlrResponse.pipelineruns[2] as PipelineRunKind,
+      ),
     );
 
     expect(result.current.vulnerabilities?.critical).toEqual(13);
@@ -36,7 +39,9 @@ describe('usePipelineRunVulnerabilities', () => {
   });
   it('should return vulnerabilities when the suffix SCAN_OUTPUT is set', () => {
     const { result } = renderHook(() =>
-      usePipelineRunScanResults(mockKubernetesPlrResponse.pipelineruns[4]),
+      usePipelineRunScanResults(
+        mockKubernetesPlrResponse.pipelineruns[4] as PipelineRunKind,
+      ),
     );
 
     expect(result.current.vulnerabilities?.critical).toEqual(1);
@@ -57,7 +62,7 @@ describe('usePipelineRunVulnerabilities', () => {
           results: results4 && results1 ? [results4, results1] : [],
         },
       };
-      return usePipelineRunScanResults(plr);
+      return usePipelineRunScanResults(plr as PipelineRunKind);
     });
 
     expect(result.current.vulnerabilities?.critical).toEqual(14);

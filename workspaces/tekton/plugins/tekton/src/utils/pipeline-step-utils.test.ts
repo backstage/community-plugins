@@ -96,7 +96,7 @@ describe('createStepStatus', () => {
               image:
                 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest',
               name: 'oc',
-              resources: {},
+              resources: {} as any,
               script: '',
             },
           ],

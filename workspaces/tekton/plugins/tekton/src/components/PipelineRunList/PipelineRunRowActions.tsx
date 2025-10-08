@@ -103,8 +103,11 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
   const results =
     pipelineRun?.status?.pipelineResults || pipelineRun?.status?.results || [];
 
+  const resultsArray = Array.isArray(results) ? results : [];
   const disabled =
-    results.length === 0 ? finishedTaskruns.length === 0 : results.length === 0;
+    resultsArray.length === 0
+      ? finishedTaskruns.length === 0
+      : resultsArray.length === 0;
 
   return (
     <>

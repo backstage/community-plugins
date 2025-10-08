@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TaskRunKind } from '@aonic-ui/pipelines';
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import {
   acsDeploymentCheckTaskRun,
@@ -39,7 +40,7 @@ import {
 describe('taskRun-utils', () => {
   it('should return sorted task runs', () => {
     const sortedTaskRuns = getSortedTaskRuns(
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
     );
     expect(sortedTaskRuns[0].id).toEqual('ruby-ex-git-xf45fo-build');
   });
@@ -51,7 +52,7 @@ describe('taskRun-utils', () => {
 
   it('should return active taskrun as the latest taskrun when active task is not present', () => {
     const activeTaskRun = getActiveTaskRun(
-      getSortedTaskRuns(mockKubernetesPlrResponse.taskruns),
+      getSortedTaskRuns(mockKubernetesPlrResponse.taskruns as TaskRunKind[]),
       '',
     );
     expect(activeTaskRun).toBe('pipelinerun-with-sbom-task-t237ev-sbom-task');
@@ -59,7 +60,7 @@ describe('taskRun-utils', () => {
 
   it('should return active taskrun when active task is present', () => {
     const activeTaskRun = getActiveTaskRun(
-      getSortedTaskRuns(mockKubernetesPlrResponse.taskruns),
+      getSortedTaskRuns(mockKubernetesPlrResponse.taskruns as TaskRunKind[]),
       'pipeline-test-wbvtlk-tkn',
     );
     expect(activeTaskRun).toBe('pipeline-test-wbvtlk-tkn');
@@ -67,7 +68,7 @@ describe('taskRun-utils', () => {
 
   it('should return undefined when active task is not present', () => {
     const activeTaskRun = getActiveTaskRun(
-      getSortedTaskRuns(mockKubernetesPlrResponse.taskruns),
+      getSortedTaskRuns(mockKubernetesPlrResponse.taskruns as TaskRunKind[]),
       'pipeline-test-wbvt-tkn',
     );
     expect(activeTaskRun).toBe(undefined);
