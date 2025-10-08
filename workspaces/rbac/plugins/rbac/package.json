@@ -96,6 +96,13 @@
   "files": [
     "dist"
   ],
+  "scalprum": {
+    "name": "backstage-community.plugin-rbac",
+    "exposedModules": {
+      "PluginRoot": "./src/index.ts",
+      "Alpha": "./src/alpha.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
