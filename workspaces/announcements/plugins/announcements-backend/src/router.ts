@@ -63,7 +63,7 @@ type GetAnnouncementsQueryParams = {
   page?: number;
   max?: number;
   active?: string;
-  sortby?: 'created_at' | 'start_at';
+  sortby?: 'created_at' | 'start_at' | 'updated_at';
   order?: 'asc' | 'desc';
   current?: boolean;
   tags?: string[];
@@ -134,7 +134,7 @@ export async function createRouter(
           max,
           offset: page ? (page - 1) * (max ?? 10) : undefined,
           active: active === 'true',
-          sortBy: ['created_at', 'start_at'].includes(sortby)
+          sortBy: ['created_at', 'start_at', 'updated_at'].includes(sortby)
             ? sortby
             : 'created_at',
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
@@ -222,6 +222,7 @@ export async function createRouter(
           ...req.body,
           id: uuid(),
           created_at: DateTime.now(),
+          updated_at: DateTime.now(),
           start_at: DateTime.fromISO(req.body.start_at),
           until_date: untilDate,
           tags: validatedTags,
@@ -301,6 +302,7 @@ export async function createRouter(
             publisher,
             category,
             active,
+            updated_at: DateTime.now(),
             start_at: DateTime.fromISO(start_at),
             until_date: until_date ? DateTime.fromISO(until_date) : undefined,
             on_behalf_of,
