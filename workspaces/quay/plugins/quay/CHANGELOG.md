@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.25.0
+
+### Minor Changes
+
+- 5c7023b: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- Updated dependencies [5c7023b]
+  - @backstage-community/plugin-quay-common@1.12.0
+
 ## 1.24.0
 
 ### Minor Changes
