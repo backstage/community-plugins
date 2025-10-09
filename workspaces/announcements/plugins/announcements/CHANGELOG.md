@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 0.14.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+  - @backstage-community/plugin-announcements-react@0.13.0
+
 ## 0.13.1
 
 ### Patch Changes
