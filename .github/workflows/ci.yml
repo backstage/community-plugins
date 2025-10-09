@@ -14,7 +14,7 @@ jobs:
     outputs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
     steps:
-      - name: Calculate number of commits in PR
+      - name: CalculatSSSSTESTESTe number of commits in PR
         id: calculate-commits
         env:
           COMMITS: ${{ github.event.pull_request.commits }}
