@@ -38,7 +38,7 @@ export const catalogModuleOCMEntityProvider = createBackendModule({
       },
       async init({ catalog, config, logger, scheduler }) {
         catalog.addEntityProvider(
-          ManagedClusterProvider.fromConfig(
+          await ManagedClusterProvider.fromConfig(
             { config, logger },
             {
               schedule: scheduler.createScheduledTaskRunner({
