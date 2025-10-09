@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.45.1
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- 3944da5: undo Editrole page submit button label
+
 ## 1.45.0
 
 ### Minor Changes
