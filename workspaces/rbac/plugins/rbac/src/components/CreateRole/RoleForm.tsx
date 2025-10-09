@@ -351,7 +351,7 @@ export const RoleForm = ({
               >
                 {submitLabel ||
                   (roleName
-                    ? t('roleForm.steps.update')
+                    ? t('roleForm.steps.save')
                     : t('roleForm.steps.create'))}
               </Button>
             </Paper>

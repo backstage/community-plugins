@@ -82,7 +82,7 @@ const rbacTranslationIt = createTranslationMessages({
     'roleForm.steps.cancel': 'Annulla',
     'roleForm.steps.reset': 'Reimposta',
     'roleForm.steps.create': 'Crea',
-    'roleForm.steps.update': 'Aggiorna',
+    'roleForm.steps.save': 'Salva',
     'roleForm.fields.name.label': 'Nome',
     'roleForm.fields.name.helperText': 'Inserisci il nome del ruolo',
     'roleForm.fields.description.label': 'Descrizione',
