@@ -99,7 +99,7 @@ export const EditRolePage = () => {
             loading: loadingMembers,
             error: membersError,
           }}
-          submitLabel={t('roleForm.steps.update')}
+          submitLabel={t('roleForm.steps.save')}
         />
       </Content>
     </Page>

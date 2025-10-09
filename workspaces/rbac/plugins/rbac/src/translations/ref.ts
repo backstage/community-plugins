@@ -90,7 +90,7 @@ export const rbacMessages = {
       cancel: 'Cancel',
       reset: 'Reset',
       create: 'Create',
-      update: 'Update',
+      save: 'Save',
     },
     fields: {
       name: {
