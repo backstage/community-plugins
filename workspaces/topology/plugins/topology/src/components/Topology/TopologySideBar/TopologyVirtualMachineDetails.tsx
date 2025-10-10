@@ -15,7 +15,7 @@
  */
 import { useContext } from 'react';
 
-import { Status } from '@janus-idp/shared-react';
+import { Status } from '@aonic-ui/core';
 
 import { ResourceIcon } from '../../../common/components/ResourceName';
 import { LABEL_USED_TEMPLATE_NAME } from '../../../const';

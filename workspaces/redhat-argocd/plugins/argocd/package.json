@@ -44,6 +44,7 @@
     "ui-test": "yarn playwright test"
   },
   "dependencies": {
+    "@aonic-ui/core": "^0.2.0",
     "@backstage-community/plugin-redhat-argocd-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.5",
     "@backstage/core-components": "^0.17.5",
@@ -52,7 +53,6 @@
     "@backstage/plugin-kubernetes-react": "^0.5.10",
     "@backstage/plugin-permission-react": "^0.4.36",
     "@backstage/theme": "^0.6.7",
-    "@janus-idp/shared-react": "^2.16.0",
     "@kubernetes/client-node": "^0.22.1",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",

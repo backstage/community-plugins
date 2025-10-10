@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskRunKind } from '@janus-idp/shared-react';
+import { TaskRunKind } from '@aonic-ui/pipelines';
 
 import { TEKTON_PIPELINE_RUN } from '../consts/tekton-const';
 

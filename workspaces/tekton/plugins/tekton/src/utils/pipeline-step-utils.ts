@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ComputedStatus, TerminatedReasons } from '@janus-idp/shared-react';
+import { ComputedStatus, TerminatedReasons } from '@aonic-ui/pipelines';
 
 import { StepStatus, TaskStatus, TaskStatusStep } from '../types/taskRun';
 import { calculateDuration } from './tekton-utils';

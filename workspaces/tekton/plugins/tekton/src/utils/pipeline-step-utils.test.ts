@@ -17,7 +17,7 @@ import {
   ComputedStatus,
   PipelineRunKind,
   PipelineTaskWithStatus,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { createStepStatus } from './pipeline-step-utils';
@@ -96,7 +96,7 @@ describe('createStepStatus', () => {
               image:
                 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest',
               name: 'oc',
-              resources: {},
+              resources: {} as any,
               script: '',
             },
           ],

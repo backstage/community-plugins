@@ -24,7 +24,7 @@ import {
   TaskRunKind,
   TaskStatusTooltip,
   TaskStatusTypes,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import './PipelineRunDecoratorTooltip.css';
 

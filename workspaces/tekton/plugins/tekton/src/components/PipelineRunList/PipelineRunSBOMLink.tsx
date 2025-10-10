@@ -16,7 +16,7 @@
 import type { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
-import { TaskRunKind } from '@janus-idp/shared-react';
+import { TaskRunKind } from '@aonic-ui/pipelines';
 
 import {
   getSbomLink,

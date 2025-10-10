@@ -17,7 +17,7 @@ import {
   PipelineKind,
   PipelineRunKind,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 export type PipelinesData = {
   pipelines: PipelineKind[];

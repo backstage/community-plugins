@@ -43,8 +43,8 @@ import {
 import {
   ComputedStatus,
   PipelineRunKind,
-  pipelineRunStatus,
-} from '@janus-idp/shared-react';
+  getPipelineRunStatus,
+} from '@aonic-ui/pipelines';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { ClusterErrors, Order } from '../../types/types';
@@ -153,7 +153,7 @@ const PipelineRunList = () => {
     let plrs = allPipelineRuns;
 
     if (selectedStatus && selectedStatus !== ComputedStatus.All) {
-      plrs = plrs.filter(plr => pipelineRunStatus(plr) === selectedStatus);
+      plrs = plrs.filter(plr => getPipelineRunStatus(plr) === selectedStatus);
     }
 
     if (search) {

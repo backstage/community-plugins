@@ -15,7 +15,11 @@
  */
 import { RawFetchError } from '@backstage/plugin-kubernetes-common';
 
-import { PipelineRunKind, PipelineRunStatus } from '@janus-idp/shared-react';
+import {
+  PipelineRunKind,
+  PipelineRunStatus,
+  TaskRunKind,
+} from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { kubernetesObjects } from '../__fixtures__/kubernetesObject';
@@ -101,15 +105,15 @@ describe('tekton-utils', () => {
 
   it('totalPipelineRunTasks should return the total number of tasks in a pipeline run', () => {
     const totalTasks = totalPipelineRunTasks(
-      mockKubernetesPlrResponse.pipelineruns[0],
+      mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind,
     );
     expect(totalTasks).toEqual(3);
   });
 
   it('getTaskStatusOfPLR should return the updated task status', () => {
     const updatedTaskStatus = getTaskStatusOfPLR(
-      mockKubernetesPlrResponse.pipelineruns[0],
-      [mockKubernetesPlrResponse.taskruns[0]],
+      mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind,
+      [mockKubernetesPlrResponse.taskruns[0] as TaskRunKind],
     );
     expect(updatedTaskStatus).toEqual({
       PipelineNotStarted: 0,
@@ -128,7 +132,7 @@ describe('tekton-utils', () => {
       status: {},
     };
     const updatedTaskStatus = getTaskStatusOfPLR(mockPipelineRun, [
-      mockKubernetesPlrResponse.taskruns[1],
+      mockKubernetesPlrResponse.taskruns[1] as TaskRunKind,
     ]);
     expect(updatedTaskStatus).toEqual({
       PipelineNotStarted: 1,
@@ -221,7 +225,7 @@ describe('tekton-utils', () => {
 
   it('should return expect duration for PipelineRun', () => {
     const duration = pipelineRunDuration(
-      mockKubernetesPlrResponse.pipelineruns[0],
+      mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind,
       mockFunctionT,
     );
     expect(duration).not.toBeNull();
@@ -235,7 +239,7 @@ describe('tekton-utils', () => {
         ...mockKubernetesPlrResponse.pipelineruns[0].status,
         startTime: '',
       },
-    };
+    } as PipelineRunKind;
     const duration = pipelineRunDuration(mockPipelineRun, mockFunctionT);
     expect(duration).not.toBeNull();
     expect(duration).toBe('-');
@@ -248,7 +252,7 @@ describe('tekton-utils', () => {
         ...mockKubernetesPlrResponse.pipelineruns[1].status,
         completionTime: '',
       },
-    };
+    } as PipelineRunKind;
     const duration = pipelineRunDuration(mockPipelineRun, mockFunctionT);
     expect(duration).not.toBeNull();
     expect(duration).toBe('-');
@@ -257,7 +261,7 @@ describe('tekton-utils', () => {
   it('should be able to sort pipelineRunsData in ascending order based on pipelinerun name', () => {
     const mockPipelineRuns: PipelineRunKind[] = [
       ...mockKubernetesPlrResponse.pipelineruns,
-    ];
+    ] as PipelineRunKind[];
 
     const sortedData: PipelineRunKind[] = Array.from(mockPipelineRuns).sort(
       getComparator('asc', 'metadata.name', 'name'),
@@ -268,7 +272,7 @@ describe('tekton-utils', () => {
   it('should be able to sort pipelineRunsData in ascending order based on pipelinerun start time', () => {
     const mockPipelineRuns: PipelineRunKind[] = [
       ...mockKubernetesPlrResponse.pipelineruns,
-    ];
+    ] as PipelineRunKind[];
 
     const sortedData: PipelineRunKind[] = Array.from(mockPipelineRuns).sort(
       getComparator('asc', 'status.startTime', 'start-time'),
@@ -279,7 +283,7 @@ describe('tekton-utils', () => {
   it('should be able to sort pipelineRunsData in ascending order based on pipelinerun duration', () => {
     const mockPipelineRuns: PipelineRunKind[] = [
       ...mockKubernetesPlrResponse.pipelineruns,
-    ];
+    ] as PipelineRunKind[];
 
     const sortedData: PipelineRunKind[] = Array.from(mockPipelineRuns).sort(
       getComparator('asc', 'status.completionTime', 'duration'),
@@ -287,8 +291,8 @@ describe('tekton-utils', () => {
     expect(sortedData[0].metadata?.name).toBe('ruby-ex-git-xf45fo');
   });
   it('should be able to sort pipelineRunsData in ascending order based on pipelinerun vulnerabilities', () => {
-    const mockPipelineRun: PipelineRunKind =
-      mockKubernetesPlrResponse.pipelineruns[1];
+    const mockPipelineRun: PipelineRunKind = mockKubernetesPlrResponse
+      .pipelineruns[1] as PipelineRunKind;
 
     const pipelineRunA: PipelineRunKind = {
       ...mockPipelineRun,
@@ -303,7 +307,7 @@ describe('tekton-utils', () => {
           },
         ],
       } as PipelineRunStatus,
-    };
+    } as PipelineRunKind;
     const pipelineRunB: PipelineRunKind = {
       ...mockPipelineRun,
       metadata: { ...mockPipelineRun.metadata, name: 'B' },
@@ -317,7 +321,7 @@ describe('tekton-utils', () => {
           },
         ],
       } as PipelineRunStatus,
-    };
+    } as PipelineRunKind;
     const pipelineRuns = [pipelineRunA, pipelineRunB];
 
     let sortedData: PipelineRunKind[] = Array.from(pipelineRuns).sort(
@@ -335,7 +339,7 @@ describe('tekton-utils', () => {
         value:
           '{"vulnerabilities":{\n"critical": 13,\n"high": 30,\n"medium": 2,\n"low": 2,\n"unknown": 0}\n}\n',
       },
-    ];
+    ] as PipelineRunStatus['results'];
     sortedData = Array.from(pipelineRuns).sort(
       getComparator('asc', 'status.results', 'vulnerabilities'),
     );

@@ -15,7 +15,7 @@
  */
 import { RunStatus } from '@patternfly/react-topology';
 
-import { ComputedStatus, TerminatedReasons } from '@janus-idp/shared-react';
+import { ComputedStatus, TerminatedReasons } from '@aonic-ui/pipelines';
 
 export type StepStatus = {
   duration: string | null | undefined;

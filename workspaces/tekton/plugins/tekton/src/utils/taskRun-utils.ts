@@ -23,7 +23,7 @@ import {
   ComputedStatus,
   pipelineRunFilterReducer,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import {
   TEKTON_PIPELINE_RUN,

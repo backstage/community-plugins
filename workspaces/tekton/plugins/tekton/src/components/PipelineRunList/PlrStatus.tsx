@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  pipelineRunFilterReducer,
-  PipelineRunKind,
-  Status,
-} from '@janus-idp/shared-react';
+import { pipelineRunFilterReducer, PipelineRunKind } from '@aonic-ui/pipelines';
+import { Status } from '@aonic-ui/core';
 
 import './PlrStatus.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';

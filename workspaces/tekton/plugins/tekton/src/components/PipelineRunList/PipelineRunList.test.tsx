@@ -15,7 +15,7 @@
  */
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';

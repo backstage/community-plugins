@@ -18,7 +18,7 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { ChartLabel } from '@patternfly/react-charts/victory';
 import { BaseNode } from '@patternfly/react-topology';
 
-import { Status } from '@janus-idp/shared-react';
+import { Status } from '@aonic-ui/core';
 
 import ResourceName from '../../../common/components/ResourceName';
 import ResourceStatus from '../../../common/components/ResourceStatus';

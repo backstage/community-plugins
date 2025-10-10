@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 
 import { fromNow } from '../../../common/utils/datetime';
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { PipelineRunKind } from '@aonic-ui/pipelines';
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import PipelineBars from './PipelineBars';
 import { renderInTestApp } from '@backstage/test-utils';
@@ -30,12 +31,13 @@ jest.mock('@material-ui/core', () => ({
 
 describe('PipelineBars', () => {
   it('should show PipelineBars & Dialog', async () => {
-    const pipelineRun = mockKubernetesPlrResponse.pipelineruns[0];
+    const pipelineRun = mockKubernetesPlrResponse
+      .pipelineruns[0] as PipelineRunKind;
     const { queryByTestId } = await renderInTestApp(
       <PipelineBars pipelineRun={pipelineRun} />,
     );
     expect(
-      queryByTestId(`horizontal-stacked-bars-${pipelineRun.metadata.name}`),
+      queryByTestId(`horizontal-stacked-bars-${pipelineRun.metadata?.name}`),
     ).toBeInTheDocument();
     expect(queryByTestId('dialog')).toBeInTheDocument();
   });

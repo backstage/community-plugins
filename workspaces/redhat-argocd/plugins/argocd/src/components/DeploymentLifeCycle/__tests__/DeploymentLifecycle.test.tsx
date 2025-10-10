@@ -37,6 +37,11 @@ jest.mock('@backstage/plugin-permission-react', () => ({
 jest.mock('../../../hooks/useTranslation', () => ({
   useTranslation: () => mockUseTranslation(),
 }));
+jest.mock('@aonic-ui/core', () => ({
+  useKubernetesObjects: jest.fn(),
+}));
+
+const mockUseKubernetesObjects = require('@aonic-ui/core').useKubernetesObjects;
 
 const mockUsePermission = usePermission as jest.MockedFunction<
   typeof usePermission
@@ -73,11 +78,13 @@ const mockConfigApi = {
 // Mock for ArgoCDApiRef
 const mockArgoCDAPI = {
   listApps: jest.fn().mockResolvedValue({ items: [mockApplication] }),
-  getRevisionDetailsList: jest.fn().mockResolvedValue({
-    commit: 'commit message',
-    author: 'test-user',
-    date: new Date(),
-  }),
+  getRevisionDetailsList: jest.fn().mockResolvedValue([
+    {
+      commit: 'commit message',
+      author: 'test-user',
+      date: new Date(),
+    },
+  ]),
 };
 
 /**
@@ -112,6 +119,34 @@ describe('DeploymentLifecycle', () => {
 
     (useArgoResources as jest.Mock).mockReturnValue({ rollouts: [] });
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
+
+    // Mock useKubernetesObjects to return the expected structure
+    mockUseKubernetesObjects.mockReturnValue({
+      kubernetesObjects: {
+        items: [
+          {
+            cluster: { name: 'mock-cluster' },
+            resources: [
+              {
+                type: 'pods',
+                resources: [],
+              },
+              {
+                type: 'replicasets',
+                resources: [],
+              },
+              {
+                type: 'customresources',
+                resources: [],
+              },
+            ],
+            podMetrics: [],
+            errors: [],
+          },
+        ],
+      },
+      loaded: true,
+    });
 
     (useArgocdConfig as any).mockReturnValue({
       baseUrl: 'https://baseurl.com',
@@ -209,7 +244,7 @@ describe('DeploymentLifecycle', () => {
   test('should not render the component if there are no applications matching the selector', async () => {
     setUseApi({
       listApps: jest.fn().mockResolvedValue({ items: [] }),
-      getRevisionDetailsList: jest.fn().mockResolvedValue({}),
+      getRevisionDetailsList: jest.fn().mockResolvedValue([]),
     });
 
     render(<DeploymentLifecycle />);

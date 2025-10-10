@@ -26,7 +26,7 @@ import {
   pipelineRunFilterReducer,
   PipelineRunKind,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@aonic-ui/pipelines';
 
 import { getActiveTaskRun, getSortedTaskRuns } from '../../utils/taskRun-utils';
 import { PipelineRunLogViewer } from './PipelineRunLogViewer';

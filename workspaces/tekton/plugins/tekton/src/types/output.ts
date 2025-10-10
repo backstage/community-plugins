@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskRunKind } from '@janus-idp/shared-react';
+import { TaskRunKind } from '@aonic-ui/pipelines';
 
 export enum TaskType {
   sbom = 'sbom',

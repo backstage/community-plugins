@@ -30,7 +30,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { PipelineRunKind, TaskRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind, TaskRunKind } from '@aonic-ui/pipelines';
 
 import { tektonGroupColor } from '../../types/types';
 import ResourceBadge from '../PipelineRunList/ResourceBadge';

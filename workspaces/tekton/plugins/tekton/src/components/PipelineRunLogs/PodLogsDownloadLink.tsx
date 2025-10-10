@@ -18,7 +18,6 @@ import type { FC, ReactElement } from 'react';
 import { useState, useContext } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
-import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { V1Pod } from '@kubernetes/client-node';
 import { createStyles, Link, makeStyles, Theme } from '@material-ui/core';
@@ -27,7 +26,10 @@ import classNames from 'classnames';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { ContainerScope } from '../../hooks/usePodLogsOfPipelineRun';
-import { TektonResourcesContextData } from '../../types/types';
+import {
+  kubernetesProxyApiRef,
+  TektonResourcesContextData,
+} from '../../types/types';
 import { getPodLogs } from '../../utils/log-downloader-utils';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';

@@ -17,7 +17,7 @@ import { act } from 'react';
 
 import { renderHook } from '@testing-library/react';
 
-import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
+import { useKubernetesObjects } from '@aonic-ui/core';
 
 import { watchResourcesData } from '../__fixtures__/k8sResourcesContextData';
 import { kubernetesObject } from '../__fixtures__/kubernetesObject';
@@ -31,7 +31,7 @@ const watchedResources = [
   ModelsPlural.replicasets,
 ];
 
-jest.mock('@backstage/plugin-kubernetes-react', () => ({
+jest.mock('@aonic-ui/core', () => ({
   useKubernetesObjects: jest.fn(),
 }));
 

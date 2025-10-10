@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { RunStatus, WhenStatus } from '@patternfly/react-topology';
+import { PipelineRunKind, TaskRunKind } from '@aonic-ui/pipelines';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import {
@@ -27,7 +28,7 @@ describe('getPipelineRun', () => {
   it('should return the required pipeline run resource', () => {
     expect(
       getPipelineRun(
-        mockKubernetesPlrResponse.pipelineruns,
+        mockKubernetesPlrResponse.pipelineruns as PipelineRunKind[],
         'pipeline-test-wbvtlk',
       ),
     ).toEqual(mockKubernetesPlrResponse.pipelineruns[1]);
@@ -35,7 +36,10 @@ describe('getPipelineRun', () => {
 
   it('should return null if pipeline run doesnot exist', () => {
     expect(
-      getPipelineRun(mockKubernetesPlrResponse.pipelineruns, 'bnb'),
+      getPipelineRun(
+        mockKubernetesPlrResponse.pipelineruns as PipelineRunKind[],
+        'bnb',
+      ),
     ).toEqual(null);
   });
 });
@@ -121,8 +125,8 @@ describe('getGraphDataModel', () => {
 
   it('should return graph, nodes and edges for valid pipelineRun', () => {
     const model = getGraphDataModel(
-      mockKubernetesPlrResponse.pipelineruns[0],
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.pipelineruns[0] as PipelineRunKind,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
     );
     expect(model?.graph).toBeDefined();
     expect(model?.nodes).toHaveLength(3);
@@ -131,8 +135,8 @@ describe('getGraphDataModel', () => {
 
   it('should include the finally group and nodes for the pipeline with finally task', () => {
     const model = getGraphDataModel(
-      mockKubernetesPlrResponse.pipelineruns[1],
-      mockKubernetesPlrResponse.taskruns,
+      mockKubernetesPlrResponse.pipelineruns[1] as PipelineRunKind,
+      mockKubernetesPlrResponse.taskruns as TaskRunKind[],
     );
     const finallyGroup = model?.nodes.filter(n => n.type === 'finally-group');
     const finallyNodes = model?.nodes.filter(n => n.type === 'finally-node');
