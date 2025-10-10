@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createContext } from 'react';
-import { KialiAppState } from './Store';
+import { ComputedServerConfig } from '@backstage-community/plugin-kiali-common/types';
+import { ActionType, createStandardAction } from 'typesafe-actions';
+import { ActionKeys } from './ActionKeys';
 
-export const KialiContext = createContext<KialiAppState>({} as KialiAppState);
+export const ServerConfigActions = {
+  setServerConfig: createStandardAction(
+    ActionKeys.SERVER_CONFIG_SET,
+  )<ComputedServerConfig>(),
+  setServerConfigLoaded: createStandardAction(
+    ActionKeys.SERVER_CONFIG_SET_LOADED,
+  )<boolean>(),
+};
+
+export type ServerConfigAction = ActionType<typeof ServerConfigActions>;

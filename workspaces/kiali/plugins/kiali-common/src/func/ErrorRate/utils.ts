@@ -101,21 +101,35 @@ export const getRateHealthConfig = (
   if (configCache[key]) {
     return configCache[key];
   }
-  if (serverConfig.healthConfig && serverConfig.healthConfig.rate) {
-    for (const rate of serverConfig.healthConfig.rate) {
-      if (
-        checkExpr(rate.namespace, ns) &&
-        checkExpr(rate.name, name) &&
-        checkExpr(rate.kind, kind)
-      ) {
-        configCache[key] = rate;
-        return rate;
-      }
+
+  // Add defensive checks for serverConfig
+  if (
+    !serverConfig?.healthConfig?.rate ||
+    !Array.isArray(serverConfig.healthConfig.rate)
+  ) {
+    return { tolerance: [] };
+  }
+
+  for (const rate of serverConfig.healthConfig.rate) {
+    if (
+      checkExpr(rate.namespace, ns) &&
+      checkExpr(rate.name, name) &&
+      checkExpr(rate.kind, kind)
+    ) {
+      configCache[key] = rate;
+      return rate;
     }
   }
-  return serverConfig.healthConfig.rate[
-    serverConfig.healthConfig.rate.length - 1
-  ];
+
+  // Return the last rate config if no specific match is found
+  const lastRate =
+    serverConfig.healthConfig.rate[serverConfig.healthConfig.rate.length - 1];
+  if (lastRate) {
+    configCache[key] = lastRate;
+    return lastRate;
+  }
+
+  return { tolerance: [] };
 };
 
 /*

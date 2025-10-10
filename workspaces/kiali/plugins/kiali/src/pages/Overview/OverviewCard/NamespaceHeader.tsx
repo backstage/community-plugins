@@ -31,7 +31,7 @@ type NamespaceHeaderProps = {
 };
 
 export const NamespaceHeader = (props: NamespaceHeaderProps) => {
-  const isIstioSystem = serverConfig.istioNamespace === props.namespace.name;
+  const isIstioSystem = serverConfig?.istioNamespace === props.namespace.name;
 
   const hasCanaryUpgradeConfigured = (): boolean => {
     return props.canaryUpgradeStatus
@@ -62,7 +62,7 @@ export const NamespaceHeader = (props: NamespaceHeaderProps) => {
       }
       subheader={
         <>
-          {props.namespace.name !== serverConfig.istioNamespace &&
+          {props.namespace.name !== serverConfig?.istioNamespace &&
             hasCanaryUpgradeConfigured() &&
             props.canaryUpgradeStatus?.migratedNamespaces.includes(
               props.namespace.name,
@@ -72,7 +72,7 @@ export const NamespaceHeader = (props: NamespaceHeaderProps) => {
                 isCanary
               />
             )}
-          {props.namespace.name !== serverConfig.istioNamespace &&
+          {props.namespace.name !== serverConfig?.istioNamespace &&
             hasCanaryUpgradeConfigured() &&
             props.canaryUpgradeStatus?.pendingNamespaces.includes(
               props.namespace.name,
@@ -82,7 +82,7 @@ export const NamespaceHeader = (props: NamespaceHeaderProps) => {
                 isCanary={false}
               />
             )}
-          {props.namespace.name === serverConfig.istioNamespace &&
+          {props.namespace.name === serverConfig?.istioNamespace &&
             !props.istioAPIEnabled && (
               <Chip
                 label="Istio API disabled"

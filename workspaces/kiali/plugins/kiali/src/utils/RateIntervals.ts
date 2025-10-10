@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 import { IntervalInMilliseconds } from '@backstage-community/plugin-kiali-common/types';
-import { config } from '../config';
-import { serverConfig } from '../config/ServerConfig';
+import { config, serverConfig } from '../config';
 
 export const getName = (durationSeconds: number): string => {
+  // Add checks for serverConfig
+  if (!serverConfig || !serverConfig.durations) {
+    return `${durationSeconds} seconds`;
+  }
+
   const name = serverConfig.durations[durationSeconds];
   if (name) {
     return name;

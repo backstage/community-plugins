@@ -33,7 +33,7 @@ import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
 import { ProviderActions } from '../actions/ProviderAction';
-import { setServerConfig } from '../config/ServerConfig';
+import { ServerConfigActions } from '../actions/ServerConfigActions';
 import { KialiHelper } from '../pages/Kiali/KialiHelper';
 import { KialiNoResources } from '../pages/Kiali/KialiNoResources';
 import {
@@ -47,6 +47,8 @@ import {
 } from '../reducers';
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
+import { ServerConfigStateReducer } from '../reducers/ServerConfigState';
+import { INITIAL_TRACING_STATE } from '../reducers/Tracing';
 import { kialiApiRef } from '../services/Api';
 import { AlertUtils } from '../utils/Alertutils';
 import { PromisesRegistry } from '../utils/CancelablePromises';
@@ -127,6 +129,10 @@ export const KialiProvider: React.FC<Props> = ({
     IstioCertsInfoStateReducer,
     initialStore.istioCertsInfo,
   );
+  const [serverConfigState, serverConfigDispatch] = React.useReducer(
+    ServerConfigStateReducer,
+    initialStore.serverConfig,
+  );
 
   const kialiClient = useApi(kialiApiRef);
   kialiClient.setEntity(entity);
@@ -181,7 +187,16 @@ export const KialiProvider: React.FC<Props> = ({
         .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       const getServerConfig = promises
         .register('getServerConfig', kialiClient.getServerConfig())
-        .then(resp => setServerConfig(resp));
+        .then(resp => {
+          // Convert ServerConfig to ComputedServerConfig by adding durations
+          const computedConfig = {
+            ...resp,
+            durations: {}, // Will be computed by the reducer
+          };
+          serverConfigDispatch(
+            ServerConfigActions.setServerConfig(computedConfig),
+          );
+        });
       const getIstioStatus = promises
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));
@@ -292,13 +307,16 @@ export const KialiProvider: React.FC<Props> = ({
         providers: providerState,
         userSettings: userSettingState,
         istioStatus: istioStatusState,
-        istioCertsState: istioCertsState,
+        istioCertsInfo: istioCertsState,
+        serverConfig: serverConfigState,
+        tracingState: INITIAL_TRACING_STATE,
         dispatch: {
           messageDispatch: messageDispatch,
           namespaceDispatch: namespaceDispatch,
           providerDispatch: providerDispatch,
           userSettingDispatch: userSettingDispatch,
           istioStatusDispatch: istioStatusDispatch,
+          serverConfigDispatch: serverConfigDispatch,
         },
         alertUtils: alertUtils,
       }}
