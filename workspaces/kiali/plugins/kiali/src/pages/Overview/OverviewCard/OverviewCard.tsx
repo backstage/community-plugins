@@ -54,7 +54,7 @@ type OverviewCardProps = {
 };
 
 export const OverviewCard = (props: OverviewCardProps) => {
-  const isIstioSystem = serverConfig.istioNamespace === props.namespace.name;
+  const isIstioSystem = serverConfig?.istioNamespace === props.namespace.name;
 
   const hasCanaryUpgradeConfigured = (): boolean => {
     return props.canaryUpgradeStatus
@@ -64,6 +64,11 @@ export const OverviewCard = (props: OverviewCardProps) => {
   };
 
   const renderCharts = (): React.JSX.Element => {
+    // Don't render charts if serverConfig is not available
+    if (!serverConfig || !serverConfig.durations) {
+      return <div>Loading...</div>;
+    }
+
     const chart = (
       <OverviewCardSparklineCharts
         key={props.namespace.name}

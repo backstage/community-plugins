@@ -108,4 +108,5 @@ export interface KialiAppState {
   tracingState: TracingState;
   dispatch: { [key: string]: React.Dispatch<KialiAppAction> };
   alertUtils?: AlertUtils;
+  /** Server Configuration */
 }
