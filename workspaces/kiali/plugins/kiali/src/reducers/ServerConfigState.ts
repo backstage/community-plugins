@@ -13,46 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { defaultServerConfig } from '@backstage-community/plugin-kiali-common/config';
-import { ComputedServerConfig } from '@backstage-community/plugin-kiali-common/types';
-import { getType } from 'typesafe-actions';
-import { KialiAppAction } from '../actions/KialiAppAction';
-import { ServerConfigActions } from '../actions/ServerConfigActions';
+
+import { ServerConfigAction } from '../actions/ServerConfigActions';
+import { defaultServerConfig } from '../config/ServerConfig';
 import { ServerConfigState } from '../store/Store';
 
-// Create a copy with computed durations
-const initialConfig = { ...defaultServerConfig };
-// Ensure durations are computed
-if (Object.keys(initialConfig.durations).length === 0) {
-  // Set some default durations if none exist
-  initialConfig.durations = {
-    60: '1m',
-    120: '2m',
-    300: '5m',
-    600: '10m',
-    1800: '30m',
-    3600: '1h',
-  };
-}
-
 export const INITIAL_SERVER_CONFIG_STATE: ServerConfigState = {
-  config: initialConfig,
+  config: defaultServerConfig,
   isLoaded: false,
 };
 
-// This Reducer allows changes to the 'serverConfig' portion of Redux Store
-export const ServerConfigReducer = (
+export const ServerConfigStateReducer = (
   state: ServerConfigState = INITIAL_SERVER_CONFIG_STATE,
-  action: KialiAppAction,
+  action: ServerConfigAction,
 ): ServerConfigState => {
   switch (action.type) {
-    case getType(ServerConfigActions.setServerConfig):
+    case 'SERVER_CONFIG_SET':
       return {
         ...state,
         config: action.payload,
         isLoaded: true,
       };
-    case getType(ServerConfigActions.setServerConfigLoaded):
+    case 'SERVER_CONFIG_SET_LOADED':
       return {
         ...state,
         isLoaded: action.payload,
