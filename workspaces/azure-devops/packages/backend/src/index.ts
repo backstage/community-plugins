@@ -48,8 +48,8 @@ backend.add(
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
-backend.add(import('@backstage/plugin-search-backend-module-catalog'));
-backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
+// backend.add(import('@backstage/plugin-search-backend-module-catalog'));
+// backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // Azure DevOps plugin
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
@@ -63,4 +63,7 @@ backend.add(
 );
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
+backend.add(
+  import('@backstage-community/plugin-search-backend-module-azure-devops'),
+);
 backend.start();

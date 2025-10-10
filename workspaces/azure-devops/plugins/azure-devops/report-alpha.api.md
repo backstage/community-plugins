@@ -17,6 +17,10 @@ import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
+import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
@@ -311,6 +315,43 @@ const _default: OverridableFrontendPlugin<
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
+    }>;
+    'search-filter-result-type:azure-devops/azure-devops-wiki-article-results-type': ExtensionDefinition<{
+      kind: 'search-filter-result-type';
+      name: 'azure-devops-wiki-article-results-type';
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<
+        {
+          value: string;
+          name: string;
+          icon: JSX.Element;
+        },
+        'search.filters.result-types.type',
+        {}
+      >;
+      inputs: {};
+      params: SearchFilterResultTypeBlueprintParams;
+    }>;
+    'search-result-list-item:azure-devops': ExtensionDefinition<{
+      kind: 'search-result-list-item';
+      name: undefined;
+      config: {
+        noTrack: boolean;
+      };
+      configInput: {
+        noTrack?: boolean | undefined;
+      };
+      output: ExtensionDataRef<
+        {
+          predicate?: SearchResultItemExtensionPredicate | undefined;
+          component: SearchResultItemExtensionComponent;
+        },
+        'search.search-result-list-item.item',
+        {}
+      >;
+      inputs: {};
+      params: SearchResultListItemBlueprintParams;
     }>;
   }
 >;

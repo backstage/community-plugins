@@ -1717,6 +1717,8 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-permission-react": "backstage:^"
+    "@backstage/plugin-search-common": "backstage:^"
+    "@backstage/plugin-search-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
@@ -1784,6 +1786,22 @@ __metadata:
     fs-extra: "npm:^11.3.0"
     yaml: "npm:^2.6.0"
     zod: "npm:^3.24.3"
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-search-backend-module-azure-devops@workspace:^, @backstage-community/plugin-search-backend-module-azure-devops@workspace:plugins/search-backend-module-azure-devops":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-search-backend-module-azure-devops@workspace:plugins/search-backend-module-azure-devops"
+  dependencies:
+    "@backstage/backend-plugin-api": "backstage:^"
+    "@backstage/backend-test-utils": "backstage:^"
+    "@backstage/cli": "backstage:^"
+    "@backstage/config": "backstage:^"
+    "@backstage/errors": "backstage:^"
+    "@backstage/plugin-search-backend-node": "backstage:^"
+    "@backstage/plugin-search-common": "backstage:^"
+    axios: "npm:^1.4.0"
+    axios-retry: "npm:^3.5.0"
   languageName: unknown
   linkType: soft
 
@@ -3622,7 +3640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-common@npm:^1.2.21":
+"@backstage/plugin-search-common@backstage:^::backstage=1.45.1&npm=1.2.21, @backstage/plugin-search-common@npm:^1.2.21":
   version: 1.2.21
   resolution: "@backstage/plugin-search-common@npm:1.2.21"
   dependencies:
@@ -14685,6 +14703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios-retry@npm:^3.5.0":
+  version: 3.9.1
+  resolution: "axios-retry@npm:3.9.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.15.4"
+    is-retry-allowed: "npm:^2.2.0"
+  checksum: 10/9a28dd8aa4640c2af30789059a1a84549178b2a415bf765a35fe6bba9cd3d78b2ee2da07e448e823303c05f3a83bf98709f4aa64a43c0f6c2812e1665126b97e
+  languageName: node
+  linkType: hard
+
 "axios@npm:1.7.7":
   version: 1.7.7
   resolution: "axios@npm:1.7.7"
@@ -14704,6 +14732,17 @@ __metadata:
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
   checksum: 10/886a79770594eaad76493fecf90344b567bd956240609b5dcd09bd0afe8d3e6f1ad6d3257a93a483b6192b409d4b673d9515a34619e3e3ed1b2c0ec2a83b20ba
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.4.0":
+  version: 1.13.2
+  resolution: "axios@npm:1.13.2"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.4"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/ae4e06dcd18289f2fd18179256d550d27f9a53ecb2f9c59f2ccc4efd1d7151839ba8c3e0fb533dac793e4a59a576ca8689a19244dce5c396680837674a47a867
   languageName: node
   linkType: hard
 
@@ -14860,6 +14899,7 @@ __metadata:
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "workspace:^"
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "workspace:^"
     "@backstage-community/plugin-scaffolder-backend-module-dotnet": "workspace:^"
+    "@backstage-community/plugin-search-backend-module-azure-devops": "workspace:^"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
@@ -21595,6 +21635,13 @@ __metadata:
     has-tostringtag: "npm:^1.0.2"
     hasown: "npm:^2.0.2"
   checksum: 10/c42b7efc5868a5c9a4d8e6d3e9816e8815c611b09535c00fead18a1138455c5cb5e1887f0023a467ad3f9c419d62ba4dc3d9ba8bafe55053914d6d6454a945d2
+  languageName: node
+  linkType: hard
+
+"is-retry-allowed@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "is-retry-allowed@npm:2.2.0"
+  checksum: 10/6d8685530871f0b040346cc72322d90122473e921149affa16de363d6c2a6e46bc76abdfaac3259b93994ec8e7f70fbe67bbb080190e440533ff728e6a64494d
   languageName: node
   linkType: hard
 
