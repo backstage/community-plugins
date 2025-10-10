@@ -104,3 +104,74 @@ The Nexus Repository Manager is a front-end plugin that enables you to view the 
    The **BUILD ARTIFACTS** tab contains a list of build artifacts and related information, such as **VERSION**, **REPOSITORY**, **REPOSITORY TYPE**, **MANIFEST**, **MODIFIED**, and **SIZE**.
 
    ![nexus-repository-manager-tab](./images/nexus-repository-manager.png)
+
+# New Frontend System
+
+Follow these steps to detect and configure the Nexus Repository Manager plugin if you'd like to use it in an application that supports the new Backstage frontend system.
+
+### Package Detection
+
+Once you installed the `@backstage-community/plugin-nexus-repository-manager` package using your preferred package manager, you have to choose how the package should be detected by the Backstage frontend app. The package can be automatically discovered when the feature discovery config is set, or it can be manually enabled via code (for more granular package customization cases).
+
+<table>
+  <tr>
+    <td>Via config</td>
+    <td>Via code</td>
+  </tr>
+  <tr>
+    <td>
+      <pre lang="yaml">
+        <code>
+# app-config.yaml
+  app:
+    # Enable package discovery for all plugins
+    packages: 'all'
+  ---
+  app:
+    # Enable package discovery only for Nexus Repository Manager
+    packages:
+      include:
+        - '@backstage-community/plugin-nexus-repository-manager'
+        </code>
+      </pre>
+    </td>
+    <td>
+      <pre lang="javascript">
+       <code>
+// packages/app/src/App.tsx
+import { createApp } from '@backstage/frontend-defaults';
+import nexusRepositoryManagerPlugin from '@backstage-community/plugin-nexus-repository-manager/alpha';
+//...
+const app = createApp({
+  // ...
+  features: [
+    //...
+    nexusRepositoryManagerPlugin,
+  ],
+});
+
+//...
+</code>
+
+</pre>
+</td>
+
+  </tr>
+</table>
+
+### Extensions Configuration
+
+Currently, the plugin installs 2 extensions: 1 api and 1 entity page content (also known as entity page tab), see below examples of how to configure the available extensions.
+
+```yml
+# app-config.yaml
+app:
+  extensions:
+    # Example disabling the Nexus Repository Manager entity content
+    - 'entity-content:nexus-repository-manager': false
+    # Example customizing the Nexus Repository Manager entity content
+    - 'entity-content:nexus-repository-manager':
+        config:
+          path: '/build'
+          title: 'Build'
+```
