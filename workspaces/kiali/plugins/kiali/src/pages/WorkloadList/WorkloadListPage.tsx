@@ -34,9 +34,10 @@ import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasth
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
-import { isMultiCluster, serverConfig } from '../../config';
+import { isMultiCluster } from '../../config';
 import { useKialiEntityContext } from '../../dynamic/KialiContext';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
+import { useServerConfig } from '../../hooks/useServerConfig';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
@@ -53,6 +54,7 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
     FilterHelper.currentDuration(),
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
   const [errorProvider, setErrorProvider] = React.useState<string | undefined>(
     undefined,
   );
