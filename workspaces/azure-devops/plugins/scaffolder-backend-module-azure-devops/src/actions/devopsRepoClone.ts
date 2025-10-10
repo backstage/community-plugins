@@ -41,6 +41,13 @@ export const createAzureDevOpsCloneRepoAction = (options: {
               'The subdirectory of the workspace to clone the repository into.',
             )
             .optional(),
+        cloneDepth: z =>
+          z
+            .number()
+            .describe(
+              'Performs a shallow fetch, retrieving only the latest n commits from the repository.',
+            )
+            .optional(),
         token: z =>
           z
             .string()
@@ -55,7 +62,12 @@ export const createAzureDevOpsCloneRepoAction = (options: {
       },
     },
     async handler(ctx) {
-      const { remoteUrl, branch = 'main', targetPath = './' } = ctx.input;
+      const {
+        remoteUrl,
+        branch = 'main',
+        targetPath = './',
+        cloneDepth,
+      } = ctx.input;
 
       const outputDir = resolveSafeChildPath(ctx.workspacePath, targetPath);
 
@@ -68,6 +80,7 @@ export const createAzureDevOpsCloneRepoAction = (options: {
       await cloneRepo({
         url: remoteUrl,
         dir: outputDir,
+        depth: cloneDepth,
         auth: auth,
         logger: ctx.logger,
         ref: branch,

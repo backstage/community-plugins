@@ -54,4 +54,22 @@ export const examples: TemplateExample[] = [
       ],
     }),
   },
+  {
+    description: 'Clone Repository with shallow clone depth',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'cloneAzureDevOpsRepository',
+          action: 'azure:repository:clone',
+          name: 'Clone Azure DevOps Repository',
+          input: {
+            remoteUrl:
+              'https://dev.azure.com/{organization}/{project}/_git/{repository}',
+            cloneDepth: 1,
+            token: '${{ secrets.USER_OAUTH_TOKEN }}',
+          },
+        },
+      ],
+    }),
+  },
 ];

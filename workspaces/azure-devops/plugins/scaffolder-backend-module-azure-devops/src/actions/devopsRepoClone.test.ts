@@ -135,4 +135,19 @@ describe('createAzureDevOpsCloneRepoAction', () => {
       `${workspacePath}/subdir`,
     );
   });
+  it('uses cloneDepth when provided', async () => {
+    getCredentialsMock.mockResolvedValue({ type: 'pat', token: 'pat-token' });
+    const ctx = createMockActionContext({
+      workspacePath,
+      input: { remoteUrl, cloneDepth: 5 },
+    });
+    await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
+    expect(cloneRepo).toHaveBeenCalledWith(
+      expect.objectContaining({
+        depth: 5,
+        dir: `${workspacePath}/./`,
+        ref: 'main',
+      }),
+    );
+  });
 });
