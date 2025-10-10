@@ -1,6 +1,10 @@
 app:
   title: Backstage Example App
   baseUrl: http://localhost:3000
+  extensions:
+    - 'page:entity-validation':
+        config:
+          path: '/'
 
 backend:
   baseUrl: http://localhost:7007
