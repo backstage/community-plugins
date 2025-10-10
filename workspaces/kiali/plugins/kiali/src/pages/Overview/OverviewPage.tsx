@@ -42,8 +42,9 @@ import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { default as React, useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { isMultiCluster, serverConfig } from '../../config';
+import { isMultiCluster } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
+import { useServerConfig } from '../../hooks/useServerConfig';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
 import { KialiAppState, KialiContext } from '../../store';
@@ -89,6 +90,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     undefined,
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
   if (!props.entity) {
     kialiClient.setAnnotation(
       KIALI_PROVIDER,
