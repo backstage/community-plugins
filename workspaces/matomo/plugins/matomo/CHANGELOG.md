@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.13.1
+
+### Patch Changes
+
+- cfd8e90: Removed axios dependency
+
 ## 1.13.0
 
 ### Minor Changes
