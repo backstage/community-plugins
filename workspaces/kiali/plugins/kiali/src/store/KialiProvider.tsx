@@ -181,7 +181,9 @@ export const KialiProvider: React.FC<Props> = ({
         .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       const getServerConfig = promises
         .register('getServerConfig', kialiClient.getServerConfig())
-        .then(resp => setServerConfig(resp));
+        .then(resp => {
+          setServerConfig(resp);
+        });
       const getIstioStatus = promises
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));

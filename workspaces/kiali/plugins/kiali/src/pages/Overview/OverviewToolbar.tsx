@@ -72,6 +72,19 @@ export const currentDirectionType = (): DirectionType => {
 
 export const getDurationType = (): SelectItem[] => {
   const items: SelectItem[] = [];
+
+  // Add check for serverConfig
+  if (!serverConfig || !serverConfig.durations) {
+    // Return default durations if serverConfig is not available
+    return [
+      { label: 'Last 1m', value: '60' },
+      { label: 'Last 5m', value: '300' },
+      { label: 'Last 10m', value: '600' },
+      { label: 'Last 30m', value: '1800' },
+      { label: 'Last 1h', value: '3600' },
+    ];
+  }
+
   Object.entries(serverConfig.durations).forEach(([key, value]) =>
     items.push({
       label: `Last ${value}`,
