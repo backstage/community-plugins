@@ -161,6 +161,10 @@ let homeCluster = getHomeCluster(serverConfig);
 const isMultiCluster = isMC();
 export { homeCluster, isMultiCluster };
 
+export const getServerConfig = (): ComputedServerConfig => {
+  return serverConfig;
+};
+
 export const toValidDuration = (duration: number): number => {
   const currentServerConfig = getServerConfig();
   // Check if valid

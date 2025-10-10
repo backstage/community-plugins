@@ -13,34 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { ComputedServerConfig } from '@backstage-community/plugin-kiali-common/types';
 import { useContext } from 'react';
-import { ServerConfigActions } from '../actions/ServerConfigActions';
 import { KialiContext } from '../store/Context';
 
-export const useServerConfig = () => {
-  const context = useContext(KialiContext) as any;
+export interface UseServerConfigReturn {
+  serverConfig: ComputedServerConfig;
+  isLoaded: boolean;
+}
+
+export const useServerConfig = (): UseServerConfigReturn => {
+  const context = useContext(KialiContext);
 
   if (!context) {
     throw new Error('useServerConfig must be used within a KialiProvider');
   }
 
-  const { serverConfig, dispatch } = context;
-
-  const setServerConfig = (config: ComputedServerConfig) => {
-    dispatch.serverConfigDispatch(ServerConfigActions.setServerConfig(config));
-  };
-
-  const setServerConfigLoaded = (loaded: boolean) => {
-    dispatch.serverConfigDispatch(
-      ServerConfigActions.setServerConfigLoaded(loaded),
-    );
-  };
+  const { serverConfig } = context;
 
   return {
     serverConfig: serverConfig.config,
     isLoaded: serverConfig.isLoaded,
-    setServerConfig,
-    setServerConfigLoaded,
   };
 };
