@@ -30,7 +30,6 @@ const backend = createBackend();
 
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
-backend.add(import('@backstage/plugin-scaffolder-backend'));
 backend.add(import('@backstage/plugin-techdocs-backend'));
 
 // auth plugin
@@ -41,9 +40,6 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
-);
 
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend'));
