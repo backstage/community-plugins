@@ -125,7 +125,7 @@ jobs:
             echo "list_deprecations=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: check knip reports
+      - name: check list deprecations
         if: ${{ steps.bcpListDeprecations.outputs.list_deprecations == 'true' }}
         run: yarn backstage-cli repo list-deprecations  
 
