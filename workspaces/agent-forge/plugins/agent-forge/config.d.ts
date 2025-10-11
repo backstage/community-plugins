@@ -19,5 +19,10 @@ export interface Config {
      * @visibility frontend
      */
     baseUrl: string;
+
+    /**
+     * @visibility frontend
+     */
+    showOptions?: boolean;
   };
 }
