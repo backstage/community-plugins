@@ -34,9 +34,9 @@
     "directory": "workspaces/wheel-of-names"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.0",
+    "@backstage/cli": "^0.34.3",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.1",
+    "@backstage/repo-tools": "^0.15.2",
     "@changesets/cli": "^2.27.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^15.0.0",
