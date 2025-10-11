@@ -54,6 +54,7 @@ export const tektonTranslationRef = createTranslationRef({
       noPipelineRuns: 'No Pipeline Runs found',
       searchBarPlaceholder: 'Search',
       rowActions: {
+        viewParamsAndResults: 'View Parameters and Results',
         viewLogs: 'View logs',
         unauthorizedViewLogs: 'Unauthorized to view logs',
         viewSBOM: 'View SBOM',
@@ -120,6 +121,17 @@ export const tektonTranslationRef = createTranslationRef({
       minute_other: '{{count}} minutes',
       second_one: '{{count}} second',
       second_other: '{{count}} seconds',
+    },
+    pipelineRunParamsAndResults: {
+      title: 'PipelineRun Parameters and Results',
+      noParams: 'No parameters found',
+      noResults: 'No results found',
+      params: 'Parameters',
+      results: 'Results',
+      output: {
+        name: 'Name',
+        value: 'Value',
+      },
     },
   },
 });

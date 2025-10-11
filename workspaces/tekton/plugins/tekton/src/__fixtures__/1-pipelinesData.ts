@@ -501,7 +501,20 @@ export const mockKubernetesPlrResponse = {
         uid: 'b7584993-146c-4d4d-ba39-8619237e940b',
       },
       spec: {
-        params: [],
+        params: [
+          {
+            name: 'git-url',
+            value: 'https://xxx',
+          },
+          {
+            name: 'git-revision',
+            value: 'master',
+          },
+          {
+            name: 'array-params',
+            value: ['one', 'two'],
+          },
+        ],
         pipelineRef: {
           name: 'ruby-ex-git',
         },
