@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 export interface Config {
-  gitops?: {
-    /** @visibility frontend */
-    baseUrl?: string;
-    /** @visibility frontend */
-    readOnly?: boolean;
+  flux?: {
+    gitops?: {
+      /**
+       * The base url to the Weave GitOps UI
+       * @visibility frontend
+       */
+      baseUrl?: string;
+      /**
+       * Readonly mode disabled the button in the UI
+       * and provides feedback to the user that resources cannot be changed.
+       * @visibility frontend
+       */
+      readOnly?: boolean;
+    };
   };
 }

@@ -209,7 +209,10 @@ export function GroupAction({
     useToggleSuspendResource(resource as Source | Deployment, false);
   const isLoading = isSyncing || isSuspending || isResuming;
   const config = useApi(configApiRef);
-  const readOnly = config.getOptionalBoolean('gitops.readOnly');
+
+  const readOnly = config.has('flux.gitops')
+    ? config.getOptionalBoolean('flux.gitops.readOnly')
+    : config.getOptionalBoolean('gitops.readOnly');
 
   return (
     <>

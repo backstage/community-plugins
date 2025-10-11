@@ -43,7 +43,9 @@ export const useWeaveFluxDeepLink = (
   resource: FluxObject,
 ): string | undefined => {
   const config = useApi(configApiRef);
-  const baseUrl = config.getOptionalString('gitops.baseUrl');
+  const baseUrl = config.has('flux.gitops')
+    ? config.getOptionalString('flux.gitops.baseUrl')
+    : config.getOptionalString('gitops.baseUrl');
 
   if (!baseUrl) {
     return undefined;
