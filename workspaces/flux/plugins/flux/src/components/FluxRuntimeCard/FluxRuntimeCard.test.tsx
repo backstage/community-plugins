@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import {
   MockFetchApi,
   renderInTestApp,
@@ -226,12 +227,10 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
 }
 
 describe('<FluxRuntimeCard />', () => {
-  let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
+  let Wrapper: ComponentType<PropsWithChildren<{}>>;
 
   beforeEach(() => {
-    Wrapper = ({ children }: { children?: React.ReactNode }) => (
-      <div>{children}</div>
-    );
+    Wrapper = ({ children }: { children?: ReactNode }) => <div>{children}</div>;
   });
 
   afterEach(() => {

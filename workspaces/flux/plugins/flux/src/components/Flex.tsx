@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { PureComponent, ReactNode, ReactEventHandler } from 'react';
 import styled from 'styled-components';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   column?: boolean;
   align?: boolean;
@@ -32,8 +32,8 @@ type Props = {
   start?: string;
   end?: string;
   gap?: string;
-  onMouseEnter?: React.ReactEventHandler;
-  onMouseLeave?: React.ReactEventHandler;
+  onMouseEnter?: ReactEventHandler;
+  onMouseLeave?: ReactEventHandler;
   'data-testid'?: string;
 };
 
@@ -57,7 +57,7 @@ const withStyles = (component: any) => styled(component)`
   ${({ shadow }) => shadow && 'box-shadow: 5px 10px 50px 3px #0000001a'};
 `;
 
-class Flex extends React.PureComponent<Props> {
+class Flex extends PureComponent<Props> {
   render() {
     const {
       className,

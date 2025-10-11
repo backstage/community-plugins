@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
@@ -152,12 +153,10 @@ const entity: Entity = {
 };
 
 describe('<FluxImagePoliciesCard />', () => {
-  let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
+  let Wrapper: ComponentType<PropsWithChildren<{}>>;
 
   beforeEach(() => {
-    Wrapper = ({ children }: { children?: React.ReactNode }) => (
-      <div>{children}</div>
-    );
+    Wrapper = ({ children }: { children?: ReactNode }) => <div>{children}</div>;
   });
 
   beforeEach(() => {
