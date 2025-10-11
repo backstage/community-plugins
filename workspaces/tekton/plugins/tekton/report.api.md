@@ -35,6 +35,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.title': 'Pipeline Runs';
     readonly 'pipelineRunList.noPipelineRuns': 'No Pipeline Runs found';
     readonly 'pipelineRunList.searchBarPlaceholder': 'Search';
+    readonly 'pipelineRunList.rowActions.viewParamsAndResults': 'View Parameters and Results';
     readonly 'pipelineRunList.rowActions.viewLogs': 'View logs';
     readonly 'pipelineRunList.rowActions.unauthorizedViewLogs': 'Unauthorized to view logs';
     readonly 'pipelineRunList.rowActions.viewSBOM': 'View SBOM';
@@ -81,6 +82,13 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunDuration.minute_other': '{{count}} minutes';
     readonly 'pipelineRunDuration.second_one': '{{count}} second';
     readonly 'pipelineRunDuration.second_other': '{{count}} seconds';
+    readonly 'pipelineRunParamsAndResults.output.name': 'Name';
+    readonly 'pipelineRunParamsAndResults.output.value': 'Value';
+    readonly 'pipelineRunParamsAndResults.title': 'PipelineRun Parameters and Results';
+    readonly 'pipelineRunParamsAndResults.results': 'Results';
+    readonly 'pipelineRunParamsAndResults.noParams': 'No parameters found';
+    readonly 'pipelineRunParamsAndResults.noResults': 'No results found';
+    readonly 'pipelineRunParamsAndResults.params': 'Parameters';
   }
 >;
 

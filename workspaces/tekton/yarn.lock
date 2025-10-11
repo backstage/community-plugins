@@ -1835,6 +1835,7 @@ __metadata:
     "@mui/icons-material": "npm:5.18.0"
     "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-core": "npm:^6.0.0"
+    "@patternfly/react-table": "npm:^6.3.1"
     "@patternfly/react-tokens": "npm:^6.0.0"
     "@patternfly/react-topology": "npm:^6.0.0"
     "@playwright/test": "npm:^1.52.0"
@@ -8628,7 +8629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:^6.0.0":
+"@patternfly/react-table@npm:^6.0.0, @patternfly/react-table@npm:^6.3.1":
   version: 6.3.1
   resolution: "@patternfly/react-table@npm:6.3.1"
   dependencies:
