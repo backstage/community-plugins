@@ -16,11 +16,7 @@
 
 import { useMemo } from 'react';
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
-import {
-  discoveryApiRef,
-  errorApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
 import { getAdrLocationUrl } from '@backstage-community/plugin-adr-common';
 import { useEntity } from '@backstage/plugin-catalog-react';
