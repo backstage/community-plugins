@@ -14,30 +14,14 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
+import { Entity } from '@backstage/catalog-model';
 
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+/** @public */
+export const APP_CODE_ANNOTATION = 'servicenow.com/appcode';
+
+/** @public */
+export const isAppCodeAvailable = (entity: Entity) =>
+  Boolean(entity?.metadata.annotations?.[APP_CODE_ANNOTATION]);
+
+export const getAppCodeFromEntity = (entity: Entity) =>
+  entity?.metadata.annotations?.[APP_CODE_ANNOTATION] ?? '';

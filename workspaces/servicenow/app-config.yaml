@@ -106,7 +106,14 @@ catalog:
   # Experimental: Always use the search method in UrlReaderProcessor.
   # New adopters are encouraged to enable it as this behavior will be the default in a future release.
   useUrlReadersSearch: true
-
+servicenow:
+  instanceUrl: https://<your-dev-instance>.service-now.com
+  basicAuth:
+    username: admin
+    password: <your-password>
+  cmdbBaseUrl: ${SERVICE_NOW_BASE_API_URL}
+  cmdbToken: ${SERVICE_NOW_API_TOKEN}
+  
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
 
