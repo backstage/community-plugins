@@ -26,7 +26,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import { MaturitySummaryCardContent } from '../MaturitySummaryInfoCard/MaturitySummaryCardContent';
 import { MaturityHelp } from '../../helpers/MaturityHelp';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { MaturityRankIcon } from '../MaturityRankIcon';
 
 type Props = {
   summary: MaturitySummary;
@@ -71,7 +71,7 @@ function rankProgress(rank: Rank, value: MaturitySummary) {
 
 function getRankAvatarProgress(rank: Rank, value: MaturitySummary) {
   return (
-    <MaturityRankAvatar
+    <MaturityRankIcon
       value={{ rank, isMaxRank: true }}
       size={25}
       progress={rankProgress(rank, value)}
@@ -100,7 +100,7 @@ export const MaturityRankInfoCard = ({ summary }: Props) => {
         </Stack>
       </CardContent>
       <CardContent>
-        <MaturityRankAvatar
+        <MaturityRankIcon
           value={summary}
           size={80}
           progress={summary.rankProgress}
