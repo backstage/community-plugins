@@ -15,13 +15,12 @@
  */
 
 import { useMemo } from 'react';
+import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import {
-  InfoCard,
-  MarkdownContent,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
-import { discoveryApiRef, useApi } from '@backstage/core-plugin-api';
+  discoveryApiRef,
+  errorApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
 import { getAdrLocationUrl } from '@backstage-community/plugin-adr-common';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -30,6 +29,7 @@ import { CookieAuthRefreshProvider } from '@backstage/plugin-auth-react';
 import { adrDecoratorFactories } from './decorators';
 import { AdrContentDecorator } from './types';
 import { adrApiRef } from '../../api';
+import { MixedContent } from './ContentSplitter';
 import useAsync from 'react-use/esm/useAsync';
 
 /**
@@ -63,6 +63,7 @@ export const AdrReader = (props: {
     if (!value?.data) {
       return '';
     }
+
     const adrDecorators = decorators ?? [
       adrDecoratorFactories.createRewriteRelativeLinksDecorator(),
       adrDecoratorFactories.createRewriteRelativeEmbedsDecorator(),
@@ -97,7 +98,7 @@ export const AdrReader = (props: {
           !error &&
           !backendUrlError &&
           value?.data && (
-            <MarkdownContent
+            <MixedContent
               content={adrContent}
               linkTarget="_blank"
               transformImageUri={href => {
