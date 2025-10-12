@@ -22,7 +22,7 @@ import {
   TableFilter,
 } from '@backstage/core-components';
 import { compare } from 'compare-versions';
-import { Box, IconButton, Tooltip } from '@material-ui/core';
+import { Box, IconButton, Tooltip, Typography } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -43,7 +43,6 @@ import {
   OCIRepository,
   ImagePolicy,
 } from '../objects';
-import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
@@ -75,9 +74,11 @@ export const NameLabel = ({
 
   if (!deepLink) {
     return (
-      <span className={classNames(classes.textOverflow, classes.nameLabel)}>
+      <Typography
+        className={classNames(classes.textOverflow, classes.nameLabel)}
+      >
         {label}
-      </span>
+      </Typography>
     );
   }
 
@@ -219,7 +220,7 @@ export function GroupAction({
       {isLoading ? (
         <Progress data-testid="loading" />
       ) : (
-        <Flex>
+        <Box display="flex" alignItems="start">
           <SyncButton
             readOnly={readOnly}
             resource={resource}
@@ -242,7 +243,7 @@ export function GroupAction({
               />
             </>
           ) : null}
-        </Flex>
+        </Box>
       )}
     </>
   );
@@ -288,10 +289,10 @@ export const nameAndClusterName = ({
 }: {
   resource: FluxObject;
 }): JSX.Element => (
-  <Flex column>
+  <Box display="flux" alignItems="start" flexDirection="column">
     <NameLabel resource={resource} />
-    <span>cluster: {resource.clusterName}</span>
-  </Flex>
+    <Typography>cluster: {resource.clusterName}</Typography>
+  </Box>
 );
 
 export const idColumn = <T extends FluxObject | Cluster>() => {
@@ -316,7 +317,7 @@ export const clusterNameFilteringColumn = <
 export const clusterColumn = <T extends Cluster>() => {
   return {
     title: 'Cluster',
-    render: resource => <span>{resource?.clusterName}</span>,
+    render: resource => <Typography>{resource?.clusterName}</Typography>,
     ...sortAndFilterOptions(resource => resource?.clusterName),
   } as TableColumn<T>;
 };
@@ -324,7 +325,7 @@ export const clusterColumn = <T extends Cluster>() => {
 export const namespaceColumn = <T extends Cluster>() => {
   return {
     title: 'Namespace',
-    render: resource => <span>{resource?.namespace}</span>,
+    render: resource => <Typography>{resource?.namespace}</Typography>,
     ...sortAndFilterOptions(resource => resource?.namespace),
   } as TableColumn<T>;
 };
@@ -332,7 +333,7 @@ export const namespaceColumn = <T extends Cluster>() => {
 export const versionColumn = <T extends Cluster>() => {
   return {
     title: 'Version',
-    render: resource => <span>{resource?.version}</span>,
+    render: resource => <Typography>{resource?.version}</Typography>,
     ...sortAndFilterOptions(resource => resource?.version),
   } as TableColumn<T>;
 };
@@ -340,7 +341,9 @@ export const versionColumn = <T extends Cluster>() => {
 export const availableComponentsColumn = <T extends Cluster>() => {
   return {
     title: 'Available Components',
-    render: resource => <span>{resource?.availableComponents.join(', ')}</span>,
+    render: resource => (
+      <Typography>{resource?.availableComponents.join(', ')}</Typography>
+    ),
     ...sortAndFilterOptions(resource =>
       resource?.availableComponents.join(', '),
     ),
@@ -435,7 +438,9 @@ export const artifactColumn = <T extends Source>() => {
           'unknown tag'
         }
       >
-        <span>{shortenSha(resource.artifact?.revision?.split('@')[0])}</span>
+        <Typography>
+          {shortenSha(resource.artifact?.revision?.split('@')[0])}
+        </Typography>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
@@ -461,11 +466,11 @@ export const sourceColumn = <T extends Deployment>() => {
       resource.type === 'HelmRelease' ? (
         formatContent(resource)
       ) : (
-        <span>
+        <Typography>
           {resource.type === 'Kustomization'
             ? (resource as Kustomization)?.path
             : ''}
-        </span>
+        </Typography>
       ),
     ...sortAndFilterOptions(resource =>
       resource.type === 'HelmRelease'
@@ -522,7 +527,7 @@ export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
-    render: resource => <span>{resource?.sourceRef?.name}</span>,
+    render: resource => <Typography>{resource?.sourceRef?.name}</Typography>,
     ...sortAndFilterOptions(resource => resource?.sourceRef?.name),
   } as TableColumn<T>;
 };
@@ -567,9 +572,9 @@ export const policy = <T extends ImagePolicy>() => {
     title: 'Image Policy',
     field: 'imagepolicy',
     render: resource => (
-      <span>
+      <Typography>
         {resource?.imagePolicy.type} / {resource?.imagePolicy.value}
-      </span>
+      </Typography>
     ),
     ...sortAndFilterOptions(
       resource =>
@@ -582,7 +587,7 @@ export const imageRepository = <T extends ImagePolicy>() => {
   return {
     title: 'Image Repository',
     field: 'imagerepository',
-    render: resource => <span>{resource?.imageRepositoryRef}</span>,
+    render: resource => <Typography>{resource?.imageRepositoryRef}</Typography>,
     ...sortAndFilterOptions(resource => resource?.imageRepositoryRef),
   } as TableColumn<T>;
 };
@@ -591,7 +596,7 @@ export const latestImageSelected = <T extends ImagePolicy>() => {
   return {
     title: 'Latest Image',
     field: 'latestimage',
-    render: resource => <span>{resource?.latestImage}</span>,
+    render: resource => <Typography>{resource?.latestImage}</Typography>,
     ...sortAndFilterOptions(resource => resource?.latestImage),
   } as TableColumn<T>;
 };

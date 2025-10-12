@@ -22,8 +22,7 @@ import {
   StatusPending,
 } from '@backstage/core-components';
 import { Condition } from '../../objects';
-import Flex from '../Flex';
-import { Tooltip } from '@material-ui/core';
+import { Box, Tooltip } from '@material-ui/core';
 import classNames from 'classnames';
 import { PropsWithChildren } from 'react';
 import { ReconcilingIcon } from './icons/ReconcilingIcon';
@@ -235,15 +234,14 @@ export interface KubeStatusIndicatorProps {
 }
 
 export function KubeStatusIndicator(props: KubeStatusIndicatorProps) {
-  const classes = useStyles();
   const ready = _.find(props.conditions, c => c.type === ReadyType.Ready);
 
   return (
     <Tooltip title={ready?.message || ''}>
       <div>
-        <Flex start className={classes} align>
+        <Box display="flex" alignItems="center" justifyContent="flex-start">
           <BackstageStatusIcon {...props} />
-        </Flex>
+        </Box>
       </div>
     </Tooltip>
   );
