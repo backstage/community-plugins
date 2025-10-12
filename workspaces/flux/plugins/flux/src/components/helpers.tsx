@@ -75,6 +75,7 @@ export const NameLabel = ({
   if (!deepLink) {
     return (
       <Typography
+        variant="body2"
         className={classNames(classes.textOverflow, classes.nameLabel)}
       >
         {label}
@@ -218,7 +219,7 @@ export function GroupAction({
       {isLoading ? (
         <Progress data-testid="loading" />
       ) : (
-        <Box display="flex" alignItems="start">
+        <Box display="flex" alignItems="start" flexDirection="row">
           <SyncButton
             readOnly={readOnly}
             resource={resource}

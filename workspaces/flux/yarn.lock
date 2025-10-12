@@ -987,18 +987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config@npm:^1.3.3":
-  version: 1.3.3
-  resolution: "@backstage/config@npm:1.3.3"
-  dependencies:
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.1"
-    ms: "npm:^2.1.3"
-  checksum: 10/95f3e2a8fca274157e7fdeafd15285f2626ac98df4fcb7fdaca9e21b64eecf4c92b6a3c20ad5cff9d7c12ec750a969e8cd23fc3e18534c1803ef7c6b45c3ba04
-  languageName: node
-  linkType: hard
-
-"@backstage/config@npm:^1.3.4":
+"@backstage/config@npm:^1.3.3, @backstage/config@npm:^1.3.4":
   version: 1.3.4
   resolution: "@backstage/config@npm:1.3.4"
   dependencies:
@@ -1009,7 +998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-app-api@backstage:^::backstage=1.43.3&npm=1.19.0, @backstage/core-app-api@npm:^1.19.0":
+"@backstage/core-app-api@backstage:^::backstage=1.43.3&npm=1.19.0, @backstage/core-app-api@npm:^1.18.0, @backstage/core-app-api@npm:^1.19.0":
   version: 1.19.0
   resolution: "@backstage/core-app-api@npm:1.19.0"
   dependencies:
@@ -1034,34 +1023,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/229d491eb25119a488c9a0b7ba07f51d3abdfdb8613d28ad786edc957d05b81b45634bb01be2b1dfa26877ce064b8cd0fd85f9ba109af9511b09eb6200987388
-  languageName: node
-  linkType: hard
-
-"@backstage/core-app-api@npm:^1.18.0":
-  version: 1.18.0
-  resolution: "@backstage/core-app-api@npm:1.18.0"
-  dependencies:
-    "@backstage/config": "npm:^1.3.3"
-    "@backstage/core-plugin-api": "npm:^1.10.9"
-    "@backstage/types": "npm:^1.2.1"
-    "@backstage/version-bridge": "npm:^1.0.11"
-    "@types/prop-types": "npm:^15.7.3"
-    history: "npm:^5.0.0"
-    i18next: "npm:^22.4.15"
-    lodash: "npm:^4.17.21"
-    prop-types: "npm:^15.7.2"
-    react-use: "npm:^17.2.4"
-    zen-observable: "npm:^0.10.0"
-    zod: "npm:^3.22.4"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/f6f8eb72b3bb5d4fb0ad76b15c68768195625d598f5ea4400ec185d0aac013f7e2dbb0ada0c0700a6ccaced454c03a29f11b6b05c739637d8eab277a94256749
   languageName: node
   linkType: hard
 
@@ -1141,7 +1102,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@backstage:^::backstage=1.43.3&npm=1.11.0, @backstage/core-plugin-api@npm:^1.11.0":
+"@backstage/core-plugin-api@backstage:^::backstage=1.43.3&npm=1.11.0, @backstage/core-plugin-api@npm:^1.10.9, @backstage/core-plugin-api@npm:^1.11.0":
   version: 1.11.0
   resolution: "@backstage/core-plugin-api@npm:1.11.0"
   dependencies:
@@ -1159,27 +1120,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/1c6d16eae995cfcb5a0db03ebf6ec0a1b23437c57fdcf75f451d034dd8689c19d9fe04572af7b12c8ae944fc17ff87539810ab5af2b8df5964fd9aa5af2a7681
-  languageName: node
-  linkType: hard
-
-"@backstage/core-plugin-api@npm:^1.10.9":
-  version: 1.10.9
-  resolution: "@backstage/core-plugin-api@npm:1.10.9"
-  dependencies:
-    "@backstage/config": "npm:^1.3.3"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.1"
-    "@backstage/version-bridge": "npm:^1.0.11"
-    history: "npm:^5.0.0"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/22f6e0d0cd18ac0ecb0737e75df9aa227b12fa7bdad11a54370efe339846b4d7d1b8ab7136c4f3e6a2d35702295cb81cb13f32e317a20f82a2c97c69d982ff10
   languageName: node
   linkType: hard
 
@@ -1761,14 +1701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/types@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@backstage/types@npm:1.2.1"
-  checksum: 10/e3e65835b9db31d3f697e2d62fbcf52a3a6373e9f75fa8429e61f0a455880d4c32cdf996b22e85165e1a5b108604267281624befebcf9ae692c8844675925f14
-  languageName: node
-  linkType: hard
-
-"@backstage/types@npm:^1.2.2":
+"@backstage/types@npm:^1.2.1, @backstage/types@npm:^1.2.2":
   version: 1.2.2
   resolution: "@backstage/types@npm:1.2.2"
   checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
