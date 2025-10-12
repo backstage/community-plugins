@@ -361,9 +361,11 @@ describe('<EntityFluxDeploymentsCard />', () => {
               [
                 configApiRef,
                 new ConfigReader({
-                  gitops: {
-                    baseUrl: 'https://example.com/wego',
-                    readOnly: false,
+                  flux: {
+                    gitops: {
+                      baseUrl: 'https://example.com/wego',
+                      readOnly: false,
+                    },
                   },
                 }),
               ],

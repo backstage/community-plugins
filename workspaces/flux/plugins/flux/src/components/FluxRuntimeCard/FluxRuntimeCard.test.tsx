@@ -246,7 +246,11 @@ describe('<FluxRuntimeCard />', () => {
               [
                 configApiRef,
                 new ConfigReader({
-                  gitops: { baseUrl: 'https://example.com/wego' },
+                  flux: {
+                    gitops: {
+                      baseUrl: 'https://example.com/wego',
+                    },
+                  },
                 }),
               ],
               [kubernetesApiRef, new StubKubernetesClient()],

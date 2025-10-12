@@ -15,9 +15,9 @@
  */
 import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { PropsWithChildren } from 'react';
-import { useWeaveFluxDeepLink } from './useWeaveFluxDeepLink';
+import { useWeaveGitOpsDeepLink } from './useWeaveGitOpsDeepLink';
 import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 import * as unverifiedGitRepository from '../__fixtures__/unverified_git_repository.json';
 import * as unverifiedOCIRepository from '../__fixtures__/unverified_oci_repository.json';
@@ -52,7 +52,7 @@ const wrapper = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-describe('useWeaveFluxDeepLink', () => {
+describe('useWeaveGitOpsDeepLink', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     gitOpsUrl = undefined;
@@ -63,7 +63,7 @@ describe('useWeaveFluxDeepLink', () => {
       gitOpsUrl = 'https://example.com';
 
       const { result } = renderHook(
-        () => useWeaveFluxDeepLink(testHelmRelease),
+        () => useWeaveGitOpsDeepLink(testHelmRelease),
         {
           wrapper,
         },
@@ -77,7 +77,7 @@ describe('useWeaveFluxDeepLink', () => {
       gitOpsUrl = 'https://example.com';
 
       const { result } = renderHook(
-        () => useWeaveFluxDeepLink(testGitRepository),
+        () => useWeaveGitOpsDeepLink(testGitRepository),
         {
           wrapper,
         },
@@ -91,7 +91,7 @@ describe('useWeaveFluxDeepLink', () => {
       gitOpsUrl = 'https://example.com';
 
       const { result } = renderHook(
-        () => useWeaveFluxDeepLink(testOCIRepository),
+        () => useWeaveGitOpsDeepLink(testOCIRepository),
         {
           wrapper,
         },
@@ -107,7 +107,7 @@ describe('useWeaveFluxDeepLink', () => {
       gitOpsUrl = 'https://example.com/';
 
       const { result } = renderHook(
-        () => useWeaveFluxDeepLink(testHelmRelease),
+        () => useWeaveGitOpsDeepLink(testHelmRelease),
         {
           wrapper,
         },
@@ -121,7 +121,7 @@ describe('useWeaveFluxDeepLink', () => {
   describe('when configured without a gitops url', () => {
     it('returns undefined', async () => {
       const { result } = renderHook(
-        () => useWeaveFluxDeepLink(testHelmRelease),
+        () => useWeaveGitOpsDeepLink(testHelmRelease),
         {
           wrapper,
         },
@@ -140,7 +140,7 @@ describe('useWeaveFluxDeepLink', () => {
           '{"apiVersion":"helm.toolkit.fluxcd.io/v2beta1","kind":"HelmRelease","metadata":{"annotations":{"metadata.weave.works/test":"value"},"creationTimestamp":"2023-05-25T14:14:46Z","finalizers":["finalizers.fluxcd.io"],"generation":5,"name":"normal","namespace":"default","resourceVersion":"1","uid":"82231842-2224-4f22-8576-5babf08d746d"}}',
       });
 
-      const { result } = renderHook(() => useWeaveFluxDeepLink(helmRelease), {
+      const { result } = renderHook(() => useWeaveGitOpsDeepLink(helmRelease), {
         wrapper,
       });
       expect(result.current).toBe(

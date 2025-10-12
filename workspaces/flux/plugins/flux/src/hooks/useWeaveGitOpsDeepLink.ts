@@ -39,13 +39,12 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   )}/${type}/details?${searchParams.toString()}`;
 };
 
-export const useWeaveFluxDeepLink = (
+export const useWeaveGitOpsDeepLink = (
   resource: FluxObject,
 ): string | undefined => {
   const config = useApi(configApiRef);
-  const baseUrl = config.has('flux.gitops')
-    ? config.getOptionalString('flux.gitops.baseUrl')
-    : config.getOptionalString('gitops.baseUrl');
+
+  const baseUrl = config.getOptionalString('flux.gitops.baseUrl');
 
   if (!baseUrl) {
     return undefined;

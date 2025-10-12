@@ -146,7 +146,12 @@ function renderHelmReleasesCard() {
         [
           configApiRef,
           new ConfigReader({
-            gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
+            flux: {
+              gitops: {
+                baseUrl: 'https://example.com/wego',
+                readOnly: false,
+              },
+            },
           }),
         ],
         [kubernetesApiRef, new StubKubernetesClient()],
@@ -250,8 +255,10 @@ describe('<EntityFluxHelmReleasesCard />', () => {
             [
               configApiRef,
               new ConfigReader({
-                gitops: {
-                  readOnly: true,
+                flux: {
+                  gitops: {
+                    readOnly: true,
+                  },
                 },
               }),
             ],
@@ -294,9 +301,11 @@ describe('<EntityFluxHelmReleasesCard />', () => {
             [
               configApiRef,
               new ConfigReader({
-                gitops: {
-                  baseUrl: 'https://example.com/wego',
-                  readOnly: false,
+                flux: {
+                  gitops: {
+                    baseUrl: 'https://example.com/wego',
+                    readOnly: false,
+                  },
                 },
               }),
             ],

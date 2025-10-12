@@ -27,7 +27,7 @@ import RetryIcon from '@material-ui/icons/Replay';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { useSyncResource, useWeaveFluxDeepLink } from '../hooks';
+import { useSyncResource, useWeaveGitOpsDeepLink } from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
@@ -68,7 +68,7 @@ export const NameLabel = ({
   resource: FluxObject;
 }): JSX.Element => {
   const { name, namespace } = resource;
-  const deepLink = useWeaveFluxDeepLink(resource);
+  const deepLink = useWeaveGitOpsDeepLink(resource);
   const label = `${namespace}/${name}`;
   const classes = useStyles();
 
@@ -211,9 +211,7 @@ export function GroupAction({
   const isLoading = isSyncing || isSuspending || isResuming;
   const config = useApi(configApiRef);
 
-  const readOnly = config.has('flux.gitops')
-    ? config.getOptionalBoolean('flux.gitops.readOnly')
-    : config.getOptionalBoolean('gitops.readOnly');
+  const readOnly = config.getOptionalBoolean('flux.gitops.readOnly');
 
   return (
     <>
