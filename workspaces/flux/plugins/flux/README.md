@@ -244,10 +244,9 @@ This will generate link URLs through to the relevant UIs relative to the configu
 
 ```yaml
 # app-config.yaml
-
-gitops:
-  #
-  baseUrl: https://wego.example.com
+flux:
+  gitops:
+    baseUrl: https://wego.example.com
 ```
 
 **NOTE:** The URL generated will include the name of the cluster that is configured in Backstage's cluster location mechanism.
@@ -293,9 +292,9 @@ You can also update the configuration to restrict the access to the sync/suspend
 
 ```yaml
 # app-config.yaml
-
-gitops:
-  readOnly: true
+flux:
+  gitops:
+    readOnly: true
 ```
 
 The UI will reflect this by showing the buttons corresponding to sync/suspend/resume as disabled.
