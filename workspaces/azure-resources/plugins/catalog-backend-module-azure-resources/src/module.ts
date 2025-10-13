@@ -22,6 +22,12 @@ import { azureResourcesServiceRef } from '@backstage-community/plugin-azure-reso
 import { readProviderConfigs } from './lib';
 import { AzureResourceProvider } from './provider/AzureResourceProvider';
 
+/**
+ * A catalog module that adds the Azure Resources entity provider.
+ * Reads the provider configuration from the `catalog.providers.azureResources` array in the app config.
+ *
+ * @public
+ */
 export const catalogModuleAzureResources = createBackendModule({
   pluginId: 'catalog',
   moduleId: 'azure-resources',

@@ -15,6 +15,7 @@
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
     "target": "ES2022",
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "types": ["node", "jest"]
   }
 }
