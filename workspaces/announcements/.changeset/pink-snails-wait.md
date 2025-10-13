@@ -8,4 +8,4 @@ Updated `CategoriesPage` and `TagsPage` in order to disaply the `ContextMenu`
 Added titleLength prop in order to truncate title on `AnnouncementDetails`
 Fixed insert of Categories from `CategoriesPage` and clean up on dialog
 Added in the `NewAnnouncementBanner` two new props `titleLength` & `excerptLength`, this would allow to truncate text. Default is 50.
-Now the `NewAnnouncementBanner` title get clicked, the alert is dismissed as user navigate to alert details
+Now in the `NewAnnouncementBanner` when the title get clicked, the alert is dismissed as user navigate to alert details
