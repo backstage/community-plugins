@@ -2,20 +2,43 @@
   "name": "@backstage-community/plugin-catalog-backend-module-azure-resources",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
   "description": "The azure-resources backend module for the catalog plugin.",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "configSchema": "config.d.ts",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.cjs.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "pluginId": "catalog"
+    "pluginId": "catalog",
+    "pluginPackage": "@backstage/plugin-catalog-backend"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/backstage-community",
+    "directory": "workspaces/azure-resources/plugins/catalog-backend-module-azure-resources"
+  },
+  "keywords": [
+    "backstage-plugin",
+    "backstage",
+    "plugin",
+    "catalog",
+    "azure",
+    "resources"
+  ],
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",
