@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 7.4.1
+
+### Patch Changes
+
+- db1ab9d: Updated dependency `knex-mock-client` to `3.0.2`.
+
 ## 7.4.0
 
 ### Minor Changes
