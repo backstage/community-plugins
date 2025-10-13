@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.20.1
+
+### Patch Changes
+
+- 469f51c: Updated dependency `@types/react` to `18.3.26`.
+
 ## 1.20.0
 
 ### Minor Changes
