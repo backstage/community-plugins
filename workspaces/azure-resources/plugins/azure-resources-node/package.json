@@ -40,7 +40,7 @@
   ],
   "dependencies": {
     "@azure/arm-resourcegraph": "^4.2.1",
-    "@azure/identity": "^4.8.0",
+    "@azure/identity": "^4.13.0",
     "@azure/ms-rest-js": "^2.7.0",
     "@backstage/backend-plugin-api": "backstage:^"
   }
