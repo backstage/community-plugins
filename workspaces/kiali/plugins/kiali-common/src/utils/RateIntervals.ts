@@ -21,7 +21,7 @@ export const getName = (
   durationSeconds: number,
   serverConfig: ComputedServerConfig,
 ): string => {
-  // Add defensive checks for serverConfig
+  // Add checks for serverConfig
   if (!serverConfig || !serverConfig.durations) {
     return `${durationSeconds} seconds`;
   }
