@@ -68,7 +68,7 @@
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/dom": "9.3.4",
-    "@testing-library/jest-dom": "6.8.0",
+    "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.6.1",
     "@types/node": "22.15.29",

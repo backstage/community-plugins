@@ -48,7 +48,7 @@
     "@backstage/cli": "^0.34.3",
     "@backstage/dev-utils": "^1.1.14",
     "@backstage/test-utils": "^1.7.11",
-    "@testing-library/jest-dom": "6.8.0",
+    "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
     "@types/luxon": "^3",
     "cross-fetch": "4.0.0",
