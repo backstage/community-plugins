@@ -39,16 +39,16 @@
     "@backstage/cli": "^0.34.3",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.15.2",
-    "@changesets/cli": "^2.28.1",
+    "@changesets/cli": "^2.29.7",
     "@microsoft/api-extractor-model": "^7.31.1",
     "@microsoft/tsdoc": "^0.15.1",
     "@microsoft/tsdoc-config": "^0.17.1",
-    "@types/node": "22.15.29",
+    "@types/node": "24.7.2",
     "@useoptic/optic": "^1.0.9",
-    "knip": "^5.50.2",
-    "node-gyp": "^9.4.1",
-    "prettier": "^2.8.8",
-    "typescript": "~5.8.3"
+    "knip": "^5.65.0",
+    "node-gyp": "^11.4.2",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3"
   },
   "resolutions": {
     "@types/react": "^18",
