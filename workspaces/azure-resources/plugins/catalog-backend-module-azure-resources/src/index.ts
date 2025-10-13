@@ -21,4 +21,7 @@
  */
 
 export { catalogModuleAzureResources as default } from './module';
-export type { AzureResourcesProviderConfig } from './lib/config';
+export type {
+  AzureResourcesProviderConfig,
+  AzureResourcesScope,
+} from './lib/config';
