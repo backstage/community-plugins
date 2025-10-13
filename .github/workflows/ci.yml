@@ -93,14 +93,14 @@ jobs:
       - name: prettier
         run: yarn prettier:check
       
-      - name: read knip-reports flag from bcp.json
-        id: bcp
+      - name: read knipReports flag from bcp.json
+        id: bcpKnipReports
         run: |
           echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
           if [ -f bcp.json ]; then
-            echo "Reading knip-reports flag..."
-            KNIP_REPORTS=$(jq -r '.["knip-reports"]' bcp.json)
-            echo "knip-reports value: $KNIP_REPORTS"
+            echo "Reading knipReports flag..."
+            KNIP_REPORTS=$(jq -r '.["knipReports"]' bcp.json)
+            echo "knipReports value: $KNIP_REPORTS"
             echo "knip_reports=$KNIP_REPORTS" >> $GITHUB_OUTPUT
           else
             echo "bcp.json not found. Defaulting knip_reports to false."
@@ -108,8 +108,26 @@ jobs:
           fi
 
       - name: check knip reports
-        if: ${{ steps.bcp.outputs.knip_reports == 'true' }}
+        if: ${{ steps.bcpKnipReports.outputs.knip_reports == 'true' }}
         run: yarn build:knip-reports --ci
+
+      - name: read listDeprecations flag from bcp.json
+        id: bcpListDeprecations
+        run: |
+          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
+          if [ -f bcp.json ]; then
+            echo "Reading listDeprecations flag..."
+            LIST_DEPRECATIONS=$(jq -r '.["listDeprecations"]' bcp.json)
+            echo "listDeprecations value: $LIST_DEPRECATIONS"
+            echo "list_deprecations=$LIST_DEPRECATIONS" >> $GITHUB_OUTPUT
+          else
+            echo "bcp.json not found. Defaulting list_deprecations to false."
+            echo "list_deprecations=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: check list deprecations
+        if: ${{ steps.bcpListDeprecations.outputs.list_deprecations == 'true' }}
+        run: yarn backstage-cli repo list-deprecations  
 
       - name: check api reports and generate API reference
         run: yarn build:api-reports:only --ci
