@@ -38,16 +38,7 @@ import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,
 } from '../MarkdownRenderer';
-
-/**
- * Truncate text to a given length and add ellipsis
- * @param text the text to truncate
- * @param length the length to truncate to
- * @returns the truncated text
- */
-const truncate = (text: string, length: number) => {
-  return text.length > length ? `${text.substring(0, length)}...` : text;
-};
+import { truncate } from '../utils/truncateUtils';
 
 const AnnouncementDetails = ({
   announcement,
@@ -56,7 +47,7 @@ const AnnouncementDetails = ({
 }: {
   announcement: Announcement;
   markdownRenderer?: MarkdownRendererTypeProps;
-  titleLength?: number; // length to truncate title to, defaults to 50
+  titleLength?: number;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
