@@ -36,6 +36,9 @@ export const tektonTranslationRef = createTranslationRef({
     statusSelector: {
       label: 'Status',
     },
+    clusterSelector: {
+      label: 'Cluster',
+    },
     tableExpandCollapse: {
       collapseAll: 'Collapse all',
       expandAll: 'Expand all',
@@ -54,6 +57,7 @@ export const tektonTranslationRef = createTranslationRef({
       noPipelineRuns: 'No Pipeline Runs found',
       searchBarPlaceholder: 'Search',
       rowActions: {
+        viewParamsAndResults: 'View Parameters and Results',
         viewLogs: 'View logs',
         unauthorizedViewLogs: 'Unauthorized to view logs',
         viewSBOM: 'View SBOM',
@@ -76,6 +80,9 @@ export const tektonTranslationRef = createTranslationRef({
         startTime: 'STARTED',
         duration: 'DURATION',
         actions: 'ACTIONS',
+      },
+      tablePagination: {
+        rowsPerPageOptionLabel: '{{num}} rows',
       },
     },
     pipelineRunLogs: {
@@ -120,6 +127,17 @@ export const tektonTranslationRef = createTranslationRef({
       minute_other: '{{count}} minutes',
       second_one: '{{count}} second',
       second_other: '{{count}} seconds',
+    },
+    pipelineRunParamsAndResults: {
+      title: 'PipelineRun Parameters and Results',
+      noParams: 'No parameters found',
+      noResults: 'No results found',
+      params: 'Parameters',
+      results: 'Results',
+      outputTableColumn: {
+        name: 'Name',
+        value: 'Value',
+      },
     },
   },
 });
