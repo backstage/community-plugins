@@ -36,6 +36,9 @@ export const tektonTranslationRef = createTranslationRef({
     statusSelector: {
       label: 'Status',
     },
+    clusterSelector: {
+      label: 'Cluster',
+    },
     tableExpandCollapse: {
       collapseAll: 'Collapse all',
       expandAll: 'Expand all',
@@ -77,6 +80,9 @@ export const tektonTranslationRef = createTranslationRef({
         startTime: 'STARTED',
         duration: 'DURATION',
         actions: 'ACTIONS',
+      },
+      tablePagination: {
+        rowsPerPageOptionLabel: '{{num}} rows',
       },
     },
     pipelineRunLogs: {
@@ -128,7 +134,7 @@ export const tektonTranslationRef = createTranslationRef({
       noResults: 'No results found',
       params: 'Parameters',
       results: 'Results',
-      output: {
+      outputTableColumn: {
         name: 'Name',
         value: 'Value',
       },

@@ -38,10 +38,10 @@ export const Output = ({ results }: OutputProps) => {
       <Thead>
         <Tr>
           <Th style={{ textAlign: 'left' }} width={25}>
-            {t('pipelineRunParamsAndResults.output.name')}
+            {t('pipelineRunParamsAndResults.outputTableColumn.name')}
           </Th>
           <Th style={{ textAlign: 'left' }}>
-            {t('pipelineRunParamsAndResults.output.value')}
+            {t('pipelineRunParamsAndResults.outputTableColumn.value')}
           </Th>
         </Tr>
       </Thead>
