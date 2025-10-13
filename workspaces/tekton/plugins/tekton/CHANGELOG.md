@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.30.1
+
+### Patch Changes
+
+- dde8f40: tekton plugin support show pipeline run params and results
+
 ## 3.30.0
 
 ### Minor Changes
