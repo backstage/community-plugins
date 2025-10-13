@@ -1,0 +1,72 @@
+---
+# Example configuration for Azure Resources catalog provider
+#
+# This file shows examples of how to configure the Azure Resources provider
+# for discovering Azure resources using Azure Resource Graph queries.
+
+catalog:
+  providers:
+    azureResources:
+      # Example 1: Storage Accounts
+      - id: storage-accounts
+        resourceType: storage-accounts
+        query: |
+          Resources
+          | where type =~ 'microsoft.storage/storageaccounts'
+        schedule:
+          frequency: { hours: 1 }
+          timeout: { minutes: 50 }
+
+      # Example 2: Production Virtual Machines with filtering
+      - id: production-vms
+        resourceType: virtual-machines
+        query: |
+          Resources
+          | where type =~ 'microsoft.compute/virtualmachines'
+          | where tags.environment == 'production'
+          | where location in ('eastus', 'westus2')
+        scope:
+          subscriptions:
+            - 'your-subscription-id-1'
+            - 'your-subscription-id-2'
+        schedule:
+          frequency: { hours: 2 }
+          timeout: { minutes: 30 }
+
+      # Example 3: AKS Clusters with management group scope
+      - id: aks-clusters
+        resourceType: aks-clusters
+        query: |
+          Resources
+          | where type =~ 'microsoft.containerservice/managedclusters'
+          | project id, name, location, resourceGroup, subscriptionId,
+              properties
+        scope:
+          managementGroups:
+            - 'mg-production'
+        schedule:
+          frequency: { hours: 4 }
+          timeout: { minutes: 60 }
+
+      # Example 4: SQL Databases (excluding master)
+      - id: sql-databases
+        resourceType: sql-databases
+        query: |
+          Resources
+          | where type =~ 'microsoft.sql/servers/databases'
+          | where name != 'master'
+          | where tags.backup == 'enabled'
+        schedule:
+          frequency: { hours: 2 }
+          timeout: { minutes: 30 }
+
+      # Example 5: Key Vaults with RBAC enabled
+      - id: key-vaults
+        resourceType: key-vaults
+        query: |
+          Resources
+          | where type =~ 'microsoft.keyvault/vaults'
+          | where properties.enableRbacAuthorization == true
+        schedule:
+          frequency: { hours: 6 }
+          timeout: { minutes: 20 }
