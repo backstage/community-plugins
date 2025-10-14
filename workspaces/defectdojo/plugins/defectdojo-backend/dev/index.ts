@@ -15,7 +15,6 @@
  */
 import { createBackend } from '@backstage/backend-defaults';
 import { mockServices } from '@backstage/backend-test-utils';
-import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 // TEMPLATE NOTE:
 // This is the development setup for your plugin that wires up a
@@ -59,26 +58,6 @@ backend.add(
         maxPages: 100,
       },
     },
-  }),
-);
-
-// TEMPLATE NOTE:
-// Rather than using a real catalog you can use a mock with a fixed set of entities.
-backend.add(
-  catalogServiceMock.factory({
-    entities: [
-      {
-        apiVersion: 'backstage.io/v1alpha1',
-        kind: 'Component',
-        metadata: {
-          name: 'sample',
-          title: 'Sample Component',
-        },
-        spec: {
-          type: 'service',
-        },
-      },
-    ],
   }),
 );
 

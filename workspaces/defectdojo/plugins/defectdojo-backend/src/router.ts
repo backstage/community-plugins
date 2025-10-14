@@ -51,23 +51,10 @@ export async function createRouter(
     await httpAuth.credentials(req, { allow: ['user'] });
     const { identifier } = req.params;
 
-    try {
-      const product = await client.getProduct(
-        !isNaN(Number(identifier)) ? Number(identifier) : identifier,
-      );
-      res.json(product);
-    } catch (error: any) {
-      logger.error(
-        `Failed to retrieve DefectDojo product ${identifier}: ${error.message}`,
-      );
-      if (error.message.includes('No product found')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ error: error.message || 'Internal server error' });
-      }
-    }
+    const product = await client.getProduct(
+      !isNaN(Number(identifier)) ? Number(identifier) : identifier,
+    );
+    res.json(product);
   });
 
   router.get('/v1/engagements', async (req, res): Promise<void> => {
@@ -84,21 +71,16 @@ export async function createRouter(
       );
     }
 
-    try {
-      const engagements = await client.getEngagements(Number(productId));
-      res.json({ engagements });
-    } catch (error: any) {
-      logger.error(
-        `Failed to retrieve DefectDojo engagements for product ${productId}: ${error.message}`,
-      );
-      res.status(500).json({ error: error.message || 'Internal server error' });
-    }
+    const engagements = await client.getEngagements(Number(productId));
+    res.json({ engagements });
   });
 
   router.get('/v1/findings', async (req, res): Promise<void> => {
     await httpAuth.credentials(req, { allow: ['user'] });
     const productIdParam = req.query.productId;
     const engagementIdParam = req.query.engagementId;
+    const limitParam = req.query.limit;
+    const offsetParam = req.query.offset;
 
     if (!productIdParam) {
       throw new InputError('productId query parameter is required');
@@ -124,70 +106,63 @@ export async function createRouter(
       }
     }
 
-    const started = Date.now();
-    try {
-      const logMessage = engagementId
-        ? `Fetching DefectDojo findings for engagement ${engagementId}`
-        : `Fetching DefectDojo findings for product ${productId}`;
-      logger.info(logMessage);
+    // Parse pagination parameters
+    const limit = limitParam ? Number(limitParam) : undefined;
+    const offset = offsetParam ? Number(offsetParam) : undefined;
 
-      const findings = await client.listFindingsByProduct(
-        productId,
-        engagementId,
+    if (limit !== undefined && (!Number.isFinite(limit) || limit <= 0)) {
+      throw new InputError(
+        `Invalid limit: ${limitParam}. Must be a positive integer.`,
       );
-
-      const payload: FindingResponse = {
-        total: findings.length,
-        findings: findings.map(
-          (f): ProcessedFinding => ({
-            id: f.id,
-            title: f.title,
-            severity: f.severity ?? 'Unknown',
-            url: f.url,
-            description: f.description ?? 'N/A',
-            cwe: f.cwe ?? 0,
-            product: f.product ?? 'N/A',
-            engagement: f.engagement ?? 'N/A',
-            created: f.created,
-          }),
-        ),
-        tookMs: Date.now() - started,
-      };
-
-      const successMessage = engagementId
-        ? `Successfully retrieved ${
-            findings.length
-          } findings for engagement ${engagementId} in ${
-            Date.now() - started
-          }ms`
-        : `Successfully retrieved ${
-            findings.length
-          } findings for product ${productId} in ${Date.now() - started}ms`;
-      logger.info(successMessage);
-      res.json(payload);
-    } catch (error: any) {
-      const took = Date.now() - started;
-      logger.error(
-        `Failed to retrieve DefectDojo findings for product ${productId}: ${error.message}, tookMs: ${took}`,
-      );
-
-      if (error.message.includes('404')) {
-        res.status(404).json({
-          error: `Product ${productId} not found in DefectDojo`,
-          tookMs: took,
-        });
-      } else if (error.message.includes('timeout')) {
-        res.status(504).json({
-          error: 'DefectDojo request timed out',
-          tookMs: took,
-        });
-      } else {
-        res.status(500).json({
-          error: error.message || 'Internal server error',
-          tookMs: took,
-        });
-      }
     }
+
+    if (offset !== undefined && (!Number.isFinite(offset) || offset < 0)) {
+      throw new InputError(
+        `Invalid offset: ${offsetParam}. Must be a non-negative integer.`,
+      );
+    }
+
+    const started = Date.now();
+    const logMessage = engagementId
+      ? `Fetching DefectDojo findings for engagement ${engagementId}`
+      : `Fetching DefectDojo findings for product ${productId}`;
+    logger.info(logMessage);
+
+    const response = await client.listFindingsByProduct(
+      productId,
+      engagementId,
+      { limit, offset },
+    );
+
+    const payload: FindingResponse = {
+      total: response.count,
+      findings: response.results.map(
+        (f): ProcessedFinding => ({
+          id: f.id,
+          title: f.title,
+          severity: f.severity ?? 'Unknown',
+          url: f.url,
+          description: f.description ?? 'N/A',
+          cwe: f.cwe ?? 0,
+          product: f.product ?? 'N/A',
+          engagement: f.engagement ?? 'N/A',
+          created: f.created,
+        }),
+      ),
+      tookMs: Date.now() - started,
+      next: response.next,
+      previous: response.previous,
+    };
+
+    const successMessage = engagementId
+      ? `Successfully retrieved ${
+          response.results.length
+        } findings for engagement ${engagementId} in ${Date.now() - started}ms`
+      : `Successfully retrieved ${
+          response.results.length
+        } findings for product ${productId} in ${Date.now() - started}ms`;
+    logger.info(successMessage);
+    res.json(payload);
   });
 
   return router;

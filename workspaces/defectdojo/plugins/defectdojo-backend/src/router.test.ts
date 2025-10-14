@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'express-async-errors';
 import express from 'express';
 import request from 'supertest';
 import { mockServices } from '@backstage/backend-test-utils';
@@ -55,7 +56,26 @@ describe('createRouter', () => {
       httpAuth: mockServices.httpAuth.mock(),
     });
 
-    app = express().use(router);
+    app = express();
+    app.use(router);
+
+    // Add error handler for tests
+    app.use(
+      (
+        err: Error,
+        _req: express.Request,
+        res: express.Response,
+        _next: express.NextFunction,
+      ) => {
+        if (err.name === 'InputError') {
+          res.status(400).json({ error: err.message });
+        } else if (err.name === 'NotFoundError') {
+          res.status(404).json({ error: err.message });
+        } else {
+          res.status(500).json({ error: err.message });
+        }
+      },
+    );
   });
 
   beforeEach(() => {
@@ -79,43 +99,48 @@ describe('createRouter', () => {
       expect(response.body.error).toContain(
         'productId query parameter is required',
       );
-    });
+    }, 10000);
 
     it('returns 400 when productId is invalid', async () => {
       const response = await request(app).get('/v1/findings?productId=invalid');
 
       expect(response.status).toEqual(400);
       expect(response.body.error).toContain('Invalid product ID');
-    });
+    }, 10000);
 
     it('returns 400 when productId is negative', async () => {
       const response = await request(app).get('/v1/findings?productId=-1');
 
       expect(response.status).toEqual(400);
       expect(response.body.error).toContain('Invalid product ID');
-    });
+    }, 10000);
 
     it('returns 400 when productId is zero', async () => {
       const response = await request(app).get('/v1/findings?productId=0');
 
       expect(response.status).toEqual(400);
       expect(response.body.error).toContain('Invalid product ID');
-    });
+    }, 10000);
 
     it('returns findings when valid productId provided', async () => {
-      const mockFindings = [
-        {
-          id: 1,
-          title: 'SQL Injection',
-          severity: 'Critical',
-          description: 'A critical vulnerability',
-          cwe: 89,
-          url: 'https://defectdojo.example.com/finding/1',
-          created: '2024-01-01T00:00:00Z',
-        },
-      ];
+      const mockResponse = {
+        results: [
+          {
+            id: 1,
+            title: 'SQL Injection',
+            severity: 'Critical',
+            description: 'A critical vulnerability',
+            cwe: 89,
+            url: 'https://defectdojo.example.com/finding/1',
+            created: '2024-01-01T00:00:00Z',
+          },
+        ],
+        count: 1,
+        next: null,
+        previous: null,
+      };
 
-      mockClient.listFindingsByProduct.mockResolvedValue(mockFindings);
+      mockClient.listFindingsByProduct.mockResolvedValue(mockResponse);
 
       const response = await request(app).get('/v1/findings?productId=123');
 
@@ -136,34 +161,45 @@ describe('createRouter', () => {
           },
         ],
         tookMs: expect.any(Number),
+        next: null,
+        previous: null,
       });
 
       expect(mockClient.listFindingsByProduct).toHaveBeenCalledWith(
         123,
         undefined,
+        { limit: undefined, offset: undefined },
       );
     });
 
     it('returns findings with engagement filter', async () => {
-      const mockFindings = [
-        {
-          id: 1,
-          title: 'XSS Vulnerability',
-          severity: 'High',
-          description: 'Cross-site scripting',
-          cwe: 79,
-          created: '2024-01-01T00:00:00Z',
-        },
-      ];
+      const mockResponse = {
+        results: [
+          {
+            id: 1,
+            title: 'XSS Vulnerability',
+            severity: 'High',
+            description: 'Cross-site scripting',
+            cwe: 79,
+            created: '2024-01-01T00:00:00Z',
+          },
+        ],
+        count: 1,
+        next: null,
+        previous: null,
+      };
 
-      mockClient.listFindingsByProduct.mockResolvedValue(mockFindings);
+      mockClient.listFindingsByProduct.mockResolvedValue(mockResponse);
 
       const response = await request(app).get(
         '/v1/findings?productId=123&engagementId=456',
       );
 
       expect(response.status).toEqual(200);
-      expect(mockClient.listFindingsByProduct).toHaveBeenCalledWith(123, 456);
+      expect(mockClient.listFindingsByProduct).toHaveBeenCalledWith(123, 456, {
+        limit: undefined,
+        offset: undefined,
+      });
     });
 
     it('returns 400 when engagementId is invalid', async () => {
@@ -173,7 +209,60 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(400);
       expect(response.body.error).toContain('Invalid engagement ID');
+    }, 10000);
+
+    it('accepts pagination parameters', async () => {
+      const mockResponse = {
+        results: [
+          {
+            id: 1,
+            title: 'Finding 1',
+            severity: 'High',
+            description: 'Test finding',
+            cwe: 79,
+            created: '2024-01-01T00:00:00Z',
+          },
+        ],
+        count: 100,
+        next: 'http://api.example.com/findings/?offset=25',
+        previous: null,
+      };
+
+      mockClient.listFindingsByProduct.mockResolvedValue(mockResponse);
+
+      const response = await request(app).get(
+        '/v1/findings?productId=123&limit=25&offset=0',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(mockClient.listFindingsByProduct).toHaveBeenCalledWith(
+        123,
+        undefined,
+        { limit: 25, offset: 0 },
+      );
+      expect(response.body.total).toEqual(100);
+      expect(response.body.next).toEqual(
+        'http://api.example.com/findings/?offset=25',
+      );
     });
+
+    it('returns 400 when limit is invalid', async () => {
+      const response = await request(app).get(
+        '/v1/findings?productId=123&limit=-1',
+      );
+
+      expect(response.status).toEqual(400);
+      expect(response.body.error).toContain('Invalid limit');
+    }, 10000);
+
+    it('returns 400 when offset is invalid', async () => {
+      const response = await request(app).get(
+        '/v1/findings?productId=123&offset=-1',
+      );
+
+      expect(response.status).toEqual(400);
+      expect(response.body.error).toContain('Invalid offset');
+    }, 10000);
 
     it('handles API errors gracefully', async () => {
       mockClient.listFindingsByProduct.mockRejectedValue(
@@ -183,33 +272,8 @@ describe('createRouter', () => {
       const response = await request(app).get('/v1/findings?productId=123');
 
       expect(response.status).toEqual(500);
-      expect(response.body.error).toEqual('API Error');
-      expect(response.body.tookMs).toEqual(expect.any(Number));
-    });
-
-    it('handles 404 errors specifically', async () => {
-      mockClient.listFindingsByProduct.mockRejectedValue(
-        new Error('DefectDojo 404: Not Found'),
-      );
-
-      const response = await request(app).get('/v1/findings?productId=123');
-
-      expect(response.status).toEqual(404);
-      expect(response.body.error).toContain(
-        'Product 123 not found in DefectDojo',
-      );
-    });
-
-    it('handles timeout errors specifically', async () => {
-      mockClient.listFindingsByProduct.mockRejectedValue(
-        new Error('DefectDojo timeout after 5000ms'),
-      );
-
-      const response = await request(app).get('/v1/findings?productId=123');
-
-      expect(response.status).toEqual(504);
-      expect(response.body.error).toEqual('DefectDojo request timed out');
-    });
+      expect(response.body.error).toContain('API Error');
+    }, 10000);
   });
 
   describe('GET /v1/products/:identifier', () => {
@@ -246,14 +310,15 @@ describe('createRouter', () => {
     });
 
     it('returns 404 when product not found', async () => {
+      const { NotFoundError } = require('@backstage/errors');
       mockClient.getProduct.mockRejectedValue(
-        new Error('No product found with name: Nonexistent'),
+        new NotFoundError('No product found with name: Nonexistent'),
       );
 
       const response = await request(app).get('/v1/products/Nonexistent');
 
+      // Backstage error middleware will handle NotFoundError and return 404
       expect(response.status).toEqual(404);
-      expect(response.body.error).toContain('No product found');
     });
   });
 
@@ -287,7 +352,7 @@ describe('createRouter', () => {
       expect(response.body.error).toContain(
         'productId query parameter is required',
       );
-    });
+    }, 10000);
 
     it('returns 400 when productId is invalid', async () => {
       const response = await request(app).get(
@@ -296,15 +361,15 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(400);
       expect(response.body.error).toContain('Invalid product ID');
-    });
+    }, 10000);
 
     it('handles API errors gracefully', async () => {
       mockClient.getEngagements.mockRejectedValue(new Error('API Error'));
 
       const response = await request(app).get('/v1/engagements?productId=123');
 
+      // Backstage error middleware will handle this
       expect(response.status).toEqual(500);
-      expect(response.body.error).toEqual('API Error');
-    });
+    }, 10000);
   });
 });

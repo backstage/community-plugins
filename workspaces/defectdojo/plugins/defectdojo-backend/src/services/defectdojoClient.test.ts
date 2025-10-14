@@ -105,11 +105,12 @@ describe('DefectDojoClient', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 404,
+        statusText: 'Not Found',
         text: () => Promise.resolve('Not Found'),
       } as Response);
 
       await expect(client.getProduct(999)).rejects.toThrow(
-        'DefectDojo 404: Not Found',
+        'Request failed with 404',
       );
     });
   });
@@ -170,20 +171,66 @@ describe('DefectDojoClient', () => {
           Promise.resolve({
             count: 1,
             next: null,
+            previous: null,
             results: mockFindings,
           }),
       } as Response);
 
       const result = await client.listFindingsByProduct(123);
 
-      expect(result).toHaveLength(1);
-      expect(result[0]).toEqual(
+      expect(result.count).toBe(1);
+      expect(result.results).toHaveLength(1);
+      expect(result.results[0]).toEqual(
         expect.objectContaining({
           id: 1,
           title: 'SQL Injection',
           severity: 'Critical',
-          url: 'https://defectdojo.example.com/api/v2/findings/1',
+          url: 'https://defectdojo.example.com/finding/1',
         }),
+      );
+      expect(result.next).toBeNull();
+      expect(result.previous).toBeNull();
+    });
+
+    it('should support pagination parameters', async () => {
+      const mockFindings = [
+        {
+          id: 1,
+          title: 'Finding 1',
+          severity: 'High',
+          description: 'Test finding',
+          cwe: 79,
+          active: true,
+          created: '2024-01-01T00:00:00Z',
+        },
+      ];
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            count: 100,
+            next: 'http://api.example.com/findings/?offset=25',
+            previous: null,
+            results: mockFindings,
+          }),
+      } as Response);
+
+      const result = await client.listFindingsByProduct(123, undefined, {
+        limit: 25,
+        offset: 0,
+      });
+
+      expect(result.count).toBe(100);
+      expect(result.results).toHaveLength(1);
+      expect(result.next).toBe('http://api.example.com/findings/?offset=25');
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('limit=25'),
+        expect.any(Object),
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('offset=0'),
+        expect.any(Object),
       );
     });
 

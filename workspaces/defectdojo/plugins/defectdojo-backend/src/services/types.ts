@@ -66,6 +66,8 @@ export interface FindingResponse {
   total: number;
   findings: ProcessedFinding[];
   tookMs: number;
+  next: string | null;
+  previous: string | null;
 }
 
 export interface ProcessedFinding {
@@ -84,5 +86,4 @@ export interface DefectDojoConfig {
   baseUrl: string;
   token: string;
   requestTimeoutMs?: number;
-  maxPages?: number;
 }

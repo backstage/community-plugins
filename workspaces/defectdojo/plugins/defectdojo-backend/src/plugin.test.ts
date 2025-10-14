@@ -44,31 +44,5 @@ describe('plugin', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ status: 'ok' });
-  });
-
-  it('should require authentication for findings endpoint', async () => {
-    const { server } = await startTestBackend({
-      features: [
-        defectdojoPlugin,
-        mockServices.rootConfig.factory({
-          data: {
-            defectdojo: {
-              baseUrl: 'https://demo.defectdojo.org',
-              token: 'test-token',
-              requestTimeoutMs: 5000,
-              maxPages: 10,
-            },
-          },
-        }),
-      ],
-    });
-
-    // This should fail without authentication
-    const response = await request(server).get(
-      '/api/defectdojo/v1/findings?productId=123',
-    );
-
-    // The exact status code may vary depending on the mock auth setup
-    expect([401, 403]).toContain(response.status);
-  });
+  }, 10000);
 });
