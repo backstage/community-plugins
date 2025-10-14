@@ -93,11 +93,19 @@ export const useFetchIdentities = () => {
   const { isLoading, error, data, isError, refetch } = useQuery<Identity[]>({
     queryKey: ['credentials'],
     queryFn: () => api.getIdentities(),
-    select: identityData => [
-      { id: 999999, name: 'None', kind: 'source' },
-      { id: 9999999, name: 'None', kind: 'maven' },
-      ...identityData,
-    ],
+    select: identityData => {
+      if (!identityData || !Array.isArray(identityData)) {
+        return [
+          { id: 999999, name: 'None', kind: 'source' as const },
+          { id: 9999999, name: 'None', kind: 'maven' as const },
+        ];
+      }
+      return [
+        { id: 999999, name: 'None', kind: 'source' as const },
+        { id: 9999999, name: 'None', kind: 'maven' as const },
+        ...identityData,
+      ];
+    },
   });
 
   return {

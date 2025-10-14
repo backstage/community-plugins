@@ -102,27 +102,42 @@ export const mtaPlugin = createBackendPlugin({
 
                 if (isTokenExpired(refreshToken)) {
                   logger.warn(`Refresh token expired for user: ${userId}`);
-                } else {
-                  const tokenSet = await authClient.refresh(
-                    String(refreshToken),
+                  // Clear expired refresh token from database
+                  await entityApplicationStorage.deleteRefreshTokenForUser(
+                    userId,
                   );
-                  if (tokenSet?.access_token) {
-                    accessToken = tokenSet.access_token;
-                    await cache.set(String(userId), accessToken, {
-                      ttl: tokenSet.expires_in ?? 60 * 1000,
-                    });
+                } else {
+                  try {
+                    const tokenSet = await authClient.refresh(
+                      String(refreshToken),
+                    );
+                    if (tokenSet?.access_token) {
+                      accessToken = tokenSet.access_token;
+                      await cache.set(String(userId), accessToken, {
+                        ttl: tokenSet.expires_in ?? 60 * 1000,
+                      });
 
-                    if (
-                      tokenSet.refresh_token !== refreshToken &&
-                      tokenSet.refresh_token
-                    ) {
-                      await entityApplicationStorage.saveRefreshTokenForUser(
-                        String(userId),
-                        tokenSet.refresh_token,
+                      if (
+                        tokenSet.refresh_token !== refreshToken &&
+                        tokenSet.refresh_token
+                      ) {
+                        await entityApplicationStorage.saveRefreshTokenForUser(
+                          String(userId),
+                          tokenSet.refresh_token,
+                        );
+                      }
+                      logger.info(
+                        `Access token refreshed successfully for user: ${userId}`,
                       );
                     }
-                    logger.info(
-                      `Access token refreshed successfully for user: ${userId}`,
+                  } catch (refreshError: any) {
+                    logger.error(
+                      `Failed to refresh token for user ${userId}:`,
+                      refreshError.message || refreshError,
+                    );
+                    // Clear invalid refresh token
+                    await entityApplicationStorage.deleteRefreshTokenForUser(
+                      userId,
                     );
                   }
                 }
@@ -150,7 +165,17 @@ export const mtaPlugin = createBackendPlugin({
             return; // Proceed to next middleware
           } catch (error: any) {
             logger.error('Error in authentication middleware:', error);
-            response.status(500).json({ error: 'Internal Server Error' });
+            const errorMessage = error.message || 'Internal Server Error';
+            const errorDetails = {
+              error: 'Authentication Error',
+              message: errorMessage,
+              details:
+                error.error_description ||
+                error.error ||
+                'An unexpected error occurred during authentication',
+            };
+            logger.error('Authentication error details:', errorDetails);
+            response.status(500).json(errorDetails);
             return; // Ensures function always returns explicitly
           }
         });

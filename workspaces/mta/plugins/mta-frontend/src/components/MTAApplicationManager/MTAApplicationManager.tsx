@@ -30,33 +30,42 @@ export const MTAApplicationManager = () => {
   const classes = useStyles();
   const { entity } = useEntity();
   const catalogApi = useApi(catalogApiRef);
-  const initialApplication = entity.metadata
-    .application as unknown as Application;
 
-  const [application, setApplication] =
-    useState<Application>(initialApplication);
+  // Initialize application state more safely
+  const [application, setApplication] = useState<Application | null>(
+    (entity.metadata.application as unknown as Application) || null,
+  );
   const [isWaiting, setIsWaiting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    if (entity) {
-      catalogApi
-        .getEntityByRef(
-          `${entity.kind.toLowerCase()}:${
-            entity.metadata.namespace || 'default'
-          }/${entity.metadata.name}`,
-        )
-        .then(appEntity => {
-          setApplication(
-            appEntity?.metadata.application as unknown as Application,
-          );
-        })
-        .catch(error => {
-          throw new Error(
-            `Error fetching application entity: ${error.message}`,
-          );
-        });
+  // Use useCallback to memoize the fetch function
+  const fetchApplication = React.useCallback(async () => {
+    if (!entity) return;
+
+    try {
+      const entityRef = `${entity.kind.toLowerCase()}:${
+        entity.metadata.namespace || 'default'
+      }/${entity.metadata.name}`;
+
+      const appEntity = await catalogApi.getEntityByRef(entityRef);
+      const app = appEntity?.metadata.application as unknown as Application;
+
+      if (app) {
+        setApplication(app);
+        setError(null);
+      } else {
+        setError('No application metadata found');
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(`Error fetching application entity: ${errorMessage}`);
     }
   }, [entity, catalogApi]);
+
+  // Only re-run when entity changes (not catalogApi)
+  React.useEffect(() => {
+    fetchApplication();
+  }, [fetchApplication]);
 
   const [tab, setTab] = React.useState(0);
 
@@ -73,6 +82,19 @@ export const MTAApplicationManager = () => {
         }
       />
     );
+  }
+
+  if (error) {
+    return (
+      <ResponseErrorPanel
+        title="Failed to load application"
+        error={new Error(error)}
+      />
+    );
+  }
+
+  if (!application) {
+    return <div>Loading application...</div>;
   }
 
   return (
@@ -95,7 +117,7 @@ export const MTAApplicationManager = () => {
           style={{
             marginTop: '2vh',
             minHeight: '100vh',
-            display: tab === 0 ? 'flex' : 'none'
+            display: tab === 0 ? 'flex' : 'none',
           }}
         >
           <ApplicationDetailsHeader
@@ -112,7 +134,7 @@ export const MTAApplicationManager = () => {
           style={{
             marginTop: '2vh',
             minHeight: '100vh',
-            display: tab === 1 ? 'flex' : 'none'
+            display: tab === 1 ? 'flex' : 'none',
           }}
         >
           <AnalysisPage />

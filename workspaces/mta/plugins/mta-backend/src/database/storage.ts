@@ -17,6 +17,7 @@ export interface EntityApplicationStorage {
     refreshToken: string,
   ): Promise<boolean | undefined>;
   getRefreshTokenForUser(backstageID: string): Promise<string | undefined>;
+  deleteRefreshTokenForUser(backstageID: string): Promise<boolean>;
 }
 
 export class DataBaseEntityApplicationStorage
@@ -80,19 +81,23 @@ export class DataBaseEntityApplicationStorage
     if (!backstageID || !refreshToken) {
       return undefined;
     }
-    const existing = await this.getRefreshTokenForUser(backstageID);
-    if (existing && existing !== refreshToken) {
-      const updated = await this.knex
-        .table(OAUTH_MAPPING_TABLE)
-        .update({ mtaOAuthRefreshToken: refreshToken })
-        .where('backstageID', backstageID);
-      return updated === 1;
-    }
 
-    const inserted = await this.knex
-      .insert({ backstageID, mtaOAuthRefreshToken: refreshToken })
-      .into(OAUTH_MAPPING_TABLE);
-    return inserted.length === 1;
+    try {
+      // Use Knex's upsert functionality (works with SQLite, PostgreSQL, MySQL)
+      await this.knex
+        .insert({ backstageID, mtaOAuthRefreshToken: refreshToken })
+        .into(OAUTH_MAPPING_TABLE)
+        .onConflict('backstageID')
+        .merge(['mtaOAuthRefreshToken']);
+
+      return true;
+    } catch (error: any) {
+      this.logger.error(
+        `Failed to save refresh token for user ${backstageID}:`,
+        error,
+      );
+      throw error;
+    }
   }
 
   async getRefreshTokenForUser(
@@ -106,5 +111,16 @@ export class DataBaseEntityApplicationStorage
       .where({ backstageID })
       .first()
       .then(row => row?.mtaOAuthRefreshToken);
+  }
+
+  async deleteRefreshTokenForUser(backstageID: string): Promise<boolean> {
+    if (!backstageID) {
+      return false;
+    }
+    const deleted = await this.knex
+      .table(OAUTH_MAPPING_TABLE)
+      .where({ backstageID })
+      .del();
+    return deleted > 0;
   }
 }

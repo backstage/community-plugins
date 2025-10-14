@@ -3,6 +3,10 @@ import {
   IdentityApi,
   createApiRef,
 } from '@backstage/core-plugin-api';
+import {
+  getCredentialsWithFallback,
+  createAuthHeaders,
+} from '../utils/credentials';
 
 export type TaskState =
   | 'not supported'
@@ -92,8 +96,8 @@ export interface Rule {
 
 export type Tags = {
   name: string;
-  source: SourceBuffer;
-  virutal: boolean;
+  source: string;
+  virtual: boolean;
 };
 
 export type Ref = {
@@ -168,7 +172,7 @@ export type Application = {
   id: number;
   name: string;
   description: string;
-  buisnessService?: Ref;
+  businessService?: Ref;
   assessed: boolean;
   owner?: Ref;
   tags?: Tags[];
@@ -204,14 +208,11 @@ export class DefaultMtaApi implements MTAApi {
 
   async getTasks(): Promise<TaskDashboard[]> {
     const url = await this.discoveryApi.getBaseUrl('mta');
-    const { token: idToken } = await this.identityApi.getCredentials();
+    const credentialResult = await getCredentialsWithFallback(this.identityApi);
 
     const response = await fetch(`${url}/tasks`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
+      headers: createAuthHeaders(credentialResult.token),
       referrerPolicy: 'no-referrer-when-downgrade',
       redirect: 'error',
     });
@@ -236,14 +237,11 @@ export class DefaultMtaApi implements MTAApi {
 
   async updateApplication(application: Application): Promise<Application> {
     const url = await this.discoveryApi.getBaseUrl('mta');
-    const { token: idToken } = await this.identityApi.getCredentials();
+    const credentialResult = await getCredentialsWithFallback(this.identityApi);
 
     const response = await fetch(`${url}/applications/${application.id}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
+      headers: createAuthHeaders(credentialResult.token),
       body: JSON.stringify(application),
       referrerPolicy: 'no-referrer-when-downgrade',
     });
@@ -269,18 +267,14 @@ export class DefaultMtaApi implements MTAApi {
     }
     return application;
   }
-  // return await response;
 
   async getIdentities(): Promise<Identity[]> {
     const url = await this.discoveryApi.getBaseUrl('mta');
-    const { token: idToken } = await this.identityApi.getCredentials();
+    const credentialResult = await getCredentialsWithFallback(this.identityApi);
 
     const response = await fetch(`${url}/identities`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
+      headers: createAuthHeaders(credentialResult.token),
       referrerPolicy: 'no-referrer-when-downgrade',
       redirect: 'error',
     });
@@ -292,10 +286,18 @@ export class DefaultMtaApi implements MTAApi {
     }
 
     if (!response.ok) {
+      const errorText = await response.text();
+      let errorDetails = errorText;
+
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorDetails = errorJson.details || errorJson.error || errorText;
+      } catch {
+        // If parsing fails, use the raw text
+      }
+
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Identities API failed with status ${response.status}: ${errorDetails}`,
         response.status,
       );
     }
@@ -305,14 +307,11 @@ export class DefaultMtaApi implements MTAApi {
 
   async getTargets(): Promise<Target[]> {
     const url = await this.discoveryApi.getBaseUrl('mta');
-    const { token: idToken } = await this.identityApi.getCredentials();
+    const credentialResult = await getCredentialsWithFallback(this.identityApi);
 
     const response = await fetch(`${url}/targets`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
+      headers: createAuthHeaders(credentialResult.token),
       referrerPolicy: 'no-referrer-when-downgrade',
       redirect: 'error',
     });
@@ -324,10 +323,18 @@ export class DefaultMtaApi implements MTAApi {
     }
 
     if (!response.ok) {
+      const errorText = await response.text();
+      let errorDetails = errorText;
+
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorDetails = errorJson.details || errorJson.error || errorText;
+      } catch {
+        // If parsing fails, use the raw text
+      }
+
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Targets API failed with status ${response.status}: ${errorDetails}`,
         response.status,
       );
     }
@@ -340,16 +347,13 @@ export class DefaultMtaApi implements MTAApi {
     analysisOptions: any,
   ): Promise<Application> {
     const url = await this.discoveryApi.getBaseUrl('mta');
-    const { token: idToken } = await this.identityApi.getCredentials();
+    const credentialResult = await getCredentialsWithFallback(this.identityApi);
 
     const response = await fetch(
       `${url}/analyze-application/${applicationId}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(idToken && { Authorization: `Bearer ${idToken}` }),
-        },
+        headers: createAuthHeaders(credentialResult.token),
         body: JSON.stringify(analysisOptions),
         referrerPolicy: 'no-referrer-when-downgrade',
       },
