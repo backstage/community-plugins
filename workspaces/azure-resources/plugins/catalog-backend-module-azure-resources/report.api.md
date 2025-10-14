@@ -4,7 +4,11 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { ResourceEntity } from '@backstage/catalog-model';
 import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+
+// @public
+export type AzureResourcesMapping = Partial<Mapping<ResourceEntity>>;
 
 // @public
 export type AzureResourcesProviderConfig = {
@@ -12,8 +16,9 @@ export type AzureResourcesProviderConfig = {
   query: string;
   scope?: AzureResourcesScope;
   schedule?: SchedulerServiceTaskScheduleDefinition;
-  mapping?: Record<string, any>;
+  mapping?: AzureResourcesMapping;
   defaultOwner?: string;
+  maxPages?: number;
 };
 
 // @public
@@ -25,4 +30,13 @@ export type AzureResourcesScope = {
 // @public
 const catalogModuleAzureResources: BackendFeature;
 export default catalogModuleAzureResources;
+
+// @public
+export type Mapping<T> = {
+  [K in keyof T]: T[K] extends Array<infer I>
+    ? Array<Mapping<I>>
+    : T[K] extends object
+    ? Mapping<T[K]>
+    : string | undefined;
+};
 ```
