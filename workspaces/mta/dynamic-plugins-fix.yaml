@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dynamic-plugins-rhdh
+  annotations:
+    rhdh.redhat.com/backstage-name: "developer-hub"
+  labels:
+    rhdh.redhat.com/ext-config-sync: "true"
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins:
+      - disabled: false
+        package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
+      - disabled: false
+        package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
+      - disabled: false
+        package: '@backstage-community/backstage-plugin-mta-backend@0.5.1'
+        integrity: 'sha512-GYtbWJlnNEBJL1UqdeY9Yo4tGoH2noFTpDhE1tYqXnz7sYDPljHXWK2OgnD0dXCq3IcWzWM9T6T/LVcp06CEKw=='
+      - disabled: false
+        package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-frontend:pr_1493__0.4.0!backstage-community-backstage-plugin-mta-frontend'
+      - disabled: false
+        package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-catalog-backend-module-mta-entity-provider:pr_1493__0.4.0!backstage-community-backstage-plugin-catalog-backend-module-mta-entity-provider'
+      - disabled: false
+        package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-scaffolder-backend-module-mta:pr_1493__0.5.0!backstage-community-backstage-plugin-scaffolder-backend-module-mta'

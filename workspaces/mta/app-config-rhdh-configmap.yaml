@@ -1,0 +1,113 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+  labels:
+    # This needs to be set to the value of the 'EXT_CONF_SYNC_backstage' env var in the operator container, which is 'true' if unset
+    rhdh.redhat.com/ext-config-sync: "true"
+  annotations:
+    rhdh.redhat.com/backstage-name: "developer-hub"
+data:
+  app-config-rhdh.yaml: |-
+    app:
+      title: Red Hat Developer Hub - Migration Toolkit for Applications
+      baseUrl: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+    backend:
+      baseUrl: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      cors:
+        origin: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+        methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+        credentials: true
+      auth:
+        providers:
+          github:
+            production:
+              clientId: ${AUTH_GITHUB_CLIENT_ID}
+              clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+          guest:
+            dangerouslyAllowOutsideDevelopment: true
+            dangerouslyDisableDefaultAuthPolicy: true
+
+    mta:
+      url: https://tackle-konveyor-tackle.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      providerAuth:
+        realm: tackle
+        secret: backstage-provider-secret
+        clientID: backstage-provider
+    signInPage: github
+    auth:
+      environment: production
+      providers:
+        github:
+          production:
+            clientId: ${AUTH_GITHUB_CLIENT_ID}
+            clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
+          dangerouslyDisableDefaultAuthPolicy: true
+
+    dynamicPlugins:
+      frontend:
+        'backstage-community.backstage-plugin-mta-frontend':
+          entityTabs:
+            - path: /mta
+              title: MTA
+              mountPoint: entity.page.mta
+          mountPoints:
+            - mountPoint: entity.page.mta/cards
+              importName: EntityMTAContent
+              config:
+                layout:
+                  gridColumn:
+                    lg: 'span 12'
+                    md: 'span 8'
+                    xs: 'span 6'
+                if:
+                  allOf:
+                    - isKind: component
+                    - isType: service
+
+    integrations:
+      github:
+        - host: github.com
+          apps:
+            - appId: ${AUTH_GITHUB_APP_ID}
+              clientId: ${AUTH_GITHUB_CLIENT_ID}
+              clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+              privateKey: ${GITHUB_PRIVATE_KEY}
+              webhookSecret: none
+
+    catalog:
+      import:
+        entityFilename: catalog-info.yaml
+        pullRequestBranchName: backstage-integration
+      rules:
+        - allow: [Component, System, API, Resource, Location]
+      locations:
+        - type: url
+          target: https://github.com/ibolton336/backstage-mta-plugins/blob/main/create-application-template.yaml
+          rules:
+            - allow: [Template]
+
+        - type: file
+          target: create-application-template.yaml
+          rules:
+            - allow: [Template]
+      providers:
+        github:
+          providerId:
+            catalogPath: /catalog-info.yaml
+            organization: ${GITHUB_ORGANIZATION}
+            schedule:
+              frequency: { seconds: 2 }
+              initialDelay: { seconds: 15 }
+              timeout: { seconds: 30 }
+        githubOrg:
+          githubUrl: 'https://github.com'
+          id: production
+          orgs:
+            - ${GITHUB_ORGANIZATION}
+          schedule:
+              frequency: { seconds: 2 }
+              initialDelay: { seconds: 15 }
+              timeout: { seconds: 30 }

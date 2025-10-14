@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(oc get:*)",
+      "Bash(oc describe:*)",
+      "Bash(oc logs:*)",
+      "Read(//Users/ibolton/Development/rhdh-local/**)",
+      "Bash(oc rollout restart:*)",
+      "Bash(chmod:*)",
+      "Bash(oc create:*)",
+      "Bash(oc apply:*)",
+      "Bash(oc rollout status:*)",
+      "Read(//Users/ibolton/Development/devhub_configs/untitled folder/**)",
+      "Bash(oc delete:*)",
+      "Bash(./rebuild-script.sh:*)",
+      "Bash(oc patch:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm view:*)",
+      "Read(//Users/ibolton/Development/startup-scripts-rhdh/**)",
+      "Bash(xargs:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

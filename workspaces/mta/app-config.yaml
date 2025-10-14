@@ -1,61 +1,71 @@
 app:
-  title: Scaffolded Backstage App
-  baseUrl: http://localhost:3000
-
-organization:
-  name: Test config for local development
-
+  title: Red Hat Developer Hub - Migration Toolkit for Applications
+  baseUrl: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
 backend:
-  # Used for enabling authentication, secret is shared by all backend plugins
-  # See https://backstage.io/docs/auth/service-to-service-auth for
-  # information on the format
-  auth:
-    dangerouslyDisableDefaultAuthPolicy: true
-    # keys:
-    #   - secret: ${BACKEND_SECRET}
-  baseUrl: http://localhost:7007
-  listen:
-    port: 7007
-    # Uncomment the following host directive to bind to specific interfaces
-    # host: 127.0.0.1
-  csp:
-    connect-src: ["'self'", 'http:', 'https:']
-    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
-    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  baseUrl: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
   cors:
-    origin: http://localhost:3000
+    origin: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
-  # This is for local development only, it is not recommended to use this in production
-  # The production database configuration is stored in app-config.production.yaml
-  database:
-    client: better-sqlite3
-    connection: ':memory:'
-    # connection:
-    #   directory: /tmp/backstage-backend
-  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+  auth:
+    providers:
+      github:
+        production:
+          clientId: ${AUTH_GITHUB_CLIENT_ID}
+          clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+      guest: 
+        dangerouslyAllowOutsideDevelopment: true
+        dangerouslyDisableDefaultAuthPolicy: true
 
 mta:
-  url: <MTA_URL>
+  url: https://tackle-konveyor-tackle.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
   providerAuth:
     realm: mta
     secret: backstage-provider-secret
     clientID: backstage-provider
-
-techdocs:
-  builder: 'local' # Alternatives - 'external'
-  generator:
-    runIn: 'docker' # Alternatives - 'local'
-  publisher:
-    type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
-
+signInPage: github
 auth:
+  environment: production
   providers:
-    guest: {}
+    github:
+      production:
+        clientId: ${AUTH_GITHUB_CLIENT_ID}
+        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+    guest: 
+      dangerouslyAllowOutsideDevelopment: true
+      dangerouslyDisableDefaultAuthPolicy: true
 
-  environment: development
+dynamicPlugins:
+  frontend:
+    'backstage-community.backstage-plugin-mta-frontend':
+      entityTabs:
+        - path: /mta
+          title: MTA
+          mountPoint: entity.page.mta
+      mountPoints:
+        - mountPoint: entity.page.mta/cards
+          importName: EntityMTAContent
+          config:
+            layout:
+              gridColumn:
+                lg: 'span 12'
+                md: 'span 8'
+                xs: 'span 6'
+            if:
+              allOf:
+                - isKind: component 
+                - isType: service
 
-scaffolder: {}
+integrations:
+  github:
+    - host: github.com
+      apps:
+        - appId: ${AUTH_GITHUB_APP_ID}
+          clientId: ${AUTH_GITHUB_CLIENT_ID}
+          clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+          privateKey: ${GITHUB_PRIVATE_KEY}
+          webhookSecret: none
+
 catalog:
   import:
     entityFilename: catalog-info.yaml
@@ -63,10 +73,30 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    - type: file
-      target: ../../examples/entities.yaml
-
-    - type: file
-      target: ../../examples/template/create-application-template.yaml
+    - type: url 
+      target: https://github.com/ibolton336/backstage-mta-plugins/blob/main/create-application-template.yaml
       rules:
         - allow: [Template]
+
+    - type: file
+      target: create-application-template.yaml
+      rules:
+        - allow: [Template]
+  providers:
+    github:
+      providerId:
+        catalogPath: /catalog-info.yaml
+        organization: ${GITHUB_ORGANIZATION}
+        schedule:
+          frequency: { seconds: 2 }
+          initialDelay: { seconds: 15 }
+          timeout: { seconds: 30 }
+    githubOrg:
+      githubUrl: 'https://github.com'
+      id: production
+      orgs:
+        - ${GITHUB_ORGANIZATION}
+      schedule:
+          frequency: { seconds: 2 }
+          initialDelay: { seconds: 15 }
+          timeout: { seconds: 30 }
