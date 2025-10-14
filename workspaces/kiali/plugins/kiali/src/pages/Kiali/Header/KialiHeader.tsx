@@ -40,7 +40,7 @@ export const KialiHeader = () => {
     <Header
       title="Kiali"
       subtitle={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <ProviderSelector page />
           <NamespaceSelector page />
         </div>

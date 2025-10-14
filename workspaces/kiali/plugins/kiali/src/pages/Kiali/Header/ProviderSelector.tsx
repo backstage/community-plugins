@@ -71,7 +71,6 @@ export const ProviderSelector = (props: { page?: boolean }) => {
     <div
       style={{
         height: '50px',
-        width: '200px',
         marginTop: props.page ? '20px' : '0px',
         color: 'white',
       }}
