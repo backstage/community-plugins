@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.19.1
+
+### Patch Changes
+
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
 ## 1.19.0
 
 ### Minor Changes
