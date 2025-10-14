@@ -58,7 +58,7 @@
     "@backstage/core-app-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
-    "@testing-library/jest-dom": "6.8.0",
+    "@testing-library/jest-dom": "6.9.1",
     "@types/node": "22.15.29",
     "cross-fetch": "4.0.0",
     "msw": "1.3.5"
