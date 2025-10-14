@@ -11,15 +11,17 @@ data:
   app-config-rhdh.yaml: |-
     app:
       title: Red Hat Developer Hub - Migration Toolkit for Applications
-      baseUrl: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      baseUrl: https://backstage-developer-hub-local-backstage.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
     backend:
-      baseUrl: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      baseUrl: https://backstage-developer-hub-local-backstage.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
       cors:
-        origin: https://backstage-developer-hub-rhdh-operator.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+        origin:
+          - https://backstage-developer-hub-local-backstage.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+          - https://backstage-developer-hub-local-backstage.ian2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
         methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
         credentials: true
       auth:
-        environment: development
+        environment: production
         providers:
           github:
             production:
@@ -37,7 +39,7 @@ data:
         clientID: backstage-provider
     signInPage: github
     auth:
-      environment: development
+      environment: production
       providers:
         github:
           production:
