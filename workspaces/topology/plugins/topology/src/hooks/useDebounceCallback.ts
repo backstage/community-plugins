@@ -43,7 +43,7 @@ export const useDebounceCallback = <T extends (...args: any[]) => any>(
 
   return useMemo(() => {
     return debounce(
-      (...args) => callbackRef.current?.(...args),
+      (...args: Parameters<T>) => callbackRef.current?.(...args),
       timeout,
       memDebounceParams,
     );
