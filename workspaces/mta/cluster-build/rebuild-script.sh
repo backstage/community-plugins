@@ -35,7 +35,7 @@ data:
       - disabled: false
         package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
       - disabled: false
-        package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-backend:pr_1493__0.5.1!backstage-plugin-mta-backend'
+        package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-backend:pr_1493__0.5.1!backstage-community-backstage-plugin-mta-backend'
       - disabled: false
         package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-frontend:pr_1493__0.4.0!backstage-community-backstage-plugin-mta-frontend'
       - disabled: false

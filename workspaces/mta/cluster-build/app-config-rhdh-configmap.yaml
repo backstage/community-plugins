@@ -4,9 +4,9 @@ metadata:
   name: app-config-rhdh
   labels:
     # This needs to be set to the value of the 'EXT_CONF_SYNC_backstage' env var in the operator container, which is 'true' if unset
-    rhdh.redhat.com/ext-config-sync: "true"
+    rhdh.redhat.com/ext-config-sync: 'true'
   annotations:
-    rhdh.redhat.com/backstage-name: "developer-hub"
+    rhdh.redhat.com/backstage-name: 'developer-hub'
 data:
   app-config-rhdh.yaml: |-
     app:
@@ -19,6 +19,7 @@ data:
         methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
         credentials: true
       auth:
+        environment: development
         providers:
           github:
             production:
@@ -36,7 +37,7 @@ data:
         clientID: backstage-provider
     signInPage: github
     auth:
-      environment: production
+      environment: development
       providers:
         github:
           production:
