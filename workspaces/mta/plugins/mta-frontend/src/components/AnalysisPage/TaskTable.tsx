@@ -8,8 +8,9 @@ import {
   TableRow,
   Paper,
   Typography,
-  Link,
+  Button,
 } from '@material-ui/core';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -89,9 +90,17 @@ const TaskTable = ({ tasks, isFetching }: ITaskTableProps) => {
                   : 'N/A'}
               </TableCell>
               <TableCell>
-                <Link href={`${mtaUrl}/tasks/${task.id}`} target="_blank_">
+                <Button
+                  size="small"
+                  color="primary"
+                  endIcon={<OpenInNewIcon />}
+                  onClick={() => {
+                    // Open in a new window/tab without affecting current navigation
+                    window.open(`${mtaUrl}/tasks/${task.id}`, '_blank', 'noopener,noreferrer');
+                  }}
+                >
                   Details
-                </Link>
+                </Button>
               </TableCell>
             </TableRow>
           ))}
