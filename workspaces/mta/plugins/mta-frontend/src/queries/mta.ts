@@ -21,7 +21,8 @@ export const useUpdateApplication = (onSuccess?: () => void) => {
   const mutation = useMutation<any, Error, any>({
     mutationFn: updateApplication,
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      // Only invalidate specific queries that need refreshing after app update
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       if (onSuccess) {
         onSuccess();
       }
@@ -79,7 +80,8 @@ export const useAnalyzeApplication = (
     onSuccess: () => {
       if (options?.onSuccess) {
         options.onSuccess();
-        queryClient.invalidateQueries();
+        // Only invalidate tasks since a new analysis may create new tasks
+        queryClient.invalidateQueries({ queryKey: ['tasks'] });
       }
     },
   });

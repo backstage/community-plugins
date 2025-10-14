@@ -89,31 +89,35 @@ export const MTAApplicationManager = () => {
           <Tab label="Application Details" />
           <Tab label="Analysis" />
         </Tabs>
-        {tab === 0 && (
-          <Grid
-            container
-            spacing={2}
-            style={{ marginTop: '2vh', minHeight: '100vh' }}
-          >
-            <ApplicationDetailsHeader
-              application={application}
-              setApplication={setApplication}
-              isWaiting={isWaiting}
-              setIsWaiting={setIsWaiting}
-            />
-            <ApplicationDetails />
-          </Grid>
-        )}
-        {tab === 1 && (
-          <Grid
-            container
-            spacing={2}
-            style={{ marginTop: '2vh', minHeight: '100vh' }}
-          >
-            <AnalysisPage />
-            <AnalysisStatusPage application={application} />
-          </Grid>
-        )}
+        <Grid
+          container
+          spacing={2}
+          style={{
+            marginTop: '2vh',
+            minHeight: '100vh',
+            display: tab === 0 ? 'flex' : 'none'
+          }}
+        >
+          <ApplicationDetailsHeader
+            application={application}
+            setApplication={setApplication}
+            isWaiting={isWaiting}
+            setIsWaiting={setIsWaiting}
+          />
+          <ApplicationDetails />
+        </Grid>
+        <Grid
+          container
+          spacing={2}
+          style={{
+            marginTop: '2vh',
+            minHeight: '100vh',
+            display: tab === 1 ? 'flex' : 'none'
+          }}
+        >
+          <AnalysisPage />
+          <AnalysisStatusPage application={application} />
+        </Grid>
       </Grid>
     </Grid>
   );
