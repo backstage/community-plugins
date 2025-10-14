@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IstioConfigDetails } from '@backstage-community/plugin-kiali-common/types';
+import {
+  IstioConfigDetails,
+  ValidationTypes,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 import { default as React } from 'react';
 import { HistoryManager } from '../../app/History';
@@ -22,7 +25,6 @@ import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
 import { ValidationObjectSummary } from '../../components/Validations/ValidationObjectSummary';
 import { GVKToBadge } from '../../components/VirtualList/Config';
 import { isMultiCluster } from '../../config';
-import { KialiIcon } from '../../config/KialiIcon';
 import { cardsHeight, kialiStyle } from '../../styles/StyleUtils';
 import {
   getGVKTypeString,
@@ -46,11 +48,6 @@ const iconStyle = kialiStyle({
 const healthIconStyle = kialiStyle({
   marginLeft: '0.5rem',
   verticalAlign: '-0.075rem',
-});
-
-const infoStyle = kialiStyle({
-  marginLeft: '0.5rem',
-  verticalAlign: '-0.06em !important',
 });
 
 export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
@@ -83,7 +80,7 @@ export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
 
   const configurationHasWarnings = (): boolean | undefined => {
     return istioValidations?.checks.some(check => {
-      return check.severity === 'Warning';
+      return check.severity === ValidationTypes.Warning;
     });
   };
 
@@ -108,8 +105,8 @@ export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
                               istioObject.kind,
                             ),
                           )
-                        ]
-                      : 'IstioConfig'
+                        ] || PFBadges.Unknown
+                      : PFBadges.Unknown
                   }
                 />
               </div>
@@ -132,10 +129,10 @@ export const IstioConfigDescription: React.FC<IstioConfigDescriptionProps> = (
                 )}
             </Typography>
 
-            {istioObject?.metadata.cluster && isMultiCluster && (
+            {istioObject?.metadata.clusterName && isMultiCluster && (
               <div key="cluster-icon" style={{ paddingBottom: '0.5rem' }}>
                 <PFBadge badge={PFBadges.Cluster} />{' '}
-                {istioObject.metadata.cluster}
+                {istioObject.metadata.clusterName}
               </div>
             )}
           </>
