@@ -61,11 +61,6 @@ export class AzureResourceProvider implements EntityProvider {
     azureClient: AzureResourceGraphClient,
   ): AzureResourceProvider {
     const providerConfig = readProviderConfig(config);
-    if (!providerConfig) {
-      throw new Error(
-        'No Azure Resource Provider configuration found under catalog.providers.azureResources',
-      );
-    }
 
     const taskRunner = scheduler.createScheduledTaskRunner(
       providerConfig.schedule ?? DEFAULT_SCHEDULE,
