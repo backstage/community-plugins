@@ -50,8 +50,7 @@ function ChatAssistantApp() {
   const appThemeApi = useApi(appThemeApiRef);
   const botName =
     config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
-  const botIcon =
-    config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
+  // botIcon removed - no longer needed for dedicated page
   const logEnabled = false;
   const activeThemeId = useObservable(
     appThemeApi.activeThemeId$(),
@@ -119,7 +118,7 @@ function ChatAssistantApp() {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState<string>('');
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   const [hasQuestion, setHasQuestion] = useState<boolean>(false);
   const [isPromptShown, setShowPrompt] = useState<boolean>(false);
   const [isInitialState, setIsInitialState] = useState<boolean>(true);
@@ -150,7 +149,7 @@ function ChatAssistantApp() {
     [key: string]: string[];
   }>({});
 
-  const openChat = () => setIsOpen(true);
+  // openChat removed - no longer needed for dedicated page
   const closeChat = () => setIsOpen(false);
   const fullScreen = () => {
     setIsFullScreen(prev => !prev);
@@ -533,22 +532,7 @@ function ChatAssistantApp() {
       });
   }
 
-  if (!isOpen) {
-    return (
-      <Button
-        onClick={openChat}
-        type="button"
-        title="Button"
-        className={`${styles.buttonOpenChat}`}
-      >
-        <img
-          src={botIcon}
-          style={{ width: 100, height: 100, objectFit: 'contain' }}
-          alt={`Click this ${botName} Logo to open AgentForge`}
-        />
-      </Button>
-    );
-  }
+  // For dedicated page, always show the chat interface
 
   return (
     <div className={`App ${isDarkMode ? styles.darkMode : styles.lightMode}`}>

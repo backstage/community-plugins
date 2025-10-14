@@ -19,5 +19,4 @@ import DefaultBotIcon from './icons/caipe.png';
 export const DEFAULT_BOT_CONFIG = {
   name: 'CAIPE',
   icon: DefaultBotIcon,
-  infoPage: 'https://cnoe-io.github.io/ai-platform-engineering',
 } as const;

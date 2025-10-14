@@ -13,5 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// Legacy exports for backward compatibility
 export { default as ChatAssistantPage } from './components/ChatAssistantApp';
+export { default as ChatAssistantApp } from './components/ChatAssistantApp';
 export { default as ChatAssistantToken } from './components/ChatAssistantToken';
+export { chatAssistantPlugin } from './plugin';
+
+// New native page component
+export { default as AgentForgePage } from './components/AgentForgePage';
+
+// New frontend system exports
+export { default } from './alpha';

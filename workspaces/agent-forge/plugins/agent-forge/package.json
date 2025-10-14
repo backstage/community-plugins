@@ -3,6 +3,21 @@
   "version": "0.3.12",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public",
@@ -37,11 +52,13 @@
   },
   "dependencies": {
     "@agentic-profile/a2a-client": "^0.6.2",
-    "@backstage/core-components": "^0.18.1",
-    "@backstage/core-plugin-api": "^1.11.0",
-    "@backstage/frontend-plugin-api": "^0.12.0",
+    "@backstage/core-compat-api": "^0.4.0",
+    "@backstage/core-components": "^0.17.5",
+    "@backstage/core-plugin-api": "^1.10.9",
+    "@backstage/frontend-plugin-api": "^0.11.0",
     "@backstage/theme": "^0.6.8",
     "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@mui/material": "^5.16.6",
     "@mui/styles": "^5.16.6",
     "react-use": "^17.2.4",

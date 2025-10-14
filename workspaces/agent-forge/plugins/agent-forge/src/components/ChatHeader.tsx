@@ -110,7 +110,7 @@ function ChatHeader({
     config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
   const infoPage =
     config.getOptionalString('agentForge.infoPage') ||
-    DEFAULT_BOT_CONFIG.infoPage;
+    'https://cnoe-io.github.io/ai-platform-engineering';
 
   const goFullScreen = () => {
     setIsFullScreen(!isFullScreen);
