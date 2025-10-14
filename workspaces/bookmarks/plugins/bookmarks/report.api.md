@@ -4,20 +4,86 @@
 
 ```ts
 
+import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import type { Entity } from '@backstage/catalog-model';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { RouteRef } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
+import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_3 } from 'react/jsx-runtime';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { RouteRef } from '@backstage/frontend-plugin-api';
+import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
+import { TranslationMessages } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
-import { TranslationResource } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
+import { TranslationResource as TranslationResource_2 } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const AVAILABLE_LANGUAGES: string[];
 
 // @public
 export const bookmarksPlugin: BackstagePlugin<    {
-entityContent: RouteRef<undefined>;
+entityContent: RouteRef_2<undefined>;
 }, {}, {}>;
+
+// @public
+const bookmarksPlugin_2: OverridableFrontendPlugin<    {
+bookmarks: RouteRef<undefined>;
+}, {}, {
+"entity-content:bookmarks": ExtensionDefinition<    {
+kind: "entity-content";
+name: undefined;
+config: {
+path: string | undefined;
+title: string | undefined;
+filter: EntityPredicate | undefined;
+group: string | false | undefined;
+};
+configInput: {
+filter?: EntityPredicate | undefined;
+title?: string | undefined;
+path?: string | undefined;
+group?: string | false | undefined;
+};
+output: ExtensionDataRef<JSX_2.Element, "core.reactElement", {}> | ExtensionDataRef<string, "core.routing.path", {}> | ExtensionDataRef<RouteRef<AnyRouteRefParams>, "core.routing.ref", {
+optional: true;
+}> | ExtensionDataRef<(entity: Entity) => boolean, "catalog.entity-filter-function", {
+optional: true;
+}> | ExtensionDataRef<string, "catalog.entity-filter-expression", {
+optional: true;
+}> | ExtensionDataRef<string, "catalog.entity-content-title", {}> | ExtensionDataRef<string, "catalog.entity-content-group", {
+optional: true;
+}>;
+inputs: {};
+params: {
+defaultPath?: [Error: `Use the 'path' param instead`];
+path: string;
+defaultTitle?: [Error: `Use the 'title' param instead`];
+title: string;
+defaultGroup?: [Error: `Use the 'group' param instead`];
+group?: ("overview" | "documentation" | "development" | "deployment" | "operation" | "observability") | (string & {});
+loader: () => Promise<JSX.Element>;
+routeRef?: RouteRef;
+filter?: string | EntityPredicate | ((entity: Entity) => boolean);
+};
+}>;
+"translation:bookmarks/bookmarksTranslations": ExtensionDefinition<    {
+kind: "translation";
+name: "bookmarksTranslations";
+config: {};
+configInput: {};
+output: ExtensionDataRef<TranslationResource<string> | TranslationMessages<string, {
+[x: string]: string;
+}, boolean>, "core.translation.translation", {}>;
+inputs: {};
+params: {
+resource: TranslationResource | TranslationMessages;
+};
+}>;
+}>;
+export default bookmarksPlugin_2;
 
 // @public
 export const bookmarksTranslationRef: TranslationRef<"bookmarks", {
@@ -33,10 +99,10 @@ readonly "entityBookmarksContent.notFound.description": "Add bookmarks to your e
 }>;
 
 // @public
-export const bookmarksTranslations: TranslationResource<"bookmarks">;
+export const bookmarksTranslations: TranslationResource_2<"bookmarks">;
 
 // @public
-export const EntityBookmarksContent: () => JSX_2.Element;
+export const EntityBookmarksContent: () => JSX_3.Element;
 
 // @public
 export const isBookmarksAvailable: (entity: Entity) => entity is Entity & {

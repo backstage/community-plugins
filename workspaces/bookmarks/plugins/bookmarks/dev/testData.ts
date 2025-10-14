@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-import { Header, Page, TabbedLayout } from '@backstage/core-components';
-import { UrlTree } from '../../src/types';
-import { StrictMode } from 'react';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { EntityBookmarksContent } from '../../src/components/EntityBookmarksContent/EntityBookmarksContent';
+import { UrlTree } from '../src/types';
 import { Entity } from '@backstage/catalog-model';
 
-const testData: UrlTree = {
+export const testData: UrlTree = {
   'Life story': 'gdoc:1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw', // gdoc defined in app-config.yaml
   'My cool gadgets and gizmos': {
     'fortune cowsay lolcat': 'https://logonoff.co/projects/fcl/index.html',
@@ -42,23 +38,40 @@ const testData: UrlTree = {
   },
 };
 
-const testEntity: Entity = {
+export const testEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
-  metadata: { bookmarks: testData, name: 'my-service' },
+  metadata: {
+    bookmarks: testData,
+    description: 'Has a bookmarks object in the metadata',
+    name: 'bookmarks',
+    tags: ['bookmarks'],
+  },
 };
 
-export const PluginTestPage = () => (
-  <Page themeId="tool">
-    <Header type="component — service" title="Bookmark plugin demo" />
-    <TabbedLayout>
-      <TabbedLayout.Route path="/" title="Bookmarks">
-        <EntityProvider entity={testEntity}>
-          <StrictMode>
-            <EntityBookmarksContent />
-          </StrictMode>
-        </EntityProvider>
-      </TabbedLayout.Route>
-    </TabbedLayout>
-  </Page>
-);
+export const testEntityNoBookmarks: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'no-bookmarks',
+    description: 'No bookmarks object in the metadata',
+    tags: ['bookmarks'],
+  },
+};
+
+export const testEntityInvalidBookmarks: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'invalid-bookmarks',
+    description: 'Has a number as a URL',
+    bookmarks: { a: 123 },
+    tags: ['bookmarks', 'invalid'],
+  },
+};
+
+export const testEntities: Entity[] = [
+  testEntity,
+  testEntityNoBookmarks,
+  testEntityInvalidBookmarks,
+];

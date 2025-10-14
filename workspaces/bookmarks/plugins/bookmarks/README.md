@@ -16,22 +16,39 @@ To install the Bookmarks plugin, follow these steps:
 yarn --cwd packages/app add @backstage-community/plugin-bookmarks
 ```
 
-2. Add `EntityBookmarksContent` to the `EntityPage` routes:
+2. Then, depending on your Backstage version, follow the appropriate instructions below to add the plugin to your entity page.
+   - **New frontend system**: Register the plugin in your `App.tsx`:
 
-```diff
-// In your packages/app/src/components/EntityPage.tsx
-import { EntityBookmarksContent, isBookmarksAvailable } from '@backstage-community/plugin-bookmarks';
+     ```diff
+     // In your packages/app/src/App.tsx
 
-// add to defaultEntityPage, etc. to see them in the other entity pages
-const serviceEntityPage = (
-  <EntityLayout>
-    {/* other routes */}
-+    <EntityLayout.Route path="/bookmarks" title="Bookmarks" if={isBookmarksAvailable}>
-+      <EntityBookmarksContent />
-+    </EntityLayout.Route>
-  </EntityLayout>
-);
-```
+     +import bookmarksPlugin from '@backstage-community/plugin-bookmarks';
+
+     const app = createApp({
+       features: [
+         // other features...
+         catalogPlugin,
+     +   bookmarksPlugin,
+       ],
+     });
+     ```
+
+   - **Legacy frontend system**: Add `EntityBookmarksContent` to the `EntityPage` routes:
+
+     ```diff
+     // In your packages/app/src/components/EntityPage.tsx
+     +import { EntityBookmarksContent, isBookmarksAvailable } from '@backstage-community/plugin-bookmarks';
+
+     // add to defaultEntityPage, etc. to see them in the other entity pages
+     const serviceEntityPage = (
+       <EntityLayout>
+         {/* other routes */}
+     +   <EntityLayout.Route path="/bookmarks" title="Bookmarks" if={isBookmarksAvailable}>
+     +     <EntityBookmarksContent />
+     +   </EntityLayout.Route>
+       </EntityLayout>
+     );
+     ```
 
 3. Add bookmarks to your entities by including them in the `metadata` section of the entity YAML file:
 
