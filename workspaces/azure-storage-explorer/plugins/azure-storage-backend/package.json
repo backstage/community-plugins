@@ -49,10 +49,10 @@
     "express-promise-router": "^4.1.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.9.0",
-    "@backstage/cli": "^0.34.3",
-    "@backstage/plugin-auth-backend": "^0.25.4",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.12",
+    "@backstage/backend-test-utils": "^1.9.1",
+    "@backstage/cli": "^0.34.4",
+    "@backstage/plugin-auth-backend": "^0.25.5",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.13",
     "@types/supertest": "^6.0.0",
     "supertest": "^7.0.0"
   },
