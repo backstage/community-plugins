@@ -19,18 +19,6 @@ import { isGithubActionsAvailable } from '../components/Router';
 /**
  * @alpha
  */
-export const entityGithubActionsCard = EntityCardBlueprint.make({
-  name: 'workflow-runs',
-  params: {
-    filter: isGithubActionsAvailable,
-    loader: () =>
-      import('../components/Router').then(m => <m.Router view="cards" />),
-  },
-});
-
-/**
- * @alpha
- */
 export const entityLatestGithubActionRunCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-workflow-run',
