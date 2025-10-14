@@ -46,8 +46,18 @@ export const NavButton = ({
       color="inherit"
       data-testid={TEST_IDS.NavButton[direction]}
       onClick={onClick}
-      startIcon={!isNext ? <ArrowBackIcon /> : undefined}
-      endIcon={isNext ? <ArrowForwardIcon /> : undefined}
+      startIcon={
+        !isNext ? (
+          <ArrowBackIcon sx={{ color: theme => theme.palette.text.primary }} />
+        ) : undefined
+      }
+      endIcon={
+        isNext ? (
+          <ArrowForwardIcon
+            sx={{ color: theme => theme.palette.text.primary }}
+          />
+        ) : undefined
+      }
       sx={{
         display: 'flex',
         flexDirection: 'row',
@@ -68,7 +78,11 @@ export const NavButton = ({
         >
           {buttonText}
         </Typography>
-        <Typography component="span" variant="body1">
+        <Typography
+          component="span"
+          variant="body1"
+          sx={{ color: theme => theme.palette.text.primary }}
+        >
           {bookmarkName}
         </Typography>
       </Box>
