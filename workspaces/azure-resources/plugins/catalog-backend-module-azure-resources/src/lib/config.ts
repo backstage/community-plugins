@@ -113,6 +113,19 @@ export type AzureResourcesProviderConfig = {
    * ```
    */
   defaultOwner?: string;
+
+  /**
+   * Maximum number of pages to fetch from Azure Resource Graph to prevent infinite loops.
+   * With a default page size of 1000, this allows controlling how many resources can be retrieved.
+   *
+   * @defaultValue 100 (allowing up to 100,000 resources with default page size)
+   *
+   * @example
+   * ```yaml
+   * maxPages: 200
+   * ```
+   */
+  maxPages?: number;
 };
 
 export const readProviderConfig = (
@@ -145,6 +158,9 @@ export const readProviderConfig = (
   // Read default owner configuration
   const defaultOwner = config.getOptionalString('defaultOwner');
 
+  // Read max pages configuration
+  const maxPages = config.getOptionalNumber('maxPages');
+
   return {
     id,
     query,
@@ -155,6 +171,7 @@ export const readProviderConfig = (
     schedule,
     mapping,
     defaultOwner,
+    maxPages,
   };
 };
 
