@@ -19,8 +19,12 @@ import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-
 import { ResourceEntity } from '@backstage/catalog-model';
 import type { Config } from '@backstage/config';
 
-// Utility type to recursively map all properties of a type to string | undefined
-type Mapping<T> = {
+/**
+ * Utility type to recursively map all properties of a type to string | undefined
+ *
+ * @public
+ */
+export type Mapping<T> = {
   [K in keyof T]: T[K] extends Array<infer I>
     ? Array<Mapping<I>>
     : T[K] extends object
@@ -28,6 +32,11 @@ type Mapping<T> = {
     : string | undefined;
 };
 
+/**
+ * Mapping configuration for Azure resources to Backstage entities.
+ *
+ * @public
+ */
 export type AzureResourcesMapping = Partial<Mapping<ResourceEntity>>;
 
 /**
@@ -101,7 +110,7 @@ export type AzureResourcesProviderConfig = {
    *     owner: tags['catalog.owner']
    * ```
    */
-  mapping?: Record<string, any>;
+  mapping?: AzureResourcesMapping;
 
   /**
    * Optional default owner to assign to entities when no owner information is found in the Azure resource.

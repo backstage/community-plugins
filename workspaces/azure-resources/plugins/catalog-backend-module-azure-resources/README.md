@@ -126,12 +126,12 @@ You can customize how Azure resource properties map to entity fields using the `
 ```yaml
 mapping:
   metadata:
+    description: properties.description # Map Azure resource description
     annotations:
       my-annotation: tags.myAnnotation # Maps tags.myAnnotation to metadata.annotations.my-annotation
       cost-center: tags['cost-center'] # Bracket notation for tags with special characters
   spec:
     owner: tags['catalog.owner'] # Override the default owner extraction
-    description: properties.description # Map Azure resource description
 ```
 
 The mapping supports:

@@ -18,4 +18,6 @@ export { readProviderConfigs } from './config';
 export type {
   AzureResourcesProviderConfig,
   AzureResourcesScope,
+  AzureResourcesMapping,
+  Mapping,
 } from './config';
