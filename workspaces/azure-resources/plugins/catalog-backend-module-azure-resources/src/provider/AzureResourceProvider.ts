@@ -38,10 +38,10 @@ const DEFAULT_SCHEDULE = {
 };
 
 /**
- * Maximum number of pages to fetch from Azure Resource Graph to prevent infinite loops.
+ * Default maximum number of pages to fetch from Azure Resource Graph to prevent infinite loops.
  * With a default page size of 1000, this allows up to 100,000 resources.
  */
-const MAX_PAGES = 100;
+const DEFAULT_MAX_PAGES = 100;
 
 /**
  * Provides entities from Azure resources based on custom KQL queries.
@@ -132,15 +132,16 @@ export class AzureResourceProvider implements EntityProvider {
     const allResources: any[] = [];
     let skipToken: string | undefined;
     let pageCount = 0;
+    const maxPages = this.config.maxPages ?? DEFAULT_MAX_PAGES;
 
     try {
       do {
         pageCount++;
 
         // Safety check to prevent infinite loops
-        if (pageCount > MAX_PAGES) {
+        if (pageCount > maxPages) {
           this.logger.warn('Reached maximum page limit for pagination', {
-            maxPages: MAX_PAGES,
+            maxPages,
             resourcesCollected: allResources.length,
           });
           break;

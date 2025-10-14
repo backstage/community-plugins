@@ -61,6 +61,7 @@ catalog:
           frequency: { hours: 5 }
           timeout: { minutes: 10 }
         defaultOwner: 'team-platform'
+        maxPages: 150 # Allow up to 150,000 resources
 
       - id: production-databases
         query: |
@@ -86,14 +87,15 @@ catalog:
 
 The following table describes the configuration parameters for each provider under `catalog.providers.azureResources`:
 
-| Name           | Description                                                                                                                                                       | Default Value                                           | Required |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------- |
-| `id`           | Unique identifier for the provider. Used in entity location keys.                                                                                                 | -                                                       | Yes      |
-| `query`        | Azure Resource Graph KQL query to fetch resources. See [Azure Resource Graph query examples](https://learn.microsoft.com/en-us/azure/governance/resource-graph/). | -                                                       | Yes      |
-| `scope`        | Scope configuration specifying which management groups or subscriptions to query.                                                                                 | -                                                       | Yes      |
-| `schedule`     | Schedule configuration for refresh tasks. Supports cron, ISO duration, or human duration formats.                                                                 | `{ frequency: { hours: 5 }, timeout: { minutes: 10 } }` | No       |
-| `mapping`      | Custom mapping configuration to map Azure resource properties to Backstage entity fields. Supports dot notation for nested properties.                            | Default mapping (see below)                             | No       |
-| `defaultOwner` | Default owner to assign to entities when no owner information is found in the Azure resource.                                                                     | -                                                       | No       |
+| Name           | Description                                                                                                                                                                                  | Default Value                                           | Required |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------- |
+| `id`           | Unique identifier for the provider. Used in entity location keys.                                                                                                                            | -                                                       | Yes      |
+| `query`        | Azure Resource Graph KQL query to fetch resources. See [Azure Resource Graph query examples](https://learn.microsoft.com/en-us/azure/governance/resource-graph/).                            | -                                                       | Yes      |
+| `scope`        | Scope configuration specifying which management groups or subscriptions to query.                                                                                                            | -                                                       | Yes      |
+| `schedule`     | Schedule configuration for refresh tasks. Supports cron, ISO duration, or human duration formats.                                                                                            | `{ frequency: { hours: 5 }, timeout: { minutes: 10 } }` | No       |
+| `mapping`      | Custom mapping configuration to map Azure resource properties to Backstage entity fields. Supports dot notation for nested properties.                                                       | Default mapping (see below)                             | No       |
+| `defaultOwner` | Default owner to assign to entities when no owner information is found in the Azure resource.                                                                                                | -                                                       | No       |
+| `maxPages`     | Maximum number of pages to fetch from Azure Resource Graph to prevent infinite loops. With a default page size of 1000, this controls the maximum number of resources that can be retrieved. | `100` (allowing up to 100,000 resources)                | No       |
 
 #### Scope Configuration
 
