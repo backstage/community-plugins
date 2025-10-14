@@ -41,8 +41,6 @@ export const catalogModuleAzureResources = createBackendModule({
         azureClient: azureResourcesServiceRef,
       },
       async init({ logger, catalog, rootConfig, azureClient, scheduler }) {
-        logger.info('Hello World!');
-
         const providerConfigs = readProviderConfigs(rootConfig);
 
         if (!providerConfigs || providerConfigs.length === 0) {
