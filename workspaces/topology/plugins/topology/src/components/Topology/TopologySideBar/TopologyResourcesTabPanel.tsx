@@ -18,10 +18,9 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { ChartLabel } from '@patternfly/react-charts/victory';
 import { BaseNode } from '@patternfly/react-topology';
 
-import { Status } from '@janus-idp/shared-react';
-
-import ResourceName from '../../../common/components/ResourceName';
-import ResourceStatus from '../../../common/components/ResourceStatus';
+import { Status } from '../../common/Status';
+import ResourceName from '../../common/ResourceName';
+import ResourceStatus from '../../common/ResourceStatus';
 import { MAXSHOWRESCOUNT } from '../../../const';
 import { useTranslation } from '../../../hooks/useTranslation';
 import {

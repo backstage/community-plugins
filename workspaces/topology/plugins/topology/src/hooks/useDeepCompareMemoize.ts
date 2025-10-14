@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PipelineRunKind } from '@janus-idp/shared-react';
-import { fromNow } from '../../../utils/datetime';
 
-type PLRlastUpdatedProps = { plr: PipelineRunKind };
+import { useRef } from 'react';
 
-const PLRlastUpdated = ({ plr }: PLRlastUpdatedProps) => {
-  const { metadata, status } = plr;
-  const lastUpdated =
-    status?.completionTime || status?.startTime || metadata?.creationTimestamp;
+import { isEqual } from 'lodash';
 
-  return lastUpdated ? (
-    <>
-      <span
-        className="bs-topology-text-muted"
-        style={{ display: 'inline-block' }}
-      >
-        ({fromNow(lastUpdated)})
-      </span>
-    </>
-  ) : null;
+export const useDeepCompareMemoize = <T = any>(
+  value: T,
+  stringify?: boolean,
+): T => {
+  const ref = useRef<T>();
+
+  if (
+    stringify
+      ? JSON.stringify(value) !== JSON.stringify(ref.current)
+      : !isEqual(value, ref.current)
+  ) {
+    ref.current = value;
+  }
+
+  return ref.current as T;
 };
-
-export default PLRlastUpdated;
