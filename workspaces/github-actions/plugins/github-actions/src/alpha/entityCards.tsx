@@ -22,6 +22,7 @@ import { isGithubActionsAvailable } from '../components/Router';
 export const entityLatestGithubActionRunCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-workflow-run',
+    disabled: true,
     config: {
       schema: {
         props: z =>
@@ -49,6 +50,7 @@ export const entityLatestGithubActionRunCard =
 export const entityLatestGithubActionsForBranchCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-branch-workflow-runs',
+    disabled: true,
     config: {
       schema: {
         props: z =>
