@@ -124,6 +124,8 @@ const renderComponent = (props = {}) => {
   )?.mockResolvedValue({
     total: mockFindings.length,
     findings: mockFindings,
+    next: null,
+    previous: null,
   });
 
   return render(
@@ -213,9 +215,13 @@ describe('DefectDojoOverview', () => {
       { timeout: 10000 },
     );
 
-    // With the new structure, the findings list may not appear until there are actual findings
-    // Just verify the component loads correctly
-    expect(screen.getByText('Active Findings')).toBeInTheDocument();
+    // Verify the component loads correctly with findings
+    await waitFor(
+      () => {
+        expect(screen.getByText('Test Product')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 
   it('hides findings list when disabled', async () => {
@@ -361,13 +367,19 @@ describe('DefectDojoOverview', () => {
       { timeout: 10000 },
     );
 
-    const defectDojoLink = screen.getByRole('button', {
-      name: /view in defectdojo/i,
-    });
-    expect(defectDojoLink).toBeEnabled();
+    // Button only appears when there are findings
+    await waitFor(
+      () => {
+        const defectDojoLink = screen.getByRole('button', {
+          name: /view in defectdojo/i,
+        });
+        expect(defectDojoLink).toBeEnabled();
+      },
+      { timeout: 5000 },
+    );
   });
 
-  it('disables DefectDojo link when URL is not configured', async () => {
+  it('renders correctly when URL is not configured', async () => {
     (
       mockConfig.getOptionalString as jest.MockedFunction<any>
     )?.mockImplementation((key: string) => {
@@ -385,6 +397,14 @@ describe('DefectDojoOverview', () => {
     );
 
     // When URL is not configured, the component should still render
-    expect(screen.getByText('Test Product')).toBeInTheDocument();
-  });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Test Product')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
+
+    // Component renders successfully even without DefectDojo URL configured
+    expect(screen.getByText('DefectDojo Overview')).toBeInTheDocument();
+  }, 15000);
 });

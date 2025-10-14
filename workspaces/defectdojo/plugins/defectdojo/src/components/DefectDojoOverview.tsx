@@ -93,6 +93,10 @@ export const DefectDojoOverview = ({
   const [engagements, setEngagements] = useState<DefectDojoEngagement[]>([]);
   const [loadingEngagements, setLoadingEngagements] = useState(false);
 
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+
   // Get the product identifier (can be ID or name)
   const productIdentifier =
     entity?.metadata.annotations?.['defectdojo.org/product-id'] ||
@@ -156,9 +160,9 @@ export const DefectDojoOverview = ({
 
   // Load findings
   const {
-    value,
-    loading: findingsLoading,
-    error,
+    value: allFindingsData,
+    loading: allFindingsLoading,
+    error: allFindingsError,
   } = useAsync(async () => {
     if (!product?.id) {
       return undefined;
@@ -172,18 +176,66 @@ export const DefectDojoOverview = ({
     const data = await defectdojoApi.getFindings(
       product.id,
       selectedEngagementData?.id,
+      {
+        limit: 10000,
+        offset: 0,
+      },
     );
     return data;
   }, [product?.id, defectdojoApi, refreshKey, selectedEngagement, engagements]);
 
+  // Load paginated findings for the list
+  const { value: paginatedFindingsData } = useAsync(async () => {
+    if (!product?.id) {
+      return undefined;
+    }
+
+    // Get the selected engagement ID
+    const selectedEngagementData = selectedEngagement
+      ? engagements.find(eng => eng.name === selectedEngagement)
+      : undefined;
+
+    const data = await defectdojoApi.getFindings(
+      product.id,
+      selectedEngagementData?.id,
+      {
+        limit: rowsPerPage,
+        offset: page * rowsPerPage,
+      },
+    );
+    return data;
+  }, [
+    product?.id,
+    defectdojoApi,
+    refreshKey,
+    selectedEngagement,
+    engagements,
+    page,
+    rowsPerPage,
+  ]);
+
   // Combined loading state
   const loading =
     productLoading ||
-    findingsLoading ||
+    allFindingsLoading ||
     (shouldShowInitialLoading && !product && !productError);
 
+  const error = allFindingsError;
+
   const handleRefresh = () => {
+    setPage(0);
     setRefreshKey(prev => prev + 1);
+  };
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const openDefectDojo = () => {
@@ -196,26 +248,32 @@ export const DefectDojoOverview = ({
     }
   };
 
-  // Get filtered vulnerabilities from API response
-  const filteredVulnerabilities = useMemo(
-    () => value?.findings || [],
-    [value?.findings],
+  // All findings for metrics calculation
+  const allFindings = useMemo(
+    () => allFindingsData?.findings || [],
+    [allFindingsData?.findings],
+  );
+
+  // Paginated findings for the list
+  const paginatedFindings = useMemo(
+    () => paginatedFindingsData?.findings || [],
+    [paginatedFindingsData?.findings],
   );
 
   // Calculate metrics and analytics
   const metrics: SeverityMetrics = useMemo(
-    () => calculateSeverityMetrics(filteredVulnerabilities),
-    [filteredVulnerabilities],
+    () => calculateSeverityMetrics(allFindings),
+    [allFindings],
   );
   const analytics: FindingAnalytics = useMemo(
-    () => calculateAdvancedMetrics(filteredVulnerabilities),
-    [filteredVulnerabilities],
+    () => calculateAdvancedMetrics(allFindings),
+    [allFindings],
   );
 
   // Calculate trends if enabled
   const trendsData = useMemo(
-    () => calculateTrends(filteredVulnerabilities, showTrends),
-    [filteredVulnerabilities, showTrends],
+    () => calculateTrends(allFindings, showTrends),
+    [allFindings, showTrends],
   );
 
   if (!productIdentifier) {
@@ -280,9 +338,10 @@ export const DefectDojoOverview = ({
                 <InputLabel shrink>Engagement</InputLabel>
                 <Select
                   value={selectedEngagement}
-                  onChange={e =>
-                    setSelectedEngagement(e.target.value as string)
-                  }
+                  onChange={e => {
+                    setSelectedEngagement(e.target.value as string);
+                    setPage(0);
+                  }}
                   disabled={loadingEngagements}
                   displayEmpty
                   renderValue={(selectedValue: unknown) => {
@@ -341,7 +400,7 @@ export const DefectDojoOverview = ({
         </Alert>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && allFindings.length > 0 && (
         <>
           <Grid container spacing={3}>
             {/* Main Dashboard */}
@@ -350,7 +409,7 @@ export const DefectDojoOverview = ({
                 metrics={metrics}
                 analytics={analytics}
                 loading={loading}
-                hasData={value !== undefined}
+                hasData={allFindingsData !== undefined}
                 defectdojoBaseUrl={defectdojoBaseUrl}
                 onOpenDefectDojo={openDefectDojo}
               />
@@ -358,49 +417,50 @@ export const DefectDojoOverview = ({
 
             {/* Severity Metrics */}
             <Grid item xs={12} md={6}>
-              {!loading && (metrics.total > 0 || value !== undefined) && (
-                <Grid container spacing={3} style={{ marginTop: 5 }}>
-                  <Grid item xs={6}>
-                    <MetricCard
-                      title="Critical"
-                      count={metrics.critical}
-                      total={metrics.total}
-                      severity="critical"
-                      trend={showTrends ? trendsData.critical : undefined}
-                    />
-                  </Grid>
+              {!loading &&
+                (metrics.total > 0 || allFindingsData !== undefined) && (
+                  <Grid container spacing={3} style={{ marginTop: 5 }}>
+                    <Grid item xs={6}>
+                      <MetricCard
+                        title="Critical"
+                        count={metrics.critical}
+                        total={metrics.total}
+                        severity="critical"
+                        trend={showTrends ? trendsData.critical : undefined}
+                      />
+                    </Grid>
 
-                  <Grid item xs={6}>
-                    <MetricCard
-                      title="High"
-                      count={metrics.high}
-                      total={metrics.total}
-                      severity="high"
-                      trend={showTrends ? trendsData.high : undefined}
-                    />
-                  </Grid>
+                    <Grid item xs={6}>
+                      <MetricCard
+                        title="High"
+                        count={metrics.high}
+                        total={metrics.total}
+                        severity="high"
+                        trend={showTrends ? trendsData.high : undefined}
+                      />
+                    </Grid>
 
-                  <Grid item xs={6}>
-                    <MetricCard
-                      title="Medium"
-                      count={metrics.medium}
-                      total={metrics.total}
-                      severity="medium"
-                      trend={showTrends ? trendsData.medium : undefined}
-                    />
-                  </Grid>
+                    <Grid item xs={6}>
+                      <MetricCard
+                        title="Medium"
+                        count={metrics.medium}
+                        total={metrics.total}
+                        severity="medium"
+                        trend={showTrends ? trendsData.medium : undefined}
+                      />
+                    </Grid>
 
-                  <Grid item xs={6}>
-                    <MetricCard
-                      title="Low"
-                      count={metrics.low}
-                      total={metrics.total}
-                      severity="low"
-                      trend={showTrends ? trendsData.low : undefined}
-                    />
+                    <Grid item xs={6}>
+                      <MetricCard
+                        title="Low"
+                        count={metrics.low}
+                        total={metrics.total}
+                        severity="low"
+                        trend={showTrends ? trendsData.low : undefined}
+                      />
+                    </Grid>
                   </Grid>
-                </Grid>
-              )}
+                )}
             </Grid>
 
             {/* CWE Analysis */}
@@ -413,14 +473,19 @@ export const DefectDojoOverview = ({
             {/* Findings List */}
             {showFindingsList &&
               showDetails &&
-              filteredVulnerabilities.length > 0 && (
+              paginatedFindings.length > 0 && (
                 <Grid item xs={12}>
                   <FindingsList
-                    findings={filteredVulnerabilities}
+                    findings={paginatedFindings}
                     expanded={expandedFindings}
                     onToggleExpanded={() =>
                       setExpandedFindings(!expandedFindings)
                     }
+                    totalCount={allFindingsData?.total}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </Grid>
               )}

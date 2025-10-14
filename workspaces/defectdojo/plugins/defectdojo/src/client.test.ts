@@ -164,6 +164,8 @@ describe('DefectDojoClient', () => {
         json: jest.fn().mockResolvedValue({
           total: 1,
           findings: mockFindings,
+          next: null,
+          previous: null,
         }),
       };
       mockFetch.mockResolvedValue(mockResponse as unknown as Response);
@@ -173,6 +175,8 @@ describe('DefectDojoClient', () => {
       expect(result).toEqual({
         total: 1,
         findings: mockFindings,
+        next: null,
+        previous: null,
       });
       expect(mockFetch).toHaveBeenCalledWith(
         'http://localhost:7007/api/defectdojo/v1/findings?productId=123',
@@ -199,6 +203,8 @@ describe('DefectDojoClient', () => {
         json: jest.fn().mockResolvedValue({
           total: 1,
           findings: mockFindings,
+          next: null,
+          previous: null,
         }),
       };
       mockFetch.mockResolvedValue(mockResponse as unknown as Response);
@@ -208,6 +214,8 @@ describe('DefectDojoClient', () => {
       expect(result).toEqual({
         total: 1,
         findings: mockFindings,
+        next: null,
+        previous: null,
       });
       expect(mockFetch).toHaveBeenCalledWith(
         'http://localhost:7007/api/defectdojo/v1/findings?productId=123&engagementId=456',
@@ -221,6 +229,8 @@ describe('DefectDojoClient', () => {
         json: jest.fn().mockResolvedValue({
           total: 0,
           findings: [],
+          next: null,
+          previous: null,
         }),
       };
       mockFetch.mockResolvedValue(mockResponse as unknown as Response);
@@ -230,6 +240,8 @@ describe('DefectDojoClient', () => {
       expect(result).toEqual({
         total: 0,
         findings: [],
+        next: null,
+        previous: null,
       });
     });
   });

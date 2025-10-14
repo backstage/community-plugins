@@ -60,6 +60,17 @@ export interface DefectDojoEngagement {
 }
 
 /**
+ * Paginated findings response
+ * @public
+ */
+export interface PaginatedFindingsResponse {
+  total: number;
+  findings: DefectDojoVulnerability[];
+  next: string | null;
+  previous: string | null;
+}
+
+/**
  * DefectDojo API interface
  * @public
  */
@@ -67,7 +78,8 @@ export interface DefectDojoApi {
   getFindings(
     productId: number,
     engagementId?: number,
-  ): Promise<{ total: number; findings: DefectDojoVulnerability[] }>;
+    options?: { limit?: number; offset?: number },
+  ): Promise<PaginatedFindingsResponse>;
   getProduct(identifier: string | number): Promise<DefectDojoProduct>;
   getEngagements(productId: number): Promise<DefectDojoEngagement[]>;
 }
@@ -122,14 +134,23 @@ export class DefectDojoClient implements DefectDojoApi {
     return response.engagements;
   }
 
-  async getFindings(productId: number, engagementId?: number) {
+  async getFindings(
+    productId: number,
+    engagementId?: number,
+    options?: { limit?: number; offset?: number },
+  ): Promise<PaginatedFindingsResponse> {
     const params = new URLSearchParams({ productId: String(productId) });
     if (engagementId) {
       params.set('engagementId', String(engagementId));
     }
-    return this.makeRequest<{
-      total: number;
-      findings: DefectDojoVulnerability[];
-    }>(`/v1/findings?${params.toString()}`);
+    if (options?.limit !== undefined) {
+      params.set('limit', String(options.limit));
+    }
+    if (options?.offset !== undefined) {
+      params.set('offset', String(options.offset));
+    }
+    return this.makeRequest<PaginatedFindingsResponse>(
+      `/v1/findings?${params.toString()}`,
+    );
   }
 }

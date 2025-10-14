@@ -17,10 +17,11 @@ export interface DefectDojoApi {
   getFindings(
     productId: number,
     engagementId?: number,
-  ): Promise<{
-    total: number;
-    findings: DefectDojoVulnerability[];
-  }>;
+    options?: {
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<PaginatedFindingsResponse>;
   // (undocumented)
   getProduct(identifier: string | number): Promise<DefectDojoProduct>;
 }
@@ -37,10 +38,11 @@ export class DefectDojoClient implements DefectDojoApi {
   getFindings(
     productId: number,
     engagementId?: number,
-  ): Promise<{
-    total: number;
-    findings: DefectDojoVulnerability[];
-  }>;
+    options?: {
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<PaginatedFindingsResponse>;
   // (undocumented)
   getProduct(identifier: string | number): Promise<DefectDojoProduct>;
 }
@@ -105,5 +107,17 @@ export interface DefectDojoVulnerability {
   title: string;
   // (undocumented)
   url: string;
+}
+
+// @public
+export interface PaginatedFindingsResponse {
+  // (undocumented)
+  findings: DefectDojoVulnerability[];
+  // (undocumented)
+  next: string | null;
+  // (undocumented)
+  previous: string | null;
+  // (undocumented)
+  total: number;
 }
 ```

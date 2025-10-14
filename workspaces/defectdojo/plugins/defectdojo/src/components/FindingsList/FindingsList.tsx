@@ -25,6 +25,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TablePagination,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -52,12 +53,22 @@ interface FindingsListProps {
   findings: DefectDojoVulnerability[];
   expanded: boolean;
   onToggleExpanded: () => void;
+  totalCount?: number;
+  page?: number;
+  rowsPerPage?: number;
+  onPageChange?: (event: unknown, newPage: number) => void;
+  onRowsPerPageChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const FindingsList: React.FC<FindingsListProps> = ({
   findings,
   expanded,
   onToggleExpanded,
+  totalCount,
+  page = 0,
+  rowsPerPage = 50,
+  onPageChange,
+  onRowsPerPageChange,
 }) => {
   const classes = useDefectDojoStyles();
 
@@ -84,27 +95,40 @@ export const FindingsList: React.FC<FindingsListProps> = ({
                 <ListItemText
                   primary={
                     <Box display="flex" alignItems="center">
-                      <Typography variant="subtitle2" style={{ flex: 1 }}>
+                      <Typography
+                        variant="subtitle2"
+                        style={{
+                          flex: 1,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          minWidth: 0,
+                        }}
+                      >
                         {vuln.title}
                       </Typography>
-                      <Chip
-                        label={vuln.severity}
-                        size="small"
-                        className={classes.severityBadge}
-                        style={{
-                          backgroundColor: getSeverityColor(vuln.severity),
-                          color: 'white',
-                          marginLeft: 8,
-                        }}
-                      />
-                      {vuln.cwe > 0 && (
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        style={{ gap: 8, flexShrink: 0 }}
+                      >
                         <Chip
-                          label={`CWE-${vuln.cwe}`}
+                          label={vuln.severity}
                           size="small"
-                          variant="outlined"
-                          style={{ marginLeft: 8 }}
+                          className={classes.severityBadge}
+                          style={{
+                            backgroundColor: getSeverityColor(vuln.severity),
+                            color: 'white',
+                          }}
                         />
-                      )}
+                        {vuln.cwe > 0 && (
+                          <Chip
+                            label={`CWE-${vuln.cwe}`}
+                            size="small"
+                            variant="outlined"
+                          />
+                        )}
+                      </Box>
                     </Box>
                   }
                   secondary={
@@ -124,6 +148,23 @@ export const FindingsList: React.FC<FindingsListProps> = ({
               </ListItem>
             ))}
           </List>
+          {totalCount !== undefined &&
+            totalCount > 0 &&
+            onPageChange &&
+            onRowsPerPageChange && (
+              <Box display="flex" justifyContent="center" mt={2}>
+                <TablePagination
+                  component="div"
+                  count={totalCount}
+                  page={page}
+                  onPageChange={onPageChange}
+                  rowsPerPage={rowsPerPage}
+                  onRowsPerPageChange={onRowsPerPageChange}
+                  rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                  labelRowsPerPage="Findings per page:"
+                />
+              </Box>
+            )}
         </Box>
       </AccordionDetails>
     </Accordion>

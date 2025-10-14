@@ -15,20 +15,7 @@ If you're using the new Backstage frontend system, install the plugin as follows
 yarn add --cwd packages/app @backstage-community/plugin-defectdojo
 ```
 
-2. Add the plugin to your frontend application in `packages/app/src/index.tsx`:
-
-```typescript
-import defectdojoPlugin from '@backstage-community/plugin-defectdojo/alpha';
-
-export default createApp({
-  features: [
-    // ... other features
-    defectdojoPlugin,
-  ],
-});
-```
-
-3. Add the component to entity pages using the `EntityLayout` or directly in your custom pages:
+2. Add the component to entity pages using the `EntityLayout` or directly in your custom pages:
 
 ```typescript
 import { DefectDojoOverview } from '@backstage-community/plugin-defectdojo';

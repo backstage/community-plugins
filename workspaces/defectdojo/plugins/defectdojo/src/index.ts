@@ -29,6 +29,7 @@ export type {
   DefectDojoVulnerability,
   DefectDojoProduct,
   DefectDojoEngagement,
+  PaginatedFindingsResponse,
 } from './client';
 
 // @public
