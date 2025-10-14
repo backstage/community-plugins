@@ -14,3 +14,4 @@
 | node-gyp                                              | package.json:48:6 | error    |
 | app                                                   | package.json:46:6 | error    |
 | pg                                                    | package.json:49:6 | error    |
+
