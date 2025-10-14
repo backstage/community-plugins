@@ -14,6 +14,8 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
+Please install and configure the frontend and backend Kubernetes plugins by following the [installation](https://backstage.io/docs/features/kubernetes/installation/) and [configuration](https://backstage.io/docs/features/kubernetes/configuration/) guides.
+
 ### Argo CD backend
 
 Please see [the backend documentation](../argocd-backend/README.md) for more information.
