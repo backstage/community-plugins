@@ -15,15 +15,6 @@ If you're using the new Backstage frontend system, install the plugin as follows
 yarn add --cwd packages/app @backstage-community/plugin-defectdojo
 ```
 
-2. Add the component to entity pages using the `EntityLayout` or directly in your custom pages:
-
-```typescript
-import { DefectDojoOverview } from '@backstage-community/plugin-defectdojo';
-
-// In your entity page or custom page
-<DefectDojoOverview />;
-```
-
 ### Legacy Frontend System
 
 If you're using the legacy frontend system:
