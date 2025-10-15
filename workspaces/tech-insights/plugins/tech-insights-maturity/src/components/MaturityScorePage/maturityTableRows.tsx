@@ -224,7 +224,7 @@ export const MaturityCheckTable = ({
               {checks?.map(entry => (
                 <MaturityCheckTableRow
                   key={entry.check.id}
-                  updated={facts[entry.check.factIds[0]].timestamp}
+                  updated={facts[entry.check.factIds[0]]?.timestamp}
                   checkResult={entry}
                 />
               ))}
