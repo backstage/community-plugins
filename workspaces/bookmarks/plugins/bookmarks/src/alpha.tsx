@@ -19,11 +19,7 @@ import {
   TranslationBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import {
-  compatWrapper,
-  convertLegacyRouteRefs,
-} from '@backstage/core-compat-api';
-import { entityContentRouteRef } from './routes';
+import { compatWrapper } from '@backstage/core-compat-api';
 import { isBookmarksAvailable } from './utils/isBookmarksAvailable';
 import { bookmarksTranslations } from './translations/translations';
 
@@ -61,9 +57,6 @@ const bookmarksPlugin = createFrontendPlugin({
       () => import('../package.json'),
   },
   extensions: [bookmarksEntityContent, bookmarksTranslationsExtension],
-  routes: convertLegacyRouteRefs({
-    bookmarks: entityContentRouteRef,
-  }),
 });
 
 export default bookmarksPlugin;

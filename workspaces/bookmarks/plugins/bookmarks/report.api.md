@@ -29,9 +29,7 @@ entityContent: RouteRef_2<undefined>;
 }, {}, {}>;
 
 // @public
-const bookmarksPlugin_2: OverridableFrontendPlugin<    {
-bookmarks: RouteRef<undefined>;
-}, {}, {
+const bookmarksPlugin_2: OverridableFrontendPlugin<    {}, {}, {
 "entity-content:bookmarks": ExtensionDefinition<    {
 kind: "entity-content";
 name: undefined;

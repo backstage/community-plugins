@@ -1,5 +1,7 @@
 # Bookmarks plugin
 
+![NPM Version](https://img.shields.io/npm/v/%40backstage-community%2Fplugin-bookmarks)
+
 The Bookmarks plugin is a simple tool for saving and viewing links to your favorite websites, Google Docs, and other online resources directly within Backstage.
 
 Bookmarks are stored in the `metadata` of a Backstage entity, making it easy to manage and access them within your Backstage Software Catalog.
