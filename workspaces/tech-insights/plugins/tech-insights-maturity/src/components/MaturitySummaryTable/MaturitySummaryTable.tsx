@@ -32,7 +32,8 @@ import useAsyncRetry from 'react-use/lib/useAsync';
 import { maturityApiRef } from '../../api';
 import { getNextRankColor, pluralize } from '../../helpers/utils';
 import { MaturityLink } from '../../helpers/MaturityLink';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { MaturityRankIcon } from '../MaturityRankIcon';
+import { MaturityRankChip } from '../MaturityRankChip';
 
 const OverallCell = ({
   areaSummary,
@@ -111,7 +112,7 @@ const ProgressCell = ({
   if (!areaSummary) return <></>;
 
   return (
-    <MaturityRankAvatar
+    <MaturityRankIcon
       value={areaSummary}
       size={25}
       progress={areaSummary.rankProgress}
@@ -190,9 +191,7 @@ export function MaturitySummaryTable({
       field: 'summary.rank',
       width: '10%',
       ...style,
-      render: row => (
-        <MaturityRankAvatar value={row.summary} size={25} variant="chip" />
-      ),
+      render: row => <MaturityRankChip value={row.summary} size={25} />,
     },
     {
       title: 'Next Rank',
