@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements": "workspace:^",
-    "@backstage/cli": "^0.34.3",
+    "@backstage/cli": "^0.34.2",
     "@backstage/core-compat-api": "^0.5.2",
-    "@backstage/core-components": "^0.18.1",
+    "@backstage/core-components": "^0.18.0",
     "@backstage/core-plugin-api": "^1.11.0",
     "@backstage/frontend-defaults": "^0.3.1",
     "@backstage/frontend-plugin-api": "^0.12.0",

@@ -2048,7 +2048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.34.3":
+"@backstage/cli@npm:^0.34.2":
   version: 0.34.3
   resolution: "@backstage/cli@npm:0.34.3"
   dependencies:
@@ -14816,9 +14816,9 @@ __metadata:
   resolution: "app-next@workspace:packages/app-next"
   dependencies:
     "@backstage-community/plugin-announcements": "workspace:^"
-    "@backstage/cli": "npm:^0.34.3"
+    "@backstage/cli": "npm:^0.34.2"
     "@backstage/core-compat-api": "npm:^0.5.2"
-    "@backstage/core-components": "npm:^0.18.1"
+    "@backstage/core-components": "npm:^0.18.0"
     "@backstage/core-plugin-api": "npm:^1.11.0"
     "@backstage/frontend-defaults": "npm:^0.3.1"
     "@backstage/frontend-plugin-api": "npm:^0.12.0"
