@@ -16,6 +16,7 @@
 import type {
   CertsInfo,
   ComponentStatus,
+  ComputedServerConfig,
   JaegerTrace,
   Namespace,
   NotificationGroup,
@@ -90,6 +91,11 @@ export type TracingState = {
   selectedTrace?: JaegerTrace;
 };
 
+export interface ServerConfigState {
+  config: ComputedServerConfig;
+  isLoaded: boolean;
+}
+
 // This defines the Kiali Global Application State
 export interface KialiAppState {
   // Global state === across multiple pages
@@ -106,6 +112,7 @@ export interface KialiAppState {
   /** User Settings */
   userSettings: UserSettings;
   tracingState: TracingState;
+  serverConfig: ServerConfigState;
   dispatch: { [key: string]: React.Dispatch<KialiAppAction> };
   alertUtils?: AlertUtils;
 }

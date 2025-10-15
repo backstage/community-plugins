@@ -22,7 +22,6 @@ import type {
 } from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
 import { default as React } from 'react';
-import { Link } from 'react-router-dom';
 import { isMultiCluster, serverConfig } from '../../config';
 import { createIcon, KialiIcon } from '../../config/KialiIcon';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';
@@ -115,9 +114,7 @@ export const DetailDescription: React.FC<Props> = (props: Props) => {
     }
 
     if (props.view === DRAWER) {
-      href = `#application/${namespace}_${appName}`;
-
-      link = <Link to={href}>{appName}</Link>;
+      link = <span>{appName}</span>;
     }
 
     return (
@@ -162,8 +159,7 @@ export const DetailDescription: React.FC<Props> = (props: Props) => {
         href = `${href}?clusterName=${props.cluster}`;
       }
 
-      href = `#service/${namespace}_${serviceName}`;
-      link = <Link to={href}>{serviceName}</Link>;
+      link = <span>{serviceName}</span>;
     }
 
     return (
@@ -260,8 +256,7 @@ export const DetailDescription: React.FC<Props> = (props: Props) => {
         href = `${href}?clusterName=${props.cluster}`;
       }
 
-      href = `#workload/${props.namespace}_${workload.workloadName}`;
-      link = <Link to={href}>{workload.workloadName}</Link>;
+      link = <span>{workload.workloadName}</span>;
     }
 
     return (
@@ -313,8 +308,7 @@ export const DetailDescription: React.FC<Props> = (props: Props) => {
           href = `${href}?clusterName=${props.cluster}`;
         }
 
-        href = `#workload/${props.namespace}_${workload.workloadName}`;
-        link = <Link to={href}>{workload.workloadName}</Link>;
+        link = <span>{workload.workloadName}</span>;
       } else {
         link = (
           <BackstageObjectLink

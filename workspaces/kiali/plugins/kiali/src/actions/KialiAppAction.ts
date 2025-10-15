@@ -20,6 +20,7 @@ import { LoginAction } from './LoginActions';
 import { MeshTlsAction } from './MeshTlsActions';
 import { MessageCenterAction } from './MessageCenterActions';
 import { NamespaceAction } from './NamespaceAction';
+import { ServerConfigAction } from './ServerConfigActions';
 import { UserSettingsAction } from './UserSettingsActions';
 
 export type KialiAppAction =
@@ -30,4 +31,5 @@ export type KialiAppAction =
   | IstioCertsInfoAction
   | IstioStatusAction
   | MeshTlsAction
-  | MessageCenterAction;
+  | MessageCenterAction
+  | ServerConfigAction;

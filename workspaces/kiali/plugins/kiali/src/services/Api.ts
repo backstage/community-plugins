@@ -346,7 +346,33 @@ export class KialiApiClient implements KialiApi {
       },
     );
 
-    return jsonResponse.json() as T;
+    if (!jsonResponse.ok) {
+      return jsonResponse.json() as T;
+    }
+
+    const responseData = await jsonResponse.json();
+
+    return responseData as T;
+  };
+
+  getApiVersionForObjectType = (objectType: string): string => {
+    const apiVersionMap: { [key: string]: string } = {
+      VirtualService: 'networking.istio.io/v1',
+      DestinationRule: 'networking.istio.io/v1',
+      Gateway: 'networking.istio.io/v1',
+      ServiceEntry: 'networking.istio.io/v1',
+      Sidecar: 'networking.istio.io/v1',
+      WorkloadEntry: 'networking.istio.io/v1',
+      WorkloadGroup: 'networking.istio.io/v1',
+      AuthorizationPolicy: 'security.istio.io/v1',
+      PeerAuthentication: 'security.istio.io/v1',
+      RequestAuthentication: 'security.istio.io/v1',
+      Telemetry: 'telemetry.istio.io/v1',
+      EnvoyFilter: 'networking.istio.io/v1alpha3',
+      WasmPlugin: 'extensions.istio.io/v1alpha1',
+    };
+
+    return apiVersionMap[objectType] || 'networking.istio.io/v1';
   };
 
   getCustomParams = (queryParams: any): string => {
@@ -674,9 +700,17 @@ export class KialiApiClient implements KialiApi {
       queryParams.help = true;
     }
 
+    const apiVersion = this.getApiVersionForObjectType(objectType);
+    const url = urls.istioConfigDetail(
+      namespace,
+      objectType,
+      object,
+      apiVersion,
+    );
+
     return this.newRequest<IstioConfigDetails>(
       HTTP_VERBS.GET,
-      urls.istioConfigDetail(namespace, objectType, object),
+      url,
       queryParams,
       {},
     );
