@@ -14,34 +14,21 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Content,
-  Header,
-  HeaderLabel,
-  MarkdownContent,
-  Page,
-  Progress,
-} from '@backstage/core-components';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
 import {
   configApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import {
-  Box,
   Button,
   Card,
   CardContent,
-  Chip,
-  Divider,
   Grid,
-  IconButton,
   Paper,
-  TextField,
   Typography,
 } from '@material-ui/core';
-import SendIcon from '@material-ui/icons/Send';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -49,64 +36,12 @@ import { ChatbotApi } from '../apis';
 import { DEFAULT_BOT_CONFIG } from '../constants';
 import { Message } from '../types';
 import { createTimestamp } from '../utils';
+import { ChatContainer } from './ChatContainer';
+import { PageHeader } from './PageHeader';
+// @ts-ignore
+import packageInfo from '../../package.json';
 
 const useStyles = makeStyles(theme => ({
-  chatContainer: {
-    height: '70vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  messagesContainer: {
-    flex: 1,
-    overflowY: 'auto',
-    padding: theme.spacing(2),
-    backgroundColor: theme.palette.background.default,
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.shape.borderRadius,
-    marginBottom: theme.spacing(2),
-  },
-  messageBox: {
-    marginBottom: theme.spacing(2),
-    padding: theme.spacing(1.5),
-    borderRadius: theme.shape.borderRadius,
-    maxWidth: '80%',
-  },
-  userMessage: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    marginLeft: 'auto',
-    textAlign: 'right',
-  },
-  botMessage: {
-    backgroundColor:
-      theme.palette.type === 'dark'
-        ? theme.palette.grey[800]
-        : theme.palette.grey[100],
-    color: theme.palette.text.primary,
-    marginRight: 'auto',
-  },
-  inputContainer: {
-    display: 'flex',
-    gap: theme.spacing(1),
-    alignItems: 'flex-end',
-  },
-  inputField: {
-    flex: 1,
-  },
-  suggestionChip: {
-    margin: theme.spacing(0.5),
-    cursor: 'pointer',
-  },
-  suggestionsContainer: {
-    marginBottom: theme.spacing(2),
-  },
-  typingIndicator: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(1),
-    fontStyle: 'italic',
-    color: theme.palette.text.secondary,
-  },
   errorBox: {
     padding: theme.spacing(2),
     backgroundColor: theme.palette.error.light,
@@ -114,26 +49,18 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.shape.borderRadius,
     marginBottom: theme.spacing(2),
   },
-  headerContent: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-  },
-  botAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: '50%',
-    objectFit: 'contain' as const,
-  },
 }));
 
 const INITIAL_SUGGESTIONS = [
   'What can you do?',
-  'Give me information about SRE team onboarding',
   'How do I configure agents?',
   'Help me with platform engineering tasks',
 ];
 
+/**
+ * Agent Forge page component
+ * @public
+ */
 export function AgentForgePage() {
   const classes = useStyles();
   const config = useApi(configApiRef);
@@ -165,12 +92,6 @@ export function AgentForgePage() {
     }
   }, [backendUrl, identityApi]);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const addMessage = useCallback((message: Message) => {
     setMessages(prevMessages => [
       ...prevMessages,
@@ -178,9 +99,33 @@ export function AgentForgePage() {
     ]);
   }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
+  const addStreamingMessage = useCallback((initialText: string = '') => {
+    const newMessage: Message = {
+      text: initialText,
+      isUser: false,
+      timestamp: createTimestamp(),
+    };
+    setMessages(prevMessages => [...prevMessages, newMessage]);
+    return newMessage;
+  }, []);
+
+  const updateStreamingMessage = useCallback((text: string) => {
+    setMessages(prevMessages => {
+      const newMessages = [...prevMessages];
+      const lastMessageIndex = newMessages.length - 1;
+      if (lastMessageIndex >= 0) {
+        newMessages[lastMessageIndex] = {
+          ...newMessages[lastMessageIndex],
+          text: text,
+        };
+      }
+      return newMessages;
+    });
+  }, []);
+
+  const finishStreamingMessage = useCallback(() => {
+    setIsTyping(false);
+  }, []);
 
   // Add initial greeting message
   useEffect(() => {
@@ -193,106 +138,153 @@ export function AgentForgePage() {
     }
   }, [botName, messages.length, addMessage]);
 
-  const handleMessageSubmit = async (messageText?: string) => {
-    const inputText = messageText || userInput.trim();
-    if (!inputText) return;
+  const handleMessageSubmit = useCallback(
+    async (messageText?: string) => {
+      const inputText = messageText || userInput.trim();
+      if (!inputText) return;
 
-    const userMessage: Message = {
-      text: inputText,
-      isUser: true,
-      timestamp: createTimestamp(),
-    };
-    addMessage(userMessage);
-    setUserInput('');
-    setIsTyping(true);
-    setSuggestions([]); // Clear suggestions after first message
-
-    if (!chatbotApi) {
-      addMessage({
-        text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`,
-        isUser: false,
+      const userMessage: Message = {
+        text: inputText,
+        isUser: true,
         timestamp: createTimestamp(),
-      });
-      setIsTyping(false);
-      return;
-    }
+      };
+      addMessage(userMessage);
+      setUserInput('');
+      setIsTyping(true);
+      setSuggestions([]); // Clear suggestions after first message
 
-    try {
-      const taskResult = await chatbotApi.submitA2ATask(newContext, inputText);
-      setNewContext(false);
-
-      // Handle streaming response from history array
-      let resultText = '';
-      if (taskResult.status.state === 'completed' && taskResult.artifacts) {
-        const part = taskResult.artifacts[0].parts[0];
-        if (part.kind === 'text') {
-          resultText = part.text;
-        }
-      } else if (taskResult.status.message) {
-        const part = taskResult.status.message.parts[0];
-        if (part.kind === 'text') {
-          resultText = part.text;
-        }
+      if (!chatbotApi) {
+        addMessage({
+          text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`,
+          isUser: false,
+          timestamp: createTimestamp(),
+        });
+        setIsTyping(false);
+        return;
       }
 
-      // If no text from status/artifacts, collect from streaming history
-      if (!resultText && taskResult.history && taskResult.history.length > 0) {
-        // Find the last user message
-        let lastUserIndex = -1;
-        for (let i = taskResult.history.length - 1; i >= 0; i--) {
-          if (taskResult.history[i].role === 'user') {
-            lastUserIndex = i;
-            break;
+      try {
+        const taskResult = await chatbotApi.submitA2ATask(
+          newContext,
+          inputText,
+        );
+        setNewContext(false);
+
+        // Handle streaming response from history array
+        let resultText = '';
+        if (taskResult.status.state === 'completed' && taskResult.artifacts) {
+          const part = taskResult.artifacts[0].parts[0];
+          if (part.kind === 'text') {
+            resultText = part.text;
+          }
+        } else if (taskResult.status.message) {
+          const part = taskResult.status.message.parts[0];
+          if (part.kind === 'text') {
+            resultText = part.text;
           }
         }
 
-        // Collect all agent messages after the last user message
-        const agentWords = [];
-        if (lastUserIndex >= 0) {
-          for (let i = lastUserIndex + 1; i < taskResult.history.length; i++) {
-            const message = taskResult.history[i];
-            if (
-              message.role === 'agent' &&
-              message.parts &&
-              message.parts[0] &&
-              message.parts[0].kind === 'text'
-            ) {
-              agentWords.push(message.parts[0].text);
+        // If no text from status/artifacts, collect from streaming history
+        if (
+          !resultText &&
+          taskResult.history &&
+          taskResult.history.length > 0
+        ) {
+          // Find the last user message
+          let lastUserIndex = -1;
+          for (let i = taskResult.history.length - 1; i >= 0; i--) {
+            if (taskResult.history[i].role === 'user') {
+              lastUserIndex = i;
+              break;
             }
           }
+
+          // Collect all agent messages after the last user message
+          const agentWords = [];
+          if (lastUserIndex >= 0) {
+            for (
+              let i = lastUserIndex + 1;
+              i < taskResult.history.length;
+              i++
+            ) {
+              const message = taskResult.history[i];
+              if (
+                message.role === 'agent' &&
+                message.parts &&
+                message.parts[0] &&
+                message.parts[0].kind === 'text'
+              ) {
+                agentWords.push(message.parts[0].text);
+              }
+            }
+          }
+
+          // Implement streaming display for long responses (>300 words)
+          if (agentWords.length > 300) {
+            addStreamingMessage();
+
+            let currentText = '';
+            agentWords.forEach((word, index) => {
+              setTimeout(() => {
+                currentText += word;
+                updateStreamingMessage(currentText.trim());
+
+                // Finish streaming on last word
+                if (index === agentWords.length - 1) {
+                  setTimeout(() => {
+                    finishStreamingMessage();
+                  }, 50);
+                }
+              }, index * 10); // delay (milliseconds) between words
+            });
+            return; // Exit early - isTyping will be set to false by finishStreamingMessage
+          }
+
+          // Fallback: join all words if no streaming
+          resultText = agentWords.join('').trim();
         }
 
-        // Join all the words together without extra spaces
-        resultText = agentWords.join('').trim();
+        // Add message normally if not streaming
+        if (resultText) {
+          addMessage({
+            text: resultText,
+            isUser: false,
+            timestamp: createTimestamp(),
+          });
+        }
+        setIsTyping(false); // Set to false for non-streaming responses
+      } catch (error) {
+        const err = error as Error;
+        setApiError(err.message);
+        addMessage({
+          text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`,
+          isUser: false,
+          timestamp: createTimestamp(),
+        });
+        setIsTyping(false); // Always set to false on error
       }
-
-      addMessage({
-        text: resultText,
-        isUser: false,
-        timestamp: createTimestamp(),
-      });
-    } catch (error) {
-      const err = error as Error;
-      setApiError(err.message);
-      addMessage({
-        text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`,
-        isUser: false,
-        timestamp: createTimestamp(),
-      });
-    } finally {
-      setIsTyping(false);
-    }
-  };
+      // Note: isTyping is set to false by finishStreamingMessage() for streaming responses
+      // or by the normal flow for non-streaming responses
+    },
+    [
+      userInput,
+      chatbotApi,
+      botName,
+      newContext,
+      addMessage,
+      setUserInput,
+      setIsTyping,
+      setSuggestions,
+      setNewContext,
+      setApiError,
+      addStreamingMessage,
+      updateStreamingMessage,
+      finishStreamingMessage,
+    ],
+  );
 
   const handleSuggestionClick = (suggestion: string) => {
     handleMessageSubmit(suggestion);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      handleMessageSubmit();
-    }
   };
 
   const resetChat = () => {
@@ -315,7 +307,7 @@ export function AgentForgePage() {
           label="Status"
           value={chatbotApi ? 'Connected' : 'Disconnected'}
         />
-        <HeaderLabel label="Version" value="v1.0" />
+        <HeaderLabel label="Version" value={`v${packageInfo.version}`} />
       </Header>
       <Content>
         <Grid container spacing={3}>
@@ -336,121 +328,18 @@ export function AgentForgePage() {
 
             <Card>
               <CardContent>
-                {/* Welcome header with avatar */}
-                {botIcon && (
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    mb={2}
-                    className={classes.headerContent}
-                  >
-                    <img
-                      src={botIcon}
-                      alt={botName}
-                      className={classes.botAvatar}
-                    />
-                    <Typography variant="h6" color="textPrimary">
-                      {botName} - AI Platform Engineer
-                    </Typography>
-                  </Box>
-                )}
-
-                <div className={classes.chatContainer}>
-                  <div className={classes.messagesContainer}>
-                    {messages.map((message, index) => (
-                      <Box
-                        key={index}
-                        className={`${classes.messageBox} ${
-                          message.isUser
-                            ? classes.userMessage
-                            : classes.botMessage
-                        }`}
-                      >
-                        <Box
-                          style={{
-                            wordBreak: 'break-word',
-                            color: 'inherit',
-                          }}
-                        >
-                          <MarkdownContent
-                            content={message.text || ''}
-                            transformLinkUri={uri =>
-                              uri.startsWith('http') ? uri : ''
-                            }
-                            linkTarget="_blank"
-                          />
-                        </Box>
-                        <Typography
-                          variant="caption"
-                          style={{
-                            opacity: 0.7,
-                            fontSize: '0.75rem',
-                            color: 'inherit',
-                            display: 'block',
-                            marginTop: 4,
-                          }}
-                        >
-                          {message.timestamp}
-                        </Typography>
-                      </Box>
-                    ))}
-
-                    {isTyping && (
-                      <Box className={classes.typingIndicator}>
-                        <Progress />
-                        <Typography variant="body2" style={{ marginLeft: 8 }}>
-                          {botName} is thinking...
-                        </Typography>
-                      </Box>
-                    )}
-
-                    <div ref={messagesEndRef} />
-                  </div>
-
-                  {suggestions.length > 0 && (
-                    <Box className={classes.suggestionsContainer}>
-                      <Typography variant="subtitle2" gutterBottom>
-                        Suggested questions:
-                      </Typography>
-                      {suggestions.map((suggestion, index) => (
-                        <Chip
-                          key={index}
-                          label={suggestion}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          className={classes.suggestionChip}
-                          variant="outlined"
-                          size="small"
-                        />
-                      ))}
-                    </Box>
-                  )}
-
-                  <Divider style={{ margin: '16px 0' }} />
-
-                  <Box className={classes.inputContainer}>
-                    <TextField
-                      className={classes.inputField}
-                      multiline
-                      maxRows={4}
-                      variant="outlined"
-                      placeholder={`Ask ${botName} anything...`}
-                      value={userInput}
-                      onChange={e => setUserInput(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      disabled={isTyping}
-                    />
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleMessageSubmit()}
-                      disabled={isTyping || !userInput.trim()}
-                    >
-                      <SendIcon />
-                    </IconButton>
-                    <IconButton onClick={resetChat} title="Reset conversation">
-                      <RefreshIcon />
-                    </IconButton>
-                  </Box>
-                </div>
+                <PageHeader botName={botName} botIcon={botIcon} />
+                <ChatContainer
+                  messages={messages}
+                  userInput={userInput}
+                  setUserInput={setUserInput}
+                  isTyping={isTyping}
+                  suggestions={suggestions}
+                  botName={botName}
+                  onMessageSubmit={handleMessageSubmit}
+                  onReset={resetChat}
+                  onSuggestionClick={handleSuggestionClick}
+                />
               </CardContent>
             </Card>
           </Grid>

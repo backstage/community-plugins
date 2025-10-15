@@ -36,27 +36,11 @@ const agentForgePage = PageBlueprint.make({
   },
 });
 
-/**
- * The Agent Forge plugin for the new frontend system.
- *
- * @alpha
- */
 export default createFrontendPlugin({
   pluginId: 'agent-forge',
   extensions: [agentForgePage],
 });
 
-/**
- * @alpha
- */
 export { chatAssistantPlugin as agentForgePlugin } from './plugin';
-
-/**
- * @alpha
- */
-export { default as ChatAssistantPage } from './components/ChatAssistantApp';
-
-/**
- * @alpha
- */
+export { default as AgentForgePage } from './components/AgentForgePage';
 export { default as ChatAssistantToken } from './components/ChatAssistantToken';

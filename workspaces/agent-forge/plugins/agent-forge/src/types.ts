@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Message interface for chat messages
+ * @public
+ */
 export interface Message {
   text?: string; // Make optional to support A2A messages
   parts?: Array<{

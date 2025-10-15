@@ -8,8 +8,6 @@ organization:
 agentForge:
   baseUrl: http://localhost:8000
   showOptions: true
-  botName: Ben 3000
-  botIcon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjDdOpuA5V5eyptmtbkP5yWQ-MQGoN2paWUQ&s
 
 backend:
   baseUrl: http://localhost:7007

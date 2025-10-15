@@ -22,6 +22,16 @@ export { chatAssistantPlugin } from './plugin';
 
 // New native page component
 export { default as AgentForgePage } from './components/AgentForgePage';
+export {
+  ChatContainer,
+  type ChatContainerProps,
+} from './components/ChatContainer';
+export { ChatMessage, type ChatMessageProps } from './components/ChatMessage';
+export { PageHeader } from './components/PageHeader';
+
+// Export types that are referenced by public APIs
+export type { Message } from './types';
+export type { PageHeaderProps } from './components/PageHeader';
 
 // New frontend system exports
 export { default } from './alpha';
