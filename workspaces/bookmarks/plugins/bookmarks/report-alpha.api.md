@@ -5,31 +5,18 @@
 ```ts
 
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
-import { JSX as JSX_3 } from 'react/jsx-runtime';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
-import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
 import { TranslationMessages } from '@backstage/frontend-plugin-api';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
-import { TranslationResource as TranslationResource_2 } from '@backstage/core-plugin-api/alpha';
 
 // @public
-export const AVAILABLE_LANGUAGES: string[];
-
-// @public
-export const bookmarksPlugin: BackstagePlugin<    {
-entityContent: RouteRef_2<undefined>;
-}, {}, {}>;
-
-// @public
-const bookmarksPlugin_2: OverridableFrontendPlugin<    {}, {}, {
+const bookmarksPlugin: OverridableFrontendPlugin<    {}, {}, {
 "entity-content:bookmarks": ExtensionDefinition<    {
 kind: "entity-content";
 name: undefined;
@@ -81,32 +68,8 @@ resource: TranslationResource | TranslationMessages;
 };
 }>;
 }>;
-export default bookmarksPlugin_2;
+export default bookmarksPlugin;
 
-// @public
-export const bookmarksTranslationRef: TranslationRef<"bookmarks", {
-readonly "bookmarkViewer.newTab": "Open in new tab";
-readonly "bookmarkViewer.navButton.next": "Next";
-readonly "bookmarkViewer.navButton.previous": "Previous";
-readonly "bookmarkViewer.mobileView.toc": "Table of Contents";
-readonly "bookmarkViewerFrame.devModeWarning": "You may have to reload the page for the iframe to load correctly in development mode";
-readonly "entityBookmarksContent.invalid.title": "Invalid bookmarks format";
-readonly "entityBookmarksContent.invalid.description": "Ensure your bookmarks are structured correctly.";
-readonly "entityBookmarksContent.notFound.title": "No bookmarks found";
-readonly "entityBookmarksContent.notFound.description": "Add bookmarks to your entity's metadata to see them here.";
-}>;
-
-// @public
-export const bookmarksTranslations: TranslationResource_2<"bookmarks">;
-
-// @public
-export const EntityBookmarksContent: () => JSX_3.Element;
-
-// @public
-export const isBookmarksAvailable: (entity: Entity) => entity is Entity & {
-    metadata: {
-        bookmarks?: unknown;
-    };
-};
+// (No @packageDocumentation comment for this package)
 
 ```

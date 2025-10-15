@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-/**
- * A Backstage plugin that helps you quickly access important links
- *
- * @packageDocumentation
- */
+import { default as bookmarksPlugin } from './alpha';
 
-export { default } from './alpha';
-export { bookmarksPlugin, EntityBookmarksContent } from './plugin';
-export {
-  AVAILABLE_LANGUAGES,
-  bookmarksTranslations,
-  bookmarksTranslationRef,
-} from './translations/translations';
-export { isBookmarksAvailable } from './utils/isBookmarksAvailable';
+describe('bookmarks NFS', () => {
+  it('should export plugin', () => {
+    expect(bookmarksPlugin).toBeDefined();
+  });
+});
