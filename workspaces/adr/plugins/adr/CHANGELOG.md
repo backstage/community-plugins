@@ -1,5 +1,16 @@
 # @backstage-community/plugin-adr
 
+## 0.17.0
+
+### Minor Changes
+
+- f9ce1d4: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [f9ce1d4]
+  - @backstage-community/plugin-adr-common@0.13.0
+
 ## 0.16.0
 
 ### Minor Changes
