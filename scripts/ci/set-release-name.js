@@ -34,6 +34,14 @@ async function getLatestRelease() {
     'https://api.github.com/repos/backstage/backstage/releases/latest',
   );
   const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch latest release: ${response.status} ${response.statusText}. ` +
+        `Response: ${JSON.stringify(json, null, 2)}`,
+    );
+  }
+
   return json;
 }
 
@@ -42,6 +50,13 @@ async function getLatestPreRelease() {
     'https://api.github.com/repos/backstage/backstage/releases',
   );
   const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch latest pre-release: ${response.status} ${response.statusText}. ` +
+        `Response: ${JSON.stringify(json, null, 2)}`,
+    );
+  }
 
   const preReleasesOnly = json.filter(release => {
     return release.prerelease === true;
