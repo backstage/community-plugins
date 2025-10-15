@@ -17,11 +17,10 @@ import type { ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { MEMO } from '../../const';
-import { resourceModels } from '../../models';
-import { kindToAbbr } from '../utils/getResources';
-
 import './ResourceName.css';
+import { resourceModels } from '../../models';
+import { MEMO } from '../../const';
+import { kindToAbbr } from '../../utils/getResources';
 
 export type ResourceIconProps = {
   className?: string;
