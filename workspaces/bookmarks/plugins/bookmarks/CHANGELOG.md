@@ -1,5 +1,12 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.4.0
+
+### Minor Changes
+
+- dae3e7f: add NFS support
+- 64fe6b6: Backstage version bump to v1.44.0
+
 ## 0.3.0
 
 ### Minor Changes
