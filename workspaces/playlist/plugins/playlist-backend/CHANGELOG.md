@@ -1,5 +1,16 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.14.0
+
+### Minor Changes
+
+- e2408fb: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [e2408fb]
+  - @backstage-community/plugin-playlist-common@0.11.0
+
 ## 0.13.0
 
 ### Minor Changes
