@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 5.10.0
+
+### Minor Changes
+
+- 36f2716: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 7b478dd: Updated dependency `@openapitools/openapi-generator-cli` to `2.24.0`.
+- Updated dependencies [36f2716]
+  - @backstage-community/plugin-ocm-common@3.13.0
+
 ## 5.9.1
 
 ### Patch Changes
