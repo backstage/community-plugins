@@ -79,6 +79,11 @@ agentForge:
   showOptions: true
   botName: Agent Forge # Optional: Customize the bot name
   botIcon: url goes here # Optional: Customize the bot icon
+  initialSuggestions: # Optional: Customize initial suggestion prompts
+    - 'What can you do?'
+    - 'How do I configure agents?'
+    - 'Help me with platform engineering tasks'
+    - 'Show me the latest deployments'
 ```
 
 ### CAIPE Setup

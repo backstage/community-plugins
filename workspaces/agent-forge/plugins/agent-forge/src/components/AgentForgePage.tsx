@@ -35,7 +35,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ChatbotApi } from '../apis';
-import { DEFAULT_BOT_CONFIG } from '../constants';
+import { DEFAULT_BOT_CONFIG, DEFAULT_SUGGESTIONS } from '../constants';
 import { Message } from '../types';
 import { ChatSession, ChatStorage } from '../types/chat';
 import { createTimestamp } from '../utils';
@@ -59,12 +59,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const INITIAL_SUGGESTIONS = [
-  'What can you do?',
-  'How do I configure agents?',
-  'Help me with platform engineering tasks',
-];
-
 const STORAGE_KEY = 'agent-forge-chat-sessions';
 
 /**
@@ -81,6 +75,9 @@ export function AgentForgePage() {
     config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
   const botIcon =
     config.getOptionalString('agentForge.botIcon') || DEFAULT_BOT_CONFIG.icon;
+  const initialSuggestions =
+    config.getOptionalStringArray('agentForge.initialSuggestions') ||
+    DEFAULT_SUGGESTIONS;
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
@@ -93,7 +90,7 @@ export function AgentForgePage() {
   const [userInput, setUserInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>(INITIAL_SUGGESTIONS);
+  const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
 
   // Token authentication for external system integration
   const { tokenMessage, isTokenRequest } = useTokenAuthentication();
@@ -184,8 +181,8 @@ export function AgentForgePage() {
 
     setSessions(prev => [newSession, ...prev]);
     setCurrentSessionId(newSession.id);
-    setSuggestions(INITIAL_SUGGESTIONS);
-  }, [sessions.length, botName]);
+    setSuggestions(initialSuggestions);
+  }, [sessions.length, botName, initialSuggestions]);
 
   // Switch to session
   const switchToSession = useCallback(
@@ -193,12 +190,12 @@ export function AgentForgePage() {
       setCurrentSessionId(sessionId);
       const session = sessions.find(s => s.id === sessionId);
       if (session && session.messages.length <= 1) {
-        setSuggestions(INITIAL_SUGGESTIONS);
+        setSuggestions(initialSuggestions);
       } else {
         setSuggestions([]);
       }
     },
-    [sessions],
+    [sessions, initialSuggestions],
   );
 
   // Delete session
@@ -566,7 +563,7 @@ export function AgentForgePage() {
       );
     }
     setUserInput('');
-    setSuggestions(INITIAL_SUGGESTIONS);
+    setSuggestions(initialSuggestions);
     setApiError(null);
   };
 

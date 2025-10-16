@@ -32,5 +32,11 @@ export interface Config {
      * @visibility frontend
      */
     botIcon?: string;
+
+    /**
+     * Initial suggestion prompts to show users
+     * @visibility frontend
+     */
+    initialSuggestions?: string[];
   };
 }

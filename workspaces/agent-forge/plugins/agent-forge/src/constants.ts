@@ -20,3 +20,9 @@ export const DEFAULT_BOT_CONFIG = {
   name: 'CAIPE',
   icon: DefaultBotIcon,
 } as const;
+
+export const DEFAULT_SUGGESTIONS = [
+  'What can you do?',
+  'How do I configure agents?',
+  'Help me with platform engineering tasks',
+];
