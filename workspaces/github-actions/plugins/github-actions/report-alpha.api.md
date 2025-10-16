@@ -50,7 +50,7 @@ const _default: OverridableFrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -60,7 +60,7 @@ const _default: OverridableFrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -115,7 +115,7 @@ const _default: OverridableFrontendPlugin<
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         props?:
@@ -125,7 +125,7 @@ const _default: OverridableFrontendPlugin<
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -177,24 +177,24 @@ const _default: OverridableFrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          limit?: number | undefined;
           branch?: string | undefined;
+          limit?: number | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        type: 'summary' | 'content' | 'info' | undefined;
       };
       configInput: {
         props?:
           | {
+              branch?: string | undefined;
               dense?: boolean | undefined;
               limit?: number | undefined;
-              branch?: string | undefined;
             }
           | undefined;
       } & {
         filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        type?: 'summary' | 'content' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -236,47 +236,6 @@ const _default: OverridableFrontendPlugin<
       };
       kind: 'entity-card';
       name: 'recent-workflow-runs';
-      params: {
-        loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
-        type?: EntityCardType | undefined;
-      };
-    }>;
-    'entity-card:github-actions/workflow-runs': ExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'workflow-runs';
-      config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
-      };
-      configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
-      };
-      output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ExtensionDataRef<
-            (entity: Entity) => boolean,
-            'catalog.entity-filter-function',
-            {
-              optional: true;
-            }
-          >
-        | ExtensionDataRef<
-            string,
-            'catalog.entity-filter-expression',
-            {
-              optional: true;
-            }
-          >
-        | ExtensionDataRef<
-            EntityCardType,
-            'catalog.entity-card-type',
-            {
-              optional: true;
-            }
-          >;
-      inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
@@ -339,10 +298,10 @@ const _default: OverridableFrontendPlugin<
         defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
         group?:
           | (string & {})
-          | 'development'
-          | 'deployment'
           | 'overview'
           | 'documentation'
+          | 'development'
+          | 'deployment'
           | 'operation'
           | 'observability'
           | undefined;
