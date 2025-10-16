@@ -110,7 +110,8 @@ yarn.lock                                                               @backsta
 /workspaces/splunk                                                      @backstage/community-plugins-maintainers
 /workspaces/stack-overflow                                              @backstage/community-plugins-maintainers
 /workspaces/stackstorm                                                  @backstage/community-plugins-maintainers
-/workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle @maicaballangan @hballangan-mdsol
+/workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle
+/workspaces/tech-insights/plugins/tech-insights-maturity                @backstage/community-plugins-maintainers  @xantier @punkle @maicaballangan @hballangan-mdsol
 /workspaces/tech-radar                                                  @backstage/community-plugins-maintainers
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/todo                                                        @backstage/community-plugins-maintainers
