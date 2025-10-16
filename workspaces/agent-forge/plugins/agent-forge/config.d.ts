@@ -16,24 +16,17 @@
 export interface Config {
   agentForge: {
     /**
+     * The base URL for the Agent Forge backend API
      * @visibility frontend
      */
     baseUrl: string;
 
     /**
-     * @visibility frontend
-     */
-    showOptions?: boolean;
-    /**
-     * The info page URL for the AI bot (right next to the bot name)
-     * @visibility frontend
-     */
-    infoPage?: string;
-    /**
      * The name of the AI bot to display in the UI
      * @visibility frontend
      */
     botName?: string;
+
     /**
      * The icon URL or path for the AI bot
      * @visibility frontend

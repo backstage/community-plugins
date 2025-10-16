@@ -18,12 +18,7 @@ import { RouteRef as RouteRef_2 } from '@backstage/frontend-plugin-api';
 // @public
 export function AgentForgePage(): JSX_2.Element;
 
-// @public (undocumented)
-function ChatAssistantApp(): JSX_2.Element;
-export { ChatAssistantApp };
-export { ChatAssistantApp as ChatAssistantPage };
-
-// @public @deprecated
+// @public
 export const chatAssistantPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
@@ -32,7 +27,7 @@ export const chatAssistantPlugin: BackstagePlugin<
   {}
 >;
 
-// @public (undocumented)
+// @public @deprecated
 export function ChatAssistantToken(): JSX_2.Element;
 
 // @public
@@ -79,6 +74,53 @@ export interface ChatMessageProps {
   message: Message;
 }
 
+// @public
+export interface ChatSession {
+  // (undocumented)
+  contextId?: string;
+  // (undocumented)
+  createdAt: Date;
+  // (undocumented)
+  id: string;
+  // (undocumented)
+  messages: Message[];
+  // (undocumented)
+  title: string;
+  // (undocumented)
+  updatedAt: Date;
+}
+
+// @public
+export function ChatSessionSidebar({
+  sessions,
+  currentSessionId,
+  onSessionSwitch,
+  onNewSession,
+  onDeleteSession,
+}: ChatSessionSidebarProps): JSX_2.Element;
+
+// @public
+export interface ChatSessionSidebarProps {
+  // (undocumented)
+  currentSessionId: string | null;
+  // (undocumented)
+  onDeleteSession: (sessionId: string) => void;
+  // (undocumented)
+  onNewSession: () => void;
+  // (undocumented)
+  onSessionSwitch: (sessionId: string) => void;
+  // (undocumented)
+  sessions: ChatSession[];
+}
+
+// @public
+export interface ChatStorage {
+  // (undocumented)
+  currentSessionId: string | null;
+  // (undocumented)
+  sessions: ChatSession[];
+}
+
 // @public (undocumented)
 const _default: OverridableFrontendPlugin<
   {},
@@ -120,65 +162,11 @@ export interface Message {
   // (undocumented)
   isUser: boolean;
   // (undocumented)
-  metadata?: {
-    user_input?: boolean;
-    form_explanation?: string;
-    input_fields?:
-      | {
-          field_name: string;
-          field_description: string;
-          field_values?: string[];
-        }[]
-      | {
-          fields: {
-            name: string;
-            type: string;
-            title: string;
-            description: string;
-            required: boolean;
-            status: string;
-            provided_value?: string | boolean | number;
-          }[];
-          summary: {
-            total_required: number;
-            total_optional: number;
-            provided_required: number;
-            provided_optional: number;
-            missing_required: number;
-          };
-          tool_info?: {
-            name: string;
-            description: string;
-            operation: string;
-          };
-          context?: {
-            missing_required_count: number;
-            total_fields_count: number;
-            extracted_count: number;
-            conversation_context: {
-              original_query: string;
-              tool_name: string;
-              timestamp: number;
-              a2a_context_id: string;
-              stable_conversation_id: string;
-            };
-            is_followup: boolean;
-            stable_conversation_id: string;
-          };
-        };
-  };
-  // (undocumented)
-  options?: string[];
-  // (undocumented)
   parts?: Array<{
     kind: string;
     text?: string;
     [key: string]: any;
   }>;
-  // (undocumented)
-  renderOptions?: boolean;
-  // (undocumented)
-  suggestions?: string[];
   // (undocumented)
   text?: string;
   // (undocumented)
@@ -198,6 +186,13 @@ export interface PageHeaderProps {
   // (undocumented)
   botName: string;
 }
+
+// @public
+export function useTokenAuthentication(): {
+  tokenMessage: string;
+  isTokenRequest: boolean;
+  handleTokenAuthentication: () => Promise<void>;
+};
 
 // (No @packageDocumentation comment for this package)
 ```

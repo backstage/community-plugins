@@ -18,8 +18,7 @@ import { createPlugin } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
 
 /**
- * Legacy plugin for the old frontend system
- * @deprecated Use the new frontend system plugin from '/alpha' instead
+ * Plugin for the legacy frontend system
  * @public
  */
 export const chatAssistantPlugin = createPlugin({
@@ -30,8 +29,7 @@ export const chatAssistantPlugin = createPlugin({
 });
 
 /**
- * Legacy page component for the old frontend system
- * @deprecated Use AgentForgePage from the main export instead
+ * Main page component for the agent-forge plugin
  * @public
  */
-export { default as ChatAssistantPage } from './components/ChatAssistantApp';
+export { default as ChatAssistantPage } from './components/AgentForgePage';

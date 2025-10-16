@@ -15,8 +15,13 @@
  */
 
 import { MarkdownContent } from '@backstage/core-components';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { Box, Typography, makeStyles } from '@material-ui/core';
+import {
+  identityApiRef,
+  useApi,
+  alertApiRef,
+} from '@backstage/core-plugin-api';
+import { Box, Typography, makeStyles, IconButton } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import useAsync from 'react-use/esm/useAsync';
 import { Message } from '../types';
 
@@ -40,6 +45,12 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.primary,
     marginRight: 'auto',
   },
+  copyButton: {
+    padding: theme.spacing(0.5),
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
 }));
 
 /**
@@ -57,7 +68,23 @@ export interface ChatMessageProps {
 export function ChatMessage({ message }: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
+  const alertApi = useApi(alertApiRef);
   const { value: profile } = useAsync(() => identityApi.getProfileInfo());
+
+  const handleCopyToClipboard = async () => {
+    try {
+      await window.navigator.clipboard.writeText(message.text || '');
+      alertApi.post({
+        message: 'Message copied to clipboard',
+        severity: 'success',
+      });
+    } catch (error) {
+      alertApi.post({
+        message: 'Failed to copy message',
+        severity: 'error',
+      });
+    }
+  };
 
   if (message.isUser) {
     return (
@@ -129,18 +156,26 @@ export function ChatMessage({ message }: ChatMessageProps) {
           linkTarget="_blank"
         />
       </Box>
-      <Typography
-        variant="caption"
-        style={{
-          opacity: 0.7,
-          fontSize: '0.75rem',
-          color: 'inherit',
-          display: 'block',
-          marginTop: 4,
-        }}
-      >
-        {message.timestamp}
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography
+          variant="caption"
+          style={{
+            opacity: 0.7,
+            fontSize: '0.75rem',
+            color: 'inherit',
+          }}
+        >
+          {message.timestamp}
+        </Typography>
+        <IconButton
+          className={classes.copyButton}
+          size="small"
+          onClick={handleCopyToClipboard}
+          title="Copy message"
+        >
+          <FileCopyIcon fontSize="small" />
+        </IconButton>
+      </Box>
     </Box>
   );
 }

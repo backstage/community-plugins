@@ -44,44 +44,41 @@ To start using the Agent-Forge Plugin, follow these steps:
    yarn --cwd packages/app add @caipe/plugin-agent-forge
    ```
 
-2. **Configure App.tsx**:
+2. **Configure App.tsx** (New Frontend System):
 
    ```tsx
-   import { ChatAssistantPage } from '@caipe/plugin-agent-forge';
+   import agentForgePlugin from '@caipe/plugin-agent-forge/alpha';
 
-   ...
+   const app = createApp({
+     features: [
+       // ... other features
+       agentForgePlugin,
+     ],
+   });
+   ```
 
-   // Add <ChatAssistantPage /> to the AppRouter
-   export default app.createRoot(
-   <>
-    ...
-    <AppRouter>
-      ...
-      <Root>{routes}</Root>
-      <ChatAssistantPage />
-      ...
-    </AppRouter>
-   </>
-   );
+3. **Add Navigation**:
+
+   ```tsx
+   // In your Sidebar component
+   import ChatIcon from '@material-ui/icons/Chat';
+
+   <SidebarItem icon={ChatIcon} to="agent-forge" text="Agent Forge" />;
    ```
 
 ## Configuration
 
 ### CAIPE Agent Integration
 
-To configure the plugin to connect to CAIPE agents, you need to configure the base URL of the running CAIPE system in your Backstage portal config file:
-
-```yaml
-agentForge:
-  baseUrl: http://127.0.0.1:8000
-  showOptions: true
-```
+To configure the plugin to connect to CAIPE agents, add the base URL of your running CAIPE system to your Backstage config:
 
 The plugin can display pre-defined options based on the agent's available skills. To enable this feature, set the `showOptions` configuration to true:
 
 ```yaml
 agentForge:
   showOptions: true
+  botName: Agent Forge # Optional: Customize the bot name
+  botIcon: url goes here # Optional: Customize the bot icon
 ```
 
 ### CAIPE Setup

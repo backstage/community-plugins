@@ -15,9 +15,10 @@
  */
 
 // Legacy exports for backward compatibility
-export { default as ChatAssistantPage } from './components/ChatAssistantApp';
-export { default as ChatAssistantApp } from './components/ChatAssistantApp';
-export { default as ChatAssistantToken } from './components/ChatAssistantToken';
+export {
+  default as ChatAssistantToken,
+  useTokenAuthentication,
+} from './components/ChatAssistantToken';
 export { chatAssistantPlugin } from './plugin';
 
 // New native page component
@@ -28,10 +29,15 @@ export {
 } from './components/ChatContainer';
 export { ChatMessage, type ChatMessageProps } from './components/ChatMessage';
 export { PageHeader } from './components/PageHeader';
+export {
+  ChatSessionSidebar,
+  type ChatSessionSidebarProps,
+} from './components/ChatSessionSidebar';
 
 // Export types that are referenced by public APIs
 export type { Message } from './types';
 export type { PageHeaderProps } from './components/PageHeader';
+export type { ChatSession, ChatStorage } from './types/chat';
 
 // New frontend system exports
 export { default } from './alpha';
