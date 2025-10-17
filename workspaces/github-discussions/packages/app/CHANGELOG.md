@@ -1,5 +1,12 @@
 # app
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [6d3602c]
+  - @backstage-community/plugin-github-discussions@0.7.0
+
 ## 0.0.6
 
 ### Patch Changes
