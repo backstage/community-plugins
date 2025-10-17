@@ -366,6 +366,91 @@ describe('YamlConditionalFileWatcher', () => {
     expectAuditorLog([]);
   });
 
+  test('should not fail on initialization, when conditional policies file contains extra delimiter', async () => {
+    conditionalStorageMock.filterConditions = jest
+      .fn()
+      .mockImplementation(() => []);
+    roleMetadataStorageMock.filterRoleMetadata = jest
+      .fn()
+      .mockImplementation(() => [
+        {
+          roleEntityRef: 'role:default/test-2',
+          source: 'csv-file',
+          author: 'user:default/tom',
+          modifiedBy: 'user:default/tom',
+          createdAt: '2021-09-01T00:00:00Z',
+        },
+        {
+          roleEntityRef: 'role:default/test-3',
+          source: 'csv-file',
+          author: 'user:default/tom',
+          modifiedBy: 'user:default/tom',
+          createdAt: '2021-09-01T00:00:00Z',
+        },
+      ]);
+
+    csvFileName = resolve(
+      __dirname,
+      '../../__fixtures__/data/valid-conditions/extra-delimiter-conditions.yaml',
+    );
+    const watcher = createWatcher(csvFileName);
+    await watcher.initialize();
+    const expectedCondition1 = {
+      result: AuthorizeResult.CONDITIONAL,
+      roleEntityRef: 'role:default/test-2',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [{ name: 'catalog.entity.refresh', action: 'update' }],
+      conditions: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: {
+          claims: ['group:default/team-a'],
+        },
+      },
+    };
+    const expectedCondition2 = {
+      result: AuthorizeResult.CONDITIONAL,
+      roleEntityRef: 'role:default/test-3',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' },
+        { name: 'catalog.entity.delete', action: 'delete' },
+      ],
+      conditions: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: {
+          claims: ['group:default/team-a', 'group:default/team-b'],
+        },
+      },
+    };
+
+    expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
+      expectedCondition1,
+    );
+    expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
+      expectedCondition2,
+    );
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.CREATE },
+        },
+        success: { ...mappedConditionMeta(expectedCondition1 as any) },
+      },
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.CREATE },
+        },
+        success: { ...mappedConditionMeta(expectedCondition2 as any) },
+      },
+    ]);
+  });
+
   test(`should not apply conditions if corresponding role is present, but with non 'csv-file' source`, async () => {
     conditionalStorageMock.filterConditions = jest
       .fn()
