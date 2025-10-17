@@ -246,6 +246,10 @@ workspace/matomo:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/matomo/**']
 
+workspace/mcp-chat:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/mcp-chat/**']
+
 workspace/mend:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/mend/**']
