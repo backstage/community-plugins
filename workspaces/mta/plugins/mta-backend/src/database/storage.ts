@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { runEmbeddedMigrations } from './embedded-migrations';
 
 const ENTITY_APPLICATION_TABLE = 'entity-application-mapping';
 const OAUTH_MAPPING_TABLE = 'oauth-mapping';
@@ -32,12 +33,11 @@ export class DataBaseEntityApplicationStorage
   static async create(
     knex: Knex<any, any[]>,
     logger: LoggerService,
-    migrationsDir: string,
   ): Promise<EntityApplicationStorage> {
     logger.info('Starting to migrate database');
-    await knex.migrate.latest({
-      directory: migrationsDir,
-    });
+
+    // Use embedded migrations
+    await runEmbeddedMigrations(knex, logger);
 
     return new DataBaseEntityApplicationStorage(knex, logger);
   }

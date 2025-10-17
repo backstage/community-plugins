@@ -39,7 +39,7 @@ export class ManagedClusterProvider implements EntityProvider {
         schedule: SchedulerServiceTaskRunner;
     } | {
         scheduler: SchedulerService;
-    }): ManagedClusterProvider[];
+    }): Promise<ManagedClusterProvider[]>;
     // (undocumented)
     getProviderName(): string;
     // (undocumented)

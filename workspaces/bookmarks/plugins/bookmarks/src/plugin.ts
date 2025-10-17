@@ -22,7 +22,7 @@ import {
 import { entityContentRouteRef } from './routes';
 
 /**
- * Bookmarks plugin
+ * Bookmarks plugin (legacy frontend system)
  *
  * @public
  */
@@ -35,6 +35,7 @@ export const bookmarksPlugin = createPlugin({
 
 /**
  * EntityBookmarksContent extension for the contents of the Bookmarks tab
+ * (legacy frontend system)
  *
  * @public
  */

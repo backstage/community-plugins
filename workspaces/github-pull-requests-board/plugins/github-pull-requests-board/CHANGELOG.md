@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.10.0
+
+### Minor Changes
+
+- 7fcfb86: Backstage version bump to v1.43.2
+
 ## 0.9.0
 
 ### Minor Changes

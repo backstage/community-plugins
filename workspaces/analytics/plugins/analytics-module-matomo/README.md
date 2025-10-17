@@ -17,6 +17,21 @@ yarn workspace app add @backstage-community/plugin-analytics-module-matomo
 
 2. Wire up the API implementation to your App:
 
+If your App is built using the New Frontend System, it's enough to supply this
+module to `createApp()`:
+
+```tsx
+import matomoModule from '@backstage-community/plugin-analytics-module-matomo/alpha';
+
+const app = createApp({
+  features: [matomoModule],
+});
+```
+
+This can be skipped entirely if you have feature discovery enabled.
+
+For all other Backstage apps, wire up the API implementation like this:
+
 ```tsx
 // packages/app/src/apis.ts
 import {

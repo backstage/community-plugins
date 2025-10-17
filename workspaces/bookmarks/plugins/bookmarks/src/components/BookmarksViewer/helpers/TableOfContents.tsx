@@ -102,7 +102,10 @@ export const TableOfContents = ({
             : [...prev, itemId],
         );
       }}
-      sx={{ flexGrow: 1 }}
+      sx={{
+        color: theme => theme.palette.text.primary,
+        flexGrow: 1,
+      }}
       data-testid={TEST_IDS.TableOfContents.wrapper}
     >
       {Object.keys(tree).map(key => (

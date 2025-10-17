@@ -35,9 +35,14 @@ type AdminPortalProps = {
   themeId?: string;
   title?: string;
   subtitle?: string;
+  defaultInactive?: boolean;
 };
 
-const AdminPortalContent = () => {
+type AdminPortalContentProps = {
+  defaultInactive?: boolean;
+};
+
+const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
   const classes = useStyles();
   const [tab, setTab] = useState('announcements');
   const { t } = useAnnouncementsTranslation();
@@ -59,7 +64,7 @@ const AdminPortalContent = () => {
         <Tab label={t('admin.adminPortal.tagsLabel')} value="tags" />
       </TabList>
       <TabPanel value="announcements" className={classes.tabPanel}>
-        <AnnouncementsContent />
+        <AnnouncementsContent defaultInactive={defaultInactive} />
       </TabPanel>
       <TabPanel value="categories" className={classes.tabPanel}>
         <CategoriesContent />
@@ -84,7 +89,7 @@ export const AdminPortal = (props?: AdminPortalProps) => {
       />
       <RequirePermission permission={announcementCreatePermission}>
         <Content>
-          <AdminPortalContent />
+          <AdminPortalContent defaultInactive={props?.defaultInactive} />
         </Content>
       </RequirePermission>
     </Page>

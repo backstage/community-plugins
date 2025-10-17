@@ -22,4 +22,5 @@
 export type AdrContentDecorator = (adrInfo: {
   baseUrl: string;
   content: string;
+  filename?: string;
 }) => { content: string };

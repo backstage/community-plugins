@@ -177,8 +177,8 @@ const _default: OverridableFrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          branch?: string | undefined;
           limit?: number | undefined;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
@@ -188,8 +188,8 @@ const _default: OverridableFrontendPlugin<
         props?:
           | {
               dense?: boolean | undefined;
-              branch?: string | undefined;
               limit?: number | undefined;
+              branch?: string | undefined;
             }
           | undefined;
       } & {
@@ -236,47 +236,6 @@ const _default: OverridableFrontendPlugin<
       };
       kind: 'entity-card';
       name: 'recent-workflow-runs';
-      params: {
-        loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
-        type?: EntityCardType | undefined;
-      };
-    }>;
-    'entity-card:github-actions/workflow-runs': ExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'workflow-runs';
-      config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
-      };
-      configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
-      };
-      output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ExtensionDataRef<
-            (entity: Entity) => boolean,
-            'catalog.entity-filter-function',
-            {
-              optional: true;
-            }
-          >
-        | ExtensionDataRef<
-            string,
-            'catalog.entity-filter-expression',
-            {
-              optional: true;
-            }
-          >
-        | ExtensionDataRef<
-            EntityCardType,
-            'catalog.entity-card-type',
-            {
-              optional: true;
-            }
-          >;
-      inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;

@@ -1,4 +1,6 @@
-import { makeStyles, Typography, SvgIcon } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import SvgIcon from '@mui/material/SvgIcon';
+import { makeStyles } from '@mui/styles';
 import { tableIconMap, TableIcon } from './table.icons';
 
 type TableMessageProps = {

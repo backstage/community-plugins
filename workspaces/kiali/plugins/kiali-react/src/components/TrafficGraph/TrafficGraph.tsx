@@ -40,12 +40,29 @@ const getVisualization = (): Visualization => {
 
 export const TrafficGraph = (props: { model: Model }) => {
   const [controller] = useState(getVisualization());
+  const [renderKey, setRenderKey] = useState(0);
+
   useEffect(() => {
-    controller.fromModel(props.model, false);
+    if (
+      (props.model.nodes && props.model.nodes.length > 0) ||
+      (props.model.edges && props.model.edges.length > 0)
+    ) {
+      // Force layout when updating the model
+      controller.fromModel(props.model, true);
+      // Auto-fit the graph to screen after loading
+      setTimeout(() => {
+        if (controller.getGraph()) {
+          controller.getGraph().fit(80);
+        }
+      }, 50);
+      // Force re-render by updating the key
+      setRenderKey(prev => prev + 1);
+    }
   }, [props.model, controller]);
 
   return (
     <TopologyView
+      key={renderKey}
       controlBar={
         <TopologyControlBar
           controlButtons={createTopologyControlButtons({

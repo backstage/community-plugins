@@ -1,5 +1,55 @@
 # @backstage-community/plugin-announcements
 
+## 0.15.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+  - @backstage-community/plugin-announcements-react@0.14.0
+
+## 0.14.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+  - @backstage-community/plugin-announcements-react@0.13.0
+
+## 0.13.1
+
+### Patch Changes
+
+- 93bb787: Fixed the typings for the Announcements new frontend system plugin, which previously prevented correct overriding.
+- 6efe1a3: - Fixed table rendering in `<AnnouncementsPage markdownRenderer="md-editor" />`. Table styling was not correctly applied when using the Backstage Light theme.
+  - Updated `@uiw/react-md-editor` dependency to `^4.0.8`.
+
+## 0.13.0
+
+### Minor Changes
+
+- aca5bee: Adds `defaultInactive` prop to `AnnouncementsPage`, to be used as the initial form value of `active` for new announcements.
+- 58ccd64: Fixed handling of `active` prop in NewAnnouncementBanner
+  Extended signal and notification on update when the annoucencement is activated
+  Updated `EditAnnoucementPage` to navigate to root path as the announcement creation page
+  Updated `EditAnnoucementPage` alertApi on success to be transient
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 0d56a66: Added search extensions for new frontend system
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+  - @backstage-community/plugin-announcements-react@0.12.0
+
 ## 0.12.1
 
 ### Patch Changes

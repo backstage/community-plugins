@@ -108,11 +108,16 @@ describe('AddEntitiesDrawer', () => {
 
   it('should render available entities correctly', async () => {
     const rendered = await render();
-    expect(searchApi.query).toHaveBeenLastCalledWith({
-      filters: {},
-      term: '',
-      types: ['software-catalog'],
-    });
+    expect(searchApi.query).toHaveBeenLastCalledWith(
+      {
+        filters: {},
+        pageCursor: undefined,
+        pageLimit: undefined,
+        term: '',
+        types: ['software-catalog'],
+      },
+      { signal: new AbortController().signal },
+    );
 
     expect(rendered.getByText('Test Ent')).toBeInTheDocument();
     expect(rendered.getByText('This is test ent')).toBeInTheDocument();

@@ -20,6 +20,7 @@
  * @packageDocumentation
  */
 
+export { default } from './alpha';
 export { bookmarksPlugin, EntityBookmarksContent } from './plugin';
 export {
   AVAILABLE_LANGUAGES,

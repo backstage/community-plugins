@@ -46,6 +46,12 @@ import { EditAnnouncementPage } from './EditAnnouncementPage';
 
 jest.mock('../AnnouncementForm');
 
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 jest.mock('@backstage-community/plugin-announcements-react', () => ({
   ...jest.requireActual('@backstage-community/plugin-announcements-react'),
   useAnnouncementsTranslation: () => ({ t: (key: string) => key }),
@@ -101,6 +107,7 @@ describe('EditAnnouncementPage', () => {
     excerpt: 'Announcement excerpt',
     body: 'Announcement body',
     created_at: '2025-01-10T00:00:00.000Z',
+    updated_at: '2025-01-10T00:00:00.000Z',
     active: true,
     start_at: '2025-01-10T00:00:00.000Z',
     until_date: '2025-02-10T00:00:00.000Z',
@@ -109,6 +116,7 @@ describe('EditAnnouncementPage', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
     jest.useRealTimers();
+    mockNavigate.mockClear();
   });
 
   it('renders loading state', async () => {
@@ -236,7 +244,10 @@ describe('EditAnnouncementPage', () => {
         expect(alertApiMock.post).toHaveBeenCalledWith({
           message: 'editAnnouncementPage.updatedMessage',
           severity: 'success',
+          display: 'transient',
         });
+
+        expect(mockNavigate).toHaveBeenCalledWith('/announcements');
       });
     });
 
@@ -301,7 +312,10 @@ describe('EditAnnouncementPage', () => {
         expect(alertApiMock.post).toHaveBeenCalledWith({
           message: 'editAnnouncementPage.updatedMessage',
           severity: 'success',
+          display: 'transient',
         });
+
+        expect(mockNavigate).toHaveBeenCalledWith('/announcements');
       });
     });
 
@@ -362,7 +376,10 @@ describe('EditAnnouncementPage', () => {
           message:
             'editAnnouncementPageupdatedMessage editAnnouncementPage.updatedMessageWithNewCategory updated-category.',
           severity: 'success',
+          display: 'transient',
         });
+
+        expect(mockNavigate).toHaveBeenCalledWith('/announcements');
       });
     });
 
@@ -417,6 +434,8 @@ describe('EditAnnouncementPage', () => {
             }),
           );
         });
+
+        expect(mockNavigate).not.toHaveBeenCalled();
       });
     });
   });

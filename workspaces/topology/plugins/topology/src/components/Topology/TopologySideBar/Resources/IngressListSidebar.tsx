@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ResourceName from '../../../../common/components/ResourceName';
+
+import ResourceName from '../../../common/ResourceName';
 import { IngressModel } from '../../../../models';
 import { IngressData } from '../../../../types/ingresses';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import TopologyResourcesTabPanelItem from '../TopologyResourcesTabPaneltem';
 import IngressRules from './IngressRules';
 
@@ -24,6 +26,7 @@ const IngressListSidebar = ({
 }: {
   ingressesData: IngressData[];
 }) => {
+  const { t } = useTranslation();
   return (
     <TopologyResourcesTabPanelItem
       resourceLabel={IngressModel.labelPlural}
@@ -44,7 +47,9 @@ const IngressListSidebar = ({
             </span>
             {ingressData.url && (
               <>
-                <span className="bs-topology-text-muted">Location:</span>
+                <span className="bs-topology-text-muted">
+                  {t('common.location')}:
+                </span>
                 <a
                   href={ingressData.url}
                   target="_blank"

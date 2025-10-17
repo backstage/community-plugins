@@ -47,6 +47,7 @@ import {
   getReconciliationCondition,
 } from '../../utils/IstioConfigUtils';
 import { AppDetailsDrawer } from '../Drawers/AppDetailsDrawer';
+import { IstioConfigDetailsDrawer } from '../Drawers/IstioConfigDetailsDrawer';
 import { ServiceDetailsDrawer } from '../Drawers/ServiceDetailsDrawer';
 import { WorkloadDetailsDrawer } from '../Drawers/WorkloadDetailsDrawer';
 import { StatefulFilters } from '../Filters/StatefulFilters';
@@ -80,13 +81,14 @@ const DrawerDiv = ({
   name,
   namespace,
   config,
+  resource,
 }: {
   name: string;
   namespace: string;
   config: string;
+  resource?: TResource;
 }) => {
   const [isOpen, toggleDrawer] = React.useState(false);
-
   const DrawerContent = ({
     toggleDrawer2,
   }: {
@@ -116,6 +118,13 @@ const DrawerDiv = ({
           )}
           {config === 'applications' && (
             <AppDetailsDrawer namespace={namespace} app={name} />
+          )}
+          {config === 'istio' && resource && (
+            <IstioConfigDetailsDrawer
+              namespace={namespace}
+              istioType={(resource as IstioConfigItem).kind}
+              name={name}
+            />
           )}
         </div>
       </div>
@@ -175,6 +184,7 @@ export const item: Renderer<TResource> = (
           name={resource.name}
           namespace={resource.namespace}
           config={config.name}
+          resource={resource}
         />
       </TableCell>
     );
@@ -201,6 +211,7 @@ export const item: Renderer<TResource> = (
         }
         key={key}
         className={linkColor}
+        useDrawer
       >
         {resource.name}
       </BackstageObjectLink>
@@ -432,7 +443,6 @@ export const istioType: Renderer<IstioConfigItem> = (
   resource: IstioConfigItem,
 ) => {
   const type = resource.kind;
-  const object = getIstioObjectGVK('', type).Kind;
 
   return (
     <TableCell
@@ -440,7 +450,7 @@ export const istioType: Renderer<IstioConfigItem> = (
       key={`VirtuaItem_IstioType_${resource.namespace}_${resource.name}`}
       style={{ verticalAlign: 'middle' }}
     >
-      {object}
+      {type}
     </TableCell>
   );
 };

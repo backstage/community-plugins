@@ -4,8 +4,10 @@ import {
   Table as TableBackstage,
   SelectItem,
 } from '@backstage/core-components';
+import SvgIcon from '@mui/material/SvgIcon';
 import { ProjectFilterComponent } from './ProjectFilterComponent';
-import { makeStyles, SvgIcon } from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { Project, Finding, Statistics } from '../../models';
 import { TableMessage } from './TableMessage';
 import { TableHeader } from './TableHeader';
@@ -44,9 +46,9 @@ export type TableColumnProps<T> = {
   render: (row: T) => ReactNode;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   funnelIcon: {
-    color: theme.palette.type === 'light' ? '#232F3E' : 'white',
+    color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
   },
 }));
 
@@ -146,7 +148,7 @@ export const Table = ({
         toolbar: true,
         grouping: true, // NOTE: require to display groupbar component
         pageSize: 50,
-        pageSizeOptions: [50, 100, 200],
+        pageSizeOptions: [10, 30, 50, 100, 200],
         emptyRowsWhenPaging: false,
         rowStyle: {
           borderTop: '1px solid #DFDFDF',

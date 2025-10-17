@@ -1,0 +1,80 @@
+diff --git a/dist/modules/build/commands/package/start/command.cjs.js b/dist/modules/build/commands/package/start/command.cjs.js
+index 6103a667378e2269b917abea94cf83ca62e69254..df0a8f8bcb0fbd618eb0a50c4bead10087786e33 100644
+--- a/dist/modules/build/commands/package/start/command.cjs.js
++++ b/dist/modules/build/commands/package/start/command.cjs.js
+@@ -14,7 +14,8 @@ async function command(opts) {
+     linkedWorkspace: await resolveLinkedWorkspace.resolveLinkedWorkspace(opts.link),
+     inspectEnabled: opts.inspect,
+     inspectBrkEnabled: opts.inspectBrk,
+-    require: opts.require
++    require: opts.require,
++    entryDir: opts.entryDir,
+   });
+ }
+ 
+diff --git a/dist/modules/build/commands/package/start/startPackage.cjs.js b/dist/modules/build/commands/package/start/startPackage.cjs.js
+index 1f10ee4baf291dff6d681f86f29e26ae773b4c09..bdb3ce7b88d879bebf4265af8b22d5dbe7e8a2b7 100644
+--- a/dist/modules/build/commands/package/start/startPackage.cjs.js
++++ b/dist/modules/build/commands/package/start/startPackage.cjs.js
+@@ -21,8 +21,8 @@ async function startPackage(options) {
+     case "frontend-plugin":
+     case "frontend-plugin-module":
+       return startFrontend.startFrontend({
+-        entry: "dev/index",
+-        ...options
++        ...options,
++        entry: `${options.entryDir ?? "dev"}/index`,
+       });
+     case "frontend-dynamic-container":
+       return startFrontend.startFrontend({
+diff --git a/dist/modules/build/index.cjs.js b/dist/modules/build/index.cjs.js
+index d634b0bdd97bfd10d35133c8eddeafe058b93697..d4e836937c1443e39bcec78fc64813152611d102 100644
+--- a/dist/modules/build/index.cjs.js
++++ b/dist/modules/build/index.cjs.js
+@@ -77,19 +77,33 @@ const buildPlugin = factory.createCliPlugin({
+       description: "Start a package for local development",
+       execute: async ({ args }) => {
+         const command = new commander.Command();
+-        const defaultCommand = command.option(...index.configOption).option(
+-          "--role <name>",
+-          "Run the command with an explicit package role"
+-        ).option("--check", "Enable type checking and linting if available").option("--inspect [host]", "Enable debugger in Node.js environments").option(
+-          "--inspect-brk [host]",
+-          "Enable debugger in Node.js environments, breaking before code starts"
+-        ).option(
+-          "--require <path...>",
+-          "Add a --require argument to the node process"
+-        ).option(
+-          "--link <path>",
+-          "Link an external workspace for module resolution"
+-        ).action(lazy.lazy(() => import('./commands/package/start/index.cjs.js'), "command"));
++        const defaultCommand = command
++          .option(...index.configOption)
++          .option(
++            "--role <name>",
++            "Run the command with an explicit package role"
++          )
++          .option("--check", "Enable type checking and linting if available")
++          .option("--inspect [host]", "Enable debugger in Node.js environments")
++          .option(
++            "--inspect-brk [host]",
++            "Enable debugger in Node.js environments, breaking before code starts"
++          )
++          .option(
++            "--require <path...>",
++            "Add a --require argument to the node process"
++          )
++          .option(
++            "--link <path>",
++            "Link an external workspace for module resolution"
++          )
++          .option("--entry-dir <path>", "Path to the directory containing the app entry point")
++          .action(
++            lazy.lazy(
++              () => import("./commands/package/start/index.cjs.js"),
++              "command"
++            )
++          );
+         await defaultCommand.parseAsync(args, { from: "user" });
+       }
+     });

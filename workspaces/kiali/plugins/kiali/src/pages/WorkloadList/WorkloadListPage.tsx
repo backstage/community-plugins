@@ -34,9 +34,9 @@ import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasth
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
-import { isMultiCluster, serverConfig } from '../../config';
-import { useKialiEntityContext } from '../../dynamic/KialiContext';
+import { homeCluster, isMultiCluster } from '../../config';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
+import { useServerConfig } from '../../hooks/useServerConfig';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
@@ -53,10 +53,10 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
     FilterHelper.currentDuration(),
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
   const [errorProvider, setErrorProvider] = React.useState<string | undefined>(
     undefined,
   );
-  const kialiContext = useKialiEntityContext();
 
   const activeNs = props.entity
     ? getEntityNs(props.entity)
@@ -73,7 +73,7 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
     data: ClusterWorkloadsResponse,
   ): WorkloadListItem[] => {
     if (data.workloads) {
-      return data.workloads.map(deployment => ({
+      const items = data.workloads.map(deployment => ({
         cluster: deployment.cluster,
         namespace: deployment.namespace,
         name: deployment.name,
@@ -101,8 +101,8 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
           data.validations,
         ),
       }));
+      return items;
     }
-
     return [];
   };
 
@@ -130,56 +130,65 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
       .then(results => {
         let workloadsItems: WorkloadListItem[] = [];
         results.forEach(response => {
-          workloadsItems = workloadsItems.concat(getDeploymentItems(response));
+          const items = getDeploymentItems(response);
+          workloadsItems = workloadsItems.concat(items);
         });
         setWorkloads(workloadsItems);
+        setLoadingData(false);
       })
       .catch(err => {
         kialiState.alertUtils?.add(
           `Could not fetch workloads: ${getErrorString(err)}`,
         );
+        setLoadingData(false);
       });
   };
 
   const load = async () => {
+    setLoadingData(true);
     kialiClient.setAnnotation(
       KIALI_PROVIDER,
       props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
         kialiState.providers.activeProvider,
     );
-    const uniqueClusters = new Set<string>();
 
-    Object.keys(serverConfig.clusters).forEach(cluster => {
-      uniqueClusters.add(cluster);
-    });
-    if (kialiContext.data) {
-      setNamespaces(kialiContext.data);
+    try {
+      const namespacesResponse = await kialiClient.getNamespaces();
+
+      // Extract clusters from namespaces response
+      const uniqueClusters = new Set<string>();
+      namespacesResponse.forEach(ns => {
+        if (ns.cluster) {
+          uniqueClusters.add(ns.cluster);
+        }
+      });
+
+      // If no clusters found, use fallback
+      if (uniqueClusters.size === 0) {
+        const clusterName = homeCluster?.name || 'default';
+        uniqueClusters.add(clusterName);
+      }
+
+      const allNamespaces: NamespaceInfo[] = getNamespaces(
+        namespacesResponse,
+        namespaces,
+      );
+      // If activeNs is empty, use all namespaces, otherwise filter by activeNs
+      const nsl =
+        activeNs.length > 0
+          ? allNamespaces.filter(ns => activeNs.includes(ns.name))
+          : allNamespaces;
+
+      setNamespaces(nsl);
       await fetchWorkloads(Array.from(uniqueClusters), duration);
-    } else {
-      kialiClient
-        .getNamespaces()
-        .then(namespacesResponse => {
-          const allNamespaces: NamespaceInfo[] = getNamespaces(
-            namespacesResponse,
-            namespaces,
-          );
-          const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
-          setNamespaces(nsl);
-          fetchWorkloads(Array.from(uniqueClusters), duration);
-        })
-        .catch(err => {
-          setErrorProvider(
-            `Error providing namespaces for ${
-              kialiState.providers.activeProvider
-            }, verify configuration for this provider: ${err.toString()}`,
-          );
-        });
-    }
-
-    // Add a delay so it doesn't look like a flash
-    setTimeout(() => {
+    } catch (err) {
+      setErrorProvider(
+        `Error providing namespaces for ${
+          kialiState.providers.activeProvider
+        }, verify configuration for this provider: ${err.toString()}`,
+      );
       setLoadingData(false);
-    }, 400);
+    }
   };
 
   const [{ loading }, refresh] = useAsyncFn(
@@ -207,6 +216,13 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNs, duration, activeProviders]);
+
+  // Initial load effect - always load data on mount
+  React.useEffect(() => {
+    setLoadingData(true);
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <CircularProgress />;

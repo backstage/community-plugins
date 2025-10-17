@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { RbacPage } from '@backstage-community/plugin-rbac';
+import { rbacTranslations } from '@backstage-community/plugin-rbac/alpha';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
@@ -50,6 +51,10 @@ import { SignInPage } from './components/SignInPage/SignInPage';
 
 const app = createApp({
   apis,
+  __experimentalTranslations: {
+    availableLanguages: ['en', 'de', 'fr', 'it', 'es'],
+    resources: [rbacTranslations],
+  },
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,

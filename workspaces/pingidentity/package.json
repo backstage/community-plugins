@@ -21,6 +21,7 @@
     "lint:all": "backstage-cli repo lint",
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community"
   },
   "workspaces": {

@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.10.0
+
+### Minor Changes
+
+- 4b53405: Backstage version bump to v1.44.1
+
 ## 2.9.0
 
 ### Minor Changes

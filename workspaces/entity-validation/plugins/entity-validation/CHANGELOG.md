@@ -1,5 +1,17 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.12.1
+
+### Patch Changes
+
+- 3b0364f: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.12.0
+
+### Minor Changes
+
+- 7530a1f: Backstage version bump to v1.43.2
+
 ## 0.11.0
 
 ### Minor Changes

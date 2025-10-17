@@ -16,7 +16,7 @@
 import Typography from '@mui/material/Typography';
 import { Split, SplitItem, Stack, StackItem } from '@patternfly/react-core';
 
-import ResourceName from '../../../common/components/ResourceName';
+import ResourceName from '../../common/ResourceName';
 import { resourceModels } from '../../../models';
 import { K8sWorkloadResource } from '../../../types/types';
 

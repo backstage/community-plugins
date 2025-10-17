@@ -66,6 +66,7 @@ export const AnnouncementForm = ({
 
   const [form, setForm] = useState({
     ...initialData,
+    active: initialData.active ?? true,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
     until_date: formattedUntilDate || '',
@@ -264,7 +265,7 @@ export const AnnouncementForm = ({
                   control={
                     <Switch
                       name="active"
-                      checked={!!form.active}
+                      checked={form.active}
                       onChange={handleChangeActive}
                       color="primary"
                     />

@@ -1,5 +1,23 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.12.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+## 0.11.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+## 0.10.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
 ## 0.9.1
 
 ### Patch Changes

@@ -15,6 +15,7 @@
  */
 import type { PropsWithChildren } from 'react';
 
+import { useTranslation } from '../../../hooks/useTranslation';
 import './TopologyResourcesTabPanelItem.css';
 
 type TopologyResourcesTabPanelItemProps = {
@@ -29,8 +30,11 @@ const TopologyResourcesTabPanelItem = ({
   dataTest,
   showResCount,
 }: PropsWithChildren<TopologyResourcesTabPanelItemProps>) => {
+  const { t } = useTranslation();
   const emptyState = (
-    <span className="bs-topology-text-muted">{`No ${resourceLabel} found for this resource.`}</span>
+    <span className="bs-topology-text-muted">
+      {t('resources.noResourcesFound', { resourceType: resourceLabel })}
+    </span>
   );
   return (
     <>
@@ -39,10 +43,12 @@ const TopologyResourcesTabPanelItem = ({
           {resourceLabel}
         </h2>
         {showResCount ? (
-          <span
-            className="bs-topology-text-muted"
-            data-testid="res-show-count"
-          >{`Showing latest ${showResCount} ${resourceLabel}`}</span>
+          <span className="bs-topology-text-muted" data-testid="res-show-count">
+            {t('resources.showingLatest', {
+              count: showResCount,
+              resourceType: resourceLabel,
+            })}
+          </span>
         ) : null}
       </div>
       <ul

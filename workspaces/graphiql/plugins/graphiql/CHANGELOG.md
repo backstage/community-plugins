@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.8.0
+
+### Minor Changes
+
+- 2efccf2: Backstage version bump to v1.43.2
+
 ## 0.7.0
 
 ### Minor Changes

@@ -14,6 +14,7 @@
   - [Version Bumping](#version-bumping)
   - [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
+  - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
 
@@ -87,6 +88,8 @@ Follow these steps to archive a plugin or workspace:
 
    - Record Git tag references using `package.json` versions (`@backstage-community/plugin-example@1.2.3`)
    - Add entries to `.github/archived-plugins.json` and `ARCHIVED_WORKSPACES.md`
+   - Remove entries from `docs/README.md`
+   - If archiving an entire workspace, remove entries from `.github/ISSUE_TEMPLATE/1-bug.yaml`, `.github/ISSUE_TEMPLATE/2-feature.yaml`, `.github/ISSUE_TEMPLATE/snippets/workspaces-dropdown.yaml`, `.github/labeler.yml`, `.github/CODEOWNERS`, and `docs/compatibility/compatibility.md`
 
 2. Dry run the following script to verify which packages would be deprecated:
 
@@ -94,7 +97,7 @@ Follow these steps to archive a plugin or workspace:
    ./scripts/ci/deprecate-archived-plugins.sh --dry-run
    ```
 
-3. Delete the workspace or plugin(s) from the repository.
+3. Delete the workspace or plugin(s) from the repository. Ensure that any relevant documentation has been appropriately updated to reflect the removal of the workspace/plugin.
 
 4. Open a PR with the changes including:
 
@@ -123,6 +126,10 @@ These automated PRs are intended as a convenience to open the version bump for y
 Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knipReports": true }`. This ensures that knip reports in your workspace stay up to date.
 
 [Knip](https://knip.dev/) is a tool that helps with clean-up and maintenance by identifying unused dependencies within workspaces. Regularly reviewing and addressing these reports can significantly improve code quality and reduce bloat.
+
+## Opt-in to List Deprecations Check
+
+Plugins owners can opt into the List Deprecations check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "listDeprecations": true }`. This ensures that you aren't using deprecated code in your workspace making it easier when deprecated code is finally removed.
 
 ## Maintaining and patching an older release line
 

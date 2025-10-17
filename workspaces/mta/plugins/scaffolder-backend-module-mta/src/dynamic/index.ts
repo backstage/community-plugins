@@ -1,9 +1,7 @@
 import { BackendDynamicPluginInstaller } from '@backstage/backend-dynamic-feature-service';
-import { createMTAApplicationAction } from '../actions';
+import { mtaScaffolderModule } from '../module';
 
 export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
-  kind: 'legacy',
-  scaffolder: env => {
-    return [createMTAApplicationAction(env)];
-  },
+  kind: 'new',
+  install: () => [mtaScaffolderModule],
 };

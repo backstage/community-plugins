@@ -7,6 +7,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const isTektonCIAvailable: (entity: Entity) => boolean;
@@ -26,6 +27,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'permissionAlert.title': 'Permission required';
     readonly 'permissionAlert.description': 'To view Tekton Pipeline Runs, contact your administrator to give you the following permission(s): {{permissions}}.';
     readonly 'statusSelector.label': 'Status';
+    readonly 'clusterSelector.label': 'Cluster';
     readonly 'tableExpandCollapse.collapseAll': 'Collapse all';
     readonly 'tableExpandCollapse.expandAll': 'Expand all';
     readonly 'pipelineVisualization.noTasksDescription': 'This Pipeline Run has no tasks to visualize';
@@ -34,6 +36,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.title': 'Pipeline Runs';
     readonly 'pipelineRunList.noPipelineRuns': 'No Pipeline Runs found';
     readonly 'pipelineRunList.searchBarPlaceholder': 'Search';
+    readonly 'pipelineRunList.rowActions.viewParamsAndResults': 'View Parameters and Results';
     readonly 'pipelineRunList.rowActions.viewLogs': 'View logs';
     readonly 'pipelineRunList.rowActions.unauthorizedViewLogs': 'Unauthorized to view logs';
     readonly 'pipelineRunList.rowActions.viewSBOM': 'View SBOM';
@@ -51,6 +54,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
     readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
     readonly 'pipelineRunList.tableHeaderTitle.actions': 'ACTIONS';
+    readonly 'pipelineRunList.tablePagination.rowsPerPageOptionLabel': '{{num}} rows';
     readonly 'pipelineRunLogs.title': 'PipelineRun Logs';
     readonly 'pipelineRunLogs.noLogs': 'No logs found';
     readonly 'pipelineRunLogs.downloader.downloadTaskLogs': 'Download';
@@ -80,8 +84,18 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunDuration.minute_other': '{{count}} minutes';
     readonly 'pipelineRunDuration.second_one': '{{count}} second';
     readonly 'pipelineRunDuration.second_other': '{{count}} seconds';
+    readonly 'pipelineRunParamsAndResults.title': 'PipelineRun Parameters and Results';
+    readonly 'pipelineRunParamsAndResults.results': 'Results';
+    readonly 'pipelineRunParamsAndResults.noParams': 'No parameters found';
+    readonly 'pipelineRunParamsAndResults.noResults': 'No results found';
+    readonly 'pipelineRunParamsAndResults.params': 'Parameters';
+    readonly 'pipelineRunParamsAndResults.outputTableColumn.name': 'Name';
+    readonly 'pipelineRunParamsAndResults.outputTableColumn.value': 'Value';
   }
 >;
+
+// @public
+export const tektonTranslations: TranslationResource<'tekton'>;
 
 // (No @packageDocumentation comment for this package)
 ```

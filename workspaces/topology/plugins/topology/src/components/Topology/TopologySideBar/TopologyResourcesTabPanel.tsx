@@ -18,11 +18,11 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { ChartLabel } from '@patternfly/react-charts/victory';
 import { BaseNode } from '@patternfly/react-topology';
 
-import { Status } from '@janus-idp/shared-react';
-
-import ResourceName from '../../../common/components/ResourceName';
-import ResourceStatus from '../../../common/components/ResourceStatus';
+import { Status } from '../../common/Status';
+import ResourceName from '../../common/ResourceName';
+import ResourceStatus from '../../common/ResourceStatus';
 import { MAXSHOWRESCOUNT } from '../../../const';
+import { useTranslation } from '../../../hooks/useTranslation';
 import {
   CronJobModel,
   JobModel,
@@ -43,11 +43,61 @@ import './TopologyResourcesTabPanel.css';
 
 type TopologyResourcesTabPanelProps = { node: BaseNode };
 
+const TranslatedStatus = ({
+  status,
+  translateFn,
+}: {
+  status: string | null;
+  translateFn: (status: string | null) => string;
+}) => {
+  if (!status) return <>-</>;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <Status status={status} iconOnly />
+      <span>{translateFn(status)}</span>
+    </div>
+  );
+};
+
 const TopologyResourcesTabPanel = ({
   node,
 }: TopologyResourcesTabPanelProps) => {
+  const { t } = useTranslation();
   const data = node.getData();
   const nodeData = data?.data;
+
+  const translatePodStatus = (status: string | null) => {
+    if (!status) return '-';
+
+    switch (status.toLowerCase()) {
+      case 'running':
+        return t('status.running');
+      case 'pending':
+        return t('status.pending');
+      case 'succeeded':
+        return t('status.succeeded');
+      case 'failed':
+        return t('status.failed');
+      case 'unknown':
+        return t('status.unknown');
+      case 'terminating':
+        return t('status.terminating');
+      case 'crashloopbackoff':
+        return t('status.crashLoopBackOff');
+      case 'error':
+        return t('status.error');
+      case 'warning':
+        return t('status.warning');
+      case 'completed':
+        return t('status.succeeded'); // Kubernetes uses 'Completed' but we map to 'succeeded'
+      case 'evicted':
+        return t('status.evicted');
+      default:
+        return status; // fallback to original status if no translation found
+    }
+  };
+
   const resource = data?.resource;
   const pipelines = nodeData?.pipelinesData?.pipelines;
   const pipelineRuns = nodeData?.pipelinesData?.pipelineRuns;
@@ -104,7 +154,10 @@ const TopologyResourcesTabPanel = ({
                       additionalClassNames="hidden-xs"
                       noStatusBackground
                     >
-                      {status ? <Status status={status} /> : '-'}
+                      <TranslatedStatus
+                        status={status}
+                        translateFn={translatePodStatus}
+                      />
                     </ResourceStatus>
                   </span>
                   <span style={{ flex: '1' }}>

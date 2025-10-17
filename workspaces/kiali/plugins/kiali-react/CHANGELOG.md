@@ -1,5 +1,33 @@
 # @backstage-community/plugin-kiali-react
 
+## 0.4.0
+
+### Minor Changes
+
+- 6de7980: Fix for issue: Could not fetch health
+  Fix for: The Istio Config drawer is blank
+  Fix Incorrect column names in the resources tables (All are named config)
+  Improve header styles
+  Backstage version update (1.42.5 -> 1.43.3)
+
+### Patch Changes
+
+- Updated dependencies [6de7980]
+  - @backstage-community/plugin-kiali-common@0.5.0
+
+## 0.3.0
+
+### Minor Changes
+
+- d0926d5: Upgrade backstage 1.42.5
+
+### Patch Changes
+
+- 396515d: Fix for graph loading issue – it was not rendering when the page was first displayed, only after a refresh.
+  Added detail pages as a drawer that opens when clicking on each workload, service, or application link.
+- Updated dependencies [d0926d5]
+  - @backstage-community/plugin-kiali-common@0.4.0
+
 ## 0.2.0
 
 ### Minor Changes

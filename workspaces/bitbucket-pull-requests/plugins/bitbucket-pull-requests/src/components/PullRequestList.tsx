@@ -90,7 +90,7 @@ const PullRequestList: FC = () => {
   useEffect(() => {
     setLoading(true);
     bitbucketApi
-      .fetchPullRequestList(
+      .fetchPullRequestListForRepo(
         projectName,
         repoName,
         stateFilter !== 'All' ? stateFilter : undefined,
@@ -134,10 +134,9 @@ const PullRequestList: FC = () => {
       highlight: true,
       width: '20%',
       render: (row: Partial<PullRequest>) => (
-        <Box fontWeight="fontWeightBold">{row.author}</Box>
+        <Box fontWeight="fontWeightBold">{row.author?.displayName}</Box>
       ),
     },
-
     {
       title: 'CREATED',
       field: 'createdDate',

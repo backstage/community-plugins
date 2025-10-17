@@ -114,6 +114,77 @@ kafka:
       dashboardUrl: https://dashboard.com
 ```
 
+## New Frontend System
+
+Follow these steps to detect and configure the Kafka plugin if you'd like to use it in an application that supports the new Backstage frontend system.
+
+### Package detection
+
+Once you install the `@backstage-community/plugin-kafka` package using your preferred package manager, you have to choose how the package should be detected by the app. The package can be automatically discovered when the feature discovery config is set, or it can be manually enabled via code (for more granular package customization cases, such as extension overrides).
+
+<table>
+  <tr>
+    <td>Via config</td>
+    <td>Via code</td>
+  </tr>
+  <tr>
+    <td>
+      <pre lang="yaml">
+        <code>
+# app-config.yaml
+  app:
+    # Enable package discovery for all plugins
+    packages: 'all'
+  ---
+  app:
+    # Enable package discovery only for Kafka
+    packages:
+      include:
+        - '@backstage-community/plugin-kafka'
+        </code>
+      </pre>
+    </td>
+    <td>
+      <pre lang="javascript">
+       <code>
+// packages/app/src/App.tsx
+import { createApp } from '@backstage/frontend-defaults';
+import kafkaPlugin from '@backstage-community/plugin-kafka/alpha';
+//...
+const app = createApp({
+  // ...
+  features: [
+    //...
+    kafkaPlugin,
+  ],
+});
+
+//...
+</code>
+
+</pre>
+</td>
+
+  </tr>
+</table>
+
+## Extensions config
+
+Currently, the plugin installs 3 extensions: 2 apis (Kafka and Kafka dashboard) and 1 entity page content (also known as entity page tab), see below examples of how to configure the available extensions.
+
+```yml
+# app-config.yaml
+app:
+  extensions:
+    # Example disabling the Kafka entity content
+    - 'entity-content:kafka': false
+    # Example customizing the Kafka entity content
+    - 'entity-content:kafka':
+        config:
+          path: '/events'
+          title: 'Events'
+```
+
 ## Features
 
 - List topics offsets and consumer group offsets for configured services.

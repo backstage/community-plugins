@@ -41,7 +41,7 @@ import {
   TektonResponseData,
 } from '../types/types';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../translation';
+import { tektonTranslationRef } from '../translations/index.ts';
 
 export const getClusters = (k8sObjects: ObjectsByEntityResponse) => {
   const clusters: string[] = k8sObjects.items.map(

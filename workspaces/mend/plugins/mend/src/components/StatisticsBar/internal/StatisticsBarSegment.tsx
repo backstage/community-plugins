@@ -1,4 +1,6 @@
-import { makeStyles, Tooltip, Theme } from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
+import { makeStyles } from '@mui/styles';
 import { StatisticsBarSegmentProps } from '../statisticsBar.types';
 import { linearGradient } from '../statisticsBar.helpers';
 
@@ -12,7 +14,7 @@ const useStyles = makeStyles<
     width: ({ percentage }) => `${percentage}%`,
     backgroundColor: ({ color }) => {
       if (color) return color;
-      return theme.palette.type === 'light'
+      return theme.palette.mode === 'light'
         ? '#F5F6F8'
         : theme.palette.background.default;
     },

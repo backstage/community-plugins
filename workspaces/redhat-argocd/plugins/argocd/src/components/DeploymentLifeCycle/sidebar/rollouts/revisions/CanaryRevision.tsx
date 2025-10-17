@@ -34,6 +34,7 @@ import AnalysisRuns from './AnalysisRuns/AnalysisRuns';
 import ProgressBar from './ProgressBar';
 import RevisionStatus from './RevisionStatus';
 import RevisionType from './RevisionType';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 interface RevisionCardProps {
   revision: Revision;
@@ -57,6 +58,7 @@ const CanaryRevision: FC<RevisionCardProps> = ({
   const { percentage, isStableRevision, isCanaryRevision } = useCanaryMetadata({
     revision,
   });
+  const { t } = useTranslation();
 
   if (!revision) {
     return null;
@@ -73,13 +75,27 @@ const CanaryRevision: FC<RevisionCardProps> = ({
         <Grid container>
           <Grid item xs={9}>
             <Typography color="textPrimary" gutterBottom>
-              {`Revision ${revision?.metadata?.annotations?.[ROLLOUT_REVISION_ANNOTATION]}`}
+              {`${t(
+                'deploymentLifecycle.sidebar.rollouts.revisions.canaryRevision.revision',
+              )} ${
+                revision?.metadata?.annotations?.[ROLLOUT_REVISION_ANNOTATION]
+              }`}
             </Typography>
           </Grid>
           {(isStableRevision || isCanaryRevision) && (
             <Grid item xs={3}>
               <Box sx={{ width: '100%' }}>
-                <RevisionType label={isStableRevision ? 'Stable' : 'Canary'} />
+                <RevisionType
+                  label={
+                    isStableRevision
+                      ? t(
+                          'deploymentLifecycle.sidebar.rollouts.revisions.canaryRevision.revisionType.stable',
+                        )
+                      : t(
+                          'deploymentLifecycle.sidebar.rollouts.revisions.canaryRevision.revisionType.canary',
+                        )
+                  }
+                />
               </Box>
             </Grid>
           )}

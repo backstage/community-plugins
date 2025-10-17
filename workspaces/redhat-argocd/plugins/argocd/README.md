@@ -14,6 +14,8 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
+Please install and configure the frontend and backend Kubernetes plugins by following the [installation](https://backstage.io/docs/features/kubernetes/installation/) and [configuration](https://backstage.io/docs/features/kubernetes/configuration/) guides.
+
 ### Argo CD backend
 
 Please see [the backend documentation](../argocd-backend/README.md) for more information.
@@ -214,71 +216,3 @@ You can use these additional annotations with the base annotations:
 ```
 
 > [!Note] > **If this annotation is not set, the plugin will default to the first Argo CD instance configured in the `app.config.yaml`**
-
-## Loading as Dynamic Plugin
-
-To install this plugin into Red Hat Developer Hub or Janus IDP via Helm use this configuration:
-
-```yaml
-global:
-  dynamic:
-    includes:
-      - dynamic-plugins.default.yaml
-    plugins:
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd-backend
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
-        disabled: false
-```
-
-This plugin can be loaded in backstage showcase application as a dynamic plugin.
-
-Follow the below steps -
-
-- Export dynamic plugin assets. This will build and create the static assets for the plugin and put it inside dist-scalprum folder.
-
-`yarn install`
-
-`yarn tsc`
-
-`yarn build`
-
-`yarn export-dynamic`
-
-- Package and copy dist-scalprum folder assets to dynamic-plugins-root folder in showcase application.
-
-```sh
-pkg=../plugins/argocd
-archive=$(npm pack $pkg)
-tar -xzf "$archive" && rm "$archive"
-mv package $(echo $archive | sed -e 's:\.tgz$::')
-```
-
-- Add the extension point inside the `app-config.yaml` or `app-config.local.yaml` file.
-
-```yaml
-dynamicPlugins:
-  frontend:
-    backstage-community.plugin-redhat-argocd:
-      mountPoints:
-        - mountPoint: entity.page.overview/cards
-          importName: ArgocdDeploymentSummary
-          config:
-            layout:
-              gridColumnEnd:
-                lg: 'span 8'
-                xs: 'span 12'
-            if:
-              allOf:
-                - isArgocdAvailable
-        - mountPoint: entity.page.cd/cards
-          importName: ArgocdDeploymentLifecycle
-          config:
-            layout:
-              gridColumn: '1 / -1'
-            if:
-              allOf:
-                - isArgocdConfigured
-```
-
-For more detailed explanation on dynamic plugins follow this [doc](https://github.com/redhat-developer/red-hat-developer-hub/blob/main/showcase-docs/dynamic-plugins.md).

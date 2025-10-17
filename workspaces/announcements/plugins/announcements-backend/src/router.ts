@@ -71,8 +71,8 @@ type GetAnnouncementsQueryParams = {
   category?: string;
   page?: number;
   max?: number;
-  active?: boolean;
-  sortby?: 'created_at' | 'start_at';
+  active?: string;
+  sortby?: 'created_at' | 'start_at' | 'updated_at';
   order?: 'asc' | 'desc';
   current?: boolean;
   tags?: string[];
@@ -153,8 +153,8 @@ export async function createRouter(
           category,
           max,
           offset: page ? (page - 1) * (max ?? 10) : undefined,
-          active,
-          sortBy: ['created_at', 'start_at'].includes(sortby)
+          active: active === 'true',
+          sortBy: ['created_at', 'start_at', 'updated_at'].includes(sortby)
             ? sortby
             : 'created_at',
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
@@ -266,6 +266,17 @@ export async function createRouter(
         throw error;
       }
       try {
+        const startAt = DateTime.fromISO(req.body.start_at);
+        const untilDate = req.body.until_date
+          ? DateTime.fromISO(req.body.until_date)
+          : undefined;
+
+        if (untilDate && untilDate < startAt) {
+          return res
+            .status(400)
+            .json({ error: 'until_date cannot be before start_at' });
+        }
+
         // Normalize tags by slugifying each tag value
         const validatedTags =
           req.body.tags && Array.isArray(req.body.tags)
@@ -277,10 +288,9 @@ export async function createRouter(
             ...req.body,
             id: uuid(),
             created_at: DateTime.now(),
-            start_at: DateTime.fromISO(req.body.start_at),
-            until_date: req.body.until_date
-              ? DateTime.fromISO(req.body.until_date)
-              : undefined,
+            updated_at: DateTime.now(),
+            start_at: startAt,
+            until_date: untilDate,
             tags: validatedTags,
           });
 
@@ -293,11 +303,16 @@ export async function createRouter(
             metadata: { action: EVENTS_ACTION_CREATE_ANNOUNCEMENT },
           });
 
-          await signalAnnouncement(announcement, signals);
-          if (req.body?.sendNotification === true) {
-            await sendAnnouncementNotification(announcement, notifications);
+          if (announcement.active) {
+            await signalAnnouncement(announcement, signals);
+            const announcementNotificationsEnabled =
+              req.body?.sendNotification === true;
+            if (announcementNotificationsEnabled) {
+              await sendAnnouncementNotification(announcement, notifications);
+            }
           }
         }
+
         await auditorEvent.success();
         return res.status(201).json(announcement);
       } catch (err) {
@@ -373,6 +388,7 @@ export async function createRouter(
             publisher,
             category,
             active,
+            updated_at: DateTime.now(),
             start_at: DateTime.fromISO(start_at),
             until_date: until_date ? DateTime.fromISO(until_date) : undefined,
             on_behalf_of,
@@ -387,6 +403,16 @@ export async function createRouter(
           metadata: { action: EVENTS_ACTION_UPDATE_ANNOUNCEMENT },
         });
       }
+
+      if (!initialAnnouncement.active && active) {
+        await signalAnnouncement(announcement, signals);
+        const announcementNotificationsEnabled =
+          req.body?.sendNotification === true;
+        if (announcementNotificationsEnabled) {
+          await sendAnnouncementNotification(announcement, notifications);
+        }
+      }
+
       await auditorEvent.success();
       return res.status(200).json(announcement);
     },

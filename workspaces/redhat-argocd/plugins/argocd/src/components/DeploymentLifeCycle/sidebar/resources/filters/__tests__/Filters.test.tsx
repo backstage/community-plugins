@@ -20,6 +20,11 @@ import {
   kindFilterMenuItems,
 } from '../Filters';
 import { FiltersType } from '../../../../../../types/resources';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('Filters', () => {
   let filters: FiltersType;
@@ -34,12 +39,14 @@ describe('Filters', () => {
   });
 
   it('should render with selected health status menu items', () => {
-    const { getByText } = render(healthStatusMenuItems(filters));
+    const { t } = mockUseTranslation();
+    const { getByText } = render(healthStatusMenuItems(filters, t as any));
     expect(getByText('Healthy')).toBeInTheDocument();
   });
 
   it('should render with selected sync status menu items', () => {
-    const { getByText } = render(syncStatusMenuItems(filters));
+    const { t } = mockUseTranslation();
+    const { getByText } = render(syncStatusMenuItems(filters, t as any));
     expect(getByText('Synced')).toBeInTheDocument();
   });
 
