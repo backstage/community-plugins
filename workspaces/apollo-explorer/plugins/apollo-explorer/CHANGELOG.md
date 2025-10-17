@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apollo-explorer
 
+## 0.13.0
+
+### Minor Changes
+
+- b8f4b4a: Backstage version bump to v1.44.0
+
 ## 0.12.0
 
 ### Minor Changes
