@@ -78,6 +78,10 @@ export const createAzureDevOpsPushRepoAction = (options: {
         gitAuthorEmail,
       } = ctx.input;
 
+      if (/\s/.test(branch)) {
+        throw new Error('Branch name must not contain spaces.');
+      }
+
       const sourcePath = resolveSafeChildPath(
         ctx.workspacePath,
         ctx.input.sourcePath ?? '.',

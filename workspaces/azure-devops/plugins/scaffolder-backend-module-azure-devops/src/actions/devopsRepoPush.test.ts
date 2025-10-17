@@ -135,4 +135,20 @@ describe('createAzureDevOpsPushRepoAction', () => {
       }),
     );
   });
+
+  it('fails validation when branch contains a space', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
+    const ctx = createMockActionContext({
+      workspacePath,
+      input: {
+        remoteUrl,
+        branch: 'feature branch with space',
+        token: 'tok',
+      },
+    });
+
+    await expect(action.handler(ctx)).rejects.toThrow(
+      'Branch name must not contain spaces.',
+    );
+  });
 });
