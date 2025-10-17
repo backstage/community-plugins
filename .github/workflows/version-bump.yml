@@ -87,18 +87,66 @@ jobs:
             echo "Backstage release version and current workspace version are the same, skipping version bump"
             exit 1 # Non-zero exit code fails the step and job
           fi
+      - name: 'Check for existing version bump PR'
+        id: check_existing_pr
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
+          script: |
+            const workspace = '${{ matrix.workspace }}';
+
+            const { data: allOpenPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              base: 'main'
+            });
+
+            const workspacePRs = allOpenPRs.filter(pr =>
+              pr.title.startsWith(`${workspace} - version:bump`) &&
+              pr.head.ref.startsWith(`${workspace}/`)
+            );
+
+            if (workspacePRs.length > 0) {
+              workspacePRs.sort((a, b) =>
+                new Date(b.created_at) - new Date(a.created_at)
+              );
+
+              const existingPR = workspacePRs[0];
+              console.log(`Found ${workspacePRs.length} existing PR(s) for ${workspace}`);
+              console.log(`Using most recently created PR #${existingPR.number}: ${existingPR.title}`);
+              console.log(`Will reuse branch: ${existingPR.head.ref}`);
+              core.setOutput('branch_name', existingPR.head.ref);
+              core.setOutput('pr_number', existingPR.number);
+              core.setOutput('has_existing_pr', 'true');
+            } else {
+              console.log('No existing version bump PR found, will create new branch');
+              const newBranch = `${workspace}/v${{ steps.set_release_name.outputs.release_version }}`;
+              core.setOutput('branch_name', newBranch);
+              core.setOutput('has_existing_pr', 'false');
+            }
       - name: 'Configure git'
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-      - name: 'Create workspace branch'
+      - name: 'Create or checkout workspace branch'
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          BRANCH=$(git branch --list ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }})
+          BRANCH_NAME="${{ steps.check_existing_pr.outputs.branch_name }}"
+
+          BRANCH=$(git branch --list "$BRANCH_NAME")
           if [ ! -z "$BRANCH" ]; then
-              git branch -D ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
+              git branch -D "$BRANCH_NAME"
           fi
-          git checkout -b ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
+
+          if git ls-remote --exit-code --heads origin "$BRANCH_NAME" > /dev/null 2>&1; then
+              echo "Remote branch exists, checking it out"
+              git fetch origin "$BRANCH_NAME"
+              git checkout -b "$BRANCH_NAME" "origin/$BRANCH_NAME"
+          else
+              echo "Creating new branch"
+              git checkout -b "$BRANCH_NAME"
+          fi
       - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }} command
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }}
@@ -131,28 +179,72 @@ jobs:
           git status
           git add -A -- :!.npmrc
           git commit -m "v${{ steps.set_release_name.outputs.release_version }} version bump"
-          git push origin ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
-      - name: 'Create Pull Request'
+          git push origin ${{ steps.check_existing_pr.outputs.branch_name }}
+      - name: 'Create or update Pull Request'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         with:
           github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
           script: |
-            await github.rest.pulls.create({
-              title: '${{ matrix.workspace }} - version:bump to v${{ steps.set_release_name.outputs.release_version }}',
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: '${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}',
-              base: 'main',
-              body: [
-                'Backstage release v${{ steps.set_release_name.outputs.release_version }} has been published, this Pull Request contains the changes to upgrade ${{ matrix.workspace }} to this new release',
-                ' ',
-                'Please review the changelog before approving, there may be manual changes needed:',
-                ' ',
-                '- Changelog: [v${{ steps.set_release_name.outputs.release_version }}](https://github.com/backstage/backstage/blob/master/docs/releases/v${{ steps.set_release_name.outputs.release_version }}-changelog.md)',
-                '- Upgrade Helper: [From ${{ steps.set_release_name.outputs.current_version }} to ${{ steps.set_release_name.outputs.release_version }}](https://backstage.github.io/upgrade-helper/?from=${{ steps.set_release_name.outputs.current_version }}&to=${{ steps.set_release_name.outputs.release_version }})',
-                ' ',
-                'Created by [Version Bump ${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})',
-                ' '
-              ].join('\n')
-            });
+            const workspace = '${{ matrix.workspace }}';
+            const releaseVersion = '${{ steps.set_release_name.outputs.release_version }}';
+            const currentVersion = '${{ steps.set_release_name.outputs.current_version }}';
+            const branchName = '${{ steps.check_existing_pr.outputs.branch_name }}';
+            const hasExistingPR = '${{ steps.check_existing_pr.outputs.has_existing_pr }}' === 'true';
+
+            const prBody = [
+              'Backstage release v' + releaseVersion + ' has been published, this Pull Request contains the changes to upgrade ' + workspace + ' to this new release',
+              ' ',
+              'Please review the changelog before approving, there may be manual changes needed:',
+              ' ',
+              '- Changelog: [v' + releaseVersion + '](https://github.com/backstage/backstage/blob/master/docs/releases/v' + releaseVersion + '-changelog.md)',
+              '- Upgrade Helper: [From ' + currentVersion + ' to ' + releaseVersion + '](https://backstage.github.io/upgrade-helper/?from=' + currentVersion + '&to=' + releaseVersion + ')',
+              ' ',
+              'Created by [Version Bump ${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})',
+              ' '
+            ].join('\n');
+
+            if (hasExistingPR) {
+              const prNumber = parseInt('${{ steps.check_existing_pr.outputs.pr_number }}');
+              console.log(`Updating existing PR #${prNumber} to v${releaseVersion}`);
+
+              const { data: existingPRData } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+
+              const updatedTitle = workspace + ' - version:bump to v' + releaseVersion;
+              const updatedBody = prBody + '\n\n---\n\n<details>\n<summary>Previous version bump information</summary>\n\n' + existingPRData.body + '\n\n</details>';
+
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                title: updatedTitle,
+                body: updatedBody
+              });
+
+              const previousVersionMatch = existingPRData.title.match(/version:bump to v([\d.]+)/);
+              const previousVersion = previousVersionMatch ? previousVersionMatch[1] : 'unknown';
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `Updated version bump to v${releaseVersion} (previously v${previousVersion}).\n\nThe branch has been updated with the latest changes. Please review the updated changelog and upgrade helper links in the PR description.`
+              });
+
+              console.log(`Successfully updated PR #${prNumber} to v${releaseVersion}`);
+
+            } else {
+              const { data: newPR } = await github.rest.pulls.create({
+                title: workspace + ' - version:bump to v' + releaseVersion,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: branchName,
+                base: 'main',
+                body: prBody
+              });
+              console.log(`Created new PR #${newPR.number}`);
+            }
