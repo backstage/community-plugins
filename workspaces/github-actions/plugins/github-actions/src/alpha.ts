@@ -16,7 +16,6 @@
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
-  entityGithubActionsCard,
   entityGithubActionsContent,
   entityLatestGithubActionRunCard,
   entityLatestGithubActionsForBranchCard,
@@ -35,7 +34,6 @@ export default createFrontendPlugin({
   }),
   extensions: [
     entityGithubActionsContent,
-    entityGithubActionsCard,
     entityLatestGithubActionRunCard,
     entityLatestGithubActionsForBranchCard,
     entityRecentGithubActionsRunsCard,
