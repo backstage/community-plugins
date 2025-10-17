@@ -8,7 +8,7 @@ The backend for the Announcements plugin. This plugin provides:
 - Integration with the [`@backstage/plugin-events-backend`](https://github.com/backstage/backstage/tree/master/plugins/events-backend) plugin
 - Integration with the [`@backstage/plugin-signals-backend`](https://github.com/backstage/backstage/tree/master/plugins/signals-backend) plugin
 - Integration with the [`@backstage/notifications-backend`](https://github.com/backstage/backstage/tree/master/plugins/notifications-backend) plugin
-- Announcement backend support audit logging with the help of the Auditor Service from [`@backstage/backend-plugin-api`](https://www.npmjs.com/package/@backstage/backend-plugin-api) package. Audit logging helps to track announcements creation, updates, and deletion.
+- Integration with the [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor). Audit logging helps to track announcements creation, updates, and deletion.
 
 ## Installation
 
