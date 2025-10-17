@@ -81,7 +81,6 @@
     "react-router-dom": "^6.0.0"
   },
   "files": [
-    "LICENSE",
     "dist",
     "config.d.ts"
   ],
