@@ -21,14 +21,24 @@ import { rootRouteRef } from '../routes';
 /**
  * @alpha
  */
-export const entityGithubActionsContent = EntityContentBlueprint.make({
-  name: 'entity',
-  params: {
-    path: 'github-actions',
-    title: 'GitHub Actions',
-    filter: isGithubActionsAvailable,
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    loader: () =>
-      import('../components/Router').then(m => <m.Router view="table" />),
-  },
-});
+export const entityGithubActionsContent =
+  EntityContentBlueprint.makeWithOverrides({
+    config: {
+      schema: {
+        layout: z => z.enum(['table', 'cards']).default('table'),
+      },
+    },
+    name: 'github-actions-entity-content',
+    factory(originalFactory, { config }) {
+      return originalFactory({
+        path: 'github-actions',
+        title: 'GitHub Actions',
+        filter: isGithubActionsAvailable,
+        routeRef: convertLegacyRouteRef(rootRouteRef),
+        loader: () =>
+          import('../components/Router').then(m => (
+            <m.Router view={config.layout} />
+          )),
+      });
+    },
+  });
