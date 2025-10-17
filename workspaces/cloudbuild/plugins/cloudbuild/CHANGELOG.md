@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cloudbuild
 
+## 0.16.0
+
+### Minor Changes
+
+- 4f2df31: Backstage version bump to v1.44.0
+
 ## 0.15.0
 
 ### Minor Changes
