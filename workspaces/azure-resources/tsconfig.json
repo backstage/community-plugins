@@ -4,7 +4,8 @@
     "packages/*/src",
     "plugins/*/src",
     "plugins/*/dev",
-    "plugins/*/migrations"
+    "plugins/*/migrations",
+    "plugins/catalog-backend-module-azure-resources/__fixtures__"
   ],
   // "files": ["node_modules/@backstage/cli/asset-types/asset-types.d.ts"],
   "exclude": ["node_modules"],
@@ -14,6 +15,7 @@
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
     "target": "ES2022",
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "types": ["node", "jest"]
   }
 }
