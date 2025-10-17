@@ -17,8 +17,7 @@ import { useEffect, useState } from 'react';
 
 import { KubernetesObjects } from '@backstage/plugin-kubernetes-react';
 
-import { useDeepCompareMemoize } from '@janus-idp/shared-react';
-
+import { useDeepCompareMemoize } from './useDeepCompareMemoize';
 import { ClusterErrors } from '../types/types';
 import { getClusters } from '../utils/tekton-utils';
 
