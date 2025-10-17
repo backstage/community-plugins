@@ -31,6 +31,8 @@ import { AUDITOR_FETCH_EVENT_ID } from '@backstage-community/plugin-announcement
 
 describe('createRouter', () => {
   let app: express.Express;
+  let auditorMock!: ReturnType<typeof mockServices.auditor.mock>;
+  let lastAuditorEvent: { success: jest.Mock; fail: jest.Mock } | undefined;
 
   const announcementsMock = jest.fn();
   const announcementByIDMock = jest.fn();
@@ -63,18 +65,22 @@ describe('createRouter', () => {
   const mockNotificationService = {
     send: jest.fn().mockImplementation(async () => {}),
   };
-  const auditorSuccessMock = jest.fn().mockResolvedValue(undefined);
-  const auditorFailMock = jest.fn().mockResolvedValue(undefined);
-  const auditorCreateEventMock = jest.fn().mockImplementation(async () => ({
-    success: auditorSuccessMock,
-    fail: auditorFailMock,
-  }));
 
   afterEach(() => {
     jest.resetAllMocks();
   });
 
   beforeAll(async () => {
+    auditorMock = mockServices.auditor.mock();
+    lastAuditorEvent = undefined;
+    auditorMock.createEvent.mockImplementation(async () => {
+      lastAuditorEvent = {
+        success: jest.fn().mockResolvedValue(undefined),
+        fail: jest.fn().mockResolvedValue(undefined),
+      };
+      return lastAuditorEvent;
+    });
+
     const announcementsContext: AnnouncementsContext = {
       logger: mockServices.logger.mock(),
       config: mockServices.rootConfig.mock(),
@@ -83,24 +89,35 @@ describe('createRouter', () => {
       permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth: mockHttpAuth,
       notifications: mockNotificationService,
-      auditor: { createEvent: auditorCreateEventMock } as any,
+      auditor: auditorMock,
     };
 
     const router = await createRouter(announcementsContext);
     app = express().use(router);
     mockNotificationService.send.mockClear();
+    auditorMock.createEvent.mockClear();
   });
 
   beforeEach(() => {
-    auditorCreateEventMock.mockImplementation(async () => ({
-      success: auditorSuccessMock,
-      fail: auditorFailMock,
-    }));
+    lastAuditorEvent = undefined;
+    mockNotificationService.send.mockImplementation(async () => {});
+    auditorMock.createEvent.mockImplementation(async () => {
+      lastAuditorEvent = {
+        success: jest.fn().mockResolvedValue(undefined),
+        fail: jest.fn().mockResolvedValue(undefined),
+      };
+      return lastAuditorEvent;
+    });
   });
 
   const expectAuditorSuccess = () => {
-    expect(auditorSuccessMock).toHaveBeenCalled();
-    expect(auditorFailMock).not.toHaveBeenCalled();
+    expect(auditorMock.createEvent).toHaveBeenCalled();
+    expect(lastAuditorEvent).toBeDefined();
+    if (!lastAuditorEvent) {
+      return;
+    }
+    expect(lastAuditorEvent.success).toHaveBeenCalled();
+    expect(lastAuditorEvent.fail).not.toHaveBeenCalled();
   };
 
   describe('GET /announcements', () => {
@@ -132,7 +149,7 @@ describe('createRouter', () => {
         current: undefined,
       });
 
-      expect(auditorCreateEventMock).toHaveBeenCalledWith(
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           eventId: AUDITOR_FETCH_EVENT_ID,
           severityLevel: 'low',
