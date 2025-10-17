@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar
 
+## 0.16.0
+
+### Minor Changes
+
+- 39cc5aa: Backstage version bump to v1.44.0
+
 ## 0.15.0
 
 ### Minor Changes
