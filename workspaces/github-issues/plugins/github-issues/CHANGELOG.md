@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.15.0
+
+### Minor Changes
+
+- cf0ea96: Backstage version bump to v1.44.0
+
 ## 0.14.0
 
 ### Minor Changes
