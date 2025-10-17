@@ -26,49 +26,49 @@ export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
  *
  * @public
  */
-export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create-announcement';
+export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create_announcement';
 
 /**
  * Event action for updating an announcement
  *
  * @public
  */
-export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update-announcement';
+export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
 
 /**
  * Event action for deleting an announcement
  *
  * @public
  */
-export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete-announcement';
+export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
 
 /**
  * Event action for creating a category
  *
  * @public
  */
-export const EVENTS_ACTION_CREATE_CATEGORY = 'create-category';
+export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
 
 /**
  * Event action for deleting a category
  *
  * @public
  */
-export const EVENTS_ACTION_DELETE_CATEGORY = 'delete-category';
+export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
 
 /**
  * Event action for creating a tag
  *
  * @public
  */
-export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
+export const EVENTS_ACTION_CREATE_TAG = 'create_tag';
 
 /**
  * Event action for deleting a tag
  *
  * @public
  */
-export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
+export const EVENTS_ACTION_DELETE_TAG = 'delete_tag';
 
 /**
  * Channel name for new announcement signals
@@ -110,6 +110,7 @@ export const AUDITOR_ACTION_UPDATE = 'update';
  *
  * @public
  */
+
 export const AUDITOR_ACTION_DELETE = 'delete';
 /**
  * Announcement fetch event ID for auditor read/query operations

@@ -86,25 +86,25 @@ export type Category = {
 };
 
 // @public
-export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create-announcement';
+export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create_announcement';
 
 // @public
-export const EVENTS_ACTION_CREATE_CATEGORY = 'create-category';
+export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
 
 // @public
-export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
+export const EVENTS_ACTION_CREATE_TAG = 'create_tag';
 
 // @public
-export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete-announcement';
+export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
 
 // @public
-export const EVENTS_ACTION_DELETE_CATEGORY = 'delete-category';
+export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
 
 // @public
-export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
+export const EVENTS_ACTION_DELETE_TAG = 'delete_tag';
 
 // @public
-export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update-announcement';
+export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
 
 // @public
 export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
