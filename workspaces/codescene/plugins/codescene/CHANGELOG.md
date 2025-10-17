@@ -1,5 +1,11 @@
 # @backstage-community/plugin-codescene
 
+## 0.11.0
+
+### Minor Changes
+
+- dbed310: Backstage version bump to v1.44.0
+
 ## 0.10.0
 
 ### Minor Changes
