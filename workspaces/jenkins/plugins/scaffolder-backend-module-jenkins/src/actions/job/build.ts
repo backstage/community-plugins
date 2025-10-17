@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import Jenkins from 'jenkins';
+import { z } from 'zod';
 
 /**
- *
- * This buildJob function, creates a template action for running a Jenkins job
- *
- * @param jenkins - The client to interact with jenkins instance
- * @returns Empty response, in case of error an exception will be thrown by jenkins client
+ * Create a scaffolder action to trigger a Jenkins job.
  */
 export function buildJob(jenkins: Jenkins) {
   return createTemplateAction({
     id: 'jenkins:job:build',
-    description: 'Run an existing job jenkins given a name',
+    description: 'Run an existing Jenkins job given its name',
     schema: {
-      input: {
-        jobName: z => z.string({ description: 'Name of jenkins item' }),
-        jobParameters: z => z.record(z.any()).optional(),
-      },
+      input: z.object({
+        jobName: z.string().describe('Name of the Jenkins job to run'),
+        jobParameters: z.record(z.any()).optional(),
+      }),
     },
     async handler(ctx) {
-      ctx.logger.info(`Starting jenkins job ${ctx.input.jobName}`);
+      ctx.logger.info(`Starting Jenkins job: ${ctx.input.jobName}`);
 
       await jenkins.job.build(ctx.input.jobName, ctx.input.jobParameters);
+
       ctx.logger.info('Job started successfully!');
     },
   });

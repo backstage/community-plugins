@@ -90,11 +90,13 @@ Below, there is an example for each action
 
   ```yaml
   - id: jenkins-job-build
-    name: Jenkins Job Build
-    action: jenkins:job:build
-    input:
-      jobName: first-job
-      jobParameters: some-value
+  name: Jenkins Job Build
+  action: jenkins:job:build
+  input:
+    jobName: first-job
+    jobParameters:
+      parameters:
+        PARAM1: value1
   ```
 
 - Copy job
