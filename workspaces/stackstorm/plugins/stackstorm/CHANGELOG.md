@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stackstorm
 
+## 0.12.0
+
+### Minor Changes
+
+- 7d588a0: Backstage version bump to v1.44.0
+
 ## 0.11.0
 
 ### Minor Changes
