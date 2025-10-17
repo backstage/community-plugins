@@ -1,5 +1,11 @@
 # @backstage-community/plugin-wheel-of-names
 
+## 0.5.0
+
+### Minor Changes
+
+- 5a28929: Backstage version bump to v1.44.0
+
 ## 0.4.0
 
 ### Minor Changes
