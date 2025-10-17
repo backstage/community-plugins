@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.20.1
+
+### Patch Changes
+
+- 469f51c: Updated dependency `@types/react` to `18.3.26`.
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
 ## 1.20.0
 
 ### Minor Changes
