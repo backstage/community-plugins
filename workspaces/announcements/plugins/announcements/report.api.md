@@ -129,6 +129,8 @@ export const NewAnnouncementBanner: (props: {
   current?: boolean | undefined;
   tags?: string[] | undefined;
   sortBy?: 'created_at' | 'updated_at' | undefined;
+  titleLength?: number | undefined;
+  excerptLength?: number | undefined;
 }) => JSX_2.Element | null;
 
 // (No @packageDocumentation comment for this package)

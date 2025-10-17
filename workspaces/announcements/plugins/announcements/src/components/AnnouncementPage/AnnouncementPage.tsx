@@ -32,19 +32,22 @@ import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,
 } from '../MarkdownRenderer';
+import { truncate } from '../utils/truncateUtils';
 
 const AnnouncementDetails = ({
   announcement,
   markdownRenderer,
+  titleLength,
 }: {
   announcement: Announcement;
   markdownRenderer?: MarkdownRendererTypeProps;
+  titleLength?: number;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
@@ -62,12 +65,19 @@ const AnnouncementDetails = ({
     </Typography>
   );
 
+  const maxLength = titleLength ?? 50;
+  const title = truncate(announcement.title, maxLength);
+  const isTruncated = announcement.title.length > maxLength;
+
+  const titleElement = isTruncated ? (
+    <Tooltip title={announcement.title} arrow>
+      <span>{title}</span>
+    </Tooltip>
+  ) : (
+    title
+  );
   return (
-    <InfoCard
-      title={announcement.title}
-      subheader={subHeader}
-      deepLink={deepLink}
-    >
+    <InfoCard title={titleElement} subheader={subHeader} deepLink={deepLink}>
       <MarkdownRenderer
         content={announcement.body}
         rendererType={markdownRenderer}
@@ -81,6 +91,7 @@ type AnnouncementPageProps = {
   title: string;
   subtitle?: ReactNode;
   markdownRenderer?: MarkdownRendererTypeProps;
+  titleLength?: number;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
@@ -104,6 +115,7 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
       <AnnouncementDetails
         announcement={value!}
         markdownRenderer={props.markdownRenderer}
+        titleLength={props.titleLength}
       />
     );
 

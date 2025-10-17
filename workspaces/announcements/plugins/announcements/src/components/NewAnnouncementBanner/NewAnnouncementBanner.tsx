@@ -38,6 +38,7 @@ import {
 } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { Alert } from '@material-ui/lab';
+import { truncate } from '../utils/truncateUtils';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -76,6 +77,8 @@ const useStyles = makeStyles(theme => {
 type AnnouncementBannerProps = {
   announcement: Announcement;
   variant?: 'block' | 'floating';
+  titleLength?: number;
+  excerptLength?: number;
 };
 
 const AnnouncementBanner = (props: AnnouncementBannerProps) => {
@@ -86,6 +89,8 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const [bannerOpen, setBannerOpen] = useState(true);
   const variant = props.variant || 'block';
   const announcement = props.announcement;
+  const titleLength = props.titleLength;
+  const excerptLength = props.excerptLength;
 
   const handleClick = () => {
     announcementsApi.markLastSeenDate(
@@ -93,6 +98,13 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     );
     setBannerOpen(false);
   };
+
+  const title = titleLength
+    ? truncate(announcement.title, titleLength)
+    : announcement.title;
+  const excerpt = excerptLength
+    ? truncate(announcement.excerpt, excerptLength)
+    : announcement.excerpt;
 
   const message = (
     <>
@@ -106,10 +118,11 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
       <Link
         to={viewAnnouncementLink({ id: announcement.id })}
         variant="inherit"
+        onClick={handleClick}
       >
-        {announcement.title}
+        {title}
       </Link>
-      &nbsp;– {announcement.excerpt}
+      &nbsp;– {excerpt}
     </>
   );
 
@@ -149,10 +162,22 @@ type NewAnnouncementBannerProps = {
   current?: boolean;
   tags?: string[];
   sortBy?: 'created_at' | 'updated_at';
+  titleLength?: number;
+  excerptLength?: number;
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
-  const { max, category, tags, active, variant, current, sortBy } = props;
+  const {
+    max,
+    category,
+    tags,
+    active,
+    variant,
+    current,
+    sortBy,
+    titleLength = 50,
+    excerptLength = 50,
+  } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
 
@@ -211,6 +236,8 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
           key={announcement.id}
           announcement={announcement}
           variant={variant}
+          titleLength={titleLength}
+          excerptLength={excerptLength}
         />
       ))}
     </>

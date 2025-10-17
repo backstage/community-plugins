@@ -347,7 +347,7 @@ export const AnnouncementsContent = ({
             columns={columns}
             data={announcements?.results ?? []}
             emptyContent={
-              <Typography style={{ padding: 2 }}>
+              <Typography style={{ padding: 2, textAlign: 'center' }}>
                 {t('admin.announcementsContent.noAnnouncementsFound')}
               </Typography>
             }

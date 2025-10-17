@@ -188,7 +188,7 @@ export const TagsContent = () => {
             columns={columns}
             data={tags ?? []}
             emptyContent={
-              <Typography style={{ padding: 2 }}>
+              <Typography style={{ padding: 2, textAlign: 'center' }}>
                 {t('admin.tagsContent.table.noTagsFound')}
               </Typography>
             }

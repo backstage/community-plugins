@@ -69,6 +69,7 @@ import {
 import { Alert, Pagination } from '@material-ui/lab';
 import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 import { MarkdownRendererTypeProps } from '../MarkdownRenderer/MarkdownRenderer';
+import { truncate } from '../utils/truncateUtils';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -82,15 +83,6 @@ const useStyles = makeStyles(theme => {
     },
   };
 });
-/**
- * Truncate text to a given length and add ellipsis
- * @param text the text to truncate
- * @param length the length to truncate to
- * @returns the truncated text
- */
-const truncate = (text: string, length: number) => {
-  return text.length > length ? `${text.substring(0, length)}...` : text;
-};
 
 const AnnouncementCard = ({
   announcement,

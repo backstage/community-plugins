@@ -182,7 +182,7 @@ export const CategoriesContent = () => {
             columns={columns}
             data={categories ?? []}
             emptyContent={
-              <Typography style={{ padding: 2 }}>
+              <Typography style={{ padding: 2, textAlign: 'center' }}>
                 {t('admin.categoriesContent.table.noCategoriesFound')}
               </Typography>
             }
