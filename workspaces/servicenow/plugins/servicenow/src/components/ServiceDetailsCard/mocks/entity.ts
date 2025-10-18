@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-import { OAuthConfig, BasicAuthConfig } from './oauthConfig';
+import { Entity } from '@backstage/catalog-model';
 
-export interface Config {
-  servicenow?: {
-    /**
-     * The instance URL for ServiceNow.
-     * @visibility backend
-     */
-    instanceUrl: string;
-    /**
-     * @visibility secret
-     */
-    basicAuth?: BasicAuthConfig;
-    /**
-     * @visibility secret
-     */
-    oauth?: OAuthConfig;
-    /** The base url of the ServiceNow instance.
-     * @visibility backend
-     */
-    cmdbBaseUrl: string;
-    /**
-     * @visibility secret
-     */
-    cmdbToken: string;
-  };
-}
+export const mockEntity: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'Example Application',
+    annotations: {
+      'servicenow.com/appcode': 'APP-001',
+    },
+  },
+};

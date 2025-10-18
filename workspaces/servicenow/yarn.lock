@@ -1558,6 +1558,7 @@ __metadata:
     "@backstage/test-utils": "npm:^1.7.11"
     "@backstage/theme": "npm:^0.6.8"
     "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/lab": "npm:^4.0.0-alpha.61"
     "@mui/icons-material": "npm:^5.15.17"
     "@mui/lab": "npm:^5.0.0-alpha.153"
     "@mui/material": "npm:^5.17.1"
