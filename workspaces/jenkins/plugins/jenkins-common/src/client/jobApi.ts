@@ -67,7 +67,19 @@ export function createJobApi(deps: JobDeps) {
     return result;
   };
 
-  const lastSegment = (name: string | string[]): string => {
+  /**
+   * Extracts the last path segment (the "leaf" job name) from a Jenkins job name.
+   *
+   * @param name - The job name, either as a slash-delimited string (e.g. "folder/job")
+   *               or as an array of segments (e.g. ["folder", "job"]).
+   * @returns The last segment of the job name, or an empty string if none exists.
+   *
+   * @example
+   * leafSegment("folder/job"); // "job"
+   * leafSegment(["folder", "job"]); // "job"
+   * leafSegment("root"); // "root"
+   */
+  const leafSegment = (name: string | string[]): string => {
     if (Array.isArray(name)) {
       return name[name.length - 1];
     }
@@ -75,6 +87,18 @@ export function createJobApi(deps: JobDeps) {
     return parts[parts.length - 1] ?? '';
   };
 
+  /**
+   * Returns all parent path segments of a Jenkins job name, excluding the leaf.
+   *
+   * @param name - The job name, either as a slash-delimited string (e.g. "a/b/c")
+   *               or as an array of segments (e.g. ["a", "b", "c"]).
+   * @returns An array of all parent segments, or an empty array if the job is at the root.
+   *
+   * @example
+   * parentSegments("a/b/c"); // ["a", "b"]
+   * parentSegments(["a", "b", "c"]); // ["a", "b"]
+   * parentSegments("job"); // []
+   */
   const parentSegments = (name: string | string[] | undefined): string[] => {
     if (!name) {
       return [];
@@ -207,7 +231,7 @@ export function createJobApi(deps: JobDeps) {
      */
     copy: async (name: string | string[], from: string): Promise<void> => {
       const segments = parentSegments(name);
-      const leaf = lastSegment(name);
+      const leaf = leafSegment(name);
       const folderPath = segments.length
         ? segments.map(normalizeJobName).join('/')
         : '';
@@ -234,7 +258,7 @@ export function createJobApi(deps: JobDeps) {
      */
     create: async (name: string | string[], xml: string): Promise<void> => {
       const segments = parentSegments(name);
-      const leaf = lastSegment(name);
+      const leaf = leafSegment(name);
       const folderPath = segments.length
         ? segments.map(normalizeJobName).join('/')
         : '';
