@@ -49,6 +49,15 @@ export function createJobApi(deps: JobDeps) {
   const { normalizeJobName, request } = deps;
 
   // Helper utils
+
+  /**
+   * Takes in a {@link JenkinsParams} object and returns a {@link URLSearchParams} object.
+   *   - If the object passed is `undefined`, an empty {@link URLSearchParams} is returned.
+   *   - If the object passed is already a {@link URLSearchParams} it gets returned as is.
+   *
+   * @param params a {@link JenkinsParams} object.
+   * @returns a {@link URLSearchParams} object
+   */
   const paramsToSearchParams = (params?: JenkinsParams): URLSearchParams => {
     if (!params) {
       return new URLSearchParams();
