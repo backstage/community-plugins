@@ -33,13 +33,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.1"
+    "@backstage/cli": "^0.34.4"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.2"
+    "@backstage/backend-plugin-api": "^1.4.4"
   },
   "repository": {
     "type": "git",
