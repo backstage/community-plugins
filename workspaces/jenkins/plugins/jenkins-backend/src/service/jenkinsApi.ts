@@ -15,11 +15,13 @@
  */
 
 import type { JenkinsInfo } from './jenkinsInfoProvider';
-import Jenkins from 'jenkins';
+import {
+  Jenkins,
+  type JenkinsBuild,
+} from '@backstage-community/plugin-jenkins-common';
 import type {
   BackstageBuild,
   BackstageProject,
-  JenkinsBuild,
   JenkinsProject,
   ScmDetails,
 } from '../types';
@@ -227,7 +229,7 @@ export class JenkinsApiImpl {
 
   private static async getClient(jenkinsInfo: JenkinsInfo) {
     // The typings for the jenkins library are out of date so just cast to any
-    return new (Jenkins as any)({
+    return new Jenkins({
       baseUrl: jenkinsInfo.baseUrl,
       headers: jenkinsInfo.headers,
       promisify: true,
@@ -379,18 +381,10 @@ export class JenkinsApiImpl {
   }
 
   async getJobBuilds(jenkinsInfo: JenkinsInfo, jobs: string[]) {
-    const response = await fetch(
-      `${jenkinsInfo.baseUrl}/job/${jobs.join(
-        '/job/',
-      )}/api/json?tree=${JenkinsApiImpl.jobBuildsTreeSpec.replace(/\s/g, '')}`,
-      {
-        method: 'get',
-        headers: jenkinsInfo.headers as HeaderInit,
-      },
-    );
+    const client = await JenkinsApiImpl.getClient(jenkinsInfo);
+    const tree = JenkinsApiImpl.jobBuildsTreeSpec.replace(/\s/g, '');
 
-    const jobBuilds = await response.json();
-    return jobBuilds;
+    return await client.job.getBuilds(jobs, tree);
   }
 
   /**
@@ -402,14 +396,8 @@ export class JenkinsApiImpl {
     jobs: string[],
     buildNumber: number,
   ) {
-    const buildUrl = this.getBuildUrl(jenkinsInfo, jobs, buildNumber);
+    const client = await JenkinsApiImpl.getClient(jenkinsInfo);
 
-    const response = await fetch(`${buildUrl}/consoleText`, {
-      method: 'get',
-      headers: jenkinsInfo.headers as HeaderInit,
-    });
-
-    const consoleText = await response.text();
-    return consoleText;
+    return await client.build.getConsoleText(jobs, buildNumber);
   }
 }

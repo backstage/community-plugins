@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
+import type {
+  JenkinsBuild,
+  CommonBuild,
+} from '@backstage-community/plugin-jenkins-common';
+
 export interface ScmDetails {
   url?: string;
   displayName?: string;
   author?: string;
-}
-
-interface CommonBuild {
-  // standard Jenkins
-  timestamp: number;
-  building: boolean;
-  duration: number;
-  result?: string;
-  fullDisplayName: string;
-  displayName: string;
-  url: string;
-  number: number;
-}
-
-export interface JenkinsBuild extends CommonBuild {
-  // read by us from jenkins but not passed to frontend
-  actions: any;
 }
 
 /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './permissions';
-export * from './types';
-export * from './client/types';
 
-export { Jenkins, type JenkinsClientOptions } from './client';
+/** @public */
+export interface CommonBuild {
+  // standard Jenkins
+  timestamp: number;
+  building: boolean;
+  duration: number;
+  result?: string;
+  fullDisplayName: string;
+  displayName: string;
+  url: string;
+  number: number;
+}
+
+/** @public */
+export interface JenkinsBuild extends CommonBuild {
+  // read by us from jenkins but not passed to frontend
+  actions: any;
+}
