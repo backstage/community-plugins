@@ -142,6 +142,10 @@ workspace/firehydrant:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/firehydrant/**']
 
+workspace/flux:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/flux/**']
+
 workspace/fossa:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/fossa/**']
