@@ -173,6 +173,7 @@ export async function newPermissionPolicy(
 export function convertGroupsToEntity(
   groups?: {
     name: string;
+    namespace?: string | null;
     title: string;
     children: never[];
     parent: string | null;
@@ -186,7 +187,7 @@ export function convertGroupsToEntity(
       kind: 'Group',
       metadata: {
         name: group.name,
-        namespace: 'default',
+        namespace: group.namespace ?? 'default',
         title: group.title,
       },
       spec: {
