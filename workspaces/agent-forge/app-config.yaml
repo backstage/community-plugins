@@ -6,7 +6,7 @@ organization:
   name: Acme
 
 agentForge:
-  baseUrl: https://caipe.dev.outshift.io
+  baseUrl: http://localhost:8000
   showOptions: true
   requestTimeout: 300
   headerTitle: CAIPE (Formerly Jarvis)
