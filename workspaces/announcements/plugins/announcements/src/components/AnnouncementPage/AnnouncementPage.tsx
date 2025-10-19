@@ -71,7 +71,7 @@ const AnnouncementDetails = ({
 
   const titleElement = isTruncated ? (
     <Tooltip title={announcement.title} arrow>
-      <span>{title}</span>
+      <Typography component="span">{title}</Typography>
     </Tooltip>
   ) : (
     title
