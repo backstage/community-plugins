@@ -40,7 +40,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ChatbotApi } from '../apis';
-import { DEFAULT_BOT_CONFIG, DEFAULT_SUGGESTIONS } from '../constants';
+import {
+  DEFAULT_BOT_CONFIG,
+  DEFAULT_SUGGESTIONS,
+  DEFAULT_THINKING_MESSAGES,
+} from '../constants';
 import { Message } from '../types';
 import { ChatSession, ChatStorage } from '../types/chat';
 import { createTimestamp } from '../utils';
@@ -171,9 +175,20 @@ const useStyles = makeStyles(theme => ({
   },
   customHeaderLeft: {
     display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    flex: '0 0 auto',
+  },
+  customHeaderTextContainer: {
+    display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(0.5),
-    flex: '0 0 auto',
+  },
+  headerBotAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    objectFit: 'contain' as const,
   },
   customHeaderRight: {
     display: 'flex',
@@ -222,6 +237,9 @@ export function AgentForgePage() {
   const initialSuggestions =
     config.getOptionalStringArray('agentForge.initialSuggestions') ||
     DEFAULT_SUGGESTIONS;
+  const thinkingMessages =
+    config.getOptionalStringArray('agentForge.thinkingMessages') ||
+    DEFAULT_THINKING_MESSAGES;
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
@@ -887,7 +905,9 @@ export function AgentForgePage() {
               onReset={resetChat}
               isTyping={isTyping}
               suggestions={suggestions}
+              thinkingMessages={thinkingMessages}
               botName={botName}
+              botIcon={botIcon}
               inputPlaceholder={inputPlaceholder}
               fontSizes={{
                 messageText: fontSizes.messageText,
@@ -909,8 +929,15 @@ export function AgentForgePage() {
       <div className={classes.fullscreenContainer}>
         <Box className={classes.customHeaderContainer}>
           <Box className={classes.customHeaderLeft}>
+            {botIcon && (
+              <img
+                src={botIcon}
+                alt={botName}
+                className={classes.headerBotAvatar}
+              />
+            )}
             <Tooltip title="Visit CAIPE Documentation" placement="bottom">
-              <Box>
+              <Box className={classes.customHeaderTextContainer}>
                 <Typography
                   variant="h5"
                   className={classes.headerTitle}
@@ -990,8 +1017,15 @@ export function AgentForgePage() {
     <>
       <Box className={classes.customHeaderContainer}>
         <Box className={classes.customHeaderLeft}>
+          {botIcon && (
+            <img
+              src={botIcon}
+              alt={botName}
+              className={classes.headerBotAvatar}
+            />
+          )}
           <Tooltip title="Visit CAIPE Documentation" placement="bottom">
-            <Box>
+            <Box className={classes.customHeaderTextContainer}>
               <Typography
                 variant="h5"
                 className={classes.headerTitle}

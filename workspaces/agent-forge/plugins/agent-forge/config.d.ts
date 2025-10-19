@@ -40,6 +40,12 @@ export interface Config {
     initialSuggestions?: string[];
 
     /**
+     * Thinking messages to rotate while the AI is processing
+     * @visibility frontend
+     */
+    thinkingMessages?: string[];
+
+    /**
      * HTTP request timeout in seconds (default: 300)
      * @visibility frontend
      */

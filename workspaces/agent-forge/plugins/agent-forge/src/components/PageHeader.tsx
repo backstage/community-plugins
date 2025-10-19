@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-import { Box, Typography, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-  headerContent: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-  },
-  botAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: '50%',
-    objectFit: 'contain' as const,
-  },
-}));
-
 /**
  * Props for the PageHeader component
  * @public
@@ -40,28 +24,7 @@ export interface PageHeaderProps {
 }
 
 /** @public */
-export function PageHeader({ botName, botIcon }: PageHeaderProps) {
-  const classes = useStyles();
-
-  if (!botIcon) {
-    return (
-      <Typography variant="h6" color="textPrimary">
-        {botName} - AI Platform Engineer
-      </Typography>
-    );
-  }
-
-  return (
-    <Box
-      display="flex"
-      alignItems="center"
-      mb={2}
-      className={classes.headerContent}
-    >
-      <img src={botIcon} alt={botName} className={classes.botAvatar} />
-      <Typography variant="h6" color="textPrimary">
-        {botName} - AI Platform Engineer
-      </Typography>
-    </Box>
-  );
+export function PageHeader(_props: PageHeaderProps) {
+  // PageHeader is now empty - bot icon moved to custom header
+  return null;
 }

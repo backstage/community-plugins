@@ -26,3 +26,10 @@ export const DEFAULT_SUGGESTIONS = [
   'How do I configure agents?',
   'Help me with platform engineering tasks',
 ];
+
+export const DEFAULT_THINKING_MESSAGES = [
+  '🤖 Contacting agents',
+  '⚙️ Processing query',
+  '📦 Carrying bits',
+  '📊 Analyzing data',
+];

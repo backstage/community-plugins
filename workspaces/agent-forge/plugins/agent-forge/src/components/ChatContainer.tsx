@@ -26,7 +26,7 @@ import {
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SendIcon from '@material-ui/icons/Send';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Message } from '../types';
 import { ChatMessage } from './ChatMessage';
 
@@ -162,7 +162,9 @@ export interface ChatContainerProps {
   setUserInput: (input: string) => void;
   isTyping: boolean;
   suggestions: string[];
+  thinkingMessages: string[];
   botName: string;
+  botIcon?: string;
   inputPlaceholder?: string;
   fontSizes?: {
     messageText?: string;
@@ -187,7 +189,9 @@ export function ChatContainer({
   setUserInput,
   isTyping,
   suggestions,
+  thinkingMessages,
   botName,
+  botIcon,
   inputPlaceholder,
   fontSizes,
   onMessageSubmit,
@@ -196,6 +200,7 @@ export function ChatContainer({
 }: ChatContainerProps) {
   const classes = useStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [thinkingMessageIndex, setThinkingMessageIndex] = useState(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -204,6 +209,25 @@ export function ChatContainer({
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  // Rotate thinking messages while typing
+  useEffect(() => {
+    if (isTyping) {
+      // Start from a random message
+      setThinkingMessageIndex(
+        Math.floor(Math.random() * thinkingMessages.length),
+      );
+
+      const interval = setInterval(() => {
+        setThinkingMessageIndex(
+          prevIndex => (prevIndex + 1) % thinkingMessages.length,
+        );
+      }, 3500); // Change message every 3.5 seconds
+
+      return () => clearInterval(interval);
+    }
+    return undefined;
+  }, [isTyping, thinkingMessages.length]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -221,6 +245,8 @@ export function ChatContainer({
           <ChatMessage
             key={index}
             message={message}
+            botName={botName}
+            botIcon={botIcon}
             fontSizes={{
               messageText: fontSizes?.messageText,
               codeBlock: fontSizes?.codeBlock,
@@ -238,7 +264,7 @@ export function ChatContainer({
               <span />
             </div>
             <Typography variant="caption" style={{ marginLeft: 8 }}>
-              {botName} is thinking...
+              {thinkingMessages[thinkingMessageIndex]}...
             </Typography>
           </Box>
         )}

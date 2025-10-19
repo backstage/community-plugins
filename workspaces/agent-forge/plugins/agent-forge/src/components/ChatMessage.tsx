@@ -102,6 +102,8 @@ const useStyles = makeStyles(theme => ({
  */
 export interface ChatMessageProps {
   message: Message;
+  botName?: string;
+  botIcon?: string;
   fontSizes?: {
     messageText?: string;
     codeBlock?: string;
@@ -114,7 +116,12 @@ export interface ChatMessageProps {
  * Individual chat message component with user profile integration
  * @public
  */
-export function ChatMessage({ message, fontSizes }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  botName,
+  botIcon,
+  fontSizes,
+}: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
   const alertApi = useApi(alertApiRef);
@@ -222,15 +229,26 @@ export function ChatMessage({ message, fontSizes }: ChatMessageProps) {
             width={20}
             height={20}
             borderRadius="50%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
             style={{
-              backgroundColor:
-                theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
+              backgroundColor: '#ffffff',
               backgroundImage: profile?.picture
                 ? `url("${profile.picture}")`
                 : undefined,
               backgroundSize: 'cover',
+              border: profile?.picture
+                ? 'none'
+                : '2px solid rgba(255, 255, 255, 0.7)',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
             }}
-          />
+          >
+            {!profile?.picture &&
+              (profile?.displayName?.[0]?.toUpperCase() || 'U')}
+          </Box>
           <Typography
             variant="caption"
             style={{ fontWeight: 700, color: '#ffffff' }}
@@ -303,6 +321,51 @@ export function ChatMessage({ message, fontSizes }: ChatMessageProps) {
 
   return (
     <Box className={`${classes.messageBox} ${classes.botMessage}`}>
+      <Box
+        display="flex"
+        alignItems="center"
+        marginBottom={0.5}
+        style={{ gap: 8 }}
+      >
+        {botIcon && (
+          <Box
+            width={20}
+            height={20}
+            borderRadius="50%"
+            style={{
+              backgroundImage: `url(${botIcon})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+        )}
+        {!botIcon && botName && (
+          <Box
+            width={20}
+            height={20}
+            borderRadius="50%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            style={{
+              backgroundColor: theme.palette.primary.main,
+              fontSize: '10px',
+              fontWeight: 600,
+              color: '#ffffff',
+            }}
+          >
+            {botName[0]?.toUpperCase()}
+          </Box>
+        )}
+        {botName && (
+          <Typography
+            variant="caption"
+            style={{ fontWeight: 700, color: 'inherit' }}
+          >
+            {botName}
+          </Typography>
+        )}
+      </Box>
       <Box
         style={{
           wordBreak: 'break-word',
