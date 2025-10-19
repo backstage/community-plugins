@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
+import { Content, Page } from '@backstage/core-components';
 import {
   configApiRef,
   identityApiRef,
@@ -23,14 +23,19 @@ import {
   alertApiRef,
 } from '@backstage/core-plugin-api';
 import {
+  Box,
   Button,
   Card,
   CardContent,
   Grid,
+  IconButton,
   Paper,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { makeStyles } from '@material-ui/core/styles';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -48,21 +53,160 @@ import packageInfo from '../../package.json';
 
 const useStyles = makeStyles(theme => ({
   errorBox: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     backgroundColor: theme.palette.error.light,
     color: theme.palette.error.contrastText,
     borderRadius: theme.shape.borderRadius,
     marginBottom: theme.spacing(2),
+    wordBreak: 'break-word',
+    fontSize: '0.8125rem',
+    lineHeight: 1.3,
   },
   mainContent: {
-    height: 'calc(100vh - 200px)',
+    height: 'calc(100vh - 80px)',
+    overflow: 'hidden',
+    margin: 0,
+    width: '100%',
+    '& .MuiGrid-spacing-xs-1': {
+      margin: 0,
+      width: '100%',
+      height: '100%',
+    },
+    '& .MuiGrid-spacing-xs-1 > .MuiGrid-item': {
+      padding: theme.spacing(0.5),
+    },
+  },
+  fullscreenContainer: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 9999,
+    backgroundColor: theme.palette.background.default,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  fullscreenContent: {
+    flex: 1,
+    overflow: 'hidden',
+    padding: theme.spacing(2),
+    display: 'flex',
+    minHeight: 0,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontWeight: 500,
+    textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+    lineHeight: 1.2,
+    margin: 0,
+  },
+  headerSubtitle: {
+    color: '#FFFFFF',
+    fontWeight: 400,
+    opacity: 0.95,
+    textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+    lineHeight: 1.3,
+    margin: 0,
+  },
+  sidebarColumn: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  chatColumn: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    minWidth: 0,
+    overflow: 'hidden',
+  },
+  chatCard: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  chatCardContent: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    minHeight: 0,
+  },
+  fullscreenButton: {
+    color: '#FFFFFF',
+  },
+  pageContainer: {
+    height: 'calc(100vh - 64px)',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    '& > *': {
+      flex: 1,
+      overflow: 'hidden',
+      minHeight: 0,
+    },
+  },
+  contentWrapper: {
+    height: '100%',
+    overflow: 'hidden',
+    padding: theme.spacing(1),
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  customHeaderContainer: {
+    background:
+      'linear-gradient(135deg, #004D40 0%, #00695C 25%, #00838F 50%, #1565C0 100%)',
+    padding: theme.spacing(1, 3),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    color: '#FFFFFF',
+    minHeight: '56px',
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  customHeaderLeft: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+    flex: '0 0 auto',
+  },
+  customHeaderRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(4),
+    flex: '0 0 auto',
+    marginLeft: 'auto',
+  },
+  customHeaderStatus: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    minWidth: '120px',
+  },
+  customHeaderLabel: {
+    fontSize: '0.75rem',
+    opacity: 0.85,
+    fontWeight: 500,
+    marginBottom: theme.spacing(0.25),
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+  },
+  customHeaderValue: {
+    fontSize: '0.9rem',
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
   },
 }));
 
 const STORAGE_KEY = 'agent-forge-chat-sessions';
 
 /**
- * Agent Forge page component with chat sessions and message queuing
+ * Agent Forge page component with chat history and message queuing
  * @public
  */
 export function AgentForgePage() {
@@ -81,6 +225,40 @@ export function AgentForgePage() {
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
+  const requestTimeout =
+    config.getOptionalNumber('agentForge.requestTimeout') || 300;
+  const headerTitle =
+    config.getOptionalString('agentForge.headerTitle') || botName;
+  const headerSubtitle =
+    config.getOptionalString('agentForge.headerSubtitle') ||
+    'AI Platform Engineer Assistant';
+  const inputPlaceholder =
+    config.getOptionalString('agentForge.inputPlaceholder') ||
+    `Ask ${botName} anything...`;
+
+  // Font size configuration
+  const fontSizes = {
+    headerTitle:
+      config.getOptionalString('agentForge.fontSize.headerTitle') || '1.125rem',
+    headerSubtitle:
+      config.getOptionalString('agentForge.fontSize.headerSubtitle') ||
+      '0.75rem',
+    messageText:
+      config.getOptionalString('agentForge.fontSize.messageText') || '0.875rem',
+    codeBlock:
+      config.getOptionalString('agentForge.fontSize.codeBlock') || '0.9rem',
+    inlineCode:
+      config.getOptionalString('agentForge.fontSize.inlineCode') || '0.875rem',
+    suggestionChip:
+      config.getOptionalString('agentForge.fontSize.suggestionChip') ||
+      '0.875rem',
+    sidebarText:
+      config.getOptionalString('agentForge.fontSize.sidebarText') || '0.875rem',
+    inputField:
+      config.getOptionalString('agentForge.fontSize.inputField') || '1rem',
+    timestamp:
+      config.getOptionalString('agentForge.fontSize.timestamp') || '0.75rem',
+  };
 
   // Chat session state
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -91,27 +269,62 @@ export function AgentForgePage() {
   const [isTyping, setIsTyping] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<
+    'checking' | 'connected' | 'disconnected'
+  >('checking');
 
   // Token authentication for external system integration
   const { tokenMessage, isTokenRequest } = useTokenAuthentication();
 
   const chatbotApi = useMemo(() => {
     try {
-      const api = new ChatbotApi(backendUrl, { identityApi });
+      const api = new ChatbotApi(
+        backendUrl,
+        { identityApi },
+        { requestTimeout },
+      );
       setApiError(null);
       return api;
     } catch (error) {
       setApiError('Failed to initialize chat service');
       return null;
     }
-  }, [backendUrl, identityApi]);
+  }, [backendUrl, identityApi, requestTimeout]);
+
+  // Check agent connection status
+  useEffect(() => {
+    const checkConnection = async () => {
+      if (!chatbotApi) {
+        setConnectionStatus('disconnected');
+        return;
+      }
+
+      setConnectionStatus('checking');
+      try {
+        // Try to get the agent card to verify connection
+        await chatbotApi.getSkillExamples();
+        setConnectionStatus('connected');
+        setApiError(null);
+      } catch (error: any) {
+        setConnectionStatus('disconnected');
+        setApiError(
+          error.message ||
+            'Unable to connect to agent service. Please check the configuration.',
+        );
+      }
+    };
+
+    checkConnection();
+  }, [chatbotApi]);
 
   // Get current session
   const currentSession = useMemo(() => {
     return sessions.find(s => s.id === currentSessionId) || null;
   }, [sessions, currentSessionId]);
 
-  // Load sessions from localStorage on mount
+  // Load chat history from localStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -150,7 +363,7 @@ export function AgentForgePage() {
     }
   }, [botName, alertApi]);
 
-  // Save sessions to localStorage whenever they change
+  // Save chat history to localStorage whenever they change
   useEffect(() => {
     try {
       const data: ChatStorage = {
@@ -159,7 +372,7 @@ export function AgentForgePage() {
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      // console.warn('Failed to save chat sessions to storage:', error);
+      // console.warn('Failed to save chat history to storage:', error);
     }
   }, [sessions, currentSessionId]);
 
@@ -188,14 +401,10 @@ export function AgentForgePage() {
   const switchToSession = useCallback(
     (sessionId: string) => {
       setCurrentSessionId(sessionId);
-      const session = sessions.find(s => s.id === sessionId);
-      if (session && session.messages.length <= 1) {
-        setSuggestions(initialSuggestions);
-      } else {
-        setSuggestions([]);
-      }
+      // Always keep suggestions visible
+      setSuggestions(initialSuggestions);
     },
-    [sessions, initialSuggestions],
+    [initialSuggestions],
   );
 
   // Delete session
@@ -348,7 +557,7 @@ export function AgentForgePage() {
       );
       setUserInput('');
       setIsTyping(true);
-      setSuggestions([]); // Clear suggestions after first message
+      // Keep suggestions visible
 
       if (!chatbotApi) {
         setSessions(prev =>
@@ -500,6 +709,13 @@ export function AgentForgePage() {
       } catch (error) {
         const err = error as Error;
         setApiError(err.message);
+
+        // Check if it's a timeout error and display it directly without additional prefix
+        const isTimeoutError = err.message.includes('timed out');
+        const errorMessage = isTimeoutError
+          ? `⏱️ ${err.message}`
+          : `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`;
+
         setSessions(prev =>
           prev.map(session => {
             if (session.id === sessionToUse) {
@@ -508,7 +724,7 @@ export function AgentForgePage() {
                 messages: [
                   ...session.messages,
                   {
-                    text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`,
+                    text: errorMessage,
                     isUser: false,
                     timestamp: createTimestamp(),
                   },
@@ -567,74 +783,293 @@ export function AgentForgePage() {
     setApiError(null);
   };
 
-  return (
-    <Page themeId="tool">
-      <Header title={botName} subtitle="AI Platform Engineer Assistant">
-        <HeaderLabel
-          label="Status"
-          value={chatbotApi ? 'Connected' : 'Disconnected'}
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const renderContent = () => (
+    <Grid container spacing={1} className={classes.mainContent} wrap="nowrap">
+      {/* Chat History Sidebar */}
+      <Grid
+        item
+        className={classes.sidebarColumn}
+        style={
+          isSidebarCollapsed
+            ? { flexShrink: 0, width: 'auto' }
+            : { flexShrink: 0, width: 'auto', minWidth: 250, maxWidth: 300 }
+        }
+      >
+        <ChatSessionSidebar
+          sessions={sessions}
+          currentSessionId={currentSessionId}
+          onSessionSwitch={switchToSession}
+          onNewSession={createNewSession}
+          onDeleteSession={deleteSession}
+          onCollapseChange={setIsSidebarCollapsed}
+          sidebarTextFontSize={fontSizes.sidebarText}
+          isCollapsed={isSidebarCollapsed}
         />
-        <HeaderLabel label="Version" value={`v${packageInfo.version}`} />
-      </Header>
-      <Content>
-        <Grid container spacing={1} className={classes.mainContent}>
-          {/* Chat Sessions Sidebar */}
-          <Grid item xs={12} md={3} style={{ height: '100%' }}>
-            <ChatSessionSidebar
-              sessions={sessions}
-              currentSessionId={currentSessionId}
-              onSessionSwitch={switchToSession}
-              onNewSession={createNewSession}
-              onDeleteSession={deleteSession}
+      </Grid>
+
+      {/* Main Chat Area */}
+      <Grid item className={classes.chatColumn}>
+        {apiError && (
+          <Paper className={classes.errorBox}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 4,
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                style={{ fontWeight: 600, fontSize: '0.875rem' }}
+              >
+                Connection Error
+              </Typography>
+              <IconButton
+                size="small"
+                onClick={() => setApiError(null)}
+                style={{ color: 'inherit', padding: 2 }}
+                title="Dismiss"
+              >
+                ×
+              </IconButton>
+            </div>
+            <Typography
+              variant="body2"
+              style={{
+                marginBottom: 6,
+                fontSize: '0.8125rem',
+                lineHeight: 1.3,
+              }}
+            >
+              {apiError}
+            </Typography>
+            <Button
+              size="small"
+              startIcon={<RefreshIcon style={{ fontSize: '1rem' }} />}
+              onClick={() => window.location.reload()}
+              variant="outlined"
+              style={{
+                color: 'inherit',
+                borderColor: 'currentColor',
+                fontSize: '0.8125rem',
+                padding: '4px 10px',
+              }}
+            >
+              Retry Connection
+            </Button>
+          </Paper>
+        )}
+
+        {isTokenRequest && tokenMessage && (
+          <Card style={{ marginBottom: 16 }}>
+            <CardContent>
+              <Typography variant="h6">Authentication</Typography>
+              <Typography variant="body2">{tokenMessage}</Typography>
+            </CardContent>
+          </Card>
+        )}
+
+        <Card className={classes.chatCard}>
+          <CardContent className={classes.chatCardContent}>
+            <PageHeader botName={botName} botIcon={botIcon} />
+
+            <ChatContainer
+              messages={currentSession?.messages || []}
+              userInput={userInput}
+              setUserInput={setUserInput}
+              onMessageSubmit={handleMessageSubmit}
+              onSuggestionClick={handleSuggestionClick}
+              onReset={resetChat}
+              isTyping={isTyping}
+              suggestions={suggestions}
+              botName={botName}
+              inputPlaceholder={inputPlaceholder}
+              fontSizes={{
+                messageText: fontSizes.messageText,
+                codeBlock: fontSizes.codeBlock,
+                inlineCode: fontSizes.inlineCode,
+                suggestionChip: fontSizes.suggestionChip,
+                inputField: fontSizes.inputField,
+                timestamp: fontSizes.timestamp,
+              }}
             />
-          </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+  );
 
-          {/* Main Chat Area */}
-          <Grid item xs={12} md={9} style={{ height: '100%' }}>
-            {apiError && (
-              <Paper className={classes.errorBox}>
-                <Typography variant="h6">Connection Error</Typography>
-                <Typography variant="body2">{apiError}</Typography>
-                <Button
-                  startIcon={<RefreshIcon />}
-                  onClick={() => window.location.reload()}
-                  style={{ marginTop: 8, color: 'inherit' }}
+  if (isFullscreen) {
+    return (
+      <div className={classes.fullscreenContainer}>
+        <Box className={classes.customHeaderContainer}>
+          <Box className={classes.customHeaderLeft}>
+            <Tooltip title="Visit CAIPE Documentation" placement="bottom">
+              <Box>
+                <Typography
+                  variant="h5"
+                  className={classes.headerTitle}
+                  style={{ fontSize: fontSizes.headerTitle }}
                 >
-                  Retry Connection
-                </Button>
-              </Paper>
-            )}
+                  {headerTitle}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  className={classes.headerSubtitle}
+                  component="a"
+                  href="https://cnoe-io.github.io/ai-platform-engineering/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    fontSize: fontSizes.headerSubtitle,
+                  }}
+                >
+                  {headerSubtitle}
+                </Typography>
+              </Box>
+            </Tooltip>
+          </Box>
+          <Box className={classes.customHeaderRight}>
+            <Tooltip title={`Agent URL: ${backendUrl}`} placement="bottom">
+              <Box className={classes.customHeaderStatus}>
+                <Typography className={classes.customHeaderLabel}>
+                  Status
+                </Typography>
+                <Typography className={classes.customHeaderValue}>
+                  {connectionStatus === 'connected' && 'Connected'}
+                  {connectionStatus === 'checking' && 'Connecting...'}
+                  {connectionStatus === 'disconnected' && 'Disconnected'}
+                </Typography>
+              </Box>
+            </Tooltip>
+            <Tooltip
+              title="View on NPM: @caipe/plugin-agent-forge"
+              placement="bottom"
+            >
+              <Box
+                className={classes.customHeaderStatus}
+                onClick={() =>
+                  window.open(
+                    'https://www.npmjs.com/package/@caipe/plugin-agent-forge',
+                    '_blank',
+                  )
+                }
+                style={{ cursor: 'pointer' }}
+              >
+                <Typography className={classes.customHeaderLabel}>
+                  Plugin Version
+                </Typography>
+                <Typography className={classes.customHeaderValue}>
+                  v{packageInfo.version}
+                </Typography>
+              </Box>
+            </Tooltip>
+            <Tooltip title="Exit Fullscreen">
+              <IconButton
+                onClick={toggleFullscreen}
+                className={classes.fullscreenButton}
+              >
+                <FullscreenExitIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+        <div className={classes.fullscreenContent}>{renderContent()}</div>
+      </div>
+    );
+  }
 
-            {isTokenRequest && tokenMessage && (
-              <Card style={{ marginBottom: 16 }}>
-                <CardContent>
-                  <Typography variant="h6">Authentication</Typography>
-                  <Typography variant="body2">{tokenMessage}</Typography>
-                </CardContent>
-              </Card>
-            )}
-
-            <Card>
-              <CardContent>
-                <PageHeader botName={botName} botIcon={botIcon} />
-
-                <ChatContainer
-                  messages={currentSession?.messages || []}
-                  userInput={userInput}
-                  setUserInput={setUserInput}
-                  onMessageSubmit={handleMessageSubmit}
-                  onSuggestionClick={handleSuggestionClick}
-                  onReset={resetChat}
-                  isTyping={isTyping}
-                  suggestions={suggestions}
-                  botName={botName}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Content>
-    </Page>
+  return (
+    <>
+      <Box className={classes.customHeaderContainer}>
+        <Box className={classes.customHeaderLeft}>
+          <Tooltip title="Visit CAIPE Documentation" placement="bottom">
+            <Box>
+              <Typography
+                variant="h5"
+                className={classes.headerTitle}
+                style={{ fontSize: fontSizes.headerTitle }}
+              >
+                {headerTitle}
+              </Typography>
+              <Typography
+                variant="body2"
+                className={classes.headerSubtitle}
+                component="a"
+                href="https://cnoe-io.github.io/ai-platform-engineering/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  fontSize: fontSizes.headerSubtitle,
+                }}
+              >
+                {headerSubtitle}
+              </Typography>
+            </Box>
+          </Tooltip>
+        </Box>
+        <Box className={classes.customHeaderRight}>
+          <Tooltip title={`Agent URL: ${backendUrl}`} placement="bottom">
+            <Box className={classes.customHeaderStatus}>
+              <Typography className={classes.customHeaderLabel}>
+                Status
+              </Typography>
+              <Typography className={classes.customHeaderValue}>
+                {connectionStatus === 'connected' && 'Connected'}
+                {connectionStatus === 'checking' && 'Connecting...'}
+                {connectionStatus === 'disconnected' && 'Disconnected'}
+              </Typography>
+            </Box>
+          </Tooltip>
+          <Tooltip
+            title="View on NPM: @caipe/plugin-agent-forge"
+            placement="bottom"
+          >
+            <Box
+              className={classes.customHeaderStatus}
+              onClick={() =>
+                window.open(
+                  'https://www.npmjs.com/package/@caipe/plugin-agent-forge',
+                  '_blank',
+                )
+              }
+              style={{ cursor: 'pointer' }}
+            >
+              <Typography className={classes.customHeaderLabel}>
+                Plugin Version
+              </Typography>
+              <Typography className={classes.customHeaderValue}>
+                v{packageInfo.version}
+              </Typography>
+            </Box>
+          </Tooltip>
+          <Tooltip title="Fullscreen">
+            <IconButton
+              onClick={toggleFullscreen}
+              className={classes.fullscreenButton}
+            >
+              <FullscreenIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+      <Box className={classes.pageContainer}>
+        <Page themeId="tool">
+          <Content noPadding>
+            <Box className={classes.contentWrapper}>{renderContent()}</Box>
+          </Content>
+        </Page>
+      </Box>
+    </>
   );
 }
 

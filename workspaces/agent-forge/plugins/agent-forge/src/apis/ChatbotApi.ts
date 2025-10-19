@@ -24,7 +24,9 @@ import {
 } from '../a2a/schema';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
-export interface IChatbotApiOptions {}
+export interface IChatbotApiOptions {
+  requestTimeout?: number;
+}
 
 export class ChatbotApi {
   private client: A2AClient | null = null;
@@ -33,7 +35,7 @@ export class ChatbotApi {
   constructor(
     private apiBaseUrl: string,
     options: { identityApi: IdentityApi },
-    _?: IChatbotApiOptions,
+    apiOptions?: IChatbotApiOptions,
   ) {
     this.contextId = '';
     if (!this.apiBaseUrl) {
@@ -41,7 +43,8 @@ export class ChatbotApi {
     }
     this.identityApi = options.identityApi;
     try {
-      this.client = new A2AClient(this.apiBaseUrl);
+      const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
+      this.client = new A2AClient(this.apiBaseUrl, timeout);
     } catch (error) {
       throw new Error('Error connecting to agent');
     }

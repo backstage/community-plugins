@@ -6,8 +6,22 @@ organization:
   name: Acme
 
 agentForge:
-  baseUrl: http://localhost:8000
+  baseUrl: https://caipe.dev.outshift.io
   showOptions: true
+  requestTimeout: 300
+  headerTitle: CAIPE
+  headerSubtitle: AI Platform Engineer Assistant
+  inputPlaceholder: Ask CAIPE anything...
+  fontSize:
+    headerTitle: 1.125rem
+    headerSubtitle: 0.75rem
+    messageText: 0.875rem
+    codeBlock: 0.9rem
+    inlineCode: 0.875rem
+    suggestionChip: 0.875rem
+    sidebarText: 0.875rem
+    inputField: 1rem
+    timestamp: 0.75rem
 
 backend:
   baseUrl: http://localhost:7007

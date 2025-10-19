@@ -59,7 +59,11 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/material": "^5.16.6",
     "@mui/styles": "^5.16.6",
+    "axios": "^1.7.2",
+    "react-markdown": "^8.0.7",
+    "react-syntax-highlighter": "^15.5.0",
     "react-use": "^17.2.4",
+    "remark-gfm": "^3.0.1",
     "uuid": "^11.1.0"
   },
   "peerDependencies": {
@@ -80,6 +84,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-syntax-highlighter": "^15.5.11",
     "commitizen": "^4.3.0",
     "cross-env": "^10.0.0",
     "cz-conventional-changelog": "^3.3.0",

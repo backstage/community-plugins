@@ -14,26 +14,40 @@
  * limitations under the License.
  */
 
-import { MarkdownContent } from '@backstage/core-components';
 import {
   identityApiRef,
   useApi,
   alertApiRef,
 } from '@backstage/core-plugin-api';
-import { Box, Typography, makeStyles, IconButton } from '@material-ui/core';
+import {
+  Box,
+  Typography,
+  makeStyles,
+  IconButton,
+  Tooltip,
+} from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import useAsync from 'react-use/esm/useAsync';
 import { Message } from '../types';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import {
+  vscDarkPlus,
+  vs,
+} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   messageBox: {
-    padding: theme.spacing(1.5),
+    padding: theme.spacing(1, 2),
     borderRadius: theme.shape.borderRadius,
-    maxWidth: '80%',
+    width: 'fit-content',
+    maxWidth: '75%',
   },
   userMessage: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
+    color: '#ffffff',
     marginLeft: 'auto',
     textAlign: 'right',
   },
@@ -51,6 +65,35 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
+  markdownTable: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    fontSize: '0.875rem',
+    '& th': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? theme.palette.grey[700]
+          : theme.palette.grey[200],
+      color: theme.palette.text.primary,
+      fontWeight: 600,
+      padding: theme.spacing(1),
+      border: `1px solid ${theme.palette.divider}`,
+      textAlign: 'left',
+    },
+    '& td': {
+      padding: theme.spacing(1),
+      border: `1px solid ${theme.palette.divider}`,
+      color: theme.palette.text.primary,
+    },
+    '& tr:nth-of-type(even)': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(255, 255, 255, 0.03)'
+          : 'rgba(0, 0, 0, 0.02)',
+    },
+  },
 }));
 
 /**
@@ -59,17 +102,24 @@ const useStyles = makeStyles(theme => ({
  */
 export interface ChatMessageProps {
   message: Message;
+  fontSizes?: {
+    messageText?: string;
+    codeBlock?: string;
+    inlineCode?: string;
+    timestamp?: string;
+  };
 }
 
 /**
  * Individual chat message component with user profile integration
  * @public
  */
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, fontSizes }: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
   const alertApi = useApi(alertApiRef);
   const { value: profile } = useAsync(() => identityApi.getProfileInfo());
+  const theme = useTheme();
 
   const handleCopyToClipboard = async () => {
     try {
@@ -86,13 +136,86 @@ export function ChatMessage({ message }: ChatMessageProps) {
     }
   };
 
+  const handleCodeCopy = async (code: string) => {
+    try {
+      await window.navigator.clipboard.writeText(code);
+      alertApi.post({
+        message: 'Code copied to clipboard',
+        severity: 'success',
+      });
+    } catch (error) {
+      alertApi.post({
+        message: 'Failed to copy code',
+        severity: 'error',
+      });
+    }
+  };
+
+  // Custom code component with syntax highlighting
+  const CodeBlock = ({ inline, className, children, ...props }: any) => {
+    const match = /language-(\w+)/.exec(className || '');
+    const codeString = String(children).replace(/\n$/, '');
+
+    if (!inline && match) {
+      return (
+        <div style={{ position: 'relative' }}>
+          <Tooltip title="Copy code">
+            <IconButton
+              size="small"
+              onClick={() => handleCodeCopy(codeString)}
+              style={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                padding: 4,
+                zIndex: 1,
+                backgroundColor: theme.palette.background.paper,
+                opacity: 0.7,
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.opacity = '1';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.opacity = '0.7';
+              }}
+            >
+              <FileCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <SyntaxHighlighter
+            style={theme.palette.type === 'dark' ? vscDarkPlus : vs}
+            language={match[1]}
+            PreTag="div"
+            customStyle={{
+              fontSize: fontSizes?.codeBlock || '0.9rem',
+              lineHeight: '1.5',
+            }}
+            {...props}
+          >
+            {codeString}
+          </SyntaxHighlighter>
+        </div>
+      );
+    }
+
+    return (
+      <code
+        className={className}
+        style={{ fontSize: fontSizes?.inlineCode || '0.875rem' }}
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  };
+
   if (message.isUser) {
     return (
       <Box className={`${classes.messageBox} ${classes.userMessage}`}>
         <Box
           display="flex"
           alignItems="center"
-          marginBottom={1}
+          marginBottom={0.5}
           style={{ gap: 8 }}
         >
           <Box
@@ -100,7 +223,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
             height={20}
             borderRadius="50%"
             style={{
-              backgroundColor: '#1b0b34',
+              backgroundColor:
+                theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
               backgroundImage: profile?.picture
                 ? `url("${profile.picture}")`
                 : undefined,
@@ -109,7 +233,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           />
           <Typography
             variant="caption"
-            style={{ fontWeight: 700, color: 'inherit' }}
+            style={{ fontWeight: 700, color: '#ffffff' }}
           >
             You
           </Typography>
@@ -117,23 +241,58 @@ export function ChatMessage({ message }: ChatMessageProps) {
         <Box
           style={{
             wordBreak: 'break-word',
-            color: 'inherit',
+            color: '#ffffff',
           }}
         >
-          <MarkdownContent
-            content={message.text || ''}
-            transformLinkUri={uri => (uri.startsWith('http') ? uri : '')}
-            linkTarget="_blank"
-          />
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              code: CodeBlock,
+              a: ({ href, children, ...props }) => (
+                <a
+                  href={href?.startsWith('http') ? href : ''}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: '#b3d9ff',
+                    textDecoration: 'underline',
+                    fontWeight: 500,
+                  }}
+                  {...props}
+                >
+                  {children}
+                </a>
+              ),
+              p: ({ children, ...props }) => (
+                <p
+                  style={{
+                    color: '#ffffff',
+                    margin: '0.5em 0',
+                    fontSize: fontSizes?.messageText || '0.875rem',
+                  }}
+                  {...props}
+                >
+                  {children}
+                </p>
+              ),
+              table: ({ children, ...props }) => (
+                <table className={classes.markdownTable} {...props}>
+                  {children}
+                </table>
+              ),
+            }}
+          >
+            {message.text || ''}
+          </ReactMarkdown>
         </Box>
         <Typography
           variant="caption"
           style={{
-            opacity: 0.7,
-            fontSize: '0.75rem',
-            color: 'inherit',
+            opacity: 0.85,
+            fontSize: fontSizes?.timestamp || '0.75rem',
+            color: '#ffffff',
             display: 'block',
-            marginTop: 4,
+            marginTop: 2,
           }}
         >
           {message.timestamp}
@@ -150,31 +309,62 @@ export function ChatMessage({ message }: ChatMessageProps) {
           color: 'inherit',
         }}
       >
-        <MarkdownContent
-          content={message.text || ''}
-          transformLinkUri={uri => (uri.startsWith('http') ? uri : '')}
-          linkTarget="_blank"
-        />
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            code: CodeBlock,
+            a: ({ href, children, ...props }) => (
+              <a
+                href={href?.startsWith('http') ? href : ''}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                  textDecoration: 'underline',
+                }}
+                {...props}
+              >
+                {children}
+              </a>
+            ),
+            p: ({ children, ...props }) => (
+              <p
+                style={{ fontSize: fontSizes?.messageText || '0.875rem' }}
+                {...props}
+              >
+                {children}
+              </p>
+            ),
+            table: ({ children, ...props }) => (
+              <table className={classes.markdownTable} {...props}>
+                {children}
+              </table>
+            ),
+          }}
+        >
+          {message.text || ''}
+        </ReactMarkdown>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography
           variant="caption"
           style={{
             opacity: 0.7,
-            fontSize: '0.75rem',
+            fontSize: fontSizes?.timestamp || '0.75rem',
             color: 'inherit',
           }}
         >
           {message.timestamp}
         </Typography>
-        <IconButton
-          className={classes.copyButton}
-          size="small"
-          onClick={handleCopyToClipboard}
-          title="Copy message"
-        >
-          <FileCopyIcon fontSize="small" />
-        </IconButton>
+        <Tooltip title="Copy message">
+          <IconButton
+            className={classes.copyButton}
+            size="small"
+            onClick={handleCopyToClipboard}
+          >
+            <FileCopyIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       </Box>
     </Box>
   );

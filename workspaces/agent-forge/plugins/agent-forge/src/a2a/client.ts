@@ -66,6 +66,7 @@ export class A2AClient {
   private agentCardPromise: Promise<AgentCard>;
   private requestIdCounter: number = 1;
   private serviceEndpointUrl?: string; // To be populated from AgentCard after fetching
+  private timeoutMs: number; // Timeout in milliseconds
 
   /**
    * Constructs an A2AClient instance.
@@ -73,10 +74,85 @@ export class A2AClient {
    * The Agent Card is expected at `${agentBaseUrl}/.well-known/agent.json`.
    * The `url` field from the Agent Card will be used as the RPC service endpoint.
    * @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
+   * @param timeoutSeconds The timeout for HTTP requests in seconds (default: 300).
    */
-  constructor(agentBaseUrl: string) {
+  constructor(agentBaseUrl: string, timeoutSeconds: number = 300) {
     this.agentBaseUrl = agentBaseUrl.replace(/\/$/, ''); // Remove trailing slash if any
+    this.timeoutMs = timeoutSeconds * 1000; // Convert to milliseconds
     this.agentCardPromise = this._fetchAndCacheAgentCard();
+  }
+
+  /**
+   * Helper method to check for 504 Gateway Timeout and throw appropriate error.
+   * @param response The HTTP response to check.
+   */
+  private checkFor504Error(response: Response): void {
+    if (response.status === 504) {
+      throw new Error('The CAIPE agent timed out. Please try again later.');
+    }
+  }
+
+  /**
+   * Creates a fetch request with timeout using AbortController.
+   * @param url The URL to fetch.
+   * @param options Fetch options.
+   * @returns A Promise that resolves to the Response.
+   */
+  private async _fetchWithTimeout(
+    url: string,
+    options: RequestInit = {},
+  ): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error(
+          `Connection timeout: Unable to reach ${url} after ${
+            this.timeoutMs / 1000
+          } seconds. Please check your network connection and try again.`,
+        );
+      }
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        throw new Error(
+          `Unable to connect to agent at ${url}. Please verify the agent URL is correct and the service is running.`,
+        );
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Creates a fetch request for streaming responses without body read timeout.
+   * The timeout only applies to establishing the connection, not reading the stream.
+   * @param url The URL to fetch.
+   * @param options Fetch options.
+   * @returns A Promise that resolves to the Response.
+   */
+  private async _fetchStreamNoTimeout(
+    url: string,
+    options: RequestInit = {},
+  ): Promise<Response> {
+    try {
+      // For streaming, don't use AbortController so the stream can continue indefinitely
+      const response = await fetch(url, options);
+      return response;
+    } catch (error: any) {
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        throw new Error(
+          `Unable to connect to agent at ${url}. Please verify the agent URL is correct and the service is running.`,
+        );
+      }
+      throw error;
+    }
   }
 
   /**
@@ -87,25 +163,26 @@ export class A2AClient {
   private async _fetchAndCacheAgentCard(): Promise<AgentCard> {
     const agentCardUrl = `${this.agentBaseUrl}/.well-known/agent.json`;
     try {
-      const response = await fetch(agentCardUrl, {
+      const response = await this._fetchWithTimeout(agentCardUrl, {
         headers: { Accept: 'application/json' },
       });
       if (!response.ok) {
+        this.checkFor504Error(response);
         throw new Error(
-          `Failed to fetch Agent Card from ${agentCardUrl}: ${response.status} ${response.statusText}`,
+          `Agent service returned error ${response.status}: ${response.statusText}. Please check if the agent service is running properly.`,
         );
       }
       const agentCard: AgentCard = await response.json();
       if (!agentCard.url) {
         throw new Error(
-          "Fetched Agent Card does not contain a valid 'url' for the service endpoint.",
+          'Agent configuration is invalid. Please contact your administrator.',
         );
       }
       // Use the configured base URL instead of the URL from agent card
       this.serviceEndpointUrl = this.agentBaseUrl;
       return agentCard;
-    } catch (error) {
-      console.error('Error fetching or parsing Agent Card:');
+    } catch (error: any) {
+      console.error('Error connecting to agent:', error.message);
       // Allow the promise to reject so users of agentCardPromise can handle it.
       throw error;
     }
@@ -123,10 +200,11 @@ export class A2AClient {
     if (agentBaseUrl) {
       const specificAgentBaseUrl = agentBaseUrl.replace(/\/$/, '');
       const agentCardUrl = `${specificAgentBaseUrl}/.well-known/agent.json`;
-      const response = await fetch(agentCardUrl, {
+      const response = await this._fetchWithTimeout(agentCardUrl, {
         headers: { Accept: 'application/json' },
       });
       if (!response.ok) {
+        this.checkFor504Error(response);
         throw new Error(
           `Failed to fetch Agent Card from ${agentCardUrl}: ${response.status} ${response.statusText}`,
         );
@@ -183,7 +261,7 @@ export class A2AClient {
     if (authToken) {
       headers.Authorization = 'Bearer ' + authToken;
     }
-    const httpResponse = await fetch(endpoint, {
+    const httpResponse = await this._fetchWithTimeout(endpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify(rpcRequest),
@@ -286,7 +364,7 @@ export class A2AClient {
       id: clientRequestId,
     };
 
-    const response = await fetch(endpoint, {
+    const response = await this._fetchStreamNoTimeout(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -296,6 +374,9 @@ export class A2AClient {
     });
 
     if (!response.ok) {
+      // Check for 504 Gateway Timeout first
+      this.checkFor504Error(response);
+
       // Attempt to read error body for more details
       let errorBody = '';
       try {
@@ -424,7 +505,7 @@ export class A2AClient {
       id: clientRequestId,
     };
 
-    const response = await fetch(endpoint, {
+    const response = await this._fetchStreamNoTimeout(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -434,6 +515,9 @@ export class A2AClient {
     });
 
     if (!response.ok) {
+      // Check for 504 Gateway Timeout first
+      this.checkFor504Error(response);
+
       let errorBody = '';
       try {
         errorBody = await response.text();

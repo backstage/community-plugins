@@ -42,6 +42,9 @@ export function useTokenAuthentication() {
       if (cb) {
         setIsTokenRequest(true);
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 300000); // 300 seconds timeout
+
           const response = await fetch(cb, {
             method: 'POST',
             mode: 'no-cors',
@@ -49,13 +52,19 @@ export function useTokenAuthentication() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ token }),
+            signal: controller.signal,
           });
+          clearTimeout(timeoutId);
           if (!response.ok) {
             setMessage(`Failed to post token to callback URL: ${cb}`);
             return;
           }
           setMessage('Success! You may close this window.');
-        } catch (error) {
+        } catch (error: any) {
+          if (error.name === 'AbortError') {
+            setMessage(`Request timeout after 300 seconds`);
+            return;
+          }
           setMessage(
             `Failed to post token to callback URL: ${cb} err: ${error} redirecting...`,
           );

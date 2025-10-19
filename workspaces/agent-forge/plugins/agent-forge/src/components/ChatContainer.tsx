@@ -17,10 +17,10 @@
 import {
   Box,
   Chip,
-  CircularProgress,
   Divider,
   IconButton,
   TextField,
+  Tooltip,
   Typography,
   makeStyles,
 } from '@material-ui/core';
@@ -32,21 +32,24 @@ import { ChatMessage } from './ChatMessage';
 
 const useStyles = makeStyles(theme => ({
   chatContainer: {
-    height: '70vh',
+    flex: 1,
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
     boxShadow: theme.shadows[1],
     overflow: 'hidden',
+    minHeight: 0,
   },
   messagesContainer: {
     flexGrow: 1,
     overflowY: 'auto',
+    overflowX: 'hidden',
     padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(1),
+    minHeight: 0,
   },
   inputContainer: {
     display: 'flex',
@@ -62,11 +65,90 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(0.5),
     fontStyle: 'italic',
   },
+  spinnerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: theme.spacing(1),
+  },
+  '@keyframes spin': {
+    '0%': {
+      transform: 'rotate(0deg)',
+    },
+    '100%': {
+      transform: 'rotate(360deg)',
+    },
+  },
+  '@keyframes pulse': {
+    '0%, 100%': {
+      opacity: 1,
+    },
+    '50%': {
+      opacity: 0.5,
+    },
+  },
+  spinner: {
+    width: 20,
+    height: 20,
+    border: `3px solid ${
+      theme.palette.type === 'dark'
+        ? 'rgba(255, 255, 255, 0.1)'
+        : 'rgba(0, 0, 0, 0.1)'
+    }`,
+    borderTop: `3px solid ${theme.palette.primary.main}`,
+    borderRadius: '50%',
+    animation: '$spin 0.8s linear infinite',
+  },
+  spinnerDots: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    '& > span': {
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      backgroundColor: theme.palette.primary.main,
+      animation: '$pulse 1.4s ease-in-out infinite',
+      '&:nth-child(1)': {
+        animationDelay: '0s',
+      },
+      '&:nth-child(2)': {
+        animationDelay: '0.2s',
+      },
+      '&:nth-child(3)': {
+        animationDelay: '0.4s',
+      },
+    },
+  },
   suggestionsContainer: {
     padding: theme.spacing(2),
     display: 'flex',
     flexWrap: 'wrap',
     gap: theme.spacing(1),
+  },
+  inputField: {
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.type === 'dark' ? '#00ccff' : undefined,
+      opacity: theme.palette.type === 'dark' ? 1 : undefined,
+    },
+  },
+  suggestionChip: {
+    backgroundColor: 'transparent',
+    borderColor: theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
+    color: theme.palette.type === 'dark' ? '#00ccff' : '#0277bd',
+    '&:hover': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(0, 153, 255, 0.15)'
+          : 'rgba(2, 136, 209, 0.1)',
+      borderColor: theme.palette.type === 'dark' ? '#00ccff' : '#01579b',
+    },
+    '&:active': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(0, 204, 255, 0.25)'
+          : 'rgba(2, 136, 209, 0.2)',
+    },
   },
 }));
 
@@ -81,6 +163,15 @@ export interface ChatContainerProps {
   isTyping: boolean;
   suggestions: string[];
   botName: string;
+  inputPlaceholder?: string;
+  fontSizes?: {
+    messageText?: string;
+    codeBlock?: string;
+    inlineCode?: string;
+    suggestionChip?: string;
+    inputField?: string;
+    timestamp?: string;
+  };
   onMessageSubmit: (messageText?: string) => void;
   onReset: () => void;
   onSuggestionClick: (suggestion: string) => void;
@@ -97,6 +188,8 @@ export function ChatContainer({
   isTyping,
   suggestions,
   botName,
+  inputPlaceholder,
+  fontSizes,
   onMessageSubmit,
   onReset,
   onSuggestionClick,
@@ -125,12 +218,25 @@ export function ChatContainer({
     <div className={classes.chatContainer}>
       <div className={classes.messagesContainer}>
         {messages.map((message, index) => (
-          <ChatMessage key={index} message={message} />
+          <ChatMessage
+            key={index}
+            message={message}
+            fontSizes={{
+              messageText: fontSizes?.messageText,
+              codeBlock: fontSizes?.codeBlock,
+              inlineCode: fontSizes?.inlineCode,
+              timestamp: fontSizes?.timestamp,
+            }}
+          />
         ))}
 
         {isTyping && (
           <Box className={classes.typingIndicator}>
-            <CircularProgress size={16} />
+            <div className={classes.spinnerDots}>
+              <span />
+              <span />
+              <span />
+            </div>
             <Typography variant="caption" style={{ marginLeft: 8 }}>
               {botName} is thinking...
             </Typography>
@@ -146,28 +252,40 @@ export function ChatContainer({
           minRows={1}
           maxRows={4}
           variant="outlined"
-          placeholder={`Ask ${botName} anything...`}
+          placeholder={inputPlaceholder || `Ask ${botName} anything...`}
           value={userInput}
           onChange={e => setUserInput(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={isInputDisabled}
+          className={classes.inputField}
+          InputProps={{
+            style: { fontSize: fontSizes?.inputField || '1rem' },
+          }}
         />
-        <IconButton
-          color="primary"
-          onClick={() => onMessageSubmit()}
-          disabled={isInputDisabled || !userInput.trim()}
-          aria-label="send message"
-        >
-          <SendIcon />
-        </IconButton>
-        <IconButton
-          color="secondary"
-          onClick={onReset}
-          aria-label="reset chat"
-          disabled={isInputDisabled}
-        >
-          <RefreshIcon />
-        </IconButton>
+        <Tooltip title="Send message">
+          <span>
+            <IconButton
+              color="primary"
+              onClick={() => onMessageSubmit()}
+              disabled={isInputDisabled || !userInput.trim()}
+              aria-label="send message"
+            >
+              <SendIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+        <Tooltip title="Reset chat">
+          <span>
+            <IconButton
+              color="secondary"
+              onClick={onReset}
+              aria-label="reset chat"
+              disabled={isInputDisabled}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
       </Box>
       {suggestions.length > 0 && (
         <Box className={classes.suggestionsContainer}>
@@ -180,6 +298,8 @@ export function ChatContainer({
               color="primary"
               variant="outlined"
               disabled={isInputDisabled}
+              className={classes.suggestionChip}
+              style={{ fontSize: fontSizes?.suggestionChip || '0.875rem' }}
             />
           ))}
         </Box>
