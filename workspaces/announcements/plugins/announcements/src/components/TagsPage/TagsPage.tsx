@@ -154,7 +154,7 @@ type TagsPageProps = {
 
 export const TagsPage = (props: TagsPageProps) => {
   const { t } = useAnnouncementsTranslation();
-  const { loading: _, allowed: canCreate } = usePermission({
+  const { allowed: canCreate } = usePermission({
     permission: announcementCreatePermission,
   });
   const { themeId, hideContextMenu } = props;

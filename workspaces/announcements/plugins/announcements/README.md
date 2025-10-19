@@ -154,7 +154,7 @@ It is possible to specify the length of the title for announcements rendered on 
 Example
 
 ```tsx
-<AnnouncementsPage cardOptions={{ titleLength: 10 }} />
+<NewAnnouncementBanner cardOptions={{ titleLength: 10 }} />
 ```
 
 ### Markdown rendering
