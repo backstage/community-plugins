@@ -39,5 +39,8 @@ export type { Message } from './types';
 export type { PageHeaderProps } from './components/PageHeader';
 export type { ChatSession, ChatStorage } from './types/chat';
 
+// Export constants including bot icon
+export { DEFAULT_BOT_CONFIG } from './constants';
+
 // New frontend system exports
 export { default } from './alpha';
