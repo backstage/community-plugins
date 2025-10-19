@@ -38,7 +38,7 @@ jobs:
       # cache wouldn't necessarily upload when it changes. actions/download-artifact also doesn't work
       # because it only handles artifacts uploaded in the same run, and we want to restore from the
       # previous successful run.
-      - uses: dawidd6/action-download-artifact@v5
+      - uses: dawidd6/action-download-artifact@5d6b83f07a047c3b88f331901c80081d0f50b468 # v5.1.0
         if: github.event.inputs.repoCache != 'disabled'
         continue-on-error: true
         with:
@@ -48,7 +48,7 @@ jobs:
       # Generate an access token for the backstage-goalie[bot] account.
       - name: Get token
         id: get_token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@56c4c5e311915eca2093a02a4900a061456b3e70 # v1.10.1
         with:
           app-id: ${{ secrets.BACKSTAGE_GOALIE_APPLICATION_ID }}
           private-key: ${{ secrets.BACKSTAGE_GOALIE_PRIVATE_KEY }}
@@ -81,7 +81,7 @@ jobs:
 
           sudo chown -R 12021:0 /tmp/renovate/
 
-      - uses: renovatebot/github-action@v41.0.2
+      - uses: renovatebot/github-action@24ba460c4107127b876fc15c0e11e403487010a3 # v41.0.2
         with:
           configurationFile: .github/renovate-action.json
           renovate-version: full
@@ -102,7 +102,7 @@ jobs:
           # To solve *that*, we'd have to extract to root (/), which isn't safe.
           tar -czvf $cache_archive -C $cache_dir .
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@a8a3f3054ee34304133daa95b009A20e8819859b # v4.3.6
         if: github.event.inputs.repoCache != 'disabled'
         with:
           name: ${{ env.cache_key }}
