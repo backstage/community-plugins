@@ -2,7 +2,7 @@
 
 This plugin is part of the [**CAIPE (Community AI Platform Engineering)**](https://cnoe-io.github.io/ai-platform-engineering/) initiative, providing seamless integration between Backstage and the multi-agentic AI systems developed by the CNOE (Cloud Native Operational Excellence) community.
 
-![jarvis_1](images/jarvis_1.png)
+![jarvis_1](https://raw.githubusercontent.com/cnoe-io/community-plugins/agent-forge/workspaces/agent-forge/plugins/agent-forge/images/jarvis_1.png)
 
 ## What is CAIPE?
 
@@ -144,7 +144,7 @@ For detailed information on agent capabilities, prompt examples, and advanced us
 
 Use the chat interface to ask questions or perform required tasks. The system supports a wide range of platform engineering operations including incident management, version control, project management, team communication, continuous deployment, and cloud infrastructure management.
 
-![jarvis_1](images/jarvis_1.png)
+![jarvis_1](https://raw.githubusercontent.com/cnoe-io/community-plugins/agent-forge/workspaces/agent-forge/plugins/agent-forge/images/jarvis_1.png)
 
 ## Community and Resources
 
