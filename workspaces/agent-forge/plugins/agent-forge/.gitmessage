@@ -1,0 +1,10 @@
+# <type>[optional scope]: <description>
+#
+# [optional body]
+#
+# [optional footer(s)]
+#
+# Types: feat, fix, docs, style, refactor, test, chore
+# Example: feat(chat): add multi-agent routing support
+#
+# Signed-off-by: Your Name <your.email@example.com>

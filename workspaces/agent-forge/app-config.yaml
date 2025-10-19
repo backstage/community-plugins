@@ -1,13 +1,26 @@
 app:
   title: Agent Forge
-  baseUrl: http://localhost:3000
+  baseUrl: http://localhost:3001
 
 organization:
-  name: Cisco
+  name: Acme
 
 agentForge:
-  baseUrl: http://127.0.0.1:8000
+  baseUrl: http://localhost:8000
   showOptions: true
+  requestTimeout: 300
+  headerTitle: CAIPE (Formerly Jarvis)
+  headerSubtitle: AI Platform Engineer Assistant
+  inputPlaceholder: Ask CAIPE anything...
+  initialSuggestions:
+    - What can you do?
+    - How do I configure agents?
+    - Help me with platform engineering tasks
+  thinkingMessages:
+    - ⚙️ Processing query
+    - 🤖 Contacting agents
+    - 📦 Carrying bits
+    - 📊 Analyzing data
 
 backend:
   baseUrl: http://localhost:7007

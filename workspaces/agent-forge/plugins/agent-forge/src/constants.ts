@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-/**
- * Message interface for chat messages
- * @public
- */
-export interface Message {
-  text?: string; // Make optional to support A2A messages
-  parts?: Array<{
-    kind: string;
-    text?: string;
-    [key: string]: any;
-  }>; // Add A2A parts support
-  isUser: boolean;
-  timestamp?: string;
-}
+import DefaultBotIcon from './icons/caipe.png';
+
+export const DEFAULT_BOT_CONFIG = {
+  name: 'CAIPE',
+  icon: DefaultBotIcon,
+} as const;
+
+export const DEFAULT_SUGGESTIONS = [
+  'What can you do?',
+  'How do I configure agents?',
+  'Help me with platform engineering tasks',
+];
+
+export const DEFAULT_THINKING_MESSAGES = [
+  '🤖 Contacting agents',
+  '⚙️ Processing query',
+  '📦 Carrying bits',
+  '📊 Analyzing data',
+];

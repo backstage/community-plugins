@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-
-function TypingIndicator() {
-  return (
-    <Box width="100%" marginBottom={2}>
-      <Skeleton animation="pulse" />
-      <Skeleton animation="wave" />
-      <Skeleton animation="pulse" />
-    </Box>
-  );
+/**
+ * Props for the PageHeader component
+ * @public
+ */
+export interface PageHeaderProps {
+  botName: string;
+  botIcon?: string;
 }
 
-export default TypingIndicator;
+/** @public */
+export function PageHeader(_props: PageHeaderProps) {
+  // PageHeader is now empty - bot icon moved to custom header
+  return null;
+}

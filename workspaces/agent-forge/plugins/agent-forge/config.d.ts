@@ -16,13 +16,100 @@
 export interface Config {
   agentForge: {
     /**
+     * The base URL for the Agent Forge backend API
      * @visibility frontend
      */
     baseUrl: string;
 
     /**
+     * The name of the AI bot to display in the UI
      * @visibility frontend
      */
-    showOptions?: boolean;
+    botName?: string;
+
+    /**
+     * The icon URL or path for the AI bot
+     * @visibility frontend
+     */
+    botIcon?: string;
+
+    /**
+     * Initial suggestion prompts to show users
+     * @visibility frontend
+     */
+    initialSuggestions?: string[];
+
+    /**
+     * Thinking messages to rotate while the AI is processing
+     * @visibility frontend
+     */
+    thinkingMessages?: string[];
+
+    /**
+     * HTTP request timeout in seconds (default: 300)
+     * @visibility frontend
+     */
+    requestTimeout?: number;
+
+    /**
+     * The header title to display (default: bot name)
+     * @visibility frontend
+     */
+    headerTitle?: string;
+
+    /**
+     * The header subtitle to display (default: "AI Platform Engineer Assistant")
+     * @visibility frontend
+     */
+    headerSubtitle?: string;
+
+    /**
+     * The placeholder text for the input field (default: "Ask {botName} anything...")
+     * @visibility frontend
+     */
+    inputPlaceholder?: string;
+
+    /**
+     * Font size configuration for various UI elements
+     * @visibility frontend
+     */
+    fontSize?: {
+      /**
+       * Header title font size (default: "1.125rem")
+       */
+      headerTitle?: string;
+      /**
+       * Header subtitle font size (default: "0.75rem")
+       */
+      headerSubtitle?: string;
+      /**
+       * Chat message text font size (default: "0.875rem")
+       */
+      messageText?: string;
+      /**
+       * Code block font size (default: "0.9rem")
+       */
+      codeBlock?: string;
+      /**
+       * Inline code font size (default: "0.875rem")
+       */
+      inlineCode?: string;
+      /**
+       * Suggestion chip font size (default: "0.875rem")
+       */
+      suggestionChip?: string;
+      /**
+       * Sidebar text font size (default: "0.875rem")
+       */
+      sidebarText?: string;
+      /**
+       * Input field font size (default: "1rem")
+       */
+      inputField?: string;
+      /**
+       * Timestamp font size (default: "0.75rem")
+       */
+      timestamp?: string;
+    };
   };
 }

@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
+import { Message } from '../types';
+
 /**
- * Message interface for chat messages
+ * Chat session interface for managing multiple conversations
  * @public
  */
-export interface Message {
-  text?: string; // Make optional to support A2A messages
-  parts?: Array<{
-    kind: string;
-    text?: string;
-    [key: string]: any;
-  }>; // Add A2A parts support
-  isUser: boolean;
-  timestamp?: string;
+export interface ChatSession {
+  id: string;
+  contextId?: string; // From A2A API for conversation continuity
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Chat storage interface for browser persistence
+ * @public
+ */
+export interface ChatStorage {
+  sessions: ChatSession[];
+  currentSessionId: string | null;
 }
