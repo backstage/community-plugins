@@ -240,6 +240,8 @@ export function AgentForgePage() {
   const thinkingMessages =
     config.getOptionalStringArray('agentForge.thinkingMessages') ||
     DEFAULT_THINKING_MESSAGES;
+  const thinkingMessagesInterval =
+    config.getOptionalNumber('agentForge.thinkingMessagesInterval') || 7000;
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
@@ -906,6 +908,7 @@ export function AgentForgePage() {
               isTyping={isTyping}
               suggestions={suggestions}
               thinkingMessages={thinkingMessages}
+              thinkingMessagesInterval={thinkingMessagesInterval}
               botName={botName}
               botIcon={botIcon}
               inputPlaceholder={inputPlaceholder}

@@ -46,6 +46,12 @@ export interface Config {
     thinkingMessages?: string[];
 
     /**
+     * Interval in milliseconds for rotating thinking messages (default: 7000)
+     * @visibility frontend
+     */
+    thinkingMessagesInterval?: number;
+
+    /**
      * HTTP request timeout in seconds (default: 300)
      * @visibility frontend
      */

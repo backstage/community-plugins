@@ -21,6 +21,7 @@ agentForge:
     - 🤖 Contacting agents
     - 📦 Carrying bits
     - 📊 Analyzing data
+  thinkingMessagesInterval: 7000  # Interval in milliseconds (default: 7000)
 
 backend:
   baseUrl: http://localhost:7007

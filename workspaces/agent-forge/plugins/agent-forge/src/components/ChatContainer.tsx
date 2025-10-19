@@ -163,6 +163,7 @@ export interface ChatContainerProps {
   isTyping: boolean;
   suggestions: string[];
   thinkingMessages: string[];
+  thinkingMessagesInterval?: number;
   botName: string;
   botIcon?: string;
   inputPlaceholder?: string;
@@ -190,6 +191,7 @@ export function ChatContainer({
   isTyping,
   suggestions,
   thinkingMessages,
+  thinkingMessagesInterval = 7000,
   botName,
   botIcon,
   inputPlaceholder,
@@ -210,24 +212,25 @@ export function ChatContainer({
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Rotate thinking messages while typing
+  // Show random thinking messages while typing
   useEffect(() => {
     if (isTyping) {
-      // Start from a random message
+      // Start with a random message
       setThinkingMessageIndex(
         Math.floor(Math.random() * thinkingMessages.length),
       );
 
       const interval = setInterval(() => {
+        // Pick a random message each time
         setThinkingMessageIndex(
-          prevIndex => (prevIndex + 1) % thinkingMessages.length,
+          Math.floor(Math.random() * thinkingMessages.length),
         );
-      }, 3500); // Change message every 3.5 seconds
+      }, thinkingMessagesInterval);
 
       return () => clearInterval(interval);
     }
     return undefined;
-  }, [isTyping, thinkingMessages.length]);
+  }, [isTyping, thinkingMessages.length, thinkingMessagesInterval]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
