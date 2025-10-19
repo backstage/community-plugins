@@ -154,7 +154,7 @@ type CategoriesPageProps = {
 
 export const CategoriesPage = (props: CategoriesPageProps) => {
   const { t } = useAnnouncementsTranslation();
-  const { loading: _, allowed: canCreate } = usePermission({
+  const { allowed: canCreate } = usePermission({
     permission: announcementCreatePermission,
   });
   const { themeId, hideContextMenu = false } = props;

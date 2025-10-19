@@ -83,3 +83,17 @@ export const SIGNALS_CHANNEL_ANNOUNCEMENTS = 'announcements:new';
  * @public
  */
 export const MAX_TITLE_TAG_LENGTH = 100;
+
+/**
+ * Maximum length shown for announcement excerpt
+ *
+ * @public
+ */
+export const MAX_EXCERPT_LENGTH = 50;
+
+/**
+ * Maximum length shown for announcement title
+ *
+ * @public
+ */
+export const MAX_TITLE_LENGTH = 50;

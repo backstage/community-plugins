@@ -140,6 +140,23 @@ It is possible to specify the text for the "New announcement" button rendered on
 }
 ```
 
+### Overriding the NewAnnouncementBanner
+
+It is possible to specify the length of the title for announcements rendered on the `NewAnnouncementBanner`. You can do this by passing a `cardOptions` prop to the `NewAnnouncementBanner` component. The `cardOptions` prop accepts an object with the following properties:
+
+```ts
+{
+  titleLength: number; // defaults to 50
+  excerptLength: number; // defaults to 50
+}
+```
+
+Example
+
+```tsx
+<AnnouncementsPage cardOptions={{ titleLength: 10 }} />
+```
+
 ### Markdown rendering
 
 The plugin supports two different markdown rendering options:

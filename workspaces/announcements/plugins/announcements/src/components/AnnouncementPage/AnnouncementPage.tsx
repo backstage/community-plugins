@@ -31,7 +31,10 @@ import {
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import {
+  Announcement,
+  MAX_TITLE_LENGTH,
+} from '@backstage-community/plugin-announcements-common';
 import { Grid, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
@@ -65,7 +68,7 @@ const AnnouncementDetails = ({
     </Typography>
   );
 
-  const maxLength = titleLength ?? 50;
+  const maxLength = titleLength ?? MAX_TITLE_LENGTH;
   const title = truncate(announcement.title, maxLength);
   const isTruncated = announcement.title.length > maxLength;
 

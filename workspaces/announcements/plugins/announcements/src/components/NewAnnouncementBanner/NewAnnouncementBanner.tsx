@@ -26,6 +26,8 @@ import {
 import {
   Announcement,
   AnnouncementSignal,
+  MAX_EXCERPT_LENGTH,
+  MAX_TITLE_LENGTH,
   SIGNALS_CHANNEL_ANNOUNCEMENTS,
 } from '@backstage-community/plugin-announcements-common';
 import { useSignal } from '@backstage/plugin-signals-react';
@@ -74,11 +76,15 @@ const useStyles = makeStyles(theme => {
   };
 });
 
+type CardOptions = {
+  titleLength?: number;
+  excerptLength?: number;
+};
+
 type AnnouncementBannerProps = {
   announcement: Announcement;
   variant?: 'block' | 'floating';
-  titleLength?: number;
-  excerptLength?: number;
+  cardOptions?: CardOptions;
 };
 
 const AnnouncementBanner = (props: AnnouncementBannerProps) => {
@@ -89,8 +95,8 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const [bannerOpen, setBannerOpen] = useState(true);
   const variant = props.variant || 'block';
   const announcement = props.announcement;
-  const titleLength = props.titleLength;
-  const excerptLength = props.excerptLength;
+  const titleLength = props.cardOptions?.titleLength;
+  const excerptLength = props.cardOptions?.excerptLength;
 
   const handleClick = () => {
     announcementsApi.markLastSeenDate(
@@ -162,8 +168,7 @@ type NewAnnouncementBannerProps = {
   current?: boolean;
   tags?: string[];
   sortBy?: 'created_at' | 'updated_at';
-  titleLength?: number;
-  excerptLength?: number;
+  cardOptions?: CardOptions;
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
@@ -175,8 +180,10 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
     variant,
     current,
     sortBy,
-    titleLength = 50,
-    excerptLength = 50,
+    cardOptions = {
+      titleLength: MAX_TITLE_LENGTH,
+      excerptLength: MAX_EXCERPT_LENGTH,
+    },
   } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
@@ -236,8 +243,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
           key={announcement.id}
           announcement={announcement}
           variant={variant}
-          titleLength={titleLength}
-          excerptLength={excerptLength}
+          cardOptions={cardOptions}
         />
       ))}
     </>
