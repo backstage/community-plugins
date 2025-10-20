@@ -62,7 +62,7 @@ export class Jenkins {
   };
   // (undocumented)
   job: {
-    get: (input: string | string[] | JobGetOptions) => Promise<any>;
+    get: (input: JobGetOptions) => Promise<any>;
     getBuilds: (name: string | string[], tree?: string) => Promise<unknown>;
     build: (
       name: string | string[],
