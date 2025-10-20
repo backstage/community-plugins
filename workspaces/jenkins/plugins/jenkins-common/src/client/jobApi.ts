@@ -126,28 +126,16 @@ export function createJobApi(deps: JobDeps) {
     return [];
   };
 
-  const getJobGetOptions = (
-    input: JobGetOptions | string | string[],
-  ): JobGetOptions => {
-    // Just name
-    if (typeof input === 'string' || Array.isArray(input)) {
-      return { name: input };
-    }
-    // name + other option(s).
-    return input;
-  };
-
   return {
     /**
      * Retrieves a job’s JSON representation from Jenkins.
      *
-     * @param input - A job name (string or segments) or a {@link JobGetOptions} object.
-     *                When an options object is provided, `tree` and `depth` are forwarded
-     *                to `/api/json` as query params.
+     * @param input - A {@link JobGetOptions} object. `tree` and `depth`
+     *                are forwarded to `/api/json` as query params.
      * @returns The parsed job JSON.
      */
-    get: async (input: JobGetOptions | string | string[]) => {
-      const { name, tree, depth } = getJobGetOptions(input);
+    get: async (input: JobGetOptions) => {
+      const { name, tree, depth } = input;
       const jobPath = normalizeJobName(name);
       const query: Record<string, string | number> = {};
       if (tree) {
@@ -199,26 +187,20 @@ export function createJobApi(deps: JobDeps) {
       // This will determine the endpoint used
       const hasParams =
         parameters instanceof URLSearchParams
-          ? Array.from(parameters.keys()).length > 0
-          : parameters &&
-            Object.keys(parameters as Record<string, unknown>).length > 0;
+          ? parameters.toString().length > 0
+          : parameters && Object.keys(parameters).length > 0;
 
       const endpoint = hasParams ? 'buildWithParameters' : 'build';
 
-      const query: Record<string, string> = {};
-      if (token) {
-        query.token = token;
-      }
+      const query: Record<string, string> = {
+        ...(token ? { token } : {}),
+        // Legacy client support: add delay option
+        ...(delay !== undefined ? { delay } : {}),
+      };
 
-      // Legacy client support: add delay option
-      if (delay) {
-        query.delay = delay;
-      }
-
-      let body: URLSearchParams | undefined;
-      if (hasParams) {
-        body = paramsToSearchParams(parameters);
-      }
+      const body: URLSearchParams | undefined = hasParams
+        ? paramsToSearchParams(parameters)
+        : undefined;
 
       return request(`${jobPath}/${endpoint}`, {
         method: 'POST',
