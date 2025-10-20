@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isGithubActionsAvailable } from '../components/Router';
 import { rootRouteRef } from '../routes';
@@ -36,9 +39,9 @@ export const entityGithubActionsContent =
         filter: isGithubActionsAvailable,
         routeRef: convertLegacyRouteRef(rootRouteRef),
         loader: () =>
-          import('../components/Router').then(m => (
-            <m.Router view={config.layout} />
-          )),
+          import('../components/Router').then(m =>
+            compatWrapper(<m.Router view={config.layout} />),
+          ),
       });
     },
   });
