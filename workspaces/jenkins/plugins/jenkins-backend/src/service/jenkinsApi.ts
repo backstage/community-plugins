@@ -227,7 +227,7 @@ export class JenkinsApiImpl {
 
   // private helper methods
 
-  private static async getClient(jenkinsInfo: JenkinsInfo) {
+  private static async getClient(jenkinsInfo: JenkinsInfo): Promise<Jenkins> {
     return new Jenkins({
       baseUrl: jenkinsInfo.baseUrl,
       headers: jenkinsInfo.headers,
