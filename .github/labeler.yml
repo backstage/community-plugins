@@ -184,6 +184,9 @@ workspace/manage:
 workspace/matomo:
   - "Workspace\\s*matomo"
 
+workspace/mcp-chat:
+  - "Workspace\\s*mcp-chat"
+
 workspace/mend:
   - "Workspace\\s*mend"
 

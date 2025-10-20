@@ -23,8 +23,6 @@ import {
   PullRequestOptions,
   Readme,
   ReadmeConfig,
-  RepoBuild,
-  RepoBuildOptions,
   Team,
 } from '@backstage-community/plugin-azure-devops-common';
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
@@ -42,33 +40,6 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
-  }
-  /**
-   * @deprecated This method has no usages and will be removed in a future release
-   */
-  public async getRepoBuilds(
-    projectName: string,
-    repoName: string,
-    host?: string,
-    org?: string,
-    options?: RepoBuildOptions,
-  ): Promise<{ items: RepoBuild[] }> {
-    const queryString = new URLSearchParams();
-    if (options?.top) {
-      queryString.append('top', options.top.toString());
-    }
-    if (host) {
-      queryString.append('host', host);
-    }
-    if (org) {
-      queryString.append('org', org);
-    }
-    const urlSegment = `repo-builds/${encodeURIComponent(
-      projectName,
-    )}/${encodeURIComponent(repoName)}?${queryString}`;
-
-    const items = await this.get<RepoBuild[]>(urlSegment);
-    return { items };
   }
 
   public async getGitTags(

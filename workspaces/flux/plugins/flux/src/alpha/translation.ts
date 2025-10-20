@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-import { getAnnotationValuesFromEntity as getAnnotationValuesFromEntityCommon } from '@backstage-community/plugin-azure-devops-common';
-
-/**
- * @public
- * @deprecated Import this from `@backstage-community/plugin-azure-devops-common` instead
- */
-export const getAnnotationValuesFromEntity =
-  getAnnotationValuesFromEntityCommon;
+/** @alpha */
+export const fluxTranslationRef = createTranslationRef({
+  id: 'flux',
+  messages: {
+    fluxContentCard: {
+      permissionAlert: {
+        title: 'Permission required',
+        message:
+          "Flux content requires authorization on Kubernetes objects, contact your portal administrator to give you the 'kubernetes.clusters.read' and 'kubernetes.resources.read' permission.",
+      },
+    },
+  },
+});
