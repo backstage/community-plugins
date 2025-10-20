@@ -228,7 +228,6 @@ export class JenkinsApiImpl {
   // private helper methods
 
   private static async getClient(jenkinsInfo: JenkinsInfo) {
-    // The typings for the jenkins library are out of date so just cast to any
     return new Jenkins({
       baseUrl: jenkinsInfo.baseUrl,
       headers: jenkinsInfo.headers,
