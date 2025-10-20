@@ -49,6 +49,7 @@ body:
         - explore
         - feedback
         - firehydrant
+        - flux
         - fossa
         - gcalendar
         - gcp-projects

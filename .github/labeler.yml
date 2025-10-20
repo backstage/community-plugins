@@ -106,6 +106,9 @@ workspace/feedback:
 workspace/firehydrant:
   - "Workspace\\s*firehydrant"
 
+workspace/flux:
+  - "Workspace\\s*flux"
+
 workspace/fossa:
   - "Workspace\\s*fossa"
 
