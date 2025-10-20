@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.10.1
+
+### Patch Changes
+
+- 1993915: Updated dependency `@openapitools/openapi-generator-cli` to `2.25.0`.
+
 ## 5.10.0
 
 ### Minor Changes
