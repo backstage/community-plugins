@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import {
   createExtensionTester,
   renderInTestApp,
@@ -23,6 +23,8 @@ import * as content from './entityContent';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { GithubActionsApi, githubActionsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
+import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import { rootRouteRef } from '../routes.ts';
 
 const listBranchesMock = jest
   .fn()
@@ -41,6 +43,10 @@ describe('Entity content extension', () => {
     reRunWorkflow: () => null,
   } as unknown as GithubActionsApi;
 
+  // Notes for future, pain points when fixing these tests:
+  // Not getting errors forwarded
+  // Not able to render an extension that is usually housed under catalog/entity plugin
+
   it('should render WorkflowRunsTable', async () => {
     renderInTestApp(
       <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
@@ -50,13 +56,36 @@ describe('Entity content extension', () => {
           ).reactElement()}
         </EntityProvider>
       </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/test': convertLegacyRouteRef(rootRouteRef),
+        },
+      },
     );
 
-    await waitFor(
-      () => {
-        expect(screen.getByText('backstage/backstage')).toBeInTheDocument();
+    await expect(screen.findByText('Age')).resolves.toBeInTheDocument();
+    expect(screen.queryByText('Rerun workflow')).toBe(null);
+  });
+
+  it('should render WorkflowRunsCards', async () => {
+    renderInTestApp(
+      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(content.entityGithubActionsContent, {
+            config: { layout: 'cards' },
+          }).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/test': convertLegacyRouteRef(rootRouteRef),
+        },
       },
-      { timeout: 5000 },
     );
+
+    await expect(
+      screen.findByText('Rerun workflow'),
+    ).resolves.toBeInTheDocument();
+    expect(screen.queryByText('Age')).toBe(null);
   });
 });
