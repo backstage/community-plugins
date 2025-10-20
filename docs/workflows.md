@@ -14,7 +14,7 @@ Responsible for releasing all workspaces in parallel by invoking the release_wor
 
 ### [release_workspace_version.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/release_workspace_version.yml)
 
-This workflow supports patching older release lines. It is useful when backporting changes to previously published versions. For a more detailed explaination on how to use this workflow, see the [Maintaining and patching an older release line section](https://github.com/backstage/community-plugins/blob/main/docs/plugin-maintainers-guide.md#maintaining-and-patching-an-older-release-line) in the [Plugin Maintainer Guide](https://github.com/backstage/community-plugins/blob/main/docs/plugin-maintainers-guide.md).
+This workflow supports patching older release lines. It is useful when backporting changes to previously published versions. For a more detailed explanation on how to use this workflow, see the [Maintaining and patching an older release line section](https://github.com/backstage/community-plugins/blob/main/docs/plugin-maintainers-guide.md#maintaining-and-patching-an-older-release-line) in the [Plugin Maintainer Guide](https://github.com/backstage/community-plugins/blob/main/docs/plugin-maintainers-guide.md).
 
 ## Testing & CI
 
@@ -42,11 +42,11 @@ This workflow generates feedback for changesets on pull requests, excluding fork
 
 Using the `github/issue-labeler` action, this workflow automatically adds labels to issues when they are opened or edited, using rules defined in the labler.yml config file.
 
-### [regenerate_issue_template.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/regenerate_issue_templates.yml)
+### [regenerate_issue_templates.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/regenerate_issue_templates.yml)
 
 This workflow updates the issue template’s workspace dropdown to reflect any newly added workspaces. It also updates the labeler rules in [`labeler.yml`](https://github.com/backstage/community-plugins/blob/main/.github/labeler.yml) accordingly and opens a pull request with the changes.
 
-### [automate_staleness.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/automate-staleness.yml)
+### [automate-staleness.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/automate-staleness.yml)
 
 This workflow marks issues and pull requests as stale after a period of inactivity (60 days). If no further activity occurs, they will be closed after an additional period (7 days). The process is executed regularly (every 6 hours) as a cron job.
 
@@ -58,10 +58,22 @@ Handles version bumping for specific workspaces. It creates a new branch for the
 
 This workflow enables plugin owners to opt in to automatic version bump pull requests. To do this, they must add `"autoVersionBump": true` to their `bcp.json` file in the root of their workspace (e.g., `workspaces/your-plugin/bcp.json`). The workflow is triggered manually by a maintainer.
 
+### [auto-version-bump-scheduler.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/auto-version-bump-scheduler.yml)
+
+Triggered on a schedule (Tuesdays), this workflow checks for recent Backstage minor releases. If a new release is found, it automatically triggers the `auto-version-bump.yml` workflow.
+
 ### [cron.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/cron.yml)
 
-This workflow periodically runs the `backstage/actions/cron@v0.6.10` action.
+This workflow periodically runs the `backstage/actions/cron@v0.6.10` action for scheduled tasks defined within that action's logic.
 
 ### [pr.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/pr.yml)
 
-This workflow ensures that pull requests from this repository remain in sync with the [Backstage Project Board](https://github.com/backstage/backstage/).
+This workflow ensures that pull requests from this repository remain in sync with the [Backstage Project Board](https://github.com/orgs/backstage/projects/4).
+
+### [deprecate-archived-plugins.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/deprecate-archived-plugins.yml)
+
+Triggered when the `.github/archived-plugins.json` file is updated on the main branch, this workflow runs a script to deprecate the specified packages on the NPM registry.
+
+### [upgrade-dashboard.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/upgrade-dashboard.yml)
+
+Triggered on pushes to main or manually, this workflow automatically updates the Backstage Upgrade Dashboard issue (#4593) with the latest compatibility information for plugins in this repository based on the Backstage release version.
