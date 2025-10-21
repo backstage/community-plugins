@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.27.0
+
+### Minor Changes
+
+- 5e4b727: Backstage update to 1.44.1
+
 ## 1.26.0
 
 ### Minor Changes
