@@ -68,7 +68,7 @@ This workflow periodically runs the `backstage/actions/cron@v0.6.10` action for 
 
 ### [pr.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/pr.yml)
 
-This workflow ensures that pull requests from this repository remain in sync with the [Backstage Project Board](https://github.com/orgs/backstage/projects/4).
+This workflow ensures that pull requests from this repository remain in sync with the [Backstage Project Board](https://github.com/backstage/backstage).
 
 ### [deprecate-archived-plugins.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/deprecate-archived-plugins.yml)
 
