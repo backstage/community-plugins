@@ -707,7 +707,7 @@ __metadata:
     "@mui/icons-material": "npm:5.18.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:5.18.0"
-    "@mui/x-tree-view": "npm:8.14.0"
+    "@mui/x-tree-view": "npm:8.14.1"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.9.1"
     "@testing-library/react": "npm:^16.3.0"
@@ -3976,9 +3976,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/x-tree-view@npm:8.14.0":
-  version: 8.14.0
-  resolution: "@mui/x-tree-view@npm:8.14.0"
+"@mui/x-tree-view@npm:8.14.1":
+  version: 8.14.1
+  resolution: "@mui/x-tree-view@npm:8.14.1"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
     "@base-ui-components/utils": "npm:0.1.2"
@@ -4000,7 +4000,7 @@ __metadata:
       optional: true
     "@emotion/styled":
       optional: true
-  checksum: 10/8e053cfdf29b87d2a41b70e82083907ffd6f621b2d3d96299c71328875c6fb14935b0d6524f168ff2a0cd111fca02fb90276c375fbb0c42e44ca5ac3dc2142b0
+  checksum: 10/23a33e9ef9512af892bd9e6754c2c5a3060fef4b32b1a93455667a8dfc6a1c402ab3564cf5072d1a5f6f73d00b2c27a7b05d2653488a7a2bd351530af1d38c67
   languageName: node
   linkType: hard
 
