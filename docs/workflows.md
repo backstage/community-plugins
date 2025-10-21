@@ -60,7 +60,7 @@ This workflow enables plugin owners to opt in to automatic version bump pull req
 
 ### [auto-version-bump-scheduler.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/auto-version-bump-scheduler.yml)
 
-Triggered on a schedule (Tuesdays), this workflow checks for recent Backstage minor releases. If a new release is found, it automatically triggers the `auto-version-bump.yml` workflow.
+Triggered on a schedule (Tuesdays), this workflow checks for recent Backstage minor releases (≤7 days old). If a new release is found, it automatically triggers the `auto-version-bump.yml` workflow.
 
 ### [cron.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/cron.yml)
 
