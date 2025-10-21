@@ -41,7 +41,7 @@
   "dependencies": {
     "@aonic-ui/pipelines": "^3.1.1",
     "@backstage-community/plugin-azure-devops": "^0.20.0",
-    "@backstage-community/plugin-azure-devops-common": "^0.14.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.16.0",
     "@backstage-community/plugin-github-actions": "^0.14.0",
     "@backstage-community/plugin-jenkins": "^0.23.0",
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^",
