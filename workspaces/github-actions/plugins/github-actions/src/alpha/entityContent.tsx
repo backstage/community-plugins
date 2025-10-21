@@ -31,7 +31,6 @@ export const entityGithubActionsContent =
         layout: z => z.enum(['table', 'cards']).default('table'),
       },
     },
-    name: 'github-actions-entity-content',
     factory(originalFactory, { config }) {
       return originalFactory({
         path: 'github-actions',
