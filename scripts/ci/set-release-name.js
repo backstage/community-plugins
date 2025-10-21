@@ -29,19 +29,52 @@ async function getBackstageVersion(workspace) {
   return fs.readJson(rootPath).then(_ => _.version);
 }
 
+async function fetchWithRetry(url, retries = 1, delayMs = 60000) {
+  const headers = {
+    Authorization: `token ${process.env.GITHUB_TOKEN}`,
+  };
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const response = await fetch(url, { headers });
+    const json = await response.json();
+
+    if (response.ok) {
+      return json;
+    }
+
+    // If it's a rate limit error, wait and retry
+    if (
+      (response.status === 403 || response.status === 429) &&
+      attempt < retries
+    ) {
+      console.log(
+        `Rate limit potentially hit (${response.status}). Waiting ${
+          delayMs / 1000
+        }s before retry...`,
+      );
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      continue;
+    }
+
+    // Otherwise, throw an error
+    throw new Error(
+      `Failed to fetch ${url}: ${response.status} ${response.statusText}. ` +
+        `Response: ${JSON.stringify(json, null, 2)}`,
+    );
+  }
+  return null;
+}
+
 async function getLatestRelease() {
-  const response = await fetch(
+  return fetchWithRetry(
     'https://api.github.com/repos/backstage/backstage/releases/latest',
   );
-  const json = await response.json();
-  return json;
 }
 
 async function getLatestPreRelease() {
-  const response = await fetch(
+  const json = await fetchWithRetry(
     'https://api.github.com/repos/backstage/backstage/releases',
   );
-  const json = await response.json();
 
   const preReleasesOnly = json.filter(release => {
     return release.prerelease === true;
