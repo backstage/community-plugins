@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.4.2
+
+### Patch Changes
+
+- 7bdd3de: Updated dependency `@mui/x-tree-view` to `8.14.1`.
+
 ## 0.4.1
 
 ### Patch Changes
