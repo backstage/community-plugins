@@ -43,10 +43,6 @@ describe('Entity content extension', () => {
     reRunWorkflow: () => null,
   } as unknown as GithubActionsApi;
 
-  // Notes for future, pain points when fixing these tests:
-  // Not getting errors forwarded
-  // Not able to render an extension that is usually housed under catalog/entity plugin
-
   it('should render WorkflowRunsTable', async () => {
     renderInTestApp(
       <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
