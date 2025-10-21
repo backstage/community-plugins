@@ -21,6 +21,7 @@ import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-com
 import { ReactNode } from 'react';
 import { Readme } from '@backstage-community/plugin-azure-devops-common';
 import { ReadmeConfig } from '@backstage-community/plugin-azure-devops-common';
+import { ResultHighlight } from '@backstage/plugin-search-common';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { Team } from '@backstage-community/plugin-azure-devops-common';
 
