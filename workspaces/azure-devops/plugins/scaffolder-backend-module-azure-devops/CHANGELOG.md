@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.16.0
+
+### Minor Changes
+
+- ff113c2: Backstage version bump to v1.44.0
+
+## 0.15.1
+
+### Patch Changes
+
+- 93cfa0a: Added fetch depth option to the `azure:repository:clone` action.
+
 ## 0.15.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bookmarks",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A Backstage plugin that helps you view your favorite websites and services.",
   "keywords": [
     "backstage",
@@ -70,7 +70,7 @@
     "@mui/icons-material": "5.18.0",
     "@mui/material": "^5.18.0",
     "@mui/system": "5.18.0",
-    "@mui/x-tree-view": "8.14.0"
+    "@mui/x-tree-view": "8.14.1"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",

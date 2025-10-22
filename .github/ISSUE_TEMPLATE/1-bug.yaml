@@ -49,6 +49,7 @@ body:
         - explore
         - feedback
         - firehydrant
+        - flux
         - fossa
         - gcalendar
         - gcp-projects
@@ -75,6 +76,7 @@ body:
         - linkerd
         - manage
         - matomo
+        - mcp-chat
         - mend
         - microsoft-calendar
         - mta

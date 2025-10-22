@@ -110,6 +110,12 @@ export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
 export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
 
 // @public
+export const MAX_EXCERPT_LENGTH = 50;
+
+// @public
+export const MAX_TITLE_LENGTH = 50;
+
+// @public
 export const MAX_TITLE_TAG_LENGTH = 100;
 
 // @public

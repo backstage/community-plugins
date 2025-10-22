@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.44.0
+
+### Minor Changes
+
+- 5e4b727: Backstage update to 1.44.1
+
+### Patch Changes
+
+- Updated dependencies [5e4b727]
+  - @backstage-community/plugin-kiali-common@0.6.0
+  - @backstage-community/plugin-kiali-react@0.5.0
+
 ## 1.43.0
 
 ### Minor Changes

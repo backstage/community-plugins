@@ -28,7 +28,10 @@ import {
   useTags,
   announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
-import { Tag } from '@backstage-community/plugin-announcements-common';
+import {
+  announcementCreatePermission,
+  Tag,
+} from '@backstage-community/plugin-announcements-common';
 import { useDeleteTagDialogState } from './useDeleteTagDialogState';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { DeleteTagDialog } from './DeleteTagDialog';
@@ -36,6 +39,8 @@ import { ResponseError } from '@backstage/errors';
 import { IconButton, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { ContextMenu } from '../AnnouncementsPage/ContextMenu';
+import { usePermission } from '@backstage/plugin-permission-react';
 
 const TagsTable = () => {
   const [newTagDialogOpen, setNewTagDialogOpen] = useState(false);
@@ -123,7 +128,7 @@ const TagsTable = () => {
           },
         ]}
         emptyContent={
-          <Typography style={{ padding: 2 }}>
+          <Typography style={{ padding: 2, textAlign: 'center' }}>
             {t('tagsTable.noTagsFound')}
           </Typography>
         }
@@ -144,13 +149,21 @@ const TagsTable = () => {
 
 type TagsPageProps = {
   themeId: string;
+  hideContextMenu?: boolean;
 };
 
 export const TagsPage = (props: TagsPageProps) => {
   const { t } = useAnnouncementsTranslation();
+  const { allowed: canCreate } = usePermission({
+    permission: announcementCreatePermission,
+  });
+  const { themeId, hideContextMenu } = props;
+
   return (
-    <Page themeId={props.themeId}>
-      <Header title={t('tagsPage.title')} subtitle={t('tagsPage.subtitle')} />
+    <Page themeId={themeId}>
+      <Header title={t('tagsPage.title')} subtitle={t('tagsPage.subtitle')}>
+        {!hideContextMenu && canCreate && <ContextMenu />}
+      </Header>
 
       <Content>
         <TagsTable />

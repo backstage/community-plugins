@@ -59,6 +59,7 @@ export const NewTagDialog = (props: NewTagDialogProps) => {
       alertApi.post({
         message: t('newTagDialog.createdMessage'),
         severity: 'success',
+        display: 'transient',
       });
 
       setTitle('');
@@ -81,22 +82,23 @@ export const NewTagDialog = (props: NewTagDialogProps) => {
         <TextField
           margin="dense"
           id="title"
-          label="Title"
+          label={t('newTagDialog.title')}
           fullWidth
           value={title}
           onChange={e => setTitle(e.target.value)}
+          required
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
-          Cancel
+          {t('newTagDialog.cancelButton')}
         </Button>
         <Button
           onClick={handleSubmit}
           color="primary"
           disabled={!title || loading}
         >
-          Create
+          {t('newTagDialog.createButton')}
         </Button>
       </DialogActions>
     </Dialog>

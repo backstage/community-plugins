@@ -142,6 +142,10 @@ workspace/firehydrant:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/firehydrant/**']
 
+workspace/flux:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/flux/**']
+
 workspace/fossa:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/fossa/**']
@@ -245,6 +249,10 @@ workspace/manage:
 workspace/matomo:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/matomo/**']
+
+workspace/mcp-chat:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/mcp-chat/**']
 
 workspace/mend:
 - changed-files:
