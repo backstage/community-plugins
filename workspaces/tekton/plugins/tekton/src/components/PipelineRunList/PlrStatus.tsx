@@ -16,8 +16,9 @@
 import {
   pipelineRunFilterReducer,
   PipelineRunKind,
-  Status,
 } from '@janus-idp/shared-react';
+
+import { Status } from '../common/Status';
 
 import './PlrStatus.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';

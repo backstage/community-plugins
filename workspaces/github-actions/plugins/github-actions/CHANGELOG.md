@@ -1,5 +1,22 @@
 # @backstage-community/plugin-github-actions
 
+## 0.16.0
+
+### Minor Changes
+
+- f6232fc: Backstage version bump to v1.44.0
+
+## 0.15.1
+
+### Patch Changes
+
+- ffb5929: The following changes where made to the alpha version of this plugin for the new frontend system:
+
+  Removed the `entityGitHubActionsCard` entirely as this card was mistakenly added as an entity card rather than content.
+
+  Disabled the `entityLatestGithubActionRunCard` and `entityLatestGithubActionsForBranchCard` to reduce visual clutter in NFS only.
+  These can be re-enabled by editing the page layout.
+
 ## 0.15.0
 
 ### Minor Changes

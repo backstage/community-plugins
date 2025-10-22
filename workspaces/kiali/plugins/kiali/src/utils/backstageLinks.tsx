@@ -20,6 +20,7 @@ import { Drawer, IconButton } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { default as React } from 'react';
 import { AppDetailsDrawer } from '../components/Drawers/AppDetailsDrawer';
+import { IstioConfigDetailsDrawer } from '../components/Drawers/IstioConfigDetailsDrawer';
 import { ServiceDetailsDrawer } from '../components/Drawers/ServiceDetailsDrawer';
 import { WorkloadDetailsDrawer } from '../components/Drawers/WorkloadDetailsDrawer';
 import { isMultiCluster } from '../config';
@@ -94,11 +95,13 @@ const DrawerContent = ({
   type,
   name,
   namespace,
+  objectGVK,
 }: {
   toggleDrawer: (isOpen: boolean) => void;
   type: string;
   name: string;
   namespace: string;
+  objectGVK?: GroupVersionKind;
 }) => {
   return (
     <div style={{ padding: '10px', minWidth: '400px' }} data-test="drawer">
@@ -124,6 +127,16 @@ const DrawerContent = ({
         )}
         {type === 'applications' && (
           <AppDetailsDrawer namespace={namespace} app={name} />
+        )}
+        {type === 'istio' && (
+          <IstioConfigDetailsDrawer
+            namespace={namespace}
+            istioType={
+              objectGVK?.Kind ||
+              (name.includes('gateway') ? 'Gateway' : 'VirtualService')
+            }
+            name={name}
+          />
         )}
       </div>
     </div>
@@ -169,6 +182,7 @@ export const BackstageObjectLink = (props: BackstageLinkProps) => {
             type={type}
             name={name}
             namespace={namespace}
+            objectGVK={objectGVK}
           />
         </Drawer>
       </>

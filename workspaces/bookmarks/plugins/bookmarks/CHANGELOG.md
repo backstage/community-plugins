@@ -1,5 +1,24 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.4.2
+
+### Patch Changes
+
+- 7bdd3de: Updated dependency `@mui/x-tree-view` to `8.14.1`.
+
+## 0.4.1
+
+### Patch Changes
+
+- 90c4aa2: Backstage version bump to v1.44.1
+
+## 0.4.0
+
+### Minor Changes
+
+- dae3e7f: add NFS support
+- 64fe6b6: Backstage version bump to v1.44.0
+
 ## 0.3.0
 
 ### Minor Changes

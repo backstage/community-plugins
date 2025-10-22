@@ -1,5 +1,16 @@
 # @backstage-community/plugin-manage
 
+## 0.5.0
+
+### Minor Changes
+
+- 797c5cc: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [797c5cc]
+  - @backstage-community/plugin-manage-react@1.3.0
+
 ## 0.4.0
 
 ### Minor Changes

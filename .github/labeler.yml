@@ -106,6 +106,9 @@ workspace/feedback:
 workspace/firehydrant:
   - "Workspace\\s*firehydrant"
 
+workspace/flux:
+  - "Workspace\\s*flux"
+
 workspace/fossa:
   - "Workspace\\s*fossa"
 
@@ -183,6 +186,9 @@ workspace/manage:
 
 workspace/matomo:
   - "Workspace\\s*matomo"
+
+workspace/mcp-chat:
+  - "Workspace\\s*mcp-chat"
 
 workspace/mend:
   - "Workspace\\s*mend"

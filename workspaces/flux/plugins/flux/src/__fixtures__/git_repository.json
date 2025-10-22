@@ -1,0 +1,53 @@
+{
+  "apiVersion": "source.toolkit.fluxcd.io/v1",
+  "kind": "GitRepository",
+  "metadata": {
+    "creationTimestamp": "2023-06-30T08:47:28Z",
+    "finalizers": ["finalizers.fluxcd.io"],
+    "generation": 1,
+    "labels": {
+      "backstage.io/kubernetes-id": "catalogue-service"
+    },
+    "name": "podinfo",
+    "namespace": "backstage",
+    "resourceVersion": "952453",
+    "uid": "c1659d91-b493-4063-ac38-12033a27f2d7"
+  },
+  "spec": {
+    "interval": "10m",
+    "ref": {
+      "branch": "master"
+    },
+    "timeout": "60s",
+    "url": "https://github.com/stefanprodan/podinfo"
+  },
+  "status": {
+    "artifact": {
+      "digest": "sha256:c894e5fad8e3a51ba4be72ada4beef3ee7be99f66770fd6f16488982bd226de8",
+      "lastUpdateTime": "2023-06-30T08:47:29Z",
+      "path": "gitrepository/backstage/podinfo/dd3869b1a177432b60ea1e3ba99c10fc9db850fa.tar.gz",
+      "revision": "master@sha1:dd3869b1a177432b60ea1e3ba99c10fc9db850fa",
+      "size": 80066,
+      "url": "http://source-controller.flux-system.svc.cluster.local./gitrepository/backstage/podinfo/dd3869b1a177432b60ea1e3ba99c10fc9db850fa.tar.gz"
+    },
+    "conditions": [
+      {
+        "lastTransitionTime": "2023-06-30T08:47:29Z",
+        "message": "stored artifact for revision 'master@sha1:dd3869b1a177432b60ea1e3ba99c10fc9db850fa'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastTransitionTime": "2023-06-30T08:47:29Z",
+        "message": "stored artifact for revision 'master@sha1:dd3869b1a177432b60ea1e3ba99c10fc9db850fa'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "ArtifactInStorage"
+      }
+    ],
+    "observedGeneration": 1
+  }
+}

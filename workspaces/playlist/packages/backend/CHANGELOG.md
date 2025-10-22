@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.18
+
+### Patch Changes
+
+- Updated dependencies [e2408fb]
+  - @backstage-community/plugin-playlist-backend@0.14.0
+
 ## 0.0.17
 
 ### Patch Changes

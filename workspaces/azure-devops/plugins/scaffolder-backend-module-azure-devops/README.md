@@ -420,6 +420,24 @@ spec:
         token: ${{ secrets.USER_OAUTH_TOKEN }}
 ```
 
+### Example: Clone an Azure Git Repository With Shallow Depth
+
+Creates a shallow clone with the history truncated to the specified number of commits, useful for reducing data transfer and clone time for large repositories.
+
+```yaml
+spec:
+  steps:
+    - id: cloneAzureRepo
+      name: git clone
+      action: azure:repository:clone
+      input:
+        remoteUrl: 'https://dev.azure.com/{organization}/{project}/_git/{repository}'
+        branch: 'main'
+        targetPath: ./work
+        cloneDepth: 1
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
 ### Example: Push changes made back to Git Repository
 
 ```yaml

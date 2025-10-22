@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 import {
+  DRAWER,
   ObjectReference,
   ServiceReference,
   WorkloadReference,
 } from '@backstage-community/plugin-kiali-common/types';
 import { List, ListItem, Typography } from '@material-ui/core';
+import { default as React } from 'react';
 import { ReferenceIstioObjectLink } from '../../components/Link/IstioObjectLink';
 import { ServiceLink } from '../../components/Link/ServiceLink';
 import { WorkloadLink } from '../../components/Link/WorkloadLink';
+import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
+import { GVKToBadge } from '../../components/VirtualList/Config';
+import { getGVKTypeString } from '../../utils/IstioConfigUtils';
 
 interface IstioConfigReferencesProps {
   objectReferences: ObjectReference[];
@@ -29,6 +34,7 @@ interface IstioConfigReferencesProps {
   workloadReferences: WorkloadReference[];
   isValid: boolean | undefined;
   cluster?: string;
+  view?: string;
 }
 
 export const IstioConfigReferences = (props: IstioConfigReferencesProps) => {
@@ -53,6 +59,93 @@ export const IstioConfigReferences = (props: IstioConfigReferencesProps) => {
     return false;
   };
 
+  const renderServiceItem = (
+    namespace: string,
+    serviceName: string,
+  ): React.ReactNode => {
+    let link: React.ReactNode;
+
+    if (props.view === DRAWER) {
+      link = (
+        <>
+          <PFBadge badge={PFBadges.Service} />
+          <Typography component="span" style={{ marginLeft: 8 }}>
+            {serviceName}
+          </Typography>
+        </>
+      );
+    } else {
+      link = (
+        <ServiceLink
+          name={serviceName}
+          namespace={namespace}
+          cluster={props.cluster}
+        />
+      );
+    }
+
+    return link;
+  };
+
+  const renderWorkloadItem = (
+    namespace: string,
+    workloadName: string,
+  ): React.ReactNode => {
+    let link: React.ReactNode;
+
+    if (props.view === DRAWER) {
+      link = (
+        <>
+          <PFBadge badge={PFBadges.Workload} />
+          <Typography component="span" style={{ marginLeft: 8 }}>
+            {workloadName}
+          </Typography>
+        </>
+      );
+    } else {
+      link = (
+        <WorkloadLink
+          name={workloadName}
+          namespace={namespace}
+          cluster={props.cluster}
+        />
+      );
+    }
+
+    return link;
+  };
+
+  const renderIstioObjectItem = (
+    namespace: string,
+    name: string,
+    objectGVK: any,
+  ): React.ReactNode => {
+    let link: React.ReactNode;
+
+    if (props.view === DRAWER) {
+      const badge = GVKToBadge[getGVKTypeString(objectGVK)];
+      link = (
+        <>
+          <PFBadge badge={badge} />
+          <Typography component="span" style={{ marginLeft: 8 }}>
+            {name}
+          </Typography>
+        </>
+      );
+    } else {
+      link = (
+        <ReferenceIstioObjectLink
+          name={name}
+          namespace={namespace}
+          objectGVK={objectGVK}
+          cluster={props.cluster}
+        />
+      );
+    }
+
+    return link;
+  };
+
   return (
     <>
       <Typography variant="h6" gutterBottom style={{ marginTop: 10 }}>
@@ -70,11 +163,7 @@ export const IstioConfigReferences = (props: IstioConfigReferencesProps) => {
           return (
             <List style={{ padding: 0 }}>
               <ListItem key={sRef} style={{ padding: 0 }}>
-                <ServiceLink
-                  name={reference.name}
-                  namespace={reference.namespace}
-                  cluster={props.cluster}
-                />
+                {renderServiceItem(reference.namespace, reference.name)}
               </ListItem>
             </List>
           );
@@ -85,11 +174,7 @@ export const IstioConfigReferences = (props: IstioConfigReferencesProps) => {
           return (
             <List style={{ padding: 0 }}>
               <ListItem key={wRef} style={{ padding: 0 }}>
-                <WorkloadLink
-                  name={reference.name}
-                  namespace={reference.namespace}
-                  cluster={props.cluster}
-                />
+                {renderWorkloadItem(reference.namespace, reference.name)}
               </ListItem>
             </List>
           );
@@ -100,12 +185,11 @@ export const IstioConfigReferences = (props: IstioConfigReferencesProps) => {
           return (
             <List style={{ padding: 0 }}>
               <ListItem key={oRef} style={{ padding: 0 }}>
-                <ReferenceIstioObjectLink
-                  name={reference.name}
-                  namespace={reference.namespace}
-                  objectGVK={reference.objectGVK}
-                  cluster={props.cluster}
-                />
+                {renderIstioObjectItem(
+                  reference.namespace,
+                  reference.name,
+                  reference.objectGVK,
+                )}
               </ListItem>
             </List>
           );

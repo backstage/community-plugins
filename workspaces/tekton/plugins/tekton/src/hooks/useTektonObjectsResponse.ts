@@ -19,16 +19,14 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { isEqual } from 'lodash';
 
-import {
-  ComputedStatus,
-  useDebounceCallback,
-  useDeepCompareMemoize,
-} from '@janus-idp/shared-react';
+import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
 import { TektonResourcesContextData, TektonResponseData } from '../types/types';
 import { useAllWatchResources } from './useAllWatchResources';
 import { useResourcesClusters } from './useResourcesClusters';
+import { useDebounceCallback } from './useDebounceCallback';
+import { useDeepCompareMemoize } from './useDeepCompareMemoize';
 
 export const useTektonObjectsResponse = (
   watchedResource: string[],

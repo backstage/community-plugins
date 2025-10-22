@@ -36,7 +36,7 @@ import { PFBadge } from '../../components/Pf/PfBadges';
 import { LocalTime } from '../../components/Time/LocalTime';
 import { ValidationObjectSummary } from '../../components/Validations/ValidationObjectSummary';
 import { GVKToBadge } from '../../components/VirtualList/Config';
-import { KialiIcon } from '../../config/KialiIcon';
+import { KialiIcon } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
 import {
   getGVKTypeString,
@@ -129,7 +129,7 @@ export const IstioConfigDetailsOverview = (
     <Card variant="outlined">
       <CardContent>
         <Typography variant="h4" gutterBottom>
-          Overview
+          Istio Config
         </Typography>
 
         {istioObject && istioObject.kind && (

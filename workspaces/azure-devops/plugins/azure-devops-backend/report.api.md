@@ -5,7 +5,6 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Build } from 'azure-devops-node-api/interfaces/BuildInterfaces';
-import { BuildDefinitionReference } from 'azure-devops-node-api/interfaces/BuildInterfaces';
 import { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { Config } from '@backstage/config';
 import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-common';
@@ -15,7 +14,6 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { Project } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequest } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-common';
-import { RepoBuild } from '@backstage-community/plugin-azure-devops-common';
 import { Team } from '@backstage-community/plugin-azure-devops-common';
 import { TeamMember } from '@backstage-community/plugin-azure-devops-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
@@ -32,13 +30,6 @@ export class AzureDevOpsApi {
   ): AzureDevOpsApi;
   // (undocumented)
   getAllTeams(options?: { limit?: number }): Promise<Team[]>;
-  // @deprecated (undocumented)
-  getBuildDefinitions(
-    projectName: string,
-    definitionName: string,
-    host?: string,
-    org?: string,
-  ): Promise<BuildDefinitionReference[]>;
   // (undocumented)
   getBuildList(
     projectName: string,
@@ -112,14 +103,6 @@ export class AzureDevOpsApi {
     url: string;
     content: string;
   }>;
-  // @deprecated (undocumented)
-  getRepoBuilds(
-    projectName: string,
-    repoName: string,
-    top: number,
-    host?: string,
-    org?: string,
-  ): Promise<RepoBuild[]>;
   // (undocumented)
   getTeamMembers(options: {
     projectId: string;
