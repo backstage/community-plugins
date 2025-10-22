@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { A2AClient } from '../a2a/client'; // Import necessary types
+import { A2AClient, A2AStreamEventData } from '../a2a/client'; // Import necessary types
 import { v4 as uuidv4 } from 'uuid'; // Example for generating task IDs
 import {
   MessageSendParams,
@@ -86,6 +86,44 @@ export class ChatbotApi {
     } catch (error) {
       // console.log(error)
       throw new Error('Error connecting to agent');
+    }
+  }
+
+  public async *submitA2ATaskStream(
+    newContext: boolean,
+    msg: string,
+    sessionContextId?: string,
+  ): AsyncGenerator<A2AStreamEventData, void, undefined> {
+    try {
+      const msgId = uuidv4();
+
+      const sendParams: MessageSendParams = {
+        message: {
+          messageId: msgId,
+          role: 'user',
+          parts: [{ text: msg, kind: 'text' }],
+          kind: 'message',
+        },
+      };
+
+      // Use session contextId if provided, otherwise use internal contextId
+      const contextToUse = sessionContextId || this.contextId;
+      if (!newContext && contextToUse !== undefined) {
+        sendParams.message.contextId = contextToUse;
+      }
+
+      // Stream responses using SSE
+      if (this.client) {
+        for await (const event of this.client.sendMessageStream(sendParams)) {
+          // Update internal contextId from streamed events
+          if (event.kind === 'task' && event.contextId) {
+            this.contextId = event.contextId;
+          }
+          yield event;
+        }
+      }
+    } catch (error) {
+      throw new Error('Error connecting to agent for streaming');
     }
   }
 

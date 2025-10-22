@@ -247,6 +247,8 @@ export function AgentForgePage() {
     config.getString('backend.baseUrl');
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
+  const enableStreaming =
+    config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
   const headerTitle =
     config.getOptionalString('agentForge.headerTitle') || botName;
   const headerSubtitle =
@@ -609,14 +611,136 @@ export function AgentForgePage() {
           sessions.find(s => s.id === sessionToUse) ||
           (sessionToUse === currentSessionId ? currentSession : null);
 
-        // console.log('Submitting message with contextId:', workingSession?.contextId);
-        const taskResult = await chatbotApi.submitA2ATask(
-          !workingSession?.contextId, // newContext = true if no contextId exists
-          inputText,
-          workingSession?.contextId, // Pass the session's contextId
-        );
+        // Use real-time SSE streaming if enabled
+        if (enableStreaming) {
+          // Add streaming message placeholder
+          addStreamingMessage();
 
-        // console.log('Received taskResult with contextId:', taskResult.contextId);
+          let lastContextId: string | undefined;
+          let accumulatedText = '';
+
+          // Stream responses in real-time using SSE
+          for await (const event of chatbotApi.submitA2ATaskStream(
+            !workingSession?.contextId,
+            inputText,
+            workingSession?.contextId,
+          )) {
+            // Update contextId from any event that has it
+            if (event.kind === 'task' && event.contextId) {
+              lastContextId = event.contextId;
+            } else if (event.contextId) {
+              lastContextId = event.contextId;
+            }
+
+            // Handle different event types
+            if (event.kind === 'message' && event.role === 'agent') {
+              // Accumulate text from agent messages
+              const textPart = event.parts?.find((p: any) => p.kind === 'text');
+              if (textPart && 'text' in textPart) {
+                accumulatedText += textPart.text;
+                updateStreamingMessage(accumulatedText);
+              }
+            } else if (event.kind === 'artifact-update') {
+              // Handle artifact updates (results from sub-agents)
+              if (event.artifact && event.artifact.parts) {
+                const textPart = event.artifact.parts.find(
+                  (p: any) => p.kind === 'text',
+                );
+                if (textPart && 'text' in textPart) {
+                  // Replace accumulated text with artifact text (final result)
+                  accumulatedText = textPart.text;
+                  updateStreamingMessage(accumulatedText);
+                }
+              }
+            } else if (event.kind === 'status-update') {
+              // Handle status updates
+              const message = event.status?.message;
+              if (message && message.role === 'agent') {
+                const textPart = message.parts?.find(
+                  (p: any) => p.kind === 'text',
+                );
+                if (textPart && 'text' in textPart) {
+                  accumulatedText += textPart.text;
+                  updateStreamingMessage(accumulatedText);
+                }
+              }
+
+              // Check if task is completed
+              if (event.status?.state === 'completed' || event.final) {
+                break;
+              }
+            } else if (event.kind === 'task') {
+              // Handle artifacts (final results from sub-agents)
+              if (event.artifacts && event.artifacts.length > 0) {
+                // Look for 'final_result' artifact first, otherwise use the last artifact
+                const finalArtifact =
+                  event.artifacts.find(a => a.name === 'final_result') ||
+                  event.artifacts[event.artifacts.length - 1];
+
+                if (finalArtifact && finalArtifact.parts) {
+                  const textPart = finalArtifact.parts.find(
+                    (p: any) => p.kind === 'text',
+                  );
+                  if (textPart && 'text' in textPart) {
+                    accumulatedText = textPart.text;
+                    updateStreamingMessage(accumulatedText);
+                  }
+                }
+              }
+              // Otherwise, process task history if available
+              else if (event.history && event.history.length > 0) {
+                const newText: string[] = [];
+                for (const historyMsg of event.history) {
+                  if (historyMsg.role === 'agent') {
+                    const textPart = historyMsg.parts?.find(
+                      (p: any) => p.kind === 'text',
+                    );
+                    if (textPart && 'text' in textPart) {
+                      newText.push(textPart.text);
+                    }
+                  }
+                }
+                const fullText = newText.join('');
+                if (fullText.length > accumulatedText.length) {
+                  accumulatedText = fullText;
+                  updateStreamingMessage(accumulatedText);
+                }
+              }
+
+              // Check task status
+              if (
+                event.status?.state === 'completed' ||
+                event.status?.state === 'failed' ||
+                event.status?.state === 'rejected'
+              ) {
+                break;
+              }
+            }
+          }
+
+          // Update session with contextId
+          if (lastContextId && sessionToUse) {
+            setSessions(prev =>
+              prev.map(session =>
+                session.id === sessionToUse
+                  ? { ...session, contextId: lastContextId }
+                  : session,
+              ),
+            );
+          }
+
+          // Finish streaming
+          finishStreamingMessage();
+          setIsTyping(false);
+          return;
+        }
+
+        // Non-streaming mode: submit task and wait for response
+        const taskResult = await chatbotApi.submitA2ATask(
+          !workingSession?.contextId,
+          inputText,
+          workingSession?.contextId,
+        );
 
         // Update session with contextId for continuity
         if (taskResult.contextId && sessionToUse) {
@@ -632,18 +756,37 @@ export function AgentForgePage() {
         // Handle streaming response from history array
         let resultText = '';
         if (taskResult.status.state === 'completed' && taskResult.artifacts) {
-          const part = taskResult.artifacts[0].parts[0];
-          if (part.kind === 'text') {
-            resultText = part.text;
+          // Look for 'final_result' artifact first, otherwise use the last artifact
+          const finalArtifact =
+            taskResult.artifacts.find(a => a.name === 'final_result') ||
+            taskResult.artifacts[taskResult.artifacts.length - 1];
+
+          if (finalArtifact && finalArtifact.parts && finalArtifact.parts[0]) {
+            const part = finalArtifact.parts[0];
+            if (part.kind === 'text') {
+              resultText = part.text;
+            }
           }
         } else if (taskResult.status.message) {
-          const part = taskResult.status.message.parts[0];
-          if (part.kind === 'text') {
-            resultText = part.text;
+          // For completed/failed/rejected states: use status.message
+          // For working/submitted states: skip to process history instead
+          const useStatusMessage =
+            taskResult.status.state === 'completed' ||
+            taskResult.status.state === 'failed' ||
+            taskResult.status.state === 'rejected' ||
+            taskResult.status.state === 'canceled' ||
+            taskResult.status.state === 'auth-required';
+
+          if (useStatusMessage) {
+            const part = taskResult.status.message.parts[0];
+            if (part.kind === 'text') {
+              resultText = part.text;
+            }
           }
         }
 
         // If no text from status/artifacts, collect from streaming history
+        // This handles "working" and "submitted" states where we need to show accumulated history
         if (
           !resultText &&
           taskResult.history &&
@@ -770,6 +913,7 @@ export function AgentForgePage() {
       sessions,
       setSessions,
       setCurrentSessionId,
+      enableStreaming,
     ],
   );
 

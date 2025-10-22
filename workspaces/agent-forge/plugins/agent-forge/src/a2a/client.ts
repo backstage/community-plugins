@@ -52,7 +52,7 @@ import {
 } from './schema'; // Assuming schema.ts is in the same directory or appropriately pathed
 
 // Helper type for the data yielded by streaming methods
-type A2AStreamEventData =
+export type A2AStreamEventData =
   | Message
   | Task
   | TaskStatusUpdateEvent
