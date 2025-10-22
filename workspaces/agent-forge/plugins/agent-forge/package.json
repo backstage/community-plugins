@@ -1,6 +1,6 @@
 {
   "name": "@caipe/plugin-agent-forge",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
