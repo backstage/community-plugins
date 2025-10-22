@@ -27,9 +27,12 @@ import {
 } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
+import { AUDITOR_FETCH_EVENT_ID } from '@backstage-community/plugin-announcements-common';
 
 describe('createRouter', () => {
   let app: express.Express;
+  let auditorMock!: ReturnType<typeof mockServices.auditor.mock>;
+  let lastAuditorEvent: { success: jest.Mock; fail: jest.Mock } | undefined;
 
   const announcementsMock = jest.fn();
   const announcementByIDMock = jest.fn();
@@ -68,6 +71,16 @@ describe('createRouter', () => {
   });
 
   beforeAll(async () => {
+    auditorMock = mockServices.auditor.mock();
+    lastAuditorEvent = undefined;
+    auditorMock.createEvent.mockImplementation(async () => {
+      lastAuditorEvent = {
+        success: jest.fn().mockResolvedValue(undefined),
+        fail: jest.fn().mockResolvedValue(undefined),
+      };
+      return lastAuditorEvent;
+    });
+
     const announcementsContext: AnnouncementsContext = {
       logger: mockServices.logger.mock(),
       config: mockServices.rootConfig.mock(),
@@ -76,16 +89,36 @@ describe('createRouter', () => {
       permissionsRegistry: mockServices.permissionsRegistry.mock(),
       httpAuth: mockHttpAuth,
       notifications: mockNotificationService,
+      auditor: auditorMock,
     };
 
     const router = await createRouter(announcementsContext);
     app = express().use(router);
     mockNotificationService.send.mockClear();
+    auditorMock.createEvent.mockClear();
   });
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    lastAuditorEvent = undefined;
+    mockNotificationService.send.mockImplementation(async () => {});
+    auditorMock.createEvent.mockImplementation(async () => {
+      lastAuditorEvent = {
+        success: jest.fn().mockResolvedValue(undefined),
+        fail: jest.fn().mockResolvedValue(undefined),
+      };
+      return lastAuditorEvent;
+    });
   });
+
+  const expectAuditorSuccess = () => {
+    expect(auditorMock.createEvent).toHaveBeenCalled();
+    expect(lastAuditorEvent).toBeDefined();
+    if (!lastAuditorEvent) {
+      return;
+    }
+    expect(lastAuditorEvent.success).toHaveBeenCalled();
+    expect(lastAuditorEvent.fail).not.toHaveBeenCalled();
+  };
 
   describe('GET /announcements', () => {
     it('returns ok', async () => {
@@ -115,6 +148,15 @@ describe('createRouter', () => {
         order: 'desc', // Default order
         current: undefined,
       });
+
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_FETCH_EVENT_ID,
+          severityLevel: 'low',
+          meta: expect.objectContaining({ queryType: 'all' }),
+        }),
+      );
+      expectAuditorSuccess();
 
       expect(response.body).toEqual([
         {
@@ -194,6 +236,7 @@ describe('createRouter', () => {
           updated_at: '2025-01-02T15:28:08.539+00:00',
         },
       ]);
+      expectAuditorSuccess();
     });
     it('filters announcements by single tag', async () => {
       announcementsMock.mockReturnValueOnce({
@@ -232,6 +275,7 @@ describe('createRouter', () => {
       expect(response.body.results[0].tags).toEqual([
         { slug: 'tag1', title: 'Tag 1' },
       ]);
+      expectAuditorSuccess();
     });
 
     it('filters announcements by multiple tags', async () => {
@@ -275,6 +319,7 @@ describe('createRouter', () => {
         { slug: 'tag1', title: 'Tag 1' },
         { slug: 'tag2', title: 'Tag 2' },
       ]);
+      expectAuditorSuccess();
     });
 
     it('returns empty results when no announcements match tags', async () => {
@@ -301,6 +346,7 @@ describe('createRouter', () => {
 
       expect(response.body.results).toHaveLength(0);
       expect(response.body.count).toEqual(0);
+      expectAuditorSuccess();
     });
   });
 });
