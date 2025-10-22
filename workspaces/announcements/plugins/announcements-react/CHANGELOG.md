@@ -1,5 +1,12 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
 ## 0.14.0
 
 ### Minor Changes

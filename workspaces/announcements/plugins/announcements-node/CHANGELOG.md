@@ -1,5 +1,12 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
 ## 0.10.0
 
 ### Minor Changes
