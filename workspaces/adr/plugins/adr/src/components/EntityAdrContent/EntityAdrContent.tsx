@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.error.main,
   },
   adrContainerTitle: {
-    color: theme.palette.grey[700],
+    color: theme.palette.text.secondary,
     marginBottom: theme.spacing(1),
   },
   adrBox: {
