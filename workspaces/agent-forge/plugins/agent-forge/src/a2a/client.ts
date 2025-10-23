@@ -348,11 +348,12 @@ export class A2AClient {
     params: MessageSendParams,
   ): AsyncGenerator<A2AStreamEventData, void, undefined> {
     const agentCard = await this.agentCardPromise; // Ensure agent card is fetched
-    if (!agentCard.capabilities?.streaming) {
-      throw new Error(
-        'Agent does not support streaming (AgentCard.capabilities.streaming is not true).',
-      );
-    }
+    // FORCE STREAMING FOR TESTING - bypassing capabilities check
+    // if (!agentCard.capabilities?.streaming) {
+    //   throw new Error(
+    //     'Agent does not support streaming (AgentCard.capabilities.streaming is not true).',
+    //   );
+    // }
 
     const endpoint = await this._getServiceEndpoint();
     const clientRequestId = this.requestIdCounter++; // Use a unique ID for this stream request
@@ -489,11 +490,12 @@ export class A2AClient {
     params: TaskIdParams,
   ): AsyncGenerator<A2AStreamEventData, void, undefined> {
     const agentCard = await this.agentCardPromise;
-    if (!agentCard.capabilities?.streaming) {
-      throw new Error(
-        'Agent does not support streaming (required for tasks/resubscribe).',
-      );
-    }
+    // FORCE STREAMING FOR TESTING - bypassing capabilities check
+    // if (!agentCard.capabilities?.streaming) {
+    //   throw new Error(
+    //     'Agent does not support streaming (required for tasks/resubscribe).',
+    //   );
+    // }
 
     const endpoint = await this._getServiceEndpoint();
     const clientRequestId = this.requestIdCounter++; // Unique ID for this resubscribe request

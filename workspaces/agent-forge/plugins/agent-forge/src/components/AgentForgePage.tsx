@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Content, Page } from '@backstage/core-components';
 import {
   configApiRef,
@@ -220,6 +220,7 @@ const useStyles = makeStyles(theme => ({
 
 const STORAGE_KEY = 'agent-forge-chat-sessions';
 
+
 /**
  * Agent Forge page component with chat history and message queuing
  * @public
@@ -247,8 +248,10 @@ export function AgentForgePage() {
     config.getString('backend.baseUrl');
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
-  const enableStreaming =
-    config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
+  const enableStreaming = config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
+  
+  // Config validation logs  
+  console.log('Agent Forge Config - Streaming:', enableStreaming);
   const headerTitle =
     config.getOptionalString('agentForge.headerTitle') || botName;
   const headerSubtitle =
@@ -296,6 +299,59 @@ export function AgentForgePage() {
   const [connectionStatus, setConnectionStatus] = useState<
     'checking' | 'connected' | 'disconnected'
   >('checking');
+  
+  // State for operational thinking messages
+  const [currentOperation, setCurrentOperation] = useState<string | null>(null);
+  const [isInOperationalMode, setIsInOperationalMode] = useState(false);
+  
+  // Cache to track tool notifications we've shown in thinking indicator
+  const toolNotificationsCache = useRef<Set<string>>(new Set());
+  
+  
+  // Function to remove cached tool notifications from content
+  const removeCachedToolNotifications = useCallback((text: string): string => {
+    let cleanText = text;
+    
+    // Remove each cached notification from the text
+    for (const notification of toolNotificationsCache.current) {
+      // Remove the exact notification text (with optional newlines)
+      const escapedNotification = notification.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\s*${escapedNotification}\\s*`, 'g');
+      cleanText = cleanText.replace(regex, '');
+    }
+    
+    // Clean up any extra whitespace/newlines at the beginning
+    cleanText = cleanText.replace(/^\s+/, '');
+    
+    console.log('CLEANED TEXT - original length:', text.length, 'cleaned length:', cleanText.length);
+    return cleanText;
+  }, []);
+  
+  
+  
+  // Utility function to detect and parse tool notifications using metadata
+  const detectToolNotification = (artifact: any): { isToolNotification: boolean; operation?: string; isStart?: boolean } => {
+    if (!artifact || !artifact.name) {
+      return { isToolNotification: false };
+    }
+    
+    // Detect tool start notifications: name = "tool_notification_start"
+    if (artifact.name === 'tool_notification_start') {
+      // Extract tool name from description: "Tool call started: argocd" → "argocd"
+      const toolName = artifact.description?.split(': ')[1] || 'tool';
+      return { isToolNotification: true, operation: `Calling ${toolName}`, isStart: true };
+    }
+    
+    // Detect tool end notifications: name = "tool_notification_end"  
+    if (artifact.name === 'tool_notification_end') {
+      // Extract tool name from description: "Tool call completed: argocd" → "argocd"
+      const toolName = artifact.description?.split(': ')[1] || 'tool';
+      return { isToolNotification: true, operation: `${toolName} completed`, isStart: false };
+    }
+    
+    // Regular content (streaming_result, etc.)
+    return { isToolNotification: false };
+  };
 
   // Token authentication for external system integration
   const { tokenMessage, isTokenRequest } = useTokenAuthentication();
@@ -511,6 +567,11 @@ export function AgentForgePage() {
     [currentSessionId],
   );
 
+  // Direct text update - no more smooth streaming complexity
+  const smoothUpdateStreamingMessage = useCallback((newText: string) => {
+    updateStreamingMessage(newText);
+  }, [updateStreamingMessage]);
+
   const finishStreamingMessage = useCallback(() => {
     setIsTyping(false);
   }, []);
@@ -579,6 +640,7 @@ export function AgentForgePage() {
       );
       setUserInput('');
       setIsTyping(true);
+      
       // Keep suggestions visible
 
       if (!chatbotApi) {
@@ -613,18 +675,20 @@ export function AgentForgePage() {
 
         // Use real-time SSE streaming if enabled
         if (enableStreaming) {
-          // Add streaming message placeholder
-          addStreamingMessage();
+          try {
+            console.log('ATTEMPTING STREAMING...');
+            // Add streaming message placeholder
+            addStreamingMessage();
 
-          let lastContextId: string | undefined;
-          let accumulatedText = '';
+            let lastContextId: string | undefined;
+            let accumulatedText = '';
 
-          // Stream responses in real-time using SSE
-          for await (const event of chatbotApi.submitA2ATaskStream(
-            !workingSession?.contextId,
-            inputText,
-            workingSession?.contextId,
-          )) {
+            // Stream responses in real-time using SSE
+            for await (const event of chatbotApi.submitA2ATaskStream(
+              !workingSession?.contextId,
+              inputText,
+              workingSession?.contextId,
+            )) {
             // Update contextId from any event that has it
             if (event.kind === 'task' && event.contextId) {
               lastContextId = event.contextId;
@@ -638,7 +702,7 @@ export function AgentForgePage() {
               const textPart = event.parts?.find((p: any) => p.kind === 'text');
               if (textPart && 'text' in textPart) {
                 accumulatedText += textPart.text;
-                updateStreamingMessage(accumulatedText);
+                smoothUpdateStreamingMessage(accumulatedText);
               }
             } else if (event.kind === 'artifact-update') {
               // Handle artifact updates (results from sub-agents)
@@ -647,24 +711,82 @@ export function AgentForgePage() {
                   (p: any) => p.kind === 'text',
                 );
                 if (textPart && 'text' in textPart) {
-                  // Replace accumulated text with artifact text (final result)
-                  accumulatedText = textPart.text;
-                  updateStreamingMessage(accumulatedText);
+                  const { isToolNotification, operation, isStart } = detectToolNotification(event.artifact);
+                  
+                  console.log('ARTIFACT UPDATE - name:', event.artifact?.name, 'append:', event.append, 'text:', textPart.text, 'isToolNotification:', isToolNotification);
+                  
+                  if (isToolNotification) {
+                    // Handle tool notifications ONLY as thinking indicators - never add to content
+                    console.log('TOOL NOTIFICATION DETECTED:', operation, 'isStart:', isStart);
+                    console.log('Setting currentOperation to:', operation);
+                    
+                    // Cache the exact notification text for later removal from content
+                    const notificationText = textPart.text.trim();
+                    toolNotificationsCache.current.add(notificationText);
+                    console.log('CACHED NOTIFICATION:', notificationText);
+                    console.log('CACHE SIZE:', toolNotificationsCache.current.size);
+                    
+                    // Always update the current operation and stay in operational mode
+                    // This handles both start and end notifications
+                    setCurrentOperation(operation || 'Processing...');
+                    setIsInOperationalMode(true);
+                    console.log('Tool notification processed, continuing stream...');
+                    // Skip adding tool notifications to accumulated text but continue processing stream
+                  } else {
+                    // Handle real content (streaming_result) - exit operational mode and accumulate text
+                    if (isInOperationalMode) {
+                      console.log('EXITING OPERATIONAL MODE - real content detected');
+                      setIsInOperationalMode(false);
+                      setCurrentOperation(null);
+                    }
+                    
+                    // Only process content if it's NOT a tool notification
+                    if (event.artifact?.name !== 'tool_notification_start' && 
+                        event.artifact?.name !== 'tool_notification_end') {
+                      
+                      // Remove any cached tool notifications from the content
+                      let cleanText = removeCachedToolNotifications(textPart.text);
+                      console.log('CONTENT AFTER CACHE CLEANING - original:', textPart.text, 'cleaned:', cleanText);
+                      
+                      // Respect the append flag for proper text accumulation
+                      if (event.append === false) {
+                        // Start fresh with new text
+                        console.log('STARTING FRESH - clearing previous text');
+                        accumulatedText = cleanText;
+                      } else {
+                        // Append to existing text with smart spacing
+                        console.log('APPENDING to existing text');
+                        
+                        // Add spacing logic to prevent words from running together
+                        if (accumulatedText && cleanText) {
+                          const lastChar = accumulatedText.slice(-1);
+                          const firstChar = cleanText.slice(0, 1);
+                          
+                          // Add space if both are alphanumeric and no space exists
+                          if (/[a-zA-Z0-9]/.test(lastChar) && /[a-zA-Z0-9]/.test(firstChar)) {
+                            // Don't add space if the new text already starts with punctuation or whitespace
+                            if (!/[\s.,!?;:]/.test(firstChar)) {
+                              accumulatedText += ' ' + cleanText;
+                            } else {
+                              accumulatedText += cleanText;
+                            }
+                          } else {
+                            accumulatedText += cleanText;
+                          }
+                        } else {
+                          accumulatedText += cleanText;
+                        }
+                      }
+                      console.log('ACCUMULATED TEXT:', accumulatedText);
+                      smoothUpdateStreamingMessage(accumulatedText);
+                    }
+                  }
                 }
               }
             } else if (event.kind === 'status-update') {
-              // Handle status updates
-              const message = event.status?.message;
-              if (message && message.role === 'agent') {
-                const textPart = message.parts?.find(
-                  (p: any) => p.kind === 'text',
-                );
-                if (textPart && 'text' in textPart) {
-                  accumulatedText += textPart.text;
-                  updateStreamingMessage(accumulatedText);
-                }
-              }
-
+              // Only handle status changes, don't process text content (to avoid duplication)
+              // Text content is already handled in artifact-update events
+              
               // Check if task is completed
               if (event.status?.state === 'completed' || event.final) {
                 break;
@@ -683,7 +805,7 @@ export function AgentForgePage() {
                   );
                   if (textPart && 'text' in textPart) {
                     accumulatedText = textPart.text;
-                    updateStreamingMessage(accumulatedText);
+                    smoothUpdateStreamingMessage(accumulatedText);
                   }
                 }
               }
@@ -696,14 +818,21 @@ export function AgentForgePage() {
                       (p: any) => p.kind === 'text',
                     );
                     if (textPart && 'text' in textPart) {
-                      newText.push(textPart.text);
+                      // Remove any cached tool notifications from history
+                      const cleanText = removeCachedToolNotifications(textPart.text);
+                      console.log('HISTORY MSG AFTER CACHE CLEANING - original:', textPart.text, 'cleaned:', cleanText);
+                      
+                      if (cleanText.trim()) {
+                        // Only add non-empty cleaned text
+                        newText.push(cleanText);
+                      }
                     }
                   }
                 }
                 const fullText = newText.join('');
                 if (fullText.length > accumulatedText.length) {
                   accumulatedText = fullText;
-                  updateStreamingMessage(accumulatedText);
+                  smoothUpdateStreamingMessage(accumulatedText);
                 }
               }
 
@@ -729,10 +858,19 @@ export function AgentForgePage() {
             );
           }
 
-          // Finish streaming
-          finishStreamingMessage();
-          setIsTyping(false);
-          return;
+            // Finish streaming and cleanup operational state
+            finishStreamingMessage();
+            setIsTyping(false);
+            setIsInOperationalMode(false);
+            setCurrentOperation(null);
+            return;
+          } catch (streamingError) {
+            console.error('STREAMING FAILED, FALLING BACK TO NON-STREAMING:', streamingError);
+            // Clean up any streaming UI state including operational mode
+            setIsInOperationalMode(false);
+            setCurrentOperation(null);
+            setIsTyping(true); // Reset typing state for non-streaming fallback
+          }
         }
 
         // Non-streaming mode: submit task and wait for response
@@ -801,7 +939,7 @@ export function AgentForgePage() {
             }
           }
 
-          // Collect all agent messages after the last user message
+          // Collect all agent messages after the last user message (excluding tool notifications)
           const agentWords = [];
           if (lastUserIndex >= 0) {
             for (
@@ -816,7 +954,17 @@ export function AgentForgePage() {
                 message.parts[0] &&
                 message.parts[0].kind === 'text'
               ) {
-                agentWords.push(message.parts[0].text);
+                // Filter out tool notifications from non-streaming history too
+                const text = message.parts[0].text;
+                const isToolMessage = /^(🔧 Calling \w+\.\.\.|✅ \w+ completed)$/m.test(text.trim());
+                
+                console.log('NON-STREAMING HISTORY - text:', text, 'isToolMessage:', isToolMessage);
+                
+                if (!isToolMessage) {
+                  agentWords.push(text);
+                } else {
+                  console.log('FILTERED OUT TOOL MESSAGE FROM NON-STREAMING HISTORY');
+                }
               }
             }
           }
@@ -829,7 +977,7 @@ export function AgentForgePage() {
             agentWords.forEach((word, index) => {
               setTimeout(() => {
                 currentText += word;
-                updateStreamingMessage(currentText.trim());
+                smoothUpdateStreamingMessage(currentText.trim());
 
                 // Finish streaming on last word
                 if (index === agentWords.length - 1) {
@@ -1056,6 +1204,8 @@ export function AgentForgePage() {
               botName={botName}
               botIcon={botIcon}
               inputPlaceholder={inputPlaceholder}
+              currentOperation={currentOperation}
+              isInOperationalMode={isInOperationalMode}
               fontSizes={{
                 messageText: fontSizes.messageText,
                 codeBlock: fontSizes.codeBlock,

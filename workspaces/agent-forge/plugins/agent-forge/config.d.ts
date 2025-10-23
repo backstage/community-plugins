@@ -58,6 +58,12 @@ export interface Config {
     requestTimeout?: number;
 
     /**
+     * Enable streaming responses (default: false)
+     * @visibility frontend
+     */
+    enableStreaming?: boolean;
+
+    /**
      * The header title to display (default: bot name)
      * @visibility frontend
      */

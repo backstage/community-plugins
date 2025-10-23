@@ -26,7 +26,7 @@ import {
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SendIcon from '@material-ui/icons/Send';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Message } from '../types';
 import { ChatMessage } from './ChatMessage';
 
@@ -178,6 +178,10 @@ export interface ChatContainerProps {
   onMessageSubmit: (messageText?: string) => void;
   onReset: () => void;
   onSuggestionClick: (suggestion: string) => void;
+  
+  // Operational mode for special handling of system messages
+  currentOperation?: string | null;
+  isInOperationalMode?: boolean;
 }
 
 /**
@@ -199,18 +203,65 @@ export function ChatContainer({
   onMessageSubmit,
   onReset,
   onSuggestionClick,
+  currentOperation,
+  isInOperationalMode,
 }: ChatContainerProps) {
   const classes = useStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [thinkingMessageIndex, setThinkingMessageIndex] = useState(0);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+  }, []);
 
+  const scrollToPosition = useCallback((position: number, smooth = true) => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: position,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+    }
+  }, []);
+
+  // Simple, smooth auto-scroll that follows text rendering during streaming
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
+    if (isTyping) {
+      // Clear any existing timeout to prevent scroll spam
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      // During streaming, follow the text to the bottom
+      scrollTimeoutRef.current = setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+    }
+
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [messages, scrollToBottom, isTyping]);
+
+  // Scroll to top of last response when streaming completes
+  useEffect(() => {
+    if (!isTyping && messagesContainerRef.current && messages.length > 0) {
+      // Small delay to ensure final text is rendered
+      setTimeout(() => {
+        // Find the last message (current response)
+        const messageElements = messagesContainerRef.current!.querySelectorAll('[class*="message"]');
+        const lastMessageElement = messageElements[messageElements.length - 1] as HTMLElement;
+        
+        if (lastMessageElement) {
+          // Scroll to top of the last response box with 60px extra space above
+          scrollToPosition(Math.max(0, lastMessageElement.offsetTop - 60), true);
+        }
+      }, 200);
+    }
+  }, [isTyping, messages.length, scrollToPosition]);
 
   // Show random thinking messages while typing
   useEffect(() => {
@@ -243,7 +294,7 @@ export function ChatContainer({
 
   return (
     <div className={classes.chatContainer}>
-      <div className={classes.messagesContainer}>
+        <div className={classes.messagesContainer} ref={messagesContainerRef}>
         {messages.map((message, index) => (
           <ChatMessage
             key={index}
@@ -267,7 +318,13 @@ export function ChatContainer({
               <span />
             </div>
             <Typography variant="caption" style={{ marginLeft: 8 }}>
-              {thinkingMessages[thinkingMessageIndex]}...
+              {(() => {
+                const message = isInOperationalMode && currentOperation 
+                  ? `🔧 ${currentOperation}...` 
+                  : `${thinkingMessages[thinkingMessageIndex]}...`;
+                console.log('THINKING MESSAGE:', { isInOperationalMode, currentOperation, message });
+                return message;
+              })()}
             </Typography>
           </Box>
         )}

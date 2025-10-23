@@ -26,6 +26,7 @@ agentForge:
     - Invite users to Github Organization
   thinkingMessagesInterval: 7000  # Interval in milliseconds (default: 7000)
   thinkingMessages:
+    # - "⏳ Thinking..."
     - "⚙️ Processing query — even great thoughts start with a single thread."
     - "🤖 Contacting agents — because collaboration beats computation."
     - "📦 Carrying bits — somewhere in here lies meaning… and metadata."

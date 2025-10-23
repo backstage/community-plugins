@@ -123,7 +123,8 @@ export class ChatbotApi {
         }
       }
     } catch (error) {
-      throw new Error('Error connecting to agent for streaming');
+      console.error('STREAMING ERROR:', error);
+      throw error; // Let the real error bubble up instead of masking it
     }
   }
 
