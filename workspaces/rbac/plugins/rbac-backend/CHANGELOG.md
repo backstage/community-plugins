@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 7.4.2
+
+### Patch Changes
+
+- de412d4: Fix issue with extra delimiter in conditional yaml.
+- 93ce408: Compare parent reference in sqlite memo using entity ref
+
 ## 7.4.1
 
 ### Patch Changes
