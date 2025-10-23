@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.16.1
+
+### Patch Changes
+
+- e05584e: Added validation to prevent branch names with spaces
+
 ## 0.16.0
 
 ### Minor Changes
