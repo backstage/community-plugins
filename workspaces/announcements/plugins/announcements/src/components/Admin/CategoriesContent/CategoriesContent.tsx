@@ -40,8 +40,11 @@ import {
 import { useDeleteCategoryDialogState } from '../../CategoriesPage/useDeleteCategoryDialogState';
 import { ResponseError } from '@backstage/errors';
 import { DeleteCategoryDialog } from '../../CategoriesPage/DeleteCategoryDialog';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);

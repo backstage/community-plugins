@@ -35,8 +35,10 @@ import {
   Announcement,
   MAX_TITLE_LENGTH,
 } from '@backstage-community/plugin-announcements-common';
-import { Grid, Tooltip, Typography } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,

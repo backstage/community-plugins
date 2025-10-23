@@ -19,18 +19,15 @@ import { DateTime } from 'luxon';
 import slugify from 'slugify';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
   announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-
 import CategoryInput from './CategoryInput';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';

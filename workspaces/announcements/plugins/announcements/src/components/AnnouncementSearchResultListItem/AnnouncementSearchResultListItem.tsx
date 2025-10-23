@@ -21,28 +21,11 @@ import {
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  makeStyles,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from '@material-ui/core';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
-
-const useStyles = makeStyles({
-  createdAt: {
-    display: 'block',
-    marginTop: '0.2rem',
-    marginBottom: '0.8rem',
-  },
-  excerpt: {
-    lineHeight: '1.55',
-  },
-  itemText: {
-    wordBreak: 'break-all',
-  },
-});
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 
 type IndexableAnnouncement = IndexableDocument & {
   createdAt: string;
@@ -59,7 +42,6 @@ export const AnnouncementSearchResultListItem = ({
   result,
   highlight,
 }: AnnouncementSearchResultProps) => {
-  const classes = useStyles();
   const { t } = useAnnouncementsTranslation();
 
   if (!result) {
@@ -84,7 +66,14 @@ export const AnnouncementSearchResultListItem = ({
 
   const excerpt = (
     <>
-      <Typography component="span" className={classes.createdAt}>
+      <Typography
+        component="span"
+        sx={{
+          display: 'block',
+          mt: 0.25,
+          mb: 1,
+        }}
+      >
         {`${t('announcementSearchResultListItem.published')} `}
         <Typography component="span" title={document.createdAt}>
           {DateTime.fromISO(document.createdAt).toRelative()}
@@ -112,7 +101,7 @@ export const AnnouncementSearchResultListItem = ({
       <ListItemText
         primary={title}
         secondary={excerpt}
-        className={classes.itemText}
+        sx={{ wordBreak: 'break-all' }}
         primaryTypographyProps={{ variant: 'h6' }}
       />
     </ListItem>

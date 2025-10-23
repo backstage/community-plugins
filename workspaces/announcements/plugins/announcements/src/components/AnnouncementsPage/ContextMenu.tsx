@@ -22,27 +22,17 @@ import {
   tagsListRouteRef,
 } from '../../routes';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  makeStyles,
-  Box,
-  IconButton,
-  Popover,
-  MenuList,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@material-ui/core';
-import MoreVert from '@material-ui/icons/MoreVert';
-import Description from '@material-ui/icons/Description';
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    color: theme.page.fontColor,
-  },
-}));
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Popover from '@mui/material/Popover';
+import MenuList from '@mui/material/MenuList';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MoreVert from '@mui/icons-material/MoreVert';
+import Description from '@mui/icons-material/Description';
 
 export function ContextMenu() {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
   const announcementsLink = useRouteRef(announcementAdminRouteRef);
   const categoriesLink = useRouteRef(categoriesListRouteRef);
@@ -67,7 +57,6 @@ export function ContextMenu() {
         onClick={onOpen}
         data-testid="menu-button"
         color="inherit"
-        className={classes.button}
       >
         <MoreVert />
       </IconButton>

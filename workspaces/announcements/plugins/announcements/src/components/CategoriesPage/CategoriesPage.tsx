@@ -36,9 +36,10 @@ import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { DeleteCategoryDialog } from './DeleteCategoryDialog';
 import { ResponseError } from '@backstage/errors';
-import { IconButton, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { usePermission } from '@backstage/plugin-permission-react';
 import { ContextMenu } from '../AnnouncementsPage/ContextMenu';
 

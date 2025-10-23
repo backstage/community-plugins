@@ -24,17 +24,8 @@ import {
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import { usePermission } from '@backstage/plugin-permission-react';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => {
-  return {
-    formRoot: {
-      '& > *': {
-        margin: theme?.spacing?.(1) ?? '8px',
-      },
-    },
-  };
-});
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 export type CategoriesFormProps = {
   initialData: Category;
@@ -45,7 +36,6 @@ export const CategoriesForm = ({
   initialData,
   onSubmit,
 }: CategoriesFormProps) => {
-  const classes = useStyles();
   const [form, setForm] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const { t } = useAnnouncementsTranslation();
@@ -78,7 +68,7 @@ export const CategoriesForm = ({
           : t('categoriesForm.newCategory')
       }
     >
-      <form className={classes.formRoot} onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <TextField
           id="title"
           type="text"
@@ -88,6 +78,7 @@ export const CategoriesForm = ({
           variant="outlined"
           fullWidth
           required
+          sx={{ mb: 1 }}
         />
         <Button
           variant="contained"

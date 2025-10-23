@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { usePermission } from '@backstage/plugin-permission-react';
-import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import { announcementDeletePermission } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 
