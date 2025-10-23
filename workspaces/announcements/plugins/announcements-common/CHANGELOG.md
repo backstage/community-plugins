@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.12.1
+
+### Patch Changes
+
+- 95470f7: Add auditing of announcement creation, updates, and deletions via [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor/).
+
 ## 0.12.0
 
 ### Minor Changes
