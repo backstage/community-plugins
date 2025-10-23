@@ -3582,6 +3582,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-signals@backstage:^::backstage=1.44.0&npm=0.0.24, @backstage/plugin-signals@npm:^0.0.24":
+  version: 0.0.24
+  resolution: "@backstage/plugin-signals@npm:0.0.24"
+  dependencies:
+    "@backstage/core-compat-api": "npm:^0.5.3"
+    "@backstage/core-components": "npm:^0.18.2"
+    "@backstage/core-plugin-api": "npm:^1.11.1"
+    "@backstage/frontend-plugin-api": "npm:^0.12.1"
+    "@backstage/plugin-signals-react": "npm:^0.0.16"
+    "@backstage/theme": "npm:^0.7.0"
+    "@backstage/types": "npm:^1.2.2"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/lab": "npm:^4.0.0-alpha.61"
+    react-use: "npm:^17.2.4"
+    uuid: "npm:^11.0.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/859736107660c40c24bb97834b377ebfc31aa1503878b47f12d29e2493b9f6d5419884db30eb356d11fb879cad76bb951c8513806c934c8f6cd5a3849890880e
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-techdocs-backend@backstage:^::backstage=1.44.0&npm=2.1.1, @backstage/plugin-techdocs-backend@npm:^2.1.1":
   version: 2.1.1
   resolution: "@backstage/plugin-techdocs-backend@npm:2.1.1"
@@ -12362,6 +12390,7 @@ __metadata:
     "@backstage/plugin-catalog-import": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-org": "backstage:^"
+    "@backstage/plugin-signals": "backstage:^"
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
