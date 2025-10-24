@@ -52,6 +52,10 @@ backend.add(import('@backstage/plugin-search-backend'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
+// notifications and signals plugins
+backend.add(import('@backstage/plugin-notifications-backend'));
+backend.add(import('@backstage/plugin-signals-backend'));
+
 // Tech insights
 backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 
