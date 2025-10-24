@@ -61,6 +61,7 @@
     "@backstage/core-app-api": "^1.19.1",
     "@backstage/dev-utils": "^1.1.15",
     "@backstage/test-utils": "^1.7.12",
+    "@backstage/ui": "^0.8.2",
     "@playwright/test": "^1.52.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
