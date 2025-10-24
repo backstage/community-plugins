@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.5.0
+
+### Minor Changes
+
+- 7de2f90: Display Multiple links
+  Display errorInfo facts description and value if check result is false and fact type is not boolean
+  Update layout of maturity check accordion summary display
+  bugfix: Remove local implementation of accordion
+
+### Patch Changes
+
+- 98fb7ac: Display the check name in the maturity results table instead of the id
+
 ## 0.4.1
 
 ### Patch Changes
