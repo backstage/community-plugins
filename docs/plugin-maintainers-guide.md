@@ -28,7 +28,9 @@ Plugin ownership is a responsibility often taken on voluntarily and/or in additi
 
 Plugin owners are assumed to have full autonomy over reviewing and merging PRs for their workspace. This includes the merging of Version Packages PRs to trigger a new release.
 
-It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces (such as dependency updates), as these may be landed by `@backstage/community-plugin-maintainers`.
+It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces, as these may be landed by `@backstage/community-plugin-maintainers`.
+
+In the case of PRs for dependency updates, if these are not handled and become stale, `@backstage/community-plugin-maintainers` will take action to merge or close them.
 
 ### Issue Triage
 
