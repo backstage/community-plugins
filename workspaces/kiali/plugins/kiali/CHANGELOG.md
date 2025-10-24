@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.44.1
+
+### Patch Changes
+
+- e6bd3fc: Updated dependency `cytoscape` to `3.33.1`.
+
 ## 1.44.0
 
 ### Minor Changes
