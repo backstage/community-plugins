@@ -1802,6 +1802,7 @@ __metadata:
     "@backstage/plugin-permission-react": "npm:^0.4.37"
     "@backstage/test-utils": "npm:^1.7.12"
     "@backstage/theme": "npm:^0.7.0"
+    "@backstage/ui": "npm:^0.8.2"
     "@kubernetes/client-node": "npm:^0.22.1"
     "@material-ui/core": "npm:^4.9.13"
     "@material-ui/icons": "npm:^4.9.1"
@@ -4487,7 +4488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.8.1":
+"@backstage/ui@npm:^0.8.1, @backstage/ui@npm:^0.8.2":
   version: 0.8.2
   resolution: "@backstage/ui@npm:0.8.2"
   dependencies:
@@ -15370,6 +15371,7 @@ __metadata:
     "@backstage/plugin-techdocs-module-addons-contrib": "npm:^1.1.29"
     "@backstage/plugin-techdocs-react": "npm:^1.3.4"
     "@backstage/plugin-user-settings": "npm:^0.8.28"
+    "@backstage/ui": "npm:^0.8.2"
     "@emotion/react": "npm:^11.11.4"
     "@emotion/styled": "npm:^11.13.0"
     "@mui/icons-material": "npm:^5.15.16"
