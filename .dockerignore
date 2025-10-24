@@ -1,0 +1,14 @@
+node_modules
+.git
+.github
+*.md
+.husky
+.yarn/cache
+.yarn/install-state.gz
+dist
+build
+coverage
+.nyc_output
+*.log
+.DS_Store
+Thumbs.db
