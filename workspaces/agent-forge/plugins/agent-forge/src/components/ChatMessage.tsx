@@ -25,8 +25,11 @@ import {
   makeStyles,
   IconButton,
   Tooltip,
+  Collapse,
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import useAsync from 'react-use/esm/useAsync';
 import { Message } from '../types';
 import ReactMarkdown from 'react-markdown';
@@ -37,6 +40,7 @@ import {
   vs,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@material-ui/core/styles';
+import { memo, useState, useEffect, useRef } from 'react';
 
 const useStyles = makeStyles(theme => ({
   messageBox: {
@@ -94,6 +98,67 @@ const useStyles = makeStyles(theme => ({
           : 'rgba(0, 0, 0, 0.02)',
     },
   },
+  executionPlanContainer: {
+    marginBottom: theme.spacing(1),
+    backgroundColor: theme.palette.type === 'dark' 
+      ? 'rgba(76, 175, 80, 0.15)' 
+      : 'rgba(76, 175, 80, 0.08)',
+    borderRadius: theme.spacing(0.5),
+    border: `1px solid ${theme.palette.type === 'dark' 
+      ? 'rgba(76, 175, 80, 0.3)' 
+      : 'rgba(76, 175, 80, 0.2)'}`,
+    overflow: 'hidden',
+  },
+  executionPlanHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: theme.spacing(0.75, 1.5),
+    cursor: 'pointer',
+    backgroundColor: theme.palette.type === 'dark' 
+      ? 'rgba(76, 175, 80, 0.2)' 
+      : 'rgba(76, 175, 80, 0.12)',
+    '&:hover': {
+      backgroundColor: theme.palette.type === 'dark' 
+        ? 'rgba(76, 175, 80, 0.3)' 
+        : 'rgba(76, 175, 80, 0.18)',
+    },
+  },
+  executionPlanContent: {
+    padding: theme.spacing(0.75, 1),
+    fontSize: '0.8rem',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap',
+    backgroundColor: theme.palette.type === 'dark' 
+      ? 'rgba(76, 175, 80, 0.1)' 
+      : 'rgba(76, 175, 80, 0.05)',
+    lineHeight: '1.3',
+  },
+  collapseHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing(0.5),
+    padding: theme.spacing(0.5, 0),
+    cursor: 'pointer',
+    borderRadius: theme.spacing(0.5),
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  collapseButton: {
+    padding: theme.spacing(0.25),
+    marginLeft: theme.spacing(0.5),
+    opacity: 0.6,
+    transition: 'opacity 0.2s',
+    '&:hover': {
+      opacity: 1,
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  responseContent: {
+    transition: 'all 0.3s ease',
+  },
 }));
 
 /**
@@ -114,9 +179,10 @@ export interface ChatMessageProps {
 
 /**
  * Individual chat message component with user profile integration
+ * Memoized to prevent unnecessary re-renders when props haven't changed
  * @public
  */
-export function ChatMessage({
+export const ChatMessage = memo(function ChatMessage({
   message,
   botName,
   botIcon,
@@ -127,10 +193,61 @@ export function ChatMessage({
   const alertApi = useApi(alertApiRef);
   const { value: profile } = useAsync(() => identityApi.getProfileInfo());
   const theme = useTheme();
+  const [isResponseExpanded, setIsResponseExpanded] = useState(true);
+  const [isExecutionPlanExpanded, setIsExecutionPlanExpanded] = useState(true);
+  const hasAutoCollapsed = useRef(false);
+
+  // Reset execution plan state completely when message changes (detect by timestamp + text combination)
+  const messageId = `${message.timestamp}-${message.text?.slice(0, 20)}`;
+  const prevMessageIdRef = useRef<string>('');
+  
+  useEffect(() => {
+    const currentMessageId = `${message.timestamp}-${message.text?.slice(0, 20)}`;
+    console.log('🆔 MESSAGE ID CHECK:', {
+      current: currentMessageId,
+      previous: prevMessageIdRef.current,
+      isNewMessage: currentMessageId !== prevMessageIdRef.current
+    });
+    
+    if (currentMessageId !== prevMessageIdRef.current) {
+      console.log('🔄 NEW MESSAGE DETECTED - resetting execution plan state');
+      // Reset all execution plan state for new message
+      hasAutoCollapsed.current = false;
+      setIsExecutionPlanExpanded(true);
+      prevMessageIdRef.current = currentMessageId;
+    }
+  }, [messageId]);
+
+  // Auto-collapse execution plan when streaming completes - only once
+  useEffect(() => {
+    if (message.executionPlan && message.executionPlan.trim().length > 0 && message.isStreaming === false && !hasAutoCollapsed.current && isExecutionPlanExpanded) {
+      console.log('🔄 AUTO-COLLAPSING EXECUTION PLAN');
+      // Small delay to let user see the plan briefly before collapsing
+      const timer = setTimeout(() => {
+        setIsExecutionPlanExpanded(false);
+        hasAutoCollapsed.current = true; // Mark as auto-collapsed to prevent repeated triggers
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [message.isStreaming, message.executionPlan, isExecutionPlanExpanded]);
 
   const handleCopyToClipboard = async () => {
     try {
-      await window.navigator.clipboard.writeText(message.text || '');
+      let textToCopy = '';
+
+      // Include execution plan if present
+      if (message.executionPlan) {
+        textToCopy += `📋 Execution Plan\n${message.executionPlan}\n\n`;
+      }
+
+      // Add main message text
+      if (message.text) {
+        textToCopy += message.text;
+      }
+
+      await window.navigator.clipboard.writeText(textToCopy);
       alertApi.post({
         message: 'Message copied to clipboard',
         severity: 'success',
@@ -366,48 +483,260 @@ export function ChatMessage({
           </Typography>
         )}
       </Box>
-      <Box
-        style={{
-          wordBreak: 'break-word',
-          color: 'inherit',
-        }}
-      >
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            code: CodeBlock,
-            a: ({ href, children, ...props }) => (
-              <a
-                href={href?.startsWith('http') ? href : ''}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
-                  textDecoration: 'underline',
+      {/* Execution Plan - collapsible if present and not empty */}
+      {message.executionPlan && message.executionPlan.trim().length > 0 && (
+        <Box className={classes.executionPlanContainer}>
+          <Box 
+            className={classes.executionPlanHeader}
+            onClick={() => setIsExecutionPlanExpanded(!isExecutionPlanExpanded)}
+          >
+            <Typography 
+              variant="subtitle2" 
+              style={{ 
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              📋 Execution Plan
+            </Typography>
+            <IconButton 
+              size="small"
+              style={{ 
+                padding: '2px',
+                opacity: 0.7,
+                transition: 'opacity 0.2s'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExecutionPlanExpanded(!isExecutionPlanExpanded);
+              }}
+            >
+              {isExecutionPlanExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+            </IconButton>
+          </Box>
+          <Collapse in={isExecutionPlanExpanded}>
+            <Box className={classes.executionPlanContent}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code: CodeBlock,
+                  a: ({ href, children, ...props }) => (
+                    <a
+                      href={href?.startsWith('http') ? href : ''}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                        textDecoration: 'underline',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </a>
+                  ),
+                  p: ({ children, ...props }) => (
+                    <p
+                      style={{ 
+                        fontSize: '0.8rem',
+                        margin: '0.2em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </p>
+                  ),
+                  h1: ({ children, ...props }) => (
+                    <h1
+                      style={{ 
+                        fontSize: '0.9rem',
+                        fontWeight: 600,
+                        margin: '0.3em 0 0.2em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.2',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </h1>
+                  ),
+                  h2: ({ children, ...props }) => (
+                    <h2
+                      style={{ 
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        margin: '0.25em 0 0.15em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.2',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({ children, ...props }) => (
+                    <h3
+                      style={{ 
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        margin: '0.2em 0 0.1em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.2',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </h3>
+                  ),
+                  ul: ({ children, ...props }) => (
+                    <ul
+                      style={{ 
+                        fontSize: '0.8rem',
+                        fontFamily: 'monospace',
+                        paddingLeft: '1.2em',
+                        margin: '0.2em 0',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children, ...props }) => (
+                    <ol
+                      style={{ 
+                        fontSize: '0.8rem',
+                        fontFamily: 'monospace',
+                        paddingLeft: '1.2em',
+                        margin: '0.2em 0',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </ol>
+                  ),
+                  li: ({ children, ...props }) => (
+                    <li
+                      style={{ 
+                        fontSize: '0.8rem',
+                        fontFamily: 'monospace',
+                        margin: '0.1em 0',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </li>
+                  ),
+                  strong: ({ children, ...props }) => (
+                    <strong
+                      style={{ 
+                        fontWeight: 600,
+                        fontFamily: 'monospace',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </strong>
+                  ),
+                  table: ({ children, ...props }) => (
+                    <table className={classes.markdownTable} {...props}>
+                      {children}
+                    </table>
+                  ),
                 }}
-                {...props}
               >
-                {children}
-              </a>
-            ),
-            p: ({ children, ...props }) => (
-              <p
-                style={{ fontSize: fontSizes?.messageText || '0.875rem' }}
-                {...props}
+                {message.executionPlan || ''}
+              </ReactMarkdown>
+            </Box>
+          </Collapse>
+        </Box>
+      )}
+
+      {/* Collapsible Response Content */}
+      {message.text && (
+        <Box>
+          {/* Subtle Collapse Header - only show for bot messages with content */}
+          {!message.isUser && message.text && (
+            <Box 
+              className={classes.collapseHeader}
+              onClick={() => setIsResponseExpanded(!isResponseExpanded)}
+            >
+              <Typography 
+                variant="caption" 
+                style={{ 
+                  opacity: 0.7,
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                }}
               >
-                {children}
-              </p>
-            ),
-            table: ({ children, ...props }) => (
-              <table className={classes.markdownTable} {...props}>
-                {children}
-              </table>
-            ),
-          }}
-        >
-          {message.text || ''}
-        </ReactMarkdown>
-      </Box>
+                Response
+              </Typography>
+              <IconButton 
+                className={classes.collapseButton}
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsResponseExpanded(!isResponseExpanded);
+                }}
+              >
+                {isResponseExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+              </IconButton>
+            </Box>
+          )}
+
+          {/* Main Content */}
+          <Collapse in={message.isUser || isResponseExpanded}>
+            <Box
+              className={classes.responseContent}
+              style={{
+                wordBreak: 'break-word',
+                color: 'inherit',
+              }}
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code: CodeBlock,
+                  a: ({ href, children, ...props }) => (
+                    <a
+                      href={href?.startsWith('http') ? href : ''}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                        textDecoration: 'underline',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </a>
+                  ),
+                  p: ({ children, ...props }) => (
+                    <p
+                      style={{ fontSize: fontSizes?.messageText || '0.875rem' }}
+                      {...props}
+                    >
+                      {children}
+                    </p>
+                  ),
+                  table: ({ children, ...props }) => (
+                    <table className={classes.markdownTable} {...props}>
+                      {children}
+                    </table>
+                  ),
+                }}
+              >
+                {message.text || ''}
+              </ReactMarkdown>
+            </Box>
+          </Collapse>
+        </Box>
+      )}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography
           variant="caption"
@@ -431,4 +760,4 @@ export function ChatMessage({
       </Box>
     </Box>
   );
-}
+});

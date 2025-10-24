@@ -307,23 +307,51 @@ export function AgentForgePage() {
   // Cache to track tool notifications we've shown in thinking indicator
   const toolNotificationsCache = useRef<Set<string>>(new Set());
   
+  // State for execution plan processing
+  const [isCapturingExecutionPlan, setIsCapturingExecutionPlan] = useState(false);
+  const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] = useState<string>('');
+  
   
   // Function to remove cached tool notifications from content
   const removeCachedToolNotifications = useCallback((text: string): string => {
     let cleanText = text;
+    const originalText = text;
+    
+    // 🚨 DEBUGGING: Check if input text contains execution plan markers
+    if (text.includes('⧨') || text.includes('⧩')) {
+      console.log('🚨 INPUT TEXT CONTAINS EXECUTION PLAN MARKERS');
+      console.log('🚨 ORIGINAL TEXT:', text.substring(0, 200) + '...');
+    }
     
     // Remove each cached notification from the text
     for (const notification of toolNotificationsCache.current) {
+      const beforeRemoval = cleanText;
+      
       // Remove the exact notification text (with optional newlines)
       const escapedNotification = notification.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(`\\s*${escapedNotification}\\s*`, 'g');
       cleanText = cleanText.replace(regex, '');
+      
+      // 🚨 DEBUGGING: Check if we removed execution plan markers
+      if (beforeRemoval !== cleanText && (beforeRemoval.includes('⧨') || beforeRemoval.includes('⧩'))) {
+        console.log('🚨 REMOVED TEXT THAT CONTAINED EXECUTION PLAN MARKERS!');
+        console.log('🚨 REMOVED NOTIFICATION:', notification.substring(0, 100) + '...');
+        console.log('🚨 BEFORE:', beforeRemoval.substring(0, 200) + '...');
+        console.log('🚨 AFTER:', cleanText.substring(0, 200) + '...');
+      }
     }
     
     // Clean up any extra whitespace/newlines at the beginning
     cleanText = cleanText.replace(/^\s+/, '');
     
-    console.log('CLEANED TEXT - original length:', text.length, 'cleaned length:', cleanText.length);
+    console.log('CLEANED TEXT - original length:', originalText.length, 'cleaned length:', cleanText.length);
+    
+    // 🚨 DEBUGGING: Final check
+    if (originalText.includes('⧨') || originalText.includes('⧩')) {
+      const stillHasMarkers = cleanText.includes('⧨') || cleanText.includes('⧩');
+      console.log('🚨 EXECUTION PLAN MARKERS AFTER CLEANING:', stillHasMarkers ? 'STILL PRESENT' : 'REMOVED!');
+    }
+    
     return cleanText;
   }, []);
   
@@ -352,6 +380,113 @@ export function AgentForgePage() {
     // Regular content (streaming_result, etc.)
     return { isToolNotification: false };
   };
+
+  // Function to process streaming text and extract execution plans
+  const processExecutionPlanMarkers = useCallback((text: string): {
+    mainContent: string;
+    executionPlanContent: string | null;
+    shouldStartCapturing: boolean;
+    shouldStopCapturing: boolean;
+  } => {
+    const startMarker = '⧨';
+    const endMarker = '⧩';
+
+    let mainContent = text;
+    let executionPlanContent: string | null = null;
+    let shouldStartCapturing = false;
+    let shouldStopCapturing = false;
+
+    // Reduced logging for performance
+    if (process.env.NODE_ENV === 'development') {
+      console.log('PROCESSING EXECUTION PLAN MARKERS - input text:', text.substring(0, 100) + '...');
+      console.log('PROCESSING EXECUTION PLAN MARKERS - isCapturingExecutionPlan:', isCapturingExecutionPlan);
+    }
+
+    // 🔧 FALLBACK: Try to detect execution plan content without markers
+    if (!text.includes(startMarker) && !text.includes(endMarker) && !isCapturingExecutionPlan) {
+      // Look for "📋 Execution Plan:" followed by content until a new section starts
+      const executionPlanPattern = /📋\s*Execution\s*Plan:\s*(.*?)(?=\n\n(?:[A-Z]|###)|Calling|Checking|$)/is;
+      const match = text.match(executionPlanPattern);
+      
+      if (match && match[1]) {
+        console.log('🔧 FALLBACK: Found execution plan content without Unicode markers!');
+        const executionPlanText = match[1].trim();
+        console.log('🔧 FALLBACK: Extracted execution plan:', executionPlanText.substring(0, 200) + '...');
+        
+        // Remove the entire execution plan section from main content
+        const fullExecutionPlanSection = match[0];
+        mainContent = text.replace(fullExecutionPlanSection, '').trim();
+        executionPlanContent = executionPlanText;
+        shouldStartCapturing = true;
+        shouldStopCapturing = true; // It's a complete plan in one chunk
+        
+        console.log('🔧 FALLBACK: Removed section:', fullExecutionPlanSection.substring(0, 100) + '...');  
+        console.log('🔧 FALLBACK: Main content after removal:', mainContent.substring(0, 200) + '...');
+        return {
+          mainContent,
+          executionPlanContent,
+          shouldStartCapturing,
+          shouldStopCapturing,
+        };
+      }
+    }
+
+    // Check for start marker (⧨)
+    if (text.includes(startMarker)) {
+      console.log('⧨ FOUND START MARKER');
+      shouldStartCapturing = true;
+      const parts = text.split(startMarker);
+      mainContent = parts[0]; // Content before start marker goes to main
+
+      // Content after start marker might contain execution plan
+      if (parts[1]) {
+        const afterStart = parts[1];
+        if (afterStart.includes(endMarker)) {
+          // Both start and end in same chunk
+          console.log('⧨⧩ FOUND BOTH MARKERS IN SAME CHUNK');
+          const endParts = afterStart.split(endMarker);
+          executionPlanContent = endParts[0]; // Content between markers
+          mainContent += endParts[1] || ''; // Content after end marker goes to main
+          shouldStopCapturing = true;
+        } else {
+          // Only start marker, content continues in next chunks
+          console.log('⧨ FOUND START MARKER ONLY - continuing capture');
+          executionPlanContent = afterStart;
+        }
+      }
+    } else if (text.includes(endMarker)) {
+      // End marker found (⧩)
+      console.log('⧩ FOUND END MARKER');
+      shouldStopCapturing = true;
+      const parts = text.split(endMarker);
+      executionPlanContent = parts[0]; // Content before end marker is execution plan
+      mainContent = parts[1] || ''; // Content after end marker goes to main
+    } else if (isCapturingExecutionPlan) {
+      // We're in the middle of capturing an execution plan
+      console.log('⧨...⧩ CONTINUING CAPTURE OF EXECUTION PLAN');
+      executionPlanContent = text;
+      mainContent = ''; // Nothing goes to main content
+    }
+
+    // Clean up execution plan content by removing duplicate headers
+    if (executionPlanContent) {
+      console.log('BEFORE HEADER CLEANUP:', executionPlanContent.substring(0, 200));
+      const originalLength = executionPlanContent.length;
+      // Remove "## 📋 Execution Plan" or "📋 Execution Plan" from the beginning
+      executionPlanContent = executionPlanContent.replace(/^[\s]*#{0,3}\s*📋\s*Execution\s*Plan[\s]*\n?/i, '').trim();
+      console.log('AFTER HEADER CLEANUP:', executionPlanContent.substring(0, 200));
+      console.log('HEADER CLEANUP - removed chars:', originalLength - executionPlanContent.length);
+    }
+
+    console.log('PROCESSING RESULT - mainContent length:', mainContent.length, 'executionPlanContent length:', executionPlanContent?.length || 0);
+
+    return {
+      mainContent,
+      executionPlanContent,
+      shouldStartCapturing,
+      shouldStopCapturing,
+    };
+  }, [isCapturingExecutionPlan]);
 
   // Token authentication for external system integration
   const { tokenMessage, isTokenRequest } = useTokenAuthentication();
@@ -540,15 +675,25 @@ export function AgentForgePage() {
         text: initialText,
         isUser: false,
         timestamp: createTimestamp(),
+        isStreaming: true,
+        executionPlan: '', // Explicitly set empty execution plan for new messages
       };
+      if (process.env.NODE_ENV === 'development') {
+        console.log('➕ ADDED NEW STREAMING MESSAGE - executionPlan set to empty string, timestamp:', newMessage.timestamp);
+      }
       addMessageToSession(newMessage);
     },
     [addMessageToSession],
   );
 
   const updateStreamingMessage = useCallback(
-    (text: string) => {
+    (text: string, executionPlan?: string, isStreaming: boolean = true) => {
       if (!currentSessionId) return;
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📝 UPDATE STREAMING MESSAGE - executionPlan:', executionPlan ? `${executionPlan.length} chars - "${executionPlan.substring(0, 30)}..."` : 'undefined/empty');
+        console.log('📝 UPDATE STREAMING MESSAGE - text length:', text.length);
+      }
 
       setSessions(prev =>
         prev.map(session => {
@@ -557,6 +702,16 @@ export function AgentForgePage() {
             const lastMessage = updatedMessages[updatedMessages.length - 1];
             if (lastMessage && !lastMessage.isUser) {
               lastMessage.text = text;
+              lastMessage.isStreaming = isStreaming;
+              // Always set execution plan to clear old values - use empty string if not provided
+              const previousExecutionPlan = lastMessage.executionPlan;
+              lastMessage.executionPlan = executionPlan || '';
+              if (process.env.NODE_ENV === 'development') {
+                console.log('📝 SET EXECUTION PLAN ON MESSAGE:');
+                console.log('📝   - Previous:', previousExecutionPlan ? `"${previousExecutionPlan.substring(0, 50)}..."` : 'empty');
+                console.log('📝   - New:', executionPlan ? `"${executionPlan.substring(0, 50)}..."` : 'empty');
+                console.log('📝   - OVERWRITING:', previousExecutionPlan && !executionPlan ? '⚠️ YES - CLEARING EXISTING PLAN!' : '✅ No');
+              }
             }
             return { ...session, messages: updatedMessages };
           }
@@ -567,14 +722,26 @@ export function AgentForgePage() {
     [currentSessionId],
   );
 
-  // Direct text update - no more smooth streaming complexity
-  const smoothUpdateStreamingMessage = useCallback((newText: string) => {
-    updateStreamingMessage(newText);
-  }, [updateStreamingMessage]);
 
   const finishStreamingMessage = useCallback(() => {
+    // Mark the last message as not streaming to trigger execution plan auto-collapse
+    if (currentSessionId) {
+      setSessions(prev =>
+        prev.map(session => {
+          if (session.id === currentSessionId) {
+            const updatedMessages = [...session.messages];
+            const lastMessage = updatedMessages[updatedMessages.length - 1];
+            if (lastMessage && !lastMessage.isUser) {
+              lastMessage.isStreaming = false;
+            }
+            return { ...session, messages: updatedMessages };
+          }
+          return session;
+        }),
+      );
+    }
     setIsTyping(false);
-  }, []);
+  }, [currentSessionId]);
 
   // Main message submission handler
   const handleMessageSubmit = useCallback(
@@ -683,6 +850,11 @@ export function AgentForgePage() {
             let lastContextId: string | undefined;
             let accumulatedText = '';
 
+            // Clear execution plan state at the start of each new response
+            setIsCapturingExecutionPlan(false);
+            setAccumulatedExecutionPlan('');
+            console.log('🧹 CLEARED EXECUTION PLAN STATE FOR NEW MESSAGE - starting fresh');
+
             // Stream responses in real-time using SSE
             for await (const event of chatbotApi.submitA2ATaskStream(
               !workingSession?.contextId,
@@ -701,8 +873,18 @@ export function AgentForgePage() {
               // Accumulate text from agent messages
               const textPart = event.parts?.find((p: any) => p.kind === 'text');
               if (textPart && 'text' in textPart) {
+                console.log('💬 AGENT MESSAGE - text:', textPart.text.substring(0, 200) + (textPart.text.length > 200 ? '...' : ''));
+                
+                // 🚨 DEBUGGING: Check if agent message contains execution plan content
+                if (textPart.text.includes('⧨') || textPart.text.includes('⧩')) {
+                  console.log('🎯 EXECUTION PLAN MARKERS IN AGENT MESSAGE!');
+                } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
+                  console.log('🔍 POTENTIAL EXECUTION PLAN IN AGENT MESSAGE WITHOUT MARKERS:');
+                  console.log('🔍 TEXT:', textPart.text);
+                }
+                
                 accumulatedText += textPart.text;
-                smoothUpdateStreamingMessage(accumulatedText);
+                updateStreamingMessage(accumulatedText, accumulatedExecutionPlan || '', true);
               }
             } else if (event.kind === 'artifact-update') {
               // Handle artifact updates (results from sub-agents)
@@ -713,17 +895,51 @@ export function AgentForgePage() {
                 if (textPart && 'text' in textPart) {
                   const { isToolNotification, operation, isStart } = detectToolNotification(event.artifact);
                   
-                  console.log('ARTIFACT UPDATE - name:', event.artifact?.name, 'append:', event.append, 'text:', textPart.text, 'isToolNotification:', isToolNotification);
+                  console.log('ARTIFACT UPDATE - name:', event.artifact?.name, 'append:', event.append, 'text:', textPart.text.substring(0, 200) + (textPart.text.length > 200 ? '...' : ''), 'isToolNotification:', isToolNotification);
                   
-                  if (isToolNotification) {
+                  // 🚨 DEBUGGING: Check if this content contains execution plan markers
+                  if (textPart.text.includes('⧨') || textPart.text.includes('⧩')) {
+                    console.log('🎯 EXECUTION PLAN MARKERS DETECTED IN STREAMING CONTENT!');
+                    console.log('🎯 FULL TEXT:', textPart.text);
+                  } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
+                    console.log('🔍 POTENTIAL EXECUTION PLAN CONTENT WITHOUT MARKERS:');
+                    console.log('🔍 TEXT:', textPart.text.substring(0, 300) + '...');
+                    console.log('🔍 This should have ⧨⧩ markers around it!');
+                  }
+                  
+                  // 🔧 NEW LOGIC: Check for execution plan markers in execution_plan artifacts
+                  if (event.artifact?.name === 'execution_plan') {
+                    const markerText = textPart.text.trim();
+                    console.log('🎯 EXECUTION PLAN ARTIFACT:', markerText);
+                    
+                    if (markerText === '⧨') {
+                      console.log('⧨ EXECUTION PLAN START MARKER - Begin capturing streaming_result');
+                      setIsCapturingExecutionPlan(true);
+                      setAccumulatedExecutionPlan(''); // Reset execution plan content
+                    } else if (markerText === '⧩') {
+                      console.log('⧩ EXECUTION PLAN END MARKER - Stop capturing streaming_result');
+                      setIsCapturingExecutionPlan(false);
+                    }
+                    
+                    // Don't process execution_plan artifacts as regular content
+                    console.log('Execution plan marker processed, continuing stream...');
+                  } else if (isToolNotification) {
                     // Handle tool notifications ONLY as thinking indicators - never add to content
                     console.log('TOOL NOTIFICATION DETECTED:', operation, 'isStart:', isStart);
                     console.log('Setting currentOperation to:', operation);
                     
                     // Cache the exact notification text for later removal from content
                     const notificationText = textPart.text.trim();
+                    
+                    // 🚨 DEBUGGING: Check if we're accidentally caching execution plan markers
+                    if (notificationText.includes('⧨') || notificationText.includes('⧩')) {
+                      console.log('🚨 WARNING: Tool notification contains execution plan markers!');
+                      console.log('🚨 NOTIFICATION TEXT:', notificationText);
+                      console.log('🚨 This might be why execution plan is getting eaten up!');
+                    }
+                    
                     toolNotificationsCache.current.add(notificationText);
-                    console.log('CACHED NOTIFICATION:', notificationText);
+                    console.log('CACHED NOTIFICATION:', notificationText.substring(0, 100) + (notificationText.length > 100 ? '...' : ''));
                     console.log('CACHE SIZE:', toolNotificationsCache.current.size);
                     
                     // Always update the current operation and stay in operational mode
@@ -746,7 +962,27 @@ export function AgentForgePage() {
                       
                       // Remove any cached tool notifications from the content
                       let cleanText = removeCachedToolNotifications(textPart.text);
-                      console.log('CONTENT AFTER CACHE CLEANING - original:', textPart.text, 'cleaned:', cleanText);
+                      console.log('CONTENT AFTER CACHE CLEANING - original:', textPart.text.substring(0, 100) + '...', 'cleaned:', cleanText.substring(0, 100) + '...');
+                      
+                      // 🔧 NEW SIMPLE LOGIC: Route streaming_result based on capture state
+                      if (isCapturingExecutionPlan) {
+                        // We're capturing execution plan - add this content to execution plan
+                        console.log('📋 CAPTURING FOR EXECUTION PLAN:', cleanText.substring(0, 100) + '...');
+                        setAccumulatedExecutionPlan(prev => {
+                          const newContent = prev + cleanText;
+                          console.log('📋 EXECUTION PLAN UPDATED from:', prev.substring(0, 50) + '...', 'to:', newContent.substring(0, 50) + '...');
+                          return newContent;
+                        });
+                        
+                        // Don't add to main content - this is execution plan content
+                        cleanText = '';
+                      } else {
+                        // Normal mode - add to main content
+                        console.log('📄 ADDING TO MAIN CONTENT:', cleanText.substring(0, 100) + '...');
+                      }
+
+                      // Get current execution plan content for message update
+                      const currentExecutionPlan = accumulatedExecutionPlan;
                       
                       // Respect the append flag for proper text accumulation
                       if (event.append === false) {
@@ -777,8 +1013,23 @@ export function AgentForgePage() {
                           accumulatedText += cleanText;
                         }
                       }
-                      console.log('ACCUMULATED TEXT:', accumulatedText);
-                      smoothUpdateStreamingMessage(accumulatedText);
+
+                      // Always update message to keep execution plan and main content separated
+                      if (process.env.NODE_ENV === 'development') {
+                        console.log('ACCUMULATED TEXT:', accumulatedText.substring(0, 100) + '...');
+                        console.log('ACCUMULATED EXECUTION PLAN:', accumulatedExecutionPlan);
+                        console.log('⧨⧩ UPDATING MESSAGE WITH EXECUTION PLAN:', currentExecutionPlan ? 'YES' : 'NO');
+                      }
+
+                      // 🔧 SIMPLE FIX: Use current execution plan content
+                      const executionPlanToPass = currentExecutionPlan || '';
+                      if (process.env.NODE_ENV === 'development') {
+                        console.log('⧨⧩ EXECUTION PLAN TO PASS:', executionPlanToPass ? `"${executionPlanToPass.substring(0, 50)}..."` : 'EMPTY STRING');
+                        console.log('⧨⧩ CURRENT currentExecutionPlan:', currentExecutionPlan ? `"${currentExecutionPlan.substring(0, 50)}..."` : 'EMPTY');
+                        console.log('⧨⧩ STATE accumulatedExecutionPlan:', accumulatedExecutionPlan ? `"${accumulatedExecutionPlan.substring(0, 50)}..."` : 'EMPTY');
+                        console.log('⧨⧩ isCapturingExecutionPlan STATE:', isCapturingExecutionPlan);
+                      }
+                      updateStreamingMessage(accumulatedText, executionPlanToPass, true);
                     }
                   }
                 }
@@ -805,7 +1056,7 @@ export function AgentForgePage() {
                   );
                   if (textPart && 'text' in textPart) {
                     accumulatedText = textPart.text;
-                    smoothUpdateStreamingMessage(accumulatedText);
+                    updateStreamingMessage(accumulatedText, accumulatedExecutionPlan || '', true);
                   }
                 }
               }
@@ -832,7 +1083,9 @@ export function AgentForgePage() {
                 const fullText = newText.join('');
                 if (fullText.length > accumulatedText.length) {
                   accumulatedText = fullText;
-                  smoothUpdateStreamingMessage(accumulatedText);
+                  // 🔧 FIX: Pass accumulated execution plan to preserve it
+                  console.log('🔧 NON-STREAMING UPDATE - preserving accumulatedExecutionPlan:', accumulatedExecutionPlan);
+                  updateStreamingMessage(accumulatedText, accumulatedExecutionPlan || '', true);
                 }
               }
 
@@ -893,6 +1146,7 @@ export function AgentForgePage() {
 
         // Handle streaming response from history array
         let resultText = '';
+        let executionPlanText = '';
         if (taskResult.status.state === 'completed' && taskResult.artifacts) {
           // Look for 'final_result' artifact first, otherwise use the last artifact
           const finalArtifact =
@@ -902,7 +1156,12 @@ export function AgentForgePage() {
           if (finalArtifact && finalArtifact.parts && finalArtifact.parts[0]) {
             const part = finalArtifact.parts[0];
             if (part.kind === 'text') {
-              resultText = part.text;
+              // Process execution plan markers in non-streaming response
+              const { mainContent, executionPlanContent } = processExecutionPlanMarkers(part.text);
+              resultText = mainContent;
+              if (executionPlanContent) {
+                executionPlanText = executionPlanContent;
+              }
             }
           }
         } else if (taskResult.status.message) {
@@ -918,7 +1177,12 @@ export function AgentForgePage() {
           if (useStatusMessage) {
             const part = taskResult.status.message.parts[0];
             if (part.kind === 'text') {
-              resultText = part.text;
+              // Process execution plan markers in status message
+              const { mainContent, executionPlanContent } = processExecutionPlanMarkers(part.text);
+              resultText = mainContent;
+              if (executionPlanContent) {
+                executionPlanText = executionPlanContent;
+              }
             }
           }
         }
@@ -977,7 +1241,7 @@ export function AgentForgePage() {
             agentWords.forEach((word, index) => {
               setTimeout(() => {
                 currentText += word;
-                smoothUpdateStreamingMessage(currentText.trim());
+                updateStreamingMessage(currentText.trim(), '', true);
 
                 // Finish streaming on last word
                 if (index === agentWords.length - 1) {
@@ -990,12 +1254,30 @@ export function AgentForgePage() {
             return; // Exit early - isTyping will be set to false by finishStreamingMessage
           }
 
-          // Fallback: join all words if no streaming
-          resultText = agentWords.join('').trim();
+          // Fallback: join all words if no streaming and process execution plan markers
+          const joinedText = agentWords.join('').trim();
+          const { mainContent, executionPlanContent } = processExecutionPlanMarkers(joinedText);
+          resultText = mainContent;
+          if (executionPlanContent) {
+            executionPlanText = executionPlanContent;
+          }
         }
 
-        // Add message normally if not streaming
-        if (resultText) {
+        // Add message normally if not streaming - include execution plan if present
+        if (resultText || executionPlanText) {
+          const newMessage = {
+            text: resultText || '',
+            isUser: false,
+            timestamp: createTimestamp(),
+            executionPlan: executionPlanText || '', // Use empty string instead of undefined
+            isStreaming: false, // Mark as completed for auto-collapse
+          };
+          console.log('📝 NON-STREAMING MESSAGE CREATED:', {
+            textLength: newMessage.text.length,
+            executionPlanLength: newMessage.executionPlan?.length || 0,
+            timestamp: newMessage.timestamp
+          });
+
           setSessions(prev =>
             prev.map(session => {
               if (session.id === sessionToUse) {
@@ -1003,11 +1285,7 @@ export function AgentForgePage() {
                   ...session,
                   messages: [
                     ...session.messages,
-                    {
-                      text: resultText,
-                      isUser: false,
-                      timestamp: createTimestamp(),
-                    },
+                    newMessage,
                   ],
                   updatedAt: new Date(),
                 };
@@ -1062,6 +1340,11 @@ export function AgentForgePage() {
       setSessions,
       setCurrentSessionId,
       enableStreaming,
+      processExecutionPlanMarkers,
+      setIsCapturingExecutionPlan,
+      setAccumulatedExecutionPlan,
+      accumulatedExecutionPlan,
+      isCapturingExecutionPlan,
     ],
   );
 

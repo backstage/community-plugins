@@ -26,7 +26,7 @@ import {
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SendIcon from '@material-ui/icons/Send';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import { Message } from '../types';
 import { ChatMessage } from './ChatMessage';
 
@@ -185,10 +185,53 @@ export interface ChatContainerProps {
 }
 
 /**
+ * Memoized messages list to prevent re-renders when only input changes
+ */
+const MessagesList = memo(function MessagesList({
+  messages,
+  botName,
+  botIcon,
+  fontSizes,
+}: {
+  messages: Message[];
+  botName: string;
+  botIcon?: string;
+  fontSizes?: {
+    messageText?: string;
+    codeBlock?: string;
+    inlineCode?: string;
+    timestamp?: string;
+  };
+}) {
+  // Memoize font sizes to prevent re-creating object on every render
+  const memoizedFontSizes = useMemo(() => ({
+    messageText: fontSizes?.messageText,
+    codeBlock: fontSizes?.codeBlock,
+    inlineCode: fontSizes?.inlineCode,
+    timestamp: fontSizes?.timestamp,
+  }), [fontSizes?.messageText, fontSizes?.codeBlock, fontSizes?.inlineCode, fontSizes?.timestamp]);
+
+  return (
+    <>
+      {messages.map((message, index) => (
+             <ChatMessage
+               key={`${index}-${message.timestamp}`} // Simplified, stable key
+               message={message}
+               botName={botName}
+               botIcon={botIcon}
+               fontSizes={memoizedFontSizes}
+             />
+           ))}
+    </>
+  );
+});
+
+/**
  * Chat container component that handles message display and input
+ * Memoized to prevent re-renders when only input changes
  * @public
  */
-export function ChatContainer({
+export const ChatContainer = memo(function ChatContainer({
   messages,
   userInput,
   setUserInput,
@@ -225,7 +268,13 @@ export function ChatContainer({
     }
   }, []);
 
-  // Simple, smooth auto-scroll that follows text rendering during streaming
+  // Optimized auto-scroll that only tracks essential changes
+  const lastMessageText = useMemo(() => {
+    if (messages.length === 0) return '';
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage.isUser ? '' : lastMessage.text || '';
+  }, [messages]);
+
   useEffect(() => {
     if (isTyping) {
       // Clear any existing timeout to prevent scroll spam
@@ -244,9 +293,10 @@ export function ChatContainer({
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [messages, scrollToBottom, isTyping]);
+  }, [lastMessageText, scrollToBottom, isTyping]); // Only track last message text, not full array
 
   // Scroll to top of last response when streaming completes
+  // Optimized: Only track essential properties, simplified DOM access
   useEffect(() => {
     if (!isTyping && messagesContainerRef.current && messages.length > 0) {
       // Small delay to ensure final text is rendered
@@ -295,20 +345,12 @@ export function ChatContainer({
   return (
     <div className={classes.chatContainer}>
         <div className={classes.messagesContainer} ref={messagesContainerRef}>
-        {messages.map((message, index) => (
-          <ChatMessage
-            key={index}
-            message={message}
-            botName={botName}
-            botIcon={botIcon}
-            fontSizes={{
-              messageText: fontSizes?.messageText,
-              codeBlock: fontSizes?.codeBlock,
-              inlineCode: fontSizes?.inlineCode,
-              timestamp: fontSizes?.timestamp,
-            }}
-          />
-        ))}
+        <MessagesList
+          messages={messages}
+          botName={botName}
+          botIcon={botIcon}
+          fontSizes={fontSizes}
+        />
 
         {isTyping && (
           <Box className={classes.typingIndicator}>
@@ -318,13 +360,9 @@ export function ChatContainer({
               <span />
             </div>
             <Typography variant="caption" style={{ marginLeft: 8 }}>
-              {(() => {
-                const message = isInOperationalMode && currentOperation 
-                  ? `🔧 ${currentOperation}...` 
-                  : `${thinkingMessages[thinkingMessageIndex]}...`;
-                console.log('THINKING MESSAGE:', { isInOperationalMode, currentOperation, message });
-                return message;
-              })()}
+              {isInOperationalMode && currentOperation 
+                ? `🔧 ${currentOperation}...` 
+                : `${thinkingMessages[thinkingMessageIndex]}...`}
             </Typography>
           </Box>
         )}
@@ -392,4 +430,4 @@ export function ChatContainer({
       )}
     </div>
   );
-}
+});
