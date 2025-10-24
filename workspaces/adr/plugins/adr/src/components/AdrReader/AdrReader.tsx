@@ -25,7 +25,7 @@ import { CookieAuthRefreshProvider } from '@backstage/plugin-auth-react';
 import { adrDecoratorFactories } from './decorators';
 import { AdrContentDecorator } from './types';
 import { adrApiRef } from '../../api';
-import { MixedContent } from './ContentSplitter';
+import { AdrMarkdownContent } from './AdrMarkdownContent';
 import useAsync from 'react-use/esm/useAsync';
 
 /**
@@ -94,11 +94,13 @@ export const AdrReader = (props: {
           !error &&
           !backendUrlError &&
           value?.data && (
-            <MixedContent
+            <AdrMarkdownContent
               content={adrContent}
-              linkTarget="_blank"
-              transformImageUri={href => {
-                return `${backendUrl}/image?url=${href}`;
+              urlTransform={(url: string) => {
+                if (url.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i)) {
+                  return `${backendUrl}/image?url=${url}`;
+                }
+                return url;
               }}
             />
           )}
