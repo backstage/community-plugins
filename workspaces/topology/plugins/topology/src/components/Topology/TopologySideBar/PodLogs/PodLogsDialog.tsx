@@ -31,7 +31,7 @@ import DialogContent from '@mui/material/DialogContent';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@patternfly/react-core';
 
-import ResourceName from '../../../../common/components/ResourceName';
+import ResourceName from '../../../common/ResourceName';
 import { K8sResourcesContext } from '../../../../hooks/K8sResourcesContext';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { ContainerSelector } from './ContainerSelector';

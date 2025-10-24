@@ -1,5 +1,23 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
+## 0.14.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+
 ## 0.13.0
 
 ### Minor Changes

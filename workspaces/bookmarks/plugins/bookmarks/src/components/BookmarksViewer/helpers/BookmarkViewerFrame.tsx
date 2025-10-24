@@ -49,7 +49,10 @@ export const BookmarkViewerFrame = memo(({ src }: { src: string }) => {
           <CircularProgress />
 
           {isDevEnv && (
-            <Typography variant="body2" sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{ color: theme => theme.palette.text.primary, mt: 2 }}
+            >
               {t('bookmarkViewerFrame.devModeWarning')}
             </Typography>
           )}

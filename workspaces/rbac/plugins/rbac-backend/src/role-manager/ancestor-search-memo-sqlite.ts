@@ -16,6 +16,7 @@
 import type { AuthService } from '@backstage/backend-plugin-api';
 import type { CatalogApi } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
+import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 
 import { AncestorSearchMemo } from './ancestor-search-memo';
 
@@ -38,7 +39,7 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
     const { items } = await this.catalogApi.getEntities(
       {
         filter: { kind: 'Group' },
-        fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
+        fields: ['kind', 'metadata.name', 'metadata.namespace', 'spec.parent'],
       },
       { token },
     );
@@ -53,7 +54,7 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
     const { items } = await this.catalogApi.getEntities(
       {
         filter: { kind: 'Group', 'relations.hasMember': this.userEntityRef },
-        fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
+        fields: ['kind', 'metadata.name', 'metadata.namespace', 'spec.parent'],
       },
       { token },
     );
@@ -61,11 +62,10 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
   }
 
   traverse(group: Entity, allGroups: Entity[], current_depth: number) {
-    const groupName = `group:${group.metadata.namespace?.toLocaleLowerCase(
-      'en-US',
-    )}/${group.metadata.name.toLocaleLowerCase('en-US')}`;
-    if (!super.hasEntityRef(groupName)) {
-      super.setNode(groupName);
+    const groupRef = stringifyEntityRef(group);
+
+    if (!super.hasEntityRef(groupRef)) {
+      super.setNode(groupRef);
     }
 
     if (this.maxDepth !== undefined && current_depth >= this.maxDepth) {
@@ -74,13 +74,23 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
     const depth = current_depth + 1;
 
     const parent = group.spec?.parent as string;
-    const parentGroup = allGroups.find(g => g.metadata.name === parent);
+    if (!parent) {
+      return;
+    }
+
+    const parentRef = stringifyEntityRef(
+      parseEntityRef(parent, {
+        defaultKind: 'group',
+        defaultNamespace: group.metadata.namespace,
+      }),
+    );
+
+    const parentGroup = allGroups.find(
+      g => stringifyEntityRef(g) === parentRef,
+    );
 
     if (parentGroup) {
-      const parentName = `group:${group.metadata.namespace?.toLocaleLowerCase(
-        'en-US',
-      )}/${parentGroup.metadata.name.toLocaleLowerCase('en-US')}`;
-      super.setEdge(parentName, groupName);
+      super.setEdge(parentRef, groupRef);
 
       if (super.isAcyclic()) {
         this.traverse(parentGroup, allGroups, depth);

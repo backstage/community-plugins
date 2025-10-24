@@ -25,6 +25,7 @@ import {
   INITIAL_USER_SETTINGS_STATE,
 } from '../reducers';
 import { INITIAL_PROVIDER_STATE } from '../reducers/Provider';
+import { INITIAL_SERVER_CONFIG_STATE } from '../reducers/ServerConfigState';
 import { INITIAL_TRACING_STATE } from '../reducers/Tracing';
 import { KialiAppState } from './Store';
 
@@ -40,6 +41,7 @@ export const initialStore: KialiAppState = {
   namespaces: INITIAL_NAMESPACE_STATE,
   providers: INITIAL_PROVIDER_STATE,
   tracingState: INITIAL_TRACING_STATE,
+  serverConfig: INITIAL_SERVER_CONFIG_STATE,
   statusState: INITIAL_STATUS_STATE,
   userSettings: INITIAL_USER_SETTINGS_STATE,
   dispatch: {},

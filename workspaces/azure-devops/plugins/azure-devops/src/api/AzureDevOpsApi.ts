@@ -23,8 +23,6 @@ import {
   PullRequestOptions,
   Readme,
   ReadmeConfig,
-  RepoBuild,
-  RepoBuildOptions,
   Team,
 } from '@backstage-community/plugin-azure-devops-common';
 
@@ -37,17 +35,6 @@ export const azureDevOpsApiRef = createApiRef<AzureDevOpsApi>({
 
 /** @public */
 export interface AzureDevOpsApi {
-  /**
-   * @deprecated This method has no usages and will be removed in a future release
-   */
-  getRepoBuilds(
-    projectName: string,
-    repoName: string,
-    host?: string,
-    org?: string,
-    options?: RepoBuildOptions,
-  ): Promise<{ items: RepoBuild[] }>;
-
   getGitTags(
     projectName: string,
     repoName: string,

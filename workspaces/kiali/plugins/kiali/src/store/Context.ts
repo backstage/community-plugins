@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 import { createContext } from 'react';
+import { KialiAppState } from './Store';
 
-export const KialiContext = createContext({});
+export const KialiContext = createContext<KialiAppState>({} as KialiAppState);

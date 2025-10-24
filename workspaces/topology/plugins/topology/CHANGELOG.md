@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- be63603: move Status and hooks into plugin
+
 ## 2.7.0
 
 ### Minor Changes

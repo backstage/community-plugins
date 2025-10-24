@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 3.30.2
+
+### Patch Changes
+
+- 6c5b40c: Move Status and hooks into plugin
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 3.30.1
+
+### Patch Changes
+
+- dde8f40: tekton plugin support show pipeline run params and results
+
 ## 3.30.0
 
 ### Minor Changes

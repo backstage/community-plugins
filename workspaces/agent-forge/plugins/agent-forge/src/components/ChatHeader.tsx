@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useState } from 'react';
 import clearIcon from '../icons/clear-icon.png';
 import useStyles from './useStyles';
 import { useHeaderStyles } from './useHeaderStyles';
@@ -21,18 +22,49 @@ import MoreInfoIcon from '../icons/more-info.svg';
 import './App.css';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { useState } from 'react';
+
+// SVG icons with white contours
+const FormIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="white"
+    strokeWidth="1.5"
+  >
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const ChatIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="white"
+    strokeWidth="1.5"
+  >
+    <path d="M9 11l3 3L22 4" />
+    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+  </svg>
+);
 
 interface ChatHeaderProps {
   clearChat: () => void;
   handleCloseChat: () => void;
   handleFullScreenToggle: () => void;
+  showFormMode: boolean;
+  onToggleFormMode: () => void;
 }
 
 function ChatHeader({
   clearChat,
   handleCloseChat,
   handleFullScreenToggle,
+  showFormMode,
+  onToggleFormMode,
 }: ChatHeaderProps) {
   const styles = useStyles();
   const headerStyles = useHeaderStyles();
@@ -72,6 +104,19 @@ function ChatHeader({
             title="Exit Full Screen"
           >
             ▣
+          </IconButton>
+          <IconButton
+            sx={{
+              color: '#fff',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px',
+            }}
+            onClick={onToggleFormMode}
+            title={showFormMode ? 'Show Text Chat' : 'Show Form Display'}
+          >
+            {showFormMode ? <FormIcon /> : <ChatIcon />}
           </IconButton>
           <IconButton onClick={clearChat} title="Clear Chat">
             <img

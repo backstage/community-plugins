@@ -42,8 +42,9 @@ import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { default as React, useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { isMultiCluster, serverConfig } from '../../config';
+import { isMultiCluster } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
+import { useServerConfig } from '../../hooks/useServerConfig';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
 import { KialiAppState, KialiContext } from '../../store';
@@ -89,6 +90,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     undefined,
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
   if (!props.entity) {
     kialiClient.setAnnotation(
       KIALI_PROVIDER,
@@ -125,8 +127,10 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
   const sortedNamespaces = (nss: NamespaceInfo[]) => {
     nss.sort((a, b) => {
-      if (a.name === serverConfig.istioNamespace) return -1;
-      if (b.name === serverConfig.istioNamespace) return 1;
+      if (serverConfig && serverConfig.istioNamespace) {
+        if (a.name === serverConfig.istioNamespace) return -1;
+        if (b.name === serverConfig.istioNamespace) return 1;
+      }
       return a.name.localeCompare(b.name);
     });
     return nss;
@@ -196,11 +200,11 @@ export const OverviewPage = (props: { entity?: Entity }) => {
           }
         });
       })
-      .catch(err =>
+      .catch(err => {
         kialiState.alertUtils!.add(
           `Could not fetch health: ${getErrorString(err)}`,
-        ),
-      );
+        );
+      });
   };
 
   const filterActiveNamespaces = (nss: NamespaceInfo[]) => {
@@ -371,7 +375,11 @@ export const OverviewPage = (props: { entity?: Entity }) => {
           .then(rs => {
             nsInfo.metrics = rs.request_count;
             nsInfo.errorMetrics = rs.request_error_count;
-            if (nsInfo.name === serverConfig.istioNamespace) {
+            if (
+              serverConfig &&
+              serverConfig.istioNamespace &&
+              nsInfo.name === serverConfig.istioNamespace
+            ) {
               nsInfo.controlPlaneMetrics = {
                 istiod_proxy_time: rs.pilot_proxy_convergence_time,
                 istiod_container_cpu: rs.container_cpu_usage_seconds_total,
@@ -418,6 +426,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         kialiState.providers.activeProvider,
       );
     }
+
     await kialiClient
       .getNamespaces()
       .then(namespacesResponse => {
@@ -515,7 +524,13 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                     <Grid
                       key={`Card_${ns.name}_${i}`}
                       item
-                      xs={ns.name === serverConfig.istioNamespace ? 12 : 4}
+                      xs={
+                        serverConfig &&
+                        serverConfig.istioNamespace &&
+                        ns.name === serverConfig.istioNamespace
+                          ? 12
+                          : 4
+                      }
                     >
                       <OverviewCard
                         namespace={ns}

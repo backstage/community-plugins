@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ResourceName from '../../../../common/components/ResourceName';
+
+import ResourceName from '../../../common/ResourceName';
 import { IngressModel } from '../../../../models';
 import { IngressData } from '../../../../types/ingresses';
 import { useTranslation } from '../../../../hooks/useTranslation';

@@ -40,6 +40,11 @@ type Props = {
 };
 
 export const OverviewCardSparklineCharts = (props: Props) => {
+  // Don't render if serverConfig is not available
+  if (!serverConfig || !serverConfig.istioNamespace) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       {props.name !== serverConfig.istioNamespace && (

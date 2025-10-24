@@ -123,6 +123,7 @@ export const config: {
         namespace: string,
         objectType: string,
         object: string,
+        apiVersion?: string,
       ) => string;
       istioConfigDelete: (
         namespace: string,

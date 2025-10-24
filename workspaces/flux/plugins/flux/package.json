@@ -1,0 +1,88 @@
+{
+  "name": "@backstage-community/plugin-flux",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/flux/plugins/flux"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "flux",
+    "pluginPackages": [
+      "@backstage-community/plugin-flux"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-kubernetes": "backstage:^",
+    "@backstage/plugin-kubernetes-common": "backstage:^",
+    "@backstage/plugin-permission-react": "backstage:^",
+    "@backstage/theme": "backstage:^",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "@tanstack/query-sync-storage-persister": "^4.36.1",
+    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query-persist-client": "^4.36.1",
+    "classnames": "^2.3.2",
+    "compare-versions": "^6.1.0",
+    "lodash": "^4.17.21",
+    "luxon": "^3.3.0",
+    "react-use": "^17.6.0",
+    "use-deep-compare": "^1.1.0",
+    "yaml": "^2.3.1"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-app-api": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^5.10.1",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/lodash": "^4.17.16",
+    "@types/node": "22.15.29",
+    "@types/react": "^18.2.58",
+    "@types/react-dom": "^18.2.58",
+    "canvas": "^3.1.2",
+    "cross-fetch": "^4.0.0",
+    "msw": "^1.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}

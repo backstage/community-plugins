@@ -129,6 +129,13 @@ export const sortFunc = (
   sortField: SortField<NamespaceInfo>,
   isAscending: boolean,
 ) => {
+  // Add check for serverConfig
+  if (!serverConfig || !serverConfig.istioNamespace) {
+    return allNamespaces.sort(
+      isAscending ? sortField.compare : (a, b) => sortField.compare(b, a),
+    );
+  }
+
   const sortedNamespaces = allNamespaces
     .filter(ns => ns.name !== serverConfig.istioNamespace)
     .sort(isAscending ? sortField.compare : (a, b) => sortField.compare(b, a));

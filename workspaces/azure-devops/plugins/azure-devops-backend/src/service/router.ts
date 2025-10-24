@@ -107,26 +107,6 @@ export async function createRouter(
     res.status(200).json(buildList);
   });
 
-  /**
-   * @deprecated This method has no usages and will be removed in a future release
-   */
-  router.get('/repo-builds/:projectName/:repoName', async (req, res) => {
-    const { projectName, repoName } = req.params;
-
-    const top = req.query.top ? Number(req.query.top) : DEFAULT_TOP;
-    const host = req.query.host?.toString();
-    const org = req.query.org?.toString();
-    const gitRepository = await azureDevOpsApi.getRepoBuilds(
-      projectName,
-      repoName,
-      top,
-      host,
-      org,
-    );
-
-    res.status(200).json(gitRepository);
-  });
-
   router.get('/git-tags/:projectName/:repoName', async (req, res) => {
     const { projectName, repoName } = req.params;
     const host = req.query.host?.toString();
@@ -260,25 +240,6 @@ export async function createRouter(
     const allTeams = await pullRequestsDashboardProvider.getAllTeams({ limit });
     res.status(200).json(allTeams);
   });
-
-  /**
-   * @deprecated This method has no usages and will be removed in a future release
-   */
-  router.get(
-    '/build-definitions/:projectName/:definitionName',
-    async (req, res) => {
-      const { projectName, definitionName } = req.params;
-      const host = req.query.host?.toString();
-      const org = req.query.org?.toString();
-      const buildDefinitionList = await azureDevOpsApi.getBuildDefinitions(
-        projectName,
-        definitionName,
-        host,
-        org,
-      );
-      res.status(200).json(buildDefinitionList);
-    },
-  );
 
   router.get('/builds/:projectName', async (req, res) => {
     const { projectName } = req.params;

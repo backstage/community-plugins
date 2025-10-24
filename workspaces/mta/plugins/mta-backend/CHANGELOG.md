@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.5.1
+
+### Patch Changes
+
+- ae8c5a9: Remove the need for backend plugin root config
+
 ## 0.5.0
 
 ### Minor Changes
