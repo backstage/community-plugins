@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,5 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { EntityAdrContent } from './EntityAdrContent';
-export { EntityAdrListItemContext } from './EntityAdrListItemContext';
+import { createContext } from 'react';
+import { AdrFileInfo } from '../../api/types';
+
+type EntityAdrListItemContextType = {
+  adr: AdrFileInfo;
+};
+
+export const EntityAdrListItemContext = createContext<
+  EntityAdrListItemContextType | undefined
+>(undefined);

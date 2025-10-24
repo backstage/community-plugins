@@ -62,6 +62,7 @@ import { rootRouteRef } from '../../routes';
 import { AdrContentDecorator, AdrReader } from '../AdrReader';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { adrTranslationRef } from '../../translations';
+import { EntityAdrListItemContext } from './EntityAdrListItemContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   adrMenu: {
@@ -97,8 +98,9 @@ const AdrListContainer = (props: {
   adrs: AdrFileInfo[];
   selectedAdr: string;
   title: string;
+  statusComponent?: React.ReactNode;
 }) => {
-  const { adrs, selectedAdr, title } = props;
+  const { adrs, selectedAdr, title, statusComponent } = props;
   const classes = useStyles();
   const rootLink = useRouteRef(rootRouteRef);
   const [open, setOpen] = React.useState(true);
@@ -151,33 +153,36 @@ const AdrListContainer = (props: {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List dense>
           {adrs.map((adr, idx) => (
-            <ListItem
-              button
-              component={Link}
-              key={idx}
-              selected={selectedAdr === adr.path}
-              to={`${rootLink()}?record=${adr.path}`}
-            >
-              <ListItemText
-                primary={adr.title ?? adr?.name.replace(/\.md$/, '')}
-                primaryTypographyProps={{
-                  style: { whiteSpace: 'normal' },
-                }}
-                secondary={
-                  <Box className={classes.adrBox}>
-                    <Box>{adr.date}</Box>
-                    {adr.status && (
-                      <Chip
-                        label={adr.status}
-                        size="small"
-                        variant="outlined"
-                        className={getChipColor(adr.status)}
-                      />
-                    )}
-                  </Box>
-                }
-              />
-            </ListItem>
+            <EntityAdrListItemContext.Provider value={{ adr }} key={idx}>
+              <ListItem
+                button
+                component={Link}
+                key={idx}
+                selected={selectedAdr === adr.path}
+                to={`${rootLink()}?record=${adr.path}`}
+              >
+                <ListItemText
+                  primary={adr.title ?? adr?.name.replace(/\.md$/, '')}
+                  primaryTypographyProps={{
+                    style: { whiteSpace: 'normal' },
+                  }}
+                  secondary={
+                    <Box className={classes.adrBox}>
+                      <Box>{adr.date}</Box>
+                      {statusComponent}
+                      {!statusComponent && adr.status && (
+                        <Chip
+                          label={adr.status}
+                          size="small"
+                          variant="outlined"
+                          className={getChipColor(adr.status)}
+                        />
+                      )}
+                    </Box>
+                  }
+                />
+              </ListItem>
+            </EntityAdrListItemContext.Provider>
           ))}
         </List>
       </Collapse>
@@ -192,8 +197,9 @@ const AdrListContainer = (props: {
 export const EntityAdrContent = (props: {
   contentDecorators?: AdrContentDecorator[];
   filePathFilterFn?: AdrFilePathFilterFn;
+  statusComponent?: React.ReactNode;
 }) => {
-  const { contentDecorators, filePathFilterFn } = props;
+  const { contentDecorators, filePathFilterFn, statusComponent } = props;
   const classes = useStyles();
   const { entity } = useEntity();
   const [adrList, setAdrList] = useState<AdrFileInfo[]>([]);
@@ -275,6 +281,7 @@ export const EntityAdrContent = (props: {
                       key={idx}
                       selectedAdr={selectedAdr}
                       title={title}
+                      statusComponent={statusComponent}
                     />
                   ))}
                 </List>
