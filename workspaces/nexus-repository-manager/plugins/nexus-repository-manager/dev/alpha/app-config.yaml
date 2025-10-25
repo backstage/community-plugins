@@ -1,0 +1,30 @@
+app:
+  title: Backstage Example App
+  baseUrl: http://localhost:3000
+  extensions:
+    # Redirect from the root to the catalog
+    - 'page:catalog':
+        config:
+          path: '/'
+    # Hide these catalog entity contents
+    - 'entity-content:catalog/overview': false
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+
+proxy:
+  endpoints:
+    '/nexus-repository-manager':
+      target: ${NEXUS_REPOSITORY_MANAGER_URL}
+      headers:
+        X-Requested-With: 'XMLHttpRequest'
+        # Uncomment the following line to access a private Nexus Repository Manager using a token
+        # Authorization: 'Bearer <NEXUS_REPOSITORY_MANAGER_TOKEN>'
+      changeOrigin: true
+      # Change to "false" in case of using self hosted Nexus Repository Manager instance with a self-signed certificate
+      secure: true
+
+nexusRepositoryManager:
+  experimentalAnnotations: true
