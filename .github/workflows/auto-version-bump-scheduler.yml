@@ -19,7 +19,7 @@ jobs:
       actions: write
     steps:
       - name: Checkout repo
-        uses: uses: actions/checkout@08eba0b3991275213b3c10b70129f1b95abaa193 # v4.3.0
+        uses: actions/checkout@08eba0b3991275213b3c10b70129f1b95abaa193 # v4.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
