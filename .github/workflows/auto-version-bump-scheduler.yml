@@ -24,7 +24,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: uses: actions/setup-node@60edb5dd545a7c5680c78309c908e50460f90b19 # v4.0.3
+        uses: actions/setup-node@60edb5dd545a7c5680c78309c908e50460f90b19 # v4.0.3
         with:
           node-version: '22.x'
 
