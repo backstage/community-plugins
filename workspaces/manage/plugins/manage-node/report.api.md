@@ -4,7 +4,6 @@
 
 ```ts
 import { BackstageCredentials } from '@backstage/backend-plugin-api';
-import { BackstageUserPrincipal } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
 
@@ -23,7 +22,7 @@ export interface OwnedEntitiesService {
   getOwnedEntitiesByOwnerEntities(
     ownerEntities: readonly Entity[],
     entityKinds: readonly string[],
-    credentials: BackstageCredentials<BackstageUserPrincipal>,
+    credentials: BackstageCredentials,
   ): Promise<Entity[]>;
 }
 
@@ -40,7 +39,7 @@ export interface OwnershipProvider {
 export interface OwnershipService {
   getOwnedGroups(
     ownershipEntityRefs: readonly string[],
-    credentials: BackstageCredentials<BackstageUserPrincipal>,
+    credentials: BackstageCredentials,
   ): Promise<Entity[]>;
 }
 ```

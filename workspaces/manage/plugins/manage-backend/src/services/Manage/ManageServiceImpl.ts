@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  BackstageCredentials,
-  BackstageUserPrincipal,
-} from '@backstage/backend-plugin-api';
+
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
 
 import {
   OwnedEntitiesService,
@@ -33,7 +31,7 @@ export class ManageServiceImpl {
   public async getOwnersAndOwnedEntities(
     ownershipEntityRefs: string[],
     kinds: readonly string[],
-    credentials: BackstageCredentials<BackstageUserPrincipal>,
+    credentials: BackstageCredentials,
   ): Promise<OwnersAndOwnedEntities> {
     const ownerEntities = await this.ownershipService.getOwnedGroups(
       ownershipEntityRefs,
