@@ -30,9 +30,10 @@ import {
   TimelineSeparator,
   TimelineOppositeContent,
   TimelineContent,
-} from '@material-ui/lab';
-import { Box, Typography } from '@material-ui/core';
+} from '@mui/lab';
+import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 /**
  * Props for the AnnouncementsTimeline component.
@@ -158,7 +159,7 @@ export const AnnouncementsTimeline = ({
       spacing={0}
     >
       <Box sx={{ minWidth: timelineMinWidth }}>
-        <Timeline align={timelineAlignment}>
+        <Timeline position={timelineAlignment}>
           {announcements.results.map(a => (
             <TimelineItem key={`ti-${a.id}`}>
               <TimelineOppositeContent

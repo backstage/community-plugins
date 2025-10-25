@@ -31,50 +31,36 @@ import {
   SIGNALS_CHANNEL_ANNOUNCEMENTS,
 } from '@backstage-community/plugin-announcements-common';
 import { useSignal } from '@backstage/plugin-signals-react';
-import {
-  makeStyles,
-  Snackbar,
-  SnackbarContent,
-  IconButton,
-  Typography,
-} from '@material-ui/core';
-import Close from '@material-ui/icons/Close';
-import { Alert } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import SnackbarContent from '@mui/material/SnackbarContent';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import Close from '@mui/icons-material/Close';
 import { truncate } from '../utils/truncateUtils';
 
-const useStyles = makeStyles(theme => {
-  return {
-    // showing on top, as a block
-    blockPositioning: {
-      padding: theme?.spacing?.(0) ?? 0,
-      position: 'relative',
-      marginBottom: theme?.spacing?.(4) ?? 32,
-      marginTop: theme?.spacing?.(3) ?? -24,
-      zIndex: 'unset',
-    },
-    // showing on top, as a floating alert
-    floatingPositioning: {},
-    icon: {
-      fontSize: 20,
-    },
-    bannerIcon: {
-      fontSize: 20,
-      marginRight: '0.5rem',
-    },
-    content: {
-      width: '100%',
-      maxWidth: 'inherit',
-      flexWrap: 'nowrap',
-      backgroundColor: theme?.palette?.banner?.info ?? '#f0f0f0',
-      display: 'flex',
-      alignItems: 'center',
-      color: theme?.palette?.banner?.text ?? '#000000',
-      '& a': {
-        color: theme?.palette?.banner?.link ?? '#0068c8',
-      },
-    },
-  };
-});
+// Styled components for banner positioning
+const BlockBanner = styled(Snackbar)(({ theme }) => ({
+  padding: theme.spacing(0),
+  position: 'relative',
+  marginBottom: theme.spacing(4),
+  marginTop: theme.spacing(3),
+  zIndex: 'unset',
+}));
+
+const BannerContent = styled(SnackbarContent)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 'inherit',
+  flexWrap: 'nowrap',
+  backgroundColor: theme.palette.banner?.info ?? '#f0f0f0',
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.banner?.text ?? '#000000',
+  '& a': {
+    color: theme.palette.banner?.link ?? '#0068c8',
+  },
+}));
 
 type CardOptions = {
   titleLength?: number;
@@ -88,7 +74,6 @@ type AnnouncementBannerProps = {
 };
 
 const AnnouncementBanner = (props: AnnouncementBannerProps) => {
-  const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const { t } = useAnnouncementsTranslation();
@@ -116,7 +101,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     <>
       <Typography
         component="span"
-        className={classes.bannerIcon}
+        sx={{ fontSize: 20, marginRight: '0.5rem' }}
         variant="inherit"
       >
         📣
@@ -132,18 +117,35 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     </>
   );
 
+  if (variant === 'block') {
+    return (
+      <BlockBanner
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={bannerOpen}
+      >
+        <BannerContent
+          message={message}
+          action={[
+            <IconButton
+              key="dismiss"
+              title={t('newAnnouncementBanner.markAsSeen')}
+              color="inherit"
+              onClick={handleClick}
+            >
+              <Close sx={{ fontSize: 20 }} />
+            </IconButton>,
+          ]}
+        />
+      </BlockBanner>
+    );
+  }
+
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={bannerOpen}
-      className={
-        variant === 'block'
-          ? classes.blockPositioning
-          : classes.floatingPositioning
-      }
     >
-      <SnackbarContent
-        className={classes.content}
+      <BannerContent
         message={message}
         action={[
           <IconButton
@@ -152,7 +154,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
             color="inherit"
             onClick={handleClick}
           >
-            <Close className={classes.icon} />
+            <Close sx={{ fontSize: 20 }} />
           </IconButton>,
         ]}
       />

@@ -46,10 +46,14 @@ import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
-import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import PreviewIcon from '@material-ui/icons/Visibility';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import PreviewIcon from '@mui/icons-material/Visibility';
 import { DateTime } from 'luxon';
 
 type AnnouncementsContentProps = {

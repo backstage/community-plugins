@@ -34,28 +34,15 @@ import {
   useAnnouncements,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  makeStyles,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Box,
-  Chip,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import NewReleasesIcon from '@material-ui/icons/NewReleases';
-
-const useStyles = makeStyles({
-  newAnnouncementIcon: {
-    minWidth: '36px',
-  },
-  chipStyle: {
-    marginRight: 4,
-    marginBottom: 4,
-  },
-});
+import Alert from '@mui/material/Alert';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 
 type AnnouncementsCardOpts = {
   title?: string;
@@ -80,7 +67,6 @@ export const AnnouncementsCard = ({
   current,
   hideStartAt,
 }: AnnouncementsCardOpts) => {
-  const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
@@ -123,7 +109,7 @@ export const AnnouncementsCard = ({
         {announcements.results.map(announcement => (
           <ListItem key={announcement.id}>
             <ListItemIcon
-              className={classes.newAnnouncementIcon}
+              sx={{ minWidth: '36px' }}
               style={{
                 visibility:
                   lastSeen < DateTime.fromISO(announcement.created_at)
@@ -173,7 +159,7 @@ export const AnnouncementsCard = ({
                             component={Link}
                             to={`${announcementsLink()}?tags=${tag.slug}`}
                             clickable
-                            className={classes.chipStyle}
+                            sx={{ mr: 0.5, mb: 0.5 }}
                           />
                         ))}
                       </Box>

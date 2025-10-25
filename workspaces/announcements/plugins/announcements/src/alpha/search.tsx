@@ -17,7 +17,7 @@ import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
-import NewReleasesIcon from '@material-ui/icons/NewReleases';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 
 export const announcementsSearchResultListItem =
   SearchResultListItemBlueprint.make({

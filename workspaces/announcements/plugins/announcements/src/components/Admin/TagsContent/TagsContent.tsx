@@ -40,8 +40,11 @@ import {
 import { useDeleteTagDialogState } from '../../TagsPage/useDeleteTagDialogState';
 import { ResponseError } from '@backstage/errors';
 import { DeleteTagDialog } from '../../TagsPage/DeleteTagDialog';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const TagsContent = () => {
   const [showNewTagForm, setShowNewTagForm] = useState(false);
