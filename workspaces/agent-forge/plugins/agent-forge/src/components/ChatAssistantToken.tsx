@@ -15,57 +15,92 @@
  */
 
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { useState, useEffect } from 'react';
-import useStyles from './useStyles';
+import { useState, useEffect, useCallback } from 'react';
 
-/** @public */
-function ChatAssistantToken() {
-  const styles = useStyles();
+/**
+ * Hook for handling token authentication with external systems
+ * @public
+ */
+export function useTokenAuthentication() {
   const [message, setMessage] = useState('');
-
+  const [isTokenRequest, setIsTokenRequest] = useState(false);
   const identityApi = useApi(identityApiRef);
-  async function getMessage() {
-    const { token } = await identityApi.getCredentials();
+
+  const handleTokenAuthentication = useCallback(async () => {
+    try {
+      const { token } = await identityApi.getCredentials();
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const cb = urlParams.get('cb');
+
+      if (urlParams.has('dt')) {
+        setMessage(token!);
+        setIsTokenRequest(true);
+        return;
+      }
+
+      if (cb) {
+        setIsTokenRequest(true);
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 300000); // 300 seconds timeout
+
+          const response = await fetch(cb, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+          if (!response.ok) {
+            setMessage(`Failed to post token to callback URL: ${cb}`);
+            return;
+          }
+          setMessage('Success! You may close this window.');
+        } catch (error: any) {
+          if (error.name === 'AbortError') {
+            setMessage(`Request timeout after 300 seconds`);
+            return;
+          }
+          setMessage(
+            `Failed to post token to callback URL: ${cb} err: ${error} redirecting...`,
+          );
+          // Redirect to callback URL with token as query parameter
+          window.location.href = `${cb}?token=${token}`;
+        }
+      }
+    } catch (error) {
+      setMessage(`Failed to get authentication token: ${error}`);
+      setIsTokenRequest(true);
+    }
+  }, [identityApi]);
+
+  useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const cb = urlParams.get('cb');
-    if (urlParams.has('dt')) {
-      setMessage(token!);
+    if (urlParams.has('dt') || urlParams.has('cb')) {
+      handleTokenAuthentication();
     }
-    if (cb) {
-      try {
-        const response = await fetch(cb, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-        if (!response.ok) {
-          setMessage(`Failed to post token to callback URL: ${cb}`);
-          return;
-        }
-        setMessage('Success! You may close this window.');
-      } catch (error) {
-        setMessage(
-          `Failed to post token to callback URL:${cb} err:${error} redirecting...`,
-        );
-        // Redirect to callback URL with token as query parameter.
-        window.location.href = `${cb}?token=${token}`;
-        // Another possible workaround.
-        // <form action={cb} method="POST">
-        //     <input type="hidden" name="token" value={token} />
-        //     <button type="submit">Submit</button>
-        //     </form>
-      }
-    }
-  }
-  useEffect(() => {
-    getMessage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return <div className={styles.todayLine}>{message}</div>;
+  }, [handleTokenAuthentication]);
+
+  return {
+    tokenMessage: message,
+    isTokenRequest,
+    handleTokenAuthentication,
+  };
+}
+
+/**
+ * Legacy component for token authentication display
+ * @deprecated Use useTokenAuthentication hook instead
+ * @public
+ */
+function ChatAssistantToken() {
+  const { tokenMessage } = useTokenAuthentication();
+  return <div>{tokenMessage}</div>;
 }
 
 /** @public */
