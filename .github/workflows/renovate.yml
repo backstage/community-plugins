@@ -30,8 +30,8 @@ jobs:
     name: Renovate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
+      - uses: actions/checkout@08eba0b3991275213b3c10b70129f1b95abaa193 # v4.3.0
+      
       # This third party action allows you to download the cache artifact from different workflow runs
       # Note that actions/cache doesn't work well because the cache key would need to be computed from
       # a file within the cache, meaning there would never be any data to restore. With other keys, the
