@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.26.0
+
+### Minor Changes
+
+- 54a1b43: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [54a1b43]
+  - @backstage-community/plugin-quay-common@1.13.0
+
 ## 1.25.0
 
 ### Minor Changes
