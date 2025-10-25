@@ -352,6 +352,40 @@ To get the README component working you'll need to do the following two steps:
 - The `if` prop is optional on the `EntitySwitch.Case`, you can remove it if you always want to see the tab even if the entity being viewed does not have the needed annotation
 - The `maxHeight` property on the `EntityAzureReadmeCard` will set the maximum screen size you would like to see, if not set it will default to 100%
 
+## Search
+
+First, make sure to setup Backstage Search with the [@backstage-community/plugin-search-backend-module-azure-devops](../search-backend-module-azure-devops/) plugin.
+Afterwards, add the following code snippet to use `AzureDevOpsWikiArticleSearchResultListItem` when the type of the search results is `azure-devops-wiki-article`:
+
+```tsx
+// In packages/app/src/components/search/SearchPage.tsx
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import { AzureDevOpsWikiArticleSearchResultListItem } from '@backstage-community/plugin-azure-devops';
+
+
+...
+// Optional - Add type to side pane
+<SearchType.Accordion
+  name="Result Type"
+  defaultValue="software-catalog"
+  types={[
+    ...
+    {
+      value: 'azure-devops-wiki-article',
+      name: 'Azure DevOps Wiki',
+      icon: <LibraryBooksIcon />,
+    },
+  ]}
+/>
+...
+
+// In results
+<SearchResult>
+  ... other items ...
+  <AzureDevOpsWikiArticleSearchResultListItem icon={<LibraryBooksIcon />}/>
+</SearchResult>
+```
+
 ## Permission Framework
 
 Azure DevOps plugin supports the permission framework for PRs, GitTags, Pipelines and Readme features. To use these permissions you'll need to add the `@backstage-community/plugin-azure-devops-common` to the same location as your [Permission Policy](https://backstage.io/docs/permissions/writing-a-policy). This example assumes that your Permission Policy lives in your `packages/backend`:

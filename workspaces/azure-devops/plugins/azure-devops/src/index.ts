@@ -23,7 +23,10 @@ export {
   isAzureDevOpsAvailable,
   isAzurePipelinesAvailable,
   AzurePullRequestsPage,
+  AzureDevOpsWikiArticleSearchResultListItem,
 } from './plugin';
+
+export type { WikiArticleSearchResultListItemProps } from './components/WikiArticleSearchResultListItem';
 
 export { AzurePullRequestsIcon } from './components/AzurePullRequestsIcon';
 
