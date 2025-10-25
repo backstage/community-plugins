@@ -19,6 +19,7 @@ import {
   incidentsPickToIncidentsData,
   ServiceNowBackendAPI,
 } from '../api/ServiceNowBackendClient';
+import { mockService, mockUser1 } from '../components/ServiceDetailsCard/mocks';
 import { PaginatedIncidentsData } from '../types';
 
 const userEmailToSysId: Record<string, string> = {
@@ -113,6 +114,26 @@ export const mockServicenowApi: Partial<ServiceNowBackendAPI> = {
     return {
       incidents: incidentsPickToIncidentsData(paged),
       totalCount,
+    };
+  },
+  async getBusinessApplication(_appCode: string) {
+    return { result: [mockService] };
+  },
+
+  async getUserDetails(_userId: string) {
+    return { result: mockUser1 };
+  },
+  async getInfraDetails(_appCode: string) {
+    return {
+      result: [
+        {
+          'parent.sys_class_name': 'Test Application',
+          'parent.name': 'Test Application',
+          u_display: 'Test Application',
+          'child.name': 'Test Application',
+          sys_updated_on: '2021-01-01',
+        },
+      ],
     };
   },
 };
