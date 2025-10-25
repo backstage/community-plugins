@@ -242,16 +242,18 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:github-actions/entity': ExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'entity';
+    'entity-content:github-actions': ExtensionDefinition<{
       config: {
+        layout: 'table' | 'cards';
+      } & {
         path: string | undefined;
         title: string | undefined;
         filter: EntityPredicate | undefined;
         group: string | false | undefined;
       };
       configInput: {
+        layout?: 'table' | 'cards' | undefined;
+      } & {
         filter?: EntityPredicate | undefined;
         title?: string | undefined;
         path?: string | undefined;
@@ -289,7 +291,23 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {};
+      inputs: {
+        [x: string]: ExtensionInput<
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
+          {
+            optional: boolean;
+            singleton: boolean;
+          }
+        >;
+      };
+      kind: 'entity-content';
+      name: undefined;
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
