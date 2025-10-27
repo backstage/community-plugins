@@ -194,7 +194,9 @@ export interface ChatMessageProps {
     inlineCode?: string;
     timestamp?: string;
   };
+  executionPlanBuffer?: Record<string, string>;
   autoExpandExecutionPlans?: Set<string>;
+  isLastMessage?: boolean;
 }
 
 /**
@@ -207,7 +209,9 @@ export const ChatMessage = memo(function ChatMessage({
   botName,
   botIcon,
   fontSizes,
+  executionPlanBuffer,
   autoExpandExecutionPlans,
+  isLastMessage,
 }: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
@@ -224,18 +228,45 @@ export const ChatMessage = memo(function ChatMessage({
   // Message key for execution plan identification
   const messageKey = message.messageId || 'unknown';
   
-  // 🚀 SIMPLIFIED: Just render execution plan if message has it - no complex lookups
-  const currentExecutionPlan = message.executionPlan || '';
+  // Get execution plan from buffer or current message - only show if message is meant to have execution plan
+  const bufferedExecutionPlan = executionPlanBuffer?.[messageKey];
+  
+  // 🔧 STRICT EXECUTION PLAN ISOLATION: Only show execution plan if message actually owns it
+  const messageHasExecutionPlanProperty = message.hasOwnProperty('executionPlan');
+  const messageHasOwnExecutionPlan = !!(message.executionPlan && message.executionPlan.trim());
+  const bufferHasExecutionPlanForThisMessage = !!(bufferedExecutionPlan && bufferedExecutionPlan.trim());
+  
+  // Only show execution plan if:
+  // 1. Message has its OWN execution plan content, OR
+  // 2. Message has executionPlan property AND buffer has content specifically for this messageId
+  const currentExecutionPlan = messageHasExecutionPlanProperty && (messageHasOwnExecutionPlan || bufferHasExecutionPlanForThisMessage)
+    ? (message.executionPlan || bufferedExecutionPlan || '')
+    : '';
   const hasExecutionPlan = currentExecutionPlan && currentExecutionPlan.trim().length > 0;
   
-  // Simple debug logging
-  if (process.env.NODE_ENV === 'development' && hasExecutionPlan) {
-    console.log('📋 RENDERING EXECUTION PLAN:', {
-      messageId: message.messageId,
-      hasExecutionPlan,
-      planLength: currentExecutionPlan.length
-    });
-  }
+  // // Enhanced debug logging for execution plan correlation and contamination tracing
+  // if (process.env.NODE_ENV === 'development') {
+  //   console.log('🔍 EXECUTION PLAN DEBUG:', {
+  //     messageId: message.messageId,
+  //     messageTimestamp: message.timestamp,
+  //     messageKey: messageKey,
+  //     messageText: message.text?.substring(0, 50) + '...',
+  //     hasExecutionPlanProperty: messageHasExecutionPlanProperty,
+  //     messageHasOwnExecutionPlan: messageHasOwnExecutionPlan,
+  //     bufferHasExecutionPlanForThisMessage: bufferHasExecutionPlanForThisMessage,
+  //     bufferKeys: Object.keys(executionPlanBuffer || {}),
+  //     bufferContents: Object.entries(executionPlanBuffer || {}).map(([key, value]) => ({
+  //       key,
+  //       contentPreview: value ? value.substring(0, 80) + '...' : 'EMPTY',
+  //       isForThisMessage: key === messageKey
+  //     })),
+  //     finalHasExecutionPlan: hasExecutionPlan,
+  //     currentExecutionPlan: currentExecutionPlan ? currentExecutionPlan.substring(0, 100) + '...' : 'EMPTY',
+  //     executionPlanSource: message.executionPlan ? 'MESSAGE' : bufferedExecutionPlan ? 'BUFFER' : 'NONE',
+  //     isolation: messageHasExecutionPlanProperty && (messageHasOwnExecutionPlan || bufferHasExecutionPlanForThisMessage) ? '✅ ALLOWED' : '🚫 BLOCKED',
+  //     contamination: !messageHasExecutionPlanProperty && Object.keys(executionPlanBuffer || {}).length > 0 ? '🚨 POTENTIAL CONTAMINATION' : '✅ CLEAN'
+  //   });
+  // }
   
   // Simple toast notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -261,14 +292,14 @@ export const ChatMessage = memo(function ChatMessage({
   
   useEffect(() => {
     const currentMessageId = `${message.timestamp}-${message.text?.slice(0, 20)}`;
-    console.log('🆔 MESSAGE ID CHECK:', {
-      current: currentMessageId,
-      previous: prevMessageIdRef.current,
-      isNewMessage: currentMessageId !== prevMessageIdRef.current
-    });
+    // console.log('🆔 MESSAGE ID CHECK:', {
+    //   current: currentMessageId,
+    //   previous: prevMessageIdRef.current,
+    //   isNewMessage: currentMessageId !== prevMessageIdRef.current
+    // });
     
     if (currentMessageId !== prevMessageIdRef.current) {
-      console.log('🔄 NEW MESSAGE DETECTED - resetting execution plan state');
+      // console.log('🔄 NEW MESSAGE DETECTED - resetting execution plan state');
       // Reset all execution plan state for new message
       hasAutoCollapsed.current = false;
       hasAutoExpanded.current = false; // Also reset auto-expand state
@@ -276,16 +307,17 @@ export const ChatMessage = memo(function ChatMessage({
       
       // Default to collapsed (in-memory only, no localStorage)
       setIsExecutionPlanExpanded(false);
-      console.log('📂 RESET EXECUTION PLAN STATE TO COLLAPSED (in-memory)');
+      // console.log('📂 RESET EXECUTION PLAN STATE TO COLLAPSED (in-memory)');
       
       prevMessageIdRef.current = currentMessageId;
     }
   }, [messageId]);
 
   // Auto-collapse execution plan when streaming completes - only once and only if user hasn't interacted
+  // 🚫 Don't auto-collapse on the last (most recent) streamed message
   useEffect(() => {
-    if (hasExecutionPlan && message.isStreaming === false && !hasAutoCollapsed.current && isExecutionPlanExpanded && !userHasInteracted.current && !hasAutoExpanded.current) {
-      console.log('🔄 AUTO-COLLAPSING EXECUTION PLAN - message finished streaming');
+    if (hasExecutionPlan && message.isStreaming === false && !hasAutoCollapsed.current && isExecutionPlanExpanded && !userHasInteracted.current && !hasAutoExpanded.current && !isLastMessage) {
+      // console.log('🔄 AUTO-COLLAPSING EXECUTION PLAN - message finished streaming');
       // Small delay to let user see the plan briefly before collapsing
       const timer = setTimeout(() => {
         setIsExecutionPlanExpanded(false);
@@ -294,14 +326,16 @@ export const ChatMessage = memo(function ChatMessage({
 
       return () => clearTimeout(timer);
     } else if (message.isStreaming === true && hasExecutionPlan) {
-      console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - message still processing');
+      // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - message still processing');
     } else if (userHasInteracted.current) {
-      console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - user has interacted');
+      // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - user has interacted');
     } else if (hasAutoExpanded.current) {
-      console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - auto-expanded, keeping open');
+      // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - auto-expanded, keeping open');
+    } else if (isLastMessage) {
+      // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - this is the last (most recent) message');
     }
     return undefined;
-  }, [message.isStreaming, hasExecutionPlan, isExecutionPlanExpanded]);
+  }, [message.isStreaming, hasExecutionPlan, isExecutionPlanExpanded, isLastMessage]);
 
   // Save execution plan expansion state to localStorage whenever it changes
   // Execution plan expansion state is now purely in-memory (no localStorage persistence needed)
@@ -309,7 +343,7 @@ export const ChatMessage = memo(function ChatMessage({
   // Auto-expand execution plan if it's marked for auto-expansion (only once)
   useEffect(() => {
     if (hasExecutionPlan && message.timestamp && autoExpandExecutionPlans?.has(messageKey) && !isExecutionPlanExpanded && !hasAutoExpanded.current && !userHasInteracted.current) {
-      console.log('🔄 AUTO-EXPANDING EXECUTION PLAN for messageKey:', messageKey);
+      // console.log('🔄 AUTO-EXPANDING EXECUTION PLAN for messageKey:', messageKey);
       setIsExecutionPlanExpanded(true);
       hasAutoExpanded.current = true; // Mark as auto-expanded to prevent repeated expansion
     }
@@ -317,7 +351,7 @@ export const ChatMessage = memo(function ChatMessage({
 
   // Handle user interaction with execution plan expand/collapse
   const handleExecutionPlanToggle = useCallback(() => {
-    console.log('👆 USER MANUALLY TOGGLED EXECUTION PLAN - from:', isExecutionPlanExpanded, 'to:', !isExecutionPlanExpanded);
+    // console.log('👆 USER MANUALLY TOGGLED EXECUTION PLAN - from:', isExecutionPlanExpanded, 'to:', !isExecutionPlanExpanded);
     userHasInteracted.current = true; // Mark that user has interacted
     setIsExecutionPlanExpanded(!isExecutionPlanExpanded);
   }, [isExecutionPlanExpanded]);
@@ -834,8 +868,8 @@ export const ChatMessage = memo(function ChatMessage({
           {message.timestamp}
         </Typography>
         <Box display="flex" alignItems="center" style={{ gap: theme.spacing(0.5) }}>
-          {/* Always show execution plan button - same size and style as copy button */}
-          <Tooltip title={hasExecutionPlan ? "View Execution Plan" : "No execution plan available for this message"}>
+          {/* Execution Plan button - commented out as per user request */}
+          {/* <Tooltip title={hasExecutionPlan ? "View Execution Plan" : "No execution plan available for this message"}>
             <span>
               <IconButton
                 className={classes.copyButton}
@@ -845,15 +879,15 @@ export const ChatMessage = memo(function ChatMessage({
                 style={{
                   opacity: hasExecutionPlan ? 1 : 0.8,
                   cursor: hasExecutionPlan ? 'pointer' : 'not-allowed',
-                  width: '24px',  // Ensure consistent width
-                  height: '24px', // Ensure consistent height
-                  padding: '0px', // Same padding as copy button
+                  width: '24px',
+                  height: '24px',
+                  padding: '0px',
                 }}
               >
                 <AssignmentIcon fontSize="small" />
               </IconButton>
             </span>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Copy message">
             <IconButton
               className={classes.copyButton}

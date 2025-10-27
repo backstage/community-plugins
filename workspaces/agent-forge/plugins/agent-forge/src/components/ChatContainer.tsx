@@ -271,6 +271,7 @@ const MessagesList = memo(function MessagesList({
                  fontSizes={memoizedFontSizes}
                  executionPlanBuffer={executionPlanBuffer}
                  autoExpandExecutionPlans={autoExpandExecutionPlans}
+                 isLastMessage={index === messages.length - 1}
                />
              </div>
            ))}

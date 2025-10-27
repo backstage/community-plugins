@@ -1337,6 +1337,46 @@ export function AgentForgePage() {
                   allStreamingIds: allStreamingMessages.map(m => m.messageId)
                 });
               }
+              
+              // 🔧 CRITICAL FIX: Store accumulated execution plan in buffer at END of streaming
+              setAccumulatedExecutionPlan(currentPlan => {
+                if (currentPlan && currentPlan.trim().length > 0) {
+                  console.log('📋 STORING EXECUTION PLAN AT END OF STREAMING:', {
+                    messageId: streamingMessage.messageId,
+                    planLength: currentPlan.length,
+                    planPreview: currentPlan.substring(0, 100) + '...'
+                  });
+                  
+                  const messageKey = streamingMessage.messageId || 'unknown';
+                  // Remove markers if present (⟦ and ⟧), otherwise content is used as-is
+                  const cleanExecutionPlan = currentPlan.replace(/⟦|⟧/g, '');
+                  
+                  // Store in buffer
+                  setExecutionPlanBuffer(prev => {
+                    const newBuffer = {
+                      ...prev,
+                      [messageKey]: cleanExecutionPlan
+                    };
+                    console.log('✅ EXECUTION PLAN STORED IN BUFFER:', {
+                      messageKey,
+                      bufferSize: Object.keys(newBuffer).length,
+                      bufferKeys: Object.keys(newBuffer)
+                    });
+                    return newBuffer;
+                  });
+                  
+                  // Mark for auto-expansion
+                  setAutoExpandExecutionPlans(prev => {
+                    const newSet = new Set(prev);
+                    newSet.add(messageKey);
+                    return newSet;
+                  });
+                  
+                  // Add executionPlan property to message
+                  streamingMessage.executionPlan = cleanExecutionPlan;
+                }
+                return currentPlan; // Don't clear it yet, let the next request clear it
+              });
             }
             return { ...session, messages: updatedMessages };
           }
@@ -1615,66 +1655,62 @@ export function AgentForgePage() {
                     console.log('🔍 This should have ⟦⟧ markers around it!');
                   }
                   
-                  // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content
+                  // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content for accumulation
                   if (event.artifact?.name === 'execution_plan_streaming') {
-                    console.log('🎯🎯🎯 EXECUTION_PLAN_STREAMING ARTIFACT DETECTED! 🎯🎯🎯');
-                    console.log('📋 EXECUTION PLAN STREAMING CONTENT:', textPart.text.substring(0, 50) + '...');
-                    // 🚨 REQUEST ISOLATION: Only accept content for current request
+                    // This artifact accumulates chunks for fallback
                     if (currentRequestIdRef.current === currentRequestId) {
-                      console.log('✅ ACCEPTING EXECUTION PLAN CONTENT - Request ID matches');
-                      // Accumulate all execution_plan_streaming content
-                      setAccumulatedExecutionPlan(prev => {
-                        const newContent = prev + textPart.text;
-                        console.log('📋 EXECUTION PLAN UPDATED from:', prev.substring(0, 50) + '...', 'to:', newContent.substring(0, 50) + '...');
-                      
-                      // 🔧 IMMEDIATE STORAGE: If we detect end marker, store immediately
-                      if (newContent.includes('⟧')) {
-                        console.log('🎯 DETECTED END MARKER ⟧ - STORING IN BUFFER IMMEDIATELY');
-                        // Get the current streaming message (find the message that is actually streaming)
-                        const currentSession = sessions.find(session => session.contextId === currentSessionId);
-                        const streamingMessage = currentSession?.messages.find(msg => msg.isStreaming === true);
-                        if (streamingMessage) {
-                          const messageKey = streamingMessage.messageId || 'unknown';
-                          console.log('🎯 FOUND STREAMING MESSAGE FOR IMMEDIATE BUFFER STORAGE:', streamingMessage.messageId);
-                          const cleanExecutionPlan = newContent.replace(/⟦|⟧/g, '');
-                          
-                          // Store in buffer immediately
-                          setExecutionPlanBuffer(prev => {
-                            const newBuffer = {
-                              ...prev,
-                              [messageKey]: cleanExecutionPlan
-                            };
-                            console.log('📋 IMMEDIATE BUFFER STORAGE DURING STREAMING:', {
-                              messageId: streamingMessage.messageId,
-                              messageTimestamp: streamingMessage.timestamp,
-                              messageKey,
-                              executionPlanLength: cleanExecutionPlan.length,
-                              preview: cleanExecutionPlan.substring(0, 100) + '...'
-                            });
-                            return newBuffer;
-                          });
-                          
-                          // Mark for auto-expansion
-                          setAutoExpandExecutionPlans(prev => {
-                            const newSet = new Set(prev);
-                            newSet.add(messageKey);
-                            console.log('🔄 MARKING EXECUTION PLAN FOR AUTO-EXPANSION DURING STREAMING:', messageKey);
-                            return newSet;
-                          });
-                        }
-                      }
-                        
-                        return newContent;
-                      });
-                    } else {
-                      console.log('🚫 REJECTING EXECUTION PLAN CONTENT - Request ID mismatch:', {
-                        current: currentRequestIdRef.current,
-                        streaming: currentRequestId,
-                        content: textPart.text.substring(0, 50) + '...'
-                      });
+                      console.log('✅ ACCEPTING EXECUTION PLAN STREAMING CHUNK');
+                      setAccumulatedExecutionPlan(prev => prev + textPart.text);
                     }
-                    // Don't add execution plan streaming content to main message
-                    console.log('Execution plan streaming content processed, continuing stream...');
+                    console.log('Execution plan streaming chunk processed, continuing...');
+                  } else if (event.artifact?.name === 'execution_plan_update') {
+                    // 🚀 REAL-TIME UPDATE: Use execution_plan_update for immediate display
+                    // This contains the complete plan so far, no need to accumulate chunks
+                    if (currentRequestIdRef.current === currentRequestId) {
+                      console.log('📋 EXECUTION PLAN UPDATE - Updating display in real-time');
+                      
+                      const completePlan = textPart.text;
+                      const cleanExecutionPlan = completePlan.replace(/⟦|⟧/g, '');
+                      
+                      // Find streaming message and update immediately
+                      setSessions(prevSessions => {
+                        return prevSessions.map(session => {
+                          if (session.contextId === currentSessionId) {
+                            const updatedMessages = session.messages.map(msg => {
+                              if (msg.isStreaming === true) {
+                                const messageKey = msg.messageId || 'unknown';
+                                
+                                // Update buffer for real-time display
+                                setExecutionPlanBuffer(prevBuffer => ({
+                                  ...prevBuffer,
+                                  [messageKey]: cleanExecutionPlan
+                                }));
+                                
+                                // Auto-expand on first update
+                                setAutoExpandExecutionPlans(prevSet => {
+                                  const newSet = new Set(prevSet);
+                                  if (!newSet.has(messageKey)) {
+                                    newSet.add(messageKey);
+                                    console.log('🔄 AUTO-EXPANDING EXECUTION PLAN');
+                                  }
+                                  return newSet;
+                                });
+                                
+                                // Update message with execution plan
+                                return { ...msg, executionPlan: cleanExecutionPlan };
+                              }
+                              return msg;
+                            });
+                            return { ...session, messages: updatedMessages };
+                          }
+                          return session;
+                        });
+                      });
+                      
+                      // Also store in accumulated state for finishStreamingMessage
+                      setAccumulatedExecutionPlan(completePlan);
+                    }
+                    console.log('Execution plan update processed, continuing...');
                   } else if (isToolNotification) {
                     // Handle tool notifications ONLY as thinking indicators - never add to content
                     console.log('TOOL NOTIFICATION DETECTED:', operation, 'isStart:', isStart);
@@ -1880,7 +1916,7 @@ export function AgentForgePage() {
               totalUniqueArtifacts: seenArtifactNames.size,
               artifactNames: Array.from(seenArtifactNames).sort(),
               hasExecutionPlanStreaming: seenArtifactNames.has('execution_plan_streaming'),
-              hasExecutionPlan: seenArtifactNames.has('execution_plan'),
+              hasExecutionPlanUpdate: seenArtifactNames.has('execution_plan_update'),
               hasStreamingResult: seenArtifactNames.has('streaming_result'),
               hasToolNotifications: Array.from(seenArtifactNames).some((name: string) => name.includes('tool_notification')),
               timestamp: new Date().toISOString()
@@ -1900,7 +1936,7 @@ export function AgentForgePage() {
               totalUniqueArtifacts: seenArtifactNames.size,
               artifactNames: Array.from(seenArtifactNames).sort(),
               hasExecutionPlanStreaming: seenArtifactNames.has('execution_plan_streaming'),
-              hasExecutionPlan: seenArtifactNames.has('execution_plan'),
+              hasExecutionPlanUpdate: seenArtifactNames.has('execution_plan_update'),
               hasStreamingResult: seenArtifactNames.has('streaming_result'),
               hasToolNotifications: Array.from(seenArtifactNames).some((name: string) => name.includes('tool_notification')),
               timestamp: new Date().toISOString()
