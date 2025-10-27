@@ -21,8 +21,7 @@ import { Message } from '../types';
  * @public
  */
 export interface ChatSession {
-  id: string;
-  contextId?: string; // From A2A API for conversation continuity
+  contextId: string; // From A2A API for conversation continuity
   title: string;
   messages: Message[];
   createdAt: Date;

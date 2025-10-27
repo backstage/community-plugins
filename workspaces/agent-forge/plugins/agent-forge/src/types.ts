@@ -19,6 +19,7 @@
  * @public
  */
 export interface Message {
+  messageId?: string; // Unique identifier for the message
   text?: string; // Make optional to support A2A messages
   parts?: Array<{
     kind: string;

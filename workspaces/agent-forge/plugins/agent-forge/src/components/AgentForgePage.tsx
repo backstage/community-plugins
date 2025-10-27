@@ -90,6 +90,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.default,
     display: 'flex',
     flexDirection: 'column',
+    borderRadius: theme.spacing(1), // Add slight border radius for better appearance
   },
   fullscreenContent: {
     flex: 1,
@@ -118,14 +119,45 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+    flexBasis: '20%',
+    flexShrink: 0,
+    flexGrow: 0,
+    maxWidth: '20%',
+    transition: 'all 0.3s ease',
+  },
+  sidebarColumnCollapsed: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    flexBasis: '60px', // Just enough for the collapse button
+    flexShrink: 0,
+    flexGrow: 0,
+    maxWidth: '60px',
+    minWidth: '60px',
+    transition: 'all 0.3s ease',
   },
   chatColumn: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    flex: 1,
+    flexBasis: '80%',
+    flexGrow: 1,
+    flexShrink: 1,
     minWidth: 0,
     overflow: 'hidden',
+    transition: 'all 0.3s ease',
+  },
+  chatColumnExpanded: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flexBasis: 'calc(100% - 60px)', // Take remaining space when sidebar is collapsed
+    flexGrow: 1,
+    flexShrink: 1,
+    minWidth: 0,
+    overflow: 'hidden',
+    transition: 'all 0.3s ease',
   },
   chatCard: {
     height: '100%',
@@ -231,6 +263,10 @@ export function AgentForgePage() {
   const identityApi = useApi(identityApiRef);
   const alertApi = useApi(alertApiRef);
 
+  // Performance optimization: progressive message loading to prevent DOM bloat  
+  const DEFAULT_MESSAGE_COUNT = 5; // Default messages shown (gradual auto-collapse target)
+  const LOAD_MORE_INCREMENT = 5; // How many additional messages to load each time
+  
   const botName =
     config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
   const botIcon =
@@ -285,9 +321,44 @@ export function AgentForgePage() {
       config.getOptionalString('agentForge.fontSize.timestamp') || '0.75rem',
   };
 
-  // Chat session state
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  // Create initial session factory
+  const createInitialSession = useCallback((): ChatSession => ({
+    contextId: uuidv4(),
+    title: 'Chat 1',
+    messages: [
+      {
+        messageId: uuidv4(),
+        text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(/⟦|⟧/g, ''),
+        isUser: false,
+        timestamp: createTimestamp(),
+      },
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }), [botName]);
+
+  // Initialize with a default session to prevent loading state
+  const [initialSession] = useState(() => {
+    const sessionId = uuidv4();
+    return {
+      contextId: sessionId,
+      title: 'Chat 1',
+      messages: [
+        {
+          messageId: uuidv4(),
+          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(/⟦|⟧/g, ''),
+          isUser: false,
+          timestamp: createTimestamp(),
+        },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  });
+  
+  // Chat session state - start with default session to prevent loading
+  const [sessions, setSessions] = useState<ChatSession[]>([initialSession]);
+  const [currentSessionId, setCurrentSessionId] = useState<string>(initialSession.contextId);
 
   // UI state
   const [userInput, setUserInput] = useState('');
@@ -299,6 +370,23 @@ export function AgentForgePage() {
   const [connectionStatus, setConnectionStatus] = useState<
     'checking' | 'connected' | 'disconnected'
   >('checking');
+  const [nextRetryCountdown, setNextRetryCountdown] = useState<number>(0);
+  const [loadedMessageCount, setLoadedMessageCount] = useState(DEFAULT_MESSAGE_COUNT); // Progressive loading count
+  const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);
+  const [isManualLoadingInProgress, setIsManualLoadingInProgress] = useState(false);
+  const lastScrollPositionRef = useRef<number>(-1);
+  const buttonToggleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastCollapseTimeRef = useRef<number>(0);
+  const gracefulScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Execution plan buffer - stores execution plans by message ID (fallback to timestamp)
+  const [executionPlanBuffer, setExecutionPlanBuffer] = useState<Record<string, string>>({});
+  // Track which execution plans should be auto-expanded when they appear
+  const [autoExpandExecutionPlans, setAutoExpandExecutionPlans] = useState<Set<string>>(new Set());
+  // Reference to input field for focus management
+  const inputRef = useRef<HTMLInputElement>(null);
+  // SCROLL MODE: Manual mode by default - users have full control over scroll position
+  // TO RE-ENABLE AUTO-SCROLL: Change false to true and uncomment toggle UI in ChatContainer.tsx
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
   
   // State for operational thinking messages
   const [currentOperation, setCurrentOperation] = useState<string | null>(null);
@@ -307,9 +395,11 @@ export function AgentForgePage() {
   // Cache to track tool notifications we've shown in thinking indicator
   const toolNotificationsCache = useRef<Set<string>>(new Set());
   
-  // State for execution plan processing
+  // State for execution plan processing with request isolation
   const [isCapturingExecutionPlan, setIsCapturingExecutionPlan] = useState(false);
   const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] = useState<string>('');
+  const currentRequestIdRef = useRef<string>(''); // Track current streaming request
+  const abortControllerRef = useRef<AbortController | null>(null); // Cancel previous streams
   
   
   // Function to remove cached tool notifications from content
@@ -318,7 +408,7 @@ export function AgentForgePage() {
     const originalText = text;
     
     // 🚨 DEBUGGING: Check if input text contains execution plan markers
-    if (text.includes('⧨') || text.includes('⧩')) {
+    if (text.includes('⟦') || text.includes('⟧')) {
       console.log('🚨 INPUT TEXT CONTAINS EXECUTION PLAN MARKERS');
       console.log('🚨 ORIGINAL TEXT:', text.substring(0, 200) + '...');
     }
@@ -333,7 +423,7 @@ export function AgentForgePage() {
       cleanText = cleanText.replace(regex, '');
       
       // 🚨 DEBUGGING: Check if we removed execution plan markers
-      if (beforeRemoval !== cleanText && (beforeRemoval.includes('⧨') || beforeRemoval.includes('⧩'))) {
+      if (beforeRemoval !== cleanText && (beforeRemoval.includes('⟦') || beforeRemoval.includes('⟧'))) {
         console.log('🚨 REMOVED TEXT THAT CONTAINED EXECUTION PLAN MARKERS!');
         console.log('🚨 REMOVED NOTIFICATION:', notification.substring(0, 100) + '...');
         console.log('🚨 BEFORE:', beforeRemoval.substring(0, 200) + '...');
@@ -347,8 +437,8 @@ export function AgentForgePage() {
     console.log('CLEANED TEXT - original length:', originalText.length, 'cleaned length:', cleanText.length);
     
     // 🚨 DEBUGGING: Final check
-    if (originalText.includes('⧨') || originalText.includes('⧩')) {
-      const stillHasMarkers = cleanText.includes('⧨') || cleanText.includes('⧩');
+    if (originalText.includes('⟦') || originalText.includes('⟧')) {
+      const stillHasMarkers = cleanText.includes('⟦') || cleanText.includes('⟧');
       console.log('🚨 EXECUTION PLAN MARKERS AFTER CLEANING:', stillHasMarkers ? 'STILL PRESENT' : 'REMOVED!');
     }
     
@@ -359,22 +449,33 @@ export function AgentForgePage() {
   
   // Utility function to detect and parse tool notifications using metadata
   const detectToolNotification = (artifact: any): { isToolNotification: boolean; operation?: string; isStart?: boolean } => {
+    console.log('🆕 NEW CODE RUNNING - detectToolNotification v2.0');
+    
     if (!artifact || !artifact.name) {
       return { isToolNotification: false };
     }
     
+    // Get the actual text content from artifact parts
+    const textContent = artifact.parts?.[0]?.text || '';
+    
+    console.log('🔍 detectToolNotification - artifact.name:', artifact.name, 'textContent:', textContent);
+    
     // Detect tool start notifications: name = "tool_notification_start"
     if (artifact.name === 'tool_notification_start') {
-      // Extract tool name from description: "Tool call started: argocd" → "argocd"
-      const toolName = artifact.description?.split(': ')[1] || 'tool';
-      return { isToolNotification: true, operation: `Calling ${toolName}`, isStart: true };
+      // Use the actual text content which includes agent name
+      // e.g., "🔧 Argocd: Calling tool: Version_Service__Version\n" or "🔧 Supervisor: Calling Agent Argocd...\n"
+      const operation = textContent.trim() || `Calling tool...`;
+      console.log('🔍 Detected tool_notification_start, operation:', operation);
+      return { isToolNotification: true, operation, isStart: true };
     }
     
     // Detect tool end notifications: name = "tool_notification_end"  
     if (artifact.name === 'tool_notification_end') {
-      // Extract tool name from description: "Tool call completed: argocd" → "argocd"
-      const toolName = artifact.description?.split(': ')[1] || 'tool';
-      return { isToolNotification: true, operation: `${toolName} completed`, isStart: false };
+      // Use the actual text content which includes agent name
+      // e.g., "✅ Argocd: Tool Version_Service__Version completed\n" or "✅ Supervisor: Agent task Argocd completed\n"
+      const operation = textContent.trim() || `Tool completed`;
+      console.log('🔍 Detected tool_notification_end, operation:', operation);
+      return { isToolNotification: true, operation, isStart: false };
     }
     
     // Regular content (streaming_result, etc.)
@@ -388,8 +489,8 @@ export function AgentForgePage() {
     shouldStartCapturing: boolean;
     shouldStopCapturing: boolean;
   } => {
-    const startMarker = '⧨';
-    const endMarker = '⧩';
+    const startMarker = '⟦';
+    const endMarker = '⟧';
 
     let mainContent = text;
     let executionPlanContent: string | null = null;
@@ -431,9 +532,9 @@ export function AgentForgePage() {
       }
     }
 
-    // Check for start marker (⧨)
+    // Check for start marker (⟦)
     if (text.includes(startMarker)) {
-      console.log('⧨ FOUND START MARKER');
+      console.log('⟦ FOUND START MARKER');
       shouldStartCapturing = true;
       const parts = text.split(startMarker);
       mainContent = parts[0]; // Content before start marker goes to main
@@ -443,27 +544,27 @@ export function AgentForgePage() {
         const afterStart = parts[1];
         if (afterStart.includes(endMarker)) {
           // Both start and end in same chunk
-          console.log('⧨⧩ FOUND BOTH MARKERS IN SAME CHUNK');
+          console.log('⟦⟧ FOUND BOTH MARKERS IN SAME CHUNK');
           const endParts = afterStart.split(endMarker);
           executionPlanContent = endParts[0]; // Content between markers
           mainContent += endParts[1] || ''; // Content after end marker goes to main
           shouldStopCapturing = true;
         } else {
           // Only start marker, content continues in next chunks
-          console.log('⧨ FOUND START MARKER ONLY - continuing capture');
+          console.log('⟦ FOUND START MARKER ONLY - continuing capture');
           executionPlanContent = afterStart;
         }
       }
     } else if (text.includes(endMarker)) {
-      // End marker found (⧩)
-      console.log('⧩ FOUND END MARKER');
+      // End marker found (⟧)
+      console.log('⟧ FOUND END MARKER');
       shouldStopCapturing = true;
       const parts = text.split(endMarker);
       executionPlanContent = parts[0]; // Content before end marker is execution plan
       mainContent = parts[1] || ''; // Content after end marker goes to main
     } else if (isCapturingExecutionPlan) {
       // We're in the middle of capturing an execution plan
-      console.log('⧨...⧩ CONTINUING CAPTURE OF EXECUTION PLAN');
+      console.log('⟦...⟧ CONTINUING CAPTURE OF EXECUTION PLAN');
       executionPlanContent = text;
       mainContent = ''; // Nothing goes to main content
     }
@@ -491,53 +592,435 @@ export function AgentForgePage() {
   // Token authentication for external system integration
   const { tokenMessage, isTokenRequest } = useTokenAuthentication();
 
-  const chatbotApi = useMemo(() => {
-    try {
-      const api = new ChatbotApi(
-        backendUrl,
-        { identityApi },
-        { requestTimeout },
-      );
-      setApiError(null);
-      return api;
-    } catch (error) {
-      setApiError('Failed to initialize chat service');
-      return null;
-    }
-  }, [backendUrl, identityApi, requestTimeout]);
-
-  // Check agent connection status
+  // ChatbotApi state - initialized asynchronously to handle A2A client constructor errors
+  const [chatbotApi, setChatbotApi] = useState<any>(null);
+  
+  // Only initialize ChatbotApi when agent is confirmed reachable
   useEffect(() => {
-    const checkConnection = async () => {
-      if (!chatbotApi) {
-        setConnectionStatus('disconnected');
-        return;
-      }
-
-      setConnectionStatus('checking');
+    // Clear existing API when connection status changes
+    if (connectionStatus === 'disconnected' || connectionStatus === 'checking') {
+      setChatbotApi(null);
+      return;
+    }
+    
+    // Only create ChatbotApi when connected
+    if (connectionStatus === 'connected' && backendUrl && !chatbotApi) {
+      console.log('🔧 Agent is reachable - initializing ChatbotApi with URL:', backendUrl);
+      
       try {
-        // Try to get the agent card to verify connection
-        await chatbotApi.getSkillExamples();
-        setConnectionStatus('connected');
-        setApiError(null);
-      } catch (error: any) {
-        setConnectionStatus('disconnected');
-        setApiError(
-          error.message ||
-            'Unable to connect to agent service. Please check the configuration.',
+        const api = new ChatbotApi(
+          backendUrl,
+          { identityApi },
+          { requestTimeout },
         );
+        
+        // Wrap API methods to catch any remaining A2A client exceptions
+        const originalSubmitA2ATask = api.submitA2ATask.bind(api);
+        const originalSubmitA2ATaskStream = api.submitA2ATaskStream.bind(api);
+        
+        api.submitA2ATask = async (isNewTask: boolean, message: string, contextId?: string) => {
+          try {
+            return await originalSubmitA2ATask(isNewTask, message, contextId);
+          } catch (error) {
+            console.error('🚫 A2A Client exception in submitA2ATask:', error);
+            throw error; // Re-throw to maintain existing error handling
+          }
+        };
+        
+        api.submitA2ATaskStream = (isNewTask: boolean, message: string, contextId?: string) => {
+          try {
+            return originalSubmitA2ATaskStream(isNewTask, message, contextId);
+          } catch (error) {
+            console.error('🚫 A2A Client exception in submitA2ATaskStream:', error);
+            throw error; // Re-throw to maintain existing error handling
+          }
+        };
+        
+        console.log('✅ ChatbotApi initialized successfully (agent reachable)');
+        setChatbotApi(api);
+      } catch (error: any) {
+        console.error('🚫 Failed to initialize ChatbotApi even when agent appears reachable:', error);
+        setChatbotApi(null);
+        // Reset connection status if API creation fails
+        setConnectionStatus('disconnected');
+        setNextRetryCountdown(30);
+      }
+    }
+  }, [connectionStatus, backendUrl, identityApi, requestTimeout, chatbotApi]);
+
+  // Global error handler for A2A client unhandled promise rejections
+  useEffect(() => {
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const error = event.reason;
+      if (error?.message?.includes('Unable to connect to agent') || 
+          error?.message?.includes('.well-known/agent.json') ||
+          error?.message?.includes('_fetchAndCacheAgentCard')) {
+        console.error('🚫 Caught unhandled A2A client promise rejection:', error);
+        event.preventDefault(); // Prevent the error from showing in UI
+        
+        // Set connection status and start retry countdown - banner will show the status
+        setConnectionStatus('disconnected');
+        setNextRetryCountdown(30);
       }
     };
 
-    checkConnection();
-  }, [chatbotApi]);
+    const handleError = (event: ErrorEvent) => {
+      const error = event.error;
+      if (error?.message?.includes('Unable to connect to agent') || 
+          error?.message?.includes('.well-known/agent.json') ||
+          error?.message?.includes('_fetchAndCacheAgentCard')) {
+        console.error('🚫 Caught unhandled A2A client error:', error);
+        event.preventDefault(); // Prevent the error from showing in UI
+        
+        // Set connection status and start retry countdown - banner will show the status
+        setConnectionStatus('disconnected');
+        setNextRetryCountdown(30);
+      }
+    };
 
-  // Get current session
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener('error', handleError);
+    return () => {
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener('error', handleError);
+    };
+  }, []);
+
+  // Check agent connection status with periodic polling and countdown
+  useEffect(() => {
+    const effectId = Math.random().toString(36).substr(2, 9);
+    console.log(`🚀 useEffect START (${effectId}) - chatbotApi:`, !!chatbotApi);
+    
+    let countdownInterval: NodeJS.Timeout | null = null;
+
+    // Lightweight connection check using agent.json endpoint
+    const checkAgentHealth = async (agentBaseUrl: string): Promise<boolean> => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
+      
+      try {
+        const agentJsonUrl = `${agentBaseUrl.replace(/\/$/, '')}/.well-known/agent.json`;
+        console.log('🔍 Checking agent health at:', agentJsonUrl);
+        
+        const response = await fetch(agentJsonUrl, {
+          method: 'GET',
+          signal: controller.signal,
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          console.log('🔴 Agent health check failed - HTTP:', response.status, response.statusText);
+          return false;
+        }
+        
+        // Try to parse JSON to ensure it's a valid agent card
+        const agentCard = await response.json();
+        if (!agentCard || typeof agentCard !== 'object') {
+          console.log('🔴 Agent health check failed - Invalid JSON response');
+          return false;
+        }
+        
+        console.log('🟢 Agent health check succeeded - Agent card received');
+        return true;
+      } catch (error: any) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          console.log('🔴 Agent health check failed - Timeout after 15 seconds');
+        } else {
+          console.log('🔴 Agent health check failed:', error.message);
+        }
+        return false;
+      }
+    };
+
+    const checkConnection = async () => {
+      console.log('🔄 Starting lightweight connection check...');
+      setConnectionStatus('checking'); // Show "Connecting..." status
+      setNextRetryCountdown(0); // Reset countdown during check
+      
+      if (!backendUrl) {
+        console.log('🔴 No backend URL available');
+        setConnectionStatus('disconnected');
+        setNextRetryCountdown(30); // Start countdown even when URL not ready
+        console.log('🔴 Set retry countdown to 30 seconds (URL not configured)');
+        return;
+      }
+
+      try {
+        const isHealthy = await checkAgentHealth(backendUrl);
+        if (isHealthy) {
+          setConnectionStatus('connected');
+          setNextRetryCountdown(0); // Clear countdown on success
+          setApiError(null); // Clear error message when connection succeeds
+          // Stop any running countdown when connected
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+          }
+        } else {
+          throw new Error('Agent health check failed - service may be down or unreachable');
+        }
+      } catch (error: any) {
+        setConnectionStatus('disconnected');
+        setNextRetryCountdown(30); // Start 30-second countdown
+      }
+    };
+
+
+    // Initial connection check - performance optimized
+    checkConnection();
+
+    // Cleanup intervals on unmount
+    return () => {
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    };
+  }, []); // Run only once on mount - don't recreate when chatbotApi changes
+
+  // Watch for countdown reaching 0 and trigger retry - optimized for performance
+  useEffect(() => {
+    if (nextRetryCountdown === 0 && connectionStatus === 'disconnected' && backendUrl) {
+      const retryConnection = async () => {
+        try {
+          setConnectionStatus('checking');
+          
+          // Use the same lightweight health check
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
+          
+          try {
+            const agentJsonUrl = `${backendUrl.replace(/\/$/, '')}/.well-known/agent.json`;
+            
+            const response = await fetch(agentJsonUrl, {
+              method: 'GET',
+              signal: controller.signal,
+              headers: { 'Accept': 'application/json' },
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            await response.json(); // Validate JSON
+            
+            setConnectionStatus('connected');
+            setApiError(null);
+          } catch (healthError: any) {
+            clearTimeout(timeoutId);
+            throw healthError;
+          }
+        } catch (error: any) {
+          console.log('🔴 RETRY FAILED: Restarting countdown...');
+          setConnectionStatus('disconnected');
+          setNextRetryCountdown(30);
+        }
+      };
+      
+      // Small delay to avoid race conditions
+      setTimeout(retryConnection, 200);
+    }
+  }, [nextRetryCountdown, connectionStatus, backendUrl]);
+
+  // Start countdown timer whenever nextRetryCountdown is set to a positive value
+  useEffect(() => {
+    if (nextRetryCountdown > 0 && connectionStatus === 'disconnected') {
+      console.log(`⏰ NextRetryCountdown changed to ${nextRetryCountdown}, starting timer`);
+      // We need to access the startCountdown function, but it's defined inside another useEffect
+      // So we'll implement the countdown logic here directly
+      const countdownInterval = setInterval(() => {
+        setNextRetryCountdown(prev => {
+          const newValue = prev <= 1 ? 0 : prev - 1;
+          console.log(`⏰ Countdown tick: ${prev} → ${newValue}`);
+          return newValue;
+        });
+      }, 1000);
+
+      return () => {
+        console.log('⏰ Clearing countdown interval on cleanup');
+        clearInterval(countdownInterval);
+      };
+    }
+    
+    // Return undefined for the case where condition is not met
+    return undefined;
+  }, [nextRetryCountdown, connectionStatus]);
+
+  // Get current session with fallback
   const currentSession = useMemo(() => {
-    return sessions.find(s => s.id === currentSessionId) || null;
+    if (sessions.length === 0) return null;
+    
+    let session = sessions.find(s => s.contextId === currentSessionId);
+    
+    // If no session found with currentSessionId, use the first session as fallback
+    if (!session && sessions.length > 0) {
+      session = sessions[0];
+      setCurrentSessionId(sessions[0].contextId);
+    }
+    
+    return session || null;
   }, [sessions, currentSessionId]);
 
-  // Load chat history from localStorage on mount
+  // Performance optimization: progressive message loading to prevent DOM bloat
+  const renderedMessages = useMemo(() => {
+    if (!currentSession?.messages) return [];
+    
+    const messages = currentSession.messages;
+    const totalMessages = messages.length;
+    
+    // Show messages up to the current loaded count
+    const messagesToShow = Math.min(loadedMessageCount, totalMessages);
+    
+    // Get the last 'messagesToShow' messages
+    return messages.slice(-messagesToShow);
+  }, [currentSession?.messages, loadedMessageCount]);
+
+  // Load more messages handler - progressive loading
+  const handleLoadMore = useCallback(() => {
+    const newCount = loadedMessageCount + LOAD_MORE_INCREMENT;
+    console.log('📥 Loading more messages:', loadedMessageCount, '→', newCount);
+    
+    // Clear any pending timeouts to ensure immediate hiding and prevent conflicts
+    if (buttonToggleTimeoutRef.current) {
+      clearTimeout(buttonToggleTimeoutRef.current);
+      buttonToggleTimeoutRef.current = null;
+    }
+    if (gracefulScrollTimeoutRef.current) {
+      clearTimeout(gracefulScrollTimeoutRef.current);
+      gracefulScrollTimeoutRef.current = null;
+    }
+    
+    setIsManualLoadingInProgress(true);
+    setLoadedMessageCount(newCount);
+    setShowLoadMoreButton(false);
+    
+    // Clear manual loading flag after a short delay
+    setTimeout(() => {
+      console.log('🧹 Clearing manual loading flag in parent');
+      setIsManualLoadingInProgress(false);
+    }, 500);
+  }, [loadedMessageCount, LOAD_MORE_INCREMENT]);
+
+  // Handle scroll-based message loading - MANUAL ONLY
+  const handleScroll = useCallback((scrollTop: number, scrollHeight: number, clientHeight: number) => {
+    // Prevent flickering by only processing significant scroll changes
+    const scrollDifference = Math.abs(scrollTop - lastScrollPositionRef.current);
+    if (scrollDifference < 10 && lastScrollPositionRef.current !== -1) {
+      return; // Ignore small scroll changes that might cause flickering
+    }
+    lastScrollPositionRef.current = scrollTop;
+    
+    const isAtTop = scrollTop < 50; // Within 50px of top
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // Within 100px of bottom
+    
+    // Show load more button when user scrolls up and there are more messages to load
+    const totalMessages = currentSession?.messages?.length || 0;
+    const hasMoreMessages = loadedMessageCount < totalMessages;
+    
+    // Debounced button state changes to prevent flickering
+    const debouncedButtonToggle = (shouldShow: boolean, reason: string) => {
+      if (buttonToggleTimeoutRef.current) {
+        clearTimeout(buttonToggleTimeoutRef.current);
+      }
+      
+      buttonToggleTimeoutRef.current = setTimeout(() => {
+        setShowLoadMoreButton(current => {
+          if (shouldShow !== current) {
+            console.log(`📜 ${reason}`);
+            return shouldShow;
+          }
+          return current;
+        });
+      }, 50); // Small debounce delay
+    };
+    
+    // Show button when user scrolls near top - NO AUTO-LOADING
+    if (isAtTop && !isManualLoadingInProgress && !showLoadMoreButton) {
+      const buttonState = hasMoreMessages ? 'more messages available' : 'no more messages';
+      debouncedButtonToggle(true, `User scrolled to top - showing load button (${buttonState})`);
+    }
+    
+    // Hide button when user scrolls away from top (unless loading)
+    if (!isAtTop && showLoadMoreButton && !isManualLoadingInProgress) {
+      debouncedButtonToggle(false, 'User scrolled away from top - hiding load button');
+    }
+    
+    // Performance optimization: Auto-collapse to default count when user scrolls to bottom
+    // This prevents DOM bloat with large message histories
+    if (isAtBottom && loadedMessageCount > DEFAULT_MESSAGE_COUNT && !isManualLoadingInProgress) {
+      // Throttle auto-collapse to prevent rapid cycles (minimum 3 seconds between collapses)
+      const currentTime = Date.now();
+      const timeSinceLastCollapse = currentTime - lastCollapseTimeRef.current;
+      
+      if (timeSinceLastCollapse > 3000) {
+        console.log('🔽 Auto-collapse for performance:', loadedMessageCount, '→', DEFAULT_MESSAGE_COUNT);
+        lastCollapseTimeRef.current = currentTime;
+        
+        // Capture that user was at bottom BEFORE we change DOM
+        const userWasAtBottom = isAtBottom;
+        
+        setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
+        setShowLoadMoreButton(false); // Hide button since we're back to default count
+        
+        // Gracefully scroll to bottom after DOM height changes to prevent jarring jumps
+        if (userWasAtBottom) {
+          // Clear any existing graceful scroll timeout
+          if (gracefulScrollTimeoutRef.current) {
+            clearTimeout(gracefulScrollTimeoutRef.current);
+          }
+          
+          gracefulScrollTimeoutRef.current = setTimeout(() => {
+            const container = document.querySelector('[data-testid="messages-container"]') as HTMLElement;
+            if (container) {
+              console.log('📍 Graceful scroll to bottom after auto-collapse (preventing jarring jump)');
+              container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+              });
+            }
+            gracefulScrollTimeoutRef.current = null;
+          }, 100); // Small delay to let DOM update after message count change
+        }
+      } else {
+        console.log('🔽 Auto-collapse throttled - only', Math.round(timeSinceLastCollapse / 1000), 'seconds since last collapse');
+      }
+    }
+    
+  }, [currentSession?.messages?.length, loadedMessageCount, isManualLoadingInProgress, DEFAULT_MESSAGE_COUNT]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (buttonToggleTimeoutRef.current) {
+        clearTimeout(buttonToggleTimeoutRef.current);
+      }
+      if (gracefulScrollTimeoutRef.current) {
+        clearTimeout(gracefulScrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Initialize load more button visibility on mount/session change - don't show initially
+  useEffect(() => {
+    if (!autoScrollEnabled && currentSession?.messages) {
+      // Don't show button on initial load, only after user scrolls up
+      const shouldShowButton = false;
+      
+      if (shouldShowButton !== showLoadMoreButton) {
+        console.log('📜 Initializing Load Earlier Messages button visibility (hidden on first load):', shouldShowButton);
+        setShowLoadMoreButton(shouldShowButton);
+      }
+    }
+  }, [currentSession?.messages?.length, loadedMessageCount, isManualLoadingInProgress, autoScrollEnabled]);
+
+  // Load chat history from localStorage on mount (replace initial session if stored data exists)
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -548,33 +1031,34 @@ export function AgentForgePage() {
           createdAt: new Date(s.createdAt),
           updatedAt: new Date(s.updatedAt),
         }));
+        
+        // Replace the initial session with stored data
         setSessions(sessionsWithDates);
-        setCurrentSessionId(data.currentSessionId);
+        // Ensure we have a valid currentSessionId
+        const validSessionId = data.currentSessionId || (sessionsWithDates[0]?.contextId) || initialSession.contextId;
+        setCurrentSessionId(validSessionId);
+        setSuggestions(initialSuggestions);
+        setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
+        setShowLoadMoreButton(false);
       } else {
-        // Only create initial session if no stored data exists
-        const initialSession: ChatSession = {
-          id: uuidv4(),
-          title: 'Chat 1',
-          messages: [
-            {
-              text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
-              isUser: false,
-              timestamp: createTimestamp(),
-            },
-          ],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        setSessions([initialSession]);
-        setCurrentSessionId(initialSession.id);
+        // Keep the initial session that's already loaded, just reset states
+        setSuggestions(initialSuggestions);
+        setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
+        setShowLoadMoreButton(false);
+        setIsManualLoadingInProgress(false);
       }
     } catch (error) {
+      console.error('Failed to load chat history:', error);
       alertApi.post({
-        message: 'Failed to load chat history. Starting with a fresh session.',
+        message: 'Failed to load chat history. Using current session.',
         severity: 'warning',
       });
+      // Keep the existing initial session on error
+      setSuggestions(initialSuggestions);
+      setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
+      setShowLoadMoreButton(false);
     }
-  }, [botName, alertApi]);
+  }, [botName, alertApi, initialSuggestions]);
 
   // Save chat history to localStorage whenever they change
   useEffect(() => {
@@ -592,11 +1076,12 @@ export function AgentForgePage() {
   // Create new session
   const createNewSession = useCallback(() => {
     const newSession: ChatSession = {
-      id: uuidv4(),
+      contextId: uuidv4(),
       title: `Chat ${sessions.length + 1}`,
       messages: [
         {
-          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
+          messageId: uuidv4(),
+          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(/⟦|⟧/g, ''),
           isUser: false,
           timestamp: createTimestamp(),
         },
@@ -606,8 +1091,11 @@ export function AgentForgePage() {
     };
 
     setSessions(prev => [newSession, ...prev]);
-    setCurrentSessionId(newSession.id);
+    setCurrentSessionId(newSession.contextId);
     setSuggestions(initialSuggestions);
+    setLoadedMessageCount(DEFAULT_MESSAGE_COUNT); // Reset to default count on new session
+    setShowLoadMoreButton(false);
+    setIsManualLoadingInProgress(false);
   }, [sessions.length, botName, initialSuggestions]);
 
   // Switch to session
@@ -616,6 +1104,10 @@ export function AgentForgePage() {
       setCurrentSessionId(sessionId);
       // Always keep suggestions visible
       setSuggestions(initialSuggestions);
+      // Reset to default count on session switch
+      setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
+      setShowLoadMoreButton(false);
+      setIsManualLoadingInProgress(false);
     },
     [initialSuggestions],
   );
@@ -623,15 +1115,28 @@ export function AgentForgePage() {
   // Delete session
   const deleteSession = useCallback(
     (sessionId: string) => {
-      setSessions(prev => prev.filter(s => s.id !== sessionId));
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🗑️ DELETE SESSION REQUESTED:', {
+          sessionId,
+          totalSessions: sessions.length,
+          sessionExists: sessions.some(s => s.contextId === sessionId)
+        });
+      }
+      const remainingSessions = sessions.filter(s => s.contextId !== sessionId);
+      setSessions(remainingSessions);
+      
       if (currentSessionId === sessionId) {
-        const remainingSessions = sessions.filter(s => s.id !== sessionId);
-        setCurrentSessionId(
-          remainingSessions.length > 0 ? remainingSessions[0].id : null,
-        );
+        if (remainingSessions.length > 0) {
+          setCurrentSessionId(remainingSessions[0].contextId);
+        } else {
+          // If no sessions left, create a new one
+          const newSession = createInitialSession();
+          setSessions([newSession]);
+          setCurrentSessionId(newSession.contextId);
+        }
       }
     },
-    [sessions, currentSessionId],
+    [sessions, currentSessionId, createInitialSession],
   );
 
   // Remove this useEffect since we handle initial session creation in the load effect
@@ -643,10 +1148,10 @@ export function AgentForgePage() {
 
       setSessions(prev =>
         prev.map(session => {
-          if (session.id === currentSessionId) {
+          if (session.contextId === currentSessionId) {
             const updatedMessages = [
               ...session.messages,
-              { ...message, timestamp: createTimestamp() },
+              { ...message, messageId: message.messageId || uuidv4(), timestamp: message.timestamp || createTimestamp() },
             ];
             return {
               ...session,
@@ -671,19 +1176,86 @@ export function AgentForgePage() {
   // Message streaming functions
   const addStreamingMessage = useCallback(
     (initialText: string = '') => {
+      // 🔧 CRITICAL FIX: Reset isStreaming flag on ALL previous messages to prevent reuse
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔄 RESETTING isStreaming FLAG ON ALL PREVIOUS MESSAGES');
+      }
+      setSessions(prev =>
+        prev.map(session => {
+          if (session.contextId === currentSessionId) {
+            const updatedMessages = session.messages.map(msg => ({
+              ...msg,
+              isStreaming: false // Reset ALL previous streaming flags
+            }));
+            if (process.env.NODE_ENV === 'development') {
+              const streamingCount = session.messages.filter(m => m.isStreaming).length;
+              console.log('🔄 RESET STREAMING FLAGS:', {
+                sessionId: session.contextId,
+                totalMessages: session.messages.length,
+                previouslyStreaming: streamingCount,
+                nowStreaming: 0
+              });
+            }
+            return { ...session, messages: updatedMessages };
+          }
+          return session;
+        }),
+      );
+
       const newMessage: Message = {
+        messageId: uuidv4(),
         text: initialText,
         isUser: false,
         timestamp: createTimestamp(),
         isStreaming: true,
-        executionPlan: '', // Explicitly set empty execution plan for new messages
+        // 🔧 FIX: Don't add executionPlan property unless message actually needs it
       };
       if (process.env.NODE_ENV === 'development') {
-        console.log('➕ ADDED NEW STREAMING MESSAGE - executionPlan set to empty string, timestamp:', newMessage.timestamp);
+        console.log('➕ ADDED NEW STREAMING MESSAGE - no executionPlan property, timestamp:', newMessage.timestamp);
+        console.log('🆔 NEW STREAMING MESSAGE ID:', newMessage.messageId);
+        console.log('🧹 CLEARING STALE EXECUTION PLAN BUFFER ENTRIES');
       }
+      
+      // 🔧 ULTRA-NUCLEAR OPTION: Completely clear execution plan buffer, localStorage, AND auto-expand state
+      // This prevents any cross-contamination between different user requests
+      setExecutionPlanBuffer(prev => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 ULTRA-NUCLEAR BUFFER RESET:', {
+            before: Object.keys(prev),
+            afterReset: 'EMPTY',
+            reason: 'New streaming message started'
+          });
+        }
+        return {}; // Complete reset
+      });
+      
+      // Also clear auto-expand state to prevent old execution plans from auto-expanding
+      setAutoExpandExecutionPlans(prev => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 CLEARING AUTO-EXPAND STATE:', {
+            before: Array.from(prev),
+            afterReset: 'EMPTY',
+            reason: 'New streaming message started'
+          });
+        }
+        return new Set(); // Complete reset
+      });
+
+      // 🚨 CRITICAL FIX: Reset accumulated execution plan React state (prevents previous message contamination)
+      setAccumulatedExecutionPlan(prevPlan => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 RESETTING ACCUMULATED EXECUTION PLAN STATE (addStreamingMessage):', {
+            before: prevPlan ? prevPlan.substring(0, 100) + '...' : 'EMPTY',
+            afterReset: 'EMPTY',
+            reason: 'New streaming message started'
+          });
+        }
+        return '';
+      });
+      
       addMessageToSession(newMessage);
     },
-    [addMessageToSession],
+    [addMessageToSession, sessions, currentSessionId],
   );
 
   const updateStreamingMessage = useCallback(
@@ -697,20 +1269,43 @@ export function AgentForgePage() {
 
       setSessions(prev =>
         prev.map(session => {
-          if (session.id === currentSessionId) {
+          if (session.contextId === currentSessionId) {
             const updatedMessages = [...session.messages];
-            const lastMessage = updatedMessages[updatedMessages.length - 1];
-            if (lastMessage && !lastMessage.isUser) {
-              lastMessage.text = text;
-              lastMessage.isStreaming = isStreaming;
-              // Always set execution plan to clear old values - use empty string if not provided
-              const previousExecutionPlan = lastMessage.executionPlan;
-              lastMessage.executionPlan = executionPlan || '';
-              if (process.env.NODE_ENV === 'development') {
-                console.log('📝 SET EXECUTION PLAN ON MESSAGE:');
-                console.log('📝   - Previous:', previousExecutionPlan ? `"${previousExecutionPlan.substring(0, 50)}..."` : 'empty');
-                console.log('📝   - New:', executionPlan ? `"${executionPlan.substring(0, 50)}..."` : 'empty');
-                console.log('📝   - OVERWRITING:', previousExecutionPlan && !executionPlan ? '⚠️ YES - CLEARING EXISTING PLAN!' : '✅ No');
+            // 🔧 FIX: Find the actually streaming message, not just the last message
+            const allStreamingMessages = updatedMessages.filter(msg => msg.isStreaming === true);
+            // Take the NEWEST streaming message (last in array) as a failsafe if multiple exist
+            const streamingMessage = allStreamingMessages[allStreamingMessages.length - 1];
+            
+            if (process.env.NODE_ENV === 'development') {
+              console.log('🎯 UPDATE STREAMING MESSAGE - SEARCH RESULTS:', {
+                totalMessages: updatedMessages.length,
+                streamingMessagesFound: allStreamingMessages.length,
+                streamingMessageIds: allStreamingMessages.map(m => m.messageId),
+                selectedMessageId: streamingMessage?.messageId || 'none',
+                selectedMessageText: streamingMessage?.text?.substring(0, 50) + '...' || 'none',
+                allMessageDetails: updatedMessages.map(m => ({
+                  id: m.messageId,
+                  timestamp: m.timestamp,
+                  isStreaming: m.isStreaming,
+                  isUser: m.isUser,
+                  textPreview: m.text?.substring(0, 30) + '...'
+                }))
+              });
+            }
+            if (streamingMessage && !streamingMessage.isUser) {
+              // 🚀 SIMPLIFIED: Just set execution plan directly on message, no buffer complexity
+              streamingMessage.text = text.replace(/⟦|⟧/g, '');
+              streamingMessage.isStreaming = isStreaming;
+              
+              // Set execution plan directly if we have content
+              if (executionPlan && executionPlan.trim()) {
+                streamingMessage.executionPlan = executionPlan.replace(/⟦|⟧/g, '');
+                if (process.env.NODE_ENV === 'development') {
+                  console.log('📋 SET EXECUTION PLAN ON MESSAGE:', {
+                    messageId: streamingMessage.messageId,
+                    planLength: streamingMessage.executionPlan.length
+                  });
+                }
               }
             }
             return { ...session, messages: updatedMessages };
@@ -724,15 +1319,24 @@ export function AgentForgePage() {
 
 
   const finishStreamingMessage = useCallback(() => {
-    // Mark the last message as not streaming to trigger execution plan auto-collapse
+    // Mark the streaming message as not streaming to trigger execution plan auto-collapse
     if (currentSessionId) {
       setSessions(prev =>
         prev.map(session => {
-          if (session.id === currentSessionId) {
+          if (session.contextId === currentSessionId) {
             const updatedMessages = [...session.messages];
-            const lastMessage = updatedMessages[updatedMessages.length - 1];
-            if (lastMessage && !lastMessage.isUser) {
-              lastMessage.isStreaming = false;
+            // 🔧 FIX: Find the actually streaming message, not just the last message
+            const allStreamingMessages = updatedMessages.filter(msg => msg.isStreaming === true);
+            const streamingMessage = allStreamingMessages[allStreamingMessages.length - 1];
+            if (streamingMessage && !streamingMessage.isUser) {
+              streamingMessage.isStreaming = false;
+              if (process.env.NODE_ENV === 'development') {
+                console.log('🏁 FINISHED STREAMING MESSAGE:', {
+                  messageId: streamingMessage.messageId,
+                  totalStreamingFound: allStreamingMessages.length,
+                  allStreamingIds: allStreamingMessages.map(m => m.messageId)
+                });
+              }
             }
             return { ...session, messages: updatedMessages };
           }
@@ -741,6 +1345,14 @@ export function AgentForgePage() {
       );
     }
     setIsTyping(false);
+    
+    // 🚀 FOCUS BACK TO INPUT - Better UX after response completes
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        console.log('🎯 FOCUSED INPUT AFTER RESPONSE COMPLETION');
+      }
+    }, 100); // Small delay to ensure DOM updates are complete
   }, [currentSessionId]);
 
   // Main message submission handler
@@ -749,19 +1361,56 @@ export function AgentForgePage() {
       const inputText = messageText || userInput.trim();
       if (!inputText) return;
 
+      // 🔧 EARLY ULTRA-NUCLEAR CLEANUP: Clear execution plan state + localStorage before processing new user request
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🧹 EARLY ULTRA-NUCLEAR CLEANUP - User submitted new message');
+      }
+      setExecutionPlanBuffer(prev => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 EARLY BUFFER RESET:', {
+            before: Object.keys(prev),
+            afterReset: 'EMPTY',
+            reason: 'User submitted new message'
+          });
+        }
+        return {};
+      });
+      setAutoExpandExecutionPlans(prev => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 EARLY AUTO-EXPAND RESET:', {
+            before: Array.from(prev),
+            afterReset: 'EMPTY',
+            reason: 'User submitted new message'
+          });
+        }
+        return new Set();
+      });
+
+      // 🚨 CRITICAL FIX: Reset accumulated execution plan React state
+      setAccumulatedExecutionPlan(prevPlan => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 RESETTING ACCUMULATED EXECUTION PLAN STATE:', {
+            before: prevPlan ? prevPlan.substring(0, 100) + '...' : 'EMPTY',
+            afterReset: 'EMPTY',
+            reason: 'User submitted new message'
+          });
+        }
+        return '';
+      });
+
       // Auto-create session if none exist
       let sessionToUse = currentSessionId;
       if (sessions.length === 0 || !currentSessionId) {
         const newSessionId = uuidv4();
         const newSession: ChatSession = {
-          id: newSessionId,
+          contextId: newSessionId,
           title:
             inputText.length > 50
               ? `${inputText.substring(0, 50)}...`
               : inputText,
           messages: [
             {
-              text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
+              text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(/⟦|⟧/g, ''),
               isUser: false,
               timestamp: createTimestamp(),
             },
@@ -775,6 +1424,7 @@ export function AgentForgePage() {
       }
 
       const userMessage: Message = {
+        messageId: uuidv4(),
         text: inputText,
         isUser: true,
         timestamp: createTimestamp(),
@@ -783,10 +1433,10 @@ export function AgentForgePage() {
       // Add message to the correct session (either current or newly created)
       setSessions(prev =>
         prev.map(session => {
-          if (session.id === sessionToUse) {
+          if (session.contextId === sessionToUse) {
             const updatedMessages = [
               ...session.messages,
-              { ...userMessage, timestamp: createTimestamp() },
+              { ...userMessage, messageId: userMessage.messageId || uuidv4(), timestamp: userMessage.timestamp || createTimestamp() },
             ];
             return {
               ...session,
@@ -811,15 +1461,17 @@ export function AgentForgePage() {
       // Keep suggestions visible
 
       if (!chatbotApi) {
+        console.log('🚫 No chatbotApi available when trying to send message');
         setSessions(prev =>
           prev.map(session => {
-            if (session.id === sessionToUse) {
+            if (session.contextId === sessionToUse) {
               return {
                 ...session,
                 messages: [
                   ...session.messages,
                   {
-                    text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`,
+                    messageId: uuidv4(),
+                    text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`.replace(/⟦|⟧/g, ''),
                     isUser: false,
                     timestamp: createTimestamp(),
                   },
@@ -837,11 +1489,14 @@ export function AgentForgePage() {
       try {
         // Get the session we're working with (either current or newly created)
         const workingSession =
-          sessions.find(s => s.id === sessionToUse) ||
+          sessions.find(s => s.contextId === sessionToUse) ||
           (sessionToUse === currentSessionId ? currentSession : null);
 
         // Use real-time SSE streaming if enabled
         if (enableStreaming) {
+          // Track all artifact names we see during streaming (outside try block for error logging)
+          const seenArtifactNames = new Set<string>();
+          
           try {
             console.log('ATTEMPTING STREAMING...');
             // Add streaming message placeholder
@@ -850,22 +1505,65 @@ export function AgentForgePage() {
             let lastContextId: string | undefined;
             let accumulatedText = '';
 
+            // 🚨 ABORT PREVIOUS STREAMING REQUEST to prevent contamination
+            if (abortControllerRef.current) {
+              console.log('🛑 ABORTING PREVIOUS STREAMING REQUEST');
+              abortControllerRef.current.abort();
+            }
+            
+            // Generate unique request ID for this streaming session
+            const currentRequestId = uuidv4();
+            currentRequestIdRef.current = currentRequestId;
+            console.log('🆔 NEW REQUEST ID:', currentRequestId);
+            
+            // Create new AbortController for this request
+            abortControllerRef.current = new AbortController();
+
             // Clear execution plan state at the start of each new response
             setIsCapturingExecutionPlan(false);
             setAccumulatedExecutionPlan('');
             console.log('🧹 CLEARED EXECUTION PLAN STATE FOR NEW MESSAGE - starting fresh');
 
             // Stream responses in real-time using SSE
-            for await (const event of chatbotApi.submitA2ATaskStream(
-              !workingSession?.contextId,
-              inputText,
-              workingSession?.contextId,
-            )) {
+            let streamIterator;
+            try {
+              streamIterator = chatbotApi.submitA2ATaskStream(
+                !workingSession?.contextId,
+                inputText,
+                workingSession?.contextId,
+              );
+            } catch (apiError) {
+              console.error('🚫 A2A Client error during stream initialization:', apiError);
+              throw apiError; // Re-throw to be caught by outer streaming catch block
+            }
+            
+            for await (const event of streamIterator) {
+            // 🚨 CHECK FOR ABORT SIGNAL: Cancel processing if new request started
+            if (abortControllerRef.current?.signal.aborted || currentRequestIdRef.current !== currentRequestId) {
+              console.log('🛑 STREAMING ABORTED - New request started or cancelled');
+              break;
+            }
+            
             // Update contextId from any event that has it
             if (event.kind === 'task' && event.contextId) {
               lastContextId = event.contextId;
             } else if (event.contextId) {
               lastContextId = event.contextId;
+            }
+
+            // 🔍 COMPREHENSIVE EVENT LOGGING - Log ALL events and artifact names
+            console.log('📨 STREAM EVENT:', {
+              kind: event.kind,
+              hasArtifact: !!event.artifact,
+              artifactName: event.artifact?.name || 'N/A',
+              role: event.role || 'N/A',
+              hasContextId: !!event.contextId,
+              timestamp: new Date().toISOString()
+            });
+            
+            // Track artifact names
+            if (event.artifact?.name) {
+              seenArtifactNames.add(event.artifact.name);
             }
 
             // Handle different event types
@@ -876,7 +1574,7 @@ export function AgentForgePage() {
                 console.log('💬 AGENT MESSAGE - text:', textPart.text.substring(0, 200) + (textPart.text.length > 200 ? '...' : ''));
                 
                 // 🚨 DEBUGGING: Check if agent message contains execution plan content
-                if (textPart.text.includes('⧨') || textPart.text.includes('⧩')) {
+                if (textPart.text.includes('⟦') || textPart.text.includes('⟧')) {
                   console.log('🎯 EXECUTION PLAN MARKERS IN AGENT MESSAGE!');
                 } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
                   console.log('🔍 POTENTIAL EXECUTION PLAN IN AGENT MESSAGE WITHOUT MARKERS:');
@@ -889,6 +1587,16 @@ export function AgentForgePage() {
             } else if (event.kind === 'artifact-update') {
               // Handle artifact updates (results from sub-agents)
               if (event.artifact && event.artifact.parts) {
+                // 🔍 COMPREHENSIVE ARTIFACT LOGGING - Log ALL artifact names
+                console.log('🎯 ARTIFACT EVENT DETECTED:', {
+                  name: event.artifact?.name,
+                  kind: event.kind,
+                  append: event.append,
+                  hasTextPart: event.artifact.parts.some((p: any) => p.kind === 'text'),
+                  totalParts: event.artifact.parts.length,
+                  timestamp: new Date().toISOString()
+                });
+                
                 const textPart = event.artifact.parts.find(
                   (p: any) => p.kind === 'text',
                 );
@@ -898,31 +1606,75 @@ export function AgentForgePage() {
                   console.log('ARTIFACT UPDATE - name:', event.artifact?.name, 'append:', event.append, 'text:', textPart.text.substring(0, 200) + (textPart.text.length > 200 ? '...' : ''), 'isToolNotification:', isToolNotification);
                   
                   // 🚨 DEBUGGING: Check if this content contains execution plan markers
-                  if (textPart.text.includes('⧨') || textPart.text.includes('⧩')) {
+                  if (textPart.text.includes('⟦') || textPart.text.includes('⟧')) {
                     console.log('🎯 EXECUTION PLAN MARKERS DETECTED IN STREAMING CONTENT!');
                     console.log('🎯 FULL TEXT:', textPart.text);
                   } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
                     console.log('🔍 POTENTIAL EXECUTION PLAN CONTENT WITHOUT MARKERS:');
                     console.log('🔍 TEXT:', textPart.text.substring(0, 300) + '...');
-                    console.log('🔍 This should have ⧨⧩ markers around it!');
+                    console.log('🔍 This should have ⟦⟧ markers around it!');
                   }
                   
-                  // 🔧 NEW LOGIC: Check for execution plan markers in execution_plan artifacts
-                  if (event.artifact?.name === 'execution_plan') {
-                    const markerText = textPart.text.trim();
-                    console.log('🎯 EXECUTION PLAN ARTIFACT:', markerText);
-                    
-                    if (markerText === '⧨') {
-                      console.log('⧨ EXECUTION PLAN START MARKER - Begin capturing streaming_result');
-                      setIsCapturingExecutionPlan(true);
-                      setAccumulatedExecutionPlan(''); // Reset execution plan content
-                    } else if (markerText === '⧩') {
-                      console.log('⧩ EXECUTION PLAN END MARKER - Stop capturing streaming_result');
-                      setIsCapturingExecutionPlan(false);
+                  // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content
+                  if (event.artifact?.name === 'execution_plan_streaming') {
+                    console.log('🎯🎯🎯 EXECUTION_PLAN_STREAMING ARTIFACT DETECTED! 🎯🎯🎯');
+                    console.log('📋 EXECUTION PLAN STREAMING CONTENT:', textPart.text.substring(0, 50) + '...');
+                    // 🚨 REQUEST ISOLATION: Only accept content for current request
+                    if (currentRequestIdRef.current === currentRequestId) {
+                      console.log('✅ ACCEPTING EXECUTION PLAN CONTENT - Request ID matches');
+                      // Accumulate all execution_plan_streaming content
+                      setAccumulatedExecutionPlan(prev => {
+                        const newContent = prev + textPart.text;
+                        console.log('📋 EXECUTION PLAN UPDATED from:', prev.substring(0, 50) + '...', 'to:', newContent.substring(0, 50) + '...');
+                      
+                      // 🔧 IMMEDIATE STORAGE: If we detect end marker, store immediately
+                      if (newContent.includes('⟧')) {
+                        console.log('🎯 DETECTED END MARKER ⟧ - STORING IN BUFFER IMMEDIATELY');
+                        // Get the current streaming message (find the message that is actually streaming)
+                        const currentSession = sessions.find(session => session.contextId === currentSessionId);
+                        const streamingMessage = currentSession?.messages.find(msg => msg.isStreaming === true);
+                        if (streamingMessage) {
+                          const messageKey = streamingMessage.messageId || 'unknown';
+                          console.log('🎯 FOUND STREAMING MESSAGE FOR IMMEDIATE BUFFER STORAGE:', streamingMessage.messageId);
+                          const cleanExecutionPlan = newContent.replace(/⟦|⟧/g, '');
+                          
+                          // Store in buffer immediately
+                          setExecutionPlanBuffer(prev => {
+                            const newBuffer = {
+                              ...prev,
+                              [messageKey]: cleanExecutionPlan
+                            };
+                            console.log('📋 IMMEDIATE BUFFER STORAGE DURING STREAMING:', {
+                              messageId: streamingMessage.messageId,
+                              messageTimestamp: streamingMessage.timestamp,
+                              messageKey,
+                              executionPlanLength: cleanExecutionPlan.length,
+                              preview: cleanExecutionPlan.substring(0, 100) + '...'
+                            });
+                            return newBuffer;
+                          });
+                          
+                          // Mark for auto-expansion
+                          setAutoExpandExecutionPlans(prev => {
+                            const newSet = new Set(prev);
+                            newSet.add(messageKey);
+                            console.log('🔄 MARKING EXECUTION PLAN FOR AUTO-EXPANSION DURING STREAMING:', messageKey);
+                            return newSet;
+                          });
+                        }
+                      }
+                        
+                        return newContent;
+                      });
+                    } else {
+                      console.log('🚫 REJECTING EXECUTION PLAN CONTENT - Request ID mismatch:', {
+                        current: currentRequestIdRef.current,
+                        streaming: currentRequestId,
+                        content: textPart.text.substring(0, 50) + '...'
+                      });
                     }
-                    
-                    // Don't process execution_plan artifacts as regular content
-                    console.log('Execution plan marker processed, continuing stream...');
+                    // Don't add execution plan streaming content to main message
+                    console.log('Execution plan streaming content processed, continuing stream...');
                   } else if (isToolNotification) {
                     // Handle tool notifications ONLY as thinking indicators - never add to content
                     console.log('TOOL NOTIFICATION DETECTED:', operation, 'isStart:', isStart);
@@ -964,15 +1716,24 @@ export function AgentForgePage() {
                       let cleanText = removeCachedToolNotifications(textPart.text);
                       console.log('CONTENT AFTER CACHE CLEANING - original:', textPart.text.substring(0, 100) + '...', 'cleaned:', cleanText.substring(0, 100) + '...');
                       
-                      // 🔧 NEW SIMPLE LOGIC: Route streaming_result based on capture state
+                      // 🔧 SIMPLE LOGIC: Route streaming_result based on capture state (existing logic handles markers)
                       if (isCapturingExecutionPlan) {
-                        // We're capturing execution plan - add this content to execution plan
-                        console.log('📋 CAPTURING FOR EXECUTION PLAN:', cleanText.substring(0, 100) + '...');
-                        setAccumulatedExecutionPlan(prev => {
-                          const newContent = prev + cleanText;
-                          console.log('📋 EXECUTION PLAN UPDATED from:', prev.substring(0, 50) + '...', 'to:', newContent.substring(0, 50) + '...');
-                          return newContent;
-                        });
+                        // 🚨 REQUEST ISOLATION: Only accept content for current request
+                        if (currentRequestIdRef.current === currentRequestId) {
+                          console.log('✅ CAPTURING FOR EXECUTION PLAN - Request ID matches:', cleanText.substring(0, 100) + '...');
+                          // We're capturing execution plan - add this content to execution plan
+                          setAccumulatedExecutionPlan(prev => {
+                            const newContent = prev + cleanText;
+                            console.log('📋 EXECUTION PLAN UPDATED from:', prev.substring(0, 50) + '...', 'to:', newContent.substring(0, 50) + '...');
+                            return newContent;
+                          });
+                        } else {
+                          console.log('🚫 REJECTING EXECUTION PLAN CAPTURE - Request ID mismatch:', {
+                            current: currentRequestIdRef.current,
+                            streaming: currentRequestId,
+                            content: cleanText.substring(0, 50) + '...'
+                          });
+                        }
                         
                         // Don't add to main content - this is execution plan content
                         cleanText = '';
@@ -981,8 +1742,7 @@ export function AgentForgePage() {
                         console.log('📄 ADDING TO MAIN CONTENT:', cleanText.substring(0, 100) + '...');
                       }
 
-                      // Get current execution plan content for message update
-                      const currentExecutionPlan = accumulatedExecutionPlan;
+                      // Note: accumulatedExecutionPlan will be used directly in the simplified logic below
                       
                       // Respect the append flag for proper text accumulation
                       if (event.append === false) {
@@ -1014,22 +1774,26 @@ export function AgentForgePage() {
                         }
                       }
 
-                      // Always update message to keep execution plan and main content separated
+                      // 🚀 SIMPLIFIED: Just pass execution plan directly to message
                       if (process.env.NODE_ENV === 'development') {
-                        console.log('ACCUMULATED TEXT:', accumulatedText.substring(0, 100) + '...');
-                        console.log('ACCUMULATED EXECUTION PLAN:', accumulatedExecutionPlan);
-                        console.log('⧨⧩ UPDATING MESSAGE WITH EXECUTION PLAN:', currentExecutionPlan ? 'YES' : 'NO');
+                        console.log('📄 STREAMING UPDATE:', {
+                          textLength: accumulatedText.length,
+                          hasExecutionPlan: !!accumulatedExecutionPlan,
+                          executionPlanLength: accumulatedExecutionPlan?.length || 0
+                        });
                       }
 
-                      // 🔧 SIMPLE FIX: Use current execution plan content
-                      const executionPlanToPass = currentExecutionPlan || '';
-                      if (process.env.NODE_ENV === 'development') {
-                        console.log('⧨⧩ EXECUTION PLAN TO PASS:', executionPlanToPass ? `"${executionPlanToPass.substring(0, 50)}..."` : 'EMPTY STRING');
-                        console.log('⧨⧩ CURRENT currentExecutionPlan:', currentExecutionPlan ? `"${currentExecutionPlan.substring(0, 50)}..."` : 'EMPTY');
-                        console.log('⧨⧩ STATE accumulatedExecutionPlan:', accumulatedExecutionPlan ? `"${accumulatedExecutionPlan.substring(0, 50)}..."` : 'EMPTY');
-                        console.log('⧨⧩ isCapturingExecutionPlan STATE:', isCapturingExecutionPlan);
+                      // Clean the text content from execution plan markers
+                      const cleanedTextForMessage = accumulatedText.replace(/⟦[^⟧]*⟧/g, '').trim();
+                      const cleanedExecutionPlan = accumulatedExecutionPlan ? accumulatedExecutionPlan.replace(/⟦|⟧/g, '') : '';
+                      
+                      updateStreamingMessage(cleanedTextForMessage, cleanedExecutionPlan, true);
+                      
+                      // 🚀 CLEAN BUFFER AFTER EACH UPDATE - prevents contamination
+                      if (cleanedExecutionPlan) {
+                        console.log('🧹 CLEANING EXECUTION PLAN STATE AFTER UPDATE');
+                        setAccumulatedExecutionPlan('');
                       }
-                      updateStreamingMessage(accumulatedText, executionPlanToPass, true);
                     }
                   }
                 }
@@ -1047,7 +1811,7 @@ export function AgentForgePage() {
               if (event.artifacts && event.artifacts.length > 0) {
                 // Look for 'final_result' artifact first, otherwise use the last artifact
                 const finalArtifact =
-                  event.artifacts.find(a => a.name === 'final_result') ||
+                  event.artifacts.find((a: any) => a.name === 'final_result') ||
                   event.artifacts[event.artifacts.length - 1];
 
                 if (finalArtifact && finalArtifact.parts) {
@@ -1104,12 +1868,23 @@ export function AgentForgePage() {
           if (lastContextId && sessionToUse) {
             setSessions(prev =>
               prev.map(session =>
-                session.id === sessionToUse
+                session.contextId === sessionToUse
                   ? { ...session, contextId: lastContextId }
                   : session,
               ),
             );
           }
+
+            // 📊 ARTIFACT SUMMARY: Log all artifact names we encountered during streaming
+            console.log('📊 STREAMING SESSION COMPLETE - ARTIFACT SUMMARY:', {
+              totalUniqueArtifacts: seenArtifactNames.size,
+              artifactNames: Array.from(seenArtifactNames).sort(),
+              hasExecutionPlanStreaming: seenArtifactNames.has('execution_plan_streaming'),
+              hasExecutionPlan: seenArtifactNames.has('execution_plan'),
+              hasStreamingResult: seenArtifactNames.has('streaming_result'),
+              hasToolNotifications: Array.from(seenArtifactNames).some((name: string) => name.includes('tool_notification')),
+              timestamp: new Date().toISOString()
+            });
 
             // Finish streaming and cleanup operational state
             finishStreamingMessage();
@@ -1119,6 +1894,30 @@ export function AgentForgePage() {
             return;
           } catch (streamingError) {
             console.error('STREAMING FAILED, FALLING BACK TO NON-STREAMING:', streamingError);
+            
+            // 📊 ARTIFACT SUMMARY (ERROR CASE): Log artifacts seen before failure
+            console.log('📊 STREAMING FAILED - ARTIFACT SUMMARY BEFORE ERROR:', {
+              totalUniqueArtifacts: seenArtifactNames.size,
+              artifactNames: Array.from(seenArtifactNames).sort(),
+              hasExecutionPlanStreaming: seenArtifactNames.has('execution_plan_streaming'),
+              hasExecutionPlan: seenArtifactNames.has('execution_plan'),
+              hasStreamingResult: seenArtifactNames.has('streaming_result'),
+              hasToolNotifications: Array.from(seenArtifactNames).some((name: string) => name.includes('tool_notification')),
+              timestamp: new Date().toISOString()
+            });
+            
+            // Check if it's an A2A connection error that shouldn't fallback
+            const err = streamingError as Error;
+            const isA2AConnectionError = err.message.includes('Unable to connect to agent') || 
+                                       err.message.includes('.well-known/agent.json') ||
+                                       err.message.includes('_fetchAndCacheAgentCard');
+            
+            // For A2A connection errors, don't attempt non-streaming fallback
+            if (isA2AConnectionError) {
+              console.log('🚫 A2A connection error detected - skipping non-streaming fallback');
+              throw streamingError; // Re-throw to be handled by main catch block
+            }
+            
             // Clean up any streaming UI state including operational mode
             setIsInOperationalMode(false);
             setCurrentOperation(null);
@@ -1127,17 +1926,23 @@ export function AgentForgePage() {
         }
 
         // Non-streaming mode: submit task and wait for response
-        const taskResult = await chatbotApi.submitA2ATask(
-          !workingSession?.contextId,
-          inputText,
-          workingSession?.contextId,
-        );
+        let taskResult;
+        try {
+          taskResult = await chatbotApi.submitA2ATask(
+            !workingSession?.contextId,
+            inputText,
+            workingSession?.contextId,
+          );
+        } catch (apiError) {
+          console.error('🚫 A2A Client error during non-streaming task submission:', apiError);
+          throw apiError; // Re-throw to be caught by main catch block
+        }
 
         // Update session with contextId for continuity
         if (taskResult.contextId && sessionToUse) {
           setSessions(prev =>
             prev.map(session =>
-              session.id === sessionToUse
+              session.contextId === sessionToUse
                 ? { ...session, contextId: taskResult.contextId }
                 : session,
             ),
@@ -1150,7 +1955,7 @@ export function AgentForgePage() {
         if (taskResult.status.state === 'completed' && taskResult.artifacts) {
           // Look for 'final_result' artifact first, otherwise use the last artifact
           const finalArtifact =
-            taskResult.artifacts.find(a => a.name === 'final_result') ||
+            taskResult.artifacts.find((a: any) => a.name === 'final_result') ||
             taskResult.artifacts[taskResult.artifacts.length - 1];
 
           if (finalArtifact && finalArtifact.parts && finalArtifact.parts[0]) {
@@ -1220,7 +2025,14 @@ export function AgentForgePage() {
               ) {
                 // Filter out tool notifications from non-streaming history too
                 const text = message.parts[0].text;
-                const isToolMessage = /^(🔧 Calling \w+\.\.\.|✅ \w+ completed)$/m.test(text.trim());
+                // Check if it's a tool notification by looking for specific patterns with agent names
+                const trimmedText = text.trim();
+                const isToolMessage = (
+                  // Tool start: "🔧 Argocd: Calling tool:" or "🔧 Supervisor: Calling Agent"
+                  (trimmedText.includes('🔧') && (trimmedText.includes('Calling tool:') || trimmedText.includes('Calling Agent'))) ||
+                  // Tool completion: "✅ Argocd: Tool ... completed" or "✅ Supervisor: Agent ... completed"
+                  (trimmedText.includes('✅') && (trimmedText.includes('Tool') || trimmedText.includes('Agent')) && trimmedText.includes('completed'))
+                );
                 
                 console.log('NON-STREAMING HISTORY - text:', text, 'isToolMessage:', isToolMessage);
                 
@@ -1266,10 +2078,11 @@ export function AgentForgePage() {
         // Add message normally if not streaming - include execution plan if present
         if (resultText || executionPlanText) {
           const newMessage = {
-            text: resultText || '',
+            messageId: uuidv4(),
+            text: (resultText || '').replace(/⟦|⟧/g, ''),
             isUser: false,
             timestamp: createTimestamp(),
-            executionPlan: executionPlanText || '', // Use empty string instead of undefined
+            executionPlan: (executionPlanText || '').replace(/⟦|⟧/g, ''), // Use empty string instead of undefined
             isStreaming: false, // Mark as completed for auto-collapse
           };
           console.log('📝 NON-STREAMING MESSAGE CREATED:', {
@@ -1280,7 +2093,7 @@ export function AgentForgePage() {
 
           setSessions(prev =>
             prev.map(session => {
-              if (session.id === sessionToUse) {
+              if (session.contextId === sessionToUse) {
                 return {
                   ...session,
                   messages: [
@@ -1297,23 +2110,38 @@ export function AgentForgePage() {
         setIsTyping(false); // Set to false for non-streaming responses
       } catch (error) {
         const err = error as Error;
-        setApiError(err.message);
+        console.log('🚫 Message submission error:', err.message);
+        
+        // When message submission fails, also set connection status to disconnected and start countdown
+        console.log('🔴 Message failed, setting connection status to disconnected with countdown');
+        setConnectionStatus('disconnected');
+        setNextRetryCountdown(30);
+        
+        // Handle A2A Client specific errors more gracefully
+        const isA2AConnectionError = err.message.includes('Unable to connect to agent') || 
+                                   err.message.includes('.well-known/agent.json') ||
+                                   err.message.includes('_fetchAndCacheAgentCard');
+        
+        // Don't set apiError - connection banner will handle display
 
         // Check if it's a timeout error and display it directly without additional prefix
         const isTimeoutError = err.message.includes('timed out');
         const errorMessage = isTimeoutError
           ? `⏱️ ${err.message}`
-          : `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`;
+          : isA2AConnectionError
+            ? `🚫 **${botName} Multi-Agent System Disconnected**\n\nConnection failed: Unable to reach the agent service. Retrying automatically...`
+            : `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`;
 
         setSessions(prev =>
           prev.map(session => {
-            if (session.id === sessionToUse) {
+            if (session.contextId === sessionToUse) {
               return {
                 ...session,
                 messages: [
                   ...session.messages,
                   {
-                    text: errorMessage,
+                    messageId: uuidv4(),
+                    text: errorMessage.replace(/⟦|⟧/g, ''),
                     isUser: false,
                     timestamp: createTimestamp(),
                   },
@@ -1348,25 +2176,28 @@ export function AgentForgePage() {
     ],
   );
 
+
   const handleSuggestionClick = (suggestion: string) => {
     handleMessageSubmit(suggestion);
   };
 
   const resetChat = () => {
+    console.log('🔄 Reset chat triggered');
     if (currentSessionId) {
       setSessions(prev =>
         prev.map(session =>
-          session.id === currentSessionId
+          session.contextId === currentSessionId
             ? {
                 ...session,
                 messages: [
                   {
-                    text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
+                    messageId: uuidv4(),
+                    text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(/⟦|⟧/g, ''),
                     isUser: false,
                     timestamp: createTimestamp(),
                   },
                 ],
-                contextId: undefined, // Reset context
+                contextId: uuidv4(), // Reset context with new ID
                 updatedAt: new Date(),
               }
             : session,
@@ -1375,24 +2206,31 @@ export function AgentForgePage() {
     }
     setUserInput('');
     setSuggestions(initialSuggestions);
-    setApiError(null);
+    setLoadedMessageCount(DEFAULT_MESSAGE_COUNT); // Reset to default count on chat reset
+    setShowLoadMoreButton(false);
+    setIsManualLoadingInProgress(false);
+    // Only clear API error if we're currently connected
+    // Don't clear connection errors when resetting chat
+    if (connectionStatus === 'connected') {
+      setApiError(null);
+    }
   };
 
   const toggleFullscreen = () => {
+    // Don't allow fullscreen toggle while a request is in progress
+    if (isTyping) {
+      console.log('⚠️ Fullscreen toggle blocked - request in progress');
+      return;
+    }
     setIsFullscreen(!isFullscreen);
   };
 
   const renderContent = () => (
     <Grid container spacing={1} className={classes.mainContent} wrap="nowrap">
-      {/* Chat History Sidebar */}
+      {/* Chat History Sidebar - Dynamic width based on collapse state */}
       <Grid
         item
-        className={classes.sidebarColumn}
-        style={
-          isSidebarCollapsed
-            ? { flexShrink: 0, width: 'auto' }
-            : { flexShrink: 0, width: 'auto', minWidth: 250, maxWidth: 300 }
-        }
+        className={isSidebarCollapsed ? classes.sidebarColumnCollapsed : classes.sidebarColumn}
       >
         <ChatSessionSidebar
           sessions={sessions}
@@ -1406,9 +2244,9 @@ export function AgentForgePage() {
         />
       </Grid>
 
-      {/* Main Chat Area */}
-      <Grid item className={classes.chatColumn}>
-        {apiError && (
+      {/* Main Chat Area - Dynamic width based on sidebar state */}
+      <Grid item className={isSidebarCollapsed ? classes.chatColumnExpanded : classes.chatColumn}>
+        {(apiError || connectionStatus === 'checking' || connectionStatus === 'disconnected') && (
           <Paper className={classes.errorBox}>
             <div
               style={{
@@ -1422,16 +2260,24 @@ export function AgentForgePage() {
                 variant="subtitle2"
                 style={{ fontWeight: 600, fontSize: '0.875rem' }}
               >
-                Connection Error
+                {apiError ? 'Connection Error' : 'Connection Status'}
               </Typography>
-              <IconButton
-                size="small"
-                onClick={() => setApiError(null)}
-                style={{ color: 'inherit', padding: 2 }}
-                title="Dismiss"
-              >
-                ×
-              </IconButton>
+              {(apiError || connectionStatus === 'disconnected') && (
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    if (apiError) {
+                      setApiError(null);
+                    } else {
+                      setConnectionStatus('connected'); // Temporarily hide banner until next check
+                    }
+                  }}
+                  style={{ color: 'inherit', padding: 2 }}
+                  title="Dismiss"
+                >
+                  ×
+                </IconButton>
+              )}
             </div>
             <Typography
               variant="body2"
@@ -1441,7 +2287,12 @@ export function AgentForgePage() {
                 lineHeight: 1.3,
               }}
             >
-              {apiError}
+              {apiError || (connectionStatus === 'checking' ? 'Connecting to agent...' : 'Agent connection failed')}
+              {(nextRetryCountdown > 0 || connectionStatus === 'checking') && (
+                nextRetryCountdown > 0 
+                  ? ` - Retrying in ${nextRetryCountdown}s...`
+                  : ` - Connecting...`
+              )}
             </Typography>
             <Button
               size="small"
@@ -1473,31 +2324,60 @@ export function AgentForgePage() {
           <CardContent className={classes.chatCardContent}>
             <PageHeader botName={botName} botIcon={botIcon} />
 
-            <ChatContainer
-              messages={currentSession?.messages || []}
-              userInput={userInput}
-              setUserInput={setUserInput}
-              onMessageSubmit={handleMessageSubmit}
-              onSuggestionClick={handleSuggestionClick}
-              onReset={resetChat}
-              isTyping={isTyping}
-              suggestions={suggestions}
-              thinkingMessages={thinkingMessages}
-              thinkingMessagesInterval={thinkingMessagesInterval}
-              botName={botName}
-              botIcon={botIcon}
-              inputPlaceholder={inputPlaceholder}
-              currentOperation={currentOperation}
-              isInOperationalMode={isInOperationalMode}
-              fontSizes={{
-                messageText: fontSizes.messageText,
-                codeBlock: fontSizes.codeBlock,
-                inlineCode: fontSizes.inlineCode,
-                suggestionChip: fontSizes.suggestionChip,
-                inputField: fontSizes.inputField,
-                timestamp: fontSizes.timestamp,
-              }}
-            />
+            {currentSession ? (
+              (() => {
+                // Debug logging for props passed to ChatContainer
+                console.log('🎯 CHATCONTAINER PROPS DEBUG:', {
+                  messagesCount: renderedMessages.length,
+                  messageTimestamps: renderedMessages.map(m => m.timestamp),
+                  executionPlanBufferKeys: Object.keys(executionPlanBuffer),
+                  executionPlanBufferSize: Object.keys(executionPlanBuffer).length,
+                  sessionId: currentSessionId
+                });
+                
+                return (
+                  <ChatContainer
+                    key={`chat-${currentSessionId}-${renderedMessages.length}`}
+                    messages={renderedMessages}
+                    userInput={userInput}
+                    setUserInput={setUserInput}
+                    onMessageSubmit={handleMessageSubmit}
+                    onSuggestionClick={handleSuggestionClick}
+                    onReset={resetChat}
+                    isTyping={isTyping}
+                    suggestions={suggestions}
+                    onScroll={handleScroll}
+                    onLoadMore={handleLoadMore}
+                    hasMoreMessages={loadedMessageCount < (currentSession?.messages?.length || 0)}
+                    showLoadMoreButton={showLoadMoreButton}
+                    loadMoreIncrement={LOAD_MORE_INCREMENT}
+                    executionPlanBuffer={executionPlanBuffer}
+                    autoExpandExecutionPlans={autoExpandExecutionPlans}
+                autoScrollEnabled={autoScrollEnabled}
+                setAutoScrollEnabled={setAutoScrollEnabled}
+                thinkingMessages={thinkingMessages}
+                thinkingMessagesInterval={thinkingMessagesInterval}
+                botName={botName}
+                botIcon={botIcon}
+                inputPlaceholder={inputPlaceholder}
+                currentOperation={currentOperation}
+                isInOperationalMode={isInOperationalMode}
+                fontSizes={{
+                  messageText: fontSizes.messageText,
+                  codeBlock: fontSizes.codeBlock,
+                  inlineCode: fontSizes.inlineCode,
+                  suggestionChip: fontSizes.suggestionChip,
+                  inputField: fontSizes.inputField,
+                  timestamp: fontSizes.timestamp,
+                }}
+              />
+                );
+              })()
+            ) : (
+              <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+                <Typography color="textSecondary">Loading chat session...</Typography>
+              </Box>
+            )}
           </CardContent>
         </Card>
       </Grid>
@@ -1549,11 +2429,15 @@ export function AgentForgePage() {
                 <Typography className={classes.customHeaderLabel}>
                   Status
                 </Typography>
-                <Typography className={classes.customHeaderValue}>
-                  {connectionStatus === 'connected' && 'Connected'}
-                  {connectionStatus === 'checking' && 'Connecting...'}
-                  {connectionStatus === 'disconnected' && 'Disconnected'}
-                </Typography>
+              <Typography className={classes.customHeaderValue}>
+                {connectionStatus === 'connected' && 'Connected'}
+                {connectionStatus === 'checking' && 'Connecting...'}
+                {connectionStatus === 'disconnected' && (
+                  nextRetryCountdown > 0 
+                    ? `Disconnected (retry in ${nextRetryCountdown}s)` 
+                    : 'Disconnected'
+                )}
+              </Typography>
               </Box>
             </Tooltip>
             <Tooltip
@@ -1578,17 +2462,30 @@ export function AgentForgePage() {
                 </Typography>
               </Box>
             </Tooltip>
-            <Tooltip title="Exit Fullscreen">
-              <IconButton
-                onClick={toggleFullscreen}
-                className={classes.fullscreenButton}
-              >
-                <FullscreenExitIcon />
-              </IconButton>
+            <Tooltip title={isTyping ? "Please wait for response to complete" : "Exit Fullscreen"}>
+              <span>
+                <IconButton
+                  onClick={toggleFullscreen}
+                  className={classes.fullscreenButton}
+                  disabled={isTyping}
+                  style={{ 
+                    opacity: isTyping ? 0.5 : 1,
+                    cursor: isTyping ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  <FullscreenExitIcon />
+                </IconButton>
+              </span>
             </Tooltip>
           </Box>
         </Box>
-        <div className={classes.fullscreenContent}>{renderContent()}</div>
+        <div className={classes.fullscreenContent}>
+          <Page themeId="tool" key={`fullscreen-${currentSessionId}`}>
+            <Content noPadding>
+              {renderContent()}
+            </Content>
+          </Page>
+        </div>
       </div>
     );
   }
@@ -1640,7 +2537,11 @@ export function AgentForgePage() {
               <Typography className={classes.customHeaderValue}>
                 {connectionStatus === 'connected' && 'Connected'}
                 {connectionStatus === 'checking' && 'Connecting...'}
-                {connectionStatus === 'disconnected' && 'Disconnected'}
+                {connectionStatus === 'disconnected' && (
+                  nextRetryCountdown > 0 
+                    ? `Disconnected (retry in ${nextRetryCountdown}s)` 
+                    : 'Disconnected'
+                )}
               </Typography>
             </Box>
           </Tooltip>
@@ -1666,18 +2567,25 @@ export function AgentForgePage() {
               </Typography>
             </Box>
           </Tooltip>
-          <Tooltip title="Fullscreen">
-            <IconButton
-              onClick={toggleFullscreen}
-              className={classes.fullscreenButton}
-            >
-              <FullscreenIcon />
-            </IconButton>
+          <Tooltip title={isTyping ? "Please wait for response to complete" : "Fullscreen"}>
+            <span>
+              <IconButton
+                onClick={toggleFullscreen}
+                className={classes.fullscreenButton}
+                disabled={isTyping}
+                style={{ 
+                  opacity: isTyping ? 0.5 : 1,
+                  cursor: isTyping ? 'not-allowed' : 'pointer'
+                }}
+              >
+                <FullscreenIcon />
+              </IconButton>
+            </span>
           </Tooltip>
         </Box>
       </Box>
       <Box className={classes.pageContainer}>
-        <Page themeId="tool">
+        <Page themeId="tool" key={`normal-${currentSessionId}`}>
           <Content noPadding>
             <Box className={classes.contentWrapper}>{renderContent()}</Box>
           </Content>
@@ -1688,3 +2596,4 @@ export function AgentForgePage() {
 }
 
 export default AgentForgePage;
+

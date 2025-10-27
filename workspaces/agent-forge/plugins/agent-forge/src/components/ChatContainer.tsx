@@ -16,6 +16,7 @@
 
 import {
   Box,
+  Button,
   Chip,
   Divider,
   IconButton,
@@ -40,6 +41,7 @@ const useStyles = makeStyles(theme => ({
     boxShadow: theme.shadows[1],
     overflow: 'hidden',
     minHeight: 0,
+    position: 'relative', // Enable absolute positioning for load more button
   },
   messagesContainer: {
     flexGrow: 1,
@@ -150,6 +152,36 @@ const useStyles = makeStyles(theme => ({
           : 'rgba(2, 136, 209, 0.2)',
     },
   },
+  loadMoreButton: {
+    position: 'absolute',
+    top: theme.spacing(2),
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 10,
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.dark,
+    },
+    borderRadius: theme.spacing(3),
+    padding: theme.spacing(1, 2),
+    boxShadow: theme.shadows[4],
+    fontSize: '0.875rem',
+    fontWeight: 500,
+  },
+  loadingIndicator: {
+    position: 'absolute',
+    top: theme.spacing(1),
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 10,
+  },
+  autoScrollToggle: {
+    position: 'absolute',
+    top: theme.spacing(1),
+    right: theme.spacing(1),
+    zIndex: 10,
+  },
 }));
 
 /**
@@ -179,6 +211,19 @@ export interface ChatContainerProps {
   onReset: () => void;
   onSuggestionClick: (suggestion: string) => void;
   
+  // Scroll-based message loading
+  onScroll?: (scrollTop: number, scrollHeight: number, clientHeight: number) => void;
+  onLoadMore?: () => void;
+  hasMoreMessages?: boolean;
+  showLoadMoreButton?: boolean;
+  loadMoreIncrement?: number;
+  executionPlanBuffer?: Record<string, string>;
+  autoExpandExecutionPlans?: Set<string>;
+  
+  // Auto-scroll control (moved from internal state to prevent loss during remounts)
+  autoScrollEnabled?: boolean;
+  setAutoScrollEnabled?: (enabled: boolean) => void;
+  
   // Operational mode for special handling of system messages
   currentOperation?: string | null;
   isInOperationalMode?: boolean;
@@ -192,6 +237,8 @@ const MessagesList = memo(function MessagesList({
   botName,
   botIcon,
   fontSizes,
+  executionPlanBuffer,
+  autoExpandExecutionPlans,
 }: {
   messages: Message[];
   botName: string;
@@ -202,6 +249,8 @@ const MessagesList = memo(function MessagesList({
     inlineCode?: string;
     timestamp?: string;
   };
+  executionPlanBuffer?: Record<string, string>;
+  autoExpandExecutionPlans?: Set<string>;
 }) {
   // Memoize font sizes to prevent re-creating object on every render
   const memoizedFontSizes = useMemo(() => ({
@@ -214,21 +263,37 @@ const MessagesList = memo(function MessagesList({
   return (
     <>
       {messages.map((message, index) => (
-             <ChatMessage
-               key={`${index}-${message.timestamp}`} // Simplified, stable key
-               message={message}
-               botName={botName}
-               botIcon={botIcon}
-               fontSizes={memoizedFontSizes}
-             />
+             <div key={`${index}-${message.timestamp}`} data-message-timestamp={message.timestamp}>
+               <ChatMessage
+                 message={message}
+                 botName={botName}
+                 botIcon={botIcon}
+                 fontSizes={memoizedFontSizes}
+                 executionPlanBuffer={executionPlanBuffer}
+                 autoExpandExecutionPlans={autoExpandExecutionPlans}
+               />
+             </div>
            ))}
     </>
   );
 });
 
+
 /**
  * Chat container component that handles message display and input
  * Memoized to prevent re-renders when only input changes
+ * 
+ * SCROLL MODE: Currently running in MANUAL mode by default
+ * - Auto-scroll is disabled by default
+ * - Users have full control over scroll position
+ * - Progressive loading: "Load Earlier Messages" shows next 20 messages each time
+ * - If user scrolls up past loaded messages, button appears again
+ * - Gradual auto-collapse to 5 recent messages when scrolling to bottom (smooth performance optimization)
+ * 
+ * TO RE-ENABLE AUTO-SCROLL:
+ * 1. Change autoScrollEnabled default to true in AgentForgePage.tsx and ChatContainer.tsx
+ * 2. Change {false && ...} to {true && ...} for the toggle button UI below
+ * 
  * @public
  */
 export const ChatContainer = memo(function ChatContainer({
@@ -246,6 +311,15 @@ export const ChatContainer = memo(function ChatContainer({
   onMessageSubmit,
   onReset,
   onSuggestionClick,
+  onScroll,
+  onLoadMore,
+  hasMoreMessages = false,
+  showLoadMoreButton = false,
+  loadMoreIncrement = 5,
+  executionPlanBuffer = {},
+  autoExpandExecutionPlans,
+  autoScrollEnabled = false, // Default to manual mode
+  setAutoScrollEnabled,
   currentOperation,
   isInOperationalMode,
 }: ChatContainerProps) {
@@ -253,65 +327,60 @@ export const ChatContainer = memo(function ChatContainer({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [thinkingMessageIndex, setThinkingMessageIndex] = useState(0);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isManualLoading, setIsManualLoading] = useState(false);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
   }, []);
 
-  const scrollToPosition = useCallback((position: number, smooth = true) => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTo({
-        top: position,
-        behavior: smooth ? 'smooth' : 'auto',
-      });
-    }
-  }, []);
+  // Handle manual loading of earlier messages - SIMPLIFIED
+  const handleManualLoadEarlier = useCallback(() => {
+    if (!onLoadMore) return;
+    
+    console.log('🔵 Manual load earlier messages clicked');
+    
+    // Set manual loading flag
+    setIsManualLoading(true);
+    
+    // Safety timeout to clear manual loading flag
+    setTimeout(() => {
+      console.log('🛡️ Safety timeout - clearing manual loading flag');
+      setIsManualLoading(false);
+    }, 2000);
+    
+    // Call the parent's load more function - NO SCROLL RESTORATION
+    onLoadMore();
+  }, [onLoadMore]);
 
-  // Optimized auto-scroll that only tracks essential changes
-  const lastMessageText = useMemo(() => {
-    if (messages.length === 0) return '';
-    const lastMessage = messages[messages.length - 1];
-    return lastMessage.isUser ? '' : lastMessage.text || '';
-  }, [messages]);
 
+  // AUTO-SCROLL DISABLED - No automatic scrolling behavior
+
+  // SCROLL RESTORATION DISABLED - No automatic scroll positioning
+
+  // Simple scroll event handler - NO AUTO-SCROLL LOGIC
   useEffect(() => {
-    if (isTyping) {
-      // Clear any existing timeout to prevent scroll spam
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
+    const container = messagesContainerRef.current;
+    if (!container || !onScroll) return;
 
-      // During streaming, follow the text to the bottom
-      scrollTimeoutRef.current = setTimeout(() => {
-        scrollToBottom();
-      }, 0);
-    }
-
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
+    const handleScrollEvent = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      
+      // Simply pass scroll information to parent - no automatic behavior
+      onScroll(scrollTop, scrollHeight, clientHeight);
     };
-  }, [lastMessageText, scrollToBottom, isTyping]); // Only track last message text, not full array
 
-  // Scroll to top of last response when streaming completes
-  // Optimized: Only track essential properties, simplified DOM access
+    container.addEventListener('scroll', handleScrollEvent);
+    return () => container.removeEventListener('scroll', handleScrollEvent);
+  }, [onScroll]);
+
+  // Reset loading flag when messages change significantly (e.g., new session)
   useEffect(() => {
-    if (!isTyping && messagesContainerRef.current && messages.length > 0) {
-      // Small delay to ensure final text is rendered
-      setTimeout(() => {
-        // Find the last message (current response)
-        const messageElements = messagesContainerRef.current!.querySelectorAll('[class*="message"]');
-        const lastMessageElement = messageElements[messageElements.length - 1] as HTMLElement;
-        
-        if (lastMessageElement) {
-          // Scroll to top of the last response box with 60px extra space above
-          scrollToPosition(Math.max(0, lastMessageElement.offsetTop - 60), true);
-        }
-      }, 200);
+    if (messages.length === 0) {
+      setIsManualLoading(false);
     }
-  }, [isTyping, messages.length, scrollToPosition]);
+  }, [messages.length]);
+
+
 
   // Show random thinking messages while typing
   useEffect(() => {
@@ -344,12 +413,125 @@ export const ChatContainer = memo(function ChatContainer({
 
   return (
     <div className={classes.chatContainer}>
-        <div className={classes.messagesContainer} ref={messagesContainerRef}>
+        {/* Auto-scroll Toggle - HIDDEN (kept for future use) */}
+        {false && (
+          <div className={classes.autoScrollToggle}>
+            <Tooltip title={autoScrollEnabled ? "Disable auto-scroll and auto-loading" : "Enable auto-scroll and auto-loading"}>
+              <IconButton
+                size="small"
+                onClick={() => {
+                  console.log('🔄 Toggling auto-scroll:', !autoScrollEnabled);
+                  setAutoScrollEnabled?.(!autoScrollEnabled);
+                }}
+                style={{
+                  backgroundColor: autoScrollEnabled ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)',
+                  color: autoScrollEnabled ? '#4caf50' : '#f44336',
+                  border: autoScrollEnabled ? 'none' : '2px solid #f44336',
+                }}
+              >
+                {autoScrollEnabled ? '📍' : '⏸️'}
+              </IconButton>
+            </Tooltip>
+            
+            {/* Manual scroll to bottom when auto-scroll is disabled */}
+            {!autoScrollEnabled && (
+              <Tooltip title="Scroll to bottom">
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    console.log('📍 Manual scroll to bottom');
+                    scrollToBottom();
+                  }}
+                  style={{
+                    marginLeft: '4px',
+                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                    color: '#2196f3',
+                  }}
+                >
+                  ⬇️
+                </IconButton>
+              </Tooltip>
+            )}
+          </div>
+        )}
+
+        {/* Visual indicator when auto-scroll is disabled - HIDDEN (kept for future use) */}
+        {false && !autoScrollEnabled && (
+          <div style={{
+            position: 'absolute',
+            top: '40px',
+            right: '8px',
+            backgroundColor: 'rgba(244, 67, 54, 0.1)',
+            color: '#f44336',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            zIndex: 9,
+            border: '1px solid rgba(244, 67, 54, 0.3)',
+          }}>
+            Manual Mode
+          </div>
+        )}
+
+        {/* Load More Button - appears when scrolling up, shows "No More Messages" when all loaded */}
+        {showLoadMoreButton && !autoScrollEnabled && (
+          <div className={classes.loadingIndicator}>
+            <Tooltip
+              title={
+                isTyping 
+                  ? "🔒 Button disabled: Please wait for the current message to complete before loading more" 
+                  : isManualLoading 
+                    ? "⏳ Button disabled: Currently loading earlier messages..."
+                    : !hasMoreMessages
+                      ? "✅ No more messages: All conversation history has been loaded"
+                      : `📜 Click to load the next ${loadMoreIncrement} earlier messages`
+              }
+              placement="top"
+              arrow
+            >
+              <span>
+                <Button
+                  onClick={hasMoreMessages ? handleManualLoadEarlier : undefined}
+                  variant="contained"
+                  size="small"
+                  disabled={isTyping || isManualLoading || !hasMoreMessages}
+                  style={{
+                    backgroundColor: 
+                      isTyping || isManualLoading ? '#bdbdbd' : 
+                      !hasMoreMessages ? '#757575' : '#2196f3',
+                    color: 
+                      isTyping || isManualLoading ? '#757575' : 
+                      !hasMoreMessages ? '#ffffff' : 'white',
+                    fontSize: '12px',
+                    padding: '4px 12px',
+                    cursor: 
+                      isTyping || isManualLoading ? 'not-allowed' : 
+                      !hasMoreMessages ? 'default' : 'pointer',
+                    opacity: isTyping || isManualLoading ? 0.6 : 1,
+                  }}
+                >
+                  {
+                    isManualLoading ? "⏳ Loading..." : 
+                    !hasMoreMessages ? "🔚 No More Messages" : 
+                    "📜 Load Earlier Messages"
+                  }
+                </Button>
+              </span>
+            </Tooltip>
+          </div>
+        )}
+
+
+        
+        <div className={classes.messagesContainer} ref={messagesContainerRef} data-testid="messages-container">
         <MessagesList
           messages={messages}
           botName={botName}
           botIcon={botIcon}
           fontSizes={fontSizes}
+          executionPlanBuffer={executionPlanBuffer}
+          autoExpandExecutionPlans={autoExpandExecutionPlans}
         />
 
         {isTyping && (
@@ -361,7 +543,7 @@ export const ChatContainer = memo(function ChatContainer({
             </div>
             <Typography variant="caption" style={{ marginLeft: 8 }}>
               {isInOperationalMode && currentOperation 
-                ? `🔧 ${currentOperation}...` 
+                ? currentOperation 
                 : `${thinkingMessages[thinkingMessageIndex]}...`}
             </Typography>
           </Box>

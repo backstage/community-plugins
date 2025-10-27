@@ -237,14 +237,14 @@ export function ChatSessionSidebar({
           </Tooltip>
           <Box style={{ flex: 1, overflow: 'auto', width: '100%' }}>
             {sessions.map((session, index) => (
-              <Tooltip key={session.id} title={session.title} placement="right">
+              <Tooltip key={session.contextId} title={session.title} placement="right">
                 <Box
                   className={`${classes.collapsedSessionDot} ${
-                    session.id === currentSessionId
+                    session.contextId === currentSessionId
                       ? classes.collapsedActiveDot
                       : ''
                   }`}
-                  onClick={() => onSessionSwitch(session.id)}
+                  onClick={() => onSessionSwitch(session.contextId)}
                   style={{ marginBottom: 8 }}
                 >
                   <Typography variant="caption">{index + 1}</Typography>
@@ -296,11 +296,11 @@ export function ChatSessionSidebar({
         <List className={classes.sessionsList}>
           {sessions.map(session => (
             <ListItem
-              key={session.id}
+              key={session.contextId}
               className={`${classes.sessionItem} ${
-                session.id === currentSessionId ? classes.activeSession : ''
+                session.contextId === currentSessionId ? classes.activeSession : ''
               }`}
-              onClick={() => onSessionSwitch(session.id)}
+              onClick={() => onSessionSwitch(session.contextId)}
             >
               <ListItemText
                 className={classes.sessionText}
@@ -322,7 +322,7 @@ export function ChatSessionSidebar({
                   className={classes.deleteButton}
                   onClick={e => {
                     e.stopPropagation();
-                    onDeleteSession(session.id);
+                    onDeleteSession(session.contextId);
                   }}
                 >
                   <DeleteIcon fontSize="small" />

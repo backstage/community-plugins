@@ -26,10 +26,18 @@ import {
   IconButton,
   Tooltip,
   Collapse,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Snackbar,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import useAsync from 'react-use/esm/useAsync';
 import { Message } from '../types';
 import ReactMarkdown from 'react-markdown';
@@ -40,14 +48,14 @@ import {
   vs,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@material-ui/core/styles';
-import { memo, useState, useEffect, useRef } from 'react';
+import { memo, useState, useEffect, useRef, useCallback } from 'react';
 
 const useStyles = makeStyles(theme => ({
   messageBox: {
     padding: theme.spacing(1, 2),
     borderRadius: theme.shape.borderRadius,
     width: 'fit-content',
-    maxWidth: '75%',
+    maxWidth: '90%',
   },
   userMessage: {
     backgroundColor: theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
@@ -99,25 +107,27 @@ const useStyles = makeStyles(theme => ({
     },
   },
   executionPlanContainer: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(0.4), // Reduced from 1 to 0.5 for smaller vertical spacing
     backgroundColor: theme.palette.type === 'dark' 
       ? 'rgba(76, 175, 80, 0.15)' 
       : 'rgba(76, 175, 80, 0.08)',
-    borderRadius: theme.spacing(0.5),
+    borderRadius: theme.spacing(0.25), // Reduced border radius for more compact look
     border: `1px solid ${theme.palette.type === 'dark' 
       ? 'rgba(76, 175, 80, 0.3)' 
       : 'rgba(76, 175, 80, 0.2)'}`,
     overflow: 'hidden',
+    width: '100%', // Set width to 70% of parent container
   },
   executionPlanHeader: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: theme.spacing(0.75, 1.5),
+    padding: theme.spacing(0.15, 0.50), // Further reduced vertical padding (0.5→0.25) for smaller height
     cursor: 'pointer',
     backgroundColor: theme.palette.type === 'dark' 
       ? 'rgba(76, 175, 80, 0.2)' 
       : 'rgba(76, 175, 80, 0.12)',
+    minHeight: '30px', // Set a compact minimum height
     '&:hover': {
       backgroundColor: theme.palette.type === 'dark' 
         ? 'rgba(76, 175, 80, 0.3)' 
@@ -125,14 +135,21 @@ const useStyles = makeStyles(theme => ({
     },
   },
   executionPlanContent: {
-    padding: theme.spacing(0.75, 1),
-    fontSize: '0.8rem',
+    padding: theme.spacing(0.25, 0.75), // Further reduced vertical padding (0.5→0.25) for smaller height
+    fontSize: '0.30rem', // Slightly smaller font for more compact look
     fontFamily: 'monospace',
     whiteSpace: 'pre-wrap',
     backgroundColor: theme.palette.type === 'dark' 
       ? 'rgba(76, 175, 80, 0.1)' 
       : 'rgba(76, 175, 80, 0.05)',
-    lineHeight: '1.3',
+    lineHeight: '0.2', // Keep the reduced line height
+    // Removed maxHeight and overflowY to allow auto-height adjustment
+    '& p': {
+      margin: '0.04em 0', // Further reduced paragraph margins for even tighter spacing
+    },
+    '& br': {
+      lineHeight: '0.32', // Keep the compressed line breaks
+    },
   },
   collapseHeader: {
     display: 'flex',
@@ -158,6 +175,8 @@ const useStyles = makeStyles(theme => ({
   },
   responseContent: {
     transition: 'all 0.3s ease',
+    width: '100%',
+    overflowX: 'auto', // Allow horizontal scroll for wide tables if needed
   },
 }));
 
@@ -175,6 +194,7 @@ export interface ChatMessageProps {
     inlineCode?: string;
     timestamp?: string;
   };
+  autoExpandExecutionPlans?: Set<string>;
 }
 
 /**
@@ -187,6 +207,7 @@ export const ChatMessage = memo(function ChatMessage({
   botName,
   botIcon,
   fontSizes,
+  autoExpandExecutionPlans,
 }: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
@@ -194,8 +215,45 @@ export const ChatMessage = memo(function ChatMessage({
   const { value: profile } = useAsync(() => identityApi.getProfileInfo());
   const theme = useTheme();
   const [isResponseExpanded, setIsResponseExpanded] = useState(true);
-  const [isExecutionPlanExpanded, setIsExecutionPlanExpanded] = useState(true);
+  const [isExecutionPlanExpanded, setIsExecutionPlanExpanded] = useState(false); // Default to collapsed
+  const [isExecutionPlanModalOpen, setIsExecutionPlanModalOpen] = useState(false);
   const hasAutoCollapsed = useRef(false);
+  const hasAutoExpanded = useRef(false);
+  const userHasInteracted = useRef(false);
+  
+  // Message key for execution plan identification
+  const messageKey = message.messageId || 'unknown';
+  
+  // 🚀 SIMPLIFIED: Just render execution plan if message has it - no complex lookups
+  const currentExecutionPlan = message.executionPlan || '';
+  const hasExecutionPlan = currentExecutionPlan && currentExecutionPlan.trim().length > 0;
+  
+  // Simple debug logging
+  if (process.env.NODE_ENV === 'development' && hasExecutionPlan) {
+    console.log('📋 RENDERING EXECUTION PLAN:', {
+      messageId: message.messageId,
+      hasExecutionPlan,
+      planLength: currentExecutionPlan.length
+    });
+  }
+  
+  // Simple toast notification state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isToastOpen, setIsToastOpen] = useState(false);
+
+  // Function to show toast notification
+  const showToast = useCallback((message: string) => {
+    setToastMessage(message);
+    setIsToastOpen(true);
+  }, []);
+
+  // Handle toast close
+  const handleToastClose = useCallback((_?: React.SyntheticEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setIsToastOpen(false);
+  }, []);
 
   // Reset execution plan state completely when message changes (detect by timestamp + text combination)
   const messageId = `${message.timestamp}-${message.text?.slice(0, 20)}`;
@@ -213,15 +271,21 @@ export const ChatMessage = memo(function ChatMessage({
       console.log('🔄 NEW MESSAGE DETECTED - resetting execution plan state');
       // Reset all execution plan state for new message
       hasAutoCollapsed.current = false;
-      setIsExecutionPlanExpanded(true);
+      hasAutoExpanded.current = false; // Also reset auto-expand state
+      userHasInteracted.current = false; // Reset user interaction tracking
+      
+      // Default to collapsed (in-memory only, no localStorage)
+      setIsExecutionPlanExpanded(false);
+      console.log('📂 RESET EXECUTION PLAN STATE TO COLLAPSED (in-memory)');
+      
       prevMessageIdRef.current = currentMessageId;
     }
   }, [messageId]);
 
-  // Auto-collapse execution plan when streaming completes - only once
+  // Auto-collapse execution plan when streaming completes - only once and only if user hasn't interacted
   useEffect(() => {
-    if (message.executionPlan && message.executionPlan.trim().length > 0 && message.isStreaming === false && !hasAutoCollapsed.current && isExecutionPlanExpanded) {
-      console.log('🔄 AUTO-COLLAPSING EXECUTION PLAN');
+    if (hasExecutionPlan && message.isStreaming === false && !hasAutoCollapsed.current && isExecutionPlanExpanded && !userHasInteracted.current && !hasAutoExpanded.current) {
+      console.log('🔄 AUTO-COLLAPSING EXECUTION PLAN - message finished streaming');
       // Small delay to let user see the plan briefly before collapsing
       const timer = setTimeout(() => {
         setIsExecutionPlanExpanded(false);
@@ -229,29 +293,51 @@ export const ChatMessage = memo(function ChatMessage({
       }, 100);
 
       return () => clearTimeout(timer);
+    } else if (message.isStreaming === true && hasExecutionPlan) {
+      console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - message still processing');
+    } else if (userHasInteracted.current) {
+      console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - user has interacted');
+    } else if (hasAutoExpanded.current) {
+      console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - auto-expanded, keeping open');
     }
     return undefined;
-  }, [message.isStreaming, message.executionPlan, isExecutionPlanExpanded]);
+  }, [message.isStreaming, hasExecutionPlan, isExecutionPlanExpanded]);
+
+  // Save execution plan expansion state to localStorage whenever it changes
+  // Execution plan expansion state is now purely in-memory (no localStorage persistence needed)
+
+  // Auto-expand execution plan if it's marked for auto-expansion (only once)
+  useEffect(() => {
+    if (hasExecutionPlan && message.timestamp && autoExpandExecutionPlans?.has(messageKey) && !isExecutionPlanExpanded && !hasAutoExpanded.current && !userHasInteracted.current) {
+      console.log('🔄 AUTO-EXPANDING EXECUTION PLAN for messageKey:', messageKey);
+      setIsExecutionPlanExpanded(true);
+      hasAutoExpanded.current = true; // Mark as auto-expanded to prevent repeated expansion
+    }
+  }, [hasExecutionPlan, message.timestamp, autoExpandExecutionPlans, isExecutionPlanExpanded, messageKey]);
+
+  // Handle user interaction with execution plan expand/collapse
+  const handleExecutionPlanToggle = useCallback(() => {
+    console.log('👆 USER MANUALLY TOGGLED EXECUTION PLAN - from:', isExecutionPlanExpanded, 'to:', !isExecutionPlanExpanded);
+    userHasInteracted.current = true; // Mark that user has interacted
+    setIsExecutionPlanExpanded(!isExecutionPlanExpanded);
+  }, [isExecutionPlanExpanded]);
 
   const handleCopyToClipboard = async () => {
     try {
       let textToCopy = '';
 
-      // Include execution plan if present
-      if (message.executionPlan) {
-        textToCopy += `📋 Execution Plan\n${message.executionPlan}\n\n`;
+      // Include execution plan if present (from buffer or message)
+      if (hasExecutionPlan) {
+        textToCopy += `📋 Execution Plan\n${currentExecutionPlan}\n\n`;
       }
 
       // Add main message text
       if (message.text) {
-        textToCopy += message.text;
+        textToCopy += message.text.replace(/⟦|⟧/g, '');
       }
 
       await window.navigator.clipboard.writeText(textToCopy);
-      alertApi.post({
-        message: 'Message copied to clipboard',
-        severity: 'success',
-      });
+      showToast('Message copied to clipboard');
     } catch (error) {
       alertApi.post({
         message: 'Failed to copy message',
@@ -263,10 +349,7 @@ export const ChatMessage = memo(function ChatMessage({
   const handleCodeCopy = async (code: string) => {
     try {
       await window.navigator.clipboard.writeText(code);
-      alertApi.post({
-        message: 'Code copied to clipboard',
-        severity: 'success',
-      });
+      showToast('Code copied to clipboard');
     } catch (error) {
       alertApi.post({
         message: 'Failed to copy code',
@@ -417,7 +500,7 @@ export const ChatMessage = memo(function ChatMessage({
               ),
             }}
           >
-            {message.text || ''}
+            {(message.text || '').replace(/⟦|⟧/g, '')}
           </ReactMarkdown>
         </Box>
         <Typography
@@ -483,18 +566,18 @@ export const ChatMessage = memo(function ChatMessage({
           </Typography>
         )}
       </Box>
-      {/* Execution Plan - collapsible if present and not empty */}
-      {message.executionPlan && message.executionPlan.trim().length > 0 && (
+      {/* Execution Plan - collapsible if present and not empty (from buffer or message) */}
+      {hasExecutionPlan && (
         <Box className={classes.executionPlanContainer}>
           <Box 
             className={classes.executionPlanHeader}
-            onClick={() => setIsExecutionPlanExpanded(!isExecutionPlanExpanded)}
+            onClick={handleExecutionPlanToggle}
           >
             <Typography 
               variant="subtitle2" 
               style={{ 
                 fontWeight: 600,
-                fontSize: '0.875rem',
+                fontSize: '0.75rem', // Reduced font size for more compact header
                 display: 'flex',
                 alignItems: 'center'
               }}
@@ -504,16 +587,18 @@ export const ChatMessage = memo(function ChatMessage({
             <IconButton 
               size="small"
               style={{ 
-                padding: '2px',
+                padding: '1px', // Reduced padding for more compact button
                 opacity: 0.7,
-                transition: 'opacity 0.2s'
+                transition: 'opacity 0.2s',
+                width: '20px', // Set smaller fixed width
+                height: '20px' // Set smaller fixed height
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                setIsExecutionPlanExpanded(!isExecutionPlanExpanded);
+                handleExecutionPlanToggle();
               }}
             >
-              {isExecutionPlanExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+              {isExecutionPlanExpanded ? <ExpandLessIcon style={{ fontSize: '16px' }} /> : <ExpandMoreIcon style={{ fontSize: '16px' }} />}
             </IconButton>
           </Box>
           <Collapse in={isExecutionPlanExpanded}>
@@ -650,7 +735,7 @@ export const ChatMessage = memo(function ChatMessage({
                   ),
                 }}
               >
-                {message.executionPlan || ''}
+                {currentExecutionPlan}
               </ReactMarkdown>
             </Box>
           </Collapse>
@@ -731,7 +816,7 @@ export const ChatMessage = memo(function ChatMessage({
                   ),
                 }}
               >
-                {message.text || ''}
+                {(message.text || '').replace(/⟦|⟧/g, '')}
               </ReactMarkdown>
             </Box>
           </Collapse>
@@ -748,16 +833,257 @@ export const ChatMessage = memo(function ChatMessage({
         >
           {message.timestamp}
         </Typography>
-        <Tooltip title="Copy message">
-          <IconButton
-            className={classes.copyButton}
-            size="small"
-            onClick={handleCopyToClipboard}
-          >
-            <FileCopyIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        <Box display="flex" alignItems="center" style={{ gap: theme.spacing(0.5) }}>
+          {/* Always show execution plan button - same size and style as copy button */}
+          <Tooltip title={hasExecutionPlan ? "View Execution Plan" : "No execution plan available for this message"}>
+            <span>
+              <IconButton
+                className={classes.copyButton}
+                size="small"
+                disabled={!hasExecutionPlan}
+                onClick={() => hasExecutionPlan && setIsExecutionPlanModalOpen(true)}
+                style={{
+                  opacity: hasExecutionPlan ? 1 : 0.8,
+                  cursor: hasExecutionPlan ? 'pointer' : 'not-allowed',
+                  width: '24px',  // Ensure consistent width
+                  height: '24px', // Ensure consistent height
+                  padding: '0px', // Same padding as copy button
+                }}
+              >
+                <AssignmentIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title="Copy message">
+            <IconButton
+              className={classes.copyButton}
+              size="small"
+              onClick={handleCopyToClipboard}
+              style={{
+                width: '24px',  // Explicit width for consistency
+                height: '24px', // Explicit height for consistency  
+                padding: '0px', // Explicit padding for consistency
+              }}
+            >
+              <FileCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
+
+      {/* Execution Plan Modal */}
+      <Dialog
+        open={isExecutionPlanModalOpen}
+        onClose={() => setIsExecutionPlanModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          style: {
+            backgroundColor: theme.palette.background.paper,
+            minHeight: '400px',
+          },
+        }}
+      >
+        <DialogTitle>
+          <Box display="flex" alignItems="center">
+            <AssignmentIcon style={{ marginRight: theme.spacing(1) }} />
+            <Typography variant="h6">📋 Execution Plan</Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box
+            style={{
+              fontSize: '0.8rem',
+              fontFamily: 'monospace',
+              whiteSpace: 'pre-wrap',
+              lineHeight: '1.4',
+              padding: theme.spacing(1),
+              backgroundColor: theme.palette.type === 'dark' 
+                ? 'rgba(76, 175, 80, 0.1)' 
+                : 'rgba(76, 175, 80, 0.05)',
+              borderRadius: theme.spacing(0.5),
+              border: `1px solid ${theme.palette.type === 'dark' 
+                ? 'rgba(76, 175, 80, 0.3)' 
+                : 'rgba(76, 175, 80, 0.2)'}`,
+              maxHeight: '60vh',
+              overflow: 'auto',
+            }}
+          >
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                code: CodeBlock,
+                a: ({ href, children, ...props }) => (
+                  <a
+                    href={href?.startsWith('http') ? href : ''}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                      textDecoration: 'underline',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                ),
+                p: ({ children, ...props }) => (
+                  <p
+                    style={{ 
+                      fontSize: '0.8rem',
+                      margin: '0.3em 0',
+                      fontFamily: 'monospace',
+                      lineHeight: '1.4',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </p>
+                ),
+                h1: ({ children, ...props }) => (
+                  <h1
+                    style={{ 
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      margin: '0.4em 0 0.3em 0',
+                      fontFamily: 'monospace',
+                      lineHeight: '1.3',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </h1>
+                ),
+                h2: ({ children, ...props }) => (
+                  <h2
+                    style={{ 
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      margin: '0.3em 0 0.2em 0',
+                      fontFamily: 'monospace',
+                      lineHeight: '1.3',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </h2>
+                ),
+                h3: ({ children, ...props }) => (
+                  <h3
+                    style={{ 
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      margin: '0.25em 0 0.15em 0',
+                      fontFamily: 'monospace',
+                      lineHeight: '1.3',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </h3>
+                ),
+                ul: ({ children, ...props }) => (
+                  <ul
+                    style={{ 
+                      fontSize: '0.8rem',
+                      fontFamily: 'monospace',
+                      paddingLeft: '1.4em',
+                      margin: '0.3em 0',
+                      lineHeight: '1.4',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children, ...props }) => (
+                  <ol
+                    style={{ 
+                      fontSize: '0.8rem',
+                      fontFamily: 'monospace',
+                      paddingLeft: '1.4em',
+                      margin: '0.3em 0',
+                      lineHeight: '1.4',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </ol>
+                ),
+                li: ({ children, ...props }) => (
+                  <li
+                    style={{ 
+                      fontSize: '0.8rem',
+                      fontFamily: 'monospace',
+                      margin: '0.15em 0',
+                      lineHeight: '1.4',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </li>
+                ),
+                strong: ({ children, ...props }) => (
+                  <strong
+                    style={{ 
+                      fontWeight: 600,
+                      fontFamily: 'monospace',
+                    }}
+                    {...props}
+                  >
+                    {children}
+                  </strong>
+                ),
+                table: ({ children, ...props }) => (
+                  <table className={classes.markdownTable} {...props}>
+                    {children}
+                  </table>
+                ),
+              }}
+            >
+              {currentExecutionPlan}
+            </ReactMarkdown>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={async () => {
+              try {
+                await window.navigator.clipboard.writeText(currentExecutionPlan);
+                showToast('Execution plan copied to clipboard');
+              } catch (error) {
+                alertApi.post({
+                  message: 'Failed to copy execution plan',
+                  severity: 'error',
+                });
+              }
+            }}
+            startIcon={<FileCopyIcon />}
+            variant="outlined"
+          >
+            Copy
+          </Button>
+          <Button
+            onClick={() => setIsExecutionPlanModalOpen(false)}
+            color="primary"
+            variant="contained"
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Custom Toast Notification */}
+      <Snackbar
+        open={isToastOpen}
+        autoHideDuration={5000}
+        onClose={handleToastClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleToastClose} severity="success" style={{ width: '100%' }}>
+          {toastMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 });
