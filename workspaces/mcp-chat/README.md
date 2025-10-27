@@ -145,6 +145,10 @@ mcpChat:
   # Supported Providers: OpenAI, Gemini, Claude, and Ollama
   providers:
     - id: openai # OpenAI provider
+      # Optional: Specify a custom baseUrl for OpenAI-compatible endpoints
+      # This is useful when using Azure OpenAI or other OpenAI-compatible services
+      # Example for Azure: baseUrl: 'https://your-resource.openai.azure.com/openai/deployments/your-deployment'
+      # baseUrl: 'https://custom-openai-compatible-url/v1'
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini # or gpt-4, gpt-3.5-turbo, etc.
     - id: claude # Claude provider

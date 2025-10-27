@@ -84,7 +84,10 @@ describe('getProviderConfig', () => {
         if (key === 'model') return 'test-model';
         throw new Error(`Unexpected key: ${key}`);
       }),
-      getOptionalString: jest.fn().mockReturnValue('test-key'),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return undefined;
+        return 'test-key';
+      }),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -111,7 +114,10 @@ describe('getProviderConfig', () => {
           if (key === 'model') return 'test-model';
           throw new Error(`Unexpected key: ${key}`);
         }),
-        getOptionalString: jest.fn().mockReturnValue('test-key'),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'baseUrl') return undefined;
+          return 'test-key';
+        }),
       } as any;
 
       mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -121,6 +127,41 @@ describe('getProviderConfig', () => {
       expect(result.type).toBe(id);
       expect(result.apiKey).toBe('test-key');
       expect(result.model).toBe('test-model');
+    });
+  });
+
+  it('should configure OpenAI provider with default and custom base URLs', () => {
+    const testCases = [
+      {
+        customBaseUrl: undefined,
+        expectedBaseUrl: 'https://api.openai.com/v1',
+      },
+      {
+        customBaseUrl: 'https://custom-openai.com/v1',
+        expectedBaseUrl: 'https://custom-openai.com/v1',
+      },
+    ];
+
+    testCases.forEach(({ customBaseUrl, expectedBaseUrl }) => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'openai';
+          if (key === 'model') return 'test-model';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'token') return 'test-token';
+          if (key === 'baseUrl') return customBaseUrl;
+          return undefined;
+        }),
+      } as any;
+
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+      expect(result.baseUrl).toBe(expectedBaseUrl);
+      expect(result.type).toBe('openai');
+      expect(result.apiKey).toBe('test-token');
     });
   });
 
@@ -180,7 +221,10 @@ describe('getProviderConfig', () => {
         if (key === 'model') return 'gpt-4';
         throw new Error(`Unexpected key: ${key}`);
       }),
-      getOptionalString: jest.fn().mockReturnValue('first-key'),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return undefined;
+        return 'first-key';
+      }),
     } as any;
 
     const mockProviderConfig2 = {
@@ -189,7 +233,10 @@ describe('getProviderConfig', () => {
         if (key === 'model') return 'claude-3-sonnet-20240229';
         throw new Error(`Unexpected key: ${key}`);
       }),
-      getOptionalString: jest.fn().mockReturnValue('second-key'),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return undefined;
+        return 'second-key';
+      }),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([
@@ -214,7 +261,10 @@ describe('getProviderConfig', () => {
         if (key === 'model') return '';
         throw new Error(`Unexpected key: ${key}`);
       }),
-      getOptionalString: jest.fn().mockReturnValue('test-key'),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return undefined;
+        return 'test-key';
+      }),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -239,7 +289,10 @@ describe('getProviderInfo', () => {
         if (key === 'model') return 'gpt-4';
         throw new Error(`Unexpected key: ${key}`);
       }),
-      getOptionalString: jest.fn().mockReturnValue('test-key'),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return 'https://api.openai.com/v1';
+        return 'test-key';
+      }),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
