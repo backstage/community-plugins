@@ -1,5 +1,5 @@
 /**
- * Unit tests for execution plan management logic
+ * Unit tests for execution plan management logic - SIMPLIFIED BUFFER ONLY
  * These tests verify the core logic that prevents execution plan contamination
  */
 
@@ -12,7 +12,6 @@ interface TestMessage {
   isStreaming: boolean;
   isUser: boolean;
   timestamp: string;
-  executionPlan?: string;
 }
 
 interface TestSession {
@@ -26,13 +25,11 @@ export class ExecutionPlanManager {
   private autoExpandExecutionPlans = new Set<string>();
   private accumulatedExecutionPlan: string = ''; // Simulate React state
 
-  // Simulate the nuclear cleanup logic (in-memory only, no localStorage)
+  // Simulate the nuclear cleanup logic
   clearAllExecutionPlanState(): void {
     this.executionPlanBuffer = {};
     this.autoExpandExecutionPlans = new Set();
     this.accumulatedExecutionPlan = ''; // 🚨 CRITICAL FIX: Reset accumulated state
-    
-    // No localStorage cleanup needed - execution plan state is now purely in-memory
   }
 
   // Simulate setting accumulated execution plan (like from streaming)
@@ -76,7 +73,7 @@ export class ExecutionPlanManager {
     return streamingMessages[streamingMessages.length - 1]; // Return newest
   }
 
-  // Store execution plan in buffer
+  // Store execution plan in buffer (SIMPLIFIED - buffer only)
   storeExecutionPlan(messageId: string, executionPlan: string): void {
     if (executionPlan && executionPlan.trim()) {
       const cleanExecutionPlan = executionPlan.replace(/⟦|⟧/g, '');
@@ -85,298 +82,340 @@ export class ExecutionPlanManager {
     }
   }
 
-  // Check if message should show execution plan (isolation logic)
-  shouldShowExecutionPlan(message: TestMessage): boolean {
-    const messageHasExecutionPlanProperty = message.hasOwnProperty('executionPlan');
-    const messageKey = message.messageId || 'unknown';
-    const bufferedExecutionPlan = this.executionPlanBuffer[messageKey];
-    
-    const messageHasOwnExecutionPlan = !!(message.executionPlan && message.executionPlan.trim());
-    const bufferHasExecutionPlanForThisMessage = !!(bufferedExecutionPlan && bufferedExecutionPlan.trim());
-    
-    // Only show execution plan if message has the property AND has content
-    return messageHasExecutionPlanProperty && (messageHasOwnExecutionPlan || bufferHasExecutionPlanForThisMessage);
+  // Check if message should show execution plan (SIMPLIFIED isolation logic)
+  shouldShowExecutionPlan(messageId: string): boolean {
+    const currentExecutionPlan = this.executionPlanBuffer[messageId] || '';
+    return !!(currentExecutionPlan && currentExecutionPlan.trim().length > 0);
   }
 
-  // Get current buffer state for testing
-  getBufferState() {
-    return {
-      buffer: { ...this.executionPlanBuffer },
-      autoExpand: new Set(this.autoExpandExecutionPlans)
-    };
+  // Get execution plan for message (SIMPLIFIED)
+  getExecutionPlan(messageId: string): string {
+    return this.executionPlanBuffer[messageId] || '';
+  }
+
+  // Get the buffer for inspection
+  getBuffer(): Record<string, string> {
+    return { ...this.executionPlanBuffer };
+  }
+
+  // Get auto-expand set for inspection
+  getAutoExpandSet(): Set<string> {
+    return new Set(this.autoExpandExecutionPlans);
   }
 }
 
-describe('ExecutionPlanManager', () => {
+describe('ExecutionPlanManager - Simplified Buffer Only', () => {
   let manager: ExecutionPlanManager;
 
   beforeEach(() => {
     manager = new ExecutionPlanManager();
-    // Execution plan state is now purely in-memory, no localStorage cleanup needed
   });
 
-  describe('clearAllExecutionPlanState', () => {
-    test('should clear execution plan buffer', () => {
-      // Setup initial state
-      manager.storeExecutionPlan('msg-1', 'Test execution plan');
-      const initialState = manager.getBufferState();
-      expect(Object.keys(initialState.buffer)).toHaveLength(1);
+  describe('Buffer Management', () => {
+    test('should store execution plan in buffer', () => {
+      const messageId = 'msg-123';
+      const plan = 'Task 1: Do something\nTask 2: Do another thing';
 
-      // Clear state
-      manager.clearAllExecutionPlanState();
-      const clearedState = manager.getBufferState();
-      expect(Object.keys(clearedState.buffer)).toHaveLength(0);
+      manager.storeExecutionPlan(messageId, plan);
+
+      expect(manager.getBuffer()[messageId]).toBe(plan);
+      expect(manager.shouldShowExecutionPlan(messageId)).toBe(true);
     });
 
-    test('should clear auto-expand state', () => {
-      manager.storeExecutionPlan('msg-1', 'Test execution plan');
-      const initialState = manager.getBufferState();
-      expect(initialState.autoExpand.size).toBe(1);
+    test('should remove execution plan markers when storing', () => {
+      const messageId = 'msg-123';
+      const planWithMarkers = '⟦Task 1: Do something⟧';
 
-      manager.clearAllExecutionPlanState();
-      const clearedState = manager.getBufferState();
-      expect(clearedState.autoExpand.size).toBe(0);
+      manager.storeExecutionPlan(messageId, planWithMarkers);
+
+      expect(manager.getBuffer()[messageId]).toBe('Task 1: Do something');
+      expect(manager.getBuffer()[messageId]).not.toContain('⟦');
+      expect(manager.getBuffer()[messageId]).not.toContain('⟧');
     });
 
-    test('should clear accumulated execution plan state (CRITICAL for preventing contamination)', () => {
-      // Setup contaminated state from previous request
-      manager.setAccumulatedExecutionPlan('Previous request execution plan');
-      expect(manager.getAccumulatedExecutionPlan()).toBe('Previous request execution plan');
+    test('should not store empty execution plans', () => {
+      const messageId = 'msg-123';
 
-      // Clear state - this should prevent contamination
-      manager.clearAllExecutionPlanState();
-      expect(manager.getAccumulatedExecutionPlan()).toBe(''); // Should be completely empty
+      manager.storeExecutionPlan(messageId, '');
+
+      expect(manager.getBuffer()[messageId]).toBeUndefined();
+      expect(manager.shouldShowExecutionPlan(messageId)).toBe(false);
+    });
+
+    test('should not store whitespace-only execution plans', () => {
+      const messageId = 'msg-123';
+
+      manager.storeExecutionPlan(messageId, '   \n  \t  ');
+
+      expect(manager.getBuffer()[messageId]).toBeUndefined();
+      expect(manager.shouldShowExecutionPlan(messageId)).toBe(false);
+    });
+
+    test('should update existing execution plan in buffer', () => {
+      const messageId = 'msg-123';
+
+      manager.storeExecutionPlan(messageId, 'Initial plan');
+      expect(manager.getBuffer()[messageId]).toBe('Initial plan');
+
+      manager.storeExecutionPlan(messageId, 'Updated plan');
+      expect(manager.getBuffer()[messageId]).toBe('Updated plan');
     });
   });
 
-  describe('resetStreamingFlags', () => {
-    test('should reset isStreaming flag on all messages in current session', () => {
+  describe('Execution Plan Isolation', () => {
+    test('should only show execution plan for messages that have it in buffer', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan for message 1');
+      manager.storeExecutionPlan('msg-2', 'Plan for message 2');
+
+      expect(manager.shouldShowExecutionPlan('msg-1')).toBe(true);
+      expect(manager.shouldShowExecutionPlan('msg-2')).toBe(true);
+      expect(manager.shouldShowExecutionPlan('msg-3')).toBe(false);
+    });
+
+    test('should prevent cross-contamination between messages', () => {
+      manager.storeExecutionPlan('msg-1', 'First plan');
+
+      // Clear buffer and add new plan
+      manager.clearAllExecutionPlanState();
+      manager.storeExecutionPlan('msg-2', 'Second plan');
+
+      expect(manager.shouldShowExecutionPlan('msg-1')).toBe(false);
+      expect(manager.shouldShowExecutionPlan('msg-2')).toBe(true);
+      expect(manager.getBuffer()['msg-1']).toBeUndefined();
+    });
+
+    test('should isolate execution plans by messageId', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan 1');
+      manager.storeExecutionPlan('msg-2', 'Plan 2');
+      manager.storeExecutionPlan('msg-3', 'Plan 3');
+
+      expect(manager.getExecutionPlan('msg-1')).toBe('Plan 1');
+      expect(manager.getExecutionPlan('msg-2')).toBe('Plan 2');
+      expect(manager.getExecutionPlan('msg-3')).toBe('Plan 3');
+    });
+  });
+
+  describe('Buffer Cleanup', () => {
+    test('should completely clear buffer when requested', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan 1');
+      manager.storeExecutionPlan('msg-2', 'Plan 2');
+
+      expect(Object.keys(manager.getBuffer())).toHaveLength(2);
+
+      manager.clearAllExecutionPlanState();
+
+      expect(Object.keys(manager.getBuffer())).toHaveLength(0);
+      expect(manager.shouldShowExecutionPlan('msg-1')).toBe(false);
+      expect(manager.shouldShowExecutionPlan('msg-2')).toBe(false);
+    });
+
+    test('should clear auto-expand set when clearing state', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan 1');
+      manager.storeExecutionPlan('msg-2', 'Plan 2');
+
+      expect(manager.getAutoExpandSet().size).toBe(2);
+
+      manager.clearAllExecutionPlanState();
+
+      expect(manager.getAutoExpandSet().size).toBe(0);
+    });
+
+    test('should reset accumulated execution plan when clearing state', () => {
+      manager.setAccumulatedExecutionPlan('Some accumulated plan');
+
+      expect(manager.getAccumulatedExecutionPlan()).toBe('Some accumulated plan');
+
+      manager.clearAllExecutionPlanState();
+
+      expect(manager.getAccumulatedExecutionPlan()).toBe('');
+    });
+  });
+
+  describe('Message State Management', () => {
+    test('should reset streaming flags on all messages', () => {
       const sessions: TestSession[] = [{
         contextId: 'session-1',
         messages: [
-          { messageId: 'msg-1', text: 'Hello', isStreaming: false, isUser: true, timestamp: '10:00 AM' },
-          { messageId: 'msg-2', text: 'Response', isStreaming: true, isUser: false, timestamp: '10:01 AM' },
-          { messageId: 'msg-3', text: 'Another', isStreaming: true, isUser: false, timestamp: '10:02 AM' }
+          { messageId: 'msg-1', text: 'Message 1', isStreaming: true, isUser: false, timestamp: '10:00' },
+          { messageId: 'msg-2', text: 'Message 2', isStreaming: true, isUser: false, timestamp: '10:01' },
         ]
       }];
 
-      const result = manager.resetStreamingFlags(sessions, 'session-1');
-      
-      expect(result[0].messages[0].isStreaming).toBe(false); // Was already false
-      expect(result[0].messages[1].isStreaming).toBe(false); // Should be reset
-      expect(result[0].messages[2].isStreaming).toBe(false); // Should be reset
+      const updatedSessions = manager.resetStreamingFlags(sessions, 'session-1');
+
+      expect(updatedSessions[0].messages.every(msg => msg.isStreaming === false)).toBe(true);
     });
 
-    test('should not affect other sessions', () => {
-      const sessions: TestSession[] = [
-        {
-          contextId: 'session-1',
-          messages: [
-            { messageId: 'msg-1', text: 'Hello', isStreaming: true, isUser: false, timestamp: '10:00 AM' }
-          ]
-        },
-        {
-          contextId: 'session-2',
-          messages: [
-            { messageId: 'msg-2', text: 'Other', isStreaming: true, isUser: false, timestamp: '10:01 AM' }
-          ]
-        }
-      ];
-
-      const result = manager.resetStreamingFlags(sessions, 'session-1');
-      
-      expect(result[0].messages[0].isStreaming).toBe(false); // Current session should be reset
-      expect(result[1].messages[0].isStreaming).toBe(true);  // Other session should be unchanged
-    });
-  });
-
-  describe('findStreamingMessage', () => {
-    test('should find the newest streaming message', () => {
+    test('should find newest streaming message', () => {
       const messages: TestMessage[] = [
-        { messageId: 'msg-1', text: 'Old', isStreaming: false, isUser: false, timestamp: '10:00 AM' },
-        { messageId: 'msg-2', text: 'Streaming 1', isStreaming: true, isUser: false, timestamp: '10:01 AM' },
-        { messageId: 'msg-3', text: 'User msg', isStreaming: false, isUser: true, timestamp: '10:02 AM' },
-        { messageId: 'msg-4', text: 'Streaming 2', isStreaming: true, isUser: false, timestamp: '10:03 AM' }
+        { messageId: 'msg-1', text: 'Message 1', isStreaming: false, isUser: false, timestamp: '10:00' },
+        { messageId: 'msg-2', text: 'Message 2', isStreaming: true, isUser: false, timestamp: '10:01' },
+        { messageId: 'msg-3', text: 'Message 3', isStreaming: true, isUser: false, timestamp: '10:02' },
       ];
 
-      const result = manager.findStreamingMessage(messages);
-      expect(result?.messageId).toBe('msg-4'); // Should return the newest streaming message
+      const streamingMessage = manager.findStreamingMessage(messages);
+
+      expect(streamingMessage?.messageId).toBe('msg-3');
     });
 
     test('should return undefined when no streaming messages exist', () => {
       const messages: TestMessage[] = [
-        { messageId: 'msg-1', text: 'Not streaming', isStreaming: false, isUser: false, timestamp: '10:00 AM' }
+        { messageId: 'msg-1', text: 'Message 1', isStreaming: false, isUser: false, timestamp: '10:00' },
+        { messageId: 'msg-2', text: 'Message 2', isStreaming: false, isUser: false, timestamp: '10:01' },
       ];
 
-      const result = manager.findStreamingMessage(messages);
-      expect(result).toBeUndefined();
+      const streamingMessage = manager.findStreamingMessage(messages);
+
+      expect(streamingMessage).toBeUndefined();
     });
   });
 
-  describe('storeExecutionPlan', () => {
-    test('should store execution plan in buffer', () => {
-      manager.storeExecutionPlan('msg-1', '⟦Test execution plan⟧');
-      const state = manager.getBufferState();
-      
-      expect(state.buffer['msg-1']).toBe('Test execution plan'); // Markers should be removed
-      expect(state.autoExpand.has('msg-1')).toBe(true);
+  describe('Auto-Expand Management', () => {
+    test('should add messageId to auto-expand set when storing plan', () => {
+      manager.storeExecutionPlan('msg-123', 'Test plan');
+
+      expect(manager.getAutoExpandSet().has('msg-123')).toBe(true);
     });
 
-    test('should not store empty execution plans', () => {
-      manager.storeExecutionPlan('msg-1', '');
-      const state = manager.getBufferState();
-      
-      expect(state.buffer['msg-1']).toBeUndefined();
-      expect(state.autoExpand.has('msg-1')).toBe(false);
+    test('should not duplicate messageIds in auto-expand set', () => {
+      manager.storeExecutionPlan('msg-123', 'Test plan 1');
+      manager.storeExecutionPlan('msg-123', 'Test plan 2');
+      manager.storeExecutionPlan('msg-123', 'Test plan 3');
+
+      expect(manager.getAutoExpandSet().size).toBe(1);
     });
 
-    test('should clean markers from execution plan', () => {
-      manager.storeExecutionPlan('msg-1', '⟦Plan with ⟦nested⟧ markers⟧');
-      const state = manager.getBufferState();
-      
-      expect(state.buffer['msg-1']).toBe('Plan with nested markers');
-    });
-  });
+    test('should track multiple messageIds in auto-expand set', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan 1');
+      manager.storeExecutionPlan('msg-2', 'Plan 2');
+      manager.storeExecutionPlan('msg-3', 'Plan 3');
 
-  describe('shouldShowExecutionPlan', () => {
-    test('should NOT show execution plan for messages without executionPlan property', () => {
-      const message: TestMessage = {
-        messageId: 'msg-1',
-        text: 'Regular message',
-        isStreaming: false,
-        isUser: false,
-        timestamp: '10:00 AM'
-        // No executionPlan property
-      };
-
-      // Even if buffer has content, shouldn't show without property
-      manager.storeExecutionPlan('msg-1', 'Some execution plan');
-      
-      const result = manager.shouldShowExecutionPlan(message);
-      expect(result).toBe(false);
-    });
-
-    test('should show execution plan for messages with property and buffer content', () => {
-      const message: TestMessage = {
-        messageId: 'msg-1',
-        text: 'AI response',
-        isStreaming: false,
-        isUser: false,
-        timestamp: '10:00 AM',
-        executionPlan: '' // Has property but empty
-      };
-
-      manager.storeExecutionPlan('msg-1', 'Execution plan from buffer');
-      
-      const result = manager.shouldShowExecutionPlan(message);
-      expect(result).toBe(true);
-    });
-
-    test('should show execution plan for messages with own content', () => {
-      const message: TestMessage = {
-        messageId: 'msg-1',
-        text: 'AI response',
-        isStreaming: false,
-        isUser: false,
-        timestamp: '10:00 AM',
-        executionPlan: 'Own execution plan'
-      };
-
-      const result = manager.shouldShowExecutionPlan(message);
-      expect(result).toBe(true);
+      const autoExpand = manager.getAutoExpandSet();
+      expect(autoExpand.size).toBe(3);
+      expect(autoExpand.has('msg-1')).toBe(true);
+      expect(autoExpand.has('msg-2')).toBe(true);
+      expect(autoExpand.has('msg-3')).toBe(true);
     });
   });
 
-  describe('Full Integration Test - Prevent Contamination', () => {
-    test('should prevent accumulated execution plan state contamination (the real bug)', () => {
-      // This test simulates the exact contamination pattern found in the logs:
-      // Request 1: "create a plan for my week" → Shows correct plan
-      // Request 2: "investigate caipe pods" → Shows "CAIPE Community Meeting Planning" (from previous request!)
-      
-      // === REQUEST 1: "create a plan for my week" ===
+  describe('Integration Tests - Full Request Cycle', () => {
+    test('should handle complete request-response cycle without contamination', () => {
+      // Request 1
+      const msg1 = manager.createStreamingMessage();
+      manager.storeExecutionPlan(msg1.messageId, '⟦Plan 1: Task A⟧');
+      manager.setAccumulatedExecutionPlan('Plan 1: Task A');
+
+      expect(manager.shouldShowExecutionPlan(msg1.messageId)).toBe(true);
+      expect(manager.getExecutionPlan(msg1.messageId)).toBe('Plan 1: Task A');
+
+      // Clear state for Request 2
       manager.clearAllExecutionPlanState();
-      manager.setAccumulatedExecutionPlan('🎯 Execution Plan: Weekly Planning');
-      
-      // Verify first request state
-      expect(manager.getAccumulatedExecutionPlan()).toBe('🎯 Execution Plan: Weekly Planning');
-      
-      // === REQUEST 2: "investigate caipe pods" ===
-      // This is where contamination was happening - accumulated state NOT being cleared
-      manager.clearAllExecutionPlanState(); // This should clear the accumulated state
-      
-      // Verify the contamination is prevented
-      expect(manager.getAccumulatedExecutionPlan()).toBe(''); // Should be empty, NOT previous request's plan
-      
-      // Set new execution plan for second request
-      manager.setAccumulatedExecutionPlan('🎯 Execution Plan: Investigate CAIPE Pods');
-      expect(manager.getAccumulatedExecutionPlan()).toBe('🎯 Execution Plan: Investigate CAIPE Pods');
-      
-      // === REQUEST 3: "howdy" ===
-      manager.clearAllExecutionPlanState();
-      expect(manager.getAccumulatedExecutionPlan()).toBe(''); // Should be clean, not showing previous plan
+
+      // Request 2
+      const msg2 = manager.createStreamingMessage();
+      manager.storeExecutionPlan(msg2.messageId, '⟦Plan 2: Task B⟧');
+      manager.setAccumulatedExecutionPlan('Plan 2: Task B');
+
+      // Verify isolation
+      expect(manager.shouldShowExecutionPlan(msg1.messageId)).toBe(false); // Old plan gone
+      expect(manager.shouldShowExecutionPlan(msg2.messageId)).toBe(true);  // New plan present
+      expect(manager.getExecutionPlan(msg1.messageId)).toBe('');
+      expect(manager.getExecutionPlan(msg2.messageId)).toBe('Plan 2: Task B');
+      expect(manager.getAccumulatedExecutionPlan()).toBe('Plan 2: Task B');
     });
 
-    test('should prevent execution plan contamination between requests', () => {
-      let sessions: TestSession[] = [{
-        contextId: 'session-1',
-        messages: []
-      }];
+    test('should handle rapid consecutive requests', () => {
+      for (let i = 1; i <= 10; i++) {
+        manager.clearAllExecutionPlanState();
 
-      // === FIRST REQUEST ===
-      // 1. Clear state and reset flags
+        const msg = manager.createStreamingMessage();
+        manager.storeExecutionPlan(msg.messageId, `Plan ${i}`);
+
+        expect(Object.keys(manager.getBuffer())).toHaveLength(1);
+        expect(manager.getExecutionPlan(msg.messageId)).toBe(`Plan ${i}`);
+      }
+    });
+
+    test('should prevent contamination when streaming is interrupted', () => {
+      // Start first request
+      const msg1 = manager.createStreamingMessage();
+      manager.storeExecutionPlan(msg1.messageId, 'Partial plan 1');
+
+      // Interrupt and start second request (simulate user clicking away)
       manager.clearAllExecutionPlanState();
-      sessions = manager.resetStreamingFlags(sessions, 'session-1');
+      const msg2 = manager.createStreamingMessage();
+      manager.storeExecutionPlan(msg2.messageId, 'Complete plan 2');
 
-      // 2. Create new streaming message
-      const firstMessage = manager.createStreamingMessage();
-      firstMessage.executionPlan = ''; // Add property to indicate it will have execution plan
-      sessions[0].messages.push(firstMessage);
+      expect(manager.shouldShowExecutionPlan(msg1.messageId)).toBe(false);
+      expect(manager.shouldShowExecutionPlan(msg2.messageId)).toBe(true);
+    });
+  });
 
-      // 3. Process execution plan for first message
-      manager.storeExecutionPlan(firstMessage.messageId, 'First execution plan');
-      firstMessage.executionPlan = 'First execution plan';
-      firstMessage.isStreaming = false;
+  describe('Edge Cases', () => {
+    test('should handle messageId with special characters', () => {
+      const messageId = 'msg-123-abc_def@test.com';
+      manager.storeExecutionPlan(messageId, 'Test plan');
 
-      // Verify first request state
-      expect(manager.shouldShowExecutionPlan(firstMessage)).toBe(true);
-      const firstState = manager.getBufferState();
-      expect(firstState.buffer[firstMessage.messageId]).toBe('First execution plan');
+      expect(manager.shouldShowExecutionPlan(messageId)).toBe(true);
+    });
 
-      // === SECOND REQUEST ===
-      // 1. Clear state and reset flags (CRITICAL for preventing contamination)
+    test('should handle very long execution plans', () => {
+      const longPlan = 'Task: '.repeat(1000) + 'Final task';
+      manager.storeExecutionPlan('msg-1', longPlan);
+
+      const retrieved = manager.getExecutionPlan('msg-1');
+      expect(retrieved.length).toBeGreaterThan(6000);
+      expect(retrieved).toContain('Final task');
+    });
+
+    test('should handle unicode in execution plans', () => {
+      const unicodePlan = '任务 1: 做某事 🎯\n任务 2: 做另一件事 ✅';
+      manager.storeExecutionPlan('msg-1', unicodePlan);
+
+      expect(manager.getExecutionPlan('msg-1')).toBe(unicodePlan);
+    });
+
+    test('should handle empty messageId gracefully', () => {
+      manager.storeExecutionPlan('', 'Test plan');
+
+      // Empty string should still work as a key
+      expect(manager.getExecutionPlan('')).toBe('Test plan');
+    });
+
+    test('should handle multiple marker pairs in plan', () => {
+      const plan = '⟦Part 1⟧ Some text ⟦Part 2⟧';
+      manager.storeExecutionPlan('msg-1', plan);
+
+      expect(manager.getExecutionPlan('msg-1')).toBe('Part 1 Some text Part 2');
+    });
+  });
+
+  describe('State Consistency', () => {
+    test('should maintain buffer consistency after multiple operations', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan 1');
+      expect(Object.keys(manager.getBuffer())).toHaveLength(1);
+
+      manager.storeExecutionPlan('msg-2', 'Plan 2');
+      expect(Object.keys(manager.getBuffer())).toHaveLength(2);
+
       manager.clearAllExecutionPlanState();
-      sessions = manager.resetStreamingFlags(sessions, 'session-1');
+      expect(Object.keys(manager.getBuffer())).toHaveLength(0);
 
-      // 2. Create new streaming message  
-      const secondMessage = manager.createStreamingMessage();
-      secondMessage.executionPlan = ''; // Add property
-      sessions[0].messages.push(secondMessage);
+      manager.storeExecutionPlan('msg-3', 'Plan 3');
+      expect(Object.keys(manager.getBuffer())).toHaveLength(1);
+    });
 
-      // 3. Verify clean state
-      const cleanState = manager.getBufferState();
-      expect(Object.keys(cleanState.buffer)).toHaveLength(0); // Buffer should be empty
-      expect(cleanState.autoExpand.size).toBe(0);
+    test('should maintain auto-expand consistency with buffer', () => {
+      manager.storeExecutionPlan('msg-1', 'Plan 1');
+      manager.storeExecutionPlan('msg-2', 'Plan 2');
 
-      // 4. Verify first message still shows its own execution plan (buffer cleanup doesn't affect own content)
-      expect(manager.shouldShowExecutionPlan(firstMessage)).toBe(true); // Still has own content
+      expect(manager.getBuffer()['msg-1']).toBeDefined();
+      expect(manager.getAutoExpandSet().has('msg-1')).toBe(true);
 
-      // 5. Process execution plan for second message
-      manager.storeExecutionPlan(secondMessage.messageId, 'Second execution plan');
-      secondMessage.executionPlan = 'Second execution plan';
-      secondMessage.isStreaming = false;
+      manager.clearAllExecutionPlanState();
 
-      // 6. Verify no contamination
-      expect(manager.shouldShowExecutionPlan(secondMessage)).toBe(true);
-      const finalState = manager.getBufferState();
-      expect(finalState.buffer[secondMessage.messageId]).toBe('Second execution plan');
-      expect(finalState.buffer[firstMessage.messageId]).toBeUndefined(); // First plan should not exist
-
-      // 7. Verify message isolation
-      expect(sessions[0].messages).toHaveLength(2);
-      expect(sessions[0].messages[0].isStreaming).toBe(false);
-      expect(sessions[0].messages[1].isStreaming).toBe(false);
-      expect(sessions[0].messages[0].messageId).toBe(firstMessage.messageId);
-      expect(sessions[0].messages[1].messageId).toBe(secondMessage.messageId);
+      expect(manager.getBuffer()['msg-1']).toBeUndefined();
+      expect(manager.getAutoExpandSet().has('msg-1')).toBe(false);
     });
   });
 });

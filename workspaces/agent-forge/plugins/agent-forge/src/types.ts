@@ -28,6 +28,5 @@ export interface Message {
   }>; // Add A2A parts support
   isUser: boolean;
   timestamp?: string;
-  executionPlan?: string; // Add execution plan support
   isStreaming?: boolean; // Add streaming state support
 }

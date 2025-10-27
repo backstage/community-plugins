@@ -196,6 +196,7 @@ export interface ChatMessageProps {
   };
   executionPlanBuffer?: Record<string, string>;
   autoExpandExecutionPlans?: Set<string>;
+  executionPlanLoading?: Set<string>;
   isLastMessage?: boolean;
 }
 
@@ -228,20 +229,8 @@ export const ChatMessage = memo(function ChatMessage({
   // Message key for execution plan identification
   const messageKey = message.messageId || 'unknown';
   
-  // Get execution plan from buffer or current message - only show if message is meant to have execution plan
-  const bufferedExecutionPlan = executionPlanBuffer?.[messageKey];
-  
-  // 🔧 STRICT EXECUTION PLAN ISOLATION: Only show execution plan if message actually owns it
-  const messageHasExecutionPlanProperty = message.hasOwnProperty('executionPlan');
-  const messageHasOwnExecutionPlan = !!(message.executionPlan && message.executionPlan.trim());
-  const bufferHasExecutionPlanForThisMessage = !!(bufferedExecutionPlan && bufferedExecutionPlan.trim());
-  
-  // Only show execution plan if:
-  // 1. Message has its OWN execution plan content, OR
-  // 2. Message has executionPlan property AND buffer has content specifically for this messageId
-  const currentExecutionPlan = messageHasExecutionPlanProperty && (messageHasOwnExecutionPlan || bufferHasExecutionPlanForThisMessage)
-    ? (message.executionPlan || bufferedExecutionPlan || '')
-    : '';
+  // 🔧 SIMPLIFIED: Get execution plan from buffer only - single source of truth
+  const currentExecutionPlan = executionPlanBuffer?.[messageKey] || '';
   const hasExecutionPlan = currentExecutionPlan && currentExecutionPlan.trim().length > 0;
   
   // // Enhanced debug logging for execution plan correlation and contamination tracing
@@ -600,7 +589,7 @@ export const ChatMessage = memo(function ChatMessage({
           </Typography>
         )}
       </Box>
-      {/* Execution Plan - collapsible if present and not empty (from buffer or message) */}
+      {/* Execution Plan - collapsible if present and not empty (from buffer or message) - hide when loading */}
       {hasExecutionPlan && (
         <Box className={classes.executionPlanContainer}>
           <Box 
@@ -638,139 +627,139 @@ export const ChatMessage = memo(function ChatMessage({
           <Collapse in={isExecutionPlanExpanded}>
             <Box className={classes.executionPlanContent}>
               <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code: CodeBlock,
-                  a: ({ href, children, ...props }) => (
-                    <a
-                      href={href?.startsWith('http') ? href : ''}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
-                        textDecoration: 'underline',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </a>
-                  ),
-                  p: ({ children, ...props }) => (
-                    <p
-                      style={{ 
-                        fontSize: '0.8rem',
-                        margin: '0.2em 0',
-                        fontFamily: 'monospace',
-                        lineHeight: '1.3',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </p>
-                  ),
-                  h1: ({ children, ...props }) => (
-                    <h1
-                      style={{ 
-                        fontSize: '0.9rem',
-                        fontWeight: 600,
-                        margin: '0.3em 0 0.2em 0',
-                        fontFamily: 'monospace',
-                        lineHeight: '1.2',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children, ...props }) => (
-                    <h2
-                      style={{ 
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        margin: '0.25em 0 0.15em 0',
-                        fontFamily: 'monospace',
-                        lineHeight: '1.2',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children, ...props }) => (
-                    <h3
-                      style={{ 
-                        fontSize: '0.8rem',
-                        fontWeight: 600,
-                        margin: '0.2em 0 0.1em 0',
-                        fontFamily: 'monospace',
-                        lineHeight: '1.2',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </h3>
-                  ),
-                  ul: ({ children, ...props }) => (
-                    <ul
-                      style={{ 
-                        fontSize: '0.8rem',
-                        fontFamily: 'monospace',
-                        paddingLeft: '1.2em',
-                        margin: '0.2em 0',
-                        lineHeight: '1.3',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children, ...props }) => (
-                    <ol
-                      style={{ 
-                        fontSize: '0.8rem',
-                        fontFamily: 'monospace',
-                        paddingLeft: '1.2em',
-                        margin: '0.2em 0',
-                        lineHeight: '1.3',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children, ...props }) => (
-                    <li
-                      style={{ 
-                        fontSize: '0.8rem',
-                        fontFamily: 'monospace',
-                        margin: '0.1em 0',
-                        lineHeight: '1.3',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </li>
-                  ),
-                  strong: ({ children, ...props }) => (
-                    <strong
-                      style={{ 
-                        fontWeight: 600,
-                        fontFamily: 'monospace',
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </strong>
-                  ),
-                  table: ({ children, ...props }) => (
-                    <table className={classes.markdownTable} {...props}>
-                      {children}
-                    </table>
-                  ),
-                }}
-              >
-                {currentExecutionPlan}
-              </ReactMarkdown>
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    code: CodeBlock,
+                    a: ({ href, children, ...props }) => (
+                      <a
+                        href={href?.startsWith('http') ? href : ''}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                          textDecoration: 'underline',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </a>
+                    ),
+                    p: ({ children, ...props }) => (
+                      <p
+                        style={{ 
+                          fontSize: '0.8rem',
+                          margin: '0.2em 0',
+                          fontFamily: 'monospace',
+                          lineHeight: '1.3',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </p>
+                    ),
+                    h1: ({ children, ...props }) => (
+                      <h1
+                        style={{ 
+                          fontSize: '0.9rem',
+                          fontWeight: 600,
+                          margin: '0.3em 0 0.2em 0',
+                          fontFamily: 'monospace',
+                          lineHeight: '1.2',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </h1>
+                    ),
+                    h2: ({ children, ...props }) => (
+                      <h2
+                        style={{ 
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          margin: '0.25em 0 0.15em 0',
+                          fontFamily: 'monospace',
+                          lineHeight: '1.2',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </h2>
+                    ),
+                    h3: ({ children, ...props }) => (
+                      <h3
+                        style={{ 
+                          fontSize: '0.8rem',
+                          fontWeight: 600,
+                          margin: '0.2em 0 0.1em 0',
+                          fontFamily: 'monospace',
+                          lineHeight: '1.2',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </h3>
+                    ),
+                    ul: ({ children, ...props }) => (
+                      <ul
+                        style={{ 
+                          fontSize: '0.8rem',
+                          fontFamily: 'monospace',
+                          paddingLeft: '1.2em',
+                          margin: '0.2em 0',
+                          lineHeight: '1.3',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </ul>
+                    ),
+                    ol: ({ children, ...props }) => (
+                      <ol
+                        style={{ 
+                          fontSize: '0.8rem',
+                          fontFamily: 'monospace',
+                          paddingLeft: '1.2em',
+                          margin: '0.2em 0',
+                          lineHeight: '1.3',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </ol>
+                    ),
+                    li: ({ children, ...props }) => (
+                      <li
+                        style={{ 
+                          fontSize: '0.8rem',
+                          fontFamily: 'monospace',
+                          margin: '0.1em 0',
+                          lineHeight: '1.3',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </li>
+                    ),
+                    strong: ({ children, ...props }) => (
+                      <strong
+                        style={{ 
+                          fontWeight: 600,
+                          fontFamily: 'monospace',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </strong>
+                    ),
+                    table: ({ children, ...props }) => (
+                      <table className={classes.markdownTable} {...props}>
+                        {children}
+                      </table>
+                    ),
+                  }}
+                >
+                  {currentExecutionPlan}
+                </ReactMarkdown>
             </Box>
           </Collapse>
         </Box>

@@ -214,6 +214,7 @@ export interface ChatContainerProps {
   // Scroll-based message loading
   onScroll?: (scrollTop: number, scrollHeight: number, clientHeight: number) => void;
   onLoadMore?: () => void;
+  executionPlanLoading?: Set<string>;
   hasMoreMessages?: boolean;
   showLoadMoreButton?: boolean;
   loadMoreIncrement?: number;
@@ -239,6 +240,7 @@ const MessagesList = memo(function MessagesList({
   fontSizes,
   executionPlanBuffer,
   autoExpandExecutionPlans,
+  executionPlanLoading,
 }: {
   messages: Message[];
   botName: string;
@@ -251,6 +253,7 @@ const MessagesList = memo(function MessagesList({
   };
   executionPlanBuffer?: Record<string, string>;
   autoExpandExecutionPlans?: Set<string>;
+  executionPlanLoading?: Set<string>;
 }) {
   // Memoize font sizes to prevent re-creating object on every render
   const memoizedFontSizes = useMemo(() => ({
@@ -271,6 +274,7 @@ const MessagesList = memo(function MessagesList({
                  fontSizes={memoizedFontSizes}
                  executionPlanBuffer={executionPlanBuffer}
                  autoExpandExecutionPlans={autoExpandExecutionPlans}
+                 executionPlanLoading={executionPlanLoading}
                  isLastMessage={index === messages.length - 1}
                />
              </div>
@@ -319,6 +323,7 @@ export const ChatContainer = memo(function ChatContainer({
   loadMoreIncrement = 5,
   executionPlanBuffer = {},
   autoExpandExecutionPlans,
+  executionPlanLoading,
   autoScrollEnabled = false, // Default to manual mode
   setAutoScrollEnabled,
   currentOperation,
@@ -533,6 +538,7 @@ export const ChatContainer = memo(function ChatContainer({
           fontSizes={fontSizes}
           executionPlanBuffer={executionPlanBuffer}
           autoExpandExecutionPlans={autoExpandExecutionPlans}
+          executionPlanLoading={executionPlanLoading}
         />
 
         {isTyping && (

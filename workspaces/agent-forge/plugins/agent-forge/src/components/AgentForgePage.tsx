@@ -400,6 +400,7 @@ export function AgentForgePage() {
   const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] = useState<string>('');
   const currentRequestIdRef = useRef<string>(''); // Track current streaming request
   const abortControllerRef = useRef<AbortController | null>(null); // Cancel previous streams
+  const [executionPlanLoading, setExecutionPlanLoading] = useState<Set<string>>(new Set()); // Track loading state per message
   
   
   // Function to remove cached tool notifications from content
@@ -1216,6 +1217,16 @@ export function AgentForgePage() {
         console.log('🧹 CLEARING STALE EXECUTION PLAN BUFFER ENTRIES');
       }
       
+      // 🎯 UI HACK: Mark this message as "loading" execution plan
+      if (newMessage.messageId) {
+        setExecutionPlanLoading(prev => {
+          const newSet = new Set(prev);
+          newSet.add(newMessage.messageId!);
+          console.log('⏳ MARKING EXECUTION PLAN AS LOADING:', newMessage.messageId);
+          return newSet;
+        });
+      }
+      
       // 🔧 ULTRA-NUCLEAR OPTION: Completely clear execution plan buffer, localStorage, AND auto-expand state
       // This prevents any cross-contamination between different user requests
       setExecutionPlanBuffer(prev => {
@@ -1297,16 +1308,7 @@ export function AgentForgePage() {
               streamingMessage.text = text.replace(/⟦|⟧/g, '');
               streamingMessage.isStreaming = isStreaming;
               
-              // Set execution plan directly if we have content
-              if (executionPlan && executionPlan.trim()) {
-                streamingMessage.executionPlan = executionPlan.replace(/⟦|⟧/g, '');
-                if (process.env.NODE_ENV === 'development') {
-                  console.log('📋 SET EXECUTION PLAN ON MESSAGE:', {
-                    messageId: streamingMessage.messageId,
-                    planLength: streamingMessage.executionPlan.length
-                  });
-                }
-              }
+              // Execution plan is now stored only in executionPlanBuffer, not on message object
             }
             return { ...session, messages: updatedMessages };
           }
@@ -1371,9 +1373,6 @@ export function AgentForgePage() {
                     newSet.add(messageKey);
                     return newSet;
                   });
-                  
-                  // Add executionPlan property to message
-                  streamingMessage.executionPlan = cleanExecutionPlan;
                 }
                 return currentPlan; // Don't clear it yet, let the next request clear it
               });
@@ -1680,6 +1679,14 @@ export function AgentForgePage() {
                               if (msg.isStreaming === true) {
                                 const messageKey = msg.messageId || 'unknown';
                                 
+                                // 🎯 UI HACK: Clear loading state now that real data arrived
+                                setExecutionPlanLoading(prevLoading => {
+                                  const newSet = new Set(prevLoading);
+                                  newSet.delete(messageKey);
+                                  console.log('✅ EXECUTION PLAN LOADED - Removing loading state:', messageKey);
+                                  return newSet;
+                                });
+                                
                                 // Update buffer for real-time display
                                 setExecutionPlanBuffer(prevBuffer => ({
                                   ...prevBuffer,
@@ -1695,9 +1702,6 @@ export function AgentForgePage() {
                                   }
                                   return newSet;
                                 });
-                                
-                                // Update message with execution plan
-                                return { ...msg, executionPlan: cleanExecutionPlan };
                               }
                               return msg;
                             });
@@ -2389,6 +2393,7 @@ export function AgentForgePage() {
                     loadMoreIncrement={LOAD_MORE_INCREMENT}
                     executionPlanBuffer={executionPlanBuffer}
                     autoExpandExecutionPlans={autoExpandExecutionPlans}
+                    executionPlanLoading={executionPlanLoading}
                 autoScrollEnabled={autoScrollEnabled}
                 setAutoScrollEnabled={setAutoScrollEnabled}
                 thinkingMessages={thinkingMessages}
