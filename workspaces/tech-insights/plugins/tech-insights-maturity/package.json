@@ -9,6 +9,9 @@
   },
   "typesVersions": {
     "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
       "package.json": [
         "package.json"
       ]
@@ -16,6 +19,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
     "./package.json": "./package.json"
   },
   "backstage": {
@@ -57,11 +61,14 @@
     "@backstage-community/plugin-tech-insights-react": "workspace:^",
     "@backstage/catalog-client": "^1.12.0",
     "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-compat-api": "^0.5.3",
     "@backstage/core-components": "^0.18.2",
     "@backstage/core-plugin-api": "^1.11.1",
+    "@backstage/frontend-plugin-api": "^0.12.1",
     "@backstage/plugin-catalog-react": "^1.21.2",
     "@backstage/theme": "^0.7.0",
     "@backstage/version-bridge": "^1.0.11",
+    "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
     "@mui/styles": "5.18.0",
