@@ -30,9 +30,7 @@
     }
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "homepage": "https://backstage.io",
   "repository": {
