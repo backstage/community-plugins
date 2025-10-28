@@ -20,22 +20,6 @@ yarn --cwd packages/app add @backstage-community/plugin-wheel-of-names
 
 ## Configuration
 
-### New Frontend System (Recommended)
-
-If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the plugin to your `packages/app/src/App.tsx`:
-
-```tsx
-import { createApp } from '@backstage/app-defaults';
-import { wheelOfNamesPlugin } from '@backstage-community/plugin-wheel-of-names/alpha';
-
-const app = createApp({
-  features: [
-    // ... other features
-    wheelOfNamesPlugin,
-  ],
-});
-```
-
 ### Legacy Frontend System
 
 If you are still using the legacy frontend system:
