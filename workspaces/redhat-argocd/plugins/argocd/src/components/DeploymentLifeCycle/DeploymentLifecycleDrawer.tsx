@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { FC } from 'react';
-
+import Rollouts from './sidebar/rollouts/Rollouts';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import {
@@ -193,6 +193,9 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                 createdAt={createdAt}
               />
             </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Rollouts />
           </Grid>
         </Grid>
       </CardContent>
