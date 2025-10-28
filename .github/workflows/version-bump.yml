@@ -23,6 +23,14 @@ on:
           - 'major'
           - 'minor'
           - 'patch'
+      enable-pr-reuse:
+        description: 'Enable PR reuse and branch renaming (experimental)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -89,6 +97,7 @@ jobs:
           fi
       - name: 'Check for existing version bump PR'
         id: check_existing_pr
+        if: ${{ inputs.enable_pr_reuse == 'true' }}
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         with:
           github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
@@ -132,14 +141,19 @@ jobs:
       - name: 'Create or checkout workspace branch'
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          BRANCH_NAME="${{ steps.check_existing_pr.outputs.branch_name }}"
+          
+          if [ "${{ inputs.enable_pr_reuse }}" == "true" ]; then
+            BRANCH_NAME="${{ steps.check_existing_pr.outputs.branch_name }}"
+          else
+            BRANCH_NAME="${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}"
+          fi
 
           BRANCH=$(git branch --list "$BRANCH_NAME")
           if [ ! -z "$BRANCH" ]; then
               git branch -D "$BRANCH_NAME"
           fi
 
-          if git ls-remote --exit-code --heads origin "$BRANCH_NAME" > /dev/null 2>&1; then
+          if [ "${{ inputs.enable_pr_reuse }}" == "true" ] && git ls-remote --exit-code --heads origin "$BRANCH_NAME" > /dev/null 2>&1; then
               echo "Remote branch exists, checking it out"
               git fetch origin "$BRANCH_NAME"
               git checkout -b "$BRANCH_NAME" "origin/$BRANCH_NAME"
@@ -179,7 +193,14 @@ jobs:
           git status
           git add -A -- :!.npmrc
           git commit -m "v${{ steps.set_release_name.outputs.release_version }} version bump"
-          git push origin ${{ steps.check_existing_pr.outputs.branch_name }}
+          
+          if [ "${{ inputs.enable_pr_reuse }}" == "true" ]; then
+            BRANCH_NAME="${{ steps.check_existing_pr.outputs.branch_name }}"
+          else
+            BRANCH_NAME="${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}"
+          fi
+          
+          git push origin "$BRANCH_NAME"
       - name: 'Create or update Pull Request'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
@@ -189,8 +210,16 @@ jobs:
             const workspace = '${{ matrix.workspace }}';
             const releaseVersion = '${{ steps.set_release_name.outputs.release_version }}';
             const currentVersion = '${{ steps.set_release_name.outputs.current_version }}';
-            const branchName = '${{ steps.check_existing_pr.outputs.branch_name }}';
-            const hasExistingPR = '${{ steps.check_existing_pr.outputs.has_existing_pr }}' === 'true';
+            const enablePRReuse = '${{ inputs.enable_pr_reuse }}' === 'true';
+            
+            let branchName, hasExistingPR;
+            if (enablePRReuse) {
+              branchName = '${{ steps.check_existing_pr.outputs.branch_name }}';
+              hasExistingPR = '${{ steps.check_existing_pr.outputs.has_existing_pr }}' === 'true';
+            } else {
+              branchName = `${workspace}/v${releaseVersion}`;
+              hasExistingPR = false;
+            }
 
             const prBody = [
               'Backstage release v' + releaseVersion + ' has been published, this Pull Request contains the changes to upgrade ' + workspace + ' to this new release',
