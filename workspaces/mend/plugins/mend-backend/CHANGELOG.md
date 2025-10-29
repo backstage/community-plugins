@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- f48c4f9: Backstage version bump to v1.44.0
+
 ## 0.8.0
 
 ### Minor Changes
