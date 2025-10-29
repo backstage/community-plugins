@@ -1524,7 +1524,6 @@ __metadata:
     "@types/body-parser-xml": "npm:^2.0.2"
     "@types/express": "npm:^4.17.6"
     "@types/supertest": "npm:^6.0.0"
-    "@types/uuid": "npm:^10.0.0"
     body-parser: "npm:^1.20.0"
     body-parser-xml: "npm:^2.0.5"
     express: "npm:^4.17.1"
@@ -7817,13 +7816,6 @@ __metadata:
   version: 1.19.25
   resolution: "@types/urijs@npm:1.19.25"
   checksum: 10/8c6330086f8528c3fdbf079a226aadf1718da53118d54070e45b81a213e9f69be3313e7aa61ac2a3e5ca752095996c4d0a76d4722ddf7d3e68a56117c682ad0d
-  languageName: node
-  linkType: hard
-
-"@types/uuid@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@types/uuid@npm:10.0.0"
-  checksum: 10/e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
   languageName: node
   linkType: hard
 
