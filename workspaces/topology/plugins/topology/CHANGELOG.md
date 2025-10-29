@@ -1,5 +1,70 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- be63603: move Status and hooks into plugin
+
+## 2.7.0
+
+### Minor Changes
+
+- 0348763: Backstage version bump to v1.43.3
+
+## 2.6.1
+
+### Patch Changes
+
+- 1defa96: Fix rendering of markdown on the missing permission page
+
+## 2.6.0
+
+### Minor Changes
+
+- 561e5d1: Add i18n support
+
+## 2.5.0
+
+### Minor Changes
+
+- c850e6d: Backstage version bump to v1.42.5
+
+## 2.4.2
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 2.4.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- f25b944: remove product theme from dev dependencies and dev app
+
+## 2.4.0
+
+### Minor Changes
+
+- a517756: Backstage version bump to v1.41.1
+
+## 2.3.1
+
+### Patch Changes
+
+- 7bfeab1: remove product theme from dev dependencies and dev app
+
+## 2.3.0
+
+### Minor Changes
+
+- fe1d8aa: Backstage version bump to v1.40.2
+  Remove broken close button from display option chips in `TopologyToolbar`.
+
 ## 2.2.2
 
 ### Patch Changes

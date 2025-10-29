@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { BitriseBuildResult } from '../../api/bitriseApi.model';
 import Alert from '@material-ui/lab/Alert';
 import { BitriseDownloadArtifactComponent } from '../BitriseDownloadArtifactComponent';

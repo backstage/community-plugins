@@ -15,7 +15,10 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import { ROLLBAR_ANNOTATION } from '../constants';
+import {
+  ROLLBAR_ANNOTATION,
+  ROLLBAR_ENVIRONMENT_ANNOTATION,
+} from '../constants';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
 export function useProjectSlugFromEntity(entity: Entity) {
@@ -33,5 +36,6 @@ export function useProjectSlugFromEntity(entity: Entity) {
       organization ??
       configApi.getOptionalString('rollbar.organization') ??
       configApi.getString('organization.name'),
+    environment: entity?.metadata.annotations?.[ROLLBAR_ENVIRONMENT_ANNOTATION],
   };
 }

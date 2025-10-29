@@ -11,13 +11,15 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { CircularProgressProps } from '@mui/material/CircularProgress';
 import { ComponentProps } from 'react';
 import type { ComponentType } from 'react';
+import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { GaugeCard as GaugeCard_2 } from '@backstage/core-components';
 import { GaugePropsGetColor } from '@backstage/core-components';
 import { GridOwnProps } from '@mui/material/Grid';
 import { JsonValue } from '@backstage/types';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 
 // @public
@@ -30,9 +32,7 @@ export interface ApiFactoryOptions {
 export function arrayify<T>(t: T | T[] | Iterable<T> | undefined): T[];
 
 // @public
-export function ColumnIconError(
-  props: ColumnIconErrorProps,
-): React_2.JSX.Element;
+export function ColumnIconError(props: ColumnIconErrorProps): JSX_2.Element;
 
 // @public
 export interface ColumnIconErrorProps {
@@ -40,9 +40,7 @@ export interface ColumnIconErrorProps {
 }
 
 // @public
-export function ColumnIconPercent(
-  props: ColumnIconPercentProps,
-): React_2.JSX.Element;
+export function ColumnIconPercent(props: ColumnIconPercentProps): JSX_2.Element;
 
 // @public
 export interface ColumnIconPercentProps {
@@ -59,7 +57,8 @@ export function createManageApiFactory(options?: ApiFactoryOptions): ApiFactory<
   ManageApi,
   DefaultManageApi,
   {
-    [x: string]: any;
+    discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
   }
 >;
 
@@ -89,11 +88,20 @@ export function CurrentKindProvider(
         starred: true;
       }
   >,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export class DefaultManageApi implements ManageApi {
-  constructor({ kindOrder, providers }: DefaultManageApiOptions);
+  constructor({
+    discoveryApi,
+    fetchApi,
+    kindOrder,
+    providers,
+  }: DefaultManageApiOptions);
+  // (undocumented)
+  getOwnersAndEntities: (
+    kinds: readonly string[],
+  ) => Promise<OwnersAndEntities>;
   // (undocumented)
   getProviders: () => readonly ManageProvider[];
   // (undocumented)
@@ -102,6 +110,10 @@ export class DefaultManageApi implements ManageApi {
 
 // @public (undocumented)
 export interface DefaultManageApiOptions {
+  // (undocumented)
+  discoveryApi: DiscoveryApi;
+  // (undocumented)
+  fetchApi: FetchApi;
   kindOrder?: string[];
   providers: Iterable<ManageModuleApi>;
 }
@@ -151,7 +163,7 @@ export type KindStarredType = typeof KindStarred;
 // @public
 export function ManageAccordion(
   props: PropsWithChildren<ManageAccordionProps>,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface ManageAccordionProps {
@@ -163,6 +175,7 @@ export interface ManageAccordionProps {
 
 // @public (undocumented)
 export interface ManageApi {
+  getOwnersAndEntities(kinds?: readonly string[]): Promise<OwnersAndEntities>;
   getProviders(): Iterable<ManageProvider>;
   readonly kindOrder: string[];
 }
@@ -202,9 +215,7 @@ export interface ManageColumnModuleSingle {
 }
 
 // @public
-export function ManageGaugeCard(
-  props: ManageGaugeCardProps,
-): React_2.JSX.Element;
+export function ManageGaugeCard(props: ManageGaugeCardProps): JSX_2.Element;
 
 // @public (undocumented)
 export interface ManageGaugeCardProps {
@@ -215,9 +226,7 @@ export interface ManageGaugeCardProps {
 }
 
 // @public (undocumented)
-export function ManageGaugeGrid(
-  props: ManageGaugeGridProps,
-): React_2.JSX.Element;
+export function ManageGaugeGrid(props: ManageGaugeGridProps): JSX_2.Element;
 
 // @public (undocumented)
 export interface ManageGaugeGridProps {
@@ -253,8 +262,8 @@ export type ManageModuleApiRef = ApiRef<ManageModuleApi>;
 
 // @public
 export function ManageOwnedProvider(
-  props: PropsWithChildren<OwnedEntitiesProviderProps>,
-): React_2.JSX.Element;
+  props: PropsWithChildren<OwnedProviderProps>,
+): JSX_2.Element;
 
 // @public (undocumented)
 export type ManageProvider = ComponentType<{
@@ -267,23 +276,23 @@ export const manageReactPlugin: BackstagePlugin<{}, {}, {}>;
 // @public
 export function ManageReorderableTabs(
   props: ReorderableTabsProps,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public (undocumented)
 export function ManageTabContentFullHeight({
   children,
   bottomMargin,
   resizeChild,
-}: PropsWithChildren<TabContentFullHeightProps>): React_2.JSX.Element;
-
-// @public (undocumented)
-export interface OwnedEntitiesProviderProps {
-  // (undocumented)
-  kinds?: string[];
-}
+}: PropsWithChildren<TabContentFullHeightProps>): JSX_2.Element;
 
 // @public (undocumented)
 export const OwnedProvider: ManageOwnedProvider;
+
+// @public (undocumented)
+export interface OwnedProviderProps {
+  // (undocumented)
+  kinds?: string[];
+}
 
 // @public
 export interface Owners {
@@ -291,6 +300,14 @@ export interface Owners {
   groups: Entity[];
   // (undocumented)
   ownedEntityRefs: string[];
+}
+
+// @public
+export interface OwnersAndEntities {
+  // (undocumented)
+  ownedEntities: Entity[];
+  // (undocumented)
+  owners: Owners;
 }
 
 // @public

@@ -32,6 +32,8 @@ import { Value } from './Value';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { sonarqubeTranslationRef } from '../../translation';
+import Tooltip from '@material-ui/core/Tooltip';
+import LinkIcon from '@material-ui/icons/Link';
 
 type MetricInsightsProps = {
   value: FindingSummary | any;
@@ -66,6 +68,7 @@ export const QualityBadge = (props: MetricInsightsProps) => {
   const { value } = props;
   let gateLabel: string = t('sonarQubeCard.qualityBadgeLabel.notComputed');
   let gateColor = classes.badgeUnknown;
+  let gateLinkToolTip = '';
   if (value?.metrics.alert_status) {
     const gatePassed = value?.metrics.alert_status === 'OK';
     gateLabel = gatePassed
@@ -75,6 +78,7 @@ export const QualityBadge = (props: MetricInsightsProps) => {
   }
   let clickableAttrs = {};
   if (value.projectUrl) {
+    gateLinkToolTip = t('sonarQubeCard.qualityBadgeTooltip');
     clickableAttrs = {
       component: 'a',
       href: value.projectUrl,
@@ -82,12 +86,15 @@ export const QualityBadge = (props: MetricInsightsProps) => {
     };
   }
   const qualityBadge = (
-    <Chip
-      label={gateLabel}
-      {...clickableAttrs}
-      className={props.compact ? classes.badgeCompact : ''}
-      classes={{ root: gateColor, label: classes.badgeLabel }}
-    />
+    <Tooltip title={gateLinkToolTip}>
+      <Chip
+        label={gateLabel}
+        {...clickableAttrs}
+        className={props.compact ? classes.badgeCompact : ''}
+        classes={{ root: gateColor, label: classes.badgeLabel }}
+        icon={value.projectUrl ? <LinkIcon /> : undefined}
+      />
+    </Tooltip>
   );
   return qualityBadge;
 };

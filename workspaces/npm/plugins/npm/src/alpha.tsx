@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
@@ -30,7 +27,7 @@ import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApiRef, NpmBackendClient } from './api';
 
-export { npmTranslations } from './translations';
+export { npmTranslationRef, npmTranslations } from './translations';
 
 export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
@@ -41,8 +38,8 @@ export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
  */
 export const npmBackendApi = ApiBlueprint.make({
   name: 'npmBackendApi',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: NpmBackendApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -54,7 +51,6 @@ export const npmBackendApi = ApiBlueprint.make({
           fetchApi,
         }),
     }),
-  },
 });
 
 /**
@@ -102,8 +98,8 @@ export const entityNpmReleaseOverviewCard: any = EntityCardBlueprint.make({
 export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
   name: 'EntityNpmReleaseTableCard',
   params: {
-    defaultPath: 'npm-releases',
-    defaultTitle: 'Npm Releases',
+    path: 'npm-releases',
+    title: 'Npm Releases',
     filter: isNpmAvailable,
     loader: () =>
       import('./components/EntityNpmReleaseTableCard').then(m => (
@@ -118,7 +114,7 @@ export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'npm',
+  pluginId: 'npm',
   extensions: [
     npmBackendApi,
     entityNpmReleaseTableCard,

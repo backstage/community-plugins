@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Box, LinearProgress, Typography } from '@material-ui/core';
 
 import { ResponseStep } from '../../types/types';

@@ -16,6 +16,9 @@
 import { createAnnotatorAction } from '../annotator/annotator';
 import { examples } from './createVersionAction.examples';
 
+/**
+ * @public
+ */
 export const createVersionAction = () => {
   return createAnnotatorAction(
     'catalog:template:version',

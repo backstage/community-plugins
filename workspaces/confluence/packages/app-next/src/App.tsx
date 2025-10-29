@@ -28,7 +28,7 @@ import { Navigate } from 'react-router';
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
   params: {
-    defaultPath: '/',
+    path: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
   },
 });

@@ -94,7 +94,7 @@ describe('AboutCard', () => {
       <AboutCard roleName="role:default/rbac_admin" />,
     );
     expect(
-      queryByText('Error: Something went wrong while fetching role'),
+      queryByText('Error: Something went wrong while fetching the role'),
     ).not.toBeNull();
     expect(queryByText('Role not found')).not.toBeNull();
   });

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Progress } from '@backstage/core-components';
 import {
@@ -35,11 +35,11 @@ import { styled, Theme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
 
+import { stringifyEntityRef } from '@backstage/catalog-model';
 import { CreateFeedbackModal } from '../CreateFeedbackModal/CreateFeedbackModal';
 import { FeedbackDetailsModal } from '../FeedbackDetailsModal';
 import { FeedbackTable } from '../FeedbackTable';
 import { CustomEmptyState } from './CustomEmptyState';
-import { stringifyEntityRef } from '@backstage/catalog-model';
 
 const PREFIX = 'EntityFeedbackPage';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Statistics } from '../../models';
 import { Total } from '../Total';
 import { TableToolbar } from './TableToolbar';
@@ -9,6 +8,7 @@ type TableHeaderProps = {
   dataLoading: boolean;
   headerTitle?: string;
   toolbar: any; // Allow any object structure here
+  ProjectFilterComponent: React.FC;
   totalTitle: string;
   url: string;
 };
@@ -19,11 +19,16 @@ export const TableHeader = ({
   dataLoading,
   headerTitle,
   toolbar,
+  ProjectFilterComponent,
   totalTitle,
   url,
 }: TableHeaderProps) => {
   return (
-    <TableToolbar toolbar={toolbar} title={headerTitle}>
+    <TableToolbar
+      toolbar={toolbar}
+      title={headerTitle}
+      ProjectFilterComponent={ProjectFilterComponent}
+    >
       <Total
         clientName={clientName}
         data={data}

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootCatalogCicdStatsRouteRef } from '../plugin';
 
@@ -23,13 +26,13 @@ import { rootCatalogCicdStatsRouteRef } from '../plugin';
 export const entityCicdChartsContent = EntityContentBlueprint.make({
   name: 'entity',
   params: {
-    defaultPath: 'cicd-statistics',
-    defaultTitle: 'CI/CD Statistics',
+    path: 'cicd-statistics',
+    title: 'CI/CD Statistics',
     filter: 'kind:component',
     routeRef: convertLegacyRouteRef(rootCatalogCicdStatsRouteRef),
-    loader: async () => {
-      const { EntityPageCicdCharts } = await import('../entity-page');
-      return <EntityPageCicdCharts />;
-    },
+    loader: () =>
+      import('../entity-page').then(m =>
+        compatWrapper(<m.EntityPageCicdCharts />),
+      ),
   },
 });

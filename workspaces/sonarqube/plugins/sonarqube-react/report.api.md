@@ -24,6 +24,12 @@ export interface FindingSummary {
   title: string;
 }
 
+// @public
+export function getProjectInfo(entity: Entity): {
+  projectInstance: string | undefined;
+  projectKey: string | undefined;
+};
+
 // @public (undocumented)
 export const isSonarQubeAvailable: (entity: Entity) => boolean;
 

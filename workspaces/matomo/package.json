@@ -6,6 +6,7 @@
     "node": "20 || 22"
   },
   "scripts": {
+    "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -19,6 +20,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "prettier:write": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
@@ -35,15 +37,15 @@
     "directory": "workspaces/matomo"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4",
+    "@backstage/cli": "^0.33.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.0",
+    "@backstage/repo-tools": "^0.15.0",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "react-router-dom": "^6.28.0",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",

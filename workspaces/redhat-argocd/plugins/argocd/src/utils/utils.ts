@@ -254,7 +254,9 @@ export const sortValues = (
 /**
  * Removes duplicate commits based on their author, message and date.
  */
-export const removeDuplicateRevisions = (revisions: RevisionInfo[]) => {
+export const removeDuplicateRevisions = (
+  revisions: RevisionInfo[],
+): RevisionInfo[] => {
   const uniqueMap = new Map<string, RevisionInfo>();
 
   revisions.forEach(revision => {
@@ -265,23 +267,4 @@ export const removeDuplicateRevisions = (revisions: RevisionInfo[]) => {
   });
 
   return Array.from(uniqueMap.values());
-};
-
-/**
- * Maps revisions to unique commits using revisionID when available.
- * Falls back to mapping by index if the attribute revisionID is not provided.
- */
-export const mapRevisions = (
-  revisions: string[],
-  data: RevisionInfo[],
-): Record<string, RevisionInfo> => {
-  const uniqRevisionInfo = removeDuplicateRevisions(data);
-  // Create a map for quick lookup by revisionID
-  const revisionMap = new Map(uniqRevisionInfo.map(r => [r.revisionID, r]));
-
-  return revisions.reduce((acc, rev, i) => {
-    acc[rev] =
-      revisionMap.get(rev) ?? uniqRevisionInfo[i] ?? ({} as RevisionInfo);
-    return acc;
-  }, {} as Record<string, RevisionInfo>);
 };

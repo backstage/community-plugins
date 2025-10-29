@@ -16,7 +16,6 @@
 import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics';
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendModule,
   gitlabAuthApiRef,
 } from '@backstage/frontend-plugin-api';
@@ -27,8 +26,8 @@ import { CicdStatisticsApiGitlab } from './api';
  */
 export const cicdStatisticsGitlabExtension = ApiBlueprint.make({
   name: 'cicd-statistics-gitlab-api',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: cicdStatisticsApiRef,
       deps: {
         gitlabAuthApi: gitlabAuthApiRef,
@@ -37,7 +36,6 @@ export const cicdStatisticsGitlabExtension = ApiBlueprint.make({
         return new CicdStatisticsApiGitlab(gitlabAuthApi);
       },
     }),
-  },
 });
 
 /**

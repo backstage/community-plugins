@@ -19,7 +19,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React from 'react';
+import type { ChangeEvent } from 'react';
 
 export type Item = {
   label: string;
@@ -63,7 +63,7 @@ export const SelectComponent = ({
 }: SelectComponentProps) => {
   const classes = useStyles();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (event: ChangeEvent<{ value: unknown }>) => {
     const val = event.target.value as string;
     onChange(val);
   };

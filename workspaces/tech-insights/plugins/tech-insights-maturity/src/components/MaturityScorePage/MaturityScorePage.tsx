@@ -24,7 +24,7 @@ import Alert from '@mui/material/Alert';
 import { maturityApiRef } from '../../api';
 import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
 import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
-import { Box } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import { MaturityCheckTable } from './maturityTableRows';
 
 export const MaturityScorePage = () => {
@@ -55,7 +55,7 @@ export const MaturityScorePage = () => {
   }
 
   return (
-    <Grid container>
+    <Grid container spacing={1}>
       <Grid item md={3}>
         <MaturityRankInfoCard summary={value.summary} />
       </Grid>

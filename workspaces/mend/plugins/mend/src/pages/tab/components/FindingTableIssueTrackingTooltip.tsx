@@ -1,11 +1,8 @@
-import React from 'react';
-import {
-  Box,
-  Divider,
-  makeStyles,
-  SvgIcon,
-  Typography,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import SvgIcon from '@mui/material/SvgIcon';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 import { Tag, TagColor, Tooltip } from '../../../components';
 import { dateTimeFormat } from '../../../utils';
 

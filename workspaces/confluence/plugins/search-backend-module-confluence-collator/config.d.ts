@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
+import { HumanDuration } from '@backstage/types';
 
 export interface Config {
   search?: {
@@ -95,5 +96,15 @@ export interface Config {
      * @visibility backend
      */
     maxRequestsPerSecond?: number;
+    /**
+     * How long to cache Confluence documents. Can be long if you have memory, as cache is keyed by Confluence version info.
+     * Example: '24h', '7d', '1h 30m'.
+     */
+    documentCacheTtl?: HumanDuration;
+    /**
+     * Set to false to disable all Confluence document caching.
+     * Default: false (cache disabled)
+     */
+    documentCacheEnabled?: boolean;
   };
 }

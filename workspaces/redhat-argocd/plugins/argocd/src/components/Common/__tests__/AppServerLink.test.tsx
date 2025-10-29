@@ -18,6 +18,11 @@ import { render, screen } from '@testing-library/react';
 import { mockApplication } from '../../../../dev/__data__';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import AppServerLink from '../AppServerLink';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
+
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('AppServerLink', () => {
   test('should not render the server link if the application is not available', () => {

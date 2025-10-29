@@ -38,6 +38,9 @@ import {
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { rbacTranslationRef } from '../translations';
+
 import { criterias } from '../components/ConditionalAccess/const';
 import { ConditionsData } from '../components/ConditionalAccess/types';
 import {
@@ -50,6 +53,7 @@ import {
   MembersData,
   PermissionsData,
   PermissionsDataSet,
+  PluginInfoType,
 } from '../types';
 import { getMembersCount } from './create-role-utils';
 
@@ -73,18 +77,23 @@ export const getPermissions = (
   return getPermissionsArray(role, policies).length;
 };
 
-export const getMembersString = (res: {
-  users: number;
-  groups: number;
-}): string => {
+export const getMembersString = (
+  res: {
+    users: number;
+    groups: number;
+  },
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+): string => {
   let membersString = '';
   if (res.groups > 0) {
-    membersString = `${res.groups} ${res.groups > 1 ? 'groups' : 'group'}`;
+    const groupsText = res.groups > 1 ? t('common.groups') : t('common.group');
+    membersString = `${res.groups} ${groupsText}`;
   }
   if (res.users > 0) {
+    const usersText = res.users > 1 ? t('common.users') : t('common.user');
     membersString = membersString.concat(
       membersString.length > 0 ? ', ' : '',
-      `${res.users} ${res.users > 1 ? 'users' : 'user'}`,
+      `${res.users} ${usersText}`,
     );
   }
   return membersString;
@@ -92,9 +101,10 @@ export const getMembersString = (res: {
 
 export const getMembers = (
   members: (string | MembersData | SelectedMember)[],
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
 ): string => {
   if (!members || members.length === 0) {
-    return 'No members';
+    return t('common.noMembers');
   }
 
   const res = members.reduce(
@@ -118,7 +128,7 @@ export const getMembers = (
     { users: 0, groups: 0 },
   );
 
-  return getMembersString(res);
+  return getMembersString(res, t);
 };
 
 export const getMembersFromGroup = (group: GroupEntity): number => {
@@ -135,24 +145,9 @@ export const getMembersFromGroup = (group: GroupEntity): number => {
 export const getPluginInfo = (
   permissions: PluginPermissionMetaData[],
   policy: RoleBasedPolicy,
-): {
-  pluginId: string;
-  isResourced: boolean;
-  resourceType?: string;
-  permissionName: string;
-  usingResourceType?: boolean;
-} =>
+): PluginInfoType | null =>
   permissions.reduce(
-    (
-      acc: {
-        pluginId: string;
-        isResourced: boolean;
-        resourceType?: string;
-        permissionName: string;
-        usingResourceType?: boolean;
-      },
-      p: PluginPermissionMetaData,
-    ) => {
+    (acc: PluginInfoType | null, p: PluginPermissionMetaData) => {
       const policyData = p.policies.find(pol => {
         if (pol.policy === policy.policy) {
           if (isResourcedPolicy(pol)) {
@@ -166,9 +161,9 @@ export const getPluginInfo = (
         }
         return false;
       });
-      if (policyData) {
+      if (p.pluginId && policyData) {
         return {
-          pluginId: p.pluginId || '-',
+          pluginId: p.pluginId,
           permissionName: policyData.name || '-',
           isResourced: isResourcedPolicy(policyData) || false,
           resourceType: isResourcedPolicy(policyData)
@@ -181,7 +176,7 @@ export const getPluginInfo = (
       }
       return acc;
     },
-    { pluginId: '-', isResourced: false, permissionName: '-' },
+    null,
   );
 
 const getPolicy = (str: string) => {
@@ -193,6 +188,8 @@ const getAllPolicies = (
   permission: string,
   allowedPolicies: RowPolicy[],
   policies: PolicyDetails[],
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+  locale = 'en-US',
 ) => {
   const deniedPolicies = policies?.reduce((acc, p) => {
     const perm = p.name;
@@ -200,12 +197,12 @@ const getAllPolicies = (
       permission === perm &&
       !allowedPolicies.find(
         allowedPolicy =>
-          allowedPolicy.policy.toLocaleLowerCase('en-US') ===
-          p.policy?.toLocaleLowerCase('en-US'),
+          allowedPolicy.policy.toLocaleLowerCase(locale) ===
+          p.policy?.toLocaleLowerCase(locale),
       )
     ) {
       acc.push({
-        policy: capitalizeFirstLetter(p.policy) || 'Use',
+        policy: capitalizeFirstLetter(p.policy) || t('common.use'),
         effect: 'deny',
       });
     }
@@ -217,6 +214,8 @@ const getAllPolicies = (
 export const getPermissionsData = (
   policies: RoleBasedPolicy[],
   permissionPolicies: PluginPermissionMetaData[],
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+  locale = 'en',
 ): PermissionsData[] => {
   const data = policies.reduce(
     (acc: PermissionsDataSet[], policy: RoleBasedPolicy) => {
@@ -226,25 +225,21 @@ export const getPermissionsData = (
         const policyTitleCase = capitalizeFirstLetter(policyStr);
         const policyString = new Set<string>();
         const policiesSet = new Set<{ policy: string; effect: string }>();
-        const {
-          pluginId,
-          isResourced,
-          resourceType,
-          permissionName,
-          usingResourceType,
-        } = getPluginInfo(permissionPolicies, policy);
-        acc.push({
-          permission: permissionName,
-          plugin: pluginId,
-          policyString: policyString.add(policyTitleCase || 'Use'),
-          policies: policiesSet.add({
-            policy: policyTitleCase || 'Use',
-            effect: policy.effect,
-          }),
-          isResourced,
-          resourceType,
-          usingResourceType,
-        });
+        const pluginInfo = getPluginInfo(permissionPolicies, policy);
+        if (pluginInfo?.pluginId) {
+          acc.push({
+            permission: pluginInfo.permissionName,
+            plugin: pluginInfo.pluginId,
+            policyString: policyString.add(policyTitleCase || t('common.use')),
+            policies: policiesSet.add({
+              policy: policyTitleCase || t('common.use'),
+              effect: policy.effect,
+            }),
+            isResourced: pluginInfo.isResourced,
+            resourceType: pluginInfo.resourceType,
+            usingResourceType: pluginInfo.usingResourceType,
+          });
+        }
       }
       return acc;
     },
@@ -258,6 +253,8 @@ export const getPermissionsData = (
       Array.from(p.policies),
       permissionPolicies.find(pp => pp.pluginId === p.plugin)
         ?.policies as PolicyDetails[],
+      t,
+      locale,
     ),
   })) as PermissionsData[];
 };
@@ -316,10 +313,11 @@ export const getConditionsData = (
 export const getPoliciesData = (
   allowedPermissions: string[],
   policies: string[],
+  locale = 'en',
 ): RowPolicy[] => {
   return policies.map(p => ({
     policy: p,
-    ...(allowedPermissions.includes(p.toLocaleLowerCase('en-US'))
+    ...(allowedPermissions.includes(p.toLocaleLowerCase(locale))
       ? { effect: 'allow' }
       : { effect: 'deny' }),
   }));
@@ -337,11 +335,12 @@ export const getConditionalPermissionsData = (
   conditionalPermissions: RoleConditionalPolicyDecision<PermissionAction>[],
   permissionPolicies: PluginsPermissionPoliciesData,
   allPermissionPolicies: PluginPermissionMetaData[],
+  locale = 'en-US',
 ): PermissionsData[] => {
   return conditionalPermissions.reduce((acc: any, cp) => {
     const conditions = getConditionsData(cp.conditions);
     const allowedPermissions = cp.permissionMapping.map(action =>
-      action.toLocaleLowerCase('en-US'),
+      action.toLocaleLowerCase(locale),
     );
 
     const pluginPermissionMetaData = allPermissionPolicies.find(
@@ -353,7 +352,7 @@ export const getConditionalPermissionsData = (
         po =>
           isResourcedPolicy(po) &&
           po.resourceType === cp.resourceType &&
-          allowedPermissions.includes(po.policy.toLocaleLowerCase('en-US')),
+          allowedPermissions.includes(po.policy.toLocaleLowerCase(locale)),
       ) ?? [];
 
     const allPolicies = (pm: string) =>
@@ -379,7 +378,7 @@ export const getConditionalPermissionsData = (
               ...(index === 0 ||
               !!policies.find(
                 pl =>
-                  pl.policy.toLocaleLowerCase('en-US') ===
+                  pl.policy.toLocaleLowerCase(locale) ===
                     arr[index - 1].policy && pl.effect === 'allow',
               )
                 ? { id: cp.id }

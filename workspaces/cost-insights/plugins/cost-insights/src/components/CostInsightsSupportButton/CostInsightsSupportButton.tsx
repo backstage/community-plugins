@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { SupportButton } from '@backstage/core-components';
 
 export const CostInsightsSupportButton = () => {

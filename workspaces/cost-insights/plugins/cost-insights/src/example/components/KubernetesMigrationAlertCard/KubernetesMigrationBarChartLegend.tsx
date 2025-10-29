@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Box from '@material-ui/core/Box';
 import { useTheme } from '@material-ui/core/styles';
 import { CostGrowth, LegendItem } from '../../../components';

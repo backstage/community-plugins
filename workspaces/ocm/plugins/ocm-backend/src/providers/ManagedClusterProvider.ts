@@ -80,7 +80,7 @@ export class ManagedClusterProvider implements EntityProvider {
     this.scheduleFn = this.createScheduleFn(taskRunner);
   }
 
-  static fromConfig(
+  static async fromConfig(
     deps: {
       config: Config;
       logger: LoggerService;
@@ -88,35 +88,41 @@ export class ManagedClusterProvider implements EntityProvider {
     options:
       | { schedule: SchedulerServiceTaskRunner }
       | { scheduler: SchedulerService },
-  ) {
+  ): Promise<ManagedClusterProvider[]> {
     const { config, logger } = deps;
 
-    return readOcmConfigs(config).map(providerConfig => {
-      const client = hubApiClient(providerConfig, logger);
-      let taskRunner;
-      if ('scheduler' in options && providerConfig.schedule) {
-        // Create a scheduled task runner using the provided scheduler and schedule configuration
-        taskRunner = options.scheduler.createScheduledTaskRunner(
-          providerConfig.schedule,
-        );
-      } else if ('schedule' in options) {
-        // Use the provided schedule directly
-        taskRunner = options.schedule;
-      } else {
-        throw new InputError(
-          `No schedule provided via config for OCMProvider:${providerConfig.id}.`,
-        );
-      }
+    const providerConfigs = readOcmConfigs(config);
 
-      return new ManagedClusterProvider(
-        client,
-        providerConfig.hubResourceName,
-        providerConfig.id,
-        deps,
-        providerConfig.owner,
-        taskRunner,
-      );
-    });
+    const providers = await Promise.all(
+      providerConfigs.map(async providerConfig => {
+        const client = await hubApiClient(providerConfig, logger);
+        let taskRunner;
+        if ('scheduler' in options && providerConfig.schedule) {
+          // Create a scheduled task runner using the provided scheduler and schedule configuration
+          taskRunner = options.scheduler.createScheduledTaskRunner(
+            providerConfig.schedule,
+          );
+        } else if ('schedule' in options) {
+          // Use the provided schedule directly
+          taskRunner = options.schedule;
+        } else {
+          throw new InputError(
+            `No schedule provided via config for OCMProvider:${providerConfig.id}.`,
+          );
+        }
+
+        return new ManagedClusterProvider(
+          client,
+          providerConfig.hubResourceName,
+          providerConfig.id,
+          deps,
+          providerConfig.owner,
+          taskRunner,
+        );
+      }),
+    );
+
+    return providers;
   }
   public async connect(connection: EntityProviderConnection): Promise<void> {
     this.connection = connection;

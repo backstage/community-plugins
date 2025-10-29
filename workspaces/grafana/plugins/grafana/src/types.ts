@@ -35,7 +35,7 @@ export interface Dashboard {
    * The folder title, if any
    * @public
    */
-  folderTitle: string;
+  folderTitle: string | undefined;
   /**
    * The endpoint to the folder
    * @public

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useRef } from 'react';
 
 import { GraphQlPullRequests, PullRequestsNumber } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
@@ -25,7 +25,7 @@ export const useGetPullRequestsFromRepository = () => {
   const graphql =
     useOctokitGraphQl<GraphQlPullRequests<PullRequestsNumber[]>>();
 
-  const fn = React.useRef(
+  const fn = useRef(
     async (
       repo: string,
       pullRequestLimit?: number,

@@ -123,6 +123,7 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.hotspotsReviewedTitle': 'Hotspots Reviewed';
     readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
     readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
+    readonly 'sonarQubeCard.qualityBadgeTooltip': 'View SonarQube Dashboard';
     readonly 'sonarQubeCard.emptyState.title': 'No information to display';
     readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
     readonly 'sonarQubeCard.noSonarQubeError.hasAnnotation': "There is no SonarQube project with key '{{project}}'";

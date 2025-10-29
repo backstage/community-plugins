@@ -22,7 +22,6 @@ import {
 import * as cards from './entityCards';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
-import React from 'react';
 
 jest.mock('../hooks/useUserRepositoriesAndTeam', () => {
   return {

@@ -1,5 +1,37 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.5.0
+
+### Minor Changes
+
+- 7de2f90: Display Multiple links
+  Display errorInfo facts description and value if check result is false and fact type is not boolean
+  Update layout of maturity check accordion summary display
+  bugfix: Remove local implementation of accordion
+
+### Patch Changes
+
+- 98fb7ac: Display the check name in the maturity results table instead of the id
+
+## 0.4.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- Updated dependencies [ba5bf7b]
+  - @backstage-community/plugin-tech-insights-common@0.7.1
+  - @backstage-community/plugin-tech-insights-maturity-common@0.3.1
+  - @backstage-community/plugin-tech-insights-react@1.2.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 47e26f5: Remove material-ui 4 usage and conflict
+
 ## 0.3.0
 
 ### Minor Changes

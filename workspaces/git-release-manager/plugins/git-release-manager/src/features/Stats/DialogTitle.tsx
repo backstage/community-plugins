@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactNode, ComponentProps } from 'react';
 import {
   createStyles,
   IconButton,
@@ -29,8 +29,8 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import { Stats } from './Stats';
 
 interface DialogTitleProps extends WithStyles<typeof styles> {
-  children: React.ReactNode;
-  setShowStats: React.ComponentProps<typeof Stats>['setShowStats'];
+  children: ReactNode;
+  setShowStats: ComponentProps<typeof Stats>['setShowStats'];
 }
 
 const styles = (theme: Theme) =>

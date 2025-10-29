@@ -23,7 +23,7 @@ import {
 import Clear from '@material-ui/icons/Clear';
 import Search from '@material-ui/icons/Search';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineRunListSearchBarProps = {
   value: string;

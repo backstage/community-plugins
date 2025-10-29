@@ -1,11 +1,16 @@
-import React from 'react';
-import { IconButton, makeStyles, SvgIcon, useTheme } from '@material-ui/core';
+import type { MouseEvent } from 'react';
+import type { Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import SvgIcon from '@mui/material/SvgIcon';
+
+import { makeStyles } from '@mui/styles';
 
 type TablePaginationActionsProps = {
   count: number;
   page: number;
   rowsPerPage: number;
-  onPageChange: (e: React.MouseEvent<HTMLButtonElement>, value: number) => void;
+  onPageChange: (e: MouseEvent<HTMLButtonElement>, value: number) => void;
 };
 
 const FirstPageIcon = () => (
@@ -56,7 +61,7 @@ const ArrowRight = () => (
   </SvgIcon>
 );
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   container: {
     display: 'flex',
     gap: '8px',
@@ -66,7 +71,7 @@ const useStyles = makeStyles(theme => ({
   },
   buttonContainer: {
     padding: '0',
-    color: theme.palette.type === 'light' ? '#073C8C' : 'white',
+    color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
     '&:disabled': {
       color: '#C4C6CB',
     },
@@ -81,23 +86,19 @@ export const TablePaginationActions = ({
 }: TablePaginationActionsProps) => {
   const theme = useTheme();
 
-  const handleFirstPageButtonClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleFirstPageButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, 0);
   };
 
-  const handleBackButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBackButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, page - 1);
   };
 
-  const handleNextButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleNextButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, page + 1);
   };
 
-  const handleLastPageButtonClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleLastPageButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
@@ -110,6 +111,7 @@ export const TablePaginationActions = ({
         disabled={page === 0}
         aria-label="first page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
@@ -118,6 +120,7 @@ export const TablePaginationActions = ({
         disabled={page === 0}
         aria-label="previous page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
       </IconButton>
@@ -127,6 +130,7 @@ export const TablePaginationActions = ({
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <ArrowLeft /> : <ArrowRight />}
       </IconButton>
@@ -135,6 +139,7 @@ export const TablePaginationActions = ({
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
         className={classes.buttonContainer}
+        size="large"
       >
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>

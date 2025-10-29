@@ -1,6 +1,7 @@
 app:
   title: CI/CD Statistics Example App
   baseUrl: http://localhost:3000
+  packages: all
 
 organization:
   name: CI/CD Statistics Example

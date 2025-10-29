@@ -1,5 +1,68 @@
 # @backstage-community/plugin-explore
 
+## 0.14.0
+
+### Minor Changes
+
+- 37cee38: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [37cee38]
+  - @backstage-community/plugin-explore-common@0.9.0
+  - @backstage-community/plugin-explore-react@0.9.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 0264565: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [0264565]
+  - @backstage-community/plugin-explore-common@0.8.0
+  - @backstage-community/plugin-explore-react@0.8.0
+
+## 0.12.0
+
+### Minor Changes
+
+- deb9523: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- 13c0def: Migrate the explore api, index page, and nav item to the new frontend system.
+- 02546ad: Internall update to use the yarn plugin for version management
+- Updated dependencies [02546ad]
+- Updated dependencies [deb9523]
+  - @backstage-community/plugin-explore-common@0.7.0
+  - @backstage-community/plugin-explore-react@0.7.0
+
+## 0.11.0
+
+### Minor Changes
+
+- e656f1d: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [e656f1d]
+  - @backstage-community/plugin-explore-common@0.6.0
+  - @backstage-community/plugin-explore-react@0.6.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 2294eff: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [2294eff]
+  - @backstage-community/plugin-explore-common@0.5.0
+  - @backstage-community/plugin-explore-react@0.5.0
+
 ## 0.9.1
 
 ### Patch Changes

@@ -16,13 +16,13 @@
 import '@testing-library/jest-dom';
 
 import { screen, waitFor } from '@testing-library/react';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { mockKubernetesPlrResponse } from '../../../__fixtures__/1-pipelinesData';
 import { acsImageCheckResults } from '../../../__fixtures__/advancedClusterSecurityData';
 import { enterpriseContractResult } from '../../../__fixtures__/enterpriseContractData';
 import PipelineRunOutput from '../PipelineRunOutput';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { kubernetesProxyApiRef } from '../../../types/types';
 
 describe('PipelineRunOutput', () => {
   it('should render the progress bar', async () => {

@@ -24,8 +24,8 @@ import { rootRouteRef } from '../routes';
 export const entityGithubActionsContent = EntityContentBlueprint.make({
   name: 'entity',
   params: {
-    defaultPath: 'github-actions',
-    defaultTitle: 'GitHub Actions',
+    path: 'github-actions',
+    title: 'GitHub Actions',
     filter: isGithubActionsAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>

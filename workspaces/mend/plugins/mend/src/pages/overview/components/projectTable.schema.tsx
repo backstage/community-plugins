@@ -1,6 +1,7 @@
-import React from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { styled, Typography } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { Tag, TagColor, type TableRowProjectProps } from '../../../components';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import { ProjectTableLanguages } from './ProjectTableLanguages';
@@ -32,10 +33,10 @@ export const tagColorMap = {
 };
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
-  color: theme?.palette?.type === 'light' ? '#073C8C' : 'white',
+  color: theme?.palette?.mode === 'light' ? '#073C8C' : 'white',
 }));
 
-const classes: Record<string, React.CSSProperties> = {
+const classes: Record<string, CSSProperties> = {
   ellipsis: {
     maxWidth: 200, // percentage also works
     whiteSpace: 'nowrap',
@@ -110,7 +111,7 @@ export const projectColumn = [
       display: 'flex',
       scrollbarWidth: 'none',
       height: '100%',
-    } as Record<string, React.CSSProperties>, // NOTE: scrollbarWidth is not recoginized
+    } as Record<string, CSSProperties>, // NOTE: scrollbarWidth is not recoginized
     width: '310px',
   },
   {
@@ -158,11 +159,11 @@ export const projectTableColumnSchema = projectColumn.map(rowData => {
     width: rowData.width,
     headerStyle: rowData.headerStyle,
     cellStyle: rowData.cellStyle,
-    render: (row: TableRowProjectProps): React.ReactNode => {
+    render: (row: TableRowProjectProps): ReactNode => {
       const value = getObjValue(row, rowData.field) as any;
       switch (rowData.field) {
         case PROJECT_FIELD.NAME: {
-          const uri = `/${row.entity?.source}/${row.entity?.namespace}/${row.entity?.kind}/${row.entity?.params.repo}/mend`;
+          const uri = `/${row.entity?.source}/${row.entity?.namespace}/${row.entity?.kind}/${row.entity?.params.repo}/mend?filter=${row.name}`;
 
           return (
             <Link to={uri}>

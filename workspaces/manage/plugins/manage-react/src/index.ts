@@ -34,15 +34,13 @@ export {
   useOwnedKinds,
   useOwnedEntities,
   useManagedEntities,
-} from './components/OwnedEntitiesProvider';
-
-export type { Owners } from './components/OwnedGroupsProvider';
-export { useOwners } from './components/OwnedGroupsProvider';
+  useOwners,
+} from './components/OwnedProvider';
 
 export type {
-  OwnedEntitiesProviderProps,
+  OwnedProviderProps,
   ManageOwnedProvider,
-} from './components/OwnedEntitiesProvider';
+} from './components/OwnedProvider';
 
 export type {
   ManageGaugeCardProps,

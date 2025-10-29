@@ -1,5 +1,61 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.14.0
+
+### Minor Changes
+
+- a543616: Backstage version bump to v1.44.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 3e41304: Backstage version bump to v1.43.2
+
+## 0.12.2
+
+### Patch Changes
+
+- 20ccec6: Fallback to document modified by display name if public name is not defined
+
+## 0.12.1
+
+### Patch Changes
+
+- 076d975: Option to cache Confluence documents to reduce API calls.
+
+  The cache uses document version information, so you can safely set long cache durations (if your cache memory allows it!). You can enable caching with `documentCacheEnabled: true` and adjust the cache duration with `documentCacheTtl` (default to 24h). Since indexing will be faster, you may want to reduce your indexing schedule interval.
+
+## 0.12.0
+
+### Minor Changes
+
+- 38ce78d: Backstage version bump to v1.42.3
+
+## 0.11.0
+
+### Minor Changes
+
+- 2fb111a: Backstage version bump to v1.41.1
+
+## 0.10.1
+
+### Patch Changes
+
+- 9b53e9b: Refined CQL query generation in the Confluence collator to correctly handle combinations of 'spaces' and 'query' parameters, preventing invalid queries when 'spaces' is empty but 'query' is present. Updated tests and documentation accordingly.
+
+## 0.10.0
+
+### Minor Changes
+
+- 106dd40: Add support for scoped API tokens when using Atlassian Cloud for the Confluence plugin.
+
+## 0.9.0
+
+### Minor Changes
+
+- 8298b36: Backstage version bump to v1.40.2
+
 ## 0.8.0
 
 ### Minor Changes

@@ -19,6 +19,9 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Typography from '@mui/material/Typography';
 
+import { useTranslation } from '../../hooks/useTranslation';
+import { Trans } from '../Trans';
+
 export const RolesListToolbar = ({
   createRoleAllowed,
   createRoleLoading,
@@ -26,6 +29,8 @@ export const RolesListToolbar = ({
   createRoleAllowed: boolean;
   createRoleLoading: boolean;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div>
       {!createRoleLoading && !createRoleAllowed && (
@@ -35,26 +40,26 @@ export const RolesListToolbar = ({
               fontWeight: 'bold',
             }}
           >
-            Unable to create role.
+            {t('toolbar.warning.title')}
           </AlertTitle>
-          To enable create/edit role button, make sure required users/groups are
-          available in catalog as a role cannot be created without users/groups
-          and also the role associated with your user should have the permission
-          policies mentioned{' '}
-          <Link
-            to="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
-            target="_blank"
-          >
-            here
-          </Link>
+          <Trans
+            message="toolbar.warning.message"
+            params={{
+              link: (
+                <Link
+                  to="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
+                  target="_blank"
+                >
+                  {t('toolbar.warning.linkText')}
+                </Link>
+              ),
+            }}
+          />
           <Typography sx={{ mt: 1 }} fontSize="small">
             <Typography component="span" fontWeight="bold" fontSize="small">
-              Note
+              {t('toolbar.warning.note')}
             </Typography>
-            : Even after ingesting users/groups in catalog and applying above
-            permissions if the create/edit button is still disabled then please
-            contact your administrator as you might be conditionally restricted
-            from accessing the create/edit button.
+            : {t('toolbar.warning.noteText')}
           </Typography>
         </Alert>
       )}
@@ -74,7 +79,7 @@ export const RolesListToolbar = ({
           disabled={!createRoleAllowed}
           data-testid="create-role"
         >
-          Create
+          {t('toolbar.createButton')}
         </LinkButton>
       </Typography>
     </div>

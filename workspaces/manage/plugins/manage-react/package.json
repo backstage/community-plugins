@@ -1,12 +1,15 @@
 {
   "name": "@backstage-community/plugin-manage-react",
   "description": "Manage plugin - react package",
-  "version": "0.1.2",
+  "version": "1.3.0",
   "backstage": {
     "role": "web-library",
     "pluginId": "manage",
     "pluginPackages": [
       "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-backend",
+      "@backstage-community/plugin-manage-common",
+      "@backstage-community/plugin-manage-node",
       "@backstage-community/plugin-manage-react"
     ]
   },
@@ -21,8 +24,8 @@
   "homepage": "https://backstage.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/manage-react"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/manage/plugins/manage-react"
   },
   "keywords": [
     "backstage",
@@ -41,11 +44,12 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-components": "^0.17.0",
-    "@backstage/core-plugin-api": "^1.10.5",
-    "@backstage/plugin-catalog-react": "^1.16.0",
-    "@backstage/types": "^1.2.1",
+    "@backstage-community/plugin-manage-common": "workspace:^",
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.18.2",
+    "@backstage/core-plugin-api": "^1.11.1",
+    "@backstage/plugin-catalog-react": "^1.21.2",
+    "@backstage/types": "^1.2.2",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
@@ -63,7 +67,7 @@
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.0",
+    "@backstage/cli": "^0.34.4",
     "@types/pluralize": "^0.0.33",
     "@types/react": "^18.3.12"
   },

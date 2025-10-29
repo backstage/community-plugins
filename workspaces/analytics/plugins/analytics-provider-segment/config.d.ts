@@ -40,6 +40,20 @@ export interface Config {
              * @visibility frontend
              */
             maskIP?: boolean;
+
+            /**
+             * The version of the Backstage application. This will be included in all
+             * analytics events to help with version-based filtering of analytics dashboards.
+             * @visibility frontend
+             */
+            appVersion?: string;
+
+            /**
+             * The version of Backstage framework being used. This will be included in all
+             * analytics events to help with framework version tracking.
+             * @visibility frontend
+             */
+            backstageVersion?: string;
           }
         | {
             /**
@@ -60,6 +74,20 @@ export interface Config {
              * @visibility frontend
              */
             maskIP?: boolean;
+
+            /**
+             * The version of the Backstage application. This will be included in all
+             * analytics events to help with version-based filtering of analytics dashboards.
+             * @visibility frontend
+             */
+            appVersion?: string;
+
+            /**
+             * The version of Backstage framework being used. This will be included in all
+             * analytics events to help with framework version tracking.
+             * @visibility frontend
+             */
+            backstageVersion?: string;
           };
     };
   };

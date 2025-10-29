@@ -20,7 +20,22 @@ export function createNowActions(
 // @public
 export const createRecordAction: (
   options: CreateActionOptions,
-) => TemplateAction;
+) => TemplateAction<
+  {
+    tableName: string;
+    requestBody?: Record<PropertyKey, unknown> | undefined;
+    sysparmDisplayValue?: 'true' | 'false' | 'all' | undefined;
+    sysparmExcludeReferenceLink?: boolean | undefined;
+    sysparmFields?: string[] | undefined;
+    sysparmInputDisplayValue?: boolean | undefined;
+    sysparmSuppressAutoSysField?: boolean | undefined;
+    sysparmView?: string | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // @public
 export function createServiceNowActions(
@@ -35,22 +50,81 @@ export function createTableActions(
 // @public
 export const deleteRecordAction: (
   options: CreateActionOptions,
-) => TemplateAction;
+) => TemplateAction<
+  {
+    tableName: string;
+    sysId: string;
+    sysparmQueryNoDomain?: boolean | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // @public
 export const modifyRecordAction: (
   options: CreateActionOptions,
-) => TemplateAction;
+) => TemplateAction<
+  {
+    tableName: string;
+    sysId: string;
+    requestBody?: Record<PropertyKey, unknown> | undefined;
+    sysparmDisplayValue?: 'true' | 'false' | 'all' | undefined;
+    sysparmExcludeReferenceLink?: boolean | undefined;
+    sysparmFields?: string[] | undefined;
+    sysparmInputDisplayValue?: boolean | undefined;
+    sysparmSuppressAutoSysField?: boolean | undefined;
+    sysparmView?: string | undefined;
+    sysparmQueryNoDomain?: boolean | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // @public
 export const retrieveRecordAction: (
   options: CreateActionOptions,
-) => TemplateAction;
+) => TemplateAction<
+  {
+    tableName: string;
+    sysId: string;
+    sysparmDisplayValue?: 'true' | 'false' | 'all' | undefined;
+    sysparmExcludeReferenceLink?: boolean | undefined;
+    sysparmFields?: string[] | undefined;
+    sysparmView?: string | undefined;
+    sysparmQueryNoDomain?: boolean | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // @public
 export const retrieveRecordsAction: (
   options: CreateActionOptions,
-) => TemplateAction;
+) => TemplateAction<
+  {
+    tableName: string;
+    sysparmQuery?: string | undefined;
+    sysparmDisplayValue?: 'true' | 'false' | 'all' | undefined;
+    sysparmExcludeReferenceLink?: boolean | undefined;
+    sysparmSuppressPaginationHeader?: boolean | undefined;
+    sysparmFields?: string[] | undefined;
+    sysparmLimit?: number | undefined;
+    sysparmView?: string | undefined;
+    sysparmQueryCategory?: string | undefined;
+    sysparmQueryNoDomain?: boolean | undefined;
+    sysparmNoCount?: boolean | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // @public (undocumented)
 const scaffolderModuleServicenowActions: BackendFeature;
@@ -59,7 +133,24 @@ export default scaffolderModuleServicenowActions;
 // @public
 export const updateRecordAction: (
   options: CreateActionOptions,
-) => TemplateAction;
+) => TemplateAction<
+  {
+    tableName: string;
+    sysId: string;
+    requestBody?: Record<PropertyKey, unknown> | undefined;
+    sysparmDisplayValue?: 'true' | 'false' | 'all' | undefined;
+    sysparmExcludeReferenceLink?: boolean | undefined;
+    sysparmFields?: string[] | undefined;
+    sysparmInputDisplayValue?: boolean | undefined;
+    sysparmSuppressAutoSysField?: boolean | undefined;
+    sysparmView?: string | undefined;
+    sysparmQueryNoDomain?: boolean | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // (No @packageDocumentation comment for this package)
 ```

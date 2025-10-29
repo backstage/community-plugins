@@ -37,7 +37,7 @@ import ResourceBadge from '../PipelineRunList/ResourceBadge';
 import PipelineRunLogDownloader from './PipelineRunLogDownloader';
 import PipelineRunLogs from './PipelineRunLogs';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

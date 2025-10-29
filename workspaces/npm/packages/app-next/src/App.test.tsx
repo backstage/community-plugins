@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { renderWithEffects } from '@backstage/test-utils';
-
-// Rarely, and only in windows CI, do these tests take slightly more than the
-// default five seconds
-jest.setTimeout(15_000);
+import { render, waitFor } from '@testing-library/react';
+import App from './App';
 
 describe('App', () => {
   it('should render', async () => {
@@ -26,19 +23,21 @@ describe('App', () => {
       APP_CONFIG: [
         {
           data: {
-            app: {
-              title: 'Test',
-              support: { url: 'http://localhost:7007/support' },
-            },
+            app: { title: 'Test' },
             backend: { baseUrl: 'http://localhost:7007' },
+            techdocs: {
+              storageUrl: 'http://localhost:7007/api/techdocs/static/docs',
+            },
           },
           context: 'test',
         },
       ] as any,
     };
 
-    const { default: app } = await import('./App');
-    const rendered = await renderWithEffects(app);
-    expect(rendered.baseElement).toBeInTheDocument();
+    const rendered = render(App.createRoot());
+
+    await waitFor(() => {
+      expect(rendered.baseElement).toBeInTheDocument();
+    });
   });
 });

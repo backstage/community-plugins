@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import {
+  CatalogApi,
   catalogApiRef,
   StarredEntitiesApi,
   starredEntitiesApiRef,
 } from '@backstage/plugin-catalog-react';
 import { catalogPlugin } from '@backstage/plugin-catalog';
 import { Observable } from '@backstage/types';
+import { RELATION_OWNED_BY } from '@backstage/catalog-model';
 
 import {
   ManageApi,
@@ -31,7 +32,6 @@ import {
 
 import { ManagePageImpl } from './ManagePage';
 import { ManageTabsImpl } from '../ManageTabs';
-import { mockCatalogApi } from '../../../test/catalog';
 
 const starredEntities: StarredEntitiesApi = {
   toggleStarred: async () => {},
@@ -44,16 +44,26 @@ const starredEntities: StarredEntitiesApi = {
     } as Observable<Set<string>>),
 };
 
+const mockCatalogApi: CatalogApi = {
+  getEntitiesByRefs: async () => {
+    return { items: [] };
+  },
+} satisfies Partial<CatalogApi> as any as CatalogApi;
+
 describe('ManagePage', () => {
   it('should render an empty page if nothing owned', async () => {
     const mockApi: ManageApi = {
       getProviders: () => [],
+      getOwnersAndEntities: async () => ({
+        owners: { groups: [], ownedEntityRefs: [] },
+        ownedEntities: [],
+      }),
       kindOrder: [],
     };
 
     const apis = [
       [manageApiRef, mockApi],
-      [catalogApiRef, mockCatalogApi({ empty: true })],
+      [catalogApiRef, mockCatalogApi],
       [starredEntitiesApiRef, starredEntities],
     ] as const;
 
@@ -81,12 +91,31 @@ describe('ManagePage', () => {
   it('should render a table of owned entities', async () => {
     const mockApi: ManageApi = {
       getProviders: () => [],
+      getOwnersAndEntities: async () => ({
+        owners: { groups: [], ownedEntityRefs: ['user:default/guest'] },
+        ownedEntities: [
+          {
+            apiVersion: 'backstage.io/v1alpha1',
+            kind: 'Component',
+            metadata: {
+              name: 'foo',
+              title: 'The Foo',
+            },
+            relations: [
+              {
+                type: RELATION_OWNED_BY,
+                targetRef: 'user:default/guest',
+              },
+            ],
+          },
+        ],
+      }),
       kindOrder: [],
     };
 
     const apis = [
       [manageApiRef, mockApi],
-      [catalogApiRef, mockCatalogApi()],
+      [catalogApiRef, mockCatalogApi],
       [starredEntitiesApiRef, starredEntities],
     ] as const;
 

@@ -22,8 +22,10 @@ attributes:
     - azure-storage-explorer
     - badges
     - bazaar
+    - bitbucket-pull-requests
     - bitrise
     - blackduck
+    - bookmarks
     - cicd-statistics
     - cloudbuild
     - code-climate
@@ -38,6 +40,7 @@ attributes:
     - explore
     - feedback
     - firehydrant
+    - flux
     - fossa
     - gcalendar
     - gcp-projects
@@ -64,6 +67,7 @@ attributes:
     - linkerd
     - manage
     - matomo
+    - mcp-chat
     - mend
     - microsoft-calendar
     - mta
@@ -74,7 +78,6 @@ attributes:
     - npm
     - ocm
     - octopus-deploy
-    - odo
     - opencost
     - periskop
     - pingidentity
@@ -92,6 +95,7 @@ attributes:
     - scaffolder-backend-module-sonarqube
     - scaffolder-relation-processor
     - sentry
+    - servicenow
     - shortcuts
     - sonarqube
     - splunk

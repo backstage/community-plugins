@@ -10,7 +10,21 @@ import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 // @public (undocumented)
 export function createKubernetesNamespaceAction(
   catalogClient: CatalogClient,
-): TemplateAction<any, any, 'v1'>;
+): TemplateAction<
+  {
+    namespace: string;
+    token: string;
+    skipTLSVerify: boolean;
+    clusterRef?: string | undefined;
+    url?: string | undefined;
+    caData?: string | undefined;
+    labels?: string | undefined;
+  },
+  {
+    [x: string]: any;
+  },
+  'v2'
+>;
 
 // @public (undocumented)
 const scaffolderModuleKubernetesAction: BackendFeature;

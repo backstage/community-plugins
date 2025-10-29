@@ -15,7 +15,6 @@
  */
 
 import {
-  RepoBuild,
   BuildStatus,
   BuildResult,
   GitTag,
@@ -27,26 +26,6 @@ import {
   GitRef,
   GitPullRequest,
 } from 'azure-devops-node-api/interfaces/GitInterfaces';
-
-/**
- * @deprecated This method has no usages and will be removed in a future release
- */
-export function mappedRepoBuild(build: Build): RepoBuild {
-  return {
-    id: build.id,
-    title: [build.definition?.name, build.buildNumber]
-      .filter(Boolean)
-      .join(' - '),
-    link: build._links?.web.href ?? '',
-    status: build.status ?? BuildStatus.None,
-    result: build.result ?? BuildResult.None,
-    queueTime: build.queueTime?.toISOString(),
-    startTime: build.startTime?.toISOString(),
-    finishTime: build.finishTime?.toISOString(),
-    source: `${build.sourceBranch} (${build.sourceVersion?.slice(0, 8)})`,
-    uniqueName: build.requestedFor?.uniqueName ?? 'N/A',
-  };
-}
 
 export function mappedGitTag(
   gitRef: GitRef,

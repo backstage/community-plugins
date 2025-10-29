@@ -23,7 +23,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { DateTime } from 'luxon';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { fossaApiRef } from '../../api';
 import {

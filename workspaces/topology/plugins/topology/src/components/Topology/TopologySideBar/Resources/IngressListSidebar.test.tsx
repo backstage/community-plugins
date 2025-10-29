@@ -16,8 +16,13 @@
 import { render } from '@testing-library/react';
 
 import { workloadNodeData } from '../../../../__fixtures__/workloadNodeData';
+import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
 import { IngressData } from '../../../../types/ingresses';
 import IngressListSidebar from './IngressListSidebar';
+
+jest.mock('../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('IngressListSidebar', () => {
   it('should render ingress if exists', () => {

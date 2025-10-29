@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Button, Typography, Box } from '@material-ui/core';
 
 import { ComponentConfig, PromoteRcOnSuccessArgs } from '../../types/types';

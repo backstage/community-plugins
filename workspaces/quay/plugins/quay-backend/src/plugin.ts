@@ -18,6 +18,8 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 
+import { quayPermissions } from '@backstage-community/plugin-quay-common';
+
 import { createRouter } from './services/router';
 
 /**
@@ -33,10 +35,20 @@ export const quayPlugin = createBackendPlugin({
         config: coreServices.rootConfig,
         logger: coreServices.logger,
         permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
       },
-      async init({ config, logger, permissions, httpAuth, httpRouter }) {
+      async init({
+        config,
+        logger,
+        permissions,
+        permissionsRegistry,
+        httpAuth,
+        httpRouter,
+      }) {
+        permissionsRegistry.addPermissions(quayPermissions);
+
         httpRouter.use(
           await createRouter({
             logger,

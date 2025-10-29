@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { getByRole, screen, waitFor } from '@testing-library/react';
 import { renderInTestApp } from '@backstage/test-utils';
 import userEvent from '@testing-library/user-event';

@@ -1,5 +1,45 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.11.0
+
+### Minor Changes
+
+- 2258b1a: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 409370a: Added support for Backstage's New Frontend System.
+
+  If you're migrating to the new frontend system, you no longer need to wire up an API implementation in `apis.ts`. Instead, pass the module in to the `createApp()` function:
+
+  ```tsx
+  import ga4Module from '@backstage-community/plugin-analytics-module-ga4/alpha';
+
+  const app = createApp({
+    features: [ga4Module],
+  });
+  ```
+
+  This can be skipped if you have feature discovery enabled.
+
+## 0.10.0
+
+### Minor Changes
+
+- 3d6351f: Backstage version bump to v1.42.4
+
+## 0.9.0
+
+### Minor Changes
+
+- 70f97c5: Backstage version bump to v1.40.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 4ed9028: Backstage version bump to v1.39.0
+
 ## 0.7.0
 
 ### Minor Changes

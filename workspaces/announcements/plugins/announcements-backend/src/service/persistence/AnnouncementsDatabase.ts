@@ -29,19 +29,27 @@ const announcementsTable = 'announcements';
  */
 type AnnouncementUpsert = Omit<
   Announcement,
-  'category' | 'created_at' | 'start_at'
+  'category' | 'tags' | 'created_at' | 'start_at' | 'until_date' | 'updated_at'
 > & {
   category?: string;
+  tags?: string[];
   created_at: DateTime;
   start_at: DateTime;
+  until_date?: DateTime;
+  updated_at: DateTime;
 };
 
 /**
  * @internal
  */
-type DbAnnouncement = Omit<Announcement, 'category' | 'start_at'> & {
+type DbAnnouncement = Omit<
+  Announcement,
+  'category' | 'tags' | 'start_at' | 'until_date'
+> & {
   category?: string;
+  tags?: string | string[];
   start_at: string;
+  until_date: string | null;
 };
 
 /**
@@ -61,18 +69,42 @@ type AnnouncementModelsList = {
 };
 
 export const timestampToDateTime = (input: Date | string): DateTime => {
-  if (typeof input === 'object') {
+  if (input instanceof Date) {
     return DateTime.fromJSDate(input).toUTC();
   }
-
-  const result = input.includes(' ')
-    ? DateTime.fromSQL(input, { zone: 'utc' })
-    : DateTime.fromISO(input, { zone: 'utc' });
+  const trimmed = input.trim();
+  const result = trimmed.includes(' ')
+    ? DateTime.fromSQL(trimmed, { zone: 'utc' })
+    : DateTime.fromISO(trimmed, { zone: 'utc' });
   if (!result.isValid) {
     throw new TypeError('Not valid');
   }
-
   return result;
+};
+
+/**
+ * Parse tags from database string or array to string array
+ * @internal
+ */
+const parseTagsFromDb = (
+  tags: string | string[] | null | undefined,
+): string[] => {
+  if (!tags) return [];
+
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return tags
+        .replace(/^\{|\}$/g, '')
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(Boolean);
+    }
+  }
+
+  return Array.isArray(tags) ? tags : [];
 };
 
 /**
@@ -93,9 +125,17 @@ const announcementUpsertToDB = (
     body: announcement.body,
     publisher: announcement.publisher,
     created_at: announcement.created_at.toSQL()!,
+    updated_at: announcement.updated_at.toSQL()!,
     active: announcement.active,
     start_at: announcement.start_at.toSQL()!,
+    until_date: announcement.until_date
+      ? announcement.until_date.toSQL()!
+      : null,
     on_behalf_of: announcement.on_behalf_of,
+    tags:
+      announcement.tags && announcement.tags.length > 0
+        ? JSON.stringify(announcement.tags)
+        : JSON.stringify([]),
   };
 };
 
@@ -105,6 +145,8 @@ const announcementUpsertToDB = (
 const DBToAnnouncementWithCategory = (
   announcementDb: DbAnnouncementWithCategory,
 ): AnnouncementModel => {
+  const parsedTags = parseTagsFromDb(announcementDb.tags);
+
   return {
     id: announcementDb.id,
     category:
@@ -114,6 +156,10 @@ const DBToAnnouncementWithCategory = (
             title: announcementDb.category_title,
           }
         : undefined,
+    tags: parsedTags.map(tag => ({
+      slug: tag,
+      title: tag,
+    })),
     title: announcementDb.title,
     excerpt: announcementDb.excerpt,
     body: announcementDb.body,
@@ -121,6 +167,10 @@ const DBToAnnouncementWithCategory = (
     created_at: timestampToDateTime(announcementDb.created_at),
     active: announcementDb.active,
     start_at: timestampToDateTime(announcementDb.start_at),
+    until_date: announcementDb.until_date
+      ? timestampToDateTime(announcementDb.until_date)
+      : null,
+    updated_at: timestampToDateTime(announcementDb.updated_at),
     on_behalf_of: announcementDb.on_behalf_of,
   };
 };
@@ -140,12 +190,12 @@ export class AnnouncementsDatabase {
       offset,
       max,
       active,
+      tags,
       sortBy = 'created_at',
       order = 'desc',
+      current,
     } = request;
 
-    // Filter the query by states
-    // Used for both the result query and the count query
     const filterState = <TRecord extends {}, TResult>(
       qb: Knex.QueryBuilder<TRecord, TResult>,
     ) => {
@@ -155,9 +205,20 @@ export class AnnouncementsDatabase {
       if (active) {
         qb.where('active', active);
       }
+      if (current) {
+        const today = DateTime.now().toISO();
+        qb.where('start_at', '<=', today).andWhere(q =>
+          q.whereNull('until_date').orWhere('until_date', '>=', today),
+        );
+      }
+      if (tags?.length) {
+        tags.forEach(tag => {
+          const likePattern = `%"${tag}"%`;
+          qb.whereRaw('CAST(tags AS TEXT) LIKE ?', [likePattern]);
+        });
+      }
     };
 
-    // Filter the page (offset + max). Used only for the result query
     const filterRange = <TRecord extends {}, TResult>(
       qb: Knex.QueryBuilder<TRecord, TResult>,
     ) => {
@@ -181,19 +242,60 @@ export class AnnouncementsDatabase {
         'categories.title as category_title',
         'active',
         'start_at',
+        'until_date',
         'on_behalf_of',
+        'tags',
+        'updated_at',
       )
       .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
     filterState(queryBuilder);
     filterRange(queryBuilder);
-    const results = (await queryBuilder.select()).map(
-      DBToAnnouncementWithCategory,
+
+    const announcementRows = await queryBuilder;
+
+    const announcementsWithInitialTags = announcementRows.map(row =>
+      DBToAnnouncementWithCategory(row),
     );
 
-    const countQueryBuilder = this.db<DbAnnouncement>(announcementsTable).count<
-      Record<string, number>
-    >('id', { as: 'total' });
+    const allTagSlugs = new Set<string>();
+    announcementsWithInitialTags.forEach(announcement => {
+      announcement.tags?.forEach(tag => {
+        allTagSlugs.add(tag.slug);
+      });
+    });
+
+    const tagSlugsArray = Array.from(allTagSlugs);
+    const tagTitleMap = new Map<string, string>(); // slug -> title
+
+    if (tagSlugsArray.length > 0) {
+      const dbTagDetails: Array<{ slug: string; title: string }> =
+        await this.db('tags')
+          .select('slug', 'title')
+          .whereIn('slug', tagSlugsArray);
+
+      dbTagDetails.forEach(tagDetail => {
+        if (tagDetail.title) {
+          tagTitleMap.set(tagDetail.slug, tagDetail.title);
+        }
+      });
+    }
+
+    const results = announcementsWithInitialTags.map(announcement => {
+      if (announcement.tags && announcement.tags.length > 0) {
+        const updatedTags = announcement.tags.map(tag => ({
+          slug: tag.slug,
+          title: tagTitleMap.get(tag.slug) || tag.slug,
+        }));
+        return { ...announcement, tags: updatedTags };
+      }
+      return announcement;
+    });
+
+    const countQueryBuilder = this.db<DbAnnouncement>(announcementsTable).count(
+      'id',
+      { as: 'total' },
+    );
     filterState(countQueryBuilder);
     const countResult = await countQueryBuilder.first();
     const count =
@@ -221,7 +323,10 @@ export class AnnouncementsDatabase {
           'categories.title as category_title',
           'active',
           'start_at',
+          'until_date',
           'on_behalf_of',
+          'tags',
+          'updated_at',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)
@@ -230,11 +335,28 @@ export class AnnouncementsDatabase {
       return undefined;
     }
 
-    return DBToAnnouncementWithCategory(dbAnnouncement);
+    const announcementBase = DBToAnnouncementWithCategory(dbAnnouncement);
+
+    if (announcementBase.tags && announcementBase.tags.length > 0) {
+      const tagSlugs = announcementBase.tags.map(t => t.slug);
+      const tagDetailsFromDb: Array<{ slug: string; title: string }> =
+        await this.db('tags').select('slug', 'title').whereIn('slug', tagSlugs);
+
+      const tagDetailsMap = new Map(
+        tagDetailsFromDb.map(td => [td.slug, td.title]),
+      );
+
+      announcementBase.tags = announcementBase.tags.map(tag => ({
+        slug: tag.slug,
+        title: tagDetailsMap.get(tag.slug) || tag.slug,
+      }));
+    }
+
+    return announcementBase;
   }
 
   async deleteAnnouncementByID(id: string): Promise<void> {
-    return this.db<DbAnnouncement>(announcementsTable).where('id', id).delete();
+    await this.db<DbAnnouncement>(announcementsTable).where('id', id).delete();
   }
 
   async insertAnnouncement(
@@ -260,6 +382,12 @@ export class AnnouncementsDatabase {
       .where('id', announcement.id)
       .update(announcementUpsertToDB(announcement));
 
-    return (await this.announcementByID(announcement.id))!;
+    const updatedAnnouncement = await this.announcementByID(announcement.id);
+
+    if (!updatedAnnouncement) {
+      throw new Error('Failed to retrieve updated announcement');
+    }
+
+    return updatedAnnouncement;
   }
 }

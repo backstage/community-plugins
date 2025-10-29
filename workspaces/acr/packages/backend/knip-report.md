@@ -1,6 +1,6 @@
 # Knip report
 
-## Unused dependencies (11)
+## Unused dependencies (10)
 
 | Name                                                  | Location          | Severity |
 | :---------------------------------------------------- | :---------------- | :------- |
@@ -12,14 +12,6 @@
 | @backstage/config                                     | package.json:25:6 | error    |
 | better-sqlite3                                        | package.json:47:6 | error    |
 | node-gyp                                              | package.json:48:6 | error    |
-| winston                                               | package.json:50:6 | error    |
 | app                                                   | package.json:46:6 | error    |
 | pg                                                    | package.json:49:6 | error    |
 
-## Unused devDependencies (3)
-
-| Name                             | Location          | Severity |
-| :------------------------------- | :---------------- | :------- |
-| @types/express-serve-static-core | package.json:55:6 | error    |
-| @types/express                   | package.json:54:6 | error    |
-| @types/luxon                     | package.json:56:6 | error    |

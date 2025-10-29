@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, {
+import {
+  createContext,
   PropsWithChildren,
   useContext,
   useEffect,
@@ -43,9 +44,9 @@ export type GroupsContextProps = {
   groups: Group[];
 };
 
-export const GroupsContext = React.createContext<
-  GroupsContextProps | undefined
->(undefined);
+export const GroupsContext = createContext<GroupsContextProps | undefined>(
+  undefined,
+);
 
 export const GroupsProvider = ({ children }: PropsWithChildren<{}>) => {
   const identityApi = useApi(identityApiRef);

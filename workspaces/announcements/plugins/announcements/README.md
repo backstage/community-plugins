@@ -92,6 +92,14 @@ app:
 
 ## Customization
 
+### Defaulting new announcements to inactive
+
+It is possible to set the initial value of the `active` switch, displayed in the new announcement form, as false by passing a `defaultInactive` prop to the `AnnouncementsPage`.
+
+```ts
+<AnnouncementsPage defaultInactive />
+```
+
 ### Overriding the AnnouncementCard
 
 It is possible to specify the length of the title for announcements rendered on the `AnnouncementsPage`. You can do this by passing a `cardOptions` prop to the `AnnouncementsPage` component. The `cardOptions` prop accepts an object with the following properties:
@@ -110,7 +118,7 @@ Example
 
 ### Overriding the AnnouncementsPage
 
-It is possible to specify the Announcements within a specific category rendered on the `AnnouncementsPage`. You can do this by passing a `category` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts an value such as:
+It is possible to specify the Announcements within a specific category or tags rendered on the `AnnouncementsPage`. You can do this by passing a `category` or `tags` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts a value such as:
 
 ```ts
 category = 'conferences';
@@ -130,6 +138,23 @@ It is possible to specify the text for the "New announcement" button rendered on
 {
   name: string; // defaults to 'announcement'
 }
+```
+
+### Overriding the NewAnnouncementBanner
+
+It is possible to specify the length of the title for announcements rendered on the `NewAnnouncementBanner`. You can do this by passing a `cardOptions` prop to the `NewAnnouncementBanner` component. The `cardOptions` prop accepts an object with the following properties:
+
+```ts
+{
+  titleLength: number; // defaults to 50
+  excerptLength: number; // defaults to 50
+}
+```
+
+Example
+
+```tsx
+<NewAnnouncementBanner cardOptions={{ titleLength: 10 }} />
 ```
 
 ### Markdown rendering

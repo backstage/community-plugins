@@ -1,5 +1,87 @@
 ### Dependencies
 
+## 7.4.2
+
+### Patch Changes
+
+- de412d4: Fix issue with extra delimiter in conditional yaml.
+- 93ce408: Compare parent reference in sqlite memo using entity ref
+
+## 7.4.1
+
+### Patch Changes
+
+- db1ab9d: Updated dependency `knex-mock-client` to `3.0.2`.
+
+## 7.4.0
+
+### Minor Changes
+
+- 232a84d: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [232a84d]
+  - @backstage-community/plugin-rbac-common@1.20.0
+  - @backstage-community/plugin-rbac-node@1.14.0
+
+## 7.3.0
+
+### Minor Changes
+
+- 5260b5c: support config to set permission vs conditional policy evaluation order
+
+## 7.2.0
+
+### Minor Changes
+
+- 2f4d9ff: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- e843699: Added missing configSchema into package.json
+- Updated dependencies [2f4d9ff]
+  - @backstage-community/plugin-rbac-common@1.19.0
+  - @backstage-community/plugin-rbac-node@1.13.0
+
+## 7.1.0
+
+### Minor Changes
+
+- 8db28a0: Updated readme example on conditional policy yaml to be well formed (removed quotes)
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
+## 7.0.0
+
+### Major Changes
+
+- 2e732e8: **BREAKING**: Removal of the deprecated createRouter from @backstage/plugin-permission-backend. This results in a new requirement of having the permission plugin installed alongside the RBAC backend plugin.
+
+  Recent changes to the @backstage/plugin-permission-backend resulted in the deprecating and removal of `createRouter` which was primarily used as a way to start both the permission backend plugin and the RBAC backend plugin at the same time. This removal now results in the requirement of having the permission backend plugin installed separately to ensure that the RBAC backend plugin works accordingly.
+
+  Changes required to `packages/backend/src/index.ts`
+
+  ```diff
+  // permission plugin
+  + backend.add(import('@backstage/plugin-permission-backend'));
+  backend.add(import('@backstage-community/plugin-rbac-backend'));
+  ```
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+  - @backstage-community/plugin-rbac-node@1.12.0
+
 ## 6.3.0
 
 ### Minor Changes

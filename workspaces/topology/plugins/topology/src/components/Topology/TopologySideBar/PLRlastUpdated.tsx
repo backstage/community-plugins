@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { PipelineRunKind } from '@janus-idp/shared-react';
-
-import { fromNow } from '../../../common/utils/datetime';
+import { fromNow } from '../../../utils/datetime';
 
 type PLRlastUpdatedProps = { plr: PipelineRunKind };
 

@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import React, {
-  useState,
-  forwardRef,
-  ChangeEvent,
-  FormEventHandler,
-} from 'react';
+import { useState, forwardRef, ChangeEvent, FormEventHandler } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';

@@ -1,12 +1,15 @@
 {
   "name": "@backstage-community/plugin-manage",
   "description": "Manage plugin - Shows a Manage page relevant to the user",
-  "version": "0.2.0",
+  "version": "0.5.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "manage",
     "pluginPackages": [
       "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-backend",
+      "@backstage-community/plugin-manage-common",
+      "@backstage-community/plugin-manage-node",
       "@backstage-community/plugin-manage-react"
     ]
   },
@@ -21,8 +24,8 @@
   "homepage": "https://backstage.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/manage"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/manage/plugins/manage"
   },
   "keywords": [
     "backstage",
@@ -42,11 +45,11 @@
   },
   "dependencies": {
     "@backstage-community/plugin-manage-react": "workspace:^",
-    "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-components": "^0.17.0",
-    "@backstage/core-plugin-api": "^1.10.5",
-    "@backstage/plugin-catalog-graph": "^0.4.17",
-    "@backstage/plugin-catalog-react": "^1.16.0",
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.18.2",
+    "@backstage/core-plugin-api": "^1.11.1",
+    "@backstage/plugin-catalog-graph": "^0.5.2",
+    "@backstage/plugin-catalog-react": "^1.21.2",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
@@ -58,10 +61,10 @@
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.0",
-    "@backstage/plugin-catalog": "^1.28.0",
-    "@backstage/test-utils": "^1.7.6",
-    "@backstage/types": "^1.2.1",
+    "@backstage/cli": "^0.34.4",
+    "@backstage/plugin-catalog": "^1.31.4",
+    "@backstage/test-utils": "^1.7.12",
+    "@backstage/types": "^1.2.2",
     "@types/react": "^18.3.12"
   },
   "files": [

@@ -13,11 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ManageApi, ManageProvider } from './ManageApi';
-import { ManageModuleApi } from './types';
+import type { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+
+import type { OwnersAndOwnedEntities } from '@backstage-community/plugin-manage-common';
+
+import type {
+  ManageApi,
+  ManageProvider,
+  Owners,
+  OwnersAndEntities,
+} from './ManageApi';
+import type { ManageModuleApi } from './types';
+import { orderOwnership } from './order-ownership';
+import { orderEntities } from './order-entities';
 
 /** @public */
 export interface DefaultManageApiOptions {
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
+
   /**
    * The kind order to use when rendering the owned entities.
    */
@@ -37,9 +52,20 @@ export interface DefaultManageApiOptions {
  */
 export class DefaultManageApi implements ManageApi {
   public readonly kindOrder: string[];
+  readonly #discoveryApi: DiscoveryApi;
+  readonly #fetchApi: FetchApi;
+
   readonly #providers: ManageProvider[] = [];
 
-  public constructor({ kindOrder, providers }: DefaultManageApiOptions) {
+  public constructor({
+    discoveryApi,
+    fetchApi,
+    kindOrder,
+    providers,
+  }: DefaultManageApiOptions) {
+    this.#discoveryApi = discoveryApi;
+    this.#fetchApi = fetchApi;
+
     this.kindOrder = kindOrder ?? [];
 
     this.#providers = Array.from(providers)
@@ -49,5 +75,33 @@ export class DefaultManageApi implements ManageApi {
 
   getProviders = (): readonly ManageProvider[] => {
     return this.#providers;
+  };
+
+  getOwnersAndEntities = async (
+    kinds: readonly string[],
+  ): Promise<OwnersAndEntities> => {
+    const manageBaseUrl = await this.#discoveryApi.getBaseUrl('manage');
+    const url = new URL(`${manageBaseUrl}/home`);
+    for (const kind of kinds) {
+      url.searchParams.append('kind', kind);
+    }
+    const resp = await this.#fetchApi.fetch(url);
+    const data: OwnersAndOwnedEntities = await resp.json();
+
+    const ancestry = orderOwnership(data.ownerEntities);
+
+    const owners: Owners = {
+      groups: ancestry.filter(entity => entity.kind === 'Group'),
+      ownedEntityRefs: ancestry.map(entity => stringifyEntityRef(entity)),
+    };
+
+    return {
+      ownedEntities: orderEntities(
+        data.ownedEntities,
+        kinds,
+        owners.ownedEntityRefs,
+      ),
+      owners,
+    };
   };
 }

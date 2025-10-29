@@ -17,6 +17,8 @@ import { V1Pod, V1ReplicaSet } from '@kubernetes/client-node';
 
 import { AnalysisRun } from './analysisRuns';
 import { Rollout } from './rollouts';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { argocdTranslationRef } from '../translations/ref';
 
 export const k8sResourceTypes = ['pods', 'replicasets'];
 export const customResourceTypes = ['analysisruns', 'rollouts'];
@@ -62,7 +64,20 @@ export enum ResourcesFilters {
   SyncStatus = 'Sync status',
   HealthStatus = 'Health status',
 }
+export const getResourceFilterTranslation = (
+  key: keyof typeof ResourcesFilters | undefined,
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+): string => {
+  if (!key) {
+    return t(
+      'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.Unset',
+    );
+  }
 
+  return t(
+    `deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.${key}`,
+  );
+};
 export interface FiltersType {
   SearchByName: string[];
   Kind: string[];

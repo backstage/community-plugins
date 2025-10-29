@@ -13,38 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Navigate } from 'react-router';
-import { createApp } from '@backstage/frontend-defaults';
+
 import {
   createFrontendModule,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
+import { createApp } from '@backstage/frontend-defaults';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import searchPlugin from '@backstage/plugin-search/alpha';
+import signalsPlugin from '@backstage/plugin-signals/alpha';
 
 import npmPlugin from '@backstage-community/plugin-npm/alpha';
+
+import { navModule } from './modules/nav';
 
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
   params: {
-    defaultPath: '/',
+    path: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
   },
 });
 
-export const app = createApp({
+export default createApp({
   features: [
-    catalogPlugin,
-    catalogImportPlugin,
-    userSettingsPlugin,
-    npmPlugin,
     createFrontendModule({
       pluginId: 'app',
       extensions: [homePageExtension],
     }),
+    catalogPlugin,
+    catalogImportPlugin,
+    navModule,
+    userSettingsPlugin,
+    searchPlugin,
+    signalsPlugin,
+    npmPlugin,
   ],
 });
-
-export default app.createRoot();

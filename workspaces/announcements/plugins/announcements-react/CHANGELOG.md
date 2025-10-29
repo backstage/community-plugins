@@ -1,5 +1,122 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
+## 0.14.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+
+## 0.13.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 4a3e603: Added support for an `until_date` field in announcements and introduced a new `current` filter.
+
+### Patch Changes
+
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+
+## 0.10.0
+
+### Minor Changes
+
+- e121abb: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- d70723f: Allow creating new announcement category for edit
+- Updated dependencies [e121abb]
+  - @backstage-community/plugin-announcements-common@0.8.0
+
+## 0.9.1
+
+### Patch Changes
+
+- 7ad0cd0: Fixes an issue where an empty list of userOwnershipRefs causes excessive api calls to the catalog when creating a new announcement.
+
+## 0.9.0
+
+### Minor Changes
+
+- bb76f4e: This change introduces tag filtering to announcements, allowing users to filter by tag by clicking on a tag on an announcement card.
+- 220cc20: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [220cc20]
+  - @backstage-community/plugin-announcements-common@0.7.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 775d236: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [775d236]
+  - @backstage-community/plugin-announcements-common@0.6.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 8c803d8: Added support for tags in announcements
+
+### Patch Changes
+
+- Updated dependencies [8c803d8]
+  - @backstage-community/plugin-announcements-common@0.5.1
+
+## 0.6.1
+
+### Patch Changes
+
+- b5402a7: Fix pagination issue when fetching groups. This resolves the issue where the "On-Behalf" team dropdown always displayed only 10 groups.
+
 ## 0.6.0
 
 ### Minor Changes

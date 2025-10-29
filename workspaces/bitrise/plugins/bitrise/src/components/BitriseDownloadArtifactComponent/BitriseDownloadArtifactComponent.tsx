@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import CloudDownload from '@material-ui/icons/CloudDownload';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';

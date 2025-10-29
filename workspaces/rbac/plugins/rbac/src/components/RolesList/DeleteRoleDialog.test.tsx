@@ -18,7 +18,12 @@ import { useApi } from '@backstage/core-plugin-api';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { mockUseLanguage } from '../../test-utils/mockTranslations';
 import DeleteRoleDialog from './DeleteRoleDialog';
+
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),

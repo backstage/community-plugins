@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { createDevApp } from '@backstage/dev-utils';
 import {
@@ -23,8 +22,6 @@ import {
   EntityAboutCard,
   EntityLayout,
 } from '@backstage/plugin-catalog';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import {
   EntityFeedbackPage,
@@ -37,7 +34,6 @@ import {
 createDevApp()
   .registerPlugin(feedbackPlugin)
   .registerPlugin(catalogPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <>

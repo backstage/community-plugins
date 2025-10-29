@@ -20,19 +20,25 @@ import moment from 'moment';
 
 import { AnalysisRun } from '../../../../../../types/analysisRuns';
 import AnalysisRunStatus from './AnalysisRunStatus';
+import { useTranslation } from '../../../../../../hooks/useTranslation';
 
 interface AnalysisRunsProps {
   analysisruns: AnalysisRun[];
 }
 
 const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
+  const { t } = useTranslation();
+
   if (!analysisruns || analysisruns?.length === 0) {
     return null;
   }
+
   return (
     <>
       <Typography color="textPrimary" gutterBottom>
-        Analysis Runs
+        {t(
+          'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.textPrimary',
+        )}
       </Typography>
       <Box sx={{ width: '100%' }}>
         {analysisruns.map(ar => {
@@ -44,14 +50,22 @@ const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
               title={(() => {
                 return (
                   <div data-testid={`${ar.metadata.name}-tooltip`}>
-                    Name: {ar.metadata.name}
+                    {t(
+                      'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.name',
+                    )}{' '}
+                    {ar.metadata.name}
                     <br />
-                    Created at:{' '}
+                    {t(
+                      'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.createdAt',
+                    )}{' '}
                     {moment(ar.metadata.creationTimestamp)
                       .local()
                       .format('MMM DD YYYY, h:mm:ss A')}
                     <br />
-                    Status: {analysisRunStatus}
+                    {t(
+                      'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.createdAt',
+                    )}{' '}
+                    {analysisRunStatus}
                   </div>
                 );
               })()}
@@ -61,10 +75,9 @@ const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
                 size="small"
                 color="default"
                 icon={<AnalysisRunStatus status={analysisRunStatus} />}
-                label={`Analysis ${ar?.metadata?.name
-                  ?.split('-')
-                  .slice(-2)
-                  .join('-')}`}
+                label={`${t(
+                  'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.chipLabel',
+                )} ${ar?.metadata?.name?.split('-').slice(-2).join('-')}`}
               />
             </Tooltip>
           );

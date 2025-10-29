@@ -15,18 +15,20 @@
  */
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-import {
+import type {
   CustomObjectsApi,
-  KubeConfig,
   KubernetesListObject,
 } from '@kubernetes/client-node';
 
 import { ManagedCluster, ManagedClusterInfo, OcmConfig } from '../types';
 
-export const hubApiClient = (
+export const hubApiClient = async (
   clusterConfig: OcmConfig,
   logger: LoggerService,
-): CustomObjectsApi => {
+): Promise<CustomObjectsApi> => {
+  const { KubeConfig, CustomObjectsApi } = await import(
+    '@kubernetes/client-node'
+  );
   const kubeConfig = new KubeConfig();
 
   if (!clusterConfig.serviceAccountToken) {

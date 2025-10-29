@@ -4,3 +4,4 @@ coverage
 .vscode
 .eslintrc.js
 report.api.md
+report-alpha.api.md

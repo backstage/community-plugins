@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { Box, Button, Typography } from '@material-ui/core';
 

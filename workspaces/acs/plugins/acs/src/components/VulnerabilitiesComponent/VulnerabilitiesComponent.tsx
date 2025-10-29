@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
@@ -39,11 +39,7 @@ export const VulnerabilitiesComponent = ({
   deploymentName,
 }: VulnerabilitiesProps) => {
   /* eslint-disable new-cap */
-  const {
-    result: ACSDataResult,
-    isLoading: ACSDataLoaded,
-    error: ACSDataError,
-  } = useFetchACSData(deploymentName);
+  const { result, isLoading, error } = useFetchACSData(deploymentName);
   /* eslint-enable new-cap */
 
   const useStyles = makeStyles(theme => ({
@@ -65,7 +61,15 @@ export const VulnerabilitiesComponent = ({
     selectedCveStatusOptions: [],
   });
 
-  if (ACSDataError) {
+  if (isLoading) {
+    return (
+      <InfoCard className={classes.root}>
+        <LinearProgress />
+      </InfoCard>
+    );
+  }
+
+  if (error) {
     return (
       <InfoCard>
         <Typography align="center" variant="button">
@@ -75,15 +79,7 @@ export const VulnerabilitiesComponent = ({
     );
   }
 
-  if (!ACSDataLoaded) {
-    return (
-      <InfoCard className={classes.root}>
-        <LinearProgress />
-      </InfoCard>
-    );
-  }
-
-  if (ACSDataResult.length === 0) {
+  if (result.jsonData.length === 0) {
     return (
       <InfoCard>
         <Typography variant="h5" component="h5" align="center">
@@ -106,7 +102,7 @@ export const VulnerabilitiesComponent = ({
     <Box sx={{ minHeight: '500px' }}>
       <DataFilterComponent setFilters={setFilters} />
 
-      <SecurityFindingsComponent data={ACSDataResult} filters={filters} />
+      <SecurityFindingsComponent data={result} filters={filters} />
     </Box>
   );
 };

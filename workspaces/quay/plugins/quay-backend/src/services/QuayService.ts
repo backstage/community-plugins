@@ -71,8 +71,16 @@ export class QuayService {
 
       if (!response.ok) {
         this.logger.error(
-          `Quay Service request failed: ${response.statusText}`,
+          `Quay Service request failed: (${response.status}, ${response.statusText})`,
         );
+
+        // Check if this is an access issue.
+        if (response?.status === 401) {
+          throw new Error(
+            `Quay returned (${response.status}, ${response.statusText}): Please make sure you have access to this repository or have valid access tokens.`,
+          );
+        }
+
         throw new Error(`Failed to fetch data: ${response.statusText}`);
       }
 

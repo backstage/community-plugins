@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   Box,
@@ -48,7 +50,7 @@ interface CreateReleaseCandidateProps {
   onSuccess?: ComponentConfig<CreateRcOnSuccessArgs>['onSuccess'];
 }
 
-const InfoCardPlusWrapper = ({ children }: { children: React.ReactNode }) => {
+const InfoCardPlusWrapper = ({ children }: { children: ReactNode }) => {
   return (
     <InfoCardPlus>
       <Box marginBottom={2}>

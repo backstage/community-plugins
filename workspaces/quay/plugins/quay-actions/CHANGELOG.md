@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 2.12.0
+
+### Minor Changes
+
+- 5c7023b: Backstage version bump to v1.43.2
+
+## 2.11.0
+
+### Minor Changes
+
+- f1dab24: Backstage version bump to v1.42.3
+
+## 2.10.0
+
+### Minor Changes
+
+- 78bb7a9: Backstage version bump to v1.41.1
+
 ## 2.9.1
 
 ### Patch Changes

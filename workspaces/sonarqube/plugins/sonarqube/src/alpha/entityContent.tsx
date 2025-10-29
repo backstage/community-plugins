@@ -22,8 +22,8 @@ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-reac
 export const entitySonarQubeContent = EntityContentBlueprint.make({
   name: 'entity',
   params: {
-    defaultPath: 'sonarqube',
-    defaultTitle: 'SonarQube',
+    path: '/sonarqube',
+    title: 'SonarQube',
     filter: isSonarQubeAvailable,
     loader: () =>
       import('../components/SonarQubeContentPage').then(m => (

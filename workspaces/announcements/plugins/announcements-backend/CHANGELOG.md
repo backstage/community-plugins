@@ -1,5 +1,139 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.15.1
+
+### Patch Changes
+
+- 95470f7: Add auditing of announcement creation, updates, and deletions via [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor/).
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
+## 0.15.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+
+## 0.14.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 5827ca1: Fire signal or notification only on active announcement
+
+## 0.12.0
+
+### Minor Changes
+
+- 58ccd64: Fixed handling of `active` prop in NewAnnouncementBanner
+  Extended signal and notification on update when the annoucencement is activated
+  Updated `EditAnnoucementPage` to navigate to root path as the announcement creation page
+  Updated `EditAnnoucementPage` alertApi on success to be transient
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+
+## 0.11.1
+
+### Patch Changes
+
+- 2007a96: Fixed #5322 that caused `500` errors when fetching existing announcements with null `until_date`.
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 4a3e603: Added support for an `until_date` field in announcements and introduced a new `current` filter.
+- 4a89fd8: With these changes, notifications can be enabled whenever new announcement is created. Announcement notifications are disabled by-default. For details, about notification, please refer [`Notifications`](https://backstage.io/docs/notifications/) docs.
+
+  announcements: integration with notifications #4378
+
+### Patch Changes
+
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+
+## 0.10.0
+
+### Minor Changes
+
+- e121abb: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [e121abb]
+  - @backstage-community/plugin-announcements-common@0.8.0
+
+## 0.9.0
+
+### Minor Changes
+
+- bb76f4e: This change introduces tag filtering to announcements, allowing users to filter by tag by clicking on a tag on an announcement card.
+- 220cc20: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [220cc20]
+  - @backstage-community/plugin-announcements-common@0.7.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 1a231d9: Potentially BREAKING CHANGES for those who were still using the deprecated code.
+
+  - Removes code related to deprecated search collator from `@backstage-community/plugin-announcements-backend` (import from `@backstage-community/plugin-search-backend-module-announcements`)
+  - Removes code related to deprecated `announcementsService` from `@backstage-community/plugin-announcements-node` in favor of `announcementsServiceRef`
+
+### Patch Changes
+
+- cbc8c92: Deprecates createPermissionIntegrationRouter in favor of leveraging the new PermissionsRegistryService. There should be no external impact to end users.
+
+## 0.7.0
+
+### Minor Changes
+
+- 775d236: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [775d236]
+  - @backstage-community/plugin-announcements-common@0.6.0
+  - @backstage-community/plugin-search-backend-module-announcements@0.5.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 8c803d8: Added support for tags in announcements
+
+### Patch Changes
+
+- Updated dependencies [8c803d8]
+  - @backstage-community/plugin-announcements-common@0.5.1
+  - @backstage-community/plugin-search-backend-module-announcements@0.4.1
+
 ## 0.5.0
 
 ### Minor Changes

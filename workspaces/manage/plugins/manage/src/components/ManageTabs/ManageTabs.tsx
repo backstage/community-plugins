@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ComponentProps, ReactNode, useMemo } from 'react';
+import { Fragment, ComponentProps, ReactNode, useMemo } from 'react';
 
 import Alert from '@mui/material/Alert';
 import { capitalize } from '@mui/material/utils';
@@ -361,7 +361,5 @@ function renderArray<T extends ReactNode>(v: T | T[] | null): ReactNode {
   if (!arr) {
     return null;
   }
-  return arr.map((item, index) => (
-    <React.Fragment key={index}>{item}</React.Fragment>
-  ));
+  return arr.map((item, index) => <Fragment key={index}>{item}</Fragment>);
 }

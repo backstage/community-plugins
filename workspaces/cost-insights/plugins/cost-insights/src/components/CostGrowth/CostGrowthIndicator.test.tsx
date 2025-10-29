@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { CostGrowthIndicator } from './CostGrowthIndicator';
 import { ChangeThreshold, EngineerThreshold } from '../../types';

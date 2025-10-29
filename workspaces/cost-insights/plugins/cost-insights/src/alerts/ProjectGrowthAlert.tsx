@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { ProjectGrowthAlertCard } from '../components/ProjectGrowthAlertCard';
 import { Alert, ProjectGrowthData } from '../types';
 

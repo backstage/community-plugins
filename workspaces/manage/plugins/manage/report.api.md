@@ -8,9 +8,9 @@ import { ComponentProps } from 'react';
 import { ComponentType } from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { Header } from '@backstage/core-components';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ManageColumnModule } from '@backstage-community/plugin-manage-react';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { RoutedTabs } from '@backstage/core-components';
 import { RouteRef } from '@backstage/core-plugin-api';
@@ -18,13 +18,13 @@ import { SwitchProps } from '@mui/material/Switch';
 import { TableOptions } from '@backstage/core-components';
 
 // @public
-export function DefaultSettings(): React_2.JSX.Element;
+export function DefaultSettings(): JSX_2.Element;
 
 // @public (undocumented)
 export type HeaderProps = Partial<ComponentProps<typeof Header>>;
 
 // @public
-export function KindOrderCard(): React_2.JSX.Element;
+export function KindOrderCard(): JSX_2.Element;
 
 // @public
 export const MANAGE_KIND_COMMON = '$common';
@@ -77,12 +77,12 @@ export function ManagePageFilters({
   switchColor,
 }: {
   switchColor?: SwitchColor;
-}): React_2.JSX.Element;
+}): JSX_2.Element;
 
 // @public
 export function ManagePageImpl<SupportedKinds extends string>(
   props: PropsWithChildren<ManagePageProps<SupportedKinds> & HeaderProps>,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface ManagePageProps<SupportedKinds extends string> {
@@ -109,7 +109,7 @@ export const managePlugin: BackstagePlugin<
 export const ManageTabs: ManageTabsImpl;
 
 // @public
-export function ManageTabsImpl(props: ManageTabsProps): React_2.JSX.Element;
+export function ManageTabsImpl(props: ManageTabsProps): JSX_2.Element;
 
 // @public
 export interface ManageTabsProps {
@@ -131,7 +131,7 @@ export const OrganizationGraph: OrganizationGraphImpl;
 // @public
 export function OrganizationGraphImpl({
   enableWholeOrganization,
-}: OrganizationGraphProps): React_2.JSX.Element;
+}: OrganizationGraphProps): JSX_2.Element;
 
 // @public
 export interface OrganizationGraphProps {
@@ -154,7 +154,7 @@ export type TableRow = {
 };
 
 // @public
-export function TabOrderCard(): React_2.JSX.Element;
+export function TabOrderCard(): JSX_2.Element;
 
 // @public
 export function useManagePageCombined(

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { forwardRef } from 'react';
 import { capitalize } from '@material-ui/core/utils';
 import { AlertDialog } from './AlertDialog';
 import { render } from '@testing-library/react';
@@ -22,7 +22,7 @@ import { Alert, AlertFormProps, AlertStatus } from '../../types';
 type MockFormDataProps = AlertFormProps<Alert>;
 
 function createForm(title: string) {
-  return React.forwardRef<HTMLFormElement, MockFormDataProps>((props, ref) => (
+  return forwardRef<HTMLFormElement, MockFormDataProps>((props, ref) => (
     <form ref={ref} onSubmit={props.onSubmit}>
       You. {title}. Me.
     </form>

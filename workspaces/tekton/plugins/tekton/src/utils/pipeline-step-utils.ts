@@ -18,7 +18,7 @@ import { ComputedStatus, TerminatedReasons } from '@janus-idp/shared-react';
 import { StepStatus, TaskStatus, TaskStatusStep } from '../types/taskRun';
 import { calculateDuration } from './tekton-utils';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../translation';
+import { tektonTranslationRef } from '../translations/index.ts';
 
 const getMatchingStepDuration = (
   t: TranslationFunction<typeof tektonTranslationRef.T>,

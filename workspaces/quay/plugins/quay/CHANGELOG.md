@@ -1,5 +1,63 @@
 ### Dependencies
 
+## 1.25.0
+
+### Minor Changes
+
+- 5c7023b: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- Updated dependencies [5c7023b]
+  - @backstage-community/plugin-quay-common@1.12.0
+
+## 1.24.0
+
+### Minor Changes
+
+- f1dab24: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [f1dab24]
+  - @backstage-community/plugin-quay-common@1.11.0
+
+## 1.23.2
+
+### Patch Changes
+
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 1.23.1
+
+### Patch Changes
+
+- d942f33: remove product theme from dev dependencies and dev app
+
+## 1.23.0
+
+### Minor Changes
+
+- 78bb7a9: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [78bb7a9]
+  - @backstage-community/plugin-quay-common@1.10.0
+
+## 1.22.1
+
+### Patch Changes
+
+- 19fe3ed: Aligned `formatDate` utility with `ADR012 using Luxon`.
+
+## 1.22.0
+
+### Minor Changes
+
+- 0341770: Add more context for debugging access issues with Quay
+
 ## 1.21.1
 
 ### Patch Changes

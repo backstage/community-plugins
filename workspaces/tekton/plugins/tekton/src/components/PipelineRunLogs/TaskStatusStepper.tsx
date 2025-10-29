@@ -38,7 +38,7 @@ import { ComputedStatus } from '@janus-idp/shared-react';
 import { TaskStep } from '../../utils/taskRun-utils';
 import { calculateDuration } from '../../utils/tekton-utils';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

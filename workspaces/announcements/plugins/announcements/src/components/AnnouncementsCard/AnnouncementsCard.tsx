@@ -42,6 +42,7 @@ import {
   ListItemText,
   Typography,
   Box,
+  Chip,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
@@ -49,6 +50,10 @@ import NewReleasesIcon from '@material-ui/icons/NewReleases';
 const useStyles = makeStyles({
   newAnnouncementIcon: {
     minWidth: '36px',
+  },
+  chipStyle: {
+    marginRight: 4,
+    marginBottom: 4,
   },
 });
 
@@ -60,6 +65,7 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
   hideStartAt?: boolean;
 };
 
@@ -71,6 +77,7 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
+  current,
   hideStartAt,
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
@@ -87,6 +94,7 @@ export const AnnouncementsCard = ({
     active,
     sortBy,
     order,
+    current,
   });
 
   const { announcementCreatePermission } = announcementEntityPermissions;
@@ -155,6 +163,21 @@ export const AnnouncementsCard = ({
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     {announcement.excerpt}
+                    {announcement.tags && announcement.tags.length > 0 && (
+                      <Box mt={1}>
+                        {announcement.tags.map(tag => (
+                          <Chip
+                            key={tag.slug}
+                            size="small"
+                            label={tag.title}
+                            component={Link}
+                            to={`${announcementsLink()}?tags=${tag.slug}`}
+                            clickable
+                            className={classes.chipStyle}
+                          />
+                        ))}
+                      </Box>
+                    )}
                   </Typography>
                   {!hideStartAt && (
                     <Typography variant="caption" color="textSecondary">

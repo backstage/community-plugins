@@ -22,12 +22,10 @@ import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import {
   Box,
   Chip,
-  ListItem,
   ListItemIcon,
   ListItemText,
   Typography,
 } from '@mui/material';
-import React from 'react';
 
 /** @public */
 export type ReportPortalSearchResultItemProps = {
@@ -47,7 +45,7 @@ export const ReportPortalSearchResultItem = (
   }
 
   return (
-    <ListItem>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       {icon && <ListItemIcon>{icon}</ListItemIcon>}
       <Box>
         <ListItemText
@@ -106,6 +104,6 @@ export const ReportPortalSearchResultItem = (
           )}
         </Box>
       </Box>
-    </ListItem>
+    </div>
   );
 };

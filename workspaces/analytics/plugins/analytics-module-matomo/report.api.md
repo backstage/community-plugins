@@ -4,10 +4,12 @@
 
 ```ts
 import { AnalyticsApi } from '@backstage/core-plugin-api';
-import { AnalyticsEvent } from '@backstage/core-plugin-api';
+import { AnalyticsEvent } from '@backstage/frontend-plugin-api';
+import { AnalyticsEvent as AnalyticsEvent_2 } from '@backstage/core-plugin-api';
+import { AnalyticsImplementation } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { Config } from '@backstage/config/index';
+import { Config } from '@backstage/config';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
@@ -15,9 +17,9 @@ import { IdentityApi } from '@backstage/core-plugin-api';
 export const analyticsModuleMatomoPlugin: BackstagePlugin<{}, {}, {}>;
 
 // @public (undocumented)
-export class MatomoAnalytics implements AnalyticsApi {
+export class MatomoAnalytics implements AnalyticsApi, AnalyticsImplementation {
   // (undocumented)
-  captureEvent(event: AnalyticsEvent): void;
+  captureEvent(event: AnalyticsEvent | AnalyticsEvent_2): void;
   // (undocumented)
   static fromConfig(
     config: ConfigApi,

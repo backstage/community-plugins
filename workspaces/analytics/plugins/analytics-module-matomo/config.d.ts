@@ -35,6 +35,13 @@ export interface Config {
          * @visibility frontend
          */
         identity?: 'disabled' | 'optional' | 'required';
+
+        /**
+         * Controls if the hashing of userId should be disabled
+         *
+         * @visibility frontend
+         */
+        sendPlainUserId?: boolean;
       };
     };
   };

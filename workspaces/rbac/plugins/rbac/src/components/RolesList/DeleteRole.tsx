@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useDeleteDialog } from '@janus-idp/shared-react';
+
 import Delete from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
 import { useActionPermissionTooltip } from '../../hooks/useActionPermissionTooltip';
+import { useDeleteDialog } from '../DeleteDialogContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 type DeleteRoleProps = {
   roleName: string;
@@ -33,6 +35,7 @@ const DeleteRole = ({
   dataTestId,
   tooltip,
 }: DeleteRoleProps) => {
+  const { t } = useTranslation();
   const { setDeleteComponent, setOpenDialog } = useDeleteDialog();
 
   const openDialog = (name: string) => {
@@ -54,9 +57,9 @@ const DeleteRole = ({
       <IconButton
         onClick={() => openDialog(roleName)}
         data-testid={testIdText}
-        aria-label="Delete"
+        aria-label={t('common.delete')}
         disabled={disable}
-        title={tooltip ?? 'Delete Role'}
+        title={tooltip ?? t('common.deleteRole')}
         sx={{
           p: 1,
           borderRadius: '50%',

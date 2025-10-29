@@ -1,5 +1,66 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.14.0
+
+### Minor Changes
+
+- 1e80a16: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [1e80a16]
+  - @backstage-community/plugin-linguist-common@0.13.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 2bd5f72: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2bd5f72]
+  - @backstage-community/plugin-linguist-common@0.12.0
+
+## 0.12.1
+
+### Patch Changes
+
+- 7d5b162: Added note regarding the need to install the Linguist Backend plugin for the Linguist Tags Catalog Processor to work
+
+## 0.12.0
+
+### Minor Changes
+
+- ca3c813: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [ca3c813]
+  - @backstage-community/plugin-linguist-common@0.11.0
+
+## 0.11.0
+
+### Minor Changes
+
+- ec085f8: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [ec085f8]
+  - @backstage-community/plugin-linguist-common@0.10.0
+
+## 0.10.0
+
+### Minor Changes
+
+- b622118: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [b622118]
+  - @backstage-community/plugin-linguist-common@0.9.0
+
 ## 0.9.0
 
 ### Minor Changes

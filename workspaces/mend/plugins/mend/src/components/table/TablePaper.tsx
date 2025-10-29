@@ -1,14 +1,15 @@
-import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import type { ReactNode, CSSProperties, FC } from 'react';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 
 type TablePaperProps = {
-  children: React.ReactNode[];
-  style: React.CSSProperties;
+  children: ReactNode[];
+  style: CSSProperties;
 };
 
-export const TablePaper: React.FC<TablePaperProps> = ({ children, style }) => {
+export const TablePaper: FC<TablePaperProps> = ({ children, style }) => {
   return (
-    <Grid direction="column" xs={12}>
+    <Grid direction="column" xs={12} style={{ width: '100%' }}>
       {[
         children[1],
         <Paper elevation={3} style={{ ...style, marginTop: '50px' }}>

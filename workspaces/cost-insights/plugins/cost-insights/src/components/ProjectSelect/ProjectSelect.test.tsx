@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import { getByRole, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProjectSelect } from './ProjectSelect';

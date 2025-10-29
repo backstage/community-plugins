@@ -21,12 +21,12 @@ import {
   getLatestPipelineRun,
   getTaskRunsForPipelineRun,
   pipelineRunStatus,
-  Status,
 } from '@janus-idp/shared-react';
 
 import { PipelinesData } from '../../../types/pipeline';
 import PipelineDecoratorBubble from './PipelineDecoratorBubble';
 import PipelineRunDecoratorTooltip from './PipelineRunDecoratorTooltip';
+import { Status } from '../../common/Status';
 
 export const PipelineRunDecorator = ({
   pipelinesData,

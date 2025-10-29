@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as yup from 'yup';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 
 import {
   isResourcedPolicy,
@@ -39,6 +40,7 @@ import {
   UpdatedConditionsData,
 } from '../types';
 import { capitalizeFirstLetter } from './string-utils';
+import { rbacTranslationRef } from '../translations';
 
 export const uniqBy = (arr: string[], iteratee: (arg: string) => any) => {
   return arr.filter(
@@ -59,29 +61,32 @@ export const getRoleData = (values: RoleFormValues): Role => {
   };
 };
 
-export const validationSchema = yup.object({
-  name: yup.string().required('Name is required'),
-  selectedMembers: yup.array().min(1, 'No member selected'),
-  selectedPlugins: yup.array().min(1, 'No plugin selected'),
-  permissionPoliciesRows: yup
-    .array()
-    .of(
-      yup.object().shape({
-        plugin: yup.string().required('Plugin is required'),
-        permission: yup.string().required('Permission is required'),
-        policies: yup
-          .array()
-          .min(1)
-          .of(
-            yup
-              .object()
-              .shape({ policy: yup.string(), effect: yup.string() })
-              .test(p => p.effect === 'allow'),
-          ),
-      }),
-    )
-    .min(1),
-});
+export const getValidationSchema = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) =>
+  yup.object({
+    name: yup.string().required(t('common.nameRequired')),
+    selectedMembers: yup.array().min(1, t('common.noMemberSelected')),
+    selectedPlugins: yup.array().min(1, t('common.noPluginSelected')),
+    permissionPoliciesRows: yup
+      .array()
+      .of(
+        yup.object().shape({
+          plugin: yup.string().required(t('common.pluginRequired')),
+          permission: yup.string().required(t('common.permissionRequired')),
+          policies: yup
+            .array()
+            .min(1)
+            .of(
+              yup
+                .object()
+                .shape({ policy: yup.string(), effect: yup.string() })
+                .test(p => p.effect === 'allow'),
+            ),
+        }),
+      )
+      .min(1),
+  });
 
 export const getMembersCount = (member: MemberEntity) => {
   return member.kind === 'Group'
@@ -181,6 +186,7 @@ export const getPluginsPermissionPoliciesData = (
 
 export const getPermissionPoliciesData = (
   values: RoleFormValues,
+  locale = 'en-US',
 ): RoleBasedPolicy[] => {
   const { kind, name, namespace, permissionPoliciesRows } = values;
 
@@ -204,7 +210,7 @@ export const getPermissionPoliciesData = (
                   resourceType && usingResourceType
                     ? `${resourceType}`
                     : `${permission}`,
-                policy: policy.policy.toLocaleLowerCase('en-US'),
+                policy: policy.policy.toLocaleLowerCase(locale),
                 effect: 'allow',
               },
             ];
@@ -221,6 +227,7 @@ export const getPermissionPoliciesData = (
 
 export const getConditionalPermissionPoliciesData = (
   values: RoleFormValues,
+  locale = 'en-US',
 ) => {
   const { kind, name, namespace, permissionPoliciesRows } = values;
 
@@ -230,7 +237,7 @@ export const getConditionalPermissionPoliciesData = (
         permissionPolicyRow;
       const permissionMapping = policies.reduce((pAcc: string[], policy) => {
         if (policy.effect === 'allow') {
-          return [...pAcc, policy.policy.toLocaleLowerCase('en-US')];
+          return [...pAcc, policy.policy.toLocaleLowerCase(locale)];
         }
         return pAcc;
       }, []);

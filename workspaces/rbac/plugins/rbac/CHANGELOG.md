@@ -1,5 +1,73 @@
 ### Dependencies
 
+## 1.45.1
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- 3944da5: undo Editrole page submit button label
+
+## 1.45.0
+
+### Minor Changes
+
+- 232a84d: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [232a84d]
+  - @backstage-community/plugin-rbac-common@1.20.0
+
+## 1.44.0
+
+### Minor Changes
+
+- 3719f79: Add internationalization (i18n) support with German, French, Italian, and Spanish translations.
+
+## 1.43.0
+
+### Minor Changes
+
+- 2f4d9ff: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+- Updated dependencies [2f4d9ff]
+  - @backstage-community/plugin-rbac-common@1.19.0
+
+## 1.42.2
+
+### Patch Changes
+
+- 2e28d31: hide permissions for uninstalled plugins
+
+## 1.42.1
+
+### Patch Changes
+
+- a2e5d4e: Added optional pagination support to getMembers API
+- aec6bc2: docs(rbac): Removing Janus IDP dynamic plugin installation instructions, switching to relative paths for doc links
+- ac39bff: removed shared-react dependencies
+- 4719a0e: Fix to remove entire permission when no policy is selected.
+
+## 1.42.0
+
+### Minor Changes
+
+- 4b58a1d: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+- Updated dependencies [4b58a1d]
+  - @backstage-community/plugin-rbac-common@1.18.0
+
 ## 1.41.6
 
 ### Patch Changes

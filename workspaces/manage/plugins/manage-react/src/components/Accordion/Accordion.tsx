@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ComponentProps, PropsWithChildren, useCallback } from 'react';
+import { ComponentProps, PropsWithChildren, useCallback } from 'react';
 
 import { makeStyles } from '@mui/styles';
 import Accordion from '@mui/material/Accordion';

@@ -19,6 +19,8 @@ import { useAsyncRetry, useInterval } from 'react-use';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { rbacApiRef } from '../api/RBACBackendClient';
+import { useLanguage } from './useLanguage';
+import { useTranslation } from './useTranslation';
 import { getPluginsPermissionPoliciesData } from '../utils/create-role-utils';
 import {
   getConditionalPermissionsData,
@@ -29,11 +31,14 @@ const getErrorText = (
   policies: any,
   permissionPolicies: any,
   conditionalPolicies: any,
+  t: (key: string, params?: any) => string,
 ): { name: number; message: string } | undefined => {
   if (!Array.isArray(policies) && (policies as Response)?.statusText) {
     return {
       name: (policies as Response).status,
-      message: `Error fetching policies. ${(policies as Response).statusText}`,
+      message: t('errors.fetchPoliciesErr', {
+        error: (policies as Response).statusText,
+      }),
     };
   } else if (
     !Array.isArray(permissionPolicies) &&
@@ -41,9 +46,9 @@ const getErrorText = (
   ) {
     return {
       name: (permissionPolicies as Response).status,
-      message: `Error fetching the plugins. ${
-        (permissionPolicies as Response).statusText
-      }`,
+      message: t('errors.fetchPlugins', {
+        error: (permissionPolicies as Response).statusText,
+      }),
     };
   } else if (
     !Array.isArray(conditionalPolicies) &&
@@ -51,9 +56,9 @@ const getErrorText = (
   ) {
     return {
       name: (conditionalPolicies as Response).status,
-      message: `Error fetching the conditional permission policies. ${
-        (conditionalPolicies as Response).statusText
-      }`,
+      message: t('errors.fetchConditionalPermissionPolicies', {
+        error: (conditionalPolicies as Response).statusText,
+      }),
     };
   }
   return undefined;
@@ -64,6 +69,8 @@ export const usePermissionPolicies = (
   pollInterval?: number,
 ) => {
   const rbacApi = useApi(rbacApiRef);
+  const locale = useLanguage();
+  const { t } = useTranslation();
   const {
     value: policies,
     retry: policiesRetry,
@@ -101,9 +108,9 @@ export const usePermissionPolicies = (
 
   const data = useMemo(() => {
     return Array.isArray(policies)
-      ? getPermissionsData(policies, allPermissionPolicies)
+      ? getPermissionsData(policies, allPermissionPolicies, t, locale)
       : [];
-  }, [allPermissionPolicies, policies]);
+  }, [allPermissionPolicies, policies, locale, t]);
 
   const conditionsData = useMemo(() => {
     const cpp = Array.isArray(conditionalPolicies) ? conditionalPolicies : [];
@@ -116,9 +123,10 @@ export const usePermissionPolicies = (
           cpp,
           pluginsPermissionsPoliciesData,
           allPermissionPolicies,
+          locale,
         )
       : [];
-  }, [allPermissionPolicies, conditionalPolicies]);
+  }, [allPermissionPolicies, conditionalPolicies, locale]);
 
   useInterval(
     () => {
@@ -136,6 +144,6 @@ export const usePermissionPolicies = (
       policiesError ||
       permissionPoliciesError ||
       conditionalPoliciesError ||
-      getErrorText(policies, permissionPolicies, conditionalPolicies),
+      getErrorText(policies, permissionPolicies, conditionalPolicies, t),
   };
 };

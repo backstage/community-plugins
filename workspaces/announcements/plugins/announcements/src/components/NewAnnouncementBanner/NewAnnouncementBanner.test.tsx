@@ -56,8 +56,10 @@ describe('NewAnnouncementBanner', () => {
           body: 'Full details of the announcement',
           publisher: 'Publisher 1',
           created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
         },
       ],
     };
@@ -79,8 +81,10 @@ describe('NewAnnouncementBanner', () => {
           body: 'Full details of the announcement',
           publisher: 'Publisher 1',
           created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
         },
       ],
     });

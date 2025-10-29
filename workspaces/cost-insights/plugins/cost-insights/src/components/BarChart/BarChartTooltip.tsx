@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ReactNode, PropsWithChildren } from 'react';
+import { ReactNode, PropsWithChildren } from 'react';
 import classnames from 'classnames';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';

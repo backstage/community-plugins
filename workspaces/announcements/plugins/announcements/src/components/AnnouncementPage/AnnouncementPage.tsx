@@ -28,23 +28,29 @@ import {
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import {
-  EntityPeekAheadPopover,
-  EntityRefLink,
-} from '@backstage/plugin-catalog-react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { Grid, Typography } from '@material-ui/core';
+import {
+  Announcement,
+  MAX_TITLE_LENGTH,
+} from '@backstage-community/plugin-announcements-common';
+import { Grid, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { MarkdownRenderer, MarkdownRendererType } from '../MarkdownRenderer';
+import {
+  MarkdownRenderer,
+  MarkdownRendererTypeProps,
+} from '../MarkdownRenderer';
+import { truncate } from '../utils/truncateUtils';
 
 const AnnouncementDetails = ({
   announcement,
   markdownRenderer,
+  titleLength,
 }: {
   announcement: Announcement;
-  markdownRenderer?: MarkdownRendererType;
+  markdownRenderer?: MarkdownRendererTypeProps;
+  titleLength?: number;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
@@ -54,24 +60,27 @@ const AnnouncementDetails = ({
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover
+      <EntityRefLink
         entityRef={announcement.on_behalf_of || announcement.publisher}
-      >
-        <EntityRefLink
-          entityRef={announcement.on_behalf_of || announcement.publisher}
-          hideIcon
-        />
-      </EntityPeekAheadPopover>
+        hideIcon
+      />
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>
   );
 
+  const maxLength = titleLength ?? MAX_TITLE_LENGTH;
+  const title = truncate(announcement.title, maxLength);
+  const isTruncated = announcement.title.length > maxLength;
+
+  const titleElement = isTruncated ? (
+    <Tooltip title={announcement.title} arrow>
+      <Typography component="span">{title}</Typography>
+    </Tooltip>
+  ) : (
+    title
+  );
   return (
-    <InfoCard
-      title={announcement.title}
-      subheader={subHeader}
-      deepLink={deepLink}
-    >
+    <InfoCard title={titleElement} subheader={subHeader} deepLink={deepLink}>
       <MarkdownRenderer
         content={announcement.body}
         rendererType={markdownRenderer}
@@ -84,7 +93,8 @@ type AnnouncementPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
-  markdownRenderer?: MarkdownRendererType;
+  markdownRenderer?: MarkdownRendererTypeProps;
+  titleLength?: number;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
@@ -108,6 +118,7 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
       <AnnouncementDetails
         announcement={value!}
         markdownRenderer={props.markdownRenderer}
+        titleLength={props.titleLength}
       />
     );
 

@@ -15,27 +15,35 @@
  */
 import { renderHook, waitFor } from '@testing-library/react';
 
-import { mockMembers } from '../__fixtures__/mockMembers';
-import { useMembers } from './useMembers';
-
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn().mockReturnValue({
-    getRole: jest.fn().mockReturnValue([
-      {
-        memberReferences: [
-          'group:default/admins',
-          'user:default/amelia.park',
-          'user:default/calum.leavy',
-          'group:default/team-b',
-          'group:default/team-c',
-        ],
-        name: 'role:default/rbac_admin',
-      },
-    ]),
-    getMembers: jest.fn().mockReturnValue(mockMembers),
-  }),
+jest.mock('./useLanguage', () => ({
+  useLanguage: () => 'en',
 }));
+
+jest.mock('@backstage/core-plugin-api', () => {
+  const { mockMembers } = require('../__fixtures__/mockMembers');
+
+  return {
+    ...jest.requireActual('@backstage/core-plugin-api'),
+    useApi: jest.fn().mockReturnValue({
+      getRole: jest.fn().mockReturnValue([
+        {
+          memberReferences: [
+            'group:default/admins',
+            'user:default/amelia.park',
+            'user:default/calum.leavy',
+            'group:default/team-b',
+            'group:default/team-c',
+          ],
+          name: 'role:default/rbac_admin',
+        },
+      ]),
+      getMembers: jest.fn().mockReturnValue(mockMembers),
+    }),
+  };
+});
+
+// Component imports AFTER mocks
+import { useMembers } from './useMembers';
 
 describe('useMembers', () => {
   it('should return members', async () => {

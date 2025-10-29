@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { useState } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import { Select, SelectItem } from '@backstage/core-components';
@@ -31,8 +31,7 @@ export const ProjectGroupDropdown = ({
   rawDescription,
   disabled,
 }: FieldExtensionComponentProps<string>) => {
-  const [selectedProjectGroup, setSelectedProjectGroup] =
-    React.useState<string>('');
+  const [selectedProjectGroup, setSelectedProjectGroup] = useState<string>('');
   const { projectGroups } = useProjectGroups();
 
   const projectGroupItems: SelectItem[] = projectGroups

@@ -90,7 +90,12 @@ describe('QuayRepository', () => {
     expect(getByTestId('quay-repo-table')).not.toBeNull();
     expect(getByTestId('quay-repo-table-empty')).not.toBeNull();
     expect(queryByText(/Quay repository/i)).toBeInTheDocument();
-    expect(queryByText('There are no images available.')).toBeInTheDocument();
+    expect(queryByText('No container images found')).toBeInTheDocument();
+    expect(
+      queryByText(
+        "This repository doesn't contain any images yet, or there might be an access issue.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it('should show table if loaded and data is present', async () => {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';

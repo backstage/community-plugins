@@ -49,15 +49,18 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 
-import { getThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
 import { searchPage } from './components/search/SearchPage';
+import { argocdTranslations } from '@backstage-community/plugin-redhat-argocd/alpha';
 
 const app = createApp({
   apis,
+  __experimentalTranslations: {
+    availableLanguages: ['en'],
+    resources: [argocdTranslations],
+  },
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,
@@ -92,7 +95,6 @@ const app = createApp({
       />
     ),
   },
-  themes: getThemes(),
 });
 
 const routes = (

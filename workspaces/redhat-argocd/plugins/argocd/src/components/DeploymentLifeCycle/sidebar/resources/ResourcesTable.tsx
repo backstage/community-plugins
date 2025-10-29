@@ -27,7 +27,7 @@ import {
 
 import { ResourcesTableBody } from './ResourcesTableBody';
 import { ResourcesTableHeader } from './ResourcesTableHeader';
-import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
+import { getResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { ResourcesFilterBy } from './filters/ResourcesFilterBy';
 import {
   Order,
@@ -39,6 +39,7 @@ import {
   sortValues,
 } from '../../../../utils/utils';
 import { useArgoResources } from '../rollouts/RolloutContext';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 interface ResourcesTableProps {
   resources: Resource[];
@@ -213,10 +214,18 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     </div>
   );
 
+  const { t } = useTranslation();
+  const resourcesColumnHeaders = getResourcesColumnHeaders(t);
+
   return (
     <>
       {toolbar}
-      <Table aria-labelledby="Resources" className={classes.table}>
+      <Table
+        aria-labelledby={t(
+          'deploymentLifecycle.sidebar.resources.resourcesTable.ariaLabelledBy',
+        )}
+        className={classes.table}
+      >
         <ResourcesTableHeader
           order={order}
           orderBy={orderBy}
@@ -228,7 +237,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
             <ResourcesTableBody rows={visibleRows} />
             {emptyRows > 0 && (
               <TableRow style={{ height: 55 * emptyRows }}>
-                <TableCell colSpan={ResourcesColumnHeaders.length} />
+                <TableCell colSpan={resourcesColumnHeaders.length} />
               </TableRow>
             )}
             <TableRow className={classes.footer}>
@@ -251,9 +260,11 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
         ) : (
           <tbody>
             <tr>
-              <td colSpan={ResourcesColumnHeaders.length}>
+              <td colSpan={resourcesColumnHeaders.length}>
                 <div data-testid="no-resources" className={classes.empty}>
-                  No Resources found
+                  {t(
+                    'deploymentLifecycle.sidebar.resources.resourcesTable.noneFound',
+                  )}
                 </div>
               </td>
             </tr>

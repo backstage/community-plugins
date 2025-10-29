@@ -20,7 +20,7 @@ import { Typography } from '@material-ui/core';
 
 import { ClusterError, ClusterErrors } from '../../types/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type ErrorPanelProps = { allErrors: ClusterErrors };
 

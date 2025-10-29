@@ -23,7 +23,12 @@ import { MockTranslationApi } from '@backstage/test-utils/alpha';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useFormik } from 'formik';
 
+import { mockUseLanguage } from '../../test-utils/mockTranslations';
 import { RoleForm } from './RoleForm';
+
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
 
 jest.mock('@mui/styles', () => ({
   ...jest.requireActual('@mui/styles'),

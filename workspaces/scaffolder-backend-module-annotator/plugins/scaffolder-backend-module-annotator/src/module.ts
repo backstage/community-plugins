@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { createBackendModule } from '@backstage/backend-plugin-api';
-import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
+import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
 
 import {
   createAnnotatorAction,
@@ -25,7 +25,7 @@ import {
 
 /***/
 /**
- * The annotator module for @backstage/plugin-scaffolder-backend.
+ * The annotator module for \@backstage/plugin-scaffolder-backend.
  *
  * @alpha
  */

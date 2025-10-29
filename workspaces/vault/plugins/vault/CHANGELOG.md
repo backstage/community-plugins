@@ -1,5 +1,41 @@
 # @backstage-community/plugin-vault
 
+## 0.13.0
+
+### Minor Changes
+
+- 93c53da: Backstage version bump to v1.44.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 24e80a4: Backstage version bump to v1.43.2
+
+## 0.11.0
+
+### Minor Changes
+
+- 97a7669: Backstage version bump to v1.42.3
+
+## 0.10.0
+
+### Minor Changes
+
+- 97794d9: Backstage version bump to v1.41.1
+
+## 0.9.0
+
+### Minor Changes
+
+- ada5266: Added support for the new frontend system
+
+## 0.8.0
+
+### Minor Changes
+
+- f1eec5a: Backstage version bump to v1.40.2
+
 ## 0.7.0
 
 ### Minor Changes

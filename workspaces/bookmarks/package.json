@@ -1,0 +1,66 @@
+{
+  "name": "@internal/bookmarks",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20 || 22"
+  },
+  "scripts": {
+    "start": "backstage-cli repo start",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
+    "build:api-reports": "yarn build:api-reports:only",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/master",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "new": "backstage-cli new"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
+    "@changesets/cli": "^2.29.7",
+    "node-gyp": "^11.4.2",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "prettier": "@backstage/cli/config/prettier",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  }
+}

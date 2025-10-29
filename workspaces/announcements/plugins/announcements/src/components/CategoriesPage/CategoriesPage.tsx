@@ -28,7 +28,10 @@ import {
   useCategories,
   announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
-import { Category } from '@backstage-community/plugin-announcements-common';
+import {
+  announcementCreatePermission,
+  Category,
+} from '@backstage-community/plugin-announcements-common';
 import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { DeleteCategoryDialog } from './DeleteCategoryDialog';
@@ -36,6 +39,8 @@ import { ResponseError } from '@backstage/errors';
 import { IconButton, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { usePermission } from '@backstage/plugin-permission-react';
+import { ContextMenu } from '../AnnouncementsPage/ContextMenu';
 
 const CategoriesTable = () => {
   const [newCategoryDialogOpen, setNewCategoryDialogOpen] = useState(false);
@@ -124,7 +129,7 @@ const CategoriesTable = () => {
           },
         ]}
         emptyContent={
-          <Typography style={{ padding: 2 }}>
+          <Typography style={{ padding: 2, textAlign: 'center' }}>
             {t('categoriesTable.noCategoriesFound')}
           </Typography>
         }
@@ -144,16 +149,24 @@ const CategoriesTable = () => {
 
 type CategoriesPageProps = {
   themeId: string;
+  hideContextMenu?: boolean;
 };
 
 export const CategoriesPage = (props: CategoriesPageProps) => {
   const { t } = useAnnouncementsTranslation();
+  const { allowed: canCreate } = usePermission({
+    permission: announcementCreatePermission,
+  });
+  const { themeId, hideContextMenu = false } = props;
+
   return (
-    <Page themeId={props.themeId}>
+    <Page themeId={themeId}>
       <Header
         title={t('categoriesPage.title')}
         subtitle={t('categoriesPage.subtitle')}
-      />
+      >
+        {!hideContextMenu && canCreate && <ContextMenu />}
+      </Header>
 
       <Content>
         <CategoriesTable />

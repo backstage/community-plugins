@@ -23,40 +23,51 @@ import {
   History,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { DeploymentHistoryCommit } from './DeploymentHistoryCommit';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 type DeploymentHistoryProps = {
   application: Application;
-  revisionsMap: { [key: string]: RevisionInfo };
+  revisions: RevisionInfo[];
   appHistory: History[];
   styleClasses: ClassNameMap<'commitMessage' | 'deploymentHistory'>;
   annotations: any;
+  showFullDeploymentHistory?: boolean;
 };
 
 export const DeploymentHistory: FC<DeploymentHistoryProps> = ({
   application,
-  revisionsMap,
+  revisions,
   appHistory,
   styleClasses,
   annotations,
+  showFullDeploymentHistory,
 }) => {
   const history = appHistory?.slice()?.reverse() || [];
   const { spec } = application || {};
   const sources = spec?.sources || (spec?.source ? [spec.source] : []);
   const displayedRevisions = new Set<string>();
+  const { t } = useTranslation();
 
   return (
     <>
       <Typography color="textPrimary" variant="body1">
-        Deployment history
+        {t(
+          'deploymentLifecycle.sidebar.resources.resource.deploymentHistory.bodyText',
+        )}
       </Typography>
       <Box className={styleClasses.deploymentHistory}>
         {history.flatMap(dep => {
-          const revisions =
+          const revisionShas =
             dep?.revisions || (dep?.revision ? [dep.revision] : []);
 
-          return revisions
+          return revisionShas
             .filter((rev): rev is string => typeof rev === 'string')
             .filter(rev => {
+              // If this option is set, don't filter duplicates
+              if (showFullDeploymentHistory) {
+                return true;
+              }
+
               // Only show each revision once
               if (displayedRevisions.has(rev)) {
                 return false;
@@ -73,13 +84,18 @@ export const DeploymentHistory: FC<DeploymentHistoryProps> = ({
                 ? getCommitUrl(repoSource.repoURL, revision, annotations)
                 : null;
 
+              const commitMessage =
+                revisions?.find(r => r.revisionID === revision)?.message || '';
               return (
                 <DeploymentHistoryCommit
-                  key={`${revision}`}
+                  // When we have duplicate revisions allowed, we want to prevent
+                  // duplicate keys for the components.
+                  // The deployment and index should be different for each duplicate revision
+                  key={`rev-${revision}-${index}-dep-${dep?.id}`}
                   deploymentHistory={dep}
                   styleClasses={styleClasses}
                   application={application}
-                  commitMessage={revisionsMap[revision]?.message || ''}
+                  commitMessage={commitMessage}
                   commitUrl={commitUrl}
                   revisionSha={revision}
                 />

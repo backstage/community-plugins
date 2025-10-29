@@ -123,6 +123,12 @@ export const noopUserTransformer: UserTransformer;
 export const sanitizeEmailTransformer: UserTransformer;
 
 // @public
+export const sanitizeGroupNameTransformer: GroupTransformer;
+
+// @public
+export const sanitizeUserNameTransformer: UserTransformer;
+
+// @public
 export interface UserRepresentationWithEntity extends UserRepresentation {
   entity: UserEntity;
 }

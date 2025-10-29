@@ -16,21 +16,13 @@
 
 import {
   createPlugin,
-  createRouteRef,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-
-export const rootRouteRef = createRouteRef({
-  id: 'cost-insights',
-});
-
-export const projectGrowthAlertRef = createRouteRef({
-  id: 'cost-insights:investigating-growth',
-});
-
-export const unlabeledDataflowAlertRef = createRouteRef({
-  id: 'cost-insights:labeling-jobs',
-});
+import {
+  projectGrowthAlertRef,
+  rootRouteRef,
+  unlabeledDataflowAlertRef,
+} from './routes';
 
 /** @public */
 export const costInsightsPlugin = createPlugin({

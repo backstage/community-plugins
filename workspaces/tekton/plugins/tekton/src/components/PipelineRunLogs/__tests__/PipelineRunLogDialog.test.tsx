@@ -15,11 +15,11 @@
  */
 import { Theme } from '@material-ui/core';
 import { screen } from '@testing-library/react';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import PipelineRunLogDialog from '../PipelineRunLogDialog';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { kubernetesProxyApiRef } from '../../../types/types';
 
 jest.mock('@material-ui/styles', () => ({
   ...jest.requireActual('@material-ui/styles'),

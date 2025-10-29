@@ -18,14 +18,17 @@ import {
   PersistenceContext,
 } from './persistence/persistenceContext';
 import {
+  AuditorService,
   DatabaseService,
   HttpAuthService,
   LoggerService,
+  PermissionsRegistryService,
   PermissionsService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { EventsService } from '@backstage/plugin-events-node';
 import { SignalsService } from '@backstage/plugin-signals-node';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * Context for the announcements plugin.
@@ -33,13 +36,16 @@ import { SignalsService } from '@backstage/plugin-signals-node';
  * @public
  */
 export type AnnouncementsContext = {
-  logger: LoggerService;
   config: RootConfigService;
-  persistenceContext: PersistenceContext;
-  permissions: PermissionsService;
-  httpAuth: HttpAuthService;
   events?: EventsService;
+  httpAuth: HttpAuthService;
+  logger: LoggerService;
+  permissions: PermissionsService;
+  permissionsRegistry: PermissionsRegistryService;
+  persistenceContext: PersistenceContext;
+  auditor: AuditorService;
   signals?: SignalsService;
+  notifications?: NotificationService;
 };
 
 /**
@@ -60,21 +66,27 @@ export type AnnouncementsContextOptions = Omit<
  * @public
  */
 export const buildAnnouncementsContext = async ({
-  logger,
   config,
   database,
-  permissions,
-  httpAuth,
   events,
+  httpAuth,
+  logger,
+  permissions,
+  permissionsRegistry,
   signals,
+  notifications,
+  auditor,
 }: AnnouncementsContextOptions): Promise<AnnouncementsContext> => {
   return {
-    logger,
     config,
-    persistenceContext: await initializePersistenceContext(database),
-    permissions,
-    httpAuth,
     events,
+    httpAuth,
+    logger,
+    permissions,
+    permissionsRegistry,
+    persistenceContext: await initializePersistenceContext(database),
     signals,
+    notifications,
+    auditor,
   };
 };

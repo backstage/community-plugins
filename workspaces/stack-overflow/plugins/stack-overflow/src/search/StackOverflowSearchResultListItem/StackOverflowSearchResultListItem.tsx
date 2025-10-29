@@ -17,7 +17,6 @@
 import type { ReactNode } from 'react';
 import { Link } from '@backstage/core-components';
 import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Box from '@material-ui/core/Box';
@@ -59,7 +58,7 @@ export const StackOverflowSearchResultListItem = (
 
   return (
     <>
-      <ListItem alignItems="center">
+      <Box display="flex" alignItems="center">
         {props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
         <Box flexWrap="wrap">
           <ListItemText
@@ -98,7 +97,7 @@ export const StackOverflowSearchResultListItem = (
               <Chip key={tag} label={`Tag: ${tag}`} size="small" />
             ))}
         </Box>
-      </ListItem>
+      </Box>
       <Divider />
     </>
   );

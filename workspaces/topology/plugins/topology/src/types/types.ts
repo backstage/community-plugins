@@ -13,12 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiRef } from '@backstage/core-plugin-api';
-import {
-  KubernetesApi,
-  KubernetesAuthProvidersApi,
-  KubernetesProxyApi,
-} from '@backstage/plugin-kubernetes-react';
 
 import {
   V1CronJob,
@@ -103,16 +97,3 @@ export type FilterContextType = {
   filters?: DisplayFilters;
   setAppliedTopologyFilters?: SetAppliedTopologyFilters;
 };
-
-export const kubernetesAuthProvidersApiRef =
-  createApiRef<KubernetesAuthProvidersApi>({
-    id: 'plugin.topology-kubernetes-auth-providers.service',
-  });
-
-export const kubernetesApiRef = createApiRef<KubernetesApi>({
-  id: 'plugin.topology-kubernetes.service',
-});
-
-export const kubernetesProxyApiRef = createApiRef<KubernetesProxyApi>({
-  id: 'plugin.topology-kubernetes.proxy-service',
-});

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import { screen } from '@testing-library/react';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import PipelineRunLogDownloader from '../PipelineRunLogDownloader';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { kubernetesProxyApiRef } from '../../../types/types';
 
 describe('PipelineRunLogDownloader', () => {
   it('should not show download links', async () => {

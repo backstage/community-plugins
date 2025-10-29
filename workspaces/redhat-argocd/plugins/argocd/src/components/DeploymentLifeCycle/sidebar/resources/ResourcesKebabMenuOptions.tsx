@@ -25,6 +25,7 @@ import {
   Theme,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,11 +56,14 @@ export const ResourcesKebabMenuOptions = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const { t } = useTranslation();
 
   return (
     <>
       <IconButton
-        aria-label="more"
+        aria-label={t(
+          'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.iconButton.ariaLabel',
+        )}
         aria-controls="kebab-menu"
         aria-haspopup="true"
         onClick={handleClick}
@@ -80,10 +84,14 @@ export const ResourcesKebabMenuOptions = () => {
         }}
       >
         <MenuItem onClick={handleClose} className={classes.menuItem}>
-          Refresh
+          {t(
+            'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh',
+          )}
         </MenuItem>
         <MenuItem onClick={handleClose} className={classes.menuItem}>
-          Sync
+          {t(
+            'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.sync',
+          )}
         </MenuItem>
       </Menu>
     </>

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, {
+import {
+  createContext,
   Dispatch,
   PropsWithChildren,
   SetStateAction,
@@ -44,9 +45,9 @@ export type FilterContextProps = {
 
 export type MapFiltersToProps<T> = (props: FilterContextProps) => T;
 
-export const FilterContext = React.createContext<
-  FilterContextProps | undefined
->(undefined);
+export const FilterContext = createContext<FilterContextProps | undefined>(
+  undefined,
+);
 
 export const FilterProvider = ({ children }: PropsWithChildren<{}>) => {
   const config = useConfig();

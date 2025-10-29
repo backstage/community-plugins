@@ -40,7 +40,10 @@ export const PipelineRunSBOMLink: FC<PipelineRunSBOMLinkProps> = ({ pr }) => {
   const classes = useStyles();
   const [openSBOMLogs, setOpenSBOMLogs] = useState(false);
   const step = useMemo(
-    () => pr.steps.findIndex(s => s.name === 'show-sbom-rhdh'),
+    () =>
+      pr.steps.findIndex(
+        s => s.name?.trim().toLowerCase() === 'show-sbom-rhdh',
+      ),
     [pr.steps],
   );
 
@@ -59,7 +62,7 @@ export const PipelineRunSBOMLink: FC<PipelineRunSBOMLinkProps> = ({ pr }) => {
         fullWidth
         maxWidth="xl"
       />
-      <Tooltip title="Link to SBOM" arrow>
+      <Tooltip title="Link to SBOM" arrow placement="left">
         <Box>
           <IconButton
             className={classes.icon}

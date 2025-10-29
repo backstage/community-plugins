@@ -1,0 +1,423 @@
+workspace/3scale:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/3scale/**']
+
+workspace/acr:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/acr/**']
+
+workspace/acs:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/acs/**']
+
+workspace/adr:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/adr/**']
+
+workspace/agent-forge:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/agent-forge/**']
+
+workspace/airbrake:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/airbrake/**']
+
+workspace/allure:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/allure/**']
+
+workspace/amplication:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/amplication/**']
+
+workspace/analytics:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/analytics/**']
+
+workspace/announcements:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/announcements/**']
+
+workspace/apache-airflow:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/apache-airflow/**']
+
+workspace/apollo-explorer:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/apollo-explorer/**']
+
+workspace/azure-devops:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/azure-devops/**']
+
+workspace/azure-resources:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/azure-resources/**']
+
+workspace/azure-sites:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/azure-sites/**']
+
+workspace/azure-storage-explorer:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/azure-storage-explorer/**']
+
+workspace/badges:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/badges/**']
+
+workspace/bazaar:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/bazaar/**']
+
+workspace/bitbucket-pull-requests:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/bitbucket-pull-requests/**']
+
+workspace/bitrise:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/bitrise/**']
+
+workspace/blackduck:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/blackduck/**']
+
+workspace/bookmarks:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/bookmarks/**']
+
+workspace/cicd-statistics:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/cicd-statistics/**']
+
+workspace/cloudbuild:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/cloudbuild/**']
+
+workspace/code-climate:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/code-climate/**']
+
+workspace/code-coverage:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/code-coverage/**']
+
+workspace/codescene:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/codescene/**']
+
+workspace/confluence:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/confluence/**']
+
+workspace/copilot:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/copilot/**']
+
+workspace/cost-insights:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/cost-insights/**']
+
+workspace/dynatrace:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/dynatrace/**']
+
+workspace/entity-feedback:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/entity-feedback/**']
+
+workspace/entity-validation:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/entity-validation/**']
+
+workspace/explore:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/explore/**']
+
+workspace/feedback:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/feedback/**']
+
+workspace/firehydrant:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/firehydrant/**']
+
+workspace/flux:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/flux/**']
+
+workspace/fossa:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/fossa/**']
+
+workspace/gcalendar:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/gcalendar/**']
+
+workspace/gcp-projects:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/gcp-projects/**']
+
+workspace/git-release-manager:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/git-release-manager/**']
+
+workspace/github-actions:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/github-actions/**']
+
+workspace/github-deployments:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/github-deployments/**']
+
+workspace/github-discussions:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/github-discussions/**']
+
+workspace/github-issues:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/github-issues/**']
+
+workspace/github-pull-requests-board:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/github-pull-requests-board/**']
+
+workspace/gitops-profiles:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/gitops-profiles/**']
+
+workspace/gocd:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/gocd/**']
+
+workspace/grafana:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/grafana/**']
+
+workspace/graphiql:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/graphiql/**']
+
+workspace/graphql-voyager:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/graphql-voyager/**']
+
+workspace/ilert:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/ilert/**']
+
+workspace/jaeger:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/jaeger/**']
+
+workspace/jenkins:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/jenkins/**']
+
+workspace/jfrog-artifactory:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/jfrog-artifactory/**']
+
+workspace/kafka:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/kafka/**']
+
+workspace/keycloak:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/keycloak/**']
+
+workspace/kiali:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/kiali/**']
+
+workspace/lighthouse:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/lighthouse/**']
+
+workspace/linguist:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/linguist/**']
+
+workspace/linkerd:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/linkerd/**']
+
+workspace/manage:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/manage/**']
+
+workspace/matomo:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/matomo/**']
+
+workspace/mcp-chat:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/mcp-chat/**']
+
+workspace/mend:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/mend/**']
+
+workspace/microsoft-calendar:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/microsoft-calendar/**']
+
+workspace/mta:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/mta/**']
+
+workspace/multi-source-security-viewer:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/multi-source-security-viewer/**']
+
+workspace/newrelic:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/newrelic/**']
+
+workspace/nexus-repository-manager:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/nexus-repository-manager/**']
+
+workspace/nomad:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/nomad/**']
+
+workspace/npm:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/npm/**']
+
+workspace/ocm:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/ocm/**']
+
+workspace/octopus-deploy:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/octopus-deploy/**']
+
+workspace/opencost:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/opencost/**']
+
+workspace/periskop:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/periskop/**']
+
+workspace/pingidentity:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/pingidentity/**']
+
+workspace/playlist:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/playlist/**']
+
+workspace/puppetdb:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/puppetdb/**']
+
+workspace/quay:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/quay/**']
+
+workspace/rbac:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/rbac/**']
+
+workspace/redhat-argocd:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/redhat-argocd/**']
+
+workspace/report-portal:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/report-portal/**']
+
+workspace/rollbar:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/rollbar/**']
+
+workspace/scaffolder-backend-module-annotator:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-annotator/**']
+
+workspace/scaffolder-backend-module-kubernetes:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-kubernetes/**']
+
+workspace/scaffolder-backend-module-regex:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-regex/**']
+
+workspace/scaffolder-backend-module-servicenow:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-servicenow/**']
+
+workspace/scaffolder-backend-module-sonarqube:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-backend-module-sonarqube/**']
+
+workspace/scaffolder-relation-processor:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/scaffolder-relation-processor/**']
+
+workspace/sentry:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/sentry/**']
+
+workspace/servicenow:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/servicenow/**']
+
+workspace/shortcuts:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/shortcuts/**']
+
+workspace/sonarqube:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/sonarqube/**']
+
+workspace/splunk:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/splunk/**']
+
+workspace/stack-overflow:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/stack-overflow/**']
+
+workspace/stackstorm:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/stackstorm/**']
+
+workspace/tech-insights:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/tech-insights/**']
+
+workspace/tech-radar:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/tech-radar/**']
+
+workspace/tekton:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/tekton/**']
+
+workspace/todo:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/todo/**']
+
+workspace/topology:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/topology/**']
+
+workspace/vault:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/vault/**']
+
+workspace/wheel-of-names:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/wheel-of-names/**']
+
+workspace/xcmetrics:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/xcmetrics/**']
+
+owner/area-maintainers:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/airbrake/**', 'workspaces/allure/**', 'workspaces/apache-airflow/**', 'workspaces/apollo-explorer/**', 'workspaces/badges/**', 'workspaces/bazaar/**', 'workspaces/cicd-statistics/**', 'workspaces/cloudbuild/**', 'workspaces/code-climate/**', 'workspaces/codescene/**', 'workspaces/dynatrace/**', 'workspaces/entity-validation/**', 'workspaces/firehydrant/**', 'workspaces/gcalendar/**', 'workspaces/gcp-projects/**', 'workspaces/github-actions/**', 'workspaces/github-deployments/**', 'workspaces/github-issues/**', 'workspaces/gitops-profiles/**', 'workspaces/gocd/**', 'workspaces/grafana/**', 'workspaces/graphiql/**', 'workspaces/graphql-voyager/**', 'workspaces/ilert/**', 'workspaces/jaeger/**', 'workspaces/jenkins/**', 'workspaces/lighthouse/**', 'workspaces/linkerd/**', 'workspaces/microsoft-calendar/**', 'workspaces/newrelic/**', 'workspaces/nomad/**', 'workspaces/opencost/**', 'workspaces/periskop/**', 'workspaces/puppetdb/**', 'workspaces/sentry/**', 'workspaces/shortcuts/**', 'workspaces/splunk/**', 'workspaces/stack-overflow/**', 'workspaces/stackstorm/**', 'workspaces/tech-radar/**', 'workspaces/todo/**', 'workspaces/vault/**', 'workspaces/xcmetrics/**']

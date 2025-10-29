@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as DeleteDialogContext from '@janus-idp/shared-react';
 import { usePermission } from '@backstage/plugin-permission-react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import DeleteRole from './DeleteRole';
+import { useDeleteDialog } from '../DeleteDialogContext';
 
-jest.mock('@janus-idp/shared-react', () => ({
+jest.mock('../DeleteDialogContext', () => ({
   useDeleteDialog: jest.fn().mockReturnValue({
     deleteComponent: '',
     setDeleteComponent: jest.fn(),
@@ -68,8 +68,7 @@ describe('DeleteRole', () => {
 
     fireEvent.click(screen.getByRole('button'));
 
-    const { setDeleteComponent, setOpenDialog } =
-      DeleteDialogContext.useDeleteDialog();
+    const { setDeleteComponent, setOpenDialog } = useDeleteDialog();
     expect(setDeleteComponent).toHaveBeenCalledWith({ roleName: 'Admin' });
     expect(setOpenDialog).toHaveBeenCalledWith(true);
   });

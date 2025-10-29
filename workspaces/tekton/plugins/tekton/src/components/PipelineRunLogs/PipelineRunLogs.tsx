@@ -32,7 +32,7 @@ import { getActiveTaskRun, getSortedTaskRuns } from '../../utils/taskRun-utils';
 import { PipelineRunLogViewer } from './PipelineRunLogViewer';
 import { TaskStatusStepper } from './TaskStatusStepper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineRunLogsProps = {
   pipelineRun: PipelineRunKind;

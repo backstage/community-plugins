@@ -6,9 +6,7 @@
     "node": "20 || 22"
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
+    "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -23,8 +21,9 @@
     "lint:all": "backstage-cli repo lint",
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "prettier:write": "prettier --write .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope backstage-community"
   },
   "workspaces": {
     "packages": [
@@ -38,14 +37,14 @@
     "directory": "workspaces/report-portal"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.33.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.0",
+    "@backstage/repo-tools": "^0.15.0",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",

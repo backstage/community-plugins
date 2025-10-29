@@ -1,9 +1,8 @@
-import React from 'react';
-import {
-  makeStyles,
-  Theme,
-  Tooltip as MaterialTooltip,
-} from '@material-ui/core';
+import type { ReactElement } from 'react';
+import { useRef, useState, useCallback } from 'react';
+import type { Theme } from '@mui/material/styles';
+import MaterialTooltip from '@mui/material/Tooltip';
+import { makeStyles } from '@mui/styles';
 import { useResize } from '../hooks';
 
 type ExtendedClassesProps = {
@@ -16,8 +15,8 @@ type ExtendedClassesProps = {
 };
 
 type TooltipProps = {
-  children: string | React.ReactElement;
-  tooltipContent: string | React.ReactElement;
+  children: string | ReactElement;
+  tooltipContent: string | ReactElement;
   isAlwaysVisible?: boolean;
   extendedClasses?: ExtendedClassesProps;
 };
@@ -30,16 +29,20 @@ const useStyles = makeStyles<
 >(theme => ({
   tooltip: ({ extendedClasses }) => ({
     backgroundColor:
-      theme.palette.type === 'light'
+      theme.palette.mode === 'light'
         ? '#232F3E'
         : theme.palette.background.default,
     ...extendedClasses?.tooltip,
+    marginBottom: '0.8rem',
   }),
   arrow: {
     color:
-      theme.palette.type === 'light'
+      theme.palette.mode === 'light'
         ? '#232F3E'
         : theme.palette.background.default,
+    overflow: 'inherit',
+    bottom: 0,
+    marginBottom: '-0.25em',
   },
 }));
 
@@ -57,11 +60,11 @@ export const Tooltip = ({
   isAlwaysVisible = true,
   extendedClasses = {},
 }: TooltipProps) => {
-  const node = React.useRef<HTMLDivElement | null>(null);
+  const node = useRef<HTMLDivElement | null>(null);
 
-  const [isEllipsis, setIsEllipsis] = React.useState(false);
+  const [isEllipsis, setIsEllipsis] = useState(false);
 
-  const compare = React.useCallback(() => {
+  const compare = useCallback(() => {
     const firstChild = node?.current?.children?.length
       ? Array.from(node?.current?.children)?.[0]
       : null;
@@ -89,7 +92,7 @@ export const Tooltip = ({
       disableHoverListener={isDisabled}
       placement="top"
       arrow
-      interactive
+      disableInteractive
     >
       <span className={additionalClasses.contentWrapper} ref={node}>
         {children}

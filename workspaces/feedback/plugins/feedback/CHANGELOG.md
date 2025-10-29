@@ -1,5 +1,57 @@
 ## @janus-idp/backstage-plugin-feedback [1.6.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback@1.5.0...@janus-idp/backstage-plugin-feedback@1.6.0) (2024-07-26)
 
+## 1.8.6
+
+### Patch Changes
+
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 1.8.5
+
+### Patch Changes
+
+- 8f94e2b: Added functionality to disable a feedback type by providing an empty list of values in the app config.
+
+## 1.8.4
+
+### Patch Changes
+
+- 773c07a: Fix broken url in package.json
+
+## 1.8.3
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
+## 1.8.2
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 1.8.1
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.8.0
+
+### Minor Changes
+
+- 351aa49: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- 57f1bd7: remove devDependency on `@redhat-developer/red-hat-developer-hub-theme`
+
+## 1.7.4
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+
 ## 1.7.3
 
 ### Patch Changes

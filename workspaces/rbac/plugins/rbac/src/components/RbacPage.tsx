@@ -15,16 +15,17 @@
  */
 import { Content, Header, Page, Progress } from '@backstage/core-components';
 
-import { DeleteDialogContextProvider } from '@janus-idp/shared-react';
-
 import { RolesList } from './RolesList/RolesList';
 import { useApi } from '@backstage/core-plugin-api';
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { useAsync } from 'react-use';
 import { ErrorPage } from '@backstage/core-components';
+import { DeleteDialogContextProvider } from './DeleteDialogContext';
+import { useTranslation } from '../hooks/useTranslation';
 
 export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
   const rbacApi = useApi(rbacApiRef);
+  const { t } = useTranslation();
   const { loading: isUserLoading, value: result } = useAsync(
     async () => await rbacApi.getUserAuthorization(),
     [],
@@ -33,7 +34,7 @@ export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
   if (!isUserLoading) {
     return result?.status === 'Authorized' ? (
       <Page themeId="tool">
-        {useHeader && <Header title="RBAC" />}
+        {useHeader && <Header title={t('page.title')} />}
         <Content>
           <DeleteDialogContextProvider>
             <RolesList />
@@ -41,7 +42,7 @@ export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
         </Content>
       </Page>
     ) : (
-      <ErrorPage statusMessage="Not Found" />
+      <ErrorPage statusMessage={t('errors.notFound')} />
     );
   }
   return <Progress />;

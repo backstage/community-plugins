@@ -1,5 +1,60 @@
 # @backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor
 
+## 0.13.0
+
+### Minor Changes
+
+- ff113c2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [ff113c2]
+  - @backstage-community/plugin-azure-devops-common@0.16.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 40839b2: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [40839b2]
+  - @backstage-community/plugin-azure-devops-common@0.15.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 8367480: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [8367480]
+  - @backstage-community/plugin-azure-devops-common@0.14.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 1634963: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [1634963]
+  - @backstage-community/plugin-azure-devops-common@0.13.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 1e109cd: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [1e109cd]
+  - @backstage-community/plugin-azure-devops-common@0.12.0
+
 ## 0.8.1
 
 ### Patch Changes

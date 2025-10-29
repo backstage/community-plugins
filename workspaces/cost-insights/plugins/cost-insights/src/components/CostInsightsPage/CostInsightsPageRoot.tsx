@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { CostInsightsPage } from './CostInsightsPage';
 import { FilterProvider } from '../../hooks/useFilters';
 import { LoadingProvider } from '../../hooks/useLoading';

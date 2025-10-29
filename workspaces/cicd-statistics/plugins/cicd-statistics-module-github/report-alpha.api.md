@@ -4,7 +4,9 @@
 
 ```ts
 import { AnyApiFactory } from '@backstage/core-plugin-api';
-import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/core-plugin-api';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendModule } from '@backstage/frontend-plugin-api';
 
@@ -18,11 +20,17 @@ export const cicdStatisticsGithubExtension: ExtensionDefinition<{
   name: 'cicd-statistics-github-api';
   config: {};
   configInput: {};
-  output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
   inputs: {};
-  params: {
-    factory: AnyApiFactory;
-  };
+  params: <
+    TApi,
+    TImpl extends TApi,
+    TDeps extends {
+      [x: string]: unknown;
+    },
+  >(
+    params: ApiFactory<TApi, TImpl, TDeps>,
+  ) => ExtensionBlueprintParams<AnyApiFactory>;
 }>;
 
 // (No @packageDocumentation comment for this package)

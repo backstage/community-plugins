@@ -19,6 +19,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import { errorApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
@@ -119,6 +120,16 @@ export const RecentWorkflowRunsCard = (props: {
               render: p => (
                 <Box display="flex">
                   <WorkflowRunStatus {...p} />
+                </Box>
+              ),
+            },
+            {
+              title: 'Age',
+              render: row => (
+                <Box display="flex">
+                  <Tooltip title={row.statusDate ?? ''}>
+                    <Box>{row.statusAge}</Box>
+                  </Tooltip>
                 </Box>
               ),
             },

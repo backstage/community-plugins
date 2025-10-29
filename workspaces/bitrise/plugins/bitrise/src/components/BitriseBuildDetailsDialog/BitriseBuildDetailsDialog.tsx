@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BitriseBuildResult } from '../../api/bitriseApi.model';
 import { BitriseArtifactsComponent } from '../BitriseArtifactsComponent';
 import Chip from '@material-ui/core/Chip';

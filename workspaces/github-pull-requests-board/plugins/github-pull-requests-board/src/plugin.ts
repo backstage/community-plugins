@@ -52,3 +52,6 @@ export const EntityTeamPullRequestsContent =
       mountPoint: rootRouteRef,
     }),
   );
+
+/** @public */
+export default githubPullRequestsBoardPlugin;

@@ -15,11 +15,16 @@
  */
 import { DateTime } from 'luxon';
 import { createApiRef } from '@backstage/core-plugin-api';
-import { CreateAnnouncementRequest, CreateCategoryRequest } from './types';
+import {
+  CreateAnnouncementRequest,
+  CreateCategoryRequest,
+  CreateTagRequest,
+} from './types';
 import {
   Announcement,
   AnnouncementsList,
   Category,
+  Tag,
 } from '@backstage-community/plugin-announcements-common';
 
 /**
@@ -39,9 +44,11 @@ export interface AnnouncementsApi {
     max?: number;
     page?: number;
     category?: string;
+    tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList>;
   announcementByID(id: string): Promise<Announcement>;
 
@@ -55,6 +62,10 @@ export interface AnnouncementsApi {
   categories(): Promise<Category[]>;
   createCategory(request: CreateCategoryRequest): Promise<void>;
   deleteCategory(slug: string): Promise<void>;
+
+  tags(): Promise<Tag[]>;
+  createTag(request: CreateTagRequest): Promise<void>;
+  deleteTag(slug: string): Promise<void>;
 
   lastSeenDate(): DateTime;
   markLastSeenDate(date: DateTime): void;

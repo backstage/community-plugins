@@ -60,6 +60,7 @@ import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
   private readonly defaultRole?: string;
+  private readonly preferPermissionPolicy: boolean;
 
   public static async build(
     logger: LoggerService,
@@ -101,6 +102,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const conditionalPoliciesFile = configApi.getOptionalString(
       'permission.rbac.conditionalPoliciesFile',
     );
+
+    const preferPermissionPolicy =
+      (configApi.getOptionalString(
+        'permission.rbac.policyDecisionPrecedence',
+      ) ?? 'conditional') === 'basic';
 
     if (superUsers && superUsers.length > 0) {
       for (const user of superUsers) {
@@ -165,6 +171,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       enforcerDelegate,
       auditor,
       conditionalStorage,
+      preferPermissionPolicy,
       superUserList,
       defaultRole,
     );
@@ -174,11 +181,13 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly enforcer: EnforcerDelegate,
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
+    preferPermissionPolicy: boolean,
     superUserList?: string[],
     defaultRole?: string,
   ) {
     this.superUserList = superUserList;
     this.defaultRole = defaultRole;
+    this.preferPermissionPolicy = preferPermissionPolicy;
   }
 
   async handle(
@@ -218,12 +227,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       }
 
       // handle permission with 'resource' type
-      const hasNamedPermission =
-        await this.hasImplicitPermissionSpecifiedByName(
-          permissionName,
-          action,
-          roles,
-        );
+      const hasNamedPermission = await this.hasImplicitPermission(
+        permissionName,
+        action,
+        roles,
+      );
 
       // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
       if (
@@ -240,25 +248,33 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       if (isResourcePermission(request.permission)) {
         const resourceType = request.permission.resourceType;
-
-        // handle conditions if they are present
-        if (user) {
-          const conditionResult = await this.handleConditions(
-            auditorEvent,
-            userEntityRef,
-            request,
-            roles,
-            user.info,
-          );
-          if (conditionResult) {
-            return conditionResult;
-          }
-        }
-
         // Let's set up higher priority for permission specified by name, than by resource type
         const obj = hasNamedPermission ? permissionName : resourceType;
+        // handle conditions if they are present
+        const conditionResult = await this.handleConditions(
+          auditorEvent,
+          userEntityRef,
+          request,
+          roles,
+          user.info,
+        );
 
-        status = await this.isAuthorized(userEntityRef, obj, action, roles);
+        if (this.preferPermissionPolicy) {
+          const hasResourcedPermission = await this.hasImplicitPermission(
+            resourceType,
+            action,
+            roles,
+          );
+          // Permission policy first
+          if (hasNamedPermission || hasResourcedPermission) {
+            status = await this.isAuthorized(userEntityRef, obj, action, roles);
+          } else if (conditionResult) {
+            return conditionResult;
+          }
+        } else {
+          if (conditionResult) return conditionResult;
+          status = await this.isAuthorized(userEntityRef, obj, action, roles);
+        }
       } else {
         // handle permission with 'basic' type
         status = await this.isAuthorized(
@@ -282,7 +298,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     }
   }
 
-  private async hasImplicitPermissionSpecifiedByName(
+  private async hasImplicitPermission(
     permissionName: string,
     action: string,
     roles: string[],

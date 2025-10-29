@@ -1,5 +1,88 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.20.0
+
+### Minor Changes
+
+- 87abf0b: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [87abf0b]
+  - @backstage-community/plugin-sonarqube-react@0.12.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 28530b1: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [28530b1]
+  - @backstage-community/plugin-sonarqube-react@0.11.0
+
+## 0.18.1
+
+### Patch Changes
+
+- 9d3c263: Fixed bug in `SonarQubeRelatedEntitiesOverview` table component where the sorting of columns does not work properly when
+  there are components without an annotation
+- 130e6f7: Fixed the typings for the SonarQube entity card, which previously prevented correct overriding.
+
+## 0.18.0
+
+### Minor Changes
+
+- dcffece: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [dcffece]
+  - @backstage-community/plugin-sonarqube-react@0.10.0
+
+## 0.17.0
+
+### Minor Changes
+
+- 6d6b976: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [6d6b976]
+  - @backstage-community/plugin-sonarqube-react@0.9.0
+
+## 0.16.2
+
+### Patch Changes
+
+- 1eda234: Fix maximum update depth exceeded in SonarqubeRelatedEntitiesOverview
+
+## 0.16.1
+
+### Patch Changes
+
+- b64dc92: Fixed bug in SonarQubeRelatedEntitiesOverview where the projectInstance was always undefined
+- Updated dependencies [b64dc92]
+  - @backstage-community/plugin-sonarqube-react@0.8.1
+
+## 0.16.0
+
+### Minor Changes
+
+- b61e4a0: Improve the discoverability of Sonarqube dashboard URL in both sonarqube entity card & tabular view
+
+## 0.15.0
+
+### Minor Changes
+
+- ad4279b: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [ad4279b]
+  - @backstage-community/plugin-sonarqube-react@0.8.0
+
 ## 0.14.0
 
 ### Minor Changes

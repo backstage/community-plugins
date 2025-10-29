@@ -72,8 +72,6 @@ You will need the URL for the tackle instance to configure the MTA plugin. This 
   - `mta` - Contains the configuration for the MTA resources.
 
     - `url` - The URL for the MTA instance running in the cluster.
-    - `backendPluginRoot` - The root URL for the MTA backend plugin.
-    - `version` - The version of the backend plugin.
     - `providerAuth` - The keycloak authentication configuration for the MTA instance.
       - `realm` - The realm for the keycloak instance.
       - `clientId` - The client ID for the keycloak instance.A

@@ -185,12 +185,13 @@ export async function createRouter(
             return logger.error('Jira integeration not found');
           }
           host = serviceConfig.getString('host');
+          const apiHost = serviceConfig.getOptionalString('apiHost') ?? host;
           const authToken = serviceConfig.getString('token');
           const hostType = serviceConfig.getOptionalString('hostType');
 
           const projectKey = entityRef.metadata.annotations['jira/project-key'];
           const jiraService = new JiraApiService(
-            host,
+            apiHost,
             authToken,
             logger,
             hostType,
@@ -348,10 +349,11 @@ export async function createRouter(
               .find(hostConfig => host === hostConfig.getString('host')) ??
             config.getConfigArray('feedback.integrations.jira')[0];
           host = serviceConfig.getString('host');
+          const apiHost = serviceConfig.getOptionalString('apiHost') ?? host;
           const authToken = serviceConfig.getString('token');
 
           const resp = await new JiraApiService(
-            host,
+            apiHost,
             authToken,
             logger,
           ).getTicketDetails(ticketId);

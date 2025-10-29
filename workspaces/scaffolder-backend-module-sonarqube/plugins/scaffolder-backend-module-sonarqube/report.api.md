@@ -4,29 +4,27 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
 export const createSonarQubeProjectAction: () => TemplateAction<
-  TemplateActionParameters,
-  JsonObject,
-  'v1'
+  {
+    baseUrl: string;
+    name: string;
+    key: string;
+    branch?: string | undefined;
+    visibility?: string | undefined;
+    token?: string | undefined;
+    username?: string | undefined;
+    password?: string | undefined;
+  },
+  {
+    projectUrl: string;
+  },
+  'v2'
 >;
 
 // @public (undocumented)
 const scaffolderModuleSonarqubeActions: BackendFeature;
 export default scaffolderModuleSonarqubeActions;
-
-// @public (undocumented)
-export type TemplateActionParameters = {
-  baseUrl: string;
-  token?: string;
-  username?: string;
-  password?: string;
-  name: string;
-  key: string;
-  branch?: string;
-  visibility?: string;
-};
 ```

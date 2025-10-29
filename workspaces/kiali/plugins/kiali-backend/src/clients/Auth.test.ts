@@ -24,13 +24,15 @@ import {
 const sessionSeconds = 5000;
 
 const rawCookie =
-  'kiali-token-aes=/Wh8L+RdEocdRxrNH8TKOShJHD3daCA6KKVUk+jKvoinR28yXMI7/33DHMPqcoVL/bOYZ5ylmiyg95Cmmwr/LDuICgfUgnp763IHoOyMEmUI4yzvpKZfqDDtksjqWCRbkxoVT94JxBFsidtAg3pCgX8gDcXt22c65AX43hAa9auxpvF3tP22SP9aZjaJ4UOqvQ70TwhE2LT+/RLQszccnV7E9kUE7zTGaY1uAKz0bNWwXY7KQ6f/uOQob3kNZMqDtyURlEHPBNA1L/QbFIGqHcM8JbglQZWII+2iPmPMHAjNKcy2xrFNUOU5CjDex9i51KUuJ1GU6xnesChShpo+tuhchFFzklslr/2egXRaPFBBCg0F6f2E3wdIt7hdc3CfAfCQWVWka9Jp30FoOWlI+pNqa5vRFKqpuGQ+vDyzb/CdTVnotsoIraUmb3rYe7gOrHUh/DQQ+smVKYGtoq2FlJMx0k0Z29dZwyM7QKdIKoWtrgfa71y1ZpQ+9CXh/9Iu71cU+5cNq7CC+joGs2eWouBKHjgGNTeP3ZNOE63GOQ36uHcxbugbCzWheJLi5fvLfu2/VVf6a/KlV4NYRI6/uEERJwRwtwWlI4dFRQP+T9DNUuomS6uxLCm0w/5zSoNXwbyJ10iqDOQ3URDk8okgwHD/kG2c0RWvslmDztz9V6AqUWMUg95hz8BDagycir1w0th98irAFjwVd9q/jA3c6DzqB8fITqv2h0f51MMs4oe0H7b2yrpCGhHSVDC5OYEe1FgFPfRbxdG8Oa//IBlUdnoLJXh4Mz9q4gA/87kp/QukyepeV7JbaoNSvBtHplvjUl1Hs/2siKTvKySiSvW5fS0TF9PE3RNtInE/hwxkMBQj5rG8zlmR3AaMLSx5q5sjA1oBz4WLLaxprO1+J22G2+W7eiblqfb01yB3ItZfBBm78ZGFAkxZiPaLuZl0B0eEbLZS8xXKkQuIeR5gTnkqoB2haskIZsI4+rEpC6GYpYukfPBzeyR+NlJd8TFbPwjuu3yjS75rrbHL7WQtMm4C6vx7Qfj7LPWQXw60RdBV3Y0CuOOS1e2lLhNF+G2lh0jYOmUeZif8IeuvQyWtMkeTBZq2etiCoicupYrVf/urNEfGIqUld1GSgoRZonaFBhRj6//7KElU9dMVfPeKAcOZmBThnsVFkqDFF04sqPkMYkJA/o+ykxO0c4EDm/EBdmV+6LY/kdDsjEY/7XV+xx16eS5e635XWebRe2Qa0cukjY7vYZtJb7c0A0nKytzL+ptvq8ovEtrEMhNck1zOliba/epgLff4RPEqdHi+CVZvvtY01SVLVjycJVAaHLvZy7waRptRpcsAOWLu/RZ4LxBMrLW1lOk83tzFo+Sya2RGH2N6sKw0YbRQmB3qLEtRGWvIYGWMnImR+H9R7rgf/86pa6k4XvdSK0NpFOnsN5/m/jNYH8p6zQ0ZAr9eG8A3bJCEnRp+yyIzOa0L4rLEt6y74sFRK6ROHAZU8UeTz3DRC5tg+JBxlKY8MmF1jTMshcZMSYeFN5VrvJJe1VJdMuCIh68BwQsPrdaEDNTHgjQkNaKAahJrtGtY1koVZhgjsRMZjTpuDL8bBzS1APM3zsun/qvo5XrU2uQvZtFbHQBBIYNZn9h/Oyp6YPvaMRP/5xkEm8nuNGcAD5sFHzDbMVaJcdoqUuwAjvlt0BvGrzfoB+K7r1U+o6O/FS4HfcjuH1FEdPJGIXkIrc4vJ8vm18zlZWdoE/bvNhCGzBR2c9OB5FcXHXa/ie0vu4gCst1Ch+81q+2j/yy6+J7uTQbODP8kGsitGSlE8zmVahjpoUoSpI48A+8PsTFg/MkElM9wENRPHD/yPDnNMxpl7z0rAqKZpXJ8zB2ij+8SgawaydDHJCtOYaJASvM8ag==; Path=/; Expires=Tue, 23 Jan 2024 09:55:59 GMT; HttpOnly; Secure; SameSite=Strict';
+  'kiali-token-Kubernetes=/Wh8L+RdEocdRxrNH8TKOShJHD3daCA6KKVUk+jKvoinR28yXMI7/33DHMPqcoVL/bOYZ5ylmiyg95Cmmwr/LDuICgfUgnp763IHoOyMEmUI4yzvpKZfqDDtksjqWCRbkxoVT94JxBFsidtAg3pCgX8gDcXt22c65AX43hAa9auxpvF3tP22SP9aZjaJ4UOqvQ70TwhE2LT+/RLQszccnV7E9kUE7zTGaY1uAKz0bNWwXY7KQ6f/uOQob3kNZMqDtyURlEHPBNA1L/QbFIGqHcM8JbglQZWII+2iPmPMHAjNKcy2xrFNUOU5CjDex9i51KUuJ1GU6xnesChShpo+tuhchFFzklslr/2egXRaPFBBCg0F6f2E3wdIt7hdc3CfAfCQWVWka9Jp30FoOWlI+pNqa5vRFKqpuGQ+vDyzb/CdTVnotsoIraUmb3rYe7gOrHUh/DQQ+smVKYGtoq2FlJMx0k0Z29dZwyM7QKdIKoWtrgfa71y1ZpQ+9CXh/9Iu71cU+5cNq7CC+joGs2eWouBKHjgGNTeP3ZNOE63GOQ36uHcxbugbCzWheJLi5fvLfu2/VVf6a/KlV4NYRI6/uEERJwRwtwWlI4dFRQP+T9DNUuomS6uxLCm0w/5zSoNXwbyJ10iqDOQ3URDk8okgwHD/kG2c0RWvslmDztz9V6AqUWMUg95hz8BDagycir1w0th98irAFjwVd9q/jA3c6DzqB8fITqv2h0f51MMs4oe0H7b2yrpCGhHSVDC5OYEe1FgFPfRbxdG8Oa//IBlUdnoLJXh4Mz9q4gA/87kp/QukyepeV7JbaoNSvBtHplvjUl1Hs/2siKTvKySiSvW5fS0TF9PE3RNtInE/hwxkMBQj5rG8zlmR3AaMLSx5q5sjA1oBz4WLLaxprO1+J22G2+W7eiblqfb01yB3ItZfBBm78ZGFAkxZiPaLuZl0B0eEbLZS8xXKkQuIeR5gTnkqoB2haskIZsI4+rEpC6GYpYukfPBzeyR+NlJd8TFbPwjuu3yjS75rrbHL7WQtMm4C6vx7Qfj7LPWQXw60RdBV3Y0CuOOS1e2lLhNF+G2lh0jYOmUeZif8IeuvQyWtMkeTBZq2etiCoicupYrVf/urNEfGIqUld1GSgoRZonaFBhRj6//7KElU9dMVfPeKAcOZmBThnsVFkqDFF04sqPkMYkJA/o+ykxO0c4EDm/EBdmV+6LY/kdDsjEY/7XV+xx16eS5e635XWebRe2Qa0cukjY7vYZtJb7c0A0nKytzL+ptvq8ovEtrEMhNck1zOliba/epgLff4RPEqdHi+CVZvvtY01SVLVjycJVAaHLvZy7waRptRpcsAOWLu/RZ4LxBMrLW1lOk83tzFo+Sya2RGH2N6sKw0YbRQmB3qLEtRGWvIYGWMnImR+H9R7rgf/86pa6k4XvdSK0NpFOnsN5/m/jNYH8p6zQ0ZAr9eG8A3bJCEnRp+yyIzOa0L4rLEt6y74sFRK6ROHAZU8UeTz3DRC5tg+JBxlKY8MmF1jTMshcZMSYeFN5VrvJJe1VJdMuCIh68BwQsPrdaEDNTHgjQkNaKAahJrtGtY1koVZhgjsRMZjTpuDL8bBzS1APM3zsun/qvo5XrU2uQvZtFbHQBBIYNZn9h/Oyp6YPvaMRP/5xkEm8nuNGcAD5sFHzDbMVaJcdoqUuwAjvlt0BvGrzfoB+K7r1U+o6O/FS4HfcjuH1FEdPJGIXkIrc4vJ8vm18zlZWdoE/bvNhCGzBR2c9OB5FcXHXa/ie0vu4gCst1Ch+81q+2j/yy6+J7uTQbODP8kGsitGSlE8zmVahjpoUoSpI48A+8PsTFg/MkElM9wENRPHD/yPDnNMxpl7z0rAqKZpXJ8zB2ij+8SgawaydDHJCtOYaJASvM8ag==; Path=/; Expires=Tue, 23 Jan 2024 09:55:59 GMT; HttpOnly; Secure; SameSite=Strict';
 const verifyCookie =
-  'kiali-token-aes=/Wh8L+RdEocdRxrNH8TKOShJHD3daCA6KKVUk+jKvoinR28yXMI7/33DHMPqcoVL/bOYZ5ylmiyg95Cmmwr/LDuICgfUgnp763IHoOyMEmUI4yzvpKZfqDDtksjqWCRbkxoVT94JxBFsidtAg3pCgX8gDcXt22c65AX43hAa9auxpvF3tP22SP9aZjaJ4UOqvQ70TwhE2LT+/RLQszccnV7E9kUE7zTGaY1uAKz0bNWwXY7KQ6f/uOQob3kNZMqDtyURlEHPBNA1L/QbFIGqHcM8JbglQZWII+2iPmPMHAjNKcy2xrFNUOU5CjDex9i51KUuJ1GU6xnesChShpo+tuhchFFzklslr/2egXRaPFBBCg0F6f2E3wdIt7hdc3CfAfCQWVWka9Jp30FoOWlI+pNqa5vRFKqpuGQ+vDyzb/CdTVnotsoIraUmb3rYe7gOrHUh/DQQ+smVKYGtoq2FlJMx0k0Z29dZwyM7QKdIKoWtrgfa71y1ZpQ+9CXh/9Iu71cU+5cNq7CC+joGs2eWouBKHjgGNTeP3ZNOE63GOQ36uHcxbugbCzWheJLi5fvLfu2/VVf6a/KlV4NYRI6/uEERJwRwtwWlI4dFRQP+T9DNUuomS6uxLCm0w/5zSoNXwbyJ10iqDOQ3URDk8okgwHD/kG2c0RWvslmDztz9V6AqUWMUg95hz8BDagycir1w0th98irAFjwVd9q/jA3c6DzqB8fITqv2h0f51MMs4oe0H7b2yrpCGhHSVDC5OYEe1FgFPfRbxdG8Oa//IBlUdnoLJXh4Mz9q4gA/87kp/QukyepeV7JbaoNSvBtHplvjUl1Hs/2siKTvKySiSvW5fS0TF9PE3RNtInE/hwxkMBQj5rG8zlmR3AaMLSx5q5sjA1oBz4WLLaxprO1+J22G2+W7eiblqfb01yB3ItZfBBm78ZGFAkxZiPaLuZl0B0eEbLZS8xXKkQuIeR5gTnkqoB2haskIZsI4+rEpC6GYpYukfPBzeyR+NlJd8TFbPwjuu3yjS75rrbHL7WQtMm4C6vx7Qfj7LPWQXw60RdBV3Y0CuOOS1e2lLhNF+G2lh0jYOmUeZif8IeuvQyWtMkeTBZq2etiCoicupYrVf/urNEfGIqUld1GSgoRZonaFBhRj6//7KElU9dMVfPeKAcOZmBThnsVFkqDFF04sqPkMYkJA/o+ykxO0c4EDm/EBdmV+6LY/kdDsjEY/7XV+xx16eS5e635XWebRe2Qa0cukjY7vYZtJb7c0A0nKytzL+ptvq8ovEtrEMhNck1zOliba/epgLff4RPEqdHi+CVZvvtY01SVLVjycJVAaHLvZy7waRptRpcsAOWLu/RZ4LxBMrLW1lOk83tzFo+Sya2RGH2N6sKw0YbRQmB3qLEtRGWvIYGWMnImR+H9R7rgf/86pa6k4XvdSK0NpFOnsN5/m/jNYH8p6zQ0ZAr9eG8A3bJCEnRp+yyIzOa0L4rLEt6y74sFRK6ROHAZU8UeTz3DRC5tg+JBxlKY8MmF1jTMshcZMSYeFN5VrvJJe1VJdMuCIh68BwQsPrdaEDNTHgjQkNaKAahJrtGtY1koVZhgjsRMZjTpuDL8bBzS1APM3zsun/qvo5XrU2uQvZtFbHQBBIYNZn9h/Oyp6YPvaMRP/5xkEm8nuNGcAD5sFHzDbMVaJcdoqUuwAjvlt0BvGrzfoB+K7r1U+o6O/FS4HfcjuH1FEdPJGIXkIrc4vJ8vm18zlZWdoE/bvNhCGzBR2c9OB5FcXHXa/ie0vu4gCst1Ch+81q+2j/yy6+J7uTQbODP8kGsitGSlE8zmVahjpoUoSpI48A+8PsTFg/MkElM9wENRPHD/yPDnNMxpl7z0rAqKZpXJ8zB2ij+8SgawaydDHJCtOYaJASvM8ag==';
+  'kiali-token-Kubernetes=/Wh8L+RdEocdRxrNH8TKOShJHD3daCA6KKVUk+jKvoinR28yXMI7/33DHMPqcoVL/bOYZ5ylmiyg95Cmmwr/LDuICgfUgnp763IHoOyMEmUI4yzvpKZfqDDtksjqWCRbkxoVT94JxBFsidtAg3pCgX8gDcXt22c65AX43hAa9auxpvF3tP22SP9aZjaJ4UOqvQ70TwhE2LT+/RLQszccnV7E9kUE7zTGaY1uAKz0bNWwXY7KQ6f/uOQob3kNZMqDtyURlEHPBNA1L/QbFIGqHcM8JbglQZWII+2iPmPMHAjNKcy2xrFNUOU5CjDex9i51KUuJ1GU6xnesChShpo+tuhchFFzklslr/2egXRaPFBBCg0F6f2E3wdIt7hdc3CfAfCQWVWka9Jp30FoOWlI+pNqa5vRFKqpuGQ+vDyzb/CdTVnotsoIraUmb3rYe7gOrHUh/DQQ+smVKYGtoq2FlJMx0k0Z29dZwyM7QKdIKoWtrgfa71y1ZpQ+9CXh/9Iu71cU+5cNq7CC+joGs2eWouBKHjgGNTeP3ZNOE63GOQ36uHcxbugbCzWheJLi5fvLfu2/VVf6a/KlV4NYRI6/uEERJwRwtwWlI4dFRQP+T9DNUuomS6uxLCm0w/5zSoNXwbyJ10iqDOQ3URDk8okgwHD/kG2c0RWvslmDztz9V6AqUWMUg95hz8BDagycir1w0th98irAFjwVd9q/jA3c6DzqB8fITqv2h0f51MMs4oe0H7b2yrpCGhHSVDC5OYEe1FgFPfRbxdG8Oa//IBlUdnoLJXh4Mz9q4gA/87kp/QukyepeV7JbaoNSvBtHplvjUl1Hs/2siKTvKySiSvW5fS0TF9PE3RNtInE/hwxkMBQj5rG8zlmR3AaMLSx5q5sjA1oBz4WLLaxprO1+J22G2+W7eiblqfb01yB3ItZfBBm78ZGFAkxZiPaLuZl0B0eEbLZS8xXKkQuIeR5gTnkqoB2haskIZsI4+rEpC6GYpYukfPBzeyR+NlJd8TFbPwjuu3yjS75rrbHL7WQtMm4C6vx7Qfj7LPWQXw60RdBV3Y0CuOOS1e2lLhNF+G2lh0jYOmUeZif8IeuvQyWtMkeTBZq2etiCoicupYrVf/urNEfGIqUld1GSgoRZonaFBhRj6//7KElU9dMVfPeKAcOZmBThnsVFkqDFF04sqPkMYkJA/o+ykxO0c4EDm/EBdmV+6LY/kdDsjEY/7XV+xx16eS5e635XWebRe2Qa0cukjY7vYZtJb7c0A0nKytzL+ptvq8ovEtrEMhNck1zOliba/epgLff4RPEqdHi+CVZvvtY01SVLVjycJVAaHLvZy7waRptRpcsAOWLu/RZ4LxBMrLW1lOk83tzFo+Sya2RGH2N6sKw0YbRQmB3qLEtRGWvIYGWMnImR+H9R7rgf/86pa6k4XvdSK0NpFOnsN5/m/jNYH8p6zQ0ZAr9eG8A3bJCEnRp+yyIzOa0L4rLEt6y74sFRK6ROHAZU8UeTz3DRC5tg+JBxlKY8MmF1jTMshcZMSYeFN5VrvJJe1VJdMuCIh68BwQsPrdaEDNTHgjQkNaKAahJrtGtY1koVZhgjsRMZjTpuDL8bBzS1APM3zsun/qvo5XrU2uQvZtFbHQBBIYNZn9h/Oyp6YPvaMRP/5xkEm8nuNGcAD5sFHzDbMVaJcdoqUuwAjvlt0BvGrzfoB+K7r1U+o6O/FS4HfcjuH1FEdPJGIXkIrc4vJ8vm18zlZWdoE/bvNhCGzBR2c9OB5FcXHXa/ie0vu4gCst1Ch+81q+2j/yy6+J7uTQbODP8kGsitGSlE8zmVahjpoUoSpI48A+8PsTFg/MkElM9wENRPHD/yPDnNMxpl7z0rAqKZpXJ8zB2ij+8SgawaydDHJCtOYaJASvM8ag==';
+
 const kialiDetails = {
   name: 'default',
   url: 'https://localhost:4000',
   sessionTime: sessionSeconds,
+  tokenName: 'kiali-token-Kubernetes',
 } as KialiDetails;
 
 describe('Let create Auth', () => {
@@ -52,9 +54,11 @@ describe('Let create Auth', () => {
 
   it('Should set kialiCookie correctly', async () => {
     const AuthClient = new KialiAuthentication(kialiDetails);
-    AuthClient.setKialiCookie(rawCookie);
+    AuthClient.setKialiCookie(rawCookie, 'kiali-token-Kubernetes');
     expect(AuthClient.getCookie()).toBe(verifyCookie);
-    AuthClient.setKialiCookie('');
+    AuthClient.setKialiCookie(rawCookie, 'kiali-token-aes');
+    expect(AuthClient.getCookie()).toBe('');
+    AuthClient.setKialiCookie('', 'kiali-token-Kubernetes');
     expect(AuthClient.getCookie()).toBe('');
   });
 
@@ -73,7 +77,7 @@ describe('Let create Auth', () => {
       sessionInfo: { expiresOn: '', username: 'anonymous' },
       strategy: AuthStrategy.token,
     });
-    AuthClient.setKialiCookie('');
+    AuthClient.setKialiCookie('', kialiDetails.tokenName!);
     expect(AuthClient.shouldRelogin()).toBeTruthy();
   });
 
@@ -87,7 +91,7 @@ describe('Let create Auth', () => {
       },
       strategy: AuthStrategy.token,
     });
-    AuthClient.setKialiCookie(rawCookie);
+    AuthClient.setKialiCookie(rawCookie, kialiDetails.tokenName!);
     expect(AuthClient.shouldRelogin()).toBeFalsy();
   });
 
@@ -101,7 +105,7 @@ describe('Let create Auth', () => {
       },
       strategy: AuthStrategy.token,
     });
-    AuthClient.setKialiCookie(rawCookie);
+    AuthClient.setKialiCookie(rawCookie, undefined);
     expect(AuthClient.shouldRelogin()).toBeTruthy();
   });
 

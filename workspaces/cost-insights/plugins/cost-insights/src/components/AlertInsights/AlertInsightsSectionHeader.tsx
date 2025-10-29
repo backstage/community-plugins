@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';

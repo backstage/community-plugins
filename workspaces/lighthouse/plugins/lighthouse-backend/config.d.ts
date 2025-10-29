@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 import { HumanDuration } from '@backstage/types';
 
 export interface Config {
@@ -25,6 +25,6 @@ export interface Config {
     /**
      * Schedule of the audit
      */
-    schedule?: HumanDuration | TaskScheduleDefinitionConfig;
+    schedule?: HumanDuration | SchedulerServiceTaskScheduleDefinitionConfig;
   };
 }

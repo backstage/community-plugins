@@ -25,7 +25,7 @@ import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const useStyles = makeStyles<Theme>(theme => ({
   label: {

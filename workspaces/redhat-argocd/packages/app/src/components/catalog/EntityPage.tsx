@@ -68,6 +68,11 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 
 import {
+  EntityKubernetesContent,
+  isKubernetesAvailable,
+} from '@backstage/plugin-kubernetes';
+
+import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
   isArgocdConfigured,
@@ -170,6 +175,14 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/cd" title="CD">
       {cdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      path="/kubernetes"
+      title="Kubernetes"
+      if={isKubernetesAvailable}
+    >
+      <EntityKubernetesContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">

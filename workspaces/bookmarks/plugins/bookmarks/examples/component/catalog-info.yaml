@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-website
+
+  bookmarks:
+    'Life story': https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic
+    'My cool gadgets and gizmos':
+      'fortune cowsay lolcat': https://logonoff.co/projects/fcl/index.html
+      'XP tour': https://logonoff.co/projects/windowsxptour/index.html
+      'notepad': https://notepad.logonoff.co
+    'Important documents':
+      'Team sync notes': https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic
+      'Manifesto':
+        'Agile manifesto': https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic
+        'Scrum manifesto': https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic
+      'Sprint planning': https://docs.google.com/document/d/1qaLicIa3FZKyup4JXo9ivNgWDmkbX6-XBaQNfKeKjpw/mobilebasic
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  providesApis: [example-grpc-api]

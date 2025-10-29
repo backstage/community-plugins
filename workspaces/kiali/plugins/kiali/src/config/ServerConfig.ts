@@ -161,14 +161,19 @@ let homeCluster = getHomeCluster(serverConfig);
 const isMultiCluster = isMC();
 export { homeCluster, isMultiCluster };
 
+export const getServerConfig = (): ComputedServerConfig => {
+  return serverConfig;
+};
+
 export const toValidDuration = (duration: number): number => {
+  const currentServerConfig = getServerConfig();
   // Check if valid
-  if (serverConfig.durations[duration]) {
+  if (currentServerConfig.durations[duration]) {
     return duration;
   }
   // Get closest duration
   const validDurations = durationsTuples.filter(
-    d => serverConfig.durations[d[0]],
+    d => currentServerConfig.durations[d[0]],
   );
   for (let i = validDurations.length - 1; i > 0; i--) {
     if (duration > durationsTuples[i][0]) {
@@ -193,7 +198,8 @@ export const setServerConfig = (cfg: ServerConfig) => {
 };
 
 export const isIstioNamespace = (namespace: string): boolean => {
-  if (namespace === serverConfig.istioNamespace) {
+  const currentServerConfig = getServerConfig();
+  if (currentServerConfig && namespace === currentServerConfig.istioNamespace) {
     return true;
   }
   return false;

@@ -22,7 +22,6 @@ import {
   OctopusReleaseProgression,
 } from '../../api';
 
-import React from 'react';
 import {
   Link,
   ResponseErrorPanel,

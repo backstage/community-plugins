@@ -1,5 +1,90 @@
 # @backstage-community/plugin-npm-backend
 
+## 1.13.0
+
+### Minor Changes
+
+- bb724ca: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [bb724ca]
+  - @backstage-community/plugin-npm-common@1.13.0
+
+## 1.12.0
+
+### Minor Changes
+
+- fcd92b0: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [fcd92b0]
+  - @backstage-community/plugin-npm-common@1.12.0
+
+## 1.11.0
+
+### Minor Changes
+
+- 3bf54c8: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [3bf54c8]
+  - @backstage-community/plugin-npm-common@1.11.0
+
+## 1.10.1
+
+### Patch Changes
+
+- bff3611: Remove unused @backstage/catalog-client dependency from the backend and other test devDependencies
+- Updated dependencies [bff3611]
+  - @backstage-community/plugin-npm-common@1.10.1
+
+## 1.10.0
+
+### Minor Changes
+
+- e5c0edf: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [e5c0edf]
+  - @backstage-community/plugin-npm-common@1.10.0
+
+## 1.9.0
+
+### Minor Changes
+
+- 9df5e2a: Add new npm registry option `extraRequestHeaders` to pass for example non-standard authentification headers.
+
+### Patch Changes
+
+- Updated dependencies [9df5e2a]
+  - @backstage-community/plugin-npm-common@1.9.0
+
+## 1.8.0
+
+### Minor Changes
+
+- 4bfc2ec: Backstage version bump to v1.40.1
+
+### Patch Changes
+
+- Updated dependencies [4bfc2ec]
+  - @backstage-community/plugin-npm-common@1.8.0
+
+## 1.7.0
+
+### Minor Changes
+
+- c42ca51: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- Updated dependencies [c42ca51]
+  - @backstage-community/plugin-npm-common@1.7.0
+
 ## 1.6.0
 
 ### Minor Changes

@@ -38,6 +38,13 @@ export interface Config {
        * @visibility secret
        */
       token?: string;
+      /**
+       * Extra registry headers for non-standard authentification tokens.
+       * @deepVisibility secret
+       */
+      extraRequestHeaders?: {
+        [key: string]: string;
+      };
     }[];
   };
 }

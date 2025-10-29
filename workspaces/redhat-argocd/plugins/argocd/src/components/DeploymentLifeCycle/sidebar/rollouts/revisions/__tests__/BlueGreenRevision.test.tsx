@@ -19,6 +19,11 @@ import { mockArgoResources } from '../../../../../../../dev/__data__/argoRollout
 import { Revision } from '../../../../../../types/revision';
 import { getRolloutUIResources } from '../../../../../../utils/rollout-utils';
 import BlueGreenRevision from '../BlueGreenRevision';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 const blueGreenRollout = getRolloutUIResources(
   mockArgoResources,

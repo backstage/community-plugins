@@ -18,7 +18,14 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { mockConditions } from '../__fixtures__/mockConditions';
 import { mockPermissionPolicies } from '../__fixtures__/mockPermissionPolicies';
 import { mockAssociatedPolicies } from '../__fixtures__/mockPolicies';
+
+import { mockUseLanguage } from '../test-utils/mockTranslations';
+
 import { usePermissionPolicies } from './usePermissionPolicies';
+
+jest.mock('./useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
@@ -71,7 +78,7 @@ describe('usePermissionPolicies', () => {
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.error).toEqual({
-        message: 'Error fetching policies. Unauthorized',
+        message: 'Error fetching the policies. Unauthorized',
         name: '403',
       });
     });

@@ -17,6 +17,11 @@ import { render, fireEvent, screen } from '@testing-library/react';
 
 import { ResourcesFilterBy } from '../ResourcesFilterBy';
 import { FiltersType } from '../../../../../../types/resources';
+import { mockUseTranslation } from '../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 jest.mock('../filterHelpers', () => ({
   handleDelete: jest.fn(),

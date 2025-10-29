@@ -19,11 +19,13 @@ import DeploymentMetadata from './DeploymentMetadata';
 import RolloutMetadata from './RolloutMetadata';
 import Metadata from '../../../../Common/Metadata';
 import MetadataItem from '../../../../Common/MetadataItem';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 type ResourceMetadataProps = {
   resource: Resource;
 };
 const ResourceMetadata: FC<ResourceMetadataProps> = ({ resource }) => {
+  const { t } = useTranslation();
   switch (resource.kind) {
     case 'Deployment':
       return <DeploymentMetadata resource={resource} />;
@@ -32,7 +34,13 @@ const ResourceMetadata: FC<ResourceMetadataProps> = ({ resource }) => {
     default:
       return (
         <Metadata>
-          <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
+          <MetadataItem
+            title={t(
+              'deploymentLifecycle.sidebar.resources.resource.resourceMetadata.namespace',
+            )}
+          >
+            {resource?.namespace}
+          </MetadataItem>
         </Metadata>
       );
   }

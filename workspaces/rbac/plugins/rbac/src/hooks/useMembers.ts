@@ -22,6 +22,8 @@ import { useApi } from '@backstage/core-plugin-api';
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { MemberEntity, MembersData } from '../types';
 import { getMembersFromGroup } from '../utils/rbac-utils';
+import { useLanguage } from './useLanguage';
+import { useTranslation } from './useTranslation';
 
 export type MembersInfo = {
   loading: boolean;
@@ -34,14 +36,19 @@ export type MembersInfo = {
 const getErrorText = (
   role: any,
   members: any,
+  t: (key: string, params?: any) => string,
 ): { message: string } | undefined => {
   if (!Array.isArray(role) && (role as Response)?.statusText) {
     return {
-      message: `Unable to fetch role: ${(role as Response).statusText}`,
+      message: t('common.unableToFetchRole', {
+        error: (role as Response).statusText,
+      }),
     };
   } else if (!Array.isArray(members) && (members as Response)?.statusText) {
     return {
-      message: `Unable to fetch members: ${(members as Response).statusText}`,
+      message: t('common.unableToFetchMembers', {
+        error: (members as Response).statusText,
+      }),
     };
   }
   return undefined;
@@ -50,6 +57,7 @@ const getErrorText = (
 const getMemberData = (
   memberResource: MemberEntity | undefined,
   ref: string,
+  locale: string,
 ) => {
   if (memberResource) {
     return {
@@ -59,7 +67,7 @@ const getMemberData = (
       type: memberResource.kind,
       ref: {
         namespace: memberResource.metadata.namespace as string,
-        kind: memberResource.kind.toLocaleLowerCase('en-US'),
+        kind: memberResource.kind.toLocaleLowerCase(locale),
         name: memberResource.metadata.name,
       },
       members:
@@ -86,6 +94,8 @@ export const useMembers = (
   pollInterval?: number,
 ): MembersInfo => {
   const rbacApi = useApi(rbacApiRef);
+  const locale = useLanguage();
+  const { t } = useTranslation();
   let data: MembersData[] = [];
   const {
     value: role,
@@ -117,12 +127,12 @@ export const useMembers = (
             )
               ? members.find(member => stringifyEntityRef(member) === ref)
               : undefined;
-            const memberData = getMemberData(memberResource, ref);
+            const memberData = getMemberData(memberResource, ref, locale);
             acc.push(memberData);
             return acc;
           }, [])
         : [],
-    [role, members],
+    [role, members, locale],
   );
 
   useInterval(
@@ -137,7 +147,7 @@ export const useMembers = (
     loading,
     data,
     retry: { roleRetry, membersRetry },
-    error: getErrorText(role, members) || roleError || membersError,
+    error: getErrorText(role, members, t) || roleError || membersError,
     canReadUsersAndGroups,
   };
 };

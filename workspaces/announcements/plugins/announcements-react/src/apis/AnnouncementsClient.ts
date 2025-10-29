@@ -26,9 +26,14 @@ import {
   Announcement,
   AnnouncementsList,
   Category,
+  Tag,
 } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsApi } from './AnnouncementsApi';
-import { CreateAnnouncementRequest, CreateCategoryRequest } from './types';
+import {
+  CreateAnnouncementRequest,
+  CreateCategoryRequest,
+  CreateTagRequest,
+} from './types';
 
 const lastSeenKey = 'user_last_seen_date';
 
@@ -113,17 +118,24 @@ export class AnnouncementsClient implements AnnouncementsApi {
     active,
     sortBy,
     order,
+    current,
+    tags,
   }: {
     max?: number;
     page?: number;
     category?: string;
+    tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList> {
     const params = new URLSearchParams();
     if (category) {
       params.append('category', category);
+    }
+    if (tags && tags.length > 0) {
+      params.append('tags', tags.join(','));
     }
     if (max) {
       params.append('max', max.toString());
@@ -140,6 +152,9 @@ export class AnnouncementsClient implements AnnouncementsApi {
     if (order) {
       params.append('order', order.toString());
     }
+    if (current) {
+      params.append('current', current.toString());
+    }
 
     return this.fetch<AnnouncementsList>(`/announcements?${params.toString()}`);
   }
@@ -154,7 +169,10 @@ export class AnnouncementsClient implements AnnouncementsApi {
     return await this.fetch<Announcement>(`/announcements`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
+      body: JSON.stringify({
+        ...request,
+        tags: Array.isArray(request.tags) ? request.tags : [],
+      }),
     });
   }
 
@@ -183,6 +201,22 @@ export class AnnouncementsClient implements AnnouncementsApi {
 
   async createCategory(request: CreateCategoryRequest): Promise<void> {
     await this.fetch<Category>(`/categories`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+  }
+
+  async tags(): Promise<Category[]> {
+    return this.fetch<Category[]>('/tags');
+  }
+
+  async deleteTag(slug: string): Promise<void> {
+    return this.delete(`/tags/${slug}`, { method: 'DELETE' });
+  }
+
+  async createTag(request: CreateTagRequest): Promise<void> {
+    await this.fetch<Tag>(`/tags`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),

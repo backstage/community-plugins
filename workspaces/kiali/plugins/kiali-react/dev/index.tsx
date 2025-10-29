@@ -15,13 +15,11 @@
  */
 import { createDevApp } from '@backstage/dev-utils';
 import { Model } from '@patternfly/react-topology';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 import { TrafficGraph } from '../src';
 import graphModel from './__data__/bookinfoGraphModel.json';
 
 createDevApp()
   .registerPlugin()
-  .addThemes(getAllThemes())
   .addPage({
     element: <TrafficGraph model={graphModel as Model} />,
     title: 'TrafficGraph',

@@ -32,6 +32,7 @@ If you are interested in Resource discovery and do not want any of the front-end
 #### Prerequisites
 
 - OCM is [deployed and configured](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.10/html/install/installing#doc-wrapper) on a Kubernetes cluster.
+  - On OpenShift, this involves installing the **Advanced Cluster Management for Kubernetes** operator from the OperatorHub, then creating a `MultiClusterHub` custom resource (CR) to deploy the OCM components.
 - [Kubernetes plugin for Backstage](https://backstage.io/docs/features/kubernetes) is installed and configured (Optional)
 - On the target Hub clusters please create a `ServiceAccount` and grant it the following `ClusterRole`:
 

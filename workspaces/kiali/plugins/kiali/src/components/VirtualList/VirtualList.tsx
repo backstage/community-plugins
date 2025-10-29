@@ -205,7 +205,8 @@ export const VirtualList = <R extends RenderResource>(
                         )
                       }
                     >
-                      {listProps.view === ENTITY ||
+                      {(listProps.view === ENTITY &&
+                        column.title === 'Configuration') ||
                       (listProps.view === DRAWER &&
                         column.title === 'Configuration')
                         ? 'CONFIG'

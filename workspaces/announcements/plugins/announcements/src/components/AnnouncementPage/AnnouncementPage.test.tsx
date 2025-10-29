@@ -66,6 +66,8 @@ describe('AnnouncementPage', () => {
     created_at: '2025-01-10T00:00:00.000Z',
     active: true,
     start_at: '2025-01-10T00:00:00.000Z',
+    until_date: '2025-02-10T00:00:00.000Z',
+    updated_at: '2025-01-10T00:00:00.000Z',
   };
 
   afterEach(() => {

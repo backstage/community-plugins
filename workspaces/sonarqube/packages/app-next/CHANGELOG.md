@@ -1,5 +1,69 @@
 # app-next
 
+## 0.0.27
+
+### Patch Changes
+
+- Updated dependencies [87abf0b]
+  - @backstage-community/plugin-sonarqube@0.20.0
+
+## 0.0.26
+
+### Patch Changes
+
+- Updated dependencies [28530b1]
+  - @backstage-community/plugin-sonarqube@0.19.0
+
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [9d3c263]
+- Updated dependencies [130e6f7]
+  - @backstage-community/plugin-sonarqube@0.18.1
+
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [dcffece]
+  - @backstage-community/plugin-sonarqube@0.18.0
+
+## 0.0.23
+
+### Patch Changes
+
+- Updated dependencies [6d6b976]
+  - @backstage-community/plugin-sonarqube@0.17.0
+
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies [1eda234]
+  - @backstage-community/plugin-sonarqube@0.16.2
+
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [b64dc92]
+  - @backstage-community/plugin-sonarqube@0.16.1
+
+## 0.0.20
+
+### Patch Changes
+
+- Updated dependencies [b61e4a0]
+  - @backstage-community/plugin-sonarqube@0.16.0
+
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [ad4279b]
+  - @backstage-community/plugin-sonarqube@0.15.0
+
 ## 0.0.18
 
 ### Patch Changes

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, {
+import {
+  createContext,
   PropsWithChildren,
   useContext,
   useEffect,
@@ -43,7 +44,7 @@ export type BillingDateContextProps = {
   lastCompleteBillingDate: string; // YYYY-MM-DD
 };
 
-export const BillingDateContext = React.createContext<
+export const BillingDateContext = createContext<
   BillingDateContextProps | undefined
 >(undefined);
 

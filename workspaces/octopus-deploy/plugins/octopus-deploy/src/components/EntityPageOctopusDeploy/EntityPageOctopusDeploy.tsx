@@ -18,7 +18,6 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { useProject } from '../../hooks/useProject';
 import { useReleases } from '../../hooks/useReleases';
 import { getProjectReferenceAnnotationFromEntity } from '../../utils/getAnnotationFromEntity';
-import React from 'react';
 import { ReleaseTable } from '../ReleaseTable';
 
 export const EntityPageOctopusDeploy = (props: { defaultLimit?: number }) => {

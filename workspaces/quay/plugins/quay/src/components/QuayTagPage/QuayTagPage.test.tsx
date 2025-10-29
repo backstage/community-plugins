@@ -18,8 +18,7 @@ import { useParams } from 'react-router-dom';
 import { errorApiRef } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { usePermission } from '@backstage/plugin-permission-react';
-import { MockErrorApi, TestApiProvider } from '@backstage/test-utils';
-import { MockTranslationApi } from '@backstage/test-utils/alpha';
+import { mockApis, MockErrorApi, TestApiProvider } from '@backstage/test-utils';
 
 import { render } from '@testing-library/react';
 
@@ -99,7 +98,7 @@ describe('QuayTagPage', () => {
     const { queryByTestId, queryAllByText } = render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >

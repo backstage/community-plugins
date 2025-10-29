@@ -40,8 +40,6 @@ import {
   getValueByPrefix,
 } from './selector';
 
-// import {TEMPLATE_OS_LABEL,TEMPLATE_OS_NAME_ANNOTATION} from '../const'
-
 // Type check
 export const isVMIKind = (item: any): item is VMIKind => {
   return item.spec !== undefined && item.status !== undefined;

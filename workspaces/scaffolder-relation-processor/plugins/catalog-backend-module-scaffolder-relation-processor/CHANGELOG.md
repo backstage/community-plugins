@@ -1,5 +1,35 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.9.0
+
+### Minor Changes
+
+- 071e2dc: Backstage version bump to v1.44.1
+
+## 2.8.0
+
+### Minor Changes
+
+- c729182: Backstage version bump to v1.42.5
+
+## 2.7.0
+
+### Minor Changes
+
+- a271cd6: Add notifications support for scaffolder relation processor to send notifications when template versions are updated. The plugin uses Backstage's notification system to alert users when scaffolder templates have new versions available. This helps teams stay informed about template updates and ensures they can take advantage of the latest improvements and fixes. The notification feature is disabled by default and can be enabled via config.
+
+## 2.6.1
+
+### Patch Changes
+
+- 50b15c7: Added documentation note clarifying that the plugin only processes existing spec.scaffoldedFrom fields.
+
+## 2.6.0
+
+### Minor Changes
+
+- f0fbcb1: Backstage version bump to v1.41.1
+
 ## 2.5.0
 
 ### Minor Changes

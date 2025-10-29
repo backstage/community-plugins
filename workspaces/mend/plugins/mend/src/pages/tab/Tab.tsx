@@ -1,4 +1,3 @@
-import React from 'react';
 import { Content } from '@backstage/core-components';
 import { useApi, fetchApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';

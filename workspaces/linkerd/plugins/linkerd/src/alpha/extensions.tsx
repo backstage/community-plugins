@@ -43,8 +43,8 @@ export const EdgesTableEntityCard = EntityCardBlueprint.make({
 
 export const LinkerdEntityContent = EntityContentBlueprint.make({
   params: {
-    defaultPath: '/linkerd',
-    defaultTitle: 'Linkerd',
+    path: '/linkerd',
+    title: 'Linkerd',
     filter: isKubernetesAvailable,
     loader: async () => {
       const m = await import('../components/DependenciesCard');

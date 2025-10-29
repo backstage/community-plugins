@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 
 import { fireEvent } from '@testing-library/react';
 
 import { FeedbackAPI, feedbackApiRef } from '../../api';
+import { mockErrorList, mockExperienceList, mockEmptyList } from '../../mocks';
 import { CreateFeedbackModal } from './CreateFeedbackModal';
-import { mockErrorList, mockExperienceList } from '../../mocks';
 
 describe('Create Feedback Modal', () => {
   const feedbackApi: Partial<FeedbackAPI> = {
@@ -143,6 +142,163 @@ describe('Create Feedback Modal', () => {
     ).toBeInTheDocument();
     expect(
       rendered.getByRole('button', { name: 'Send Feedback' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('Create Feedback Modal - Bugs Disabled', () => {
+  const feedbackApi: Partial<FeedbackAPI> = {
+    createFeedback: jest.fn(),
+    getErrorList: jest.fn().mockReturnValue(mockEmptyList),
+    getExperienceList: jest.fn().mockReturnValue(mockExperienceList),
+  };
+
+  const PROJECT_ID = 'component:default/example-website';
+  const handleModalClose = jest.fn().mockReturnValue(true);
+
+  const render = async () =>
+    await renderInTestApp(
+      <TestApiProvider apis={[[feedbackApiRef, feedbackApi]]}>
+        <CreateFeedbackModal
+          handleModalCloseFn={handleModalClose}
+          projectEntity={PROJECT_ID}
+          open
+        />
+      </TestApiProvider>,
+    );
+
+  it('should render', async () => {
+    const rendered = await render();
+    expect(rendered).toBeDefined();
+  });
+
+  test('should not render type selector', async () => {
+    const rendered = await render();
+    const tags = rendered.queryAllByRole('radio');
+    expect(rendered.queryByText(`Select type`)).not.toBeInTheDocument();
+    expect(tags).toHaveLength(0);
+  });
+
+  it('should render the modal title for feedback', async () => {
+    const rendered = await render();
+
+    expect(
+      rendered.getByText(`Feedback for ${PROJECT_ID.split('/').pop()}`),
+    ).toBeInTheDocument();
+  });
+
+  it('should render all tags for feedback', async () => {
+    const rendered = await render();
+    expect(
+      rendered.getByRole('button', { name: 'Excellent' }),
+    ).toBeInTheDocument();
+    expect(rendered.getByRole('button', { name: 'Good' })).toBeInTheDocument();
+    expect(
+      rendered.getByRole('button', { name: 'Needs Improvement' }),
+    ).toBeInTheDocument();
+    expect(rendered.getByRole('button', { name: 'Other' })).toBeInTheDocument();
+  });
+
+  it('should have correct feedback labels', async () => {
+    const rendered = await render();
+
+    expect(
+      rendered.getByRole('textbox', { name: 'Summary' }),
+    ).toBeInTheDocument();
+
+    expect(
+      rendered.getByRole('textbox', { name: 'Description' }),
+    ).toBeInTheDocument();
+  });
+
+  it('should render submit buttons for feedback', async () => {
+    const rendered = await render();
+
+    expect(
+      rendered.getByRole('button', { name: 'Cancel' }),
+    ).toBeInTheDocument();
+    expect(
+      rendered.getByRole('button', { name: 'Send Feedback' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('Create Feedback Modal - Experiences Disabled', () => {
+  const feedbackApi: Partial<FeedbackAPI> = {
+    createFeedback: jest.fn(),
+    getErrorList: jest.fn().mockReturnValue(mockErrorList),
+    getExperienceList: jest.fn().mockReturnValue(mockEmptyList),
+  };
+
+  const PROJECT_ID = 'component:default/example-website';
+  const handleModalClose = jest.fn().mockReturnValue(true);
+
+  const render = async () =>
+    await renderInTestApp(
+      <TestApiProvider apis={[[feedbackApiRef, feedbackApi]]}>
+        <CreateFeedbackModal
+          handleModalCloseFn={handleModalClose}
+          projectEntity={PROJECT_ID}
+          open
+        />
+      </TestApiProvider>,
+    );
+
+  it('should render', async () => {
+    const rendered = await render();
+    expect(rendered).toBeDefined();
+  });
+
+  test('should not render type selector', async () => {
+    const rendered = await render();
+    const tags = rendered.queryAllByRole('radio');
+    expect(rendered.queryByText(`Select type`)).not.toBeInTheDocument();
+    expect(tags).toHaveLength(0);
+  });
+
+  it('should render the modal title for bugs', async () => {
+    const rendered = await render();
+    expect(
+      rendered.getByText(`Feedback for ${PROJECT_ID.split('/').pop()}`),
+    ).toBeInTheDocument();
+  });
+
+  it('should render all tags for bug', async () => {
+    const rendered = await render();
+    expect(
+      rendered.getByRole('button', { name: 'Slow Loading' }),
+    ).toBeInTheDocument();
+    expect(
+      rendered.getByRole('button', { name: 'Not Responsive' }),
+    ).toBeInTheDocument();
+    expect(
+      rendered.getByRole('button', { name: 'Navigation' }),
+    ).toBeInTheDocument();
+    expect(
+      rendered.getByRole('button', { name: 'UI Issues' }),
+    ).toBeInTheDocument();
+    expect(rendered.getByRole('button', { name: 'Other' })).toBeInTheDocument();
+  });
+
+  it('should have correct bug labels', async () => {
+    const rendered = await render();
+
+    expect(
+      rendered.getByRole('textbox', { name: 'Summary' }),
+    ).toBeInTheDocument();
+
+    expect(
+      rendered.getByRole('textbox', { name: 'Description' }),
+    ).toBeInTheDocument();
+  });
+
+  it('should render submit buttons for bugs', async () => {
+    const rendered = await render();
+    expect(
+      rendered.getByRole('button', { name: 'Cancel' }),
+    ).toBeInTheDocument();
+    expect(
+      rendered.getByRole('button', { name: 'Report Bug' }),
     ).toBeInTheDocument();
   });
 });

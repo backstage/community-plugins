@@ -139,6 +139,99 @@ const groupPage = (
 
 Note: For a full example of this you can look at [this EntityPage](../../packages/app/src/components/catalog/EntityPage.tsx).
 
+## New Frontend System
+
+Follow these steps to detect and configure the Entity Feedback plugin if you'd like to use it in an application that supports the new Backstage frontend system.
+
+### Package detection
+
+Once you install the `@backstage-community/plugin-entity-feedback` package using your preferred package manager, you have to choose how the package should be detected by the app. The package can be automatically discovered when the feature discovery config is set, or it can be manually enabled via code (for more granular package customization cases, such as extension overrides).
+
+<table>
+  <tr>
+    <td>Via config</td>
+    <td>Via code</td>
+  </tr>
+  <tr>
+    <td>
+      <pre lang="yaml">
+        <code>
+# app-config.yaml
+  app:
+    # Enable package discovery for all plugins
+    packages: 'all'
+  ---
+  app:
+    # Enable package discovery only for Entity Feedback
+    packages:
+      include:
+        - '@backstage-community/plugin-entity-feedback'
+        </code>
+      </pre>
+    </td>
+    <td>
+      <pre lang="javascript">
+       <code>
+// packages/app/src/App.tsx
+import { createApp } from '@backstage/frontend-defaults';
+import entityFeedbackPlugin from '@backstage-community/plugin-entity-feedback/alpha';
+//...
+const app = createApp({
+  // ...
+  features: [
+    //...
+    entityFeedbackPlugin,
+  ],
+});
+
+//...
+</code>
+
+</pre>
+</td>
+
+  </tr>
+</table>
+
+## Extensions config
+
+Currently, the plugin installs 4 extensions: 1 api, 2 entity cards (buttons and table ratings) and 1 entity page content (also known as entity page tab), see below examples of how to configure the available extensions.
+
+```yml
+# app-config.yaml
+app:
+  extensions:
+    # Example disabling the "buttons" rating entity card
+    - 'entity-card:entity-feedback/ratings-buttons': false
+    # Example customizing the "buttons" rating entity card
+    - 'entity-card:entity-feedback/ratings-buttons':
+        config:
+          variant: 'starred' # (Optional) defaults to "like-dislike"
+          title: 'Rating Buttons' # (Optional) defaults to "Rate this entity"
+          requireResponse: false # (Optional) defaults to "true"
+          dialogTitle: 'What could be better?' # (Optional) defaults to "Tell us what could be better"
+          dialogResponses: # (Optional) defaults to "Incorrect info, Missing info and Other"
+            - id: 'inaccurate'
+              label: 'Inaccurate'
+            - id: 'other'
+              label: 'Other'
+    # Example disabling the "table" rating entity card
+    - 'entity-card:entity-feedback/ratings-table': false
+    # Example customizing the "table" rating entity card
+    - 'entity-card:entity-feedback/ratings-table':
+        config:
+          variant: 'starred' # (Optional) defaults to "like-dislike"
+          title: 'Rating Table' # (Optional) defaults to "Entity Ratings"
+          allEntities: true # (Optional) defaults to "false"
+    # Example disabling the entity feedback content
+    - 'entity-content:entity-feedback': false
+    # Example customizing the entity feedback content
+    - 'entity-content:entity-feedback':
+        config:
+          path: '/feedbacks'
+          title: 'Feedbacks'
+```
+
 ## Local Development
 
 To start the mocked example you need to run the front and backend.

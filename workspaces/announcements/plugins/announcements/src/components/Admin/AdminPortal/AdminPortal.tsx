@@ -22,6 +22,7 @@ import { useAnnouncementsTranslation } from '@backstage-community/plugin-announc
 import { makeStyles, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
+import { TagsContent } from '../TagsContent';
 
 const useStyles = makeStyles(() => ({
   tabPanel: {
@@ -34,9 +35,14 @@ type AdminPortalProps = {
   themeId?: string;
   title?: string;
   subtitle?: string;
+  defaultInactive?: boolean;
 };
 
-const AdminPortalContent = () => {
+type AdminPortalContentProps = {
+  defaultInactive?: boolean;
+};
+
+const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
   const classes = useStyles();
   const [tab, setTab] = useState('announcements');
   const { t } = useAnnouncementsTranslation();
@@ -55,12 +61,16 @@ const AdminPortalContent = () => {
           label={t('admin.adminPortal.categoriesLabel')}
           value="categories"
         />
+        <Tab label={t('admin.adminPortal.tagsLabel')} value="tags" />
       </TabList>
       <TabPanel value="announcements" className={classes.tabPanel}>
-        <AnnouncementsContent />
+        <AnnouncementsContent defaultInactive={defaultInactive} />
       </TabPanel>
       <TabPanel value="categories" className={classes.tabPanel}>
         <CategoriesContent />
+      </TabPanel>
+      <TabPanel value="tags" className={classes.tabPanel}>
+        <TagsContent />
       </TabPanel>
     </TabContext>
   );
@@ -79,7 +89,7 @@ export const AdminPortal = (props?: AdminPortalProps) => {
       />
       <RequirePermission permission={announcementCreatePermission}>
         <Content>
-          <AdminPortalContent />
+          <AdminPortalContent defaultInactive={props?.defaultInactive} />
         </Content>
       </RequirePermission>
     </Page>

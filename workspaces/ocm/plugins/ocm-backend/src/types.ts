@@ -15,7 +15,11 @@
  */
 import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 
-import type { KubernetesObject, V1PodCondition } from '@kubernetes/client-node';
+import type {
+  CustomObjectsApi,
+  KubernetesObject,
+  V1PodCondition,
+} from '@kubernetes/client-node';
 
 export type OcmConfig = {
   id: string;
@@ -110,3 +114,8 @@ export interface ManagedClusterInfo extends KubernetesObject {
     conditions: V1PodCondition[];
   };
 }
+
+export type ClientDetails = {
+  client: CustomObjectsApi;
+  hubResourceName: string;
+};

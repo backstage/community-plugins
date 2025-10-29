@@ -46,23 +46,6 @@ describe('Entity card extensions', () => {
     reRunWorkflow: () => null,
   } as unknown as GithubActionsApi;
 
-  it('should render WorkflowRunsCard', async () => {
-    renderInTestApp(
-      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
-        <EntityProvider entity={sampleEntity.entity}>
-          {createExtensionTester(cards.entityGithubActionsCard).reactElement()}
-        </EntityProvider>
-      </TestApiProvider>,
-    );
-
-    await waitFor(
-      () => {
-        expect(screen.getByText('backstage/backstage')).toBeInTheDocument();
-      },
-      { timeout: 5000 },
-    );
-  });
-
   it('should render LatestWorkflowRunCard', async () => {
     renderInTestApp(
       <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
@@ -76,7 +59,7 @@ describe('Entity card extensions', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText('Last master build')).toBeInTheDocument();
+        expect(screen.getByText('Last main build')).toBeInTheDocument();
       },
       { timeout: 5000 },
     );
@@ -95,7 +78,7 @@ describe('Entity card extensions', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText('Last master build')).toBeInTheDocument();
+        expect(screen.getByText('Recent main builds')).toBeInTheDocument();
       },
       { timeout: 5000 },
     );

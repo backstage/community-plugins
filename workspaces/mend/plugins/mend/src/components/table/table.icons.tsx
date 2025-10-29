@@ -1,78 +1,78 @@
-import React from 'react';
+import type { Ref } from 'react';
 import { forwardRef } from 'react';
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import ViewColumn from '@material-ui/icons/ViewColumn';
-import Retry from '@material-ui/icons/Replay';
-import Resize from '@material-ui/icons/Height';
+import AddBox from '@mui/icons-material/AddBox';
+import ArrowUpward from '@mui/icons-material/ArrowUpward';
+import Check from '@mui/icons-material/Check';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import Clear from '@mui/icons-material/Clear';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import Edit from '@mui/icons-material/Edit';
+import FilterList from '@mui/icons-material/FilterList';
+import FirstPage from '@mui/icons-material/FirstPage';
+import LastPage from '@mui/icons-material/LastPage';
+import Remove from '@mui/icons-material/Remove';
+import SaveAlt from '@mui/icons-material/SaveAlt';
+import ViewColumn from '@mui/icons-material/ViewColumn';
+import Retry from '@mui/icons-material/Replay';
+import Resize from '@mui/icons-material/Height';
 
 export const tableBackstageIcons = {
-  Add: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Add: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <AddBox {...props} ref={ref} />
   )),
-  Check: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Check: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Check {...props} ref={ref} />
   )),
-  Clear: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Clear: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Clear {...props} ref={ref} />
   )),
-  Delete: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Delete: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <DeleteOutline {...props} ref={ref} />
   )),
-  DetailPanel: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  DetailPanel: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <ChevronRight {...props} ref={ref} />
   )),
-  Edit: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Edit: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Edit {...props} ref={ref} />
   )),
-  Export: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Export: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <SaveAlt {...props} ref={ref} />
   )),
-  Filter: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Filter: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <FilterList {...props} ref={ref} />
   )),
-  FirstPage: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  FirstPage: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <FirstPage {...props} ref={ref} />
   )),
-  LastPage: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  LastPage: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <LastPage {...props} ref={ref} />
   )),
-  NextPage: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  NextPage: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <ChevronRight {...props} ref={ref} />
   )),
-  PreviousPage: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  PreviousPage: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <ChevronLeft {...props} ref={ref} />
   )),
-  ResetSearch: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  ResetSearch: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Clear {...props} ref={ref} />
   )),
-  Resize: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Resize: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Resize {...props} ref={ref} />
   )),
   /**
    * Search icons added directly to the table
    */
-  SortArrow: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  SortArrow: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <ArrowUpward {...props} ref={ref} />
   )),
-  ThirdStateCheck: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  ThirdStateCheck: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Remove {...props} ref={ref} />
   )),
-  ViewColumn: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  ViewColumn: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <ViewColumn {...props} ref={ref} />
   )),
-  Retry: forwardRef((props, ref: React.Ref<SVGSVGElement>) => (
+  Retry: forwardRef((props, ref: Ref<SVGSVGElement>) => (
     <Retry {...props} ref={ref} />
   )),
 };

@@ -1,0 +1,148 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
+import { topologyTranslationRef } from './ref';
+
+const topologyTranslationDe = createTranslationMessages({
+  ref: topologyTranslationRef,
+  messages: {
+    // CRITICAL: Use flat dot notation, not nested objects
+    'page.title': 'Topologie',
+    'page.subtitle': 'Kubernetes Workload-Topologie-Visualisierung',
+    'toolbar.cluster': 'Cluster',
+    'toolbar.selectCluster': 'Cluster auswählen',
+    'toolbar.displayOptions': 'Anzeige-Optionen',
+    'toolbar.currentDisplayOptions': 'Aktuelle Anzeige-Optionen',
+    'emptyState.noResourcesFound': 'Keine Ressourcen gefunden',
+    'emptyState.noResourcesDescription':
+      'Es wurden keine Kubernetes-Ressourcen im ausgewählten Cluster gefunden.',
+    'permissions.missingPermission': 'Fehlende Berechtigung',
+    'permissions.missingPermissionDescription':
+      'Um die Topologie anzuzeigen, muss Ihr Administrator Ihnen {{permissions}} {{permissionText}} gewähren.',
+    'permissions.missingPermissionDescription_plural':
+      'Um die Topologie anzuzeigen, muss Ihr Administrator Ihnen {{permissions}} {{permissionText}} gewähren.',
+    'permissions.permission': 'Berechtigung',
+    'permissions.permissions': 'Berechtigungen',
+    'permissions.goBack': 'Zurück',
+    'sideBar.details': 'Details',
+    'sideBar.resources': 'Ressourcen',
+    'status.running': 'Läuft',
+    'status.pending': 'Ausstehend',
+    'status.succeeded': 'Erfolgreich',
+    'status.failed': 'Fehlgeschlagen',
+    'status.unknown': 'Unbekannt',
+    'status.terminating': 'Beenden',
+    'status.crashLoopBackOff': 'CrashLoopBackOff',
+    'status.error': 'Fehler',
+    'status.warning': 'Warnung',
+    'status.ready': 'Bereit',
+    'status.notReady': 'Nicht bereit',
+    'status.active': 'Aktiv',
+    'status.inactive': 'Inaktiv',
+    'status.updating': 'Aktualisierung',
+    'status.evicted': 'Vertrieben',
+    'status.cancelled': 'Abgebrochen',
+    'details.name': 'Name',
+    'details.namespace': 'Namespace',
+    'details.labels': 'Labels',
+    'details.annotations': 'Annotationen',
+    'details.createdAt': 'Erstellt',
+    'details.age': 'Alter',
+    'details.replicas': 'Replikas',
+    'details.availableReplicas': 'Verfügbare Replikas',
+    'details.readyReplicas': 'Bereite Replikas',
+    'details.updatedReplicas': 'Aktualisierte Replikas',
+    'details.selector': 'Selektor',
+    'details.strategy': 'Strategie',
+    'details.image': 'Image',
+    'details.ports': 'Ports',
+    'details.volumes': 'Volumes',
+    'details.volumeMounts': 'Volume-Mounts',
+    'details.environmentVariables': 'Umgebungs-Variablen',
+    'details.resourceRequirements': 'Ressourcen-Anforderungen',
+    'details.limits': 'Limits',
+    'details.requests': 'Requests',
+    'details.cpu': 'CPU',
+    'details.memory': 'Speicher',
+    'details.storage': 'Speicher',
+    'details.desiredCompletions': 'Gewünschte Abschlüsse',
+    'details.parallelism': 'Parallelität',
+    'details.activeDeadlineSeconds': 'Aktive Frist in Sekunden',
+    'details.currentCount': 'Aktuelle Anzahl',
+    'details.desiredCount': 'Gewünschte Anzahl',
+    'details.schedule': 'Zeitplan',
+    'details.concurrencyPolicy': 'Nebenläufigkeitsrichtlinie',
+    'details.startingDeadlineSeconds': 'Startfrist Sekunden',
+    'details.lastScheduleTime': 'Letzte Planungszeit',
+    'details.maxSurgeDescription': '{{maxSurge}} größer als {{replicas}} Pod',
+    'details.maxUnavailableDescription':
+      '{{maxUnavailable}} von {{replicas}} Pod',
+    'logs.download': 'Herunterladen',
+    'logs.noLogsFound': 'Keine Protokolle gefunden',
+    'logs.selectContainer': 'Container auswählen',
+    'logs.container': 'Container',
+    'logs.pod': 'Pod',
+    'logs.showPrevious': 'Vorherige anzeigen',
+    'logs.follow': 'Folgen',
+    'logs.refresh': 'Aktualisieren',
+    'logs.timestamps': 'Zeitstempel',
+    'logs.wrapLines': 'Zeilen umbrechen',
+    'logs.clearLogs': 'Protokolle löschen',
+    'logs.logLevel': 'Protokoll-Ebene',
+    'logs.search': 'Suchen',
+    'logs.noMatchingLogs': 'Keine passenden Protokolle gefunden',
+    'resources.noResourcesFound':
+      'Keine {{resourceType}} für diese Ressource gefunden.',
+    'resources.showingLatest': 'Zeige die neuesten {{count}} {{resourceType}}',
+    'time.seconds': 'Sekunden',
+    'time.minutes': 'Minuten',
+    'time.hours': 'Stunden',
+    'time.days': 'Tage',
+    'events.type': 'Typ',
+    'events.reason': 'Grund',
+    'events.message': 'Nachricht',
+    'events.source': 'Quelle',
+    'events.firstSeen': 'Zuerst gesehen',
+    'events.lastSeen': 'Zuletzt gesehen',
+    'events.count': 'Anzahl',
+    'events.noEventsFound': 'Keine Ereignisse gefunden',
+    'filters.showLabels': 'Labels anzeigen',
+    'filters.showPodCount': 'Pod-Anzahl anzeigen',
+    'filters.expandApplicationGroups': 'Anwendungs-Gruppen erweitern',
+    'filters.showConnectors': 'Verbindungen anzeigen',
+    'common.status': 'Status',
+    'common.owner': 'Eigentümer',
+    'common.location': 'Standort',
+    'common.viewLogs': 'Protokolle anzeigen',
+    'bootOrder.summary': 'Boot-Reihenfolge Zusammenfassung',
+    'bootOrder.emptySummary': 'Keine Boot-Reihenfolge konfiguriert',
+    'bootOrder.disk': 'Festplatte',
+    'bootOrder.network': 'Netzwerk',
+    'bootOrder.cdrom': 'CD-ROM',
+    'vm.status.starting': 'Startet',
+    'vm.status.stopping': 'Stoppt',
+    'vm.status.stopped': 'Gestoppt',
+    'vm.status.paused': 'Pausiert',
+    'vm.status.migrating': 'Migriert',
+    'vm.status.provisioning': 'Bereitstellung',
+    'vm.status.errorUnschedulable': 'Fehler nicht planbar',
+    'vm.status.errorImagePull': 'Fehler Image Pull',
+    'vm.status.imageNotReady': 'Image nicht bereit',
+    'vm.status.waitingForVolumeBinding': 'Warten auf Volume-Bindung',
+  },
+});
+
+export default topologyTranslationDe;

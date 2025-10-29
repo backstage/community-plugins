@@ -29,7 +29,10 @@ export const useTektonViewPermission = () => {
     permission: kubernetesResourcesReadPermission,
   });
 
-  return (
-    clusterReadPermission.allowed && clusterResourcesReadPermission.allowed
-  );
+  return {
+    loading:
+      clusterReadPermission.loading || clusterResourcesReadPermission.loading,
+    allowed:
+      clusterReadPermission.allowed && clusterResourcesReadPermission.allowed,
+  };
 };

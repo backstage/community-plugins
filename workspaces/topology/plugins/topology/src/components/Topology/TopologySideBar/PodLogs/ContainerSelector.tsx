@@ -19,7 +19,7 @@ import { V1Container } from '@kubernetes/client-node';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import ResourceName from '../../../../common/components/ResourceName';
+import ResourceName from '../../../common/ResourceName';
 
 type ContainerSelectorType = {
   containersList: V1Container[];

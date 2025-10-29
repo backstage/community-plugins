@@ -25,7 +25,6 @@ import {
   CoreV1ApiCreateNamespaceRequest,
   KubeConfig,
 } from '@kubernetes/client-node';
-import { z } from 'zod';
 import { examples } from './createKubernetesNamespace.examples';
 
 const KUBERNETES_API_URL_ANNOTATION = 'kubernetes.io/api-server';
@@ -47,7 +46,7 @@ type TemplateActionParameters = {
   clusterRef?: string;
   url?: string;
   token: string;
-  skipTLSVerify?: boolean;
+  skipTLSVerify: boolean;
   caData?: string;
   labels?: string;
 };
@@ -127,50 +126,46 @@ export const convertLabelsToObject = (
  * @public
  */
 export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
-  return createTemplateAction<TemplateActionParameters>({
+  return createTemplateAction({
     id: 'kubernetes:create-namespace',
     description: 'Creates a kubernetes namespace',
     examples,
     schema: {
-      input: z
-        .object({
-          namespace: z.string().describe('Name of the namespace to be created'),
-          token: z.string().describe('Bearer token to authenticate with'),
-          clusterRef: z
+      input: {
+        namespace: z =>
+          z.string().describe('Name of the namespace to be created'),
+        token: z => z.string().describe('Bearer token to authenticate with'),
+        clusterRef: z =>
+          z
             .string()
             .optional()
             .describe('Cluster resource entity reference from the catalog'),
-          url: z
+        url: z =>
+          z
             .string()
             .optional()
             .describe(
               'Url of the kubernetes API, will be used if clusterRef is not provided',
             ),
-          skipTLSVerify: z
+        skipTLSVerify: z =>
+          z
             .boolean()
             .optional()
             .default(false)
             .describe(
               'Skip TLS certificate verification, not recommended to use in production environment, defaults to false',
             ),
-          caData: z
+        caData: z =>
+          z
             .string()
             .optional()
             .describe('Certificate Authority base64 encoded certificate'),
-          labels: z
+        labels: z =>
+          z
             .string()
             .optional()
             .describe('Labels that will be applied to the namespace.'),
-        })
-        .superRefine((data, ctx) => {
-          if (!data.clusterRef && !data.url) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: 'Either clusterRef or url must be provided',
-              path: ['clusterRef', 'url'],
-            });
-          }
-        }),
+      },
     },
     async handler(ctx) {
       const {

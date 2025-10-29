@@ -35,6 +35,7 @@ type CreateAnnouncementPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
+  defaultInactive?: boolean;
 };
 
 export const CreateAnnouncementPage = (props: CreateAnnouncementPageProps) => {
@@ -86,7 +87,7 @@ export const CreateAnnouncementPage = (props: CreateAnnouncementPageProps) => {
 
       <Content>
         <AnnouncementForm
-          initialData={{} as Announcement}
+          initialData={{ active: !props.defaultInactive } as Announcement}
           onSubmit={onSubmit}
         />
       </Content>

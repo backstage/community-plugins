@@ -20,7 +20,6 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 
 import express from 'express';
 import Router from 'express-promise-router';
@@ -52,10 +51,6 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  const permissionIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: [quayViewPermission],
-  });
-
   // Add permission middleware
   const checkPermission = async (
     req: express.Request,
@@ -82,7 +77,6 @@ export async function createRouter(
     }
   };
 
-  router.use(permissionIntegrationRouter);
   router.use('/repository', checkPermission);
 
   const validateParams = (

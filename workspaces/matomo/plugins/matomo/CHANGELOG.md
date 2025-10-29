@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.13.1
+
+### Patch Changes
+
+- cfd8e90: Removed axios dependency
+
+## 1.13.0
+
+### Minor Changes
+
+- 1f9f1be: Backstage version bump to v1.41.1
+
 ## 1.12.0
 
 ### Minor Changes

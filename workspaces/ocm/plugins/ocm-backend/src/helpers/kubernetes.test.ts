@@ -15,7 +15,6 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 
-import { CustomObjectsApi, KubeConfig } from '@kubernetes/client-node';
 import { setupServer } from 'msw/node';
 
 import { handlers } from '../../__fixtures__/handlers';
@@ -33,6 +32,22 @@ beforeAll(() => server.listen());
 afterEach(() => server.restoreHandlers());
 afterAll(() => server.close());
 
+const kubeConfig = {
+  clusters: [{ name: 'cluster', server: 'https://example.com' }],
+  users: [{ name: 'user', password: 'password' }],
+  contexts: [{ name: 'currentContext', cluster: 'cluster', user: 'user' }],
+  currentContext: 'currentContext',
+};
+
+const getApi = async () => {
+  const { KubeConfig, CustomObjectsApi } = await import(
+    '@kubernetes/client-node'
+  );
+  const kc = new KubeConfig();
+  kc.loadFromOptions(kubeConfig);
+  return kc.makeApiClient(CustomObjectsApi);
+};
+
 const FIXTURES_DIR = `${__dirname}/../../__fixtures__`;
 const logger = mockServices.logger.mock();
 
@@ -47,21 +62,62 @@ describe('kubernetes.ts', () => {
     jest.resetModules();
   });
 
+  describe('getManagedClusters', () => {
+    it('should return some clusters', async () => {
+      const api = await getApi();
+      const result: any = await listManagedClusters(api);
+      expect(result.items[0].metadata.name).toBe('local-cluster');
+      expect(result.items[1].metadata.name).toBe('cluster1');
+    });
+  });
+
+  describe('getManagedCluster', () => {
+    it('should return the correct cluster', async () => {
+      const result: any = await getManagedCluster(await getApi(), 'cluster1');
+
+      expect(result.metadata.name).toBe('cluster1');
+    });
+
+    it('should return an error object when cluster is not found', async () => {
+      const result = await getManagedCluster(
+        await getApi(),
+        'non_existent_cluster',
+      ).catch(r => r);
+
+      expect(result.statusCode).toBe(404);
+      expect(result.name).toBe('NotFound');
+    });
+  });
+
+  describe('getManagedClusterInfo', () => {
+    it('should return cluster', async () => {
+      const result: any = await getManagedClusterInfo(
+        await getApi(),
+        'local-cluster',
+      );
+      expect(result.metadata.name).toBe('local-cluster');
+    });
+  });
+
+  describe('getManagedClusterInfos', () => {
+    it('should return some cluster infos', async () => {
+      const result: any = await listManagedClusterInfos(await getApi());
+      expect(result.items[0].metadata.name).toBe('local-cluster');
+      expect(result.items[1].metadata.name).toBe('cluster1');
+    });
+  });
+
   describe('hubApiClient', () => {
     beforeAll(() => {
-      jest.doMock('@kubernetes/client-node', () => {
-        const actualModule = jest.requireActual('@kubernetes/client-node');
-
+      // @ts-ignore
+      jest.unstable_mockModule('@kubernetes/client-node', () => {
         return {
-          ...actualModule,
-          KubeConfig: jest.fn().mockImplementation(() => {
-            return mockKubeConfig;
-          }),
+          KubeConfig: jest.fn().mockImplementation(() => mockKubeConfig),
         };
       });
     });
 
-    it('should use the default config if there is no service account token configured', () => {
+    it('should use the default config if there is no service account token configured', async () => {
       process.env.KUBECONFIG = `${FIXTURES_DIR}/kubeconfig.yaml`;
       const clusterConfig = {
         id: 'foo',
@@ -71,13 +127,13 @@ describe('kubernetes.ts', () => {
       // use require here to ensure the mock is used. It doesn't work with direct import
       const { hubApiClient } = require('./kubernetes');
 
-      hubApiClient(clusterConfig, logger);
+      await hubApiClient(clusterConfig, logger);
 
       expect(mockKubeConfig.loadFromDefault).toHaveBeenCalled();
       expect(mockKubeConfig.makeApiClient).toHaveBeenCalled();
     });
 
-    it('should use the provided config in the returned api client', () => {
+    it('should use the provided config in the returned api client', async () => {
       const clusterConfig = {
         id: 'foo',
         hubResourceName: 'cluster1',
@@ -88,7 +144,7 @@ describe('kubernetes.ts', () => {
       // use require here to ensure the mock is used. It doesn't work with direct import
       const { hubApiClient } = require('./kubernetes');
 
-      hubApiClient(clusterConfig, logger);
+      await hubApiClient(clusterConfig, logger);
 
       expect(mockKubeConfig.makeApiClient).toHaveBeenCalled();
       expect(mockKubeConfig.loadFromOptions).toHaveBeenCalledWith({
@@ -106,64 +162,6 @@ describe('kubernetes.ts', () => {
         ],
         currentContext: 'cluster1',
       });
-    });
-  });
-
-  const kubeConfig = {
-    clusters: [{ name: 'cluster', server: 'https://example.com' }],
-    users: [{ name: 'user', password: 'password' }],
-    contexts: [{ name: 'currentContext', cluster: 'cluster', user: 'user' }],
-    currentContext: 'currentContext',
-  };
-
-  const getApi = () => {
-    const kc = new KubeConfig();
-    kc.loadFromOptions(kubeConfig);
-    return kc.makeApiClient(CustomObjectsApi);
-  };
-
-  describe('getManagedClusters', () => {
-    it('should return some clusters', async () => {
-      const api = getApi();
-      const result: any = await listManagedClusters(api);
-      expect(result.items[0].metadata.name).toBe('local-cluster');
-      expect(result.items[1].metadata.name).toBe('cluster1');
-    });
-  });
-
-  describe('getManagedCluster', () => {
-    it('should return the correct cluster', async () => {
-      const result: any = await getManagedCluster(getApi(), 'cluster1');
-
-      expect(result.metadata.name).toBe('cluster1');
-    });
-
-    it('should return an error object when cluster is not found', async () => {
-      const result = await getManagedCluster(
-        getApi(),
-        'non_existent_cluster',
-      ).catch(r => r);
-
-      expect(result.statusCode).toBe(404);
-      expect(result.name).toBe('NotFound');
-    });
-  });
-
-  describe('getManagedClusterInfo', () => {
-    it('should return cluster', async () => {
-      const result: any = await getManagedClusterInfo(
-        getApi(),
-        'local-cluster',
-      );
-      expect(result.metadata.name).toBe('local-cluster');
-    });
-  });
-
-  describe('getManagedClusterInfos', () => {
-    it('should return some cluster infos', async () => {
-      const result: any = await listManagedClusterInfos(getApi());
-      expect(result.items[0].metadata.name).toBe('local-cluster');
-      expect(result.items[1].metadata.name).toBe('cluster1');
     });
   });
 });

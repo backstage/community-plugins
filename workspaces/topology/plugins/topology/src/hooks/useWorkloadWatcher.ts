@@ -17,14 +17,11 @@ import { useState, useContext, useCallback, useEffect } from 'react';
 
 import { Model } from '@patternfly/react-topology';
 
-import {
-  useDebounceCallback,
-  useDeepCompareMemoize,
-} from '@janus-idp/shared-react';
-
 import { updateTopologyDataModel } from '../data-transforms/updateTopologyDataModel';
 import { K8sResourcesContextData, K8sResponseData } from '../types/types';
 import { K8sResourcesContext } from './K8sResourcesContext';
+import { useDebounceCallback } from './useDebounceCallback';
+import { useDeepCompareMemoize } from './useDeepCompareMemoize';
 
 export const useWorkloadsWatcher = (): {
   loaded: boolean;

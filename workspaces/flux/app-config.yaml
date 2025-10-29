@@ -1,0 +1,32 @@
+app:
+  title: Flux Dev App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  reading:
+    allow:
+      - host: localhost
+
+  database:
+    pluginDivisionMode: database
+    client: 'better-sqlite3'
+    connection: ':memory:'
+
+auth:
+  providers:
+    guest:
+      userEntityRef: user:default/guest
+
+catalog:
+  readonly: true
+  locations:
+    - target: ../../catalog-info.yaml
+      type: 'file'
+      rules:
+        - allow:
+            - Component

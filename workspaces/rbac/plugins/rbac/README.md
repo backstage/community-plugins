@@ -6,16 +6,9 @@ The RBAC UI plugin offers a streamlined user interface for effectively managing 
 
 ### Installation
 
-#### Installing as a dynamic plugin?
-
-The sections below are relevant for static plugins. If the plugin is expected to be installed as a dynamic one:
-
-- follow https://github.com/janus-idp/backstage-showcase/blob/main/showcase-docs/dynamic-plugins.md#installing-a-dynamic-plugin-package-in-the-showcase
-- add content of `app-config.yaml` into `app-config.local.yaml`.
-
 #### Prerequisites
 
-Follow the RBAC backend plugin [README](https://github.com/backstage/community-plugins/blob/main/workspaces/rbac/plugins/rbac-backend/README.md) to integrate rbac in your Backstage instance.
+Follow the RBAC backend plugin [README](../rbac-backend/README.md) to integrate rbac in your Backstage instance.
 
 ---
 
@@ -34,7 +27,7 @@ g, user:default/<login-id/user-name>, role:default/team_a
 
 > Note: Even after ingesting users/groups in catalog and applying above permissions if the create/edit button is still disabled then please contact your administrator as you might be conditionally restricted from accessing the create/edit button.
 
-- To fetch the permissions from other plugins like `Kubernetes` and `Jenkins` in the Role Form as mentioned [here](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/rbac-backend/docs/permissions.md), add the following configuration in your `app-config.yaml`:
+- To fetch the permissions from other plugins like `Kubernetes` and `Jenkins` in the Role Form as mentioned in the [RBAC permissions documentation](../rbac-backend/docs/permissions.md), add the following configuration in your `app-config.yaml`:
 
 ```yaml title="app-config.yaml"
 permission:

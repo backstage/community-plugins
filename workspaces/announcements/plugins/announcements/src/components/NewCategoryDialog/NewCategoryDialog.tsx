@@ -52,10 +52,13 @@ export const NewCategoryDialog = (props: NewCategoryDialogProps) => {
       alertApi.post({
         message: t('newCategoryDialog.createdMessage'),
         severity: 'success',
+        display: 'transient',
       });
       props.onClose();
+      setTitle('');
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
+      setTitle('');
     }
   };
 
@@ -75,12 +78,13 @@ export const NewCategoryDialog = (props: NewCategoryDialogProps) => {
           onChange={handleChange}
           type="text"
           fullWidth
+          required
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('newCategoryDialog.cancelButton')}</Button>
 
-        <Button onClick={onConfirm} color="primary">
+        <Button onClick={onConfirm} color="primary" disabled={!title.trim()}>
           {t('newCategoryDialog.createButton')}
         </Button>
       </DialogActions>

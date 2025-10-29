@@ -52,7 +52,7 @@ export const NewRelicPage = newRelicPlugin.provide(
   createRoutableExtension({
     name: 'NewRelicPage',
     component: () =>
-      import('./components/NewRelicComponent').then(m => m.default),
+      import('./components/NewRelicComponent').then(m => m.NewRelicComponent),
     mountPoint: rootRouteRef,
   }),
 );

@@ -1,22 +1,18 @@
 # Knip report
 
-## Unused dependencies (4)
+## Unused dependencies (2)
+
+| Name         | Location          | Severity |
+| :----------- | :---------------- | :------- |
+| style-inject | package.json:60:6 | error    |
+| victory      | package.json:61:6 | error    |
+
+## Unused devDependencies (2)
 
 | Name                         | Location          | Severity |
 | :--------------------------- | :---------------- | :------- |
-| @backstage/plugin-kubernetes | package.json:42:6 | error    |
-| @patternfly/react-styles     | package.json:57:6 | error    |
-| style-inject                 | package.json:65:6 | error    |
-| victory                      | package.json:66:6 | error    |
-
-## Unused devDependencies (4)
-
-| Name                         | Location          | Severity |
-| :--------------------------- | :---------------- | :------- |
-| @testing-library/react-hooks | package.json:81:6 | error    |
-| @testing-library/user-event  | package.json:82:6 | error    |
-| @backstage/core-app-api      | package.json:75:6 | error    |
-| msw                          | package.json:87:6 | error    |
+| @testing-library/react-hooks | package.json:76:6 | error    |
+| @backstage/core-app-api      | package.json:70:6 | error    |
 
 ## Unlisted dependencies (1)
 

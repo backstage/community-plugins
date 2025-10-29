@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import { memo, cloneElement, useEffect, useState } from 'react';
 import Collapse from '@material-ui/core/Collapse';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -57,7 +57,7 @@ const NavigationMenuItem = ({ navigation, icon, title }: NavigationItem) => {
   );
 };
 
-export const CostInsightsNavigation = React.memo(
+export const CostInsightsNavigation = memo(
   ({ alerts, products }: CostInsightsNavigationProps) => {
     const classes = useStyles();
     const { icons } = useConfig();
@@ -92,12 +92,12 @@ export const CostInsightsNavigation = React.memo(
             icon={
               item.navigation === DefaultNavigation.AlertInsightsHeader ? (
                 <Badge badgeContent={alerts} color="secondary">
-                  {React.cloneElement(item.icon, {
+                  {cloneElement(item.icon, {
                     className: classes.navigationIcon,
                   })}
                 </Badge>
               ) : (
-                React.cloneElement(item.icon, {
+                cloneElement(item.icon, {
                   className: classes.navigationIcon,
                 })
               )
@@ -109,7 +109,7 @@ export const CostInsightsNavigation = React.memo(
             <NavigationMenuItem
               key={`navigation-menu-item-${item.navigation}`}
               navigation={item.navigation}
-              icon={React.cloneElement(item.icon, {
+              icon={cloneElement(item.icon, {
                 className: classes.navigationIcon,
               })}
               title={item.title}

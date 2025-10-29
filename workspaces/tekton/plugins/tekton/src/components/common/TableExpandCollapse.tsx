@@ -21,7 +21,7 @@ import Expand from '@material-ui/icons/UnfoldMore';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const useStyles = makeStyles({
   expandCollapse: {

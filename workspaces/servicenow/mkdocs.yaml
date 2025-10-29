@@ -1,0 +1,12 @@
+site_name: ServiceNow plugin for Backstage
+repo_url: https://github.com/backstage/community-plugins
+edit_uri: edit/main/workspaces/servicenow/docs
+
+plugins:
+  - techdocs-core
+
+nav:
+  - About: index.md
+  - Configuration: Configuration.md
+  - API: API.md
+  - Development: Development.md

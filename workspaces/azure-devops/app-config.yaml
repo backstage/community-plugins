@@ -1,6 +1,7 @@
 app:
   title: Azure DevOps Example App
   baseUrl: http://localhost:3000
+  packages: all
 
 organization:
   name: Azure DevOps Example
@@ -66,5 +67,10 @@ catalog:
     # Local example scaffolder action
     - type: file
       target: ../../examples/scaffolder/createAzurePipeline.yaml
+      rules:
+        - allow: [Template]
+      # Local example scaffolder action
+    - type: file
+      target: ../../examples/scaffolder/permitAzurePipeline.yaml
       rules:
         - allow: [Template]

@@ -21,6 +21,10 @@ import '@testing-library/jest-dom';
 import { MemberEntity } from '../../types';
 import { AddMembersForm } from './AddMembersForm';
 
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: () => 'en',
+}));
+
 const membersData: {
   members: MemberEntity[];
   loading: boolean;

@@ -165,7 +165,11 @@ const conf = {
         namespace: string,
         objectType: string,
         object: string,
-      ) => `api/namespaces/${namespace}/istio/${objectType}/${object}`,
+        apiVersion?: string,
+      ) =>
+        apiVersion
+          ? `api/namespaces/${namespace}/istio/${apiVersion}/${objectType}/${object}`
+          : `api/namespaces/${namespace}/istio/${objectType}/${object}`,
       istioConfigDelete: (
         namespace: string,
         objectType: string,

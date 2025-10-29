@@ -57,7 +57,7 @@ import { PipelineRunListSearchBar } from './PipelineRunListSearchBar';
 import { PipelineRunTableBody } from './PipelineRunTableBody';
 import { EnhancedTableHead } from './PipelineTableHeader';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type WrapperInfoCardProps = {
   allErrors?: ClusterErrors;
@@ -255,9 +255,27 @@ const PipelineRunList = () => {
                 <TableRow className={classes.footer}>
                   <TablePagination
                     rowsPerPageOptions={[
-                      { value: 5, label: '5 rows' },
-                      { value: 10, label: '10 rows' },
-                      { value: 25, label: '25 rows' },
+                      {
+                        value: 5,
+                        label: t(
+                          'pipelineRunList.tablePagination.rowsPerPageOptionLabel',
+                          { num: '5' },
+                        ),
+                      },
+                      {
+                        value: 10,
+                        label: t(
+                          'pipelineRunList.tablePagination.rowsPerPageOptionLabel',
+                          { num: '10' },
+                        ),
+                      },
+                      {
+                        value: 25,
+                        label: t(
+                          'pipelineRunList.tablePagination.rowsPerPageOptionLabel',
+                          { num: '25' },
+                        ),
+                      },
                     ]}
                     count={filteredPipelineRuns.length}
                     rowsPerPage={rowsPerPage}

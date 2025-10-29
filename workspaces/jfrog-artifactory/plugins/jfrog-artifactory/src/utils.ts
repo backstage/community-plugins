@@ -15,9 +15,37 @@
  */
 
 import { filesize } from 'filesize';
+import { DateTime } from 'luxon';
 
 export function formatByteSize(sizeInBytes: number | undefined): string {
   if (!sizeInBytes) return 'N/A';
 
   return filesize(sizeInBytes);
+}
+
+/**
+ * Formats a date using the Backstage-standard Luxon library.
+ *
+ * @param date - The date to format, can be a string, number (Unix timestamp), or Date object.
+ * @returns A formatted date string (e.g., "Jun 9, 2025, 6:15 PM") or 'N/A'.
+ */
+export function formatDate(date: string | number | Date | undefined): string {
+  if (!date || date === -1) {
+    return 'N/A';
+  }
+
+  let dt: DateTime;
+
+  if (typeof date === 'number') {
+    dt = DateTime.fromSeconds(date);
+  } else if (date instanceof Date) {
+    dt = DateTime.fromJSDate(date);
+  } else {
+    dt = DateTime.fromISO(date);
+  }
+
+  if (!dt.isValid) {
+    return 'N/A';
+  }
+  return dt.toLocaleString(DateTime.DATETIME_MED);
 }

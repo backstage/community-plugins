@@ -57,10 +57,12 @@ export default class TaskManagement {
         if (e instanceof Error) {
           this.options.logger.error(
             `[TaskManagement] Failed to process task: ${e.message}`,
+            e,
           );
         } else {
           this.options.logger.error(
-            `[TaskManagement] Failed to process task: ${e}`,
+            '[TaskManagement] Failed to process task',
+            e,
           );
         }
       }

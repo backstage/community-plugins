@@ -24,7 +24,6 @@ import {
 import { AsyncEntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
 import { FeedbackRatings, StarredRatingButtons } from './StarredRatingButtons';

@@ -16,9 +16,11 @@ key: string;
 }[];
 pattern: string;
 replacement: string;
-flags?: ("g" | "m" | "i" | "y" | "u" | "s" | "d")[] | undefined;
+flags?: ("i" | "g" | "m" | "y" | "u" | "s" | "d")[] | undefined;
 }[];
-}, any, "v1">;
+}, {
+[x: string]: any;
+}, "v2">;
 
 // @public (undocumented)
 const scaffolderModuleRegexActions: BackendFeature;

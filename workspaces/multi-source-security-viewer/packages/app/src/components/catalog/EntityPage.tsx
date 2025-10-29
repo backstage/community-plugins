@@ -73,7 +73,7 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 import {
-  isMultiCIAvailable,
+  isMultiCIAvailableAndEnabled,
   EntityMultiCIPipelinesContent,
 } from '@backstage-community/plugin-multi-source-security-viewer';
 
@@ -132,7 +132,7 @@ const cicdContent = (
 
 const securityContent = (
   <EntitySwitch>
-    <EntitySwitch.Case if={isMultiCIAvailable}>
+    <EntitySwitch.Case if={isMultiCIAvailableAndEnabled}>
       <EntityMultiCIPipelinesContent />
     </EntitySwitch.Case>
 

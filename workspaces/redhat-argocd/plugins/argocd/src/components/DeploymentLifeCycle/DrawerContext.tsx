@@ -24,14 +24,14 @@ import {
 
 interface DrawerContextValue {
   application: Application;
-  revisionsMap: { [key: string]: RevisionInfo };
+  revisions: RevisionInfo[];
   latestRevision: History;
   appHistory: History[];
 }
 
 interface DrawerContextProps {
   application: Application;
-  revisionsMap: { [key: string]: RevisionInfo };
+  revisions: RevisionInfo[];
   children: ReactNode;
 }
 
@@ -41,7 +41,7 @@ export const DrawerContext = createContext<DrawerContextValue>(
 
 export const DrawerProvider: FC<DrawerContextProps> = ({
   application,
-  revisionsMap,
+  revisions,
   children,
 }) => {
   const appHistory = application?.status?.history ?? [];
@@ -53,7 +53,7 @@ export const DrawerProvider: FC<DrawerContextProps> = ({
         application,
         appHistory,
         latestRevision,
-        revisionsMap,
+        revisions,
       }}
     >
       {children}

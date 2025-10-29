@@ -50,9 +50,14 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { tektonTranslations } from '@backstage-community/plugin-tekton';
 
 const app = createApp({
   apis,
+  __experimentalTranslations: {
+    availableLanguages: ['en'],
+    resources: [tektonTranslations],
+  },
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,

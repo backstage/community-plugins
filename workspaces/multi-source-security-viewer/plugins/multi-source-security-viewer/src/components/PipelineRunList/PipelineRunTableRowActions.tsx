@@ -74,6 +74,7 @@ export const PipelineRunTableRowActions: FC<
       />
       <Box className={classes.boxActions}>
         <Tooltip
+          placement="left"
           title={
             pr.hasSteps ? 'View Logs' : 'Logs are not available for this run'
           }
@@ -91,6 +92,7 @@ export const PipelineRunTableRowActions: FC<
           </Box>
         </Tooltip>
         <Tooltip
+          placement="left"
           title={
             pr.hasNoScanResults
               ? 'Scan Results are not available for this run'

@@ -18,6 +18,11 @@ import { render, screen } from '@testing-library/react';
 import { mockArgoResources } from '../../../../../../../../dev/__data__/argoRolloutsObjects';
 import { AnalysisRun } from '../../../../../../../types/analysisRuns';
 import AnalysisRuns from '../AnalysisRuns';
+import { mockUseTranslation } from '../../../../../../../test-utils/mockTranslations';
+
+jest.mock('../../../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
+}));
 
 describe('AnalysisRuns Component', () => {
   const mockAnalysisRuns = [

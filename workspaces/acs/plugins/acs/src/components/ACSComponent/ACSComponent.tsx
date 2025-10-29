@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { VulnerabilitiesComponent } from '../VulnerabilitiesComponent';

@@ -23,14 +23,15 @@ import * as fs from 'fs-extra';
 import * as yaml from 'yaml';
 
 import { getObjectToAnnotate } from '../../utils/getObjectToAnnotate';
-import { resolveSpec, Value } from '../../utils/resolveSpec';
+import { resolveSpec } from '../../utils/resolveSpec';
 import { resolveAnnotation } from '../../utils/resolveAnnotation';
+import { Value } from '../../types';
 
 /**
+ * @public
  * Creates a new Scaffolder action to annotate an entity object with specified label(s), annotation(s) and spec property(ies).
  *
  */
-
 export const createAnnotatorAction = (
   actionId: string = 'catalog:annotate',
   actionDescription?: string,
@@ -42,14 +43,7 @@ export const createAnnotatorAction = (
   },
   examples?: TemplateExample[],
 ) => {
-  return createTemplateAction<{
-    labels?: { [key: string]: string };
-    annotations?: { [key: string]: string };
-    spec?: { [key: string]: string };
-    entityFilePath?: string;
-    objectYaml?: { [key: string]: string };
-    writeToFile?: string;
-  }>({
+  return createTemplateAction({
     id: actionId,
     examples,
     description:
@@ -57,53 +51,44 @@ export const createAnnotatorAction = (
       'Creates a new scaffolder action to annotate the entity object with specified label(s), annotation(s) and spec property(ies).',
     schema: {
       input: {
-        type: 'object',
-        properties: {
-          labels: {
-            title: 'Labels',
-            description:
+        labels: z =>
+          z
+            .record(z.string(), z.string())
+            .optional()
+            .describe(
               'Labels that will be applied to the `metadata.labels` of the entity object',
-            type: 'object',
-          },
-          annotations: {
-            title: 'Annotations',
-            description:
+            ),
+        annotations: z =>
+          z
+            .record(z.string(), z.string())
+            .optional()
+            .describe(
               'Annotations that will be applied to the `metadata.annotations` of the entity object',
-            type: 'object',
-          },
-          spec: {
-            title: 'Spec',
-            description:
+            ),
+        spec: z =>
+          z
+            .record(z.string(), z.any())
+            .optional()
+            .describe(
               'Key-Value pair(s) that will be applied to the `spec` of the entity object',
-            type: 'object',
-          },
-          entityFilePath: {
-            title: 'Entity File Path',
-            description: 'Path to the entity yaml you want to annotate',
-            type: 'string',
-          },
-          objectYaml: {
-            title: 'Object Yaml',
-            description: 'Entity object yaml you want to annotate',
-            type: 'object',
-          },
-          writeToFile: {
-            title: 'Write To File',
-            description:
+            ),
+        entityFilePath: z =>
+          z
+            .string()
+            .optional()
+            .describe('Path to the entity yaml you want to annotate'),
+        objectYaml: z =>
+          z
+            .record(z.string(), z.any())
+            .optional()
+            .describe('Entity object yaml you want to annotate'),
+        writeToFile: z =>
+          z
+            .string()
+            .optional()
+            .describe(
               'Path to the file you want to write. Default path `./catalog-info.yaml`',
-            type: 'string',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          annotatedObject: {
-            type: 'object',
-            title:
-              'The entity object annotated with your desired annotation(s), label(s) and spec property(ies)',
-          },
-        },
+            ),
       },
     },
     async handler(ctx) {

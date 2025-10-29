@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { MissingAnnotationEmptyState } from '@backstage/core-components';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import {
+  MissingAnnotationEmptyState,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 
 import { Card, CardHeader } from '@material-ui/core';
 

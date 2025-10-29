@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   AppIcon,
@@ -72,6 +72,15 @@ const RenderTime = (props: { timeMillis: number }) => {
     </Grid>
   );
 };
+
+function parseTime(value: string | number | undefined): number {
+  if (!value) return 0;
+  if (typeof value === 'number') {
+    return value;
+  }
+  // assume ISO string
+  return DateTime.fromISO(value).toMillis();
+}
 
 const CatalogLink = (props: { projectName: string; launchName: string }) => {
   const { projectName, launchName } = props;
@@ -174,7 +183,7 @@ export const LaunchesPageContent = (props: {
         passed: data.statistics.executions.passed ?? 0,
         failed: data.statistics.executions.failed ?? 0,
         skipped: data.statistics.executions.skipped ?? 0,
-        startTime: data.startTime,
+        startTime: parseTime(data.startTime),
       });
     });
     setTableData({ launches: tempArr, page: res.page });

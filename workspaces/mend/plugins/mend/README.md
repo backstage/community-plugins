@@ -1,10 +1,10 @@
-# mend.io
+# Mend.io
 
-This plugin integrates mend.io functionality seamlessly into your Backstage application.
+This plugin integrates Mend.io functionality seamlessly into your Backstage application.
 
 ### Plugin Compatibility
 
-The plugin has been successfully tested with Backstage v1.28. If you are using a newer version of Backstage, please file an issue, and we will provide guidance on the best integration practices for your specific version.
+The plugin has been successfully tested with Backstage v1.40.0 If you are using a newer version of Backstage, please file an issue, and we will provide guidance on the best integration practices for your specific version.
 
 ### Features
 
@@ -43,7 +43,7 @@ yarn --cwd packages/backend add @backstage-community/plugin-mend-backend
 
 ### Getting Started
 
-**Get mend.io Activation Key:**
+**Get Mend.io Activation Key:**
 
 1. Navigate to the "Settings" menu.
 
@@ -55,15 +55,14 @@ yarn --cwd packages/backend add @backstage-community/plugin-mend-backend
 
 ![Activation Key](../../assets/key.png)
 
-**Configure your mend.io Activation Key** in your local app-config.yaml or production app-config.production.yaml file:
+**Configure your Mend.io Activation Key** in your local app-config.yaml or production app-config.production.yaml file:
 
 ```yaml
 mend:
-  baseUrl: ${API_URL_HERE}
   activationKey: ${YOUR_ACTIVATION_KEY_HERE}
 ```
 
-**Add the mend.io tab to your entity page:**
+**Add the Mend.io tab to your entity page:**
 
 In your `packages/app/src/components/Catalog/EntityPage.tsx` file:
 
@@ -75,7 +74,7 @@ const serviceEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       // ... other elements
-      <EntityLayout.Route path="/mend" title="mend.io">
+      <EntityLayout.Route path="/mend" title="Mend.io">
         <MendTab />
       </EntityLayout.Route>
       // ... other elements
@@ -86,7 +85,7 @@ const serviceEntityPage = (
 // ...
 ```
 
-**Add the mend.io page to your routes:**
+**Add the Mend.io page to your routes:**
 
 In your `packages/app/src/App.tsx` file:
 
@@ -107,7 +106,7 @@ const routes = (
 // ...
 ```
 
-**Add the mend.io sidebar button:**
+**Add the Mend.io sidebar button:**
 
 In your `packages/app/src/components/Root/Root.tsx` file:
 
@@ -129,6 +128,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 // ...
 ```
 
-**Add the mend.io backend plugin**
+**Add the Mend.io backend plugin**
 
 See the [mend backend plugin instructions](../mend-backend/README.md).

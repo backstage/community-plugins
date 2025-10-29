@@ -52,11 +52,17 @@ workspace/badges:
 workspace/bazaar:
   - "Workspace\\s*bazaar"
 
+workspace/bitbucket-pull-requests:
+  - "Workspace\\s*bitbucket-pull-requests"
+
 workspace/bitrise:
   - "Workspace\\s*bitrise"
 
 workspace/blackduck:
   - "Workspace\\s*blackduck"
+
+workspace/bookmarks:
+  - "Workspace\\s*bookmarks"
 
 workspace/cicd-statistics:
   - "Workspace\\s*cicd-statistics"
@@ -99,6 +105,9 @@ workspace/feedback:
 
 workspace/firehydrant:
   - "Workspace\\s*firehydrant"
+
+workspace/flux:
+  - "Workspace\\s*flux"
 
 workspace/fossa:
   - "Workspace\\s*fossa"
@@ -178,6 +187,9 @@ workspace/manage:
 workspace/matomo:
   - "Workspace\\s*matomo"
 
+workspace/mcp-chat:
+  - "Workspace\\s*mcp-chat"
+
 workspace/mend:
   - "Workspace\\s*mend"
 
@@ -207,9 +219,6 @@ workspace/ocm:
 
 workspace/octopus-deploy:
   - "Workspace\\s*octopus-deploy"
-
-workspace/odo:
-  - "Workspace\\s*odo"
 
 workspace/opencost:
   - "Workspace\\s*opencost"
@@ -261,6 +270,9 @@ workspace/scaffolder-relation-processor:
 
 workspace/sentry:
   - "Workspace\\s*sentry"
+
+workspace/servicenow:
+  - "Workspace\\s*servicenow"
 
 workspace/shortcuts:
   - "Workspace\\s*shortcuts"

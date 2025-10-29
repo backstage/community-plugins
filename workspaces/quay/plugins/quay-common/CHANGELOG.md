@@ -1,5 +1,23 @@
 # @backstage-community/plugin-quay-common
 
+## 1.12.0
+
+### Minor Changes
+
+- 5c7023b: Backstage version bump to v1.43.2
+
+## 1.11.0
+
+### Minor Changes
+
+- f1dab24: Backstage version bump to v1.42.3
+
+## 1.10.0
+
+### Minor Changes
+
+- 78bb7a9: Backstage version bump to v1.41.1
+
 ## 1.9.1
 
 ### Patch Changes

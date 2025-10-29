@@ -31,7 +31,10 @@ import {
   KEYCLOAK_REALM_ANNOTATION,
   KEYCLOAK_BRIEF_REPRESENTATION_DEFAULT,
 } from './constants';
-import { noopGroupTransformer, noopUserTransformer } from './transformers';
+import {
+  sanitizeUserNameTransformer,
+  sanitizeGroupNameTransformer,
+} from './transformers';
 import {
   GroupRepresentationWithParent,
   GroupRepresentationWithParentAndEntity,
@@ -47,7 +50,7 @@ export const parseGroup = async (
   realm: string,
   groupTransformer?: GroupTransformer,
 ): Promise<GroupEntity | undefined> => {
-  const transformer = groupTransformer ?? noopGroupTransformer;
+  const transformer = groupTransformer ?? sanitizeGroupNameTransformer;
   const entity: GroupEntity = {
     apiVersion: 'backstage.io/v1beta1',
     kind: 'Group',
@@ -80,7 +83,7 @@ export const parseUser = async (
   groupIndex: Map<string, string[]>,
   userTransformer?: UserTransformer,
 ): Promise<UserEntity | undefined> => {
-  const transformer = userTransformer ?? noopUserTransformer;
+  const transformer = userTransformer ?? sanitizeUserNameTransformer;
   const entity: UserEntity = {
     apiVersion: 'backstage.io/v1beta1',
     kind: 'User',

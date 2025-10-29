@@ -16,7 +16,7 @@
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderHook } from '@testing-library/react';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { useConsumerGroupsForEntity } from './useConsumerGroupsForEntity';
 import { TestApiProvider } from '@backstage/test-utils';
 import { configApiRef } from '@backstage/core-plugin-api';

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import { FlatRoutes } from '@backstage/core-app-api';
-import { convertLegacyApp } from '@backstage/core-compat-api';
+import { convertLegacyAppRoot } from '@backstage/core-compat-api';
 import { createApp } from '@backstage/frontend-defaults';
 import {
   configApiRef,
   ApiBlueprint,
-  createApiFactory,
   createFrontendModule,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
@@ -39,12 +38,12 @@ import jenkinsPlugin from '@backstage-community/plugin-jenkins/alpha';
 const homePageExtension = PageBlueprint.make({
   name: 'home',
   params: {
-    defaultPath: '/',
+    path: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
   },
 });
 
-const collectedLegacyPlugins = convertLegacyApp(
+const collectedLegacyPlugins = convertLegacyAppRoot(
   <FlatRoutes>
     <Route path="/api-docs" element={<ApiExplorerPage />} />
   </FlatRoutes>,
@@ -52,20 +51,17 @@ const collectedLegacyPlugins = convertLegacyApp(
 
 const scmAuthApi = ApiBlueprint.make({
   name: 'scm-auth',
-  params: {
-    factory: ScmAuth.createDefaultApiFactory(),
-  },
+  params: defineParams => defineParams(ScmAuth.createDefaultApiFactory()),
 });
 
 const scmIntegrationsApi = ApiBlueprint.make({
   name: 'scm-integrations',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: scmIntegrationsApiRef,
       deps: { configApi: configApiRef },
       factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
     }),
-  },
 });
 
 export const app = createApp({

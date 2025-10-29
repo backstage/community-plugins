@@ -22,6 +22,9 @@ backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
 backend.add(import('@backstage/plugin-techdocs-backend'));
 
+// manage plugin
+backend.add(import('@backstage-community/plugin-manage-backend'));
+
 // auth plugin
 backend.add(import('@backstage/plugin-auth-backend'));
 // See https://backstage.io/docs/backend-system/building-backends/migrating#the-auth-plugin

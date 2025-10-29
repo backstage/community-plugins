@@ -24,8 +24,11 @@ import Box from '@mui/material/Box';
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
-import { columns } from './PermissionsListColumns';
+import { getColumns } from './PermissionsListColumns';
 import { StyledTableWrapper } from './StyledTableWrapper';
+import { useLanguage } from '../../hooks/useLanguage';
+import { useTranslation } from '../../hooks/useTranslation';
+import { capitalizeFirstLetter } from '../../utils/string-utils';
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -50,12 +53,21 @@ export const PermissionsCard = ({
   entityReference,
   canReadUsersAndGroups,
 }: PermissionsCardProps) => {
+  const { t } = useTranslation();
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
+  const locale = useLanguage();
   const [searchText, setSearchText] = useState<string>();
 
+  const columns = useMemo(() => getColumns(t), [t]);
+
   const numberOfPolicies = useMemo(() => {
-    const filteredPermissions = filterTableData({ data, columns, searchText });
+    const filteredPermissions = filterTableData({
+      data,
+      columns,
+      searchText,
+      locale,
+    });
     let policies = 0;
     filteredPermissions.forEach(p => {
       if (p.conditions) {
@@ -65,12 +77,12 @@ export const PermissionsCard = ({
       policies += p.policies.filter(pol => pol.effect === 'allow').length;
     });
     return policies;
-  }, [data, searchText]);
+  }, [data, searchText, columns, locale]);
 
   const actions = [
     {
       icon: getRefreshIcon,
-      tooltip: 'Refresh',
+      tooltip: t('common.refresh'),
       isFreeAction: true,
       onClick: () => {
         retry.permissionPoliciesRetry();
@@ -80,15 +92,19 @@ export const PermissionsCard = ({
     },
     {
       icon: () => getEditIcon(canReadUsersAndGroups, entityReference),
-      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
+      tooltip: canReadUsersAndGroups
+        ? t('common.edit')
+        : t('common.unauthorizedToEdit'),
       isFreeAction: true,
       onClick: () => {},
     },
   ];
 
-  let title = 'Permission Policies';
+  let title = t('permissionPolicies.permissionPolicies');
   if (!loading && data.length > 0) {
-    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
+    title = capitalizeFirstLetter(
+      `${numberOfPolicies} ${numberOfPolicies !== 1 ? t('permissionPolicies.permissions') : t('permissionPolicies.permission')}`,
+    );
   }
 
   return (
@@ -97,7 +113,7 @@ export const PermissionsCard = ({
         <Box style={{ paddingBottom: '16px' }}>
           <WarningPanel
             message={error?.message}
-            title="Something went wrong while fetching the permission policies"
+            title={t('errors.fetchPolicies')}
             severity="error"
           />
         </Box>
@@ -115,10 +131,14 @@ export const PermissionsCard = ({
               data-testid="permission-table-empty"
               sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
             >
-              No records found
+              {t('common.noRecordsFound')}
             </Box>
           }
           onSearchChange={setSearchText}
+          localization={{
+            toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+            pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+          }}
         />
       </StyledTableWrapper>
     </Box>

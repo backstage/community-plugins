@@ -2,11 +2,13 @@
 
 The backend for the Announcements plugin. This plugin provides:
 
-- REST APIs for managing announcements and categories
+- REST APIs for managing announcements, categories, and tags
 - Integration with the [`@backstage/plugin-search`](https://github.com/backstage/backstage/tree/master/plugins/search) plugin
 - Integration with the [`@backstage/plugin-permission-backend`](https://github.com/backstage/backstage/tree/master/plugins/permission-backend) plugin
 - Integration with the [`@backstage/plugin-events-backend`](https://github.com/backstage/backstage/tree/master/plugins/events-backend) plugin
 - Integration with the [`@backstage/plugin-signals-backend`](https://github.com/backstage/backstage/tree/master/plugins/signals-backend) plugin
+- Integration with the [`@backstage/notifications-backend`](https://github.com/backstage/backstage/tree/master/plugins/notifications-backend) plugin
+- Integration with the [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor). Audit logging helps to track announcements creation, updates, and deletion.
 
 ## Installation
 
@@ -65,7 +67,7 @@ docker-compose down -v
 
 #### better-sqlite3
 
-The better-sqlite3 database can be seeded with categories and announcements.
+The better-sqlite3 database can be seeded with categories, tags, and announcements.
 
 With the backend running,
 
@@ -90,6 +92,9 @@ curl http://localhost:7007/api/announcements/announcements
 
 # get all categories
 curl http://localhost:7007/api/categories
+
+# get all tags
+curl http://localhost:7007/api/tags
 ```
 
 ```ts
@@ -100,3 +105,12 @@ const response = await fetch(
 const data = await response.json();
 return data;
 ```
+
+### Notifications for Announcements
+
+Backstage’s Notification System empowers plugins and services to deliver alerts to users and is directly visible in the UI or via external channels. Visit the [docs](https://backstage.io/docs/notifications/) on notifications for more information.
+
+The Notification plugin delivers real-time alerting, with backend/frontend components to send and display notifications - including push signals.
+To trigger alerts when a new announcement appears, you can combine these systems: send a notification via the Notifications backend whenever an announcement is created.
+
+Announcement notifications are disabled by-default. Notifications can be sent if "sendNotification" option in the UI is enabled.

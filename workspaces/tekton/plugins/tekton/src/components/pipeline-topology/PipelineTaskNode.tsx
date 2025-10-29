@@ -54,7 +54,7 @@ import { PipelineVisualizationStepList } from './PipelineVisualizationStepList';
 
 import './PipelineTaskNode.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineTaskNodeProps = {
   element: Node;

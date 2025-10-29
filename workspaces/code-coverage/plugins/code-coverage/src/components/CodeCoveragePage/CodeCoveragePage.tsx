@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { CoverageHistoryChart } from '../CoverageHistoryChart';
 import { FileExplorer } from '../FileExplorer';
 import { Content, ContentHeader, Page } from '@backstage/core-components';

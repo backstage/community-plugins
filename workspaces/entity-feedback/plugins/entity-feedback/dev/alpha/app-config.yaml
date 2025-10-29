@@ -1,0 +1,17 @@
+app:
+  title: Backstage Example App
+  baseUrl: http://localhost:3000
+  extensions:
+    # Redirect from the root to the catalog
+    - 'page:catalog':
+        config:
+          path: '/'
+    # Hide these catalog entity cards
+    - 'entity-card:catalog/has-subcomponents': false
+    - 'entity-card:catalog/depends-on-components': false
+    - 'entity-card:catalog/depends-on-resources': false
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007

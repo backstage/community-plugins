@@ -1,5 +1,47 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- 7e92ec9: Backstage version bump to v1.43.3
+
+## 1.16.0
+
+### Minor Changes
+
+- 0701a10: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+- af98d48: Updated dependency `@hey-api/openapi-ts` to `0.82.4`.
+
+## 1.15.1
+
+### Patch Changes
+
+- 60a37cc: Updated dependency `@hey-api/openapi-ts` to `0.80.5`.
+
+## 1.15.0
+
+### Minor Changes
+
+- d7e6708: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- c6f0aec: remove product theme from dev dependencies and dev app
+- 333e98c: Aligned `formatDate` utility with `ADR012 using Luxon`.
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+
+## 1.14.2
+
+### Patch Changes
+
+- 7cfcb00: Updated dependency `@hey-api/openapi-ts` to `0.78.3`.
+
 ## 1.14.1
 
 ### Patch Changes

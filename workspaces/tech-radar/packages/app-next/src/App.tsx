@@ -15,7 +15,6 @@
  */
 import { createApp } from '@backstage/frontend-defaults';
 import {
-  createApiFactory,
   createFrontendModule,
   ApiBlueprint,
   PageBlueprint,
@@ -34,7 +33,7 @@ import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
   params: {
-    defaultPath: '/',
+    path: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
   },
 });
@@ -57,10 +56,12 @@ class SampleTechRadarApi implements TechRadarApi {
 // overriding the api is one way to change the radar content
 // @ts-ignore
 const techRadarApi = ApiBlueprint.make({
-  name: 'techRadarApi',
-  params: {
-    factory: createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
-  },
+  params: defineParams =>
+    defineParams({
+      api: techRadarApiRef,
+      deps: {},
+      factory: () => new SampleTechRadarApi(),
+    }),
 });
 
 export const app = createApp({

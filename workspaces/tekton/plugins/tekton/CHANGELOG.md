@@ -1,5 +1,135 @@
 ### Dependencies
 
+## 3.31.0
+
+### Minor Changes
+
+- 547b888: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [547b888]
+  - @backstage-community/plugin-tekton-common@1.14.0
+
+## 3.30.2
+
+### Patch Changes
+
+- 6c5b40c: Move Status and hooks into plugin
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 3.30.1
+
+### Patch Changes
+
+- dde8f40: tekton plugin support show pipeline run params and results
+
+## 3.30.0
+
+### Minor Changes
+
+- f9604b7: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [f9604b7]
+  - @backstage-community/plugin-tekton-common@1.13.0
+
+## 3.29.0
+
+### Minor Changes
+
+- 99b0588: Standardize i18n in Tekton plugin
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- 773c07a: Fix broken url in package.json
+
+## 3.28.0
+
+### Minor Changes
+
+- 8878087: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [8878087]
+  - @backstage-community/plugin-tekton-common@1.12.0
+
+## 3.27.6
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
+## 3.27.5
+
+### Patch Changes
+
+- 56b4264: use `usek8sobjects` hook from k8s-react package
+
+## 3.27.4
+
+### Patch Changes
+
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
+## 3.27.3
+
+### Patch Changes
+
+- 6877ddc: Updated dependency `@testing-library/jest-dom` to `6.6.4`.
+- 34aa972: Updated dependency `@mui/icons-material` to `5.18.0`.
+  Updated dependency `@mui/material` to `5.18.0`.
+  Updated dependency `@mui/styles` to `5.18.0`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.177`.
+- 4b2569f: Updated dependency `start-server-and-test` to `2.0.13`.
+
+## 3.27.2
+
+### Patch Changes
+
+- e7d7f3f: render loading when permission api is loading
+
+## 3.27.1
+
+### Patch Changes
+
+- e6d88ff: remove product theme from dev dependencies and dev app
+
+## 3.27.0
+
+### Minor Changes
+
+- 8e74b11: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [8e74b11]
+  - @backstage-community/plugin-tekton-common@1.11.0
+
+## 3.26.4
+
+### Patch Changes
+
+- 22e56c8: Apply a temporary fix for the horizontal bar issue under the Task Status column
+
+## 3.26.3
+
+### Patch Changes
+
+- f818001: Updated dependency `@types/lodash` to `4.17.20`.
+
+## 3.26.2
+
+### Patch Changes
+
+- 8fa8ece: Updated dependency `@types/lodash` to `4.17.17`.
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- Updated dependencies [6a59fcf]
+  - @backstage-community/plugin-tekton-common@1.10.1
+
 ## 3.26.1
 
 ### Patch Changes

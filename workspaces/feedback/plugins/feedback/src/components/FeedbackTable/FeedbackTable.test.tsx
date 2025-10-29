@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 
 import { waitFor } from '@testing-library/react';
 
+import { ReactNode } from 'react';
 import { FeedbackAPI, feedbackApiRef } from '../../api';
 import { mockFeedback } from '../../mocks';
 import { rootRouteRef } from '../../routes';
@@ -28,7 +28,7 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
   EntityRefLink: (props: { entityRef: string }) => (
     <a href="https://localhost">{props.entityRef}</a>
   ),
-  EntityPeekAheadPopover: (props: { children?: React.ReactNode }) => (
+  EntityPeekAheadPopover: (props: { children?: ReactNode }) => (
     <>{props.children}</>
   ),
 }));

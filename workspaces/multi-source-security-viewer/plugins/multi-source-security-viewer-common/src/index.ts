@@ -20,3 +20,4 @@
  * @packageDocumentation
  */
 export * from './permissions';
+export * from './annotations';

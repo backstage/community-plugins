@@ -16,7 +16,6 @@
 import {
   ApiBlueprint,
   configApiRef,
-  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   identityApiRef,
@@ -36,8 +35,8 @@ import {
  */
 export const acrApi = ApiBlueprint.make({
   name: 'acrApi',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: AzureContainerRegistryApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -51,7 +50,6 @@ export const acrApi = ApiBlueprint.make({
           identityApi,
         }),
     }),
-  },
 });
 
 /**
@@ -59,11 +57,11 @@ export const acrApi = ApiBlueprint.make({
  *
  * @alpha
  */
-export const acrImagesEntityContent: any = EntityContentBlueprint.make({
+export const acrImagesEntityContent = EntityContentBlueprint.make({
   name: 'acrImagesEntityContent',
   params: {
-    defaultPath: 'acr-images',
-    defaultTitle: 'ACR images',
+    path: 'acr-images',
+    title: 'ACR images',
     filter: isAcrAvailable,
     loader: () =>
       import('./components/AcrImagesEntityContent').then(m => (
@@ -78,6 +76,6 @@ export const acrImagesEntityContent: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'acr',
+  pluginId: 'acr',
   extensions: [acrApi, acrImagesEntityContent],
 });

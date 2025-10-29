@@ -59,6 +59,14 @@ export type PermissionsDataSet = {
   usingResourceType?: boolean;
 };
 
+export type PluginInfoType = {
+  pluginId: string;
+  isResourced: boolean;
+  resourceType?: string;
+  permissionName: string;
+  usingResourceType?: boolean;
+};
+
 export type SelectedPlugin = { label: string; value: string };
 
 export type PermissionsData = {

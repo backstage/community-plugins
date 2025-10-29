@@ -22,6 +22,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "CI=true prettier --check .",
+    "prettier:fix": "prettier --write .",
     "prettier:write": "CI=true prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
@@ -38,13 +39,13 @@
     "directory": "workspaces/kiali"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.0",
+    "@backstage/cli": "^0.34.4",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.2",
+    "@backstage/repo-tools": "^0.15.3",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@types/deep-freeze": "^0.1.5",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",

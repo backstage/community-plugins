@@ -22,6 +22,6 @@ import { entitySonarQubeContent } from './entityContent';
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'sonarqube',
+  pluginId: 'sonarqube',
   extensions: [sonarQubeApi, entitySonarQubeCard, entitySonarQubeContent],
 });

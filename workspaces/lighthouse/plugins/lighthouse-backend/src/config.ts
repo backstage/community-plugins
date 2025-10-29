@@ -15,9 +15,9 @@
  */
 import { LoggerService } from '@backstage/backend-plugin-api';
 import {
-  TaskScheduleDefinition,
-  readTaskScheduleDefinitionFromConfig,
-} from '@backstage/backend-tasks';
+  SchedulerServiceTaskScheduleDefinition,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+} from '@backstage/backend-plugin-api';
 import { Config, readDurationFromConfig } from '@backstage/config';
 import { HumanDuration } from '@backstage/types';
 
@@ -26,7 +26,9 @@ type Options = {
 };
 
 /** @public */
-export class LighthouseAuditScheduleImpl implements TaskScheduleDefinition {
+export class LighthouseAuditScheduleImpl
+  implements SchedulerServiceTaskScheduleDefinition
+{
   /**
    * Looks at the `lighthouse.schedule` section in the application configuration
    * and returns a TaskScheduleDefinition.
@@ -34,17 +36,20 @@ export class LighthouseAuditScheduleImpl implements TaskScheduleDefinition {
    *
    * @returns a TaskScheduleDefinition
    */
-  static fromConfig(config: Config, options: Options): TaskScheduleDefinition {
+  static fromConfig(
+    config: Config,
+    options: Options,
+  ): SchedulerServiceTaskScheduleDefinition {
     const { logger } = options;
 
-    let lighthouse: TaskScheduleDefinition = {
+    let lighthouse: SchedulerServiceTaskScheduleDefinition = {
       frequency: { days: 1 },
       timeout: { minutes: 10 },
       initialDelay: { minutes: 15 },
     };
 
     if (config.has('lighthouse.schedule.frequency')) {
-      lighthouse = readTaskScheduleDefinitionFromConfig(
+      lighthouse = readSchedulerServiceTaskScheduleDefinitionFromConfig(
         config.getConfig('lighthouse.schedule'),
       );
     } else if (config.has('lighthouse.schedule')) {

@@ -1,5 +1,72 @@
 # @backstage-community/plugin-copilot
 
+## 0.15.0
+
+### Minor Changes
+
+- 4d1cf33: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [4d1cf33]
+  - @backstage-community/plugin-copilot-common@0.14.0
+
+## 0.14.0
+
+### Minor Changes
+
+- 8c60a7f: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [8c60a7f]
+  - @backstage-community/plugin-copilot-common@0.13.0
+
+## 0.13.1
+
+### Patch Changes
+
+- 726097f: Update README.md with better installation instructions to prevent silly copy/paste errors that are exposed by the new frontend system
+
+## 0.13.0
+
+### Minor Changes
+
+- 5deb1e7: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [5deb1e7]
+  - @backstage-community/plugin-copilot-common@0.12.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 3f606e1: Backstage version bump to v1.41.1
+
+### Patch Changes
+
+- Updated dependencies [3f606e1]
+  - @backstage-community/plugin-copilot-common@0.11.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 4b09bc8: Adds support for the new frontend system
+
+## 0.10.0
+
+### Minor Changes
+
+- d3221bf: Backstage version bump to v1.40.2
+
+### Patch Changes
+
+- Updated dependencies [d3221bf]
+  - @backstage-community/plugin-copilot-common@0.10.0
+
 ## 0.9.2
 
 ### Patch Changes

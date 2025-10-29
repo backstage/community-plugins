@@ -412,3 +412,43 @@ async handle(
   };
 }
 ```
+
+## New Frontend System (Alpha)
+
+The Azure DevOps plugin currently support the New Frontend System via an `/alpha` export, here's how to use it:
+
+### Use new frontend system
+
+1. Install the frontend plugin:
+
+   ```bash
+   # From your Backstage root directory
+   yarn --cwd packages/app add @backstage-community/plugin-azure-devops
+   ```
+
+2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+
+   After all other imports:
+
+   ```tsx
+   import azureDevOpsPlugin from '@backstage-community/plugin-azure-devops';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       azureDevOpsPlugin,
+       // ...
+     ],
+   });
+   ```
+
+   Alternatively you can simply use feature discover and skip the above step by adding the following yo your `app-config.yaml` file:
+
+   ```yaml
+   app:
+     packages: all
+   ```

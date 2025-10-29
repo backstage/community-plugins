@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { waitFor, screen, render } from '@testing-library/react';
 
 import {

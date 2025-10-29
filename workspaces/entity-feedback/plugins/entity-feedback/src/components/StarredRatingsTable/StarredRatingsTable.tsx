@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
-
 import { FeedbackRatingsTable } from '../FeedbackRatingsTable';
 import { FeedbackRatings } from '../StarredRatingButtons';
 

@@ -19,27 +19,16 @@ import { isGithubActionsAvailable } from '../components/Router';
 /**
  * @alpha
  */
-export const entityGithubActionsCard = EntityCardBlueprint.make({
-  name: 'workflow-runs',
-  params: {
-    filter: isGithubActionsAvailable,
-    loader: () =>
-      import('../components/Router').then(m => <m.Router view="cards" />),
-  },
-});
-
-/**
- * @alpha
- */
 export const entityLatestGithubActionRunCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-workflow-run',
+    disabled: true,
     config: {
       schema: {
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -61,12 +50,13 @@ export const entityLatestGithubActionRunCard =
 export const entityLatestGithubActionsForBranchCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-branch-workflow-runs',
+    disabled: true,
     config: {
       schema: {
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
             })
             .default({}),
       },
@@ -93,7 +83,7 @@ export const entityRecentGithubActionsRunsCard =
         props: z =>
           z
             .object({
-              branch: z.string().default('master'),
+              branch: z.string().optional(),
               dense: z.boolean().default(false),
               limit: z.number().default(5).optional(),
             })

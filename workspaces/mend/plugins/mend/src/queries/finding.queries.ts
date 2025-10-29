@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Finding } from '../models';
+import { Finding, Project } from '../models';
 import { post } from '../api';
 import { Query } from './queries.types';
 
@@ -15,8 +15,8 @@ type FindingSuccessResponseData = {
   clientName: string;
   clientUrl: string;
   findingList: Finding[];
-  projectName: string;
-  projectUuid: string;
+  projectList: Project[];
+  projectSourceUrl: string;
 };
 
 export type FindingData = {

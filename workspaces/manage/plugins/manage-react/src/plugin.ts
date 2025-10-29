@@ -29,9 +29,7 @@ export const OwnedProvider = manageReactPlugin.provide(
     name: 'OwnedProvider',
     component: {
       lazy: () =>
-        import('./components/OwnedEntitiesProvider').then(
-          m => m.ManageOwnedProvider,
-        ),
+        import('./components/OwnedProvider').then(m => m.ManageOwnedProvider),
     },
   }),
 );

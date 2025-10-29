@@ -20,6 +20,7 @@ export const AnnouncementsAdminPortal: (
         themeId?: string | undefined;
         title?: string | undefined;
         subtitle?: string | undefined;
+        defaultInactive?: boolean | undefined;
       }
     | undefined,
 ) => JSX_2.Element;
@@ -33,6 +34,7 @@ export const AnnouncementsCard: ({
   variant,
   sortBy,
   order,
+  current,
   hideStartAt,
 }: {
   title?: string | undefined;
@@ -42,6 +44,7 @@ export const AnnouncementsCard: ({
   variant?: InfoCardVariants | undefined;
   sortBy?: 'created_at' | 'start_at' | undefined;
   order?: 'desc' | 'asc' | undefined;
+  current?: boolean | undefined;
   hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
@@ -79,6 +82,8 @@ export const AnnouncementsPage: (props: {
     | undefined;
   hideInactive?: boolean | undefined;
   hideStartAt?: boolean | undefined;
+  markdownRenderer?: MarkdownRendererTypeProps | undefined;
+  defaultInactive?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -98,6 +103,7 @@ export const AnnouncementsTimeline: ({
   hideInactive,
   sortBy,
   order,
+  current,
 }: AnnouncementsTimelineProps) => JSX_2.Element;
 
 // @public
@@ -108,7 +114,11 @@ export type AnnouncementsTimelineProps = {
   hideInactive?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
 };
+
+// @public
+export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
 
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {
@@ -116,6 +126,15 @@ export const NewAnnouncementBanner: (props: {
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
+  current?: boolean | undefined;
+  tags?: string[] | undefined;
+  sortBy?: 'created_at' | 'updated_at' | undefined;
+  cardOptions?:
+    | {
+        titleLength?: number | undefined;
+        excerptLength?: number | undefined;
+      }
+    | undefined;
 }) => JSX_2.Element | null;
 
 // (No @packageDocumentation comment for this package)

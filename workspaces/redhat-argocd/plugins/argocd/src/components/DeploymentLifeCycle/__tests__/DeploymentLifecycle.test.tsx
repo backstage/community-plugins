@@ -15,7 +15,7 @@
  */
 import { PropsWithChildren } from 'react';
 
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 import { createTheme, ThemeProvider } from '@material-ui/core';
@@ -25,12 +25,17 @@ import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import DeploymentLifecycle from '../DeploymentLifecycle';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
+import { argoCDApiRef } from '../../../api';
+import { mockUseTranslation } from '../../../test-utils/mockTranslations';
 
 jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
 }));
 jest.mock('@backstage/plugin-permission-react', () => ({
   usePermission: jest.fn(),
+}));
+jest.mock('../../../hooks/useTranslation', () => ({
+  useTranslation: () => mockUseTranslation(),
 }));
 
 const mockUsePermission = usePermission as jest.MockedFunction<
@@ -60,6 +65,47 @@ jest.mock('@backstage/core-components', () => ({
   ),
 }));
 
+// Mock for configApiRef
+const mockConfigApi = {
+  getOptionalBoolean: jest.fn().mockReturnValue(false),
+};
+
+// Mock for ArgoCDApiRef
+const mockArgoCDAPI = {
+  listApps: jest.fn().mockResolvedValue({ items: [mockApplication] }),
+  getRevisionDetailsList: jest.fn().mockResolvedValue({
+    commit: 'commit message',
+    author: 'test-user',
+    date: new Date(),
+  }),
+};
+
+/**
+ * Replaces useApi's implementation with a version that:
+ *   - returns mockConfigApi when called with configApiRef
+ *   - returns an Argo API mock when called with argoCDApiRef
+ *   - returns {} for anything else
+ *
+ * You can override Argo methods per test by passing functions in `argoImpl`
+ */
+function setUseApi(argoImpl: {
+  listApps?: jest.Mock | (() => Promise<any>);
+  getRevisionDetailsList?: jest.Mock | (() => Promise<any>);
+}) {
+  (useApi as jest.Mock).mockImplementation((ref: any) => {
+    if (ref === configApiRef) return mockConfigApi;
+    if (ref === argoCDApiRef) {
+      return {
+        listApps: argoImpl.listApps ?? mockArgoCDAPI.listApps,
+        getRevisionDetailsList:
+          argoImpl.getRevisionDetailsList ??
+          mockArgoCDAPI.getRevisionDetailsList,
+      };
+    }
+    return {};
+  });
+}
+
 describe('DeploymentLifecycle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -74,19 +120,8 @@ describe('DeploymentLifecycle', () => {
       instanceName: 'main',
     });
 
-    (useApi as any).mockReturnValue({
-      listApps: async () => {
-        return Promise.resolve({ items: [mockApplication] });
-      },
-      getRevisionDetailsList: async () => {
-        return Promise.resolve({
-          commit: 'commit message',
-          author: 'test-user',
-          date: new Date(),
-        });
-      },
-    });
-    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    // Setup useAPI implementation mock with defaults
+    setUseApi({});
   });
 
   it('should render Permission alert if the user does not have view permission', () => {
@@ -140,13 +175,10 @@ describe('DeploymentLifecycle', () => {
   });
 
   test('should catch the error while fetching revision details', async () => {
-    (useApi as any).mockReturnValue({
-      listApps: async () => {
-        return Promise.resolve({ items: [mockApplication] });
-      },
-      getRevisionDetailsList: async () => {
-        return Promise.reject(new Error('500: Internal server error'));
-      },
+    setUseApi({
+      getRevisionDetailsList: jest
+        .fn()
+        .mockRejectedValue(new Error('500: Internal server error')),
     });
 
     render(<DeploymentLifecycle />);
@@ -160,18 +192,12 @@ describe('DeploymentLifecycle', () => {
   });
 
   test('should catch the error while fetching applications', async () => {
-    (useApi as any).mockReturnValue({
-      listApps: async () => {
-        return Promise.reject(new Error('500: Internal server error'));
-      },
-      getRevisionDetailsList: async () => {
-        return Promise.resolve({
-          commit: 'commit message',
-          author: 'test-user',
-          date: new Date(),
-        });
-      },
+    setUseApi({
+      listApps: jest
+        .fn()
+        .mockRejectedValue(new Error('500: Internal server error')),
     });
+
     render(<DeploymentLifecycle />);
 
     await waitFor(() => {
@@ -181,14 +207,11 @@ describe('DeploymentLifecycle', () => {
   });
 
   test('should not render the component if there are no applications matching the selector', async () => {
-    (useApi as any).mockReturnValue({
-      listApps: async () => {
-        return Promise.resolve({ items: [] });
-      },
-      getRevisionDetailsList: async () => {
-        return Promise.resolve({});
-      },
+    setUseApi({
+      listApps: jest.fn().mockResolvedValue({ items: [] }),
+      getRevisionDetailsList: jest.fn().mockResolvedValue({}),
     });
+
     render(<DeploymentLifecycle />);
 
     await waitFor(() => {

@@ -38,6 +38,7 @@ import {
 } from '../../utils/utils';
 import AppSyncStatus from '../AppStatus/AppSyncStatus';
 import { AppHealthIcon } from '../AppStatus/StatusIcons';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const DeploymentSummary = () => {
   const { entity } = useEntity();
@@ -77,6 +78,18 @@ const DeploymentSummary = () => {
       : `${appBaseUrl}/applications/${row.metadata.name}`;
   };
 
+  const { t } = useTranslation();
+  // Translated text
+  const tableTitle = t('deploymentSummary.deploymentSummary.tableTitle');
+  const columnTitles = {
+    instance: t('deploymentSummary.deploymentSummary.columns.instance'),
+    server: t('deploymentSummary.deploymentSummary.columns.server'),
+    revision: t('deploymentSummary.deploymentSummary.columns.revision'),
+    lastDeployed: t('deploymentSummary.deploymentSummary.columns.lastDeployed'),
+    syncStatus: t('deploymentSummary.deploymentSummary.columns.syncStatus'),
+    healthStatus: t('deploymentSummary.deploymentSummary.columns.healthStatus'),
+  };
+
   const columns: TableColumn<Application>[] = [
     {
       title: 'ArgoCD App',
@@ -101,21 +114,21 @@ const DeploymentSummary = () => {
       },
     },
     {
-      title: 'Instance',
+      title: `${columnTitles.instance}`,
       field: 'instance',
       render: (row: Application): ReactNode => {
         return <>{row.metadata?.instance?.name || instanceName}</>;
       },
     },
     {
-      title: 'Server',
+      title: `${columnTitles.server}`,
       field: 'server',
       render: (row: Application): ReactNode => {
         return <>{row.spec.destination.server}</>;
       },
     },
     {
-      title: 'Revision',
+      title: `${columnTitles.revision}`,
       field: 'revision',
       render: (row: Application): ReactNode => {
         const historyList = row.status?.history ?? [];
@@ -123,16 +136,21 @@ const DeploymentSummary = () => {
         const repoUrl =
           row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
 
+        // Depending on how many sources there could be multiple revisions.
+        const latestRevision =
+          latestRev?.revision ?? latestRev?.revisions?.pop() ?? '';
         const commitUrl = isAppHelmChartType(row)
           ? repoUrl
           : getCommitUrl(
               repoUrl,
-              latestRev?.revision ?? '',
+              latestRevision,
               entity?.metadata?.annotations || {},
             );
+        const latestRevisionLinkText =
+          latestRevision === '' ? '-' : latestRevision?.substring(0, 7);
         return (
           <Link href={commitUrl} target="_blank" rel="noopener">
-            {latestRev?.revision?.substring(0, 7) ?? '-'}
+            {latestRevisionLinkText}
           </Link>
         );
       },
@@ -140,7 +158,7 @@ const DeploymentSummary = () => {
 
     {
       id: 'test',
-      title: 'Last deployed',
+      title: `${columnTitles.lastDeployed}`,
       field: 'lastdeployed',
       customSort: (a: Application, b: Application) => {
         const bHistory = b?.status?.history ?? [];
@@ -164,7 +182,7 @@ const DeploymentSummary = () => {
       },
     },
     {
-      title: 'Sync status',
+      title: `${columnTitles.syncStatus}`,
       field: 'syncstatus',
       customSort: (a: Application, b: Application): number => {
         const syncStatusOrder: string[] = Object.values(SyncStatuses);
@@ -176,7 +194,7 @@ const DeploymentSummary = () => {
       render: (row: Application): ReactNode => <AppSyncStatus app={row} />,
     },
     {
-      title: 'Health status',
+      title: `${columnTitles.healthStatus}`,
       field: 'healthstatus',
       customSort: (a: Application, b: Application): number => {
         const healthStatusOrder: string[] = Object.values(HealthStatus);
@@ -196,7 +214,7 @@ const DeploymentSummary = () => {
 
   return !error && hasArgocdViewAccess ? (
     <Table
-      title="Deployment summary"
+      title={tableTitle}
       options={{
         paging: true,
         search: false,

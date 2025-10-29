@@ -15,9 +15,8 @@
  */
 import { useContext } from 'react';
 
-import { Status } from '@janus-idp/shared-react';
-
-import { ResourceIcon } from '../../../common/components/ResourceName';
+import { Status } from '../../common/Status';
+import { ResourceIcon } from '../../common/ResourceName';
 import { LABEL_USED_TEMPLATE_NAME } from '../../../const';
 import { K8sResourcesContext } from '../../../hooks/K8sResourcesContext';
 import { VMIKind, VMKind } from '../../../types/vm';

@@ -21,3 +21,9 @@
 
 export { searchModuleConfluenceCollator as default } from './module';
 export * from './collators';
+export {
+  type ConfluenceDocument,
+  type ConfluenceDocumentMetadata,
+  type ConfluenceDocumentList,
+  type DocumentMetadata,
+} from './client';

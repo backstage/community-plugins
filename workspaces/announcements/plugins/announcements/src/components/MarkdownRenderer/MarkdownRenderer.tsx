@@ -17,11 +17,19 @@ import { MarkdownContent } from '@backstage/core-components';
 import MDEditor from '@uiw/react-md-editor';
 import { makeStyles, useTheme } from '@material-ui/core';
 
-export type MarkdownRendererType = 'backstage' | 'md-editor';
+/**
+ * @public
+ * Use this props to specify which rendering mode the MarkdownRenderer should operate in.
+ *
+ * - `'backstage'`: Indicates that the renderer should use the Backstage built-in style.
+ * - `'md-editor'`: Indicates that the renderer should use the Markdown Editor (WYSIWYG) style.
+ *
+ */
+export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
 
 export interface MarkdownRendererProps {
   content: string;
-  rendererType?: MarkdownRendererType;
+  rendererType?: MarkdownRendererTypeProps;
 }
 
 // Custom styles for the MDEditor to match Backstage MUI theme
@@ -44,6 +52,33 @@ const useStyles = makeStyles(theme => ({
     '& blockquote': {
       paddingLeft: theme.spacing(1),
       color: theme.palette.text.secondary,
+    },
+    '& table': {
+      '& thead th': {
+        color: theme.palette.text.primary,
+        backgroundColor:
+          theme.palette.type === 'dark'
+            ? theme.palette.background.default
+            : theme.palette.background.paper,
+      },
+      '& th, & td': {
+        border: 0,
+      },
+      '& tbody tr:nth-of-type(odd)': {
+        backgroundColor:
+          theme.palette.type === 'dark'
+            ? theme.palette.action.selected
+            : theme.palette.action.hover,
+      },
+      '& tbody tr:nth-of-type(even)': {
+        backgroundColor:
+          theme.palette.type === 'dark'
+            ? theme.palette.background.paper
+            : theme.palette.background.paper,
+      },
+      '& tbody td': {
+        borderTop: `1px solid ${theme.palette.divider}`,
+      },
     },
   },
 }));

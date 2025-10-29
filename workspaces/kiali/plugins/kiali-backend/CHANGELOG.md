@@ -1,5 +1,52 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.27.0
+
+### Minor Changes
+
+- 5e4b727: Backstage update to 1.44.1
+
+## 1.26.0
+
+### Minor Changes
+
+- 6de7980: Fix for issue: Could not fetch health
+  Fix for: The Istio Config drawer is blank
+  Fix Incorrect column names in the resources tables (All are named config)
+  Improve header styles
+  Backstage version update (1.42.5 -> 1.43.3)
+
+## 1.25.0
+
+### Minor Changes
+
+- d0926d5: Upgrade backstage 1.42.5
+
+## 1.24.0
+
+### Minor Changes
+
+- 7989c3b: Issue #4995 related with cookie token. Make it configurable
+
+## 1.23.0
+
+### Minor Changes
+
+- 1c08f79: Upgrade backstage to 1.39.1
+
+## 1.22.2
+
+### Patch Changes
+
+- 4c49556: Updated dependency `@types/express` to `4.17.23`.
+
+## 1.22.1
+
+### Patch Changes
+
+- 6a59fcf: remove support and lifecycle keywords in package.json
+- 098b200: Updated dependency `@types/express` to `4.17.22`.
+
 ## 1.22.0
 
 ### Minor Changes

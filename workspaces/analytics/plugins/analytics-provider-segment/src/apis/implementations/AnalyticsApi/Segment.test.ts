@@ -181,6 +181,64 @@ describe('SegmentAnalytics', () => {
     });
   });
 
+  describe('version tracking', () => {
+    const configWithVersions = new ConfigReader({
+      app: {
+        analytics: {
+          segment: {
+            writeKey,
+            testMode: false,
+            maskIP: false,
+            appVersion: '1.2.3',
+            backstageVersion: '1.17.0',
+          },
+        },
+      },
+    });
+
+    it('includes versions in events when configured', async () => {
+      const api = SegmentAnalytics.fromConfig(configWithVersions);
+      await api.captureEvent({
+        action: 'click',
+        subject: 'button',
+        context,
+      });
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        'click',
+        {
+          subject: 'button',
+          context: {
+            ...context,
+            appVersion: '1.2.3',
+            backstageVersion: '1.17.0',
+          },
+          attributes: undefined,
+        },
+        {},
+      );
+    });
+
+    it('does not include version properties when not configured', async () => {
+      const api = SegmentAnalytics.fromConfig(basicValidConfig);
+      await api.captureEvent({
+        action: 'click',
+        subject: 'button',
+        context,
+      });
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        'click',
+        {
+          subject: 'button',
+          context: context,
+          attributes: undefined,
+        },
+        {},
+      );
+    });
+  });
+
   describe('identityApi', () => {
     const identityApi = {
       getBackstageIdentity: jest.fn().mockResolvedValue({

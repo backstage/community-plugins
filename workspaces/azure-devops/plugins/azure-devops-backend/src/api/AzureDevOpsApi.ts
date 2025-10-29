@@ -27,7 +27,6 @@ import {
   Project,
   PullRequest,
   PullRequestOptions,
-  RepoBuild,
   Team,
   TeamMember,
 } from '@backstage-community/plugin-azure-devops-common';
@@ -63,12 +62,7 @@ import {
   DefaultAzureDevOpsCredentialsProvider,
   ScmIntegrations,
 } from '@backstage/integration';
-import {
-  mappedBuildRun,
-  mappedGitTag,
-  mappedPullRequest,
-  mappedRepoBuild,
-} from './mappers';
+import { mappedBuildRun, mappedGitTag, mappedPullRequest } from './mappers';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /** @public */
@@ -213,46 +207,6 @@ export class AzureDevOpsApi {
       repoId,
       'TfsGit',
     );
-  }
-
-  /**
-   * @deprecated This method has no usages and will be removed in a future release
-   */
-  public async getRepoBuilds(
-    projectName: string,
-    repoName: string,
-    top: number,
-    host?: string,
-    org?: string,
-  ) {
-    this.logger?.debug(
-      `Calling Azure DevOps REST API, getting up to ${top} Builds for Repository ${repoName} for Project ${projectName}`,
-    );
-
-    const gitRepository = await this.getGitRepository(
-      projectName,
-      repoName,
-      host,
-      org,
-    );
-    if (!gitRepository) {
-      throw new Error(
-        `No repository found for Project "${projectName}" with Repository "${repoName}" on host "${host}" under organization "${org}".`,
-      );
-    }
-    const buildList = await this.getBuildList(
-      projectName,
-      gitRepository.id as string,
-      top,
-      host,
-      org,
-    );
-
-    const repoBuilds: RepoBuild[] = buildList.map(build => {
-      return mappedRepoBuild(build);
-    });
-
-    return repoBuilds;
   }
 
   public async getGitTags(
@@ -461,10 +415,7 @@ export class AzureDevOpsApi {
     }));
   }
 
-  /**
-   * @deprecated This method has no usages and will be removed in a future release
-   */
-  public async getBuildDefinitions(
+  private async getBuildDefinitions(
     projectName: string,
     definitionName: string,
     host?: string,

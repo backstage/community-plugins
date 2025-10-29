@@ -31,8 +31,9 @@ import DialogContent from '@mui/material/DialogContent';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@patternfly/react-core';
 
-import ResourceName from '../../../../common/components/ResourceName';
+import ResourceName from '../../../common/ResourceName';
 import { K8sResourcesContext } from '../../../../hooks/K8sResourcesContext';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import { ContainerSelector } from './ContainerSelector';
 import { PodLogs } from './PodLogs';
 import PodLogsDownload from './PodLogsDownload';
@@ -144,6 +145,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
 };
 
 export const PodLogsDialog = ({ podData }: PodLogsDialogProps) => {
+  const { t } = useTranslation();
   const { clusters, selectedCluster } = React.useContext(K8sResourcesContext);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -173,7 +175,7 @@ export const PodLogsDialog = ({ podData }: PodLogsDialogProps) => {
         aria-label="view logs"
         onClick={openDialog}
       >
-        View Logs
+        {t('common.viewLogs')}
       </Button>
     </>
   );

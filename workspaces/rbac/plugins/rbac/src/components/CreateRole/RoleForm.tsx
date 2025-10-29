@@ -29,6 +29,8 @@ import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
+import { useTranslation } from '../../hooks/useTranslation';
+
 import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity, PermissionsData, RoleError } from '../../types';
 import {
@@ -38,7 +40,7 @@ import {
   getRemovedConditionalPoliciesIds,
   getRoleData,
   getUpdatedConditionalPolicies,
-  validationSchema,
+  getValidationSchema,
 } from '../../utils/create-role-utils';
 import { isSamePermissionPolicy, onlyInLeft } from '../../utils/rbac-utils';
 import {
@@ -83,6 +85,7 @@ export const RoleForm = ({
   const [openCancelDialog, setOpenCancelDialog] = useState<boolean>(false);
   const navigate = useNavigate();
   const rbacApi = useApi(rbacApiRef);
+  const { t } = useTranslation();
 
   const updateRole = async (
     values: RoleFormValues,
@@ -106,7 +109,7 @@ export const RoleForm = ({
       const res = await rbacApi.updateRole(oldData, newData);
       if ((res as RoleError).error) {
         throw new Error(
-          `${'Unable to edit the role. '}${(res as RoleError).error.message}`,
+          `${t('errors.editRole')} ${(res as RoleError).error.message}`,
         );
       } else {
         const oldPermissionsData = getPermissionPoliciesData(initialValues);
@@ -121,14 +124,14 @@ export const RoleForm = ({
           isSamePermissionPolicy,
         );
 
-        await removePermissions(newName, deletePermissions, rbacApi);
-        await createPermissions(newPermissions, rbacApi);
+        await removePermissions(newName, deletePermissions, rbacApi, t);
+        await createPermissions(newPermissions, rbacApi, t);
 
-        await removeConditions(deleteConditions, rbacApi);
-        await modifyConditions(updateConditions, rbacApi);
-        await createConditions(newConditions, rbacApi);
+        await removeConditions(deleteConditions, rbacApi, t);
+        await modifyConditions(updateConditions, rbacApi, t);
+        await createConditions(newConditions, rbacApi, t);
 
-        navigateTo(navigate, roleName, newName, 'updated', step);
+        navigateTo(navigate, t, roleName, newName, 'updated', step);
       }
     } catch (e) {
       formikHelpers.setStatus({ submitError: e });
@@ -148,23 +151,25 @@ export const RoleForm = ({
       const res = await rbacApi.createRole(newData);
       if ((res as RoleError).error) {
         throw new Error(
-          `${'Unable to create role. '}${(res as RoleError).error.message}`,
+          `${t('errors.createRole')} ${(res as RoleError).error.message}`,
         );
       }
 
       await createPermissions(
         newPermissionsData,
         rbacApi,
-        'Role was created successfully but unable to add permission policies to the role.',
+        t,
+        t('errors.roleCreatedSuccess'),
       );
 
       await createConditions(
         newConditionalPermissionPoliciesData,
         rbacApi,
-        'Role created successfully but unable to add conditions to the role.',
+        t,
+        t('errors.roleCreatedConditionsSuccess'),
       );
 
-      navigateTo(navigate, roleName, newData.name, 'created', step);
+      navigateTo(navigate, t, roleName, newData.name, 'created', step);
     } catch (e) {
       formikHelpers.setStatus({ submitError: e });
     }
@@ -173,7 +178,7 @@ export const RoleForm = ({
   const formik = useFormik<RoleFormValues>({
     enableReinitialize: true,
     initialValues,
-    validationSchema: validationSchema,
+    validationSchema: getValidationSchema(t),
     onSubmit: async (
       values: RoleFormValues,
       formikHelpers: FormikHelpers<RoleFormValues>,
@@ -261,7 +266,7 @@ export const RoleForm = ({
             actions={{
               showBack: false,
               showNext: true,
-              nextText: 'Next',
+              nextText: t('roleForm.steps.next'),
               canNext: () => !!formik.values.name && !formik.errors.name,
               onNext: () => handleNext('name'),
             }}
@@ -279,13 +284,13 @@ export const RoleForm = ({
             title={titles.usersAndGroupsTitle}
             actions={{
               showNext: true,
-              nextText: 'Next',
+              nextText: t('roleForm.steps.next'),
               canNext: () =>
                 formik.values.selectedMembers?.length > 0 &&
                 !formik.errors.selectedMembers,
               onNext: () => handleNext('selectedMembers'),
               showBack: true,
-              backText: 'Back',
+              backText: t('roleForm.steps.back'),
               onBack: handleBack,
             }}
           >
@@ -307,11 +312,11 @@ export const RoleForm = ({
             title={titles.permissionPoliciesTitle}
             actions={{
               showNext: true,
-              nextText: 'Next',
+              nextText: t('roleForm.steps.next'),
               canNext: () => canNextPermissionPoliciesStep(),
               onNext: () => handleNext('permissionPoliciesRows'),
               showBack: true,
-              backText: 'Back',
+              backText: t('roleForm.steps.back'),
               onBack: handleBack,
             }}
           >
@@ -330,8 +335,10 @@ export const RoleForm = ({
             <Paper square elevation={0}>
               <ReviewStep values={formik.values} isEditing={!!roleName} />
               <br />
-              <Button onClick={handleBack}>Back</Button>
-              <Button onClick={e => handleReset(e)}>Reset</Button>
+              <Button onClick={handleBack}>{t('roleForm.steps.back')}</Button>
+              <Button onClick={e => handleReset(e)}>
+                {t('roleForm.steps.reset')}
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
@@ -342,7 +349,10 @@ export const RoleForm = ({
                   !formik.dirty
                 }
               >
-                {submitLabel || 'Create'}
+                {submitLabel ||
+                  (roleName
+                    ? t('roleForm.steps.save')
+                    : t('roleForm.steps.create'))}
               </Button>
             </Paper>
           </SimpleStepperStep>
@@ -357,7 +367,7 @@ export const RoleForm = ({
           onClick={() => setOpenCancelDialog(true)}
           color="primary"
         >
-          Cancel
+          {t('roleForm.steps.cancel')}
         </Button>
       </CardContent>
       <CancelDialog
@@ -365,7 +375,7 @@ export const RoleForm = ({
         editForm={!!roleName}
         closeDialog={() => setOpenCancelDialog(false)}
         navigateTo={() =>
-          navigateTo(navigate, roleName, undefined, undefined, step)
+          navigateTo(navigate, t, roleName, undefined, undefined, step)
         }
       />
     </Card>

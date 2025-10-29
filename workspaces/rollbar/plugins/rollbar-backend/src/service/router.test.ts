@@ -39,6 +39,7 @@ describe('createRouter', () => {
       rollbarApi,
       logger: mockServices.rootLogger(),
       config: new ConfigReader({ rollbar: { accountToken: 'foo' } }),
+      cache: mockServices.cache.mock(),
     });
     app = express().use(router);
   });

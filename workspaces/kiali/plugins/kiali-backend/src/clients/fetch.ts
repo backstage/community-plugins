@@ -140,6 +140,7 @@ export class KialiFetcher {
           this.kialiAuth.setSession(session);
           this.kialiAuth.setKialiCookie(
             resp.headers['set-cookie']?.join(';') || '',
+            this.KialiDetails.tokenName || 'kiali-token-Kubernetes',
           );
           this.logger.info(`User ${session.username} logged in kiali plugin`);
         })

@@ -45,6 +45,7 @@ export const sonarqubeTranslationRef = createTranslationRef({
         gatePassed: 'Gate passed',
         gateFailed: 'Gate failed',
       },
+      qualityBadgeTooltip: 'View SonarQube Dashboard',
     },
     sonarQubeTable: {
       columnsTitle: {

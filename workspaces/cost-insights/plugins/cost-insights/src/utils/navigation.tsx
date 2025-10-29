@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import MoneyIcon from '@material-ui/icons/MonetizationOn';
 import ActionIcon from '@material-ui/icons/Whatshot';
 import Settings from '@material-ui/icons/Settings';

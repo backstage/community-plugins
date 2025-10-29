@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Group } from '@backstage-community/plugin-cost-insights-common';
 import { CostInsightsTabs } from '../CostInsightsTabs';

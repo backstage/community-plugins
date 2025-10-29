@@ -36,8 +36,9 @@ import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasth
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
-import { isMultiCluster, serverConfig } from '../../config';
+import { isMultiCluster } from '../../config';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
+import { useServerConfig } from '../../hooks/useServerConfig';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
@@ -59,6 +60,7 @@ export const ServiceListPage = (props: {
     FilterHelper.currentDuration(),
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
   kialiClient.setAnnotation(
     KIALI_PROVIDER,
     props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||

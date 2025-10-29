@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { FocusEvent, useState } from 'react';
 
 import { configApiRef, useAnalytics, useApi } from '@backstage/core-plugin-api';
 
@@ -97,9 +97,13 @@ export const CreateFeedbackModal = (props: {
   const issueTags = feedbackApi.getErrorList();
   const feedbackTags = feedbackApi.getExperienceList();
   const analytics = useAnalytics();
-  const [feedbackType, setFeedbackType] = useState('BUG');
+  const bugsEnabled = issueTags.length === 0 ? false : true;
+  const feedbackEnabled = feedbackTags.length === 0 ? false : true;
+  const defaultType = bugsEnabled ? 'BUG' : 'FEEDBACK';
+  const defaultTag = bugsEnabled ? issueTags[0] : feedbackTags[0];
+  const [feedbackType, setFeedbackType] = useState(defaultType);
   const [submitClicked, setSubmitClicked] = useState(false);
-  const [selectedTag, setSelectedTag] = useState(issueTags[0]);
+  const [selectedTag, setSelectedTag] = useState(defaultTag);
   const app = useApi(configApiRef);
   const summaryLimit = app.getOptionalNumber('feedback.summaryLimit') ?? 240;
 
@@ -135,8 +139,8 @@ export const CreateFeedbackModal = (props: {
     setSummary(s => ({ ...s, value: '', error: false }));
     setDescription(d => ({ ...d, value: '', error: false }));
     setSubmitClicked(false);
-    setFeedbackType('BUG');
-    setSelectedTag(issueTags[0]);
+    setFeedbackType(defaultType);
+    setSelectedTag(defaultTag);
   }
 
   async function handleSubmitClick() {
@@ -159,7 +163,7 @@ export const CreateFeedbackModal = (props: {
   }
 
   function handleInputChange(
-    event: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) {
     if (event.target.id === 'summary') {
       const _summary = event.target.value;
@@ -191,7 +195,7 @@ export const CreateFeedbackModal = (props: {
   }
 
   function handleValidation(
-    event: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) {
     if (event.target.id === 'summary') {
       if (event.target.value.length === 0) {
@@ -244,36 +248,38 @@ export const CreateFeedbackModal = (props: {
                 </Alert>
               </Grid>
             ) : null}
-            <Grid item xs={4}>
-              <Typography variant="h6">Select type</Typography>
-              <RadioGroup className={classes.radioGroup} row>
-                <FormControlLabel
-                  value="BUG"
-                  checked={feedbackType === 'BUG'}
-                  onChange={handleCategoryClick}
-                  label="Bug"
-                  control={
-                    <Radio
-                      icon={<BugReportOutlined />}
-                      checkedIcon={<BugReportTwoToneIcon />}
-                      color="error"
-                    />
-                  }
-                />
-                <FormControlLabel
-                  value="FEEDBACK"
-                  onChange={handleCategoryClick}
-                  label="Feedback"
-                  control={
-                    <Radio
-                      icon={<SmsOutlined />}
-                      checkedIcon={<SmsTwoTone />}
-                      color="primary"
-                    />
-                  }
-                />
-              </RadioGroup>
-            </Grid>
+            {bugsEnabled && feedbackEnabled ? (
+              <Grid item xs={4}>
+                <Typography variant="h6">Select type</Typography>
+                <RadioGroup className={classes.radioGroup} row>
+                  <FormControlLabel
+                    value="BUG"
+                    checked={feedbackType === 'BUG'}
+                    onChange={handleCategoryClick}
+                    label="Bug"
+                    control={
+                      <Radio
+                        icon={<BugReportOutlined />}
+                        checkedIcon={<BugReportTwoToneIcon />}
+                        color="error"
+                      />
+                    }
+                  />
+                  <FormControlLabel
+                    value="FEEDBACK"
+                    onChange={handleCategoryClick}
+                    label="Feedback"
+                    control={
+                      <Radio
+                        icon={<SmsOutlined />}
+                        checkedIcon={<SmsTwoTone />}
+                        color="primary"
+                      />
+                    }
+                  />
+                </RadioGroup>
+              </Grid>
+            ) : null}
             <Grid item xs={12}>
               <Typography variant="h6">
                 Select {feedbackType === 'FEEDBACK' ? 'Feedback' : 'Bug'}

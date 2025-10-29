@@ -1,0 +1,61 @@
+{
+  "name": "@internal/mcp-chat",
+  "description": "A Backstage plugin that provides a chat interface for interacting with the MCP Servers.",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": "20 || 22"
+  },
+  "scripts": {
+    "start": "backstage-cli repo start",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "build:all": "backstage-cli repo build --all",
+    "build:api-reports": "yarn build:api-reports:only --tsc",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
+  },
+  "workspaces": {
+    "packages": [
+      "plugins/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-chat"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0",
+    "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/repo-tools": "^0.14.0",
+    "@changesets/cli": "^2.27.1",
+    "knip": "^5.27.4",
+    "node-gyp": "^10.0.0",
+    "prettier": "^2.3.2",
+    "typescript": "~5.3.0"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "prettier": "@backstage/cli/config/prettier",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

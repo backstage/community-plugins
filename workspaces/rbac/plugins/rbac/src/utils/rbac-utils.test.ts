@@ -22,6 +22,7 @@ import {
 
 import {
   PermissionAction,
+  PluginPermissionMetaData,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
@@ -38,6 +39,28 @@ import {
   getPluginInfo,
   getPoliciesData,
 } from './rbac-utils';
+
+// Mock translation function for tests
+const mockT = (key: string, params?: any) => {
+  const messages: Record<string, string> = {
+    'common.noMembers': 'No members',
+    'common.users': 'users',
+    'common.user': 'user',
+    'common.groups': 'groups',
+    'common.group': 'group',
+    'common.use': 'Use',
+  };
+  let message = messages[key] || key;
+  if (params) {
+    for (const [paramKey, paramValue] of Object.entries(params)) {
+      message = message.replace(
+        new RegExp(`{{${paramKey}}}`, 'g'),
+        String(paramValue),
+      );
+    }
+  }
+  return message;
+};
 
 const mockPolicies = [
   {
@@ -91,23 +114,22 @@ describe('rbac utils', () => {
   });
 
   it('should return number of users and groups in member references', () => {
-    expect(getMembers(['user:default/xyz', 'group:default/admins'])).toBe(
-      '1 group, 1 user',
-    );
+    expect(
+      getMembers(['user:default/xyz', 'group:default/admins'], mockT as any),
+    ).toBe('1 group, 1 user');
 
     expect(
-      getMembers([
-        'user:default/xyz',
-        'group:default/admins',
-        'user:default/alice',
-      ]),
+      getMembers(
+        ['user:default/xyz', 'group:default/admins', 'user:default/alice'],
+        mockT as any,
+      ),
     ).toBe('1 group, 2 users');
 
-    expect(getMembers(['user:default/xyz'])).toBe('1 user');
+    expect(getMembers(['user:default/xyz'], mockT as any)).toBe('1 user');
 
-    expect(getMembers(['group:default/xyz'])).toBe('1 group');
+    expect(getMembers(['group:default/xyz'], mockT as any)).toBe('1 group');
 
-    expect(getMembers([])).toBe('No members');
+    expect(getMembers([], mockT as any)).toBe('No members');
   });
 
   it('should return number of members in a group', () => {
@@ -181,19 +203,28 @@ describe('rbac utils', () => {
     expect(getMembersFromGroup(resource)).toBe(0);
   });
 
-  it('should return plugin-id of the policy', () => {
+  it('should return plugin-id of the policy and return null if no pluginId exists', () => {
     expect(
       getPluginInfo(mockPermissionPolicies, {
         permission: 'catalog.entity.read',
         policy: 'read',
-      }).pluginId,
+      })?.pluginId,
     ).toBe('catalog');
     expect(
       getPluginInfo(mockPermissionPolicies, {
         permission: 'scaffolder.template.read',
         policy: 'read',
-      }).pluginId,
+      })?.pluginId,
     ).toBe('scaffolder');
+    const mockPermissionPoliciesWithoutPluginId = [
+      { ...mockPermissionPolicies[0], pluginId: undefined },
+    ] as any as PluginPermissionMetaData[];
+    expect(
+      getPluginInfo(mockPermissionPoliciesWithoutPluginId, {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+      }),
+    ).toBe(null);
   });
 
   it('should return if the permission is resourced', () => {
@@ -201,18 +232,22 @@ describe('rbac utils', () => {
       getPluginInfo(mockPermissionPolicies, {
         permission: 'catalog.entity.read',
         policy: 'read',
-      }).isResourced,
+      })?.isResourced,
     ).toBe(true);
     expect(
       getPluginInfo(mockPermissionPolicies, {
         permission: 'scaffolder.template.read',
         policy: 'read',
-      }).isResourced,
+      })?.isResourced,
     ).toBe(true);
   });
 
   it('should return the permissions data', () => {
-    const data = getPermissionsData(mockPolicies, mockPermissionPolicies);
+    const data = getPermissionsData(
+      mockPolicies,
+      mockPermissionPolicies,
+      mockT as any,
+    );
     expect(data[0]).toEqual({
       permission: 'policy.entity.read',
       plugin: 'permission',

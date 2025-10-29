@@ -19,6 +19,7 @@ import { useRouteRef } from '@backstage/core-plugin-api';
 import {
   announcementAdminRouteRef,
   categoriesListRouteRef,
+  tagsListRouteRef,
 } from '../../routes';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
@@ -45,6 +46,7 @@ export function ContextMenu() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
   const announcementsLink = useRouteRef(announcementAdminRouteRef);
   const categoriesLink = useRouteRef(categoriesListRouteRef);
+  const tagsLink = useRouteRef(tagsListRouteRef);
   const navigate = useNavigate();
   const { t } = useAnnouncementsTranslation();
 
@@ -90,6 +92,12 @@ export function ContextMenu() {
             <ListItemText
               primary={t('announcementsPage.contextMenu.categories')}
             />
+          </MenuItem>
+          <MenuItem onClick={() => navigate(tagsLink())}>
+            <ListItemIcon>
+              <Description fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={t('announcementsPage.contextMenu.tags')} />
           </MenuItem>
         </MenuList>
       </Popover>

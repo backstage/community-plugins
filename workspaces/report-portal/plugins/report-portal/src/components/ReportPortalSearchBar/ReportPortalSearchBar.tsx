@@ -25,7 +25,7 @@ import {
 } from '@backstage/plugin-search-react';
 import DefaultSearchIcon from '@mui/icons-material/Search';
 import { Autocomplete, IconButton, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
 import { ReportPortalSearchResultItem } from '../../plugin';
 import { ReportPortalIcon } from '../ReportPortalIcon';

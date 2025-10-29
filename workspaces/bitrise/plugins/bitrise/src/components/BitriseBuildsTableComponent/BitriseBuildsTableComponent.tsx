@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import * as React from 'react';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import GitHubIcon from '@material-ui/icons/GitHub';

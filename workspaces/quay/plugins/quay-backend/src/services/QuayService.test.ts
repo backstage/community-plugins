@@ -307,6 +307,7 @@ describe('QuayService', () => {
   it('should log an error and throw when fetching fails', async () => {
     fetchMock.mockResolvedValue({
       ok: false,
+      status: 500,
       statusText: 'Internal Server Error',
     } as Response);
 
@@ -315,7 +316,7 @@ describe('QuayService', () => {
     );
 
     expect(mockLogger.error).toHaveBeenCalledWith(
-      'Quay Service request failed: Internal Server Error',
+      'Quay Service request failed: (500, Internal Server Error)',
     );
   });
 });

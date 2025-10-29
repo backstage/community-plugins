@@ -21,6 +21,7 @@
     "lint:all": "backstage-cli repo lint",
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community"
   },
   "workspaces": {
@@ -35,9 +36,9 @@
     "directory": "workspaces/pingidentity"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.1",
+    "@backstage/cli": "^0.34.4",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.3",
+    "@backstage/repo-tools": "^0.15.3",
     "@changesets/cli": "^2.27.1",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",

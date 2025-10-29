@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { render } from '@testing-library/react';
+// CRITICAL: Import mocks BEFORE components
+import { mockUseTranslation } from '../../test-utils/mockTranslations';
 
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: mockUseTranslation,
+}));
+
+// Component imports AFTER mocks
+import { render } from '@testing-library/react';
 import { TopologyEmptyState } from './TopologyEmptyState';
 
 describe('TopologyEmptyState', () => {

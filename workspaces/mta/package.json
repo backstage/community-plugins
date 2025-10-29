@@ -25,6 +25,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope internal",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -40,13 +41,12 @@
     "directory": "workspaces/mta"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.1",
+    "@backstage/cli": "^0.34.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.1",
+    "@backstage/repo-tools": "^0.15.1",
     "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
     "knip": "^5.27.4",
-    "lerna": "^7.3.0",
     "node-gyp": "^9.0.0",
     "prettier": "^3.3.3",
     "typescript": "~5.3.0"

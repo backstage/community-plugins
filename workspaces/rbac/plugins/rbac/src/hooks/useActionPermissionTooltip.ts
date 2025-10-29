@@ -16,12 +16,13 @@
 
 import { usePermission } from '@backstage/plugin-permission-react';
 import { capitalizeFirstLetter } from '../utils/string-utils';
+import { useTranslation } from './useTranslation';
 
 export function useActionPermissionTooltip({
   permission,
   resourceRef,
   canAct,
-  action = 'perform this action',
+  action,
   dataTestId,
   fallbackTooltip,
 }: {
@@ -32,6 +33,7 @@ export function useActionPermissionTooltip({
   dataTestId?: string;
   fallbackTooltip?: string;
 }) {
+  const { t } = useTranslation();
   const result = usePermission({ permission, resourceRef });
 
   const isLoading = result.loading;
@@ -39,18 +41,22 @@ export function useActionPermissionTooltip({
   const disable = !(isAllowed && canAct);
 
   let tooltipText: string;
+  const actionText = action || t('common.performThisAction');
 
   if (isLoading) {
-    tooltipText = 'Checking permissions…';
+    tooltipText = t('common.checkingPermissions');
   } else if (disable) {
-    tooltipText = `Unauthorized to ${action}`;
+    tooltipText = t('common.unauthorizedTo' as any, { action: actionText });
   } else {
-    tooltipText = fallbackTooltip ?? `${capitalizeFirstLetter(action)} role`;
+    tooltipText =
+      fallbackTooltip ??
+      t('common.roleAction' as any, {
+        action: capitalizeFirstLetter(actionText),
+      });
   }
-
   const testIdText = disable
-    ? `disable-${action}-role-${resourceRef}`
-    : `${action}-role-${resourceRef}`;
+    ? `disable-${actionText}-role-${resourceRef}`
+    : `${actionText}-role-${resourceRef}`;
 
   return {
     isLoading,
