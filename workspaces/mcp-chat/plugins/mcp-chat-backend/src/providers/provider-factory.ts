@@ -64,7 +64,9 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
     openai: {
       type: 'openai',
       apiKey: token,
-      baseUrl: 'https://api.openai.com/v1',
+      baseUrl:
+        providerConfig.getOptionalString('baseUrl') ||
+        'https://api.openai.com/v1',
       model: model,
     },
 
