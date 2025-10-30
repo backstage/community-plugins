@@ -1,7 +1,19 @@
-/**
- * Unit tests for ChatMessage execution plan display logic
- * These tests verify the core rendering logic without full component rendering
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 import { Message } from '../../types';
 
@@ -305,7 +317,7 @@ describe('ChatMessage - Execution Plan Display', () => {
         { messageId: 'msg-1', text: 'Only message' }
       ];
 
-      const isLast = 0 === messages.length - 1;
+      const isLast = messages.length - 1 === 0;
       expect(isLast).toBe(true);
     });
 
@@ -359,7 +371,7 @@ describe('ChatMessage - Execution Plan Display', () => {
     });
 
     test('should maintain execution plan buffer integrity across state updates', () => {
-      let buffer: Record<string, string> = {};
+      const buffer: Record<string, string> = {};
 
       // Simulate multiple rapid updates
       buffer['msg-1'] = 'Initial plan';
@@ -414,7 +426,7 @@ describe('ChatMessage - Execution Plan Display', () => {
     });
 
     test('should handle very long messageIds', () => {
-      const longId = 'msg-' + 'x'.repeat(1000);
+      const longId = `msg-${  'x'.repeat(1000)}`;
       const buffer = {
         [longId]: 'Test plan'
       };

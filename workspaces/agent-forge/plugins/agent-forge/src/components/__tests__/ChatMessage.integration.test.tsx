@@ -1,6 +1,17 @@
-/**
- * Integration tests for ChatMessage component
- * These tests render the actual component and test execution plan display
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import React from 'react';
@@ -220,7 +231,7 @@ describe('ChatMessage Integration Tests', () => {
       const user = userEvent.setup();
       
       // Mock clipboard API
-      Object.assign(navigator, {
+      Object.assign(window.navigator, {
         clipboard: {
           writeText: jest.fn().mockResolvedValue(undefined),
         },
@@ -234,14 +245,14 @@ describe('ChatMessage Integration Tests', () => {
       
       // Clipboard should be called
       await waitFor(() => {
-        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Hello! How can I help you?');
+        expect(window.navigator.clipboard.writeText).toHaveBeenCalledWith('Hello! How can I help you?');
       });
     });
 
     test('should show toast on successful copy', async () => {
       const user = userEvent.setup();
       
-      Object.assign(navigator, {
+      Object.assign(window.navigator, {
         clipboard: {
           writeText: jest.fn().mockResolvedValue(undefined),
         },
@@ -356,7 +367,7 @@ describe('ChatMessage Integration Tests', () => {
     test('should support keyboard navigation for actions', async () => {
       const user = userEvent.setup();
       
-      Object.assign(navigator, {
+      Object.assign(window.navigator, {
         clipboard: {
           writeText: jest.fn().mockResolvedValue(undefined),
         },
@@ -372,7 +383,7 @@ describe('ChatMessage Integration Tests', () => {
       await user.keyboard('{Enter}');
       
       await waitFor(() => {
-        expect(navigator.clipboard.writeText).toHaveBeenCalled();
+        expect(window.navigator.clipboard.writeText).toHaveBeenCalled();
       });
     });
   });
@@ -430,7 +441,7 @@ describe('ChatMessage Integration Tests', () => {
 
   describe('Performance', () => {
     test('should render quickly with large execution plan', async () => {
-      const largePlan = 'Task '.repeat(1000) + 'Final task';
+      const largePlan = `${'Task '.repeat(1000)  }Final task`;
       const messageWithLargePlan = { ...mockBotMessage, messageId: 'large-plan' };
       const buffer = {
         'large-plan': largePlan,

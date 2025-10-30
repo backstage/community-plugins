@@ -19,7 +19,7 @@
 1. **Navigate to plugin directory**
 
    ```bash
-   cd /Users/sraradhy/cisco/eti/sre/community-plugins/workspaces/agent-forge/plugins/agent-forge
+   cd ~/community-plugins/workspaces/agent-forge/plugins/agent-forge
    ```
 
 2. **Install dependencies**
@@ -37,7 +37,7 @@
 4. **Test the build**
 
    ```bash
-   npm test
+   yarn test
    ```
 
 5. **Publish to npm**

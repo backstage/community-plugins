@@ -1,6 +1,6 @@
 app:
   title: Agent Forge
-  baseUrl: http://localhost:3005
+  baseUrl: http://localhost:3000
 
 organization:
   name: Acme

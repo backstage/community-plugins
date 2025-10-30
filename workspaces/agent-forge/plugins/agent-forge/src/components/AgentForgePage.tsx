@@ -411,7 +411,7 @@ export function AgentForgePage() {
     // 🚨 DEBUGGING: Check if input text contains execution plan markers
     if (text.includes('⟦') || text.includes('⟧')) {
       console.log('🚨 INPUT TEXT CONTAINS EXECUTION PLAN MARKERS');
-      console.log('🚨 ORIGINAL TEXT:', text.substring(0, 200) + '...');
+      console.log('🚨 ORIGINAL TEXT:', `${text.substring(0, 200)  }...`);
     }
     
     // Remove each cached notification from the text
@@ -426,9 +426,9 @@ export function AgentForgePage() {
       // 🚨 DEBUGGING: Check if we removed execution plan markers
       if (beforeRemoval !== cleanText && (beforeRemoval.includes('⟦') || beforeRemoval.includes('⟧'))) {
         console.log('🚨 REMOVED TEXT THAT CONTAINED EXECUTION PLAN MARKERS!');
-        console.log('🚨 REMOVED NOTIFICATION:', notification.substring(0, 100) + '...');
-        console.log('🚨 BEFORE:', beforeRemoval.substring(0, 200) + '...');
-        console.log('🚨 AFTER:', cleanText.substring(0, 200) + '...');
+        console.log('🚨 REMOVED NOTIFICATION:', `${notification.substring(0, 100)  }...`);
+        console.log('🚨 BEFORE:', `${beforeRemoval.substring(0, 200)  }...`);
+        console.log('🚨 AFTER:', `${cleanText.substring(0, 200)  }...`);
       }
     }
     
@@ -500,7 +500,7 @@ export function AgentForgePage() {
 
     // Reduced logging for performance
     if (process.env.NODE_ENV === 'development') {
-      console.log('PROCESSING EXECUTION PLAN MARKERS - input text:', text.substring(0, 100) + '...');
+      console.log('PROCESSING EXECUTION PLAN MARKERS - input text:', `${text.substring(0, 100)  }...`);
       console.log('PROCESSING EXECUTION PLAN MARKERS - isCapturingExecutionPlan:', isCapturingExecutionPlan);
     }
 
@@ -513,7 +513,7 @@ export function AgentForgePage() {
       if (match && match[1]) {
         console.log('🔧 FALLBACK: Found execution plan content without Unicode markers!');
         const executionPlanText = match[1].trim();
-        console.log('🔧 FALLBACK: Extracted execution plan:', executionPlanText.substring(0, 200) + '...');
+        console.log('🔧 FALLBACK: Extracted execution plan:', `${executionPlanText.substring(0, 200)  }...`);
         
         // Remove the entire execution plan section from main content
         const fullExecutionPlanSection = match[0];
@@ -522,8 +522,8 @@ export function AgentForgePage() {
         shouldStartCapturing = true;
         shouldStopCapturing = true; // It's a complete plan in one chunk
         
-        console.log('🔧 FALLBACK: Removed section:', fullExecutionPlanSection.substring(0, 100) + '...');  
-        console.log('🔧 FALLBACK: Main content after removal:', mainContent.substring(0, 200) + '...');
+        console.log('🔧 FALLBACK: Removed section:', `${fullExecutionPlanSection.substring(0, 100)  }...`);  
+        console.log('🔧 FALLBACK: Main content after removal:', `${mainContent.substring(0, 200)  }...`);
         return {
           mainContent,
           executionPlanContent,
@@ -1256,7 +1256,7 @@ export function AgentForgePage() {
       setAccumulatedExecutionPlan(prevPlan => {
         if (process.env.NODE_ENV === 'development') {
           console.log('🧹 RESETTING ACCUMULATED EXECUTION PLAN STATE (addStreamingMessage):', {
-            before: prevPlan ? prevPlan.substring(0, 100) + '...' : 'EMPTY',
+            before: prevPlan ? `${prevPlan.substring(0, 100)  }...` : 'EMPTY',
             afterReset: 'EMPTY',
             reason: 'New streaming message started'
           });
@@ -1293,13 +1293,13 @@ export function AgentForgePage() {
                 streamingMessagesFound: allStreamingMessages.length,
                 streamingMessageIds: allStreamingMessages.map(m => m.messageId),
                 selectedMessageId: streamingMessage?.messageId || 'none',
-                selectedMessageText: streamingMessage?.text?.substring(0, 50) + '...' || 'none',
+                selectedMessageText: `${streamingMessage?.text?.substring(0, 50)  }...` || 'none',
                 allMessageDetails: updatedMessages.map(m => ({
                   id: m.messageId,
                   timestamp: m.timestamp,
                   isStreaming: m.isStreaming,
                   isUser: m.isUser,
-                  textPreview: m.text?.substring(0, 30) + '...'
+                  textPreview: `${m.text?.substring(0, 30)  }...`
                 }))
               });
             }
@@ -1346,7 +1346,7 @@ export function AgentForgePage() {
                   console.log('📋 STORING EXECUTION PLAN AT END OF STREAMING:', {
                     messageId: streamingMessage.messageId,
                     planLength: currentPlan.length,
-                    planPreview: currentPlan.substring(0, 100) + '...'
+                    planPreview: `${currentPlan.substring(0, 100)  }...`
                   });
                   
                   const messageKey = streamingMessage.messageId || 'unknown';
@@ -1429,7 +1429,7 @@ export function AgentForgePage() {
       setAccumulatedExecutionPlan(prevPlan => {
         if (process.env.NODE_ENV === 'development') {
           console.log('🧹 RESETTING ACCUMULATED EXECUTION PLAN STATE:', {
-            before: prevPlan ? prevPlan.substring(0, 100) + '...' : 'EMPTY',
+            before: prevPlan ? `${prevPlan.substring(0, 100)  }...` : 'EMPTY',
             afterReset: 'EMPTY',
             reason: 'User submitted new message'
           });
@@ -1650,7 +1650,7 @@ export function AgentForgePage() {
                     console.log('🎯 FULL TEXT:', textPart.text);
                   } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
                     console.log('🔍 POTENTIAL EXECUTION PLAN CONTENT WITHOUT MARKERS:');
-                    console.log('🔍 TEXT:', textPart.text.substring(0, 300) + '...');
+                    console.log('🔍 TEXT:', `${textPart.text.substring(0, 300)  }...`);
                     console.log('🔍 This should have ⟦⟧ markers around it!');
                   }
                   
@@ -1754,24 +1754,24 @@ export function AgentForgePage() {
                       
                       // Remove any cached tool notifications from the content
                       let cleanText = removeCachedToolNotifications(textPart.text);
-                      console.log('CONTENT AFTER CACHE CLEANING - original:', textPart.text.substring(0, 100) + '...', 'cleaned:', cleanText.substring(0, 100) + '...');
+                      console.log('CONTENT AFTER CACHE CLEANING - original:', `${textPart.text.substring(0, 100)  }...`, 'cleaned:', `${cleanText.substring(0, 100)  }...`);
                       
                       // 🔧 SIMPLE LOGIC: Route streaming_result based on capture state (existing logic handles markers)
                       if (isCapturingExecutionPlan) {
                         // 🚨 REQUEST ISOLATION: Only accept content for current request
                         if (currentRequestIdRef.current === currentRequestId) {
-                          console.log('✅ CAPTURING FOR EXECUTION PLAN - Request ID matches:', cleanText.substring(0, 100) + '...');
+                          console.log('✅ CAPTURING FOR EXECUTION PLAN - Request ID matches:', `${cleanText.substring(0, 100)  }...`);
                           // We're capturing execution plan - add this content to execution plan
                           setAccumulatedExecutionPlan(prev => {
                             const newContent = prev + cleanText;
-                            console.log('📋 EXECUTION PLAN UPDATED from:', prev.substring(0, 50) + '...', 'to:', newContent.substring(0, 50) + '...');
+                            console.log('📋 EXECUTION PLAN UPDATED from:', `${prev.substring(0, 50)  }...`, 'to:', `${newContent.substring(0, 50)  }...`);
                             return newContent;
                           });
                         } else {
                           console.log('🚫 REJECTING EXECUTION PLAN CAPTURE - Request ID mismatch:', {
                             current: currentRequestIdRef.current,
                             streaming: currentRequestId,
-                            content: cleanText.substring(0, 50) + '...'
+                            content: `${cleanText.substring(0, 50)  }...`
                           });
                         }
                         
@@ -1779,7 +1779,7 @@ export function AgentForgePage() {
                         cleanText = '';
                       } else {
                         // Normal mode - add to main content
-                        console.log('📄 ADDING TO MAIN CONTENT:', cleanText.substring(0, 100) + '...');
+                        console.log('📄 ADDING TO MAIN CONTENT:', `${cleanText.substring(0, 100)  }...`);
                       }
 
                       // Note: accumulatedExecutionPlan will be used directly in the simplified logic below
@@ -1802,7 +1802,7 @@ export function AgentForgePage() {
                           if (/[a-zA-Z0-9]/.test(lastChar) && /[a-zA-Z0-9]/.test(firstChar)) {
                             // Don't add space if the new text already starts with punctuation or whitespace
                             if (!/[\s.,!?;:]/.test(firstChar)) {
-                              accumulatedText += ' ' + cleanText;
+                              accumulatedText += ` ${  cleanText}`;
                             } else {
                               accumulatedText += cleanText;
                             }
