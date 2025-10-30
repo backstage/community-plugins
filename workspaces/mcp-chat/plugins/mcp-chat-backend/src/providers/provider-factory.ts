@@ -19,6 +19,7 @@ import { OpenAIProvider } from './openai-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
+import { LiteLLMProvider } from './litellm-provider';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 export class ProviderFactory {
@@ -36,6 +37,9 @@ export class ProviderFactory {
       case 'ollama':
         return new OllamaProvider(config);
 
+      case 'litellm':
+        return new LiteLLMProvider(config);
+
       default:
         throw new Error(`Unsupported provider: ${config.type}`);
     }
@@ -51,7 +55,7 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const token = providerConfig.getOptionalString('token');
   const model = providerConfig.getString('model');
 
-  const allowedProviders = ['openai', 'claude', 'gemini', 'ollama'];
+  const allowedProviders = ['openai', 'claude', 'gemini', 'ollama', 'litellm'];
   if (!allowedProviders.includes(providerId)) {
     throw new Error(
       `Unsupported provider id: ${providerId}. Allowed values are: ${allowedProviders.join(
@@ -91,6 +95,14 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
         providerConfig.getOptionalString('baseUrl') || 'http://localhost:11434',
       model: model,
     },
+
+    litellm: {
+      type: 'litellm',
+      apiKey: token, // Optional, depends on LiteLLM configuration
+      baseUrl:
+        providerConfig.getOptionalString('baseUrl') || 'http://localhost:4000',
+      model: model,
+    },
   };
 
   const configTemplate = configs[providerId];
@@ -99,7 +111,9 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   }
 
   // Validate required fields
-  if (providerId !== 'ollama' && !configTemplate.apiKey) {
+  // Ollama and LiteLLM can work without API keys depending on configuration
+  const noApiKeyRequired = ['ollama', 'litellm'];
+  if (!noApiKeyRequired.includes(providerId) && !configTemplate.apiKey) {
     throw new Error(`API key is required for provider: ${providerId}`);
   }
   if (!configTemplate.baseUrl) {

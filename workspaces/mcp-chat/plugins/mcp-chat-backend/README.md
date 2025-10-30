@@ -10,7 +10,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 
 ## Features
 
-- 🤖 **Multi-Provider AI Support**: Works with OpenAI, Claude, Gemini, and Ollama
+- 🤖 **Multi-Provider AI Support**: Works with OpenAI, Claude, Gemini, Ollama, and LiteLLM
 - 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, SSE, Streamable HTTP)
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
@@ -20,11 +20,12 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 
 The following AI providers and models have been thoroughly tested:
 
-| Provider   | Model              | Status          | Notes                                                         |
-| ---------- | ------------------ | --------------- | ------------------------------------------------------------- |
-| **OpenAI** | `gpt-4o-mini`      | ✅ Fully Tested | Recommended for production use                                |
-| **Gemini** | `gemini-2.5-flash` | ✅ Fully Tested | Excellent performance with tool calling                       |
-| **Ollama** | `llama3.1:8b`      | ✅ Tested       | Works well, but `llama3.1:30b` recommended for better results |
+| Provider    | Model              | Status          | Notes                                                         |
+| ----------- | ------------------ | --------------- | ------------------------------------------------------------- |
+| **OpenAI**  | `gpt-4o-mini`      | ✅ Fully Tested | Recommended for production use                                |
+| **Gemini**  | `gemini-2.5-flash` | ✅ Fully Tested | Excellent performance with tool calling                       |
+| **Ollama**  | `llama3.1:8b`      | ✅ Tested       | Works well, but `llama3.1:30b` recommended for better results |
+| **LiteLLM** | Various            | ✅ Tested       | Proxy for 100+ LLMs with unified API interface                |
 
 > **Note**: While other providers and models may work, they have not been extensively tested. The plugin supports any provider that implements tool calling functionality, but compatibility is not guaranteed for untested configurations.
 
@@ -142,7 +143,7 @@ Add the following configuration to your `app-config.yaml`:
 ```yaml
 mcpChat:
   # Configure AI providers (currently only the first provider is used)
-  # Supported Providers: OpenAI, Gemini, Claude, and Ollama
+  # Supported Providers: OpenAI, Gemini, Claude, Ollama, and LiteLLM
   providers:
     - id: openai # OpenAI provider
       token: ${OPENAI_API_KEY}
@@ -156,6 +157,10 @@ mcpChat:
     - id: ollama # Ollama provider
       baseUrl: 'http://localhost:11434'
       model: llama3.1:8b # or any model you have locally
+    - id: litellm # LiteLLM proxy provider
+      baseUrl: 'http://localhost:4000' # LiteLLM proxy URL
+      token: ${LITELLM_API_KEY} # Optional, depends on your LiteLLM setup
+      model: gpt-4o-mini # Model name configured in LiteLLM
 
   # Configure MCP servers
   mcpServers:
@@ -243,6 +248,7 @@ Set the following environment variables in your Backstage deployment:
 # AI Provider API Keys
 export OPENAI_API_KEY="sk-..."
 export GEMINI_API_KEY="..."
+export LITELLM_API_KEY="sk-..." # Optional, for LiteLLM proxy authentication
 
 # MCP Server Configuration
 export BRAVE_API_KEY="..."

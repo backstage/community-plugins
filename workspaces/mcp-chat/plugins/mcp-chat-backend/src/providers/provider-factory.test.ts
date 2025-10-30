@@ -24,6 +24,7 @@ import { OpenAIProvider } from './openai-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
+import { LiteLLMProvider } from './litellm-provider';
 import { ProviderConfig } from '../types';
 
 describe('ProviderFactory', () => {
@@ -34,6 +35,7 @@ describe('ProviderFactory', () => {
         { type: 'claude', expectedClass: ClaudeProvider },
         { type: 'gemini', expectedClass: GeminiProvider },
         { type: 'ollama', expectedClass: OllamaProvider },
+        { type: 'litellm', expectedClass: LiteLLMProvider },
       ];
 
       testCases.forEach(({ type, expectedClass }) => {
@@ -93,7 +95,7 @@ describe('getProviderConfig', () => {
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
     expect(() => getProviderConfig(mockConfig)).toThrow(
-      'Unsupported provider id: unsupported. Allowed values are: openai, claude, gemini, ollama',
+      'Unsupported provider id: unsupported. Allowed values are: openai, claude, gemini, ollama, litellm',
     );
   });
 
@@ -197,7 +199,61 @@ describe('getProviderConfig', () => {
     });
   });
 
-  it('should throw error when API key is missing for non-Ollama providers', () => {
+  it('should configure LiteLLM provider with default and custom base URLs', () => {
+    const testCases = [
+      { customBaseUrl: undefined, expectedBaseUrl: 'http://localhost:4000' },
+      {
+        customBaseUrl: 'http://custom:4000',
+        expectedBaseUrl: 'http://custom:4000',
+      },
+    ];
+
+    testCases.forEach(({ customBaseUrl, expectedBaseUrl }) => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'litellm';
+          if (key === 'model') return 'gpt-4o-mini';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'token') return 'test-key';
+          if (key === 'baseUrl') return customBaseUrl;
+          return undefined;
+        }),
+      } as any;
+
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+      expect(result.baseUrl).toBe(expectedBaseUrl);
+      expect(result.type).toBe('litellm');
+      expect(result.apiKey).toBe('test-key');
+    });
+  });
+
+  it('should allow LiteLLM provider without API key', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'litellm';
+        if (key === 'model') return 'gpt-4o-mini';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'token') return undefined;
+        if (key === 'baseUrl') return 'http://localhost:4000';
+        return undefined;
+      }),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderConfig(mockConfig);
+    expect(result.baseUrl).toBe('http://localhost:4000');
+    expect(result.type).toBe('litellm');
+    expect(result.apiKey).toBeUndefined();
+  });
+
+  it('should throw error when API key is missing for non-Ollama/LiteLLM providers', () => {
     const mockProviderConfig = {
       getString: jest.fn().mockImplementation((key: string) => {
         if (key === 'id') return 'openai';
