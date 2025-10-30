@@ -39,6 +39,10 @@ mcpChat:
     - id: ollama
       baseUrl: 'http://localhost:11434'
       model: llama3.1:8b
+    - id: litellm
+      baseUrl: 'http://localhost:4000'
+      token: ${LITELLM_API_KEY}
+      model: gpt-4o-mini
   mcpServers:
     - id: brave-search-server
       name: Brave Search Server
