@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.2.0
+
+### Minor Changes
+
+- 4d353dc: Added LiteLLM provider support for unified access to 100+ LLM providers
+
 ## 0.1.1
 
 ### Patch Changes
