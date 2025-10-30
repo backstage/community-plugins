@@ -6,7 +6,6 @@
     "group:linters",
     "group:test",
     ":preserveSemverRanges",
-    "helpers:pinGitHubActionDigests"
   ],
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["dependencies"],
