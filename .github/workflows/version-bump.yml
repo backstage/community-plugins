@@ -23,14 +23,11 @@ on:
           - 'major'
           - 'minor'
           - 'patch'
-      enable-pr-reuse:
+      enable_pr_reuse:
         description: 'Enable PR reuse and branch renaming (experimental)'
         required: true
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
+        default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -97,7 +94,7 @@ jobs:
           fi
       - name: 'Check for existing version bump PR'
         id: check_existing_pr
-        if: ${{ inputs.enable_pr_reuse == 'true' }}
+        if: ${{ inputs.enable_pr_reuse }}
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         with:
           github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
@@ -210,7 +207,7 @@ jobs:
             const workspace = '${{ matrix.workspace }}';
             const releaseVersion = '${{ steps.set_release_name.outputs.release_version }}';
             const currentVersion = '${{ steps.set_release_name.outputs.current_version }}';
-            const enablePRReuse = '${{ inputs.enable_pr_reuse }}' === 'true';
+            const enablePRReuse = ${{ inputs.enable_pr_reuse }};
             
             let branchName, hasExistingPR;
             if (enablePRReuse) {
