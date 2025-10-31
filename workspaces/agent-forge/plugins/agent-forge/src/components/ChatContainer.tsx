@@ -381,7 +381,9 @@ export const ChatContainer = memo(function ChatContainer({
     };
 
     container.addEventListener('scroll', handleScrollEvent);
-    return () => container.removeEventListener('scroll', handleScrollEvent);
+    return () => {
+      container.removeEventListener('scroll', handleScrollEvent);
+    };
   }, [onScroll]);
 
   // Reset loading flag when messages change significantly (e.g., new session)
@@ -489,15 +491,18 @@ export const ChatContainer = memo(function ChatContainer({
         {showLoadMoreButton && !autoScrollEnabled && (
           <div className={classes.loadingIndicator}>
             <Tooltip
-              title={
-                isTyping 
-                  ? "🔒 Button disabled: Please wait for the current message to complete before loading more" 
-                  : isManualLoading 
-                    ? "⏳ Button disabled: Currently loading earlier messages..."
-                    : !hasMoreMessages
-                      ? "✅ No more messages: All conversation history has been loaded"
-                      : `📜 Click to load the next ${loadMoreIncrement} earlier messages`
-              }
+              title={(() => {
+                if (isTyping) {
+                  return "🔒 Button disabled: Please wait for the current message to complete before loading more";
+                }
+                if (isManualLoading) {
+                  return "⏳ Button disabled: Currently loading earlier messages...";
+                }
+                if (!hasMoreMessages) {
+                  return "✅ No more messages: All conversation history has been loaded";
+                }
+                return `📜 Click to load the next ${loadMoreIncrement} earlier messages`;
+              })()}
               placement="top"
               arrow
             >
@@ -508,17 +513,23 @@ export const ChatContainer = memo(function ChatContainer({
                   size="small"
                   disabled={isTyping || isManualLoading || !hasMoreMessages}
                   style={{
-                    backgroundColor: 
-                      isTyping || isManualLoading ? '#bdbdbd' : 
-                      !hasMoreMessages ? '#757575' : '#2196f3',
-                    color: 
-                      isTyping || isManualLoading ? '#757575' : 
-                      !hasMoreMessages ? '#ffffff' : 'white',
+                    backgroundColor: (() => {
+                      if (isTyping || isManualLoading) return '#bdbdbd';
+                      if (!hasMoreMessages) return '#757575';
+                      return '#2196f3';
+                    })(),
+                    color: (() => {
+                      if (isTyping || isManualLoading) return '#757575';
+                      if (!hasMoreMessages) return '#ffffff';
+                      return 'white';
+                    })(),
                     fontSize: '12px',
                     padding: '4px 12px',
-                    cursor: 
-                      isTyping || isManualLoading ? 'not-allowed' : 
-                      !hasMoreMessages ? 'default' : 'pointer',
+                    cursor: (() => {
+                      if (isTyping || isManualLoading) return 'not-allowed';
+                      if (!hasMoreMessages) return 'default';
+                      return 'pointer';
+                    })(),
                     opacity: isTyping || isManualLoading ? 0.6 : 1,
                   }}
                 >

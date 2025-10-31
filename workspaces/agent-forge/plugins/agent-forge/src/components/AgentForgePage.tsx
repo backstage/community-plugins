@@ -1813,7 +1813,7 @@ export function AgentForgePage() {
                   if (textPart.text.includes('⟦') || textPart.text.includes('⟧')) {
                     console.log('🎯 EXECUTION PLAN MARKERS DETECTED IN STREAMING CONTENT!');
                     console.log('🎯 FULL TEXT:', textPart.text);
-                  } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
+                  } else if (textPart.text.toLocaleLowerCase('en-US').includes('task:') || textPart.text.toLocaleLowerCase('en-US').includes('approach:')) {
                     console.log('🔍 POTENTIAL EXECUTION PLAN CONTENT WITHOUT MARKERS:');
                     console.log('🔍 TEXT:', `${textPart.text.substring(0, 300)  }...`);
                     console.log('🔍 This should have ⟦⟧ markers around it!');
