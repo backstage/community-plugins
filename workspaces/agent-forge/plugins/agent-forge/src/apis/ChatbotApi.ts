@@ -57,7 +57,7 @@ export class ChatbotApi {
   ) {
     try {
       const msgId = uuidv4();
-      const { token } = await this.identityApi.getCredentials();
+      const { token } = await this.identityApi.getIdToken();
 
       const sendParams: MessageSendParams = {
         message: {
