@@ -2521,7 +2521,7 @@ __metadata:
     "@types/supertest": "npm:^2.0.12"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
-    ollama: "npm:^0.5.16"
+    ollama: "npm:^0.6.0"
     supertest: "npm:^6.2.4"
   languageName: unknown
   linkType: soft
@@ -20205,12 +20205,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ollama@npm:^0.5.16":
-  version: 0.5.16
-  resolution: "ollama@npm:0.5.16"
+"ollama@npm:^0.6.0":
+  version: 0.6.2
+  resolution: "ollama@npm:0.6.2"
   dependencies:
     whatwg-fetch: "npm:^3.6.20"
-  checksum: 10/40650813d7cc41058c25c9cb08374078b69f449e84c25dfa4b08176138db93af2f0546eb52431b538a055af30c84908330a8a5ac554595be3022e7f1fdac4a49
+  checksum: 10/3f08a8e9423eb20553d28e50474cb7934e9ab0740c4aabd79e9406f6415f2e072beae5e6a3aa12231e1803e63308afc0b97567f103e04c49bf41ac07eaf10c23
   languageName: node
   linkType: hard
 
