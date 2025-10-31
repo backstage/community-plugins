@@ -1,6 +1,6 @@
 app:
   title: Agent Forge
-  baseUrl: http://localhost:3000
+  baseUrl: http://0.0.0.0:3000
 
 organization:
   name: Acme
@@ -51,4 +51,5 @@ agentForge:
 backend:
   baseUrl: http://localhost:7007
   listen:
+    host: 0.0.0.0
     port: 7007
