@@ -59,10 +59,19 @@ export const registerCommands = (program: Command) => {
     .option('--force', 'Overwrite existing workspace', false)
     .action(lazy(() => import('./plugin/migrate'), 'default'));
 
-  program
+  const workspaceCommand = program
     .command('workspace')
+    .description('Tools for managing workspaces.');
+
+  workspaceCommand
     .command('create')
     .action(lazy(() => import('./workspace/create'), 'default'));
+
+  workspaceCommand
+    .command('list')
+    .description('List all available workspaces')
+    .option('--json', 'Output as JSON')
+    .action(lazy(() => import('./workspace/list-workspaces'), 'default'));
 
   const lintCommand = program
     .command('lint [command]')

@@ -19,7 +19,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import semver from 'semver';
-import { listWorkspaces } from './list-workspaces.js';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +37,10 @@ async function getLatestBackstageVersion() {
 
 // get all workspace versions
 async function getWorkspaceVersions() {
-  const workspaceNames = await listWorkspaces();
+  // Get workspaces using community-cli
+  const workspaceNames = JSON.parse(
+    execSync('npx community-cli workspace list --json').toString(),
+  );
   const workspacesDir = path.join(__dirname, '..', 'workspaces');
   const workspaces = [];
 
@@ -140,9 +143,21 @@ function generateDashboard(workspaces, tiers, latestVersion) {
   }
   const totalUpToDate = workspaces.length - totalOutdated;
 
-  output += generateTierSummary(tiers.tier1.length, '🔴', '≥ 3 minor versions behind');
-  output += generateTierSummary(tiers.tier2.length, '🟠', '2 minor versions behind');
-  output += generateTierSummary(tiers.tier3.length, '🟡', '1 minor version behind');
+  output += generateTierSummary(
+    tiers.tier1.length,
+    '🔴',
+    '≥ 3 minor versions behind',
+  );
+  output += generateTierSummary(
+    tiers.tier2.length,
+    '🟠',
+    '2 minor versions behind',
+  );
+  output += generateTierSummary(
+    tiers.tier3.length,
+    '🟡',
+    '1 minor version behind',
+  );
   output += generateTierSummary(totalUpToDate, '🟢', 'up to date');
   output += '\n';
 
