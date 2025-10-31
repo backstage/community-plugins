@@ -15,6 +15,40 @@
  */
 
 /**
+ * Metadata field definition for input forms
+ * @public
+ */
+export interface MetadataField {
+  name: string;
+  label?: string;
+  type?: 'text' | 'number' | 'email' | 'password' | 'textarea' | 'select' | 'boolean';
+  required?: boolean;
+  description?: string;
+  placeholder?: string;
+  defaultValue?: any;
+  options?: Array<{ value: string; label: string }>;
+  validation?: {
+    min?: number;
+    max?: number;
+    pattern?: string;
+    minLength?: number;
+    maxLength?: number;
+  };
+}
+
+/**
+ * Metadata request for user input
+ * @public
+ */
+export interface MetadataRequest {
+  requestId?: string;
+  title?: string;
+  description?: string;
+  fields: MetadataField[];
+  artifactName?: string;
+}
+
+/**
  * Message interface for chat messages
  * @public
  */
@@ -29,4 +63,6 @@ export interface Message {
   isUser: boolean;
   timestamp?: string;
   isStreaming?: boolean; // Add streaming state support
+  metadataRequest?: MetadataRequest; // CopilotKit-style metadata input request
+  metadataResponse?: Record<string, any>; // User's response to metadata request
 }

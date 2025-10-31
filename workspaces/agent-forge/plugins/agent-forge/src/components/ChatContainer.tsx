@@ -210,6 +210,7 @@ export interface ChatContainerProps {
   onMessageSubmit: (messageText?: string) => void;
   onReset: () => void;
   onSuggestionClick: (suggestion: string) => void;
+  onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
   
   // Scroll-based message loading
   onScroll?: (scrollTop: number, scrollHeight: number, clientHeight: number) => void;
@@ -241,6 +242,7 @@ const MessagesList = memo(function MessagesList({
   executionPlanBuffer,
   autoExpandExecutionPlans,
   executionPlanLoading,
+  onMetadataSubmit,
 }: {
   messages: Message[];
   botName: string;
@@ -254,6 +256,7 @@ const MessagesList = memo(function MessagesList({
   executionPlanBuffer?: Record<string, string>;
   autoExpandExecutionPlans?: Set<string>;
   executionPlanLoading?: Set<string>;
+  onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
 }) {
   // Memoize font sizes to prevent re-creating object on every render
   const memoizedFontSizes = useMemo(() => ({
@@ -276,6 +279,7 @@ const MessagesList = memo(function MessagesList({
                  autoExpandExecutionPlans={autoExpandExecutionPlans}
                  executionPlanLoading={executionPlanLoading}
                  isLastMessage={index === messages.length - 1}
+                 onMetadataSubmit={onMetadataSubmit}
                />
              </div>
            ))}
@@ -316,6 +320,7 @@ export const ChatContainer = memo(function ChatContainer({
   onMessageSubmit,
   onReset,
   onSuggestionClick,
+  onMetadataSubmit,
   onScroll,
   onLoadMore,
   hasMoreMessages = false,
@@ -539,6 +544,7 @@ export const ChatContainer = memo(function ChatContainer({
           executionPlanBuffer={executionPlanBuffer}
           autoExpandExecutionPlans={autoExpandExecutionPlans}
           executionPlanLoading={executionPlanLoading}
+          onMetadataSubmit={onMetadataSubmit}
         />
 
         {isTyping && (

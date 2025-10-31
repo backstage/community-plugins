@@ -418,9 +418,10 @@ export function AgentForgePage() {
     for (const notification of toolNotificationsCache.current) {
       const beforeRemoval = cleanText;
       
-      // Remove the exact notification text (with optional newlines)
+      // Remove the exact notification text
       const escapedNotification = notification.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(`\\s*${escapedNotification}\\s*`, 'g');
+      // Remove notification but keep surrounding whitespace intact
+      const regex = new RegExp(escapedNotification, 'g');
       cleanText = cleanText.replace(regex, '');
       
       // 🚨 DEBUGGING: Check if we removed execution plan markers
@@ -432,8 +433,11 @@ export function AgentForgePage() {
       }
     }
     
-    // Clean up any extra whitespace/newlines at the beginning
-    cleanText = cleanText.replace(/^\s+/, '');
+    // Clean up extra whitespace MORE CAREFULLY
+    // Only collapse runs of 2+ spaces, preserve single spaces between words
+    cleanText = cleanText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs
+    cleanText = cleanText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
+    cleanText = cleanText.trim();
     
     console.log('CLEANED TEXT - original length:', originalText.length, 'cleaned length:', cleanText.length);
     
@@ -1320,6 +1324,155 @@ export function AgentForgePage() {
   );
 
 
+  // Helper function to parse JSON response and extract metadata fields
+  const parseJsonResponseForMetadata = (text: string): { 
+    content: string; 
+    metadataRequest?: any; 
+    hasMetadata: boolean 
+  } => {
+    if (!text || text.trim().length === 0) {
+      return { content: text, hasMetadata: false };
+    }
+
+    try {
+      // Try to parse as JSON
+      const jsonResponse = JSON.parse(text);
+      
+      // Check if it requires user input
+      const requiresInput = jsonResponse.require_user_input === true || 
+                           jsonResponse.metadata?.user_input === true;
+      
+      if (requiresInput && jsonResponse.metadata?.input_fields) {
+        console.log('🎨 JSON METADATA DETECTED:', jsonResponse.metadata.input_fields);
+        
+        // Convert input_fields to MetadataField format
+        // Support both formats: {field_name, field_description} and {name, description}
+        const metadataFields = jsonResponse.metadata.input_fields.map((field: any) => {
+          // Determine field name (support both formats)
+          const fieldName = field.name || field.field_name;
+          const fieldDescription = field.description || field.field_description;
+          const fieldType = field.type || (field.field_values ? 'select' : 'text');
+          const fieldRequired = field.required !== undefined 
+            ? field.required 
+            : !fieldDescription?.toLowerCase().includes('optional');
+          
+          return {
+            name: fieldName,
+            label: fieldName.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            type: fieldType,
+            required: fieldRequired,
+            description: fieldDescription,
+            placeholder: fieldDescription,
+            defaultValue: field.defaultValue || field.field_values?.[0],
+            options: field.options || field.field_values?.map((v: string) => ({ value: v, label: v })),
+          };
+        });
+        
+        return {
+          content: jsonResponse.content || text,
+          hasMetadata: true,
+          metadataRequest: {
+            requestId: `json-metadata-${Date.now()}`,
+            title: 'Input Required',
+            description: jsonResponse.content,
+            fields: metadataFields,
+          },
+        };
+      }
+      
+      // Check if this is a completion response with status
+      if (jsonResponse.status === 'completed' && jsonResponse.message) {
+        console.log('✅ Completion response detected, using clean message');
+        return { content: jsonResponse.message, hasMetadata: false };
+      }
+      
+      // JSON but no metadata - return the content field or message if available
+      if (jsonResponse.content) {
+        return { content: jsonResponse.content, hasMetadata: false };
+      }
+      if (jsonResponse.message) {
+        return { content: jsonResponse.message, hasMetadata: false };
+      }
+      
+      // Fallback to original text
+      return { content: text, hasMetadata: false };
+    } catch (e) {
+      // Not pure JSON - might be text with embedded JSON
+      console.log('🧹 Cleaning text with potential embedded JSON');
+      
+      // Strategy 1: Remove JSON objects embedded in the text
+      // Matches patterns like: text{"status":"completed","message":"..."}text
+      let cleanedText = text.replace(/\{"status"\s*:\s*"[^"]+"\s*,\s*"message"\s*:\s*"[^"]+"\}/g, '');
+      
+      // Strategy 2: Remove duplicate content blocks (text appears multiple times)
+      // This handles cases where entire responses are duplicated with slight variations
+      
+      // First, try to detect large-scale duplication by looking for repeated paragraphs
+      const paragraphs = cleanedText.split(/\n\n+/);
+      const seenParagraphs = new Map<string, string>(); // normalized -> original
+      const uniqueParagraphs: string[] = [];
+      
+      for (const para of paragraphs) {
+        if (para.trim().length === 0) continue;
+        
+        // Normalize: remove extra spaces, lowercase, remove special chars for comparison
+        const normalized = para.trim().toLowerCase()
+          .replace(/\s+/g, ' ')  // Collapse spaces
+          .replace(/['"]/g, '')   // Remove quotes
+          .replace(/\s/g, '');    // Remove all spaces for fuzzy matching
+        
+        // Check if we've already seen this content (exact match after normalization)
+        if (!seenParagraphs.has(normalized)) {
+          seenParagraphs.set(normalized, para);
+          uniqueParagraphs.push(para.trim());
+        }
+      }
+      
+      // Rejoin unique paragraphs
+      if (uniqueParagraphs.length > 0) {
+        cleanedText = uniqueParagraphs.join('\n\n');
+      }
+      
+      // Strategy 3: Remove duplicate sentences within the remaining text
+      const sentences = cleanedText.split(/\.\s+/).filter(s => s.trim().length > 0);
+      const uniqueSentences = new Set<string>();
+      const deduplicatedSentences: string[] = [];
+      
+      for (const sentence of sentences) {
+        const normalized = sentence.trim().toLowerCase()
+          .replace(/['"]/g, '')
+          .replace(/\s+/g, ' ');
+        
+        if (!uniqueSentences.has(normalized)) {
+          uniqueSentences.add(normalized);
+          deduplicatedSentences.push(sentence.trim());
+        }
+      }
+      
+      // Rejoin sentences
+      if (deduplicatedSentences.length > 0) {
+        cleanedText = deduplicatedSentences.join('. ');
+        // Add final period if original text had one
+        if (text.trim().endsWith('.')) {
+          cleanedText += '.';
+        }
+      }
+      
+      // Final cleanup: trim extra whitespace but preserve paragraph breaks
+      cleanedText = cleanedText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs  
+      cleanedText = cleanedText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
+      cleanedText = cleanedText.trim();
+      
+      console.log('🧹 Cleaned text:', {
+        original: text.substring(0, 100),
+        cleaned: cleanedText.substring(0, 100),
+        removed: text.length - cleanedText.length
+      });
+      
+      return { content: cleanedText || text, hasMetadata: false };
+    }
+  };
+
   const finishStreamingMessage = useCallback(() => {
     // Mark the streaming message as not streaming to trigger execution plan auto-collapse
     if (currentSessionId) {
@@ -1332,6 +1485,18 @@ export function AgentForgePage() {
             const streamingMessage = allStreamingMessages[allStreamingMessages.length - 1];
             if (streamingMessage && !streamingMessage.isUser) {
               streamingMessage.isStreaming = false;
+              
+              // 🎯 PARSE JSON RESPONSE FOR METADATA FIELDS AND CLEAN DUPLICATES
+              const messageText = streamingMessage.text || '';
+              const { content, metadataRequest, hasMetadata } = parseJsonResponseForMetadata(messageText);
+              
+              // Update message with cleaned content (removes duplicate JSON, etc.)
+              streamingMessage.text = content;
+              
+              if (hasMetadata && metadataRequest) {
+                console.log('✨ Converting JSON response to metadata form:', metadataRequest);
+                streamingMessage.metadataRequest = metadataRequest;
+              }
               if (process.env.NODE_ENV === 'development') {
                 console.log('🏁 FINISHED STREAMING MESSAGE:', {
                   messageId: streamingMessage.messageId,
@@ -1654,6 +1819,44 @@ export function AgentForgePage() {
                     console.log('🔍 This should have ⟦⟧ markers around it!');
                   }
                   
+                  // 🎯 COPILOTKIT-STYLE METADATA INPUT: Check for metadata in artifacts
+                  if (event.artifact?.metadata && Object.keys(event.artifact.metadata).length > 0) {
+                    console.log('🎨 METADATA DETECTED IN ARTIFACT:', {
+                      artifactName: event.artifact.name,
+                      metadata: event.artifact.metadata,
+                    });
+                    
+                    // Create a metadata request message for user input
+                    const metadataFields = Object.entries(event.artifact.metadata).map(([key, value]: [string, any]) => ({
+                      name: key,
+                      label: value?.label || key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+                      type: value?.type || 'text',
+                      required: value?.required !== false,
+                      description: value?.description,
+                      placeholder: value?.placeholder,
+                      defaultValue: value?.defaultValue,
+                      options: value?.options,
+                      validation: value?.validation,
+                    }));
+                    
+                    // Add a bot message with metadata request
+                    addMessageToSession({
+                      text: textPart.text || 'Please provide the following information:',
+                      isUser: false,
+                      timestamp: new Date().toLocaleTimeString(),
+                      metadataRequest: {
+                        requestId: `metadata-${Date.now()}`,
+                        title: event.artifact.metadata.title || 'Input Required',
+                        description: event.artifact.metadata.description,
+                        fields: metadataFields,
+                        artifactName: event.artifact.name,
+                      },
+                    });
+                    
+                    console.log('📝 Metadata request message added to session');
+                    continue; // Skip normal text processing for metadata artifacts
+                  }
+                  
                   // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content for accumulation
                   if (event.artifact?.name === 'execution_plan_streaming') {
                     // This artifact accumulates chunks for fallback
@@ -1790,28 +1993,10 @@ export function AgentForgePage() {
                         console.log('STARTING FRESH - clearing previous text');
                         accumulatedText = cleanText;
                       } else {
-                        // Append to existing text with smart spacing
-                        console.log('APPENDING to existing text');
-                        
-                        // Add spacing logic to prevent words from running together
-                        if (accumulatedText && cleanText) {
-                          const lastChar = accumulatedText.slice(-1);
-                          const firstChar = cleanText.slice(0, 1);
-                          
-                          // Add space if both are alphanumeric and no space exists
-                          if (/[a-zA-Z0-9]/.test(lastChar) && /[a-zA-Z0-9]/.test(firstChar)) {
-                            // Don't add space if the new text already starts with punctuation or whitespace
-                            if (!/[\s.,!?;:]/.test(firstChar)) {
-                              accumulatedText += ` ${  cleanText}`;
-                            } else {
-                              accumulatedText += cleanText;
-                            }
-                          } else {
-                            accumulatedText += cleanText;
-                          }
-                        } else {
-                          accumulatedText += cleanText;
-                        }
+                        // Append to existing text - direct concatenation
+                        // The server sends properly chunked text, just concatenate without adding spaces
+                        console.log('APPENDING to existing text (direct concat)');
+                        accumulatedText += cleanText;
                       }
 
                       // 🚀 SIMPLIFIED: Just pass execution plan directly to message
@@ -2117,17 +2302,28 @@ export function AgentForgePage() {
 
         // Add message normally if not streaming - include execution plan if present
         if (resultText || executionPlanText) {
-          const newMessage = {
+          // 🎯 Parse JSON response for metadata fields (non-streaming)
+          const { content, metadataRequest, hasMetadata } = parseJsonResponseForMetadata(resultText);
+          
+          const newMessage: any = {
             messageId: uuidv4(),
-            text: (resultText || '').replace(/⟦|⟧/g, ''),
+            text: hasMetadata ? content : (resultText || '').replace(/⟦|⟧/g, ''),
             isUser: false,
             timestamp: createTimestamp(),
             executionPlan: (executionPlanText || '').replace(/⟦|⟧/g, ''), // Use empty string instead of undefined
             isStreaming: false, // Mark as completed for auto-collapse
           };
+          
+          // Add metadata request if detected
+          if (hasMetadata && metadataRequest) {
+            console.log('✨ JSON metadata detected in non-streaming response:', metadataRequest);
+            newMessage.metadataRequest = metadataRequest;
+          }
+          
           console.log('📝 NON-STREAMING MESSAGE CREATED:', {
             textLength: newMessage.text.length,
             executionPlanLength: newMessage.executionPlan?.length || 0,
+            hasMetadata,
             timestamp: newMessage.timestamp
           });
 
@@ -2220,6 +2416,56 @@ export function AgentForgePage() {
   const handleSuggestionClick = (suggestion: string) => {
     handleMessageSubmit(suggestion);
   };
+
+  // Handle metadata form submission from CopilotKit-style input forms
+  const handleMetadataSubmit = useCallback(
+    async (messageId: string, data: Record<string, any>) => {
+      console.log('📝 Metadata form submitted:', { messageId, data });
+      
+      // Update the message with the metadata response
+      setSessions(prev =>
+        prev.map(session => {
+          if (session.contextId === currentSessionId) {
+            return {
+              ...session,
+              messages: session.messages.map(msg => {
+                if (msg.messageId === messageId) {
+                  return {
+                    ...msg,
+                    metadataResponse: data,
+                  };
+                }
+                return msg;
+              }),
+              updatedAt: new Date(),
+            };
+          }
+          return session;
+        }),
+      );
+
+      // Format the metadata as a readable markdown table
+      const formattedData = Object.entries(data)
+        .map(([key, value]) => {
+          const label = key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+          return `**${label}**: ${value}`;
+        })
+        .join('\n\n');
+      
+      const metadataMessage = `### Submitted Information\n\n${formattedData}`;
+      
+      // Add user message showing what was submitted
+      addMessageToSession({
+        text: metadataMessage,
+        isUser: true,
+        timestamp: new Date().toLocaleTimeString(),
+      });
+
+      // Send the metadata back to the agent as JSON
+      await handleMessageSubmit(JSON.stringify(data));
+    },
+    [currentSessionId, handleMessageSubmit, addMessageToSession],
+  );
 
   const resetChat = () => {
     console.log('🔄 Reset chat triggered');
@@ -2403,6 +2649,7 @@ export function AgentForgePage() {
                 inputPlaceholder={inputPlaceholder}
                 currentOperation={currentOperation}
                 isInOperationalMode={isInOperationalMode}
+                onMetadataSubmit={handleMetadataSubmit}
                 fontSizes={{
                   messageText: fontSizes.messageText,
                   codeBlock: fontSizes.codeBlock,

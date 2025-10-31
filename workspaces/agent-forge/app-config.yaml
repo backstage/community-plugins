@@ -6,7 +6,7 @@ organization:
   name: Acme
 
 agentForge:
-  baseUrl: http://10.99.255.178:8000
+  baseUrl: http://localhost:8000
   # baseUrl: https://caipe.dev.outshift.io
   botName: CAIPE
   infoPage: https://cnoe-io.github.io/ai-platform-engineering/

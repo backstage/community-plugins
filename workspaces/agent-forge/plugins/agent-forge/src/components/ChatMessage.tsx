@@ -49,6 +49,7 @@ import {
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@material-ui/core/styles';
 import { memo, useState, useEffect, useRef, useCallback } from 'react';
+import { MetadataInputForm } from './MetadataInputForm';
 
 const useStyles = makeStyles(theme => ({
   messageBox: {
@@ -198,6 +199,7 @@ export interface ChatMessageProps {
   autoExpandExecutionPlans?: Set<string>;
   executionPlanLoading?: Set<string>;
   isLastMessage?: boolean;
+  onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
 }
 
 /**
@@ -213,6 +215,7 @@ export const ChatMessage = memo(function ChatMessage({
   executionPlanBuffer,
   autoExpandExecutionPlans,
   isLastMessage,
+  onMetadataSubmit,
 }: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
@@ -1107,6 +1110,23 @@ export const ChatMessage = memo(function ChatMessage({
           {toastMessage}
         </Alert>
       </Snackbar>
+
+      {/* Metadata Input Form - CopilotKit-style */}
+      {message.metadataRequest && !message.metadataResponse && (
+        <Box mt={1}>
+          <MetadataInputForm
+            title={message.metadataRequest.title}
+            description={message.metadataRequest.description}
+            fields={message.metadataRequest.fields}
+            onSubmit={(data) => {
+              if (onMetadataSubmit && message.messageId) {
+                onMetadataSubmit(message.messageId, data);
+              }
+            }}
+            isSubmitting={false}
+          />
+        </Box>
+      )}
     </Box>
   );
 });
