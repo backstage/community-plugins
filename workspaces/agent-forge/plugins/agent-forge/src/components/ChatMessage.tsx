@@ -48,7 +48,7 @@ import {
   vs,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@material-ui/core/styles';
-import { memo, useState, useEffect, useRef, useCallback } from 'react';
+import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { MetadataInputForm } from './MetadataInputForm';
 
 const useStyles = makeStyles(theme => ({
@@ -265,8 +265,8 @@ export const ChatMessage = memo(function ChatMessage({
   const [isToastOpen, setIsToastOpen] = useState(false);
 
   // Function to show toast notification
-  const showToast = useCallback((message: string) => {
-    setToastMessage(message);
+  const showToast = useCallback((toastMsg: string) => {
+    setToastMessage(toastMsg);
     setIsToastOpen(true);
   }, []);
 
@@ -473,7 +473,7 @@ export const ChatMessage = memo(function ChatMessage({
             }}
           >
             {!profile?.picture &&
-              (profile?.displayName?.[0]?.toUpperCase() || 'U')}
+              (profile?.displayName?.[0]?.toLocaleUpperCase('en-US') || 'U')}
           </Box>
           <Typography
             variant="caption"
@@ -580,7 +580,7 @@ export const ChatMessage = memo(function ChatMessage({
               color: '#ffffff',
             }}
           >
-            {botName[0]?.toUpperCase()}
+            {botName[0]?.toLocaleUpperCase('en-US')}
           </Box>
         )}
         {botName && (

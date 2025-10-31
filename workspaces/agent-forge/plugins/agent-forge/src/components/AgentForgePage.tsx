@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Content, Page } from '@backstage/core-components';
 import {
   configApiRef,
@@ -1354,11 +1354,11 @@ export function AgentForgePage() {
           const fieldType = field.type || (field.field_values ? 'select' : 'text');
           const fieldRequired = field.required !== undefined 
             ? field.required 
-            : !fieldDescription?.toLowerCase().includes('optional');
+            : !fieldDescription?.toLocaleLowerCase('en-US').includes('optional');
           
           return {
             name: fieldName,
-            label: fieldName.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            label: fieldName.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toLocaleUpperCase('en-US')),
             type: fieldType,
             required: fieldRequired,
             description: fieldDescription,
@@ -1416,7 +1416,7 @@ export function AgentForgePage() {
         if (para.trim().length === 0) continue;
         
         // Normalize: remove extra spaces, lowercase, remove special chars for comparison
-        const normalized = para.trim().toLowerCase()
+        const normalized = para.trim().toLocaleLowerCase('en-US')
           .replace(/\s+/g, ' ')  // Collapse spaces
           .replace(/['"]/g, '')   // Remove quotes
           .replace(/\s/g, '');    // Remove all spaces for fuzzy matching
@@ -1439,7 +1439,7 @@ export function AgentForgePage() {
       const deduplicatedSentences: string[] = [];
       
       for (const sentence of sentences) {
-        const normalized = sentence.trim().toLowerCase()
+        const normalized = sentence.trim().toLocaleLowerCase('en-US')
           .replace(/['"]/g, '')
           .replace(/\s+/g, ' ');
         
@@ -1519,9 +1519,9 @@ export function AgentForgePage() {
                   const cleanExecutionPlan = currentPlan.replace(/⟦|⟧/g, '');
                   
                   // Store in buffer
-                  setExecutionPlanBuffer(prev => {
+                  setExecutionPlanBuffer(prevBuffer => {
                     const newBuffer = {
-                      ...prev,
+                      ...prevBuffer,
                       [messageKey]: cleanExecutionPlan
                     };
                     console.log('✅ EXECUTION PLAN STORED IN BUFFER:', {
@@ -1533,8 +1533,8 @@ export function AgentForgePage() {
                   });
                   
                   // Mark for auto-expansion
-                  setAutoExpandExecutionPlans(prev => {
-                    const newSet = new Set(prev);
+                  setAutoExpandExecutionPlans(prevSet => {
+                    const newSet = new Set(prevSet);
                     newSet.add(messageKey);
                     return newSet;
                   });
@@ -1736,9 +1736,9 @@ export function AgentForgePage() {
                 inputText,
                 workingSession?.contextId,
               );
-            } catch (apiError) {
-              console.error('🚫 A2A Client error during stream initialization:', apiError);
-              throw apiError; // Re-throw to be caught by outer streaming catch block
+            } catch (streamError) {
+              console.error('🚫 A2A Client error during stream initialization:', streamError);
+              throw streamError; // Re-throw to be caught by outer streaming catch block
             }
             
             for await (const event of streamIterator) {
@@ -1780,7 +1780,7 @@ export function AgentForgePage() {
                 // 🚨 DEBUGGING: Check if agent message contains execution plan content
                 if (textPart.text.includes('⟦') || textPart.text.includes('⟧')) {
                   console.log('🎯 EXECUTION PLAN MARKERS IN AGENT MESSAGE!');
-                } else if (textPart.text.toLowerCase().includes('task:') || textPart.text.toLowerCase().includes('approach:')) {
+                } else if (textPart.text.toLocaleLowerCase('en-US').includes('task:') || textPart.text.toLocaleLowerCase('en-US').includes('approach:')) {
                   console.log('🔍 POTENTIAL EXECUTION PLAN IN AGENT MESSAGE WITHOUT MARKERS:');
                   console.log('🔍 TEXT:', textPart.text);
                 }
@@ -1829,7 +1829,7 @@ export function AgentForgePage() {
                     // Create a metadata request message for user input
                     const metadataFields = Object.entries(event.artifact.metadata).map(([key, value]: [string, any]) => ({
                       name: key,
-                      label: value?.label || key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+                      label: value?.label || key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toLocaleUpperCase('en-US')),
                       type: value?.type || 'text',
                       required: value?.required !== false,
                       description: value?.description,
@@ -2158,9 +2158,9 @@ export function AgentForgePage() {
             inputText,
             workingSession?.contextId,
           );
-        } catch (apiError) {
-          console.error('🚫 A2A Client error during non-streaming task submission:', apiError);
-          throw apiError; // Re-throw to be caught by main catch block
+        } catch (taskError) {
+          console.error('🚫 A2A Client error during non-streaming task submission:', taskError);
+          throw taskError; // Re-throw to be caught by main catch block
         }
 
         // Update session with contextId for continuity
@@ -2362,11 +2362,14 @@ export function AgentForgePage() {
 
         // Check if it's a timeout error and display it directly without additional prefix
         const isTimeoutError = err.message.includes('timed out');
-        const errorMessage = isTimeoutError
-          ? `⏱️ ${err.message}`
-          : isA2AConnectionError
-            ? `🚫 **${botName} Multi-Agent System Disconnected**\n\nConnection failed: Unable to reach the agent service. Retrying automatically...`
-            : `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`;
+        let errorMessage: string;
+        if (isTimeoutError) {
+          errorMessage = `⏱️ ${err.message}`;
+        } else if (isA2AConnectionError) {
+          errorMessage = `🚫 **${botName} Multi-Agent System Disconnected**\n\nConnection failed: Unable to reach the agent service. Retrying automatically...`;
+        } else {
+          errorMessage = `🚫 **${botName} Multi-Agent System Disconnected**\n\nError: ${err.message}`;
+        }
 
         setSessions(prev =>
           prev.map(session => {
@@ -2447,7 +2450,7 @@ export function AgentForgePage() {
       // Format the metadata as a readable markdown table
       const formattedData = Object.entries(data)
         .map(([key, value]) => {
-          const label = key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+          const label = key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toLocaleUpperCase('en-US'));
           return `**${label}**: ${value}`;
         })
         .join('\n\n');
