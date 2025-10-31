@@ -19,11 +19,14 @@ import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
 import { MCPClientService } from './services/MCPClientService';
+import { ChatConversationStore } from './services/ChatConversationStore';
 import { MCPServerType } from './types';
 
 describe('createRouter', () => {
   let app: express.Express;
   let mcpClientService: jest.Mocked<MCPClientService>;
+  let conversationStore: jest.Mocked<ChatConversationStore>;
+  let httpAuth: any;
 
   beforeEach(async () => {
     mcpClientService = {
@@ -34,9 +37,27 @@ describe('createRouter', () => {
       getMCPServerStatus: jest.fn(),
     };
 
+    conversationStore = {
+      saveConversation: jest.fn(),
+      getConversations: jest.fn(),
+      getConversationById: jest.fn(),
+      deleteAllConversations: jest.fn(),
+    } as any;
+
+    // Mock httpAuth service
+    httpAuth = {
+      credentials: jest.fn().mockResolvedValue({
+        principal: {
+          userEntityRef: 'user:default/testuser',
+        },
+      }),
+    };
+
     const router = await createRouter({
       logger: mockServices.logger.mock(),
       mcpClientService,
+      conversationStore,
+      httpAuth,
     });
 
     app = express();
@@ -180,7 +201,6 @@ describe('createRouter', () => {
       expect(response.body).toEqual({
         availableTools: mockTools,
         toolCount: 2,
-        timestamp: expect.any(String),
       });
       expect(mcpClientService.getAvailableTools).toHaveBeenCalledTimes(1);
     });
@@ -194,14 +214,13 @@ describe('createRouter', () => {
       expect(response.body).toEqual({
         availableTools: [],
         toolCount: 0,
-        timestamp: expect.any(String),
       });
     });
   });
 
   describe('POST /chat', () => {
     const validMessages = [
-      { role: 'user', content: 'Hello, what can you help me with?' },
+      { role: 'user' as const, content: 'Hello, what can you help me with?' },
     ];
 
     it('should process chat request without tools', async () => {
@@ -268,7 +287,7 @@ describe('createRouter', () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'At least one message is required',
+        error: 'Messages array is required',
       });
     });
 
@@ -279,7 +298,7 @@ describe('createRouter', () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'Messages field is required',
+        error: 'Messages array is required',
       });
     });
 
@@ -405,6 +424,195 @@ describe('createRouter', () => {
         validMessages,
         undefined,
       );
+    });
+
+    it('should save conversation to database after successful chat', async () => {
+      const mockResponse = {
+        reply: 'Hello! I can help you with various tasks.',
+        toolCalls: [],
+        toolResponses: [],
+      };
+
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+      conversationStore.saveConversation.mockResolvedValue({
+        id: 'test-id',
+        userId: 'user:default/testuser',
+        messages: [
+          ...validMessages,
+          {
+            role: 'assistant' as const,
+            content: mockResponse.reply,
+            tool_calls: undefined,
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: [] });
+
+      expect(response.status).toBe(200);
+      expect(conversationStore.saveConversation).toHaveBeenCalledWith(
+        'user:default/testuser',
+        [
+          ...validMessages,
+          {
+            role: 'assistant',
+            content: mockResponse.reply,
+            tool_calls: undefined,
+          },
+        ],
+        undefined,
+        undefined, // conversationId
+      );
+    });
+
+    it('should continue even if saving conversation fails', async () => {
+      const mockResponse = {
+        reply: 'Hello! I can help you with various tasks.',
+        toolCalls: [],
+        toolResponses: [],
+      };
+
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+      conversationStore.saveConversation.mockRejectedValue(
+        new Error('Database error'),
+      );
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: [] });
+
+      expect(response.status).toBe(200);
+      expect(response.body.content).toBe(mockResponse.reply);
+    });
+  });
+
+  describe('GET /conversations', () => {
+    it('should return conversation history', async () => {
+      const mockConversations = [
+        {
+          id: 'conv-1',
+          userId: 'user:default/testuser',
+          messages: [
+            { role: 'user' as const, content: 'Hello' },
+            { role: 'assistant' as const, content: 'Hi there!' },
+          ],
+          createdAt: new Date('2025-01-01'),
+          updatedAt: new Date('2025-01-01'),
+        },
+        {
+          id: 'conv-2',
+          userId: 'user:default/testuser',
+          messages: [
+            { role: 'user' as const, content: 'How are you?' },
+            { role: 'assistant' as const, content: 'I am doing well!' },
+          ],
+          createdAt: new Date('2025-01-02'),
+          updatedAt: new Date('2025-01-02'),
+        },
+      ];
+
+      conversationStore.getConversations.mockResolvedValue(mockConversations);
+
+      const response = await request(app).get('/conversations');
+
+      expect(response.status).toBe(200);
+      expect(response.body.conversations).toHaveLength(2);
+      expect(response.body.count).toBe(2);
+      expect(response.body.limit).toBe('config default');
+      expect(conversationStore.getConversations).toHaveBeenCalledWith(
+        'user:default/testuser',
+        undefined,
+      );
+    });
+
+    it('should accept limit query parameter', async () => {
+      const mockConversations = [
+        {
+          id: 'conv-1',
+          userId: 'user:default/testuser',
+          messages: [
+            { role: 'user' as const, content: 'Hello' },
+            { role: 'assistant' as const, content: 'Hi there!' },
+          ],
+          createdAt: new Date('2025-01-01'),
+          updatedAt: new Date('2025-01-01'),
+        },
+      ];
+
+      conversationStore.getConversations.mockResolvedValue(mockConversations);
+
+      const response = await request(app).get('/conversations?limit=5');
+
+      expect(response.status).toBe(200);
+      expect(response.body.conversations).toHaveLength(1);
+      expect(response.body.count).toBe(1);
+      expect(response.body.limit).toBe(5);
+      expect(conversationStore.getConversations).toHaveBeenCalledWith(
+        'user:default/testuser',
+        5,
+      );
+    });
+
+    it('should handle errors when retrieving conversations', async () => {
+      conversationStore.getConversations.mockRejectedValue(
+        new Error('Database error'),
+      );
+
+      const response = await request(app).get('/conversations');
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBe('Failed to retrieve conversations');
+    });
+  });
+
+  describe('GET /conversations/:id', () => {
+    it('should return a specific conversation by ID', async () => {
+      const mockConversation = {
+        id: 'conv-1',
+        userId: 'user:default/testuser',
+        messages: [
+          { role: 'user' as const, content: 'Hello' },
+          { role: 'assistant' as const, content: 'Hi there!' },
+        ],
+        createdAt: new Date('2025-01-01'),
+        updatedAt: new Date('2025-01-01'),
+      };
+
+      conversationStore.getConversationById.mockResolvedValue(mockConversation);
+
+      const response = await request(app).get('/conversations/conv-1');
+
+      expect(response.status).toBe(200);
+      expect(response.body.id).toBe('conv-1');
+      expect(response.body.messages).toHaveLength(2);
+      expect(conversationStore.getConversationById).toHaveBeenCalledWith(
+        'user:default/testuser',
+        'conv-1',
+      );
+    });
+
+    it('should return 404 for non-existent conversation', async () => {
+      conversationStore.getConversationById.mockResolvedValue(null);
+
+      const response = await request(app).get('/conversations/non-existent');
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('Conversation not found');
+    });
+
+    it('should handle errors when retrieving a conversation', async () => {
+      conversationStore.getConversationById.mockRejectedValue(
+        new Error('Database error'),
+      );
+
+      const response = await request(app).get('/conversations/conv-1');
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBe('Failed to retrieve conversation');
     });
   });
 });

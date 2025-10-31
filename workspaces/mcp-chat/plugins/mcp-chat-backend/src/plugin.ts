@@ -18,13 +18,14 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { MCPClientServiceImpl } from './services';
+import { MCPClientServiceImpl } from './services/MCPClientServiceImpl';
+import { ChatConversationStore } from './services/ChatConversationStore';
 import { validateConfig } from './utils';
+import { resolve as resolvePath } from 'path';
 
 /**
  * mcpChatPlugin backend plugin
  *
- * @public
  */
 export const mcpChatPlugin = createBackendPlugin({
   pluginId: 'mcp-chat',
@@ -34,17 +35,42 @@ export const mcpChatPlugin = createBackendPlugin({
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         httpRouter: coreServices.httpRouter,
+        database: coreServices.database,
+        httpAuth: coreServices.httpAuth,
       },
-      async init({ logger, httpRouter, config }) {
+      async init({ logger, httpRouter, config, database, httpAuth }) {
         validateConfig(config);
+
+        // Initialize database connection
+        const db = await database.getClient();
+
+        // Run migrations
+        logger.info('Running database migrations...');
+        const migrationsDir = resolvePath(
+          require.resolve(
+            '@backstage-community/plugin-mcp-chat-backend/package.json',
+          ),
+          '../migrations',
+        );
+        await db.migrate.latest({
+          directory: migrationsDir,
+        });
+        logger.info('Database migrations completed');
+
+        // Initialize services
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
         });
+
+        const conversationStore = new ChatConversationStore(db, logger, config);
+
         httpRouter.use(
           await createRouter({
             logger,
             mcpClientService,
+            conversationStore,
+            httpAuth,
           }),
         );
       },

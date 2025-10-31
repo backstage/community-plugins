@@ -19,3 +19,4 @@ export { useMcpServers } from './useMcpServers';
 export type { UseMcpServersReturn } from './useMcpServers';
 export { useAvailableTools } from './useAvailableTools';
 export type { UseAvailableToolsReturn } from './useAvailableTools';
+export { useConversations } from './useConversations';

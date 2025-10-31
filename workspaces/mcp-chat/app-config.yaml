@@ -48,6 +48,12 @@ mcpChat:
       baseUrl: 'http://localhost:4000'
       token: ${LITELLM_API_KEY}
       model: gpt-4o-mini
+
+  # Conversation history settings
+  conversationHistory:
+    displayLimit: 10 # Number of recent conversations to show in UI (default: 10)
+    # Note: ALL conversations are stored in DB, this only controls what's displayed
+
   mcpServers:
     - id: brave-search-server
       name: Brave Search Server

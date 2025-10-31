@@ -13,6 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './MCPClientService';
-export * from './MCPClientServiceImpl';
-export * from './ChatConversationStore';
+export { LeftPane } from './LeftPane';
+export { NewChatButton } from './NewChatButton';
+export { ConversationList } from './ConversationList';

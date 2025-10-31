@@ -206,31 +206,21 @@ describe('mcpChatPlugin', () => {
     });
 
     it('should validate messages and return error for invalid messages', async () => {
-      validateMessages.mockReturnValue({
-        isValid: false,
-        error: 'Messages field is required',
-      });
-
       const response = await request(backend.server)
         .post('/api/mcp-chat/chat')
         .send({})
         .expect(400);
 
-      expect(response.body.error).toBe('Messages field is required');
+      expect(response.body.error).toBe('Messages array is required');
     });
 
     it('should validate messages and return error for empty messages', async () => {
-      validateMessages.mockReturnValue({
-        isValid: false,
-        error: 'At least one message is required',
-      });
-
       const response = await request(backend.server)
         .post('/api/mcp-chat/chat')
-        .send({ messages: [], enabledTools: [] })
+        .send({ messages: [] })
         .expect(400);
 
-      expect(response.body.error).toBe('At least one message is required');
+      expect(response.body.error).toBe('Messages array is required');
     });
 
     it('should reject invalid enabledTools', async () => {
@@ -272,7 +262,6 @@ describe('mcpChatPlugin', () => {
 
       expect(response.body).toHaveProperty('availableTools');
       expect(response.body).toHaveProperty('toolCount');
-      expect(response.body).toHaveProperty('timestamp');
       expect(Array.isArray(response.body.availableTools)).toBe(true);
     });
   });

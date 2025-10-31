@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerService } from '@backstage/backend-plugin-api';
+import { LoggerService, HttpAuthService } from '@backstage/backend-plugin-api';
 import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { MCPClientService } from './services/MCPClientService';
+import { ChatConversationStore } from './services/ChatConversationStore';
 import { validateMessages } from './utils';
 
 export async function createRouter({
   logger,
   mcpClientService,
+  conversationStore,
+  httpAuth,
 }: {
   logger: LoggerService;
   mcpClientService: MCPClientService;
+  conversationStore: ChatConversationStore;
+  httpAuth: HttpAuthService;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -54,13 +59,18 @@ export async function createRouter({
     return res.json({
       availableTools: availableTools,
       toolCount: availableTools.length,
-      timestamp: new Date().toISOString(),
     });
   });
 
   // MCP Chat route
   router.post('/chat', async (req, res) => {
-    const { messages, enabledTools } = req.body;
+    logger.info('Route called: /chat');
+    const { messages, enabledTools, conversationId } = req.body;
+
+    // Validate messages
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: 'Messages array is required' });
+    }
 
     const validation = validateMessages(messages);
     if (!validation.isValid) {
@@ -82,14 +92,51 @@ export async function createRouter({
     const { reply, toolCalls, toolResponses } =
       await mcpClientService.processQuery(messages, enabledTools);
 
-    if (toolCalls.length > 0) {
-      const toolsUsed = toolCalls.map(call => call.function.name);
+    const toolsUsed =
+      toolCalls.length > 0 ? toolCalls.map(call => call.function.name) : [];
 
+    // Create the complete conversation with assistant's response
+    const conversationMessages = [
+      ...messages,
+      {
+        role: 'assistant' as const,
+        content: reply,
+        tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
+      },
+    ];
+
+    // Save conversation to database with user context
+    let savedConversationId: string | undefined;
+    try {
+      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const userId = credentials.principal.userEntityRef;
+
+      const savedConversation = await conversationStore.saveConversation(
+        userId,
+        conversationMessages,
+        toolsUsed.length > 0 ? toolsUsed : undefined,
+        conversationId, // Pass existing conversationId to update or create new
+      );
+      savedConversationId = savedConversation.id;
+    } catch (error: any) {
+      // If table doesn't exist, just warn - migrations may not have run yet
+      if (error?.message?.includes('no such table')) {
+        logger.warn(
+          'Conversations table does not exist yet. Skipping conversation save.',
+        );
+      } else {
+        logger.error(`Failed to save conversation: ${error}`);
+      }
+      // Don't fail the request if saving fails
+    }
+
+    if (toolCalls.length > 0) {
       return res.json({
         role: 'assistant',
         content: reply,
         toolResponses,
         toolsUsed,
+        conversationId: savedConversationId,
       });
     }
     return res.json({
@@ -97,7 +144,77 @@ export async function createRouter({
       content: reply,
       toolResponses: [],
       toolsUsed: [],
+      conversationId: savedConversationId,
     });
+  });
+
+  // Get conversation history for the authenticated user
+  // Query params: ?limit=20 (optional, overrides config)
+  router.get('/conversations', async (req, res) => {
+    logger.info('Route called: /conversations');
+    try {
+      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const userId = credentials.principal.userEntityRef;
+
+      // Allow optional limit query parameter to override config
+      const limit = req.query.limit
+        ? parseInt(req.query.limit as string, 10)
+        : undefined;
+
+      const conversations = await conversationStore.getConversations(
+        userId,
+        limit,
+      );
+      return res.json({
+        conversations,
+        count: conversations.length,
+        limit: limit || 'config default',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error: any) {
+      // If table doesn't exist, return empty array instead of error
+      if (error?.message?.includes('no such table')) {
+        logger.warn(
+          'Conversations table does not exist yet. Returning empty array.',
+        );
+        return res.json({
+          conversations: [],
+          count: 0,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      logger.error(`Failed to retrieve conversations: ${error}`);
+      return res
+        .status(500)
+        .json({ error: 'Failed to retrieve conversations' });
+    }
+  });
+
+  // Get a specific conversation by ID (user-scoped)
+  router.get('/conversations/:id', async (req, res) => {
+    const { id } = req.params;
+    logger.info(`Route called: /conversations/${id}`);
+    try {
+      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const userId = credentials.principal.userEntityRef;
+
+      const conversation = await conversationStore.getConversationById(
+        userId,
+        id,
+      );
+      if (!conversation) {
+        return res.status(404).json({ error: 'Conversation not found' });
+      }
+      return res.json(conversation);
+    } catch (error: any) {
+      // If table doesn't exist, return 404
+      if (error?.message?.includes('no such table')) {
+        logger.warn('Conversations table does not exist yet.');
+        return res.status(404).json({ error: 'Conversation not found' });
+      }
+      logger.error(`Failed to retrieve conversation ${id}: ${error}`);
+      return res.status(500).json({ error: 'Failed to retrieve conversation' });
+    }
   });
 
   return router;

@@ -57,7 +57,17 @@ jest.mock('../RightPane', () => ({
     return (
       <div data-testid="right-pane">
         <button onClick={props.onToggleSidebar}>Toggle Sidebar</button>
+      </div>
+    );
+  },
+}));
+
+jest.mock('../LeftPane', () => ({
+  LeftPane: (props: any) => {
+    return (
+      <div data-testid="left-pane">
         <button onClick={props.onNewChat}>New Chat</button>
+        <button onClick={props.onToggle}>Toggle</button>
       </div>
     );
   },
@@ -81,6 +91,12 @@ const mockUseProviderStatus = jest.fn(() => ({
 jest.mock('../../hooks', () => ({
   useProviderStatus: () => mockUseProviderStatus(),
   useMcpServers: () => mockUseMcpServers(),
+  useConversations: () => ({
+    conversations: [],
+    loading: false,
+    error: undefined,
+    loadConversation: jest.fn(),
+  }),
 }));
 
 const mockMcpChatApi = {
@@ -161,7 +177,6 @@ describe('ChatPage', () => {
         expect.objectContaining({
           sidebarCollapsed: true,
           onToggleSidebar: expect.any(Function),
-          onNewChat: expect.any(Function),
           mcpServers: expect.arrayContaining([
             expect.objectContaining({ name: 'test-server' }),
           ]),

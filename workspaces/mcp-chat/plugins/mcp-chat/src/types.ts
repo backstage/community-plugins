@@ -136,4 +136,26 @@ export interface ChatResponse {
   content: string;
   toolResponses?: any[];
   toolsUsed?: string[];
+  conversationId?: string;
+}
+
+/**
+ * @public
+ */
+export interface ConversationRecord {
+  id: string;
+  userId: string;
+  messages: ChatMessage[];
+  toolsUsed?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * @public
+ */
+export interface ConversationsResponse {
+  conversations: ConversationRecord[];
+  count: number;
+  timestamp: string;
 }

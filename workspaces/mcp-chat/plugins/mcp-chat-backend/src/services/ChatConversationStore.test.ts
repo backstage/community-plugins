@@ -1,0 +1,217 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
+import { ChatConversationStore } from './ChatConversationStore';
+import { ChatMessage } from '../types';
+import { ConfigReader } from '@backstage/config';
+
+describe('ChatConversationStore', () => {
+  const databases = TestDatabases.create();
+  const logger = mockServices.logger.mock();
+  const config = new ConfigReader({
+    mcpChat: {
+      conversationHistory: {
+        displayLimit: 10,
+      },
+    },
+  });
+
+  it.each(databases.eachSupportedId())(
+    'should save and retrieve conversations, %p',
+    async databaseId => {
+      const knex = await databases.init(databaseId);
+
+      // Create table
+      await knex.schema.createTable('mcp_chat_conversations', table => {
+        table.uuid('id').primary().notNullable();
+        table.string('user_id').notNullable();
+        table.text('messages').notNullable();
+        table.text('tools_used').nullable();
+        table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
+        table.index('user_id', 'idx_mcp_chat_conversations_user_id');
+      });
+
+      const store = new ChatConversationStore(knex, logger, config);
+
+      const userId = 'user:default/testuser';
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Hello' },
+        { role: 'assistant', content: 'Hi there!' },
+      ];
+
+      // Save conversation
+      const saved = await store.saveConversation(userId, messages);
+      expect(saved.id).toBeDefined();
+      expect(saved.userId).toBe(userId);
+      expect(saved.messages).toEqual(messages);
+      expect(saved.createdAt).toBeInstanceOf(Date);
+
+      // Retrieve conversations
+      const conversations = await store.getConversations(userId);
+      expect(conversations).toHaveLength(1);
+      expect(conversations[0].messages).toEqual(messages);
+
+      // Retrieve by ID
+      const retrieved = await store.getConversationById(userId, saved.id);
+      expect(retrieved).not.toBeNull();
+      expect(retrieved?.messages).toEqual(messages);
+    },
+  );
+
+  it.each(databases.eachSupportedId())(
+    'should save conversations with tools used, %p',
+    async databaseId => {
+      const knex = await databases.init(databaseId);
+
+      await knex.schema.createTable('mcp_chat_conversations', table => {
+        table.uuid('id').primary().notNullable();
+        table.string('user_id').notNullable();
+        table.text('messages').notNullable();
+        table.text('tools_used').nullable();
+        table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
+        table.index('user_id', 'idx_mcp_chat_conversations_user_id');
+      });
+
+      const store = new ChatConversationStore(knex, logger, config);
+      const userId = 'user:default/testuser';
+
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Search for something' },
+        { role: 'assistant', content: 'Here are the results' },
+      ];
+      const toolsUsed = ['brave_search', 'kubernetes_query'];
+
+      const saved = await store.saveConversation(userId, messages, toolsUsed);
+      expect(saved.toolsUsed).toEqual(toolsUsed);
+
+      const retrieved = await store.getConversationById(userId, saved.id);
+      expect(retrieved?.toolsUsed).toEqual(toolsUsed);
+    },
+  );
+
+  it.each(databases.eachSupportedId())(
+    'should store all conversations but return only displayLimit, %p',
+    async databaseId => {
+      const knex = await databases.init(databaseId);
+
+      await knex.schema.createTable('mcp_chat_conversations', table => {
+        table.uuid('id').primary().notNullable();
+        table.string('user_id').notNullable();
+        table.text('messages').notNullable();
+        table.text('tools_used').nullable();
+        table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
+        table.index('user_id', 'idx_mcp_chat_conversations_user_id');
+      });
+
+      const store = new ChatConversationStore(knex, logger, config);
+      const userId = 'user:default/testuser';
+
+      // Save 15 conversations
+      for (let i = 0; i < 15; i++) {
+        const messages: ChatMessage[] = [
+          { role: 'user', content: `Message ${i}` },
+          { role: 'assistant', content: `Response ${i}` },
+        ];
+        await store.saveConversation(userId, messages);
+        // Small delay to ensure different timestamps
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+
+      // Should return only 10 conversations (displayLimit from config)
+      const conversations = await store.getConversations(userId);
+      expect(conversations.length).toBe(10);
+
+      // Verify they are the most recent ones
+      const firstMessage = conversations[0].messages[0];
+      expect(firstMessage.content).toContain('Message 14');
+
+      // Verify all 15 are actually stored in DB
+      const allInDb = await knex('mcp_chat_conversations')
+        .where({ user_id: userId })
+        .count('* as count');
+      expect(Number(allInDb[0].count)).toBe(15);
+    },
+  );
+
+  it.each(databases.eachSupportedId())(
+    'should return null for non-existent conversation, %p',
+    async databaseId => {
+      const knex = await databases.init(databaseId);
+
+      await knex.schema.createTable('mcp_chat_conversations', table => {
+        table.uuid('id').primary().notNullable();
+        table.string('user_id').notNullable();
+        table.text('messages').notNullable();
+        table.text('tools_used').nullable();
+        table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
+        table.index('user_id', 'idx_mcp_chat_conversations_user_id');
+      });
+
+      const store = new ChatConversationStore(knex, logger, config);
+      const userId = 'user:default/testuser';
+
+      const retrieved = await store.getConversationById(
+        userId,
+        'non-existent-id',
+      );
+      expect(retrieved).toBeNull();
+    },
+  );
+
+  it.each(databases.eachSupportedId())(
+    'should delete all conversations, %p',
+    async databaseId => {
+      const knex = await databases.init(databaseId);
+
+      await knex.schema.createTable('mcp_chat_conversations', table => {
+        table.uuid('id').primary().notNullable();
+        table.string('user_id').notNullable();
+        table.text('messages').notNullable();
+        table.text('tools_used').nullable();
+        table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
+        table.index('user_id', 'idx_mcp_chat_conversations_user_id');
+      });
+
+      const store = new ChatConversationStore(knex, logger, config);
+      const userId = 'user:default/testuser';
+
+      // Save some conversations
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Test' },
+        { role: 'assistant', content: 'Response' },
+      ];
+      await store.saveConversation(userId, messages);
+      await store.saveConversation(userId, messages);
+
+      // Verify they exist
+      let conversations = await store.getConversations(userId);
+      expect(conversations.length).toBeGreaterThan(0);
+
+      // Delete all
+      await store.deleteAllConversations();
+
+      // Verify they're gone
+      conversations = await store.getConversations(userId);
+      expect(conversations).toHaveLength(0);
+    },
+  );
+});

@@ -158,8 +158,7 @@ describe('RightPane', () => {
       renderRightPane();
 
       expect(screen.getByTestId('bot-icon')).toBeInTheDocument();
-      expect(screen.getByText('MCP Chat')).toBeInTheDocument();
-      expect(screen.getByText('New chat')).toBeInTheDocument();
+      expect(screen.getByText('MCP Configs')).toBeInTheDocument();
       expect(screen.getByTestId('provider-status')).toBeInTheDocument();
       expect(screen.getByTestId('active-tools')).toBeInTheDocument();
       expect(screen.getByTestId('active-mcp-servers')).toBeInTheDocument();
@@ -168,8 +167,7 @@ describe('RightPane', () => {
     it('renders collapsed sidebar with minimal UI', () => {
       renderRightPane({ sidebarCollapsed: true });
 
-      expect(screen.queryByText('MCP Chat')).not.toBeInTheDocument();
-      expect(screen.queryByText('New chat')).not.toBeInTheDocument();
+      expect(screen.queryByText('MCP Configs')).not.toBeInTheDocument();
       expect(screen.queryByTestId('provider-status')).not.toBeInTheDocument();
       expect(screen.queryByTestId('active-tools')).not.toBeInTheDocument();
       expect(
@@ -202,28 +200,6 @@ describe('RightPane', () => {
       renderRightPane({ sidebarCollapsed: true });
 
       expect(screen.getByTestId('ChevronLeftIcon')).toBeInTheDocument();
-    });
-  });
-
-  describe('new chat functionality', () => {
-    it('calls onNewChat when new chat button is clicked', () => {
-      const onNewChat = jest.fn();
-      renderRightPane({ onNewChat });
-
-      const newChatButton = screen.getByText('New chat');
-      fireEvent.click(newChatButton);
-
-      expect(onNewChat).toHaveBeenCalledTimes(1);
-    });
-
-    it('shows new chat button in collapsed state', () => {
-      const onNewChat = jest.fn();
-      renderRightPane({ sidebarCollapsed: true, onNewChat });
-
-      const addButton = screen.getByTestId('AddIcon').closest('button');
-      fireEvent.click(addButton!);
-
-      expect(onNewChat).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -350,7 +326,7 @@ describe('RightPane', () => {
         </TestApiProvider>,
       );
 
-      expect(screen.queryByText('MCP Chat')).not.toBeInTheDocument();
+      expect(screen.queryByText('MCP Configs')).not.toBeInTheDocument();
     });
 
     it('maintains functionality across state changes', () => {
