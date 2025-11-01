@@ -38,7 +38,7 @@
     "@backstage/core-plugin-api": "^1.11.1",
     "@backstage/plugin-catalog-react": "^1.21.2",
     "@backstage/theme": "^0.7.0",
-    "@material-table/core": "4.3.46",
+    "@material-table/core": "6.5.2",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
     "@mui/styles": "^5.18.0",
