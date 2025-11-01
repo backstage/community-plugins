@@ -1699,7 +1699,7 @@ __metadata:
     "@backstage/plugin-catalog-node": "npm:^1.18.0"
     "@types/express": "npm:*"
     "@types/supertest": "npm:^2.0.12"
-    dotenv: "npm:^16.4.5"
+    dotenv: "npm:^17.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     jsonwebtoken: "npm:^9.0.2"
@@ -5832,7 +5832,7 @@ __metadata:
     "@backstage/repo-tools": "npm:^0.15.1"
     "@changesets/cli": "npm:^2.27.7"
     "@playwright/test": "npm:^1.32.3"
-    dotenv: "npm:^16.4.5"
+    dotenv: "npm:^17.0.0"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^9.0.0"
     prettier: "npm:^3.3.3"
@@ -16377,10 +16377,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.4.5":
-  version: 16.4.5
-  resolution: "dotenv@npm:16.4.5"
-  checksum: 10/55a3134601115194ae0f924e54473459ed0d9fc340ae610b676e248cca45aa7c680d86365318ea964e6da4e2ea80c4514c1adab5adb43d6867fb57ff068f95c8
+"dotenv@npm:^17.0.0":
+  version: 17.2.3
+  resolution: "dotenv@npm:17.2.3"
+  checksum: 10/f8b78626ebfff6e44420f634773375c9651808b3e1a33df6d4cc19120968eea53e100f59f04ec35f2a20b2beb334b6aba4f24040b2f8ad61773f158ac042a636
   languageName: node
   linkType: hard
 
