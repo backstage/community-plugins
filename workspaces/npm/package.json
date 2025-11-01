@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "24"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-npm --include @backstage-community/plugin-npm-backend --parallel -v -i run start",
