@@ -16,11 +16,8 @@
 
 import { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
-import type {
-  BasicAuthConfig,
-  OAuthConfig,
-  ServiceNowConfig,
-} from '../../config';
+import type { Config as ServiceNowConfig } from '../../config';
+import { OAuthConfig, BasicAuthConfig } from '../../oauthConfig';
 
 /**
  * Reads the ServiceNow configuration from the provided Config object.
@@ -131,11 +128,16 @@ export function readServiceNowConfig(
     };
   }
 
+  const cmdbBaseUrl = serviceNowConfig.getString('cmdbBaseUrl') || '';
+  const cmdbToken = serviceNowConfig.getString('cmdbToken') || '';
+
   return {
     servicenow: {
       instanceUrl,
       oauth,
       basicAuth,
+      cmdbBaseUrl,
+      cmdbToken,
     },
   };
 }
