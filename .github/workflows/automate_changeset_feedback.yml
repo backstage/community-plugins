@@ -36,7 +36,7 @@ jobs:
       - name: fetch base
         run: git fetch --depth 1 origin ${{ github.base_ref }}
 
-      - uses: backstage/actions/changeset-feedback@v0.6.10
+      - uses: backstage/actions/changeset-feedback@51d5c22c070014da4153c306d1566a7b0a70868f # v0.6.10
         name: Generate feedback
         with:
           diff-ref: 'origin/main'

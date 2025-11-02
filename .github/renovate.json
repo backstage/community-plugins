@@ -5,7 +5,7 @@
     ":rebaseStalePrs",
     "group:linters",
     "group:test",
-    ":preserveSemverRanges"
+    ":preserveSemverRanges",
   ],
   "prConcurrentLimit": 20,
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
