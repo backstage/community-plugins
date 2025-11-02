@@ -68,7 +68,66 @@ const domains = [
   },
 }));
 
-const catalogApi = catalogApiMock({ entities: [...components, ...domains] });
+function generateGroups() {
+  const groups: any[] = [];
+  const topGroups = ['group1', 'group2', 'group3'];
+  const subGroupsPerTop = 5;
+
+  for (const top of topGroups) {
+    const subGroupNames = Array.from(
+      { length: subGroupsPerTop },
+      (_, i) => `${top}-subgroup${i + 1}`,
+    );
+    groups.push({
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Group',
+      metadata: {
+        namespace: 'default',
+        annotations: {},
+        name: top,
+        description: `The ${top} business unit`,
+      },
+      spec: {
+        type: 'business-unit',
+        profile: {},
+        children: subGroupNames.map(n => `group:default/${n}`),
+      },
+      relations: [
+        ...subGroupNames.map(n => ({
+          type: 'hasChild',
+          targetRef: `group:default/${n}`,
+        })),
+      ],
+    });
+
+    for (const subName of subGroupNames) {
+      groups.push({
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Group',
+        metadata: {
+          namespace: 'default',
+          annotations: {},
+          name: subName,
+          description: `The ${subName} business unit`,
+        },
+        spec: {
+          type: 'team',
+          profile: {},
+          parent: top,
+          children: [],
+        },
+        relations: [{ type: 'childOf', targetRef: `group:default/${top}` }],
+      });
+    }
+  }
+  return groups;
+}
+
+const customGroups = generateGroups();
+
+const catalogApi = catalogApiMock({
+  entities: [...components, ...domains, ...customGroups],
+});
 
 const catalogPluginOverrides = createFrontendModule({
   pluginId: 'catalog',
