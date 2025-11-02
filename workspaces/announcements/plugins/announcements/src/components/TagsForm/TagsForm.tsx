@@ -24,17 +24,8 @@ import {
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 import { usePermission } from '@backstage/plugin-permission-react';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => {
-  return {
-    formRoot: {
-      '& > *': {
-        margin: theme?.spacing?.(1) ?? '8px',
-      },
-    },
-  };
-});
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 export type TagsFormProps = {
   initialData: Tag;
@@ -45,7 +36,6 @@ export const TagsForm = ({
   initialData = { title: '', slug: '' },
   onSubmit,
 }: TagsFormProps) => {
-  const classes = useStyles();
   const [form, setForm] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const { t } = useAnnouncementsTranslation();
@@ -74,11 +64,7 @@ export const TagsForm = ({
     <InfoCard
       title={initialData.title ? t('tagsForm.editTag') : t('tagsForm.newTag')}
     >
-      <form
-        className={classes.formRoot}
-        onSubmit={handleSubmit}
-        data-testid="tag-form"
-      >
+      <form onSubmit={handleSubmit} data-testid="tag-form">
         <TextField
           id="title"
           type="text"
@@ -89,6 +75,7 @@ export const TagsForm = ({
           fullWidth
           required
           inputProps={{ 'data-testid': 'tag-title-input' }}
+          sx={{ mb: 1 }}
         />
         <Button
           variant="contained"

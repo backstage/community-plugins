@@ -15,15 +15,13 @@
  */
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Grid,
-  TextField,
-} from '@material-ui/core';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 
 export type TagFormProps = {
   onSubmit: (data: { title: string }) => void;

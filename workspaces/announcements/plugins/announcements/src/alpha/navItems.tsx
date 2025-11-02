@@ -16,7 +16,7 @@
 import { NavItemBlueprint } from '@backstage/frontend-plugin-api/';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 import { rootRouteRef } from '../routes';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 
 /**
  * @alpha
