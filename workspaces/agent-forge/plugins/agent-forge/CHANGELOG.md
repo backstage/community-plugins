@@ -1,5 +1,19 @@
 # @backstage-community/plugin-agent-forge
 
+## 0.4.0
+
+### Minor Changes
+
+- eccd9ed: Retrieve the backstage auth token from IdentityApi and send it using the Auth Bearer header to each agent call.
+  Provide the agent card skill examples as options
+- 3530f15: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- eccd9ed: Add OAuth Authorization Header to A2A Agent request
+- 2e2218e: Updated dependency `cross-env` to `^10.0.0`.
+- cfd8e90: Removed axios dependency
+
 ## 0.3.0
 
 ### Minor Changes
