@@ -78,10 +78,11 @@ export const AnnouncementsPage = announcementsPlugin.provide(
  * @public
  */
 export const AnnouncementsAdminPortal = announcementsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'AnnouncementsAdminPortal',
-    component: () => import('./components/Admin').then(m => m.AdminPortal),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () => import('./components/Admin').then(m => m.AdminPortal),
+    },
   }),
 );
 
