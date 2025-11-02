@@ -1,5 +1,17 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 2.1.0
+
+### Minor Changes
+
+- d49c2a6: Backstage version bump to v1.44.2
+
+### Patch Changes
+
+- c00e4d6: Re-enable the Rollouts feature by adding the Rollouts component back to the Lifecycle Drawer.
+- Updated dependencies [d49c2a6]
+  - @backstage-community/plugin-redhat-argocd-common@1.9.0
+
 ## 2.0.0
 
 ### Major Changes
