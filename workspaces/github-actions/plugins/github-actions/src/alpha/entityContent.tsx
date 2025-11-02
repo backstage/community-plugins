@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isGithubActionsAvailable } from '../components/Router';
 import { rootRouteRef } from '../routes';
@@ -21,14 +24,23 @@ import { rootRouteRef } from '../routes';
 /**
  * @alpha
  */
-export const entityGithubActionsContent = EntityContentBlueprint.make({
-  name: 'entity',
-  params: {
-    path: 'github-actions',
-    title: 'GitHub Actions',
-    filter: isGithubActionsAvailable,
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    loader: () =>
-      import('../components/Router').then(m => <m.Router view="table" />),
-  },
-});
+export const entityGithubActionsContent =
+  EntityContentBlueprint.makeWithOverrides({
+    config: {
+      schema: {
+        layout: z => z.enum(['table', 'cards']).default('table'),
+      },
+    },
+    factory(originalFactory, { config }) {
+      return originalFactory({
+        path: 'github-actions',
+        title: 'GitHub Actions',
+        filter: isGithubActionsAvailable,
+        routeRef: convertLegacyRouteRef(rootRouteRef),
+        loader: () =>
+          import('../components/Router').then(m =>
+            compatWrapper(<m.Router view={config.layout} />),
+          ),
+      });
+    },
+  });
