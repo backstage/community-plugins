@@ -15,7 +15,4 @@
  */
 export { buildAnnouncementsContext } from './announcementsContextBuilder';
 
-export type {
-  AnnouncementsContext,
-  AnnouncementsContextOptions,
-} from './announcementsContextBuilder';
+export type { AnnouncementsContext } from './announcementsContextBuilder';
