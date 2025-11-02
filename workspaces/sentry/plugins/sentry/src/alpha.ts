@@ -26,7 +26,7 @@ import { rootRouteRef } from './plugin';
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'sentry',
+  pluginId: 'sentry',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
   }),

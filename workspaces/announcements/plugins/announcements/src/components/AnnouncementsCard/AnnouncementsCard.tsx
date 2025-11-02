@@ -65,6 +65,7 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
   hideStartAt?: boolean;
 };
 
@@ -76,6 +77,7 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
+  current,
   hideStartAt,
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
@@ -92,6 +94,7 @@ export const AnnouncementsCard = ({
     active,
     sortBy,
     order,
+    current,
   });
 
   const { announcementCreatePermission } = announcementEntityPermissions;

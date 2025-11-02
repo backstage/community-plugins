@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-devops-common",
-  "version": "0.13.0",
+  "version": "0.16.0",
   "backstage": {
     "role": "common-library",
     "pluginId": "azure-devops",
@@ -41,11 +41,11 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/plugin-catalog-common": "^1.1.5",
-    "@backstage/plugin-permission-common": "^0.9.1"
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/plugin-catalog-common": "backstage:^",
+    "@backstage/plugin-permission-common": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1"
+    "@backstage/cli": "backstage:^"
   }
 }

@@ -39,11 +39,13 @@ import {
 } from '../../utils/taskRun-utils';
 import OutputIcon from '../Icons/OutputIcon';
 import ViewLogsIcon from '../Icons/ViewLogsIcon';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import PipelineRunOutputDialog from '../PipelineRunOutput/PipelineRunOutputDialog';
 import PipelineRunSBOMLink from './PipelineRunSBOMLink';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
+import { PipelineRunParamsAndResultsDialog } from '../PipelineRunParamsAndResults';
 
 const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
   pipelineRun,
@@ -53,6 +55,8 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
   const { t } = useTranslationRef(tektonTranslationRef);
 
   const [openOutput, setOpenOutput] = useState<boolean>(false);
+  const [openParamsAndResults, setOpenParamsAndResults] =
+    useState<boolean>(false);
   const pods = watchResourcesData?.pods?.data || [];
   const taskRuns = watchResourcesData?.taskruns?.data || [];
   const { sbomTaskRun } = getTaskrunsOutputGroup(
@@ -126,7 +130,36 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
           setOpenOutput(false);
         }}
       />
+
+      <PipelineRunParamsAndResultsDialog
+        pipelineRun={pipelineRun}
+        open={openParamsAndResults}
+        closeDialog={() => {
+          setOpenParamsAndResults(false);
+        }}
+      />
+
       <Flex gap={{ default: 'gapXs' }}>
+        <FlexItem>
+          <Tooltip
+            content={
+              hasKubernetesProxyAccess.allowed
+                ? t('pipelineRunList.rowActions.viewParamsAndResults')
+                : t('pipelineRunList.rowActions.unauthorizedViewLogs')
+            }
+          >
+            <IconButton
+              size="small"
+              data-testid="view-params-and-results-icon"
+              onClick={() => setOpenParamsAndResults(true)}
+              disabled={!hasKubernetesProxyAccess.allowed}
+              style={{ pointerEvents: 'auto', padding: 0 }}
+            >
+              <ListAltIcon />
+            </IconButton>
+          </Tooltip>
+        </FlexItem>
+
         <FlexItem>
           <Tooltip
             content={

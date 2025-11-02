@@ -14,6 +14,7 @@ import {
   StatisticsEngine,
   StatisticsName,
 } from './data.service.types';
+import { AZURE_HOST_NAME } from '../constants';
 
 enum FINDING_TYPE {
   DEPENDENCIES = 'ALERTS',
@@ -120,9 +121,11 @@ export const dataProjectParser = (
         applicationName: organizationData[next.uuid].applicationName,
         applicationUuid: next.applicationUuid,
         lastScan: next.statistics[FINDING_TYPE.LAST_SCAN].lastScanTime,
-        languages: Object.entries(next.statistics.LIBRARY_TYPE_HISTOGRAM).sort(
-          (a, b) => b[1] - a[1],
-        ),
+        languages: next.statistics?.LIBRARY_TYPE_HISTOGRAM
+          ? Object.entries(next.statistics.LIBRARY_TYPE_HISTOGRAM).sort(
+              (a, b) => b[1] - a[1],
+            )
+          : ([] as [string, number][]),
       };
 
       prev.projectList.unshift(project);
@@ -140,7 +143,7 @@ export const dataProjectParser = (
   return projectData;
 };
 
-const parseEntityURL = (entityUrl?: string) => {
+export const parseEntityURL = (entityUrl?: string) => {
   try {
     if (!entityUrl) {
       return null;
@@ -153,10 +156,18 @@ const parseEntityURL = (entityUrl?: string) => {
     if (!matches) {
       return null;
     }
-
     const url = new URL(matches[0]);
-    const fn = match('/:org/:repo', { end: false });
-    return fn(url.pathname);
+    const hostname = url.host.toLowerCase();
+    let matcher = match('/:org/:repo', { end: false });
+
+    if (hostname === AZURE_HOST_NAME) {
+      matcher = match('/:org/:project/_git/:repo', { end: false });
+    }
+    const extractedContent = matcher(url.pathname);
+    if (extractedContent) {
+      return { ...extractedContent, host: hostname };
+    }
+    return null;
   } catch (error) {
     return null;
   }
@@ -166,6 +177,7 @@ export const dataMatcher = (
   entities: Entity[],
   projects: ProjectStatisticsSuccessResponseData[],
 ) => {
+  const projectSourceURL = getSourceURLWiseProject(projects);
   return entities.reduce(
     (
       prev: Array<
@@ -183,13 +195,11 @@ export const dataMatcher = (
         return prev;
       }
 
-      // NOTE: Find project based on GH_ prefix
-      const project = projects.find(
-        (item: { path: string }) =>
-          item.path.match(/^GH_(.*)/)?.[1] === entityURL?.params.repo,
-      );
+      // NOTE: Find project based on Github URL
+      const relatedProjects =
+        projectSourceURL[`${entityURL?.host}${entityURL?.path}`]?.projectObjs;
 
-      if (!project) {
+      if (!relatedProjects) {
         return prev;
       }
 
@@ -201,13 +211,78 @@ export const dataMatcher = (
         source: 'catalog',
       };
 
-      prev.push({ ...project, entity });
+      relatedProjects.forEach(project => prev.push({ ...project, entity }));
 
       return prev;
     },
     [],
   );
 };
+
+/**
+ * Extracts the source URL details from each project and returns a dictionary
+ * where each key is a combination of the URL's host and pathname,
+ * and the value is an object containing the original project and the parsed source URL data.
+ *
+ * @param projects Array of ProjectStatisticsSuccessResponseData
+ * @returns A dictionary object with keys as `${host}${pathname}` strings extracted from sourceUrl and values as:
+ *          {
+ *            projectObjs: ProjectStatisticsSuccessResponseData[];
+              sourceUrl: string | null;
+              host: string | null;
+              pathname: string | null;
+ *          }
+ */
+export function getSourceURLWiseProject(
+  projects: ProjectStatisticsSuccessResponseData[],
+) {
+  return projects.reduce(
+    (acc, project) => {
+      const projectTags = project.tags as Array<{ key: string; value: string }>;
+      const sourceUrlTag = projectTags?.find(tag => tag.key === 'sourceUrl');
+      let host = null;
+      let pathname = null;
+      let sourceUrl = null;
+
+      if (sourceUrlTag && typeof sourceUrlTag.value === 'string') {
+        sourceUrl = sourceUrlTag.value;
+        const urlString = sourceUrl.startsWith('http')
+          ? sourceUrl
+          : `https://${sourceUrl}`;
+
+        try {
+          const urlObj = new URL(urlString);
+          host = urlObj.host.toLocaleLowerCase();
+          // Remove leading/trailing slashes and split
+          pathname = urlObj.pathname;
+        } catch (e) {
+          // fallback: leave as nulls
+        }
+      }
+
+      if (acc[`${host}${pathname}`]) {
+        acc[`${host}${pathname}`].projectObjs.push(project);
+      } else {
+        acc[`${host}${pathname}`] = {
+          projectObjs: [project],
+          sourceUrl,
+          host,
+          pathname,
+        };
+      }
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        projectObjs: ProjectStatisticsSuccessResponseData[];
+        sourceUrl: string | null;
+        host: string | null;
+        pathname: string | null;
+      }
+    >,
+  );
+}
 
 const getIssueStatus = (
   engine: StatisticsEngine,
@@ -246,6 +321,7 @@ export const dataFindingParser = (
   code: CodeFindingSuccessResponseData[] = [],
   dependencies: DependenciesFindingSuccessResponseData[] = [],
   containers: ContainersFindingSuccessResponseData[] = [],
+  projectName: string = '',
 ) => {
   let codeFindings: Finding[] = [];
   let dependenciesFindings: Finding[] = [];
@@ -259,6 +335,8 @@ export const dataFindingParser = (
         name: finding.type.cwe.title,
         origin: `${finding.sharedStep.file}:${finding.sharedStep.line}`,
         time: finding?.createdTime,
+        projectId: finding.projectId,
+        projectName: projectName,
         issue: {
           issueStatus: finding.almIssues.jiraPlatform.issueStatus,
           reporter: finding.almIssues.jiraPlatform.createdByName,
@@ -279,6 +357,8 @@ export const dataFindingParser = (
         name: finding.vulnerability.name,
         origin: finding.component.name,
         time: finding.vulnerability.modifiedDate,
+        projectId: finding.project.uuid,
+        projectName: projectName,
         issue: {
           issueStatus: '',
           reporter: '',
@@ -299,6 +379,8 @@ export const dataFindingParser = (
         name: finding.vulnerabilityId,
         origin: finding.packageName,
         time: finding.detectionDate,
+        projectId: finding.projectUuid,
+        projectName: projectName,
         issue: {
           issueStatus: '',
           reporter: '',

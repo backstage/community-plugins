@@ -1,0 +1,70 @@
+{
+  "name": "@backstage-community/plugin-catalog-backend-module-azure-resources",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "The azure-resources backend module for the catalog plugin.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "configSchema": "config.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "catalog",
+    "pluginPackage": "@backstage/plugin-catalog-backend"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/backstage-community",
+    "directory": "workspaces/azure-resources/plugins/catalog-backend-module-azure-resources"
+  },
+  "keywords": [
+    "backstage-plugin",
+    "backstage",
+    "plugin",
+    "catalog",
+    "azure",
+    "resources"
+  ],
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-azure-resources-node": "workspace:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
+    "lodash": "^4.17.21",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-catalog-backend-module-logs": "backstage:^",
+    "@types/lodash": "^4.17.20"
+  },
+  "files": [
+    "dist"
+  ]
+}

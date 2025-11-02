@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-scaffolder-backend-module-jenkins",
   "description": "Scaffolder plugin for Jenkins",
-  "version": "0.11.0",
+  "version": "0.14.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -31,14 +31,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.1",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-scaffolder-node": "^0.10.0",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/plugin-scaffolder-node": "backstage:^",
     "cross-fetch": "^4.0.0",
     "jenkins": "^1.1.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1"
+    "@backstage/cli": "backstage:^"
   },
   "files": [
     "dist"

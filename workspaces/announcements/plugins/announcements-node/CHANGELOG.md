@@ -1,5 +1,67 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
+## 0.10.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+
+## 0.8.2
+
+### Patch Changes
+
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+
+## 0.8.0
+
+### Minor Changes
+
+- e121abb: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [e121abb]
+  - @backstage-community/plugin-announcements-common@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes

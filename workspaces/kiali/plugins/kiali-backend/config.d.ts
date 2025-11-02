@@ -35,6 +35,10 @@ export interface Config {
        */
       skipTLSVerify?: boolean;
       /**
+       * Token name to provide to Kiali like the cookie name, defaults to kiali-token-Kubernetes
+       */
+      tokenName?: string;
+      /**
        * Base64-encoded certificate authority bundle in PEM format.
        * @visibility secret
        */

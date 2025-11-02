@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.4.2
+
+### Patch Changes
+
+- e28273e: add index to improve performance of fact deletion
+
 ## 2.4.1
 
 ### Patch Changes

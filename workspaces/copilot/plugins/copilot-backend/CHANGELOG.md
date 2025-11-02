@@ -1,5 +1,50 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.0
+
+### Minor Changes
+
+- 4d1cf33: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [4d1cf33]
+  - @backstage-community/plugin-copilot-common@0.14.0
+
+## 0.14.0
+
+### Minor Changes
+
+- 8c60a7f: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [8c60a7f]
+  - @backstage-community/plugin-copilot-common@0.13.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 181ea72: Various performance improvements for larger organizations
+
+  - Only gather metrics from teams that have 5 or more members, teams
+    with less members will not have any metrics provided by the api as
+    documented here https://docs.github.com/en/rest/copilot/copilot-metrics?apiVersion=2022-11-28
+  - To improve performance and reduce the API calls made on large orgs,
+    we only need to retrieve the org and enterprise seats once per task.
+
+## 0.12.0
+
+### Minor Changes
+
+- 5deb1e7: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [5deb1e7]
+  - @backstage-community/plugin-copilot-common@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes

@@ -1,5 +1,38 @@
 # @backstage-community/plugin-npm-backend
 
+## 1.13.0
+
+### Minor Changes
+
+- bb724ca: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [bb724ca]
+  - @backstage-community/plugin-npm-common@1.13.0
+
+## 1.12.0
+
+### Minor Changes
+
+- fcd92b0: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [fcd92b0]
+  - @backstage-community/plugin-npm-common@1.12.0
+
+## 1.11.0
+
+### Minor Changes
+
+- 3bf54c8: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- Updated dependencies [3bf54c8]
+  - @backstage-community/plugin-npm-common@1.11.0
+
 ## 1.10.1
 
 ### Patch Changes

@@ -1,5 +1,68 @@
 ### Dependencies
 
+## 3.31.0
+
+### Minor Changes
+
+- 547b888: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [547b888]
+  - @backstage-community/plugin-tekton-common@1.14.0
+
+## 3.30.2
+
+### Patch Changes
+
+- 6c5b40c: Move Status and hooks into plugin
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 3.30.1
+
+### Patch Changes
+
+- dde8f40: tekton plugin support show pipeline run params and results
+
+## 3.30.0
+
+### Minor Changes
+
+- f9604b7: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [f9604b7]
+  - @backstage-community/plugin-tekton-common@1.13.0
+
+## 3.29.0
+
+### Minor Changes
+
+- 99b0588: Standardize i18n in Tekton plugin
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- 773c07a: Fix broken url in package.json
+
+## 3.28.0
+
+### Minor Changes
+
+- 8878087: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [8878087]
+  - @backstage-community/plugin-tekton-common@1.12.0
+
+## 3.27.6
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
 ## 3.27.5
 
 ### Patch Changes

@@ -35,6 +35,42 @@ const ARCHIVED_WORKSPACES_FILE = path.join(
   'ARCHIVED_WORKSPACES.md',
 );
 
+// Configuration files that need workspace entries removed
+const CONFIG_FILES = {
+  LABELER: path.join(__dirname, '..', '.github', 'labeler.yml'),
+  BUG_TEMPLATE: path.join(
+    __dirname,
+    '..',
+    '.github',
+    'ISSUE_TEMPLATE',
+    '1-bug.yaml',
+  ),
+  FEATURE_TEMPLATE: path.join(
+    __dirname,
+    '..',
+    '.github',
+    'ISSUE_TEMPLATE',
+    '2-feature.yaml',
+  ),
+  WORKSPACE_DROPDOWN: path.join(
+    __dirname,
+    '..',
+    '.github',
+    'ISSUE_TEMPLATE',
+    'snippets',
+    'workspaces-dropdown.yaml',
+  ),
+  CODEOWNERS: path.join(__dirname, '..', '.github', 'CODEOWNERS'),
+  COMPATIBILITY: path.join(
+    __dirname,
+    '..',
+    'docs',
+    'compatibility',
+    'compatibility.md',
+  ),
+  README: path.join(__dirname, '..', 'docs', 'README.md'),
+};
+
 async function appendToArchivedWorkspacesMd(entries) {
   console.log('Updating ARCHIVED_WORKSPACES.md...');
 
@@ -50,6 +86,113 @@ async function appendToArchivedWorkspacesMd(entries) {
   await fs.appendFile(ARCHIVED_WORKSPACES_FILE, newContent);
 
   console.log(`Added ${entries.length} entries to ARCHIVED_WORKSPACES.md`);
+}
+
+async function removeWorkspaceFromLabeler(workspace) {
+  console.log(`Removing workspace/${workspace} from labeler.yml...`);
+  const content = await fs.readFile(CONFIG_FILES.LABELER, 'utf8');
+
+  const lines = content.split('\n');
+  const filteredLines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (line.startsWith(`workspace/${workspace}:`)) {
+      // Skip this line and the following line as per labeler format
+      i++;
+
+      // Skip the following empty line if it exists
+      if (i + 1 < lines.length && lines[i + 1].trim() === '') {
+        i++;
+      }
+      continue;
+    }
+
+    filteredLines.push(line);
+  }
+
+  await fs.writeFile(CONFIG_FILES.LABELER, filteredLines.join('\n'));
+  console.log('Updated labeler.yml');
+}
+
+async function removeWorkspaceFromIssueTemplate(filePath, workspace) {
+  console.log(`Removing ${workspace} from ${path.basename(filePath)}...`);
+  const content = await fs.readFile(filePath, 'utf8');
+
+  const lines = content.split('\n');
+  const filteredLines = lines.filter(line => {
+    const trimmed = line.trim();
+    return trimmed !== `- ${workspace}`;
+  });
+
+  await fs.writeFile(filePath, filteredLines.join('\n'));
+  console.log(`Updated ${path.basename(filePath)}`);
+}
+
+async function removeWorkspaceFromCodeowners(workspace) {
+  console.log(`Removing /workspaces/${workspace} from CODEOWNERS...`);
+  const content = await fs.readFile(CONFIG_FILES.CODEOWNERS, 'utf8');
+
+  const lines = content.split('\n');
+  const filteredLines = lines.filter(line => {
+    const workspacePattern = new RegExp(
+      `^/workspaces/${workspace.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s`,
+    );
+    return !workspacePattern.test(line);
+  });
+
+  await fs.writeFile(CONFIG_FILES.CODEOWNERS, filteredLines.join('\n'));
+  console.log('Updated CODEOWNERS');
+}
+
+async function removeWorkspaceFromCompatibility(workspace) {
+  console.log(`Removing ${workspace} from compatibility.md...`);
+  const content = await fs.readFile(CONFIG_FILES.COMPATIBILITY, 'utf8');
+
+  const lines = content.split('\n');
+  const filteredLines = lines.filter(line => {
+    if (line.startsWith('| ')) {
+      const workspacePattern = new RegExp(
+        `/workspaces/${workspace.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          '\\$&',
+        )}(\\)|%2F)`,
+      );
+      if (workspacePattern.test(line)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  await fs.writeFile(CONFIG_FILES.COMPATIBILITY, filteredLines.join('\n'));
+  console.log('Updated compatibility.md');
+}
+
+async function removeFromReadme(packages) {
+  console.log(`Removing entries from docs/README.md...`);
+  const content = await fs.readFile(CONFIG_FILES.README, 'utf8');
+
+  const lines = content.split('\n');
+  const filteredLines = lines.filter(line => {
+    if (!line.startsWith('| ')) {
+      return true;
+    }
+
+    // Remove entries matching any of the package names
+    for (const pkg of packages) {
+      if (line.includes(pkg.name)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  await fs.writeFile(CONFIG_FILES.README, filteredLines.join('\n'));
+  console.log('Updated docs/README.md');
 }
 
 async function getPackagesFromWorkspace(workspace, targetPlugin = null) {
@@ -155,6 +298,31 @@ async function main() {
     await addArchivedEntry(entries);
 
     await appendToArchivedWorkspacesMd(entries);
+
+    await removeFromReadme(packages);
+
+    // For full workspace archival, also update other configuration files
+    if (!plugin) {
+      console.log(
+        `\\nDetected full workspace archival - updating additional configuration files...`,
+      );
+      await removeWorkspaceFromLabeler(workspace);
+      await removeWorkspaceFromIssueTemplate(
+        CONFIG_FILES.BUG_TEMPLATE,
+        workspace,
+      );
+      await removeWorkspaceFromIssueTemplate(
+        CONFIG_FILES.FEATURE_TEMPLATE,
+        workspace,
+      );
+      await removeWorkspaceFromIssueTemplate(
+        CONFIG_FILES.WORKSPACE_DROPDOWN,
+        workspace,
+      );
+      await removeWorkspaceFromCodeowners(workspace);
+      await removeWorkspaceFromCompatibility(workspace);
+      console.log('Successfully updated all configuration files');
+    }
 
     console.log(`\nSuccessfully archived ${entries.length} package(s):`);
     entries.forEach(entry => {

@@ -62,10 +62,16 @@ export type Announcement = {
   active: boolean;
   /** Date indicating when the announcement starts (is visible to end users) */
   start_at: string;
+  /** Date indicating when the announcement should show until, using current filters. If omitted, the announcement is open-ended. */
+  until_date?: string | null;
   /** The team on whose behalf the announcement was published */
   on_behalf_of?: string;
   /** Array of tags associated with the announcement */
   tags?: Tag[];
+  /** Whether the notification is enabled */
+  sendNotification?: boolean;
+  /** Timestamp when the announcement was last updated */
+  updated_at: string;
 };
 
 /**
@@ -98,10 +104,14 @@ export type AnnouncementsFilters = {
   page?: number;
   /** Filter by active status */
   active?: boolean;
-  /** Field to sort by (e.g., "created_at", "start_at") */
-  sortBy?: 'created_at' | 'start_at';
+  /** Field to sort by (e.g., "created_at", "start_at", "updated_at") */
+  sortBy?: 'created_at' | 'start_at' | 'updated_at';
   /** Sorting order: "asc" for ascending or "desc" for descending */
   order?: 'asc' | 'desc';
+  /** Filter by current status (current date falls between start and until) */
+  current?: boolean;
+  /** Whether the notification is enabled */
+  sendNotification?: boolean;
 };
 
 /**

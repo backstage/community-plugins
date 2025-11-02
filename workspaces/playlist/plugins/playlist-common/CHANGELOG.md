@@ -1,5 +1,23 @@
 # @backstage-community/plugin-playlist-common
 
+## 0.11.0
+
+### Minor Changes
+
+- e2408fb: Backstage version bump to v1.44.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 6724458: Backstage version bump to v1.43.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 720723d: Backstage version bump to v1.42.3
+
 ## 0.8.0
 
 ### Minor Changes

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import type { Order } from '@backstage-community/plugin-servicenow-common';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IncidentsTableHeader } from './IncidentsTableHeader';
 import { IncidentsListColumns } from './IncidentsListColumns';
 import { IncidentTableFieldEnum, IncidentTableField } from '../../types';
-import type { Order } from '@backstage-community/plugin-servicenow-common';
 
 describe('IncidentsTableHeader', () => {
   const mockOnRequestSort = jest.fn();

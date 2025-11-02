@@ -16,7 +16,6 @@
 
 import {
   ApiBlueprint,
-  createApiFactory,
   PageBlueprint,
   createFrontendPlugin,
   discoveryApiRef,
@@ -34,8 +33,8 @@ import { rootRouteRef } from '../plugin';
 
 /** @alpha */
 export const newRelicApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: newRelicApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -44,13 +43,12 @@ export const newRelicApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new NewRelicClient({ discoveryApi, fetchApi }),
     }),
-  },
 });
 
 /** @alpha */
 export const newRelicPage = PageBlueprint.make({
   params: {
-    defaultPath: '/new-relic',
+    path: '/new-relic',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/NewRelicComponent').then(m =>

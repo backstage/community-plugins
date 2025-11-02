@@ -25,6 +25,7 @@ import {
   announcementEditRouteRef,
   announcementViewRouteRef,
   categoriesListRouteRef,
+  tagsListRouteRef,
 } from '../routes';
 import { AnnouncementsPage, AnnouncementsPageProps } from './AnnouncementsPage';
 import { AnnouncementPage } from './AnnouncementPage';
@@ -33,6 +34,7 @@ import { EditAnnouncementPage } from './EditAnnouncementPage';
 import { CategoriesPage } from './CategoriesPage';
 import { AdminPortal } from './Admin';
 import { MarkdownRendererTypeProps } from './MarkdownRenderer';
+import { TagsPage } from './TagsPage';
 
 type RouterProps = {
   themeId?: string;
@@ -49,6 +51,7 @@ type RouterProps = {
   hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
+  defaultInactive?: boolean;
 };
 
 export const Router = (props: RouterProps) => {
@@ -95,7 +98,12 @@ export const Router = (props: RouterProps) => {
 
       <Route
         path={`${categoriesListRouteRef.path}`}
-        element={<CategoriesPage themeId={propsWithDefaults.themeId} />}
+        element={<CategoriesPage {...propsWithDefaults} />}
+      />
+
+      <Route
+        path={`${tagsListRouteRef.path}`}
+        element={<TagsPage {...propsWithDefaults} />}
       />
     </Routes>
   );

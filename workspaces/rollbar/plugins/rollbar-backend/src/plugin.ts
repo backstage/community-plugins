@@ -30,13 +30,15 @@ export const rollbarPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
+        cache: coreServices.cache,
         config: coreServices.rootConfig,
         logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
       },
-      async init({ config, logger, httpRouter }) {
+      async init({ cache, config, logger, httpRouter }) {
         httpRouter.use(
           await createRouter({
+            cache,
             config,
             logger,
           }),

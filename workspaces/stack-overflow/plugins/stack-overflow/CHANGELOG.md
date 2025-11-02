@@ -1,5 +1,27 @@
 # @backstage-community/plugin-stack-overflow
 
+## 0.11.0
+
+### Minor Changes
+
+- be33f5f: Backstage version bump to v1.44.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 27b8761: Backstage version bump to v1.43.2
+
+## 0.9.0
+
+### Minor Changes
+
+- f72bb73: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- f72bb73: Fixed an issue causing the `StackOverflowSearchResultListItem` component to have extra indentation in its layout.
+
 ## 0.8.0
 
 ### Minor Changes

@@ -75,8 +75,10 @@ describe('AnnouncementsTimeline', () => {
           body: 'Body 1',
           publisher: 'Publisher 1',
           created_at: '2022-01-01',
+          updated_at: '2022-01-01',
           active: true,
           start_at: '2025-01-01',
+          until_date: '2025-02-01',
         },
         {
           id: '2',
@@ -85,8 +87,10 @@ describe('AnnouncementsTimeline', () => {
           body: 'Body 2',
           publisher: 'Publisher 2',
           created_at: '2022-01-02',
+          updated_at: '2022-01-02',
           active: true,
           start_at: '2022-01-02',
+          until_date: '2022-02-02',
         },
       ],
     };

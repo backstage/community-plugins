@@ -1,3 +1,11 @@
+# Development
+
+## Prerequisites
+
+You need to have a ServiceNow developer instance. You can request a new one from the [ServiceNow Developer Portal](https://developer.servicenow.com/dev.do#!/learn/learning-plans/washingtondc/new_to_servicenow/app_store_learnv2_buildmyfirstapp_washingtondc_personal_developer_instances).
+
+## Local testing
+
 Compile code:
 
 ```

@@ -1,5 +1,5 @@
 {
-  "version": "0.5.0",
+  "version": "0.8.0",
   "license": "Apache-2.0",
   "name": "@backstage-community/plugin-scaffolder-backend-module-dotnet",
   "description": "The azure-devops module for @backstage/plugin-scaffolder-backend",
@@ -39,15 +39,15 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.1",
-    "@backstage/plugin-scaffolder-node": "^0.10.0",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/plugin-scaffolder-node": "backstage:^",
     "fs-extra": "^11.3.0",
     "yaml": "^2.6.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.1",
+    "@backstage/cli": "backstage:^",
+    "@backstage/plugin-scaffolder-node-test-utils": "backstage:^",
     "@types/fs-extra": "^11"
   },
   "files": [

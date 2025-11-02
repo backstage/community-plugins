@@ -31,13 +31,13 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.15.0",
-    "@changesets/cli": "^2.29.5",
-    "node-gyp": "^11.3.0",
+    "@backstage/cli": "backstage:^",
+    "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
+    "@changesets/cli": "^2.29.7",
+    "node-gyp": "^11.4.2",
     "prettier": "^3.6.2",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.3"
   },
   "resolutions": {
     "@types/react": "^18",

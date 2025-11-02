@@ -22,6 +22,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -45,12 +46,15 @@ export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
   onSearchClear,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <TextField
       size="small"
       variant="outlined"
-      placeholder="Search by kind"
+      placeholder={t(
+        'deploymentLifecycle.sidebar.resources.resourcesSearchBar.placeholder',
+      )}
       value={value}
       onChange={onChange}
       className={classes.searchInput}
@@ -63,7 +67,9 @@ export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
         endAdornment: (
           <InputAdornment
             position="end"
-            aria-label="clear search"
+            aria-label={t(
+              'deploymentLifecycle.sidebar.resources.resourcesSearchBar.ariaLabel',
+            )}
             data-testid="clear-search"
             style={{
               display: value === '' ? 'none' : 'flex',

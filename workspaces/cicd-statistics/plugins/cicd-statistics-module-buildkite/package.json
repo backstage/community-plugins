@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cicd-statistics-module-buildkite",
-  "version": "0.8.0",
+  "version": "0.11.0",
   "description": "CI/CD Statistics plugin module; Buildkite CI/CD",
   "backstage": {
     "role": "frontend-plugin-module",
@@ -40,15 +40,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-cicd-statistics": "workspace:^",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-plugin-api": "^1.10.9",
-    "@backstage/test-utils": "^1.7.10",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
     "@gitbeaker/browser": "^35.6.0",
     "@gitbeaker/core": "^35.6.0",
     "@roadiehq/backstage-plugin-buildkite": "^2.3.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
+    "@backstage/cli": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0",
     "@types/react-dom": "^18.2.19",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

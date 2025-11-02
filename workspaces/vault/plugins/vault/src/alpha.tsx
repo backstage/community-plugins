@@ -15,7 +15,6 @@
  */
 import {
   ApiBlueprint,
-  createApiFactory,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
@@ -33,8 +32,8 @@ import { vaultApiRef, VaultClient } from './api';
  */
 export const vaultApi = ApiBlueprint.make({
   name: 'vaultApi',
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: vaultApiRef,
       deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
       factory: ({
@@ -49,7 +48,6 @@ export const vaultApi = ApiBlueprint.make({
           fetchApi,
         }),
     }),
-  },
 });
 
 /**
@@ -60,8 +58,8 @@ export const vaultApi = ApiBlueprint.make({
 export const vaultEntityContent: any = EntityContentBlueprint.make({
   name: 'vaultEntityContent',
   params: {
-    defaultPath: 'vault',
-    defaultTitle: 'Vault',
+    path: 'vault',
+    title: 'Vault',
     filter: isVaultAvailable,
     loader: () =>
       import('./components/EntityVaultCard').then(m => <m.EntityVaultCard />),
@@ -74,6 +72,6 @@ export const vaultEntityContent: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'vault',
+  pluginId: 'vault',
   extensions: [vaultApi, vaultEntityContent],
 });

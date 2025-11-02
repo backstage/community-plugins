@@ -15,6 +15,7 @@
  */
 import { V1Deployment } from '@kubernetes/client-node';
 
+import { useTranslation } from '../../../hooks/useTranslation';
 import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 import TopologyWorkloadDetails from './TopologyWorkloadDetails';
 
@@ -23,16 +24,18 @@ type TopologyDeploymentDetailsProps = { resource: V1Deployment };
 const TopologyDeploymentDetails = ({
   resource,
 }: TopologyDeploymentDetailsProps) => {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="topology-workload-details">
         <TopologyWorkloadDetails resource={resource}>
-          <TopologySideBarDetailsItem label="Status">
+          <TopologySideBarDetailsItem label={t('common.status')}>
             {resource.status?.availableReplicas ===
             resource.status?.updatedReplicas ? (
-              'Active'
+              t('status.active')
             ) : (
-              <div>Updating</div>
+              <div>{t('status.updating')}</div>
             )}
           </TopologySideBarDetailsItem>
         </TopologyWorkloadDetails>
@@ -41,28 +44,33 @@ const TopologyDeploymentDetails = ({
         className="topology-workload-details"
         data-testid="deployment-details"
       >
-        <TopologySideBarDetailsItem label="Update strategy">
+        <TopologySideBarDetailsItem label={t('details.updateStrategy')}>
           {resource.spec?.strategy?.type}
         </TopologySideBarDetailsItem>
-        <TopologySideBarDetailsItem label="Max unavailable">
-          {`${resource.spec?.strategy?.rollingUpdate?.maxUnavailable ?? 1} of ${
-            resource.spec?.replicas
-          } pod`}
+        <TopologySideBarDetailsItem label={t('details.maxUnavailable')}>
+          {t('details.maxUnavailableDescription', {
+            maxUnavailable:
+              resource.spec?.strategy?.rollingUpdate?.maxUnavailable ?? 1,
+            replicas: resource.spec?.replicas,
+          })}
         </TopologySideBarDetailsItem>
-        <TopologySideBarDetailsItem label="Max surge">
-          {`${
-            resource.spec?.strategy?.rollingUpdate?.maxSurge ?? 1
-          } greater than ${resource.spec?.replicas} pod`}
+        <TopologySideBarDetailsItem label={t('details.maxSurge')}>
+          {t('details.maxSurgeDescription', {
+            maxSurge: resource.spec?.strategy?.rollingUpdate?.maxSurge ?? 1,
+            replicas: resource.spec?.replicas,
+          })}
         </TopologySideBarDetailsItem>
-        <TopologySideBarDetailsItem label="Progress deadline seconds">
+        <TopologySideBarDetailsItem
+          label={t('details.progressDeadlineSeconds')}
+        >
           {resource.spec?.progressDeadlineSeconds
-            ? `${resource.spec.progressDeadlineSeconds} seconds`
-            : 'Not configured'}
+            ? `${resource.spec.progressDeadlineSeconds} ${t('time.seconds')}`
+            : t('details.notConfigured')}
         </TopologySideBarDetailsItem>
-        <TopologySideBarDetailsItem label="Min ready seconds">
+        <TopologySideBarDetailsItem label={t('details.minReadySeconds')}>
           {resource.spec?.minReadySeconds
-            ? `${resource.spec.minReadySeconds} seconds`
-            : 'Not configured'}
+            ? `${resource.spec.minReadySeconds} ${t('time.seconds')}`
+            : t('details.notConfigured')}
         </TopologySideBarDetailsItem>
       </div>
     </>

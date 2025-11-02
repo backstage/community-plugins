@@ -19,27 +19,27 @@ import {
   MaturityRank,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
+import Accordion from '@mui/material/Accordion';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import CancelTwoToneIcon from '@mui/icons-material/Cancel';
 import CategoryIcon from '@mui/icons-material/Category';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import MuiAccordionSummary, {
-  AccordionSummaryProps,
-} from '@mui/material/AccordionSummary';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { makeStyles, styled } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import type { SyntheticEvent } from 'react';
-import { useState } from 'react';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import React, { useState } from 'react';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
+import { MaturityRankChip } from '../MaturityRankChip';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Props {
   checks: MaturityCheckResult[];
@@ -47,44 +47,6 @@ interface Props {
   rank: MaturityRank;
   category: Rank;
 }
-
-const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: 0,
-  },
-  '&:before': {
-    display: 'none',
-  },
-}));
-
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
-  flexDirection: 'row-reverse',
-  width: '100%',
-  paddingLeft: theme.spacing(2),
-  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-    transform: 'rotate(90deg)',
-  },
-  '& .MuiAccordionSummary-content': {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
-}));
 
 const MaturityCheckTableRow = ({
   checkResult,
@@ -115,19 +77,22 @@ const MaturityCheckTableRow = ({
   });
 
   const { check, solution, filters } = useStyles();
+  const errorInfo = Object.values(checkResult.facts).filter(
+    fact => fact.type !== 'boolean',
+  );
+
   return (
     <div>
-      <Accordion expanded={expanded} onChange={handleChange()}>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+      <Accordion
+        expanded={expanded}
+        onChange={handleChange()}
+        elevation={2}
+        sx={{ border: '1px solid rgba(173, 172, 172, 0.26)' }}
+      >
+        <AccordionSummary expandIcon={<ArrowDropDownIcon />}>
           <Grid container alignItems="center" spacing={2}>
             <Grid item xs={3}>
-              <Stack direction="row" spacing={2} className={check}>
-                <MaturityRankAvatar
-                  value={{ rank: checkResult.check.metadata.rank }}
-                  size={25}
-                />
-                <Typography>{checkResult.check.id}</Typography>
-              </Stack>
+              <Typography>{checkResult.check.name}</Typography>
             </Grid>
             <Grid item xs={7.5}>
               <Typography className={check}>
@@ -150,7 +115,7 @@ const MaturityCheckTableRow = ({
           </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={2} sx={{ paddingLeft: 2, paddingRight: 2 }}>
+          <Grid container spacing={1} sx={{ paddingLeft: 1, paddingRight: 1 }}>
             <Grid item xs={9}>
               <Stack spacing={1}>
                 <Stack spacing={1} direction="row">
@@ -161,18 +126,42 @@ const MaturityCheckTableRow = ({
                     {checkResult.check.metadata?.solution}
                   </Typography>
                 </Stack>
+                {checkResult.result === false && errorInfo.length > 0 && (
+                  <Stack spacing={1} direction="row">
+                    <Tooltip title="Error: The fact(s) that caused this check to fail">
+                      <ErrorOutlineIcon color="error" />
+                    </Tooltip>
+                    <Typography
+                      variant="subtitle2"
+                      className={filters}
+                      color="secondary"
+                    >
+                      {errorInfo.map((fact, index) => (
+                        <React.Fragment key={fact.id}>
+                          {index > 0 && <br />}
+                          {`${fact.description}: ${fact.value}`}
+                        </React.Fragment>
+                      ))}
+                    </Typography>
+                  </Stack>
+                )}
                 <Stack spacing={1} direction="row">
-                  <Tooltip title="Update: Last time the maturity check was updated">
-                    <AccessTimeIcon color="primary" />
+                  <Tooltip title="Reference: Consult the documentation linked here for more background info.">
+                    <MenuBookIcon color="primary" />
                   </Tooltip>
-                  <Typography variant="subtitle2" className={filters}>
-                    {updated ? `Updated ${updated}` : 'Not yet run'}
+                  <Typography>
+                    {checkResult.check.links?.map((link, index) => (
+                      <React.Fragment key={link.url}>
+                        {index > 0 && ', '}
+                        <Link to={link.url}>{link.title}</Link>
+                      </React.Fragment>
+                    ))}
                   </Typography>
                 </Stack>
               </Stack>
             </Grid>
             <Grid item xs={3}>
-              <Stack spacing={1}>
+              <Stack spacing={0.2}>
                 <Stack spacing={1} direction="row">
                   <Tooltip title="Category: The category for this check">
                     <CategoryIcon color="primary" />
@@ -182,13 +171,11 @@ const MaturityCheckTableRow = ({
                   </Typography>
                 </Stack>
                 <Stack spacing={1} direction="row">
-                  <Tooltip title="Reference: Consult the documentation linked here for more background info.">
-                    <MenuBookIcon color="primary" />
+                  <Tooltip title="Update: Last time the maturity check was updated">
+                    <AccessTimeIcon color="primary" />
                   </Tooltip>
-                  <Typography>
-                    <Link to={checkResult.check.links?.at(0)?.url ?? ''}>
-                      {checkResult.check.links?.at(0)?.title}
-                    </Link>
+                  <Typography variant="subtitle2" className={filters}>
+                    {updated ? `${updated.slice(0, 19)}` : 'Not yet run'}
                   </Typography>
                 </Stack>
               </Stack>
@@ -208,24 +195,28 @@ export const MaturityCheckTable = ({
 }: Props) => {
   // Expand only the next rank Category needed to level up
   const [expanded, setExpanded] = useState<boolean>(rank.rank + 1 === category);
+  if (checks.length === 0) return <></>;
+
   const handleChange = () => (_event: SyntheticEvent, newExpanded: boolean) => {
     setExpanded(newExpanded);
   };
 
-  if (checks.length === 0) return <></>;
-
   return (
     <div>
-      <Accordion expanded={expanded} onChange={handleChange()}>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <MaturityRankAvatar
-                value={{ rank: category, isMaxRank: category <= rank.rank }}
-                variant="chip"
-              />
-            </Grid>
-          </Grid>
+      <Accordion
+        expanded={expanded}
+        onChange={handleChange()}
+        elevation={1}
+        sx={{ border: '1.5px solid rgba(173, 172, 172, 0.26)' }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2-content"
+          id="panel2-header"
+        >
+          <MaturityRankChip
+            value={{ rank: category, isMaxRank: category <= rank.rank }}
+          />
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={1}>

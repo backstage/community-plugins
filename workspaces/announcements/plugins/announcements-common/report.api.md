@@ -16,8 +16,11 @@ export type Announcement = {
   created_at: string;
   active: boolean;
   start_at: string;
+  until_date?: string | null;
   on_behalf_of?: string;
   tags?: Tag[];
+  sendNotification?: boolean;
+  updated_at: string;
 };
 
 // @public
@@ -41,8 +44,10 @@ export type AnnouncementsFilters = {
   tags?: string[];
   page?: number;
   active?: boolean;
-  sortBy?: 'created_at' | 'start_at';
+  sortBy?: 'created_at' | 'start_at' | 'updated_at';
   order?: 'asc' | 'desc';
+  current?: boolean;
+  sendNotification?: boolean;
 };
 
 // @public
@@ -60,6 +65,21 @@ export type AnnouncementsList = {
 export const announcementUpdatePermission: BasicPermission;
 
 // @public
+export const AUDITOR_ACTION_CREATE = 'create';
+
+// @public
+export const AUDITOR_ACTION_DELETE = 'delete';
+
+// @public
+export const AUDITOR_ACTION_UPDATE = 'update';
+
+// @public
+export const AUDITOR_FETCH_EVENT_ID = 'announcements-fetch';
+
+// @public
+export const AUDITOR_MUTATE_EVENT_ID = 'announcements-mutate';
+
+// @public
 export type Category = {
   slug: string;
   title: string;
@@ -72,7 +92,7 @@ export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create_announcement';
 export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
 
 // @public
-export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
+export const EVENTS_ACTION_CREATE_TAG = 'create_tag';
 
 // @public
 export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
@@ -81,13 +101,19 @@ export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
 export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
 
 // @public
-export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
+export const EVENTS_ACTION_DELETE_TAG = 'delete_tag';
 
 // @public
 export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
 
 // @public
 export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
+
+// @public
+export const MAX_EXCERPT_LENGTH = 50;
+
+// @public
+export const MAX_TITLE_LENGTH = 50;
 
 // @public
 export const MAX_TITLE_TAG_LENGTH = 100;

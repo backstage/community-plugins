@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-playlist-common",
-  "version": "0.8.0",
+  "version": "0.11.0",
   "description": "Common functionalities for the playlist plugin",
   "backstage": {
     "role": "common-library",
@@ -39,9 +39,9 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.9.1"
+    "@backstage/plugin-permission-common": "^0.9.2"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1"
+    "@backstage/cli": "^0.34.4"
   }
 }

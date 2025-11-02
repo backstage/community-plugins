@@ -4,15 +4,17 @@
 
 ```ts
 import { AnyApiFactory } from '@backstage/core-plugin-api';
-import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/core-plugin-api';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @alpha
-const _default: FrontendPlugin<{}, {}, {}>;
+const _default: OverridableFrontendPlugin<{}, {}, {}>;
 export default _default;
 
 // @alpha
@@ -32,11 +34,15 @@ export const npmBackendApi: ExtensionDefinition<{
   name: 'npmBackendApi';
   config: {};
   configInput: {};
-  output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
   inputs: {};
-  params: {
-    factory: AnyApiFactory;
-  };
+  params: <
+    TApi,
+    TImpl extends TApi,
+    TDeps extends { [name in string]: unknown },
+  >(
+    params: ApiFactory<TApi, TImpl, TDeps>,
+  ) => ExtensionBlueprintParams<AnyApiFactory>;
 }>;
 
 // @public (undocumented)

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-gcp-projects",
-  "version": "0.11.0",
+  "version": "0.14.0",
   "description": "A Backstage plugin that helps you manage projects in GCP",
   "backstage": {
     "role": "frontend-plugin",
@@ -41,15 +41,15 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.17.4",
-    "@backstage/core-plugin-api": "^1.10.9",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@react-hookz/web": "^24.0.0",
     "@types/react": "^16.13.1 || ^17.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/dev-utils": "^1.1.12",
+    "@backstage/cli": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

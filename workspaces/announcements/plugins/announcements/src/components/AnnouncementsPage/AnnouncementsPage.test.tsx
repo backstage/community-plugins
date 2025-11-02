@@ -156,6 +156,7 @@ describe('AnnouncementsPage', () => {
 
     it('should display "today" when the announcement start date matches current date', async () => {
       const today = DateTime.now().toISODate();
+      const weekFromToday = DateTime.now().plus({ days: 7 }).toISODate();
       const todayAnnouncement: AnnouncementsList = {
         count: 1,
         results: [
@@ -168,6 +169,8 @@ describe('AnnouncementsPage', () => {
             created_at: today,
             active: true,
             start_at: today,
+            until_date: weekFromToday,
+            updated_at: today,
           },
         ],
       };
@@ -201,6 +204,7 @@ describe('AnnouncementsPage', () => {
 
     it('should hide start date when hideStartAt is true', async () => {
       const today = DateTime.now().toISODate();
+      const weekFromToday = DateTime.now().plus({ days: 7 }).toISODate();
       const todayAnnouncement: AnnouncementsList = {
         count: 1,
         results: [
@@ -213,6 +217,8 @@ describe('AnnouncementsPage', () => {
             created_at: today,
             active: true,
             start_at: today,
+            until_date: weekFromToday,
+            updated_at: today,
           },
         ],
       };
@@ -252,6 +258,8 @@ describe('AnnouncementsPage', () => {
             created_at: '2023-01-01T10:00:00.000Z',
             active: true,
             start_at: '2023-01-01T10:00:00.000Z',
+            until_date: '2023-02-01T10:00:00.000Z',
+            updated_at: '2023-01-01T10:00:00.000Z',
             tags: [
               { slug: 'important', title: 'Important' },
               { slug: 'release', title: 'Release' },
@@ -308,8 +316,10 @@ describe('AnnouncementsPage', () => {
             body: 'Full content',
             publisher: 'default:user/user',
             created_at: '2023-01-01T10:00:00.000Z',
+            updated_at: '2023-01-01T10:00:00.000Z',
             active: true,
             start_at: '2023-01-01T10:00:00.000Z',
+            until_date: '2023-02-01T10:00:00.000Z',
             tags: [
               { slug: 'important', title: 'Important' },
               { slug: 'release', title: 'Release' },

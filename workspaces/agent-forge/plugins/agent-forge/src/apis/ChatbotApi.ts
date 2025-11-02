@@ -20,19 +20,26 @@ import {
   MessageSendParams,
   SendMessageResponse,
   Task,
-  TextPart,
+  AgentCard,
 } from '../a2a/schema';
+import { IdentityApi } from '@backstage/core-plugin-api';
 
 export interface IChatbotApiOptions {}
 
 export class ChatbotApi {
   private client: A2AClient | null = null;
   private contextId: string;
-  constructor(private apiBaseUrl: string, _?: IChatbotApiOptions) {
+  private identityApi: IdentityApi;
+  constructor(
+    private apiBaseUrl: string,
+    options: { identityApi: IdentityApi },
+    _?: IChatbotApiOptions,
+  ) {
     this.contextId = '';
     if (!this.apiBaseUrl) {
       throw new Error('Agent URL is not provided');
     }
+    this.identityApi = options.identityApi;
     try {
       this.client = new A2AClient(this.apiBaseUrl);
     } catch (error) {
@@ -42,8 +49,9 @@ export class ChatbotApi {
 
   public async submitA2ATask(newContext: boolean, msg: string) {
     try {
-      // Send a simple task (pass only params)
       const msgId = uuidv4();
+      const { token } = await this.identityApi.getCredentials();
+
       const sendParams: MessageSendParams = {
         message: {
           messageId: msgId,
@@ -57,27 +65,26 @@ export class ChatbotApi {
       }
       // Method now returns Task | null directly
       const taskResult: SendMessageResponse | undefined =
-        await this.client?.sendMessage(sendParams);
+        await this.client?.sendMessage(sendParams, token);
 
       const task: Task = taskResult?.result as Task;
 
       this.contextId = task.contextId;
-      const status = task.status.state;
-      let result: string | undefined = '';
-      if (status === 'completed') {
-        if (task.artifacts) {
-          const part = task.artifacts[0].parts[0] as TextPart;
-          result = part.text;
-        }
-      } else {
-        const part = task.status.message?.parts[0] as TextPart;
-        result = part.text;
-      }
 
-      return result;
+      // Return the full task response instead of just the text
+      return task;
     } catch (error) {
       // console.log(error)
-      return 'Error connecting to agent';
+      throw new Error('Error connecting to agent');
+    }
+  }
+
+  public async getSkillExamples() {
+    const card: AgentCard | undefined = await this.client?.getAgentCard();
+    try {
+      return card?.skills[0].examples;
+    } catch (error) {
+      return [];
     }
   }
 }

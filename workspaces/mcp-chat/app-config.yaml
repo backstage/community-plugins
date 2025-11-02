@@ -1,0 +1,114 @@
+app:
+  title: MCP Chat
+  baseUrl: http://localhost:3000
+
+organization:
+  name: 'MCP Chat'
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+# --------- MCP Chat Configuration ---------
+mcpChat:
+  providers:
+    - id: openai
+      token: ${OPENAI_API_KEY}
+      model: gpt-4o-mini
+    - id: gemini
+      token: ${GEMINI_API_KEY}
+      model: gemini-2.5-flash
+    - id: claude
+      token: ${CLAUDE_API_KEY}
+      model: claude-sonnet-4-20250514
+    - id: ollama
+      baseUrl: 'http://localhost:11434'
+      model: llama3.1:8b
+    - id: litellm
+      baseUrl: 'http://localhost:4000'
+      token: ${LITELLM_API_KEY}
+      model: gpt-4o-mini
+  mcpServers:
+    - id: brave-search-server
+      name: Brave Search Server
+      npxCommand: '@modelcontextprotocol/server-brave-search'
+      env:
+        BRAVE_API_KEY: ${BRAVE_API_KEY}
+    - id: kubernetes-server
+      name: Kubernetes Server
+      npxCommand: 'kubernetes-mcp-server@latest'
+      env:
+        KUBECONFIG: ${KUBECONFIG}
+    - id: backstage-server
+      name: Backstage Server
+      url: 'http://localhost:7007/api/mcp-actions/v1'
+      headers:
+        Authorization: 'Bearer ${BACKSTAGE_API_TOKEN}'
+  systemPrompt: "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered."
+  quickPrompts:
+    - title: 'Web Search & Research'
+      description: 'Find the latest information, documentation, and best practices'
+      prompt: 'Search for the latest developments in Model Context Protocol and its applications'
+      category: Research
+    - title: 'Kubernetes & Cloud'
+      description: 'Query cloud resources, containers, and deployment status'
+      prompt: 'Show me the current Kubernetes deployments, pods status, and resource utilization in a nicely formatted text with bullet points'
+      category: Infrastructure
+    - title: 'Backstage Insights'
+      description: 'Get insights from Backstage, including catalog entities and documentation'
+      prompt: 'Describe the "example-app" microservice in our Backstage catalog'
+      category: Portals
+# ------------------------------------------------
+
+proxy:
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'docker'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest: {}
+
+scaffolder:
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    - type: file
+      target: ../../examples/entities.yaml
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+kubernetes:
+
+permission:
+  enabled: true

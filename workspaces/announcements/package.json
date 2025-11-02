@@ -7,6 +7,7 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
+    "start:next": "yarn start app-next backend",
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
@@ -38,9 +39,9 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
+    "@backstage/cli": "^0.34.4",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.15.0",
+    "@backstage/repo-tools": "^0.15.3",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
     "knip": "^5.27.4",

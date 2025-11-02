@@ -1,5 +1,27 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.11.0
+
+### Minor Changes
+
+- 06602be: Backstage version bump to v1.44.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 7fcfb86: Backstage version bump to v1.43.2
+
+## 0.9.0
+
+### Minor Changes
+
+- 2cea0d0: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- c2b33a1: Decouple entities from the board logic for reuse the board on other places
+
 ## 0.8.0
 
 ### Minor Changes

@@ -31,7 +31,7 @@ describe('AppCommitLink', () => {
       <AppCommitLink
         application={mockApplication}
         entity={mockEntity}
-        revisionsMap={{}}
+        revisions={[]}
         latestRevision={mockApplication.status.history?.[1] as History}
       />,
     );
@@ -46,10 +46,7 @@ describe('AppCommitLink', () => {
       <AppCommitLink
         application={mockApplication}
         entity={mockEntity}
-        revisionsMap={{
-          '90f9758b7033a4bbb7c33a35ee474d61091644bc':
-            mockRevision as unknown as RevisionInfo,
-        }}
+        revisions={[mockRevision as unknown as RevisionInfo]}
         latestRevision={mockApplication.status.history?.[1] as History}
       />,
     );
@@ -80,10 +77,7 @@ describe('AppCommitLink', () => {
           },
         }}
         entity={{ ...mockEntity, metadata: { name: 'entity' } }}
-        revisionsMap={{
-          '90f9758b7033a4bbb7c33a35ee474d61091644bc':
-            mockRevision as unknown as RevisionInfo,
-        }}
+        revisions={[mockRevision as unknown as RevisionInfo]}
         latestRevision={mockApplication.status.history?.[1] as History}
       />,
     );
@@ -99,10 +93,7 @@ describe('AppCommitLink', () => {
       <AppCommitLink
         application={mockApplication}
         entity={mockEntity}
-        revisionsMap={{
-          '90f9758b7033a4bbb7c33a35ee474d61091644bc':
-            mockRevision as unknown as RevisionInfo,
-        }}
+        revisions={[mockRevision as unknown as RevisionInfo]}
         latestRevision={mockApplication.status.history?.[1] as History}
       />,
     );
@@ -115,10 +106,7 @@ describe('AppCommitLink', () => {
       <AppCommitLink
         application={mockApplication}
         entity={mockEntity}
-        revisionsMap={{
-          '90f9758b7033a4bbb7c33a35ee474d61091644bc':
-            mockRevision as unknown as RevisionInfo,
-        }}
+        revisions={[mockRevision as unknown as RevisionInfo]}
         latestRevision={mockApplication.status.history?.[1] as History}
         showAuthor
       />,

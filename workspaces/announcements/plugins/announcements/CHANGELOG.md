@@ -1,5 +1,116 @@
 # @backstage-community/plugin-announcements
 
+## 0.16.0
+
+### Minor Changes
+
+- 1c076d9: - Centered text for empty tables in:
+  - Announcements
+  - Category
+  - Tags
+  - Properly mounted in the frontend the `/tags` path
+  - Updated `CategoriesPage` and `TagsPage` in order to display the `ContextMenu`
+  - Added titleLength prop in order to truncate title on `AnnouncementDetails`
+  - Fixed insert of Categories from `CategoriesPage` and clean up on dialog
+  - Added in the `NewAnnouncementBanner` a `cardOptions={{titleLength,excerptLength }}` props, this would allow to truncate text. Default is 50.
+  - Now in the `NewAnnouncementBanner` when the title get clicked, the alert is dismissed as user navigate to alert details
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+  - @backstage-community/plugin-announcements-react@0.14.1
+
+## 0.15.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+  - @backstage-community/plugin-announcements-react@0.14.0
+
+## 0.14.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+  - @backstage-community/plugin-announcements-react@0.13.0
+
+## 0.13.1
+
+### Patch Changes
+
+- 93bb787: Fixed the typings for the Announcements new frontend system plugin, which previously prevented correct overriding.
+- 6efe1a3: - Fixed table rendering in `<AnnouncementsPage markdownRenderer="md-editor" />`. Table styling was not correctly applied when using the Backstage Light theme.
+  - Updated `@uiw/react-md-editor` dependency to `^4.0.8`.
+
+## 0.13.0
+
+### Minor Changes
+
+- aca5bee: Adds `defaultInactive` prop to `AnnouncementsPage`, to be used as the initial form value of `active` for new announcements.
+- 58ccd64: Fixed handling of `active` prop in NewAnnouncementBanner
+  Extended signal and notification on update when the annoucencement is activated
+  Updated `EditAnnoucementPage` to navigate to root path as the announcement creation page
+  Updated `EditAnnoucementPage` alertApi on success to be transient
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 0d56a66: Added search extensions for new frontend system
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+  - @backstage-community/plugin-announcements-react@0.12.0
+
+## 0.12.1
+
+### Patch Changes
+
+- 2007a96: Fixed #5322 that caused `500` errors when fetching existing announcements with null `until_date`.
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+  - @backstage-community/plugin-announcements-react@0.11.1
+
+## 0.12.0
+
+### Minor Changes
+
+- 4a3e603: Added support for an `until_date` field in announcements and introduced a new `current` filter.
+- 4a89fd8: With these changes, notifications can be enabled whenever new announcement is created. Announcement notifications are disabled by-default. For details, about notification, please refer [`Notifications`](https://backstage.io/docs/notifications/) docs.
+
+  announcements: integration with notifications #4378
+
+### Patch Changes
+
+- 92b9e8c: Fix a bug in the Edit announcement page where the page does not update the announcement if the announcement is missing a category
+- Updated dependencies [4a3e603]
+- Updated dependencies [4a89fd8]
+  - @backstage-community/plugin-announcements-common@0.9.0
+  - @backstage-community/plugin-announcements-react@0.11.0
+
+## 0.11.0
+
+### Minor Changes
+
+- e121abb: Backstage version bump to v1.42.3
+
+### Patch Changes
+
+- d70723f: Allow creating new announcement category for edit
+- Updated dependencies [e121abb]
+- Updated dependencies [d70723f]
+  - @backstage-community/plugin-announcements-common@0.8.0
+  - @backstage-community/plugin-announcements-react@0.10.0
+
 ## 0.10.2
 
 ### Patch Changes

@@ -1,5 +1,8 @@
 import { forwardRef } from 'react';
-import { Chip, makeStyles, Theme } from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+import Chip from '@mui/material/Chip';
+
+import { makeStyles } from '@mui/styles';
 
 export enum TagColor {
   CRITICAL = 'critical',

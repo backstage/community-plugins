@@ -14,34 +14,51 @@
  * limitations under the License.
  */
 import {
-  AnalyticsApi,
-  AnalyticsEvent,
+  AnalyticsApi as LegacyAnalyticsApi,
+  AnalyticsEvent as LegacyAnalyticsEvent,
   ConfigApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
+import {
+  AnalyticsEvent,
+  AnalyticsImplementation,
+} from '@backstage/frontend-plugin-api';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 
 /**
  * Segment provider for the Backstage Analytics API.
  * @public
  */
-export class SegmentAnalytics implements AnalyticsApi {
+export class SegmentAnalytics
+  implements LegacyAnalyticsApi, AnalyticsImplementation
+{
   private readonly analytics: AnalyticsBrowser;
   private readonly testMode: boolean;
   private readonly maskIP: boolean;
+  private readonly appVersion: string | undefined;
+  private readonly backstageVersion: string | undefined;
   private readonly identityApi: IdentityApi | undefined;
 
   /**
    * Instantiate the implementation and initialize Segment client.
    */
   private constructor(
-    options: { writeKey: string; testMode: boolean; maskIP: boolean },
+    options: {
+      writeKey: string;
+      testMode: boolean;
+      maskIP: boolean;
+      appVersion?: string;
+      backstageVersion?: string;
+    },
     identityApi?: IdentityApi,
   ) {
-    const { writeKey, testMode, maskIP } = options;
+    const { writeKey, testMode, maskIP, appVersion, backstageVersion } =
+      options;
     this.identityApi = identityApi;
     this.testMode = testMode;
     this.maskIP = maskIP;
+    this.appVersion = appVersion;
+    this.backstageVersion = backstageVersion;
     this.analytics = new AnalyticsBrowser();
     this.analytics.load({ writeKey: writeKey });
   }
@@ -60,6 +77,12 @@ export class SegmentAnalytics implements AnalyticsApi {
       : config.getOptionalString('app.analytics.segment.writeKey') ?? '';
     const maskIP =
       config.getOptionalBoolean('app.analytics.segment.maskIP') ?? false;
+    const appVersion = config.getOptionalString(
+      'app.analytics.segment.appVersion',
+    );
+    const backstageVersion = config.getOptionalString(
+      'app.analytics.segment.backstageVersion',
+    );
 
     if (!writeKey && !testMode) {
       const error = new Error(
@@ -75,18 +98,29 @@ export class SegmentAnalytics implements AnalyticsApi {
         writeKey,
         testMode,
         maskIP,
+        appVersion,
+        backstageVersion,
       },
       options?.identityApi,
     );
   }
 
-  async captureEvent(event: AnalyticsEvent) {
+  async captureEvent(event: AnalyticsEvent | LegacyAnalyticsEvent) {
     // Don't capture events in test mode.
     if (this.testMode) {
       return;
     }
     const analyticsOpts = this.maskIP ? { ip: '0.0.0.0' } : {};
     const { action, subject, context, attributes } = event;
+
+    // Prepare common properties that include version information
+    const commonProperties: Record<string, string> = {};
+    if (this.appVersion) {
+      commonProperties.appVersion = this.appVersion;
+    }
+    if (this.backstageVersion) {
+      commonProperties.backstageVersion = this.backstageVersion;
+    }
 
     // Identify users.
     if (action === 'identify') {
@@ -97,7 +131,7 @@ export class SegmentAnalytics implements AnalyticsApi {
       } else {
         userId = await this.getPIIFreeUserID(subject);
       }
-      await this.analytics.identify(userId, {}, analyticsOpts);
+      await this.analytics.identify(userId, commonProperties, analyticsOpts);
       return;
     }
 
@@ -106,7 +140,10 @@ export class SegmentAnalytics implements AnalyticsApi {
       await this.analytics.page(
         context.pluginId,
         subject,
-        context,
+        {
+          ...context,
+          ...commonProperties,
+        },
         analyticsOpts,
       );
       return;
@@ -117,7 +154,10 @@ export class SegmentAnalytics implements AnalyticsApi {
       action,
       {
         subject: subject,
-        context: context,
+        context: {
+          ...context,
+          ...commonProperties,
+        },
         attributes: attributes,
       },
       analyticsOpts,

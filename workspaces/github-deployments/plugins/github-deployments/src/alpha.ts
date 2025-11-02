@@ -25,7 +25,7 @@ import { rootRouteRef } from './routes';
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'github-deployments',
+  pluginId: 'github-deployments',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
   }),

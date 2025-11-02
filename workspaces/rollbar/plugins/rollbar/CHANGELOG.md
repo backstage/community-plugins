@@ -1,5 +1,18 @@
 # @backstage-community/plugin-rollbar
 
+## 0.9.0
+
+### Minor Changes
+
+- b76f4c5: Backstage version bump to v1.43.2
+- d10b44c: Backstage version bump to v1.44.0
+
+## 0.8.1
+
+### Patch Changes
+
+- 8db5951: Allow custom project environment name
+
 ## 0.8.0
 
 ### Minor Changes

@@ -16,13 +16,12 @@
 import { RunStatus } from '@patternfly/react-topology';
 import classNames from 'classnames';
 
-import { Status } from '@janus-idp/shared-react';
-
+import { Status } from '../common/Status';
 import { StepStatus } from '../../types/taskRun';
 
 import './PipelineVisualizationStepList.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 export type PipelineVisualizationStepListProps = {
   isSpecOverview: boolean;

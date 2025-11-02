@@ -1,5 +1,37 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.14.0
+
+### Minor Changes
+
+- a543616: Backstage version bump to v1.44.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 3e41304: Backstage version bump to v1.43.2
+
+## 0.12.2
+
+### Patch Changes
+
+- 20ccec6: Fallback to document modified by display name if public name is not defined
+
+## 0.12.1
+
+### Patch Changes
+
+- 076d975: Option to cache Confluence documents to reduce API calls.
+
+  The cache uses document version information, so you can safely set long cache durations (if your cache memory allows it!). You can enable caching with `documentCacheEnabled: true` and adjust the cache duration with `documentCacheTtl` (default to 24h). Since indexing will be faster, you may want to reduce your indexing schedule interval.
+
+## 0.12.0
+
+### Minor Changes
+
+- 38ce78d: Backstage version bump to v1.42.3
+
 ## 0.11.0
 
 ### Minor Changes

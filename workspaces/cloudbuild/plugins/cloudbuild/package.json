@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cloudbuild",
-  "version": "0.13.0",
+  "version": "0.16.0",
   "description": "A Backstage plugin that integrates towards Google Cloud Build",
   "backstage": {
     "role": "frontend-plugin",
@@ -41,10 +41,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.17.4",
-    "@backstage/core-plugin-api": "^1.10.9",
-    "@backstage/plugin-catalog-react": "^1.19.1",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
@@ -53,9 +53,9 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/dev-utils": "^1.1.12",
-    "@backstage/test-utils": "^1.7.10",
+    "@backstage/cli": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

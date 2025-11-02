@@ -48,6 +48,10 @@ export const signalAnnouncement = async (
         ...announcement,
         created_at: announcement.created_at.toString(),
         start_at: announcement.start_at.toString(),
+        until_date: announcement.until_date
+          ? announcement.until_date.toString()
+          : null,
+        updated_at: announcement.updated_at.toString(),
       },
     },
   });

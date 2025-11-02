@@ -26,7 +26,6 @@ import OfflineIcon from '@material-ui/icons/WifiOff';
 
 import { EntityTeamPullRequestsContent } from '../src';
 import { githubAuthApiRef } from '@backstage/frontend-plugin-api';
-import React from 'react';
 
 const GITHUB_PULL_REQUESTS_ANNOTATION = 'github.com/project-slug';
 const GITHUB_USER_LOGIN_ANNOTATION = 'github.com/user-login';

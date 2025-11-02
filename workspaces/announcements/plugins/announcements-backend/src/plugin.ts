@@ -22,6 +22,7 @@ import { signalsServiceRef } from '@backstage/plugin-signals-node';
 import { eventsServiceRef } from '@backstage/plugin-events-node';
 import { buildAnnouncementsContext } from './service';
 import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
+import { notificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * A backend for the announcements plugin.
@@ -41,6 +42,8 @@ export const announcementsPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         permissionsRegistry: coreServices.permissionsRegistry,
         signals: signalsServiceRef,
+        notifications: notificationService,
+        auditor: coreServices.auditor,
       },
       async init({
         config,
@@ -52,6 +55,8 @@ export const announcementsPlugin = createBackendPlugin({
         permissions,
         permissionsRegistry,
         signals,
+        notifications,
+        auditor,
       }) {
         const context = await buildAnnouncementsContext({
           config,
@@ -62,6 +67,8 @@ export const announcementsPlugin = createBackendPlugin({
           permissions,
           permissionsRegistry,
           signals,
+          notifications,
+          auditor,
         });
 
         permissionsRegistry.addPermissions(

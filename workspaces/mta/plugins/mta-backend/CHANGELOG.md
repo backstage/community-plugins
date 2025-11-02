@@ -1,5 +1,21 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.5.1
+
+### Patch Changes
+
+- ae8c5a9: Remove the need for backend plugin root config
+
+## 0.5.0
+
+### Minor Changes
+
+- eb387c6: Updated MTA plugins for Backstage v1.42.5:
+
+  - Migrated dynamic plugin installer from legacy to new format
+  - Enhanced scaffolder action with better type safety and output handling
+  - Updated dependencies to align with Backstage v1.42.5
+
 ## 0.4.1
 
 ### Patch Changes

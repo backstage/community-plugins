@@ -25,7 +25,7 @@ import { rootRouteRef } from '../routes';
  */
 export const announcementsPage = PageBlueprint.make({
   params: {
-    defaultPath: '/announcements',
+    path: '/announcements',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () =>
       import('../components/Router').then(m => compatWrapper(<m.Router />)),

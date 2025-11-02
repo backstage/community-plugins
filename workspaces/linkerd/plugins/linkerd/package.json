@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-linkerd",
-  "version": "0.11.0",
+  "version": "0.14.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -46,12 +46,12 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-plugin-api": "^1.10.9",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/frontend-plugin-api": "^0.10.4",
-    "@backstage/plugin-catalog-react": "^1.19.1",
-    "@backstage/theme": "^0.6.7",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.61",
@@ -60,14 +60,14 @@
     "reactflow": "^11.11.0"
   },
   "peerDependencies": {
-    "@backstage/plugin-kubernetes": "^0.12.9",
+    "@backstage/plugin-kubernetes": "^0.12.12",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/core-app-api": "^1.18.0",
-    "@backstage/dev-utils": "^1.1.12",
-    "@backstage/test-utils": "^1.7.10",
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-app-api": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",

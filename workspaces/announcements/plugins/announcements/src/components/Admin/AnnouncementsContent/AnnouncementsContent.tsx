@@ -52,7 +52,13 @@ import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
 import { DateTime } from 'luxon';
 
-export const AnnouncementsContent = () => {
+type AnnouncementsContentProps = {
+  defaultInactive?: boolean;
+};
+
+export const AnnouncementsContent = ({
+  defaultInactive,
+}: AnnouncementsContentProps) => {
   const alertApi = useApi(alertApiRef);
   const announcementsApi = useApi(announcementsApiRef);
   const navigate = useNavigate();
@@ -260,6 +266,20 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
+        <Typography>
+          {t('admin.announcementsContent.table.until_date')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'until_date',
+      type: 'date',
+      render: rowData =>
+        rowData?.until_date
+          ? DateTime.fromISO(rowData.until_date).toFormat('M/d/yyyy')
+          : '-',
+    },
+    {
+      title: (
         <Typography>{t('admin.announcementsContent.table.actions')}</Typography>
       ),
       render: rowData => {
@@ -314,7 +334,7 @@ export const AnnouncementsContent = () => {
         {showCreateAnnouncementForm && (
           <Grid item xs={12}>
             <AnnouncementForm
-              initialData={{} as Announcement}
+              initialData={{ active: !defaultInactive } as Announcement}
               onSubmit={onSubmit}
             />
           </Grid>
@@ -327,7 +347,7 @@ export const AnnouncementsContent = () => {
             columns={columns}
             data={announcements?.results ?? []}
             emptyContent={
-              <Typography style={{ padding: 2 }}>
+              <Typography style={{ padding: 2, textAlign: 'center' }}>
                 {t('admin.announcementsContent.noAnnouncementsFound')}
               </Typography>
             }

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-entity-validation",
-  "version": "0.10.0",
+  "version": "0.13.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "entity-validation",
@@ -9,9 +9,7 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "homepage": "https://backstage.io",
   "repository": {
@@ -23,6 +21,21 @@
   "sideEffects": false,
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
@@ -36,13 +49,15 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-client": "^1.10.2",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.17.4",
-    "@backstage/core-plugin-api": "^1.10.9",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-common": "^1.1.5",
-    "@backstage/plugin-catalog-react": "^1.19.1",
+    "@backstage/catalog-client": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-common": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
     "@codemirror/language": "^6.0.0",
     "@codemirror/legacy-modes": "^6.1.0",
     "@codemirror/view": "^6.0.0",
@@ -57,9 +72,11 @@
     "yaml": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/dev-utils": "^1.1.12",
-    "@backstage/test-utils": "^1.7.10",
+    "@backstage/cli": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

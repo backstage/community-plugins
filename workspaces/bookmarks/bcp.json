@@ -1,3 +1,5 @@
 {
-  "knip-reports": true
+  "autoVersionBump": true,
+  "knipReports": true,
+  "listDeprecations": true
 }

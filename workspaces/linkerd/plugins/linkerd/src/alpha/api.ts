@@ -15,7 +15,6 @@
  */
 import {
   ApiBlueprint,
-  createApiFactory,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
@@ -23,12 +22,11 @@ import { linkerdPluginRef } from '../plugin';
 import { LinkerdClient } from '../api/client';
 
 export const linkerdApi = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: defineParams =>
+    defineParams({
       api: linkerdPluginRef,
       deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
       factory: ({ discoveryApi, fetchApi }) =>
         new LinkerdClient({ discoveryApi, fetchApi }),
     }),
-  },
 });

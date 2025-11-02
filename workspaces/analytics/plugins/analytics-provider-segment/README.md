@@ -18,6 +18,21 @@ This plugin contains no other functionality.
 
 1. Wire up the API implementation to your App in `packages/app/src/apis.ts`:
 
+   If your App is built using the New Frontend System, it's enough to supply this
+   plugin to `createApp()`:
+
+   ```tsx
+   import analyticsProviderSegmentPlugin from '@backstage-community/plugin-analytics-provider-segment/alpha';
+
+   const app = createApp({
+     features: [analyticsProviderSegmentPlugin],
+   });
+   ```
+
+   This can be skipped entirely if you have feature discovery enabled.
+
+   For all other Backstage apps, wire up the API implementation like this:
+
    ```tsx title="packages/app/src/apis.ts"
    /* highlight-add-start */
    import { SegmentAnalytics } from '@backstage-community/plugin-analytics-provider-segment';
@@ -57,6 +72,26 @@ app:
       maskIP: true # prevents IP addresses from being sent if true
       # highlight-end
 ```
+
+### Version Tracking
+
+To include version information in your analytics events (helpful for version-based filtering in dashboards), you can configure:
+
+```yaml title="app-config.yaml"
+app:
+  analytics:
+    segment:
+      writeKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      appVersion: '1.2.3' # Your Backstage app version
+      backstageVersion: '1.17.0' # Backstage framework version
+```
+
+When configured, these version fields will be included in all analytics events sent to Segment, allowing you to:
+
+- Filter analytics dashboards by app version
+- Track feature adoption across different versions
+- Monitor user behavior changes between versions
+- Create version-specific analytics reports
 
 ## Debugging and Testing
 

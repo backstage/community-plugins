@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import type { MouseEvent } from 'react';
-
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import {
   Toolbar,
@@ -29,14 +28,19 @@ import {
 } from '@patternfly/react-core';
 import FilterIcon from '@patternfly/react-icons/dist/esm/icons/filter-icon';
 import {
-  healthStatusMenuItems,
-  syncStatusMenuItems,
   resourcesFiltersMenuItems,
+  syncStatusMenuItems,
   kindFilterMenuItems,
+  healthStatusMenuItems,
 } from './Filters';
 import { handleDelete, handleDeleteGroup } from './filterHelpers';
-import { FiltersType, ResourcesFilters } from '../../../../../types/resources';
+import {
+  FiltersType,
+  ResourcesFilters,
+  getResourceFilterTranslation,
+} from '../../../../../types/resources';
 import { useDarkTheme } from '../../../../../hooks/useDarkTheme';
+import { useTranslation } from '../../../../../hooks/useTranslation';
 
 interface ResourcesFilterByProps {
   filters: FiltersType;
@@ -60,6 +64,8 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
     useState<boolean>(false);
   const [isKindFilterExpanded, setIsKindFilterExpanded] =
     useState<boolean>(false);
+
+  const { t } = useTranslation();
 
   useDarkTheme();
 
@@ -97,7 +103,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
     <>
       <ToolbarItem>
         <Select
-          aria-label="ResourcesFilters"
+          aria-label={t(
+            'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.resourceFilters',
+          )}
           id="ResourcesFilters"
           toggle={toggleRef => (
             <MenuToggle
@@ -107,16 +115,14 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
               style={{ width: '200px' }}
             >
               <FilterIcon />{' '}
-              {resourcesFilterBy
-                ? ResourcesFilters[resourcesFilterBy]
-                : 'Filter by'}
+              {getResourceFilterTranslation(resourcesFilterBy, t)}
             </MenuToggle>
           )}
           onSelect={onResourcesFilterSelect}
           selected={resourcesFilterBy}
           isOpen={isResourcesFilterExpanded}
         >
-          {resourcesFiltersMenuItems()}
+          {resourcesFiltersMenuItems(t)}
         </Select>
       </ToolbarItem>
 
@@ -131,7 +137,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         >
           {resourcesFilterBy === 'SearchByName' && (
             <SearchInput
-              aria-label="Search by name"
+              aria-label={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.searchByNameInput',
+              )}
               onChange={(_, value) =>
                 setFilters(prev => ({
                   ...prev,
@@ -143,7 +151,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                 setFilters(prev => ({ ...prev, SearchByName: [] }))
               }
               style={{ height: '36px', width: '200px' }}
-              placeholder="Search by name"
+              placeholder={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.searchByNameInput',
+              )}
             />
           )}
         </ToolbarFilter>
@@ -161,7 +171,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         >
           {resourcesFilterBy === 'HealthStatus' && (
             <Select
-              aria-label="Health Status"
+              aria-label={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.HealthStatus',
+              )}
               toggle={toggleRef => (
                 <MenuToggle
                   ref={toggleRef}
@@ -172,7 +184,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                   data-testid="health-status-toggle"
                   style={{ width: '260px' }}
                 >
-                  Filter by Health status{' '}
+                  {t(
+                    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusInput',
+                  )}{' '}
                   {filters.HealthStatus.length > 0 && (
                     <Badge isRead>{filters.HealthStatus.length}</Badge>
                   )}
@@ -184,7 +198,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
               onOpenChange={isOpen => setIsHealthStatusExpanded(isOpen)}
               isOpen={isHealthStatusExpanded}
             >
-              {healthStatusMenuItems(filters)}
+              {healthStatusMenuItems(filters, t)}
             </Select>
           )}
         </ToolbarFilter>
@@ -198,7 +212,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         >
           {resourcesFilterBy === 'SyncStatus' && (
             <Select
-              aria-label="Sync Status"
+              aria-label={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.syncStatus',
+              )}
               toggle={toggleRef => (
                 <MenuToggle
                   ref={toggleRef}
@@ -206,7 +222,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                   isExpanded={isSyncStatusExpanded}
                   style={{ width: '240px' }}
                 >
-                  Filter by Sync status{' '}
+                  {t(
+                    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusInput',
+                  )}{' '}
                   {filters.SyncStatus.length > 0 && (
                     <Badge isRead>{filters.SyncStatus.length}</Badge>
                   )}
@@ -218,7 +236,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
               onOpenChange={isOpen => setIsSyncStatusExpanded(isOpen)}
               isOpen={isSyncStatusExpanded}
             >
-              {syncStatusMenuItems(filters)}
+              {syncStatusMenuItems(filters, t)}
             </Select>
           )}
         </ToolbarFilter>
@@ -233,7 +251,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         >
           {resourcesFilterBy === 'Kind' && (
             <Select
-              aria-label="Kind"
+              aria-label={t(
+                'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.kind',
+              )}
               toggle={toggleRef => (
                 <MenuToggle
                   ref={toggleRef}
@@ -241,7 +261,9 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
                   isExpanded={isKindFilterExpanded}
                   style={{ width: '200px' }}
                 >
-                  Filter by Kind{' '}
+                  {t(
+                    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.kindInput',
+                  )}{' '}
                   {filters.Kind.length > 0 && (
                     <Badge isRead>{filters.Kind.length}</Badge>
                   )}

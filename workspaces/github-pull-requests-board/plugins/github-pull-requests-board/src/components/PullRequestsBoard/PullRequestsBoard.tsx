@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import PeopleIcon from '@material-ui/icons/People';
 import { Progress, InfoCard } from '@backstage/core-components';

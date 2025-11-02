@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-scaffolder-backend-module-sonarqube",
   "description": "The sonarqube module for @backstage/plugin-scaffolder-backend",
-  "version": "2.8.0",
+  "version": "2.10.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -38,13 +38,13 @@
     "prettier:fix": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.1",
-    "@backstage/plugin-scaffolder-node": "^0.10.0",
+    "@backstage/backend-plugin-api": "^1.4.4",
+    "@backstage/plugin-scaffolder-node": "^0.12.0",
     "yaml": "^2.3.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.1"
+    "@backstage/cli": "^0.34.4",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.4"
   },
   "files": [
     "dist"

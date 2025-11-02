@@ -78,6 +78,15 @@ jobs:
       - name: 'Set release name'
         id: set_release_name
         run: node scripts/ci/set-release-name.js ${{ matrix.workspace }} ${{ inputs.release_line || 'main' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Check current and release versions'
+        id: check
+        run: |
+          if [[ "${{ steps.set_release_name.outputs.release_version }}" == "${{ steps.set_release_name.outputs.current_version }}" ]]; then
+            echo "Backstage release version and current workspace version are the same, skipping version bump"
+            exit 1 # Non-zero exit code fails the step and job
+          fi
       - name: 'Configure git'
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -97,7 +106,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Run dedupe
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: yarn dedupe   
+        run: yarn dedupe
       - name: 'Check for changes'
         id: check_for_changes
         run: |
@@ -113,6 +122,9 @@ jobs:
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }} ${{ inputs.version-bump-type || 'minor' }}
+      - name: Run prettier:fix
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn prettier:fix        
       - name: 'Commit changes'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         run: |

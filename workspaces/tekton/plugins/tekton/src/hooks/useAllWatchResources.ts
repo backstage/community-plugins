@@ -17,8 +17,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { KubernetesObjects } from '@backstage/plugin-kubernetes-react';
 
-import { useDeepCompareMemoize } from '@janus-idp/shared-react';
-
+import { useDeepCompareMemoize } from './useDeepCompareMemoize';
 import { TektonResponseData } from '../types/types';
 import { getTektonResources } from '../utils/tekton-utils';
 

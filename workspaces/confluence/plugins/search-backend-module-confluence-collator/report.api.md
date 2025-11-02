@@ -6,6 +6,7 @@
 /// <reference types="node" />
 
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { CacheService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { IndexableDocument } from '@backstage/plugin-search-common';
@@ -40,10 +41,20 @@ export type ConfluenceCollatorFactoryOptions = {
   parallelismLimit?: number;
   maxRequestsPerSecond?: number;
   logger: LoggerService;
+  cache?: CacheService;
+  documentCacheTtl?: number;
 };
 
 // @public
 export type ConfluenceDocument = ConfluenceDocumentMetadata & {
+  type:
+    | 'page'
+    | 'blogpost'
+    | 'comment'
+    | 'attachment'
+    | 'folder'
+    | 'embed'
+    | 'database';
   body: {
     storage: {
       value: string;
@@ -51,7 +62,10 @@ export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   };
   version: {
     by: {
+      displayName: string;
       publicName: string;
+      email?: string;
+      accountStatus?: string;
     };
     when: string;
     friendlyWhen: string;
@@ -83,6 +97,15 @@ export type ConfluenceDocumentMetadata = {
     base?: string;
     webui: string;
   };
+  version?: {
+    when: string;
+  };
+};
+
+// @public
+export type DocumentMetadata = {
+  url: string;
+  versionWhen?: string;
 };
 
 // @public

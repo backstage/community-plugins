@@ -6,6 +6,9 @@ It contains the following actions:
 - `azure:pipeline:run`: run a azure pipeline for a project, with pipeline id
 - `azure:pipeline:create`: Create a new Azure pipeline in a project.
 - `azure:pipeline:permit`: Permit or deny a pipeline for a resource.
+- `azure:repository:clone`: Clone an Azure repository for the context of the scaffolder
+- `azure:repository:push`: Push changes back to Azure repository
+- `azure:pr:create`: Create a new Pull Request
 
 ## Installation
 
@@ -400,4 +403,91 @@ spec:
         resourceId: '15'
         resourceType: variablegroup
         authorized: true
+```
+
+### Example: Clone an Azure Git Repository
+
+```yaml
+spec:
+  steps:
+    - id: cloneAzureRepo
+      name: git clone
+      action: azure:repository:clone
+      input:
+        remoteUrl: 'https://dev.azure.com/{organization}/{project}/_git/{repository}'
+        branch: 'main'
+        targetPath: ./work
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Clone an Azure Git Repository With Shallow Depth
+
+Creates a shallow clone with the history truncated to the specified number of commits, useful for reducing data transfer and clone time for large repositories.
+
+```yaml
+spec:
+  steps:
+    - id: cloneAzureRepo
+      name: git clone
+      action: azure:repository:clone
+      input:
+        remoteUrl: 'https://dev.azure.com/{organization}/{project}/_git/{repository}'
+        branch: 'main'
+        targetPath: ./work
+        cloneDepth: 1
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Push changes made back to Git Repository
+
+```yaml
+spec:
+  steps:
+    - id: pushAzureRepoRepos
+      name: git push
+      action: azure:repository:push
+      input:
+        branch: scaffolder/new-branch
+        sourcePath: ./work
+        gitCommitMessage: My changes
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Create a new Simple Pull Request
+
+```yaml
+spec:
+  steps:
+    - id: createPR
+      name: Create PR
+      action: azure:pr:create
+      input:
+        organization: org
+        repoName: repo
+        title: My PR
+        project: my-project
+        description: 'Created by Backstage Scaffolder'
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```
+
+### Example: Create a new Pull Request
+
+```yaml
+spec:
+  steps:
+    - id: createPR
+      name: Create PR
+      action: azure:pr:create
+      input:
+        organization: org
+        sourceBranch: scaffolder/new-branch
+        targetBranch: 'main'
+        repoName: repo
+        title: My PR
+        project: my-project
+        supportsIterations: true
+        description: 'Created by Backstage Scaffolder'
+        autoComplete: true
+        workItemId: 12345
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
 ```

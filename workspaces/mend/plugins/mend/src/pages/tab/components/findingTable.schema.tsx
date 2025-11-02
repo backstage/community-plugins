@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import {
   Tag,
@@ -18,6 +18,7 @@ enum FINDING_FIELD {
   STATUS = 'issue.status',
   ISSUE_TRACKING = 'issue.issueStatus',
   SCAN_ENGINE = 'kind',
+  PROJECT_NAME = 'projectName',
 }
 
 const tagSeverityColorMap: { [key: string]: TagColor } = {
@@ -83,6 +84,11 @@ const textColumn = {
 };
 
 const findingColumn = [
+  {
+    title: 'Project Name',
+    field: FINDING_FIELD.PROJECT_NAME,
+    ...textColumn,
+  },
   {
     title: 'Severity',
     field: FINDING_FIELD.SEVERITY,
@@ -208,6 +214,35 @@ export const findingTableColumnSchema = findingColumn.map(rowData => {
               width="auto"
               fontWeight={500}
             />
+          );
+        }
+        case FINDING_FIELD.PROJECT_NAME: {
+          return (
+            <Tooltip
+              tooltipContent={
+                <Typography
+                  component="span"
+                  display="block"
+                  style={{
+                    textTransform: 'none',
+                    lineHeight: '16px',
+                    padding: '8px',
+                  }}
+                  align="center"
+                  variant="overline"
+                >
+                  {value}
+                </Typography>
+              }
+            >
+              <Typography
+                component="span"
+                style={classes.ellipsis}
+                variant="body2"
+              >
+                {value}
+              </Typography>
+            </Tooltip>
           );
         }
         case FINDING_FIELD.ORIGIN: {

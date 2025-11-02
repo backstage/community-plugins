@@ -23,8 +23,10 @@ import { DateTime } from 'luxon';
  */
 export type AnnouncementModel = Omit<
   Announcement,
-  'created_at' | 'start_at'
+  'created_at' | 'start_at' | 'until_date' | 'updated_at'
 > & {
   created_at: DateTime;
   start_at: DateTime;
+  until_date?: DateTime | null;
+  updated_at: DateTime;
 };

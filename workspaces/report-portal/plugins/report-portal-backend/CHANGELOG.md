@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal-backend
 
+## 1.1.1
+
+### Patch Changes
+
+- 2b5f93e: - fix: handle startTime in both formats number/string
+
 ## 1.1.0
 
 ### Minor Changes

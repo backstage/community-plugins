@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kafka
 
+## 0.9.0
+
+### Minor Changes
+
+- 6c22329: Backstage version bump to v1.43.2 and migrate the `kafka` plugin to the new frontend system.
+
 ## 0.8.0
 
 ### Minor Changes

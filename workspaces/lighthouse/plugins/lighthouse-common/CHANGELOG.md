@@ -1,5 +1,29 @@
 # @backstage-community/plugin-lighthouse-common
 
+## 0.12.0
+
+### Minor Changes
+
+- da07702: Backstage version bump to v1.44.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 950260b: Backstage version bump to v1.43.2
+
+## 0.10.1
+
+### Patch Changes
+
+- a1ec06f: Marked `lighthouse.baseUrl` configuration as required.
+
+## 0.10.0
+
+### Minor Changes
+
+- 51df1cb: Backstage version bump to v1.42.4
+
 ## 0.9.0
 
 ### Minor Changes

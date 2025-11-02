@@ -17,23 +17,29 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { MarkdownContent } from '@backstage/core-components';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { useTranslation } from '../../hooks/useTranslation';
+import { rbacTranslationRef } from '../../translations';
 
-export const tooltipTitle = () => (
+export const tooltipTitle = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+) => (
   <div>
     <Typography variant="body1" component="p" align="center">
-      Nested conditions are <b>1 layer rules within a main condition</b>. It
-      lets you allow appropriate access by using detailed permissions based on
-      various conditions. You can add multiple nested conditions.
+      <MarkdownContent
+        content={t('conditionalAccess.nestedConditionTooltip')}
+      />
     </Typography>
     <Typography variant="body1" component="p" align="center">
-      For example, you can allow access to all entity types in the main
-      condition and use a nested condition to limit the access to entities owned
-      by the user.
+      {t('conditionalAccess.nestedConditionExample')}
     </Typography>
   </div>
 );
 
 export const AddNestedConditionButton = () => {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -43,9 +49,9 @@ export const AddNestedConditionButton = () => {
       }}
     >
       <Typography variant="body1" component="span">
-        Add nested condition
+        {t('conditionalAccess.addNestedCondition')}
       </Typography>
-      <Tooltip title={tooltipTitle()} placement="top">
+      <Tooltip title={tooltipTitle(t)} placement="top">
         <HelpOutlineIcon fontSize="inherit" style={{ marginLeft: '0.25rem' }} />
       </Tooltip>
     </Box>

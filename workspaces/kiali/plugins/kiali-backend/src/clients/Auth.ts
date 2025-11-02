@@ -89,11 +89,14 @@ export class KialiAuthentication {
   /*
     Parse kiali token with key AUTH_KIALI_TOKEN from headers and store
   */
-  setKialiCookie = (rawCookie: string) => {
+  setKialiCookie = (
+    rawCookie: string,
+    tokenName: string = 'kiali-token-Kubernetes',
+  ) => {
     if (rawCookie !== '') {
       const kCookie = rawCookie
         .split(';')
-        .filter(n => n.split('=')[0].trim() === AUTH_KIALI_TOKEN);
+        .filter(n => n.split('=')[0].trim() === tokenName);
       this.cookie = kCookie.length > 0 ? kCookie[0].trim() : '';
     } else {
       this.cookie = '';

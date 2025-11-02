@@ -19,14 +19,15 @@ import { Config } from '@backstage/config';
 const KIALI_PREFIX = 'kiali';
 
 export type KialiDetails = {
+  caData?: string;
+  caFile?: string;
   name: string;
-  url: string;
-  urlExternal: string;
   skipTLSVerify?: boolean;
   sessionTime?: number;
   serviceAccountToken?: string;
-  caData?: string;
-  caFile?: string;
+  tokenName?: string;
+  url: string;
+  urlExternal: string;
 };
 
 const isValidUrl = (url: string): boolean => {
@@ -87,6 +88,7 @@ export const getHubClusterFromConfig = (
       skipTLSVerify: hub.getOptionalBoolean('skipTLSVerify') || false,
       sessionTime: hub.getOptionalNumber('sessionTime'),
       serviceAccountToken: hub.getOptionalString('serviceAccountToken'),
+      tokenName: hub.getOptionalString('tokenName') || 'kiali-token-Kubernetes',
       caData: hub.getOptionalString('caData'),
       caFile: hub.getOptionalString('caFile'),
     } as KialiDetails;

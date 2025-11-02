@@ -58,7 +58,7 @@ import {
   translateResourceToOCM,
 } from '../helpers/parser';
 import { createOpenApiRouter } from '../schema/openapi.generated';
-import { ManagedClusterInfo } from '../types';
+import { ClientDetails, ManagedClusterInfo } from '../types';
 
 async function createRouter(deps: {
   config: Config;
@@ -76,15 +76,24 @@ async function createRouter(deps: {
   router.use(express.json());
   router.use(permissionsIntegrationRouter);
 
-  const clients = Object.fromEntries(
-    readOcmConfigs(config).map(provider => [
-      provider.id,
-      {
-        client: hubApiClient(provider, logger),
-        hubResourceName: provider.hubResourceName,
-      },
-    ]),
+  const providerConfigs = readOcmConfigs(config);
+
+  const clientEntries = await Promise.all(
+    providerConfigs.map(async provider => {
+      const client = await hubApiClient(provider, logger);
+
+      return [
+        provider.id,
+        {
+          client: client,
+          hubResourceName: provider.hubResourceName,
+        },
+      ];
+    }),
   );
+
+  const clients: { [k: string]: ClientDetails } =
+    Object.fromEntries(clientEntries);
 
   const authorize = async (request: Request, permission: BasicPermission) => {
     const decision = (

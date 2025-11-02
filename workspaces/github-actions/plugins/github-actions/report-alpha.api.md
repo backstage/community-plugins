@@ -6,43 +6,44 @@
 /// <reference types="react" />
 
 import { AnyApiFactory } from '@backstage/core-plugin-api';
-import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: FrontendPlugin<
+const _default: OverridableFrontendPlugin<
   {
     entityContent: RouteRef<undefined>;
   },
   {},
   {
-    [x: `api:${string}`]: ExtensionDefinition<{
+    'api:github-actions': ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
       configInput: {};
-      output: ConfigurableExtensionDataRef<
-        AnyApiFactory,
-        'core.api.factory',
-        {}
-      >;
+      output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
       inputs: {};
-      params: {
-        factory: AnyApiFactory;
-      };
+      params: <
+        TApi,
+        TImpl extends TApi,
+        TDeps extends {
+          [x: string]: unknown;
+        },
+      >(
+        params: ApiFactory<TApi, TImpl, TDeps>,
+      ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    [
-      x: `entity-card:${string}/latest-branch-workflow-runs`
-    ]: ExtensionDefinition<{
+    'entity-card:github-actions/latest-branch-workflow-runs': ExtensionDefinition<{
       config: {
         props: {
           branch?: string | undefined;
@@ -62,22 +63,22 @@ const _default: FrontendPlugin<
         type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             string,
             'catalog.entity-filter-expression',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             EntityCardType,
             'catalog.entity-card-type',
             {
@@ -86,7 +87,13 @@ const _default: FrontendPlugin<
           >;
       inputs: {
         [x: string]: ExtensionInput<
-          AnyExtensionDataRef,
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
           {
             optional: boolean;
             singleton: boolean;
@@ -101,7 +108,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    [x: `entity-card:${string}/latest-workflow-run`]: ExtensionDefinition<{
+    'entity-card:github-actions/latest-workflow-run': ExtensionDefinition<{
       config: {
         props: {
           branch?: string | undefined;
@@ -121,22 +128,22 @@ const _default: FrontendPlugin<
         type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             string,
             'catalog.entity-filter-expression',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             EntityCardType,
             'catalog.entity-card-type',
             {
@@ -145,7 +152,13 @@ const _default: FrontendPlugin<
           >;
       inputs: {
         [x: string]: ExtensionInput<
-          AnyExtensionDataRef,
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
           {
             optional: boolean;
             singleton: boolean;
@@ -160,12 +173,12 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    [x: `entity-card:${string}/recent-workflow-runs`]: ExtensionDefinition<{
+    'entity-card:github-actions/recent-workflow-runs': ExtensionDefinition<{
       config: {
         props: {
           dense: boolean;
-          branch?: string | undefined;
           limit?: number | undefined;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
@@ -175,8 +188,8 @@ const _default: FrontendPlugin<
         props?:
           | {
               dense?: boolean | undefined;
-              branch?: string | undefined;
               limit?: number | undefined;
+              branch?: string | undefined;
             }
           | undefined;
       } & {
@@ -184,22 +197,22 @@ const _default: FrontendPlugin<
         type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             string,
             'catalog.entity-filter-expression',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             EntityCardType,
             'catalog.entity-card-type',
             {
@@ -208,7 +221,13 @@ const _default: FrontendPlugin<
           >;
       inputs: {
         [x: string]: ExtensionInput<
-          AnyExtensionDataRef,
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
           {
             optional: boolean;
             singleton: boolean;
@@ -223,48 +242,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    [x: `entity-card:${string}/workflow-runs`]: ExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'workflow-runs';
-      config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
-      };
-      configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
-      };
-      output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<
-            (entity: Entity) => boolean,
-            'catalog.entity-filter-function',
-            {
-              optional: true;
-            }
-          >
-        | ConfigurableExtensionDataRef<
-            string,
-            'catalog.entity-filter-expression',
-            {
-              optional: true;
-            }
-          >
-        | ConfigurableExtensionDataRef<
-            EntityCardType,
-            'catalog.entity-card-type',
-            {
-              optional: true;
-            }
-          >;
-      inputs: {};
-      params: {
-        loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
-        type?: EntityCardType | undefined;
-      };
-    }>;
-    [x: `entity-content:${string}/entity`]: ExtensionDefinition<{
+    'entity-content:github-actions/entity': ExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {
@@ -280,35 +258,31 @@ const _default: FrontendPlugin<
         group?: string | false | undefined;
       };
       output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<string, 'core.routing.path', {}>
+        | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
-            string,
-            'catalog.entity-content-title',
-            {}
-          >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<
             string,
             'catalog.entity-filter-expression',
             {
               optional: true;
             }
           >
-        | ConfigurableExtensionDataRef<
+        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
+        | ExtensionDataRef<
             string,
             'catalog.entity-content-group',
             {
@@ -317,10 +291,12 @@ const _default: FrontendPlugin<
           >;
       inputs: {};
       params: {
-        loader: () => Promise<JSX.Element>;
-        defaultPath: string;
-        defaultTitle: string;
-        defaultGroup?:
+        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+        path: string;
+        defaultTitle?: [Error: "Use the 'title' param instead"] | undefined;
+        title: string;
+        defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
+        group?:
           | (string & {})
           | 'development'
           | 'deployment'
@@ -329,6 +305,7 @@ const _default: FrontendPlugin<
           | 'operation'
           | 'observability'
           | undefined;
+        loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };

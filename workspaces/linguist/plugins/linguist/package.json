@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-linguist",
-  "version": "0.10.0",
+  "version": "0.13.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "linguist",
@@ -52,13 +52,13 @@
   },
   "dependencies": {
     "@backstage-community/plugin-linguist-common": "workspace:^",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-compat-api": "^0.4.4",
-    "@backstage/core-components": "^0.17.4",
-    "@backstage/core-plugin-api": "^1.10.9",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/frontend-plugin-api": "^0.10.4",
-    "@backstage/plugin-catalog-react": "^1.19.1",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
     "@material-ui/core": "^4.9.13",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
@@ -67,9 +67,9 @@
     "slugify": "^1.6.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
-    "@backstage/dev-utils": "^1.1.12",
-    "@backstage/plugin-catalog": "^1.31.1",
+    "@backstage/cli": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

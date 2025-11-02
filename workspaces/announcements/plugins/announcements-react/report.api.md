@@ -28,8 +28,9 @@ export interface AnnouncementsApi {
     category?: string;
     tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -74,6 +75,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     active,
     sortBy,
     order,
+    current,
     tags,
   }: {
     max?: number;
@@ -81,8 +83,9 @@ export class AnnouncementsClient implements AnnouncementsApi {
     category?: string;
     tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
+    current?: boolean;
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -144,6 +147,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.table.until_date': 'Until';
     readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.cancelButton': 'Cancel';
@@ -179,6 +183,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
+    readonly 'announcementForm.untilDate': 'Announcement end date';
     readonly 'announcementForm.onBehalfOf': 'On behalf of';
     readonly 'announcementForm.tagsLabel': 'Tags';
     readonly 'announcementForm.categoryInput.label': 'Category';
@@ -250,6 +255,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'createAnnouncementPage.alertMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.edit': 'Edit';
     readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
+    readonly 'editAnnouncementPage.updatedMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';
     readonly 'newCategoryDialog.title': 'Title';

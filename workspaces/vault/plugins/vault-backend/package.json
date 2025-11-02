@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-vault-backend",
-  "version": "0.12.0",
+  "version": "0.15.0",
   "description": "A Backstage backend plugin that integrates towards Vault",
   "backstage": {
     "role": "backend-plugin",
@@ -44,10 +44,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-vault-node": "workspace:^",
-    "@backstage/backend-defaults": "^0.11.1",
-    "@backstage/backend-plugin-api": "^1.4.1",
-    "@backstage/config": "^1.3.3",
-    "@backstage/errors": "^1.2.7",
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/errors": "backstage:^",
     "@types/express": "*",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
@@ -60,12 +60,12 @@
     "yn": "^5.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.11.1",
-    "@backstage/backend-test-utils": "^1.7.0",
-    "@backstage/cli": "^0.33.1",
-    "@backstage/plugin-auth-backend": "^0.25.2",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.10",
-    "@backstage/plugin-catalog-backend": "^3.0.0",
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
     "@types/compression": "^1.7.2",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^6.0.0",

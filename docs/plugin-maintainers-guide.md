@@ -14,6 +14,7 @@
   - [Version Bumping](#version-bumping)
   - [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
+  - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
 
@@ -27,7 +28,9 @@ Plugin ownership is a responsibility often taken on voluntarily and/or in additi
 
 Plugin owners are assumed to have full autonomy over reviewing and merging PRs for their workspace. This includes the merging of Version Packages PRs to trigger a new release.
 
-It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces (such as dependency updates), as these may be landed by `@backstage/community-plugin-maintainers`.
+It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces, as these may be landed by `@backstage/community-plugin-maintainers`.
+
+In the case of PRs for dependency updates, if these are not handled and become stale, `@backstage/community-plugin-maintainers` will take action to merge or close them.
 
 ### Issue Triage
 
@@ -50,7 +53,7 @@ If you are no longer maintaining a plugin, please take the following steps to fo
 
 3. If you are the last remaining CODEOWNER:
    - The `@backstage/community-plugins-maintainers` group will provide best-effort support for issues and maintenance. Without a dedicated owner, plugin updates and support may be slower or limited.
-   - To help with this, opt into automatic version bump PRs by creating an empty `.auto-version-bump` file in the plugin's workspace (i.e., `workspaces/${WORKSPACE}/.auto-version-bump`).
+   - To help with this, opt into automatic version bump PRs by adding `"autoVersionBump": true` to your `bcp.json` file in the plugin's workspace (i.e., `workspaces/${WORKSPACE}/bcp.json`).
 
 ## Archiving a Plugin
 
@@ -87,6 +90,8 @@ Follow these steps to archive a plugin or workspace:
 
    - Record Git tag references using `package.json` versions (`@backstage-community/plugin-example@1.2.3`)
    - Add entries to `.github/archived-plugins.json` and `ARCHIVED_WORKSPACES.md`
+   - Remove entries from `docs/README.md`
+   - If archiving an entire workspace, remove entries from `.github/ISSUE_TEMPLATE/1-bug.yaml`, `.github/ISSUE_TEMPLATE/2-feature.yaml`, `.github/ISSUE_TEMPLATE/snippets/workspaces-dropdown.yaml`, `.github/labeler.yml`, `.github/CODEOWNERS`, and `docs/compatibility/compatibility.md`
 
 2. Dry run the following script to verify which packages would be deprecated:
 
@@ -94,7 +99,7 @@ Follow these steps to archive a plugin or workspace:
    ./scripts/ci/deprecate-archived-plugins.sh --dry-run
    ```
 
-3. Delete the workspace or plugin(s) from the repository.
+3. Delete the workspace or plugin(s) from the repository. Ensure that any relevant documentation has been appropriately updated to reflect the removal of the workspace/plugin.
 
 4. Open a PR with the changes including:
 
@@ -110,7 +115,7 @@ Plugin owners are expected to run the Version Bump script for their workspace. T
 
 ## Opt-in to Automatic Version Bump PRs
 
-Plugin owners can opt in to automatic version bump PRs by creating an empty .auto-version-bump file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers` .
+Plugin owners can opt in to automatic version bump PRs by adding `"autoVersionBump": true` to their `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers`.
 
 These automated PRs are intended as a convenience to open the version bump for you. As the plugin maintainer, you would still be required to:
 
@@ -120,9 +125,13 @@ These automated PRs are intended as a convenience to open the version bump for y
 
 ## Opt-in to Knip Reports Check
 
-Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knip-reports": true }`. This ensures that knip reports in your workspace stay up to date.
+Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knipReports": true }`. This ensures that knip reports in your workspace stay up to date.
 
 [Knip](https://knip.dev/) is a tool that helps with clean-up and maintenance by identifying unused dependencies within workspaces. Regularly reviewing and addressing these reports can significantly improve code quality and reduce bloat.
+
+## Opt-in to List Deprecations Check
+
+Plugins owners can opt into the List Deprecations check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "listDeprecations": true }`. This ensures that you aren't using deprecated code in your workspace making it easier when deprecated code is finally removed.
 
 ## Maintaining and patching an older release line
 

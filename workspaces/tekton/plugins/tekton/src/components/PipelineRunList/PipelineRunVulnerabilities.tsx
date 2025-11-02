@@ -28,7 +28,7 @@ import { PipelineRunKind } from '@janus-idp/shared-react';
 import { usePipelineRunScanResults } from '../../hooks/usePipelineRunScanResults';
 import CriticalRiskIcon from '../Icons/CriticalRiskIcon';
 import EqualsIcon from '../Icons/EqualsIcon';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 const useVStyles = makeStyles((theme: Theme) => ({

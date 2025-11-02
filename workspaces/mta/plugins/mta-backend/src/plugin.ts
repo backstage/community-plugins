@@ -1,14 +1,12 @@
 import {
   coreServices,
   createBackendPlugin,
-  resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import express, { Router } from 'express';
 import { Issuer, generators } from 'openid-client';
 import { isTokenExpired } from './utils';
 import { DataBaseEntityApplicationStorage } from './database/storage';
 import dotenv from 'dotenv';
-import path from 'path';
 
 // @public (undocumented)
 export const mtaPlugin = createBackendPlugin({
@@ -56,40 +54,11 @@ export const mtaPlugin = createBackendPlugin({
         });
 
         dotenv.config();
-        const isDevelopment = process.env.NODE_ENV === 'development';
 
-        // Get version from package.json
-        const { version } = require('../package.json');
-
-        const mtaVersion =
-          config.getOptionalString('mta.backendPluginVersion') ?? version; // Set in config
-        const defaultBase = process.env.APP_ROOT ?? '/opt/app-root';
-        const defaultPluginRoot = path.join(
-          defaultBase,
-          'src',
-          'dynamic-plugins-root',
-          `backstage-community-backstage-plugin-mta-backend-${mtaVersion}`,
-        );
-
-        const pluginRootFromConfig = config.getOptionalString(
-          'mta.backendPluginRoot',
-        );
-        const pluginRoot = isDevelopment
-          ? resolvePackagePath(
-              '@backstage-community/backstage-plugin-mta-backend',
-            )
-          : process.env.PLUGIN_ROOT ||
-            pluginRootFromConfig ||
-            defaultPluginRoot;
-
-        const migrationsDir = path.join(pluginRoot, 'migrations');
+        // No need for migrations directory - using embedded migrations
         const databaseClient = await database.getClient();
         const entityApplicationStorage =
-          await DataBaseEntityApplicationStorage.create(
-            databaseClient,
-            logger,
-            migrationsDir,
-          );
+          await DataBaseEntityApplicationStorage.create(databaseClient, logger);
 
         // OpenID Code Challenge
         const code_verifier = generators.codeVerifier();

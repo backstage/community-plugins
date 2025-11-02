@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 import { createPlugin } from '@backstage/core-plugin-api';
+import {
+  AnalyticsImplementationBlueprint,
+  configApiRef,
+  createFrontendPlugin,
+  identityApiRef,
+} from '@backstage/frontend-plugin-api';
+import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
 
 /**
  *
@@ -21,4 +28,21 @@ import { createPlugin } from '@backstage/core-plugin-api';
  */
 export const analyticsModuleSegment = createPlugin({
   id: 'analytics-provider-segment',
+});
+
+const segmentImplementation = AnalyticsImplementationBlueprint.make({
+  params: defineParams =>
+    defineParams({
+      deps: { configApi: configApiRef, identityApi: identityApiRef },
+      factory: ({ configApi, identityApi }) =>
+        SegmentAnalytics.fromConfig(configApi, { identityApi }),
+    }),
+});
+
+/**
+ * @public
+ */
+export const analyticsProviderSegmentPlugin = createFrontendPlugin({
+  pluginId: 'analytics-provider-segment',
+  extensions: [segmentImplementation],
 });

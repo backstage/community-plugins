@@ -35,6 +35,7 @@ import {
   Link,
 } from '@backstage/core-components';
 import { SidebarSearchModal } from '@backstage/plugin-search';
+import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
@@ -98,6 +99,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
+      <NotificationsSidebarItem />
       <SidebarGroup
         label="Settings"
         icon={<UserSettingsSignInAvatar />}

@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+import { useMemo, useCallback } from 'react';
+
+import { SelectItem } from '@backstage/core-components';
+
 import Box from '@mui/material/Box';
+
 import { IncidentEnumFilter } from '../shared-components/IncidentEnumFilter';
 import { INCIDENT_STATE_MAP, PRIORITY_MAP } from '../../utils/incidentUtils';
 import { useQueryArrayFilter } from '../../hooks/useQueryArrayFilter';
-import { useMemo, useCallback } from 'react';
-import { SelectItem } from '@backstage/core-components';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 
 export const IncidentsFilter = () => {

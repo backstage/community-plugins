@@ -15,7 +15,6 @@
  */
 import {
   ApiBlueprint,
-  createApiFactory,
   discoveryApiRef,
   errorApiRef,
   fetchApiRef,
@@ -30,8 +29,8 @@ import {
  * @alpha
  */
 export const announcementsApiExtension = ApiBlueprint.make({
-  params: {
-    factory: createApiFactory({
+  params: define =>
+    define({
       api: announcementsApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -47,5 +46,4 @@ export const announcementsApiExtension = ApiBlueprint.make({
           errorApi,
         }),
     }),
-  },
 });

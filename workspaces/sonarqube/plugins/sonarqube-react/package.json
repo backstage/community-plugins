@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube-react",
-  "version": "0.9.0",
+  "version": "0.12.0",
   "backstage": {
     "role": "web-library",
     "pluginId": "sonarqube",
@@ -51,11 +51,11 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-plugin-api": "^1.10.9"
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.1",
+    "@backstage/cli": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0",
     "@types/react-dom": "^18.2.19",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

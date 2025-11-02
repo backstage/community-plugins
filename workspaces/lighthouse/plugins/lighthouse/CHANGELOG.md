@@ -1,5 +1,46 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.15.0
+
+### Minor Changes
+
+- da07702: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [da07702]
+  - @backstage-community/plugin-lighthouse-common@0.12.0
+
+## 0.14.0
+
+### Minor Changes
+
+- 950260b: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [950260b]
+  - @backstage-community/plugin-lighthouse-common@0.11.0
+
+## 0.13.1
+
+### Patch Changes
+
+- a1ec06f: Added support for the new frontend system.
+- Updated dependencies [a1ec06f]
+  - @backstage-community/plugin-lighthouse-common@0.10.1
+
+## 0.13.0
+
+### Minor Changes
+
+- 51df1cb: Backstage version bump to v1.42.4
+
+### Patch Changes
+
+- Updated dependencies [51df1cb]
+  - @backstage-community/plugin-lighthouse-common@0.10.0
+
 ## 0.12.0
 
 ### Minor Changes

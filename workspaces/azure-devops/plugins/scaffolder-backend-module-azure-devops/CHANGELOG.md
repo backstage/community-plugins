@@ -1,5 +1,41 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.16.1
+
+### Patch Changes
+
+- e05584e: Added validation to prevent branch names with spaces
+
+## 0.16.0
+
+### Minor Changes
+
+- ff113c2: Backstage version bump to v1.44.0
+
+## 0.15.1
+
+### Patch Changes
+
+- 93cfa0a: Added fetch depth option to the `azure:repository:clone` action.
+
+## 0.15.0
+
+### Minor Changes
+
+- 40839b2: Backstage version bump to v1.43.2
+
+## 0.14.0
+
+### Minor Changes
+
+- 1e1ece3: Add new actions for Azure DevOps: Git Clone, Push and Create new Pull Request
+
+## 0.13.0
+
+### Minor Changes
+
+- 8367480: Backstage version bump to v1.42.3
+
 ## 0.12.0
 
 ### Minor Changes

@@ -15,29 +15,41 @@
  */
 import { TableColumn } from '@backstage/core-components';
 
-export const ResourcesColumnHeaders: TableColumn[] = [
-  {
-    id: 'expander',
-    title: '',
-  },
-  {
-    id: 'name',
-    title: 'Name',
-  },
-  {
-    id: 'kind',
-    title: 'Kind',
-  },
-  {
-    id: 'created-at',
-    title: 'Created at',
-  },
-  {
-    id: 'sync-status',
-    title: 'Sync status',
-  },
-  {
-    id: 'health-status',
-    title: 'Health status',
-  },
-];
+export const getResourcesColumnHeaders = (t: Function): TableColumn[] => {
+  return [
+    {
+      id: 'expander',
+      title: '',
+    },
+    {
+      id: 'name',
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.name',
+      ),
+    },
+    {
+      id: 'kind',
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.kind',
+      ),
+    },
+    {
+      id: 'created-at',
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.createdAt',
+      ),
+    },
+    {
+      id: 'sync-status',
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.syncStatus',
+      ),
+    },
+    {
+      id: 'health-status',
+      title: t(
+        'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.healthStatus',
+      ),
+    },
+  ];
+};

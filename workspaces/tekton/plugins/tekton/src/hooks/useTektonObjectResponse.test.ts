@@ -28,7 +28,13 @@ const watchedResources = [ModelsPlural.pipelineruns, ModelsPlural.taskruns];
 
 jest.mock('@backstage/plugin-kubernetes-react', () => ({
   useKubernetesObjects: jest.fn(),
+}));
+
+jest.mock('./useDeepCompareMemoize', () => ({
   useDeepCompareMemoize: (val: any) => val,
+}));
+
+jest.mock('./useDebounceCallback', () => ({
   useDebounceCallback: (val: any) => jest.fn(val),
 }));
 

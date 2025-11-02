@@ -29,6 +29,7 @@ import {
 } from '../../utils/conditional-access-utils';
 import { ConditionsFormRowFields } from './ConditionsFormRowFields';
 import { criterias } from './const';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   AccessConditionsErrors,
   ComplexErrors,
@@ -74,6 +75,8 @@ export const ComplexConditionRow = ({
   nestedConditionIndex,
   activeNestedCriteria,
 }: ComplexConditionRowProps) => {
+  const { t } = useTranslation();
+
   const handleRemoveSimpleConditionRule = (
     index: number,
     ruleList: PermissionCondition[],
@@ -247,7 +250,7 @@ export const ComplexConditionRow = ({
           updateRules={isNestedCondition ? updateRules : undefined}
         />
         <IconButton
-          title="Remove"
+          title={t('common.remove')}
           sx={{
             color: theme => theme.palette.grey[500],
             flexGrow: 0,

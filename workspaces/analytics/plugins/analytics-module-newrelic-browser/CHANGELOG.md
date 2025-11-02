@@ -1,5 +1,45 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.12.0
+
+### Minor Changes
+
+- 1e3b40b: Backstage version bump to v1.44.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 2258b1a: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 58c21b3: Added support for Backstage's New Frontend System.
+
+  If you're migrating to the new frontend system, you no longer need to wire up an API implementation in `apis.ts`. Instead, pass the module in to the `createApp()` function:
+
+  ```tsx
+  import newRelicBrowserModule from '@backstage-community/plugin-analytics-module-newrelic-browser/alpha';
+
+  const app = createApp({
+    features: [newRelicBrowserModule],
+  });
+  ```
+
+  This can be skipped if you have feature discovery enabled.
+
+## 0.10.0
+
+### Minor Changes
+
+- 7eb926b: Adding a sessionReplay config block to the plugin options, allowing users to enable/disable session replay and set options like sampling rate, error sampling rate, masking selectors, and block selectors.
+
+## 0.9.0
+
+### Minor Changes
+
+- 3d6351f: Backstage version bump to v1.42.4
+
 ## 0.8.0
 
 ### Minor Changes

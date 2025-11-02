@@ -17,13 +17,22 @@ import { Chip, Grid, Tooltip } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
-import { homeCluster } from '../../../config';
+import { useServerConfig } from '../../../hooks/useServerConfig';
 import { KialiAppState, KialiContext } from '../../../store';
 import { HelpKiali } from './HelpKiali';
 import { NamespaceSelector } from './NamespaceSelector';
 
 export const KialiHeaderEntity = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
+
+  // Get home cluster from server config
+  const homeCluster = React.useMemo(() => {
+    if (!serverConfig?.clusters) return null;
+    return Object.values(serverConfig.clusters).find(
+      cluster => cluster.isKialiHome,
+    );
+  }, [serverConfig]);
 
   return (
     <div style={{ marginLeft: '20px' }}>
@@ -40,15 +49,22 @@ export const KialiHeaderEntity = () => {
               justifyContent: 'right',
             }}
           >
-            <Tooltip title={<div>Kiali home cluster: {homeCluster?.name}</div>}>
+            <Tooltip
+              title={
+                <div>
+                  Kiali home cluster: {homeCluster?.name || 'Not configured'}
+                </div>
+              }
+            >
               <Chip
                 color="primary"
-                icon={<ClusterIcon />}
-                label={homeCluster?.name}
+                icon={<ClusterIcon style={{ color: 'white' }} />}
+                label={homeCluster?.name || 'Home Cluster'}
+                style={{ color: 'white' }}
               />
             </Tooltip>
-            <HelpKiali />
-            <MessageCenter />
+            <HelpKiali color="black" />
+            <MessageCenter color="black" />
           </div>
         </Grid>
         {kialiState.authentication.session && (

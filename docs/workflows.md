@@ -56,7 +56,7 @@ Handles version bumping for specific workspaces. It creates a new branch for the
 
 ### [auto-version-bump.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/auto-version-bump.yml)
 
-This workflow enables plugin owners to opt in to automatic version bump pull requests. To do this, they must place an empty `.auto-version-bump` file in the root of their workspace (e.g., `workspaces/your-plugin/.auto-version-bump`). The workflow is triggered manually by a maintainer.
+This workflow enables plugin owners to opt in to automatic version bump pull requests. To do this, they must add `"autoVersionBump": true` to their `bcp.json` file in the root of their workspace (e.g., `workspaces/your-plugin/bcp.json`). The workflow is triggered manually by a maintainer.
 
 ### [cron.yml](https://github.com/backstage/community-plugins/blob/main/.github/workflows/cron.yml)
 
