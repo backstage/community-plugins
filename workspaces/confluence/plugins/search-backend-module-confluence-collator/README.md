@@ -159,6 +159,67 @@ search:
           seconds: 3
 ```
 
+## Multiple Confluence Instance Support
+
+This plugin supports indexing and searching documentation from multiple Confluence instances.
+
+### Configuration Example
+
+Add each Confluence instance under the `confluence` key in your `app-config.yaml`, using a unique name for each (e.g., `default`, `secondary`):
+
+```yaml
+confluence:
+  default:
+    baseUrl: 'https://api.atlassian.com/ex/confluence/<instance1-id>/wiki'
+    auth:
+      type: 'basic'
+      token: '<TOKEN_FOR_INSTANCE_1>'
+      email: '<EMAIL_FOR_INSTANCE_1>'
+  secondary:
+    baseUrl: 'https://api.atlassian.com/ex/confluence/<instance2-id>/wiki'
+    auth:
+      type: 'basic'
+      token: '<TOKEN_FOR_INSTANCE_2>'
+      email: '<EMAIL_FOR_INSTANCE_2>'
+```
+
+### Configure a collator for each instance under search.collators:
+
+```yaml
+search:
+  collators:
+    confluence:
+      instanceKey: default
+      schedule:
+        frequency: { minutes: 30 }
+        timeout: { minutes: 10 }
+    confluenceSecondary:
+      instanceKey: secondary
+      schedule:
+        frequency: { minutes: 30 }
+        timeout: { minutes: 10 }
+```
+
+### UI Integration
+
+In your search UI, ensure both types are available and selected by default:
+
+```
+<SearchType.Accordion
+  name="Result Type"
+  defaultValue={['confluence', 'confluenceSecondary']}
+  types={[
+    { value: 'confluence', name: 'Confluence one' },
+    { value: 'confluenceSecondary', name: 'Confluence two' },
+    // ...other types
+  ]}
+/>
+```
+
+## Result
+
+With this configuration, your Backstage instance will index and display search results from all configured Confluence instances.
+
 ## Special thanks & Disclaimer
 
 Thanks to K-Phoen for creating the confluence plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome
