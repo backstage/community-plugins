@@ -25,7 +25,7 @@ import Jenkins from 'jenkins';
 export function enableJob(jenkins: Jenkins) {
   return createTemplateAction({
     id: 'jenkins:job:enable',
-    description: 'Destroy an existing job jenkins given a name',
+    description: 'Enable an existing Jenkins job given a name',
     schema: {
       input: {
         jobName: z => z.string({ description: 'Name of jenkins item' }),
