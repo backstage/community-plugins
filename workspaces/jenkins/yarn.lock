@@ -1681,12 +1681,10 @@ __metadata:
     "@backstage/plugin-permission-common": "backstage:^"
     "@backstage/plugin-permission-node": "backstage:^"
     "@types/express": "npm:^4.17.6"
-    "@types/jenkins": "npm:^1.0.0"
     "@types/node-fetch": "npm:^2.5.12"
     "@types/supertest": "npm:^6.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
-    jenkins: "npm:^1.0.0"
     node-fetch: "npm:^2.6.7"
     yn: "npm:^4.0.0"
   languageName: unknown
@@ -1699,6 +1697,8 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-permission-common": "backstage:^"
+    form-data: "npm:^4.0.4"
+    node-fetch: "npm:^2.6.7"
   languageName: unknown
   linkType: soft
 
@@ -1742,6 +1742,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/scaffolder-backend-module-jenkins"
   dependencies:
+    "@backstage-community/plugin-jenkins-common": "workspace:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/errors": "backstage:^"
@@ -11129,16 +11130,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jenkins@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "@types/jenkins@npm:1.0.2"
-  dependencies:
-    "@types/node": "npm:*"
-    form-data: "npm:^4.0.0"
-  checksum: 10/c02895642c81a74cb40740117b5fce0af768ac7985028b6fd0c68d88b350261473db8c05681fc1de0c612579f905f283f0de33efe683ea9a716ae5264287bfba
-  languageName: node
-  linkType: hard
-
 "@types/jest@npm:^29.5.11":
   version: 29.5.13
   resolution: "@types/jest@npm:29.5.13"
@@ -20129,7 +20120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jenkins@npm:^1.0.0, jenkins@npm:^1.1.0":
+"jenkins@npm:^1.1.0":
   version: 1.1.0
   resolution: "jenkins@npm:1.1.0"
   dependencies:
