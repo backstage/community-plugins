@@ -64,6 +64,9 @@ export interface Config {
        */
       maxDepth?: number;
       /**
+       * The default role to assign to all authenticated users.
+       */
+      defaultRole?: string;
        * An optional value that controls evaluation order between basic permission policy and conditional policy for permissions.
        * - Default: "conditional"
        * - "basic": prefer permission policy first
