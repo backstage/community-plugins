@@ -98,6 +98,32 @@ APIs.
 
 - Currently only supports New Relic APM data
 
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import newrelicPlugin from '@backstage-community/plugin-newrelic/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    newrelicPlugin,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:newrelic`
+- `page:newrelic`
+- `nav-item:newrelic`
+
 ---
 
 You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
