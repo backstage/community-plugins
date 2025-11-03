@@ -1,5 +1,16 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.9.0
+
+### Minor Changes
+
+- 148f96d: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [148f96d]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.7.0
+
 ## 0.8.2
 
 ### Patch Changes
