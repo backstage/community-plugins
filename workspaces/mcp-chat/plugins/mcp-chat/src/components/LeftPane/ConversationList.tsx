@@ -63,13 +63,13 @@ export const ConversationList: FC<ConversationListProps> = ({
         Recent Conversations
       </Typography>
 
-      {loading && (
+      {loading && conversations.length === 0 && (
         <Box sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
           <CircularProgress size={24} />
         </Box>
       )}
 
-      {!loading && error && (
+      {!loading && error && conversations.length === 0 && (
         <Typography
           variant="caption"
           color="error"
@@ -79,7 +79,7 @@ export const ConversationList: FC<ConversationListProps> = ({
         </Typography>
       )}
 
-      {!loading && !error && conversations.length === 0 && (
+      {conversations.length === 0 && !loading && !error && (
         <Typography
           variant="caption"
           color="text.secondary"
@@ -89,7 +89,7 @@ export const ConversationList: FC<ConversationListProps> = ({
         </Typography>
       )}
 
-      {!loading && !error && conversations.length > 0 && (
+      {conversations.length > 0 && (
         <List dense sx={{ padding: 0 }}>
           {conversations.map(conversation => {
             const firstUserMessage = conversation.messages.find(

@@ -19,6 +19,7 @@ import {
   executeToolCall,
   validateConfig,
   validateMessages,
+  isGuestUser,
 } from './utils';
 import { MCPServerType } from './types';
 
@@ -923,6 +924,39 @@ describe('Utils', () => {
       expect(() => validateConfig(mockConfig)).toThrow(
         'systemPrompt must be a string',
       );
+    });
+  });
+
+  describe('isGuestUser', () => {
+    it('should identify development guest user correctly', () => {
+      expect(isGuestUser('user:development/guest')).toBe(true);
+      expect(isGuestUser('user:Development/Guest')).toBe(true);
+      expect(isGuestUser('user:DEVELOPMENT/GUEST')).toBe(true);
+    });
+
+    it('should not identify regular users as guests', () => {
+      expect(isGuestUser('user:development/john.doe')).toBe(false);
+      expect(isGuestUser('user:development/admin')).toBe(false);
+      expect(isGuestUser('user:development/testuser')).toBe(false);
+      expect(isGuestUser('user:default/alice')).toBe(false);
+      // Should NOT match users with 'guest' in their name
+      expect(isGuestUser('user:development/guest-user')).toBe(false);
+      expect(isGuestUser('user:development/guestadmin')).toBe(false);
+      expect(isGuestUser('user:development/myguest')).toBe(false);
+    });
+
+    it('should not match guest users from other namespaces', () => {
+      expect(isGuestUser('user:default/guest')).toBe(false);
+      expect(isGuestUser('user:production/guest')).toBe(false);
+      expect(isGuestUser('user:custom/guest')).toBe(false);
+      expect(isGuestUser('user:staging/guest')).toBe(false);
+    });
+
+    it('should handle edge cases', () => {
+      expect(isGuestUser('')).toBe(false);
+      expect(isGuestUser('user:development/')).toBe(false);
+      expect(isGuestUser('guest')).toBe(false);
+      expect(isGuestUser('user:development/guest/extra')).toBe(false);
     });
   });
 });

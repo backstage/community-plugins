@@ -16,12 +16,12 @@
 import {
   coreServices,
   createBackendPlugin,
+  resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
 import { MCPClientServiceImpl } from './services/MCPClientServiceImpl';
 import { ChatConversationStore } from './services/ChatConversationStore';
 import { validateConfig } from './utils';
-import { resolve as resolvePath } from 'path';
 
 /**
  * mcpChatPlugin backend plugin
@@ -45,17 +45,36 @@ export const mcpChatPlugin = createBackendPlugin({
         const db = await database.getClient();
 
         // Run migrations
-        logger.info('Running database migrations...');
-        const migrationsDir = resolvePath(
-          require.resolve(
-            '@backstage-community/plugin-mcp-chat-backend/package.json',
-          ),
-          '../migrations',
-        );
-        await db.migrate.latest({
-          directory: migrationsDir,
-        });
-        logger.info('Database migrations completed');
+        logger.info('Running database migrations for MCP Chat...');
+        try {
+          const migrationsDir = resolvePackagePath(
+            '@backstage-community/plugin-mcp-chat-backend',
+            'migrations',
+          );
+          logger.info(`Migrations directory: ${migrationsDir}`);
+
+          const [batchNo, log] = await db.migrate.latest({
+            directory: migrationsDir,
+          });
+
+          if (log.length === 0) {
+            logger.info('Database is already up to date');
+          } else {
+            logger.info(
+              `Batch ${batchNo} run: ${log.length} migrations applied`,
+            );
+            log.forEach((migration: string) => {
+              logger.info(`  - ${migration}`);
+            });
+          }
+        } catch (error) {
+          logger.error(
+            `Failed to run migrations: ${
+              error instanceof Error ? error.message : error
+            }`,
+          );
+          throw error;
+        }
 
         // Initialize services
         const mcpClientService = new MCPClientServiceImpl({

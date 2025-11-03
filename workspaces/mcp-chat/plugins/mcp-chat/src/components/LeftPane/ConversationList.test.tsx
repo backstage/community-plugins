@@ -128,7 +128,7 @@ describe('ConversationList', () => {
   });
 
   describe('loading state', () => {
-    it('shows loading spinner when loading', () => {
+    it('shows loading spinner when loading with no conversations', () => {
       renderWithTheme(
         <ConversationList {...defaultProps} loading conversations={[]} />,
       );
@@ -137,6 +137,24 @@ describe('ConversationList', () => {
       expect(
         screen.queryByText(/Hello, how are you\?/),
       ).not.toBeInTheDocument();
+    });
+
+    it('does not show loading spinner when refetching with cached conversations', () => {
+      renderWithTheme(
+        <ConversationList
+          {...defaultProps}
+          loading
+          conversations={mockConversations}
+        />,
+      );
+
+      // Should NOT show loading spinner
+      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+      // Should show cached conversations
+      expect(screen.getByText(/Hello, how are you\?/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/What is the weather like today\?/),
+      ).toBeInTheDocument();
     });
   });
 

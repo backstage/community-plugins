@@ -488,6 +488,32 @@ describe('createRouter', () => {
       expect(response.status).toBe(200);
       expect(response.body.content).toBe(mockResponse.reply);
     });
+
+    it('should not save conversation for guest users', async () => {
+      // Mock guest user
+      httpAuth.credentials.mockResolvedValueOnce({
+        principal: {
+          userEntityRef: 'user:development/guest',
+        },
+      });
+
+      const mockResponse = {
+        reply: 'Hello! I can help you with various tasks.',
+        toolCalls: [],
+        toolResponses: [],
+      };
+
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: validMessages, enabledTools: [] });
+
+      expect(response.status).toBe(200);
+      expect(response.body.content).toBe(mockResponse.reply);
+      // Should NOT call saveConversation for guest users
+      expect(conversationStore.saveConversation).not.toHaveBeenCalled();
+    });
   });
 
   describe('GET /conversations', () => {
@@ -567,6 +593,23 @@ describe('createRouter', () => {
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to retrieve conversations');
     });
+
+    it('should return empty array for guest users', async () => {
+      // Mock guest user
+      httpAuth.credentials.mockResolvedValueOnce({
+        principal: {
+          userEntityRef: 'user:development/guest',
+        },
+      });
+
+      const response = await request(app).get('/conversations');
+
+      expect(response.status).toBe(200);
+      expect(response.body.conversations).toEqual([]);
+      expect(response.body.count).toBe(0);
+      // Should NOT call getConversations for guest users
+      expect(conversationStore.getConversations).not.toHaveBeenCalled();
+    });
   });
 
   describe('GET /conversations/:id', () => {
@@ -613,6 +656,22 @@ describe('createRouter', () => {
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to retrieve conversation');
+    });
+
+    it('should return 404 for guest users', async () => {
+      // Mock guest user
+      httpAuth.credentials.mockResolvedValueOnce({
+        principal: {
+          userEntityRef: 'user:development/guest',
+        },
+      });
+
+      const response = await request(app).get('/conversations/conv-1');
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('Conversation not found');
+      // Should NOT call getConversationById for guest users
+      expect(conversationStore.getConversationById).not.toHaveBeenCalled();
     });
   });
 });

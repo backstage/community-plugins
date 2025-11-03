@@ -19,7 +19,7 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { MCPClientService } from './services/MCPClientService';
 import { ChatConversationStore } from './services/ChatConversationStore';
-import { validateMessages } from './utils';
+import { validateMessages, isGuestUser } from './utils';
 
 export async function createRouter({
   logger,
@@ -105,19 +105,31 @@ export async function createRouter({
       },
     ];
 
-    // Save conversation to database with user context
+    // Save conversation to database only for authenticated users
     let savedConversationId: string | undefined;
     try {
-      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const credentials = await httpAuth.credentials(req, {
+        allow: ['user'],
+        allowLimitedAccess: true,
+      });
+
       const userId = credentials.principal.userEntityRef;
 
-      const savedConversation = await conversationStore.saveConversation(
-        userId,
-        conversationMessages,
-        toolsUsed.length > 0 ? toolsUsed : undefined,
-        conversationId, // Pass existing conversationId to update or create new
-      );
-      savedConversationId = savedConversation.id;
+      // Only save conversations for authenticated users (not guests)
+      if (!isGuestUser(userId)) {
+        const savedConversation = await conversationStore.saveConversation(
+          userId,
+          conversationMessages,
+          toolsUsed.length > 0 ? toolsUsed : undefined,
+          conversationId, // Pass existing conversationId to update or create new
+        );
+        savedConversationId = savedConversation.id;
+        logger.info(`Conversation saved for user: ${userId}`);
+      } else {
+        logger.debug(
+          `Guest user detected (${userId}) - skipping conversation save`,
+        );
+      }
     } catch (error: any) {
       // If table doesn't exist, just warn - migrations may not have run yet
       if (error?.message?.includes('no such table')) {
@@ -153,8 +165,23 @@ export async function createRouter({
   router.get('/conversations', async (req, res) => {
     logger.info('Route called: /conversations');
     try {
-      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const credentials = await httpAuth.credentials(req, {
+        allow: ['user'],
+        allowLimitedAccess: true,
+      });
       const userId = credentials.principal.userEntityRef;
+
+      // Guest users don't have saved conversations
+      if (isGuestUser(userId)) {
+        logger.debug(
+          `Guest user (${userId}) requested conversations - returning empty`,
+        );
+        return res.json({
+          conversations: [],
+          count: 0,
+          timestamp: new Date().toISOString(),
+        });
+      }
 
       // Allow optional limit query parameter to override config
       const limit = req.query.limit
@@ -195,8 +222,16 @@ export async function createRouter({
     const { id } = req.params;
     logger.info(`Route called: /conversations/${id}`);
     try {
-      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+      const credentials = await httpAuth.credentials(req, {
+        allow: ['user'],
+        allowLimitedAccess: true,
+      });
       const userId = credentials.principal.userEntityRef;
+
+      // Guest users don't have saved conversations
+      if (isGuestUser(userId)) {
+        return res.status(404).json({ error: 'Conversation not found' });
+      }
 
       const conversation = await conversationStore.getConversationById(
         userId,
