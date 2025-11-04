@@ -16,16 +16,17 @@
 
 ## Build and Publish Steps
 
-1. **Navigate to plugin directory**
+1. **Navigate to plugin directory from the root of the community-plugins**
 
    ```bash
-   cd ~/community-plugins/workspaces/agent-forge/plugins/agent-forge
+   # From community-plugins root directory
+   cd ./workspaces/agent-forge/plugins/agent-forge
    ```
 
-2. **Install dependencies**
+2. **Patch the version**
 
    ```bash
-   npm install
+   npm version patch
    ```
 
 3. **Build the package**
@@ -42,7 +43,7 @@
 
 5. **Publish to npm**
    ```bash
-   npm version patch && npm publish
+    npm publish
    ```
 
 ## Package Details
@@ -55,9 +56,7 @@
 ## Installation for Users
 
 ```bash
-npm install @caipe/plugin-agent-forge
-# or
-yarn add @caipe/plugin-agent-forge
+yarn --cwd packages/app add @caipe/plugin-agent-forge
 ```
 
 ## Usage in Backstage

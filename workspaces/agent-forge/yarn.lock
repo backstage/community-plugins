@@ -7674,11 +7674,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.8.19":
-  version: 2.8.23
-  resolution: "baseline-browser-mapping@npm:2.8.23"
+  version: 2.8.24
+  resolution: "baseline-browser-mapping@npm:2.8.24"
   bin:
     baseline-browser-mapping: dist/cli.js
-  checksum: 10/f074d76f4b9157ac976c8e0083c20c9b808ac4de33cf8e245ced6e5eade6b43d05a6f12eb07924d8b846c86ac14f49626864b35a80bace6c8bc5ba0f947cc270
+  checksum: 10/ea99b958242de7d9c714cc7139b67697f9b0731b292d3153578c988d98e919816cd515537db2fc56ea0918117d1524ac2c6baf860fb9a8bc7aa2adeed95582f7
   languageName: node
   linkType: hard
 
