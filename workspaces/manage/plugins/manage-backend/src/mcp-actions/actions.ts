@@ -60,9 +60,9 @@ export function registerMcpActions({
           ownerEntities: z
             .array(z.object({}).passthrough())
             .describe(
-              'A list of Backstage entities representing the group a user ' +
-                'belongs to, or their parent or child groups all the way up ' +
-                'to the root group and down to leaf groups. ' +
+              'A list of Backstage entities representing the user and groups ' +
+                'the user belongs to, or their parent or child groups all ' +
+                'the way up to the root group and down to leaf groups. ' +
                 'The relations between groups are stored in the ' +
                 '`relations` property of type `childOf` or `parentOf`.',
             ),
