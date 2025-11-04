@@ -36,7 +36,7 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { Knex } from 'knex';
 
-const migrationsDir = resolvePackagePath(
+export const migrationsDir = resolvePackagePath(
   '@backstage-community/plugin-copilot-backend',
   'migrations',
 );

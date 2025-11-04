@@ -17,260 +17,204 @@
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {
-  // Delete duplicate rows keeping the one with highest total_engaged_users (PostgreSQL only)
-  if (!knex.client.config.client.includes('sqlite3')) {
-    // copilot_metrics
-    await knex.raw(`
-      DELETE FROM copilot_metrics 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM copilot_metrics
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
-      )
-    `);
+  // Delete duplicate rows keeping the one with highest total_engaged_users
+  // Using a database-agnostic approach with correlated subqueries
 
-    // ide_completions
-    await knex.raw(`
-      DELETE FROM ide_completions 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_completions
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // copilot_metrics
+  await knex.raw(`
+    DELETE FROM copilot_metrics 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM copilot_metrics t2 
+        WHERE t2.day = copilot_metrics.day 
+          AND t2.type = copilot_metrics.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_completions_language_users
-    await knex.raw(`
-      DELETE FROM ide_completions_language_users 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, language, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_completions_language_users
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_completions
+  await knex.raw(`
+    DELETE FROM ide_completions 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_completions t2 
+        WHERE t2.day = ide_completions.day 
+          AND t2.type = ide_completions.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_completions_language_editors
-    await knex.raw(`
-      DELETE FROM ide_completions_language_editors 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, editor, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_completions_language_editors
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_completions_language_users
+  await knex.raw(`
+    DELETE FROM ide_completions_language_users 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_completions_language_users t2 
+        WHERE t2.day = ide_completions_language_users.day 
+          AND t2.language = ide_completions_language_users.language 
+          AND t2.type = ide_completions_language_users.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_completions_language_editors_model
-    await knex.raw(`
-      DELETE FROM ide_completions_language_editors_model 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, editor, model, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_completions_language_editors_model
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_completions_language_editors
+  await knex.raw(`
+    DELETE FROM ide_completions_language_editors 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_completions_language_editors t2 
+        WHERE t2.day = ide_completions_language_editors.day 
+          AND t2.editor = ide_completions_language_editors.editor 
+          AND t2.type = ide_completions_language_editors.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_completions_language_editors_model_language
-    await knex.raw(`
-      DELETE FROM ide_completions_language_editors_model_language 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, editor, model, language, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_completions_language_editors_model_language
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_completions_language_editors_model
+  await knex.raw(`
+    DELETE FROM ide_completions_language_editors_model 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_completions_language_editors_model t2 
+        WHERE t2.day = ide_completions_language_editors_model.day 
+          AND t2.editor = ide_completions_language_editors_model.editor 
+          AND t2.model = ide_completions_language_editors_model.model 
+          AND t2.type = ide_completions_language_editors_model.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_chats
-    await knex.raw(`
-      DELETE FROM ide_chats 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_chats
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_completions_language_editors_model_language
+  await knex.raw(`
+    DELETE FROM ide_completions_language_editors_model_language 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_completions_language_editors_model_language t2 
+        WHERE t2.day = ide_completions_language_editors_model_language.day 
+          AND t2.editor = ide_completions_language_editors_model_language.editor 
+          AND t2.model = ide_completions_language_editors_model_language.model 
+          AND t2.language = ide_completions_language_editors_model_language.language 
+          AND t2.type = ide_completions_language_editors_model_language.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_chat_editors
-    await knex.raw(`
-      DELETE FROM ide_chat_editors 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, editor, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_chat_editors
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_chats
+  await knex.raw(`
+    DELETE FROM ide_chats 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_chats t2 
+        WHERE t2.day = ide_chats.day 
+          AND t2.type = ide_chats.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // ide_chat_editors_model
-    await knex.raw(`
-      DELETE FROM ide_chat_editors_model 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, editor, model, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM ide_chat_editors_model
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_chat_editors
+  await knex.raw(`
+    DELETE FROM ide_chat_editors 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_chat_editors t2 
+        WHERE t2.day = ide_chat_editors.day 
+          AND t2.editor = ide_chat_editors.editor 
+          AND t2.type = ide_chat_editors.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // dotcom_chats
-    await knex.raw(`
-      DELETE FROM dotcom_chats 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM dotcom_chats
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // ide_chat_editors_model
+  await knex.raw(`
+    DELETE FROM ide_chat_editors_model 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM ide_chat_editors_model t2 
+        WHERE t2.day = ide_chat_editors_model.day 
+          AND t2.editor = ide_chat_editors_model.editor 
+          AND t2.model = ide_chat_editors_model.model 
+          AND t2.type = ide_chat_editors_model.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // dotcom_chat_models
-    await knex.raw(`
-      DELETE FROM dotcom_chat_models 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, model, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM dotcom_chat_models
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // dotcom_chats
+  await knex.raw(`
+    DELETE FROM dotcom_chats 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM dotcom_chats t2 
+        WHERE t2.day = dotcom_chats.day 
+          AND t2.type = dotcom_chats.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // dotcom_prs
-    await knex.raw(`
-      DELETE FROM dotcom_prs 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM dotcom_prs
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // dotcom_chat_models
+  await knex.raw(`
+    DELETE FROM dotcom_chat_models 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM dotcom_chat_models t2 
+        WHERE t2.day = dotcom_chat_models.day 
+          AND t2.model = dotcom_chat_models.model 
+          AND t2.type = dotcom_chat_models.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // dotcom_pr_repositories
-    await knex.raw(`
-      DELETE FROM dotcom_pr_repositories 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, repository, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM dotcom_pr_repositories
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // dotcom_prs
+  await knex.raw(`
+    DELETE FROM dotcom_prs 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM dotcom_prs t2 
+        WHERE t2.day = dotcom_prs.day 
+          AND t2.type = dotcom_prs.type 
+          AND t2.team_name IS NULL
       )
-    `);
+  `);
 
-    // dotcom_pr_repositories_models
-    await knex.raw(`
-      DELETE FROM dotcom_pr_repositories_models 
-      WHERE ctid IN (
-          SELECT ctid
-          FROM (
-              SELECT ctid,
-                     ROW_NUMBER() OVER (
-                         PARTITION BY day, repository, model, type 
-                         ORDER BY total_engaged_users DESC
-                     ) as row_num
-              FROM dotcom_pr_repositories_models
-              WHERE team_name IS NULL
-          ) ranked
-          WHERE row_num > 1
+  // dotcom_pr_repositories
+  await knex.raw(`
+    DELETE FROM dotcom_pr_repositories 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM dotcom_pr_repositories t2 
+        WHERE t2.day = dotcom_pr_repositories.day 
+          AND t2.repository = dotcom_pr_repositories.repository 
+          AND t2.type = dotcom_pr_repositories.type 
+          AND t2.team_name IS NULL
       )
-    `);
-  }
+  `);
+
+  // dotcom_pr_repositories_models
+  await knex.raw(`
+    DELETE FROM dotcom_pr_repositories_models 
+    WHERE team_name IS NULL
+      AND total_engaged_users < (
+        SELECT MAX(total_engaged_users) 
+        FROM dotcom_pr_repositories_models t2 
+        WHERE t2.day = dotcom_pr_repositories_models.day 
+          AND t2.repository = dotcom_pr_repositories_models.repository 
+          AND t2.model = dotcom_pr_repositories_models.model 
+          AND t2.type = dotcom_pr_repositories_models.type 
+          AND t2.team_name IS NULL
+      )
+  `);
 
   // Update all remaining null team_name values to empty strings
   await knex('copilot_metrics')
