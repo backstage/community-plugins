@@ -96,7 +96,6 @@ export class ChatbotApi {
   ): AsyncGenerator<A2AStreamEventData, void, undefined> {
     try {
       const msgId = uuidv4();
-
       const sendParams: MessageSendParams = {
         message: {
           messageId: msgId,
@@ -105,6 +104,7 @@ export class ChatbotApi {
           kind: 'message',
         },
       };
+      const { token } = await this.identityApi.getIdToken();
 
       // Use session contextId if provided, otherwise use internal contextId
       const contextToUse = sessionContextId || this.contextId;
@@ -114,7 +114,7 @@ export class ChatbotApi {
 
       // Stream responses using SSE
       if (this.client) {
-        for await (const event of this.client.sendMessageStream(sendParams)) {
+        for await (const event of this.client.sendMessageStream(sendParams, token)) {
           // Update internal contextId from streamed events
           if (event.kind === 'task' && event.contextId) {
             this.contextId = event.contextId;

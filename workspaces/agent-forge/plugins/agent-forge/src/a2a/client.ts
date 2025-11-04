@@ -346,6 +346,7 @@ export class A2AClient {
    */
   public async *sendMessageStream(
     params: MessageSendParams,
+    authToken?: string,
   ): AsyncGenerator<A2AStreamEventData, void, undefined> {
     const agentCard = await this.agentCardPromise; // Ensure agent card is fetched
     // FORCE STREAMING FOR TESTING - bypassing capabilities check
@@ -370,6 +371,7 @@ export class A2AClient {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'text/event-stream', // Crucial for SSE
+        Authorization: 'Bearer ' + authToken,
       },
       body: JSON.stringify(rpcRequest),
     });
