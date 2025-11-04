@@ -211,7 +211,7 @@ export interface ChatContainerProps {
   onReset: () => void;
   onSuggestionClick: (suggestion: string) => void;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
-  
+
   // Scroll-based message loading
   onScroll?: (scrollTop: number, scrollHeight: number, clientHeight: number) => void;
   onLoadMore?: () => void;
@@ -221,11 +221,11 @@ export interface ChatContainerProps {
   loadMoreIncrement?: number;
   executionPlanBuffer?: Record<string, string>;
   autoExpandExecutionPlans?: Set<string>;
-  
+
   // Auto-scroll control (moved from internal state to prevent loss during remounts)
   autoScrollEnabled?: boolean;
   setAutoScrollEnabled?: (enabled: boolean) => void;
-  
+
   // Operational mode for special handling of system messages
   currentOperation?: string | null;
   isInOperationalMode?: boolean;
@@ -291,18 +291,18 @@ const MessagesList = memo(function MessagesList({
 /**
  * Chat container component that handles message display and input
  * Memoized to prevent re-renders when only input changes
- * 
+ *
  * SCROLL MODE: Currently running in MANUAL mode by default
  * - Auto-scroll is disabled by default
  * - Users have full control over scroll position
  * - Progressive loading: "Load Earlier Messages" shows next 20 messages each time
  * - If user scrolls up past loaded messages, button appears again
  * - Gradual auto-collapse to 5 recent messages when scrolling to bottom (smooth performance optimization)
- * 
+ *
  * TO RE-ENABLE AUTO-SCROLL:
  * 1. Change autoScrollEnabled default to true in AgentForgePage.tsx and ChatContainer.tsx
  * 2. Change {false && ...} to {true && ...} for the toggle button UI below
- * 
+ *
  * @public
  */
 export const ChatContainer = memo(function ChatContainer({
@@ -329,7 +329,7 @@ export const ChatContainer = memo(function ChatContainer({
   executionPlanBuffer = {},
   autoExpandExecutionPlans,
   executionPlanLoading,
-  autoScrollEnabled = false, // Default to manual mode
+  autoScrollEnabled = true, // Default to auto-scroll enabled
   setAutoScrollEnabled,
   currentOperation,
   isInOperationalMode,
@@ -341,24 +341,31 @@ export const ChatContainer = memo(function ChatContainer({
   const [isManualLoading, setIsManualLoading] = useState(false);
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  // Auto-scroll to bottom when messages change or when auto-scroll is enabled
+  useEffect(() => {
+    if (autoScrollEnabled) {
+      scrollToBottom();
+    }
+  }, [messages, autoScrollEnabled, scrollToBottom]);
 
   // Handle manual loading of earlier messages - SIMPLIFIED
   const handleManualLoadEarlier = useCallback(() => {
     if (!onLoadMore) return;
-    
+
     console.log('🔵 Manual load earlier messages clicked');
-    
+
     // Set manual loading flag
     setIsManualLoading(true);
-    
+
     // Safety timeout to clear manual loading flag
     setTimeout(() => {
       console.log('🛡️ Safety timeout - clearing manual loading flag');
       setIsManualLoading(false);
     }, 2000);
-    
+
     // Call the parent's load more function - NO SCROLL RESTORATION
     onLoadMore();
   }, [onLoadMore]);
@@ -375,7 +382,7 @@ export const ChatContainer = memo(function ChatContainer({
 
     const handleScrollEvent = () => {
       const { scrollTop, scrollHeight, clientHeight } = container;
-      
+
       // Simply pass scroll information to parent - no automatic behavior
       onScroll(scrollTop, scrollHeight, clientHeight);
     };
@@ -445,7 +452,7 @@ export const ChatContainer = memo(function ChatContainer({
                 {autoScrollEnabled ? '📍' : '⏸️'}
               </IconButton>
             </Tooltip>
-            
+
             {/* Manual scroll to bottom when auto-scroll is disabled */}
             {!autoScrollEnabled && (
               <Tooltip title="Scroll to bottom">
@@ -534,8 +541,8 @@ export const ChatContainer = memo(function ChatContainer({
                   }}
                 >
                   {
-                    isManualLoading ? "⏳ Loading..." : 
-                    !hasMoreMessages ? "🔚 No More Messages" : 
+                    isManualLoading ? "⏳ Loading..." :
+                    !hasMoreMessages ? "🔚 No More Messages" :
                     "📜 Load Earlier Messages"
                   }
                 </Button>
@@ -545,7 +552,7 @@ export const ChatContainer = memo(function ChatContainer({
         )}
 
 
-        
+
         <div className={classes.messagesContainer} ref={messagesContainerRef} data-testid="messages-container">
         <MessagesList
           messages={messages}
@@ -566,8 +573,8 @@ export const ChatContainer = memo(function ChatContainer({
               <span />
             </div>
             <Typography variant="caption" style={{ marginLeft: 8 }}>
-              {isInOperationalMode && currentOperation 
-                ? currentOperation 
+              {isInOperationalMode && currentOperation
+                ? currentOperation
                 : `${thinkingMessages[thinkingMessageIndex]}...`}
             </Typography>
           </Box>

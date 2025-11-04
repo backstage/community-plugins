@@ -263,10 +263,10 @@ export function AgentForgePage() {
   const identityApi = useApi(identityApiRef);
   const alertApi = useApi(alertApiRef);
 
-  // Performance optimization: progressive message loading to prevent DOM bloat  
+  // Performance optimization: progressive message loading to prevent DOM bloat
   const DEFAULT_MESSAGE_COUNT = 5; // Default messages shown (gradual auto-collapse target)
   const LOAD_MORE_INCREMENT = 5; // How many additional messages to load each time
-  
+
   const botName =
     config.getOptionalString('agentForge.botName') || DEFAULT_BOT_CONFIG.name;
   const botIcon =
@@ -285,8 +285,8 @@ export function AgentForgePage() {
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming = config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
-  
-  // Config validation logs  
+
+  // Config validation logs
   console.log('Agent Forge Config - Streaming:', enableStreaming);
   const headerTitle =
     config.getOptionalString('agentForge.headerTitle') || botName;
@@ -355,7 +355,7 @@ export function AgentForgePage() {
       updatedAt: new Date(),
     };
   });
-  
+
   // Chat session state - start with default session to prevent loading
   const [sessions, setSessions] = useState<ChatSession[]>([initialSession]);
   const [currentSessionId, setCurrentSessionId] = useState<string>(initialSession.contextId);
@@ -380,91 +380,98 @@ export function AgentForgePage() {
   const gracefulScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // Execution plan buffer - stores execution plans by message ID (fallback to timestamp)
   const [executionPlanBuffer, setExecutionPlanBuffer] = useState<Record<string, string>>({});
+  const [currentStreamingMessageId, setCurrentStreamingMessageId] = useState<string | null>(null);
   // Track which execution plans should be auto-expanded when they appear
   const [autoExpandExecutionPlans, setAutoExpandExecutionPlans] = useState<Set<string>>(new Set());
   // Reference to input field for focus management
   const inputRef = useRef<HTMLInputElement>(null);
-  // SCROLL MODE: Manual mode by default - users have full control over scroll position
-  // TO RE-ENABLE AUTO-SCROLL: Change false to true and uncomment toggle UI in ChatContainer.tsx
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
-  
+  // SCROLL MODE: Auto-scroll enabled by default - automatically scrolls to bottom on new messages
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
+
   // State for operational thinking messages
   const [currentOperation, setCurrentOperation] = useState<string | null>(null);
   const [isInOperationalMode, setIsInOperationalMode] = useState(false);
-  
+
   // Cache to track tool notifications we've shown in thinking indicator
   const toolNotificationsCache = useRef<Set<string>>(new Set());
-  
+
   // State for execution plan processing with request isolation
   const [isCapturingExecutionPlan, setIsCapturingExecutionPlan] = useState(false);
   const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] = useState<string>('');
   const currentRequestIdRef = useRef<string>(''); // Track current streaming request
   const abortControllerRef = useRef<AbortController | null>(null); // Cancel previous streams
   const [executionPlanLoading, setExecutionPlanLoading] = useState<Set<string>>(new Set()); // Track loading state per message
-  
-  
+
+
   // Function to remove cached tool notifications from content
   const removeCachedToolNotifications = useCallback((text: string): string => {
     let cleanText = text;
     const originalText = text;
-    
+
     // 🚨 DEBUGGING: Check if input text contains execution plan markers
     if (text.includes('⟦') || text.includes('⟧')) {
       console.log('🚨 INPUT TEXT CONTAINS EXECUTION PLAN MARKERS');
-      console.log('🚨 ORIGINAL TEXT:', `${text.substring(0, 200)  }...`);
+      console.log('🚨 ORIGINAL TEXT:', `${text.substring(0, 200)}...`);
     }
-    
-    // Remove each cached notification from the text
+
+    // Remove each cached notification from the text, but only for known tool notifications
     for (const notification of toolNotificationsCache.current) {
+      const normalized = notification.trim();
+      const looksLikeToolStart = normalized.includes('Calling');
+      const looksLikeToolEnd = /completed/i.test(normalized);
+
+      if (!looksLikeToolStart && !looksLikeToolEnd) {
+        continue; // Skip removal to avoid stripping regular markdown (e.g., TODO lists)
+      }
+
       const beforeRemoval = cleanText;
-      
+
       // Remove the exact notification text
-      const escapedNotification = notification.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      // Remove notification but keep surrounding whitespace intact
+      const escapedNotification = normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(escapedNotification, 'g');
       cleanText = cleanText.replace(regex, '');
-      
+
       // 🚨 DEBUGGING: Check if we removed execution plan markers
       if (beforeRemoval !== cleanText && (beforeRemoval.includes('⟦') || beforeRemoval.includes('⟧'))) {
         console.log('🚨 REMOVED TEXT THAT CONTAINED EXECUTION PLAN MARKERS!');
-        console.log('🚨 REMOVED NOTIFICATION:', `${notification.substring(0, 100)  }...`);
-        console.log('🚨 BEFORE:', `${beforeRemoval.substring(0, 200)  }...`);
-        console.log('🚨 AFTER:', `${cleanText.substring(0, 200)  }...`);
+        console.log('🚨 REMOVED NOTIFICATION:', `${notification.substring(0, 100)}...`);
+        console.log('🚨 BEFORE:', `${beforeRemoval.substring(0, 200)}...`);
+        console.log('🚨 AFTER:', `${cleanText.substring(0, 200)}...`);
       }
     }
-    
+
     // Clean up extra whitespace MORE CAREFULLY
     // Only collapse runs of 2+ spaces, preserve single spaces between words
     cleanText = cleanText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs
     cleanText = cleanText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
     cleanText = cleanText.trim();
-    
+
     console.log('CLEANED TEXT - original length:', originalText.length, 'cleaned length:', cleanText.length);
-    
+
     // 🚨 DEBUGGING: Final check
     if (originalText.includes('⟦') || originalText.includes('⟧')) {
       const stillHasMarkers = cleanText.includes('⟦') || cleanText.includes('⟧');
       console.log('🚨 EXECUTION PLAN MARKERS AFTER CLEANING:', stillHasMarkers ? 'STILL PRESENT' : 'REMOVED!');
     }
-    
+
     return cleanText;
   }, []);
-  
-  
-  
+
+
+
   // Utility function to detect and parse tool notifications using metadata
   const detectToolNotification = (artifact: any): { isToolNotification: boolean; operation?: string; isStart?: boolean } => {
     console.log('🆕 NEW CODE RUNNING - detectToolNotification v2.0');
-    
+
     if (!artifact || !artifact.name) {
       return { isToolNotification: false };
     }
-    
+
     // Get the actual text content from artifact parts
     const textContent = artifact.parts?.[0]?.text || '';
-    
+
     console.log('🔍 detectToolNotification - artifact.name:', artifact.name, 'textContent:', textContent);
-    
+
     // Detect tool start notifications: name = "tool_notification_start"
     if (artifact.name === 'tool_notification_start') {
       // Use the actual text content which includes agent name
@@ -473,8 +480,8 @@ export function AgentForgePage() {
       console.log('🔍 Detected tool_notification_start, operation:', operation);
       return { isToolNotification: true, operation, isStart: true };
     }
-    
-    // Detect tool end notifications: name = "tool_notification_end"  
+
+    // Detect tool end notifications: name = "tool_notification_end"
     if (artifact.name === 'tool_notification_end') {
       // Use the actual text content which includes agent name
       // e.g., "✅ Argocd: Tool Version_Service__Version completed\n" or "✅ Supervisor: Agent task Argocd completed\n"
@@ -482,7 +489,7 @@ export function AgentForgePage() {
       console.log('🔍 Detected tool_notification_end, operation:', operation);
       return { isToolNotification: true, operation, isStart: false };
     }
-    
+
     // Regular content (streaming_result, etc.)
     return { isToolNotification: false };
   };
@@ -513,20 +520,20 @@ export function AgentForgePage() {
       // Look for "📋 Execution Plan:" followed by content until a new section starts
       const executionPlanPattern = /📋\s*Execution\s*Plan:\s*(.*?)(?=\n\n(?:[A-Z]|###)|Calling|Checking|$)/is;
       const match = text.match(executionPlanPattern);
-      
+
       if (match && match[1]) {
         console.log('🔧 FALLBACK: Found execution plan content without Unicode markers!');
         const executionPlanText = match[1].trim();
         console.log('🔧 FALLBACK: Extracted execution plan:', `${executionPlanText.substring(0, 200)  }...`);
-        
+
         // Remove the entire execution plan section from main content
         const fullExecutionPlanSection = match[0];
         mainContent = text.replace(fullExecutionPlanSection, '').trim();
         executionPlanContent = executionPlanText;
         shouldStartCapturing = true;
         shouldStopCapturing = true; // It's a complete plan in one chunk
-        
-        console.log('🔧 FALLBACK: Removed section:', `${fullExecutionPlanSection.substring(0, 100)  }...`);  
+
+        console.log('🔧 FALLBACK: Removed section:', `${fullExecutionPlanSection.substring(0, 100)  }...`);
         console.log('🔧 FALLBACK: Main content after removal:', `${mainContent.substring(0, 200)  }...`);
         return {
           mainContent,
@@ -599,7 +606,7 @@ export function AgentForgePage() {
 
   // ChatbotApi state - initialized asynchronously to handle A2A client constructor errors
   const [chatbotApi, setChatbotApi] = useState<any>(null);
-  
+
   // Only initialize ChatbotApi when agent is confirmed reachable
   useEffect(() => {
     // Clear existing API when connection status changes
@@ -607,22 +614,22 @@ export function AgentForgePage() {
       setChatbotApi(null);
       return;
     }
-    
+
     // Only create ChatbotApi when connected
     if (connectionStatus === 'connected' && backendUrl && !chatbotApi) {
       console.log('🔧 Agent is reachable - initializing ChatbotApi with URL:', backendUrl);
-      
+
       try {
         const api = new ChatbotApi(
           backendUrl,
           { identityApi },
           { requestTimeout },
         );
-        
+
         // Wrap API methods to catch any remaining A2A client exceptions
         const originalSubmitA2ATask = api.submitA2ATask.bind(api);
         const originalSubmitA2ATaskStream = api.submitA2ATaskStream.bind(api);
-        
+
         api.submitA2ATask = async (isNewTask: boolean, message: string, contextId?: string) => {
           try {
             return await originalSubmitA2ATask(isNewTask, message, contextId);
@@ -631,7 +638,7 @@ export function AgentForgePage() {
             throw error; // Re-throw to maintain existing error handling
           }
         };
-        
+
         api.submitA2ATaskStream = (isNewTask: boolean, message: string, contextId?: string) => {
           try {
             return originalSubmitA2ATaskStream(isNewTask, message, contextId);
@@ -640,7 +647,7 @@ export function AgentForgePage() {
             throw error; // Re-throw to maintain existing error handling
           }
         };
-        
+
         console.log('✅ ChatbotApi initialized successfully (agent reachable)');
         setChatbotApi(api);
       } catch (error: any) {
@@ -657,12 +664,12 @@ export function AgentForgePage() {
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const error = event.reason;
-      if (error?.message?.includes('Unable to connect to agent') || 
+      if (error?.message?.includes('Unable to connect to agent') ||
           error?.message?.includes('.well-known/agent.json') ||
           error?.message?.includes('_fetchAndCacheAgentCard')) {
         console.error('🚫 Caught unhandled A2A client promise rejection:', error);
         event.preventDefault(); // Prevent the error from showing in UI
-        
+
         // Set connection status and start retry countdown - banner will show the status
         setConnectionStatus('disconnected');
         setNextRetryCountdown(30);
@@ -671,12 +678,12 @@ export function AgentForgePage() {
 
     const handleError = (event: ErrorEvent) => {
       const error = event.error;
-      if (error?.message?.includes('Unable to connect to agent') || 
+      if (error?.message?.includes('Unable to connect to agent') ||
           error?.message?.includes('.well-known/agent.json') ||
           error?.message?.includes('_fetchAndCacheAgentCard')) {
         console.error('🚫 Caught unhandled A2A client error:', error);
         event.preventDefault(); // Prevent the error from showing in UI
-        
+
         // Set connection status and start retry countdown - banner will show the status
         setConnectionStatus('disconnected');
         setNextRetryCountdown(30);
@@ -695,18 +702,18 @@ export function AgentForgePage() {
   useEffect(() => {
     const effectId = Math.random().toString(36).substr(2, 9);
     console.log(`🚀 useEffect START (${effectId}) - chatbotApi:`, !!chatbotApi);
-    
+
     let countdownInterval: NodeJS.Timeout | null = null;
 
     // Lightweight connection check using agent.json endpoint
     const checkAgentHealth = async (agentBaseUrl: string): Promise<boolean> => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
-      
+
       try {
         const agentJsonUrl = `${agentBaseUrl.replace(/\/$/, '')}/.well-known/agent.json`;
         console.log('🔍 Checking agent health at:', agentJsonUrl);
-        
+
         const response = await fetch(agentJsonUrl, {
           method: 'GET',
           signal: controller.signal,
@@ -714,21 +721,21 @@ export function AgentForgePage() {
             'Accept': 'application/json',
           },
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!response.ok) {
           console.log('🔴 Agent health check failed - HTTP:', response.status, response.statusText);
           return false;
         }
-        
+
         // Try to parse JSON to ensure it's a valid agent card
         const agentCard = await response.json();
         if (!agentCard || typeof agentCard !== 'object') {
           console.log('🔴 Agent health check failed - Invalid JSON response');
           return false;
         }
-        
+
         console.log('🟢 Agent health check succeeded - Agent card received');
         return true;
       } catch (error: any) {
@@ -746,7 +753,7 @@ export function AgentForgePage() {
       console.log('🔄 Starting lightweight connection check...');
       setConnectionStatus('checking'); // Show "Connecting..." status
       setNextRetryCountdown(0); // Reset countdown during check
-      
+
       if (!backendUrl) {
         console.log('🔴 No backend URL available');
         setConnectionStatus('disconnected');
@@ -794,28 +801,28 @@ export function AgentForgePage() {
       const retryConnection = async () => {
         try {
           setConnectionStatus('checking');
-          
+
           // Use the same lightweight health check
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 15000);
-          
+
           try {
             const agentJsonUrl = `${backendUrl.replace(/\/$/, '')}/.well-known/agent.json`;
-            
+
             const response = await fetch(agentJsonUrl, {
               method: 'GET',
               signal: controller.signal,
               headers: { 'Accept': 'application/json' },
             });
-            
+
             clearTimeout(timeoutId);
-            
+
             if (!response.ok) {
               throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            
+
             await response.json(); // Validate JSON
-            
+
             setConnectionStatus('connected');
             setApiError(null);
           } catch (healthError: any) {
@@ -828,7 +835,7 @@ export function AgentForgePage() {
           setNextRetryCountdown(30);
         }
       };
-      
+
       // Small delay to avoid race conditions
       setTimeout(retryConnection, 200);
     }
@@ -853,7 +860,7 @@ export function AgentForgePage() {
         clearInterval(countdownInterval);
       };
     }
-    
+
     // Return undefined for the case where condition is not met
     return undefined;
   }, [nextRetryCountdown, connectionStatus]);
@@ -861,28 +868,28 @@ export function AgentForgePage() {
   // Get current session with fallback
   const currentSession = useMemo(() => {
     if (sessions.length === 0) return null;
-    
+
     let session = sessions.find(s => s.contextId === currentSessionId);
-    
+
     // If no session found with currentSessionId, use the first session as fallback
     if (!session && sessions.length > 0) {
       session = sessions[0];
       setCurrentSessionId(sessions[0].contextId);
     }
-    
+
     return session || null;
   }, [sessions, currentSessionId]);
 
   // Performance optimization: progressive message loading to prevent DOM bloat
   const renderedMessages = useMemo(() => {
     if (!currentSession?.messages) return [];
-    
+
     const messages = currentSession.messages;
     const totalMessages = messages.length;
-    
+
     // Show messages up to the current loaded count
     const messagesToShow = Math.min(loadedMessageCount, totalMessages);
-    
+
     // Get the last 'messagesToShow' messages
     return messages.slice(-messagesToShow);
   }, [currentSession?.messages, loadedMessageCount]);
@@ -891,7 +898,7 @@ export function AgentForgePage() {
   const handleLoadMore = useCallback(() => {
     const newCount = loadedMessageCount + LOAD_MORE_INCREMENT;
     console.log('📥 Loading more messages:', loadedMessageCount, '→', newCount);
-    
+
     // Clear any pending timeouts to ensure immediate hiding and prevent conflicts
     if (buttonToggleTimeoutRef.current) {
       clearTimeout(buttonToggleTimeoutRef.current);
@@ -901,11 +908,11 @@ export function AgentForgePage() {
       clearTimeout(gracefulScrollTimeoutRef.current);
       gracefulScrollTimeoutRef.current = null;
     }
-    
+
     setIsManualLoadingInProgress(true);
     setLoadedMessageCount(newCount);
     setShowLoadMoreButton(false);
-    
+
     // Clear manual loading flag after a short delay
     setTimeout(() => {
       console.log('🧹 Clearing manual loading flag in parent');
@@ -921,20 +928,20 @@ export function AgentForgePage() {
       return; // Ignore small scroll changes that might cause flickering
     }
     lastScrollPositionRef.current = scrollTop;
-    
+
     const isAtTop = scrollTop < 50; // Within 50px of top
     const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // Within 100px of bottom
-    
+
     // Show load more button when user scrolls up and there are more messages to load
     const totalMessages = currentSession?.messages?.length || 0;
     const hasMoreMessages = loadedMessageCount < totalMessages;
-    
+
     // Debounced button state changes to prevent flickering
     const debouncedButtonToggle = (shouldShow: boolean, reason: string) => {
       if (buttonToggleTimeoutRef.current) {
         clearTimeout(buttonToggleTimeoutRef.current);
       }
-      
+
       buttonToggleTimeoutRef.current = setTimeout(() => {
         setShowLoadMoreButton(current => {
           if (shouldShow !== current) {
@@ -945,42 +952,42 @@ export function AgentForgePage() {
         });
       }, 50); // Small debounce delay
     };
-    
+
     // Show button when user scrolls near top - NO AUTO-LOADING
     if (isAtTop && !isManualLoadingInProgress && !showLoadMoreButton) {
       const buttonState = hasMoreMessages ? 'more messages available' : 'no more messages';
       debouncedButtonToggle(true, `User scrolled to top - showing load button (${buttonState})`);
     }
-    
+
     // Hide button when user scrolls away from top (unless loading)
     if (!isAtTop && showLoadMoreButton && !isManualLoadingInProgress) {
       debouncedButtonToggle(false, 'User scrolled away from top - hiding load button');
     }
-    
+
     // Performance optimization: Auto-collapse to default count when user scrolls to bottom
     // This prevents DOM bloat with large message histories
     if (isAtBottom && loadedMessageCount > DEFAULT_MESSAGE_COUNT && !isManualLoadingInProgress) {
       // Throttle auto-collapse to prevent rapid cycles (minimum 3 seconds between collapses)
       const currentTime = Date.now();
       const timeSinceLastCollapse = currentTime - lastCollapseTimeRef.current;
-      
+
       if (timeSinceLastCollapse > 3000) {
         console.log('🔽 Auto-collapse for performance:', loadedMessageCount, '→', DEFAULT_MESSAGE_COUNT);
         lastCollapseTimeRef.current = currentTime;
-        
+
         // Capture that user was at bottom BEFORE we change DOM
         const userWasAtBottom = isAtBottom;
-        
+
         setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
         setShowLoadMoreButton(false); // Hide button since we're back to default count
-        
+
         // Gracefully scroll to bottom after DOM height changes to prevent jarring jumps
         if (userWasAtBottom) {
           // Clear any existing graceful scroll timeout
           if (gracefulScrollTimeoutRef.current) {
             clearTimeout(gracefulScrollTimeoutRef.current);
           }
-          
+
           gracefulScrollTimeoutRef.current = setTimeout(() => {
             const container = document.querySelector('[data-testid="messages-container"]') as HTMLElement;
             if (container) {
@@ -997,7 +1004,7 @@ export function AgentForgePage() {
         console.log('🔽 Auto-collapse throttled - only', Math.round(timeSinceLastCollapse / 1000), 'seconds since last collapse');
       }
     }
-    
+
   }, [currentSession?.messages?.length, loadedMessageCount, isManualLoadingInProgress, DEFAULT_MESSAGE_COUNT]);
 
   // Cleanup timeouts on unmount
@@ -1017,7 +1024,7 @@ export function AgentForgePage() {
     if (!autoScrollEnabled && currentSession?.messages) {
       // Don't show button on initial load, only after user scrolls up
       const shouldShowButton = false;
-      
+
       if (shouldShowButton !== showLoadMoreButton) {
         console.log('📜 Initializing Load Earlier Messages button visibility (hidden on first load):', shouldShowButton);
         setShowLoadMoreButton(shouldShowButton);
@@ -1036,7 +1043,7 @@ export function AgentForgePage() {
           createdAt: new Date(s.createdAt),
           updatedAt: new Date(s.updatedAt),
         }));
-        
+
         // Replace the initial session with stored data
         setSessions(sessionsWithDates);
         // Ensure we have a valid currentSessionId
@@ -1129,7 +1136,7 @@ export function AgentForgePage() {
       }
       const remainingSessions = sessions.filter(s => s.contextId !== sessionId);
       setSessions(remainingSessions);
-      
+
       if (currentSessionId === sessionId) {
         if (remainingSessions.length > 0) {
           setCurrentSessionId(remainingSessions[0].contextId);
@@ -1220,7 +1227,7 @@ export function AgentForgePage() {
         console.log('🆔 NEW STREAMING MESSAGE ID:', newMessage.messageId);
         console.log('🧹 CLEARING STALE EXECUTION PLAN BUFFER ENTRIES');
       }
-      
+
       // 🎯 UI HACK: Mark this message as "loading" execution plan
       if (newMessage.messageId) {
         setExecutionPlanLoading(prev => {
@@ -1230,7 +1237,7 @@ export function AgentForgePage() {
           return newSet;
         });
       }
-      
+
       // 🔧 ULTRA-NUCLEAR OPTION: Completely clear execution plan buffer, localStorage, AND auto-expand state
       // This prevents any cross-contamination between different user requests
       setExecutionPlanBuffer(prev => {
@@ -1243,7 +1250,7 @@ export function AgentForgePage() {
         }
         return {}; // Complete reset
       });
-      
+
       // Also clear auto-expand state to prevent old execution plans from auto-expanding
       setAutoExpandExecutionPlans(prev => {
         if (process.env.NODE_ENV === 'development') {
@@ -1256,6 +1263,8 @@ export function AgentForgePage() {
         return new Set(); // Complete reset
       });
 
+      setCurrentStreamingMessageId(newMessage.messageId || null);
+
       // 🚨 CRITICAL FIX: Reset accumulated execution plan React state (prevents previous message contamination)
       setAccumulatedExecutionPlan(prevPlan => {
         if (process.env.NODE_ENV === 'development') {
@@ -1267,7 +1276,7 @@ export function AgentForgePage() {
         }
         return '';
       });
-      
+
       addMessageToSession(newMessage);
     },
     [addMessageToSession, sessions, currentSessionId],
@@ -1290,7 +1299,7 @@ export function AgentForgePage() {
             const allStreamingMessages = updatedMessages.filter(msg => msg.isStreaming === true);
             // Take the NEWEST streaming message (last in array) as a failsafe if multiple exist
             const streamingMessage = allStreamingMessages[allStreamingMessages.length - 1];
-            
+
             if (process.env.NODE_ENV === 'development') {
               console.log('🎯 UPDATE STREAMING MESSAGE - SEARCH RESULTS:', {
                 totalMessages: updatedMessages.length,
@@ -1311,7 +1320,7 @@ export function AgentForgePage() {
               // 🚀 SIMPLIFIED: Just set execution plan directly on message, no buffer complexity
               streamingMessage.text = text.replace(/⟦|⟧/g, '');
               streamingMessage.isStreaming = isStreaming;
-              
+
               // Execution plan is now stored only in executionPlanBuffer, not on message object
             }
             return { ...session, messages: updatedMessages };
@@ -1325,10 +1334,10 @@ export function AgentForgePage() {
 
 
   // Helper function to parse JSON response and extract metadata fields
-  const parseJsonResponseForMetadata = (text: string): { 
-    content: string; 
-    metadataRequest?: any; 
-    hasMetadata: boolean 
+  const parseJsonResponseForMetadata = (text: string): {
+    content: string;
+    metadataRequest?: any;
+    hasMetadata: boolean
   } => {
     if (!text || text.trim().length === 0) {
       return { content: text, hasMetadata: false };
@@ -1337,14 +1346,14 @@ export function AgentForgePage() {
     try {
       // Try to parse as JSON
       const jsonResponse = JSON.parse(text);
-      
+
       // Check if it requires user input
-      const requiresInput = jsonResponse.require_user_input === true || 
+      const requiresInput = jsonResponse.require_user_input === true ||
                            jsonResponse.metadata?.user_input === true;
-      
+
       if (requiresInput && jsonResponse.metadata?.input_fields) {
         console.log('🎨 JSON METADATA DETECTED:', jsonResponse.metadata.input_fields);
-        
+
         // Convert input_fields to MetadataField format
         // Support both formats: {field_name, field_description} and {name, description}
         const metadataFields = jsonResponse.metadata.input_fields.map((field: any) => {
@@ -1352,10 +1361,10 @@ export function AgentForgePage() {
           const fieldName = field.name || field.field_name;
           const fieldDescription = field.description || field.field_description;
           const fieldType = field.type || (field.field_values ? 'select' : 'text');
-          const fieldRequired = field.required !== undefined 
-            ? field.required 
+          const fieldRequired = field.required !== undefined
+            ? field.required
             : !fieldDescription?.toLocaleLowerCase('en-US').includes('optional');
-          
+
           return {
             name: fieldName,
             label: fieldName.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toLocaleUpperCase('en-US')),
@@ -1367,7 +1376,7 @@ export function AgentForgePage() {
             options: field.options || field.field_values?.map((v: string) => ({ value: v, label: v })),
           };
         });
-        
+
         return {
           content: jsonResponse.content || text,
           hasMetadata: true,
@@ -1379,13 +1388,13 @@ export function AgentForgePage() {
           },
         };
       }
-      
+
       // Check if this is a completion response with status
       if (jsonResponse.status === 'completed' && jsonResponse.message) {
         console.log('✅ Completion response detected, using clean message');
         return { content: jsonResponse.message, hasMetadata: false };
       }
-      
+
       // JSON but no metadata - return the content field or message if available
       if (jsonResponse.content) {
         return { content: jsonResponse.content, hasMetadata: false };
@@ -1393,82 +1402,103 @@ export function AgentForgePage() {
       if (jsonResponse.message) {
         return { content: jsonResponse.message, hasMetadata: false };
       }
-      
+
       // Fallback to original text
       return { content: text, hasMetadata: false };
     } catch (e) {
       // Not pure JSON - might be text with embedded JSON
       console.log('🧹 Cleaning text with potential embedded JSON');
-      
+
       // Strategy 1: Remove JSON objects embedded in the text
       // Matches patterns like: text{"status":"completed","message":"..."}text
       let cleanedText = text.replace(/\{"status"\s*:\s*"[^"]+"\s*,\s*"message"\s*:\s*"[^"]+"\}/g, '');
-      
+
       // Strategy 2: Remove duplicate content blocks (text appears multiple times)
       // This handles cases where entire responses are duplicated with slight variations
-      
+
       // First, try to detect large-scale duplication by looking for repeated paragraphs
       const paragraphs = cleanedText.split(/\n\n+/);
       const seenParagraphs = new Map<string, string>(); // normalized -> original
       const uniqueParagraphs: string[] = [];
-      
+
       for (const para of paragraphs) {
         if (para.trim().length === 0) continue;
-        
+
         // Normalize: remove extra spaces, lowercase, remove special chars for comparison
         const normalized = para.trim().toLocaleLowerCase('en-US')
           .replace(/\s+/g, ' ')  // Collapse spaces
           .replace(/['"]/g, '')   // Remove quotes
           .replace(/\s/g, '');    // Remove all spaces for fuzzy matching
-        
+
         // Check if we've already seen this content (exact match after normalization)
         if (!seenParagraphs.has(normalized)) {
           seenParagraphs.set(normalized, para);
           uniqueParagraphs.push(para.trim());
         }
       }
-      
+
       // Rejoin unique paragraphs
       if (uniqueParagraphs.length > 0) {
         cleanedText = uniqueParagraphs.join('\n\n');
       }
-      
+
       // Strategy 3: Remove duplicate sentences within the remaining text
-      const sentences = cleanedText.split(/\.\s+/).filter(s => s.trim().length > 0);
-      const uniqueSentences = new Set<string>();
-      const deduplicatedSentences: string[] = [];
-      
-      for (const sentence of sentences) {
-        const normalized = sentence.trim().toLocaleLowerCase('en-US')
-          .replace(/['"]/g, '')
-          .replace(/\s+/g, ' ');
-        
-        if (!uniqueSentences.has(normalized)) {
-          uniqueSentences.add(normalized);
-          deduplicatedSentences.push(sentence.trim());
+      // Use a smarter split that preserves list markers (1., 2., etc.)
+      const listItemPattern = /(\d+\.\s+[^\n]+)/g;
+      const listItems = cleanedText.match(listItemPattern) || [];
+
+      if (listItems.length > 0) {
+        // This is a numbered list - preserve it as-is but deduplicate whole items
+        const uniqueListItems = new Set<string>();
+        const deduplicatedItems: string[] = [];
+
+        for (const item of listItems) {
+          const normalized = item.trim().toLowerCase().replace(/\s+/g, ' ');
+          if (!uniqueListItems.has(normalized)) {
+            uniqueListItems.add(normalized);
+            deduplicatedItems.push(item.trim());
+          }
+        }
+
+        cleanedText = deduplicatedItems.join('\n');
+      } else {
+        // Not a list - use sentence-level deduplication
+        const sentences = cleanedText.split(/\.\s+/).filter(s => s.trim().length > 0);
+        const uniqueSentences = new Set<string>();
+        const deduplicatedSentences: string[] = [];
+
+        for (const sentence of sentences) {
+          const normalized = sentence.trim().toLocaleLowerCase('en-US')
+            .replace(/['"]/g, '')
+            .replace(/\s+/g, ' ');
+
+          if (!uniqueSentences.has(normalized)) {
+            uniqueSentences.add(normalized);
+            deduplicatedSentences.push(sentence.trim());
+          }
+        }
+
+        // Rejoin sentences
+        if (deduplicatedSentences.length > 0) {
+          cleanedText = deduplicatedSentences.join('. ');
+          // Add final period if original text had one
+          if (text.trim().endsWith('.')) {
+            cleanedText += '.';
+          }
         }
       }
-      
-      // Rejoin sentences
-      if (deduplicatedSentences.length > 0) {
-        cleanedText = deduplicatedSentences.join('. ');
-        // Add final period if original text had one
-        if (text.trim().endsWith('.')) {
-          cleanedText += '.';
-        }
-      }
-      
+
       // Final cleanup: trim extra whitespace but preserve paragraph breaks
-      cleanedText = cleanedText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs  
+      cleanedText = cleanedText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs
       cleanedText = cleanedText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
       cleanedText = cleanedText.trim();
-      
+
       console.log('🧹 Cleaned text:', {
         original: text.substring(0, 100),
         cleaned: cleanedText.substring(0, 100),
         removed: text.length - cleanedText.length
       });
-      
+
       return { content: cleanedText || text, hasMetadata: false };
     }
   };
@@ -1485,14 +1515,14 @@ export function AgentForgePage() {
             const streamingMessage = allStreamingMessages[allStreamingMessages.length - 1];
             if (streamingMessage && !streamingMessage.isUser) {
               streamingMessage.isStreaming = false;
-              
+
               // 🎯 PARSE JSON RESPONSE FOR METADATA FIELDS AND CLEAN DUPLICATES
               const messageText = streamingMessage.text || '';
               const { content, metadataRequest, hasMetadata } = parseJsonResponseForMetadata(messageText);
-              
+
               // Update message with cleaned content (removes duplicate JSON, etc.)
               streamingMessage.text = content;
-              
+
               if (hasMetadata && metadataRequest) {
                 console.log('✨ Converting JSON response to metadata form:', metadataRequest);
                 streamingMessage.metadataRequest = metadataRequest;
@@ -1504,7 +1534,7 @@ export function AgentForgePage() {
                   allStreamingIds: allStreamingMessages.map(m => m.messageId)
                 });
               }
-              
+
               // 🔧 CRITICAL FIX: Store accumulated execution plan in buffer at END of streaming
               setAccumulatedExecutionPlan(currentPlan => {
                 if (currentPlan && currentPlan.trim().length > 0) {
@@ -1513,11 +1543,11 @@ export function AgentForgePage() {
                     planLength: currentPlan.length,
                     planPreview: `${currentPlan.substring(0, 100)  }...`
                   });
-                  
+
                   const messageKey = streamingMessage.messageId || 'unknown';
                   // Remove markers if present (⟦ and ⟧), otherwise content is used as-is
                   const cleanExecutionPlan = currentPlan.replace(/⟦|⟧/g, '');
-                  
+
                   // Store in buffer
                   setExecutionPlanBuffer(prevBuffer => {
                     const newBuffer = {
@@ -1531,7 +1561,7 @@ export function AgentForgePage() {
                     });
                     return newBuffer;
                   });
-                  
+
                   // Mark for auto-expansion
                   setAutoExpandExecutionPlans(prevSet => {
                     const newSet = new Set(prevSet);
@@ -1549,7 +1579,7 @@ export function AgentForgePage() {
       );
     }
     setIsTyping(false);
-    
+
     // 🚀 FOCUS BACK TO INPUT - Better UX after response completes
     setTimeout(() => {
       if (inputRef.current) {
@@ -1661,7 +1691,7 @@ export function AgentForgePage() {
       );
       setUserInput('');
       setIsTyping(true);
-      
+
       // Keep suggestions visible
 
       if (!chatbotApi) {
@@ -1700,7 +1730,7 @@ export function AgentForgePage() {
         if (enableStreaming) {
           // Track all artifact names we see during streaming (outside try block for error logging)
           const seenArtifactNames = new Set<string>();
-          
+
           try {
             console.log('ATTEMPTING STREAMING...');
             // Add streaming message placeholder
@@ -1714,12 +1744,12 @@ export function AgentForgePage() {
               console.log('🛑 ABORTING PREVIOUS STREAMING REQUEST');
               abortControllerRef.current.abort();
             }
-            
+
             // Generate unique request ID for this streaming session
             const currentRequestId = uuidv4();
             currentRequestIdRef.current = currentRequestId;
             console.log('🆔 NEW REQUEST ID:', currentRequestId);
-            
+
             // Create new AbortController for this request
             abortControllerRef.current = new AbortController();
 
@@ -1740,14 +1770,14 @@ export function AgentForgePage() {
               console.error('🚫 A2A Client error during stream initialization:', streamError);
               throw streamError; // Re-throw to be caught by outer streaming catch block
             }
-            
+
             for await (const event of streamIterator) {
             // 🚨 CHECK FOR ABORT SIGNAL: Cancel processing if new request started
             if (abortControllerRef.current?.signal.aborted || currentRequestIdRef.current !== currentRequestId) {
               console.log('🛑 STREAMING ABORTED - New request started or cancelled');
               break;
             }
-            
+
             // Update contextId from any event that has it
             if (event.kind === 'task' && event.contextId) {
               lastContextId = event.contextId;
@@ -1764,7 +1794,7 @@ export function AgentForgePage() {
               hasContextId: !!event.contextId,
               timestamp: new Date().toISOString()
             });
-            
+
             // Track artifact names
             if (event.artifact?.name) {
               seenArtifactNames.add(event.artifact.name);
@@ -1776,7 +1806,7 @@ export function AgentForgePage() {
               const textPart = event.parts?.find((p: any) => p.kind === 'text');
               if (textPart && 'text' in textPart) {
                 console.log('💬 AGENT MESSAGE - text:', textPart.text.substring(0, 200) + (textPart.text.length > 200 ? '...' : ''));
-                
+
                 // 🚨 DEBUGGING: Check if agent message contains execution plan content
                 if (textPart.text.includes('⟦') || textPart.text.includes('⟧')) {
                   console.log('🎯 EXECUTION PLAN MARKERS IN AGENT MESSAGE!');
@@ -1784,7 +1814,7 @@ export function AgentForgePage() {
                   console.log('🔍 POTENTIAL EXECUTION PLAN IN AGENT MESSAGE WITHOUT MARKERS:');
                   console.log('🔍 TEXT:', textPart.text);
                 }
-                
+
                 accumulatedText += textPart.text;
                 updateStreamingMessage(accumulatedText, accumulatedExecutionPlan || '', true);
               }
@@ -1800,15 +1830,15 @@ export function AgentForgePage() {
                   totalParts: event.artifact.parts.length,
                   timestamp: new Date().toISOString()
                 });
-                
+
                 const textPart = event.artifact.parts.find(
                   (p: any) => p.kind === 'text',
                 );
                 if (textPart && 'text' in textPart) {
                   const { isToolNotification, operation, isStart } = detectToolNotification(event.artifact);
-                  
+
                   console.log('ARTIFACT UPDATE - name:', event.artifact?.name, 'append:', event.append, 'text:', textPart.text.substring(0, 200) + (textPart.text.length > 200 ? '...' : ''), 'isToolNotification:', isToolNotification);
-                  
+
                   // 🚨 DEBUGGING: Check if this content contains execution plan markers
                   if (textPart.text.includes('⟦') || textPart.text.includes('⟧')) {
                     console.log('🎯 EXECUTION PLAN MARKERS DETECTED IN STREAMING CONTENT!');
@@ -1818,14 +1848,14 @@ export function AgentForgePage() {
                     console.log('🔍 TEXT:', `${textPart.text.substring(0, 300)  }...`);
                     console.log('🔍 This should have ⟦⟧ markers around it!');
                   }
-                  
+
                   // 🎯 COPILOTKIT-STYLE METADATA INPUT: Check for metadata in artifacts
                   if (event.artifact?.metadata && Object.keys(event.artifact.metadata).length > 0) {
                     console.log('🎨 METADATA DETECTED IN ARTIFACT:', {
                       artifactName: event.artifact.name,
                       metadata: event.artifact.metadata,
                     });
-                    
+
                     // Create a metadata request message for user input
                     const metadataFields = Object.entries(event.artifact.metadata).map(([key, value]: [string, any]) => ({
                       name: key,
@@ -1838,7 +1868,7 @@ export function AgentForgePage() {
                       options: value?.options,
                       validation: value?.validation,
                     }));
-                    
+
                     // Add a bot message with metadata request
                     addMessageToSession({
                       text: textPart.text || 'Please provide the following information:',
@@ -1852,11 +1882,11 @@ export function AgentForgePage() {
                         artifactName: event.artifact.name,
                       },
                     });
-                    
+
                     console.log('📝 Metadata request message added to session');
                     continue; // Skip normal text processing for metadata artifacts
                   }
-                  
+
                   // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content for accumulation
                   if (event.artifact?.name === 'execution_plan_streaming') {
                     // This artifact accumulates chunks for fallback
@@ -1870,50 +1900,58 @@ export function AgentForgePage() {
                     // This contains the complete plan so far, no need to accumulate chunks
                     if (currentRequestIdRef.current === currentRequestId) {
                       console.log('📋 EXECUTION PLAN UPDATE - Updating display in real-time');
-                      
+
                       const completePlan = textPart.text;
                       const cleanExecutionPlan = completePlan.replace(/⟦|⟧/g, '');
-                      
-                      // Find streaming message and update immediately
-                      setSessions(prevSessions => {
-                        return prevSessions.map(session => {
-                          if (session.contextId === currentSessionId) {
-                            const updatedMessages = session.messages.map(msg => {
-                              if (msg.isStreaming === true) {
-                                const messageKey = msg.messageId || 'unknown';
-                                
-                                // 🎯 UI HACK: Clear loading state now that real data arrived
-                                setExecutionPlanLoading(prevLoading => {
-                                  const newSet = new Set(prevLoading);
-                                  newSet.delete(messageKey);
-                                  console.log('✅ EXECUTION PLAN LOADED - Removing loading state:', messageKey);
-                                  return newSet;
-                                });
-                                
-                                // Update buffer for real-time display
-                                setExecutionPlanBuffer(prevBuffer => ({
-                                  ...prevBuffer,
-                                  [messageKey]: cleanExecutionPlan
-                                }));
-                                
-                                // Auto-expand on first update
-                                setAutoExpandExecutionPlans(prevSet => {
-                                  const newSet = new Set(prevSet);
-                                  if (!newSet.has(messageKey)) {
-                                    newSet.add(messageKey);
-                                    console.log('🔄 AUTO-EXPANDING EXECUTION PLAN');
-                                  }
-                                  return newSet;
-                                });
-                              }
-                              return msg;
-                            });
-                            return { ...session, messages: updatedMessages };
-                          }
-                          return session;
+
+                      // Get the active streaming message ID
+                      const activeMessageId = currentStreamingMessageId;
+
+                      if (activeMessageId) {
+                        console.log('🎯 STORING EXECUTION PLAN FOR MESSAGE:', activeMessageId);
+
+                        // Update buffer immediately for real-time display
+                        setExecutionPlanBuffer(prevBuffer => ({
+                          ...prevBuffer,
+                          [activeMessageId]: cleanExecutionPlan
+                        }));
+
+                        // Clear loading state
+                        setExecutionPlanLoading(prevLoading => {
+                          const newSet = new Set(prevLoading);
+                          newSet.delete(activeMessageId);
+                          console.log('✅ EXECUTION PLAN LOADED - Removing loading state:', activeMessageId);
+                          return newSet;
                         });
-                      });
-                      
+
+                        // Auto-expand on first update
+                        setAutoExpandExecutionPlans(prevSet => {
+                          const newSet = new Set(prevSet);
+                          if (!newSet.has(activeMessageId)) {
+                            newSet.add(activeMessageId);
+                            console.log('🔄 AUTO-EXPANDING EXECUTION PLAN');
+                          }
+                          return newSet;
+                        });
+
+                        // Force a re-render by updating the streaming message with a tiny timestamp change
+                        // This ensures ChatMessage component picks up the buffer update immediately
+                        setSessions(prevSessions => {
+                          return prevSessions.map(session => {
+                            if (session.contextId === currentSessionId) {
+                              const updatedMessages = session.messages.map(msg => {
+                                if (msg.isStreaming === true && msg.messageId === activeMessageId) {
+                                  return { ...msg }; // Shallow clone triggers re-render
+                                }
+                                return msg;
+                              });
+                              return { ...session, messages: updatedMessages };
+                            }
+                            return session;
+                          });
+                        });
+                      }
+
                       // Also store in accumulated state for finishStreamingMessage
                       setAccumulatedExecutionPlan(completePlan);
                     }
@@ -1922,21 +1960,21 @@ export function AgentForgePage() {
                     // Handle tool notifications ONLY as thinking indicators - never add to content
                     console.log('TOOL NOTIFICATION DETECTED:', operation, 'isStart:', isStart);
                     console.log('Setting currentOperation to:', operation);
-                    
+
                     // Cache the exact notification text for later removal from content
                     const notificationText = textPart.text.trim();
-                    
+
                     // 🚨 DEBUGGING: Check if we're accidentally caching execution plan markers
                     if (notificationText.includes('⧨') || notificationText.includes('⧩')) {
                       console.log('🚨 WARNING: Tool notification contains execution plan markers!');
                       console.log('🚨 NOTIFICATION TEXT:', notificationText);
                       console.log('🚨 This might be why execution plan is getting eaten up!');
                     }
-                    
+
                     toolNotificationsCache.current.add(notificationText);
                     console.log('CACHED NOTIFICATION:', notificationText.substring(0, 100) + (notificationText.length > 100 ? '...' : ''));
                     console.log('CACHE SIZE:', toolNotificationsCache.current.size);
-                    
+
                     // Always update the current operation and stay in operational mode
                     // This handles both start and end notifications
                     setCurrentOperation(operation || 'Processing...');
@@ -1950,75 +1988,104 @@ export function AgentForgePage() {
                       setIsInOperationalMode(false);
                       setCurrentOperation(null);
                     }
-                    
-                    // Only process content if it's NOT a tool notification
-                    if (event.artifact?.name !== 'tool_notification_start' && 
+
+                    if (event.artifact?.name !== 'tool_notification_start' &&
                         event.artifact?.name !== 'tool_notification_end') {
-                      
-                      // Remove any cached tool notifications from the content
-                      let cleanText = removeCachedToolNotifications(textPart.text);
-                      console.log('CONTENT AFTER CACHE CLEANING - original:', `${textPart.text.substring(0, 100)  }...`, 'cleaned:', `${cleanText.substring(0, 100)  }...`);
-                      
-                      // 🔧 SIMPLE LOGIC: Route streaming_result based on capture state (existing logic handles markers)
-                      if (isCapturingExecutionPlan) {
-                        // 🚨 REQUEST ISOLATION: Only accept content for current request
-                        if (currentRequestIdRef.current === currentRequestId) {
-                          console.log('✅ CAPTURING FOR EXECUTION PLAN - Request ID matches:', `${cleanText.substring(0, 100)  }...`);
-                          // We're capturing execution plan - add this content to execution plan
-                          setAccumulatedExecutionPlan(prev => {
-                            const newContent = prev + cleanText;
-                            console.log('📋 EXECUTION PLAN UPDATED from:', `${prev.substring(0, 50)  }...`, 'to:', `${newContent.substring(0, 50)  }...`);
-                            return newContent;
-                          });
-                        } else {
-                          console.log('🚫 REJECTING EXECUTION PLAN CAPTURE - Request ID mismatch:', {
-                            current: currentRequestIdRef.current,
-                            streaming: currentRequestId,
-                            content: `${cleanText.substring(0, 50)  }...`
-                          });
-                        }
-                        
-                        // Don't add to main content - this is execution plan content
-                        cleanText = '';
-                      } else {
-                        // Normal mode - add to main content
-                        console.log('📄 ADDING TO MAIN CONTENT:', `${cleanText.substring(0, 100)  }...`);
+                      const {
+                        mainContent,
+                        executionPlanContent,
+                        shouldStartCapturing,
+                        shouldStopCapturing,
+                      } = processExecutionPlanMarkers(textPart.text);
+                      const activeMessageId = currentStreamingMessageId;
+
+                      if (shouldStartCapturing) {
+                        console.log('🎯 BEGIN EXECUTION PLAN CAPTURE');
+                        setIsCapturingExecutionPlan(true);
                       }
 
-                      // Note: accumulatedExecutionPlan will be used directly in the simplified logic below
-                      
+                      let executionPlanForMessage = activeMessageId
+                        ? executionPlanBuffer[activeMessageId] || ''
+                        : '';
+
+                      if (executionPlanContent && executionPlanContent.trim().length > 0) {
+                        const sanitizedChunk = executionPlanContent.replace(/⟦|⟧/g, '');
+                        const bufferedPlan = activeMessageId
+                          ? executionPlanBuffer[activeMessageId] || ''
+                          : '';
+                        const baseBufferedPlan = shouldStartCapturing ? '' : bufferedPlan;
+                        executionPlanForMessage = `${baseBufferedPlan}${sanitizedChunk}`.trim();
+
+                        if (activeMessageId) {
+                          setExecutionPlanBuffer(prevBuffer => {
+                            const previousPlan = prevBuffer[activeMessageId] || '';
+                            const basePlan = shouldStartCapturing ? '' : previousPlan;
+                            const nextPlan = `${basePlan}${sanitizedChunk}`.trim();
+                            if (previousPlan === nextPlan) {
+                              return prevBuffer;
+                            }
+                            console.log('🗂️ BUFFERING EXECUTION PLAN FROM STREAM:', {
+                              messageId: activeMessageId,
+                              planPreview: `${nextPlan.substring(0, 100)}...`
+                            });
+                            return {
+                              ...prevBuffer,
+                              [activeMessageId]: nextPlan,
+                            };
+                          });
+                          setExecutionPlanLoading(prevLoading => {
+                            if (!prevLoading.has(activeMessageId)) {
+                              return prevLoading;
+                            }
+                            const newSet = new Set(prevLoading);
+                            newSet.delete(activeMessageId);
+                            return newSet;
+                          });
+                          setAutoExpandExecutionPlans(prevSet => {
+                            if (prevSet.has(activeMessageId)) {
+                              return prevSet;
+                            }
+                            const newSet = new Set(prevSet);
+                            newSet.add(activeMessageId);
+                            return newSet;
+                          });
+                        }
+
+                        setAccumulatedExecutionPlan(prevPlan => {
+                          const basePlan = shouldStartCapturing ? '' : prevPlan;
+                          return `${basePlan}${executionPlanContent}`;
+                        });
+                      }
+
+                      if (shouldStopCapturing) {
+                        console.log('✅ EXECUTION PLAN CAPTURE COMPLETE');
+                        setIsCapturingExecutionPlan(false);
+                      }
+
+                      // Remove any cached tool notifications from the content (preserves markdown like TODO lists)
+                      let cleanText = removeCachedToolNotifications(mainContent);
+                      console.log('CONTENT AFTER CACHE CLEANING - original:', `${mainContent.substring(0, 100)}...`, 'cleaned:', `${cleanText.substring(0, 100)}...`);
+
                       // Respect the append flag for proper text accumulation
                       if (event.append === false) {
-                        // Start fresh with new text
                         console.log('STARTING FRESH - clearing previous text');
                         accumulatedText = cleanText;
                       } else {
-                        // Append to existing text - direct concatenation
-                        // The server sends properly chunked text, just concatenate without adding spaces
                         console.log('APPENDING to existing text (direct concat)');
                         accumulatedText += cleanText;
                       }
 
-                      // 🚀 SIMPLIFIED: Just pass execution plan directly to message
                       if (process.env.NODE_ENV === 'development') {
                         console.log('📄 STREAMING UPDATE:', {
                           textLength: accumulatedText.length,
-                          hasExecutionPlan: !!accumulatedExecutionPlan,
-                          executionPlanLength: accumulatedExecutionPlan?.length || 0
+                          hasExecutionPlan: executionPlanForMessage.length > 0,
+                          executionPlanLength: executionPlanForMessage.length
                         });
                       }
 
-                      // Clean the text content from execution plan markers
                       const cleanedTextForMessage = accumulatedText.replace(/⟦[^⟧]*⟧/g, '').trim();
-                      const cleanedExecutionPlan = accumulatedExecutionPlan ? accumulatedExecutionPlan.replace(/⟦|⟧/g, '') : '';
-                      
-                      updateStreamingMessage(cleanedTextForMessage, cleanedExecutionPlan, true);
-                      
-                      // 🚀 CLEAN BUFFER AFTER EACH UPDATE - prevents contamination
-                      if (cleanedExecutionPlan) {
-                        console.log('🧹 CLEANING EXECUTION PLAN STATE AFTER UPDATE');
-                        setAccumulatedExecutionPlan('');
-                      }
+
+                      updateStreamingMessage(cleanedTextForMessage, executionPlanForMessage, true);
                     }
                   }
                 }
@@ -2026,7 +2093,7 @@ export function AgentForgePage() {
             } else if (event.kind === 'status-update') {
               // Only handle status changes, don't process text content (to avoid duplication)
               // Text content is already handled in artifact-update events
-              
+
               // Check if task is completed
               if (event.status?.state === 'completed' || event.final) {
                 break;
@@ -2061,7 +2128,7 @@ export function AgentForgePage() {
                       // Remove any cached tool notifications from history
                       const cleanText = removeCachedToolNotifications(textPart.text);
                       console.log('HISTORY MSG AFTER CACHE CLEANING - original:', textPart.text, 'cleaned:', cleanText);
-                      
+
                       if (cleanText.trim()) {
                         // Only add non-empty cleaned text
                         newText.push(cleanText);
@@ -2119,7 +2186,7 @@ export function AgentForgePage() {
             return;
           } catch (streamingError) {
             console.error('STREAMING FAILED, FALLING BACK TO NON-STREAMING:', streamingError);
-            
+
             // 📊 ARTIFACT SUMMARY (ERROR CASE): Log artifacts seen before failure
             console.log('📊 STREAMING FAILED - ARTIFACT SUMMARY BEFORE ERROR:', {
               totalUniqueArtifacts: seenArtifactNames.size,
@@ -2130,19 +2197,19 @@ export function AgentForgePage() {
               hasToolNotifications: Array.from(seenArtifactNames).some((name: string) => name.includes('tool_notification')),
               timestamp: new Date().toISOString()
             });
-            
+
             // Check if it's an A2A connection error that shouldn't fallback
             const err = streamingError as Error;
-            const isA2AConnectionError = err.message.includes('Unable to connect to agent') || 
+            const isA2AConnectionError = err.message.includes('Unable to connect to agent') ||
                                        err.message.includes('.well-known/agent.json') ||
                                        err.message.includes('_fetchAndCacheAgentCard');
-            
+
             // For A2A connection errors, don't attempt non-streaming fallback
             if (isA2AConnectionError) {
               console.log('🚫 A2A connection error detected - skipping non-streaming fallback');
               throw streamingError; // Re-throw to be handled by main catch block
             }
-            
+
             // Clean up any streaming UI state including operational mode
             setIsInOperationalMode(false);
             setCurrentOperation(null);
@@ -2258,9 +2325,9 @@ export function AgentForgePage() {
                   // Tool completion: "✅ Argocd: Tool ... completed" or "✅ Supervisor: Agent ... completed"
                   (trimmedText.includes('✅') && (trimmedText.includes('Tool') || trimmedText.includes('Agent')) && trimmedText.includes('completed'))
                 );
-                
+
                 console.log('NON-STREAMING HISTORY - text:', text, 'isToolMessage:', isToolMessage);
-                
+
                 if (!isToolMessage) {
                   agentWords.push(text);
                 } else {
@@ -2304,7 +2371,7 @@ export function AgentForgePage() {
         if (resultText || executionPlanText) {
           // 🎯 Parse JSON response for metadata fields (non-streaming)
           const { content, metadataRequest, hasMetadata } = parseJsonResponseForMetadata(resultText);
-          
+
           const newMessage: any = {
             messageId: uuidv4(),
             text: hasMetadata ? content : (resultText || '').replace(/⟦|⟧/g, ''),
@@ -2313,13 +2380,13 @@ export function AgentForgePage() {
             executionPlan: (executionPlanText || '').replace(/⟦|⟧/g, ''), // Use empty string instead of undefined
             isStreaming: false, // Mark as completed for auto-collapse
           };
-          
+
           // Add metadata request if detected
           if (hasMetadata && metadataRequest) {
             console.log('✨ JSON metadata detected in non-streaming response:', metadataRequest);
             newMessage.metadataRequest = metadataRequest;
           }
-          
+
           console.log('📝 NON-STREAMING MESSAGE CREATED:', {
             textLength: newMessage.text.length,
             executionPlanLength: newMessage.executionPlan?.length || 0,
@@ -2347,17 +2414,17 @@ export function AgentForgePage() {
       } catch (error) {
         const err = error as Error;
         console.log('🚫 Message submission error:', err.message);
-        
+
         // When message submission fails, also set connection status to disconnected and start countdown
         console.log('🔴 Message failed, setting connection status to disconnected with countdown');
         setConnectionStatus('disconnected');
         setNextRetryCountdown(30);
-        
+
         // Handle A2A Client specific errors more gracefully
-        const isA2AConnectionError = err.message.includes('Unable to connect to agent') || 
+        const isA2AConnectionError = err.message.includes('Unable to connect to agent') ||
                                    err.message.includes('.well-known/agent.json') ||
                                    err.message.includes('_fetchAndCacheAgentCard');
-        
+
         // Don't set apiError - connection banner will handle display
 
         // Check if it's a timeout error and display it directly without additional prefix
@@ -2424,7 +2491,7 @@ export function AgentForgePage() {
   const handleMetadataSubmit = useCallback(
     async (messageId: string, data: Record<string, any>) => {
       console.log('📝 Metadata form submitted:', { messageId, data });
-      
+
       // Update the message with the metadata response
       setSessions(prev =>
         prev.map(session => {
@@ -2454,9 +2521,9 @@ export function AgentForgePage() {
           return `**${label}**: ${value}`;
         })
         .join('\n\n');
-      
+
       const metadataMessage = `### Submitted Information\n\n${formattedData}`;
-      
+
       // Add user message showing what was submitted
       addMessageToSession({
         text: metadataMessage,
@@ -2578,7 +2645,7 @@ export function AgentForgePage() {
             >
               {apiError || (connectionStatus === 'checking' ? 'Connecting to agent...' : 'Agent connection failed')}
               {(nextRetryCountdown > 0 || connectionStatus === 'checking') && (
-                nextRetryCountdown > 0 
+                nextRetryCountdown > 0
                   ? ` - Retrying in ${nextRetryCountdown}s...`
                   : ` - Connecting...`
               )}
@@ -2623,7 +2690,7 @@ export function AgentForgePage() {
                   executionPlanBufferSize: Object.keys(executionPlanBuffer).length,
                   sessionId: currentSessionId
                 });
-                
+
                 return (
                   <ChatContainer
                     key={`chat-${currentSessionId}-${renderedMessages.length}`}
@@ -2724,8 +2791,8 @@ export function AgentForgePage() {
                 {connectionStatus === 'connected' && 'Connected'}
                 {connectionStatus === 'checking' && 'Connecting...'}
                 {connectionStatus === 'disconnected' && (
-                  nextRetryCountdown > 0 
-                    ? `Disconnected (retry in ${nextRetryCountdown}s)` 
+                  nextRetryCountdown > 0
+                    ? `Disconnected (retry in ${nextRetryCountdown}s)`
                     : 'Disconnected'
                 )}
               </Typography>
@@ -2759,7 +2826,7 @@ export function AgentForgePage() {
                   onClick={toggleFullscreen}
                   className={classes.fullscreenButton}
                   disabled={isTyping}
-                  style={{ 
+                  style={{
                     opacity: isTyping ? 0.5 : 1,
                     cursor: isTyping ? 'not-allowed' : 'pointer'
                   }}
@@ -2829,8 +2896,8 @@ export function AgentForgePage() {
                 {connectionStatus === 'connected' && 'Connected'}
                 {connectionStatus === 'checking' && 'Connecting...'}
                 {connectionStatus === 'disconnected' && (
-                  nextRetryCountdown > 0 
-                    ? `Disconnected (retry in ${nextRetryCountdown}s)` 
+                  nextRetryCountdown > 0
+                    ? `Disconnected (retry in ${nextRetryCountdown}s)`
                     : 'Disconnected'
                 )}
               </Typography>
@@ -2864,7 +2931,7 @@ export function AgentForgePage() {
                 onClick={toggleFullscreen}
                 className={classes.fullscreenButton}
                 disabled={isTyping}
-                style={{ 
+                style={{
                   opacity: isTyping ? 0.5 : 1,
                   cursor: isTyping ? 'not-allowed' : 'pointer'
                 }}
