@@ -44,6 +44,7 @@ const useStyles = makeStyles(
   theme => ({
     graph: {
       minHeight: '100%',
+      maxHeight: '1200px',
       flex: 1,
     },
     graphWrapper: {
