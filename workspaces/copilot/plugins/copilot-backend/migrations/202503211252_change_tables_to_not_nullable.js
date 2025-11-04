@@ -17,204 +17,66 @@
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {
-  // Delete duplicate rows keeping the one with highest total_engaged_users
-  // Using a database-agnostic approach with correlated subqueries
+  await deleteDuplicates('copilot_metrics', ['day', 'type']);
 
-  // copilot_metrics
-  await knex.raw(`
-    DELETE FROM copilot_metrics 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM copilot_metrics t2 
-        WHERE t2.day = copilot_metrics.day 
-          AND t2.type = copilot_metrics.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_completions', ['day', 'type']);
 
-  // ide_completions
-  await knex.raw(`
-    DELETE FROM ide_completions 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_completions t2 
-        WHERE t2.day = ide_completions.day 
-          AND t2.type = ide_completions.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_completions_language_users', [
+    'day',
+    'language',
+    'type',
+  ]);
 
-  // ide_completions_language_users
-  await knex.raw(`
-    DELETE FROM ide_completions_language_users 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_completions_language_users t2 
-        WHERE t2.day = ide_completions_language_users.day 
-          AND t2.language = ide_completions_language_users.language 
-          AND t2.type = ide_completions_language_users.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_completions_language_editors', [
+    'day',
+    'editor',
+    'type',
+  ]);
 
-  // ide_completions_language_editors
-  await knex.raw(`
-    DELETE FROM ide_completions_language_editors 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_completions_language_editors t2 
-        WHERE t2.day = ide_completions_language_editors.day 
-          AND t2.editor = ide_completions_language_editors.editor 
-          AND t2.type = ide_completions_language_editors.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_completions_language_editors_model', [
+    'day',
+    'editor',
+    'model',
+    'type',
+  ]);
 
-  // ide_completions_language_editors_model
-  await knex.raw(`
-    DELETE FROM ide_completions_language_editors_model 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_completions_language_editors_model t2 
-        WHERE t2.day = ide_completions_language_editors_model.day 
-          AND t2.editor = ide_completions_language_editors_model.editor 
-          AND t2.model = ide_completions_language_editors_model.model 
-          AND t2.type = ide_completions_language_editors_model.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_completions_language_editors_model_language', [
+    'day',
+    'editor',
+    'model',
+    'language',
+    'type',
+  ]);
 
-  // ide_completions_language_editors_model_language
-  await knex.raw(`
-    DELETE FROM ide_completions_language_editors_model_language 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_completions_language_editors_model_language t2 
-        WHERE t2.day = ide_completions_language_editors_model_language.day 
-          AND t2.editor = ide_completions_language_editors_model_language.editor 
-          AND t2.model = ide_completions_language_editors_model_language.model 
-          AND t2.language = ide_completions_language_editors_model_language.language 
-          AND t2.type = ide_completions_language_editors_model_language.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_chats', ['day', 'type']);
 
-  // ide_chats
-  await knex.raw(`
-    DELETE FROM ide_chats 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_chats t2 
-        WHERE t2.day = ide_chats.day 
-          AND t2.type = ide_chats.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_chat_editors', ['day', 'editor', 'type']);
 
-  // ide_chat_editors
-  await knex.raw(`
-    DELETE FROM ide_chat_editors 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_chat_editors t2 
-        WHERE t2.day = ide_chat_editors.day 
-          AND t2.editor = ide_chat_editors.editor 
-          AND t2.type = ide_chat_editors.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('ide_chat_editors_model', [
+    'day',
+    'editor',
+    'model',
+    'type',
+  ]);
 
-  // ide_chat_editors_model
-  await knex.raw(`
-    DELETE FROM ide_chat_editors_model 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM ide_chat_editors_model t2 
-        WHERE t2.day = ide_chat_editors_model.day 
-          AND t2.editor = ide_chat_editors_model.editor 
-          AND t2.model = ide_chat_editors_model.model 
-          AND t2.type = ide_chat_editors_model.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('dotcom_chats', ['day', 'type']);
 
-  // dotcom_chats
-  await knex.raw(`
-    DELETE FROM dotcom_chats 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM dotcom_chats t2 
-        WHERE t2.day = dotcom_chats.day 
-          AND t2.type = dotcom_chats.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('dotcom_chat_models', ['day', 'model', 'type']);
 
-  // dotcom_chat_models
-  await knex.raw(`
-    DELETE FROM dotcom_chat_models 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM dotcom_chat_models t2 
-        WHERE t2.day = dotcom_chat_models.day 
-          AND t2.model = dotcom_chat_models.model 
-          AND t2.type = dotcom_chat_models.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('dotcom_prs', ['day', 'type']);
 
-  // dotcom_prs
-  await knex.raw(`
-    DELETE FROM dotcom_prs 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM dotcom_prs t2 
-        WHERE t2.day = dotcom_prs.day 
-          AND t2.type = dotcom_prs.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('dotcom_pr_repositories', [
+    'day',
+    'repository',
+    'type',
+  ]);
 
-  // dotcom_pr_repositories
-  await knex.raw(`
-    DELETE FROM dotcom_pr_repositories 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM dotcom_pr_repositories t2 
-        WHERE t2.day = dotcom_pr_repositories.day 
-          AND t2.repository = dotcom_pr_repositories.repository 
-          AND t2.type = dotcom_pr_repositories.type 
-          AND t2.team_name IS NULL
-      )
-  `);
-
-  // dotcom_pr_repositories_models
-  await knex.raw(`
-    DELETE FROM dotcom_pr_repositories_models 
-    WHERE team_name IS NULL
-      AND total_engaged_users < (
-        SELECT MAX(total_engaged_users) 
-        FROM dotcom_pr_repositories_models t2 
-        WHERE t2.day = dotcom_pr_repositories_models.day 
-          AND t2.repository = dotcom_pr_repositories_models.repository 
-          AND t2.model = dotcom_pr_repositories_models.model 
-          AND t2.type = dotcom_pr_repositories_models.type 
-          AND t2.team_name IS NULL
-      )
-  `);
+  await deleteDuplicates('dotcom_pr_repositories_models', [
+    'day',
+    'repository',
+    'model',
+    'type',
+  ]);
 
   // Update all remaining null team_name values to empty strings
   await knex('copilot_metrics')
@@ -313,6 +175,32 @@ exports.up = async function up(knex) {
   await knex.schema.table('dotcom_pr_repositories_models', table => {
     table.string('team_name').notNullable().alter();
   });
+
+  // Delete duplicate rows keeping the one with highest total_engaged_users
+  // When there are ties (same total_engaged_users), keep only one row
+  async function deleteDuplicates(tableName, partitionColumns) {
+    const isSqlite = knex.client.config.client.includes('sqlite3');
+    const rowIdColumn = isSqlite ? 'rowid' : 'ctid';
+
+    const partitionBy = partitionColumns.join(', ');
+
+    await knex.raw(`
+      DELETE FROM ${tableName}
+      WHERE ${rowIdColumn} IN (
+        SELECT ${rowIdColumn}
+        FROM (
+          SELECT ${rowIdColumn},
+                 ROW_NUMBER() OVER (
+                   PARTITION BY ${partitionBy}
+                   ORDER BY total_engaged_users DESC, ${rowIdColumn}
+                 ) as row_num
+          FROM ${tableName}
+          WHERE team_name IS NULL
+        ) ranked
+        WHERE row_num > 1
+      )
+    `);
+  }
 };
 
 /**

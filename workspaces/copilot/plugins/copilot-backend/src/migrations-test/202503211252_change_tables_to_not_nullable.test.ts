@@ -357,7 +357,7 @@ describe('migration 202503211252_change_tables_to_not_nullable', () => {
             day: testDate,
             type: 'organization',
             team_name: null,
-            total_engaged_users: 9,
+            total_engaged_users: 7,
           },
           {
             day: testDate2,
