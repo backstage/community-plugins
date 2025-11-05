@@ -29,6 +29,7 @@ import {
 } from '../providers/provider-factory';
 import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
 import { LLMProvider } from '../providers/base-provider';
+import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
 import { MCPClientService } from './MCPClientService';
 import {
   ChatMessage,
@@ -39,6 +40,8 @@ import {
   QueryResponse,
   ServerTool,
   MCPServerType,
+  ServerConfig,
+  ResponsesApiMcpCall,
 } from '../types';
 
 export type Options = {
@@ -55,6 +58,7 @@ export class MCPClientServiceImpl implements MCPClientService {
   private connected = false;
   private mcpServers: Promise<MCPServer[]> | null = null;
   private readonly systemPrompt: string;
+  private serverConfigs: ServerConfig[] = [];
 
   constructor(options: Options) {
     this.logger = options.logger;
@@ -99,6 +103,136 @@ export class MCPClientServiceImpl implements MCPClientService {
     const allTools: ServerTool[] = [];
     const serverResults: MCPServer[] = [];
     const serverConfigs = loadServerConfigs(this.config);
+
+    // Store server configs for Responses API provider
+    this.serverConfigs = serverConfigs;
+
+    // Check if using Responses API provider - initialize local MCP for tool discovery
+    const providerConfig = getConfig(this.config);
+    if (providerConfig.type === 'openai-responses') {
+      this.logger.info(
+        'Using OpenAI Responses API - initializing local MCP for tool discovery',
+      );
+
+      // Note: We don't set MCP configs on provider here - they will be set per-request
+      // in processQueryWithResponsesApi() with only the enabled servers
+
+      // Initialize local MCP clients ONLY for tool discovery
+      // Filter to only URL-based servers (Responses API requirement)
+      const urlBasedServers = serverConfigs.filter(config => config.url);
+
+      for (const serverConfig of urlBasedServers) {
+        try {
+          const client = new Client({
+            name: `${serverConfig.name}-client`,
+            version: '1.0.0',
+          });
+
+          // Create transport based on server type
+          let transport;
+
+          if (serverConfig.type === MCPServerType.STREAMABLE_HTTP) {
+            const transportOptions: any = {};
+            if (serverConfig.headers) {
+              transportOptions.requestInit = {
+                headers: serverConfig.headers,
+              };
+            }
+            transport = new StreamableHTTPClientTransport(
+              new URL(serverConfig.url!),
+              transportOptions,
+            );
+          } else if (serverConfig.type === MCPServerType.SSE) {
+            const transportOptions: any = { url: new URL(serverConfig.url!) };
+            if (serverConfig.headers) {
+              transportOptions.headers = serverConfig.headers;
+            }
+            transport = new SSEClientTransport(transportOptions);
+          }
+
+          if (transport) {
+            await client.connect(transport);
+            this.mcpClients.set(serverConfig.id, client);
+
+            // List tools from this server
+            const { tools } = await client.listTools();
+
+            const serverTools: ServerTool[] = tools.map(tool => ({
+              type: 'function',
+              function: {
+                name: tool.name,
+                description: tool.description || '',
+                parameters: tool.inputSchema,
+              },
+              serverId: serverConfig.id,
+            }));
+
+            allTools.push(...serverTools);
+
+            serverResults.push({
+              id: serverConfig.id,
+              name: serverConfig.name,
+              type: serverConfig.type,
+              url: serverConfig.url,
+              status: {
+                valid: true,
+                connected: true,
+              },
+            });
+
+            this.logger.info(
+              `Connected to ${serverConfig.name}: ${serverTools.length} tools`,
+            );
+          }
+        } catch (error) {
+          this.logger.warn(
+            `Failed to connect to ${serverConfig.name}: ${
+              error instanceof Error ? error.message : error
+            }`,
+          );
+          serverResults.push({
+            id: serverConfig.id,
+            name: serverConfig.name,
+            type: serverConfig.type,
+            url: serverConfig.url,
+            status: {
+              valid: true,
+              connected: false,
+              error: error instanceof Error ? error.message : String(error),
+            },
+          });
+        }
+      }
+
+      // Add status for STDIO servers (not supported by Responses API)
+      const stdioServers = serverConfigs.filter(config => !config.url);
+      for (const serverConfig of stdioServers) {
+        serverResults.push({
+          id: serverConfig.id,
+          name: serverConfig.name,
+          type: serverConfig.type,
+          npxCommand: serverConfig.npxCommand,
+          scriptPath: serverConfig.scriptPath,
+          args: serverConfig.args,
+          status: {
+            valid: false,
+            connected: false,
+            error: 'Responses API only supports URL-based MCP servers',
+          },
+        });
+      }
+
+      this.tools = allTools;
+      this.connected = true;
+
+      this.logger.info(
+        `Discovered ${this.tools.length} tools from ${
+          serverResults.filter(s => s.status.connected).length
+        } connected servers`,
+      );
+
+      return serverResults;
+    }
 
     for (const serverConfig of serverConfigs) {
       const isValid = !!(
@@ -294,7 +428,7 @@ export class MCPClientServiceImpl implements MCPClientService {
 
   async processQuery(
     messagesInput: any[],
-    enabledTools: string[] = [],
+    enabledTools?: string[],
   ): Promise<QueryResponse> {
     // Only add system message if one doesn't already exist
     const messages: ChatMessage[] = [...messagesInput];
@@ -305,9 +439,18 @@ export class MCPClientServiceImpl implements MCPClientService {
       });
     }
 
+    // Check if using Responses API provider
+    const providerConfig = getConfig(this.config);
+    if (providerConfig.type === 'openai-responses') {
+      return this.processQueryWithResponsesApi(messages, enabledTools);
+    }
+
     // Filter tools based on enabled servers
+    // - If enabledTools is undefined/null: use all tools (default)
+    // - If enabledTools is empty array []: use no tools (all disabled)
+    // - If enabledTools has items: use only those tools
     const filteredTools =
-      enabledTools.length > 0
+      enabledTools !== undefined && enabledTools !== null
         ? this.tools.filter(tool => enabledTools.includes(tool.serverId))
         : this.tools;
 
@@ -391,6 +534,68 @@ export class MCPClientServiceImpl implements MCPClientService {
       reply: replyMessage.content || '',
       toolCalls: [],
       toolResponses: [],
+    };
+  }
+
+  /**
+   * Process query using OpenAI Responses API
+   * The API handles tool discovery and execution internally
+   */
+  private async processQueryWithResponsesApi(
+    messages: ChatMessage[],
+    enabledTools?: string[],
+  ): Promise<QueryResponse> {
+    // Filter server configs based on enabled tools
+    // - If enabledTools is undefined/null: use all servers (default)
+    // - If enabledTools is empty array []: use no servers (all disabled)
+    // - If enabledTools has items: use only those servers
+    const enabledServerConfigs =
+      enabledTools !== undefined && enabledTools !== null
+        ? this.serverConfigs.filter(config => enabledTools.includes(config.id))
+        : this.serverConfigs;
+
+    // Set the filtered configs on the provider
+    if (this.llmProvider instanceof OpenAIResponsesProvider) {
+      this.llmProvider.setMcpServerConfigs(enabledServerConfigs);
+    }
+
+    // Send message - the provider handles MCP tool configuration internally
+    const response = await this.llmProvider.sendMessage(messages);
+    const replyMessage = response.choices[0].message;
+
+    // Extract tool calls and responses from the Responses API output
+    const toolCalls = replyMessage.tool_calls || [];
+    const toolResponses: any[] = [];
+
+    // Get the raw output from the provider to extract tool execution details
+    if (this.llmProvider instanceof OpenAIResponsesProvider) {
+      const output = this.llmProvider.getLastResponseOutput();
+      if (output) {
+        for (const event of output) {
+          if (event.type === 'mcp_call') {
+            const mcpCall = event as ResponsesApiMcpCall;
+            // Build tool response in the format expected by the UI
+            toolResponses.push({
+              id: mcpCall.id,
+              name: mcpCall.name,
+              arguments: JSON.parse(mcpCall.arguments || '{}'),
+              result: mcpCall.error || mcpCall.output,
+              serverId: mcpCall.server_label,
+              error: mcpCall.error,
+            });
+          }
+        }
+      }
+    }
+
+    this.logger.info(
+      `Responses API completed with ${toolCalls.length} tool calls`,
+    );
+
+    return {
+      reply: replyMessage.content || '',
+      toolCalls,
+      toolResponses,
     };
   }
 

@@ -213,3 +213,103 @@ export interface ToolCall {
 export interface ServerTool extends Tool {
   serverId: string;
 }
+
+// =============================================================================
+// OpenAI Responses API Types
+// =============================================================================
+
+/**
+ * Tool configuration for OpenAI Responses API
+ */
+export interface ResponsesApiMcpTool {
+  type: 'mcp';
+  server_url: string;
+  server_label: string;
+  require_approval: 'never' | 'always' | 'auto';
+  allowed_tools?: string[];
+  headers?: Record<string, string>;
+}
+
+/**
+ * MCP list tools output event
+ */
+export interface ResponsesApiMcpListTools {
+  id: string;
+  type: 'mcp_list_tools';
+  server_label: string;
+  tools: Array<{
+    name: string;
+    description: string;
+    input_schema: any;
+  }>;
+}
+
+/**
+ * MCP tool call output event
+ */
+export interface ResponsesApiMcpCall {
+  id: string;
+  type: 'mcp_call';
+  name: string;
+  arguments: string;
+  server_label: string;
+  error: string | null;
+  output: string;
+}
+
+/**
+ * Message output event
+ */
+export interface ResponsesApiMessage {
+  id: string;
+  type: 'message';
+  role: 'assistant';
+  status: 'completed' | 'failed';
+  content: Array<{
+    type: 'output_text';
+    text: string;
+    annotations?: any[];
+  }>;
+}
+
+/**
+ * Union type for all possible output events
+ */
+export type ResponsesApiOutputEvent =
+  | ResponsesApiMcpListTools
+  | ResponsesApiMcpCall
+  | ResponsesApiMessage;
+
+/**
+ * Response from OpenAI Responses API
+ */
+export interface ResponsesApiResponse {
+  id: string;
+  object: 'response';
+  created_at: number;
+  model: string;
+  status: 'completed' | 'failed' | 'cancelled';
+  output: ResponsesApiOutputEvent[];
+  usage?: {
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+    input_tokens_details?: {
+      cached_tokens: number;
+    };
+    output_tokens_details?: any;
+  };
+  error?: string | null;
+  instructions?: string | null;
+  tools?: ResponsesApiMcpTool[];
+  parallel_tool_calls?: boolean;
+  previous_response_id?: string | null;
+  temperature?: number | null;
+  top_p?: number | null;
+  text?: {
+    format: {
+      type: string;
+    };
+  };
+  truncation?: any;
+}
