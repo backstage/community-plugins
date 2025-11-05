@@ -25,30 +25,30 @@ import {
   CatalogService,
   CatalogServiceRequestOptions,
 } from '@backstage/plugin-catalog-node';
-import { AuthService } from '@backstage/backend-plugin-api';
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { NotFoundError } from '@backstage/errors';
 
 export class CatalogHelper {
-  readonly #auth: AuthService;
+  readonly #credentials: BackstageCredentials;
   readonly #catalog: CatalogService;
 
   constructor({
-    auth,
+    credentials,
     catalog,
   }: {
-    auth: AuthService;
+    credentials: BackstageCredentials;
     catalog: CatalogService;
   }) {
-    this.#auth = auth;
+    this.#credentials = credentials;
     this.#catalog = catalog;
   }
 
-  #getOptions = async (
+  #getOptions = (
     options?: Partial<CatalogServiceRequestOptions>,
-  ): Promise<CatalogServiceRequestOptions> => {
+  ): CatalogServiceRequestOptions => {
     return {
       ...options,
-      credentials: await this.#auth.getOwnServiceCredentials(),
+      credentials: this.#credentials,
     };
   };
 
@@ -70,7 +70,7 @@ export class CatalogHelper {
       {
         filter: { 'spec.profile.email': email },
       },
-      await this.#getOptions(),
+      this.#getOptions(),
     );
 
     if (items.length === 0) {
@@ -87,7 +87,7 @@ export class CatalogHelper {
       if (parsedEntityRef.kind.toLocaleLowerCase('en-US') === 'user') {
         const entity = await this.#catalog.getEntityByRef(
           name,
-          await this.#getOptions(),
+          this.#getOptions(),
         );
         if (entity) {
           return entity;
@@ -104,7 +104,7 @@ export class CatalogHelper {
           kind: 'User',
         },
       },
-      await this.#getOptions(),
+      this.#getOptions(),
     );
 
     if (items.length === 0) {
@@ -115,7 +115,7 @@ export class CatalogHelper {
   };
 
   /**
-   * Gets the Entity for a user, given the username or email
+   * Gets the Entity for a user, given the username, user entity ref or email
    */
   getUserByNameOrEmail = async (nameOrEmail: string): Promise<Entity> => {
     return nameOrEmail.includes('@')

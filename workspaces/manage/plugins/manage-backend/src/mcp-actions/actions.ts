@@ -17,6 +17,7 @@
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 import { AuthService } from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
 
 import { ManageService } from '../services/Manage';
 import { CatalogHelper } from './catalog-helper';
@@ -32,8 +33,6 @@ export function registerMcpActions({
   actionsRegistry: ActionsRegistryService;
   manageService: ManageService;
 }) {
-  const catalogHelper = new CatalogHelper({ auth, catalog });
-
   actionsRegistry.register({
     attributes: {
       readOnly: true,
@@ -48,7 +47,12 @@ export function registerMcpActions({
         z.object({
           user: z
             .string()
-            .describe('The username, "entity ref" or email of the person'),
+            .optional()
+            .describe(
+              'The username, "user entity ref" or email of the person. ' +
+                'This field is not required if the action is executed in the ' +
+                'context of an authenticated user.',
+            ),
         }),
       output: z =>
         z.object({
@@ -70,8 +74,21 @@ export function registerMcpActions({
             ),
         }),
     },
-    action: async ({ input }) => {
-      const userEntity = await catalogHelper.getUserByNameOrEmail(input.user);
+    action: async ({ input, credentials }) => {
+      const user = auth.isPrincipal(credentials, 'user')
+        ? credentials.principal.userEntityRef
+        : input.user;
+
+      if (!user) {
+        throw new InputError(
+          'No user specified, and the action is not executed in the context ' +
+            'of an authenticated user.',
+        );
+      }
+
+      const catalogHelper = new CatalogHelper({ credentials, catalog });
+
+      const userEntity = await catalogHelper.getUserByNameOrEmail(user);
       const ownershipEntityRefs = await catalogHelper.getOwnershipEntityRefs(
         userEntity,
       );
@@ -80,7 +97,7 @@ export function registerMcpActions({
         await manageService.getOwnersAndOwnedEntities(
           ownershipEntityRefs,
           [],
-          await auth.getOwnServiceCredentials(),
+          credentials,
         );
 
       return {
