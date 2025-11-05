@@ -403,7 +403,7 @@ describe('createRouter', () => {
       expect(response.status).toBe(200);
       expect(mcpClientService.processQuery).toHaveBeenCalledWith(
         validMessages,
-        [],
+        undefined,
       );
     });
   });
