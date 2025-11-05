@@ -51,7 +51,7 @@
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "knex": "^3.0.0",
-    "luxon": "^3.5.0",
+    "luxon": "^3.7.2",
     "node-fetch": "^2.6.7",
     "winston": "^3.2.1",
     "yn": "^4.0.0",
