@@ -5,7 +5,7 @@ CLI tools for managing the community plugins repository.
 ## Usage
 
 ```bash
-npx community-cli <command>
+yarn community-cli <command>
 ```
 
 ## Available Commands
