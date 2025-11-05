@@ -57,7 +57,7 @@ export class ChatbotApi {
   ) {
     try {
       const msgId = uuidv4();
-      const { token } = await this.identityApi.getIdToken();
+      const { token } = await this.identityApi.getCredentials();
 
       const sendParams: MessageSendParams = {
         message: {
@@ -79,7 +79,7 @@ export class ChatbotApi {
 
       const task: Task = taskResult?.result as Task;
 
-      this.contextId = task.contextId;
+      this.contextId = task.context_id;
 
       // Return the full task response instead of just the text
       return task;
@@ -104,7 +104,7 @@ export class ChatbotApi {
           kind: 'message',
         },
       };
-      const { token } = await this.identityApi.getIdToken();
+      const { token } = await this.identityApi.getCredentials();
 
       // Use session contextId if provided, otherwise use internal contextId
       const contextToUse = sessionContextId || this.contextId;
@@ -114,7 +114,10 @@ export class ChatbotApi {
 
       // Stream responses using SSE
       if (this.client) {
-        for await (const event of this.client.sendMessageStream(sendParams, token)) {
+        for await (const event of this.client.sendMessageStream(
+          sendParams,
+          token,
+        )) {
           // Update internal contextId from streamed events
           if (event.kind === 'task' && event.contextId) {
             this.contextId = event.contextId;

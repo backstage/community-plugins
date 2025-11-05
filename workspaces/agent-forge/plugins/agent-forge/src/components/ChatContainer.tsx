@@ -27,7 +27,14 @@ import {
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SendIcon from '@material-ui/icons/Send';
-import React, { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  memo,
+} from 'react';
 import { Message } from '../types';
 import { ChatMessage } from './ChatMessage';
 
@@ -213,13 +220,18 @@ export interface ChatContainerProps {
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
 
   // Scroll-based message loading
-  onScroll?: (scrollTop: number, scrollHeight: number, clientHeight: number) => void;
+  onScroll?: (
+    scrollTop: number,
+    scrollHeight: number,
+    clientHeight: number,
+  ) => void;
   onLoadMore?: () => void;
   executionPlanLoading?: Set<string>;
   hasMoreMessages?: boolean;
   showLoadMoreButton?: boolean;
   loadMoreIncrement?: number;
   executionPlanBuffer?: Record<string, string>;
+  executionPlanHistory?: Record<string, string[]>;
   autoExpandExecutionPlans?: Set<string>;
 
   // Auto-scroll control (moved from internal state to prevent loss during remounts)
@@ -240,6 +252,7 @@ const MessagesList = memo(function MessagesList({
   botIcon,
   fontSizes,
   executionPlanBuffer,
+  executionPlanHistory,
   autoExpandExecutionPlans,
   executionPlanLoading,
   onMetadataSubmit,
@@ -254,39 +267,50 @@ const MessagesList = memo(function MessagesList({
     timestamp?: string;
   };
   executionPlanBuffer?: Record<string, string>;
+  executionPlanHistory?: Record<string, string[]>;
   autoExpandExecutionPlans?: Set<string>;
   executionPlanLoading?: Set<string>;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
 }) {
   // Memoize font sizes to prevent re-creating object on every render
-  const memoizedFontSizes = useMemo(() => ({
-    messageText: fontSizes?.messageText,
-    codeBlock: fontSizes?.codeBlock,
-    inlineCode: fontSizes?.inlineCode,
-    timestamp: fontSizes?.timestamp,
-  }), [fontSizes?.messageText, fontSizes?.codeBlock, fontSizes?.inlineCode, fontSizes?.timestamp]);
+  const memoizedFontSizes = useMemo(
+    () => ({
+      messageText: fontSizes?.messageText,
+      codeBlock: fontSizes?.codeBlock,
+      inlineCode: fontSizes?.inlineCode,
+      timestamp: fontSizes?.timestamp,
+    }),
+    [
+      fontSizes?.messageText,
+      fontSizes?.codeBlock,
+      fontSizes?.inlineCode,
+      fontSizes?.timestamp,
+    ],
+  );
 
   return (
     <>
       {messages.map((message, index) => (
-             <div key={`${index}-${message.timestamp}`} data-message-timestamp={message.timestamp}>
-               <ChatMessage
-                 message={message}
-                 botName={botName}
-                 botIcon={botIcon}
-                 fontSizes={memoizedFontSizes}
-                 executionPlanBuffer={executionPlanBuffer}
-                 autoExpandExecutionPlans={autoExpandExecutionPlans}
-                 executionPlanLoading={executionPlanLoading}
-                 isLastMessage={index === messages.length - 1}
-                 onMetadataSubmit={onMetadataSubmit}
-               />
-             </div>
-           ))}
+        <div
+          key={`${index}-${message.timestamp}`}
+          data-message-timestamp={message.timestamp}
+        >
+          <ChatMessage
+            message={message}
+            botName={botName}
+            botIcon={botIcon}
+            fontSizes={memoizedFontSizes}
+            executionPlanBuffer={executionPlanBuffer}
+            executionPlanHistory={executionPlanHistory}
+            autoExpandExecutionPlans={autoExpandExecutionPlans}
+            executionPlanLoading={executionPlanLoading}
+            onMetadataSubmit={onMetadataSubmit}
+          />
+        </div>
+      ))}
     </>
   );
 });
-
 
 /**
  * Chat container component that handles message display and input
@@ -327,6 +351,7 @@ export const ChatContainer = memo(function ChatContainer({
   showLoadMoreButton = false,
   loadMoreIncrement = 5,
   executionPlanBuffer = {},
+  executionPlanHistory = {},
   autoExpandExecutionPlans,
   executionPlanLoading,
   autoScrollEnabled = true, // Default to auto-scroll enabled
@@ -370,7 +395,6 @@ export const ChatContainer = memo(function ChatContainer({
     onLoadMore();
   }, [onLoadMore]);
 
-
   // AUTO-SCROLL DISABLED - No automatic scrolling behavior
 
   // SCROLL RESTORATION DISABLED - No automatic scroll positioning
@@ -388,6 +412,7 @@ export const ChatContainer = memo(function ChatContainer({
     };
 
     container.addEventListener('scroll', handleScrollEvent);
+    // eslint-disable-next-line consistent-return
     return () => {
       container.removeEventListener('scroll', handleScrollEvent);
     };
@@ -399,8 +424,6 @@ export const ChatContainer = memo(function ChatContainer({
       setIsManualLoading(false);
     }
   }, [messages.length]);
-
-
 
   // Show random thinking messages while typing
   useEffect(() => {
@@ -433,51 +456,60 @@ export const ChatContainer = memo(function ChatContainer({
 
   return (
     <div className={classes.chatContainer}>
-        {/* Auto-scroll Toggle - HIDDEN (kept for future use) */}
-        {false && (
-          <div className={classes.autoScrollToggle}>
-            <Tooltip title={autoScrollEnabled ? "Disable auto-scroll and auto-loading" : "Enable auto-scroll and auto-loading"}>
+      {/* Auto-scroll Toggle - HIDDEN (kept for future use) */}
+      {false && (
+        <div className={classes.autoScrollToggle}>
+          <Tooltip
+            title={
+              autoScrollEnabled
+                ? 'Disable auto-scroll and auto-loading'
+                : 'Enable auto-scroll and auto-loading'
+            }
+          >
+            <IconButton
+              size="small"
+              onClick={() => {
+                console.log('🔄 Toggling auto-scroll:', !autoScrollEnabled);
+                setAutoScrollEnabled?.(!autoScrollEnabled);
+              }}
+              style={{
+                backgroundColor: autoScrollEnabled
+                  ? 'rgba(76, 175, 80, 0.2)'
+                  : 'rgba(244, 67, 54, 0.2)',
+                color: autoScrollEnabled ? '#4caf50' : '#f44336',
+                border: autoScrollEnabled ? 'none' : '2px solid #f44336',
+              }}
+            >
+              {autoScrollEnabled ? '📍' : '⏸️'}
+            </IconButton>
+          </Tooltip>
+
+          {/* Manual scroll to bottom when auto-scroll is disabled */}
+          {!autoScrollEnabled && (
+            <Tooltip title="Scroll to bottom">
               <IconButton
                 size="small"
                 onClick={() => {
-                  console.log('🔄 Toggling auto-scroll:', !autoScrollEnabled);
-                  setAutoScrollEnabled?.(!autoScrollEnabled);
+                  console.log('📍 Manual scroll to bottom');
+                  scrollToBottom();
                 }}
                 style={{
-                  backgroundColor: autoScrollEnabled ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)',
-                  color: autoScrollEnabled ? '#4caf50' : '#f44336',
-                  border: autoScrollEnabled ? 'none' : '2px solid #f44336',
+                  marginLeft: '4px',
+                  backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                  color: '#2196f3',
                 }}
               >
-                {autoScrollEnabled ? '📍' : '⏸️'}
+                ⬇️
               </IconButton>
             </Tooltip>
+          )}
+        </div>
+      )}
 
-            {/* Manual scroll to bottom when auto-scroll is disabled */}
-            {!autoScrollEnabled && (
-              <Tooltip title="Scroll to bottom">
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    console.log('📍 Manual scroll to bottom');
-                    scrollToBottom();
-                  }}
-                  style={{
-                    marginLeft: '4px',
-                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
-                    color: '#2196f3',
-                  }}
-                >
-                  ⬇️
-                </IconButton>
-              </Tooltip>
-            )}
-          </div>
-        )}
-
-        {/* Visual indicator when auto-scroll is disabled - HIDDEN (kept for future use) */}
-        {false && !autoScrollEnabled && (
-          <div style={{
+      {/* Visual indicator when auto-scroll is disabled - HIDDEN (kept for future use) */}
+      {false && !autoScrollEnabled && (
+        <div
+          style={{
             position: 'absolute',
             top: '40px',
             right: '8px',
@@ -489,71 +521,74 @@ export const ChatContainer = memo(function ChatContainer({
             fontWeight: 'bold',
             zIndex: 9,
             border: '1px solid rgba(244, 67, 54, 0.3)',
-          }}>
-            Manual Mode
-          </div>
-        )}
+          }}
+        >
+          Manual Mode
+        </div>
+      )}
 
-        {/* Load More Button - appears when scrolling up, shows "No More Messages" when all loaded */}
-        {showLoadMoreButton && !autoScrollEnabled && (
-          <div className={classes.loadingIndicator}>
-            <Tooltip
-              title={(() => {
-                if (isTyping) {
-                  return "🔒 Button disabled: Please wait for the current message to complete before loading more";
-                }
-                if (isManualLoading) {
-                  return "⏳ Button disabled: Currently loading earlier messages...";
-                }
-                if (!hasMoreMessages) {
-                  return "✅ No more messages: All conversation history has been loaded";
-                }
-                return `📜 Click to load the next ${loadMoreIncrement} earlier messages`;
-              })()}
-              placement="top"
-              arrow
-            >
-              <span>
-                <Button
-                  onClick={hasMoreMessages ? handleManualLoadEarlier : undefined}
-                  variant="contained"
-                  size="small"
-                  disabled={isTyping || isManualLoading || !hasMoreMessages}
-                  style={{
-                    backgroundColor: (() => {
-                      if (isTyping || isManualLoading) return '#bdbdbd';
-                      if (!hasMoreMessages) return '#757575';
-                      return '#2196f3';
-                    })(),
-                    color: (() => {
-                      if (isTyping || isManualLoading) return '#757575';
-                      if (!hasMoreMessages) return '#ffffff';
-                      return 'white';
-                    })(),
-                    fontSize: '12px',
-                    padding: '4px 12px',
-                    cursor: (() => {
-                      if (isTyping || isManualLoading) return 'not-allowed';
-                      if (!hasMoreMessages) return 'default';
-                      return 'pointer';
-                    })(),
-                    opacity: isTyping || isManualLoading ? 0.6 : 1,
-                  }}
-                >
-                  {
-                    isManualLoading ? "⏳ Loading..." :
-                    !hasMoreMessages ? "🔚 No More Messages" :
-                    "📜 Load Earlier Messages"
-                  }
-                </Button>
-              </span>
-            </Tooltip>
-          </div>
-        )}
+      {/* Load More Button - appears when scrolling up, shows "No More Messages" when all loaded */}
+      {showLoadMoreButton && !autoScrollEnabled && (
+        <div className={classes.loadingIndicator}>
+          <Tooltip
+            title={(() => {
+              if (isTyping) {
+                return '🔒 Button disabled: Please wait for the current message to complete before loading more';
+              }
+              if (isManualLoading) {
+                return '⏳ Button disabled: Currently loading earlier messages...';
+              }
+              if (!hasMoreMessages) {
+                return '✅ No more messages: All conversation history has been loaded';
+              }
+              return `📜 Click to load the next ${loadMoreIncrement} earlier messages`;
+            })()}
+            placement="top"
+            arrow
+          >
+            <Box component="span">
+              <Button
+                onClick={hasMoreMessages ? handleManualLoadEarlier : undefined}
+                variant="contained"
+                size="small"
+                disabled={isTyping || isManualLoading || !hasMoreMessages}
+                style={{
+                  backgroundColor: (() => {
+                    if (isTyping || isManualLoading) return '#bdbdbd';
+                    if (!hasMoreMessages) return '#757575';
+                    return '#2196f3';
+                  })(),
+                  color: (() => {
+                    if (isTyping || isManualLoading) return '#757575';
+                    if (!hasMoreMessages) return '#ffffff';
+                    return 'white';
+                  })(),
+                  fontSize: '12px',
+                  padding: '4px 12px',
+                  cursor: (() => {
+                    if (isTyping || isManualLoading) return 'not-allowed';
+                    if (!hasMoreMessages) return 'default';
+                    return 'pointer';
+                  })(),
+                  opacity: isTyping || isManualLoading ? 0.6 : 1,
+                }}
+              >
+                {(() => {
+                  if (isManualLoading) return '⏳ Loading...';
+                  if (!hasMoreMessages) return '🔚 No More Messages';
+                  return '📜 Load Earlier Messages';
+                })()}
+              </Button>
+            </Box>
+          </Tooltip>
+        </div>
+      )}
 
-
-
-        <div className={classes.messagesContainer} ref={messagesContainerRef} data-testid="messages-container">
+      <div
+        className={classes.messagesContainer}
+        ref={messagesContainerRef}
+        data-testid="messages-container"
+      >
         <MessagesList
           messages={messages}
           botName={botName}
@@ -600,7 +635,7 @@ export const ChatContainer = memo(function ChatContainer({
           }}
         />
         <Tooltip title="Send message">
-          <span>
+          <Box component="span">
             <IconButton
               color="primary"
               onClick={() => onMessageSubmit()}
@@ -609,10 +644,10 @@ export const ChatContainer = memo(function ChatContainer({
             >
               <SendIcon />
             </IconButton>
-          </span>
+          </Box>
         </Tooltip>
         <Tooltip title="Reset chat">
-          <span>
+          <Box component="span">
             <IconButton
               color="secondary"
               onClick={onReset}
@@ -621,7 +656,7 @@ export const ChatContainer = memo(function ChatContainer({
             >
               <RefreshIcon />
             </IconButton>
-          </span>
+          </Box>
         </Tooltip>
       </Box>
       {suggestions.length > 0 && (

@@ -1,0 +1,534 @@
+data: {"id":1,"jsonrpc":"2.0","result":{"contextId":"2073c9be-3749-468b-a193-881a4120306c","history":[{"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"message","messageId":"820829a6-1a78-43c9-acf1-0215d81ed7e9","parts":[{"kind":"text","text":"show weather in dallas"}],"role":"user","taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}],"id":"34d2407e-7927-4c65-8142-7c1d6572c33e","kind":"task","status":{"state":"submitted"}}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"5ecb56f9-8f12-4b0c-b4f3-ffbf79a3c32d","description":"Tool call started: write_todos","name":"tool_notification_start","parts":[{"kind":"text","text":"🔧 Supervisor: Calling Agent Write_Todos...\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"1dd49332-addf-4bf6-90bd-6a213799dc01","description":"TODO-based execution plan","name":"execution_plan_update","parts":[{"kind":"text","text":"📋 **Task Progress:**\n\n- 🔄 Query the weather agent for current weather in Dallas\n- ⏳ Validate output meets user requirements (use reflect_on_output tool)\n- ⏳ Synthesize and present weather information"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"6401c974-e15c-45ec-937d-07c0729a2c9b","description":"Tool call completed: write_todos","name":"tool_notification_end","parts":[{"kind":"text","text":"✅ Supervisor: Agent task Write_Todos completed\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"77c24118-c16d-418a-8b7a-a63e9e1dbfe1","description":"Tool call started: weather","name":"tool_notification_start","parts":[{"kind":"text","text":"🔧 Supervisor: Calling Agent Weather...\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"90b337da-9406-4e42-8354-e26795b8a256","description":"Tool call started: get_current_weather","name":"tool_notification_start","parts":[{"kind":"text","text":"🔧 Weather: Calling tool: Get_Current_Weather\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"a6baf5c2-0c46-4556-8968-0f653742c958","description":"Tool call completed: get_current_weather","name":"tool_notification_end","parts":[{"kind":"text","text":"✅ Weather: Tool Get_Current_Weather completed\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"The"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" current"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" weather"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" in"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" Dallas"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" is"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" as"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" follows"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Temperature"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"56"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"5"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"°F"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Humidity"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"82"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"%\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Wind"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" Speed"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"4"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"6"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" mph"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Wind"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" Direction"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"141"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"°\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Pre"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"cip"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"itation"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"0"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"0"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" inches"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Pressure"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"101"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"9"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"3"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" h"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Pa"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\n\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"The"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" weather"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" is"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" clear"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" with"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" no"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" precipitation"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"{\""}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"status"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\":\""}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"completed"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\",\""}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"message"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\":\""}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"The"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" current"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" weather"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" in"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" Dallas"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" is"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" as"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" follows"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":\\"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Temperature"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"56"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"5"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"°F"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Humidity"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"82"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"%\\"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Wind"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" Speed"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"4"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"6"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" mph"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Wind"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" Direction"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"141"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"°"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\\"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Pre"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"cip"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"itation"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"0"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"0"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" inches"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Pressure"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"101"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"9"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"3"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" h"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"Pa"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"\\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"The"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" weather"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" is"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" clear"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" with"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" no"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":" precipitation"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":".\""}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"e9335f05-e760-4cff-954f-2af082848fbf","description":"Streaming result from weather","name":"streaming_result","parts":[{"kind":"text","text":"}"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"384edeeb-184d-41c4-91cc-19c556856eec","description":"Complete result from weather","name":"complete_result","parts":[{"kind":"text","text":"The current weather in Dallas is as follows:\n- **Temperature:** 56.5°F\n- **Humidity:** 82%\n- **Wind Speed:** 4.6 mph\n- **Wind Direction:** 141°\n- **Precipitation:** 0.0 inches\n- **Pressure:** 1019.3 hPa\n\nThe weather is clear with no precipitation.{\"status\":\"completed\",\"message\":\"The current weather in Dallas is as follows:\\n- **Temperature:** 56.5°F\\n- **Humidity:** 82%\\n- **Wind Speed:** 4.6 mph\\n- **Wind Direction:** 141°\\n- **Precipitation:** 0.0 inches\\n- **Pressure:** 1019.3 hPa\\n\\nThe weather is clear with no precipitation.\"}"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":true,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"f9c785da-d2c1-4a4e-8b2f-4dee889bb22e","description":"Tool operation completed","name":"tool_notification_end","parts":[{"kind":"text","text":"🔧 Weather: Calling tool: Get_Current_Weather\n✅ Weather: Tool Get_Current_Weather completed\nThe current weather in Dallas is as follows:\n- **Temperature:** 56.5°F\n- **Humidity:** 82%\n- **Wind Speed:** 4.6 mph\n- **Wind Direction:** 141°\n- **Precipitation:** 0.0 inches\n- **Pressure:** 1019.3 hPa\n\nThe weather is clear with no precipitation.{\"status\":\"completed\",\"message\":\"The current weather in Dallas is as follows:\\n- **Temperature:** 56.5°F\\n- **Humidity:** 82%\\n- **Wind Speed:** 4.6 mph\\n- **Wind Direction:** 141°\\n- **Precipitation:** 0.0 inches\\n- **Pressure:** 1019.3 hPa\\n\\nThe weather is clear with no precipitation.\"}The current weather in Dallas is as follows:\n- **Temperature:** 56.5°F\n- **Humidity:** 82%\n- **Wind Speed:** 4.6 mph\n- **Wind Direction:** 141°\n- **Precipitation:** 0.0 inches\n- **Pressure:** 1019.3 hPa\n\nThe weather is clear with no precipitation.{\"status\":\"completed\",\"message\":\"The current weather in Dallas is as follows:\\n- **Temperature:** 56.5°F\\n- **Humidity:** 82%\\n- **Wind Speed:** 4.6 mph\\n- **Wind Direction:** 141°\\n- **Precipitation:** 0.0 inches\\n- **Pressure:** 1019.3 hPa\\n\\nThe weather is clear with no precipitation.\"}"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"761bced0-e6e9-4181-8aeb-2c49ad7e5827","description":"Tool operation completed","name":"tool_notification_end","parts":[{"kind":"text","text":"response='🔧 Weather: Calling tool: Get_Current_Weather\\n✅ Weather: Tool Get_Current_Weather completed\\nThe current weather in Dallas is as follows:\\n- **Temperature:** 56.5°F\\n- **Humidity:** 82%\\n- **Wind Speed:** 4.6 mph\\n- **Wind Direction:** 141°\\n- **Precipitation:** 0.0 inches\\n- **Pressure:** 1019.3 hPa\\n\\nThe weather is clear with no precipitation.{\"status\":\"completed\",\"message\":\"The current weather in Dallas is as follows:\\\\n- **Temperature:** 56.5°F\\\\n- **Humidity:** 82%\\\\n- **Wind Speed:** 4.6 mph\\\\n- **Wind Direction:** 141°\\\\n- **Precipitation:** 0.0 inches\\\\n- **Pressure:** 1019.3 hPa\\\\n\\\\nThe weather is clear with no precipitation.\"}The current weather in Dallas is as follows:\\n- **Temperature:** 56.5°F\\n- **Humidity:** 82%\\n- **Wind Speed:** 4.6 mph\\n- **Wind Direction:** 141°\\n- **Precipitation:** 0.0 inches\\n- **Pressure:** 1019.3 hPa\\n\\nThe weather is clear with no precipitation.'\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"da574b1e-2327-429b-969f-7d62163d4f62","description":"Tool call completed: weather","name":"tool_notification_end","parts":[{"kind":"text","text":"✅ Supervisor: Agent task Weather completed\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"829bab63-b53e-4395-a6ee-089ab17fd0b2","description":"Tool call started: write_todos","name":"tool_notification_start","parts":[{"kind":"text","text":"🔧 Supervisor: Calling Agent Write_Todos...\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"727fe090-1058-4900-b765-6d4b1915c207","description":"TODO progress update","name":"execution_plan_status_update","parts":[{"kind":"text","text":"📋 **Task Progress:**\n\n- ✅ Query the weather agent for current weather in Dallas\n- 🔄 Validate output meets user requirements (use reflect_on_output tool)"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"23e5c763-95f5-4256-b773-ea906667e8fe","description":"Tool call completed: write_todos","name":"tool_notification_end","parts":[{"kind":"text","text":"✅ Supervisor: Agent task Write_Todos completed\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"5b086014-2232-4220-be2d-2cb5bfa13bc1","description":"Tool call started: reflect_on_output","name":"tool_notification_start","parts":[{"kind":"text","text":"🔧 Supervisor: Calling Agent Reflect_On_Output...\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"{\"is_valid\": true, \"issues\": [], \"suggestions\": [], \"validation_summary\": \"✅ Output validation PASSED - all requirements met. Proceed with presenting results to user.\", \"total_issues\": 0}\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"a7e0af2c-a928-473b-bea6-0b2750286ecb","description":"Tool call completed: reflect_on_output","name":"tool_notification_end","parts":[{"kind":"text","text":"✅ Supervisor: Agent task Reflect_On_Output completed\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"3e0323d2-a265-4203-9201-d55b1844c439","description":"Tool call started: write_todos","name":"tool_notification_start","parts":[{"kind":"text","text":"🔧 Supervisor: Calling Agent Write_Todos...\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"e7805ea8-84e3-4e8b-a66b-5c177acb71f6","description":"TODO progress update","name":"execution_plan_status_update","parts":[{"kind":"text","text":"📋 **Task Progress:**\n\n- ✅ Validate output meets user requirements (use reflect_on_output tool)\n- 🔄 Synthesize and present weather information"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"0146ca18-0da0-41b6-8790-5559aedbf7e7","description":"Tool call completed: write_todos","name":"tool_notification_end","parts":[{"kind":"text","text":"✅ Supervisor: Agent task Write_Todos completed\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"The"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" current"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" weather"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" in"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" Dallas"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" is"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" as"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" follows"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":\n\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Temperature"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"56"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"5"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"°F"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Humidity"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"82"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"%\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Wind"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" Speed"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"4"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"6"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" mph"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Wind"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" Direction"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"141"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"°\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Pre"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"cip"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"itation"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"0"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"0"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" inches"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"-"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" **"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Pressure"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":":**"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" "}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"101"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"9"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"3"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" h"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"Pa"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"\n\n"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"The"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" weather"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" is"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" clear"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" with"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" no"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":" precipitation"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":true,"artifact":{"artifactId":"c0263d2e-e96b-48ef-863b-c0d21ffa435f","description":"Streaming result from Platform Engineer","name":"streaming_result","parts":[{"kind":"text","text":"."}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"1a58c39c-9e76-4849-a7d6-28c46b2a413c","description":"TODO progress update","name":"execution_plan_status_update","parts":[{"kind":"text","text":"📋 **Execution Plan (final)**\n\n- ✅ Validate output meets user requirements (use reflect_on_output tool)\n- ✅ Synthesize and present weather information"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":false,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"append":false,"artifact":{"artifactId":"5a5958ba-1f61-4b74-a9e3-8b95848af98b","description":"Partial result from Platform Engineer (stream ended)","name":"partial_result","parts":[{"kind":"text","text":"The current weather in Dallas is as follows:\n- **Temperature:** 56.5°F\n- **Humidity:** 82%\n- **Wind Speed:** 4.6 mph\n- **Wind Direction:** 141°\n- **Precipitation:** 0.0 inches\n- **Pressure:** 1019.3 hPa\n\nThe weather is clear with no precipitation.{\"status\":\"completed\",\"message\":\"The current weather in Dallas is as follows:\\n- **Temperature:** 56.5°F\\n- **Humidity:** 82%\\n- **Wind Speed:** 4.6 mph\\n- **Wind Direction:** 141°\\n- **Precipitation:** 0.0 inches\\n- **Pressure:** 1019.3 hPa\\n\\nThe weather is clear with no precipitation.\"}"}]},"contextId":"2073c9be-3749-468b-a193-881a4120306c","kind":"artifact-update","lastChunk":true,"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+
+data: {"id":1,"jsonrpc":"2.0","result":{"contextId":"2073c9be-3749-468b-a193-881a4120306c","final":true,"kind":"status-update","status":{"state":"completed"},"taskId":"34d2407e-7927-4c65-8142-7c1d6572c33e"}}
+

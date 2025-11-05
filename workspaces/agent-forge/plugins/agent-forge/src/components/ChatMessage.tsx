@@ -48,7 +48,14 @@ import {
   vs,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@material-ui/core/styles';
-import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { MetadataInputForm } from './MetadataInputForm';
 
 const useStyles = makeStyles(theme => ({
@@ -109,13 +116,16 @@ const useStyles = makeStyles(theme => ({
   },
   executionPlanContainer: {
     marginBottom: theme.spacing(0.4), // Reduced from 1 to 0.5 for smaller vertical spacing
-    backgroundColor: theme.palette.type === 'dark' 
-      ? 'rgba(76, 175, 80, 0.15)' 
-      : 'rgba(76, 175, 80, 0.08)',
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(76, 175, 80, 0.15)'
+        : 'rgba(76, 175, 80, 0.08)',
     borderRadius: theme.spacing(0.25), // Reduced border radius for more compact look
-    border: `1px solid ${theme.palette.type === 'dark' 
-      ? 'rgba(76, 175, 80, 0.3)' 
-      : 'rgba(76, 175, 80, 0.2)'}`,
+    border: `1px solid ${
+      theme.palette.type === 'dark'
+        ? 'rgba(76, 175, 80, 0.3)'
+        : 'rgba(76, 175, 80, 0.2)'
+    }`,
     overflow: 'hidden',
     width: '100%', // Set width to 70% of parent container
   },
@@ -123,16 +133,18 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: theme.spacing(0.15, 0.50), // Further reduced vertical padding (0.5→0.25) for smaller height
+    padding: theme.spacing(0.15, 0.5), // Further reduced vertical padding (0.5→0.25) for smaller height
     cursor: 'pointer',
-    backgroundColor: theme.palette.type === 'dark' 
-      ? 'rgba(76, 175, 80, 0.2)' 
-      : 'rgba(76, 175, 80, 0.12)',
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(76, 175, 80, 0.2)'
+        : 'rgba(76, 175, 80, 0.12)',
     minHeight: '30px', // Set a compact minimum height
     '&:hover': {
-      backgroundColor: theme.palette.type === 'dark' 
-        ? 'rgba(76, 175, 80, 0.3)' 
-        : 'rgba(76, 175, 80, 0.18)',
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(76, 175, 80, 0.3)'
+          : 'rgba(76, 175, 80, 0.18)',
     },
   },
   executionPlanContent: {
@@ -140,9 +152,10 @@ const useStyles = makeStyles(theme => ({
     fontSize: '0.30rem', // Slightly smaller font for more compact look
     fontFamily: 'monospace',
     whiteSpace: 'pre-wrap',
-    backgroundColor: theme.palette.type === 'dark' 
-      ? 'rgba(76, 175, 80, 0.1)' 
-      : 'rgba(76, 175, 80, 0.05)',
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(76, 175, 80, 0.1)'
+        : 'rgba(76, 175, 80, 0.05)',
     lineHeight: '0.2', // Keep the reduced line height
     // Removed maxHeight and overflowY to allow auto-height adjustment
     '& p': {
@@ -196,9 +209,9 @@ export interface ChatMessageProps {
     timestamp?: string;
   };
   executionPlanBuffer?: Record<string, string>;
+  executionPlanHistory?: Record<string, string[]>;
   autoExpandExecutionPlans?: Set<string>;
   executionPlanLoading?: Set<string>;
-  isLastMessage?: boolean;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
 }
 
@@ -213,8 +226,8 @@ export const ChatMessage = memo(function ChatMessage({
   botIcon,
   fontSizes,
   executionPlanBuffer,
+  executionPlanHistory,
   autoExpandExecutionPlans,
-  isLastMessage,
   onMetadataSubmit,
 }: ChatMessageProps) {
   const classes = useStyles();
@@ -224,18 +237,79 @@ export const ChatMessage = memo(function ChatMessage({
   const theme = useTheme();
   const [isResponseExpanded, setIsResponseExpanded] = useState(true);
   const [isExecutionPlanExpanded, setIsExecutionPlanExpanded] = useState(false); // Default to collapsed
-  const [isExecutionPlanModalOpen, setIsExecutionPlanModalOpen] = useState(false);
+  const [isExecutionPlanModalOpen, setIsExecutionPlanModalOpen] =
+    useState(false);
   const hasAutoCollapsed = useRef(false);
   const hasAutoExpanded = useRef(false);
   const userHasInteracted = useRef(false);
-  
+  const responseContainerRef = useRef<HTMLDivElement | null>(null);
+  const setResponseContainerRef = useCallback((node: HTMLDivElement | null) => {
+    responseContainerRef.current = node;
+  }, []);
+
+  const copyTextToClipboard = useCallback(async (text: string) => {
+    if (!text) {
+      throw new Error('No text to copy');
+    }
+
+    if (window.navigator.clipboard?.writeText) {
+      try {
+        await window.navigator.clipboard.writeText(text);
+        return;
+      } catch (err) {
+        console.warn(
+          'navigator.clipboard.writeText failed; falling back to execCommand copy',
+          err,
+        );
+      }
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '0';
+    textarea.style.left = '-9999px';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      if (!successful) {
+        throw new Error('document.execCommand("copy") returned false');
+      }
+    } catch (fallbackError) {
+      document.body.removeChild(textarea);
+      throw fallbackError;
+    }
+  }, []);
+
   // Message key for execution plan identification
   const messageKey = message.messageId || 'unknown';
-  
-  // 🔧 SIMPLIFIED: Get execution plan from buffer only - single source of truth
-  const currentExecutionPlan = executionPlanBuffer?.[messageKey] || '';
-  const hasExecutionPlan = currentExecutionPlan && currentExecutionPlan.trim().length > 0;
-  
+
+  const executionPlanFromBuffer = executionPlanBuffer?.[messageKey] || '';
+
+  const planHistory = useMemo(() => {
+    const planHistoryRaw = executionPlanHistory?.[messageKey] || [];
+    const deduped: string[] = [];
+    [...planHistoryRaw, executionPlanFromBuffer]
+      .filter(entry => !!entry && entry.trim().length > 0)
+      .forEach(entry => {
+        if (deduped.length === 0 || deduped[deduped.length - 1] !== entry) {
+          deduped.push(entry);
+        }
+      });
+    return deduped;
+  }, [executionPlanHistory, messageKey, executionPlanFromBuffer]);
+
+  const finalExecutionPlan = planHistory[planHistory.length - 1] || '';
+  const priorExecutionPlans =
+    planHistory.length > 1 ? planHistory.slice(0, planHistory.length - 1) : [];
+  const hasExecutionPlan = finalExecutionPlan.trim().length > 0;
+
   // // Enhanced debug logging for execution plan correlation and contamination tracing
   // if (process.env.NODE_ENV === 'development') {
   //   console.log('🔍 EXECUTION PLAN DEBUG:', {
@@ -259,7 +333,7 @@ export const ChatMessage = memo(function ChatMessage({
   //     contamination: !messageHasExecutionPlanProperty && Object.keys(executionPlanBuffer || {}).length > 0 ? '🚨 POTENTIAL CONTAMINATION' : '✅ CLEAN'
   //   });
   // }
-  
+
   // Simple toast notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isToastOpen, setIsToastOpen] = useState(false);
@@ -271,44 +345,56 @@ export const ChatMessage = memo(function ChatMessage({
   }, []);
 
   // Handle toast close
-  const handleToastClose = useCallback((_?: React.SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setIsToastOpen(false);
-  }, []);
+  const handleToastClose = useCallback(
+    (_?: React.SyntheticEvent, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setIsToastOpen(false);
+    },
+    [],
+  );
 
   // Reset execution plan state completely when message changes (detect by timestamp + text combination)
   const messageId = `${message.timestamp}-${message.text?.slice(0, 20)}`;
   const prevMessageIdRef = useRef<string>('');
-  
+
   useEffect(() => {
-    const currentMessageId = `${message.timestamp}-${message.text?.slice(0, 20)}`;
+    const currentMessageId = `${message.timestamp}-${message.text?.slice(
+      0,
+      20,
+    )}`;
     // console.log('🆔 MESSAGE ID CHECK:', {
     //   current: currentMessageId,
     //   previous: prevMessageIdRef.current,
     //   isNewMessage: currentMessageId !== prevMessageIdRef.current
     // });
-    
+
     if (currentMessageId !== prevMessageIdRef.current) {
       // console.log('🔄 NEW MESSAGE DETECTED - resetting execution plan state');
       // Reset all execution plan state for new message
       hasAutoCollapsed.current = false;
       hasAutoExpanded.current = false; // Also reset auto-expand state
       userHasInteracted.current = false; // Reset user interaction tracking
-      
+
       // Default to collapsed (in-memory only, no localStorage)
       setIsExecutionPlanExpanded(false);
       // console.log('📂 RESET EXECUTION PLAN STATE TO COLLAPSED (in-memory)');
-      
+
       prevMessageIdRef.current = currentMessageId;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messageId]);
 
   // Auto-collapse execution plan when streaming completes - only once and only if user hasn't interacted
-  // 🚫 Don't auto-collapse on the last (most recent) streamed message
   useEffect(() => {
-    if (hasExecutionPlan && message.isStreaming === false && !hasAutoCollapsed.current && isExecutionPlanExpanded && !userHasInteracted.current && !hasAutoExpanded.current && !isLastMessage) {
+    if (
+      hasExecutionPlan &&
+      message.isStreaming === false &&
+      !hasAutoCollapsed.current &&
+      isExecutionPlanExpanded &&
+      !userHasInteracted.current
+    ) {
       // console.log('🔄 AUTO-COLLAPSING EXECUTION PLAN - message finished streaming');
       // Small delay to let user see the plan briefly before collapsing
       const timer = setTimeout(() => {
@@ -321,25 +407,34 @@ export const ChatMessage = memo(function ChatMessage({
       // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - message still processing');
     } else if (userHasInteracted.current) {
       // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - user has interacted');
-    } else if (hasAutoExpanded.current) {
-      // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - auto-expanded, keeping open');
-    } else if (isLastMessage) {
-      // console.log('⏸️ EXECUTION PLAN AUTO-COLLAPSE PREVENTED - this is the last (most recent) message');
     }
     return undefined;
-  }, [message.isStreaming, hasExecutionPlan, isExecutionPlanExpanded, isLastMessage]);
+  }, [message.isStreaming, hasExecutionPlan, isExecutionPlanExpanded]);
 
   // Save execution plan expansion state to localStorage whenever it changes
   // Execution plan expansion state is now purely in-memory (no localStorage persistence needed)
 
   // Auto-expand execution plan if it's marked for auto-expansion (only once)
   useEffect(() => {
-    if (hasExecutionPlan && message.timestamp && autoExpandExecutionPlans?.has(messageKey) && !isExecutionPlanExpanded && !hasAutoExpanded.current && !userHasInteracted.current) {
+    if (
+      hasExecutionPlan &&
+      message.timestamp &&
+      autoExpandExecutionPlans?.has(messageKey) &&
+      !isExecutionPlanExpanded &&
+      !hasAutoExpanded.current &&
+      !userHasInteracted.current
+    ) {
       // console.log('🔄 AUTO-EXPANDING EXECUTION PLAN for messageKey:', messageKey);
       setIsExecutionPlanExpanded(true);
       hasAutoExpanded.current = true; // Mark as auto-expanded to prevent repeated expansion
     }
-  }, [hasExecutionPlan, message.timestamp, autoExpandExecutionPlans, isExecutionPlanExpanded, messageKey]);
+  }, [
+    hasExecutionPlan,
+    message.timestamp,
+    autoExpandExecutionPlans,
+    isExecutionPlanExpanded,
+    messageKey,
+  ]);
 
   // Handle user interaction with execution plan expand/collapse
   const handleExecutionPlanToggle = useCallback(() => {
@@ -350,21 +445,16 @@ export const ChatMessage = memo(function ChatMessage({
 
   const handleCopyToClipboard = async () => {
     try {
-      let textToCopy = '';
+      let textToCopy = responseContainerRef.current?.innerText?.trim() ?? '';
 
-      // Include execution plan if present (from buffer or message)
-      if (hasExecutionPlan) {
-        textToCopy += `📋 Execution Plan\n${currentExecutionPlan}\n\n`;
+      if (!textToCopy && message.text) {
+        textToCopy = message.text.replace(/⟦|⟧/g, '').trim();
       }
 
-      // Add main message text
-      if (message.text) {
-        textToCopy += message.text.replace(/⟦|⟧/g, '');
-      }
-
-      await window.navigator.clipboard.writeText(textToCopy);
-      showToast('Message copied to clipboard');
+      await copyTextToClipboard(textToCopy);
+      showToast('Response copied to clipboard');
     } catch (error) {
+      console.error('Failed to copy message content', error);
       alertApi.post({
         message: 'Failed to copy message',
         severity: 'error',
@@ -592,194 +682,18 @@ export const ChatMessage = memo(function ChatMessage({
           </Typography>
         )}
       </Box>
-      {/* Execution Plan - collapsible if present and not empty (from buffer or message) - hide when loading */}
-      {hasExecutionPlan && (
-        <Box className={classes.executionPlanContainer}>
-          <Box 
-            className={classes.executionPlanHeader}
-            onClick={handleExecutionPlanToggle}
-          >
-            <Typography 
-              variant="subtitle2" 
-              style={{ 
-                fontWeight: 600,
-                fontSize: '0.75rem', // Reduced font size for more compact header
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              📋 Execution Plan
-            </Typography>
-            <IconButton 
-              size="small"
-              style={{ 
-                padding: '1px', // Reduced padding for more compact button
-                opacity: 0.7,
-                transition: 'opacity 0.2s',
-                width: '20px', // Set smaller fixed width
-                height: '20px' // Set smaller fixed height
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleExecutionPlanToggle();
-              }}
-            >
-              {isExecutionPlanExpanded ? <ExpandLessIcon style={{ fontSize: '16px' }} /> : <ExpandMoreIcon style={{ fontSize: '16px' }} />}
-            </IconButton>
-          </Box>
-          <Collapse in={isExecutionPlanExpanded}>
-            <Box className={classes.executionPlanContent}>
-              <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    code: CodeBlock,
-                    a: ({ href, children, ...props }) => (
-                      <a
-                        href={href?.startsWith('http') ? href : ''}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
-                          textDecoration: 'underline',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </a>
-                    ),
-                    p: ({ children, ...props }) => (
-                      <p
-                        style={{ 
-                          fontSize: '0.8rem',
-                          margin: '0.2em 0',
-                          fontFamily: 'monospace',
-                          lineHeight: '1.3',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </p>
-                    ),
-                    h1: ({ children, ...props }) => (
-                      <h1
-                        style={{ 
-                          fontSize: '0.9rem',
-                          fontWeight: 600,
-                          margin: '0.3em 0 0.2em 0',
-                          fontFamily: 'monospace',
-                          lineHeight: '1.2',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </h1>
-                    ),
-                    h2: ({ children, ...props }) => (
-                      <h2
-                        style={{ 
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
-                          margin: '0.25em 0 0.15em 0',
-                          fontFamily: 'monospace',
-                          lineHeight: '1.2',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </h2>
-                    ),
-                    h3: ({ children, ...props }) => (
-                      <h3
-                        style={{ 
-                          fontSize: '0.8rem',
-                          fontWeight: 600,
-                          margin: '0.2em 0 0.1em 0',
-                          fontFamily: 'monospace',
-                          lineHeight: '1.2',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </h3>
-                    ),
-                    ul: ({ children, ...props }) => (
-                      <ul
-                        style={{ 
-                          fontSize: '0.8rem',
-                          fontFamily: 'monospace',
-                          paddingLeft: '1.2em',
-                          margin: '0.2em 0',
-                          lineHeight: '1.3',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </ul>
-                    ),
-                    ol: ({ children, ...props }) => (
-                      <ol
-                        style={{ 
-                          fontSize: '0.8rem',
-                          fontFamily: 'monospace',
-                          paddingLeft: '1.2em',
-                          margin: '0.2em 0',
-                          lineHeight: '1.3',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </ol>
-                    ),
-                    li: ({ children, ...props }) => (
-                      <li
-                        style={{ 
-                          fontSize: '0.8rem',
-                          fontFamily: 'monospace',
-                          margin: '0.1em 0',
-                          lineHeight: '1.3',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </li>
-                    ),
-                    strong: ({ children, ...props }) => (
-                      <strong
-                        style={{ 
-                          fontWeight: 600,
-                          fontFamily: 'monospace',
-                        }}
-                        {...props}
-                      >
-                        {children}
-                      </strong>
-                    ),
-                    table: ({ children, ...props }) => (
-                      <table className={classes.markdownTable} {...props}>
-                        {children}
-                      </table>
-                    ),
-                  }}
-                >
-                  {currentExecutionPlan}
-                </ReactMarkdown>
-            </Box>
-          </Collapse>
-        </Box>
-      )}
-
       {/* Collapsible Response Content */}
       {message.text && (
         <Box>
           {/* Subtle Collapse Header - only show for bot messages with content */}
           {!message.isUser && message.text && (
-            <Box 
+            <Box
               className={classes.collapseHeader}
               onClick={() => setIsResponseExpanded(!isResponseExpanded)}
             >
-              <Typography 
-                variant="caption" 
-                style={{ 
+              <Typography
+                variant="caption"
+                style={{
                   opacity: 0.7,
                   fontSize: '0.75rem',
                   fontWeight: 500,
@@ -787,15 +701,19 @@ export const ChatMessage = memo(function ChatMessage({
               >
                 Response
               </Typography>
-              <IconButton 
+              <IconButton
                 className={classes.collapseButton}
                 size="small"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   setIsResponseExpanded(!isResponseExpanded);
                 }}
               >
-                {isResponseExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+                {isResponseExpanded ? (
+                  <ExpandLessIcon fontSize="small" />
+                ) : (
+                  <ExpandMoreIcon fontSize="small" />
+                )}
               </IconButton>
             </Box>
           )}
@@ -807,8 +725,225 @@ export const ChatMessage = memo(function ChatMessage({
               style={{
                 wordBreak: 'break-word',
                 color: 'inherit',
+                maxHeight: message.isStreaming ? 320 : 'none',
+                minHeight: message.isStreaming ? 160 : 'auto',
+                overflowY: message.isStreaming ? 'auto' : 'visible',
+                paddingRight: message.isStreaming
+                  ? theme.spacing(0.5)
+                  : undefined,
               }}
             >
+              <div ref={setResponseContainerRef} style={{ width: '100%' }}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    code: CodeBlock,
+                    a: ({ href, children, ...props }) => (
+                      <a
+                        href={href?.startsWith('http') ? href : ''}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color:
+                            theme.palette.type === 'dark'
+                              ? '#90caf9'
+                              : '#1976d2',
+                          textDecoration: 'underline',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </a>
+                    ),
+                    p: ({ children, ...props }) => (
+                      <p
+                        style={{
+                          fontSize: fontSizes?.messageText || '0.875rem',
+                        }}
+                        {...props}
+                      >
+                        {children}
+                      </p>
+                    ),
+                    table: ({ children, ...props }) => (
+                      <table className={classes.markdownTable} {...props}>
+                        {children}
+                      </table>
+                    ),
+                  }}
+                >
+                  {(message.text || '').replace(/⟦|⟧/g, '')}
+                </ReactMarkdown>
+              </div>
+            </Box>
+          </Collapse>
+        </Box>
+      )}
+
+      {/* Execution Plan - now positioned after response content */}
+      {hasExecutionPlan && (
+        <Box className={classes.executionPlanContainer}>
+          <Box
+            className={classes.executionPlanHeader}
+            onClick={handleExecutionPlanToggle}
+          >
+            <Typography
+              variant="subtitle2"
+              style={{
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              📋 Execution Plan
+            </Typography>
+            <IconButton
+              size="small"
+              style={{
+                padding: '1px',
+                opacity: 0.7,
+                transition: 'opacity 0.2s',
+                width: '20px',
+                height: '20px',
+              }}
+              onClick={e => {
+                e.stopPropagation();
+                handleExecutionPlanToggle();
+              }}
+            >
+              {isExecutionPlanExpanded ? (
+                <ExpandLessIcon style={{ fontSize: '16px' }} />
+              ) : (
+                <ExpandMoreIcon style={{ fontSize: '16px' }} />
+              )}
+            </IconButton>
+          </Box>
+          <Collapse in={isExecutionPlanExpanded}>
+            <Box className={classes.executionPlanContent}>
+              {priorExecutionPlans.length > 0 ? (
+                <Box
+                  style={{
+                    padding: theme.spacing(0.6),
+                    marginBottom: theme.spacing(0.75),
+                    borderRadius: theme.spacing(0.75),
+                    backgroundColor:
+                      theme.palette.type === 'dark'
+                        ? 'rgba(255, 255, 255, 0.04)'
+                        : 'rgba(255, 255, 255, 0.8)',
+                    border: `1px dashed ${
+                      theme.palette.type === 'dark'
+                        ? 'rgba(76, 175, 80, 0.45)'
+                        : 'rgba(76, 175, 80, 0.45)'
+                    }`,
+                  }}
+                >
+                  <Typography
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      opacity: 0.85,
+                      marginBottom: theme.spacing(0.75),
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: theme.spacing(0.75),
+                    }}
+                  >
+                    🕘 Execution Plan History
+                  </Typography>
+                  {priorExecutionPlans.map((entry, index) => (
+                    <Box
+                      key={index}
+                      style={{
+                        padding: theme.spacing(0.5, 0.75),
+                        borderRadius: theme.spacing(0.5),
+                        backgroundColor:
+                          theme.palette.type === 'dark'
+                            ? 'rgba(76, 175, 80, 0.12)'
+                            : 'rgba(76, 175, 80, 0.1)',
+                        border: `1px solid ${
+                          theme.palette.type === 'dark'
+                            ? 'rgba(76, 175, 80, 0.35)'
+                            : 'rgba(76, 175, 80, 0.25)'
+                        }`,
+                        marginBottom: theme.spacing(0.6),
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          opacity: 0.8,
+                          marginBottom: theme.spacing(0.35),
+                        }}
+                      >
+                        Step {index + 1}
+                      </Typography>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({ children, ...props }) => (
+                            <p
+                              style={{
+                                fontSize: '0.78rem',
+                                margin: '0.2em 0',
+                                fontFamily: 'monospace',
+                                lineHeight: '1.25',
+                              }}
+                              {...props}
+                            >
+                              {children}
+                            </p>
+                          ),
+                          ul: ({ children, ...props }) => (
+                            <ul
+                              style={{
+                                fontSize: '0.78rem',
+                                fontFamily: 'monospace',
+                                paddingLeft: '1.2em',
+                                margin: '0.2em 0',
+                                lineHeight: '1.25',
+                              }}
+                              {...props}
+                            >
+                              {children}
+                            </ul>
+                          ),
+                          ol: ({ children, ...props }) => (
+                            <ol
+                              style={{
+                                fontSize: '0.78rem',
+                                fontFamily: 'monospace',
+                                paddingLeft: '1.2em',
+                                margin: '0.2em 0',
+                                lineHeight: '1.25',
+                              }}
+                              {...props}
+                            >
+                              {children}
+                            </ol>
+                          ),
+                          li: ({ children, ...props }) => (
+                            <li
+                              style={{
+                                fontSize: '0.78rem',
+                                fontFamily: 'monospace',
+                                margin: '0.12em 0',
+                                lineHeight: '1.25',
+                              }}
+                              {...props}
+                            >
+                              {children}
+                            </li>
+                          ),
+                        }}
+                      >
+                        {entry}
+                      </ReactMarkdown>
+                    </Box>
+                  ))}
+                </Box>
+              ) : null}
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -819,7 +954,8 @@ export const ChatMessage = memo(function ChatMessage({
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                        color:
+                          theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
                         textDecoration: 'underline',
                       }}
                       {...props}
@@ -829,11 +965,110 @@ export const ChatMessage = memo(function ChatMessage({
                   ),
                   p: ({ children, ...props }) => (
                     <p
-                      style={{ fontSize: fontSizes?.messageText || '0.875rem' }}
+                      style={{
+                        fontSize: '0.8rem',
+                        margin: '0.2em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.3',
+                      }}
                       {...props}
                     >
                       {children}
                     </p>
+                  ),
+                  h1: ({ children, ...props }) => (
+                    <h1
+                      style={{
+                        fontSize: '0.9rem',
+                        fontWeight: 600,
+                        margin: '0.3em 0 0.2em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.2',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </h1>
+                  ),
+                  h2: ({ children, ...props }) => (
+                    <h2
+                      style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        margin: '0.25em 0 0.15em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.2',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({ children, ...props }) => (
+                    <h3
+                      style={{
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        margin: '0.2em 0 0.1em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.2',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </h3>
+                  ),
+                  ul: ({ children, ...props }) => (
+                    <ul
+                      style={{
+                        fontSize: '0.8rem',
+                        fontFamily: 'monospace',
+                        paddingLeft: '1.2em',
+                        margin: '0.2em 0',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children, ...props }) => (
+                    <ol
+                      style={{
+                        fontSize: '0.8rem',
+                        fontFamily: 'monospace',
+                        paddingLeft: '1.2em',
+                        margin: '0.2em 0',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </ol>
+                  ),
+                  li: ({ children, ...props }) => (
+                    <li
+                      style={{
+                        fontSize: '0.8rem',
+                        fontFamily: 'monospace',
+                        margin: '0.1em 0',
+                        lineHeight: '1.3',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </li>
+                  ),
+                  strong: ({ children, ...props }) => (
+                    <strong
+                      style={{
+                        fontWeight: 600,
+                        fontFamily: 'monospace',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </strong>
                   ),
                   table: ({ children, ...props }) => (
                     <table className={classes.markdownTable} {...props}>
@@ -842,7 +1077,7 @@ export const ChatMessage = memo(function ChatMessage({
                   ),
                 }}
               >
-                {(message.text || '').replace(/⟦|⟧/g, '')}
+                {finalExecutionPlan}
               </ReactMarkdown>
             </Box>
           </Collapse>
@@ -859,7 +1094,11 @@ export const ChatMessage = memo(function ChatMessage({
         >
           {message.timestamp}
         </Typography>
-        <Box display="flex" alignItems="center" style={{ gap: theme.spacing(0.5) }}>
+        <Box
+          display="flex"
+          alignItems="center"
+          style={{ gap: theme.spacing(0.5) }}
+        >
           {/* Execution Plan button - commented out as per user request */}
           {/* <Tooltip title={hasExecutionPlan ? "View Execution Plan" : "No execution plan available for this message"}>
             <span>
@@ -886,8 +1125,8 @@ export const ChatMessage = memo(function ChatMessage({
               size="small"
               onClick={handleCopyToClipboard}
               style={{
-                width: '24px',  // Explicit width for consistency
-                height: '24px', // Explicit height for consistency  
+                width: '24px', // Explicit width for consistency
+                height: '24px', // Explicit height for consistency
                 padding: '0px', // Explicit padding for consistency
               }}
             >
@@ -924,17 +1163,144 @@ export const ChatMessage = memo(function ChatMessage({
               whiteSpace: 'pre-wrap',
               lineHeight: '1.4',
               padding: theme.spacing(1),
-              backgroundColor: theme.palette.type === 'dark' 
-                ? 'rgba(76, 175, 80, 0.1)' 
-                : 'rgba(76, 175, 80, 0.05)',
+              backgroundColor:
+                theme.palette.type === 'dark'
+                  ? 'rgba(76, 175, 80, 0.1)'
+                  : 'rgba(76, 175, 80, 0.05)',
               borderRadius: theme.spacing(0.5),
-              border: `1px solid ${theme.palette.type === 'dark' 
-                ? 'rgba(76, 175, 80, 0.3)' 
-                : 'rgba(76, 175, 80, 0.2)'}`,
+              border: `1px solid ${
+                theme.palette.type === 'dark'
+                  ? 'rgba(76, 175, 80, 0.3)'
+                  : 'rgba(76, 175, 80, 0.2)'
+              }`,
               maxHeight: '60vh',
               overflow: 'auto',
             }}
           >
+            {/* Execution Plan History */}
+            {priorExecutionPlans.length > 0 ? (
+              <Box
+                style={{
+                  padding: theme.spacing(0.6),
+                  marginBottom: theme.spacing(0.75),
+                  borderRadius: theme.spacing(0.75),
+                  backgroundColor:
+                    theme.palette.type === 'dark'
+                      ? 'rgba(255, 255, 255, 0.04)'
+                      : 'rgba(255, 255, 255, 0.8)',
+                  border: `1px dashed ${
+                    theme.palette.type === 'dark'
+                      ? 'rgba(76, 175, 80, 0.45)'
+                      : 'rgba(76, 175, 80, 0.45)'
+                  }`,
+                }}
+              >
+                <Typography
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    opacity: 0.85,
+                    marginBottom: theme.spacing(0.75),
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: theme.spacing(0.75),
+                  }}
+                >
+                  🕘 Execution Plan History
+                </Typography>
+                {priorExecutionPlans.map((entry, index) => (
+                  <Box
+                    key={index}
+                    style={{
+                      padding: theme.spacing(0.5, 0.75),
+                      borderRadius: theme.spacing(0.5),
+                      backgroundColor:
+                        theme.palette.type === 'dark'
+                          ? 'rgba(76, 175, 80, 0.12)'
+                          : 'rgba(76, 175, 80, 0.1)',
+                      border: `1px solid ${
+                        theme.palette.type === 'dark'
+                          ? 'rgba(76, 175, 80, 0.35)'
+                          : 'rgba(76, 175, 80, 0.25)'
+                      }`,
+                      marginBottom: theme.spacing(0.6),
+                    }}
+                  >
+                    <Typography
+                      style={{
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        opacity: 0.8,
+                        marginBottom: theme.spacing(0.35),
+                      }}
+                    >
+                      Step {index + 1}
+                    </Typography>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({ children, ...props }) => (
+                          <p
+                            style={{
+                              fontSize: '0.78rem',
+                              margin: '0.2em 0',
+                              fontFamily: 'monospace',
+                              lineHeight: '1.25',
+                            }}
+                            {...props}
+                          >
+                            {children}
+                          </p>
+                        ),
+                        ul: ({ children, ...props }) => (
+                          <ul
+                            style={{
+                              fontSize: '0.78rem',
+                              fontFamily: 'monospace',
+                              paddingLeft: '1.2em',
+                              margin: '0.2em 0',
+                              lineHeight: '1.25',
+                            }}
+                            {...props}
+                          >
+                            {children}
+                          </ul>
+                        ),
+                        ol: ({ children, ...props }) => (
+                          <ol
+                            style={{
+                              fontSize: '0.78rem',
+                              fontFamily: 'monospace',
+                              paddingLeft: '1.2em',
+                              margin: '0.2em 0',
+                              lineHeight: '1.25',
+                            }}
+                            {...props}
+                          >
+                            {children}
+                          </ol>
+                        ),
+                        li: ({ children, ...props }) => (
+                          <li
+                            style={{
+                              fontSize: '0.78rem',
+                              fontFamily: 'monospace',
+                              margin: '0.12em 0',
+                              lineHeight: '1.25',
+                            }}
+                            {...props}
+                          >
+                            {children}
+                          </li>
+                        ),
+                      }}
+                    >
+                      {entry}
+                    </ReactMarkdown>
+                  </Box>
+                ))}
+              </Box>
+            ) : null}
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
@@ -945,7 +1311,8 @@ export const ChatMessage = memo(function ChatMessage({
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
-                      color: theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
+                      color:
+                        theme.palette.type === 'dark' ? '#90caf9' : '#1976d2',
                       textDecoration: 'underline',
                     }}
                     {...props}
@@ -955,11 +1322,11 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 p: ({ children, ...props }) => (
                   <p
-                    style={{ 
-                      fontSize: '0.8rem',
-                      margin: '0.3em 0',
+                    style={{
+                      fontSize: '0.85rem',
+                      margin: '0.25em 0',
                       fontFamily: 'monospace',
-                      lineHeight: '1.4',
+                      lineHeight: '1.35',
                     }}
                     {...props}
                   >
@@ -968,12 +1335,12 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 h1: ({ children, ...props }) => (
                   <h1
-                    style={{ 
-                      fontSize: '1rem',
+                    style={{
+                      fontSize: '0.95rem',
                       fontWeight: 600,
-                      margin: '0.4em 0 0.3em 0',
+                      margin: '0.35em 0 0.2em 0',
                       fontFamily: 'monospace',
-                      lineHeight: '1.3',
+                      lineHeight: '1.25',
                     }}
                     {...props}
                   >
@@ -982,12 +1349,12 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 h2: ({ children, ...props }) => (
                   <h2
-                    style={{ 
+                    style={{
                       fontSize: '0.9rem',
                       fontWeight: 600,
-                      margin: '0.3em 0 0.2em 0',
+                      margin: '0.3em 0 0.18em 0',
                       fontFamily: 'monospace',
-                      lineHeight: '1.3',
+                      lineHeight: '1.25',
                     }}
                     {...props}
                   >
@@ -996,12 +1363,12 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 h3: ({ children, ...props }) => (
                   <h3
-                    style={{ 
+                    style={{
                       fontSize: '0.85rem',
                       fontWeight: 600,
                       margin: '0.25em 0 0.15em 0',
                       fontFamily: 'monospace',
-                      lineHeight: '1.3',
+                      lineHeight: '1.25',
                     }}
                     {...props}
                   >
@@ -1010,12 +1377,12 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 ul: ({ children, ...props }) => (
                   <ul
-                    style={{ 
-                      fontSize: '0.8rem',
+                    style={{
+                      fontSize: '0.85rem',
                       fontFamily: 'monospace',
-                      paddingLeft: '1.4em',
-                      margin: '0.3em 0',
-                      lineHeight: '1.4',
+                      paddingLeft: '1.2em',
+                      margin: '0.25em 0',
+                      lineHeight: '1.35',
                     }}
                     {...props}
                   >
@@ -1024,12 +1391,12 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 ol: ({ children, ...props }) => (
                   <ol
-                    style={{ 
-                      fontSize: '0.8rem',
+                    style={{
+                      fontSize: '0.85rem',
                       fontFamily: 'monospace',
-                      paddingLeft: '1.4em',
-                      margin: '0.3em 0',
-                      lineHeight: '1.4',
+                      paddingLeft: '1.2em',
+                      margin: '0.25em 0',
+                      lineHeight: '1.35',
                     }}
                     {...props}
                   >
@@ -1038,11 +1405,11 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 li: ({ children, ...props }) => (
                   <li
-                    style={{ 
-                      fontSize: '0.8rem',
+                    style={{
+                      fontSize: '0.85rem',
                       fontFamily: 'monospace',
-                      margin: '0.15em 0',
-                      lineHeight: '1.4',
+                      margin: '0.12em 0',
+                      lineHeight: '1.35',
                     }}
                     {...props}
                   >
@@ -1051,7 +1418,7 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
                 strong: ({ children, ...props }) => (
                   <strong
-                    style={{ 
+                    style={{
                       fontWeight: 600,
                       fontFamily: 'monospace',
                     }}
@@ -1067,7 +1434,7 @@ export const ChatMessage = memo(function ChatMessage({
                 ),
               }}
             >
-              {currentExecutionPlan}
+              {finalExecutionPlan}
             </ReactMarkdown>
           </Box>
         </DialogContent>
@@ -1075,7 +1442,13 @@ export const ChatMessage = memo(function ChatMessage({
           <Button
             onClick={async () => {
               try {
-                await window.navigator.clipboard.writeText(currentExecutionPlan);
+                const textToCopy = [
+                  ...priorExecutionPlans.map(
+                    (entry, index) => `Step ${index + 1}\n${entry}`,
+                  ),
+                  finalExecutionPlan,
+                ].join('\n\n');
+                await window.navigator.clipboard.writeText(textToCopy);
                 showToast('Execution plan copied to clipboard');
               } catch (error) {
                 alertApi.post({
@@ -1106,7 +1479,11 @@ export const ChatMessage = memo(function ChatMessage({
         onClose={handleToastClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleToastClose} severity="success" style={{ width: '100%' }}>
+        <Alert
+          onClose={handleToastClose}
+          severity="success"
+          style={{ width: '100%' }}
+        >
           {toastMessage}
         </Alert>
       </Snackbar>
@@ -1118,7 +1495,7 @@ export const ChatMessage = memo(function ChatMessage({
             title={message.metadataRequest.title}
             description={message.metadataRequest.description}
             fields={message.metadataRequest.fields}
-            onSubmit={(data) => {
+            onSubmit={data => {
               if (onMetadataSubmit && message.messageId) {
                 onMetadataSubmit(message.messageId, data);
               }

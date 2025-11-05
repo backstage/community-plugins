@@ -215,7 +215,7 @@ export interface DataPart extends PartBase {
 export type Part = TextPart | FilePart | DataPart;
 
 export interface Artifact {
-  artifactId: string;
+  artifact_id: string;
   name?: string;
   description?: string;
   parts: Part[];
@@ -226,10 +226,10 @@ export interface Message {
   role: 'user' | 'agent';
   parts: Part[];
   metadata?: { [key: string]: any };
-  referenceTaskIds?: string[];
-  messageId: string;
-  taskId?: string;
-  contextId?: string;
+  reference_task_ids?: string[];
+  message_id: string;
+  task_id?: string;
+  context_id?: string;
   kind: 'message';
 }
 
@@ -241,7 +241,7 @@ export interface TaskStatus {
 
 export interface Task {
   id: string;
-  contextId: string;
+  context_id: string;
   status: TaskStatus;
   history?: Message[];
   artifacts?: Artifact[];
@@ -250,8 +250,8 @@ export interface Task {
 }
 
 export interface TaskStatusUpdateEvent {
-  taskId: string;
-  contextId: string;
+  task_id: string;
+  context_id: string;
   kind: 'status-update';
   status: TaskStatus;
   final: boolean;
@@ -259,12 +259,12 @@ export interface TaskStatusUpdateEvent {
 }
 
 export interface TaskArtifactUpdateEvent {
-  taskId: string;
-  contextId: string;
+  task_id: string;
+  context_id: string;
   kind: 'artifact-update';
   artifact: Artifact;
   append?: boolean;
-  lastChunk?: boolean;
+  last_chunk?: boolean;
   metadata?: { [key: string]: any };
 }
 

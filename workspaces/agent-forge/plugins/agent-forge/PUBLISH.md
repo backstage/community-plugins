@@ -35,16 +35,11 @@
    npm run build
    ```
 
-4. **Test the build**
+4. **Publish to npm**
 
-   ```bash
-   yarn test
-   ```
-
-5. **Publish to npm**
-   ```bash
-    npm publish
-   ```
+```bash
+ npm publish
+```
 
 ## Package Details
 
