@@ -15,7 +15,9 @@
  */
 
 import {
+  DEFAULT_NAMESPACE,
   Entity,
+  parseEntityRef,
   RELATION_MEMBER_OF,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
@@ -50,7 +52,20 @@ export class CatalogHelper {
     };
   };
 
-  #getUserEntityRefByEmail = async (email: string): Promise<Entity> => {
+  #pickDefaultEntity = (items: Entity[]): Entity => {
+    if (items.length > 1) {
+      const defaultItem = items.find(
+        e => e.metadata.namespace === DEFAULT_NAMESPACE,
+      );
+      if (defaultItem) {
+        return defaultItem;
+      }
+    }
+
+    return items[0];
+  };
+
+  #getUserEntityByEmail = async (email: string): Promise<Entity> => {
     const { items } = await this.#catalog.getEntities(
       {
         filter: { 'spec.profile.email': email },
@@ -61,25 +76,42 @@ export class CatalogHelper {
     if (items.length === 0) {
       throw new NotFoundError(`No user found for email ${email}`);
     }
-    return items[0];
+
+    return this.#pickDefaultEntity(items);
   };
 
-  #ensureUserEntityRef = async (username: string): Promise<Entity> => {
+  #getUserEntityByNameOrRef = async (name: string): Promise<Entity> => {
+    // Try to parse as entity ref first
+    try {
+      const parsedEntityRef = parseEntityRef(name);
+      if (parsedEntityRef.kind.toLocaleLowerCase('en-US') === 'user') {
+        const entity = await this.#catalog.getEntityByRef(
+          name,
+          await this.#getOptions(),
+        );
+        if (entity) {
+          return entity;
+        }
+      }
+    } catch {
+      // Swallow error (parseEntityRef) and try by name
+    }
+
     const { items } = await this.#catalog.getEntities(
       {
         filter: {
-          'metadata.name': username,
-          'metadata.namespace': 'default',
-          Kind: 'User',
+          'metadata.name': name,
+          kind: 'User',
         },
       },
       await this.#getOptions(),
     );
 
     if (items.length === 0) {
-      throw new NotFoundError(`No user found with username ${username}`);
+      throw new NotFoundError(`No user found with username ${name}`);
     }
-    return items[0];
+
+    return this.#pickDefaultEntity(items);
   };
 
   /**
@@ -87,8 +119,8 @@ export class CatalogHelper {
    */
   getUserByNameOrEmail = async (nameOrEmail: string): Promise<Entity> => {
     return nameOrEmail.includes('@')
-      ? await this.#getUserEntityRefByEmail(nameOrEmail)
-      : await this.#ensureUserEntityRef(nameOrEmail);
+      ? await this.#getUserEntityByEmail(nameOrEmail)
+      : await this.#getUserEntityByNameOrRef(nameOrEmail);
   };
 
   /**

@@ -19,7 +19,7 @@ import { CatalogService } from '@backstage/plugin-catalog-node';
 import { AuthService } from '@backstage/backend-plugin-api';
 
 import { ManageService } from '../services/Manage';
-import { CatalogHelper } from './catalog-helpers';
+import { CatalogHelper } from './catalog-helper';
 
 export function registerMcpActions({
   auth,
@@ -46,7 +46,9 @@ export function registerMcpActions({
     schema: {
       input: z =>
         z.object({
-          user: z.string().describe('The username or email of the person'),
+          user: z
+            .string()
+            .describe('The username, "entity ref" or email of the person'),
         }),
       output: z =>
         z.object({

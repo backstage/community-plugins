@@ -21,7 +21,7 @@ backend.add(import('@backstage-community/plugin-manage-backend'));
 
 ## MCP
 
-The backend provides an MCP action called `my-entities` which has an input field `user` being the username or email of the person for whom entities will be fetched.
+The backend provides an MCP action called `my-entities` which has an input field `user` being the username, entity ref or email of the person for whom entities will be fetched.
 
 The logic is the same as for what's shown in the UI.
 
