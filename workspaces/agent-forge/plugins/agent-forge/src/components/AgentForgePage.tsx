@@ -183,11 +183,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     overflow: 'hidden',
     minHeight: 0,
-    height: '100%',
-    padding: `${theme.spacing(2)}px !important`,
-    '&:last-child': {
-      paddingBottom: `${theme.spacing(2)}px !important`,
-    },
   },
   fullscreenButton: {
     color: '#FFFFFF',
@@ -306,16 +301,9 @@ export function AgentForgePage() {
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
     config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
-  const disconnectionDelayMs =
-    config.getOptionalNumber('agentForge.disconnectionDelayMs') || 3000;
 
   // Config validation logs
   console.log('Agent Forge Config - Streaming:', enableStreaming);
-  console.log(
-    'Agent Forge Config - Disconnection Delay:',
-    disconnectionDelayMs,
-    'ms',
-  );
   const headerTitle =
     config.getOptionalString('agentForge.headerTitle') || botName;
   const headerSubtitle =
@@ -417,32 +405,6 @@ export function AgentForgePage() {
   const [connectionStatus, setConnectionStatus] = useState<
     'checking' | 'connected' | 'disconnected'
   >('checking');
-  const [visibleConnectionStatus, setVisibleConnectionStatus] = useState<
-    'checking' | 'connected' | 'disconnected'
-  >('checking');
-  const connectionStatusTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  useEffect(() => {
-    if (connectionStatusTimeoutRef.current) {
-      clearTimeout(connectionStatusTimeoutRef.current);
-      connectionStatusTimeoutRef.current = null;
-    }
-
-    if (connectionStatus === 'disconnected') {
-      connectionStatusTimeoutRef.current = setTimeout(() => {
-        setVisibleConnectionStatus('disconnected');
-        connectionStatusTimeoutRef.current = null;
-      }, disconnectionDelayMs);
-    } else {
-      setVisibleConnectionStatus(connectionStatus);
-    }
-
-    return () => {
-      if (connectionStatusTimeoutRef.current) {
-        clearTimeout(connectionStatusTimeoutRef.current);
-        connectionStatusTimeoutRef.current = null;
-      }
-    };
-  }, [connectionStatus, disconnectionDelayMs]);
   const [nextRetryCountdown, setNextRetryCountdown] = useState<number>(0);
   const [loadedMessageCount, setLoadedMessageCount] = useState(
     DEFAULT_MESSAGE_COUNT,
@@ -458,18 +420,15 @@ export function AgentForgePage() {
   const [executionPlanBuffer, setExecutionPlanBuffer] = useState<
     Record<string, string>
   >({});
-  const [executionPlanHistory, setExecutionPlanHistory] = useState<
-    Record<string, string[]>
-  >({});
-  const [, setCurrentStreamingMessageId] = useState<string | null>(null);
   // Track which execution plans should be auto-expanded when they appear
   const [autoExpandExecutionPlans, setAutoExpandExecutionPlans] = useState<
     Set<string>
   >(new Set());
   // Reference to input field for focus management
   const inputRef = useRef<HTMLInputElement>(null);
-  // SCROLL MODE: Auto-scroll enabled by default - automatically scrolls to bottom on new messages
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
+  // SCROLL MODE: Manual mode by default - users have full control over scroll position
+  // TO RE-ENABLE AUTO-SCROLL: Change false to true and uncomment toggle UI in ChatContainer.tsx
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
 
   // State for operational thinking messages
   const [currentOperation, setCurrentOperation] = useState<string | null>(null);
@@ -483,17 +442,8 @@ export function AgentForgePage() {
     useState(false);
   const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] =
     useState<string>('');
-
-  // 🔧 FIX: Per-session streaming state to support concurrent sessions
-  interface SessionStreamingState {
-    requestId: string;
-    abortController: AbortController;
-    streamingMessageId: string | null;
-  }
-  const streamingStateBySession = useRef<Map<string, SessionStreamingState>>(
-    new Map(),
-  );
-
+  const currentRequestIdRef = useRef<string>(''); // Track current streaming request
+  const abortControllerRef = useRef<AbortController | null>(null); // Cancel previous streams
   const [executionPlanLoading, setExecutionPlanLoading] = useState<Set<string>>(
     new Set(),
   ); // Track loading state per message
@@ -509,23 +459,16 @@ export function AgentForgePage() {
       console.log('🚨 ORIGINAL TEXT:', `${text.substring(0, 200)}...`);
     }
 
-    // Remove each cached notification from the text, but only for known tool notifications
+    // Remove each cached notification from the text
     for (const notification of toolNotificationsCache.current) {
-      const normalized = notification.trim();
-      const looksLikeToolStart = normalized.includes('Calling');
-      const looksLikeToolEnd = /completed/i.test(normalized);
-
-      if (!looksLikeToolStart && !looksLikeToolEnd) {
-        continue; // Skip removal to avoid stripping regular markdown (e.g., TODO lists)
-      }
-
       const beforeRemoval = cleanText;
 
       // Remove the exact notification text
-      const escapedNotification = normalized.replace(
+      const escapedNotification = notification.replace(
         /[.*+?^${}()|[\]\\]/g,
         '\\$&',
       );
+      // Remove notification but keep surrounding whitespace intact
       const regex = new RegExp(escapedNotification, 'g');
       cleanText = cleanText.replace(regex, '');
 
@@ -568,81 +511,6 @@ export function AgentForgePage() {
     }
 
     return cleanText;
-  }, []);
-
-  // 🎨 FORMAT EXECUTION PLAN (agent-chat-cli pattern)
-  // Format execution plan text into a user-friendly markdown checklist with emojis
-  // Matches agent-chat-cli/a2a_client.py lines 161-207
-  const formatExecutionPlanText = useCallback((rawText: string): string => {
-    if (!rawText) {
-      return rawText;
-    }
-
-    // If already formatted with emojis, return as-is (agent-chat-cli lines 167-169)
-    const stripped = rawText.trim();
-    if (
-      stripped.startsWith('- ✅') ||
-      stripped.startsWith('✅') ||
-      stripped.includes('📋')
-    ) {
-      return rawText;
-    }
-
-    // Determine heading (agent-chat-cli lines 171-173)
-    let heading = '📋 **Execution Plan**';
-    if (
-      rawText.includes('Updated') &&
-      rawText.toLocaleLowerCase('en-US').includes('todo list')
-    ) {
-      heading = '📋 **Execution Plan (updated)**';
-    }
-
-    // Try to parse as JSON array of todos (agent-chat-cli lines 175-187)
-    const listStart = rawText.indexOf('[');
-    const listEnd = rawText.lastIndexOf(']');
-
-    if (listStart === -1 || listEnd === -1 || listEnd <= listStart) {
-      return rawText;
-    }
-
-    const listSegment = rawText.substring(listStart, listEnd + 1);
-
-    try {
-      const todos = JSON.parse(listSegment);
-
-      if (!Array.isArray(todos)) {
-        return rawText;
-      }
-
-      // Map status to emoji (agent-chat-cli lines 189-193)
-      const statusEmoji: Record<string, string> = {
-        in_progress: '⏳',
-        completed: '✅',
-        pending: '📋',
-      };
-
-      // Build formatted output (agent-chat-cli lines 195-202)
-      const lines = [heading, ''];
-      for (const item of todos) {
-        if (typeof item !== 'object' || item === null) {
-          continue;
-        }
-        const content = item.content || item.task || '(no description)';
-        const status = (item.status || '').toLocaleLowerCase('en-US');
-        const emoji = statusEmoji[status] || '•';
-        lines.push(`- ${emoji} ${content}`);
-      }
-
-      // Return formatted if we have items (agent-chat-cli lines 204-207)
-      if (lines.length <= 2) {
-        return rawText;
-      }
-
-      return lines.join('\n');
-    } catch (e) {
-      console.log('Failed to parse execution plan as JSON:', e);
-      return rawText;
-    }
   }, []);
 
   // Utility function to detect and parse tool notifications using metadata
@@ -741,7 +609,7 @@ export function AgentForgePage() {
           // Remove the entire execution plan section from main content
           const fullExecutionPlanSection = match[0];
           mainContent = text.replace(fullExecutionPlanSection, '').trim();
-          executionPlanContent = fullExecutionPlanSection.trim();
+          executionPlanContent = executionPlanText;
           shouldStartCapturing = true;
           shouldStopCapturing = true; // It's a complete plan in one chunk
 
@@ -759,82 +627,6 @@ export function AgentForgePage() {
             shouldStartCapturing,
             shouldStopCapturing,
           };
-        }
-
-        // Handle "📋 **Task Progress:**" / "📋 **Execution Plan (final)**" blocks with emoji bullets
-        const headingRegex =
-          /📋\s*\*\*(?:Task\s*Progress:|Execution\s*Plan(?:\s*\([^*]+\))?)\*\*/;
-        const headingMatch = text.match(headingRegex);
-
-        if (headingMatch && typeof headingMatch.index === 'number') {
-          const startIndex = headingMatch.index;
-          let cursor = startIndex;
-          let endIndex = startIndex;
-          let firstLine = true;
-
-          while (cursor < text.length) {
-            const newlineIndex = text.indexOf('\n', cursor);
-            const lineEnd =
-              newlineIndex === -1 ? text.length : newlineIndex + 1;
-            const line = text.slice(cursor, lineEnd);
-            const trimmed = line.trim();
-
-            if (firstLine) {
-              endIndex = lineEnd;
-              cursor = lineEnd;
-              firstLine = false;
-              continue;
-            }
-
-            if (trimmed === '') {
-              endIndex = lineEnd;
-              cursor = lineEnd;
-              continue;
-            }
-
-            if (
-              trimmed.startsWith('-') ||
-              trimmed.startsWith('•') ||
-              trimmed.startsWith('✅') ||
-              trimmed.startsWith('⏳') ||
-              trimmed.startsWith('🔄') ||
-              trimmed.startsWith('📋')
-            ) {
-              endIndex = lineEnd;
-              cursor = lineEnd;
-              continue;
-            }
-
-            break; // Non-bullet content encountered
-          }
-
-          if (endIndex > startIndex) {
-            const executionPlanBlockRaw = text
-              .slice(startIndex, endIndex)
-              .trimEnd();
-            if (executionPlanBlockRaw.length > 0) {
-              const before = text.slice(0, startIndex);
-              const after = text.slice(endIndex);
-              mainContent = `${before}${after}`
-                .replace(/\n{3,}/g, '\n\n')
-                .trim();
-
-              executionPlanContent = executionPlanBlockRaw.trim();
-              shouldStartCapturing = true;
-              shouldStopCapturing = true;
-
-              console.log(
-                '🔧 FALLBACK: Extracted Task Progress execution plan block',
-              );
-
-              return {
-                mainContent,
-                executionPlanContent,
-                shouldStartCapturing,
-                shouldStopCapturing,
-              };
-            }
-          }
         }
       }
 
@@ -1465,37 +1257,6 @@ export function AgentForgePage() {
           sessionsWithDates[0]?.contextId ||
           initialSession.contextId;
         setCurrentSessionId(validSessionId);
-
-        // 🔧 RESTORE execution plan buffer from storage
-        if (data.executionPlanBuffer) {
-          console.log(
-            '📦 RESTORING EXECUTION PLAN BUFFER:',
-            Object.keys(data.executionPlanBuffer).length,
-            'plans',
-          );
-          setExecutionPlanBuffer(data.executionPlanBuffer);
-        }
-
-        // 🔧 RESTORE execution plan history from storage
-        if (data.executionPlanHistory) {
-          console.log(
-            '📦 RESTORING EXECUTION PLAN HISTORY:',
-            Object.keys(data.executionPlanHistory).length,
-            'histories',
-          );
-          setExecutionPlanHistory(data.executionPlanHistory);
-        }
-
-        // 🔧 RESTORE auto-expand state from storage
-        if (data.autoExpandExecutionPlans) {
-          console.log(
-            '📦 RESTORING AUTO-EXPAND STATE:',
-            data.autoExpandExecutionPlans.length,
-            'plans',
-          );
-          setAutoExpandExecutionPlans(new Set(data.autoExpandExecutionPlans));
-        }
-
         setSuggestions(initialSuggestions);
         setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
         setShowLoadMoreButton(false);
@@ -1525,21 +1286,12 @@ export function AgentForgePage() {
       const data: ChatStorage = {
         sessions,
         currentSessionId,
-        executionPlanBuffer, // 🔧 PERSIST execution plans
-        executionPlanHistory, // 🔧 PERSIST execution plan history
-        autoExpandExecutionPlans: Array.from(autoExpandExecutionPlans), // 🔧 PERSIST auto-expand state
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       // console.warn('Failed to save chat history to storage:', error);
     }
-  }, [
-    sessions,
-    currentSessionId,
-    executionPlanBuffer,
-    executionPlanHistory,
-    autoExpandExecutionPlans,
-  ]);
+  }, [sessions, currentSessionId]);
 
   // Create new session
   const createNewSession = useCallback(() => {
@@ -1592,18 +1344,6 @@ export function AgentForgePage() {
           totalSessions: sessions.length,
           sessionExists: sessions.some(s => s.contextId === sessionId),
         });
-      }
-
-      // 🔧 FIX: Clean up session-specific streaming state
-      const sessionState = streamingStateBySession.current.get(sessionId);
-      if (sessionState) {
-        // Abort any ongoing stream for this session
-        sessionState.abortController.abort();
-        streamingStateBySession.current.delete(sessionId);
-        console.log(
-          '🧹 CLEANED UP STREAMING STATE FOR DELETED SESSION:',
-          sessionId,
-        );
       }
       const remainingSessions = sessions.filter(s => s.contextId !== sessionId);
       setSessions(remainingSessions);
@@ -1708,56 +1448,43 @@ export function AgentForgePage() {
         console.log('🧹 CLEARING STALE EXECUTION PLAN BUFFER ENTRIES');
       }
 
-      // 🔧 CLEAR OLD STATE: Reset execution plan buffer and auto-expand (agent-chat-cli pattern)
-      // agent-chat-cli line 593: execution_markdown = "" (starts empty, NO placeholder!)
+      // 🎯 UI HACK: Mark this message as "loading" execution plan
+      if (newMessage.messageId) {
+        setExecutionPlanLoading(prev => {
+          const newSet = new Set(prev);
+          newSet.add(newMessage.messageId!);
+          console.log(
+            '⏳ MARKING EXECUTION PLAN AS LOADING:',
+            newMessage.messageId,
+          );
+          return newSet;
+        });
+      }
+
+      // 🔧 ULTRA-NUCLEAR OPTION: Completely clear execution plan buffer, localStorage, AND auto-expand state
+      // This prevents any cross-contamination between different user requests
       setExecutionPlanBuffer(prev => {
         if (process.env.NODE_ENV === 'development') {
-          console.log(
-            '🧹 CLEARING EXECUTION PLAN BUFFER (agent-chat-cli pattern):',
-            {
-              before: Object.keys(prev),
-              after: newMessage.messageId ? 'PLACEHOLDER' : 'EMPTY',
-              reason:
-                'New streaming message started - will populate on first update',
-            },
-          );
+          console.log('🧹 ULTRA-NUCLEAR BUFFER RESET:', {
+            before: Object.keys(prev),
+            afterReset: 'EMPTY',
+            reason: 'New streaming message started',
+          });
         }
-
-        if (newMessage.messageId) {
-          return {
-            [newMessage.messageId]:
-              '📋 **Execution Plan**\n\n_(waiting for execution plan updates...)_',
-          };
-        }
-
-        return {};
+        return {}; // Complete reset
       });
 
-      setExecutionPlanHistory(prev => {
-        if (newMessage.messageId) {
-          return {
-            ...prev,
-            [newMessage.messageId]: [],
-          };
+      // Also clear auto-expand state to prevent old execution plans from auto-expanding
+      setAutoExpandExecutionPlans(prev => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🧹 CLEARING AUTO-EXPAND STATE:', {
+            before: Array.from(prev),
+            afterReset: 'EMPTY',
+            reason: 'New streaming message started',
+          });
         }
-        return prev;
+        return new Set(); // Complete reset
       });
-
-      // Clear auto-expand state and pre-expand current plan container
-      setAutoExpandExecutionPlans(() => {
-        if (newMessage.messageId) {
-          return new Set([newMessage.messageId]);
-        }
-        return new Set();
-      });
-
-      // 🔧 FIX: Update session-specific streaming message ID
-      const sessionState =
-        streamingStateBySession.current.get(currentSessionId);
-      if (sessionState) {
-        sessionState.streamingMessageId = newMessage.messageId || null;
-      }
-      setCurrentStreamingMessageId(newMessage.messageId || null);
 
       // 🚨 CRITICAL FIX: Reset accumulated execution plan React state (prevents previous message contamination)
       setAccumulatedExecutionPlan(prevPlan => {
@@ -1937,57 +1664,84 @@ export function AgentForgePage() {
       // Not pure JSON - might be text with embedded JSON
       console.log('🧹 Cleaning text with potential embedded JSON');
 
-      // Strategy 1: Remove JSON status payloads embedded in the text
-      // Same logic as agent-chat-cli: find and remove {"status":"...","message":"..."}
-      let cleanedText = text;
-      const cleanedParts: string[] = [];
-      let remaining = text;
+      // Strategy 1: Remove JSON objects embedded in the text
+      // Matches patterns like: text{"status":"completed","message":"..."}text
+      let cleanedText = text.replace(
+        /\{"status"\s*:\s*"[^"]+"\s*,\s*"message"\s*:\s*"[^"]+"\}/g,
+        '',
+      );
 
-      while (remaining.includes('{"status":')) {
-        const beforeIndex = remaining.indexOf('{"status":');
-        const before = remaining.substring(0, beforeIndex);
+      // Strategy 2: Remove duplicate content blocks (text appears multiple times)
+      // This handles cases where entire responses are duplicated with slight variations
 
-        if (before.trim()) {
-          cleanedParts.push(before.trim());
+      // First, try to detect large-scale duplication by looking for repeated paragraphs
+      const paragraphs = cleanedText.split(/\n\n+/);
+      const seenParagraphs = new Map<string, string>(); // normalized -> original
+      const uniqueParagraphs: string[] = [];
+
+      for (const para of paragraphs) {
+        if (para.trim().length === 0) continue;
+
+        // Normalize: remove extra spaces, lowercase, remove special chars for comparison
+        const normalized = para
+          .trim()
+          .toLocaleLowerCase('en-US')
+          .replace(/\s+/g, ' ') // Collapse spaces
+          .replace(/['"]/g, '') // Remove quotes
+          .replace(/\s/g, ''); // Remove all spaces for fuzzy matching
+
+        // Check if we've already seen this content (exact match after normalization)
+        if (!seenParagraphs.has(normalized)) {
+          seenParagraphs.set(normalized, para);
+          uniqueParagraphs.push(para.trim());
         }
-
-        // Find the matching closing brace for the JSON object
-        let braceCount = 1;
-        let braceIndex = -1;
-        const after = remaining.substring(beforeIndex + 10); // Skip '{"status":'
-
-        for (let i = 0; i < after.length; i++) {
-          if (after[i] === '{') {
-            braceCount++;
-          } else if (after[i] === '}') {
-            braceCount--;
-            if (braceCount === 0) {
-              braceIndex = i;
-              break;
-            }
-          }
-        }
-
-        if (braceIndex === -1) {
-          // No matching brace found, keep remaining text
-          if (remaining.trim() && remaining.trim() !== text.trim()) {
-            cleanedParts.push(remaining.trim());
-          }
-          break;
-        }
-
-        // Skip the JSON object and continue with what's after
-        remaining = after.substring(braceIndex + 1);
       }
 
-      // Add any remaining text after last JSON
-      if (remaining.trim()) {
-        cleanedParts.push(remaining.trim());
+      // Rejoin unique paragraphs
+      if (uniqueParagraphs.length > 0) {
+        cleanedText = uniqueParagraphs.join('\n\n');
       }
 
-      cleanedText = cleanedParts.length > 0 ? cleanedParts.join('\n\n') : text;
+      // Strategy 3: Remove duplicate sentences within the remaining text
+      const sentences = cleanedText
+        .split(/\.\s+/)
+        .filter(s => s.trim().length > 0);
+      const uniqueSentences = new Set<string>();
+      const deduplicatedSentences: string[] = [];
 
-      console.log('✅ JSON status payloads removed, returning clean text');
+      for (const sentence of sentences) {
+        const normalized = sentence
+          .trim()
+          .toLocaleLowerCase('en-US')
+          .replace(/['"]/g, '')
+          .replace(/\s+/g, ' ');
+
+        if (!uniqueSentences.has(normalized)) {
+          uniqueSentences.add(normalized);
+          deduplicatedSentences.push(sentence.trim());
+        }
+      }
+
+      // Rejoin sentences
+      if (deduplicatedSentences.length > 0) {
+        cleanedText = deduplicatedSentences.join('. ');
+        // Add final period if original text had one
+        if (text.trim().endsWith('.')) {
+          cleanedText += '.';
+        }
+      }
+
+      // Final cleanup: trim extra whitespace but preserve paragraph breaks
+      cleanedText = cleanedText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs
+      cleanedText = cleanedText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
+      cleanedText = cleanedText.trim();
+
+      console.log('🧹 Cleaned text:', {
+        original: text.substring(0, 100),
+        cleaned: cleanedText.substring(0, 100),
+        removed: text.length - cleanedText.length,
+      });
+
       return { content: cleanedText || text, hasMetadata: false };
     }
   };
@@ -2010,62 +1764,25 @@ export function AgentForgePage() {
 
               // 🎯 PARSE JSON RESPONSE FOR METADATA FIELDS AND CLEAN DUPLICATES
               const messageText = streamingMessage.text || '';
-              console.log(
-                '[AGENT_FORGE_FINAL_RENDERING] 🧹 BEFORE CLEANING - Text length:',
-                messageText.length,
-              );
-              console.log(
-                '[AGENT_FORGE_FINAL_RENDERING] 🧹 BEFORE CLEANING - Text preview:',
-                `${messageText.substring(0, 300)}...`,
-              );
+              const { content, metadataRequest, hasMetadata } =
+                parseJsonResponseForMetadata(messageText);
 
-              // Skip aggressive cleaning if this message has partial_result (already clean from backend)
-              if ((streamingMessage as any).skipCleaning) {
-                console.log(
-                  '[AGENT_FORGE_FINAL_RENDERING] ⏭️ SKIPPING CLEANING - partial_result is already clean',
-                );
-                // Don't clean, text is already complete and correct
-              } else {
-                const { content, metadataRequest, hasMetadata } =
-                  parseJsonResponseForMetadata(messageText);
+              // Update message with cleaned content (removes duplicate JSON, etc.)
+              streamingMessage.text = content;
 
+              if (hasMetadata && metadataRequest) {
                 console.log(
-                  '[AGENT_FORGE_FINAL_RENDERING] 🧹 AFTER CLEANING - Content length:',
-                  content.length,
+                  '✨ Converting JSON response to metadata form:',
+                  metadataRequest,
                 );
-                console.log(
-                  '[AGENT_FORGE_FINAL_RENDERING] 🧹 AFTER CLEANING - Content preview:',
-                  `${content.substring(0, 300)}...`,
-                );
-                console.log(
-                  '[AGENT_FORGE_FINAL_RENDERING] 🧹 Text was',
-                  messageText.length > content.length
-                    ? 'TRUNCATED'
-                    : 'unchanged',
-                );
-
-                // Update message with cleaned content (removes duplicate JSON, etc.)
-                streamingMessage.text = content;
-
-                if (hasMetadata && metadataRequest) {
-                  console.log(
-                    '✨ Converting JSON response to metadata form:',
-                    metadataRequest,
-                  );
-                  streamingMessage.metadataRequest = metadataRequest;
-                }
+                streamingMessage.metadataRequest = metadataRequest;
               }
-
               if (process.env.NODE_ENV === 'development') {
-                console.log(
-                  '[AGENT_FORGE_FINAL_RENDERING] 🏁 FINISHED STREAMING MESSAGE:',
-                  {
-                    messageId: streamingMessage.messageId,
-                    finalTextLength: streamingMessage.text?.length,
-                    skippedCleaning:
-                      (streamingMessage as any).skipCleaning || false,
-                  },
-                );
+                console.log('🏁 FINISHED STREAMING MESSAGE:', {
+                  messageId: streamingMessage.messageId,
+                  totalStreamingFound: allStreamingMessages.length,
+                  allStreamingIds: allStreamingMessages.map(m => m.messageId),
+                });
               }
 
               // 🔧 CRITICAL FIX: Store accumulated execution plan in buffer at END of streaming
@@ -2096,20 +1813,6 @@ export function AgentForgePage() {
                       bufferKeys: Object.keys(newBuffer),
                     });
                     return newBuffer;
-                  });
-
-                  setExecutionPlanHistory(prevHistory => {
-                    const history = prevHistory[messageKey] || [];
-                    if (
-                      history.length > 0 &&
-                      history[history.length - 1] === cleanExecutionPlan
-                    ) {
-                      return prevHistory;
-                    }
-                    return {
-                      ...prevHistory,
-                      [messageKey]: [...history, cleanExecutionPlan],
-                    };
                   });
 
                   // Mark for auto-expansion
@@ -2161,7 +1864,6 @@ export function AgentForgePage() {
         }
         return {};
       });
-      setExecutionPlanHistory(() => ({}));
       setAutoExpandExecutionPlans(prev => {
         if (process.env.NODE_ENV === 'development') {
           console.log('🧹 EARLY AUTO-EXPAND RESET:', {
@@ -2301,36 +2003,20 @@ export function AgentForgePage() {
 
             let lastContextId: string | undefined;
             let accumulatedText = '';
-            // 🔧 NEW: Persistent buffer for streaming output container (never reset)
-            let streamingOutputBuffer = '';
 
-            // 🔧 FIX: Use session-specific streaming state
-            const previousSessionState =
-              streamingStateBySession.current.get(sessionToUse);
-            if (previousSessionState) {
-              console.log(
-                '🛑 ABORTING PREVIOUS STREAMING REQUEST FOR SESSION:',
-                sessionToUse,
-              );
-              previousSessionState.abortController.abort();
+            // 🚨 ABORT PREVIOUS STREAMING REQUEST to prevent contamination
+            if (abortControllerRef.current) {
+              console.log('🛑 ABORTING PREVIOUS STREAMING REQUEST');
+              abortControllerRef.current.abort();
             }
 
             // Generate unique request ID for this streaming session
             const currentRequestId = uuidv4();
-            console.log(
-              '🆔 NEW REQUEST ID FOR SESSION:',
-              sessionToUse,
-              '- Request:',
-              currentRequestId,
-            );
+            currentRequestIdRef.current = currentRequestId;
+            console.log('🆔 NEW REQUEST ID:', currentRequestId);
 
-            // Create new session-specific streaming state
-            const newAbortController = new AbortController();
-            streamingStateBySession.current.set(sessionToUse, {
-              requestId: currentRequestId,
-              abortController: newAbortController,
-              streamingMessageId: null, // Will be set in addStreamingMessage
-            });
+            // Create new AbortController for this request
+            abortControllerRef.current = new AbortController();
 
             // Clear execution plan state at the start of each new response
             setIsCapturingExecutionPlan(false);
@@ -2342,13 +2028,6 @@ export function AgentForgePage() {
             // Stream responses in real-time using SSE
             let streamIterator;
             try {
-              console.log('[AGENT_FORGE_FINAL_RENDERING] 📨 USER QUERY:', {
-                query: inputText,
-                isNewContext: !workingSession?.contextId,
-                contextId: workingSession?.contextId || '(new)',
-                backendUrl: chatbotApi ? 'configured' : 'NOT configured',
-              });
-
               streamIterator = chatbotApi.submitA2ATaskStream(
                 !workingSession?.contextId,
                 inputText,
@@ -2363,27 +2042,13 @@ export function AgentForgePage() {
             }
 
             for await (const event of streamIterator) {
-              // 🔧 FIX: Check session-specific abort signal
-              const sessionState =
-                streamingStateBySession.current.get(sessionToUse);
+              // 🚨 CHECK FOR ABORT SIGNAL: Cancel processing if new request started
               if (
-                !sessionState ||
-                sessionState.abortController.signal.aborted ||
-                sessionState.requestId !== currentRequestId
+                abortControllerRef.current?.signal.aborted ||
+                currentRequestIdRef.current !== currentRequestId
               ) {
-                let reason = 'Unknown';
-                if (!sessionState) {
-                  reason = 'No session state';
-                } else if (sessionState.abortController.signal.aborted) {
-                  reason = 'Aborted';
-                } else {
-                  reason = 'New request started';
-                }
                 console.log(
-                  '🛑 STREAMING ABORTED FOR SESSION:',
-                  sessionToUse,
-                  '- Reason:',
-                  reason,
+                  '🛑 STREAMING ABORTED - New request started or cancelled',
                 );
                 break;
               }
@@ -2565,95 +2230,74 @@ export function AgentForgePage() {
                       continue; // Skip normal text processing for metadata artifacts
                     }
 
-                    // 🔧 IGNORE execution_plan_streaming (agent-chat-cli line 718-719 pattern)
+                    // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content for accumulation
                     if (event.artifact?.name === 'execution_plan_streaming') {
-                      // agent-chat-cli ignores this completely - just continue
+                      // This artifact accumulates chunks for fallback
+                      if (currentRequestIdRef.current === currentRequestId) {
+                        console.log(
+                          '✅ ACCEPTING EXECUTION PLAN STREAMING CHUNK',
+                        );
+                        setAccumulatedExecutionPlan(
+                          prev => prev + textPart.text,
+                        );
+                      }
                       console.log(
-                        '⏭️ IGNORING execution_plan_streaming (agent-chat-cli pattern)',
+                        'Execution plan streaming chunk processed, continuing...',
                       );
-                      continue;
-                    }
+                    } else if (
+                      event.artifact?.name === 'execution_plan_update'
+                    ) {
+                      // 🚀 REAL-TIME UPDATE: Use execution_plan_update for immediate display
+                      // This contains the complete plan so far, no need to accumulate chunks
+                      if (currentRequestIdRef.current === currentRequestId) {
+                        console.log(
+                          '📋 EXECUTION PLAN UPDATE - Updating display in real-time',
+                        );
 
-                    // 🎯 HANDLE partial_result - Complete final accumulated text from backend
-                    if (event.artifact?.name === 'partial_result') {
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 🎯 ARTIFACT DETECTED - Using as final complete text',
-                      );
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 📄 Content length:',
-                        textPart.text.length,
-                        'chars',
-                      );
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 📄 Content preview:',
-                        `${textPart.text.substring(0, 200)}...`,
-                      );
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 📄 Full text:',
-                        textPart.text,
-                      );
+                        const completePlan = textPart.text;
+                        const cleanExecutionPlan = completePlan.replace(
+                          /⟦|⟧/g,
+                          '',
+                        );
 
-                      // 🔧 FIXED: Use persistent streaming output buffer (not accumulatedText which gets reset)
-                      const previousStreamedOutput =
-                        streamingOutputBuffer || accumulatedText;
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 💾 Saving streamed output:',
-                        previousStreamedOutput.length,
-                        'chars',
-                      );
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 📊 Buffer comparison:',
-                        {
-                          streamingBuffer: streamingOutputBuffer.length,
-                          accumulatedText: accumulatedText.length,
-                          using: streamingOutputBuffer
-                            ? 'streamingBuffer'
-                            : 'accumulatedText',
-                        },
-                      );
-
-                      // Parse partial_result for structured metadata (dynamic forms)
-                      const { content, metadataRequest, hasMetadata } =
-                        parseJsonResponseForMetadata(textPart.text);
-
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 🎨 Parsed response:',
-                        {
-                          hasMetadata,
-                          contentLength: content.length,
-                          metadataFields: metadataRequest?.fields?.length || 0,
-                        },
-                      );
-
-                      // Use the extracted content (not the raw JSON)
-                      const finalText = content;
-                      accumulatedText = finalText;
-
-                      // Update message with both final text AND streamed output container AND metadata
-                      // 🔧 FIX: Use session-specific streaming message ID
-                      const partialResultSessionState =
-                        streamingStateBySession.current.get(currentSessionId);
-                      if (partialResultSessionState?.streamingMessageId) {
-                        setSessions(prev =>
-                          prev.map(session => {
+                        // Find streaming message and update immediately
+                        setSessions(prevSessions => {
+                          return prevSessions.map(session => {
                             if (session.contextId === currentSessionId) {
                               const updatedMessages = session.messages.map(
                                 msg => {
-                                  if (
-                                    msg.messageId ===
-                                    partialResultSessionState.streamingMessageId
-                                  ) {
-                                    return {
-                                      ...msg,
-                                      text: finalText,
-                                      streamedOutput: previousStreamedOutput,
-                                      metadataRequest: hasMetadata
-                                        ? metadataRequest
-                                        : undefined,
-                                      skipCleaning: true,
-                                      hasFinalResult: true, // Mark that partial_result was received
-                                      isStreaming: true, // Keep streaming flag for updateStreamingMessage
-                                    };
+                                  if (msg.isStreaming === true) {
+                                    const messageKey =
+                                      msg.messageId || 'unknown';
+
+                                    // 🎯 UI HACK: Clear loading state now that real data arrived
+                                    setExecutionPlanLoading(prevLoading => {
+                                      const newSet = new Set(prevLoading);
+                                      newSet.delete(messageKey);
+                                      console.log(
+                                        '✅ EXECUTION PLAN LOADED - Removing loading state:',
+                                        messageKey,
+                                      );
+                                      return newSet;
+                                    });
+
+                                    // Update buffer for real-time display
+                                    setExecutionPlanBuffer(prevBuffer => ({
+                                      ...prevBuffer,
+                                      [messageKey]: cleanExecutionPlan,
+                                    }));
+
+                                    // Auto-expand on first update
+                                    setAutoExpandExecutionPlans(prevSet => {
+                                      const newSet = new Set(prevSet);
+                                      if (!newSet.has(messageKey)) {
+                                        newSet.add(messageKey);
+                                        console.log(
+                                          '🔄 AUTO-EXPANDING EXECUTION PLAN',
+                                        );
+                                      }
+                                      return newSet;
+                                    });
                                   }
                                   return msg;
                                 },
@@ -2661,171 +2305,11 @@ export function AgentForgePage() {
                               return { ...session, messages: updatedMessages };
                             }
                             return session;
-                          }),
-                        );
-
-                        console.log(
-                          '[AGENT_FORGE_FINAL_RENDERING] 📦 Streamed output stored in separate container (collapsed)',
-                        );
-                        console.log(
-                          '[AGENT_FORGE_FINAL_RENDERING] 📄 Final text set as main content',
-                        );
-                        if (hasMetadata) {
-                          console.log(
-                            '[AGENT_FORGE_FINAL_RENDERING] 🎨 Metadata form fields prepared for dynamic UI',
-                          );
-                        }
-                      }
-
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] ✅ Message updated with final text',
-                      );
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 🔍 Final text length:',
-                        finalText.length,
-                      );
-                      console.log(
-                        '[AGENT_FORGE_FINAL_RENDERING] 🔍 Streamed output length:',
-                        previousStreamedOutput.length,
-                      );
-                      continue;
-                    }
-
-                    if (
-                      event.artifact?.name === 'execution_plan_update' ||
-                      event.artifact?.name === 'execution_plan_status_update'
-                    ) {
-                      // 🚀 REAL-TIME UPDATE: Use execution_plan_update/status_update for immediate display
-                      // This contains the complete plan, REPLACE existing plan (don't accumulate)
-                      // 🔧 FIX: Check session-specific request ID
-                      const planUpdateSessionState =
-                        streamingStateBySession.current.get(sessionToUse);
-                      if (
-                        planUpdateSessionState?.requestId === currentRequestId
-                      ) {
-                        console.log(
-                          '📋 EXECUTION PLAN UPDATE - Updating display in real-time for session:',
-                          sessionToUse,
-                        );
-
-                        const completePlan = textPart.text;
-                        // 🎨 FORMAT with emojis (agent-chat-cli pattern) - parses JSON and adds status emojis
-                        const formattedPlan =
-                          formatExecutionPlanText(completePlan);
-
-                        // Get the active streaming message ID
-                        // 🔧 FIX: Use session-specific streaming message ID
-                        const executionPlanSessionState =
-                          streamingStateBySession.current.get(currentSessionId);
-                        const activeMessageId =
-                          executionPlanSessionState?.streamingMessageId;
-
-                        if (activeMessageId) {
-                          console.log(
-                            '🎯 STORING EXECUTION PLAN FOR MESSAGE:',
-                            activeMessageId,
-                          );
-                          console.log(
-                            '📋 EXECUTION PLAN CONTENT (first 200 chars):',
-                            formattedPlan.substring(0, 200),
-                          );
-
-                          // Debug: Show all current message IDs
-                          console.log(
-                            '📋 ALL MESSAGES IN SESSION:',
-                            currentSession?.messages.map(m => ({
-                              id: m.messageId,
-                              isStreaming: m.isStreaming,
-                              text: m.text?.substring(0, 50),
-                            })),
-                          );
-
-                          // Update buffer immediately for real-time display with formatted plan
-                          setExecutionPlanBuffer(prevBuffer => {
-                            console.log(
-                              '📋 BUFFER - Before update, keys:',
-                              Object.keys(prevBuffer),
-                            );
-                            const newBuffer = {
-                              ...prevBuffer,
-                              [activeMessageId]: formattedPlan,
-                            };
-                            console.log(
-                              '📋 BUFFER - After update, keys:',
-                              Object.keys(newBuffer),
-                            );
-                            console.log(
-                              '📋 BUFFER - Content for',
-                              activeMessageId,
-                              ':',
-                              newBuffer[activeMessageId]?.substring(0, 100),
-                            );
-                            return newBuffer;
                           });
+                        });
 
-                          setExecutionPlanHistory(prevHistory => {
-                            const history = prevHistory[activeMessageId] || [];
-                            if (
-                              history.length > 0 &&
-                              history[history.length - 1] === formattedPlan
-                            ) {
-                              return prevHistory;
-                            }
-                            return {
-                              ...prevHistory,
-                              [activeMessageId]: [...history, formattedPlan],
-                            };
-                          });
-
-                          // Clear loading state
-                          setExecutionPlanLoading(prevLoading => {
-                            const newSet = new Set(prevLoading);
-                            newSet.delete(activeMessageId);
-                            console.log(
-                              '✅ EXECUTION PLAN LOADED - Removing loading state:',
-                              activeMessageId,
-                            );
-                            return newSet;
-                          });
-
-                          // Auto-expand on first update
-                          setAutoExpandExecutionPlans(prevSet => {
-                            const newSet = new Set(prevSet);
-                            if (!newSet.has(activeMessageId)) {
-                              newSet.add(activeMessageId);
-                              console.log('🔄 AUTO-EXPANDING EXECUTION PLAN');
-                            }
-                            return newSet;
-                          });
-
-                          // Force a re-render by updating the streaming message with a tiny timestamp change
-                          // This ensures ChatMessage component picks up the buffer update immediately
-                          setSessions(prevSessions => {
-                            return prevSessions.map(session => {
-                              if (session.contextId === currentSessionId) {
-                                const updatedMessages = session.messages.map(
-                                  msg => {
-                                    if (
-                                      msg.isStreaming === true &&
-                                      msg.messageId === activeMessageId
-                                    ) {
-                                      return { ...msg }; // Shallow clone triggers re-render
-                                    }
-                                    return msg;
-                                  },
-                                );
-                                return {
-                                  ...session,
-                                  messages: updatedMessages,
-                                };
-                              }
-                              return session;
-                            });
-                          });
-                        }
-
-                        // Also store formatted plan in accumulated state for finishStreamingMessage
-                        setAccumulatedExecutionPlan(formattedPlan);
+                        // Also store in accumulated state for finishStreamingMessage
+                        setAccumulatedExecutionPlan(completePlan);
                       }
                       console.log(
                         'Execution plan update processed, continuing...',
@@ -2886,188 +2370,123 @@ export function AgentForgePage() {
                         setCurrentOperation(null);
                       }
 
+                      // Only process content if it's NOT a tool notification
                       if (
                         event.artifact?.name !== 'tool_notification_start' &&
                         event.artifact?.name !== 'tool_notification_end'
                       ) {
-                        const {
-                          mainContent,
-                          executionPlanContent,
-                          shouldStartCapturing,
-                          shouldStopCapturing,
-                        } = processExecutionPlanMarkers(textPart.text);
-                        // 🔧 FIX: Use session-specific streaming message ID
-                        const markerSessionState =
-                          streamingStateBySession.current.get(currentSessionId);
-                        const activeMessageId =
-                          markerSessionState?.streamingMessageId;
-
-                        if (shouldStartCapturing) {
-                          console.log('🎯 BEGIN EXECUTION PLAN CAPTURE');
-                          setIsCapturingExecutionPlan(true);
-                        }
-
-                        let executionPlanForMessage = activeMessageId
-                          ? executionPlanBuffer[activeMessageId] || ''
-                          : '';
-
-                        if (
-                          executionPlanContent &&
-                          executionPlanContent.trim().length > 0
-                        ) {
-                          const sanitizedChunk = executionPlanContent.replace(
-                            /⟦|⟧/g,
-                            '',
-                          );
-                          const bufferedPlan = activeMessageId
-                            ? executionPlanBuffer[activeMessageId] || ''
-                            : '';
-                          const baseBufferedPlan = shouldStartCapturing
-                            ? ''
-                            : bufferedPlan;
-                          executionPlanForMessage =
-                            `${baseBufferedPlan}${sanitizedChunk}`.trim();
-
-                          if (activeMessageId) {
-                            setExecutionPlanBuffer(prevBuffer => {
-                              const previousPlan =
-                                prevBuffer[activeMessageId] || '';
-                              const basePlan = shouldStartCapturing
-                                ? ''
-                                : previousPlan;
-                              const nextPlan =
-                                `${basePlan}${sanitizedChunk}`.trim();
-                              if (previousPlan === nextPlan) {
-                                return prevBuffer;
-                              }
-                              console.log(
-                                '🗂️ BUFFERING EXECUTION PLAN FROM STREAM:',
-                                {
-                                  messageId: activeMessageId,
-                                  planPreview: `${nextPlan.substring(
-                                    0,
-                                    100,
-                                  )}...`,
-                                },
-                              );
-                              return {
-                                ...prevBuffer,
-                                [activeMessageId]: nextPlan,
-                              };
-                            });
-                            setExecutionPlanLoading(prevLoading => {
-                              if (!prevLoading.has(activeMessageId)) {
-                                return prevLoading;
-                              }
-                              const newSet = new Set(prevLoading);
-                              newSet.delete(activeMessageId);
-                              return newSet;
-                            });
-                            setAutoExpandExecutionPlans(prevSet => {
-                              if (prevSet.has(activeMessageId)) {
-                                return prevSet;
-                              }
-                              const newSet = new Set(prevSet);
-                              newSet.add(activeMessageId);
-                              return newSet;
-                            });
-                          }
-
-                          setAccumulatedExecutionPlan(prevPlan => {
-                            const basePlan = shouldStartCapturing
-                              ? ''
-                              : prevPlan;
-                            return `${basePlan}${executionPlanContent}`;
-                          });
-                        }
-
-                        if (shouldStopCapturing) {
-                          console.log('✅ EXECUTION PLAN CAPTURE COMPLETE');
-                          setIsCapturingExecutionPlan(false);
-                        }
-
-                        // Remove any cached tool notifications from the content (preserves markdown like TODO lists)
-                        const cleanText =
-                          removeCachedToolNotifications(mainContent);
+                        // Remove any cached tool notifications from the content
+                        let cleanText = removeCachedToolNotifications(
+                          textPart.text,
+                        );
                         console.log(
                           'CONTENT AFTER CACHE CLEANING - original:',
-                          `${mainContent.substring(0, 100)}...`,
+                          `${textPart.text.substring(0, 100)}...`,
                           'cleaned:',
                           `${cleanText.substring(0, 100)}...`,
                         );
 
-                        // 🔧 ALWAYS accumulate to streaming output buffer (for complete history)
-                        streamingOutputBuffer += cleanText;
-                        console.log(
-                          '📦 STREAMING OUTPUT BUFFER:',
-                          streamingOutputBuffer.length,
-                          'chars total',
-                        );
+                        // 🔧 SIMPLE LOGIC: Route streaming_result based on capture state (existing logic handles markers)
+                        if (isCapturingExecutionPlan) {
+                          // 🚨 REQUEST ISOLATION: Only accept content for current request
+                          if (
+                            currentRequestIdRef.current === currentRequestId
+                          ) {
+                            console.log(
+                              '✅ CAPTURING FOR EXECUTION PLAN - Request ID matches:',
+                              `${cleanText.substring(0, 100)}...`,
+                            );
+                            // We're capturing execution plan - add this content to execution plan
+                            setAccumulatedExecutionPlan(prev => {
+                              const newContent = prev + cleanText;
+                              console.log(
+                                '📋 EXECUTION PLAN UPDATED from:',
+                                `${prev.substring(0, 50)}...`,
+                                'to:',
+                                `${newContent.substring(0, 50)}...`,
+                              );
+                              return newContent;
+                            });
+                          } else {
+                            console.log(
+                              '🚫 REJECTING EXECUTION PLAN CAPTURE - Request ID mismatch:',
+                              {
+                                current: currentRequestIdRef.current,
+                                streaming: currentRequestId,
+                                content: `${cleanText.substring(0, 50)}...`,
+                              },
+                            );
+                          }
+
+                          // Don't add to main content - this is execution plan content
+                          cleanText = '';
+                        } else {
+                          // Normal mode - add to main content
+                          console.log(
+                            '📄 ADDING TO MAIN CONTENT:',
+                            `${cleanText.substring(0, 100)}...`,
+                          );
+                        }
+
+                        // Note: accumulatedExecutionPlan will be used directly in the simplified logic below
 
                         // Respect the append flag for proper text accumulation
                         if (event.append === false) {
+                          // Start fresh with new text
                           console.log(
-                            'STARTING FRESH - clearing previous text (but keeping streaming buffer)',
+                            'STARTING FRESH - clearing previous text',
                           );
                           accumulatedText = cleanText;
                         } else {
+                          // Append to existing text - direct concatenation
+                          // The server sends properly chunked text, just concatenate without adding spaces
                           console.log(
                             'APPENDING to existing text (direct concat)',
                           );
                           accumulatedText += cleanText;
                         }
 
+                        // 🚀 SIMPLIFIED: Just pass execution plan directly to message
                         if (process.env.NODE_ENV === 'development') {
                           console.log('📄 STREAMING UPDATE:', {
                             textLength: accumulatedText.length,
-                            hasExecutionPlan:
-                              executionPlanForMessage.length > 0,
-                            executionPlanLength: executionPlanForMessage.length,
+                            hasExecutionPlan: !!accumulatedExecutionPlan,
+                            executionPlanLength:
+                              accumulatedExecutionPlan?.length || 0,
                           });
                         }
 
+                        // Clean the text content from execution plan markers
                         const cleanedTextForMessage = accumulatedText
                           .replace(/⟦[^⟧]*⟧/g, '')
                           .trim();
+                        const cleanedExecutionPlan = accumulatedExecutionPlan
+                          ? accumulatedExecutionPlan.replace(/⟦|⟧/g, '')
+                          : '';
 
                         updateStreamingMessage(
                           cleanedTextForMessage,
-                          executionPlanForMessage,
+                          cleanedExecutionPlan,
                           true,
                         );
+
+                        // 🚀 CLEAN BUFFER AFTER EACH UPDATE - prevents contamination
+                        if (cleanedExecutionPlan) {
+                          console.log(
+                            '🧹 CLEANING EXECUTION PLAN STATE AFTER UPDATE',
+                          );
+                          setAccumulatedExecutionPlan('');
+                        }
                       }
                     }
                   }
                 }
               } else if (event.kind === 'status-update') {
-                // 🎯 SHOW STATUS UPDATES IN SPINNER (agent-chat-cli pattern)
-                // Once we have streaming content, status updates show as operations
-
-                // Extract status message text if available
-                if (event.status?.message?.parts) {
-                  const textPart = event.status.message.parts.find(
-                    (p: any) => p.kind === 'text',
-                  );
-                  if (textPart && 'text' in textPart && textPart.text) {
-                    const statusText = textPart.text
-                      .trim()
-                      .split('\n')[0]
-                      .substring(0, 160);
-                    console.log('📊 STATUS UPDATE:', statusText);
-
-                    // Show in spinner notification if we have accumulated text
-                    if (accumulatedText.length > 0) {
-                      setCurrentOperation(statusText || 'Processing...');
-                      setIsInOperationalMode(true);
-                    }
-                  }
-                }
+                // Only handle status changes, don't process text content (to avoid duplication)
+                // Text content is already handled in artifact-update events
 
                 // Check if task is completed
                 if (event.status?.state === 'completed' || event.final) {
-                  console.log('✅ STATUS UPDATE: Task completed');
-                  setIsInOperationalMode(false);
-                  setCurrentOperation(null);
                   break;
                 }
               } else if (event.kind === 'task') {
@@ -3174,18 +2593,6 @@ export function AgentForgePage() {
               ),
               timestamp: new Date().toISOString(),
             });
-
-            console.log(
-              '[AGENT_FORGE_FINAL_RENDERING] 🏁 STREAM ENDED - Finishing message',
-            );
-            console.log(
-              '[AGENT_FORGE_FINAL_RENDERING] 📊 Final accumulated text length:',
-              accumulatedText.length,
-            );
-            console.log(
-              '[AGENT_FORGE_FINAL_RENDERING] 📊 Final accumulated text preview:',
-              `${accumulatedText.substring(0, 300)}...`,
-            );
 
             // Finish streaming and cleanup operational state
             finishStreamingMessage();
@@ -3633,13 +3040,7 @@ export function AgentForgePage() {
   };
 
   const renderContent = () => (
-    <Grid
-      container
-      spacing={1}
-      className={classes.mainContent}
-      wrap="nowrap"
-      style={isFullscreen ? { height: 'calc(100vh - 56px)' } : undefined}
-    >
+    <Grid container spacing={1} className={classes.mainContent} wrap="nowrap">
       {/* Chat History Sidebar - Dynamic width based on collapse state */}
       <Grid
         item
@@ -3669,8 +3070,8 @@ export function AgentForgePage() {
         }
       >
         {(apiError ||
-          visibleConnectionStatus === 'checking' ||
-          visibleConnectionStatus === 'disconnected') && (
+          connectionStatus === 'checking' ||
+          connectionStatus === 'disconnected') && (
           <Paper className={classes.errorBox}>
             <div
               style={{
@@ -3686,7 +3087,7 @@ export function AgentForgePage() {
               >
                 {apiError ? 'Connection Error' : 'Connection Status'}
               </Typography>
-              {(apiError || visibleConnectionStatus === 'disconnected') && (
+              {(apiError || connectionStatus === 'disconnected') && (
                 <IconButton
                   size="small"
                   onClick={() => {
@@ -3694,7 +3095,6 @@ export function AgentForgePage() {
                       setApiError(null);
                     } else {
                       setConnectionStatus('connected'); // Temporarily hide banner until next check
-                      setVisibleConnectionStatus('connected');
                     }
                   }}
                   style={{ color: 'inherit', padding: 2 }}
@@ -3713,11 +3113,10 @@ export function AgentForgePage() {
               }}
             >
               {apiError ||
-                (visibleConnectionStatus === 'checking'
+                (connectionStatus === 'checking'
                   ? 'Connecting to agent...'
                   : 'Agent connection failed')}
-              {(nextRetryCountdown > 0 ||
-                visibleConnectionStatus === 'checking') &&
+              {(nextRetryCountdown > 0 || connectionStatus === 'checking') &&
                 (nextRetryCountdown > 0
                   ? ` - Retrying in ${nextRetryCountdown}s...`
                   : ` - Connecting...`)}
@@ -3761,8 +3160,6 @@ export function AgentForgePage() {
                   executionPlanBufferKeys: Object.keys(executionPlanBuffer),
                   executionPlanBufferSize:
                     Object.keys(executionPlanBuffer).length,
-                  executionPlanHistorySize:
-                    Object.keys(executionPlanHistory).length,
                   sessionId: currentSessionId,
                 });
 
@@ -3786,7 +3183,6 @@ export function AgentForgePage() {
                     showLoadMoreButton={showLoadMoreButton}
                     loadMoreIncrement={LOAD_MORE_INCREMENT}
                     executionPlanBuffer={executionPlanBuffer}
-                    executionPlanHistory={executionPlanHistory}
                     autoExpandExecutionPlans={autoExpandExecutionPlans}
                     executionPlanLoading={executionPlanLoading}
                     autoScrollEnabled={autoScrollEnabled}
@@ -3912,7 +3308,7 @@ export function AgentForgePage() {
                   : 'Exit Fullscreen'
               }
             >
-              <Box component="span">
+              <span>
                 <IconButton
                   onClick={toggleFullscreen}
                   className={classes.fullscreenButton}
@@ -3924,7 +3320,7 @@ export function AgentForgePage() {
                 >
                   <FullscreenExitIcon />
                 </IconButton>
-              </Box>
+              </span>
             </Tooltip>
           </Box>
         </Box>
@@ -4018,7 +3414,7 @@ export function AgentForgePage() {
               isTyping ? 'Please wait for response to complete' : 'Fullscreen'
             }
           >
-            <Box component="span">
+            <span>
               <IconButton
                 onClick={toggleFullscreen}
                 className={classes.fullscreenButton}
@@ -4030,7 +3426,7 @@ export function AgentForgePage() {
               >
                 <FullscreenIcon />
               </IconButton>
-            </Box>
+            </span>
           </Tooltip>
         </Box>
       </Box>
