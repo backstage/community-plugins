@@ -462,7 +462,6 @@ export function AgentForgePage() {
     Record<string, string[]>
   >({});
   const [, setCurrentStreamingMessageId] = useState<string | null>(null);
-  const currentStreamingMessageIdRef = useRef<string | null>(null);
   // Track which execution plans should be auto-expanded when they appear
   const [autoExpandExecutionPlans, setAutoExpandExecutionPlans] = useState<
     Set<string>
@@ -484,8 +483,17 @@ export function AgentForgePage() {
     useState(false);
   const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] =
     useState<string>('');
-  const currentRequestIdRef = useRef<string>(''); // Track current streaming request
-  const abortControllerRef = useRef<AbortController | null>(null); // Cancel previous streams
+
+  // 🔧 FIX: Per-session streaming state to support concurrent sessions
+  interface SessionStreamingState {
+    requestId: string;
+    abortController: AbortController;
+    streamingMessageId: string | null;
+  }
+  const streamingStateBySession = useRef<Map<string, SessionStreamingState>>(
+    new Map(),
+  );
+
   const [executionPlanLoading, setExecutionPlanLoading] = useState<Set<string>>(
     new Set(),
   ); // Track loading state per message
@@ -1585,6 +1593,18 @@ export function AgentForgePage() {
           sessionExists: sessions.some(s => s.contextId === sessionId),
         });
       }
+
+      // 🔧 FIX: Clean up session-specific streaming state
+      const sessionState = streamingStateBySession.current.get(sessionId);
+      if (sessionState) {
+        // Abort any ongoing stream for this session
+        sessionState.abortController.abort();
+        streamingStateBySession.current.delete(sessionId);
+        console.log(
+          '🧹 CLEANED UP STREAMING STATE FOR DELETED SESSION:',
+          sessionId,
+        );
+      }
       const remainingSessions = sessions.filter(s => s.contextId !== sessionId);
       setSessions(remainingSessions);
 
@@ -1731,7 +1751,12 @@ export function AgentForgePage() {
         return new Set();
       });
 
-      currentStreamingMessageIdRef.current = newMessage.messageId || null;
+      // 🔧 FIX: Update session-specific streaming message ID
+      const sessionState =
+        streamingStateBySession.current.get(currentSessionId);
+      if (sessionState) {
+        sessionState.streamingMessageId = newMessage.messageId || null;
+      }
       setCurrentStreamingMessageId(newMessage.messageId || null);
 
       // 🚨 CRITICAL FIX: Reset accumulated execution plan React state (prevents previous message contamination)
@@ -1962,101 +1987,7 @@ export function AgentForgePage() {
 
       cleanedText = cleanedParts.length > 0 ? cleanedParts.join('\n\n') : text;
 
-      // Strategy 2: Remove duplicate content blocks (text appears multiple times)
-      // This handles cases where entire responses are duplicated with slight variations
-
-      // First, try to detect large-scale duplication by looking for repeated paragraphs
-      const paragraphs = cleanedText.split(/\n\n+/);
-      const seenParagraphs = new Map<string, string>(); // normalized -> original
-      const uniqueParagraphs: string[] = [];
-
-      for (const para of paragraphs) {
-        if (para.trim().length === 0) continue;
-
-        // Normalize: remove extra spaces, lowercase, remove special chars for comparison
-        const normalized = para
-          .trim()
-          .toLocaleLowerCase('en-US')
-          .replace(/\s+/g, ' ') // Collapse spaces
-          .replace(/['"]/g, '') // Remove quotes
-          .replace(/\s/g, ''); // Remove all spaces for fuzzy matching
-
-        // Check if we've already seen this content (exact match after normalization)
-        if (!seenParagraphs.has(normalized)) {
-          seenParagraphs.set(normalized, para);
-          uniqueParagraphs.push(para.trim());
-        }
-      }
-
-      // Rejoin unique paragraphs
-      if (uniqueParagraphs.length > 0) {
-        cleanedText = uniqueParagraphs.join('\n\n');
-      }
-
-      // Strategy 3: Remove duplicate sentences within the remaining text
-      // Use a smarter split that preserves list markers (1., 2., etc.)
-      const listItemPattern = /(\d+\.\s+[^\n]+)/g;
-      const listItems = cleanedText.match(listItemPattern) || [];
-
-      if (listItems.length > 0) {
-        // This is a numbered list - preserve it as-is but deduplicate whole items
-        const uniqueListItems = new Set<string>();
-        const deduplicatedItems: string[] = [];
-
-        for (const item of listItems) {
-          const normalized = item
-            .trim()
-            .toLocaleLowerCase('en-US')
-            .replace(/\s+/g, ' ');
-          if (!uniqueListItems.has(normalized)) {
-            uniqueListItems.add(normalized);
-            deduplicatedItems.push(item.trim());
-          }
-        }
-
-        cleanedText = deduplicatedItems.join('\n');
-      } else {
-        // Not a list - use sentence-level deduplication
-        const sentences = cleanedText
-          .split(/\.\s+/)
-          .filter(s => s.trim().length > 0);
-        const uniqueSentences = new Set<string>();
-        const deduplicatedSentences: string[] = [];
-
-        for (const sentence of sentences) {
-          const normalized = sentence
-            .trim()
-            .toLocaleLowerCase('en-US')
-            .replace(/['"]/g, '')
-            .replace(/\s+/g, ' ');
-
-          if (!uniqueSentences.has(normalized)) {
-            uniqueSentences.add(normalized);
-            deduplicatedSentences.push(sentence.trim());
-          }
-        }
-
-        // Rejoin sentences
-        if (deduplicatedSentences.length > 0) {
-          cleanedText = deduplicatedSentences.join('. ');
-          // Add final period if original text had one
-          if (text.trim().endsWith('.')) {
-            cleanedText += '.';
-          }
-        }
-      }
-
-      // Final cleanup: trim extra whitespace but preserve paragraph breaks
-      cleanedText = cleanedText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs
-      cleanedText = cleanedText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
-      cleanedText = cleanedText.trim();
-
-      console.log('🧹 Cleaned text:', {
-        original: text.substring(0, 100),
-        cleaned: cleanedText.substring(0, 100),
-        removed: text.length - cleanedText.length,
-      });
-
+      console.log('✅ JSON status payloads removed, returning clean text');
       return { content: cleanedText || text, hasMetadata: false };
     }
   };
@@ -2373,19 +2304,33 @@ export function AgentForgePage() {
             // 🔧 NEW: Persistent buffer for streaming output container (never reset)
             let streamingOutputBuffer = '';
 
-            // 🚨 ABORT PREVIOUS STREAMING REQUEST to prevent contamination
-            if (abortControllerRef.current) {
-              console.log('🛑 ABORTING PREVIOUS STREAMING REQUEST');
-              abortControllerRef.current.abort();
+            // 🔧 FIX: Use session-specific streaming state
+            const previousSessionState =
+              streamingStateBySession.current.get(sessionToUse);
+            if (previousSessionState) {
+              console.log(
+                '🛑 ABORTING PREVIOUS STREAMING REQUEST FOR SESSION:',
+                sessionToUse,
+              );
+              previousSessionState.abortController.abort();
             }
 
             // Generate unique request ID for this streaming session
             const currentRequestId = uuidv4();
-            currentRequestIdRef.current = currentRequestId;
-            console.log('🆔 NEW REQUEST ID:', currentRequestId);
+            console.log(
+              '🆔 NEW REQUEST ID FOR SESSION:',
+              sessionToUse,
+              '- Request:',
+              currentRequestId,
+            );
 
-            // Create new AbortController for this request
-            abortControllerRef.current = new AbortController();
+            // Create new session-specific streaming state
+            const newAbortController = new AbortController();
+            streamingStateBySession.current.set(sessionToUse, {
+              requestId: currentRequestId,
+              abortController: newAbortController,
+              streamingMessageId: null, // Will be set in addStreamingMessage
+            });
 
             // Clear execution plan state at the start of each new response
             setIsCapturingExecutionPlan(false);
@@ -2418,13 +2363,27 @@ export function AgentForgePage() {
             }
 
             for await (const event of streamIterator) {
-              // 🚨 CHECK FOR ABORT SIGNAL: Cancel processing if new request started
+              // 🔧 FIX: Check session-specific abort signal
+              const sessionState =
+                streamingStateBySession.current.get(sessionToUse);
               if (
-                abortControllerRef.current?.signal.aborted ||
-                currentRequestIdRef.current !== currentRequestId
+                !sessionState ||
+                sessionState.abortController.signal.aborted ||
+                sessionState.requestId !== currentRequestId
               ) {
+                let reason = 'Unknown';
+                if (!sessionState) {
+                  reason = 'No session state';
+                } else if (sessionState.abortController.signal.aborted) {
+                  reason = 'Aborted';
+                } else {
+                  reason = 'New request started';
+                }
                 console.log(
-                  '🛑 STREAMING ABORTED - New request started or cancelled',
+                  '🛑 STREAMING ABORTED FOR SESSION:',
+                  sessionToUse,
+                  '- Reason:',
+                  reason,
                 );
                 break;
               }
@@ -2671,7 +2630,10 @@ export function AgentForgePage() {
                       accumulatedText = finalText;
 
                       // Update message with both final text AND streamed output container AND metadata
-                      if (currentStreamingMessageIdRef.current) {
+                      // 🔧 FIX: Use session-specific streaming message ID
+                      const partialResultSessionState =
+                        streamingStateBySession.current.get(currentSessionId);
+                      if (partialResultSessionState?.streamingMessageId) {
                         setSessions(prev =>
                           prev.map(session => {
                             if (session.contextId === currentSessionId) {
@@ -2679,7 +2641,7 @@ export function AgentForgePage() {
                                 msg => {
                                   if (
                                     msg.messageId ===
-                                    currentStreamingMessageIdRef.current
+                                    partialResultSessionState.streamingMessageId
                                   ) {
                                     return {
                                       ...msg,
@@ -2735,9 +2697,15 @@ export function AgentForgePage() {
                     ) {
                       // 🚀 REAL-TIME UPDATE: Use execution_plan_update/status_update for immediate display
                       // This contains the complete plan, REPLACE existing plan (don't accumulate)
-                      if (currentRequestIdRef.current === currentRequestId) {
+                      // 🔧 FIX: Check session-specific request ID
+                      const planUpdateSessionState =
+                        streamingStateBySession.current.get(sessionToUse);
+                      if (
+                        planUpdateSessionState?.requestId === currentRequestId
+                      ) {
                         console.log(
-                          '📋 EXECUTION PLAN UPDATE - Updating display in real-time',
+                          '📋 EXECUTION PLAN UPDATE - Updating display in real-time for session:',
+                          sessionToUse,
                         );
 
                         const completePlan = textPart.text;
@@ -2746,8 +2714,11 @@ export function AgentForgePage() {
                           formatExecutionPlanText(completePlan);
 
                         // Get the active streaming message ID
+                        // 🔧 FIX: Use session-specific streaming message ID
+                        const executionPlanSessionState =
+                          streamingStateBySession.current.get(currentSessionId);
                         const activeMessageId =
-                          currentStreamingMessageIdRef.current;
+                          executionPlanSessionState?.streamingMessageId;
 
                         if (activeMessageId) {
                           console.log(
@@ -2925,8 +2896,11 @@ export function AgentForgePage() {
                           shouldStartCapturing,
                           shouldStopCapturing,
                         } = processExecutionPlanMarkers(textPart.text);
+                        // 🔧 FIX: Use session-specific streaming message ID
+                        const markerSessionState =
+                          streamingStateBySession.current.get(currentSessionId);
                         const activeMessageId =
-                          currentStreamingMessageIdRef.current;
+                          markerSessionState?.streamingMessageId;
 
                         if (shouldStartCapturing) {
                           console.log('🎯 BEGIN EXECUTION PLAN CAPTURE');
