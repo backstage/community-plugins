@@ -22,19 +22,22 @@ import {
   Task,
   AgentCard,
 } from '../a2a/schema';
-import { IdentityApi } from '@backstage/core-plugin-api';
+import { IdentityApi, OpenIdConnectApi } from '@backstage/core-plugin-api';
 
 export interface IChatbotApiOptions {
   requestTimeout?: number;
+  useOpenIDToken?: boolean;
 }
 
 export class ChatbotApi {
   private client: A2AClient | null = null;
   private contextId: string;
   private identityApi: IdentityApi;
+  private openIdConnectApi: OpenIdConnectApi;
+  private useOpenIDToken: boolean;
   constructor(
     private apiBaseUrl: string,
-    options: { identityApi: IdentityApi },
+    options: { identityApi: IdentityApi; openIdConnectApi: OpenIdConnectApi },
     apiOptions?: IChatbotApiOptions,
   ) {
     this.contextId = '';
@@ -42,12 +45,22 @@ export class ChatbotApi {
       throw new Error('Agent URL is not provided');
     }
     this.identityApi = options.identityApi;
+    this.openIdConnectApi = options.openIdConnectApi;
+    this.useOpenIDToken = apiOptions?.useOpenIDToken ?? false; // default to false which means use IdentityApi.getCredentials() (backstage token)
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
     } catch (error) {
       throw new Error('Error connecting to agent');
     }
+  }
+
+  private async getToken(): Promise<string | undefined> {
+    if (this.useOpenIDToken) {
+      return await this.openIdConnectApi.getIdToken();
+    }
+    const credentials = await this.identityApi.getCredentials();
+    return credentials.token;
   }
 
   public async submitA2ATask(
@@ -57,7 +70,7 @@ export class ChatbotApi {
   ) {
     try {
       const msgId = uuidv4();
-      const { token } = await this.identityApi.getCredentials();
+      const token = await this.getToken();
 
       const sendParams: MessageSendParams = {
         message: {
@@ -104,7 +117,7 @@ export class ChatbotApi {
           kind: 'message',
         },
       };
-      const { token } = await this.identityApi.getCredentials();
+      const token = await this.getToken();
 
       // Use session contextId if provided, otherwise use internal contextId
       const contextToUse = sessionContextId || this.contextId;

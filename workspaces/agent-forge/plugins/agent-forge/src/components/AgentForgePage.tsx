@@ -23,10 +23,16 @@ import React, {
 } from 'react';
 import { Content, Page } from '@backstage/core-components';
 import {
+  ApiRef,
   configApiRef,
   identityApiRef,
+  OpenIdConnectApi,
+  ProfileInfoApi,
+  BackstageIdentityApi,
+  SessionApi,
   useApi,
   alertApiRef,
+  createApiRef,
 } from '@backstage/core-plugin-api';
 import {
   Box,
@@ -287,6 +293,10 @@ export function AgentForgePage() {
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
+  const authApiId =
+    config.getOptionalString('agentForge.authApiId') ?? 'auth.duo.oidc'; // default to auth.duo.oidc
+  const useOpenIDToken =
+    config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
@@ -326,6 +336,14 @@ export function AgentForgePage() {
     timestamp:
       config.getOptionalString('agentForge.fontSize.timestamp') || '0.75rem',
   };
+
+  // OpenIdConnectApiRef
+  const OpenIdConnectApiRef: ApiRef<
+    OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
+  > = createApiRef({
+    id: authApiId,
+  });
+  const openIdConnectApi = useApi(OpenIdConnectApiRef);
 
   // Create initial session factory
   const createInitialSession = useCallback(
@@ -898,12 +916,18 @@ export function AgentForgePage() {
         '🔧 Agent is reachable - initializing ChatbotApi with URL:',
         backendUrl,
       );
+      console.log(
+        '🔧 Using Bearer Token type:',
+        useOpenIDToken,
+        ' with authApiId:',
+        authApiId,
+      );
 
       try {
         const api = new ChatbotApi(
           backendUrl,
-          { identityApi },
-          { requestTimeout },
+          { identityApi, openIdConnectApi },
+          { requestTimeout, useOpenIDToken },
         );
 
         // Wrap API methods to catch any remaining A2A client exceptions

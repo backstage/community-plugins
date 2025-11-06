@@ -64,6 +64,18 @@ export interface Config {
     enableStreaming?: boolean;
 
     /**
+     * The API ID for the OpenIdConnectApi (default: 'auth.duo.oidc')
+     * @visibility frontend
+     */
+    authApiId?: string;
+
+    /**
+     * Whether to use the OpenIdConnectApi.getIdToken() method for authentication (default: false)
+     * @visibility frontend
+     */
+    useOpenIDToken?: boolean;
+
+    /**
      * The header title to display (default: bot name)
      * @visibility frontend
      */
