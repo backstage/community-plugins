@@ -17,6 +17,7 @@
   - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
+  - [FAQ](#faq)
 
 ## Plugin Owner Expectations
 
@@ -201,3 +202,81 @@ When patching an older release, follow the steps below to ensure the correct wor
 7. Open a PR with the `CHANGELOG` additions to `backstage/community-plugins` main branch:
    - This is necessary for history to be clear on the latest branch.
    - You can use `git cherry-pick --no-commit workspace/${workspace}` and only commit the `CHANGELOG` files.
+
+-----
+
+## FAQ
+
+Here are some common issues and questions that contributors often face.
+
+### The bot says I'm missing a changeset. How do I add one?
+
+If your change affects any code inside a `plugins/` or `packages/` directory, it needs a changeset file to document the change for the release.
+
+1.  Go to the root of the `community-plugins` repository .
+
+2.  Run the command: `yarn dlx @changesets/cli`
+3.  Follow the prompts:
+      * Use the arrow keys and spacebar to select the package(s) you changed.
+      * Select the version bump type (usually `patch` for bug fixes, `minor` for features).
+      * Write a short summary of your change (e.g., `fix(jenkins): Correct buildJob parameter passing`).
+4.  A new file like `.changeset/small-turtles-cry.md` will be created. Add and commit this file to your PR.
+
+### My PR is full of unrelated files ("Knip" changes, `yarn.lock` conflicts)\!
+
+This happens when your branch is out-of-date with the main `main` branch. You need to rebase your branch to include the latest changes *before* your commits.
+
+1.  Make sure your local `main` branch is up-to-date:
+    ```bash
+    git checkout main
+    git pull origin main
+    ```
+2.  Switch back to your feature branch:
+    ```bash
+    git checkout my-feature-branch
+    ```
+3.  Rebase your branch on top of `main`:
+    ```bash
+    git rebase main
+    ```
+4.  Fix any merge conflicts that come up.
+5.  Force-push your rebased branch. This will update your PR with a clean history:
+    ```bash
+    git push --force-with-lease
+    ```
+
+### A GitHub check is stuck "waiting for status to be reported".
+
+This is a common GitHub glitch. The easiest way to fix it is to close your Pull Request and then immediately reopen it. This forces GitHub to re-trigger the checks.
+
+### The "API Report" check is failing.
+
+This means you changed an exported type, function, or class, and the API documentation needs to be updated.
+
+1.  Run `yarn backstage-cli api-report:ci` from the root of the repo.
+2.  This will automatically update the `api-report.md` file for your plugin.
+3.  Commit this updated file to your PR.
+
+### My build is failing with errors about `package.json` metadata.
+
+The `package.json` for your plugin might be missing required fields or have incorrect values.
+
+1.  Go to your plugin's workspace directory (e.g., `workspaces/my-plugin/`).
+2.  Run `yarn backstage-cli repo fix --publish`
+3.  This will check for and automatically fix common `package.json` issues. Commit any changes.
+
+### My CI workflow is failing due to linting errors.
+
+This means your code doesn't match the project's automatic formatting rules.
+
+1.  Run `yarn lint --fix` from the root of the repo. This will automatically fix most linting errors.
+2.  Commit the changes that the linter made to your files.
+
+### How do I create a new plugin?
+
+1.  From the root of the `community-plugins` repository, run the new plugin creation script:
+    ```bash
+    yarn new
+    ```
+2.  Follow the interactive prompts. It will ask you for the plugin name, what kind of plugin it is (frontend, backend, etc.), and will create all the boilerplate files for you in a new folder under `workspaces/`.
+3.  Commit all the newly created files and open a PR.
