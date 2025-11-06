@@ -64,6 +64,13 @@ export interface Config {
     enableStreaming?: boolean;
 
     /**
+     * Token type to use for authentication (default: 'backstage_token')
+     * Options: 'id_token' | 'backstage_token'
+     * @visibility frontend
+     */
+    tokenType?: string;
+
+    /**
      * The header title to display (default: bot name)
      * @visibility frontend
      */
