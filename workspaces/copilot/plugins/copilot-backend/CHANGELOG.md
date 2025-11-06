@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.1
+
+### Patch Changes
+
+- 3fd5298: Fixed an issue causing incorrect metrics to be displayed due to duplicate database entries for the same day.
+
 ## 0.15.0
 
 ### Minor Changes
