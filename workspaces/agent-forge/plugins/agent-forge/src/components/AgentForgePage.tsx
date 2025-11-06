@@ -23,10 +23,16 @@ import React, {
 } from 'react';
 import { Content, Page } from '@backstage/core-components';
 import {
+  ApiRef,
   configApiRef,
   identityApiRef,
+  OpenIdConnectApi,
+  ProfileInfoApi,
+  BackstageIdentityApi,
+  SessionApi,
   useApi,
   alertApiRef,
+  createApiRef,
 } from '@backstage/core-plugin-api';
 import {
   Box,
@@ -45,7 +51,7 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { makeStyles } from '@material-ui/core/styles';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ChatbotApi } from '../apis';
+import { ChatbotApi, IdentityTokenType } from '../apis';
 import {
   DEFAULT_BOT_CONFIG,
   DEFAULT_SUGGESTIONS,
@@ -60,6 +66,13 @@ import { ChatSessionSidebar } from './ChatSessionSidebar';
 import { useTokenAuthentication } from './ChatAssistantToken';
 // @ts-ignore
 import packageInfo from '../../package.json';
+
+// DUO SSO
+const duoOIDCAuthApiRef: ApiRef<
+  OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
+> = createApiRef({
+  id: 'auth.duo.oidc',
+});
 
 const useStyles = makeStyles(theme => ({
   errorBox: {
@@ -266,6 +279,7 @@ export function AgentForgePage() {
   const classes = useStyles();
   const config = useApi(configApiRef);
   const identityApi = useApi(identityApiRef);
+  const duoOIDCAuthApi = useApi(duoOIDCAuthApiRef);
   const alertApi = useApi(alertApiRef);
 
   // Performance optimization: progressive message loading to prevent DOM bloat
@@ -287,6 +301,8 @@ export function AgentForgePage() {
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
+  const tokenType = (config.getOptionalString('agentForge.tokenType') ??
+    'backstage_token') as IdentityTokenType;
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
@@ -898,12 +914,13 @@ export function AgentForgePage() {
         '🔧 Agent is reachable - initializing ChatbotApi with URL:',
         backendUrl,
       );
+      console.log('🔧 Using Bearer Token type:', tokenType);
 
       try {
         const api = new ChatbotApi(
           backendUrl,
-          { identityApi },
-          { requestTimeout },
+          { identityApi: identityApi, openIdConnectApi: duoOIDCAuthApi },
+          { requestTimeout, tokenType },
         );
 
         // Wrap API methods to catch any remaining A2A client exceptions

@@ -22,19 +22,24 @@ import {
   Task,
   AgentCard,
 } from '../a2a/schema';
-import { IdentityApi } from '@backstage/core-plugin-api';
+import { IdentityApi, OpenIdConnectApi } from '@backstage/core-plugin-api';
+
+export type IdentityTokenType = 'id_token' | 'backstage_token';
 
 export interface IChatbotApiOptions {
   requestTimeout?: number;
+  tokenType?: IdentityTokenType;
 }
 
 export class ChatbotApi {
   private client: A2AClient | null = null;
   private contextId: string;
   private identityApi: IdentityApi;
+  private openIdConnectApi: OpenIdConnectApi;
+  private tokenType: IdentityTokenType;
   constructor(
     private apiBaseUrl: string,
-    options: { identityApi: IdentityApi },
+    options: { identityApi: IdentityApi; openIdConnectApi: OpenIdConnectApi },
     apiOptions?: IChatbotApiOptions,
   ) {
     this.contextId = '';
@@ -42,12 +47,23 @@ export class ChatbotApi {
       throw new Error('Agent URL is not provided');
     }
     this.identityApi = options.identityApi;
+    this.openIdConnectApi = options.openIdConnectApi;
+    this.tokenType =
+      apiOptions?.tokenType ?? ('backstage_token' as IdentityTokenType); // default to backstage_token
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
     } catch (error) {
       throw new Error('Error connecting to agent');
     }
+  }
+
+  private async getToken(): Promise<string | undefined> {
+    if (this.tokenType === 'id_token') {
+      return await this.openIdConnectApi.getIdToken();
+    } // backstage_token
+    const credentials = await this.identityApi.getCredentials();
+    return credentials.token;
   }
 
   public async submitA2ATask(
@@ -57,7 +73,7 @@ export class ChatbotApi {
   ) {
     try {
       const msgId = uuidv4();
-      const { token } = await this.identityApi.getCredentials();
+      const token = await this.getToken();
 
       const sendParams: MessageSendParams = {
         message: {
@@ -104,7 +120,7 @@ export class ChatbotApi {
           kind: 'message',
         },
       };
-      const { token } = await this.identityApi.getCredentials();
+      const token = await this.getToken();
 
       // Use session contextId if provided, otherwise use internal contextId
       const contextToUse = sessionContextId || this.contextId;
