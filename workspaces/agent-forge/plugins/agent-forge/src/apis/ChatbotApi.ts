@@ -24,11 +24,9 @@ import {
 } from '../a2a/schema';
 import { IdentityApi, OpenIdConnectApi } from '@backstage/core-plugin-api';
 
-export type IdentityTokenType = 'id_token' | 'backstage_token';
-
 export interface IChatbotApiOptions {
   requestTimeout?: number;
-  tokenType?: IdentityTokenType;
+  useOpenIDToken?: boolean;
 }
 
 export class ChatbotApi {
@@ -36,7 +34,7 @@ export class ChatbotApi {
   private contextId: string;
   private identityApi: IdentityApi;
   private openIdConnectApi: OpenIdConnectApi;
-  private tokenType: IdentityTokenType;
+  private useOpenIDToken: boolean;
   constructor(
     private apiBaseUrl: string,
     options: { identityApi: IdentityApi; openIdConnectApi: OpenIdConnectApi },
@@ -48,8 +46,7 @@ export class ChatbotApi {
     }
     this.identityApi = options.identityApi;
     this.openIdConnectApi = options.openIdConnectApi;
-    this.tokenType =
-      apiOptions?.tokenType ?? ('backstage_token' as IdentityTokenType); // default to backstage_token
+    this.useOpenIDToken = apiOptions?.useOpenIDToken ?? false; // default to false which means use IdentityApi.getCredentials() (backstage token)
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
@@ -59,9 +56,9 @@ export class ChatbotApi {
   }
 
   private async getToken(): Promise<string | undefined> {
-    if (this.tokenType === 'id_token') {
+    if (this.useOpenIDToken) {
       return await this.openIdConnectApi.getIdToken();
-    } // backstage_token
+    }
     const credentials = await this.identityApi.getCredentials();
     return credentials.token;
   }

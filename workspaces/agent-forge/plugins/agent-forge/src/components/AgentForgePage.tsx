@@ -51,7 +51,7 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { makeStyles } from '@material-ui/core/styles';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ChatbotApi, IdentityTokenType } from '../apis';
+import { ChatbotApi } from '../apis';
 import {
   DEFAULT_BOT_CONFIG,
   DEFAULT_SUGGESTIONS,
@@ -66,13 +66,6 @@ import { ChatSessionSidebar } from './ChatSessionSidebar';
 import { useTokenAuthentication } from './ChatAssistantToken';
 // @ts-ignore
 import packageInfo from '../../package.json';
-
-// DUO SSO
-const duoOIDCAuthApiRef: ApiRef<
-  OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
-> = createApiRef({
-  id: 'auth.duo.oidc',
-});
 
 const useStyles = makeStyles(theme => ({
   errorBox: {
@@ -279,7 +272,6 @@ export function AgentForgePage() {
   const classes = useStyles();
   const config = useApi(configApiRef);
   const identityApi = useApi(identityApiRef);
-  const duoOIDCAuthApi = useApi(duoOIDCAuthApiRef);
   const alertApi = useApi(alertApiRef);
 
   // Performance optimization: progressive message loading to prevent DOM bloat
@@ -301,8 +293,10 @@ export function AgentForgePage() {
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
-  const tokenType = (config.getOptionalString('agentForge.tokenType') ??
-    'backstage_token') as IdentityTokenType;
+  const authApiId =
+    config.getOptionalString('agentForge.authApiId') ?? 'auth.duo.oidc'; // default to auth.duo.oidc
+  const useOpenIDToken =
+    config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
@@ -342,6 +336,14 @@ export function AgentForgePage() {
     timestamp:
       config.getOptionalString('agentForge.fontSize.timestamp') || '0.75rem',
   };
+
+  // OpenIdConnectApiRef
+  const OpenIdConnectApiRef: ApiRef<
+    OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
+  > = createApiRef({
+    id: authApiId,
+  });
+  const openIdConnectApi = useApi(OpenIdConnectApiRef);
 
   // Create initial session factory
   const createInitialSession = useCallback(
@@ -914,13 +916,18 @@ export function AgentForgePage() {
         '🔧 Agent is reachable - initializing ChatbotApi with URL:',
         backendUrl,
       );
-      console.log('🔧 Using Bearer Token type:', tokenType);
+      console.log(
+        '🔧 Using Bearer Token type:',
+        useOpenIDToken,
+        ' with authApiId:',
+        authApiId,
+      );
 
       try {
         const api = new ChatbotApi(
           backendUrl,
-          { identityApi: identityApi, openIdConnectApi: duoOIDCAuthApi },
-          { requestTimeout, tokenType },
+          { identityApi, openIdConnectApi },
+          { requestTimeout, useOpenIDToken },
         );
 
         // Wrap API methods to catch any remaining A2A client exceptions
