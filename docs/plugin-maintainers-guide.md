@@ -247,7 +247,7 @@ This happens when your branch is out-of-date with the main `main` branch. You ne
 
 ### A GitHub check is stuck "waiting for status to be reported".
 
-This is a common GitHub glitch. The easiest way to fix it is to close your Pull Request and then immediately reopen it. This forces GitHub to re-trigger the checks.
+The easiest way to fix it is to close your Pull Request and then immediately reopen it. This forces GitHub to re-trigger the checks.
 
 ### The "API Report" check is failing.
 
