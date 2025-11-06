@@ -366,6 +366,15 @@ export class A2AClient {
       id: clientRequestId,
     };
 
+    // 🔍 LOG THE QUERY BEING SENT TO THE BACKEND
+    console.log('[AGENT_FORGE_FINAL_RENDERING] 📤 SENDING QUERY TO BACKEND:', {
+      endpoint: endpoint,
+      method: 'message/stream',
+      query: params.message?.parts?.[0]?.text || '(no text found)',
+      contextId: params.message?.contextId || '(new conversation)',
+      requestId: clientRequestId,
+    });
+
     const response = await this._fetchStreamNoTimeout(endpoint, {
       method: 'POST',
       headers: {
@@ -375,6 +384,15 @@ export class A2AClient {
       },
       body: JSON.stringify(rpcRequest),
     });
+
+    console.log(
+      '[AGENT_FORGE_FINAL_RENDERING] ✅ RESPONSE RECEIVED FROM BACKEND:',
+      {
+        status: response.status,
+        statusText: response.statusText,
+        contentType: response.headers.get('Content-Type'),
+      },
+    );
 
     if (!response.ok) {
       // Check for 504 Gateway Timeout first

@@ -528,7 +528,7 @@ export const ChatContainer = memo(function ChatContainer({
       )}
 
       {/* Load More Button - appears when scrolling up, shows "No More Messages" when all loaded */}
-      {showLoadMoreButton && !autoScrollEnabled && (
+      {showLoadMoreButton && (
         <div className={classes.loadingIndicator}>
           <Tooltip
             title={(() => {

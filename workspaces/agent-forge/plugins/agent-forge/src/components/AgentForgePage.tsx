@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => ({
     lineHeight: 1.3,
   },
   mainContent: {
-    height: '100%',
+    height: 'calc(100vh - 80px)',
     overflow: 'hidden',
     margin: 0,
     width: '100%',
@@ -183,6 +183,11 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     overflow: 'hidden',
     minHeight: 0,
+    height: '100%',
+    padding: `${theme.spacing(2)}px !important`,
+    '&:last-child': {
+      paddingBottom: `${theme.spacing(2)}px !important`,
+    },
   },
   fullscreenButton: {
     color: '#FFFFFF',
@@ -301,9 +306,16 @@ export function AgentForgePage() {
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
     config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
+  const disconnectionDelayMs =
+    config.getOptionalNumber('agentForge.disconnectionDelayMs') || 3000;
 
   // Config validation logs
   console.log('Agent Forge Config - Streaming:', enableStreaming);
+  console.log(
+    'Agent Forge Config - Disconnection Delay:',
+    disconnectionDelayMs,
+    'ms',
+  );
   const headerTitle =
     config.getOptionalString('agentForge.headerTitle') || botName;
   const headerSubtitle =
@@ -419,7 +431,7 @@ export function AgentForgePage() {
       connectionStatusTimeoutRef.current = setTimeout(() => {
         setVisibleConnectionStatus('disconnected');
         connectionStatusTimeoutRef.current = null;
-      }, 3000);
+      }, disconnectionDelayMs);
     } else {
       setVisibleConnectionStatus(connectionStatus);
     }
@@ -430,7 +442,7 @@ export function AgentForgePage() {
         connectionStatusTimeoutRef.current = null;
       }
     };
-  }, [connectionStatus]);
+  }, [connectionStatus, disconnectionDelayMs]);
   const [nextRetryCountdown, setNextRetryCountdown] = useState<number>(0);
   const [loadedMessageCount, setLoadedMessageCount] = useState(
     DEFAULT_MESSAGE_COUNT,
@@ -1445,6 +1457,37 @@ export function AgentForgePage() {
           sessionsWithDates[0]?.contextId ||
           initialSession.contextId;
         setCurrentSessionId(validSessionId);
+
+        // 🔧 RESTORE execution plan buffer from storage
+        if (data.executionPlanBuffer) {
+          console.log(
+            '📦 RESTORING EXECUTION PLAN BUFFER:',
+            Object.keys(data.executionPlanBuffer).length,
+            'plans',
+          );
+          setExecutionPlanBuffer(data.executionPlanBuffer);
+        }
+
+        // 🔧 RESTORE execution plan history from storage
+        if (data.executionPlanHistory) {
+          console.log(
+            '📦 RESTORING EXECUTION PLAN HISTORY:',
+            Object.keys(data.executionPlanHistory).length,
+            'histories',
+          );
+          setExecutionPlanHistory(data.executionPlanHistory);
+        }
+
+        // 🔧 RESTORE auto-expand state from storage
+        if (data.autoExpandExecutionPlans) {
+          console.log(
+            '📦 RESTORING AUTO-EXPAND STATE:',
+            data.autoExpandExecutionPlans.length,
+            'plans',
+          );
+          setAutoExpandExecutionPlans(new Set(data.autoExpandExecutionPlans));
+        }
+
         setSuggestions(initialSuggestions);
         setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
         setShowLoadMoreButton(false);
@@ -1474,12 +1517,21 @@ export function AgentForgePage() {
       const data: ChatStorage = {
         sessions,
         currentSessionId,
+        executionPlanBuffer, // 🔧 PERSIST execution plans
+        executionPlanHistory, // 🔧 PERSIST execution plan history
+        autoExpandExecutionPlans: Array.from(autoExpandExecutionPlans), // 🔧 PERSIST auto-expand state
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       // console.warn('Failed to save chat history to storage:', error);
     }
-  }, [sessions, currentSessionId]);
+  }, [
+    sessions,
+    currentSessionId,
+    executionPlanBuffer,
+    executionPlanHistory,
+    autoExpandExecutionPlans,
+  ]);
 
   // Create new session
   const createNewSession = useCallback(() => {
@@ -1860,12 +1912,55 @@ export function AgentForgePage() {
       // Not pure JSON - might be text with embedded JSON
       console.log('🧹 Cleaning text with potential embedded JSON');
 
-      // Strategy 1: Remove JSON objects embedded in the text
-      // Matches patterns like: text{"status":"completed","message":"..."}text
-      let cleanedText = text.replace(
-        /\{"status"\s*:\s*"[^"]+"\s*,\s*"message"\s*:\s*"[^"]+"\}/g,
-        '',
-      );
+      // Strategy 1: Remove JSON status payloads embedded in the text
+      // Same logic as agent-chat-cli: find and remove {"status":"...","message":"..."}
+      let cleanedText = text;
+      const cleanedParts: string[] = [];
+      let remaining = text;
+
+      while (remaining.includes('{"status":')) {
+        const beforeIndex = remaining.indexOf('{"status":');
+        const before = remaining.substring(0, beforeIndex);
+
+        if (before.trim()) {
+          cleanedParts.push(before.trim());
+        }
+
+        // Find the matching closing brace for the JSON object
+        let braceCount = 1;
+        let braceIndex = -1;
+        const after = remaining.substring(beforeIndex + 10); // Skip '{"status":'
+
+        for (let i = 0; i < after.length; i++) {
+          if (after[i] === '{') {
+            braceCount++;
+          } else if (after[i] === '}') {
+            braceCount--;
+            if (braceCount === 0) {
+              braceIndex = i;
+              break;
+            }
+          }
+        }
+
+        if (braceIndex === -1) {
+          // No matching brace found, keep remaining text
+          if (remaining.trim() && remaining.trim() !== text.trim()) {
+            cleanedParts.push(remaining.trim());
+          }
+          break;
+        }
+
+        // Skip the JSON object and continue with what's after
+        remaining = after.substring(braceIndex + 1);
+      }
+
+      // Add any remaining text after last JSON
+      if (remaining.trim()) {
+        cleanedParts.push(remaining.trim());
+      }
+
+      cleanedText = cleanedParts.length > 0 ? cleanedParts.join('\n\n') : text;
 
       // Strategy 2: Remove duplicate content blocks (text appears multiple times)
       // This handles cases where entire responses are duplicated with slight variations
@@ -1984,25 +2079,62 @@ export function AgentForgePage() {
 
               // 🎯 PARSE JSON RESPONSE FOR METADATA FIELDS AND CLEAN DUPLICATES
               const messageText = streamingMessage.text || '';
-              const { content, metadataRequest, hasMetadata } =
-                parseJsonResponseForMetadata(messageText);
+              console.log(
+                '[AGENT_FORGE_FINAL_RENDERING] 🧹 BEFORE CLEANING - Text length:',
+                messageText.length,
+              );
+              console.log(
+                '[AGENT_FORGE_FINAL_RENDERING] 🧹 BEFORE CLEANING - Text preview:',
+                `${messageText.substring(0, 300)}...`,
+              );
 
-              // Update message with cleaned content (removes duplicate JSON, etc.)
-              streamingMessage.text = content;
-
-              if (hasMetadata && metadataRequest) {
+              // Skip aggressive cleaning if this message has partial_result (already clean from backend)
+              if ((streamingMessage as any).skipCleaning) {
                 console.log(
-                  '✨ Converting JSON response to metadata form:',
-                  metadataRequest,
+                  '[AGENT_FORGE_FINAL_RENDERING] ⏭️ SKIPPING CLEANING - partial_result is already clean',
                 );
-                streamingMessage.metadataRequest = metadataRequest;
+                // Don't clean, text is already complete and correct
+              } else {
+                const { content, metadataRequest, hasMetadata } =
+                  parseJsonResponseForMetadata(messageText);
+
+                console.log(
+                  '[AGENT_FORGE_FINAL_RENDERING] 🧹 AFTER CLEANING - Content length:',
+                  content.length,
+                );
+                console.log(
+                  '[AGENT_FORGE_FINAL_RENDERING] 🧹 AFTER CLEANING - Content preview:',
+                  `${content.substring(0, 300)}...`,
+                );
+                console.log(
+                  '[AGENT_FORGE_FINAL_RENDERING] 🧹 Text was',
+                  messageText.length > content.length
+                    ? 'TRUNCATED'
+                    : 'unchanged',
+                );
+
+                // Update message with cleaned content (removes duplicate JSON, etc.)
+                streamingMessage.text = content;
+
+                if (hasMetadata && metadataRequest) {
+                  console.log(
+                    '✨ Converting JSON response to metadata form:',
+                    metadataRequest,
+                  );
+                  streamingMessage.metadataRequest = metadataRequest;
+                }
               }
+
               if (process.env.NODE_ENV === 'development') {
-                console.log('🏁 FINISHED STREAMING MESSAGE:', {
-                  messageId: streamingMessage.messageId,
-                  totalStreamingFound: allStreamingMessages.length,
-                  allStreamingIds: allStreamingMessages.map(m => m.messageId),
-                });
+                console.log(
+                  '[AGENT_FORGE_FINAL_RENDERING] 🏁 FINISHED STREAMING MESSAGE:',
+                  {
+                    messageId: streamingMessage.messageId,
+                    finalTextLength: streamingMessage.text?.length,
+                    skippedCleaning:
+                      (streamingMessage as any).skipCleaning || false,
+                  },
+                );
               }
 
               // 🔧 CRITICAL FIX: Store accumulated execution plan in buffer at END of streaming
@@ -2238,6 +2370,8 @@ export function AgentForgePage() {
 
             let lastContextId: string | undefined;
             let accumulatedText = '';
+            // 🔧 NEW: Persistent buffer for streaming output container (never reset)
+            let streamingOutputBuffer = '';
 
             // 🚨 ABORT PREVIOUS STREAMING REQUEST to prevent contamination
             if (abortControllerRef.current) {
@@ -2263,6 +2397,13 @@ export function AgentForgePage() {
             // Stream responses in real-time using SSE
             let streamIterator;
             try {
+              console.log('[AGENT_FORGE_FINAL_RENDERING] 📨 USER QUERY:', {
+                query: inputText,
+                isNewContext: !workingSession?.contextId,
+                contextId: workingSession?.contextId || '(new)',
+                backendUrl: chatbotApi ? 'configured' : 'NOT configured',
+              });
+
               streamIterator = chatbotApi.submitA2ATaskStream(
                 !workingSession?.contextId,
                 inputText,
@@ -2470,6 +2611,120 @@ export function AgentForgePage() {
                       // agent-chat-cli ignores this completely - just continue
                       console.log(
                         '⏭️ IGNORING execution_plan_streaming (agent-chat-cli pattern)',
+                      );
+                      continue;
+                    }
+
+                    // 🎯 HANDLE partial_result - Complete final accumulated text from backend
+                    if (event.artifact?.name === 'partial_result') {
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 🎯 ARTIFACT DETECTED - Using as final complete text',
+                      );
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 📄 Content length:',
+                        textPart.text.length,
+                        'chars',
+                      );
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 📄 Content preview:',
+                        `${textPart.text.substring(0, 200)}...`,
+                      );
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 📄 Full text:',
+                        textPart.text,
+                      );
+
+                      // 🔧 FIXED: Use persistent streaming output buffer (not accumulatedText which gets reset)
+                      const previousStreamedOutput =
+                        streamingOutputBuffer || accumulatedText;
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 💾 Saving streamed output:',
+                        previousStreamedOutput.length,
+                        'chars',
+                      );
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 📊 Buffer comparison:',
+                        {
+                          streamingBuffer: streamingOutputBuffer.length,
+                          accumulatedText: accumulatedText.length,
+                          using: streamingOutputBuffer
+                            ? 'streamingBuffer'
+                            : 'accumulatedText',
+                        },
+                      );
+
+                      // Parse partial_result for structured metadata (dynamic forms)
+                      const { content, metadataRequest, hasMetadata } =
+                        parseJsonResponseForMetadata(textPart.text);
+
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 🎨 Parsed response:',
+                        {
+                          hasMetadata,
+                          contentLength: content.length,
+                          metadataFields: metadataRequest?.fields?.length || 0,
+                        },
+                      );
+
+                      // Use the extracted content (not the raw JSON)
+                      const finalText = content;
+                      accumulatedText = finalText;
+
+                      // Update message with both final text AND streamed output container AND metadata
+                      if (currentStreamingMessageIdRef.current) {
+                        setSessions(prev =>
+                          prev.map(session => {
+                            if (session.contextId === currentSessionId) {
+                              const updatedMessages = session.messages.map(
+                                msg => {
+                                  if (
+                                    msg.messageId ===
+                                    currentStreamingMessageIdRef.current
+                                  ) {
+                                    return {
+                                      ...msg,
+                                      text: finalText,
+                                      streamedOutput: previousStreamedOutput,
+                                      metadataRequest: hasMetadata
+                                        ? metadataRequest
+                                        : undefined,
+                                      skipCleaning: true,
+                                      hasFinalResult: true, // Mark that partial_result was received
+                                      isStreaming: true, // Keep streaming flag for updateStreamingMessage
+                                    };
+                                  }
+                                  return msg;
+                                },
+                              );
+                              return { ...session, messages: updatedMessages };
+                            }
+                            return session;
+                          }),
+                        );
+
+                        console.log(
+                          '[AGENT_FORGE_FINAL_RENDERING] 📦 Streamed output stored in separate container (collapsed)',
+                        );
+                        console.log(
+                          '[AGENT_FORGE_FINAL_RENDERING] 📄 Final text set as main content',
+                        );
+                        if (hasMetadata) {
+                          console.log(
+                            '[AGENT_FORGE_FINAL_RENDERING] 🎨 Metadata form fields prepared for dynamic UI',
+                          );
+                        }
+                      }
+
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] ✅ Message updated with final text',
+                      );
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 🔍 Final text length:',
+                        finalText.length,
+                      );
+                      console.log(
+                        '[AGENT_FORGE_FINAL_RENDERING] 🔍 Streamed output length:',
+                        previousStreamedOutput.length,
                       );
                       continue;
                     }
@@ -2767,10 +3022,18 @@ export function AgentForgePage() {
                           `${cleanText.substring(0, 100)}...`,
                         );
 
+                        // 🔧 ALWAYS accumulate to streaming output buffer (for complete history)
+                        streamingOutputBuffer += cleanText;
+                        console.log(
+                          '📦 STREAMING OUTPUT BUFFER:',
+                          streamingOutputBuffer.length,
+                          'chars total',
+                        );
+
                         // Respect the append flag for proper text accumulation
                         if (event.append === false) {
                           console.log(
-                            'STARTING FRESH - clearing previous text',
+                            'STARTING FRESH - clearing previous text (but keeping streaming buffer)',
                           );
                           accumulatedText = cleanText;
                         } else {
@@ -2937,6 +3200,18 @@ export function AgentForgePage() {
               ),
               timestamp: new Date().toISOString(),
             });
+
+            console.log(
+              '[AGENT_FORGE_FINAL_RENDERING] 🏁 STREAM ENDED - Finishing message',
+            );
+            console.log(
+              '[AGENT_FORGE_FINAL_RENDERING] 📊 Final accumulated text length:',
+              accumulatedText.length,
+            );
+            console.log(
+              '[AGENT_FORGE_FINAL_RENDERING] 📊 Final accumulated text preview:',
+              `${accumulatedText.substring(0, 300)}...`,
+            );
 
             // Finish streaming and cleanup operational state
             finishStreamingMessage();
@@ -3384,7 +3659,13 @@ export function AgentForgePage() {
   };
 
   const renderContent = () => (
-    <Grid container spacing={1} className={classes.mainContent} wrap="nowrap">
+    <Grid
+      container
+      spacing={1}
+      className={classes.mainContent}
+      wrap="nowrap"
+      style={isFullscreen ? { height: 'calc(100vh - 56px)' } : undefined}
+    >
       {/* Chat History Sidebar - Dynamic width based on collapse state */}
       <Grid
         item

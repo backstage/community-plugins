@@ -21,7 +21,14 @@
 export interface MetadataField {
   name: string;
   label?: string;
-  type?: 'text' | 'number' | 'email' | 'password' | 'textarea' | 'select' | 'boolean';
+  type?:
+    | 'text'
+    | 'number'
+    | 'email'
+    | 'password'
+    | 'textarea'
+    | 'select'
+    | 'boolean';
   required?: boolean;
   description?: string;
   placeholder?: string;
@@ -65,4 +72,7 @@ export interface Message {
   isStreaming?: boolean; // Add streaming state support
   metadataRequest?: MetadataRequest; // CopilotKit-style metadata input request
   metadataResponse?: Record<string, any>; // User's response to metadata request
+  streamedOutput?: string; // Complete streaming history for collapsed container
+  hasFinalResult?: boolean; // Whether partial_result was received
+  skipCleaning?: boolean; // Skip markdown cleaning for final results
 }
