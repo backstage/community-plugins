@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@backstage/ui/css/styles.css';
 import { createDevApp } from '@backstage/dev-utils';
 import {
   EntityMultiCIPipelinesContent,

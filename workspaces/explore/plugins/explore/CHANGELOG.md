@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 0.14.1
+
+### Patch Changes
+
+- f38ab58: Fixed slow rendering of group diagram for bigger organisations
+
 ## 0.14.0
 
 ### Minor Changes
