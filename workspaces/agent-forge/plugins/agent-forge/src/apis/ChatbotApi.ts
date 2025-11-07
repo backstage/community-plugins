@@ -33,11 +33,11 @@ export class ChatbotApi {
   private client: A2AClient | null = null;
   private contextId: string;
   private identityApi: IdentityApi;
-  private openIdConnectApi: OpenIdConnectApi;
+  private openIdConnectApi: OpenIdConnectApi | null;
   private useOpenIDToken: boolean;
   constructor(
     private apiBaseUrl: string,
-    options: { identityApi: IdentityApi; openIdConnectApi: OpenIdConnectApi },
+    options: { identityApi: IdentityApi; openIdConnectApi?: OpenIdConnectApi | null },
     apiOptions?: IChatbotApiOptions,
   ) {
     this.contextId = '';
@@ -45,7 +45,7 @@ export class ChatbotApi {
       throw new Error('Agent URL is not provided');
     }
     this.identityApi = options.identityApi;
-    this.openIdConnectApi = options.openIdConnectApi;
+    this.openIdConnectApi = options.openIdConnectApi ?? null;
     this.useOpenIDToken = apiOptions?.useOpenIDToken ?? false; // default to false which means use IdentityApi.getCredentials() (backstage token)
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
@@ -57,6 +57,11 @@ export class ChatbotApi {
 
   private async getToken(): Promise<string | undefined> {
     if (this.useOpenIDToken) {
+      if (!this.openIdConnectApi) {
+        console.warn('useOpenIDToken is true but openIdConnectApi is not provided, falling back to IdentityApi');
+        const credentials = await this.identityApi.getCredentials();
+        return credentials.token;
+      }
       return await this.openIdConnectApi.getIdToken();
     }
     const credentials = await this.identityApi.getCredentials();
@@ -150,6 +155,20 @@ export class ChatbotApi {
       return card?.skills[0].examples;
     } catch (error) {
       return [];
+    }
+  }
+
+  public async cancelTask(taskId: string): Promise<void> {
+    try {
+      if (!this.client) {
+        throw new Error('A2A client not initialized');
+      }
+      const { token } = await this.identityApi.getCredentials();
+      await this.client.cancelTask({ taskId }, token);
+      console.log('✅ A2A cancellation sent for task:', taskId);
+    } catch (error) {
+      console.error('❌ Failed to send A2A cancellation:', error);
+      // Don't throw - cancellation is best-effort
     }
   }
 }

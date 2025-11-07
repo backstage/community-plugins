@@ -27,6 +27,7 @@ import {
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SendIcon from '@material-ui/icons/Send';
+import StopIcon from '@material-ui/icons/Stop';
 import React, {
   useCallback,
   useEffect,
@@ -215,6 +216,7 @@ export interface ChatContainerProps {
     timestamp?: string;
   };
   onMessageSubmit: (messageText?: string) => void;
+  onCancelRequest: () => void;
   onReset: () => void;
   onSuggestionClick: (suggestion: string) => void;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
@@ -342,6 +344,7 @@ export const ChatContainer = memo(function ChatContainer({
   inputPlaceholder,
   fontSizes,
   onMessageSubmit,
+  onCancelRequest,
   onReset,
   onSuggestionClick,
   onMetadataSubmit,
@@ -528,7 +531,7 @@ export const ChatContainer = memo(function ChatContainer({
       )}
 
       {/* Load More Button - appears when scrolling up, shows "No More Messages" when all loaded */}
-      {showLoadMoreButton && !autoScrollEnabled && (
+      {showLoadMoreButton && (
         <div className={classes.loadingIndicator}>
           <Tooltip
             title={(() => {
@@ -634,18 +637,32 @@ export const ChatContainer = memo(function ChatContainer({
             style: { fontSize: fontSizes?.inputField || '1rem' },
           }}
         />
-        <Tooltip title="Send message">
-          <Box component="span">
-            <IconButton
-              color="primary"
-              onClick={() => onMessageSubmit()}
-              disabled={isInputDisabled || !userInput.trim()}
-              aria-label="send message"
-            >
-              <SendIcon />
-            </IconButton>
-          </Box>
-        </Tooltip>
+        {isTyping ? (
+          <Tooltip title="Cancel request">
+            <Box component="span">
+              <IconButton
+                color="secondary"
+                onClick={onCancelRequest}
+                aria-label="cancel request"
+              >
+                <StopIcon />
+              </IconButton>
+            </Box>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Send message">
+            <Box component="span">
+              <IconButton
+                color="primary"
+                onClick={() => onMessageSubmit()}
+                disabled={isInputDisabled || !userInput.trim()}
+                aria-label="send message"
+              >
+                <SendIcon />
+              </IconButton>
+            </Box>
+          </Tooltip>
+        )}
         <Tooltip title="Reset chat">
           <Box component="span">
             <IconButton

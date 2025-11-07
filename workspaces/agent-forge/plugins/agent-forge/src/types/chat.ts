@@ -35,4 +35,7 @@ export interface ChatSession {
 export interface ChatStorage {
   sessions: ChatSession[];
   currentSessionId: string | null;
+  executionPlanBuffer?: Record<string, string>; // Store execution plans by message ID (per-session)
+  executionPlanHistory?: Record<string, string[]>; // Store history of execution plan updates by message ID
+  autoExpandExecutionPlans?: string[]; // Store which plans should be auto-expanded
 }

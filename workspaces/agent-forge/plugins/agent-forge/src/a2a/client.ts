@@ -366,6 +366,15 @@ export class A2AClient {
       id: clientRequestId,
     };
 
+    // 🔍 LOG THE QUERY BEING SENT TO THE BACKEND
+    console.log('[AGENT_FORGE_FINAL_RENDERING] 📤 SENDING QUERY TO BACKEND:', {
+      endpoint: endpoint,
+      method: 'message/stream',
+      query: params.message?.parts?.[0]?.text || '(no text found)',
+      contextId: params.message?.contextId || '(new conversation)',
+      requestId: clientRequestId,
+    });
+
     const response = await this._fetchStreamNoTimeout(endpoint, {
       method: 'POST',
       headers: {
@@ -375,6 +384,15 @@ export class A2AClient {
       },
       body: JSON.stringify(rpcRequest),
     });
+
+    console.log(
+      '[AGENT_FORGE_FINAL_RENDERING] ✅ RESPONSE RECEIVED FROM BACKEND:',
+      {
+        status: response.status,
+        statusText: response.statusText,
+        contentType: response.headers.get('Content-Type'),
+      },
+    );
 
     if (!response.ok) {
       // Check for 504 Gateway Timeout first
@@ -472,12 +490,17 @@ export class A2AClient {
   /**
    * Cancels a task by its ID.
    * @param params Parameters containing the taskId.
+   * @param authToken Optional authentication token.
    * @returns A Promise resolving to CancelTaskResponse, which contains the updated Task object or an error.
    */
-  public async cancelTask(params: TaskIdParams): Promise<CancelTaskResponse> {
+  public async cancelTask(
+    params: TaskIdParams,
+    authToken?: string,
+  ): Promise<CancelTaskResponse> {
     return this._postRpcRequest<TaskIdParams, CancelTaskResponse>(
       'tasks/cancel',
       params,
+      authToken,
     );
   }
 

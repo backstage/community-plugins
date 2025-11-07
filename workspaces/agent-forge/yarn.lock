@@ -1303,7 +1303,7 @@
   integrity sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA==
 
 "@caipe/plugin-agent-forge@file:/home/suwhang/Outshift/cnoe-io/community-plugins/workspaces/agent-forge/plugins/agent-forge":
-  version "0.3.38"
+  version "0.3.39"
   resolved "file:plugins/agent-forge"
   dependencies:
     "@agentic-profile/a2a-client" "^0.6.2"

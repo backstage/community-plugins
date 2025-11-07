@@ -129,6 +129,53 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     width: '100%', // Set width to 70% of parent container
   },
+  streamedOutputContainer: {
+    marginBottom: theme.spacing(0.4),
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(33, 150, 243, 0.15)'
+        : 'rgba(33, 150, 243, 0.08)',
+    borderRadius: theme.spacing(0.25),
+    border: `1px solid ${
+      theme.palette.type === 'dark'
+        ? 'rgba(33, 150, 243, 0.3)'
+        : 'rgba(33, 150, 243, 0.2)'
+    }`,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  streamedOutputHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: theme.spacing(0.15, 0.5),
+    cursor: 'pointer',
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(33, 150, 243, 0.2)'
+        : 'rgba(33, 150, 243, 0.12)',
+    minHeight: '30px',
+    '&:hover': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(33, 150, 243, 0.3)'
+          : 'rgba(33, 150, 243, 0.18)',
+    },
+  },
+  streamedOutputContent: {
+    padding: theme.spacing(0.5, 1),
+    fontSize: '0.8rem',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap',
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(33, 150, 243, 0.1)'
+        : 'rgba(33, 150, 243, 0.05)',
+    lineHeight: '1.4',
+    '& p': {
+      margin: '0.3em 0',
+    },
+  },
   executionPlanHeader: {
     display: 'flex',
     alignItems: 'center',
@@ -148,21 +195,21 @@ const useStyles = makeStyles(theme => ({
     },
   },
   executionPlanContent: {
-    padding: theme.spacing(0.25, 0.75), // Further reduced vertical padding (0.5→0.25) for smaller height
-    fontSize: '0.30rem', // Slightly smaller font for more compact look
+    padding: theme.spacing(0.5, 1), // Comfortable padding for readability
+    fontSize: '0.8rem', // Readable font size
     fontFamily: 'monospace',
     whiteSpace: 'pre-wrap',
     backgroundColor:
       theme.palette.type === 'dark'
         ? 'rgba(76, 175, 80, 0.1)'
         : 'rgba(76, 175, 80, 0.05)',
-    lineHeight: '0.2', // Keep the reduced line height
+    lineHeight: '1.4', // Better line height for readability
     // Removed maxHeight and overflowY to allow auto-height adjustment
     '& p': {
-      margin: '0.04em 0', // Further reduced paragraph margins for even tighter spacing
+      margin: '0.3em 0', // Better spacing between paragraphs
     },
     '& br': {
-      lineHeight: '0.32', // Keep the compressed line breaks
+      lineHeight: '1.4', // Match overall line height
     },
   },
   collapseHeader: {
@@ -237,6 +284,8 @@ export const ChatMessage = memo(function ChatMessage({
   const theme = useTheme();
   const [isResponseExpanded, setIsResponseExpanded] = useState(true);
   const [isExecutionPlanExpanded, setIsExecutionPlanExpanded] = useState(false); // Default to collapsed
+  const [isStreamedOutputExpanded, setIsStreamedOutputExpanded] =
+    useState(false); // Default to collapsed
   const [isExecutionPlanModalOpen, setIsExecutionPlanModalOpen] =
     useState(false);
   const hasAutoCollapsed = useRef(false);
@@ -290,10 +339,14 @@ export const ChatMessage = memo(function ChatMessage({
   // Message key for execution plan identification
   const messageKey = message.messageId || 'unknown';
 
-  const executionPlanFromBuffer = executionPlanBuffer?.[messageKey] || '';
+  // Prioritize buffer, fallback to persisted message data for history
+  const executionPlanFromBuffer =
+    executionPlanBuffer?.[messageKey] || message.executionPlan || '';
 
   const planHistory = useMemo(() => {
-    const planHistoryRaw = executionPlanHistory?.[messageKey] || [];
+    // Use persisted history from message as fallback
+    const planHistoryRaw =
+      executionPlanHistory?.[messageKey] || message.executionPlanHistory || [];
     const deduped: string[] = [];
     [...planHistoryRaw, executionPlanFromBuffer]
       .filter(entry => !!entry && entry.trim().length > 0)
@@ -303,12 +356,21 @@ export const ChatMessage = memo(function ChatMessage({
         }
       });
     return deduped;
-  }, [executionPlanHistory, messageKey, executionPlanFromBuffer]);
+  }, [
+    executionPlanHistory,
+    messageKey,
+    executionPlanFromBuffer,
+    message.executionPlan,
+    message.executionPlanHistory,
+  ]);
 
   const finalExecutionPlan = planHistory[planHistory.length - 1] || '';
   const priorExecutionPlans =
     planHistory.length > 1 ? planHistory.slice(0, planHistory.length - 1) : [];
   const hasExecutionPlan = finalExecutionPlan.trim().length > 0;
+  const hasStreamedOutput =
+    !!(message as any).streamedOutput &&
+    (message as any).streamedOutput.trim().length > 0;
 
   // // Enhanced debug logging for execution plan correlation and contamination tracing
   // if (process.env.NODE_ENV === 'development') {
@@ -442,6 +504,10 @@ export const ChatMessage = memo(function ChatMessage({
     userHasInteracted.current = true; // Mark that user has interacted
     setIsExecutionPlanExpanded(!isExecutionPlanExpanded);
   }, [isExecutionPlanExpanded]);
+
+  const handleStreamedOutputToggle = useCallback(() => {
+    setIsStreamedOutputExpanded(!isStreamedOutputExpanded);
+  }, [isStreamedOutputExpanded]);
 
   const handleCopyToClipboard = async () => {
     try {
@@ -794,9 +860,33 @@ export const ChatMessage = memo(function ChatMessage({
                 fontSize: '0.75rem',
                 display: 'flex',
                 alignItems: 'center',
+                gap: theme.spacing(0.75),
               }}
             >
               📋 Execution Plan
+              {priorExecutionPlans.length > 0 && (
+                <Box
+                  component="span"
+                  style={{
+                    fontSize: '0.65rem',
+                    fontWeight: 500,
+                    padding: '1px 6px',
+                    borderRadius: '10px',
+                    backgroundColor:
+                      theme.palette.type === 'dark'
+                        ? 'rgba(76, 175, 80, 0.3)'
+                        : 'rgba(76, 175, 80, 0.25)',
+                    color:
+                      theme.palette.type === 'dark'
+                        ? 'rgba(255, 255, 255, 0.9)'
+                        : 'rgba(0, 0, 0, 0.8)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {priorExecutionPlans.length + 1} updates
+                </Box>
+              )}
             </Typography>
             <IconButton
               size="small"
@@ -819,9 +909,11 @@ export const ChatMessage = memo(function ChatMessage({
               )}
             </IconButton>
           </Box>
+
           <Collapse in={isExecutionPlanExpanded}>
             <Box className={classes.executionPlanContent}>
-              {priorExecutionPlans.length > 0 ? (
+              {/* Execution Plan History - now collapses with main execution plan */}
+              {priorExecutionPlans.length > 0 && (
                 <Box
                   style={{
                     padding: theme.spacing(0.6),
@@ -849,7 +941,8 @@ export const ChatMessage = memo(function ChatMessage({
                       gap: theme.spacing(0.75),
                     }}
                   >
-                    🕘 Execution Plan History
+                    🕘 Execution Plan History ({priorExecutionPlans.length}{' '}
+                    updates)
                   </Typography>
                   {priorExecutionPlans.map((entry, index) => (
                     <Box
@@ -877,7 +970,7 @@ export const ChatMessage = memo(function ChatMessage({
                           marginBottom: theme.spacing(0.35),
                         }}
                       >
-                        Step {index + 1}
+                        Update {index + 1}
                       </Typography>
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
@@ -943,7 +1036,21 @@ export const ChatMessage = memo(function ChatMessage({
                     </Box>
                   ))}
                 </Box>
-              ) : null}
+              )}
+
+              <Typography
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  opacity: 0.85,
+                  marginBottom: theme.spacing(0.75),
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: theme.spacing(0.75),
+                }}
+              >
+                📍 Current Plan
+              </Typography>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -1083,6 +1190,85 @@ export const ChatMessage = memo(function ChatMessage({
           </Collapse>
         </Box>
       )}
+
+      {/* Streamed Output - shows the word-by-word streamed text before partial_result */}
+      {hasStreamedOutput && (
+        <Box className={classes.streamedOutputContainer}>
+          <Box
+            className={classes.streamedOutputHeader}
+            onClick={handleStreamedOutputToggle}
+          >
+            <Typography
+              variant="subtitle2"
+              style={{
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing(0.5),
+              }}
+            >
+              📡 Streamed Output
+              {(message as any).hasFinalResult && (
+                <span
+                  style={{
+                    fontSize: '0.65rem',
+                    opacity: 0.7,
+                    fontWeight: 400,
+                  }}
+                >
+                  (superseded by final result)
+                </span>
+              )}
+            </Typography>
+            <IconButton
+              size="small"
+              style={{
+                padding: '1px',
+                opacity: 0.7,
+                transition: 'opacity 0.2s',
+                width: '20px',
+                height: '20px',
+              }}
+              onClick={e => {
+                e.stopPropagation();
+                handleStreamedOutputToggle();
+              }}
+            >
+              {isStreamedOutputExpanded ? (
+                <ExpandLessIcon style={{ fontSize: '16px' }} />
+              ) : (
+                <ExpandMoreIcon style={{ fontSize: '16px' }} />
+              )}
+            </IconButton>
+          </Box>
+          <Collapse in={isStreamedOutputExpanded}>
+            <Box className={classes.streamedOutputContent}>
+              <ReactMarkdown
+                className={classes.markdown}
+                components={{
+                  p: ({ children, ...props }) => (
+                    <p
+                      style={{
+                        fontSize: '0.78rem',
+                        margin: '0.2em 0',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.25',
+                      }}
+                      {...props}
+                    >
+                      {children}
+                    </p>
+                  ),
+                }}
+              >
+                {(message as any).streamedOutput || ''}
+              </ReactMarkdown>
+            </Box>
+          </Collapse>
+        </Box>
+      )}
+
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography
           variant="caption"
