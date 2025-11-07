@@ -163,17 +163,17 @@ const useStyles = makeStyles(theme => ({
     },
   },
   streamedOutputContent: {
-    padding: theme.spacing(0.25, 0.75),
-    fontSize: '0.30rem',
+    padding: theme.spacing(0.5, 1),
+    fontSize: '0.8rem',
     fontFamily: 'monospace',
     whiteSpace: 'pre-wrap',
     backgroundColor:
       theme.palette.type === 'dark'
         ? 'rgba(33, 150, 243, 0.1)'
         : 'rgba(33, 150, 243, 0.05)',
-    lineHeight: '0.2',
+    lineHeight: '1.4',
     '& p': {
-      margin: '0.04em 0',
+      margin: '0.3em 0',
     },
   },
   executionPlanHeader: {
@@ -195,21 +195,21 @@ const useStyles = makeStyles(theme => ({
     },
   },
   executionPlanContent: {
-    padding: theme.spacing(0.25, 0.75), // Further reduced vertical padding (0.5→0.25) for smaller height
-    fontSize: '0.30rem', // Slightly smaller font for more compact look
+    padding: theme.spacing(0.5, 1), // Comfortable padding for readability
+    fontSize: '0.8rem', // Readable font size
     fontFamily: 'monospace',
     whiteSpace: 'pre-wrap',
     backgroundColor:
       theme.palette.type === 'dark'
         ? 'rgba(76, 175, 80, 0.1)'
         : 'rgba(76, 175, 80, 0.05)',
-    lineHeight: '0.2', // Keep the reduced line height
+    lineHeight: '1.4', // Better line height for readability
     // Removed maxHeight and overflowY to allow auto-height adjustment
     '& p': {
-      margin: '0.04em 0', // Further reduced paragraph margins for even tighter spacing
+      margin: '0.3em 0', // Better spacing between paragraphs
     },
     '& br': {
-      lineHeight: '0.32', // Keep the compressed line breaks
+      lineHeight: '1.4', // Match overall line height
     },
   },
   collapseHeader: {
@@ -339,10 +339,14 @@ export const ChatMessage = memo(function ChatMessage({
   // Message key for execution plan identification
   const messageKey = message.messageId || 'unknown';
 
-  const executionPlanFromBuffer = executionPlanBuffer?.[messageKey] || '';
+  // Prioritize buffer, fallback to persisted message data for history
+  const executionPlanFromBuffer =
+    executionPlanBuffer?.[messageKey] || message.executionPlan || '';
 
   const planHistory = useMemo(() => {
-    const planHistoryRaw = executionPlanHistory?.[messageKey] || [];
+    // Use persisted history from message as fallback
+    const planHistoryRaw =
+      executionPlanHistory?.[messageKey] || message.executionPlanHistory || [];
     const deduped: string[] = [];
     [...planHistoryRaw, executionPlanFromBuffer]
       .filter(entry => !!entry && entry.trim().length > 0)
@@ -352,7 +356,13 @@ export const ChatMessage = memo(function ChatMessage({
         }
       });
     return deduped;
-  }, [executionPlanHistory, messageKey, executionPlanFromBuffer]);
+  }, [
+    executionPlanHistory,
+    messageKey,
+    executionPlanFromBuffer,
+    message.executionPlan,
+    message.executionPlanHistory,
+  ]);
 
   const finalExecutionPlan = planHistory[planHistory.length - 1] || '';
   const priorExecutionPlans =
@@ -850,9 +860,33 @@ export const ChatMessage = memo(function ChatMessage({
                 fontSize: '0.75rem',
                 display: 'flex',
                 alignItems: 'center',
+                gap: theme.spacing(0.75),
               }}
             >
               📋 Execution Plan
+              {priorExecutionPlans.length > 0 && (
+                <Box
+                  component="span"
+                  style={{
+                    fontSize: '0.65rem',
+                    fontWeight: 500,
+                    padding: '1px 6px',
+                    borderRadius: '10px',
+                    backgroundColor:
+                      theme.palette.type === 'dark'
+                        ? 'rgba(76, 175, 80, 0.3)'
+                        : 'rgba(76, 175, 80, 0.25)',
+                    color:
+                      theme.palette.type === 'dark'
+                        ? 'rgba(255, 255, 255, 0.9)'
+                        : 'rgba(0, 0, 0, 0.8)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {priorExecutionPlans.length + 1} updates
+                </Box>
+              )}
             </Typography>
             <IconButton
               size="small"
@@ -875,9 +909,11 @@ export const ChatMessage = memo(function ChatMessage({
               )}
             </IconButton>
           </Box>
+
           <Collapse in={isExecutionPlanExpanded}>
             <Box className={classes.executionPlanContent}>
-              {priorExecutionPlans.length > 0 ? (
+              {/* Execution Plan History - now collapses with main execution plan */}
+              {priorExecutionPlans.length > 0 && (
                 <Box
                   style={{
                     padding: theme.spacing(0.6),
@@ -905,7 +941,8 @@ export const ChatMessage = memo(function ChatMessage({
                       gap: theme.spacing(0.75),
                     }}
                   >
-                    🕘 Execution Plan History
+                    🕘 Execution Plan History ({priorExecutionPlans.length}{' '}
+                    updates)
                   </Typography>
                   {priorExecutionPlans.map((entry, index) => (
                     <Box
@@ -933,7 +970,7 @@ export const ChatMessage = memo(function ChatMessage({
                           marginBottom: theme.spacing(0.35),
                         }}
                       >
-                        Step {index + 1}
+                        Update {index + 1}
                       </Typography>
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
@@ -999,7 +1036,21 @@ export const ChatMessage = memo(function ChatMessage({
                     </Box>
                   ))}
                 </Box>
-              ) : null}
+              )}
+
+              <Typography
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  opacity: 0.85,
+                  marginBottom: theme.spacing(0.75),
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: theme.spacing(0.75),
+                }}
+              >
+                📍 Current Plan
+              </Typography>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{

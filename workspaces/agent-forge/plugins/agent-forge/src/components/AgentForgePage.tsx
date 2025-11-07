@@ -107,8 +107,8 @@ const useStyles = makeStyles(theme => ({
   fullscreenContent: {
     flex: 1,
     overflow: 'hidden',
-    padding: theme.spacing(2),
     display: 'flex',
+    flexDirection: 'column',
     minHeight: 0,
   },
   headerTitle: {
@@ -397,7 +397,10 @@ export function AgentForgePage() {
 
   // UI state
   const [userInput, setUserInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  // 🔧 FIX: Per-session typing state to support concurrent sessions
+  const [isTypingBySession, setIsTypingBySession] = useState<
+    Map<string, boolean>
+  >(new Map());
   const [apiError, setApiError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -416,37 +419,221 @@ export function AgentForgePage() {
   const buttonToggleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastCollapseTimeRef = useRef<number>(0);
   const gracefulScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Execution plan buffer - stores execution plans by message ID (fallback to timestamp)
-  const [executionPlanBuffer, setExecutionPlanBuffer] = useState<
-    Record<string, string>
-  >({});
-  // Track which execution plans should be auto-expanded when they appear
-  const [autoExpandExecutionPlans, setAutoExpandExecutionPlans] = useState<
-    Set<string>
-  >(new Set());
   // Reference to input field for focus management
   const inputRef = useRef<HTMLInputElement>(null);
-  // SCROLL MODE: Manual mode by default - users have full control over scroll position
-  // TO RE-ENABLE AUTO-SCROLL: Change false to true and uncomment toggle UI in ChatContainer.tsx
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
+  // SCROLL MODE: Auto-scroll enabled by default - automatically scrolls to bottom on new messages
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
 
-  // State for operational thinking messages
-  const [currentOperation, setCurrentOperation] = useState<string | null>(null);
-  const [isInOperationalMode, setIsInOperationalMode] = useState(false);
+  // 🔧 FIX: Per-session operational mode state to support concurrent sessions
+  interface SessionOperationalState {
+    currentOperation: string | null;
+    isInOperationalMode: boolean;
+  }
+  const operationalStateBySession = useRef<
+    Map<string, SessionOperationalState>
+  >(new Map());
+
+  const getOperationalState = useCallback(
+    (sessionId: string): SessionOperationalState => {
+      let state = operationalStateBySession.current.get(sessionId);
+      if (!state) {
+        state = {
+          currentOperation: null,
+          isInOperationalMode: false,
+        };
+        operationalStateBySession.current.set(sessionId, state);
+      }
+      return state;
+    },
+    [],
+  );
+
+  // Accessor/setter wrappers for current session's operational state
+  const currentOperation =
+    getOperationalState(currentSessionId).currentOperation;
+  const isInOperationalMode =
+    getOperationalState(currentSessionId).isInOperationalMode;
+
+  const setCurrentOperation = useCallback(
+    (value: string | null) => {
+      const state = getOperationalState(currentSessionId);
+      state.currentOperation = value;
+    },
+    [currentSessionId, getOperationalState],
+  );
+
+  const setIsInOperationalMode = useCallback(
+    (value: boolean) => {
+      const state = getOperationalState(currentSessionId);
+      state.isInOperationalMode = value;
+    },
+    [currentSessionId, getOperationalState],
+  );
 
   // Cache to track tool notifications we've shown in thinking indicator
   const toolNotificationsCache = useRef<Set<string>>(new Set());
 
-  // State for execution plan processing with request isolation
-  const [isCapturingExecutionPlan, setIsCapturingExecutionPlan] =
-    useState(false);
-  const [accumulatedExecutionPlan, setAccumulatedExecutionPlan] =
-    useState<string>('');
-  const currentRequestIdRef = useRef<string>(''); // Track current streaming request
-  const abortControllerRef = useRef<AbortController | null>(null); // Cancel previous streams
-  const [executionPlanLoading, setExecutionPlanLoading] = useState<Set<string>>(
-    new Set(),
-  ); // Track loading state per message
+  // 🔧 FIX: Per-session execution plan state to support concurrent sessions
+  interface SessionExecutionPlanState {
+    isCapturing: boolean;
+    accumulated: string;
+    autoExpand: Set<string>;
+    loading: Set<string>;
+    buffer: Record<string, string>; // messageId -> execution plan content
+    history: Record<string, string[]>; // messageId -> array of previous execution plans
+  }
+  const executionPlanStateBySession = useRef<
+    Map<string, SessionExecutionPlanState>
+  >(new Map());
+
+  // Helper to get or create execution plan state for a session
+  const getExecutionPlanState = useCallback(
+    (sessionId: string): SessionExecutionPlanState => {
+      let state = executionPlanStateBySession.current.get(sessionId);
+      if (!state) {
+        state = {
+          isCapturing: false,
+          accumulated: '',
+          autoExpand: new Set<string>(),
+          loading: new Set<string>(),
+          buffer: {},
+          history: {},
+        };
+        executionPlanStateBySession.current.set(sessionId, state);
+      }
+      return state;
+    },
+    [],
+  );
+
+  // Create reactive state for current session to trigger re-renders
+  // This allows components to react to execution plan changes
+  const [, forceUpdate] = useState({});
+  const triggerExecutionPlanUpdate = useCallback(() => {
+    forceUpdate({});
+  }, []);
+
+  // Accessor functions for current session's execution plan state
+  const getCurrentExecutionPlanState = useCallback(() => {
+    return getExecutionPlanState(currentSessionId);
+  }, [currentSessionId, getExecutionPlanState]);
+
+  // Computed values from current session's execution plan state
+  const executionPlanBuffer = getCurrentExecutionPlanState().buffer;
+  const executionPlanHistory = getCurrentExecutionPlanState().history;
+  const autoExpandExecutionPlans = getCurrentExecutionPlanState().autoExpand;
+  const executionPlanLoading = getCurrentExecutionPlanState().loading;
+
+  // Setter wrapper functions that update session-specific state
+  const setExecutionPlanBuffer = useCallback(
+    (updater: (prev: Record<string, string>) => Record<string, string>) => {
+      const state = getExecutionPlanState(currentSessionId);
+      const prevBuffer = { ...state.buffer };
+      const newBuffer = updater(state.buffer);
+
+      // Track history: for each messageId that changed, save the previous value
+      Object.keys(newBuffer).forEach(messageId => {
+        const prevValue = prevBuffer[messageId];
+        const newValue = newBuffer[messageId];
+
+        console.log(`🔍 EXECUTION PLAN BUFFER UPDATE for ${messageId}:`, {
+          hasPrevValue: !!prevValue,
+          hasNewValue: !!newValue,
+          prevLength: prevValue?.length || 0,
+          newLength: newValue?.length || 0,
+          valuesEqual: prevValue === newValue,
+          currentHistoryLength: state.history[messageId]?.length || 0,
+        });
+
+        // Track history if:
+        // 1. There's a new value (always track updates)
+        // 2. The value changed from previous (or this is the first update)
+        // 3. Previous value is not empty (don't track empty -> content transitions)
+        if (newValue && prevValue && prevValue.trim() !== newValue.trim()) {
+          if (!state.history[messageId]) {
+            state.history[messageId] = [];
+          }
+          // Add previous value to history if it's not already there
+          if (!state.history[messageId].includes(prevValue)) {
+            state.history[messageId].push(prevValue);
+            console.log(
+              `📚 EXECUTION PLAN HISTORY: Added entry for ${messageId}, history length: ${state.history[messageId].length}`,
+            );
+            console.log(
+              `   Previous value (first 100 chars): ${prevValue.substring(
+                0,
+                100,
+              )}...`,
+            );
+          } else {
+            console.log(
+              `⏭️ EXECUTION PLAN HISTORY: Skipped duplicate for ${messageId}`,
+            );
+          }
+        } else {
+          console.log(
+            `⏭️ EXECUTION PLAN HISTORY: Not tracking - prevValue=${!!prevValue}, newValue=${!!newValue}, different=${
+              prevValue?.trim() !== newValue?.trim()
+            }`,
+          );
+        }
+      });
+
+      state.buffer = newBuffer;
+      triggerExecutionPlanUpdate();
+    },
+    [currentSessionId, getExecutionPlanState, triggerExecutionPlanUpdate],
+  );
+
+  const setAutoExpandExecutionPlans = useCallback(
+    (updater: (prev: Set<string>) => Set<string>) => {
+      const state = getExecutionPlanState(currentSessionId);
+      state.autoExpand = updater(state.autoExpand);
+      triggerExecutionPlanUpdate();
+    },
+    [currentSessionId, getExecutionPlanState, triggerExecutionPlanUpdate],
+  );
+
+  const setExecutionPlanLoading = useCallback(
+    (updater: (prev: Set<string>) => Set<string>) => {
+      const state = getExecutionPlanState(currentSessionId);
+      state.loading = updater(state.loading);
+      triggerExecutionPlanUpdate();
+    },
+    [currentSessionId, getExecutionPlanState, triggerExecutionPlanUpdate],
+  );
+
+  const setIsCapturingExecutionPlan = useCallback(
+    (value: boolean) => {
+      const state = getExecutionPlanState(currentSessionId);
+      state.isCapturing = value;
+    },
+    [currentSessionId, getExecutionPlanState],
+  );
+
+  const setAccumulatedExecutionPlan = useCallback(
+    (updater: string | ((prev: string) => string)) => {
+      const state = getExecutionPlanState(currentSessionId);
+      state.accumulated =
+        typeof updater === 'function' ? updater(state.accumulated) : updater;
+    },
+    [currentSessionId, getExecutionPlanState],
+  );
+
+  const isCapturingExecutionPlan = getCurrentExecutionPlanState().isCapturing;
+  const accumulatedExecutionPlan = getCurrentExecutionPlanState().accumulated;
+
+  // 🔧 FIX: Per-session streaming state to support concurrent sessions
+  interface SessionStreamingState {
+    requestId: string;
+    abortController: AbortController;
+    streamingMessageId: string | null;
+    streamingOutputBuffer: string; // Persistent buffer for complete streaming history
+    taskId: string | null; // A2A task ID for cancellation
+  }
+  const streamingStateBySession = useRef<Map<string, SessionStreamingState>>(
+    new Map(),
+  );
 
   // Function to remove cached tool notifications from content
   const removeCachedToolNotifications = useCallback((text: string): string => {
@@ -1257,6 +1444,39 @@ export function AgentForgePage() {
           sessionsWithDates[0]?.contextId ||
           initialSession.contextId;
         setCurrentSessionId(validSessionId);
+
+        // 🔧 RESTORE execution plans (per-session state)
+        if (data.executionPlanBuffer) {
+          console.log(
+            '📦 RESTORING EXECUTION PLAN BUFFER:',
+            Object.keys(data.executionPlanBuffer).length,
+            'plans',
+          );
+          // Restore the buffer for the current session
+          const state = getExecutionPlanState(validSessionId);
+          state.buffer = data.executionPlanBuffer;
+        }
+        if (data.executionPlanHistory) {
+          console.log(
+            '📦 RESTORING EXECUTION PLAN HISTORY:',
+            Object.keys(data.executionPlanHistory).length,
+            'message histories',
+          );
+          // Restore the history for the current session
+          const state = getExecutionPlanState(validSessionId);
+          state.history = data.executionPlanHistory;
+        }
+        if (data.autoExpandExecutionPlans) {
+          console.log(
+            '📦 RESTORING AUTO-EXPAND STATE:',
+            data.autoExpandExecutionPlans.length,
+            'plans',
+          );
+          // Restore the auto-expand state for the current session
+          const state = getExecutionPlanState(validSessionId);
+          state.autoExpand = new Set(data.autoExpandExecutionPlans);
+        }
+
         setSuggestions(initialSuggestions);
         setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
         setShowLoadMoreButton(false);
@@ -1278,7 +1498,7 @@ export function AgentForgePage() {
       setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
       setShowLoadMoreButton(false);
     }
-  }, [botName, alertApi, initialSuggestions]);
+  }, [botName, alertApi, initialSuggestions, getExecutionPlanState]);
 
   // Save chat history to localStorage whenever they change
   useEffect(() => {
@@ -1286,12 +1506,21 @@ export function AgentForgePage() {
       const data: ChatStorage = {
         sessions,
         currentSessionId,
+        executionPlanBuffer, // 🔧 PERSIST execution plans (per-session buffer)
+        executionPlanHistory, // 🔧 PERSIST execution plan history
+        autoExpandExecutionPlans: Array.from(autoExpandExecutionPlans), // 🔧 PERSIST auto-expand state
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       // console.warn('Failed to save chat history to storage:', error);
     }
-  }, [sessions, currentSessionId]);
+  }, [
+    sessions,
+    currentSessionId,
+    executionPlanBuffer,
+    executionPlanHistory,
+    autoExpandExecutionPlans,
+  ]);
 
   // Create new session
   const createNewSession = useCallback(() => {
@@ -1345,6 +1574,40 @@ export function AgentForgePage() {
           sessionExists: sessions.some(s => s.contextId === sessionId),
         });
       }
+
+      // 🔧 FIX: Clean up session-specific streaming state
+      const sessionState = streamingStateBySession.current.get(sessionId);
+      if (sessionState) {
+        // Abort any ongoing stream for this session
+        sessionState.abortController.abort();
+        streamingStateBySession.current.delete(sessionId);
+        console.log(
+          '🧹 CLEANED UP STREAMING STATE FOR DELETED SESSION:',
+          sessionId,
+        );
+      }
+
+      // 🔧 FIX: Clean up session-specific typing state
+      setIsTypingBySession(prev => {
+        const newMap = new Map(prev);
+        newMap.delete(sessionId);
+        return newMap;
+      });
+
+      // 🔧 FIX: Clean up session-specific execution plan state
+      executionPlanStateBySession.current.delete(sessionId);
+      console.log(
+        '🧹 CLEANED UP EXECUTION PLAN STATE FOR DELETED SESSION:',
+        sessionId,
+      );
+
+      // 🔧 FIX: Clean up session-specific operational mode state
+      operationalStateBySession.current.delete(sessionId);
+      console.log(
+        '🧹 CLEANED UP OPERATIONAL STATE FOR DELETED SESSION:',
+        sessionId,
+      );
+
       const remainingSessions = sessions.filter(s => s.contextId !== sessionId);
       setSessions(remainingSessions);
 
@@ -1461,30 +1724,32 @@ export function AgentForgePage() {
         });
       }
 
-      // 🔧 ULTRA-NUCLEAR OPTION: Completely clear execution plan buffer, localStorage, AND auto-expand state
-      // This prevents any cross-contamination between different user requests
-      setExecutionPlanBuffer(prev => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('🧹 ULTRA-NUCLEAR BUFFER RESET:', {
-            before: Object.keys(prev),
-            afterReset: 'EMPTY',
-            reason: 'New streaming message started',
-          });
-        }
-        return {}; // Complete reset
-      });
+      // Keep previous execution plans intact - only clear auto-expand for the new message
+      // Previous messages' execution plans should remain visible (but collapsed)
+      if (newMessage.messageId) {
+        setAutoExpandExecutionPlans(prev => {
+          const newSet = new Set(prev);
+          // Only ensure the new message will be auto-expanded when its plan arrives
+          newSet.add(newMessage.messageId!);
+          if (process.env.NODE_ENV === 'development') {
+            console.log(
+              '📋 AUTO-EXPAND: Added new message to auto-expand set:',
+              {
+                messageId: newMessage.messageId,
+                totalAutoExpand: newSet.size,
+              },
+            );
+          }
+          return newSet;
+        });
+      }
 
-      // Also clear auto-expand state to prevent old execution plans from auto-expanding
-      setAutoExpandExecutionPlans(prev => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('🧹 CLEARING AUTO-EXPAND STATE:', {
-            before: Array.from(prev),
-            afterReset: 'EMPTY',
-            reason: 'New streaming message started',
-          });
-        }
-        return new Set(); // Complete reset
-      });
+      // 🔧 FIX: Update session-specific streaming message ID
+      const sessionState =
+        streamingStateBySession.current.get(currentSessionId);
+      if (sessionState) {
+        sessionState.streamingMessageId = newMessage.messageId || null;
+      }
 
       // 🚨 CRITICAL FIX: Reset accumulated execution plan React state (prevents previous message contamination)
       setAccumulatedExecutionPlan(prevPlan => {
@@ -1580,6 +1845,101 @@ export function AgentForgePage() {
       return { content: text, hasMetadata: false };
     }
 
+    // Check for UserInputMetaData: prefix first
+    const userInputMetaDataPrefix = 'UserInputMetaData:';
+    if (text.trim().startsWith(userInputMetaDataPrefix)) {
+      console.log('🎨 UserInputMetaData prefix detected');
+      try {
+        // Extract JSON after the prefix
+        const jsonStr = text
+          .trim()
+          .substring(userInputMetaDataPrefix.length)
+          .trim();
+        console.log('🎨 Parsing JSON:', jsonStr);
+        const jsonResponse = JSON.parse(jsonStr);
+        console.log('🎨 Parsed JSON:', jsonResponse);
+
+        if (jsonResponse.metadata?.input_fields) {
+          console.log(
+            '🎨 UserInputMetaData PARSED:',
+            jsonResponse.metadata.input_fields,
+          );
+
+          // Convert input_fields to MetadataField format
+          const metadataFields = jsonResponse.metadata.input_fields.map(
+            (field: any) => {
+              const fieldName = field.name || field.field_name;
+              const fieldDescription =
+                field.description || field.field_description;
+              const fieldType =
+                field.type || (field.field_values ? 'select' : 'text');
+              const fieldRequired =
+                field.required !== undefined
+                  ? field.required
+                  : !fieldDescription
+                      ?.toLocaleLowerCase('en-US')
+                      .includes('optional');
+
+              // Transform options to {value, label} format if needed
+              let transformedOptions;
+              if (field.options) {
+                // Check if options are already in object format
+                if (Array.isArray(field.options) && field.options.length > 0) {
+                  if (typeof field.options[0] === 'string') {
+                    // Convert string array to object array
+                    transformedOptions = field.options.map((v: string) => ({
+                      value: v,
+                      label: v,
+                    }));
+                  } else {
+                    // Already in object format
+                    transformedOptions = field.options;
+                  }
+                }
+              } else if (field.field_values) {
+                transformedOptions = field.field_values.map((v: string) => ({
+                  value: v,
+                  label: v,
+                }));
+              }
+
+              return {
+                name: fieldName,
+                label: fieldName
+                  .replace(/_/g, ' ')
+                  .replace(/\b\w/g, (l: string) =>
+                    l.toLocaleUpperCase('en-US'),
+                  ),
+                type: fieldType,
+                required: fieldRequired,
+                description: fieldDescription,
+                placeholder: fieldDescription,
+                defaultValue:
+                  field.defaultValue ||
+                  field.field_values?.[0] ||
+                  (transformedOptions && transformedOptions[0]?.value),
+                options: transformedOptions,
+              };
+            },
+          );
+
+          return {
+            content: jsonResponse.content || text,
+            hasMetadata: true,
+            metadataRequest: {
+              requestId: `user-input-metadata-${Date.now()}`,
+              title: 'Input Required',
+              description: jsonResponse.content,
+              fields: metadataFields,
+            },
+          };
+        }
+      } catch (e) {
+        console.error('❌ Failed to parse UserInputMetaData JSON:', e);
+        // Fall through to regular parsing
+      }
+    }
+
     try {
       // Try to parse as JSON
       const jsonResponse = JSON.parse(text);
@@ -1612,6 +1972,29 @@ export function AgentForgePage() {
                     ?.toLocaleLowerCase('en-US')
                     .includes('optional');
 
+            // Transform options to {value, label} format if needed
+            let transformedOptions;
+            if (field.options) {
+              // Check if options are already in object format
+              if (Array.isArray(field.options) && field.options.length > 0) {
+                if (typeof field.options[0] === 'string') {
+                  // Convert string array to object array
+                  transformedOptions = field.options.map((v: string) => ({
+                    value: v,
+                    label: v,
+                  }));
+                } else {
+                  // Already in object format
+                  transformedOptions = field.options;
+                }
+              }
+            } else if (field.field_values) {
+              transformedOptions = field.field_values.map((v: string) => ({
+                value: v,
+                label: v,
+              }));
+            }
+
             return {
               name: fieldName,
               label: fieldName
@@ -1621,13 +2004,11 @@ export function AgentForgePage() {
               required: fieldRequired,
               description: fieldDescription,
               placeholder: fieldDescription,
-              defaultValue: field.defaultValue || field.field_values?.[0],
-              options:
-                field.options ||
-                field.field_values?.map((v: string) => ({
-                  value: v,
-                  label: v,
-                })),
+              defaultValue:
+                field.defaultValue ||
+                field.field_values?.[0] ||
+                (transformedOptions && transformedOptions[0]?.value),
+              options: transformedOptions,
             };
           },
         );
@@ -1664,84 +2045,57 @@ export function AgentForgePage() {
       // Not pure JSON - might be text with embedded JSON
       console.log('🧹 Cleaning text with potential embedded JSON');
 
-      // Strategy 1: Remove JSON objects embedded in the text
-      // Matches patterns like: text{"status":"completed","message":"..."}text
-      let cleanedText = text.replace(
-        /\{"status"\s*:\s*"[^"]+"\s*,\s*"message"\s*:\s*"[^"]+"\}/g,
-        '',
-      );
+      // Remove JSON status payloads embedded in the text (specifically {"status":"completed","message":"..."})
+      // Use brace-counting to handle complex nested JSON with newlines and escaped characters
+      let cleanedText = text;
+      const cleanedParts: string[] = [];
+      let remaining = text;
 
-      // Strategy 2: Remove duplicate content blocks (text appears multiple times)
-      // This handles cases where entire responses are duplicated with slight variations
+      while (remaining.includes('{"status":')) {
+        const beforeIndex = remaining.indexOf('{"status":');
+        const before = remaining.substring(0, beforeIndex);
 
-      // First, try to detect large-scale duplication by looking for repeated paragraphs
-      const paragraphs = cleanedText.split(/\n\n+/);
-      const seenParagraphs = new Map<string, string>(); // normalized -> original
-      const uniqueParagraphs: string[] = [];
-
-      for (const para of paragraphs) {
-        if (para.trim().length === 0) continue;
-
-        // Normalize: remove extra spaces, lowercase, remove special chars for comparison
-        const normalized = para
-          .trim()
-          .toLocaleLowerCase('en-US')
-          .replace(/\s+/g, ' ') // Collapse spaces
-          .replace(/['"]/g, '') // Remove quotes
-          .replace(/\s/g, ''); // Remove all spaces for fuzzy matching
-
-        // Check if we've already seen this content (exact match after normalization)
-        if (!seenParagraphs.has(normalized)) {
-          seenParagraphs.set(normalized, para);
-          uniqueParagraphs.push(para.trim());
+        if (before.trim()) {
+          cleanedParts.push(before.trim());
         }
-      }
 
-      // Rejoin unique paragraphs
-      if (uniqueParagraphs.length > 0) {
-        cleanedText = uniqueParagraphs.join('\n\n');
-      }
+        // Find the matching closing brace for the JSON object
+        let braceCount = 1;
+        let braceIndex = -1;
+        const after = remaining.substring(beforeIndex + 10); // Skip '{"status":'
 
-      // Strategy 3: Remove duplicate sentences within the remaining text
-      const sentences = cleanedText
-        .split(/\.\s+/)
-        .filter(s => s.trim().length > 0);
-      const uniqueSentences = new Set<string>();
-      const deduplicatedSentences: string[] = [];
-
-      for (const sentence of sentences) {
-        const normalized = sentence
-          .trim()
-          .toLocaleLowerCase('en-US')
-          .replace(/['"]/g, '')
-          .replace(/\s+/g, ' ');
-
-        if (!uniqueSentences.has(normalized)) {
-          uniqueSentences.add(normalized);
-          deduplicatedSentences.push(sentence.trim());
+        for (let i = 0; i < after.length; i++) {
+          if (after[i] === '{') {
+            braceCount++;
+          } else if (after[i] === '}') {
+            braceCount--;
+            if (braceCount === 0) {
+              braceIndex = i;
+              break;
+            }
+          }
         }
-      }
 
-      // Rejoin sentences
-      if (deduplicatedSentences.length > 0) {
-        cleanedText = deduplicatedSentences.join('. ');
-        // Add final period if original text had one
-        if (text.trim().endsWith('.')) {
-          cleanedText += '.';
+        if (braceIndex === -1) {
+          // No matching brace found, keep remaining text
+          if (remaining.trim() && remaining.trim() !== text.trim()) {
+            cleanedParts.push(remaining.trim());
+          }
+          break;
         }
+
+        // Skip the JSON object and continue with what's after
+        remaining = after.substring(braceIndex + 1);
       }
 
-      // Final cleanup: trim extra whitespace but preserve paragraph breaks
-      cleanedText = cleanedText.replace(/[ \t]{2,}/g, ' '); // Collapse multiple spaces/tabs
-      cleanedText = cleanedText.replace(/\n{3,}/g, '\n\n'); // Collapse multiple newlines
-      cleanedText = cleanedText.trim();
+      // Add any remaining text after last JSON
+      if (remaining.trim()) {
+        cleanedParts.push(remaining.trim());
+      }
 
-      console.log('🧹 Cleaned text:', {
-        original: text.substring(0, 100),
-        cleaned: cleanedText.substring(0, 100),
-        removed: text.length - cleanedText.length,
-      });
+      cleanedText = cleanedParts.length > 0 ? cleanedParts.join('\n\n') : text;
 
+      console.log('✅ JSON status payloads removed, returning clean text');
       return { content: cleanedText || text, hasMetadata: false };
     }
   };
@@ -1769,6 +2123,19 @@ export function AgentForgePage() {
 
               // Update message with cleaned content (removes duplicate JSON, etc.)
               streamingMessage.text = content;
+
+              // 🔧 SAVE: Store streaming output buffer to message for collapsed container
+              const sessionState =
+                streamingStateBySession.current.get(currentSessionId);
+              if (sessionState && sessionState.streamingOutputBuffer) {
+                streamingMessage.streamedOutput =
+                  sessionState.streamingOutputBuffer;
+                console.log(
+                  '📦 SAVED STREAMING OUTPUT TO MESSAGE:',
+                  sessionState.streamingOutputBuffer.length,
+                  'chars',
+                );
+              }
 
               if (hasMetadata && metadataRequest) {
                 console.log(
@@ -1821,6 +2188,21 @@ export function AgentForgePage() {
                     newSet.add(messageKey);
                     return newSet;
                   });
+
+                  // 🔧 PERSIST: Save execution plan directly to message for history
+                  streamingMessage.executionPlan = cleanExecutionPlan;
+                  // Also save history if available
+                  const state = getExecutionPlanState(currentSessionId);
+                  if (state.history[messageKey]) {
+                    streamingMessage.executionPlanHistory =
+                      state.history[messageKey];
+                  }
+                  console.log('💾 PERSISTED EXECUTION PLAN TO MESSAGE:', {
+                    messageId: messageKey,
+                    hasPlan: !!streamingMessage.executionPlan,
+                    historyCount:
+                      streamingMessage.executionPlanHistory?.length || 0,
+                  });
                 }
                 return currentPlan; // Don't clear it yet, let the next request clear it
               });
@@ -1831,7 +2213,12 @@ export function AgentForgePage() {
         }),
       );
     }
-    setIsTyping(false);
+    // 🔧 FIX: Use session-specific typing state
+    setIsTypingBySession(prev => {
+      const newMap = new Map(prev);
+      newMap.set(currentSessionId, false);
+      return newMap;
+    });
 
     // 🚀 FOCUS BACK TO INPUT - Better UX after response completes
     setTimeout(() => {
@@ -1842,38 +2229,88 @@ export function AgentForgePage() {
     }, 100); // Small delay to ensure DOM updates are complete
   }, [currentSessionId]);
 
+  // Cancel current request for a specific session
+  const handleCancelRequest = useCallback(
+    async (sessionId: string) => {
+      const sessionState = streamingStateBySession.current.get(sessionId);
+
+      if (!sessionState) {
+        console.log('⚠️ No active request to cancel for session:', sessionId);
+        return;
+      }
+
+      console.log('🛑 CANCELLING REQUEST for session:', sessionId);
+
+      // Send A2A cancellation if we have a taskId
+      if (sessionState.taskId && chatbotApi) {
+        console.log(
+          '📤 Sending A2A cancellation for task:',
+          sessionState.taskId,
+        );
+        await chatbotApi.cancelTask(sessionState.taskId);
+      }
+
+      // Abort the streaming request
+      sessionState.abortController.abort();
+
+      // Update typing state for this session
+      setIsTypingBySession(prev => {
+        const newMap = new Map(prev);
+        newMap.set(sessionId, false);
+        return newMap;
+      });
+
+      // Clear operational mode for this session
+      const opState = operationalStateBySession.current.get(sessionId);
+      if (opState) {
+        opState.isInOperationalMode = false;
+        opState.currentOperation = null;
+      }
+
+      // Mark the streaming message as cancelled and add a cancellation notice
+      setSessions(prev =>
+        prev.map(session => {
+          if (session.contextId === sessionId) {
+            const updatedMessages = session.messages.map(msg => {
+              if (
+                msg.isStreaming === true &&
+                msg.messageId === sessionState.streamingMessageId
+              ) {
+                // Mark the streaming message as complete
+                return {
+                  ...msg,
+                  isStreaming: false,
+                  text: `${
+                    msg.text || ''
+                  }\n\n---\n\n⚠️ **Request Cancelled**\n\n_This request was cancelled by the user._`,
+                };
+              }
+              return msg;
+            });
+            return { ...session, messages: updatedMessages };
+          }
+          return session;
+        }),
+      );
+
+      // Clean up session state
+      streamingStateBySession.current.delete(sessionId);
+      console.log(
+        '✅ Request cancelled and cleaned up for session:',
+        sessionId,
+      );
+    },
+    [setIsTypingBySession, chatbotApi],
+  );
+
   // Main message submission handler
   const handleMessageSubmit = useCallback(
     async (messageText?: string) => {
       const inputText = messageText || userInput.trim();
       if (!inputText) return;
 
-      // 🔧 EARLY ULTRA-NUCLEAR CLEANUP: Clear execution plan state + localStorage before processing new user request
-      if (process.env.NODE_ENV === 'development') {
-        console.log(
-          '🧹 EARLY ULTRA-NUCLEAR CLEANUP - User submitted new message',
-        );
-      }
-      setExecutionPlanBuffer(prev => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('🧹 EARLY BUFFER RESET:', {
-            before: Object.keys(prev),
-            afterReset: 'EMPTY',
-            reason: 'User submitted new message',
-          });
-        }
-        return {};
-      });
-      setAutoExpandExecutionPlans(prev => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('🧹 EARLY AUTO-EXPAND RESET:', {
-            before: Array.from(prev),
-            afterReset: 'EMPTY',
-            reason: 'User submitted new message',
-          });
-        }
-        return new Set();
-      });
+      // Keep execution plans from previous messages intact
+      // They will remain visible (collapsed) when new message is submitted
 
       // 🚨 CRITICAL FIX: Reset accumulated execution plan React state
       setAccumulatedExecutionPlan(prevPlan => {
@@ -1952,7 +2389,13 @@ export function AgentForgePage() {
         }),
       );
       setUserInput('');
-      setIsTyping(true);
+      // 🔧 FIX: Use session-specific typing state
+      setIsTypingBySession(prev => {
+        const newMap = new Map(prev);
+        newMap.set(sessionToUse, true);
+        console.log('🎬 SET TYPING STATE TO TRUE for session:', sessionToUse);
+        return newMap;
+      });
 
       // Keep suggestions visible
 
@@ -1981,7 +2424,12 @@ export function AgentForgePage() {
             return session;
           }),
         );
-        setIsTyping(false);
+        // 🔧 FIX: Use session-specific typing state
+        setIsTypingBySession(prev => {
+          const newMap = new Map(prev);
+          newMap.set(sessionToUse, false);
+          return newMap;
+        });
         return;
       }
 
@@ -2004,25 +2452,39 @@ export function AgentForgePage() {
             let lastContextId: string | undefined;
             let accumulatedText = '';
 
-            // 🚨 ABORT PREVIOUS STREAMING REQUEST to prevent contamination
-            if (abortControllerRef.current) {
-              console.log('🛑 ABORTING PREVIOUS STREAMING REQUEST');
-              abortControllerRef.current.abort();
+            // 🔧 FIX: Use session-specific streaming state
+            const previousSessionState =
+              streamingStateBySession.current.get(sessionToUse);
+            if (previousSessionState) {
+              console.log(
+                '🛑 ABORTING PREVIOUS STREAMING REQUEST FOR SESSION:',
+                sessionToUse,
+              );
+              previousSessionState.abortController.abort();
             }
 
             // Generate unique request ID for this streaming session
             const currentRequestId = uuidv4();
-            currentRequestIdRef.current = currentRequestId;
             console.log('🆔 NEW REQUEST ID:', currentRequestId);
 
-            // Create new AbortController for this request
-            abortControllerRef.current = new AbortController();
+            // Create new session-specific streaming state
+            const newAbortController = new AbortController();
+            streamingStateBySession.current.set(sessionToUse, {
+              requestId: currentRequestId,
+              abortController: newAbortController,
+              streamingMessageId: null, // Will be set in addStreamingMessage
+              streamingOutputBuffer: '', // Initialize empty buffer for this session
+              taskId: null, // Will be captured from first task event
+            });
 
-            // Clear execution plan state at the start of each new response
-            setIsCapturingExecutionPlan(false);
-            setAccumulatedExecutionPlan('');
+            // 🔧 FIX: Clear execution plan state for THIS SESSION at the start of each new response
+            const sessionExecPlanState = getExecutionPlanState(sessionToUse);
+            sessionExecPlanState.isCapturing = false;
+            sessionExecPlanState.accumulated = '';
             console.log(
               '🧹 CLEARED EXECUTION PLAN STATE FOR NEW MESSAGE - starting fresh',
+              'Session:',
+              sessionToUse,
             );
 
             // Stream responses in real-time using SSE
@@ -2042,13 +2504,27 @@ export function AgentForgePage() {
             }
 
             for await (const event of streamIterator) {
-              // 🚨 CHECK FOR ABORT SIGNAL: Cancel processing if new request started
+              // 🔧 FIX: Check session-specific abort signal
+              const currentSessionState =
+                streamingStateBySession.current.get(sessionToUse);
               if (
-                abortControllerRef.current?.signal.aborted ||
-                currentRequestIdRef.current !== currentRequestId
+                !currentSessionState ||
+                currentSessionState.abortController.signal.aborted ||
+                currentSessionState.requestId !== currentRequestId
               ) {
+                let reason = 'Unknown';
+                if (!currentSessionState) {
+                  reason = 'No session state';
+                } else if (currentSessionState.abortController.signal.aborted) {
+                  reason = 'Aborted';
+                } else {
+                  reason = 'New request started';
+                }
                 console.log(
-                  '🛑 STREAMING ABORTED - New request started or cancelled',
+                  '🛑 STREAMING ABORTED - Reason:',
+                  reason,
+                  'Session:',
+                  sessionToUse,
                 );
                 break;
               }
@@ -2230,10 +2706,52 @@ export function AgentForgePage() {
                       continue; // Skip normal text processing for metadata artifacts
                     }
 
+                    // 🎯 HANDLE partial_result - Complete final accumulated text from backend
+                    // This is sent when stream ends prematurely and contains ALL accumulated content
+                    if (event.artifact?.name === 'partial_result') {
+                      console.log(
+                        '🎯 PARTIAL_RESULT ARTIFACT DETECTED - Using as final complete text',
+                      );
+                      console.log(
+                        '📄 Content length:',
+                        textPart.text.length,
+                        'chars',
+                      );
+                      console.log(
+                        '📄 Content preview:',
+                        `${textPart.text.substring(0, 200)}...`,
+                      );
+
+                      // Replace accumulated text with complete final text from backend
+                      accumulatedText = textPart.text;
+
+                      // Clean the text content from execution plan markers
+                      const cleanedTextForMessage = accumulatedText
+                        .replace(/⟦[^⟧]*⟧/g, '')
+                        .trim();
+
+                      updateStreamingMessage(
+                        cleanedTextForMessage,
+                        accumulatedExecutionPlan || '',
+                        true,
+                      );
+
+                      console.log(
+                        '✅ Streaming message updated with complete partial_result text',
+                      );
+                      continue;
+                    }
+
                     // 🔧 SIMPLE LOGIC: Just capture execution_plan_streaming content for accumulation
                     if (event.artifact?.name === 'execution_plan_streaming') {
                       // This artifact accumulates chunks for fallback
-                      if (currentRequestIdRef.current === currentRequestId) {
+                      // 🔧 FIX: Use session-specific state
+                      const planStreamingSessionState =
+                        streamingStateBySession.current.get(sessionToUse);
+                      if (
+                        planStreamingSessionState?.requestId ===
+                        currentRequestId
+                      ) {
                         console.log(
                           '✅ ACCEPTING EXECUTION PLAN STREAMING CHUNK',
                         );
@@ -2245,13 +2763,25 @@ export function AgentForgePage() {
                         'Execution plan streaming chunk processed, continuing...',
                       );
                     } else if (
-                      event.artifact?.name === 'execution_plan_update'
+                      event.artifact?.name === 'execution_plan_update' ||
+                      event.artifact?.name === 'execution_plan_status_update'
                     ) {
-                      // 🚀 REAL-TIME UPDATE: Use execution_plan_update for immediate display
-                      // This contains the complete plan so far, no need to accumulate chunks
-                      if (currentRequestIdRef.current === currentRequestId) {
+                      // 🚀 REAL-TIME UPDATE: Use execution_plan_update/execution_plan_status_update for immediate display
+                      // execution_plan_update: Initial TODO list creation
+                      // execution_plan_status_update: Subsequent TODO status updates (merge=true)
+                      // Both contain the complete plan so far, no need to accumulate chunks
+                      // 🔧 FIX: Use session-specific state
+                      const planUpdateSessionState =
+                        streamingStateBySession.current.get(sessionToUse);
+                      if (
+                        planUpdateSessionState?.requestId === currentRequestId
+                      ) {
                         console.log(
-                          '📋 EXECUTION PLAN UPDATE - Updating display in real-time',
+                          `📋 ${
+                            event.artifact.name === 'execution_plan_update'
+                              ? 'INITIAL'
+                              : 'STATUS'
+                          } EXECUTION PLAN UPDATE - Updating display in real-time`,
                         );
 
                         const completePlan = textPart.text;
@@ -2389,8 +2919,11 @@ export function AgentForgePage() {
                         // 🔧 SIMPLE LOGIC: Route streaming_result based on capture state (existing logic handles markers)
                         if (isCapturingExecutionPlan) {
                           // 🚨 REQUEST ISOLATION: Only accept content for current request
+                          // 🔧 FIX: Use session-specific state
+                          const captureSessionState =
+                            streamingStateBySession.current.get(sessionToUse);
                           if (
-                            currentRequestIdRef.current === currentRequestId
+                            captureSessionState?.requestId === currentRequestId
                           ) {
                             console.log(
                               '✅ CAPTURING FOR EXECUTION PLAN - Request ID matches:',
@@ -2411,7 +2944,7 @@ export function AgentForgePage() {
                             console.log(
                               '🚫 REJECTING EXECUTION PLAN CAPTURE - Request ID mismatch:',
                               {
-                                current: currentRequestIdRef.current,
+                                current: captureSessionState?.requestId,
                                 streaming: currentRequestId,
                                 content: `${cleanText.substring(0, 50)}...`,
                               },
@@ -2444,6 +2977,20 @@ export function AgentForgePage() {
                             'APPENDING to existing text (direct concat)',
                           );
                           accumulatedText += cleanText;
+                        }
+
+                        // 🔧 ALWAYS accumulate to session-specific streaming output buffer (for complete history)
+                        const sessionStateForBuffer =
+                          streamingStateBySession.current.get(sessionToUse);
+                        if (sessionStateForBuffer) {
+                          sessionStateForBuffer.streamingOutputBuffer +=
+                            cleanText;
+                          console.log(
+                            '📦 STREAMING OUTPUT BUFFER:',
+                            sessionStateForBuffer.streamingOutputBuffer.length,
+                            'chars total for session:',
+                            sessionToUse,
+                          );
                         }
 
                         // 🚀 SIMPLIFIED: Just pass execution plan directly to message
@@ -2490,6 +3037,21 @@ export function AgentForgePage() {
                   break;
                 }
               } else if (event.kind === 'task') {
+                // Capture taskId for A2A cancellation
+                if (event.id) {
+                  const taskSessionState =
+                    streamingStateBySession.current.get(sessionToUse);
+                  if (taskSessionState && !taskSessionState.taskId) {
+                    taskSessionState.taskId = event.id;
+                    console.log(
+                      '📋 Captured A2A task ID:',
+                      event.id,
+                      'for session:',
+                      sessionToUse,
+                    );
+                  }
+                }
+
                 // Handle artifacts (final results from sub-agents)
                 if (event.artifacts && event.artifacts.length > 0) {
                   // Look for 'final_result' artifact first, otherwise use the last artifact
@@ -2596,7 +3158,12 @@ export function AgentForgePage() {
 
             // Finish streaming and cleanup operational state
             finishStreamingMessage();
-            setIsTyping(false);
+            // 🔧 FIX: Use session-specific typing state
+            setIsTypingBySession(prev => {
+              const newMap = new Map(prev);
+              newMap.set(sessionToUse, false);
+              return newMap;
+            });
             setIsInOperationalMode(false);
             setCurrentOperation(null);
             return;
@@ -2644,7 +3211,12 @@ export function AgentForgePage() {
             // Clean up any streaming UI state including operational mode
             setIsInOperationalMode(false);
             setCurrentOperation(null);
-            setIsTyping(true); // Reset typing state for non-streaming fallback
+            // 🔧 FIX: Use session-specific typing state
+            setIsTypingBySession(prev => {
+              const newMap = new Map(prev);
+              newMap.set(sessionToUse, true);
+              return newMap;
+            });
           }
         }
 
@@ -2861,17 +3433,15 @@ export function AgentForgePage() {
             }),
           );
         }
-        setIsTyping(false); // Set to false for non-streaming responses
+        // 🔧 FIX: Use session-specific typing state
+        setIsTypingBySession(prev => {
+          const newMap = new Map(prev);
+          newMap.set(sessionToUse, false);
+          return newMap;
+        });
       } catch (error) {
         const err = error as Error;
         console.log('🚫 Message submission error:', err.message);
-
-        // When message submission fails, also set connection status to disconnected and start countdown
-        console.log(
-          '🔴 Message failed, setting connection status to disconnected with countdown',
-        );
-        setConnectionStatus('disconnected');
-        setNextRetryCountdown(30);
 
         // Handle A2A Client specific errors more gracefully
         const isA2AConnectionError =
@@ -2879,10 +3449,24 @@ export function AgentForgePage() {
           err.message.includes('.well-known/agent.json') ||
           err.message.includes('_fetchAndCacheAgentCard');
 
-        // Don't set apiError - connection banner will handle display
-
         // Check if it's a timeout error and display it directly without additional prefix
         const isTimeoutError = err.message.includes('timed out');
+
+        // 🔧 FIX: Only set disconnected for actual connection errors, not timeouts or other errors
+        if (isA2AConnectionError && !isTimeoutError) {
+          console.log(
+            '🔴 Connection error detected, setting status to disconnected with countdown',
+          );
+          setConnectionStatus('disconnected');
+          setNextRetryCountdown(30);
+        } else {
+          console.log(
+            '⚠️ Message error (timeout or other) but connection may still be OK, not changing connection status',
+          );
+        }
+
+        // Don't set apiError - connection banner will handle display
+
         let errorMessage: string;
         if (isTimeoutError) {
           errorMessage = `⏱️ ${err.message}`;
@@ -2912,7 +3496,12 @@ export function AgentForgePage() {
             return session;
           }),
         );
-        setIsTyping(false); // Always set to false on error
+        // 🔧 FIX: Use session-specific typing state
+        setIsTypingBySession(prev => {
+          const newMap = new Map(prev);
+          newMap.set(sessionToUse, false);
+          return newMap;
+        });
       }
     },
     [
@@ -2933,6 +3522,7 @@ export function AgentForgePage() {
       setAccumulatedExecutionPlan,
       accumulatedExecutionPlan,
       isCapturingExecutionPlan,
+      setIsTypingBySession,
     ],
   );
 
@@ -3032,7 +3622,9 @@ export function AgentForgePage() {
 
   const toggleFullscreen = () => {
     // Don't allow fullscreen toggle while a request is in progress
-    if (isTyping) {
+    const currentSessionIsTyping =
+      isTypingBySession.get(currentSessionId) || false;
+    if (currentSessionIsTyping) {
       console.log('⚠️ Fullscreen toggle blocked - request in progress');
       return;
     }
@@ -3163,6 +3755,17 @@ export function AgentForgePage() {
                   sessionId: currentSessionId,
                 });
 
+                const isCurrentSessionTyping =
+                  isTypingBySession.get(currentSessionId) || false;
+                if (process.env.NODE_ENV === 'development') {
+                  console.log(
+                    '🎬 RENDERING CHATCONTAINER - isTyping:',
+                    isCurrentSessionTyping,
+                    'for session:',
+                    currentSessionId,
+                  );
+                }
+
                 return (
                   <ChatContainer
                     key={`chat-${currentSessionId}-${renderedMessages.length}`}
@@ -3170,9 +3773,12 @@ export function AgentForgePage() {
                     userInput={userInput}
                     setUserInput={setUserInput}
                     onMessageSubmit={handleMessageSubmit}
+                    onCancelRequest={() =>
+                      handleCancelRequest(currentSessionId)
+                    }
                     onSuggestionClick={handleSuggestionClick}
                     onReset={resetChat}
-                    isTyping={isTyping}
+                    isTyping={isCurrentSessionTyping}
                     suggestions={suggestions}
                     onScroll={handleScroll}
                     onLoadMore={handleLoadMore}
@@ -3183,6 +3789,7 @@ export function AgentForgePage() {
                     showLoadMoreButton={showLoadMoreButton}
                     loadMoreIncrement={LOAD_MORE_INCREMENT}
                     executionPlanBuffer={executionPlanBuffer}
+                    executionPlanHistory={executionPlanHistory}
                     autoExpandExecutionPlans={autoExpandExecutionPlans}
                     executionPlanLoading={executionPlanLoading}
                     autoScrollEnabled={autoScrollEnabled}
@@ -3303,7 +3910,7 @@ export function AgentForgePage() {
             </Tooltip>
             <Tooltip
               title={
-                isTyping
+                isTypingBySession.get(currentSessionId) || false
                   ? 'Please wait for response to complete'
                   : 'Exit Fullscreen'
               }
@@ -3312,10 +3919,16 @@ export function AgentForgePage() {
                 <IconButton
                   onClick={toggleFullscreen}
                   className={classes.fullscreenButton}
-                  disabled={isTyping}
+                  disabled={isTypingBySession.get(currentSessionId) || false}
                   style={{
-                    opacity: isTyping ? 0.5 : 1,
-                    cursor: isTyping ? 'not-allowed' : 'pointer',
+                    opacity:
+                      isTypingBySession.get(currentSessionId) || false
+                        ? 0.5
+                        : 1,
+                    cursor:
+                      isTypingBySession.get(currentSessionId) || false
+                        ? 'not-allowed'
+                        : 'pointer',
                   }}
                 >
                   <FullscreenExitIcon />
@@ -3411,17 +4024,23 @@ export function AgentForgePage() {
           </Tooltip>
           <Tooltip
             title={
-              isTyping ? 'Please wait for response to complete' : 'Fullscreen'
+              isTypingBySession.get(currentSessionId) || false
+                ? 'Please wait for response to complete'
+                : 'Fullscreen'
             }
           >
             <span>
               <IconButton
                 onClick={toggleFullscreen}
                 className={classes.fullscreenButton}
-                disabled={isTyping}
+                disabled={isTypingBySession.get(currentSessionId) || false}
                 style={{
-                  opacity: isTyping ? 0.5 : 1,
-                  cursor: isTyping ? 'not-allowed' : 'pointer',
+                  opacity:
+                    isTypingBySession.get(currentSessionId) || false ? 0.5 : 1,
+                  cursor:
+                    isTypingBySession.get(currentSessionId) || false
+                      ? 'not-allowed'
+                      : 'pointer',
                 }}
               >
                 <FullscreenIcon />

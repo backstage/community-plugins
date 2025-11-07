@@ -490,12 +490,17 @@ export class A2AClient {
   /**
    * Cancels a task by its ID.
    * @param params Parameters containing the taskId.
+   * @param authToken Optional authentication token.
    * @returns A Promise resolving to CancelTaskResponse, which contains the updated Task object or an error.
    */
-  public async cancelTask(params: TaskIdParams): Promise<CancelTaskResponse> {
+  public async cancelTask(
+    params: TaskIdParams,
+    authToken?: string,
+  ): Promise<CancelTaskResponse> {
     return this._postRpcRequest<TaskIdParams, CancelTaskResponse>(
       'tasks/cancel',
       params,
+      authToken,
     );
   }
 

@@ -75,4 +75,6 @@ export interface Message {
   streamedOutput?: string; // Complete streaming history for collapsed container
   hasFinalResult?: boolean; // Whether partial_result was received
   skipCleaning?: boolean; // Skip markdown cleaning for final results
+  executionPlan?: string; // Execution plan for this message (persisted to history)
+  executionPlanHistory?: string[]; // History of execution plan updates
 }

@@ -152,4 +152,18 @@ export class ChatbotApi {
       return [];
     }
   }
+
+  public async cancelTask(taskId: string): Promise<void> {
+    try {
+      if (!this.client) {
+        throw new Error('A2A client not initialized');
+      }
+      const { token } = await this.identityApi.getCredentials();
+      await this.client.cancelTask({ taskId }, token);
+      console.log('✅ A2A cancellation sent for task:', taskId);
+    } catch (error) {
+      console.error('❌ Failed to send A2A cancellation:', error);
+      // Don't throw - cancellation is best-effort
+    }
+  }
 }
