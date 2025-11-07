@@ -36,9 +36,9 @@
     "directory": "workspaces/rbac"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.1",
+    "@backstage/cli": "^0.34.4",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.15.1",
+    "@backstage/repo-tools": "^0.15.3",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "knip": "^5.27.4",
