@@ -36,7 +36,7 @@ import React, {
   useState,
   memo,
 } from 'react';
-import { Message } from '../types';
+import { Message, Feedback } from '../types';
 import { ChatMessage } from './ChatMessage';
 
 const useStyles = makeStyles(theme => ({
@@ -221,6 +221,12 @@ export interface ChatContainerProps {
   onSuggestionClick: (suggestion: string) => void;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
 
+  // Feedback props
+  enableFeedback?: boolean;
+  feedback?: { [key: number]: Feedback };
+  onFeedbackChange?: (index: number, feedback: Feedback) => void;
+  onFeedbackSubmit?: (index: number, feedback: Feedback) => void;
+
   // Scroll-based message loading
   onScroll?: (
     scrollTop: number,
@@ -258,6 +264,10 @@ const MessagesList = memo(function MessagesList({
   autoExpandExecutionPlans,
   executionPlanLoading,
   onMetadataSubmit,
+  enableFeedback,
+  feedback,
+  onFeedbackChange,
+  onFeedbackSubmit,
 }: {
   messages: Message[];
   botName: string;
@@ -273,6 +283,10 @@ const MessagesList = memo(function MessagesList({
   autoExpandExecutionPlans?: Set<string>;
   executionPlanLoading?: Set<string>;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
+  enableFeedback?: boolean;
+  feedback?: { [key: number]: Feedback };
+  onFeedbackChange?: (index: number, feedback: Feedback) => void;
+  onFeedbackSubmit?: (index: number, feedback: Feedback) => void;
 }) {
   // Memoize font sizes to prevent re-creating object on every render
   const memoizedFontSizes = useMemo(
@@ -307,6 +321,18 @@ const MessagesList = memo(function MessagesList({
             autoExpandExecutionPlans={autoExpandExecutionPlans}
             executionPlanLoading={executionPlanLoading}
             onMetadataSubmit={onMetadataSubmit}
+            enableFeedback={enableFeedback}
+            messageFeedback={feedback?.[index]}
+            onFeedbackChange={
+              onFeedbackChange
+                ? newFeedback => onFeedbackChange(index, newFeedback)
+                : undefined
+            }
+            onFeedbackSubmit={
+              onFeedbackSubmit
+                ? feedbackData => onFeedbackSubmit(index, feedbackData)
+                : undefined
+            }
           />
         </div>
       ))}
@@ -342,6 +368,10 @@ export const ChatContainer = memo(function ChatContainer({
   botName,
   botIcon,
   inputPlaceholder,
+  enableFeedback = false,
+  feedback,
+  onFeedbackChange,
+  onFeedbackSubmit,
   fontSizes,
   onMessageSubmit,
   onCancelRequest,
@@ -598,9 +628,14 @@ export const ChatContainer = memo(function ChatContainer({
           botIcon={botIcon}
           fontSizes={fontSizes}
           executionPlanBuffer={executionPlanBuffer}
+          executionPlanHistory={executionPlanHistory}
           autoExpandExecutionPlans={autoExpandExecutionPlans}
           executionPlanLoading={executionPlanLoading}
           onMetadataSubmit={onMetadataSubmit}
+          enableFeedback={enableFeedback}
+          feedback={feedback}
+          onFeedbackChange={onFeedbackChange}
+          onFeedbackSubmit={onFeedbackSubmit}
         />
 
         {isTyping && (

@@ -23,10 +23,14 @@ import {
   AgentCard,
 } from '../a2a/schema';
 import { IdentityApi, OpenIdConnectApi } from '@backstage/core-plugin-api';
+import { Message, Feedback } from '../types';
+import { createTimestamp } from '../utils';
+import axios, { AxiosError } from 'axios';
 
 export interface IChatbotApiOptions {
   requestTimeout?: number;
   useOpenIDToken?: boolean;
+  feedbackEndpoint?: string | null;
 }
 
 export class ChatbotApi {
@@ -35,9 +39,13 @@ export class ChatbotApi {
   private identityApi: IdentityApi;
   private openIdConnectApi: OpenIdConnectApi | null;
   private useOpenIDToken: boolean;
+  private feedbackEndpoint: string | null;
   constructor(
     private apiBaseUrl: string,
-    options: { identityApi: IdentityApi; openIdConnectApi?: OpenIdConnectApi | null },
+    options: {
+      identityApi: IdentityApi;
+      openIdConnectApi?: OpenIdConnectApi | null;
+    },
     apiOptions?: IChatbotApiOptions,
   ) {
     this.contextId = '';
@@ -47,6 +55,7 @@ export class ChatbotApi {
     this.identityApi = options.identityApi;
     this.openIdConnectApi = options.openIdConnectApi ?? null;
     this.useOpenIDToken = apiOptions?.useOpenIDToken ?? false; // default to false which means use IdentityApi.getCredentials() (backstage token)
+    this.feedbackEndpoint = apiOptions?.feedbackEndpoint ?? null;
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
@@ -58,7 +67,9 @@ export class ChatbotApi {
   private async getToken(): Promise<string | undefined> {
     if (this.useOpenIDToken) {
       if (!this.openIdConnectApi) {
-        console.warn('useOpenIDToken is true but openIdConnectApi is not provided, falling back to IdentityApi');
+        console.warn(
+          'useOpenIDToken is true but openIdConnectApi is not provided, falling back to IdentityApi',
+        );
         const credentials = await this.identityApi.getCredentials();
         return credentials.token;
       }
@@ -155,6 +166,52 @@ export class ChatbotApi {
       return card?.skills[0].examples;
     } catch (error) {
       return [];
+    }
+  }
+
+  public async submitFeedback(
+    message: Message,
+    feedback: Feedback,
+  ): Promise<void> {
+    if (!this.feedbackEndpoint) {
+      throw new Error('Feedback endpoint is not configured');
+    }
+
+    try {
+      // always use backstage token for Jarvis
+      // TODO: maybe this should be configurable
+      const { token } = await this.identityApi.getCredentials();
+
+      // Submit feedback without Authorization header to avoid CORS preflight
+      const { status } = await axios.post(
+        this.feedbackEndpoint,
+        {
+          type: feedback.type,
+          reason: feedback.reason,
+          additionalFeedback: feedback.additionalFeedback || '',
+          timestamp: createTimestamp(),
+          message: message.text,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Commented out to avoid CORS preflight
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      if (status !== 200) {
+        throw new Error('Failed to submit feedback');
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err?.isAxiosError) {
+        throw new Error(
+          `Error submitting feedback: ${[err.message, err.cause?.message]
+            .filter(Boolean)
+            .join(' - ')}`,
+        );
+      }
+      throw new Error(err.message);
     }
   }
 
