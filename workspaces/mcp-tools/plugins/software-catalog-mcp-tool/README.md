@@ -33,6 +33,7 @@ backend.add(
 This tool searches and retrieves catalog entities from the Backstage server. It can list all Backstage entities such as Components, Systems, Resources, APIs, Locations, Users, and Groups. By default, results are returned in a simplified format, which returns key metadata, but setting `verbose` to true will return the full Backstage entity objects.
 
 **Parameters:**
+
 - `kind` (optional, string): Filter entities by kind (e.g., Component, API, System, Resource)
 - `type` (optional, string): Filter entities by type (e.g., ai-model, library, website, storage). Note: `type` can only be filtered on if a specified entity `kind` is also specified.
 - `name` (optional, string): Filter entities by name

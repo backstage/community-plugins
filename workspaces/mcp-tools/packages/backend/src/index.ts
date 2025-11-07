@@ -67,7 +67,5 @@ backend.add(import('@backstage/plugin-mcp-actions-backend'));
 backend.add(
   import('@backstage-community/backstage-plugin-software-catalog-mcp-tool'),
 );
-backend.add(
-  import('@backstage-community/backstage-plugin-techdocs-mcp-tool'),
-);
+backend.add(import('@backstage-community/backstage-plugin-techdocs-mcp-tool'));
 backend.start();

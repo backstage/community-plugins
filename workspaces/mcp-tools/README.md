@@ -7,8 +7,6 @@ For information on each MCP tool, see each plugin's README:
 - [software-catalog-mcp-tool](./plugins/software-catalog-mcp-tool/README.md) - MCP tools for interacting with the software catalog
 - [techdocs-mcp-tool](./plugins/techdocs-mcp-tool/README.md) - MCP tools for interacting with TechDocs
 
-
-
 ## Development
 
 A sample dev environment under `packages/` is provided to test the MCP tools. To start the instance:
