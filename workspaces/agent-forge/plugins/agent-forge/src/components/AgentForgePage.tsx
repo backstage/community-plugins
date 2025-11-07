@@ -294,7 +294,7 @@ export function AgentForgePage() {
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
   const authApiId =
-    config.getOptionalString('agentForge.authApiId') ?? 'auth.duo.oidc'; // default to auth.duo.oidc
+    config.getOptionalString('agentForge.authApiId'); // Optional - only needed if using a custom auth provider
   const useOpenIDToken =
     config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
   const requestTimeout =
@@ -337,13 +337,13 @@ export function AgentForgePage() {
       config.getOptionalString('agentForge.fontSize.timestamp') || '0.75rem',
   };
 
-  // OpenIdConnectApiRef
+  // OpenIdConnectApiRef - only create if authApiId is provided
   const OpenIdConnectApiRef: ApiRef<
     OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
-  > = createApiRef({
+  > | null = authApiId ? createApiRef({
     id: authApiId,
-  });
-  const openIdConnectApi = useApi(OpenIdConnectApiRef);
+  }) : null;
+  const openIdConnectApi = OpenIdConnectApiRef ? useApi(OpenIdConnectApiRef) : null;
 
   // Create initial session factory
   const createInitialSession = useCallback(
