@@ -211,16 +211,7 @@ Here are some common issues and questions that contributors often face.
 
 ### The bot says I'm missing a changeset. How do I add one?
 
-If your change affects any code inside a `plugins/` or `packages/` directory, it needs a changeset file to document the change for the release.
-
-1.  Go to the root of the `community-plugins` repository .
-
-2.  Run the command: `yarn dlx @changesets/cli`
-3.  Follow the prompts:
-      * Use the arrow keys and spacebar to select the package(s) you changed.
-      * Select the version bump type (usually `patch` for bug fixes, `minor` for features).
-      * Write a short summary of your change (e.g., `fix(jenkins): Correct buildJob parameter passing`).
-4.  A new file like `.changeset/small-turtles-cry.md` will be created. Add and commit this file to your PR.
+If your change affects any code inside a `plugins/` or `packages/` directory, it needs a changeset file to document the change for the release. Please follow the [Backstage contributing guide on creating changesets](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#creating-changesets).
 
 ### My PR is full of unrelated files ("Knip" changes, `yarn.lock` conflicts)\!
 
