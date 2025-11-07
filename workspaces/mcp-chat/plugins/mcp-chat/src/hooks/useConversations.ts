@@ -16,7 +16,7 @@
 
 import { useState, useEffect } from 'react';
 import { useApi, identityApiRef } from '@backstage/core-plugin-api';
-import { useAsync } from 'react-use';
+import useAsync from 'react-use/esm/useAsync';
 import { mcpChatApiRef } from '../api';
 import type { ConversationRecord } from '../types';
 
