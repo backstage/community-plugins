@@ -152,9 +152,11 @@ export async function discoverOrganizationMetrics({
         '[discoverOrganizationMetrics] No new metrics found to insert',
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
-      '[discoverOrganizationMetrics] An error occurred while processing Github Copilot metrics',
+      `[discoverOrganizationMetrics] Failed to process Github Copilot metrics: ${
+        error?.message || error
+      }`,
       error,
     );
     throw error;

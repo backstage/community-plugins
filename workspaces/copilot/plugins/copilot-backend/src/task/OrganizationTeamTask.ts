@@ -182,16 +182,20 @@ export async function discoverOrganizationTeamMetrics({
             `[discoverOrganizationTeamMetrics] No new metrics found to insert for team: ${team.slug}`,
           );
         }
-      } catch (error) {
+      } catch (error: any) {
         logger.error(
-          `[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}`,
+          `[discoverOrganizationTeamMetrics] Failed to process metrics for team ${
+            team.slug
+          }: ${error?.message || error}`,
           error,
         );
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     logger.error(
-      '[discoverOrganizationTeamMetrics] Error fetching teams',
+      `[discoverOrganizationTeamMetrics] Failed to fetch teams: ${
+        error?.message || error
+      }`,
       error,
     );
     throw error;

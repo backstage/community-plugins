@@ -50,21 +50,15 @@ export default class TaskManagement {
       `[TaskManagement] Starting processing of ${this.tasks.length} tasks`,
     );
 
-    const taskPromises = this.tasks.map(async task => {
+    const taskPromises = this.tasks.map(async (task, index) => {
       try {
         await task();
-      } catch (e) {
-        if (e instanceof Error) {
-          this.options.logger.error(
-            `[TaskManagement] Failed to process task: ${e.message}`,
-            e,
-          );
-        } else {
-          this.options.logger.error(
-            '[TaskManagement] Failed to process task',
-            e,
-          );
-        }
+      } catch (e: any) {
+        const taskName = task.name || `Task ${index + 1}`;
+        this.options.logger.error(
+          `[TaskManagement] Failed to process ${taskName}: ${e?.message || e}`,
+          e,
+        );
       }
     });
 

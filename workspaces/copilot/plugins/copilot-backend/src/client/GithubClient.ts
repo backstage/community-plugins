@@ -16,12 +16,14 @@
 
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   CopilotMetrics,
   CopilotSeats,
   TeamInfo,
 } from '@backstage-community/plugin-copilot-common';
 import { Octokit } from '@octokit/rest';
+import { createAppAuth } from '@octokit/auth-app';
 import {
   CopilotConfig,
   CopilotCredentials,
@@ -50,11 +52,12 @@ export class GithubClient implements GithubApi {
   constructor(
     private readonly copilotConfig: CopilotConfig,
     private readonly config: Config,
+    private readonly logger?: LoggerService,
   ) {}
 
-  static async fromConfig(config: Config) {
+  static async fromConfig(config: Config, logger?: LoggerService) {
     const info = getCopilotConfig(config);
-    return new GithubClient(info, config);
+    return new GithubClient(info, config, logger);
   }
 
   private async getCredentials(): Promise<CopilotCredentials> {
@@ -64,17 +67,84 @@ export class GithubClient implements GithubApi {
   private async getOctokit(
     type: 'enterprise' | 'organization',
   ): Promise<Octokit> {
-    const credentials = await this.getCredentials();
-    const headers = credentials[type]?.headers || {};
+    try {
+      const credentials = await this.getCredentials();
+      const authStrategy = credentials[type];
 
-    return new Octokit({
-      baseUrl: this.copilotConfig.apiBaseUrl,
-      auth: headers.Authorization?.replace('Bearer ', '') || '',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
+      if (!authStrategy) {
+        throw new Error(`No credentials configured for ${type}`);
+      }
+
+      const octokitConfig: any = {
+        baseUrl: this.copilotConfig.apiBaseUrl,
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      };
+
+      // If it's a string token, use it directly
+      // If it's an auth strategy config (GitHub App), pass authStrategy and auth
+      if (typeof authStrategy === 'string') {
+        this.logger?.debug(
+          `[GithubClient] Using token authentication for ${type}`,
+        );
+        octokitConfig.auth = authStrategy;
+      } else {
+        this.logger?.debug(
+          `[GithubClient] Using GitHub App authentication for ${type}`,
+          {
+            appId: authStrategy.appId,
+          },
+        );
+
+        // For GitHub Apps, we need to get the installation ID first
+        // Create a temporary app-authenticated Octokit to get the installation ID
+        const appOctokit = new Octokit({
+          authStrategy: createAppAuth,
+          auth: {
+            appId: authStrategy.appId,
+            privateKey: authStrategy.privateKey,
+          },
+        });
+
+        // Get installation ID for the organization
+        const orgName =
+          type === 'organization'
+            ? this.copilotConfig.organization
+            : this.copilotConfig.enterprise;
+
+        if (!orgName) {
+          throw new Error(`No ${type} name configured`);
+        }
+
+        const { data: installation } =
+          await appOctokit.rest.apps.getOrgInstallation({
+            org: orgName,
+          });
+
+        this.logger?.debug(
+          `[GithubClient] Got installation ID ${installation.id} for ${orgName}`,
+        );
+
+        // Now create the properly configured auth
+        octokitConfig.authStrategy = createAppAuth;
+        octokitConfig.auth = {
+          appId: authStrategy.appId,
+          privateKey: authStrategy.privateKey,
+          installationId: installation.id,
+        };
+      }
+
+      return new Octokit(octokitConfig);
+    } catch (error: any) {
+      this.logger?.error(
+        `[GithubClient] Failed to create Octokit instance for ${type}: ${
+          error?.message || error
+        }`,
+      );
+      throw await ResponseError.fromResponse(error?.response || error);
+    }
   }
 
   private async getEnterpriseOctokit(): Promise<Octokit> {
@@ -98,8 +168,8 @@ export class GithubClient implements GithubApi {
     try {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -112,8 +182,8 @@ export class GithubClient implements GithubApi {
     try {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -188,8 +258,8 @@ export class GithubClient implements GithubApi {
       }
 
       return teams;
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -203,8 +273,8 @@ export class GithubClient implements GithubApi {
       });
 
       return this.mergePaginationResult(seats as CopilotSeats[]);
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -215,8 +285,13 @@ export class GithubClient implements GithubApi {
     try {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      this.logger?.error(
+        `[GithubClient] Failed to fetch organization copilot metrics: ${
+          error?.message || error
+        }`,
+      );
+      throw await ResponseError.fromResponse(error?.response || error);
     }
   }
 
@@ -229,8 +304,8 @@ export class GithubClient implements GithubApi {
     try {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -289,8 +364,8 @@ export class GithubClient implements GithubApi {
       }
 
       return teams;
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -304,8 +379,8 @@ export class GithubClient implements GithubApi {
       });
 
       return this.mergePaginationResult(seats as CopilotSeats[]);
-    } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+    } catch (error: any) {
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 

@@ -181,15 +181,22 @@ export async function discoverEnterpriseTeamMetrics({
             `[discoverEnterpriseTeamMetrics] No new metrics found to insert for team: ${team.slug}`,
           );
         }
-      } catch (error) {
+      } catch (error: any) {
         logger.error(
-          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}`,
+          `[discoverEnterpriseTeamMetrics] Failed to process metrics for team ${
+            team.slug
+          }: ${error?.message || error}`,
           error,
         );
       }
     }
-  } catch (error) {
-    logger.error('[discoverEnterpriseTeamMetrics] Error fetching teams', error);
+  } catch (error: any) {
+    logger.error(
+      `[discoverEnterpriseTeamMetrics] Failed to fetch teams: ${
+        error?.message || error
+      }`,
+      error,
+    );
     throw error;
   }
 }
