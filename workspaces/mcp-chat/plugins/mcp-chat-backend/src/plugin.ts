@@ -26,6 +26,7 @@ import { validateConfig } from './utils';
 /**
  * mcpChatPlugin backend plugin
  *
+ * @public
  */
 export const mcpChatPlugin = createBackendPlugin({
   pluginId: 'mcp-chat',
