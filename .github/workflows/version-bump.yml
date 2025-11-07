@@ -101,11 +101,12 @@ jobs:
           script: |
             const workspace = '${{ matrix.workspace }}';
 
-            const { data: allOpenPRs } = await github.rest.pulls.list({
+            const allOpenPRs = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              base: 'main'
+              base: 'main',
+              per_page: 100
             });
 
             const workspacePRs = allOpenPRs.filter(pr =>
