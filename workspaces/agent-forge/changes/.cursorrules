@@ -1,0 +1,226 @@
+# ADR (Architecture Decision Record) Documentation Standards
+
+All change documentation in this directory must follow the ADR format.
+
+## File Naming Convention
+
+**Format:** `YYYY-MM-DD-kebab-case-description.md`
+
+**Examples:**
+- `2025-11-07-execution-plan-panel.md`
+- `2025-11-07-dynamic-form-support.md`
+- `2025-11-07-streaming-improvements.md`
+
+**Rules:**
+- Use the current date when creating new ADRs
+- Use lowercase with hyphens (kebab-case)
+- Be descriptive but concise
+- Date format is strictly YYYY-MM-DD
+
+## Required Header Structure
+
+```markdown
+# Title in Title Case
+
+**Status**: 🟢 In-use | 🟡 Proposed | 🔴 Deprecated
+**Category**: Features & Enhancements | Bug Fixes | UI/UX | Configuration & Setup
+**Date**: Month DD, YYYY
+```
+
+**Status Options:**
+- 🟢 **In-use** - Currently implemented and active
+- 🟡 **Proposed** - Planned but not yet implemented
+- 🔴 **Deprecated** - No longer in use
+
+**Category Options:**
+- Features & Enhancements
+- Bug Fixes
+- UI/UX
+- Configuration & Setup
+- Documentation & Examples
+
+## Required Sections (in order)
+
+### 1. Overview
+Brief summary (2-3 sentences) of what this document covers.
+
+### 2. The Problem (or Context)
+- What problem does this solve?
+- What was the previous UI/UX?
+- Why was a change needed?
+
+### 3. The Solution
+- What was implemented?
+- High-level approach
+- Key UI/UX decisions made
+
+### 4. How It Works
+Detailed technical explanation with:
+- Step-by-step flow
+- Code examples (React/TypeScript)
+- UI mockups or screenshots if helpful
+- User interaction flows
+
+### 5. Implementation Details (optional)
+- Components added or modified
+- State management changes
+- API integration points
+- Technical specifics
+
+### 6. Benefits
+Why this is valuable:
+- User experience improvements
+- Developer experience improvements
+- Performance gains
+- Maintainability improvements
+
+### 7. Implementation Files
+List of modified/added files with descriptions:
+```markdown
+**Modified Files:**
+
+1. **`src/components/ComponentName.tsx`**
+   - Added feature X
+   - Modified state management Y
+   - Lines 123-456
+
+**New Files:**
+
+1. **`src/components/NewComponent.tsx`**
+   - New component for feature X
+```
+
+### 8. Configuration (if applicable)
+- Environment variables
+- App configuration
+- Setup instructions
+- Examples
+
+### 9. Testing (if applicable)
+- How to test
+- Test coverage
+- Manual testing steps
+- Example test runs
+
+### 10. Compatibility
+- Backward compatibility notes
+- Breaking changes (if any)
+- Migration guide (if needed)
+- Browser compatibility
+
+### 11. Examples (if applicable)
+Real-world usage examples with code blocks and screenshots.
+
+### 12. Troubleshooting (optional)
+Common issues and solutions.
+
+### 13. Future Enhancements (optional)
+Potential improvements or next steps.
+
+## Style Guidelines
+
+### Formatting
+- Use **bold** for emphasis
+- Use `inline code` for code references
+- Use ```language code blocks for examples
+- Use > blockquotes for important notes
+- Use - or * for bullet lists
+- Use 1. 2. 3. for numbered lists
+
+### Emoji Indicators
+Use emojis to enhance readability:
+- ✅ Success, done, working
+- ❌ Error, not working, removed
+- 🟢 Active status
+- 🟡 Pending/proposed status
+- 🔴 Deprecated status
+- 📋 Todo, checklist
+- 🎯 Goal, target
+- 🎨 UI/UX related
+- 🔧 Configuration
+- 🧪 Testing
+- 📚 Documentation
+- 🚀 Deployment, release
+- ⚠️ Warning, caution
+- 💬 Chat, messaging
+- 📊 Data, analytics
+
+### Code Examples
+Always include:
+- Syntax highlighting (```typescript, ```tsx, ```javascript, etc.)
+- Context (what component, what file)
+- Comments explaining key parts
+
+### UI/UX Documentation
+- Include before/after comparisons
+- Show user interaction flows
+- Document state changes
+- Explain visual design decisions
+
+### Tables
+Use tables for comparisons:
+```markdown
+| Feature | Before | After |
+|---------|--------|-------|
+| Panel display | Static | Dynamic updates |
+```
+
+### Language
+- Write in present tense
+- Be clear and concise
+- Explain "what" and "why", not just "how"
+- Assume reader has React/TypeScript context
+- Define acronyms on first use
+
+## Example ADR Structure
+
+```markdown
+# Execution Plan Panel with Real-Time Updates
+
+**Status**: 🟢 In-use
+**Category**: Features & Enhancements
+**Date**: November 7, 2025
+
+## Overview
+
+Agent-Forge now displays execution plans in a dedicated panel with real-time status updates, providing clear visibility into agent progress.
+
+## The Problem
+
+Previously, execution plans appeared in the chat, cluttering the conversation.
+
+## The Solution
+
+Implemented a dedicated execution plan panel with in-place status updates.
+
+## How It Works
+
+### 1. Panel Component
+
+Created ExecutionPlanPanel component that listens for plan updates...
+
+[etc.]
+```
+
+## Quality Checklist
+
+Before committing an ADR, ensure:
+- ✅ File name follows YYYY-MM-DD-kebab-case.md format
+- ✅ Header has Status, Category, Date
+- ✅ Overview is clear and concise
+- ✅ Problem/Context is explained
+- ✅ Solution is described
+- ✅ Implementation details are included
+- ✅ Benefits are listed
+- ✅ Files modified are documented
+- ✅ Code examples are provided (TypeScript/React)
+- ✅ UI/UX changes are documented
+- ✅ Formatting is consistent
+- ✅ No typos or grammatical errors
+
+## References
+
+For examples of good ADR structure, see:
+- ai-platform-engineering/docs/docs/changes/2025-11-05-*.md
+- agent-chat-cli/changes/2025-11-07-*.md
+
