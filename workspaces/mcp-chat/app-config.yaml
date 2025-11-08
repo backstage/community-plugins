@@ -28,8 +28,13 @@ integrations:
 mcpChat:
   providers:
     - id: openai
+      baseUrl: 'https://any-openai-compatible-url/v1'
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini
+    - id: openai-responses # OpenAI Responses API
+      baseUrl: 'http://your-responses-api-endpoint.com/v1/openai/v1'
+      model: 'gemini/models/gemini-2.5-flash'
+      token: ${API_TOKEN} # Optional
     - id: gemini
       token: ${GEMINI_API_KEY}
       model: gemini-2.5-flash
