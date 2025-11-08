@@ -293,10 +293,11 @@ export function AgentForgePage() {
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
-  const authApiId =
-    config.getOptionalString('agentForge.authApiId'); // Optional - only needed if using a custom auth provider
+  const authApiId = config.getOptionalString('agentForge.authApiId'); // Optional - only needed if using a custom auth provider
   const useOpenIDToken =
     config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
+  const autoReloadOnTokenExpiry =
+    config.getOptionalBoolean('agentForge.autoReloadOnTokenExpiry') ?? true;
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
@@ -340,10 +341,16 @@ export function AgentForgePage() {
   // OpenIdConnectApiRef - only create if authApiId is provided
   const OpenIdConnectApiRef: ApiRef<
     OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
-  > | null = authApiId ? createApiRef({
-    id: authApiId,
-  }) : null;
-  const openIdConnectApi = OpenIdConnectApiRef ? useApi(OpenIdConnectApiRef) : null;
+  > | null = authApiId
+    ? createApiRef({
+        id: authApiId,
+      })
+    : null;
+  // Always call useApi to satisfy React Hooks rules, but handle null case
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const openIdConnectApi = OpenIdConnectApiRef
+    ? useApi(OpenIdConnectApiRef)
+    : null;
 
   // Create initial session factory
   const createInitialSession = useCallback(
@@ -926,7 +933,7 @@ export function AgentForgePage() {
         const api = new ChatbotApi(
           backendUrl,
           { identityApi, openIdConnectApi },
-          { requestTimeout, useOpenIDToken },
+          { requestTimeout, useOpenIDToken, autoReloadOnTokenExpiry },
         );
 
         // Wrap API methods to catch any remaining A2A client exceptions
@@ -975,7 +982,15 @@ export function AgentForgePage() {
         setNextRetryCountdown(30);
       }
     }
-  }, [connectionStatus, backendUrl, identityApi, requestTimeout, chatbotApi]);
+  }, [
+    connectionStatus,
+    backendUrl,
+    identityApi,
+    requestTimeout,
+    useOpenIDToken,
+    autoReloadOnTokenExpiry,
+    chatbotApi,
+  ]);
 
   // Global error handler for A2A client unhandled promise rejections
   useEffect(() => {
@@ -3443,6 +3458,36 @@ export function AgentForgePage() {
         const err = error as Error;
         console.log('🚫 Message submission error:', err.message);
 
+        // Check if it's a 401/403 authentication error
+        const isAuthError = (errorObj: any): boolean => {
+          if (
+            errorObj?.response?.status === 401 ||
+            errorObj?.response?.status === 403
+          ) {
+            return true;
+          }
+          if (errorObj?.status === 401 || errorObj?.status === 403) {
+            return true;
+          }
+          if (
+            errorObj?.message?.includes('401') ||
+            errorObj?.message?.includes('403')
+          ) {
+            return true;
+          }
+          if (
+            errorObj?.message
+              ?.toLocaleLowerCase('en-US')
+              .includes('unauthorized') ||
+            errorObj?.message?.toLocaleLowerCase('en-US').includes('forbidden')
+          ) {
+            return true;
+          }
+          return false;
+        };
+
+        const is401or403 = isAuthError(err);
+
         // Handle A2A Client specific errors more gracefully
         const isA2AConnectionError =
           err.message.includes('Unable to connect to agent') ||
@@ -3468,7 +3513,10 @@ export function AgentForgePage() {
         // Don't set apiError - connection banner will handle display
 
         let errorMessage: string;
-        if (isTimeoutError) {
+        if (is401or403) {
+          // Special message for authentication errors
+          errorMessage = `🔒 **Session Expired**\n\nYour authentication session has expired. Please reload the page to continue.\n\n[Click here to reload](#reload)`;
+        } else if (isTimeoutError) {
           errorMessage = `⏱️ ${err.message}`;
         } else if (isA2AConnectionError) {
           errorMessage = `🚫 **${botName} Multi-Agent System Disconnected**\n\nConnection failed: Unable to reach the agent service. Retrying automatically...`;

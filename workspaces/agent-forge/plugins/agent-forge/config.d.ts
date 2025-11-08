@@ -76,6 +76,13 @@ export interface Config {
     useOpenIDToken?: boolean;
 
     /**
+     * Automatically reload the page when OpenID token expires (default: true)
+     * Only applies when useOpenIDToken is true
+     * @visibility frontend
+     */
+    autoReloadOnTokenExpiry?: boolean;
+
+    /**
      * The header title to display (default: bot name)
      * @visibility frontend
      */
