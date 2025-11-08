@@ -1,6 +1,19 @@
 # Agent Forge Workspace
 
-This workspace contains the Agent Forge plugin for [Backstage](https://backstage.io) - a chatbot interface for AI agents with support for OpenID Connect authentication, streaming responses, and session management.
+This workspace contains the Agent Forge plugin for [Backstage](https://backstage.io) - a chatbot interface for AI agents that talk A2A protocol with support for OpenID Connect authentication, streaming responses, and session management.
+
+## About Agent Forge
+
+Agent Forge is designed to pair with [CAIPE (Community AI Platform Engineering)](https://cnoe-io.github.io/ai-platform-engineering/), an open-source Multi-Agentic AI System (MAS) that provides specialized sub-agents for platform operations, incident management, and DevOps workflows. However, **Agent Forge can work with any [A2A (Agent-to-Agent) protocol](https://a2a-protocol.org/latest/) compatible agent**, making it a flexible solution for integrating AI agents into your Backstage portal.
+
+### Key Features
+
+- **A2A Protocol Support**: Built on the [A2A Protocol](https://a2a-protocol.org/latest/), an open standard by the Linux Foundation for agent-to-agent communication
+- **OpenID Connect Authentication**: Secure token-based authentication with automatic expiration handling
+- **Streaming Responses**: Real-time agent response streaming for better UX
+- **Session Management**: Persistent chat sessions with context preservation
+- **Multi-Agent Compatible**: Works with CAIPE or any A2A-compatible agent system
+- **Configurable UI**: Customizable branding, colors, and behavior
 
 ## Getting Started
 
@@ -303,19 +316,49 @@ agent-forge/
 
 ## Configuration
 
+Agent Forge connects to any A2A-compatible agent backend. When using with [CAIPE](https://cnoe-io.github.io/ai-platform-engineering/), point the `baseUrl` to your CAIPE deployment.
+
 See `app-config.yaml` for available configuration options:
 
 ```yaml
 agentForge:
-  baseUrl: http://localhost:8000
-  botName: CAIPE
+  baseUrl: http://localhost:8000 # Your A2A-compatible agent URL
+  botName: CAIPE # Or your custom agent name
   useOpenIDToken: true
   autoReloadOnTokenExpiry: true
   enableStreaming: true
   # ... more options
 ```
 
+### Connecting to Different Agent Systems
+
+**CAIPE (Recommended)**:
+
+```yaml
+agentForge:
+  baseUrl: https://your-caipe-deployment.example.com
+  botName: CAIPE
+  infoPage: https://cnoe-io.github.io/ai-platform-engineering/
+```
+
+**Custom A2A Agent**:
+
+```yaml
+agentForge:
+  baseUrl: https://your-custom-agent.example.com
+  botName: Your Agent Name
+  infoPage: https://your-docs-url.example.com
+```
+
 ## Resources
+
+### Agent Systems
+
+- [CAIPE (Community AI Platform Engineering)](https://cnoe-io.github.io/ai-platform-engineering/) - Multi-Agentic AI System for Platform Engineering
+- [CAIPE GitHub Repository](https://github.com/cnoe-io/ai-platform-engineering) - Open-source MAS implementation
+- [A2A Protocol](https://a2a-protocol.org/latest/) - Agent-to-Agent communication standard (open standard by Linux Foundation)
+
+### Development Resources
 
 - [Backstage Documentation](https://backstage.io/docs)
 - [Community Plugins Repository](https://github.com/backstage/community-plugins)
@@ -324,7 +367,15 @@ agentForge:
 
 ## Support
 
-For issues and questions:
+For issues and questions about Agent Forge and CAIPE:
 
-- Open an issue: https://github.com/backstage/community-plugins/issues
-- Backstage Discord: https://discord.gg/backstage
+### CAIPE Community
+
+- **Community Page**: [CNOE Agentic AI SIG Community](https://cnoe-io.github.io/ai-platform-engineering/community/)
+- **GitHub Issues**: [CAIPE Issues](https://github.com/cnoe-io/ai-platform-engineering/issues)
+- **Weekly Meetings**: Every Monday at 12:00 PM CST / 10:00 AM PST
+- **Slack Channel**: [#cnoe-sig-agentic-ai](https://cloud-native.slack.com/archives/C081LBWQC9D) on CNCF Slack
+
+### Backstage Support
+
+- **Plugin Issues**: [community-plugins/issues](https://github.com/backstage/community-plugins/issues)

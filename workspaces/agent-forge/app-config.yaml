@@ -12,7 +12,7 @@ agentForge:
   infoPage: https://cnoe-io.github.io/ai-platform-engineering/
   showOptions: true
   useOpenIDToken: true  # Set to true to use OpenIdConnectApi.getIdToken(), false to use IdentityApi.getCredentials()
-  autoReloadOnTokenExpiry: false  # Set to true to auto-reload page when OpenID token expires, false to show error message
+  autoReloadOnTokenExpiry: true  # Set to true to auto-reload page when OpenID token expires, false to show error message
   enableStreaming: true   # Set to true to enable streaming responses, false for non-streaming
   requestTimeout: 300
   disconnectionDelayMs: 3000  # Delay before showing disconnection toast (default: 3000ms/3 seconds)
