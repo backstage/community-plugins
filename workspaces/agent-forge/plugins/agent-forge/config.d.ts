@@ -76,6 +76,18 @@ export interface Config {
     useOpenIDToken?: boolean;
 
     /**
+     * Whether to enable feedback (default: false)
+     * @visibility frontend
+     */
+    enableFeedback?: boolean;
+
+    /**
+     * The endpoint for submitting feedback (default: /submit_feedback)
+     * @visibility frontend
+     */
+    feedbackEndpoint?: string;
+
+    /**
      * The header title to display (default: bot name)
      * @visibility frontend
      */
