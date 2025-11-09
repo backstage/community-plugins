@@ -23,11 +23,15 @@ import {
   AgentCard,
 } from '../a2a/schema';
 import { IdentityApi, OpenIdConnectApi } from '@backstage/core-plugin-api';
+import { Message, Feedback } from '../types';
+import { createTimestamp } from '../utils';
+import axios, { AxiosError } from 'axios';
 
 export interface IChatbotApiOptions {
   requestTimeout?: number;
   useOpenIDToken?: boolean;
   autoReloadOnTokenExpiry?: boolean;
+  feedbackEndpoint?: string | null;
 }
 
 export class ChatbotApi {
@@ -37,6 +41,7 @@ export class ChatbotApi {
   private openIdConnectApi: OpenIdConnectApi | null;
   private useOpenIDToken: boolean;
   private autoReloadOnTokenExpiry: boolean;
+  private feedbackEndpoint: string | null;
 
   constructor(
     private apiBaseUrl: string,
@@ -54,6 +59,7 @@ export class ChatbotApi {
     this.openIdConnectApi = options.openIdConnectApi ?? null;
     this.useOpenIDToken = apiOptions?.useOpenIDToken ?? false; // default to false which means use IdentityApi.getCredentials() (backstage token)
     this.autoReloadOnTokenExpiry = apiOptions?.autoReloadOnTokenExpiry ?? true; // default to true for better UX
+    this.feedbackEndpoint = apiOptions?.feedbackEndpoint ?? null;
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
@@ -483,6 +489,52 @@ export class ChatbotApi {
       return card?.skills[0].examples;
     } catch (error) {
       return [];
+    }
+  }
+
+  public async submitFeedback(
+    message: Message,
+    feedback: Feedback,
+  ): Promise<void> {
+    if (!this.feedbackEndpoint) {
+      throw new Error('Feedback endpoint is not configured');
+    }
+
+    try {
+      // always use backstage token for Jarvis
+      // TODO: maybe this should be configurable
+      const { token } = await this.identityApi.getCredentials();
+
+      // Submit feedback without Authorization header to avoid CORS preflight
+      const { status } = await axios.post(
+        this.feedbackEndpoint,
+        {
+          type: feedback.type,
+          reason: feedback.reason,
+          additionalFeedback: feedback.additionalFeedback || '',
+          timestamp: createTimestamp(),
+          message: message.text,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Commented out to avoid CORS preflight
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      if (status !== 200) {
+        throw new Error('Failed to submit feedback');
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err?.isAxiosError) {
+        throw new Error(
+          `Error submitting feedback: ${[err.message, err.cause?.message]
+            .filter(Boolean)
+            .join(' - ')}`,
+        );
+      }
+      throw new Error(err.message);
     }
   }
 

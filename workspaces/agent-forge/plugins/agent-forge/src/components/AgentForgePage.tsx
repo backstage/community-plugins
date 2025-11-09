@@ -57,7 +57,7 @@ import {
   DEFAULT_SUGGESTIONS,
   DEFAULT_THINKING_MESSAGES,
 } from '../constants';
-import { Message } from '../types';
+import { Message, Feedback } from '../types';
 import { ChatSession, ChatStorage } from '../types/chat';
 import { createTimestamp } from '../utils';
 import { ChatContainer } from './ChatContainer';
@@ -298,6 +298,10 @@ export function AgentForgePage() {
     config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
   const autoReloadOnTokenExpiry =
     config.getOptionalBoolean('agentForge.autoReloadOnTokenExpiry') ?? true;
+  const enableFeedback =
+    config.getOptionalBoolean('agentForge.enableFeedback') ?? false;
+  const feedbackEndpoint =
+    config.getOptionalString('agentForge.feedbackEndpoint') ?? null;
   const requestTimeout =
     config.getOptionalNumber('agentForge.requestTimeout') || 300;
   const enableStreaming =
@@ -412,6 +416,7 @@ export function AgentForgePage() {
   const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [feedback, setFeedback] = useState<{ [key: number]: Feedback }>({});
   const [connectionStatus, setConnectionStatus] = useState<
     'checking' | 'connected' | 'disconnected'
   >('checking');
@@ -929,11 +934,19 @@ export function AgentForgePage() {
         authApiId,
       );
 
+      console.log('🔧 Feedback endpoint:', feedbackEndpoint);
+      console.log('🔧 Feedback enabled:', enableFeedback);
+
       try {
         const api = new ChatbotApi(
           backendUrl,
           { identityApi, openIdConnectApi },
-          { requestTimeout, useOpenIDToken, autoReloadOnTokenExpiry },
+          {
+            requestTimeout,
+            useOpenIDToken,
+            autoReloadOnTokenExpiry,
+            feedbackEndpoint,
+          },
         );
 
         // Wrap API methods to catch any remaining A2A client exceptions
@@ -3630,6 +3643,73 @@ export function AgentForgePage() {
     [currentSessionId, handleMessageSubmit, addMessageToSession],
   );
 
+  // Feedback handlers
+  const handleFeedbackChange = useCallback(
+    (index: number, newFeedback: Feedback) => {
+      if (!enableFeedback) return;
+      setFeedback(prev => ({
+        ...prev,
+        [index]: newFeedback,
+      }));
+    },
+    [enableFeedback],
+  );
+
+  const handleFeedbackSubmit = useCallback(
+    async (index: number, feedbackData: Feedback) => {
+      if (!enableFeedback) return;
+
+      const session = sessions.find(s => s.contextId === currentSessionId);
+      if (!session) return;
+
+      const message = session.messages[index];
+      if (!message) return;
+
+      try {
+        await chatbotApi?.submitFeedback(message, feedbackData);
+        alertApi.post({
+          severity: 'success',
+          message: 'Thank you for your feedback!',
+        });
+
+        setFeedback(prev => ({
+          ...prev,
+          [index]: {
+            ...feedbackData,
+            submitted: true,
+            showFeedbackOptions: false,
+          },
+        }));
+
+        // Update message in session
+        setSessions(prev =>
+          prev.map(s => {
+            if (s.contextId === currentSessionId) {
+              return {
+                ...s,
+                messages: s.messages.map((msg, i) => {
+                  if (i === index) {
+                    return { ...msg, showFeedbackOptions: false };
+                  }
+                  return msg;
+                }),
+                updatedAt: new Date(),
+              };
+            }
+            return s;
+          }),
+        );
+      } catch (error) {
+        alertApi.post({
+          severity: 'error',
+          message:
+            'There was an error submitting your feedback. Please try again.',
+        });
+      }
+    },
+    [sessions, currentSessionId, chatbotApi, alertApi, enableFeedback],
+  );
+
   const resetChat = () => {
     console.log('🔄 Reset chat triggered');
     if (currentSessionId) {
@@ -3850,6 +3930,10 @@ export function AgentForgePage() {
                     currentOperation={currentOperation}
                     isInOperationalMode={isInOperationalMode}
                     onMetadataSubmit={handleMetadataSubmit}
+                    enableFeedback={enableFeedback}
+                    feedback={feedback}
+                    onFeedbackChange={handleFeedbackChange}
+                    onFeedbackSubmit={handleFeedbackSubmit}
                     fontSizes={{
                       messageText: fontSizes.messageText,
                       codeBlock: fontSizes.codeBlock,

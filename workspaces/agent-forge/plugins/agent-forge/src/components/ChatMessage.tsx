@@ -32,6 +32,7 @@ import {
   DialogActions,
   Button,
   Snackbar,
+  Chip,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -57,6 +58,8 @@ import React, {
   useMemo,
 } from 'react';
 import { MetadataInputForm } from './MetadataInputForm';
+import { FeedbackButton, Feedback as FeedbackEnum } from './FeedbackButton';
+import { Feedback as FeedbackType } from '../types';
 
 const useStyles = makeStyles(theme => ({
   messageBox: {
@@ -260,6 +263,11 @@ export interface ChatMessageProps {
   autoExpandExecutionPlans?: Set<string>;
   executionPlanLoading?: Set<string>;
   onMetadataSubmit?: (messageId: string, data: Record<string, any>) => void;
+  // Feedback props
+  enableFeedback?: boolean;
+  messageFeedback?: FeedbackType;
+  onFeedbackChange?: (feedback: FeedbackType) => void;
+  onFeedbackSubmit?: (feedback: FeedbackType) => void;
 }
 
 /**
@@ -276,6 +284,10 @@ export const ChatMessage = memo(function ChatMessage({
   executionPlanHistory,
   autoExpandExecutionPlans,
   onMetadataSubmit,
+  enableFeedback = false,
+  messageFeedback,
+  onFeedbackChange,
+  onFeedbackSubmit,
 }: ChatMessageProps) {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
@@ -539,6 +551,57 @@ export const ChatMessage = memo(function ChatMessage({
       });
     }
   };
+
+  // Feedback handlers
+  const handleFeedback = useCallback(
+    (type: FeedbackEnum) => {
+      if (!onFeedbackChange) return;
+
+      const feedbackType = type === FeedbackEnum.LIKE ? 'like' : 'dislike';
+      const newFeedback = { ...messageFeedback };
+
+      if (newFeedback.type === feedbackType) {
+        newFeedback.type = undefined;
+        newFeedback.showFeedbackOptions = false;
+      } else {
+        newFeedback.type = feedbackType;
+        newFeedback.showFeedbackOptions = true;
+      }
+
+      onFeedbackChange(newFeedback);
+    },
+    [messageFeedback, onFeedbackChange],
+  );
+
+  const handleFeedbackReason = useCallback(
+    (reason: string) => {
+      if (!onFeedbackChange) return;
+
+      const newFeedback = { ...messageFeedback };
+      newFeedback.reason = reason;
+      newFeedback.promptForFeedback = reason === 'Other';
+      onFeedbackChange(newFeedback);
+    },
+    [messageFeedback, onFeedbackChange],
+  );
+
+  const handleSubmitFeedback = useCallback(() => {
+    if (!onFeedbackSubmit || !messageFeedback) return;
+    onFeedbackSubmit(messageFeedback);
+  }, [messageFeedback, onFeedbackSubmit]);
+
+  const handleCopyMessage = useCallback(async () => {
+    try {
+      const textToCopy = message.text?.replace(/⟦|⟧/g, '') || '';
+      await copyTextToClipboard(textToCopy);
+      showToast('Message copied to clipboard');
+    } catch (error) {
+      alertApi.post({
+        message: 'Failed to copy message',
+        severity: 'error',
+      });
+    }
+  }, [message.text, copyTextToClipboard, showToast, alertApi]);
 
   // Custom code component with syntax highlighting
   const CodeBlock = ({ inline, className, children, ...props }: any) => {
@@ -1245,7 +1308,6 @@ export const ChatMessage = memo(function ChatMessage({
           <Collapse in={isStreamedOutputExpanded}>
             <Box className={classes.streamedOutputContent}>
               <ReactMarkdown
-                className={classes.markdown}
                 components={{
                   p: ({ children, ...props }) => (
                     <p
@@ -1268,6 +1330,106 @@ export const ChatMessage = memo(function ChatMessage({
           </Collapse>
         </Box>
       )}
+
+      {/* Feedback Buttons */}
+      {enableFeedback && onFeedbackChange && (
+        <Box display="flex" alignItems="center" mt={1} mb={1}>
+          <FeedbackButton
+            enabled={!messageFeedback?.submitted}
+            feedback={messageFeedback?.type}
+            handleFeedback={handleFeedback}
+            handleCopyToClipBoard={handleCopyMessage}
+          />
+        </Box>
+      )}
+
+      {/* Feedback Options */}
+      {enableFeedback &&
+        messageFeedback?.showFeedbackOptions &&
+        onFeedbackChange && (
+          <Box mb={2} mt={1}>
+            <Box display="flex" flexWrap="wrap" mb={1}>
+              {messageFeedback.type === 'like'
+                ? [
+                    'Very Helpful',
+                    'Accurate',
+                    'Simplified My Task',
+                    'Other',
+                  ].map(reason => (
+                    <Chip
+                      key={reason}
+                      label={reason}
+                      clickable
+                      size="small"
+                      color={
+                        messageFeedback.reason === reason
+                          ? 'primary'
+                          : 'default'
+                      }
+                      onClick={() => handleFeedbackReason(reason)}
+                      style={{ margin: 4 }}
+                    />
+                  ))
+                : [
+                    'Inaccurate',
+                    'Poorly Formatted',
+                    'Incomplete',
+                    'Off-topic',
+                    'Other',
+                  ].map(reason => (
+                    <Chip
+                      key={reason}
+                      label={reason}
+                      clickable
+                      size="small"
+                      color={
+                        messageFeedback.reason === reason
+                          ? 'primary'
+                          : 'default'
+                      }
+                      onClick={() => handleFeedbackReason(reason)}
+                      style={{ margin: 4 }}
+                    />
+                  ))}
+            </Box>
+            {messageFeedback.promptForFeedback && (
+              <Box mb={1}>
+                <textarea
+                  placeholder="Provide additional feedback"
+                  value={messageFeedback.additionalFeedback || ''}
+                  onChange={e => {
+                    const newFeedback = {
+                      ...messageFeedback,
+                      additionalFeedback: e.target.value,
+                    };
+                    onFeedbackChange(newFeedback);
+                  }}
+                  style={{
+                    width: '100%',
+                    minHeight: '60px',
+                    padding: '8px',
+                    borderRadius: '4px',
+                    border: `1px solid ${theme.palette.divider}`,
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    fontFamily: 'inherit',
+                    fontSize: '0.875rem',
+                    resize: 'vertical',
+                  }}
+                />
+              </Box>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleSubmitFeedback}
+              disabled={!messageFeedback.reason}
+            >
+              Submit Feedback
+            </Button>
+          </Box>
+        )}
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography

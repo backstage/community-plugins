@@ -78,3 +78,12 @@ export interface Message {
   executionPlan?: string; // Execution plan for this message (persisted to history)
   executionPlanHistory?: string[]; // History of execution plan updates
 }
+
+export interface Feedback {
+  type?: string;
+  reason?: string;
+  additionalFeedback?: string;
+  showFeedbackOptions?: boolean;
+  promptForFeedback?: boolean;
+  submitted?: boolean;
+}
