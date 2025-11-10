@@ -57,7 +57,12 @@ import {
   DEFAULT_SUGGESTIONS,
   DEFAULT_THINKING_MESSAGES,
 } from '../constants';
-import { Message, Feedback, PlatformEngineerResponse } from '../types';
+import {
+  Message,
+  Feedback,
+  PlatformEngineerResponse,
+  UserEmailMode,
+} from '../types';
 import { ChatSession, ChatStorage } from '../types/chat';
 import { createTimestamp } from '../utils';
 import { ChatContainer } from './ChatContainer';
@@ -296,6 +301,9 @@ export function AgentForgePage() {
   const authApiId = config.getOptionalString('agentForge.authApiId'); // Optional - only needed if using a custom auth provider
   const useOpenIDToken =
     config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
+  const userEmailMode =
+    (config.getOptionalString('agentForge.userEmailMode') as UserEmailMode) ||
+    'none';
   const autoReloadOnTokenExpiry =
     config.getOptionalBoolean('agentForge.autoReloadOnTokenExpiry') ?? true;
   const enableFeedback =
@@ -351,9 +359,8 @@ export function AgentForgePage() {
       })
     : null;
   // Always call useApi to satisfy React Hooks rules, but handle null case
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const openIdConnectApi = OpenIdConnectApiRef
-    ? useApi(OpenIdConnectApiRef)
+    ? useApi(OpenIdConnectApiRef) // eslint-disable-line react-hooks/rules-of-hooks
     : null;
 
   // Create initial session factory
@@ -415,6 +422,7 @@ export function AgentForgePage() {
     'checking' | 'connected' | 'disconnected'
   >('checking');
   const [nextRetryCountdown, setNextRetryCountdown] = useState<number>(0);
+  const [caipeVersion, setCaipeVersion] = useState<string | null>(null);
   const [loadedMessageCount, setLoadedMessageCount] = useState(
     DEFAULT_MESSAGE_COUNT,
   ); // Progressive loading count
@@ -909,7 +917,7 @@ export function AgentForgePage() {
         ' with authApiId:',
         authApiId,
       );
-
+      console.log('🔧 User email mode:', userEmailMode);
       console.log('🔧 Feedback endpoint:', feedbackEndpoint);
       console.log('🔧 Feedback enabled:', enableFeedback);
 
@@ -920,6 +928,7 @@ export function AgentForgePage() {
           {
             requestTimeout,
             useOpenIDToken,
+            userEmailMode,
             autoReloadOnTokenExpiry,
             feedbackEndpoint,
           },
@@ -1072,6 +1081,12 @@ export function AgentForgePage() {
         if (!agentCard || typeof agentCard !== 'object') {
           console.log('🔴 Agent health check failed - Invalid JSON response');
           return false;
+        }
+
+        // Extract and store the CAIPE version if available
+        if (agentCard.version) {
+          setCaipeVersion(agentCard.version);
+          console.log('🔍 CAIPE version detected:', agentCard.version);
         }
 
         console.log('🟢 Agent health check succeeded - Agent card received');
@@ -3782,6 +3797,21 @@ export function AgentForgePage() {
                 </Typography>
               </Box>
             </Tooltip>
+            {caipeVersion && (
+              <Tooltip
+                title={`CAIPE Platform Version: ${caipeVersion}`}
+                placement="bottom"
+              >
+                <Box className={classes.customHeaderStatus}>
+                  <Typography className={classes.customHeaderLabel}>
+                    CAIPE Version
+                  </Typography>
+                  <Typography className={classes.customHeaderValue}>
+                    v{caipeVersion}
+                  </Typography>
+                </Box>
+              </Tooltip>
+            )}
             <Tooltip
               title="View on NPM: @caipe/plugin-agent-forge"
               placement="bottom"
@@ -3896,6 +3926,21 @@ export function AgentForgePage() {
               </Typography>
             </Box>
           </Tooltip>
+          {caipeVersion && (
+            <Tooltip
+              title={`CAIPE Platform Version: ${caipeVersion}`}
+              placement="bottom"
+            >
+              <Box className={classes.customHeaderStatus}>
+                <Typography className={classes.customHeaderLabel}>
+                  CAIPE Version
+                </Typography>
+                <Typography className={classes.customHeaderValue}>
+                  v{caipeVersion}
+                </Typography>
+              </Box>
+            </Tooltip>
+          )}
           <Tooltip
             title="View on NPM: @caipe/plugin-agent-forge"
             placement="bottom"

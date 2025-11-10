@@ -15,6 +15,12 @@
  */
 
 /**
+ * User email mode configuration
+ * @public
+ */
+export type UserEmailMode = 'none' | 'message' | 'metadata';
+
+/**
  * Platform Engineer Response Schema (A2A DataPart)
  * Single source of truth for structured responses from AI Platform Engineer.
  * Now uses Jarvis-compatible field names for consistency.
