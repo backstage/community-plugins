@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import type { MetadataResponse } from '@backstage/plugin-permission-node';
+import {
+  AuthorizeResult,
+  type MetadataResponse,
+} from '@backstage/plugin-permission-common';
 
 import { resolve } from 'path';
 
