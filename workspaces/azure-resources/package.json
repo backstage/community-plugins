@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20 || 22"
+    "node": "24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -43,7 +43,7 @@
     "@microsoft/api-extractor-model": "^7.31.2",
     "@microsoft/tsdoc": "^0.15.1",
     "@microsoft/tsdoc-config": "^0.17.1",
-    "@types/node": "24.9.1",
+    "@types/node": "24.10.0",
     "@useoptic/optic": "^1.0.9",
     "knip": "^5.66.2",
     "node-gyp": "^11.5.0",
