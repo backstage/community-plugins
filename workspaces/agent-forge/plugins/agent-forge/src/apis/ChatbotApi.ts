@@ -23,13 +23,14 @@ import {
   AgentCard,
 } from '../a2a/schema';
 import { IdentityApi, OpenIdConnectApi } from '@backstage/core-plugin-api';
-import { Message, Feedback } from '../types';
+import { Message, Feedback, UserEmailMode } from '../types';
 import { createTimestamp } from '../utils';
 import axios, { AxiosError } from 'axios';
 
 export interface IChatbotApiOptions {
   requestTimeout?: number;
   useOpenIDToken?: boolean;
+  userEmailMode?: UserEmailMode;
   autoReloadOnTokenExpiry?: boolean;
   feedbackEndpoint?: string | null;
 }
@@ -40,6 +41,7 @@ export class ChatbotApi {
   private identityApi: IdentityApi;
   private openIdConnectApi: OpenIdConnectApi | null;
   private useOpenIDToken: boolean;
+  private userEmailMode: UserEmailMode;
   private autoReloadOnTokenExpiry: boolean;
   private feedbackEndpoint: string | null;
 
@@ -60,6 +62,7 @@ export class ChatbotApi {
     this.useOpenIDToken = apiOptions?.useOpenIDToken ?? false; // default to false which means use IdentityApi.getCredentials() (backstage token)
     this.autoReloadOnTokenExpiry = apiOptions?.autoReloadOnTokenExpiry ?? true; // default to true for better UX
     this.feedbackEndpoint = apiOptions?.feedbackEndpoint ?? null;
+    this.userEmailMode = apiOptions?.userEmailMode ?? 'none'; // default to 'metadata' for backward compatibility
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
@@ -389,6 +392,47 @@ export class ChatbotApi {
     return credentials.token;
   }
 
+  /**
+   * Get user email from Backstage IdentityApi
+   * @returns User email or undefined if not available
+   */
+  private async getUserEmail(): Promise<string | undefined> {
+    try {
+      const profile = await this.identityApi.getProfileInfo();
+      return profile.email;
+    } catch (error) {
+      console.warn('Error getting user email from IdentityApi:', error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Prepare message text and metadata based on user email mode
+   * @param msg - Original message text
+   * @returns Object containing messageText and metadata
+   */
+  private async prepareMessageWithEmail(
+    msg: string,
+  ): Promise<{ messageText: string; metadata?: Record<string, any> }> {
+    let messageText = msg;
+    let metadata: Record<string, any> | undefined;
+
+    if (this.userEmailMode !== 'none') {
+      const userEmail = await this.getUserEmail();
+      if (userEmail) {
+        if (this.userEmailMode === 'message') {
+          // Prepend email to message text
+          messageText = `The user email is ${userEmail}\n\n${msg}`;
+        } else if (this.userEmailMode === 'metadata') {
+          // Add email to metadata (A2A protocol best practice)
+          metadata = { user_email: userEmail };
+        }
+      }
+    }
+
+    return { messageText, metadata };
+  }
+
   public async submitA2ATask(
     newContext: boolean,
     msg: string,
@@ -398,12 +442,16 @@ export class ChatbotApi {
       const msgId = uuidv4();
       const token = await this.getToken();
 
+      // Prepare message with user email based on configured mode
+      const { messageText, metadata } = await this.prepareMessageWithEmail(msg);
+
       const sendParams: MessageSendParams = {
         message: {
           messageId: msgId,
           role: 'user',
-          parts: [{ text: msg, kind: 'text' }],
+          parts: [{ text: messageText, kind: 'text' }],
           kind: 'message',
+          metadata,
         },
       };
 
@@ -441,12 +489,17 @@ export class ChatbotApi {
   ): AsyncGenerator<A2AStreamEventData, void, undefined> {
     try {
       const msgId = uuidv4();
+
+      // Prepare message with user email based on configured mode
+      const { messageText, metadata } = await this.prepareMessageWithEmail(msg);
+
       const sendParams: MessageSendParams = {
         message: {
           messageId: msgId,
           role: 'user',
-          parts: [{ text: msg, kind: 'text' }],
+          parts: [{ text: messageText, kind: 'text' }],
           kind: 'message',
+          metadata,
         },
       };
       const token = await this.getToken();

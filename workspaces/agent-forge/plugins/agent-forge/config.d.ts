@@ -76,6 +76,13 @@ export interface Config {
     useOpenIDToken?: boolean;
 
     /**
+     * The mode to use for the user email (default: 'metadata')
+     * Options: 'none' (don't include), 'message' (prepend to text), 'metadata' (add as metadata)
+     * @visibility frontend
+     */
+    userEmailMode?: 'none' | 'message' | 'metadata';
+
+    /**
      * Automatically reload the page when OpenID token expires (default: true)
      * Only applies when useOpenIDToken is true
      * @visibility frontend
