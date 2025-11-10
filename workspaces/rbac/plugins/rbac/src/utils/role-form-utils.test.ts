@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { IdentityApi } from '@backstage/core-plugin-api';
-import { MockConfigApi } from '@backstage/test-utils';
 
 import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
+import { mockApis } from '@backstage/test-utils';
 
 import { mockNewConditions } from '../__fixtures__/mockConditions';
 import {
@@ -47,10 +47,8 @@ describe('RBAC Permissions Functions', () => {
     },
   } as IdentityApi;
 
-  const mockConfigApi = new MockConfigApi({
-    permission: {
-      enabled: true,
-    },
+  const mockConfigApi = mockApis.config({
+    data: { permission: { enabled: true } },
   });
 
   beforeEach(() => {
