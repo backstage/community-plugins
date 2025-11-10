@@ -76,6 +76,13 @@ export interface Config {
     useOpenIDToken?: boolean;
 
     /**
+     * Automatically reload the page when OpenID token expires (default: true)
+     * Only applies when useOpenIDToken is true
+     * @visibility frontend
+     */
+    autoReloadOnTokenExpiry?: boolean;
+
+    /**
      * Whether to enable feedback (default: false)
      * @visibility frontend
      */

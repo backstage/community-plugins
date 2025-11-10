@@ -57,7 +57,7 @@ import {
   DEFAULT_SUGGESTIONS,
   DEFAULT_THINKING_MESSAGES,
 } from '../constants';
-import { Message, Feedback } from '../types';
+import { Message, Feedback, PlatformEngineerResponse } from '../types';
 import { ChatSession, ChatStorage } from '../types/chat';
 import { createTimestamp } from '../utils';
 import { ChatContainer } from './ChatContainer';
@@ -296,6 +296,8 @@ export function AgentForgePage() {
   const authApiId = config.getOptionalString('agentForge.authApiId'); // Optional - only needed if using a custom auth provider
   const useOpenIDToken =
     config.getOptionalBoolean('agentForge.useOpenIDToken') ?? false;
+  const autoReloadOnTokenExpiry =
+    config.getOptionalBoolean('agentForge.autoReloadOnTokenExpiry') ?? true;
   const enableFeedback =
     config.getOptionalBoolean('agentForge.enableFeedback') ?? false;
   const feedbackEndpoint =
@@ -348,6 +350,7 @@ export function AgentForgePage() {
         id: authApiId,
       })
     : null;
+  // Always call useApi to satisfy React Hooks rules, but handle null case
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const openIdConnectApi = OpenIdConnectApiRef
     ? useApi(OpenIdConnectApiRef)
@@ -361,10 +364,7 @@ export function AgentForgePage() {
       messages: [
         {
           messageId: uuidv4(),
-          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(
-            /⟦|⟧/g,
-            '',
-          ),
+          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
           isUser: false,
           timestamp: createTimestamp(),
         },
@@ -384,10 +384,7 @@ export function AgentForgePage() {
       messages: [
         {
           messageId: uuidv4(),
-          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(
-            /⟦|⟧/g,
-            '',
-          ),
+          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
           isUser: false,
           timestamp: createTimestamp(),
         },
@@ -649,16 +646,8 @@ export function AgentForgePage() {
     let cleanText = text;
     const originalText = text;
 
-    // 🚨 DEBUGGING: Check if input text contains execution plan markers
-    if (text.includes('⟦') || text.includes('⟧')) {
-      console.log('🚨 INPUT TEXT CONTAINS EXECUTION PLAN MARKERS');
-      console.log('🚨 ORIGINAL TEXT:', `${text.substring(0, 200)}...`);
-    }
-
     // Remove each cached notification from the text
     for (const notification of toolNotificationsCache.current) {
-      const beforeRemoval = cleanText;
-
       // Remove the exact notification text
       const escapedNotification = notification.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -667,20 +656,6 @@ export function AgentForgePage() {
       // Remove notification but keep surrounding whitespace intact
       const regex = new RegExp(escapedNotification, 'g');
       cleanText = cleanText.replace(regex, '');
-
-      // 🚨 DEBUGGING: Check if we removed execution plan markers
-      if (
-        beforeRemoval !== cleanText &&
-        (beforeRemoval.includes('⟦') || beforeRemoval.includes('⟧'))
-      ) {
-        console.log('🚨 REMOVED TEXT THAT CONTAINED EXECUTION PLAN MARKERS!');
-        console.log(
-          '🚨 REMOVED NOTIFICATION:',
-          `${notification.substring(0, 100)}...`,
-        );
-        console.log('🚨 BEFORE:', `${beforeRemoval.substring(0, 200)}...`);
-        console.log('🚨 AFTER:', `${cleanText.substring(0, 200)}...`);
-      }
     }
 
     // Clean up extra whitespace MORE CAREFULLY
@@ -696,18 +671,166 @@ export function AgentForgePage() {
       cleanText.length,
     );
 
-    // 🚨 DEBUGGING: Final check
-    if (originalText.includes('⟦') || originalText.includes('⟧')) {
-      const stillHasMarkers =
-        cleanText.includes('⟦') || cleanText.includes('⟧');
-      console.log(
-        '🚨 EXECUTION PLAN MARKERS AFTER CLEANING:',
-        stillHasMarkers ? 'STILL PRESENT' : 'REMOVED!',
-      );
-    }
-
     return cleanText;
   }, []);
+
+  // Utility function to parse JSON responses and extract PlatformEngineerResponse
+  const parseJsonResponseForMetadata = (
+    text: string,
+  ): {
+    content: string;
+    platformEngineerResponse?: PlatformEngineerResponse;
+    hasMetadata: boolean;
+  } => {
+    if (!text || text.trim().length === 0) {
+      return { content: text, hasMetadata: false };
+    }
+
+    try {
+      // Try to parse as JSON
+      const jsonResponse = JSON.parse(text);
+
+      // Check if it's a PlatformEngineerResponse with user input request
+      // (Now compatible with both Platform Engineer and Jarvis formats)
+      if (
+        jsonResponse.require_user_input === true &&
+        jsonResponse.metadata?.input_fields
+      ) {
+        console.log('✅ PlatformEngineerResponse detected with input_fields');
+        return {
+          content: jsonResponse.content || text,
+          hasMetadata: true,
+          platformEngineerResponse: jsonResponse,
+        };
+      }
+
+      // Check if it's a JarvisResponse (with answer instead of content)
+      if (
+        jsonResponse.answer &&
+        jsonResponse.metadata?.user_input === true &&
+        jsonResponse.metadata?.input_fields
+      ) {
+        console.log(
+          '✅ JarvisResponse detected with input_fields - converting to PlatformEngineerResponse',
+        );
+
+        // Convert JarvisResponse to PlatformEngineerResponse (just rename answer → content)
+        const platformResponse: PlatformEngineerResponse = {
+          is_task_complete: false,
+          require_user_input: true,
+          content: jsonResponse.answer,
+          metadata: jsonResponse.metadata,
+        };
+
+        return {
+          content: platformResponse.content,
+          hasMetadata: true,
+          platformEngineerResponse: platformResponse,
+        };
+      }
+
+      // Check if this is a completion response with status
+      if (jsonResponse.status === 'completed' && jsonResponse.message) {
+        console.log('✅ Completion response detected, using clean message');
+        return { content: jsonResponse.message, hasMetadata: false };
+      }
+
+      // JSON but no metadata - return the content field or message if available
+      if (jsonResponse.content) {
+        return { content: jsonResponse.content, hasMetadata: false };
+      }
+      if (jsonResponse.message) {
+        return { content: jsonResponse.message, hasMetadata: false };
+      }
+
+      // Fallback to original text
+      return { content: text, hasMetadata: false };
+    } catch (e) {
+      // Not pure JSON - might be text with embedded JSON
+      console.log('🧹 Cleaning text with potential embedded JSON');
+
+      // Remove JSON payloads embedded in the text
+      // Handle multiple patterns: {"status":"..."}, {"answer":"..."}, etc.
+      // Use brace-counting to handle complex nested JSON with newlines and escaped characters
+      let cleanedText = text;
+      const cleanedParts: string[] = [];
+      let remaining = text;
+
+      // Look for any JSON object patterns: {"status":, {"answer":, {"action_taken":, etc.
+      const jsonPatterns = [
+        '{"status":',
+        '{"answer":',
+        '{"action_taken":',
+        '{"formatted_text":',
+      ];
+
+      let foundPattern = true;
+      while (foundPattern) {
+        // Find the earliest JSON pattern
+        let earliestIndex = -1;
+        let earliestPattern = '';
+
+        for (const pattern of jsonPatterns) {
+          const index = remaining.indexOf(pattern);
+          if (index !== -1 && (earliestIndex === -1 || index < earliestIndex)) {
+            earliestIndex = index;
+            earliestPattern = pattern;
+          }
+        }
+
+        if (earliestIndex === -1) {
+          // No more JSON patterns found
+          foundPattern = false;
+          break;
+        }
+
+        const before = remaining.substring(0, earliestIndex);
+        if (before.trim()) {
+          cleanedParts.push(before.trim());
+        }
+
+        // Find the matching closing brace for the JSON object
+        let braceCount = 1;
+        let braceIndex = -1;
+        const after = remaining.substring(
+          earliestIndex + earliestPattern.length,
+        );
+
+        for (let i = 0; i < after.length; i++) {
+          if (after[i] === '{') {
+            braceCount++;
+          } else if (after[i] === '}') {
+            braceCount--;
+            if (braceCount === 0) {
+              braceIndex = i;
+              break;
+            }
+          }
+        }
+
+        if (braceIndex === -1) {
+          // No matching brace found, keep remaining text
+          if (remaining.trim() && remaining.trim() !== text.trim()) {
+            cleanedParts.push(remaining.trim());
+          }
+          break;
+        }
+
+        // Skip the JSON object and continue with what's after
+        remaining = after.substring(braceIndex + 1);
+      }
+
+      // Add any remaining text after last JSON
+      if (remaining.trim()) {
+        cleanedParts.push(remaining.trim());
+      }
+
+      cleanedText = cleanedParts.length > 0 ? cleanedParts.join('\n\n') : text;
+
+      console.log('✅ JSON payloads removed, returning clean text');
+      return { content: cleanedText || text, hasMetadata: false };
+    }
+  };
 
   // Utility function to detect and parse tool notifications using metadata
   const detectToolNotification = (
@@ -729,11 +852,15 @@ export function AgentForgePage() {
       textContent,
     );
 
+    // 🔧 FIX: Clean embedded JSON payloads from tool notification text
+    const { content: cleanedTextContent } =
+      parseJsonResponseForMetadata(textContent);
+
     // Detect tool start notifications: name = "tool_notification_start"
     if (artifact.name === 'tool_notification_start') {
       // Use the actual text content which includes agent name
       // e.g., "🔧 Argocd: Calling tool: Version_Service__Version\n" or "🔧 Supervisor: Calling Agent Argocd...\n"
-      const operation = textContent.trim() || `Calling tool...`;
+      const operation = cleanedTextContent.trim() || `Calling tool...`;
       console.log('🔍 Detected tool_notification_start, operation:', operation);
       return { isToolNotification: true, operation, isStart: true };
     }
@@ -742,7 +869,7 @@ export function AgentForgePage() {
     if (artifact.name === 'tool_notification_end') {
       // Use the actual text content which includes agent name
       // e.g., "✅ Argocd: Tool Version_Service__Version completed\n" or "✅ Supervisor: Agent task Argocd completed\n"
-      const operation = textContent.trim() || `Tool completed`;
+      const operation = cleanedTextContent.trim() || `Tool completed`;
       console.log('🔍 Detected tool_notification_end, operation:', operation);
       return { isToolNotification: true, operation, isStart: false };
     }
@@ -751,155 +878,7 @@ export function AgentForgePage() {
     return { isToolNotification: false };
   };
 
-  // Function to process streaming text and extract execution plans
-  const processExecutionPlanMarkers = useCallback(
-    (
-      text: string,
-    ): {
-      mainContent: string;
-      executionPlanContent: string | null;
-      shouldStartCapturing: boolean;
-      shouldStopCapturing: boolean;
-    } => {
-      const startMarker = '⟦';
-      const endMarker = '⟧';
-
-      let mainContent = text;
-      let executionPlanContent: string | null = null;
-      let shouldStartCapturing = false;
-      let shouldStopCapturing = false;
-
-      // Reduced logging for performance
-      if (process.env.NODE_ENV === 'development') {
-        console.log(
-          'PROCESSING EXECUTION PLAN MARKERS - input text:',
-          `${text.substring(0, 100)}...`,
-        );
-        console.log(
-          'PROCESSING EXECUTION PLAN MARKERS - isCapturingExecutionPlan:',
-          isCapturingExecutionPlan,
-        );
-      }
-
-      // 🔧 FALLBACK: Try to detect execution plan content without markers
-      if (
-        !text.includes(startMarker) &&
-        !text.includes(endMarker) &&
-        !isCapturingExecutionPlan
-      ) {
-        // Look for "📋 Execution Plan:" followed by content until a new section starts
-        const executionPlanPattern =
-          /📋\s*Execution\s*Plan:\s*(.*?)(?=\n\n(?:[A-Z]|###)|Calling|Checking|$)/is;
-        const match = text.match(executionPlanPattern);
-
-        if (match && match[1]) {
-          console.log(
-            '🔧 FALLBACK: Found execution plan content without Unicode markers!',
-          );
-          const executionPlanText = match[1].trim();
-          console.log(
-            '🔧 FALLBACK: Extracted execution plan:',
-            `${executionPlanText.substring(0, 200)}...`,
-          );
-
-          // Remove the entire execution plan section from main content
-          const fullExecutionPlanSection = match[0];
-          mainContent = text.replace(fullExecutionPlanSection, '').trim();
-          executionPlanContent = executionPlanText;
-          shouldStartCapturing = true;
-          shouldStopCapturing = true; // It's a complete plan in one chunk
-
-          console.log(
-            '🔧 FALLBACK: Removed section:',
-            `${fullExecutionPlanSection.substring(0, 100)}...`,
-          );
-          console.log(
-            '🔧 FALLBACK: Main content after removal:',
-            `${mainContent.substring(0, 200)}...`,
-          );
-          return {
-            mainContent,
-            executionPlanContent,
-            shouldStartCapturing,
-            shouldStopCapturing,
-          };
-        }
-      }
-
-      // Check for start marker (⟦)
-      if (text.includes(startMarker)) {
-        console.log('⟦ FOUND START MARKER');
-        shouldStartCapturing = true;
-        const parts = text.split(startMarker);
-        mainContent = parts[0]; // Content before start marker goes to main
-
-        // Content after start marker might contain execution plan
-        if (parts[1]) {
-          const afterStart = parts[1];
-          if (afterStart.includes(endMarker)) {
-            // Both start and end in same chunk
-            console.log('⟦⟧ FOUND BOTH MARKERS IN SAME CHUNK');
-            const endParts = afterStart.split(endMarker);
-            executionPlanContent = endParts[0]; // Content between markers
-            mainContent += endParts[1] || ''; // Content after end marker goes to main
-            shouldStopCapturing = true;
-          } else {
-            // Only start marker, content continues in next chunks
-            console.log('⟦ FOUND START MARKER ONLY - continuing capture');
-            executionPlanContent = afterStart;
-          }
-        }
-      } else if (text.includes(endMarker)) {
-        // End marker found (⟧)
-        console.log('⟧ FOUND END MARKER');
-        shouldStopCapturing = true;
-        const parts = text.split(endMarker);
-        executionPlanContent = parts[0]; // Content before end marker is execution plan
-        mainContent = parts[1] || ''; // Content after end marker goes to main
-      } else if (isCapturingExecutionPlan) {
-        // We're in the middle of capturing an execution plan
-        console.log('⟦...⟧ CONTINUING CAPTURE OF EXECUTION PLAN');
-        executionPlanContent = text;
-        mainContent = ''; // Nothing goes to main content
-      }
-
-      // Clean up execution plan content by removing duplicate headers
-      if (executionPlanContent) {
-        console.log(
-          'BEFORE HEADER CLEANUP:',
-          executionPlanContent.substring(0, 200),
-        );
-        const originalLength = executionPlanContent.length;
-        // Remove "## 📋 Execution Plan" or "📋 Execution Plan" from the beginning
-        executionPlanContent = executionPlanContent
-          .replace(/^[\s]*#{0,3}\s*📋\s*Execution\s*Plan[\s]*\n?/i, '')
-          .trim();
-        console.log(
-          'AFTER HEADER CLEANUP:',
-          executionPlanContent.substring(0, 200),
-        );
-        console.log(
-          'HEADER CLEANUP - removed chars:',
-          originalLength - executionPlanContent.length,
-        );
-      }
-
-      console.log(
-        'PROCESSING RESULT - mainContent length:',
-        mainContent.length,
-        'executionPlanContent length:',
-        executionPlanContent?.length || 0,
-      );
-
-      return {
-        mainContent,
-        executionPlanContent,
-        shouldStartCapturing,
-        shouldStopCapturing,
-      };
-    },
-    [isCapturingExecutionPlan],
-  );
+  // Execution plan markers removed - now handled via execution_plan_update event type
 
   // Token authentication for external system integration
   const { tokenMessage, isTokenRequest } = useTokenAuthentication();
@@ -938,7 +917,12 @@ export function AgentForgePage() {
         const api = new ChatbotApi(
           backendUrl,
           { identityApi, openIdConnectApi },
-          { requestTimeout, useOpenIDToken, feedbackEndpoint },
+          {
+            requestTimeout,
+            useOpenIDToken,
+            autoReloadOnTokenExpiry,
+            feedbackEndpoint,
+          },
         );
 
         // Wrap API methods to catch any remaining A2A client exceptions
@@ -987,7 +971,15 @@ export function AgentForgePage() {
         setNextRetryCountdown(30);
       }
     }
-  }, [connectionStatus, backendUrl, identityApi, requestTimeout, chatbotApi]);
+  }, [
+    connectionStatus,
+    backendUrl,
+    identityApi,
+    requestTimeout,
+    useOpenIDToken,
+    autoReloadOnTokenExpiry,
+    chatbotApi,
+  ]);
 
   // Global error handler for A2A client unhandled promise rejections
   useEffect(() => {
@@ -1542,10 +1534,7 @@ export function AgentForgePage() {
       messages: [
         {
           messageId: uuidv4(),
-          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`.replace(
-            /⟦|⟧/g,
-            '',
-          ),
+          text: `Hi! I am ${botName}, your AI Platform Engineer. How can I help you today?`,
           isUser: false,
           timestamp: createTimestamp(),
         },
@@ -1830,8 +1819,11 @@ export function AgentForgePage() {
               });
             }
             if (streamingMessage && !streamingMessage.isUser) {
-              // 🚀 SIMPLIFIED: Just set execution plan directly on message, no buffer complexity
-              streamingMessage.text = text.replace(/⟦|⟧/g, '');
+              // 🚀 SIMPLIFIED: Just set text directly on message
+              // 🔧 STRIP JSON: Clean embedded JSON during streaming to prevent display of raw JSON
+              const { content: cleanedText } =
+                parseJsonResponseForMetadata(text);
+              streamingMessage.text = cleanedText;
               streamingMessage.isStreaming = isStreaming;
 
               // Execution plan is now stored only in executionPlanBuffer, not on message object
@@ -1844,273 +1836,6 @@ export function AgentForgePage() {
     },
     [currentSessionId],
   );
-
-  // Helper function to parse JSON response and extract metadata fields
-  const parseJsonResponseForMetadata = (
-    text: string,
-  ): {
-    content: string;
-    metadataRequest?: any;
-    hasMetadata: boolean;
-  } => {
-    if (!text || text.trim().length === 0) {
-      return { content: text, hasMetadata: false };
-    }
-
-    // Check for UserInputMetaData: prefix first
-    const userInputMetaDataPrefix = 'UserInputMetaData:';
-    if (text.trim().startsWith(userInputMetaDataPrefix)) {
-      console.log('🎨 UserInputMetaData prefix detected');
-      try {
-        // Extract JSON after the prefix
-        const jsonStr = text
-          .trim()
-          .substring(userInputMetaDataPrefix.length)
-          .trim();
-        console.log('🎨 Parsing JSON:', jsonStr);
-        const jsonResponse = JSON.parse(jsonStr);
-        console.log('🎨 Parsed JSON:', jsonResponse);
-
-        if (jsonResponse.metadata?.input_fields) {
-          console.log(
-            '🎨 UserInputMetaData PARSED:',
-            jsonResponse.metadata.input_fields,
-          );
-
-          // Convert input_fields to MetadataField format
-          const metadataFields = jsonResponse.metadata.input_fields.map(
-            (field: any) => {
-              const fieldName = field.name || field.field_name;
-              const fieldDescription =
-                field.description || field.field_description;
-              const fieldType =
-                field.type || (field.field_values ? 'select' : 'text');
-              const fieldRequired =
-                field.required !== undefined
-                  ? field.required
-                  : !fieldDescription
-                      ?.toLocaleLowerCase('en-US')
-                      .includes('optional');
-
-              // Transform options to {value, label} format if needed
-              let transformedOptions;
-              if (field.options) {
-                // Check if options are already in object format
-                if (Array.isArray(field.options) && field.options.length > 0) {
-                  if (typeof field.options[0] === 'string') {
-                    // Convert string array to object array
-                    transformedOptions = field.options.map((v: string) => ({
-                      value: v,
-                      label: v,
-                    }));
-                  } else {
-                    // Already in object format
-                    transformedOptions = field.options;
-                  }
-                }
-              } else if (field.field_values) {
-                transformedOptions = field.field_values.map((v: string) => ({
-                  value: v,
-                  label: v,
-                }));
-              }
-
-              return {
-                name: fieldName,
-                label: fieldName
-                  .replace(/_/g, ' ')
-                  .replace(/\b\w/g, (l: string) =>
-                    l.toLocaleUpperCase('en-US'),
-                  ),
-                type: fieldType,
-                required: fieldRequired,
-                description: fieldDescription,
-                placeholder: fieldDescription,
-                defaultValue:
-                  field.defaultValue ||
-                  field.field_values?.[0] ||
-                  (transformedOptions && transformedOptions[0]?.value),
-                options: transformedOptions,
-              };
-            },
-          );
-
-          return {
-            content: jsonResponse.content || text,
-            hasMetadata: true,
-            metadataRequest: {
-              requestId: `user-input-metadata-${Date.now()}`,
-              title: 'Input Required',
-              description: jsonResponse.content,
-              fields: metadataFields,
-            },
-          };
-        }
-      } catch (e) {
-        console.error('❌ Failed to parse UserInputMetaData JSON:', e);
-        // Fall through to regular parsing
-      }
-    }
-
-    try {
-      // Try to parse as JSON
-      const jsonResponse = JSON.parse(text);
-
-      // Check if it requires user input
-      const requiresInput =
-        jsonResponse.require_user_input === true ||
-        jsonResponse.metadata?.user_input === true;
-
-      if (requiresInput && jsonResponse.metadata?.input_fields) {
-        console.log(
-          '🎨 JSON METADATA DETECTED:',
-          jsonResponse.metadata.input_fields,
-        );
-
-        // Convert input_fields to MetadataField format
-        // Support both formats: {field_name, field_description} and {name, description}
-        const metadataFields = jsonResponse.metadata.input_fields.map(
-          (field: any) => {
-            // Determine field name (support both formats)
-            const fieldName = field.name || field.field_name;
-            const fieldDescription =
-              field.description || field.field_description;
-            const fieldType =
-              field.type || (field.field_values ? 'select' : 'text');
-            const fieldRequired =
-              field.required !== undefined
-                ? field.required
-                : !fieldDescription
-                    ?.toLocaleLowerCase('en-US')
-                    .includes('optional');
-
-            // Transform options to {value, label} format if needed
-            let transformedOptions;
-            if (field.options) {
-              // Check if options are already in object format
-              if (Array.isArray(field.options) && field.options.length > 0) {
-                if (typeof field.options[0] === 'string') {
-                  // Convert string array to object array
-                  transformedOptions = field.options.map((v: string) => ({
-                    value: v,
-                    label: v,
-                  }));
-                } else {
-                  // Already in object format
-                  transformedOptions = field.options;
-                }
-              }
-            } else if (field.field_values) {
-              transformedOptions = field.field_values.map((v: string) => ({
-                value: v,
-                label: v,
-              }));
-            }
-
-            return {
-              name: fieldName,
-              label: fieldName
-                .replace(/_/g, ' ')
-                .replace(/\b\w/g, (l: string) => l.toLocaleUpperCase('en-US')),
-              type: fieldType,
-              required: fieldRequired,
-              description: fieldDescription,
-              placeholder: fieldDescription,
-              defaultValue:
-                field.defaultValue ||
-                field.field_values?.[0] ||
-                (transformedOptions && transformedOptions[0]?.value),
-              options: transformedOptions,
-            };
-          },
-        );
-
-        return {
-          content: jsonResponse.content || text,
-          hasMetadata: true,
-          metadataRequest: {
-            requestId: `json-metadata-${Date.now()}`,
-            title: 'Input Required',
-            description: jsonResponse.content,
-            fields: metadataFields,
-          },
-        };
-      }
-
-      // Check if this is a completion response with status
-      if (jsonResponse.status === 'completed' && jsonResponse.message) {
-        console.log('✅ Completion response detected, using clean message');
-        return { content: jsonResponse.message, hasMetadata: false };
-      }
-
-      // JSON but no metadata - return the content field or message if available
-      if (jsonResponse.content) {
-        return { content: jsonResponse.content, hasMetadata: false };
-      }
-      if (jsonResponse.message) {
-        return { content: jsonResponse.message, hasMetadata: false };
-      }
-
-      // Fallback to original text
-      return { content: text, hasMetadata: false };
-    } catch (e) {
-      // Not pure JSON - might be text with embedded JSON
-      console.log('🧹 Cleaning text with potential embedded JSON');
-
-      // Remove JSON status payloads embedded in the text (specifically {"status":"completed","message":"..."})
-      // Use brace-counting to handle complex nested JSON with newlines and escaped characters
-      let cleanedText = text;
-      const cleanedParts: string[] = [];
-      let remaining = text;
-
-      while (remaining.includes('{"status":')) {
-        const beforeIndex = remaining.indexOf('{"status":');
-        const before = remaining.substring(0, beforeIndex);
-
-        if (before.trim()) {
-          cleanedParts.push(before.trim());
-        }
-
-        // Find the matching closing brace for the JSON object
-        let braceCount = 1;
-        let braceIndex = -1;
-        const after = remaining.substring(beforeIndex + 10); // Skip '{"status":'
-
-        for (let i = 0; i < after.length; i++) {
-          if (after[i] === '{') {
-            braceCount++;
-          } else if (after[i] === '}') {
-            braceCount--;
-            if (braceCount === 0) {
-              braceIndex = i;
-              break;
-            }
-          }
-        }
-
-        if (braceIndex === -1) {
-          // No matching brace found, keep remaining text
-          if (remaining.trim() && remaining.trim() !== text.trim()) {
-            cleanedParts.push(remaining.trim());
-          }
-          break;
-        }
-
-        // Skip the JSON object and continue with what's after
-        remaining = after.substring(braceIndex + 1);
-      }
-
-      // Add any remaining text after last JSON
-      if (remaining.trim()) {
-        cleanedParts.push(remaining.trim());
-      }
-
-      cleanedText = cleanedParts.length > 0 ? cleanedParts.join('\n\n') : text;
-
-      console.log('✅ JSON status payloads removed, returning clean text');
-      return { content: cleanedText || text, hasMetadata: false };
-    }
-  };
 
   const finishStreamingMessage = useCallback(() => {
     // Mark the streaming message as not streaming to trigger execution plan auto-collapse
@@ -2130,7 +1855,7 @@ export function AgentForgePage() {
 
               // 🎯 PARSE JSON RESPONSE FOR METADATA FIELDS AND CLEAN DUPLICATES
               const messageText = streamingMessage.text || '';
-              const { content, metadataRequest, hasMetadata } =
+              const { content, platformEngineerResponse, hasMetadata } =
                 parseJsonResponseForMetadata(messageText);
 
               // Update message with cleaned content (removes duplicate JSON, etc.)
@@ -2149,12 +1874,13 @@ export function AgentForgePage() {
                 );
               }
 
-              if (hasMetadata && metadataRequest) {
+              if (hasMetadata && platformEngineerResponse) {
                 console.log(
-                  '✨ Converting JSON response to metadata form:',
-                  metadataRequest,
+                  '✨ Converting JSON response to PlatformEngineerResponse form:',
+                  platformEngineerResponse,
                 );
-                streamingMessage.metadataRequest = metadataRequest;
+                streamingMessage.platformEngineerResponse =
+                  platformEngineerResponse;
               }
               if (process.env.NODE_ENV === 'development') {
                 console.log('🏁 FINISHED STREAMING MESSAGE:', {
@@ -2177,8 +1903,8 @@ export function AgentForgePage() {
                   );
 
                   const messageKey = streamingMessage.messageId || 'unknown';
-                  // Remove markers if present (⟦ and ⟧), otherwise content is used as-is
-                  const cleanExecutionPlan = currentPlan.replace(/⟦|⟧/g, '');
+                  // Store execution plan as-is
+                  const cleanExecutionPlan = currentPlan;
 
                   // Store in buffer
                   setExecutionPlanBuffer(prevBuffer => {
@@ -2422,10 +2148,7 @@ export function AgentForgePage() {
                   ...session.messages,
                   {
                     messageId: uuidv4(),
-                    text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`.replace(
-                      /⟦|⟧/g,
-                      '',
-                    ),
+                    text: `🚫 **${botName} Multi-Agent System Disconnected**\n\nI'm unable to connect to the ${botName} Multi-Agent System at this time. Please check your configuration and try again.`,
                     isUser: false,
                     timestamp: createTimestamp(),
                   },
@@ -2576,25 +2299,7 @@ export function AgentForgePage() {
                       (textPart.text.length > 200 ? '...' : ''),
                   );
 
-                  // 🚨 DEBUGGING: Check if agent message contains execution plan content
-                  if (
-                    textPart.text.includes('⟦') ||
-                    textPart.text.includes('⟧')
-                  ) {
-                    console.log('🎯 EXECUTION PLAN MARKERS IN AGENT MESSAGE!');
-                  } else if (
-                    textPart.text
-                      .toLocaleLowerCase('en-US')
-                      .includes('task:') ||
-                    textPart.text
-                      .toLocaleLowerCase('en-US')
-                      .includes('approach:')
-                  ) {
-                    console.log(
-                      '🔍 POTENTIAL EXECUTION PLAN IN AGENT MESSAGE WITHOUT MARKERS:',
-                    );
-                    console.log('🔍 TEXT:', textPart.text);
-                  }
+                  // Execution plan markers removed - now handled via execution_plan_update events
 
                   accumulatedText += textPart.text;
                   updateStreamingMessage(
@@ -2618,9 +2323,66 @@ export function AgentForgePage() {
                     timestamp: new Date().toISOString(),
                   });
 
+                  // Check for both TextPart and DataPart
                   const textPart = event.artifact.parts.find(
                     (p: any) => p.kind === 'text',
                   );
+                  const dataPart = event.artifact.parts.find(
+                    (p: any) => p.kind === 'data',
+                  );
+
+                  // Handle DataPart (structured JSON from sub-agents like Jarvis)
+                  if (dataPart && 'data' in dataPart) {
+                    console.log(
+                      '📦 DataPart in artifact-update:',
+                      dataPart.data,
+                    );
+
+                    // Convert DataPart to JSON string and parse for metadata
+                    const jsonStr = JSON.stringify(dataPart.data);
+                    const { platformEngineerResponse, hasMetadata } =
+                      parseJsonResponseForMetadata(jsonStr);
+
+                    if (hasMetadata && platformEngineerResponse) {
+                      console.log(
+                        '✅ Structured metadata detected in streaming DataPart - adding form to streaming message',
+                      );
+
+                      // Keep supervisor's accumulated text, just add the metadata to it
+                      setSessions(prev =>
+                        prev.map(session => {
+                          if (session.contextId === currentSessionId) {
+                            const updatedMessages = [...session.messages];
+                            // Find the streaming message
+                            const streamingMessage = updatedMessages.find(
+                              msg => msg.isStreaming === true,
+                            );
+
+                            if (streamingMessage) {
+                              // Mark as complete and add metadata (form fields)
+                              streamingMessage.isStreaming = false;
+                              streamingMessage.platformEngineerResponse =
+                                platformEngineerResponse;
+                              console.log(
+                                `✅ Added form metadata to streaming message (kept supervisor's text: "${streamingMessage.text?.substring(
+                                  0,
+                                  100,
+                                )}...")`,
+                              );
+                            }
+
+                            return { ...session, messages: updatedMessages };
+                          }
+                          return session;
+                        }),
+                      );
+
+                      // Skip text accumulation - we've handled this
+                      continue;
+                    }
+                  }
+
+                  // Handle TextPart (regular text streaming)
                   if (textPart && 'text' in textPart) {
                     const { isToolNotification, operation, isStart } =
                       detectToolNotification(event.artifact);
@@ -2637,86 +2399,9 @@ export function AgentForgePage() {
                       isToolNotification,
                     );
 
-                    // 🚨 DEBUGGING: Check if this content contains execution plan markers
-                    if (
-                      textPart.text.includes('⟦') ||
-                      textPart.text.includes('⟧')
-                    ) {
-                      console.log(
-                        '🎯 EXECUTION PLAN MARKERS DETECTED IN STREAMING CONTENT!',
-                      );
-                      console.log('🎯 FULL TEXT:', textPart.text);
-                    } else if (
-                      textPart.text
-                        .toLocaleLowerCase('en-US')
-                        .includes('task:') ||
-                      textPart.text
-                        .toLocaleLowerCase('en-US')
-                        .includes('approach:')
-                    ) {
-                      console.log(
-                        '🔍 POTENTIAL EXECUTION PLAN CONTENT WITHOUT MARKERS:',
-                      );
-                      console.log(
-                        '🔍 TEXT:',
-                        `${textPart.text.substring(0, 300)}...`,
-                      );
-                      console.log('🔍 This should have ⟦⟧ markers around it!');
-                    }
+                    // Execution plan markers removed - now handled via execution_plan_update events
 
-                    // 🎯 COPILOTKIT-STYLE METADATA INPUT: Check for metadata in artifacts
-                    if (
-                      event.artifact?.metadata &&
-                      Object.keys(event.artifact.metadata).length > 0
-                    ) {
-                      console.log('🎨 METADATA DETECTED IN ARTIFACT:', {
-                        artifactName: event.artifact.name,
-                        metadata: event.artifact.metadata,
-                      });
-
-                      // Create a metadata request message for user input
-                      const metadataFields = Object.entries(
-                        event.artifact.metadata,
-                      ).map(([key, value]: [string, any]) => ({
-                        name: key,
-                        label:
-                          value?.label ||
-                          key
-                            .replace(/_/g, ' ')
-                            .replace(/\b\w/g, (l: string) =>
-                              l.toLocaleUpperCase('en-US'),
-                            ),
-                        type: value?.type || 'text',
-                        required: value?.required !== false,
-                        description: value?.description,
-                        placeholder: value?.placeholder,
-                        defaultValue: value?.defaultValue,
-                        options: value?.options,
-                        validation: value?.validation,
-                      }));
-
-                      // Add a bot message with metadata request
-                      addMessageToSession({
-                        text:
-                          textPart.text ||
-                          'Please provide the following information:',
-                        isUser: false,
-                        timestamp: new Date().toLocaleTimeString(),
-                        metadataRequest: {
-                          requestId: `metadata-${Date.now()}`,
-                          title:
-                            event.artifact.metadata.title || 'Input Required',
-                          description: event.artifact.metadata.description,
-                          fields: metadataFields,
-                          artifactName: event.artifact.name,
-                        },
-                      });
-
-                      console.log(
-                        '📝 Metadata request message added to session',
-                      );
-                      continue; // Skip normal text processing for metadata artifacts
-                    }
+                    // Metadata handling removed - now using PlatformEngineerResponse format only
 
                     // 🎯 HANDLE partial_result - Complete final accumulated text from backend
                     // This is sent when stream ends prematurely and contains ALL accumulated content
@@ -2737,8 +2422,35 @@ export function AgentForgePage() {
                       // Replace accumulated text with complete final text from backend
                       accumulatedText = textPart.text;
 
+                      // 🔧 FIX: Clean embedded JSON status payloads (e.g., {"status":"completed","message":"..."})
+                      // This prevents status JSON from appearing in the UI as tool notifications
+                      const {
+                        content: cleanedContent,
+                        hasMetadata,
+                        platformEngineerResponse,
+                      } = parseJsonResponseForMetadata(accumulatedText);
+
+                      // If metadata detected in text (e.g., UserInputMetaData:), handle it
+                      if (hasMetadata && platformEngineerResponse) {
+                        console.log(
+                          '🎨 METADATA DETECTED IN partial_result TEXT',
+                        );
+                        addMessageToSession({
+                          text:
+                            cleanedContent ||
+                            'Please provide the following information:',
+                          isUser: false,
+                          timestamp: new Date().toLocaleTimeString(),
+                          platformEngineerResponse,
+                        });
+                        console.log(
+                          '📝 PlatformEngineerResponse message added from partial_result',
+                        );
+                        continue;
+                      }
+
                       // Clean the text content from execution plan markers
-                      const cleanedTextForMessage = accumulatedText
+                      const cleanedTextForMessage = cleanedContent
                         .replace(/⟦[^⟧]*⟧/g, '')
                         .trim();
 
@@ -2866,8 +2578,12 @@ export function AgentForgePage() {
                       );
                       console.log('Setting currentOperation to:', operation);
 
+                      // 🔧 FIX: Clean embedded JSON payloads from tool notification text
+                      const { content: cleanedNotificationText } =
+                        parseJsonResponseForMetadata(textPart.text);
+
                       // Cache the exact notification text for later removal from content
-                      const notificationText = textPart.text.trim();
+                      const notificationText = cleanedNotificationText.trim();
 
                       // 🚨 DEBUGGING: Check if we're accidentally caching execution plan markers
                       if (
@@ -2921,6 +2637,36 @@ export function AgentForgePage() {
                         let cleanText = removeCachedToolNotifications(
                           textPart.text,
                         );
+
+                        // 🔧 FIX: Also clean embedded JSON status payloads from streaming content
+                        // This prevents {"status":"error","message":"..."} from appearing in the UI
+                        const {
+                          content: cleanedFromJson,
+                          hasMetadata,
+                          platformEngineerResponse,
+                        } = parseJsonResponseForMetadata(cleanText);
+
+                        // If metadata detected in streaming text, handle it and skip content processing
+                        if (hasMetadata && platformEngineerResponse) {
+                          console.log(
+                            '🎨 METADATA DETECTED IN streaming_result TEXT',
+                          );
+                          addMessageToSession({
+                            text:
+                              cleanedFromJson ||
+                              'Please provide the following information:',
+                            isUser: false,
+                            timestamp: new Date().toLocaleTimeString(),
+                            platformEngineerResponse,
+                          });
+                          console.log(
+                            '📝 PlatformEngineerResponse message added from streaming_result',
+                          );
+                          continue; // Skip normal streaming processing for metadata
+                        }
+
+                        cleanText = cleanedFromJson;
+
                         console.log(
                           'CONTENT AFTER CACHE CLEANING - original:',
                           `${textPart.text.substring(0, 100)}...`,
@@ -3015,13 +2761,10 @@ export function AgentForgePage() {
                           });
                         }
 
-                        // Clean the text content from execution plan markers
-                        const cleanedTextForMessage = accumulatedText
-                          .replace(/⟦[^⟧]*⟧/g, '')
-                          .trim();
-                        const cleanedExecutionPlan = accumulatedExecutionPlan
-                          ? accumulatedExecutionPlan.replace(/⟦|⟧/g, '')
-                          : '';
+                        // Use accumulated text as-is
+                        const cleanedTextForMessage = accumulatedText.trim();
+                        const cleanedExecutionPlan =
+                          accumulatedExecutionPlan || '';
 
                         updateStreamingMessage(
                           cleanedTextForMessage,
@@ -3261,7 +3004,10 @@ export function AgentForgePage() {
 
         // Handle streaming response from history array
         let resultText = '';
-        let executionPlanText = '';
+        const executionPlanText = '';
+        let finalPlatformEngineerResponse:
+          | PlatformEngineerResponse
+          | undefined = undefined;
         if (taskResult.status.state === 'completed' && taskResult.artifacts) {
           // Look for 'final_result' artifact first, otherwise use the last artifact
           const finalArtifact =
@@ -3271,12 +3017,28 @@ export function AgentForgePage() {
           if (finalArtifact && finalArtifact.parts && finalArtifact.parts[0]) {
             const part = finalArtifact.parts[0];
             if (part.kind === 'text') {
-              // Process execution plan markers in non-streaming response
-              const { mainContent, executionPlanContent } =
-                processExecutionPlanMarkers(part.text);
-              resultText = mainContent;
-              if (executionPlanContent) {
-                executionPlanText = executionPlanContent;
+              // Execution plans now come via execution_plan_update events
+              resultText = part.text;
+            } else if (part.kind === 'data') {
+              // DataPart: Structured JSON (JarvisResponse or PlatformEngineerResponse)
+              console.log('📦 DataPart received:', part.data);
+
+              // Parse DataPart to extract structured metadata for forms
+              const jsonData = part.data;
+              const jsonStr = JSON.stringify(jsonData);
+              const { content, platformEngineerResponse, hasMetadata } =
+                parseJsonResponseForMetadata(jsonStr);
+
+              if (hasMetadata && platformEngineerResponse) {
+                console.log(
+                  '✅ DataPart contains structured metadata - storing for form rendering',
+                );
+                resultText = content;
+                // Store the platformEngineerResponse in the message for form rendering
+                finalPlatformEngineerResponse = platformEngineerResponse;
+              } else {
+                // Fallback: use JSON string as text
+                resultText = jsonStr;
               }
             }
           }
@@ -3293,12 +3055,28 @@ export function AgentForgePage() {
           if (useStatusMessage) {
             const part = taskResult.status.message.parts[0];
             if (part.kind === 'text') {
-              // Process execution plan markers in status message
-              const { mainContent, executionPlanContent } =
-                processExecutionPlanMarkers(part.text);
-              resultText = mainContent;
-              if (executionPlanContent) {
-                executionPlanText = executionPlanContent;
+              // Execution plans now come via execution_plan_update events
+              resultText = part.text;
+            } else if (part.kind === 'data') {
+              // DataPart: Structured JSON (JarvisResponse or PlatformEngineerResponse)
+              console.log('📦 DataPart received in status.message:', part.data);
+
+              // Parse DataPart to extract structured metadata for forms
+              const jsonData = part.data;
+              const jsonStr = JSON.stringify(jsonData);
+              const { content, platformEngineerResponse, hasMetadata } =
+                parseJsonResponseForMetadata(jsonStr);
+
+              if (hasMetadata && platformEngineerResponse) {
+                console.log(
+                  '✅ Status DataPart contains structured metadata - storing for form rendering',
+                );
+                resultText = content;
+                // Store the platformEngineerResponse in the message for form rendering
+                finalPlatformEngineerResponse = platformEngineerResponse;
+              } else {
+                // Fallback: use JSON string as text
+                resultText = jsonStr;
               }
             }
           }
@@ -3389,40 +3167,43 @@ export function AgentForgePage() {
             return; // Exit early - isTyping will be set to false by finishStreamingMessage
           }
 
-          // Fallback: join all words if no streaming and process execution plan markers
-          const joinedText = agentWords.join('').trim();
-          const { mainContent, executionPlanContent } =
-            processExecutionPlanMarkers(joinedText);
-          resultText = mainContent;
-          if (executionPlanContent) {
-            executionPlanText = executionPlanContent;
-          }
+          // Fallback: join all words if no streaming
+          // Execution plans now come via execution_plan_update events
+          resultText = agentWords.join('').trim();
         }
 
         // Add message normally if not streaming - include execution plan if present
         if (resultText || executionPlanText) {
           // 🎯 Parse JSON response for metadata fields (non-streaming)
-          const { content, metadataRequest, hasMetadata } =
-            parseJsonResponseForMetadata(resultText);
+          // Prioritize finalPlatformEngineerResponse extracted from DataPart
+          let content = resultText;
+          let platformEngineerResponse = finalPlatformEngineerResponse;
+          let hasMetadata = !!finalPlatformEngineerResponse;
+
+          if (!finalPlatformEngineerResponse) {
+            // Fallback: parse from text if no DataPart was processed
+            const parsed = parseJsonResponseForMetadata(resultText);
+            content = parsed.content;
+            platformEngineerResponse = parsed.platformEngineerResponse;
+            hasMetadata = parsed.hasMetadata;
+          }
 
           const newMessage: any = {
             messageId: uuidv4(),
-            text: hasMetadata
-              ? content
-              : (resultText || '').replace(/⟦|⟧/g, ''),
+            text: hasMetadata ? content : resultText || '',
             isUser: false,
             timestamp: createTimestamp(),
-            executionPlan: (executionPlanText || '').replace(/⟦|⟧/g, ''), // Use empty string instead of undefined
+            executionPlan: executionPlanText || '', // Use empty string instead of undefined
             isStreaming: false, // Mark as completed for auto-collapse
           };
 
-          // Add metadata request if detected
-          if (hasMetadata && metadataRequest) {
+          // Add PlatformEngineerResponse if detected
+          if (hasMetadata && platformEngineerResponse) {
             console.log(
-              '✨ JSON metadata detected in non-streaming response:',
-              metadataRequest,
+              '✨ PlatformEngineerResponse detected in non-streaming response:',
+              platformEngineerResponse,
             );
-            newMessage.metadataRequest = metadataRequest;
+            newMessage.platformEngineerResponse = platformEngineerResponse;
           }
 
           console.log('📝 NON-STREAMING MESSAGE CREATED:', {
@@ -3455,6 +3236,36 @@ export function AgentForgePage() {
         const err = error as Error;
         console.log('🚫 Message submission error:', err.message);
 
+        // Check if it's a 401/403 authentication error
+        const isAuthError = (errorObj: any): boolean => {
+          if (
+            errorObj?.response?.status === 401 ||
+            errorObj?.response?.status === 403
+          ) {
+            return true;
+          }
+          if (errorObj?.status === 401 || errorObj?.status === 403) {
+            return true;
+          }
+          if (
+            errorObj?.message?.includes('401') ||
+            errorObj?.message?.includes('403')
+          ) {
+            return true;
+          }
+          if (
+            errorObj?.message
+              ?.toLocaleLowerCase('en-US')
+              .includes('unauthorized') ||
+            errorObj?.message?.toLocaleLowerCase('en-US').includes('forbidden')
+          ) {
+            return true;
+          }
+          return false;
+        };
+
+        const is401or403 = isAuthError(err);
+
         // Handle A2A Client specific errors more gracefully
         const isA2AConnectionError =
           err.message.includes('Unable to connect to agent') ||
@@ -3480,7 +3291,10 @@ export function AgentForgePage() {
         // Don't set apiError - connection banner will handle display
 
         let errorMessage: string;
-        if (isTimeoutError) {
+        if (is401or403) {
+          // Special message for authentication errors
+          errorMessage = `🔒 **Session Expired**\n\nYour authentication session has expired. Please reload the page to continue.\n\n[Click here to reload](#reload)`;
+        } else if (isTimeoutError) {
           errorMessage = `⏱️ ${err.message}`;
         } else if (isA2AConnectionError) {
           errorMessage = `🚫 **${botName} Multi-Agent System Disconnected**\n\nConnection failed: Unable to reach the agent service. Retrying automatically...`;
@@ -3497,7 +3311,7 @@ export function AgentForgePage() {
                   ...session.messages,
                   {
                     messageId: uuidv4(),
-                    text: errorMessage.replace(/⟦|⟧/g, ''),
+                    text: errorMessage,
                     isUser: false,
                     timestamp: createTimestamp(),
                   },
@@ -3529,7 +3343,6 @@ export function AgentForgePage() {
       setSessions,
       setCurrentSessionId,
       enableStreaming,
-      processExecutionPlanMarkers,
       setIsCapturingExecutionPlan,
       setAccumulatedExecutionPlan,
       accumulatedExecutionPlan,
@@ -3557,7 +3370,7 @@ export function AgentForgePage() {
                 if (msg.messageId === messageId) {
                   return {
                     ...msg,
-                    metadataResponse: data,
+                    userInputResponse: data,
                   };
                 }
                 return msg;

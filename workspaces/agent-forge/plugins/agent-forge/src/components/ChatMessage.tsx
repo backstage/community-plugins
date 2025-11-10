@@ -40,7 +40,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import useAsync from 'react-use/esm/useAsync';
-import { Message } from '../types';
+import { Message, PlatformEngineerResponse } from '../types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -297,16 +297,37 @@ export const ChatMessage = memo(function ChatMessage({
   const [isResponseExpanded, setIsResponseExpanded] = useState(true);
   const [isExecutionPlanExpanded, setIsExecutionPlanExpanded] = useState(false); // Default to collapsed
   const [isStreamedOutputExpanded, setIsStreamedOutputExpanded] =
-    useState(false); // Default to collapsed
+    useState(false); // Start collapsed - will expand when streaming content arrives
   const [isExecutionPlanModalOpen, setIsExecutionPlanModalOpen] =
     useState(false);
   const hasAutoCollapsed = useRef(false);
   const hasAutoExpanded = useRef(false);
   const userHasInteracted = useRef(false);
+  const userHasInteractedWithStreamedOutput = useRef(false); // Track user interaction with streamed output
   const responseContainerRef = useRef<HTMLDivElement | null>(null);
   const setResponseContainerRef = useCallback((node: HTMLDivElement | null) => {
     responseContainerRef.current = node;
   }, []);
+
+  // Auto-scroll to bottom during streaming - only if user is already at bottom
+  useEffect(() => {
+    if (message.isStreaming && responseContainerRef.current) {
+      const container = responseContainerRef.current.parentElement;
+      if (container && container.scrollHeight > container.clientHeight) {
+        // Check if user is near the bottom (within 50px threshold)
+        const isNearBottom =
+          container.scrollHeight -
+            container.scrollTop -
+            container.clientHeight <
+          50;
+
+        // Only auto-scroll if user is already at/near bottom
+        if (isNearBottom) {
+          container.scrollTop = container.scrollHeight;
+        }
+      }
+    }
+  }, [message.text, message.isStreaming]);
 
   const copyTextToClipboard = useCallback(async (text: string) => {
     if (!text) {
@@ -450,9 +471,12 @@ export const ChatMessage = memo(function ChatMessage({
       hasAutoCollapsed.current = false;
       hasAutoExpanded.current = false; // Also reset auto-expand state
       userHasInteracted.current = false; // Reset user interaction tracking
+      userHasInteractedWithStreamedOutput.current = false; // Reset streamed output interaction tracking
 
       // Default to collapsed (in-memory only, no localStorage)
       setIsExecutionPlanExpanded(false);
+      // Start with streamed output collapsed - will expand when content arrives
+      setIsStreamedOutputExpanded(false);
       // console.log('📂 RESET EXECUTION PLAN STATE TO COLLAPSED (in-memory)');
 
       prevMessageIdRef.current = currentMessageId;
@@ -484,6 +508,38 @@ export const ChatMessage = memo(function ChatMessage({
     }
     return undefined;
   }, [message.isStreaming, hasExecutionPlan, isExecutionPlanExpanded]);
+
+  // Auto-expand streamed output when content arrives during streaming
+  useEffect(() => {
+    if (
+      message.isStreaming &&
+      hasStreamedOutput &&
+      !isStreamedOutputExpanded &&
+      !userHasInteractedWithStreamedOutput.current
+    ) {
+      // Expand when streaming content arrives
+      setIsStreamedOutputExpanded(true);
+    }
+  }, [message.isStreaming, hasStreamedOutput, isStreamedOutputExpanded]);
+
+  // Auto-collapse streamed output after streaming completes (partial_result arrives)
+  // Only auto-collapse if user hasn't manually interacted with it
+  useEffect(() => {
+    if (
+      !message.isStreaming &&
+      hasStreamedOutput &&
+      isStreamedOutputExpanded &&
+      !userHasInteractedWithStreamedOutput.current
+    ) {
+      // Collapse after a short delay to allow user to see the transition
+      const timer = setTimeout(() => {
+        setIsStreamedOutputExpanded(false);
+      }, 500); // 500ms delay for smooth transition
+
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [message.isStreaming, hasStreamedOutput, isStreamedOutputExpanded]);
 
   // Save execution plan expansion state to localStorage whenever it changes
   // Execution plan expansion state is now purely in-memory (no localStorage persistence needed)
@@ -518,6 +574,7 @@ export const ChatMessage = memo(function ChatMessage({
   }, [isExecutionPlanExpanded]);
 
   const handleStreamedOutputToggle = useCallback(() => {
+    userHasInteractedWithStreamedOutput.current = true; // Mark that user has interacted
     setIsStreamedOutputExpanded(!isStreamedOutputExpanded);
   }, [isStreamedOutputExpanded]);
 
@@ -820,16 +877,40 @@ export const ChatMessage = memo(function ChatMessage({
               className={classes.collapseHeader}
               onClick={() => setIsResponseExpanded(!isResponseExpanded)}
             >
-              <Typography
-                variant="caption"
+              <Box
                 style={{
-                  opacity: 0.7,
-                  fontSize: '0.75rem',
-                  fontWeight: 500,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: theme.spacing(1),
                 }}
               >
-                Response
-              </Typography>
+                <Typography
+                  variant="caption"
+                  style={{
+                    opacity: 0.7,
+                    fontSize: '0.75rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  Response
+                </Typography>
+                {/* Streaming indicator on Response title */}
+                {message.isStreaming && (
+                  <Typography
+                    variant="caption"
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      color:
+                        theme.palette.type === 'dark'
+                          ? '#4fc3f7' // Brighter cyan for dark mode
+                          : '#0288d1', // Brighter blue for light mode
+                    }}
+                  >
+                    • Streaming raw output
+                  </Typography>
+                )}
+              </Box>
               <IconButton
                 className={classes.collapseButton}
                 size="small"
@@ -854,12 +935,13 @@ export const ChatMessage = memo(function ChatMessage({
               style={{
                 wordBreak: 'break-word',
                 color: 'inherit',
-                maxHeight: message.isStreaming ? 320 : 'none',
-                minHeight: message.isStreaming ? 160 : 'auto',
+                maxHeight: message.isStreaming ? '15em' : 'none', // ~15 lines at 1em line-height
+                minHeight: message.isStreaming ? '15em' : 'auto', // Fixed at 15 lines
                 overflowY: message.isStreaming ? 'auto' : 'visible',
                 paddingRight: message.isStreaming
                   ? theme.spacing(0.5)
                   : undefined,
+                overflowAnchor: message.isStreaming ? 'auto' : undefined, // Enable auto-scroll to bottom
               }}
             >
               <div ref={setResponseContainerRef} style={{ width: '100%' }}>
@@ -1836,22 +1918,47 @@ export const ChatMessage = memo(function ChatMessage({
         </Alert>
       </Snackbar>
 
-      {/* Metadata Input Form - CopilotKit-style */}
-      {message.metadataRequest && !message.metadataResponse && (
-        <Box mt={1}>
-          <MetadataInputForm
-            title={message.metadataRequest.title}
-            description={message.metadataRequest.description}
-            fields={message.metadataRequest.fields}
-            onSubmit={data => {
-              if (onMetadataSubmit && message.messageId) {
-                onMetadataSubmit(message.messageId, data);
+      {/* User Input Form - Transform PlatformEngineerResponse to form */}
+      {message.platformEngineerResponse &&
+        message.platformEngineerResponse.require_user_input &&
+        !message.userInputResponse && (
+          <Box mt={1}>
+            <MetadataInputForm
+              title="Input Required"
+              description={message.platformEngineerResponse.content}
+              fields={
+                message.platformEngineerResponse.metadata?.input_fields?.map(
+                  field => ({
+                    name: field.field_name,
+                    label: field.field_name
+                      .replace(/_/g, ' ')
+                      .replace(/\b\w/g, (l: string) =>
+                        l.toLocaleUpperCase('en-US'),
+                      ),
+                    type:
+                      field.field_values && field.field_values.length > 0
+                        ? 'select'
+                        : 'text',
+                    required: true,
+                    description: field.field_description,
+                    placeholder: field.field_description,
+                    defaultValue: field.field_values?.[0],
+                    options: field.field_values?.map(v => ({
+                      value: v,
+                      label: v,
+                    })),
+                  }),
+                ) || []
               }
-            }}
-            isSubmitting={false}
-          />
-        </Box>
-      )}
+              onSubmit={data => {
+                if (onMetadataSubmit && message.messageId) {
+                  onMetadataSubmit(message.messageId, data);
+                }
+              }}
+              isSubmitting={false}
+            />
+          </Box>
+        )}
     </Box>
   );
 });
