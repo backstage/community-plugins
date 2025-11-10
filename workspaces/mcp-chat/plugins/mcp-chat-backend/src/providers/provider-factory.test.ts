@@ -95,7 +95,7 @@ describe('getProviderConfig', () => {
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
     expect(() => getProviderConfig(mockConfig)).toThrow(
-      'Unsupported provider id: unsupported. Allowed values are: openai, claude, gemini, ollama, litellm',
+      'Unsupported provider id: unsupported. Allowed values are: openai, openai-responses, claude, gemini, ollama, litellm',
     );
   });
 

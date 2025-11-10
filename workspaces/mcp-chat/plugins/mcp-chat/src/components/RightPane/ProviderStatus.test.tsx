@@ -221,7 +221,7 @@ describe('ProviderStatus', () => {
         <ProviderStatus providerStatusData={null} isLoading error={null} />,
       );
 
-      expect(screen.getByText(/Loading\.\.\./)).toBeInTheDocument();
+      expect(screen.getAllByText(/Loading\.\.\./)[0]).toBeInTheDocument();
     });
 
     it('shows not available when no provider data', () => {
@@ -233,7 +233,7 @@ describe('ProviderStatus', () => {
         />,
       );
 
-      expect(screen.getByText(/Not available/)).toBeInTheDocument();
+      expect(screen.getAllByText(/Not available/)[0]).toBeInTheDocument();
     });
   });
 
@@ -306,7 +306,7 @@ describe('ProviderStatus', () => {
         <ProviderStatus providerStatusData={null} isLoading error={null} />,
       );
 
-      expect(screen.getByText(/Loading\.\.\./)).toBeInTheDocument();
+      expect(screen.getAllByText(/Loading\.\.\./)[0]).toBeInTheDocument();
     });
   });
 

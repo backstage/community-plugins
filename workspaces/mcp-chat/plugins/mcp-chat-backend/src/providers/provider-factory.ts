@@ -16,6 +16,7 @@
 import { LLMProvider } from './base-provider';
 import { ProviderConfig } from '../types';
 import { OpenAIProvider } from './openai-provider';
+import { OpenAIResponsesProvider } from './openai-responses-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
@@ -27,6 +28,9 @@ export class ProviderFactory {
     switch (config.type) {
       case 'openai':
         return new OpenAIProvider(config);
+
+      case 'openai-responses':
+        return new OpenAIResponsesProvider(config);
 
       case 'claude':
         return new ClaudeProvider(config);
@@ -55,7 +59,14 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const token = providerConfig.getOptionalString('token');
   const model = providerConfig.getString('model');
 
-  const allowedProviders = ['openai', 'claude', 'gemini', 'ollama', 'litellm'];
+  const allowedProviders = [
+    'openai',
+    'openai-responses',
+    'claude',
+    'gemini',
+    'ollama',
+    'litellm',
+  ];
   if (!allowedProviders.includes(providerId)) {
     throw new Error(
       `Unsupported provider id: ${providerId}. Allowed values are: ${allowedProviders.join(
@@ -71,6 +82,13 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       baseUrl:
         providerConfig.getOptionalString('baseUrl') ||
         'https://api.openai.com/v1',
+      model: model,
+    },
+
+    'openai-responses': {
+      type: 'openai-responses',
+      apiKey: token,
+      baseUrl: providerConfig.getOptionalString('baseUrl') || '',
       model: model,
     },
 
@@ -111,8 +129,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   }
 
   // Validate required fields
-  // Ollama and LiteLLM can work without API keys depending on configuration
-  const noApiKeyRequired = ['ollama', 'litellm'];
+  // Ollama, LiteLLM, and OpenAI Responses can work without API keys depending on configuration
+  const noApiKeyRequired = ['ollama', 'litellm', 'openai-responses'];
   if (!noApiKeyRequired.includes(providerId) && !configTemplate.apiKey) {
     throw new Error(`API key is required for provider: ${providerId}`);
   }

@@ -193,18 +193,44 @@ export const ProviderStatus = ({
           />
         </Tooltip>
       </Box>
-      <Typography
-        variant="caption"
-        style={{
-          color: theme.palette.text.primary,
-          lineHeight: 1.5,
-          fontSize: '0.8rem',
-        }}
-      >
-        <strong>Model:</strong> {displayModel}
-        <br />
-        <strong>URL:</strong> {displayUrl}
-      </Typography>
+      <Box>
+        <Typography
+          variant="caption"
+          style={{
+            color: theme.palette.text.primary,
+            lineHeight: 1.5,
+            fontSize: '0.8rem',
+          }}
+        >
+          <strong>Model:</strong> {displayModel}
+        </Typography>
+        <Typography
+          variant="caption"
+          style={{
+            color: theme.palette.text.primary,
+            lineHeight: 1.5,
+            fontSize: '0.8rem',
+            display: 'block',
+            marginTop: '4px',
+          }}
+        >
+          <strong>URL:</strong>
+        </Typography>
+        <Typography
+          variant="caption"
+          style={{
+            color: theme.palette.text.primary,
+            lineHeight: 1.4,
+            fontSize: '0.75rem',
+            wordBreak: 'break-all',
+            display: 'block',
+            marginTop: '2px',
+            fontFamily: 'monospace',
+          }}
+        >
+          {displayUrl}
+        </Typography>
+      </Box>
       {errorMessage && !isLoading && (
         <Box
           style={{
