@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.20.1
+
+### Patch Changes
+
+- 20f8821: Updated dependency `uuid` to `^13.0.0` and remove deprecated and redundant `@types/uuid` package.
+
 ## 0.20.0
 
 ### Minor Changes
