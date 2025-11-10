@@ -1,5 +1,13 @@
 # @backstage-community/plugin-cicd-statistics-module-gitlab
 
+## 0.12.1
+
+### Patch Changes
+
+- 8202df6: Added documentation for the New Frontend System
+- Updated dependencies [8202df6]
+  - @backstage-community/plugin-cicd-statistics@0.12.1
+
 ## 0.12.0
 
 ### Minor Changes
