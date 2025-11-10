@@ -1751,6 +1751,7 @@ __metadata:
     "@backstage/plugin-permission-react": "npm:^0.4.37"
     "@backstage/test-utils": "npm:^1.7.12"
     "@backstage/theme": "npm:^0.7.0"
+    "@backstage/ui": "npm:^0.8.2"
     "@mui/icons-material": "npm:5.18.0"
     "@mui/material": "npm:^5.14.18"
     "@mui/styles": "npm:^6.1.7"
