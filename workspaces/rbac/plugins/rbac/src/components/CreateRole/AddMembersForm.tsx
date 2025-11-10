@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { useState, useEffect, useMemo } from 'react';
-
-import { stringifyEntityRef } from '@backstage/catalog-model';
-
+import {
+  GroupEntity,
+  stringifyEntityRef,
+  UserEntity,
+} from '@backstage/catalog-model';
+import {
+  Button,
+  Box,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core';
 import Autocomplete from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import IconButton from '@mui/material/IconButton';
+import MuiIconButton from '@mui/material/IconButton';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { FormikErrors } from 'formik';
-
 import { MemberEntity } from '../../types';
 import { useLanguage } from '../../hooks/useLanguage';
 import {
@@ -37,11 +47,26 @@ import { RoleFormValues, SelectedMember } from './types';
 import { useTranslation } from '../../hooks/useTranslation';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { rbacTranslationRef } from '../../translations';
+import { MemberSelectionDialog } from './MemberSelectionDialog';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    browseButton: {
+      marginLeft: theme.spacing(1),
+      top: theme.spacing(1),
+      whiteSpace: 'nowrap',
+    },
+  }),
+);
 
 type AddMembersFormProps = {
   selectedMembers: SelectedMember[];
   selectedMembersError?: string;
-  membersData: { members: MemberEntity[]; loading: boolean; error: Error };
+  membersData: {
+    members: MemberEntity[];
+    loading: boolean;
+    error?: Error;
+  };
   setFieldValue: (
     field: string,
     value: any,
@@ -49,6 +74,7 @@ type AddMembersFormProps = {
   ) => Promise<FormikErrors<RoleFormValues>> | Promise<void>;
 };
 
+// --- These helpers are still needed for the Autocomplete ---
 const getDescription = (
   member: MemberEntity,
   t: TranslationFunction<typeof rbacTranslationRef.T>,
@@ -69,9 +95,26 @@ const getDescription = (
           ? t('common.childGroupsCount' as any, { count: childCount })
           : '',
       ]
-        .filter(Boolean) // Remove any empty strings
+        .filter(Boolean)
         .join(', ')
     : undefined;
+};
+
+const entityToSelectedMember = (
+  entity: MemberEntity,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+): SelectedMember => {
+  const ref = stringifyEntityRef(entity);
+  return {
+    id: entity.metadata.etag ?? ref,
+    label: entity.spec?.profile?.displayName ?? entity.metadata.name,
+    description: getDescription(entity, t),
+    etag: entity.metadata.etag ?? ref,
+    type: entity.kind,
+    namespace: entity.metadata.namespace,
+    members: getMembersCount(entity),
+    ref: ref,
+  };
 };
 
 export const AddMembersForm = ({
@@ -80,6 +123,7 @@ export const AddMembersForm = ({
   setFieldValue,
   membersData,
 }: AddMembersFormProps) => {
+  const classes = useStyles();
   const locale = useLanguage();
   const { t } = useTranslation();
   const [search, setSearch] = useState<string>('');
@@ -89,22 +133,25 @@ export const AddMembersForm = ({
     setSelectedMember(selectedMembers);
   }, [selectedMembers]);
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { users, groups } = useMemo(() => {
+    const u: UserEntity[] = [];
+    const g: GroupEntity[] = [];
+    (membersData.members || []).forEach(member => {
+      if (member.kind === 'User') {
+        u.push(member as UserEntity);
+      } else if (member.kind === 'Group') {
+        g.push(member as GroupEntity);
+      }
+    });
+    return { users: u, groups: g };
+  }, [membersData.members]);
+
   const membersOptions: SelectedMember[] = useMemo(() => {
     return membersData.members
-      ? membersData.members.map((member: MemberEntity, index: number) => {
-          const tag =
-            member.metadata.etag ??
-            `${member.metadata.name}-${member.kind}-${index}`;
-          return {
-            id: tag,
-            label: member.spec?.profile?.displayName ?? member.metadata.name,
-            description: getDescription(member, t),
-            etag: tag,
-            type: member.kind,
-            namespace: member.metadata.namespace,
-            members: getMembersCount(member),
-            ref: stringifyEntityRef(member),
-          };
+      ? membersData.members.map((member: MemberEntity) => {
+          return entityToSelectedMember(member, t);
         })
       : ([] as SelectedMember[]);
   }, [membersData.members, t]);
@@ -131,74 +178,94 @@ export const AddMembersForm = ({
       ? option.etag === value.etag
       : selectedMember?.[0].etag === value.etag;
 
+  const handleDialogApply = (newSelection: SelectedMember[]) => {
+    setFieldValue('selectedMembers', newSelection);
+    setDialogOpen(false);
+  };
+
   return (
     <>
       <FormHelperText>{t('common.searchAndSelectUsersGroups')}</FormHelperText>
-      <br />
-      <Autocomplete
-        disableCloseOnSelect
-        data-testid="users-and-groups-autocomplete"
-        sx={{ width: '30%' }}
-        multiple
-        options={filteredMembers || []}
-        getOptionLabel={(option: SelectedMember) => option.label ?? ''}
-        isOptionEqualToValue={handleIsOptionEqualToValue}
-        loading={membersData.loading}
-        loadingText={<LinearProgress />}
-        disableClearable
-        value={selectedMember}
-        onChange={(_e, value: SelectedMember[]) => {
-          setSelectedMember(value);
-          setFieldValue('selectedMembers', value);
-        }}
-        renderTags={() => ''}
-        inputValue={search}
-        onInputChange={(_e, newSearch: string, reason) =>
-          reason === 'input' && setSearch(newSearch)
-        }
-        renderOption={(props, option: SelectedMember, state) => (
-          <MembersDropdownOption props={props} option={option} state={state} />
-        )}
-        noOptionsText={t('common.noUsersAndGroupsFound')}
-        clearOnEscape
-        renderInput={params => (
-          <TextField
-            data-testid="users-and-groups-text-field"
-            {...params}
-            name="add-users-and-groups"
-            variant="outlined"
-            label={t('common.selectUsersAndGroups')}
-            error={!!selectedMembersError}
-            helperText={selectedMembersError ?? ''}
-            required
-            onKeyDown={event => {
-              if (event.key === 'Backspace' && params.inputProps.value === '') {
-                event.stopPropagation();
-              }
-            }}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {search && (
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        setSearch('');
-                      }}
-                      aria-label={t('common.clearSearch')}
-                    >
-                      <HighlightOffIcon fontSize="small" />
-                    </IconButton>
-                  )}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            }}
-          />
-        )}
-      />
-      <br />
+      <Box display="flex" alignItems="flex-start" mt={1}>
+        <Autocomplete
+          disableCloseOnSelect
+          data-testid="users-and-groups-autocomplete"
+          sx={{ width: '30%' }}
+          multiple
+          options={filteredMembers || []}
+          getOptionLabel={(option: SelectedMember) => option.label ?? ''}
+          isOptionEqualToValue={handleIsOptionEqualToValue}
+          loading={membersData.loading}
+          loadingText={<LinearProgress />}
+          disableClearable
+          value={selectedMember}
+          onChange={(_e, value: SelectedMember[]) => {
+            setSelectedMember(value);
+            setFieldValue('selectedMembers', value);
+          }}
+          renderTags={() => ''}
+          inputValue={search}
+          onInputChange={(_e, newSearch: string, reason) =>
+            reason === 'input' && setSearch(newSearch)
+          }
+          renderOption={(props, option: SelectedMember, state) => (
+            <MembersDropdownOption
+              props={props}
+              option={option}
+              state={state}
+            />
+          )}
+          noOptionsText={t('common.noUsersAndGroupsFound')}
+          clearOnEscape
+          renderInput={params => (
+            <TextField
+              data-testid="users-and-groups-text-field"
+              {...params}
+              name="add-users-and-groups"
+              variant="outlined"
+              label={t('common.selectUsersAndGroups')}
+              error={!!selectedMembersError}
+              helperText={selectedMembersError ?? ''}
+              required
+              onKeyDown={event => {
+                if (
+                  event.key === 'Backspace' &&
+                  params.inputProps.value === ''
+                ) {
+                  event.stopPropagation();
+                }
+              }}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {search && (
+                      <MuiIconButton
+                        size="small"
+                        onClick={() => {
+                          setSearch('');
+                        }}
+                        aria-label={t('common.clearSearch')}
+                      >
+                        <HighlightOffIcon fontSize="small" />
+                      </MuiIconButton>
+                    )}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
+            />
+          )}
+        />
+        <Button
+          variant="outlined"
+          className={classes.browseButton}
+          onClick={() => setDialogOpen(true)}
+          startIcon={<ManageSearchIcon />}
+        >
+          Browse All
+        </Button>
+      </Box>
       {membersData.error?.message && (
         <FormHelperText error={!!membersData.error}>
           {t('common.errorFetchingUserGroups' as any, {
@@ -206,6 +273,16 @@ export const AddMembersForm = ({
           })}
         </FormHelperText>
       )}
+      <MemberSelectionDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onApply={handleDialogApply}
+        initialSelectedMembers={selectedMembers}
+        allUsers={users}
+        allGroups={groups}
+        isLoading={membersData.loading}
+        t={t}
+      />
     </>
   );
 };
