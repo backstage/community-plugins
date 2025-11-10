@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- 5c4b01f: Added OpenAI Responses API Support
+
 ## 0.2.1
 
 ### Patch Changes
