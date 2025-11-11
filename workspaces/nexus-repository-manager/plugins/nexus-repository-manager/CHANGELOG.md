@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.18.0
+
+### Minor Changes
+
+- 893d1d6: Backstage version bump to v1.44.2
+
+### Patch Changes
+
+- 47d8095: Migrate the `nexus-repository-manager` plugin to the new frontend system.
+- 80b07a8: Updated dependency `@hey-api/openapi-ts` to `0.86.11`.
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
 ## 1.17.0
 
 ### Minor Changes
