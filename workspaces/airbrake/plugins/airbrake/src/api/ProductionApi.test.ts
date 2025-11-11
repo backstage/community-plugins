@@ -15,7 +15,7 @@
  */
 
 import { ProductionAirbrakeApi } from './ProductionApi';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import mockGroupsData from './mock/airbrakeGroupsApiMock.json';
 import { setupServer } from 'msw/node';
 import { setupRequestMockHandlers } from '@backstage/test-utils';
@@ -28,10 +28,10 @@ describe('The production Airbrake API', () => {
 
   it('fetches groups using the provided project ID', async () => {
     worker.use(
-      rest.get(
+      http.get(
         'http://localhost:7007/api/airbrake/api/v4/projects/123456/groups',
-        (_, res, ctx) => {
-          return res(ctx.status(200), ctx.json(mockGroupsData));
+        () => {
+          return HttpResponse.json(mockGroupsData, { status: 200 });
         },
       ),
     );
@@ -42,10 +42,10 @@ describe('The production Airbrake API', () => {
 
   it('throws if fetching groups was unsuccessful', async () => {
     worker.use(
-      rest.get(
+      http.get(
         'http://localhost:7007/api/airbrake/api/v4/projects/123456/groups',
-        (_, res, ctx) => {
-          return res(ctx.status(500));
+        () => {
+          return new HttpResponse(null, { status: 500 });
         },
       ),
     );

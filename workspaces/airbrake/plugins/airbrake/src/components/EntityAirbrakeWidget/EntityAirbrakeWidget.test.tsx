@@ -28,7 +28,7 @@ import {
   MockAirbrakeApi,
   ProductionAirbrakeApi,
 } from '../../api';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 describe('EntityAirbrakeWidget', () => {
@@ -67,10 +67,10 @@ describe('EntityAirbrakeWidget', () => {
 
   it('states that an error occurred if the API call fails', async () => {
     worker.use(
-      rest.get(
+      http.get(
         'http://localhost:7007/api/airbrake/api/v4/projects/123/groups',
-        (_, res, ctx) => {
-          return res(ctx.status(500));
+        () => {
+          return new HttpResponse(null, { status: 500 });
         },
       ),
     );
