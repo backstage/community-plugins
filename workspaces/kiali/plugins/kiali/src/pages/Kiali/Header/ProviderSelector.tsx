@@ -37,15 +37,10 @@ export const ProviderSelector = (props: { page?: boolean }) => {
       .getNamespaces()
       .then(data => {
         kialiState.dispatch.namespaceDispatch(
-          NamespaceActions.receiveList(
-            [...data.filter(ns => ns.cluster === (value as string))],
-            new Date(),
-          ),
+          NamespaceActions.receiveList([...data], new Date()),
         );
         kialiState.dispatch.namespaceDispatch(
-          NamespaceActions.setActiveNamespaces([
-            ...data.filter(ns => ns.cluster === (value as string)),
-          ]),
+          NamespaceActions.setActiveNamespaces([...data]),
         );
       })
       .catch(_ => {

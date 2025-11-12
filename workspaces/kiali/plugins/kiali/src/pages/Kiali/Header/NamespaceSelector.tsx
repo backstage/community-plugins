@@ -33,11 +33,9 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
     } = event;
     kialiState.dispatch.namespaceDispatch(
       NamespaceActions.setActiveNamespaces(
-        (
-          kialiState.namespaces.items?.filter(
-            ns => ns.cluster === kialiState.providers.activeProvider,
-          ) || []
-        ).filter(ns => (value as string[]).includes(ns.name)),
+        (kialiState.namespaces.items || []).filter(ns =>
+          (value as string[]).includes(ns.name),
+        ),
       ),
     );
   };
