@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cicd-statistics
 
+## 0.12.1
+
+### Patch Changes
+
+- 8202df6: Added documentation for the New Frontend System
+
 ## 0.12.0
 
 ### Minor Changes
