@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.16.1
+
+### Patch Changes
+
+- 71b618d: Added documentation for the New Frontend System
+
 ## 0.16.0
 
 ### Minor Changes
