@@ -45,6 +45,7 @@ import {
   NamespaceStateReducer,
   UserSettingsStateReducer,
 } from '../reducers';
+import { INITIAL_ISTIO_CERTS_INFO_STATE } from '../reducers/IstioCertsInfoState';
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
 import { ServerConfigStateReducer } from '../reducers/ServerConfigState';
@@ -178,9 +179,6 @@ export const KialiProvider: React.FC<Props> = ({
         .then(response =>
           meshTLSStatusDispatch(MeshTlsActions.setinfo(response)),
         );
-      const getIstioCerts = promises
-        .register('getIstioCerts', kialiClient.getIstioCertsInfo())
-        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       const getServerConfig = promises
         .register('getServerConfig', kialiClient.getServerConfig())
         .then(resp => {
@@ -197,6 +195,24 @@ export const KialiProvider: React.FC<Props> = ({
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));
       await fetchNamespaces();
+      // Build namespaces string from active namespaces (after they are loaded)
+      const namespacesString = namespaceState.activeNamespaces
+        .map(ns => ns.name)
+        .join(',');
+      const clusterName = providerState.activeProvider || undefined;
+
+      const getIstioCerts = promises
+        .register(
+          'getIstioCerts',
+          kialiClient.getIstioCertsInfo(namespacesString, clusterName),
+        )
+        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)))
+        .catch(err => {
+          // Handle 404 or other errors gracefully - set empty state
+          istioCertsDispatch(
+            IstioCertsInfoActions.setinfo(INITIAL_ISTIO_CERTS_INFO_STATE),
+          );
+        });
       await Promise.all([
         getAuthpromise,
         getStatusPromise,

@@ -174,7 +174,10 @@ export interface KialiApi {
     params: IstioMetricsOptions,
   ): Promise<Readonly<IstioMetricsMap>>;
   getIstioStatus(cluster?: string): Promise<ComponentStatus[]>;
-  getIstioCertsInfo(): Promise<CertsInfo[]>;
+  getIstioCertsInfo(
+    namespaces: string,
+    clusterName?: string,
+  ): Promise<CertsInfo[]>;
   getClustersWorkloads(
     namespaces: string,
     params: AppListQuery,
@@ -741,11 +744,20 @@ export class KialiApiClient implements KialiApi {
     ).then(resp => resp);
   };
 
-  getIstioCertsInfo = (): Promise<CertsInfo[]> => {
+  getIstioCertsInfo = (
+    namespaces: string,
+    clusterName?: string,
+  ): Promise<CertsInfo[]> => {
+    const queryParams: any = {
+      namespaces: namespaces,
+    };
+    if (clusterName) {
+      queryParams.clusterName = clusterName;
+    }
     return this.newRequest<CertsInfo[]>(
       HTTP_VERBS.GET,
       urls.istioCertsInfo(),
-      {},
+      queryParams,
       {},
     ).then(resp => resp);
   };
