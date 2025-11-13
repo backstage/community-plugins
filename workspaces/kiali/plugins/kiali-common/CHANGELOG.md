@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-common
 
+## 0.7.0
+
+### Minor Changes
+
+- 2312f93: Improved namespace selector usability, update certs API call to the backend
+
 ## 0.6.0
 
 ### Minor Changes
