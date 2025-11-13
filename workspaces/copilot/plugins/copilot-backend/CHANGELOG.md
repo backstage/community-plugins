@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.2
+
+### Patch Changes
+
+- 1b7adc8: Fixed a mismatch between the backend requiring copilot.host and the config declaration stating it was optional.
+
 ## 0.15.1
 
 ### Patch Changes
