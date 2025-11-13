@@ -45,7 +45,6 @@ import {
   NamespaceStateReducer,
   UserSettingsStateReducer,
 } from '../reducers';
-import { INITIAL_ISTIO_CERTS_INFO_STATE } from '../reducers/IstioCertsInfoState';
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
 import { ServerConfigStateReducer } from '../reducers/ServerConfigState';
@@ -206,13 +205,7 @@ export const KialiProvider: React.FC<Props> = ({
           'getIstioCerts',
           kialiClient.getIstioCertsInfo(namespacesString, clusterName),
         )
-        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)))
-        .catch(err => {
-          // Handle 404 or other errors gracefully - set empty state
-          istioCertsDispatch(
-            IstioCertsInfoActions.setinfo(INITIAL_ISTIO_CERTS_INFO_STATE),
-          );
-        });
+        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       await Promise.all([
         getAuthpromise,
         getStatusPromise,
