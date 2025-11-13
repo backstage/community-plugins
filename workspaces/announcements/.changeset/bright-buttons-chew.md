@@ -2,4 +2,4 @@
 '@backstage-community/plugin-announcements': patch
 ---
 
-Successful announcements should be transient
+The success message shown when an announcement is created is now transient
