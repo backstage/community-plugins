@@ -30,7 +30,7 @@ on:
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: version-bump-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -139,7 +139,7 @@ jobs:
       - name: 'Create or checkout workspace branch'
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          
+
           if [ "${{ inputs.enable_pr_reuse }}" == "true" ]; then
             BRANCH_NAME="${{ steps.check_existing_pr.outputs.branch_name }}"
           else
@@ -184,20 +184,20 @@ jobs:
         run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }} ${{ inputs.version-bump-type || 'minor' }}
       - name: Run prettier:fix
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: yarn prettier:fix        
+        run: yarn prettier:fix
       - name: 'Commit changes'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         run: |
           git status
           git add -A -- :!.npmrc
           git commit -m "v${{ steps.set_release_name.outputs.release_version }} version bump"
-          
+
           if [ "${{ inputs.enable_pr_reuse }}" == "true" ]; then
             BRANCH_NAME="${{ steps.check_existing_pr.outputs.branch_name }}"
           else
             BRANCH_NAME="${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}"
           fi
-          
+
           git push origin "$BRANCH_NAME"
       - name: 'Create or update Pull Request'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
@@ -209,7 +209,7 @@ jobs:
             const releaseVersion = '${{ steps.set_release_name.outputs.release_version }}';
             const currentVersion = '${{ steps.set_release_name.outputs.current_version }}';
             const enablePRReuse = ${{ inputs.enable_pr_reuse }};
-            
+
             let branchName, hasExistingPR;
             if (enablePRReuse) {
               branchName = '${{ steps.check_existing_pr.outputs.branch_name }}';
