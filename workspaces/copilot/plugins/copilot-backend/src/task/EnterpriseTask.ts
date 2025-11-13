@@ -150,11 +150,9 @@ export async function discoverEnterpriseMetrics({
     } else {
       logger.info('[discoverEnterpriseMetrics] No new metrics found to insert');
     }
-  } catch (error: any) {
+  } catch (error) {
     logger.error(
-      `[discoverEnterpriseMetrics] Failed to process Github Copilot metrics: ${
-        error?.message || error
-      }`,
+      `[discoverEnterpriseMetrics] Failed to process Github Copilot metrics.`,
       error,
     );
     throw error;
