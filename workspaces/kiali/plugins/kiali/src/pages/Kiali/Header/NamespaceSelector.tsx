@@ -27,6 +27,33 @@ import { KialiAppState, KialiContext } from '../../../store';
 export const NamespaceSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
 
+  const defaultSetRef = React.useRef(false);
+
+  React.useEffect(() => {
+    const allNamespaces = kialiState.namespaces.items || [];
+    
+    if (defaultSetRef.current || allNamespaces.length === 0) {
+      return;
+    }
+
+    const defaultNamespace = allNamespaces.find(ns => ns.name === 'default');
+
+    if (defaultNamespace) {
+      kialiState.dispatch.namespaceDispatch(
+        NamespaceActions.setActiveNamespaces([defaultNamespace]),
+      );
+    } else {
+      kialiState.dispatch.namespaceDispatch(
+        NamespaceActions.setActiveNamespaces(allNamespaces),
+      );
+    }
+
+    defaultSetRef.current = true;
+  }, [
+    kialiState.namespaces.items,
+    kialiState.dispatch.namespaceDispatch,
+  ]);
+
   const handleChange = (event: any) => {
     const {
       target: { value },
