@@ -315,6 +315,62 @@ export function AgentForgePage() {
   const enableStreaming =
     config.getOptionalBoolean('agentForge.enableStreaming') ?? false;
 
+  // Custom call configuration - parse both string and object formats
+  // Memoize the entire parsing to prevent infinite re-renders (config.getOptional returns new object each time)
+  const { customCallConfig, suggestionToCustomCallMap } = useMemo(() => {
+    const rawCustomCallConfig = config.getOptional('agentForge.customCall') as
+      | Record<
+          string,
+          | string
+          | {
+              prompt: string;
+              suggestions?: string[];
+            }
+        >
+      | undefined;
+
+    const parsedConfig: Record<string, string> = {};
+    const suggestionMap = new Map<string, string>(); // Maps suggestion text to custom call prefix
+
+    if (rawCustomCallConfig) {
+      Object.entries(rawCustomCallConfig).forEach(([label, value]) => {
+        if (typeof value === 'string') {
+          // Simple string format: "Label": "prefix"
+          parsedConfig[label] = value;
+        } else {
+          // Object format with prompt and suggestions
+          parsedConfig[label] = value.prompt;
+
+          // Map suggestions to this custom call's prompt
+          if (value.suggestions) {
+            value.suggestions.forEach(suggestion => {
+              suggestionMap.set(suggestion, value.prompt);
+            });
+          }
+        }
+      });
+    }
+
+    return {
+      customCallConfig: parsedConfig,
+      suggestionToCustomCallMap: suggestionMap,
+    };
+  }, [config]);
+
+  // Merge all suggestions: initial + suggestions from customCall definitions
+  const allSuggestions = useMemo(() => {
+    const merged = [...initialSuggestions];
+
+    // Extract suggestions from the memoized customCallConfig map
+    for (const [suggestion] of suggestionToCustomCallMap) {
+      if (!merged.includes(suggestion)) {
+        merged.push(suggestion);
+      }
+    }
+
+    return merged;
+  }, [initialSuggestions, suggestionToCustomCallMap]);
+
   // Config validation logs
   console.log('Agent Forge Config - Streaming:', enableStreaming);
   const headerTitle =
@@ -409,12 +465,39 @@ export function AgentForgePage() {
 
   // UI state
   const [userInput, setUserInput] = useState('');
+  // Custom call state - tracks selected custom call prefix per session
+  const [customCallBySession, setCustomCallBySession] = useState<
+    Map<string, string>
+  >(new Map());
   // 🔧 FIX: Per-session typing state to support concurrent sessions
   const [isTypingBySession, setIsTypingBySession] = useState<
     Map<string, boolean>
   >(new Map());
+
+  // Ref to track temporary custom call for auto-triggered suggestions
+  const tempCustomCallRef = useRef<string>('');
+
+  // Get current session's custom call selection (or use temp override)
+  // Memoize based on state only (not ref, as refs don't trigger re-renders)
+  const selectedCustomCall = useMemo(() => {
+    return (
+      tempCustomCallRef.current ||
+      customCallBySession.get(currentSessionId) ||
+      ''
+    );
+  }, [customCallBySession, currentSessionId]);
+
+  // Debug: Log when currentSessionId changes
+  useEffect(() => {
+    console.log(
+      '🔄 Session changed to:',
+      currentSessionId,
+      'customCall for this session:',
+      customCallBySession.get(currentSessionId),
+    );
+  }, [currentSessionId, customCallBySession]);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
+  const [suggestions, setSuggestions] = useState<string[]>(allSuggestions);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [feedback, setFeedback] = useState<{ [key: number]: Feedback }>({});
@@ -920,6 +1003,7 @@ export function AgentForgePage() {
       console.log('🔧 User email mode:', userEmailMode);
       console.log('🔧 Feedback endpoint:', feedbackEndpoint);
       console.log('🔧 Feedback enabled:', enableFeedback);
+      console.log('🔧 Custom call configuration:', customCallConfig);
 
       try {
         const api = new ChatbotApi(
@@ -931,6 +1015,7 @@ export function AgentForgePage() {
             userEmailMode,
             autoReloadOnTokenExpiry,
             feedbackEndpoint,
+            customCallPrefix: selectedCustomCall,
           },
         );
 
@@ -989,6 +1074,20 @@ export function AgentForgePage() {
     autoReloadOnTokenExpiry,
     chatbotApi,
   ]);
+
+  // Update chatbotApi's custom call prefix when current session's selection changes
+  useEffect(() => {
+    if (chatbotApi && chatbotApi.setCustomCallPrefix) {
+      const currentCustomCall = customCallBySession.get(currentSessionId) || '';
+      chatbotApi.setCustomCallPrefix(currentCustomCall);
+      console.log(
+        '🔧 Updated chatbotApi custom call prefix for session',
+        currentSessionId,
+        ':',
+        currentCustomCall,
+      );
+    }
+  }, [customCallBySession, currentSessionId, chatbotApi]);
 
   // Global error handler for A2A client unhandled promise rejections
   useEffect(() => {
@@ -1325,24 +1424,8 @@ export function AgentForgePage() {
         }, 50); // Small debounce delay
       };
 
-      // Show button when user scrolls near top - NO AUTO-LOADING
-      if (isAtTop && !isManualLoadingInProgress && !showLoadMoreButton) {
-        const buttonState = hasMoreMessages
-          ? 'more messages available'
-          : 'no more messages';
-        debouncedButtonToggle(
-          true,
-          `User scrolled to top - showing load button (${buttonState})`,
-        );
-      }
-
-      // Hide button when user scrolls away from top (unless loading)
-      if (!isAtTop && showLoadMoreButton && !isManualLoadingInProgress) {
-        debouncedButtonToggle(
-          false,
-          'User scrolled away from top - hiding load button',
-        );
-      }
+      // Don't auto-show button on scroll to prevent issues when switching sessions
+      // Users can manually scroll to trigger load if needed
 
       // Performance optimization: Auto-collapse to default count when user scrolls to bottom
       // This prevents DOM bloat with large message histories
@@ -1496,12 +1579,12 @@ export function AgentForgePage() {
           state.autoExpand = new Set(data.autoExpandExecutionPlans);
         }
 
-        setSuggestions(initialSuggestions);
+        setSuggestions(allSuggestions);
         setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
         setShowLoadMoreButton(false);
       } else {
         // Keep the initial session that's already loaded, just reset states
-        setSuggestions(initialSuggestions);
+        setSuggestions(allSuggestions);
         setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
         setShowLoadMoreButton(false);
         setIsManualLoadingInProgress(false);
@@ -1513,11 +1596,11 @@ export function AgentForgePage() {
         severity: 'warning',
       });
       // Keep the existing initial session on error
-      setSuggestions(initialSuggestions);
+      setSuggestions(allSuggestions);
       setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
       setShowLoadMoreButton(false);
     }
-  }, [botName, alertApi, initialSuggestions, getExecutionPlanState]);
+  }, [botName, alertApi, allSuggestions, getExecutionPlanState]);
 
   // Save chat history to localStorage whenever they change
   useEffect(() => {
@@ -1560,24 +1643,27 @@ export function AgentForgePage() {
 
     setSessions(prev => [newSession, ...prev]);
     setCurrentSessionId(newSession.contextId);
-    setSuggestions(initialSuggestions);
+    setSuggestions(allSuggestions);
     setLoadedMessageCount(DEFAULT_MESSAGE_COUNT); // Reset to default count on new session
     setShowLoadMoreButton(false);
     setIsManualLoadingInProgress(false);
-  }, [sessions.length, botName, initialSuggestions]);
+  }, [sessions.length, botName, allSuggestions]);
 
   // Switch to session
   const switchToSession = useCallback(
     (sessionId: string) => {
       setCurrentSessionId(sessionId);
       // Always keep suggestions visible
-      setSuggestions(initialSuggestions);
+      setSuggestions(allSuggestions);
       // Reset to default count on session switch
       setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
       setShowLoadMoreButton(false);
       setIsManualLoadingInProgress(false);
+
+      // Trigger scroll to bottom for the new session's chat
+      setAutoScrollEnabled(true);
     },
-    [initialSuggestions],
+    [allSuggestions],
   );
 
   // Delete session
@@ -2105,11 +2191,28 @@ export function AgentForgePage() {
         sessionToUse = newSessionId;
       }
 
+      // Get the current custom call (check temp ref first, then session map)
+      const currentCustomCall =
+        tempCustomCallRef.current ||
+        customCallBySession.get(currentSessionId) ||
+        '';
+      const wasUsingTempCustomCall = !!tempCustomCallRef.current;
+
+      const customCallLabel = currentCustomCall
+        ? Object.entries(customCallConfig || {}).find(
+            ([, prefix]) => prefix === currentCustomCall,
+          )?.[0]
+        : undefined;
+
+      // Clear temporary custom call ref after extracting the label (but keep wasUsingTempCustomCall to reset API later)
+      tempCustomCallRef.current = '';
+
       const userMessage: Message = {
         messageId: uuidv4(),
         text: inputText,
         isUser: true,
         timestamp: createTimestamp(),
+        customCallLabel,
       };
 
       // Add message to the correct session (either current or newly created)
@@ -3343,6 +3446,20 @@ export function AgentForgePage() {
           newMap.set(sessionToUse, false);
           return newMap;
         });
+      } finally {
+        // If we used a temp custom call, reset the API back to the session's actual custom call
+        if (
+          wasUsingTempCustomCall &&
+          chatbotApi &&
+          chatbotApi.setCustomCallPrefix
+        ) {
+          const sessionCustomCall = customCallBySession.get(sessionToUse) || '';
+          chatbotApi.setCustomCallPrefix(sessionCustomCall);
+          console.log(
+            '🔧 Reset chatbotApi custom call prefix back to session value:',
+            sessionCustomCall,
+          );
+        }
       }
     },
     [
@@ -3363,12 +3480,76 @@ export function AgentForgePage() {
       accumulatedExecutionPlan,
       isCapturingExecutionPlan,
       setIsTypingBySession,
+      customCallConfig,
+      customCallBySession,
     ],
   );
 
   const handleSuggestionClick = (suggestion: string) => {
+    console.log(
+      '🔘 Suggestion clicked - selectedCustomCall is:',
+      selectedCustomCall,
+    );
+
+    // Check if this suggestion should auto-trigger a custom call
+    const autoTriggerPrefix = suggestionToCustomCallMap.get(suggestion);
+
+    if (autoTriggerPrefix) {
+      console.log(
+        '🔘 Auto-triggering custom call for suggestion:',
+        suggestion,
+        'with prefix:',
+        autoTriggerPrefix,
+      );
+
+      // Set temporary custom call using ref (will be used for this message only)
+      tempCustomCallRef.current = autoTriggerPrefix;
+
+      // Also update the chatbotApi immediately so it uses the correct prefix
+      if (chatbotApi && chatbotApi.setCustomCallPrefix) {
+        chatbotApi.setCustomCallPrefix(autoTriggerPrefix);
+        console.log(
+          '🔧 Updated chatbotApi custom call prefix to:',
+          autoTriggerPrefix,
+        );
+      }
+    }
+
+    // Submit the message
     handleMessageSubmit(suggestion);
   };
+
+  // Handle custom call button click - toggles the selected custom call prefix
+  const handleCustomCallClick = useCallback(
+    (label: string, prefix: string) => {
+      setCustomCallBySession(prev => {
+        const newMap = new Map(prev);
+        const current = newMap.get(currentSessionId) || '';
+
+        // Toggle: if same button clicked, clear it; otherwise set new prefix
+        if (current === prefix) {
+          console.log(
+            '🔘 Cleared custom call prefix for session:',
+            currentSessionId,
+          );
+          newMap.set(currentSessionId, '');
+        } else {
+          console.log(
+            '🔘 Selected custom call:',
+            label,
+            '->',
+            prefix,
+            'for session:',
+            currentSessionId,
+          );
+          newMap.set(currentSessionId, prefix);
+        }
+        console.log('🔘 Full map after update:', Object.fromEntries(newMap));
+        return newMap;
+      });
+    },
+    [currentSessionId],
+  );
 
   // Handle metadata form submission from CopilotKit-style input forms
   const handleMetadataSubmit = useCallback(
@@ -3516,10 +3697,16 @@ export function AgentForgePage() {
       );
     }
     setUserInput('');
-    setSuggestions(initialSuggestions);
+    setSuggestions(allSuggestions);
     setLoadedMessageCount(DEFAULT_MESSAGE_COUNT); // Reset to default count on chat reset
     setShowLoadMoreButton(false);
     setIsManualLoadingInProgress(false);
+    // Clear custom call selection for current session on reset
+    setCustomCallBySession(prev => {
+      const newMap = new Map(prev);
+      newMap.set(currentSessionId, '');
+      return newMap;
+    });
     // Only clear API error if we're currently connected
     // Don't clear connection errors when resetting chat
     if (connectionStatus === 'connected') {
@@ -3675,7 +3862,7 @@ export function AgentForgePage() {
 
                 return (
                   <ChatContainer
-                    key={`chat-${currentSessionId}-${renderedMessages.length}`}
+                    key="chat-container"
                     messages={renderedMessages}
                     userInput={userInput}
                     setUserInput={setUserInput}
@@ -3713,6 +3900,9 @@ export function AgentForgePage() {
                     feedback={feedback}
                     onFeedbackChange={handleFeedbackChange}
                     onFeedbackSubmit={handleFeedbackSubmit}
+                    customCallConfig={customCallConfig}
+                    selectedCustomCall={selectedCustomCall}
+                    onCustomCallClick={handleCustomCallClick}
                     fontSizes={{
                       messageText: fontSizes.messageText,
                       codeBlock: fontSizes.codeBlock,
@@ -3864,7 +4054,7 @@ export function AgentForgePage() {
           </Box>
         </Box>
         <div className={classes.fullscreenContent}>
-          <Page themeId="tool" key={`fullscreen-${currentSessionId}`}>
+          <Page themeId="tool" key="fullscreen-page">
             <Content noPadding>{renderContent()}</Content>
           </Page>
         </div>
@@ -3991,7 +4181,7 @@ export function AgentForgePage() {
         </Box>
       </Box>
       <Box className={classes.pageContainer}>
-        <Page themeId="tool" key={`normal-${currentSessionId}`}>
+        <Page themeId="tool" key="normal-page">
           <Content noPadding>
             <Box className={classes.contentWrapper}>{renderContent()}</Box>
           </Content>

@@ -33,6 +33,7 @@ export interface IChatbotApiOptions {
   userEmailMode?: UserEmailMode;
   autoReloadOnTokenExpiry?: boolean;
   feedbackEndpoint?: string | null;
+  customCallPrefix?: string;
 }
 
 export class ChatbotApi {
@@ -44,6 +45,7 @@ export class ChatbotApi {
   private userEmailMode: UserEmailMode;
   private autoReloadOnTokenExpiry: boolean;
   private feedbackEndpoint: string | null;
+  private customCallPrefix: string;
 
   constructor(
     private apiBaseUrl: string,
@@ -63,6 +65,7 @@ export class ChatbotApi {
     this.autoReloadOnTokenExpiry = apiOptions?.autoReloadOnTokenExpiry ?? true; // default to true for better UX
     this.feedbackEndpoint = apiOptions?.feedbackEndpoint ?? null;
     this.userEmailMode = apiOptions?.userEmailMode ?? 'none'; // default to 'metadata' for backward compatibility
+    this.customCallPrefix = apiOptions?.customCallPrefix ?? ''; // default to empty string
     try {
       const timeout = apiOptions?.requestTimeout ?? 300; // Default to 300 seconds
       this.client = new A2AClient(this.apiBaseUrl, timeout);
@@ -433,6 +436,42 @@ export class ChatbotApi {
     return { messageText, metadata };
   }
 
+  /**
+   * Prepare message text with custom call prefix
+   * @param msg - Original message text
+   * @returns Message text with custom call prefix prepended
+   */
+  private prepareMessageWithCustomCall(msg: string): string {
+    if (this.customCallPrefix) {
+      // Prepend custom call prefix to message text
+      return `${this.customCallPrefix} ${msg}`;
+    }
+    return msg;
+  }
+
+  /**
+   * Set custom call prefix for subsequent messages
+   * @param prefix - Custom call prefix to prepend to messages
+   */
+  public setCustomCallPrefix(prefix: string): void {
+    this.customCallPrefix = prefix;
+  }
+
+  /**
+   * Clear custom call prefix
+   */
+  public clearCustomCallPrefix(): void {
+    this.customCallPrefix = '';
+  }
+
+  /**
+   * Get current custom call prefix
+   * @returns Current custom call prefix
+   */
+  public getCustomCallPrefix(): string {
+    return this.customCallPrefix;
+  }
+
   public async submitA2ATask(
     newContext: boolean,
     msg: string,
@@ -442,8 +481,13 @@ export class ChatbotApi {
       const msgId = uuidv4();
       const token = await this.getToken();
 
-      // Prepare message with user email based on configured mode
-      const { messageText, metadata } = await this.prepareMessageWithEmail(msg);
+      // Prepare message with custom call prefix first
+      const processedMsg = this.prepareMessageWithCustomCall(msg);
+
+      // Then prepare message with user email based on configured mode
+      const { messageText, metadata } = await this.prepareMessageWithEmail(
+        processedMsg,
+      );
 
       const sendParams: MessageSendParams = {
         message: {
@@ -490,8 +534,13 @@ export class ChatbotApi {
     try {
       const msgId = uuidv4();
 
-      // Prepare message with user email based on configured mode
-      const { messageText, metadata } = await this.prepareMessageWithEmail(msg);
+      // Prepare message with custom call prefix first
+      const processedMsg = this.prepareMessageWithCustomCall(msg);
+
+      // Then prepare message with user email based on configured mode
+      const { messageText, metadata } = await this.prepareMessageWithEmail(
+        processedMsg,
+      );
 
       const sendParams: MessageSendParams = {
         message: {

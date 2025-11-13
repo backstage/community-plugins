@@ -120,6 +120,27 @@ export interface Config {
     inputPlaceholder?: string;
 
     /**
+     * Custom call buttons configuration - key is button label, value is either:
+     * - A string: the prefix text to prepend to messages
+     * - An object with 'prompt' (required) and optional 'suggestions' array
+     *
+     * Example in app-config.yaml:
+     *   customCall:
+     *     "Agent A": "Ask Agent A to do the Following:"
+     *     "Jarvis":
+     *       prompt: "Ask Jarvis agent to do the Following:"
+     *       suggestions:
+     *         - Get LLM keys
+     *         - Deploy to Production
+     *
+     * Suggestions defined under customCall will be merged with initialSuggestions
+     * and automatically trigger that custom call when clicked.
+     * @visibility frontend
+     * @deepVisibility frontend
+     */
+    customCall?: {};
+
+    /**
      * Font size configuration for various UI elements
      * @visibility frontend
      */

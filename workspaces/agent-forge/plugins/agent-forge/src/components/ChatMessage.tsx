@@ -757,6 +757,20 @@ export const ChatMessage = memo(function ChatMessage({
           >
             You
           </Typography>
+          {message.customCallLabel && (
+            <Box
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                color: '#ffffff',
+                padding: '2px 8px',
+                borderRadius: '12px',
+                fontSize: '0.7rem',
+                fontWeight: 600,
+              }}
+            >
+              {message.customCallLabel}
+            </Box>
+          )}
         </Box>
         <Box
           style={{

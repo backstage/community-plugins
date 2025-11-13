@@ -20,6 +20,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  InputAdornment,
   TextField,
   Tooltip,
   Typography,
@@ -141,6 +142,13 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.type === 'dark' ? '#00ccff' : undefined,
       opacity: theme.palette.type === 'dark' ? 1 : undefined,
     },
+    '& .MuiInputAdornment-positionStart': {
+      marginTop: '0 !important',
+      alignSelf: 'center',
+    },
+  },
+  quickActionsLabel: {
+    color: theme.palette.type === 'dark' ? '#00ccff' : 'rgba(0, 0, 0, 0.54)',
   },
   suggestionChip: {
     backgroundColor: 'transparent',
@@ -249,6 +257,11 @@ export interface ChatContainerProps {
   // Operational mode for special handling of system messages
   currentOperation?: string | null;
   isInOperationalMode?: boolean;
+
+  // Custom call props
+  customCallConfig?: Record<string, string>;
+  selectedCustomCall?: string;
+  onCustomCallClick?: (label: string, prefix: string) => void;
 }
 
 /**
@@ -391,16 +404,31 @@ export const ChatContainer = memo(function ChatContainer({
   setAutoScrollEnabled,
   currentOperation,
   isInOperationalMode,
+  customCallConfig,
+  selectedCustomCall,
+  onCustomCallClick,
 }: ChatContainerProps) {
   const classes = useStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const chipRef = useRef<HTMLDivElement>(null);
   const [thinkingMessageIndex, setThinkingMessageIndex] = useState(0);
   const [isManualLoading, setIsManualLoading] = useState(false);
+  const [chipWidth, setChipWidth] = useState(0);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  // Measure chip width when selectedCustomCall changes
+  useEffect(() => {
+    if (chipRef.current && selectedCustomCall) {
+      const width = chipRef.current.offsetWidth;
+      setChipWidth(width + 16); // Add 16px for spacing
+    } else {
+      setChipWidth(0);
+    }
+  }, [selectedCustomCall]);
 
   // Auto-scroll to bottom when messages change or when auto-scroll is enabled
   useEffect(() => {
@@ -655,23 +683,105 @@ export const ChatContainer = memo(function ChatContainer({
         <div ref={messagesEndRef} />
       </div>
       <Divider />
+
+      {/* Custom Call Buttons - Displayed above input box */}
+      {customCallConfig && Object.keys(customCallConfig).length > 0 && (
+        <Box px={2} pt={1.5} pb={0.5}>
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            style={{ gap: '8px', alignItems: 'center' }}
+          >
+            <Typography
+              variant="body2"
+              className={classes.quickActionsLabel}
+              style={{
+                fontSize: '0.875rem',
+                fontWeight: 400,
+              }}
+            >
+              Agents:
+            </Typography>
+            {Object.entries(customCallConfig).map(([label, prefix]) => {
+              const isSelected = selectedCustomCall === prefix;
+              return (
+                <Chip
+                  key={label}
+                  label={label}
+                  onClick={() => onCustomCallClick?.(label, prefix)}
+                  clickable
+                  disabled={isTyping}
+                  size="small"
+                  style={{
+                    backgroundColor: isSelected ? '#1976d2' : 'transparent',
+                    color: isSelected ? '#fff' : '#1976d2',
+                    borderColor: '#1976d2',
+                    fontWeight: isSelected ? 600 : 400,
+                    transition: 'all 0.2s ease',
+                    margin: 0,
+                  }}
+                  variant={isSelected ? 'default' : 'outlined'}
+                />
+              );
+            })}
+          </Box>
+        </Box>
+      )}
+
       <Box p={2} className={classes.inputContainer}>
-        <TextField
-          fullWidth
-          multiline
-          minRows={1}
-          maxRows={4}
-          variant="outlined"
-          placeholder={inputPlaceholder || `Ask ${botName} anything...`}
-          value={userInput}
-          onChange={e => setUserInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isInputDisabled}
-          className={classes.inputField}
-          InputProps={{
-            style: { fontSize: fontSizes?.inputField || '1rem' },
-          }}
-        />
+        <Box position="relative" flex={1}>
+          {selectedCustomCall && (
+            <Box
+              ref={chipRef}
+              position="absolute"
+              left="14px"
+              top="14px"
+              style={{ zIndex: 1, pointerEvents: 'auto' }}
+            >
+              <Chip
+                label={
+                  Object.entries(customCallConfig || {}).find(
+                    ([, prefix]) => prefix === selectedCustomCall,
+                  )?.[0] || selectedCustomCall
+                }
+                size="small"
+                onDelete={() => {
+                  const label =
+                    Object.entries(customCallConfig || {}).find(
+                      ([, prefix]) => prefix === selectedCustomCall,
+                    )?.[0] || '';
+                  onCustomCallClick?.(label, selectedCustomCall);
+                }}
+                style={{
+                  backgroundColor: '#1976d2',
+                  color: '#fff',
+                  height: '28px',
+                  fontWeight: 500,
+                }}
+              />
+            </Box>
+          )}
+          <TextField
+            fullWidth
+            multiline
+            minRows={1}
+            maxRows={4}
+            variant="outlined"
+            placeholder={inputPlaceholder || `Ask ${botName} anything...`}
+            value={userInput}
+            onChange={e => setUserInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={isInputDisabled}
+            className={classes.inputField}
+            InputProps={{
+              style: {
+                fontSize: fontSizes?.inputField || '1rem',
+                paddingLeft: chipWidth > 0 ? `${chipWidth}px` : undefined,
+                minHeight: '56px',
+              },
+            }}
+          />
+        </Box>
         {isTyping ? (
           <Tooltip title="Cancel request">
             <Box component="span">
