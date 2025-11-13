@@ -178,9 +178,6 @@ export const KialiProvider: React.FC<Props> = ({
         .then(response =>
           meshTLSStatusDispatch(MeshTlsActions.setinfo(response)),
         );
-      const getIstioCerts = promises
-        .register('getIstioCerts', kialiClient.getIstioCertsInfo())
-        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       const getServerConfig = promises
         .register('getServerConfig', kialiClient.getServerConfig())
         .then(resp => {
@@ -197,6 +194,18 @@ export const KialiProvider: React.FC<Props> = ({
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));
       await fetchNamespaces();
+      // Build namespaces string from active namespaces (after they are loaded)
+      const namespacesString = namespaceState.activeNamespaces
+        .map(ns => ns.name)
+        .join(',');
+      const clusterName = providerState.activeProvider || undefined;
+
+      const getIstioCerts = promises
+        .register(
+          'getIstioCerts',
+          kialiClient.getIstioCertsInfo(namespacesString, clusterName),
+        )
+        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       await Promise.all([
         getAuthpromise,
         getStatusPromise,

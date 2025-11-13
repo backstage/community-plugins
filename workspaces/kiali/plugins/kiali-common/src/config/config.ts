@@ -204,7 +204,7 @@ const conf = {
       configValidations: () => `api/istio/validations`,
       meshTls: () => 'api/mesh/tls',
       istioStatus: () => 'api/istio/status',
-      istioCertsInfo: () => 'api/istio/certs',
+      istioCertsInfo: () => 'api/clusters/tls',
       pod: (namespace: string, pod: string) =>
         `api/namespaces/${namespace}/pods/${pod}`,
       podLogs: (namespace: string, pod: string) =>

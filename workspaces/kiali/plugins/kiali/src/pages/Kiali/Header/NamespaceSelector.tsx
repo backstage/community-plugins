@@ -27,18 +27,83 @@ import { KialiAppState, KialiContext } from '../../../store';
 export const NamespaceSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
 
+  const allNamespaces = kialiState.namespaces.items || [];
+  const activeNamespaceNames = kialiState.namespaces.activeNamespaces.map(
+    ns => ns.name,
+  );
+  const allSelected =
+    allNamespaces.length > 0 &&
+    allNamespaces.every(ns => activeNamespaceNames.includes(ns.name));
+
+  const SELECT_ALL_VALUE = '__SELECT_ALL__';
+
   const handleChange = (event: any) => {
     const {
       target: { value },
     } = event;
+    const values = value as string[];
+
+    // Check if "Select All" option was clicked by checking if SELECT_ALL_VALUE is in the array
+    if (values.includes(SELECT_ALL_VALUE)) {
+      if (allSelected) {
+        // Deselect all
+        kialiState.dispatch.namespaceDispatch(
+          NamespaceActions.setActiveNamespaces([]),
+        );
+      } else {
+        // Select all
+        kialiState.dispatch.namespaceDispatch(
+          NamespaceActions.setActiveNamespaces(allNamespaces),
+        );
+      }
+      return;
+    }
+
+    // Filter out invalid values and SELECT_ALL_VALUE
+    const validValues = values.filter(
+      v =>
+        v &&
+        v !== '' &&
+        v !== SELECT_ALL_VALUE &&
+        allNamespaces.some(ns => ns.name === v),
+    );
     kialiState.dispatch.namespaceDispatch(
       NamespaceActions.setActiveNamespaces(
-        (kialiState.namespaces.items || []).filter(ns =>
-          (value as string[]).includes(ns.name),
-        ),
+        allNamespaces.filter(ns => validValues.includes(ns.name)),
       ),
     );
   };
+
+  const handleSelectAllClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Update state directly
+    if (allSelected) {
+      kialiState.dispatch.namespaceDispatch(
+        NamespaceActions.setActiveNamespaces([]),
+      );
+    } else {
+      kialiState.dispatch.namespaceDispatch(
+        NamespaceActions.setActiveNamespaces(allNamespaces),
+      );
+    }
+  };
+
+  const handleSelectAllMouseDown = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Update state directly on mouse down as well
+    if (allSelected) {
+      kialiState.dispatch.namespaceDispatch(
+        NamespaceActions.setActiveNamespaces([]),
+      );
+    } else {
+      kialiState.dispatch.namespaceDispatch(
+        NamespaceActions.setActiveNamespaces(allNamespaces),
+      );
+    }
+  };
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -65,23 +130,33 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
         Namespaces Selected
       </InputLabel>
       <Select
-        value={kialiState.namespaces.activeNamespaces.map(ns => ns.name)}
+        value={activeNamespaceNames.filter(v => v !== SELECT_ALL_VALUE)}
         multiple
         onChange={handleChange}
-        renderValue={selected => (selected as string[]).join(', ')}
+        renderValue={selected =>
+          (selected as string[]).filter(v => v !== SELECT_ALL_VALUE).join(', ')
+        }
         MenuProps={MenuProps}
         data-test="namespace-selector"
-        style={{ color: 'white' }}
+        style={{ color: 'white', maxWidth: '600px', minWidth: '200px' }}
       >
-        {(kialiState.namespaces.items || []).map(ns => (
-          <MenuItem key={ns.name} value={ns.name}>
-            <Checkbox
-              checked={
-                kialiState.namespaces.activeNamespaces
-                  .map(activeNs => activeNs.name)
-                  .indexOf(ns.name) > -1
-              }
+        {allNamespaces.length > 0 && (
+          <MenuItem
+            key="select-all"
+            value={SELECT_ALL_VALUE}
+            onClick={handleSelectAllClick}
+            onMouseDown={handleSelectAllMouseDown}
+            style={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
+          >
+            <Checkbox checked={allSelected} indeterminate={false} />
+            <ListItemText
+              primary={allSelected ? 'Deselect All' : 'Select All'}
             />
+          </MenuItem>
+        )}
+        {allNamespaces.map(ns => (
+          <MenuItem key={ns.name} value={ns.name}>
+            <Checkbox checked={activeNamespaceNames.includes(ns.name)} />
             <ListItemText primary={ns.name} />
           </MenuItem>
         ))}
