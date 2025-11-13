@@ -44,7 +44,7 @@ export const getCopilotConfig = (config: Config): CopilotConfig => {
 
   if (!githubConfig) {
     throw new Error(
-      `GitHub configuration for host "${host}" is missing or incomplete. Please check the integretions configuration section.`,
+      `GitHub configuration for host "${host}" is missing or incomplete. Please check the integrations configuration section.`,
     );
   }
 
