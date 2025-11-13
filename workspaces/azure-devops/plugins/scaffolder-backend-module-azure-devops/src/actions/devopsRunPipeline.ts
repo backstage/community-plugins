@@ -125,6 +125,12 @@ export function createAzureDevopsRunPipelineAction(options: {
         failIfNotSuccessful,
       } = ctx.input;
 
+      if (failIfNotSuccessful && !pollingInterval) {
+        throw new Error(
+          'The parameter failIfNotSuccessful option requires pollingInterval to be set',
+        );
+      }
+
       const url = `https://${host}/${organization}`;
       const authHandler = await getAuthHandler(
         integrations,
