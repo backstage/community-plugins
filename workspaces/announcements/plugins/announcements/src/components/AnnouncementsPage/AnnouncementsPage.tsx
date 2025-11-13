@@ -420,9 +420,8 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
 
       <Content>
         <ContentHeader title="">
-          {!loadingCreatePermission && (
+          {!loadingCreatePermission && canCreate && (
             <LinkButton
-              disabled={!canCreate}
               to={newAnnouncementLink()}
               color="primary"
               variant="contained"

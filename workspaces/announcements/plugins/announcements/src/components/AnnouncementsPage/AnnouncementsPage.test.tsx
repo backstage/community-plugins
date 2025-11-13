@@ -20,12 +20,24 @@ import {
 } from '@backstage/test-utils';
 import { AnnouncementsPage } from './AnnouncementsPage';
 import { rootRouteRef } from '../../routes';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
+import {
+  permissionApiRef,
+  usePermission,
+} from '@backstage/plugin-permission-react';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { DateTime } from 'luxon';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
+
+jest.mock('@backstage/plugin-permission-react', () => ({
+  ...jest.requireActual('@backstage/plugin-permission-react'),
+  usePermission: jest.fn(),
+}));
+
+const mockUsePermission = usePermission as jest.MockedFunction<
+  typeof usePermission
+>;
 
 const mockAnnouncements = [
   {
@@ -49,6 +61,14 @@ describe('AnnouncementsPage', () => {
   const mockCatalogApi = {
     getEntities: async () => ({ items: [] }),
   };
+
+  beforeEach(() => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should render', async () => {
     await renderInTestApp(
@@ -95,6 +115,56 @@ describe('AnnouncementsPage', () => {
     );
 
     expect(screen.queryByTestId('announcements-context-menu')).toBeNull();
+  });
+
+  it('should hide create button when permission is denied', async () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
+
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [permissionApiRef, mockApis.permission()],
+          [announcementsApiRef, mockAnnouncementsApi],
+          [catalogApiRef, mockCatalogApi],
+        ]}
+      >
+        <AnnouncementsPage themeId="home" title="Announcements" />
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/announcements': rootRouteRef,
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('New announcement')).toBeNull();
+    });
+  });
+
+  it('should show create button when permission is granted', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [permissionApiRef, mockApis.permission()],
+          [announcementsApiRef, mockAnnouncementsApi],
+          [catalogApiRef, mockCatalogApi],
+        ]}
+      >
+        <AnnouncementsPage themeId="home" title="Announcements" />
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/announcements': rootRouteRef,
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('New announcement')).toBeInTheDocument();
+    });
   });
 
   describe('AnnouncementCard', () => {
