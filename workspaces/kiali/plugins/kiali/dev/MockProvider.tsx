@@ -387,10 +387,7 @@ export class MockKialiClient implements KialiApi {
     return kialiData.istioStatus;
   }
 
-  async getIstioCertsInfo(
-    namespaces: string,
-    clusterName?: string,
-  ): Promise<CertsInfo[]> {
+  async getIstioCertsInfo(_: string, __?: string): Promise<CertsInfo[]> {
     return kialiData.istioCertsInfo;
   }
   isDevEnv(): boolean {
