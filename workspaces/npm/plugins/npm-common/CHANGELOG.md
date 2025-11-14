@@ -1,5 +1,7 @@
 # @backstage-community/plugin-npm-common
 
+## 1.14.0
+
 ## 1.13.0
 
 ### Minor Changes
