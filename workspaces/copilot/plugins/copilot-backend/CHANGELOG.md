@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.3
+
+### Patch Changes
+
+- 53e4a3b: fixes sql for engagement-metrics with the change from null to empty string.
+
 ## 0.15.2
 
 ### Patch Changes
