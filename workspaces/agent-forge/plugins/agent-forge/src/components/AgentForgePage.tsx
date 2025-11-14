@@ -2196,7 +2196,6 @@ export function AgentForgePage() {
         tempCustomCallRef.current ||
         customCallBySession.get(currentSessionId) ||
         '';
-      const wasUsingTempCustomCall = !!tempCustomCallRef.current;
 
       const customCallLabel = currentCustomCall
         ? Object.entries(customCallConfig || {}).find(
@@ -2204,7 +2203,7 @@ export function AgentForgePage() {
           )?.[0]
         : undefined;
 
-      // Clear temporary custom call ref after extracting the label (but keep wasUsingTempCustomCall to reset API later)
+      // Clear temporary custom call ref after extracting the label
       tempCustomCallRef.current = '';
 
       const userMessage: Message = {
@@ -3446,21 +3445,10 @@ export function AgentForgePage() {
           newMap.set(sessionToUse, false);
           return newMap;
         });
-      } finally {
-        // If we used a temp custom call, reset the API back to the session's actual custom call
-        if (
-          wasUsingTempCustomCall &&
-          chatbotApi &&
-          chatbotApi.setCustomCallPrefix
-        ) {
-          const sessionCustomCall = customCallBySession.get(sessionToUse) || '';
-          chatbotApi.setCustomCallPrefix(sessionCustomCall);
-          console.log(
-            '🔧 Reset chatbotApi custom call prefix back to session value:',
-            sessionCustomCall,
-          );
-        }
       }
+      // Note: We don't reset the session state in a finally block
+      // because we want the custom call button to stay highlighted after sending.
+      // The temp ref is already cleared earlier in the function.
     },
     [
       userInput,
@@ -3504,6 +3492,19 @@ export function AgentForgePage() {
 
       // Set temporary custom call using ref (will be used for this message only)
       tempCustomCallRef.current = autoTriggerPrefix;
+
+      // Also update the session state so the UI button is highlighted
+      setCustomCallBySession(prev => {
+        const newMap = new Map(prev);
+        newMap.set(currentSessionId, autoTriggerPrefix);
+        console.log(
+          '🔘 Set custom call for session:',
+          currentSessionId,
+          '->',
+          autoTriggerPrefix,
+        );
+        return newMap;
+      });
 
       // Also update the chatbotApi immediately so it uses the correct prefix
       if (chatbotApi && chatbotApi.setCustomCallPrefix) {
