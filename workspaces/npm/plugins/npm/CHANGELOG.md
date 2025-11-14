@@ -1,5 +1,15 @@
 # @backstage-community/plugin-npm
 
+## 1.14.0
+
+### Minor Changes
+
+- 945db23: This version changes the translation import from `@backstage/core-plugin-api/alpha` to the new frontend system import `@backstage/frontend-plugin-api` and exports now a TranslationBlueprint also in the NFS `/alpha` export.
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.14.0
+
 ## 1.13.0
 
 ### Minor Changes
