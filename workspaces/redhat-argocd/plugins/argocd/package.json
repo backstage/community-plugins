@@ -77,7 +77,7 @@
     "@backstage/test-utils": "^1.7.12",
     "@playwright/test": "^1.52.0",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "14.3.1",
+    "@testing-library/react": "16.3.0",
     "@types/pluralize": "^0.0.33",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^18",
