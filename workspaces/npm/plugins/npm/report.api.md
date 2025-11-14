@@ -7,8 +7,8 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
-import { TranslationResource } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
 export const EntityNpmInfoCard: () => JSX_2.Element;

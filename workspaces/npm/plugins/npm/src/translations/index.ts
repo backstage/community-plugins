@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { createTranslationResource } from '@backstage/frontend-plugin-api';
 
 import { npmTranslationRef } from './ref';
 

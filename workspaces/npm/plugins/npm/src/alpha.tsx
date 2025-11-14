@@ -18,6 +18,7 @@ import {
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
+  TranslationBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
   EntityCardBlueprint,
@@ -26,6 +27,7 @@ import {
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApiRef, NpmBackendClient } from './api';
+import { npmTranslations } from './translations';
 
 export { npmTranslationRef, npmTranslations } from './translations';
 
@@ -109,6 +111,16 @@ export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
 });
 
 /**
+ * @alpha
+ */
+export const npmTranslation = TranslationBlueprint.make({
+  name: 'npmTranslation',
+  params: {
+    resource: npmTranslations,
+  },
+});
+
+/**
  * Backstage frontend plugin.
  *
  * @alpha
@@ -120,5 +132,6 @@ export default createFrontendPlugin({
     entityNpmReleaseTableCard,
     entityNpmInfoCard,
     entityNpmReleaseOverviewCard,
+    npmTranslation,
   ],
 });
