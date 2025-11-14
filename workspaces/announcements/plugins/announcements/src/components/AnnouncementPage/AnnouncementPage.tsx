@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { DateTime } from 'luxon';
 import {
@@ -27,6 +27,7 @@ import {
   useApi,
   useRouteRef,
   useRouteRefParams,
+  useAnalytics,
 } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
@@ -100,6 +101,7 @@ type AnnouncementPageProps = {
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const { id } = useRouteRefParams(announcementViewRouteRef);
+  const analytics = useAnalytics();
   const { value, loading, error } = useAsync(
     async () => announcementsApi.announcementByID(id),
     [id],
@@ -129,6 +131,19 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
       announcementsApi.markLastSeenDate(announcementCreatedAt);
     }
   }
+
+  useEffect(() => {
+    if (!value) {
+      return;
+    }
+
+    analytics.captureEvent('view', value.title, {
+      attributes: {
+        announcementId: value.id,
+        location: 'AnnouncementPage',
+      },
+    });
+  }, [analytics, value]);
 
   return (
     <Page themeId={props.themeId}>

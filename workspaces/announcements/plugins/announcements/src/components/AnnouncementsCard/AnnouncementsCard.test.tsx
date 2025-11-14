@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { AnnouncementsCard } from './AnnouncementsCard';
 import {
   mockApis,
@@ -25,18 +25,27 @@ import { AnnouncementsList } from '@backstage-community/plugin-announcements-com
 import { DateTime } from 'luxon';
 import { rootRouteRef } from '../../routes';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { analyticsApiRef } from '@backstage/core-plugin-api';
 
 const mockAnnouncementsApi = (announcements: AnnouncementsList) => ({
   announcements: jest.fn().mockResolvedValue(announcements),
   lastSeenDate: jest.fn().mockReturnValue(DateTime.now().minus({ days: 1 })),
 });
 
-const renderAnnouncementsCard = async (announcements: AnnouncementsList) => {
+type AnalyticsMock = ReturnType<typeof mockApis.analytics.mock>;
+
+const renderAnnouncementsCard = async (
+  announcements: AnnouncementsList,
+  analyticsApi?: AnalyticsMock,
+) => {
+  const analytics = analyticsApi ?? mockApis.analytics.mock();
+
   await renderInTestApp(
     <TestApiProvider
       apis={[
         [announcementsApiRef, mockAnnouncementsApi(announcements)],
         [permissionApiRef, mockApis.permission()],
+        [analyticsApiRef, analytics],
       ]}
     >
       <AnnouncementsCard />
@@ -47,17 +56,23 @@ const renderAnnouncementsCard = async (announcements: AnnouncementsList) => {
       },
     },
   );
+
+  return analytics;
 };
 
 const renderAnnouncementsCardWithProps = async (
   announcements: AnnouncementsList,
   props: any = {},
+  analyticsApi?: AnalyticsMock,
 ) => {
+  const analytics = analyticsApi ?? mockApis.analytics.mock();
+
   await renderInTestApp(
     <TestApiProvider
       apis={[
         [announcementsApiRef, mockAnnouncementsApi(announcements)],
         [permissionApiRef, mockApis.permission()],
+        [analyticsApiRef, analytics],
       ]}
     >
       <AnnouncementsCard {...props} />
@@ -68,6 +83,8 @@ const renderAnnouncementsCardWithProps = async (
       },
     },
   );
+
+  return analytics;
 };
 
 describe('AnnouncementsCard', () => {
@@ -117,6 +134,58 @@ describe('AnnouncementsCard', () => {
       expect(screen.getByText(a.title)).toBeInTheDocument();
       expect(screen.getByText(new RegExp(a.excerpt, 'i'))).toBeInTheDocument();
     });
+  });
+
+  it('captures analytics click event for announcements', async () => {
+    const clickableAnnouncements: AnnouncementsList = {
+      count: 1,
+      results: [
+        {
+          id: '1',
+          title: 'Clickable Announcement',
+          excerpt: 'Excerpt',
+          body: 'Body',
+          publisher: 'Publisher',
+          created_at: '2025-01-01',
+          active: true,
+          start_at: '2025-01-01',
+          until_date: '2025-02-01',
+          updated_at: '2025-01-01',
+        },
+      ],
+    };
+
+    const analyticsApi = mockApis.analytics.mock();
+
+    await renderAnnouncementsCard(clickableAnnouncements, analyticsApi);
+
+    fireEvent.click(screen.getByText('Clickable Announcement'));
+
+    await waitFor(() => {
+      expect(analyticsApi.captureEvent).toHaveBeenCalled();
+    });
+
+    const events = analyticsApi.captureEvent.mock.calls.map(([event]) => event);
+
+    expect(events).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          action: 'click',
+          subject: 'Clickable Announcement',
+          attributes: expect.objectContaining({
+            announcementId: '1',
+            location: 'AnnouncementsCard',
+          }),
+        }),
+        expect.objectContaining({
+          action: 'click',
+          subject: 'Clickable Announcement',
+          attributes: expect.objectContaining({
+            to: '/announcements/view/1',
+          }),
+        }),
+      ]),
+    );
   });
 
   it('should display "today" when the announcement start date matches current date', async () => {
