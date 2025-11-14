@@ -155,6 +155,10 @@ jobs:
               echo "Remote branch exists, checking it out"
               git fetch origin "$BRANCH_NAME"
               git checkout -b "$BRANCH_NAME" "origin/$BRANCH_NAME"
+
+              echo "Re-installing workspace dependencies..."
+              cd workspaces/${{ matrix.workspace }}
+              yarn install --immutable
           else
               echo "Creating new branch"
               git checkout -b "$BRANCH_NAME"
@@ -243,20 +247,6 @@ jobs:
 
               const updatedTitle = workspace + ' - version:bump to v' + releaseVersion;
               const updatedBody = prBody + '\n\n---\n\n<details>\n<summary>Previous version bump information</summary>\n\n' + existingPRData.body + '\n\n</details>';
-
-              const newBranchName = `${workspace}/v${releaseVersion}`;
-              const currentBranchName = existingPRData.head.ref;
-
-              if (currentBranchName !== newBranchName) {
-                console.log(`Renaming branch from ${currentBranchName} to ${newBranchName}`);
-                await github.rest.repos.renameBranch({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  branch: currentBranchName,
-                  new_name: newBranchName
-                });
-                console.log(`Successfully renamed branch to ${newBranchName}`);
-              }
 
               await github.rest.pulls.update({
                 owner: context.repo.owner,
