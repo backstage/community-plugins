@@ -85,7 +85,7 @@ There could be times when there is a need for a more rich development environmen
 
 ## Coding Guidelines
 
-To keep the codebase consistent and maintainable, we have a some cross workspace tolling in place:
+To keep the codebase consistent and maintainable, we have some cross workspace tooling in place:
 
 - `yarn`: is the package manager used for all workspaces. We will regularly update the yarn version to keep up with the latest features and bug fixes. This version is managed in the root `package.json` and `.yarnrc.yml` files and should not be locked to a different version in any workspace. Updating the yarn version could imply changes on all the `yarn.lock` files.
 - `prettier`: All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
@@ -151,7 +151,9 @@ From there, once the script has finished, you should have a new `yarn workspace`
 Once you have a workspace setup, the creation of new plugins and packages is just like any other Backstage repository. You can use the `yarn new` command to run the prompt for creating new plugins or packages.
 
 ```bash
+# Example: navigate to your workspace (replace "adr" with your workspace name)
 cd workspaces/adr
+yarn install
 yarn new
 ```
 
