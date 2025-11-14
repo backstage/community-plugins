@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.16.1
+
+### Patch Changes
+
+- 9987329: The success message shown when an announcement is created is now transient
+
 ## 0.16.0
 
 ### Minor Changes
