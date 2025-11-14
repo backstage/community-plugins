@@ -35,9 +35,9 @@ import {
 } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   announcementCreateRouteRef,
   announcementEditRouteRef,
@@ -52,37 +52,22 @@ import {
   useAnnouncements,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  IconButton,
-  ListItemIcon,
-  makeStyles,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Typography,
-} from '@material-ui/core';
-import { Alert, Pagination } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 import { MarkdownRendererTypeProps } from '../MarkdownRenderer/MarkdownRenderer';
 import { truncate } from '../utils/truncateUtils';
-
-const useStyles = makeStyles(theme => {
-  return {
-    cardHeader: {
-      color: theme?.palette?.text?.primary || '#000',
-    },
-    pagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: theme?.spacing?.(4) || 32,
-    },
-  };
-});
 
 const AnnouncementCard = ({
   announcement,
@@ -95,7 +80,6 @@ const AnnouncementCard = ({
   options: AnnouncementCardProps;
   hideStartAt?: boolean;
 }) => {
-  const classes = useStyles();
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const editAnnouncementLink = useRouteRef(announcementEditRouteRef);
@@ -107,10 +91,7 @@ const AnnouncementCard = ({
       disableFocusListener
       data-testid="announcement-card-title-tooltip"
     >
-      <Link
-        className={classes.cardHeader}
-        to={viewAnnouncementLink({ id: announcement.id })}
-      >
+      <Link to={viewAnnouncementLink({ id: announcement.id })}>
         {truncate(announcement.title, titleLength)}
       </Link>
     </Tooltip>
@@ -262,7 +243,6 @@ const AnnouncementsGrid = ({
   order?: 'asc' | 'desc';
   hideStartAt?: boolean;
 }) => {
-  const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const location = useLocation();
@@ -346,13 +326,13 @@ const AnnouncementsGrid = ({
       </ItemCardGrid>
 
       {announcements && announcements.count !== 0 && (
-        <div className={classes.pagination}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
           <Pagination
             count={Math.ceil(announcements.count / maxPerPage)}
             page={page}
             onChange={handleChange}
           />
-        </div>
+        </Box>
       )}
 
       <DeleteAnnouncementDialog

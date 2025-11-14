@@ -30,7 +30,8 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { AnnouncementsTimeline, AdminPortal } from '../src/components';
 import { signalsPlugin } from '@backstage/plugin-signals';
-import { Grid, Typography } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 const mockCatalogApi = {
   getEntityByRef: async (entityRef: string) => {

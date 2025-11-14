@@ -31,7 +31,7 @@ import {
   useAnnouncementsTranslation,
   useCategories,
 } from '@backstage-community/plugin-announcements-react';
-import { Alert } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
 import { rootRouteRef } from '../../routes';
 import { useNavigate } from 'react-router-dom';
 

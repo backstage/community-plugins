@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChangeEvent, useState } from 'react';
 import { Page, Header, Content } from '@backstage/core-components';
+import { Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
 import { AnnouncementsContent } from '../AnnouncementsContent';
 import { CategoriesContent } from '../CategoriesContent';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import { makeStyles, Tab } from '@material-ui/core';
-import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
 import { TagsContent } from '../TagsContent';
-
-const useStyles = makeStyles(() => ({
-  tabPanel: {
-    paddingLeft: '0px',
-    paddingRight: '0px',
-  },
-}));
 
 type AdminPortalProps = {
   themeId?: string;
@@ -43,36 +34,27 @@ type AdminPortalContentProps = {
 };
 
 const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
-  const classes = useStyles();
-  const [tab, setTab] = useState('announcements');
   const { t } = useAnnouncementsTranslation();
-  const handleChange = (_event: ChangeEvent<{}>, tabValue: string) => {
-    setTab(tabValue);
-  };
 
   return (
-    <TabContext value={tab}>
-      <TabList onChange={handleChange}>
-        <Tab
-          label={t('admin.adminPortal.announcementsLabels')}
-          value="announcements"
-        />
-        <Tab
-          label={t('admin.adminPortal.categoriesLabel')}
-          value="categories"
-        />
-        <Tab label={t('admin.adminPortal.tagsLabel')} value="tags" />
+    <Tabs>
+      <TabList>
+        <Tab id="announcements">
+          {t('admin.adminPortal.announcementsLabels')}
+        </Tab>
+        <Tab id="categories">{t('admin.adminPortal.categoriesLabel')}</Tab>
+        <Tab id="tags">{t('admin.adminPortal.tagsLabel')}</Tab>
       </TabList>
-      <TabPanel value="announcements" className={classes.tabPanel}>
+      <TabPanel id="announcements">
         <AnnouncementsContent defaultInactive={defaultInactive} />
       </TabPanel>
-      <TabPanel value="categories" className={classes.tabPanel}>
+      <TabPanel id="categories">
         <CategoriesContent />
       </TabPanel>
-      <TabPanel value="tags" className={classes.tabPanel}>
+      <TabPanel id="tags">
         <TagsContent />
       </TabPanel>
-    </TabContext>
+    </Tabs>
   );
 };
 
