@@ -64,6 +64,7 @@ export interface Message {
   streamedOutput?: string; // Complete streaming history for collapsed container
   hasFinalResult?: boolean; // Whether partial_result was received
   skipCleaning?: boolean; // Skip markdown cleaning for final results
+  customCallLabel?: string; // Label of custom call button used when sending this message
   executionPlan?: string; // Execution plan for this message (persisted to history)
   executionPlanHistory?: string[]; // History of execution plan updates
 }
