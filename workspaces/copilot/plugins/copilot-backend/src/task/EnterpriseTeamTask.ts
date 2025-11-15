@@ -183,13 +183,16 @@ export async function discoverEnterpriseTeamMetrics({
         }
       } catch (error) {
         logger.error(
-          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}`,
+          `[discoverEnterpriseTeamMetrics] Failed to process metrics for team ${team.slug}.`,
           error,
         );
       }
     }
   } catch (error) {
-    logger.error('[discoverEnterpriseTeamMetrics] Error fetching teams', error);
+    logger.error(
+      `[discoverEnterpriseTeamMetrics] Failed to fetch teams.`,
+      error,
+    );
     throw error;
   }
 }

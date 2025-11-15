@@ -123,7 +123,7 @@ async function createRouter(
   const { schedule } = pluginOptions;
 
   const db = await DatabaseHandler.create({ database });
-  const api = await GithubClient.fromConfig(config);
+  const api = await GithubClient.fromConfig(config, logger);
 
   await scheduler.scheduleTask({
     id: 'copilot-metrics',

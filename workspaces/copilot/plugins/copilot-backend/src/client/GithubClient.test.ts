@@ -27,6 +27,7 @@ describe('GithubClient', () => {
   let githubClient: GithubClient;
   let mockOctokit: jest.Mocked<Octokit>;
   let mockConfig: any;
+  let mockLogger: any;
 
   const mockCopilotConfig = {
     host: 'github.com',
@@ -52,6 +53,8 @@ describe('GithubClient', () => {
       },
     });
 
+    mockLogger = mockServices.logger.mock();
+
     mockOctokit = {
       graphql: jest.fn(),
       request: jest.fn(),
@@ -63,7 +66,7 @@ describe('GithubClient', () => {
 
     MockedOctokit.mockImplementation(() => mockOctokit);
 
-    githubClient = new GithubClient(mockCopilotConfig, mockConfig);
+    githubClient = new GithubClient(mockCopilotConfig, mockConfig, mockLogger);
   });
 
   describe('fetchOrganizationTeams', () => {

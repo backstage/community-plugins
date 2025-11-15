@@ -46,6 +46,7 @@
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/integration": "backstage:^",
+    "@octokit/auth-app": "^7.1.3",
     "@octokit/rest": "20.1.2",
     "@types/express": "*",
     "express": "^4.17.1",

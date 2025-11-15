@@ -16,7 +16,6 @@
 
 import { getCopilotConfig, getGithubCredentials } from './GithubUtils';
 import { mockServices } from '@backstage/backend-test-utils';
-import { DefaultGithubCredentialsProvider } from '@backstage/integration';
 
 describe('getCopilotConfig', () => {
   beforeEach(() => {
@@ -163,11 +162,7 @@ describe('getGithubCredentials', () => {
 
     expect(result).toEqual({
       enterprise: undefined,
-      organization: {
-        type: 'token',
-        headers: { Authorization: 'Bearer test-token' },
-        token: 'test-token',
-      },
+      organization: 'test-token',
     });
   });
 
@@ -187,11 +182,7 @@ describe('getGithubCredentials', () => {
     });
 
     expect(result).toEqual({
-      enterprise: {
-        type: 'token',
-        headers: { Authorization: 'Bearer test-token' },
-        token: 'test-token',
-      },
+      enterprise: 'test-token',
       organization: undefined,
     });
   });
@@ -213,27 +204,12 @@ describe('getGithubCredentials', () => {
     });
 
     expect(result).toEqual({
-      enterprise: {
-        type: 'token',
-        headers: { Authorization: 'Bearer test-token' },
-        token: 'test-token',
-      },
-      organization: {
-        type: 'token',
-        headers: { Authorization: 'Bearer test-token' },
-        token: 'test-token',
-      },
+      enterprise: 'test-token',
+      organization: 'test-token',
     });
   });
 
   it('should return organization credentials with app config', async () => {
-    jest
-      .spyOn(DefaultGithubCredentialsProvider.prototype, 'getCredentials')
-      .mockResolvedValue({
-        type: 'app',
-        headers: { Authorization: 'Bearer app-token' },
-        token: 'app-token',
-      });
     const mockConfig = mockServices.rootConfig({
       data: {
         integrations: {
@@ -262,24 +238,14 @@ describe('getGithubCredentials', () => {
       apiBaseUrl: '',
     });
 
-    expect(result).toEqual({
-      enterprise: undefined,
-      organization: {
-        type: 'app',
-        headers: { Authorization: 'Bearer app-token' },
-        token: 'app-token',
-      },
-    });
+    expect(result.enterprise).toBeUndefined();
+    // organization should be an auth strategy config object
+    expect(typeof result.organization).toBe('object');
+    expect(result.organization).toHaveProperty('appId', 1234);
+    expect(result.organization).toHaveProperty('privateKey');
   });
 
   it('should return organization credentials with app config and enterprise credentials with token config', async () => {
-    jest
-      .spyOn(DefaultGithubCredentialsProvider.prototype, 'getCredentials')
-      .mockResolvedValue({
-        type: 'app',
-        headers: { Authorization: 'Bearer app-token' },
-        token: 'app-token',
-      });
     const mockConfig = mockServices.rootConfig({
       data: {
         integrations: {
@@ -315,17 +281,157 @@ describe('getGithubCredentials', () => {
       apiBaseUrl: '',
     });
 
-    expect(result).toEqual({
-      enterprise: {
-        type: 'token',
-        headers: { Authorization: 'Bearer enterprise-token' },
-        token: 'enterprise-token',
-      },
-      organization: {
-        type: 'app',
-        headers: { Authorization: 'Bearer app-token' },
-        token: 'app-token',
+    expect(result.enterprise).toBe('enterprise-token');
+    // organization should be an auth strategy config object
+    expect(typeof result.organization).toBe('object');
+    expect(result.organization).toHaveProperty('appId', 1234);
+    expect(result.organization).toHaveProperty('privateKey');
+  });
+
+  it('should select the correct app based on allowedInstallationOwners', async () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [
+            {
+              host: 'github.com',
+              apps: [
+                {
+                  appId: 1111,
+                  clientId: 'test1',
+                  clientSecret: 'test1',
+                  privateKey: `test1`,
+                  webhookSecret: 'shhh1',
+                  allowedInstallationOwners: ['other-org'],
+                },
+                {
+                  appId: 2222,
+                  clientId: 'test2',
+                  clientSecret: 'test2',
+                  privateKey: `test2`,
+                  webhookSecret: 'shhh2',
+                  allowedInstallationOwners: ['my-org', 'another-org'],
+                },
+              ],
+            },
+          ],
+        },
       },
     });
+
+    const result = await getGithubCredentials(mockConfig, {
+      host: 'github.com',
+      organization: 'my-org',
+      apiBaseUrl: '',
+    });
+
+    expect(result.enterprise).toBeUndefined();
+    expect(typeof result.organization).toBe('object');
+    expect(result.organization).toHaveProperty('appId', 2222);
+    expect(result.organization).toHaveProperty('privateKey');
+  });
+
+  it('should throw error if no app matches allowedInstallationOwners', async () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [
+            {
+              host: 'github.com',
+              apps: [
+                {
+                  appId: 1111,
+                  clientId: 'test1',
+                  clientSecret: 'test1',
+                  privateKey: `test1`,
+                  webhookSecret: 'shhh1',
+                  allowedInstallationOwners: ['other-org'],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    await expect(
+      getGithubCredentials(mockConfig, {
+        host: 'github.com',
+        organization: 'unauthorized-org',
+        apiBaseUrl: '',
+      }),
+    ).rejects.toThrow(
+      'No GitHub App configured for organization "unauthorized-org". Check allowedInstallationOwners in your GitHub integration config.',
+    );
+  });
+
+  it('should use app with empty allowedInstallationOwners for any organization', async () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [
+            {
+              host: 'github.com',
+              apps: [
+                {
+                  appId: 1111,
+                  clientId: 'test1',
+                  clientSecret: 'test1',
+                  privateKey: `test1`,
+                  webhookSecret: 'shhh1',
+                  // No allowedInstallationOwners means it works for any org
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    const result = await getGithubCredentials(mockConfig, {
+      host: 'github.com',
+      organization: 'any-org',
+      apiBaseUrl: '',
+    });
+
+    expect(result.enterprise).toBeUndefined();
+    expect(typeof result.organization).toBe('object');
+    expect(result.organization).toHaveProperty('appId', 1111);
+    expect(result.organization).toHaveProperty('privateKey');
+  });
+
+  it('should match organization case-insensitively', async () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [
+            {
+              host: 'github.com',
+              apps: [
+                {
+                  appId: 1111,
+                  clientId: 'test1',
+                  clientSecret: 'test1',
+                  privateKey: `test1`,
+                  webhookSecret: 'shhh1',
+                  allowedInstallationOwners: ['My-Organization'],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    const result = await getGithubCredentials(mockConfig, {
+      host: 'github.com',
+      organization: 'my-organization', // Different case
+      apiBaseUrl: '',
+    });
+
+    expect(result.enterprise).toBeUndefined();
+    expect(typeof result.organization).toBe('object');
+    expect(result.organization).toHaveProperty('appId', 1111);
+    expect(result.organization).toHaveProperty('privateKey');
   });
 });
