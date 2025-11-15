@@ -1533,7 +1533,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^3.1.2"
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.15"
     "@backstage/plugin-catalog-node": "npm:^1.19.1"
-    "@keycloak/keycloak-admin-client": "npm:26.3.4"
+    "@keycloak/keycloak-admin-client": "npm:26.4.5"
     "@opentelemetry/api": "npm:^1.9.0"
     "@types/lodash": "npm:4.17.20"
     "@types/uuid": "npm:10.0.0"
@@ -3425,14 +3425,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keycloak/keycloak-admin-client@npm:26.3.4":
-  version: 26.3.4
-  resolution: "@keycloak/keycloak-admin-client@npm:26.3.4"
+"@keycloak/keycloak-admin-client@npm:26.4.5":
+  version: 26.4.5
+  resolution: "@keycloak/keycloak-admin-client@npm:26.4.5"
   dependencies:
     camelize-ts: "npm:^3.0.0"
     url-join: "npm:^5.0.0"
     url-template: "npm:^3.1.1"
-  checksum: 10/8e5cf3cf2375946a8d20e2ddc8b7cd57759182b1f2a51c4c06d7d4569a9d5d009ff8d3e3825d32add669690480e8b63cf3b13f9ab4afa85f7d63535cf16b59e4
+  checksum: 10/87a28890fc4502e2d045e2bdca3f0cc4805f94562863114ed9861cef33c5fcdec3d699003070b8651d97c3c2278f1975b53a1eacf022701ace042d2d2a65b378
   languageName: node
   linkType: hard
 
