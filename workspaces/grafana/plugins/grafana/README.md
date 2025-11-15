@@ -21,6 +21,33 @@ Entity dashboards card:
 
 ![Dashboards card](./docs/dashboards_card.png)
 
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import grafanaPlugin from '@backstage-community/plugin-grafana/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    grafanaPlugin,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:grafana`
+- `entity-card:grafana/dashboards`
+- `entity-card:grafana/alerts`
+- `entity-card:grafana/overview-dashboard`
+
 ## Special thanks & Disclaimer
 
 Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-grafana). As an outcome
