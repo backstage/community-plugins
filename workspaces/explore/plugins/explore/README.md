@@ -97,6 +97,33 @@ const SearchPage = () => {
 ...
 ```
 
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import explorePlugin from '@backstage-community/plugin-explore/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    explorePlugin,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:explore`
+- `page:explore`
+- `nav-item:explore`
+- `search-result-list-item:explore`
+
 ## Customization
 
 Create a custom explore page in
