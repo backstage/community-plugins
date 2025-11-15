@@ -38,6 +38,8 @@ import {
   Page,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import { AzureDevOpsWikiArticleSearchResultListItem } from '@backstage-community/plugin-azure-devops';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -84,6 +86,11 @@ const SearchPage = () => {
                   name: 'Documentation',
                   icon: <DocsIcon />,
                 },
+                {
+                  value: 'azure-devops-wiki-article',
+                  name: 'Azure DevOps Wiki',
+                  icon: <LibraryBooksIcon />,
+                },
               ]}
             />
             <Paper className={classes.filters}>
@@ -127,6 +134,9 @@ const SearchPage = () => {
             <SearchResult>
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
+              <AzureDevOpsWikiArticleSearchResultListItem
+                icon={<LibraryBooksIcon />}
+              />
             </SearchResult>
           </Grid>
         </Grid>
