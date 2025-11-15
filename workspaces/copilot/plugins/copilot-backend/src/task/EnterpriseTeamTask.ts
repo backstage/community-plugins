@@ -18,6 +18,7 @@ import {
   MetricsType,
 } from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
+import { formatDate } from '../utils/dateUtils';
 import {
   convertToTeamSeatAnalysis,
   filterBaseMetrics,
@@ -72,7 +73,9 @@ export async function discoverEnterpriseTeamMetrics({
 
         const lastDay = await db.getMostRecentDayFromMetricsV2(type, team.slug);
         logger.info(
-          `[discoverEnterpriseTeamMetrics] Found last day: ${lastDay}`,
+          `[discoverEnterpriseTeamMetrics] Found last day: ${formatDate(
+            lastDay,
+          )}`,
         );
 
         const newMetrics: CopilotMetrics[] = filterNewMetricsV2(
