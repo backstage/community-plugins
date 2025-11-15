@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 export * from './createTimestamp';
-export * from './guards';
 export * from './helpers';
