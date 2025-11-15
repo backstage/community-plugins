@@ -16,13 +16,15 @@
  */
 
 import arrayToTable from 'array-to-table';
-import { listWorkspaces } from './list-workspaces.js';
+import { execSync } from 'child_process';
 
 async function main(args) {
   const workspaceReports = [];
 
-  // Get workspaces
-  const workspaces = await listWorkspaces();
+  // Get workspaces using community-cli
+  const workspaces = JSON.parse(
+    execSync('npx community-cli workspace list --json').toString(),
+  );
 
   // Loop through workspaces
   for (const workspace of workspaces) {

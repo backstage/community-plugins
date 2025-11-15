@@ -19,7 +19,7 @@ import fs from 'fs';
 import { resolve, join } from 'path';
 import * as url from 'url';
 import * as codeowners from 'codeowners-utils';
-import { listWorkspaces } from './list-workspaces.js';
+import { execSync } from 'child_process';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -30,8 +30,10 @@ async function main(args) {
   const codeownersPath = resolve(rootPath, '.github', 'CODEOWNERS');
   const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
 
-  // Get workspaces
-  const workspaces = await listWorkspaces();
+  // Get workspaces using community-cli
+  const workspaces = JSON.parse(
+    execSync('npx community-cli workspace list --json').toString(),
+  );
 
   const maintainerWorkspaces = [];
 
