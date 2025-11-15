@@ -108,6 +108,52 @@ spec:
 
 `YOUR_INSTANCE_NAME/` is optional and will query the default instance if not provided.
 
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery),
+the plugin will be automatically discovered and enabled.
+
+Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import sonarqubePlugin from '@backstage-community/plugin-sonarqube/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    sonarqubePlugin,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:sonarqube/sonarqube-api`
+- `entity:sonarqube/entity-sonarqube-card`
+- `entity:sonarqube/sonarqube-related-entities-overview`
+
+### Legacy Frontend System
+
+When using the legacy frontend system, customize through component props:
+
+- **`EntitySonarQubeCard`** - Props: `variant`, `missingAnnotationReadMoreUrl`, `duplicationRatings`
+- **`SonarQubeRelatedEntitiesOverview`** - Props: `relationType`, `entityKind`
+- **`EntitySonarQubeContentPage`** - Props: `title`, `supportTitle`, `missingAnnotationReadMoreUrl`
+
+Example:
+
+```tsx
+<EntitySonarQubeCard
+  variant="gridItem"
+  missingAnnotationReadMoreUrl="https://your-docs-url.com"
+/>
+```
+
 ### Integrating with `EntityPage` (New Frontend System)
 
 Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
