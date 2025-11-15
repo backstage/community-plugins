@@ -209,7 +209,9 @@ export const validateConfig = (config: RootConfigService) => {
       }
     } catch (error) {
       throw new Error(
-        `Invalid configuration for MCP server at index ${index}: ${error.message}`,
+        `Invalid configuration for MCP server at index ${index}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
       );
     }
   }
@@ -420,3 +422,12 @@ export const validateMessages = (
 
   return { isValid: true };
 };
+
+/**
+ * Check if a user is a guest user based on their userEntityRef
+ * Guest users have userEntityRef like 'user:development/guest'
+ */
+export function isGuestUser(userEntityRef: string): boolean {
+  const guestPattern = /^user:development\/guest$/i;
+  return guestPattern.test(userEntityRef);
+}

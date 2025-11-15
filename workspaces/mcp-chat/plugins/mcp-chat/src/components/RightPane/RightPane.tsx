@@ -15,12 +15,10 @@
  */
 import { FC } from 'react';
 import { useTheme } from '@mui/material/styles';
-import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MemoryIcon from '@mui/icons-material/Memory';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { ActiveMcpServers } from './ActiveMcpServers';
@@ -33,7 +31,6 @@ import { UseProviderStatusReturn, useAvailableTools } from '../../hooks';
 interface RightPaneProps {
   sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
-  onNewChat: () => void;
   mcpServers: MCPServer[];
   onServerToggle: (serverName: string) => void;
   providerStatus: UseProviderStatusReturn;
@@ -42,7 +39,6 @@ interface RightPaneProps {
 export const RightPane: FC<RightPaneProps> = ({
   sidebarCollapsed,
   onToggleSidebar,
-  onNewChat,
   mcpServers,
   onServerToggle,
   providerStatus,
@@ -107,11 +103,10 @@ export const RightPane: FC<RightPaneProps> = ({
               variant="h6"
               sx={{
                 fontWeight: 600,
-                marginLeft: theme.spacing(1),
                 color: theme.palette.text.primary,
               }}
             >
-              MCP Chat
+              MCP Configs
             </Typography>
           </>
         )}
@@ -136,29 +131,6 @@ export const RightPane: FC<RightPaneProps> = ({
 
       {!sidebarCollapsed && (
         <>
-          <Box sx={{ padding: '16px 16px 8px' }}>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              sx={{
-                background: theme.palette.primary.main,
-                color: theme.palette.primary.contrastText,
-                '&:hover': {
-                  background: theme.palette.primary.dark,
-                },
-                borderRadius: theme.spacing(1),
-                textTransform: 'none',
-                padding: theme.spacing(1, 2),
-                fontWeight: 600,
-              }}
-              size="small"
-              fullWidth
-              onClick={onNewChat}
-            >
-              New chat
-            </Button>
-          </Box>
-
           <ProviderStatus
             providerStatusData={providerStatus.providerStatusData}
             isLoading={providerStatus.isLoading}
@@ -188,64 +160,18 @@ export const RightPane: FC<RightPaneProps> = ({
             padding: '16px 8px',
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
+            alignItems: 'center',
           }}
         >
-          {/* Top section - buttons that stay at top */}
-          <Box>
-            {/* Add button when collapsed */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginBottom: '16px',
-              }}
-            >
-              <IconButton
-                size="small"
-                onClick={onNewChat}
-                sx={{
-                  backgroundColor: theme.palette.primary.main,
-                  color: theme.palette.primary.contrastText,
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    backgroundColor: theme.palette.primary.dark,
-                    transform: 'scale(1.05)',
-                  },
-                }}
-              >
-                <AddIcon />
-              </IconButton>
-            </Box>
-          </Box>
-
-          {/* Bottom section - MCP Servers */}
-          <Box>
-            {/* Separator line */}
-            <Box
-              sx={{
-                borderTop: `2px solid ${theme.palette.divider}`,
-                margin: '0 8px 16px 8px',
-              }}
-            />
-
-            {/* MCP Servers Section Icon */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <IconButton
-                size="medium"
-                title="MCP Configuration"
-                onClick={onToggleSidebar}
-                sx={{ color: theme.palette.text.primary }}
-              >
-                <MemoryIcon />
-              </IconButton>
-            </Box>
-          </Box>
+          {/* MCP Servers Section Icon */}
+          <IconButton
+            size="medium"
+            title="MCP Configuration"
+            onClick={onToggleSidebar}
+            sx={{ color: theme.palette.text.primary }}
+          >
+            <MemoryIcon />
+          </IconButton>
         </Box>
       )}
     </Box>

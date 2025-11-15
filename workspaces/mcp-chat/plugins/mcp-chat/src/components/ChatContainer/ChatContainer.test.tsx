@@ -152,6 +152,7 @@ describe('ChatContainer', () => {
         [{ role: 'user', content: 'Hello world' }],
         ['1'],
         expect.any(AbortSignal),
+        undefined, // conversationId
       );
 
       await waitFor(() => {
@@ -221,7 +222,33 @@ describe('ChatContainer', () => {
         expect.any(Array),
         ['1', '3'],
         expect.any(AbortSignal),
+        undefined, // conversationId
       );
+    });
+
+    it('calls onConversationUpdated after successful message send', async () => {
+      const onConversationUpdated = jest.fn();
+      const onMessagesChange = jest.fn();
+
+      mockMcpChatApi.sendChatMessage.mockResolvedValue({
+        role: 'assistant',
+        content: 'Hello! How can I help you?',
+        toolResponses: [],
+        toolsUsed: [],
+        conversationId: 'conv-123',
+      });
+
+      renderChatContainer({ onMessagesChange, onConversationUpdated });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello' } });
+      fireEvent.click(sendButton!);
+
+      await waitFor(() => {
+        expect(onConversationUpdated).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
@@ -238,6 +265,7 @@ describe('ChatContainer', () => {
         [{ role: 'user', content: 'Test suggestion' }],
         ['1'],
         expect.any(AbortSignal),
+        undefined, // conversationId
       );
     });
   });
