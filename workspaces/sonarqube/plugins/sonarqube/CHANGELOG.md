@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.20.1
+
+### Patch Changes
+
+- 6836ad6: new frontend system docs added
+
 ## 0.20.0
 
 ### Minor Changes
