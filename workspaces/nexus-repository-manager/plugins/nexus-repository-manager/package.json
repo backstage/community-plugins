@@ -69,7 +69,7 @@
     "@backstage/plugin-catalog": "^1.31.4",
     "@backstage/test-utils": "^1.7.12",
     "@backstage/ui": "^0.8.2",
-    "@hey-api/openapi-ts": "0.86.11",
+    "@hey-api/openapi-ts": "0.87.4",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.6.1",
