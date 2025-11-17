@@ -34,11 +34,11 @@ export const scaffolderModuleSonarqubeActions = createBackendModule({
     env.registerInit({
       deps: {
         scaffolder: scaffolderActionsExtensionPoint,
-        config: coreServices.config,
+        rootConfig: coreServices.rootConfig,
       },
-      async init({ scaffolder, config }) {
+      async init({ scaffolder, rootConfig }) {
         scaffolder.addActions(
-          createConfiguredSonarQubeProjectAction(config),
+          createConfiguredSonarQubeProjectAction(rootConfig),
           createSonarQubeProjectAction(),
         );
       },

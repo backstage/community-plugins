@@ -69,7 +69,15 @@ describe('createConfiguredSonarQubeProjectAction (unit)', () => {
     },
   });
   const action = createConfiguredSonarQubeProjectAction(config);
-  const context = createMockActionContext();
+  const context = createMockActionContext<
+    {
+      projectKey: string;
+      projectName: string;
+      organization?: string;
+      visibility?: 'public' | 'private';
+    },
+    { projectUrl: string }
+  >();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -130,7 +138,15 @@ describeIfLive('createConfiguredSonarQubeProjectAction (live)', () => {
   });
 
   it('creates a project against a running SonarQube instance', async () => {
-    const context = createMockActionContext();
+    const context = createMockActionContext<
+      {
+        projectKey: string;
+        projectName: string;
+        organization?: string;
+        visibility?: 'public' | 'private';
+      },
+      { projectUrl: string }
+    >();
     const config = new ConfigReader({
       sonarqube: {
         baseUrl: liveBaseUrl!,
@@ -161,18 +177,18 @@ describe('createSonarQubeProjectAction (legacy)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (global as unknown as { fetch: jest.Mock }).fetch = jest
+    (global as typeof globalThis & { fetch: jest.Mock }).fetch = jest
       .fn()
       .mockResolvedValue({
         ok: true,
         status: 200,
         statusText: 'OK',
         json: async () => ({ key: 'service' }),
-      }) as unknown as typeof fetch;
+      });
   });
 
   afterEach(() => {
-    (global as unknown as { fetch: jest.Mock }).fetch.mockReset();
+    (global as typeof globalThis & { fetch: jest.Mock }).fetch.mockReset();
     global.fetch = originalFetch;
   });
 
@@ -500,7 +516,7 @@ describe('scaffolderModuleSonarqubeActions registration', () => {
         createSonarQubeProjectAction: mockCreateLegacy,
       }));
       jest.doMock('@backstage/backend-plugin-api', () => ({
-        coreServices: { config: Symbol('config') },
+        coreServices: { rootConfig: Symbol('rootConfig') },
         createBackendModule: jest.fn(config => ({
           register: config.register,
         })),
@@ -513,7 +529,7 @@ describe('scaffolderModuleSonarqubeActions registration', () => {
     const initConfig = registerInit.mock.calls[0][0];
     await initConfig.init({
       scaffolder: { addActions },
-      config: {} as Config,
+      rootConfig: {} as Config,
     });
 
     expect(addActions).toHaveBeenCalledWith(configuredAction, legacyAction);

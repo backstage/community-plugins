@@ -29,48 +29,30 @@ export const CREATE_CONFIGURED_SONARQUBE_PROJECT_ID =
  * @public
  */
 export const createConfiguredSonarQubeProjectAction = (config: Config) => {
-  return createTemplateAction<{
-    projectKey: string;
-    projectName: string;
-    organization?: string;
-    visibility?: 'public' | 'private';
-  }>({
+  return createTemplateAction({
     id: CREATE_CONFIGURED_SONARQUBE_PROJECT_ID,
     description:
       'Creates a new SonarQube project using the configured SonarQube credentials',
     schema: {
       input: {
-        type: 'object',
-        required: ['projectKey', 'projectName'],
-        properties: {
-          projectKey: {
-            type: 'string',
-            title: 'Project Key',
-            description: 'The unique key of the SonarQube project',
-          },
-          projectName: {
-            type: 'string',
-            title: 'Project Name',
-            description: 'The display name of the SonarQube project',
-          },
-          organization: {
-            type: 'string',
-            title: 'Organization',
-            description: 'The SonarQube organization key (optional)',
-          },
-          visibility: {
-            type: 'string',
-            enum: ['public', 'private'],
-            title: 'Visibility',
-            description: 'Whether the project will be private or public',
-          },
-        },
+        projectKey: z =>
+          z.string().describe('The unique key of the SonarQube project'),
+        projectName: z =>
+          z.string().describe('The display name of the SonarQube project'),
+        organization: z =>
+          z
+            .string()
+            .optional()
+            .describe('The SonarQube organization key (optional)'),
+        visibility: z =>
+          z
+            .enum(['public', 'private'])
+            .optional()
+            .describe('Whether the project will be private or public'),
       },
       output: {
-        projectUrl: {
-          type: 'string',
-          description: 'URL of the SonarQube project dashboard',
-        },
+        projectUrl: z =>
+          z.string().url().describe('URL of the SonarQube project dashboard'),
       },
     },
     async handler(ctx) {
