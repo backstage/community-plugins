@@ -28,6 +28,7 @@ interface RequestParameters {
 }
 
 /**
+ * @deprecated Use {@link createConfiguredSonarQubeProjectAction} instead.
  * @public
  */
 export const createSonarQubeProjectAction = () => {
