@@ -32,9 +32,7 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "backstage:^",
-    "@backstage/errors": "backstage:^",
     "@backstage/plugin-scaffolder-node": "backstage:^",
-    "cross-fetch": "^4.0.0",
     "jenkins": "^1.1.0"
   },
   "devDependencies": {
