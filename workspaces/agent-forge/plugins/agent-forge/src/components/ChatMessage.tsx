@@ -1953,7 +1953,7 @@ export const ChatMessage = memo(function ChatMessage({
                       field.field_values && field.field_values.length > 0
                         ? 'select'
                         : 'text',
-                    required: true,
+                    required: (field as any).required ?? true,
                     description: field.field_description,
                     placeholder: field.field_description,
                     defaultValue: field.field_values?.[0],
