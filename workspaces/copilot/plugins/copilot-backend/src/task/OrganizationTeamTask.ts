@@ -184,14 +184,14 @@ export async function discoverOrganizationTeamMetrics({
         }
       } catch (error) {
         logger.error(
-          `[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}`,
+          `[discoverOrganizationTeamMetrics] Failed to process metrics for team ${team.slug}.`,
           error,
         );
       }
     }
   } catch (error) {
     logger.error(
-      '[discoverOrganizationTeamMetrics] Error fetching teams',
+      `[discoverOrganizationTeamMetrics] Failed to fetch teams.`,
       error,
     );
     throw error;
