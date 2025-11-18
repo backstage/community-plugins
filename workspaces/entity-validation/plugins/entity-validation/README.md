@@ -57,7 +57,7 @@ To add the new page to your sidebar, you must include these lines in your `Root.
 
 ### Setup
 
-If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+The plugin should be automatically discovered and enabled by Backstage. If you are not using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), you can manually enable the plugin by adding it to your app:
 
 ```tsx
 // packages/app/src/App.tsx
