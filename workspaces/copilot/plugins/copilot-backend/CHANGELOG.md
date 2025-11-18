@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.4
+
+### Patch Changes
+
+- 14bf95c: Improves error logging. Changes Octokit to use the built in CreateAppAuth in order to automatically refresh expired tokens.
+
 ## 0.15.3
 
 ### Patch Changes
