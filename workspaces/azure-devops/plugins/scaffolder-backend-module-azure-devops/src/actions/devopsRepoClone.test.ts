@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { createAzureDevOpsCloneRepoAction } from './devopsRepoClone';
-import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
-import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
+import { ScmIntegrations } from '@backstage/integration';
+import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
+import { createAzureDevOpsCloneRepoAction } from './devopsRepoClone';
 
 jest.mock('@backstage/plugin-scaffolder-node', () => ({
   ...jest.requireActual('@backstage/plugin-scaffolder-node'),
@@ -100,7 +100,7 @@ describe('createAzureDevOpsCloneRepoAction', () => {
     await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
     expect(cloneRepo).toHaveBeenCalledWith(
       expect.objectContaining({
-        auth: { token: 'bearer-token' },
+        auth: { username: 'not-empty', password: 'bearer-token' },
       }),
     );
   });
