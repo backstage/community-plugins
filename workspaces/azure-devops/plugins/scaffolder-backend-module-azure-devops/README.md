@@ -46,6 +46,14 @@ integrations:
         - personalAccessToken: ${PERSONAL_ACCESS_TOKEN}
 ```
 
+To use DefaultAzureCredential (example Workload Identity, federated token), don't define credentials.
+
+```yaml
+integrations:
+  azure:
+    - host: dev.azure.com
+```
+
 ## Usage
 
 You can use the action in any of the steps of your [Software Template](https://backstage.io/docs/features/software-templates/).
