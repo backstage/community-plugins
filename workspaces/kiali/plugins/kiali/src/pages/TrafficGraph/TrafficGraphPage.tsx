@@ -31,7 +31,7 @@ import { default as React, useRef, useState } from 'react';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
-import { getEntityNs, nsEqual } from '../../helpers/namespaces';
+import { getEntityNs } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
@@ -211,7 +211,8 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
     } else {
       // Check if we need to fetch
       const keyChanged = currentKey !== lastFetchedKey.current;
-      const modelIsEmpty = model.nodes.length === 0 && model.edges.length === 0;
+      const modelIsEmpty =
+        (model.nodes?.length ?? 0) === 0 && (model.edges?.length ?? 0) === 0;
       // Fetch if key changed, or if key matches but model is empty (component remounted)
       const needsFetch =
         keyChanged || (currentKey === lastFetchedKey.current && modelIsEmpty);
@@ -235,7 +236,7 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
 
   React.useEffect(() => {
     // Only update the controller if the model has nodes or edges
-    if (model.nodes.length > 0 || model.edges.length > 0) {
+    if ((model.nodes?.length ?? 0) > 0 || (model.edges?.length ?? 0) > 0) {
       controller.fromModel(model, false);
     }
   }, [model, controller]);
@@ -272,7 +273,8 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   }
 
   // Don't show graph if model is empty (no nodes or edges)
-  const hasGraphData = model.nodes.length > 0 || model.edges.length > 0;
+  const hasGraphData =
+    (model.nodes?.length ?? 0) > 0 || (model.edges?.length ?? 0) > 0;
 
   return (
     <Content className={graphStyle} data-test="kiali-graph-card">
