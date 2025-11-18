@@ -15,19 +15,19 @@
  */
 
 import { LoggerService } from '@backstage/backend-plugin-api';
-import {
-  WebApi,
-  getPersonalAccessTokenHandler,
-  getBearerHandler,
-} from 'azure-devops-node-api';
-import { IGitApi } from 'azure-devops-node-api/GitApi';
-import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { InputError } from '@backstage/errors';
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
 import {
   DefaultAzureDevOpsCredentialsProvider,
   ScmIntegrationRegistry,
 } from '@backstage/integration';
+import {
+  WebApi,
+  getBearerHandler,
+  getPersonalAccessTokenHandler,
+} from 'azure-devops-node-api';
+import { IGitApi } from 'azure-devops-node-api/GitApi';
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
+import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
 
 export async function createADOPullRequest({
   gitPullRequestToCreate,
@@ -100,21 +100,25 @@ export async function getGitCredentials(
 ) {
   const credentialProvider =
     DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
-  const credentials = await credentialProvider.getCredentials({ url: url });
+  const credentials = await credentialProvider.getCredentials({ url });
 
-  let auth: { username: string; password: string } | { token: string };
   if (token) {
-    auth = { username: 'not-empty', password: token };
-  } else if (credentials?.type === 'pat') {
-    auth = { username: 'not-empty', password: credentials.token };
-  } else if (credentials?.type === 'bearer') {
-    auth = { token: credentials.token };
-  } else {
+    return { username: 'not-empty', password: token };
+  }
+
+  if (!credentials) {
     throw new InputError(
-      `No credentials provided ${url}, please check your integrations config`,
+      `No credentials provided for ${url}, please check your integrations config`,
     );
   }
-  return auth;
+
+  if (credentials.type === 'pat' || credentials.type === 'bearer') {
+    return { username: 'not-empty', password: credentials.token };
+  }
+
+  throw new InputError(
+    `Unsupported credential type '${credentials.type}' for ${url}`,
+  );
 }
 
 export async function getAuthHandler(
