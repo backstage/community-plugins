@@ -405,9 +405,36 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         .registerChained('metricschunks', undefined, () =>
           fetchMetricsChunk(chunk),
         )
-        .then(() => {
-          nss.slice();
-          setActiveNs(filterActiveNamespaces(nss));
+        .then(updatedChunk => {
+          // fetchMetricsChunk modifies the chunk array in place and returns it
+          // Update namespaces state with the updated chunk, preserving ALL existing data
+          if (updatedChunk && Array.isArray(updatedChunk)) {
+            setNamespaces(prevNamespaces => {
+              // Only update namespaces that are in the updated chunk
+              // Preserve all other data including metrics from other chunks
+              const updated = prevNamespaces.map(prevNs => {
+                const updatedNs = updatedChunk.find(
+                  n => n.name === prevNs.name,
+                );
+                if (updatedNs && updatedNs.metrics) {
+                  // Only update if we have new metrics, preserve everything else
+                  return {
+                    ...prevNs,
+                    metrics: updatedNs.metrics,
+                    errorMetrics: updatedNs.errorMetrics,
+                    controlPlaneMetrics: updatedNs.controlPlaneMetrics,
+                  };
+                }
+                // Keep existing namespace with all its data (including metrics)
+                return prevNs;
+              });
+
+              // Update activeNs with the updated namespaces
+              setActiveNs(filterActiveNamespaces(updated));
+
+              return updated;
+            });
+          }
         });
     });
   };
@@ -440,11 +467,29 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         const sortField = FilterHelper.currentSortField(Sorts.sortFields);
         const sortNs = sortedNamespaces(allNamespaces);
 
+        // Preserve existing metrics when refreshing to avoid showing "No traffic" message
+        const namespacesWithMetrics = sortNs.map(ns => {
+          const previous = namespaces.find(prev => prev.name === ns.name);
+          return {
+            ...ns,
+            // Preserve all previous data, not just metrics
+            status: previous?.status,
+            tlsStatus: previous?.tlsStatus,
+            metrics: previous?.metrics,
+            errorMetrics: previous?.errorMetrics,
+            validations: previous?.validations,
+            controlPlaneMetrics: previous?.controlPlaneMetrics,
+          };
+        });
+        setNamespaces(namespacesWithMetrics);
+
+        // Update activeNs immediately with preserved metrics
+        setActiveNs(filterActiveNamespaces(namespacesWithMetrics));
+
         fetchHealth(isAscending, sortField, overviewType, sortNs);
         fetchTLS(sortNs, isAscending, sortField);
         fetchValidations(sortNs, isAscending, sortField);
         fetchMetrics(sortNs);
-        setNamespaces(sortNs);
         promises.waitAll();
       })
       .catch(error => {
