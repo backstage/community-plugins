@@ -28,7 +28,6 @@ import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, useTheme } from '@material-ui/core';
 import { Model, Visualization } from '@patternfly/react-topology';
 import { default as React, useRef, useState } from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
@@ -97,9 +96,9 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
 
   const activeNamespaces = getNamespaces(props.entity, kialiState);
   const activeProvider = getProvider(props.entity, kialiState);
-  const prevProvider = useRef(activeProvider);
-  const prevActiveNs = useRef(activeNamespaces);
-  const prevDuration = useRef(duration);
+  const prevProvider = useRef<string | undefined>(undefined);
+  const prevActiveNs = useRef<string[]>([]);
+  const prevDuration = useRef<number | undefined>(undefined);
 
   const [model, setModel] = useState<Model>({
     nodes: [],
@@ -158,21 +157,31 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
           }
           return response;
         })
-        .catch(error => setErrorProvider(error.toString()));
-      const graphData = decorateGraphData(
-        (data as GraphDefinition).elements,
-        (data as GraphDefinition).duration,
-      );
-      const g = generateDataModel(graphData, graphQueryElements);
-      setModel({
-        nodes: g.nodes,
-        edges: g.edges,
-        graph: graphConfig,
-      });
+        .catch(error => {
+          setErrorProvider(error.toString());
+          return null;
+        });
+
+      if (data) {
+        const graphData = decorateGraphData(
+          (data as GraphDefinition).elements,
+          (data as GraphDefinition).duration,
+        );
+        const g = generateDataModel(graphData, graphQueryElements);
+        setModel({
+          nodes: g.nodes,
+          edges: g.edges,
+          graph: graphConfig,
+        });
+      } else {
+        // If data is null, keep the previous model
+        // Don't clear it to avoid showing empty graph
+      }
     } catch (error: any) {
       kialiState.alertUtils?.add(
         `Could not fetch services: ${getErrorString(error)}`,
       );
+      // Don't clear the model on error, keep the previous one
     }
   };
 
@@ -187,38 +196,83 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
     />
   );
 
+  const [loading, setLoading] = React.useState(true);
+  const lastFetchedKey = React.useRef<string>('');
+
   React.useEffect(() => {
-    if (
-      duration !== prevDuration.current ||
-      !nsEqual(activeNamespaces, prevActiveNs.current) ||
-      activeProvider !== prevProvider.current
-    ) {
-      setErrorProvider(undefined);
-      fetchGraph();
-      prevDuration.current = duration;
-      prevActiveNs.current = activeNamespaces;
-      prevProvider.current = activeProvider;
+    const namespacesKey = activeNamespaces.join(',');
+    const currentKey = `${namespacesKey}|${duration}|${activeProvider}`;
+
+    if (activeNamespaces.length === 0) {
+      // Namespaces are empty - clear model and stop loading
+      setModel({ nodes: [], edges: [], graph: graphConfig });
+      setLoading(false);
+      lastFetchedKey.current = currentKey;
+    } else {
+      // Check if we need to fetch
+      const keyChanged = currentKey !== lastFetchedKey.current;
+      const modelIsEmpty = model.nodes.length === 0 && model.edges.length === 0;
+      // Fetch if key changed, or if key matches but model is empty (component remounted)
+      const needsFetch =
+        keyChanged || (currentKey === lastFetchedKey.current && modelIsEmpty);
+
+      if (needsFetch) {
+        setErrorProvider(undefined);
+        setLoading(true);
+        fetchGraph().finally(() => {
+          setLoading(false);
+          lastFetchedKey.current = currentKey;
+        });
+      }
     }
+
+    // Update refs
+    prevDuration.current = duration;
+    prevActiveNs.current = activeNamespaces;
+    prevProvider.current = activeProvider;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNamespaces, duration, activeProvider]);
 
   React.useEffect(() => {
-    controller.fromModel(model, false);
+    // Only update the controller if the model has nodes or edges
+    if (model.nodes.length > 0 || model.edges.length > 0) {
+      controller.fromModel(model, false);
+    }
   }, [model, controller]);
 
-  const [state, refresh] = useAsyncFn(
-    async () => {
+  const refresh = React.useCallback(async () => {
+    if (activeNamespaces.length === 0) {
+      return;
+    }
+    setLoading(true);
+    setErrorProvider(undefined);
+    // Force refresh by clearing the key
+    lastFetchedKey.current = '';
+    try {
       await fetchGraph();
-    },
-    [],
-    { loading: true },
-  );
+      const currentKey = `${activeNamespaces.join(
+        ',',
+      )}|${duration}|${activeProvider}`;
+      lastFetchedKey.current = currentKey;
+    } catch (error) {
+      // Error is already handled in fetchGraph
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeNamespaces, duration, activeProvider]);
 
-  useDebounce(refresh, 10);
-
-  if (state.loading) {
+  if (loading) {
     return <CircularProgress />;
   }
+
+  // Don't show anything if no namespaces are selected
+  if (activeNamespaces.length === 0) {
+    return null;
+  }
+
+  // Don't show graph if model is empty (no nodes or edges)
+  const hasGraphData = model.nodes.length > 0 || model.edges.length > 0;
 
   return (
     <Content className={graphStyle} data-test="kiali-graph-card">
@@ -232,7 +286,7 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
               onRefresh={refresh}
             />
           )}
-          <TrafficGraph model={model} />
+          {hasGraphData ? <TrafficGraph model={model} /> : null}
         </>
       )}
     </Content>
