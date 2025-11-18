@@ -8,8 +8,13 @@ on:
         default: main
         type: choice
         options:
-          - next
           - main
+          - next
+          - custom
+      custom_version:
+        description: 'Custom Version (only used if release_line is "custom", e.g., 1.42.1)'
+        required: false
+        type: string
       workspace_input:
         description: 'Workspace (this must be a JSON array)'
         required: true
@@ -80,9 +85,17 @@ jobs:
         run: yarn install --immutable
       # End of yarn setup
 
+      - name: 'Determine release version'
+        id: determine_release
+        run: |
+          if [ "${{ inputs.release_line }}" == "custom" ]; then
+            echo "RELEASE_VALUE=${{ inputs.custom_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "RELEASE_VALUE=${{ inputs.release_line || 'main' }}" >> $GITHUB_OUTPUT
+          fi
       - name: 'Set release name'
         id: set_release_name
-        run: node scripts/ci/set-release-name.js ${{ matrix.workspace }} ${{ inputs.release_line || 'main' }}
+        run: node scripts/ci/set-release-name.js ${{ matrix.workspace }} ${{ steps.determine_release.outputs.RELEASE_VALUE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Check current and release versions'
@@ -159,9 +172,9 @@ jobs:
               echo "Creating new branch"
               git checkout -b "$BRANCH_NAME"
           fi
-      - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }} command
+      - name: Run backstage-cli versions:bump --release ${{ steps.determine_release.outputs.RELEASE_VALUE }} command
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }}
+        run: yarn backstage-cli versions:bump --release ${{ steps.determine_release.outputs.RELEASE_VALUE }}
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Run dedupe
