@@ -24,16 +24,20 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
       kind: 'Component',
       metadata: {
         name: 'foo',
-        annotations: { 'quay.io/repository-slug': 'foo/bar' },
+        annotations: {
+          'quay.io/repository-slug': 'foo/bar',
+          'quay.io/instance': 'devel',
+        },
       },
     },
   }),
 }));
 
 describe('useRepository', () => {
-  it('should return organization and repository', () => {
+  it('should return instance, organization and repository', () => {
     const { result } = renderHook(() => useRepository());
     expect(result.current).toEqual({
+      instance: 'devel',
       organization: 'foo',
       repository: 'bar',
     });

@@ -16,6 +16,8 @@
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 
+import { QUAY_SINGLE_INSTANCE_NAME } from '@backstage-community/plugin-quay-common';
+
 import {
   LabelsResponse,
   ManifestByDigestResponse,
@@ -24,48 +26,110 @@ import {
 } from '../types';
 
 export interface QuayService {
+  getQuayInstance(instanceName?: string): QuayInstance | undefined;
   getTags(
+    instance: string,
     org: string,
     repo: string,
     page?: number,
     limit?: number,
   ): Promise<TagsResponse>;
-  getLabels(org: string, repo: string, digest: string): Promise<LabelsResponse>;
+  getLabels(
+    instance: string,
+    org: string,
+    repo: string,
+    digest: string,
+  ): Promise<LabelsResponse>;
   getManifestByDigest(
+    instance: string,
     org: string,
     repo: string,
     digest: string,
   ): Promise<ManifestByDigestResponse>;
   getSecurityDetails(
+    instance: string,
     org: string,
     repo: string,
     digest: string,
   ): Promise<SecurityDetailsResponse>;
 }
 
-export class QuayService {
-  private readonly apiUrl: string;
-  private readonly token?: string;
-  private readonly logger: LoggerService;
+export type QuayInstance = {
+  name: string;
+  apiUrl: string;
+  token: string | undefined;
+};
 
-  constructor(config: Config, logger: LoggerService) {
-    this.apiUrl = config.getString('quay.apiUrl');
-    this.token = config.getOptionalString('quay.apiKey');
+export class QuayService {
+  private readonly logger: LoggerService;
+  private readonly instances: Map<string, QuayInstance>;
+  private readonly defaultInstanceName: string;
+
+  constructor(instances: QuayInstance[], logger: LoggerService) {
+    if (instances.length === 0) {
+      throw new Error('At least one Quay instance must be configured');
+    }
+
+    this.instances = new Map(
+      instances.map(instance => [instance.name, instance]),
+    );
+    this.defaultInstanceName = instances[0].name;
     this.logger = logger;
   }
 
   static fromConfig(config: Config, logger: LoggerService): QuayService {
-    return new QuayService(config, logger);
+    const quayConfig = config.getConfig('quay');
+
+    // Multiple instances configuration
+    if (quayConfig.has('instances')) {
+      const instancesConfig = quayConfig.getConfigArray('instances');
+      const instances = instancesConfig.map(instanceConfig => ({
+        name: instanceConfig.getString('name'),
+        apiUrl: instanceConfig.getString('apiUrl'),
+        token: instanceConfig.getOptionalString('apiKey'),
+      }));
+      return new QuayService(instances, logger);
+    }
+
+    // Single instance configuration
+    return new QuayService(
+      [
+        {
+          name: QUAY_SINGLE_INSTANCE_NAME,
+          apiUrl: quayConfig.getString('apiUrl'),
+          token: quayConfig.getOptionalString('apiKey'),
+        },
+      ],
+      logger,
+    );
   }
 
-  private async fetchFromQuay(endpoint: string): Promise<any> {
-    const url = `${this.apiUrl}${endpoint}`;
+  public getQuayInstance(instanceName?: string): QuayInstance | undefined {
+    return instanceName
+      ? this.instances.get(instanceName)
+      : this.instances.get(this.defaultInstanceName);
+  }
+
+  private async fetchFromQuay(
+    endpoint: string,
+    instanceName: string,
+  ): Promise<any> {
+    const instance = this.getQuayInstance(instanceName);
+    if (!instance) {
+      throw new Error(
+        `Quay instance "${instanceName}" not found in configuration.`,
+      );
+    }
+
+    const url = `${instance.apiUrl}${endpoint}`;
 
     try {
       const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
-          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+          ...(instance.token
+            ? { Authorization: `Bearer ${instance.token}` }
+            : {}),
         },
       });
 
@@ -91,6 +155,7 @@ export class QuayService {
   }
 
   async getTags(
+    instance: string,
     org: string,
     repo: string,
     page?: number,
@@ -107,27 +172,41 @@ export class QuayService {
 
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/tag?${params.toString()}`,
+      instance,
     ) as Promise<TagsResponse>;
   }
 
-  async getLabels(org: string, repo: string, digest: string) {
+  async getLabels(instance: string, org: string, repo: string, digest: string) {
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/manifest/${digest}/labels`,
+      instance,
     ) as Promise<LabelsResponse>;
   }
 
-  async getManifestByDigest(org: string, repo: string, digest: string) {
+  async getManifestByDigest(
+    instance: string,
+    org: string,
+    repo: string,
+    digest: string,
+  ) {
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/manifest/${digest}`,
+      instance,
     ) as Promise<ManifestByDigestResponse>;
   }
 
-  async getSecurityDetails(org: string, repo: string, digest: string) {
+  async getSecurityDetails(
+    instance: string,
+    org: string,
+    repo: string,
+    digest: string,
+  ) {
     const params = new URLSearchParams();
     params.append('vulnerabilities', 'true');
 
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/manifest/${digest}/security?${params}`,
+      instance,
     ) as Promise<SecurityDetailsResponse>;
   }
 }

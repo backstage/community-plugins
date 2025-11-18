@@ -9,6 +9,9 @@ import { BasicPermission } from '@backstage/plugin-permission-common';
 export const quayPermissions: BasicPermission[];
 
 // @public
+export const QUAY_SINGLE_INSTANCE_NAME = 'default';
+
+// @public
 export const quayViewPermission: BasicPermission;
 
 // (No @packageDocumentation comment for this package)

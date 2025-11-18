@@ -26,7 +26,7 @@ backend.add(import('@backstage-community/plugin-quay-backend'));
 
 ### App Config
 
-Define the following in `app-config.yaml`:
+Define the following in `app-config.yaml` for a single Quay instance:
 
 ```yaml
 quay:
@@ -41,6 +41,32 @@ For more information on OAuth access tokens in Quay, please see [the official do
 
 **Note**: Robot tokens will not work for the `apiKey` value.
 
+#### Multiple Quay Instances Configuration
+
+You can connect to multiple Quay instances by following configuration:
+
+```yaml
+quay:
+  instances:
+    - name: production
+      apiUrl: 'https://quay.io'
+      apiKey: 'prod-abc123'
+    - name: staging
+      apiUrl: 'https://quay-staging.example.com'
+      apiKey: 'staging-xyz456'
+```
+
+When using multiple instances, specify the target instance in your entity using the `quay.io/instance` annotation:
+
+```yaml title="catalog-info.yaml"
+metadata:
+  annotations:
+    'quay.io/repository-slug': '<ORGANIZATION>/<REPOSITORY>'
+    'quay.io/instance': 'production'
+```
+
+**Note:** If the `quay.io/instance` annotation is not specified, the plugin will automatically use the first configured instance as the default.
+
 ### Catalog
 
 Add the annotation `quay.io/repository-slug` to your entity
@@ -48,7 +74,16 @@ Add the annotation `quay.io/repository-slug` to your entity
 ```yaml
 metadata:
   annotations:
-    quay.io/repository-slug: '<organization>/<repository>`
+    quay.io/repository-slug: '<organization>/<repository>'
+```
+
+To connect Catalog components to different Quay instances, specify the target instance in your entity using the `quay.io/instance` annotation. The instance name must match a name defined in your instances configuration. If omitted, the first configured instance is used by default.
+
+```yaml
+metadata:
+  annotations:
+    quay.io/repository-slug: '<organization>/<repository>'
+    quay.io/instance: 'production'
 ```
 
 ## Development

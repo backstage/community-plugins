@@ -40,6 +40,7 @@ jest.mock('@backstage/core-plugin-api', () => ({
 
 jest.mock('../../hooks/', () => ({
   useRepository: () => ({
+    instance: 'default',
     repository: 'redhat-backstage-build',
     organization: 'backstage-community',
   }),

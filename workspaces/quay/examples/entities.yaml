@@ -25,6 +25,20 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: quay-multiinstance-site
+  annotations:
+    quay.io/repository-slug: 'rhdh-community/rhdh'
+    quay.io/instance: 'devel'
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guests
+  system: examples
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
   name: example-component
 spec:
   type: website

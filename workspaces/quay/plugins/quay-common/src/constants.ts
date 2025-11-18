@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-export const DOC_LINKS = {
-  AUTH_TOKEN_GUIDE:
-    'https://docs.redhat.com/en/documentation/red_hat_quay/3/html-single/red_hat_quay_api_guide/index#creating-oauth-access-token',
-  BACKEND_CONFIGURATION_GUIDE:
-    'https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-backend#app-config',
-  BACKEND_ANNOTATIONS_GUIDE:
-    'https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-backend#catalog',
-} as const;
+/**
+ * The Quay instance name used for single-instance configurations.
+ * @public
+ */
+export const QUAY_SINGLE_INSTANCE_NAME = 'default';
