@@ -40,8 +40,15 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/plugin-catalog-common": "^1.1.4",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
+    "@emotion/sheet": "^1.0.0",
+    "@material-ui/styles": "^4.11.5",
+    "@types/jest": "^29.0.0",
+    "@types/node": "^18.0.0",
+    "@types/webpack-env": "^1.18.0",
+    "csstype": "^3.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
@@ -60,6 +67,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "packageManager": "yarn@4.8.1"
+  }
 }
