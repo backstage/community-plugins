@@ -227,9 +227,9 @@ export interface Message {
   parts: Part[];
   metadata?: { [key: string]: any };
   reference_task_ids?: string[];
-  message_id: string;
-  task_id?: string;
-  context_id?: string;
+  messageId: string;
+  taskId?: string;
+  contextId?: string;
   kind: 'message';
 }
 
@@ -241,7 +241,7 @@ export interface TaskStatus {
 
 export interface Task {
   id: string;
-  context_id: string;
+  contextId: string;
   status: TaskStatus;
   history?: Message[];
   artifacts?: Artifact[];
@@ -250,8 +250,8 @@ export interface Task {
 }
 
 export interface TaskStatusUpdateEvent {
-  task_id: string;
-  context_id: string;
+  taskId: string;
+  contextId: string;
   kind: 'status-update';
   status: TaskStatus;
   final: boolean;
@@ -259,12 +259,12 @@ export interface TaskStatusUpdateEvent {
 }
 
 export interface TaskArtifactUpdateEvent {
-  task_id: string;
-  context_id: string;
+  taskId: string;
+  contextId: string;
   kind: 'artifact-update';
   artifact: Artifact;
   append?: boolean;
-  last_chunk?: boolean;
+  lastChunk?: boolean;
   metadata?: { [key: string]: any };
 }
 

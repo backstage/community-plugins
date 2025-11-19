@@ -501,6 +501,14 @@ export class ChatbotApi {
 
       // Use session contextId if provided, otherwise use internal contextId
       const contextToUse = sessionContextId || this.contextId;
+
+      console.log('🔍 CONTEXT DEBUG:', {
+        sessionContextId,
+        internalContextId: this.contextId,
+        contextToUse,
+        newContext,
+      });
+
       if (!newContext && contextToUse !== undefined) {
         sendParams.message.contextId = contextToUse;
       }
@@ -510,7 +518,7 @@ export class ChatbotApi {
 
       const task: Task = taskResult?.result as Task;
 
-      this.contextId = task.context_id;
+      this.contextId = task.contextId;
 
       // Return the full task response instead of just the text
       return task;
@@ -566,8 +574,20 @@ export class ChatbotApi {
           token,
         )) {
           // Update internal contextId from streamed events
-          if (event.kind === 'task' && event.contextId) {
-            this.contextId = event.contextId;
+          // Also check if context_id is returned (snake_case) and normalize to camelCase
+          const contextId =
+            (event as any).contextId || (event as any).context_id;
+          if (contextId) {
+            console.log('🔍 CONTEXT ID:', contextId);
+            // Ensure standard camelCase property exists for downstream consumers
+            if (!(event as any).contextId) {
+              (event as any).contextId = contextId;
+            }
+            if (event.kind === 'task') {
+              this.contextId = contextId;
+            }
+          } else {
+            console.log('🔍 NO CONTEXT ID');
           }
           yield event;
         }
@@ -631,7 +651,10 @@ export class ChatbotApi {
       const err = error as AxiosError;
       if (err?.isAxiosError) {
         throw new Error(
-          `Error submitting feedback: ${[err.message, err.cause?.message]
+          `Error submitting feedback: ${[
+            err.message,
+            (err.cause as any)?.message,
+          ]
             .filter(Boolean)
             .join(' - ')}`,
         );
@@ -646,7 +669,7 @@ export class ChatbotApi {
         throw new Error('A2A client not initialized');
       }
       const token = await this.getToken();
-      await this.client.cancelTask({ taskId }, token);
+      await this.client.cancelTask({ id: taskId }, token);
       console.log('✅ A2A cancellation sent for task:', taskId);
     } catch (error) {
       console.error('❌ Failed to send A2A cancellation:', error);

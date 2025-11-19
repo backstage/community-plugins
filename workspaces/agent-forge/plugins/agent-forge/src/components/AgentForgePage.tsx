@@ -514,7 +514,7 @@ export function AgentForgePage() {
     useState(false);
   const lastScrollPositionRef = useRef<number>(-1);
   const buttonToggleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastCollapseTimeRef = useRef<number>(0);
+  // const lastCollapseTimeRef = useRef<number>(0);
   const gracefulScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // Reference to input field for focus management
   const inputRef = useRef<HTMLInputElement>(null);
@@ -1379,7 +1379,7 @@ export function AgentForgePage() {
 
     setIsManualLoadingInProgress(true);
     setLoadedMessageCount(newCount);
-    setShowLoadMoreButton(false);
+    // setShowLoadMoreButton(false); // Keep button visible for sequential loading
 
     // Clear manual loading flag after a short delay
     setTimeout(() => {
@@ -1400,12 +1400,7 @@ export function AgentForgePage() {
       }
       lastScrollPositionRef.current = scrollTop;
 
-      const isAtTop = scrollTop < 50; // Within 50px of top
       const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // Within 100px of bottom
-
-      // Show load more button when user scrolls up and there are more messages to load
-      const totalMessages = currentSession?.messages?.length || 0;
-      const hasMoreMessages = loadedMessageCount < totalMessages;
 
       // Debounced button state changes to prevent flickering
       const debouncedButtonToggle = (shouldShow: boolean, reason: string) => {
@@ -1424,65 +1419,11 @@ export function AgentForgePage() {
         }, 50); // Small debounce delay
       };
 
-      // Don't auto-show button on scroll to prevent issues when switching sessions
-      // Users can manually scroll to trigger load if needed
-
-      // Performance optimization: Auto-collapse to default count when user scrolls to bottom
-      // This prevents DOM bloat with large message histories
-      if (
-        isAtBottom &&
-        loadedMessageCount > DEFAULT_MESSAGE_COUNT &&
-        !isManualLoadingInProgress
-      ) {
-        // Throttle auto-collapse to prevent rapid cycles (minimum 3 seconds between collapses)
-        const currentTime = Date.now();
-        const timeSinceLastCollapse = currentTime - lastCollapseTimeRef.current;
-
-        if (timeSinceLastCollapse > 3000) {
-          console.log(
-            '🔽 Auto-collapse for performance:',
-            loadedMessageCount,
-            '→',
-            DEFAULT_MESSAGE_COUNT,
-          );
-          lastCollapseTimeRef.current = currentTime;
-
-          // Capture that user was at bottom BEFORE we change DOM
-          const userWasAtBottom = isAtBottom;
-
-          setLoadedMessageCount(DEFAULT_MESSAGE_COUNT);
-          setShowLoadMoreButton(false); // Hide button since we're back to default count
-
-          // Gracefully scroll to bottom after DOM height changes to prevent jarring jumps
-          if (userWasAtBottom) {
-            // Clear any existing graceful scroll timeout
-            if (gracefulScrollTimeoutRef.current) {
-              clearTimeout(gracefulScrollTimeoutRef.current);
-            }
-
-            gracefulScrollTimeoutRef.current = setTimeout(() => {
-              const container = document.querySelector(
-                '[data-testid="messages-container"]',
-              ) as HTMLElement;
-              if (container) {
-                console.log(
-                  '📍 Graceful scroll to bottom after auto-collapse (preventing jarring jump)',
-                );
-                container.scrollTo({
-                  top: container.scrollHeight,
-                  behavior: 'smooth',
-                });
-              }
-              gracefulScrollTimeoutRef.current = null;
-            }, 100); // Small delay to let DOM update after message count change
-          }
-        } else {
-          console.log(
-            '🔽 Auto-collapse throttled - only',
-            Math.round(timeSinceLastCollapse / 1000),
-            'seconds since last collapse',
-          );
-        }
+      // Show button when user scrolls up
+      if (!isAtBottom) {
+        debouncedButtonToggle(true, 'User scrolled up - showing button');
+      } else {
+        debouncedButtonToggle(false, 'User at bottom - hiding button');
       }
     },
     [
@@ -1505,26 +1446,10 @@ export function AgentForgePage() {
     };
   }, []);
 
-  // Initialize load more button visibility on mount/session change - don't show initially
+  // Reset load more button visibility when switching sessions
   useEffect(() => {
-    if (!autoScrollEnabled && currentSession?.messages) {
-      // Don't show button on initial load, only after user scrolls up
-      const shouldShowButton = false;
-
-      if (shouldShowButton !== showLoadMoreButton) {
-        console.log(
-          '📜 Initializing Load Earlier Messages button visibility (hidden on first load):',
-          shouldShowButton,
-        );
-        setShowLoadMoreButton(shouldShowButton);
-      }
-    }
-  }, [
-    currentSession?.messages?.length,
-    loadedMessageCount,
-    isManualLoadingInProgress,
-    autoScrollEnabled,
-  ]);
+    setShowLoadMoreButton(false);
+  }, [currentSessionId]);
 
   // Load chat history from localStorage on mount (replace initial session if stored data exists)
   useEffect(() => {
