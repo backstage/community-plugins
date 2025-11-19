@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.45.1
+
+### Patch Changes
+
+- 556b381: Updated dependency `micro-memoize` to `4.2.0`.
+
 ## 1.45.0
 
 ### Minor Changes
