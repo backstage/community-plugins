@@ -12,7 +12,7 @@ on:
           - next
           - custom
       custom_version:
-        description: 'Custom Version (only used if release_line is "custom", e.g., 1.42.1)'
+        description: 'Custom Backstage version (only used if release line is "custom") to bump to'
         required: false
         type: string
       workspace_input:
