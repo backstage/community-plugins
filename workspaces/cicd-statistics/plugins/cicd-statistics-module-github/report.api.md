@@ -10,32 +10,31 @@ import { CicdStatisticsApi } from '@backstage-community/plugin-cicd-statistics';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { FetchBuildsOptions } from '@backstage-community/plugin-cicd-statistics';
-import { OAuthApi } from '@backstage/core-plugin-api';
 import { Octokit } from '@octokit/rest';
+import { ScmAuthApi } from '@backstage/integration-react';
 
 // @public
 export class CicdStatisticsApiGithub implements CicdStatisticsApi {
-  constructor(
-    githubAuthApi: OAuthApi,
-    configApi: ConfigApi,
-    cicdDefaults?: Partial<CicdDefaults>,
-  );
+  constructor(options: {
+    scmAuthApi: ScmAuthApi;
+    configApi: ConfigApi;
+    cicdDefaults?: Partial<CicdDefaults>;
+  });
   // (undocumented)
-  readonly configApi: ConfigApi;
-  // (undocumented)
-  createGithubApi(entity: Entity, scopes: string[]): Promise<GithubClient>;
+  createGithubClient(entity: Entity): Promise<GithubClient>;
   // (undocumented)
   fetchBuilds(options: FetchBuildsOptions): Promise<CicdState>;
   // (undocumented)
   getConfiguration(): Promise<Partial<CicdConfiguration>>;
 }
 
+// @public (undocumented)
+export const GITHUB_ACTIONS_ANNOTATION = 'github.com/project-slug';
+
 // @public
 export type GithubClient = {
-  api: InstanceType<typeof Octokit>;
+  octokit: InstanceType<typeof Octokit>;
   owner: string;
   repo: string;
 };
-
-// (No @packageDocumentation comment for this package)
 ```
