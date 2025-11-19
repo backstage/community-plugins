@@ -13,13 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
-import { cicdStatisticsGithubApi } from './alpha/index';
-
-/**
- * @alpha
- */
-export default createFrontendModule({
-  pluginId: 'cicd-statistics',
-  extensions: [cicdStatisticsGithubApi],
-});
+export * from './apis';

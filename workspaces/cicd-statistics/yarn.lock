@@ -1384,6 +1384,7 @@ __metadata:
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/integration": "backstage:^"
+    "@backstage/integration-react": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@octokit/rest": "npm:^21.1.1"
