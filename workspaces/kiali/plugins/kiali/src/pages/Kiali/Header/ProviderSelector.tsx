@@ -19,14 +19,14 @@ import { InputLabel, MenuItem, Select } from '@material-ui/core';
 import { default as React } from 'react';
 import { NamespaceActions } from '../../../actions';
 import { ProviderActions } from '../../../actions/ProviderAction';
-import { useHeaderBackgroundContext } from '../../../contexts/HeaderBackgroundContext';
+import { useHeaderBackground } from '../../../contexts/HeaderBackgroundContext';
 import { kialiApiRef } from '../../../services/Api';
 import { KialiAppState, KialiContext } from '../../../store';
 
 export const ProviderSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const kialiClient = useApi(kialiApiRef);
-  const { hasBackgroundImage } = useHeaderBackgroundContext();
+  const hasBackgroundImage = useHeaderBackground();
 
   const handleChange = async (event: any) => {
     const {

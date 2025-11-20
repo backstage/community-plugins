@@ -22,12 +22,12 @@ import {
 } from '@material-ui/core';
 import { default as React } from 'react';
 import { NamespaceActions } from '../../../actions';
-import { useHeaderBackgroundContext } from '../../../contexts/HeaderBackgroundContext';
+import { useHeaderBackground } from '../../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../../store';
 
 export const NamespaceSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
-  const { hasBackgroundImage } = useHeaderBackgroundContext();
+  const hasBackgroundImage = useHeaderBackground();
 
   const allNamespaces = kialiState.namespaces.items || [];
   const activeNamespaceNames = kialiState.namespaces.activeNamespaces.map(
