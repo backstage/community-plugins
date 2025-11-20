@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.13.1
+
+### Patch Changes
+
+- 07c7478: Updated dependency `@azure/arm-appservice` to `^17.0.0`.
+
 ## 0.13.0
 
 ### Minor Changes
