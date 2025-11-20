@@ -31,7 +31,9 @@ async function main(_args) {
 
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('yarn community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
   );
 
   // Creates a dropdown issue template field for selecting a workspace

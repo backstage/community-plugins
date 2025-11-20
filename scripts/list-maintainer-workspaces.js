@@ -32,7 +32,9 @@ async function main(args) {
 
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('yarn community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
   );
 
   const maintainerWorkspaces = [];

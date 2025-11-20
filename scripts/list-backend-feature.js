@@ -37,7 +37,9 @@ async function main(args) {
 
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('npx community-cli workspace list --json').toString(),
+    execSync('npx community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
   );
 
   // Loop through workspaces

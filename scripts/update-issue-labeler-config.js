@@ -24,10 +24,11 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const execAsync = promisify(exec);
 
-async function getMaintainerWorkspaces() {
+async function getMaintainerWorkspaces(rootPath) {
   try {
     const { stdout } = await execAsync(
       'node scripts/list-maintainer-workspaces.js --json',
+      { cwd: rootPath },
     );
     return JSON.parse(stdout.trim());
   } catch (error) {
@@ -42,9 +43,11 @@ async function main() {
   const githubPrLabelerConfigPath = resolve(rootPath, '.github/pr-labeler.yml');
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('yarn community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
   );
-  const maintainerWorkspaces = await getMaintainerWorkspaces();
+  const maintainerWorkspaces = await getMaintainerWorkspaces(rootPath);
 
   // Generate issue labeler configuration (based on issue template selection)
   const issueLabelMappings = [
