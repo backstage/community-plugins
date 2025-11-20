@@ -18,3 +18,4 @@ export * from './entityCards';
 export * from './navItems';
 export * from './pages';
 export * from './search';
+export * from './banner';
