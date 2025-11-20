@@ -20,7 +20,7 @@ import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import {
   HeaderBackgroundProvider,
-  useHeaderBackgroundContext,
+  useHeaderBackground,
 } from '../../../contexts/HeaderBackgroundContext';
 import { useServerConfig } from '../../../hooks/useServerConfig';
 import { KialiAppState, KialiContext } from '../../../store';
@@ -31,7 +31,7 @@ import { ProviderSelector } from './ProviderSelector';
 const KialiHeaderContent = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const { serverConfig } = useServerConfig();
-  const { hasBackgroundImage } = useHeaderBackgroundContext();
+  const hasBackgroundImage = useHeaderBackground();
 
   // Get home cluster from server config
   const homeCluster = React.useMemo(() => {

@@ -17,13 +17,13 @@ import { Button } from '@material-ui/core';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { AboutUIModal } from '../../../components/About/AboutUIModal';
-import { useHeaderBackgroundContext } from '../../../contexts/HeaderBackgroundContext';
+import { useHeaderBackground } from '../../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../../store';
 
 export const HelpKiali = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [showAbout, setShowAbout] = React.useState<boolean>(false);
-  const { hasBackgroundImage } = useHeaderBackgroundContext();
+  const hasBackgroundImage = useHeaderBackground();
 
   const openAbout = () => {
     setShowAbout(true);

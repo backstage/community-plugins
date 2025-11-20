@@ -21,7 +21,7 @@ import {
 import { Badge, Button, Drawer } from '@material-ui/core';
 import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
-import { useHeaderBackgroundContext } from '../../contexts/HeaderBackgroundContext';
+import { useHeaderBackground } from '../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { AlertDrawer } from './AlertDrawer';
@@ -92,7 +92,7 @@ export const MessageCenter = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [isOpen, toggleDrawer] = React.useState(false);
   const messageCenterStatus = calculateMessageStatus(kialiState);
-  const { hasBackgroundImage } = useHeaderBackgroundContext();
+  const hasBackgroundImage = useHeaderBackground();
   /*
   const onDismiss = (message: NotificationMessage, userDismissed: boolean) => {
     if (userDismissed) {
