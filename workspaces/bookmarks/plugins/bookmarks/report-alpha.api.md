@@ -8,8 +8,8 @@ import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { TranslationMessages } from '@backstage/frontend-plugin-api';
@@ -17,7 +17,7 @@ import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
 const bookmarksPlugin: OverridableFrontendPlugin<    {}, {}, {
-"entity-content:bookmarks": ExtensionDefinition<    {
+"entity-content:bookmarks": OverridableExtensionDefinition<    {
 kind: "entity-content";
 name: undefined;
 config: {
@@ -54,7 +54,7 @@ routeRef?: RouteRef;
 filter?: string | EntityPredicate | ((entity: Entity) => boolean);
 };
 }>;
-"translation:bookmarks/bookmarksTranslations": ExtensionDefinition<    {
+"translation:bookmarks/bookmarksTranslations": OverridableExtensionDefinition<    {
 kind: "translation";
 name: "bookmarksTranslations";
 config: {};
