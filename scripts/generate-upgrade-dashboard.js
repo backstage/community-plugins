@@ -39,7 +39,7 @@ async function getLatestBackstageVersion() {
 async function getWorkspaceVersions() {
   // Get workspaces using community-cli
   const workspaceNames = JSON.parse(
-    execSync('npx community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json').toString(),
   );
   const workspacesDir = path.join(__dirname, '..', 'workspaces');
   const workspaces = [];

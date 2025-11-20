@@ -32,7 +32,7 @@ async function main(args) {
 
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('npx community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json').toString(),
   );
 
   // Loop through workspaces

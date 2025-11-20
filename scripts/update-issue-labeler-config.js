@@ -42,7 +42,7 @@ async function main() {
   const githubPrLabelerConfigPath = resolve(rootPath, '.github/pr-labeler.yml');
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('npx community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json').toString(),
   );
   const maintainerWorkspaces = await getMaintainerWorkspaces();
 

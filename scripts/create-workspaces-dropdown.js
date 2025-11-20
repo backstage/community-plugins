@@ -31,7 +31,7 @@ async function main(_args) {
 
   // Get workspaces using community-cli
   const workspaces = JSON.parse(
-    execSync('npx community-cli workspace list --json').toString(),
+    execSync('yarn community-cli workspace list --json').toString(),
   );
 
   // Creates a dropdown issue template field for selecting a workspace

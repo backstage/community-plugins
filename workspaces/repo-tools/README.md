@@ -21,16 +21,16 @@ yarn community-cli <command>
 
 ```bash
 # List workspaces
-npx community-cli workspace list
+yarn community-cli workspace list
 
 # List workspaces as JSON
-npx community-cli workspace list --json
+yarn community-cli workspace list --json
 
 # Create new workspace
-npx community-cli workspace create
+yarn community-cli workspace create
 
 # Get help
-npx community-cli --help
+yarn community-cli --help
 ```
 
 ## Development
