@@ -1,5 +1,13 @@
 # @backstage-community/plugin-announcements
 
+## 0.16.1
+
+### Patch Changes
+
+- 9987329: The success message shown when an announcement is created is now transient
+- ffb26dc: Fixed routing issue where some links were incorrectly redirecting to `/announcements/admin` instead of `/announcements`. Changed `<AnnouncementsAdminPortal />` from a routable extension to a component extension to resolve the mount point conflict with the main `<AnnouncementsPage />`.
+- f39d97f: Added announcement banner as app root element for the new frontend system.
+
 ## 0.16.0
 
 ### Minor Changes

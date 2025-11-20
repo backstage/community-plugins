@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.16.0
+
+### Minor Changes
+
+- fdec0dd: Remove unused dependencies and update `uuid` to v13.
+
 ## 0.15.1
 
 ### Patch Changes
