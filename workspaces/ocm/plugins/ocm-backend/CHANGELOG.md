@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.11.1
+
+### Patch Changes
+
+- 636525d: Updated dependency `@types/express` to `4.17.25`.
+
 ## 5.11.0
 
 ### Minor Changes
