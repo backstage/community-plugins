@@ -17,15 +17,19 @@ import { Button } from '@material-ui/core';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { AboutUIModal } from '../../../components/About/AboutUIModal';
+import { useHeaderBackgroundContext } from '../../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../../store';
 
-export const HelpKiali = (props: { color?: string }) => {
+export const HelpKiali = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [showAbout, setShowAbout] = React.useState<boolean>(false);
+  const { hasBackgroundImage } = useHeaderBackgroundContext();
 
   const openAbout = () => {
     setShowAbout(true);
   };
+
+  const iconColor = hasBackgroundImage ? 'white' : undefined;
 
   return (
     <>
@@ -34,7 +38,7 @@ export const HelpKiali = (props: { color?: string }) => {
         style={{ marginTop: '-5px' }}
         data-test="help-button"
       >
-        <QuestionCircleIcon color={`${props.color}`} />
+        <QuestionCircleIcon color={iconColor} />
       </Button>
       <AboutUIModal
         showModal={showAbout}
