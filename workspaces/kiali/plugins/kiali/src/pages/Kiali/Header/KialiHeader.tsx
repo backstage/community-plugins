@@ -18,15 +18,20 @@ import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
+import {
+  HeaderBackgroundProvider,
+  useHeaderBackgroundContext,
+} from '../../../contexts/HeaderBackgroundContext';
 import { useServerConfig } from '../../../hooks/useServerConfig';
 import { KialiAppState, KialiContext } from '../../../store';
 import { HelpKiali } from './HelpKiali';
 import { NamespaceSelector } from './NamespaceSelector';
 import { ProviderSelector } from './ProviderSelector';
 
-export const KialiHeader = () => {
+const KialiHeaderContent = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const { serverConfig } = useServerConfig();
+  const { hasBackgroundImage } = useHeaderBackgroundContext();
 
   // Get home cluster from server config
   const homeCluster = React.useMemo(() => {
@@ -35,6 +40,9 @@ export const KialiHeader = () => {
       cluster => cluster.isKialiHome,
     );
   }, [serverConfig]);
+
+  const textColor = hasBackgroundImage ? 'white' : undefined;
+  const iconColor = hasBackgroundImage ? 'white' : undefined;
 
   return (
     <Header
@@ -50,34 +58,42 @@ export const KialiHeader = () => {
         title={
           <div>Kiali home cluster: {homeCluster?.name || 'Not configured'}</div>
         }
-        style={{ marginTop: '10px', color: 'white' }}
+        style={{ marginTop: '10px' }}
       >
         <Chip
           variant="outlined"
-          icon={<ClusterIcon style={{ color: 'white' }} />}
+          icon={<ClusterIcon style={{ color: iconColor }} />}
           label={homeCluster?.name || 'Home Cluster'}
           data-test="home-cluster"
-          style={{ color: 'white', borderColor: 'white' }}
+          style={{ color: textColor, borderColor: textColor }}
         />
       </Tooltip>
-      <HelpKiali color="black" />
-      <MessageCenter color="black" />
+      <HelpKiali />
+      <MessageCenter />
       {kialiState.authentication.session && (
         <div
           style={{
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            color: 'white',
+            color: textColor,
           }}
           data-test="user"
         >
-          <Typography style={{ margin: '10px' }}>
+          <Typography style={{ margin: '10px', color: textColor }}>
             <b>User : </b>
             {kialiState.authentication.session.username || 'anonymous'}
           </Typography>
         </div>
       )}
     </Header>
+  );
+};
+
+export const KialiHeader = () => {
+  return (
+    <HeaderBackgroundProvider>
+      <KialiHeaderContent />
+    </HeaderBackgroundProvider>
   );
 };

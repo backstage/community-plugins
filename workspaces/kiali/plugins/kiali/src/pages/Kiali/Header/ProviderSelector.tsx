@@ -19,12 +19,15 @@ import { InputLabel, MenuItem, Select } from '@material-ui/core';
 import { default as React } from 'react';
 import { NamespaceActions } from '../../../actions';
 import { ProviderActions } from '../../../actions/ProviderAction';
+import { useHeaderBackgroundContext } from '../../../contexts/HeaderBackgroundContext';
 import { kialiApiRef } from '../../../services/Api';
 import { KialiAppState, KialiContext } from '../../../store';
 
 export const ProviderSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const kialiClient = useApi(kialiApiRef);
+  const { hasBackgroundImage } = useHeaderBackgroundContext();
+
   const handleChange = async (event: any) => {
     const {
       target: { value },
@@ -62,17 +65,19 @@ export const ProviderSelector = (props: { page?: boolean }) => {
       },
     },
   };
+  const textColor = hasBackgroundImage ? 'white' : undefined;
+
   return (
     <div
       style={{
         height: '50px',
         marginTop: props.page ? '20px' : '0px',
-        color: 'white',
+        color: textColor,
       }}
     >
       <InputLabel
         id="demo-multiple-checkbox-label"
-        style={{ color: props.page ? 'white' : undefined }}
+        style={{ color: textColor }}
       >
         Provider:
       </InputLabel>
@@ -81,7 +86,7 @@ export const ProviderSelector = (props: { page?: boolean }) => {
         onChange={handleChange}
         MenuProps={MenuProps}
         data-test="provider-selector"
-        style={{ color: 'white' }}
+        style={{ color: textColor }}
       >
         {(kialiState.providers.items || []).map(prov => (
           <MenuItem key={prov} value={prov}>

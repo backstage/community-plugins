@@ -22,10 +22,12 @@ import {
 } from '@material-ui/core';
 import { default as React } from 'react';
 import { NamespaceActions } from '../../../actions';
+import { useHeaderBackgroundContext } from '../../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../../store';
 
 export const NamespaceSelector = (props: { page?: boolean }) => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { hasBackgroundImage } = useHeaderBackgroundContext();
 
   const allNamespaces = kialiState.namespaces.items || [];
   const activeNamespaceNames = kialiState.namespaces.activeNamespaces.map(
@@ -114,18 +116,20 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
       },
     },
   };
+  const textColor = hasBackgroundImage ? 'white' : undefined;
+
   return (
     <div
       style={{
         height: '50px',
         width: '200px',
         marginTop: props.page ? '20px' : '0px',
-        color: 'white',
+        color: textColor,
       }}
     >
       <InputLabel
         id="demo-multiple-checkbox-label"
-        style={{ color: props.page ? 'white' : undefined }}
+        style={{ color: textColor }}
       >
         Namespaces Selected
       </InputLabel>
@@ -138,7 +142,7 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
         }
         MenuProps={MenuProps}
         data-test="namespace-selector"
-        style={{ color: 'white', maxWidth: '600px', minWidth: '200px' }}
+        style={{ maxWidth: '600px', minWidth: '200px', color: textColor }}
       >
         {allNamespaces.length > 0 && (
           <MenuItem
