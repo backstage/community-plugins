@@ -100,7 +100,7 @@ export async function getGitCredentials(
 ) {
   const credentialProvider =
     DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
-  const credentials = await credentialProvider.getCredentials({ url });
+  const credentials = await credentialProvider.getCredentials({ url: url });
 
   if (token) {
     return { username: 'not-empty', password: token };
