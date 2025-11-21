@@ -61,6 +61,12 @@ function isNotFoundError(error: any): boolean {
   return error?.response?.status === 404;
 }
 
+function isFolderPathError(error: any): boolean {
+  return (
+    error?.response?.status === 400 && error?.cause?.message?.includes('folder')
+  );
+}
+
 const ReadmeCardError = ({ error }: ErrorProps) => {
   if (isNotFoundError(error)) {
     return (
@@ -77,6 +83,15 @@ const ReadmeCardError = ({ error }: ErrorProps) => {
             Read more
           </Button>
         }
+      />
+    );
+  }
+  if (isFolderPathError(error)) {
+    return (
+      <EmptyState
+        title="Invalid README path configuration"
+        missing="info"
+        description="The dev.azure.com/readme-path annotation must point to a specific markdown file (e.g., /README.md or /docs/README.md), not a folder. Please update your entity configuration."
       />
     );
   }

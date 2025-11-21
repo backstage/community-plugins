@@ -37,6 +37,7 @@ import {
 } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-common';
 import { mockServices } from '@backstage/backend-test-utils';
+import { InputError } from '@backstage/errors';
 
 describe('AzureDevOpsApi', () => {
   beforeEach(() => {
@@ -783,5 +784,64 @@ describe('AzureDevOpsApi', () => {
       'Log section - Step 3',
       '====================',
     ]);
+  });
+
+  it('should throw error when readme path points to a folder', async () => {
+    const mockUrlReaderWithFolder: UrlReaderService = {
+      readUrl: () =>
+        Promise.resolve({
+          buffer: async () => Buffer.from('{"isFolder":true,"path":"/docs"}'),
+          etag: 'buffer',
+          stream: jest.fn(),
+        }),
+      readTree: jest.fn(),
+      search: jest.fn(),
+    };
+
+    const api = AzureDevOpsApi.fromConfig(mockConfig, {
+      logger: mockLogger,
+      urlReader: mockUrlReaderWithFolder,
+    });
+
+    await expect(
+      api.getReadme('dev.azure.com', 'org', 'project', 'repo', '/docs'),
+    ).rejects.toThrow(InputError);
+
+    await expect(
+      api.getReadme('dev.azure.com', 'org', 'project', 'repo', '/docs'),
+    ).rejects.toThrow(
+      'The path "/docs" is a folder, not a file. Please specify a markdown file path (e.g., /README.md or /docs/README.md).',
+    );
+  });
+
+  it('should successfully get readme when path points to a file', async () => {
+    const mockUrlReaderWithMarkdown: UrlReaderService = {
+      readUrl: () =>
+        Promise.resolve({
+          buffer: async () =>
+            Buffer.from('# My README\n\nThis is a readme file.'),
+          etag: 'buffer',
+          stream: jest.fn(),
+        }),
+      readTree: jest.fn(),
+      search: jest.fn(),
+    };
+
+    const api = AzureDevOpsApi.fromConfig(mockConfig, {
+      logger: mockLogger,
+      urlReader: mockUrlReaderWithMarkdown,
+    });
+
+    const result = await api.getReadme(
+      'dev.azure.com',
+      'org',
+      'project',
+      'repo',
+      '/README.md',
+    );
+
+    expect(result).toHaveProperty('url');
+    expect(result).toHaveProperty('content');
+    expect(result.content).toContain('# My README');
   });
 });
