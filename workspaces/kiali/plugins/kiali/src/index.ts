@@ -16,10 +16,11 @@
 export {
   kialiPlugin,
   EntityKialiContent,
-  EntityKialiContentProps,
   KialiPage,
   EntityKialiResourcesCard,
   EntityKialiGraphCard,
 } from './plugin';
+
+export type { EntityKialiContentProps } from './plugin';
 
 export { default as KialiIcon } from '@mui/icons-material/Troubleshoot';
