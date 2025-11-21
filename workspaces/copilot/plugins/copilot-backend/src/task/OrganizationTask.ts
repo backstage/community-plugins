@@ -18,6 +18,7 @@ import {
   CopilotMetrics,
 } from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
+import { formatDate } from '../utils/dateUtils';
 import {
   filterBaseMetrics,
   filterNewMetricsV2,
@@ -55,7 +56,9 @@ export async function discoverOrganizationMetrics({
     );
 
     const lastDay = await db.getMostRecentDayFromMetricsV2(type);
-    logger.info(`[discoverOrganizationMetrics] Found last day: ${lastDay}`);
+    logger.info(
+      `[discoverOrganizationMetrics] Found last day: ${formatDate(lastDay)}`,
+    );
 
     const newMetrics: CopilotMetrics[] = filterNewMetricsV2(
       copilotMetrics,
