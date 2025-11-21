@@ -2,4 +2,4 @@
 '@backstage-community/plugins': patch
 ---
 
-fix(jenkins):Fixed docs issue
+Fixed  typos in `README` and code
