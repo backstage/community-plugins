@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios from 'axios';
-import axiosRetry from 'axios-retry';
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
-
-export const getAxiosClient = (baseURL: string, authHeaderValue: string) => {
-  const client = axios.create({
-    baseURL,
-    auth: { username: '', password: authHeaderValue },
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  return client;
-};
+import { ResponseError } from '@backstage/errors';
 
 export const buildBaseUrl = (
   baseUrl: string,
@@ -40,3 +26,29 @@ export const buildBaseUrl = (
 
 export const convertStringToBase64 = (stringToConvert: string): string =>
   Buffer.from(stringToConvert).toString('base64');
+
+export async function fetchWithRetry(
+  url: Parameters<typeof fetch>[0],
+  options: Parameters<typeof fetch>[1] = {},
+  retries = 3,
+  backoff = 300,
+) {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      if (retries > 0) {
+        await new Promise(res => setTimeout(res, backoff));
+        return fetchWithRetry(url, options, retries - 1, backoff * 2); // exponential backoff
+      }
+      throw await ResponseError.fromResponse(response);
+    }
+    return response;
+  } catch (err) {
+    if (retries > 0) {
+      console.warn(`Network error, retrying... (${retries} left)`);
+      await new Promise(res => setTimeout(res, backoff));
+      return fetchWithRetry(url, options, retries - 1, backoff * 2);
+    }
+    throw err;
+  }
+}

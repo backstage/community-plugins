@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-import { AxiosInstance } from 'axios';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { WikiPageDetail, WikiPage } from '../types';
-import { getAxiosClient, buildBaseUrl } from '../utils';
+import { buildBaseUrl, fetchWithRetry } from '../utils';
 
 export class AzureDevOpsWikiReader {
   private readonly logger: LoggerService;
-  private readonly axiosClient: AxiosInstance;
   private readonly organization: string;
   private readonly project: string;
   private readonly wikiIdentifier: string;
   public titleSuffix?: string;
   constructor(
-    baseUrl: string,
+    private readonly baseUrl: string,
     organization: string,
     project: string,
-    token: string,
+    private readonly token: string,
     wikiIdentifier: string,
     logger: LoggerService,
     titleSuffix?: string,
@@ -40,15 +38,6 @@ export class AzureDevOpsWikiReader {
     this.organization = organization;
     this.project = project;
     this.wikiIdentifier = wikiIdentifier;
-
-    const builtUrl = buildBaseUrl(
-      baseUrl,
-      organization,
-      project,
-      wikiIdentifier,
-    );
-
-    this.axiosClient = getAxiosClient(builtUrl, token);
   }
 
   getListOfAllWikiPages = async () => {
@@ -64,16 +53,23 @@ export class AzureDevOpsWikiReader {
     this.logger.info(`Reading ADO wiki pages from wiki ${this.wikiIdentifier}`);
 
     while (hasMorePages) {
-      const body: any = continuationToken !== null ? { continuationToken } : {};
+      const body = continuationToken !== null ? { continuationToken } : {};
 
-      const response = await this.axiosClient.post(
-        `/pagesBatch?api-version=6.0-preview.1`,
-        JSON.stringify(body),
+      const response = await this.fetch(
+        'pagesBatch?api-version=6.0-preview.1',
+        {
+          method: 'POST',
+          body: JSON.stringify(body),
+        },
       );
 
-      wikiPageDetails.push(...response.data.value);
+      const data = (await response.json()) as { value: WikiPageDetail[] };
 
-      continuationToken = response.headers['x-ms-continuationtoken'];
+      for (const item of data.value) {
+        wikiPageDetails.push(item);
+      }
+
+      continuationToken = response.headers.get('x-ms-continuationtoken');
 
       if (!continuationToken) {
         hasMorePages = false;
@@ -86,14 +82,12 @@ export class AzureDevOpsWikiReader {
     return wikiPageDetails;
   };
 
-  readSingleWikiPage = async (id: number): Promise<WikiPage | undefined> => {
+  readSingleWikiPage = async (id: number): Promise<WikiPage> => {
     let rawPageContent;
     try {
-      const pageResponse = await this.axiosClient.get(
-        `/pages/${id}?includeContent=true`,
-      );
+      const pageResponse = await this.fetch(`/pages/${id}?includeContent=true`);
 
-      rawPageContent = pageResponse.data;
+      rawPageContent = await pageResponse.json();
       return rawPageContent;
     } catch (err) {
       this.logger.error(
@@ -101,5 +95,22 @@ export class AzureDevOpsWikiReader {
       );
       throw err;
     }
+  };
+
+  fetch: typeof fetchWithRetry = async (url, options) => {
+    const credentials = btoa(`:${this.token}`);
+
+    return fetchWithRetry(
+      `${buildBaseUrl(
+        this.baseUrl,
+        this.organization,
+        this.project,
+        this.wikiIdentifier,
+      )}${url}`,
+      {
+        ...options,
+        headers: { ...options?.headers, Authorization: `Basic ${credentials}` },
+      },
+    );
   };
 }
