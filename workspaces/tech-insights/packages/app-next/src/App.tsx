@@ -13,9 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@backstage/cli/asset-types';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import '@backstage/ui/css/styles.css';
+import { createApp } from '@backstage/frontend-defaults';
+import {
+  createFrontendModule,
+  PageBlueprint,
+} from '@backstage/frontend-plugin-api';
+import { Navigate } from 'react-router';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+const homePageExtension = PageBlueprint.make({
+  name: 'homePage',
+  params: {
+    path: '/',
+    loader: () => Promise.resolve(<Navigate to="catalog" />),
+  },
+});
+
+export const app = createApp({
+  features: [
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [homePageExtension],
+    }),
+  ],
+});
+
+export default app.createRoot();

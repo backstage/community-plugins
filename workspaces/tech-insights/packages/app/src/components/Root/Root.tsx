@@ -41,6 +41,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
+import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -95,6 +96,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
+      <SidebarDivider />
+      <NotificationsSidebarItem />
       <SidebarDivider />
       <SidebarGroup
         label="Settings"

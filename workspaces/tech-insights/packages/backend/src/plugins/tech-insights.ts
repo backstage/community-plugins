@@ -29,6 +29,11 @@ export const checks = [
     description:
       'Verifies that a Group has been set as the owner for this entity',
     factIds: ['entityOwnershipFactRetriever'],
+    metadata: {
+      category: 'Ownership',
+      rank: 1,
+      solution: 'Set a Group as the owner of the entity',
+    },
     rule: {
       conditions: {
         all: [
