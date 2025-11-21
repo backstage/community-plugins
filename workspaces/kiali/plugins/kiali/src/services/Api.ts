@@ -170,9 +170,9 @@ export interface KialiApi {
     cluster?: string,
   ): Promise<IstioConfigList>;
   getNamespaceMetrics(
-    namespace: string,
+    namespaces: string,
     params: IstioMetricsOptions,
-  ): Promise<Readonly<IstioMetricsMap>>;
+  ): Promise<Map<string, Readonly<IstioMetricsMap>>>;
   getIstioStatus(cluster?: string): Promise<ComponentStatus[]>;
   getIstioCertsInfo(
     namespaces: string,
@@ -383,10 +383,10 @@ export class KialiApiClient implements KialiApi {
     for (const key in queryParams) {
       if (Array.isArray(queryParams[key])) {
         for (let i = 0; i < queryParams[key].length; i++) {
-          params += `${key}[]=${queryParams[key]}&`;
+          params += `${key}[]=${encodeURIComponent(queryParams[key][i])}&`;
         }
       } else {
-        params += `${key}=${queryParams[key]}&`;
+        params += `${key}=${encodeURIComponent(queryParams[key])}&`;
       }
     }
     return params.slice(0, -1);
@@ -720,15 +720,42 @@ export class KialiApiClient implements KialiApi {
   };
 
   getNamespaceMetrics = (
-    namespace: string,
+    namespaces: string,
     params: IstioMetricsOptions,
-  ): Promise<Readonly<IstioMetricsMap>> => {
-    return this.newRequest<Readonly<IstioMetricsMap>>(
+  ): Promise<Map<string, Readonly<IstioMetricsMap>>> => {
+    const queryParams: any = {
+      ...params,
+      namespaces: namespaces,
+    };
+    // Only include includeAmbient if it's explicitly set to true
+    if (params.includeAmbient === true) {
+      queryParams.includeAmbient = true;
+    }
+    // Ensure filters is an array for customParams formatting
+    if (queryParams.filters && !Array.isArray(queryParams.filters)) {
+      queryParams.filters = [queryParams.filters];
+    }
+    return this.newRequest<Map<string, Readonly<IstioMetricsMap>>>(
       HTTP_VERBS.GET,
-      urls.namespaceMetrics(namespace),
-      params,
+      urls.clustersMetrics(),
+      queryParams,
       {},
-    ).then(resp => resp);
+      true,
+      true, // customParams to format filters[] correctly
+    ).then(resp => {
+      // Convert response to Map if it's not already
+      if (resp instanceof Map) {
+        return resp;
+      }
+      // If response is an object, convert it to Map
+      const metricsMap = new Map<string, Readonly<IstioMetricsMap>>();
+      if (typeof resp === 'object' && resp !== null) {
+        Object.entries(resp).forEach(([namespace, metrics]) => {
+          metricsMap.set(namespace, metrics as Readonly<IstioMetricsMap>);
+        });
+      }
+      return metricsMap;
+    });
   };
 
   getIstioStatus = (cluster?: string): Promise<ComponentStatus[]> => {
