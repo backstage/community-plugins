@@ -96,11 +96,9 @@ export const AdrReader = (props: {
           value?.data && (
             <AdrMarkdownContent
               content={adrContent}
-              urlTransform={(url: string) => {
-                if (url.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i)) {
-                  return `${backendUrl}/image?url=${url}`;
-                }
-                return url;
+              linkTarget="_blank"
+              transformImageUri={href => {
+                return `${backendUrl}/image?url=${href}`;
               }}
             />
           )}

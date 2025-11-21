@@ -67,8 +67,10 @@ const useStyles = makeStyles(
 export type AdrMarkdownContentProps = {
   /** The markdown content to render */
   content: string;
-  /** Function to transform all URLs */
-  urlTransform?: (url: string) => string;
+  /** Function to transform image URLs */
+  transformImageUri?: (src: string) => string;
+  /** Target attribute for links (e.g., '_blank') */
+  linkTarget?: string;
 };
 
 /**
@@ -84,7 +86,8 @@ export type AdrMarkdownContentProps = {
  */
 export const AdrMarkdownContent = ({
   content,
-  urlTransform,
+  transformImageUri,
+  linkTarget,
 }: AdrMarkdownContentProps) => {
   const classes = useStyles();
   const mermaid = useMermaid();
@@ -100,7 +103,14 @@ export const AdrMarkdownContent = ({
       <ReactMarkdown
         remarkPlugins={[gfm]}
         rehypePlugins={[[rehypeMermaid, { strategy: 'pre-mermaid' }]]}
-        urlTransform={urlTransform}
+        urlTransform={transformImageUri}
+        components={{
+          a: ({ node, children, ...props }) => (
+            <a {...props} target={linkTarget || props.target}>
+              {children}
+            </a>
+          ),
+        }}
       >
         {content}
       </ReactMarkdown>

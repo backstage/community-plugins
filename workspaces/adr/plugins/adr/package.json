@@ -56,7 +56,6 @@
     "@backstage/core-compat-api": "^0.5.3",
     "@backstage/core-components": "^0.18.2",
     "@backstage/core-plugin-api": "^1.11.1",
-    "@backstage/errors": "^1.2.7",
     "@backstage/frontend-plugin-api": "^0.12.1",
     "@backstage/integration-react": "^1.2.11",
     "@backstage/plugin-auth-react": "^0.1.20",
@@ -80,6 +79,7 @@
     "@testing-library/react": "^15.0.0",
     "@types/lodash": "^4.14.151",
     "@types/react-dom": "^18.2.19",
+    "playwright": "^1.48.2",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"

@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * Type declarations for rehype-mermaid plugin.
+ *
+ * This declaration is needed because while the rehype-mermaid package
+ * includes TypeScript type definitions, it doesn't declare them in its
+ * package.json "types" field, preventing TypeScript from automatically
+ * discovering them. We manually re-export the types from the distribution
+ * files to provide type safety when using this plugin with TypeScript.
+ */
 declare module 'rehype-mermaid' {
   import type { Plugin } from 'unified';
 
   export * from 'rehype-mermaid/dist/rehype-mermaid';
-  import def from 'rehype-mermaid/dist/rehype-mermaid';
 
   const plugin: Plugin<[Record<string, unknown>?]>;
   export default plugin;
