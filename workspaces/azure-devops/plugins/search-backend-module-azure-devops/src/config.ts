@@ -19,7 +19,6 @@ import {
   SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import { InputError } from '@backstage/errors';
 import { CONFIG_SECTION_NAME } from './types';
 
 export const defaults = {
@@ -39,14 +38,8 @@ export function readScheduleConfigOptions(
   if (config) {
     const scheduleConfig = config.getOptionalConfig('schedule');
     if (scheduleConfig) {
-      try {
-        schedule =
-          readSchedulerServiceTaskScheduleDefinitionFromConfig(scheduleConfig);
-      } catch (error) {
-        throw new InputError(
-          `Invalid schedule at ${CONFIG_SECTION_NAME}, ${error}`,
-        );
-      }
+      schedule =
+        readSchedulerServiceTaskScheduleDefinitionFromConfig(scheduleConfig);
     }
   }
 
