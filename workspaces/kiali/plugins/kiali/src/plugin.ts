@@ -26,6 +26,11 @@ import { KialiApiClient, kialiApiRef } from './services/Api';
 import '@patternfly/patternfly/patternfly.css';
 import { pluginId } from '@backstage-community/plugin-kiali-common';
 
+/**
+ * Kiali plugin
+ *
+ * @public
+ */
 export const kialiPlugin = createPlugin({
   id: pluginId,
   routes: {
@@ -46,6 +51,11 @@ export const kialiPlugin = createPlugin({
   ],
 });
 
+/**
+ * Kiali page
+ *
+ * @public
+ */
 export const KialiPage = kialiPlugin.provide(
   createRoutableExtension({
     name: 'KialiPage',
@@ -54,6 +64,11 @@ export const KialiPage = kialiPlugin.provide(
   }),
 );
 
+/**
+ * Entity Kiali resources card
+ *
+ * @public
+ */
 export const EntityKialiResourcesCard = kialiPlugin.provide(
   createComponentExtension({
     name: 'EntityKialiResourcesCard',
@@ -66,6 +81,11 @@ export const EntityKialiResourcesCard = kialiPlugin.provide(
   }),
 );
 
+/**
+ * Entity Kiali graph card
+ *
+ * @public
+ */
 export const EntityKialiGraphCard = kialiPlugin.provide(
   createComponentExtension({
     name: 'EntityKialiGraphCard',
@@ -77,8 +97,9 @@ export const EntityKialiGraphCard = kialiPlugin.provide(
     },
   }),
 );
+
 /**
- * Props of EntityExampleComponent
+ * Props of EntityKialiContent
  *
  * @public
  */
@@ -89,6 +110,11 @@ export type EntityKialiContentProps = {
   refreshIntervalMs?: number;
 };
 
+/**
+ * Entity Kiali content
+ *
+ * @public
+ */
 export const EntityKialiContent: (
   props: EntityKialiContentProps,
 ) => JSX.Element = kialiPlugin.provide(
