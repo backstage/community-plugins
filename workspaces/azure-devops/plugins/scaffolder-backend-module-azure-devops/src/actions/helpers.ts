@@ -15,19 +15,19 @@
  */
 
 import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  WebApi,
+  getPersonalAccessTokenHandler,
+  getBearerHandler,
+} from 'azure-devops-node-api';
+import { IGitApi } from 'azure-devops-node-api/GitApi';
+import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { InputError } from '@backstage/errors';
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
 import {
   DefaultAzureDevOpsCredentialsProvider,
   ScmIntegrationRegistry,
 } from '@backstage/integration';
-import {
-  WebApi,
-  getBearerHandler,
-  getPersonalAccessTokenHandler,
-} from 'azure-devops-node-api';
-import { IGitApi } from 'azure-devops-node-api/GitApi';
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
-import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
 
 export async function createADOPullRequest({
   gitPullRequestToCreate,
