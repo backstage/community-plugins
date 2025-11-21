@@ -7,8 +7,8 @@ import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { TranslationMessages } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
@@ -30,7 +30,7 @@ export const entityNpmReleaseTableCard: any;
 export { isNpmAvailable };
 
 // @alpha
-export const npmBackendApi: ExtensionDefinition<{
+export const npmBackendApi: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'npmBackendApi';
   config: {};
@@ -47,7 +47,7 @@ export const npmBackendApi: ExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const npmTranslation: ExtensionDefinition<{
+export const npmTranslation: OverridableExtensionDefinition<{
   kind: 'translation';
   name: 'npmTranslation';
   config: {};
