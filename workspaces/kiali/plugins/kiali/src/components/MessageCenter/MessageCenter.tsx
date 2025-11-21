@@ -21,6 +21,7 @@ import {
 import { Badge, Button, Drawer } from '@material-ui/core';
 import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
+import { useHeaderBackground } from '../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { AlertDrawer } from './AlertDrawer';
@@ -87,10 +88,11 @@ const calculateMessageStatus = (state: KialiAppState) => {
     );
 };
 
-export const MessageCenter = (props: { color?: string }) => {
+export const MessageCenter = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [isOpen, toggleDrawer] = React.useState(false);
   const messageCenterStatus = calculateMessageStatus(kialiState);
+  const hasBackgroundImage = useHeaderBackground();
   /*
   const onDismiss = (message: NotificationMessage, userDismissed: boolean) => {
     if (userDismissed) {
@@ -100,11 +102,14 @@ export const MessageCenter = (props: { color?: string }) => {
     }  
   }
   */
+  const iconColor = hasBackgroundImage ? 'white' : undefined;
+  const textColor = hasBackgroundImage ? 'white' : undefined;
+
   return (
     <>
       <Button
         onClick={() => toggleDrawer(true)}
-        style={{ marginTop: '-15px', color: 'white' }}
+        style={{ marginTop: '-15px', color: textColor }}
         data-test="message-center"
       >
         <Badge
@@ -116,7 +121,7 @@ export const MessageCenter = (props: { color?: string }) => {
           }
           color={messageCenterStatus.badgeDanger ? 'error' : 'primary'}
         >
-          <KialiIcon.Bell className={bell} color={`${props.color}`} />
+          <KialiIcon.Bell className={bell} color={iconColor} />
         </Badge>
       </Button>
       <Drawer anchor="right" open={isOpen} onClose={() => toggleDrawer(false)}>

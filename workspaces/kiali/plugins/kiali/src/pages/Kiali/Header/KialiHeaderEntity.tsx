@@ -57,14 +57,12 @@ export const KialiHeaderEntity = () => {
               }
             >
               <Chip
-                color="primary"
-                icon={<ClusterIcon style={{ color: 'white' }} />}
+                icon={<ClusterIcon />}
                 label={homeCluster?.name || 'Home Cluster'}
-                style={{ color: 'white' }}
               />
             </Tooltip>
-            <HelpKiali color="black" />
-            <MessageCenter color="black" />
+            <HelpKiali />
+            <MessageCenter />
           </div>
         </Grid>
         {kialiState.authentication.session && (

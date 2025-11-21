@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Kiali plugin for Backstage.
+ *
+ * @packageDocumentation
+ */
+
 export {
   kialiPlugin,
   EntityKialiContent,
@@ -20,5 +27,7 @@ export {
   EntityKialiResourcesCard,
   EntityKialiGraphCard,
 } from './plugin';
+
+export type { EntityKialiContentProps } from './plugin';
 
 export { default as KialiIcon } from '@mui/icons-material/Troubleshoot';

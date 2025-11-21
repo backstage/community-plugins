@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Backend plugin for Kiali integration in Backstage.
+ *
+ * @packageDocumentation
+ */
+
 export * from './service/router';
 export * from './plugin';
 export { kialiPlugin as default } from './plugin';
+export { KialiApiImpl } from './clients/KialiAPIConnector';
