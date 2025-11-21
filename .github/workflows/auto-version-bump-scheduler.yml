@@ -19,12 +19,12 @@ jobs:
       actions: write
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b3991275213b3c10b70129f1b95abaa193 # v4.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a7c5680c78309c908e50460f90b19 # v4.0.3
         with:
           node-version: '22.x'
 
