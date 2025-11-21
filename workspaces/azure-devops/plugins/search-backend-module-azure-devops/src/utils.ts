@@ -36,10 +36,6 @@ export async function fetchWithRetry(
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      if (retries > 0) {
-        await new Promise(res => setTimeout(res, backoff));
-        return fetchWithRetry(url, options, retries - 1, backoff * 2); // exponential backoff
-      }
       throw await ResponseError.fromResponse(response);
     }
     return response;
