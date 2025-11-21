@@ -23,7 +23,7 @@ jobs:
           egress-policy: audit
 
       - name: PR sync
-        uses: backstage/actions/pr-sync@v0.6.10
+        uses: backstage/actions/pr-sync@51d5c22c070014da4153c306d1566a7b0a70868f # v0.6.10
         with:
           github-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN  }}
           app-id: ${{ secrets.BACKSTAGE_GOALIE_APPLICATION_ID }}
