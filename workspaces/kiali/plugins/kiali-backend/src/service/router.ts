@@ -22,17 +22,32 @@ import { ValidationCategory } from '../clients/fetch';
 import { KialiApiImpl } from '../clients/KialiAPIConnector';
 import { readKialiConfigs } from './config';
 
+/**
+ * Options for creating the Kiali router.
+ *
+ * @public
+ */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
 }
 
+/**
+ * Configuration for a Kiali provider API.
+ *
+ * @public
+ */
 export interface KialiProvidersApi {
   name: string;
   urlExternal: string;
   api: KialiApiImpl;
 }
 
+/**
+ * Creates an Express router for Kiali API endpoints.
+ *
+ * @public
+ */
 export const makeRouter = (
   logger: LoggerService,
   kialiApis: KialiProvidersApi[],

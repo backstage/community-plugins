@@ -19,6 +19,11 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
 
+/**
+ * Kiali backend plugin.
+ *
+ * @public
+ */
 export const kialiPlugin = createBackendPlugin({
   pluginId: 'kiali',
   register(env) {
