@@ -37,7 +37,7 @@
     "@backstage/plugin-catalog-node": "^1.19.1",
     "@backstage/plugin-permission-common": "^0.9.2",
     "@backstage/plugin-permission-node": "^0.10.5",
-    "@kubernetes/client-node": "^0.22.1",
+    "@kubernetes/client-node": "^1.0.0",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "undici": "^7.3.0",
