@@ -44,24 +44,43 @@ export const searchModuleConfluenceCollator = createBackendModule({
           initialDelay: { seconds: 30 },
         };
 
-        const schedule = config.has('search.collators.confluence.schedule')
-          ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-              config.getConfig('search.collators.confluence.schedule'),
-            )
-          : defaultSchedule;
+        const confluenceConfigs = config.getConfig('confluence');
+        const instanceKeys = confluenceConfigs.keys();
 
-        logger.info(
-          `Indexing Confluence instance: "${config.getString(
-            'confluence.baseUrl',
-          )}"`,
-        );
-        logger.info(`Confluence indexing schedule ${JSON.stringify(schedule)}`);
-        indexRegistry.addCollator({
-          schedule: scheduler.createScheduledTaskRunner(schedule),
-          factory: ConfluenceCollatorFactory.fromConfig(config, {
-            logger: logger,
-          }),
-        });
+        for (const instanceKey of instanceKeys) {
+          const collatorKey =
+            instanceKey === 'default'
+              ? 'confluence'
+              : `confluence${instanceKey
+                  .charAt(0)
+                  .toUpperCase()}${instanceKey.slice(1)}`;
+
+          const schedulePath = `search.collators.${collatorKey}.schedule`;
+          const schedule = config.has(schedulePath)
+            ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+                config.getConfig(schedulePath),
+              )
+            : defaultSchedule;
+
+          logger.info(
+            `Indexing Confluence instance: "${confluenceConfigs
+              .getConfig(instanceKey)
+              .getString('baseUrl')}"`,
+          );
+          logger.info(
+            `Confluence indexing schedule ${JSON.stringify(schedule)}`,
+          );
+
+          indexRegistry.addCollator({
+            schedule: scheduler.createScheduledTaskRunner(schedule),
+            factory: ConfluenceCollatorFactory.fromConfig(
+              config,
+              { logger },
+              instanceKey,
+              collatorKey,
+            ),
+          });
+        }
       },
     });
   },
