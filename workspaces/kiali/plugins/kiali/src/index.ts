@@ -16,6 +16,7 @@
 export {
   kialiPlugin,
   EntityKialiContent,
+  EntityKialiContentProps,
   KialiPage,
   EntityKialiResourcesCard,
   EntityKialiGraphCard,
