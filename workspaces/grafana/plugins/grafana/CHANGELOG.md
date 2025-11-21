@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.10.1
+
+### Patch Changes
+
+- 45ce0ac: Added documentation for the New Frontend System
+
 ## 0.10.0
 
 ### Minor Changes
