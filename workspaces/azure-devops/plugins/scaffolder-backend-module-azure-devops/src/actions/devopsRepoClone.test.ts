@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { ConfigReader } from '@backstage/config';
-import { ScmIntegrations } from '@backstage/integration';
-import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 import { createAzureDevOpsCloneRepoAction } from './devopsRepoClone';
+import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
+import { ScmIntegrations } from '@backstage/integration';
+import { ConfigReader } from '@backstage/config';
 
 jest.mock('@backstage/plugin-scaffolder-node', () => ({
   ...jest.requireActual('@backstage/plugin-scaffolder-node'),
