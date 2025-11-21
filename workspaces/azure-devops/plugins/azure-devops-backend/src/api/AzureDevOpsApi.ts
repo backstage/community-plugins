@@ -57,6 +57,7 @@ import {
 } from 'azure-devops-node-api/interfaces/CoreInterfaces';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
+import { InputError } from '@backstage/errors';
 import {
   AzureDevOpsCredentialsProvider,
   DefaultAzureDevOpsCredentialsProvider,
@@ -539,13 +540,29 @@ export class AzureDevOpsApi {
     const url = buildEncodedUrl(host, org, project, repo, path);
     const response = await this.urlReader.readUrl(url);
     const buffer = await response.buffer();
+    const contentString = buffer.toString();
+
+    // Gracefully handle paths that are folders
+    try {
+      const jsonResponse = JSON.parse(contentString);
+      if (jsonResponse.isFolder === true) {
+        throw new InputError(
+          `The path "${path}" is a folder, not a file. Please specify a markdown file path (e.g., /README.md or /docs/README.md).`,
+        );
+      }
+    } catch (error) {
+      if (error instanceof InputError) {
+        throw error;
+      }
+    }
+
     const content = await replaceReadme(
       this.urlReader,
       host,
       org,
       project,
       repo,
-      buffer.toString(),
+      contentString,
     );
     return { url, content };
   }
