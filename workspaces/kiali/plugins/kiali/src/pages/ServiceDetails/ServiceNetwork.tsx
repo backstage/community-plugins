@@ -143,8 +143,8 @@ export const ServiceNetwork: React.FC<ServiceNetworkProps> = (
                       ? props.serviceDetails.service.ip
                       : ''
                     : props.serviceDetails.service.externalName
-                    ? props.serviceDetails.service.externalName
-                    : ''}
+                      ? props.serviceDetails.service.externalName
+                      : ''}
                 </li>
               )}
 
