@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- a80285d: Backstage version bump to v1.45.1
+
 ## 1.21.0
 
 ### Minor Changes
