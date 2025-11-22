@@ -34,8 +34,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.4",
-    "@backstage/plugin-permission-common": "^0.9.2"
+    "@backstage/cli": "^0.34.5",
+    "@backstage/plugin-permission-common": "^0.9.3"
   },
   "files": [
     "dist"
@@ -51,7 +51,7 @@
   ],
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "peerDependencies": {
-    "@backstage/plugin-permission-common": "^0.9.2"
+    "@backstage/plugin-permission-common": "^0.9.3"
   },
   "maintainers": [
     "@04kash"
