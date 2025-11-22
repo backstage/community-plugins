@@ -22,6 +22,8 @@ export interface ChatResponse {
   // (undocumented)
   content: string;
   // (undocumented)
+  conversationId?: string;
+  // (undocumented)
   role: 'assistant';
   // (undocumented)
   toolResponses?: any[];
@@ -30,9 +32,39 @@ export interface ChatResponse {
 }
 
 // @public (undocumented)
+export interface ConversationRecord {
+  // (undocumented)
+  createdAt: string;
+  // (undocumented)
+  id: string;
+  // (undocumented)
+  messages: ChatMessage[];
+  // (undocumented)
+  toolsUsed?: string[];
+  // (undocumented)
+  updatedAt: string;
+  // (undocumented)
+  userId: string;
+}
+
+// @public (undocumented)
+export interface ConversationsResponse {
+  // (undocumented)
+  conversations: ConversationRecord[];
+  // (undocumented)
+  count: number;
+  // (undocumented)
+  timestamp: string;
+}
+
+// @public (undocumented)
 export interface McpChatApi {
   // (undocumented)
   getAvailableTools(): Promise<ToolsResponse>;
+  // (undocumented)
+  getConversationById(id: string): Promise<ConversationRecord>;
+  // (undocumented)
+  getConversations(): Promise<ConversationsResponse>;
   // (undocumented)
   getMCPServerStatus(): Promise<MCPServerStatusData>;
   // (undocumented)
@@ -42,6 +74,7 @@ export interface McpChatApi {
     messages: ChatMessage[],
     enabledTools?: string[],
     signal?: AbortSignal,
+    conversationId?: string,
   ): Promise<ChatResponse>;
 }
 
