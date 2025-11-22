@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createBackendModule } from '@backstage/backend-plugin-api';
+import {
+  coreServices,
+  createBackendModule,
+} from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
 
-import { createSonarQubeProjectAction } from './actions';
+import {
+  createConfiguredSonarQubeProjectAction,
+  createSonarQubeProjectAction,
+} from './actions';
 
 /**
  * @public
@@ -28,9 +34,13 @@ export const scaffolderModuleSonarqubeActions = createBackendModule({
     env.registerInit({
       deps: {
         scaffolder: scaffolderActionsExtensionPoint,
+        rootConfig: coreServices.rootConfig,
       },
-      async init({ scaffolder }) {
-        scaffolder.addActions(createSonarQubeProjectAction());
+      async init({ scaffolder, rootConfig }) {
+        scaffolder.addActions(
+          createConfiguredSonarQubeProjectAction(rootConfig),
+          createSonarQubeProjectAction(),
+        );
       },
     });
   },

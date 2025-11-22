@@ -21,4 +21,10 @@
  */
 
 export * from './actions';
+export { createSonarQubeClient, SonarQubeClient } from './sonarqube';
+export type {
+  SonarQubeClientOptions,
+  CreateProjectParams,
+  GenerateTokenParams,
+} from './sonarqube';
 export { scaffolderModuleSonarqubeActions as default } from './module';

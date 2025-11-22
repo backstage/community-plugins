@@ -39,7 +39,9 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.4.4",
+    "@backstage/config": "^1.1.1",
     "@backstage/plugin-scaffolder-node": "^0.12.0",
+    "cross-fetch": "^4.1.0",
     "yaml": "^2.3.3"
   },
   "devDependencies": {

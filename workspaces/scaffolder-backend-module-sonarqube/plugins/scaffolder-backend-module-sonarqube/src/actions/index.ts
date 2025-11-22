@@ -14,3 +14,7 @@
  * limitations under the License.
  */
 export { createSonarQubeProjectAction } from './createSonarQubeProject';
+export {
+  createConfiguredSonarQubeProjectAction,
+  CREATE_CONFIGURED_SONARQUBE_PROJECT_ID,
+} from './createConfiguredSonarQubeProject';
