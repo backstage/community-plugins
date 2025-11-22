@@ -1,13 +1,52 @@
 app:
   title: Agent Forge
-  baseUrl: http://localhost:3000
+  baseUrl: http://localhost:3001
 
 organization:
-  name: Cisco
+  name: Acme
 
 agentForge:
-  baseUrl: http://127.0.0.1:8000
+  baseUrl: http://10.99.255.178:8000
+  # baseUrl: https://caipe.dev.outshift.io
+  botName: CAIPE
+  infoPage: https://cnoe-io.github.io/ai-platform-engineering/
   showOptions: true
+  useOpenIDToken: true  # Set to true to use OpenIdConnectApi.getIdToken(), false to use IdentityApi.getCredentials()
+  enableStreaming: true   # Set to true to enable streaming responses, false for non-streaming
+  requestTimeout: 300
+  headerTitle: CAIPE
+  headerSubtitle: AI Platform Engineer Assistant
+  inputPlaceholder: Ask CAIPE anything...
+  initialSuggestions:
+    - Create GitHub Repository
+    - Deploy ArgoCD Application
+    - Create AWS Resources
+    - Get LLM keys
+    - Add MyID Groups
+    - Invite users to Github Organization
+  thinkingMessagesInterval: 7000  # Interval in milliseconds (default: 7000)
+  thinkingMessages:
+    # - "⏳ Thinking..."
+    - "⚙️ Processing query — even great thoughts start with a single thread."
+    - "🤖 Contacting agents — because collaboration beats computation."
+    - "📦 Carrying bits — somewhere in here lies meaning… and metadata."
+    - "📊 Analyzing data — the truth hides between the averages."
+    - "🧠 Reflecting on the prompt — clarity is the best optimization."
+    - "🌐 Syncing thoughts across nodes — wisdom prefers low latency."
+    - "🧩 Assembling context — the art of not missing the missing piece."
+    - "🔍 Searching the void — if you stare long enough into the logs, the logs stare back."
+    - "🪞 Reflecting reasoning — recursive thinking: now 30% more self-aware."
+    - "🧭 Following agent breadcrumbs — because even distributed minds need a map."
+    - "🔧 Calibrating models — what is alignment, if not purpose with precision?"
+    - "💭 Daydreaming in embeddings — vectors have feelings too."
+    - "🚦 Negotiating with rate limits — patience is also a form of throughput."
+    - "📚 Reading context — a good agent never stops learning."
+    - "🕸️ Weaving reasoning chains — because one thought alone never scales."
+    - "💡 Illuminating intent — signal, not noise — that's the real bandwidth."
+    - "🧮 Counting tokens — every byte a step toward enlightenment."
+    - "🕰️ Waiting for consensus — distributed wisdom takes time."
+    - "🧰 Debugging the universe — there's always one more missing semicolon."
+    - "🌌 Manifesting insights — the cosmos runs on context, too."
 
 backend:
   baseUrl: http://localhost:7007

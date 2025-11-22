@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPlugin } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
-
-/**
- * Plugin for the legacy frontend system
- * @public
- */
-export const chatAssistantPlugin = createPlugin({
-  id: 'agent-forge',
-  routes: {
-    root: rootRouteRef,
-  },
-});
+import { Message } from '../types';
 
 /**
- * Main page component for the agent-forge plugin
+ * Chat session interface for managing multiple conversations
  * @public
  */
-export { default as ChatAssistantPage } from './components/AgentForgePage';
+export interface ChatSession {
+  id: string;
+  contextId?: string; // From A2A API for conversation continuity
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Chat storage interface for browser persistence
+ * @public
+ */
+export interface ChatStorage {
+  sessions: ChatSession[];
+  currentSessionId: string | null;
+}

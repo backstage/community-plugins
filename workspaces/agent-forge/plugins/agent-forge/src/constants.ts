@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPlugin } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
+import DefaultBotIcon from './icons/caipe.png';
 
-/**
- * Plugin for the legacy frontend system
- * @public
- */
-export const chatAssistantPlugin = createPlugin({
-  id: 'agent-forge',
-  routes: {
-    root: rootRouteRef,
-  },
-});
+export const DEFAULT_BOT_CONFIG = {
+  name: 'CAIPE',
+  icon: DefaultBotIcon,
+} as const;
 
-/**
- * Main page component for the agent-forge plugin
- * @public
- */
-export { default as ChatAssistantPage } from './components/AgentForgePage';
+export const DEFAULT_SUGGESTIONS = [
+  'What can you do?',
+  'How do I configure agents?',
+  'Help me with platform engineering tasks',
+];
+
+export const DEFAULT_THINKING_MESSAGES = [
+  '🤖 Contacting agents',
+  '⚙️ Processing query',
+  '📦 Carrying bits',
+  '📊 Analyzing data',
+];
