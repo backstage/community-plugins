@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { compatWrapper } from '@backstage/core-compat-api';
 import { AppRootElementBlueprint } from '@backstage/frontend-plugin-api';
 import { NewAnnouncementBanner } from '../components/NewAnnouncementBanner';
 
@@ -34,7 +35,7 @@ export const announcementsBanner = AppRootElementBlueprint.makeWithOverrides({
   },
   factory: (originalFactory, { config }) => {
     return originalFactory({
-      element: <NewAnnouncementBanner {...config} />,
+      element: compatWrapper(<NewAnnouncementBanner {...config} />),
     });
   },
 });
