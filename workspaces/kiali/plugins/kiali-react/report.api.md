@@ -7,8 +7,6 @@
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { Model } from '@patternfly/react-topology';
 
-// Warning: (ae-missing-release-tag) "TrafficGraph" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const TrafficGraph: (props: {
     model: Model;

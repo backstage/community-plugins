@@ -14,8 +14,6 @@ import type { IMarker } from 'react-ace';
 import type { Namespace as Namespace_2 } from '@backstage-community/plugin-kiali-common/types';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 
-// Warning: (ae-missing-release-tag) "Abort" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Abort {
     // (undocumented)
@@ -24,8 +22,6 @@ export interface Abort {
     percentage?: Percent;
 }
 
-// Warning: (ae-missing-release-tag) "AccessLog" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type AccessLog = {
     authority: string;
@@ -54,13 +50,9 @@ export type AccessLog = {
     user_agent: string;
 };
 
-// Warning: (ae-missing-release-tag) "aceOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const aceOptions: AceOptions;
 
-// Warning: (ae-missing-release-tag) "AceValidations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AceValidations {
     // (undocumented)
@@ -69,8 +61,6 @@ export interface AceValidations {
     markers: Array<IMarker>;
 }
 
-// Warning: (ae-missing-release-tag) "ActiveFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ActiveFilter {
     // (undocumented)
@@ -79,8 +69,6 @@ export interface ActiveFilter {
     value: string;
 }
 
-// Warning: (ae-missing-release-tag) "ActiveFiltersInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ActiveFiltersInfo {
     // (undocumented)
@@ -89,13 +77,9 @@ export interface ActiveFiltersInfo {
     op: LabelOperation;
 }
 
-// Warning: (ae-missing-release-tag) "ActiveTogglesInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ActiveTogglesInfo = Map<string, boolean>;
 
-// Warning: (ae-missing-release-tag) "AdditionalItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AdditionalItem {
     // (undocumented)
@@ -106,8 +90,6 @@ export interface AdditionalItem {
     value: string;
 }
 
-// Warning: (ae-missing-release-tag) "Address" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Address {
     // (undocumented)
@@ -116,8 +98,6 @@ export interface Address {
     value: string;
 }
 
-// Warning: (ae-missing-release-tag) "AggregationModel" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AggregationModel {
     // (undocumented)
@@ -128,13 +108,9 @@ export interface AggregationModel {
     singleSelection: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "Aggregator" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Aggregator = 'sum' | 'avg' | 'min' | 'max' | 'stddev' | 'stdvar';
 
-// Warning: (ae-missing-release-tag) "AllFilterTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const AllFilterTypes: {
     typeAhead: NonInputTypes.typeAhead;
@@ -154,26 +130,18 @@ export const AllFilterTypes: {
     url: TextInputTypes.url;
 };
 
-// Warning: (ae-missing-release-tag) "AllowedRoutes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AllowedRoutes {
     // (undocumented)
     namespaces: FromNamespaces;
 }
 
-// Warning: (ae-missing-release-tag) "AllPromLabelsValues" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type AllPromLabelsValues = Map<PromLabel, SingleLabelValues>;
 
-// Warning: (ae-missing-release-tag) "ApiError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ApiError = AxiosError<KialiError>;
 
-// Warning: (ae-missing-release-tag) "APIKey" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface APIKey {
     // (undocumented)
@@ -184,15 +152,11 @@ export interface APIKey {
     query?: string;
 }
 
-// Warning: (ae-missing-release-tag) "ApiResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ApiResponse<T> = Partial<AxiosResponse<T>> & {
     data: T;
 };
 
-// Warning: (ae-missing-release-tag) "App" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface App {
     // (undocumented)
@@ -211,13 +175,9 @@ export interface App {
     workloads: AppWorkload[];
 }
 
-// Warning: (ae-missing-release-tag) "AppenderString" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type AppenderString = string;
 
-// Warning: (ae-missing-release-tag) "AppHealthResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppHealthResponse {
     // (undocumented)
@@ -226,8 +186,6 @@ export interface AppHealthResponse {
     workloadStatuses: WorkloadStatus[];
 }
 
-// Warning: (ae-missing-release-tag) "AppId" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppId {
     // (undocumented)
@@ -238,8 +196,6 @@ export interface AppId {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "AppList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppList {
     // (undocumented)
@@ -248,8 +204,6 @@ export interface AppList {
     cluster?: string;
 }
 
-// Warning: (ae-missing-release-tag) "AppListItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppListItem {
     // (undocumented)
@@ -274,8 +228,6 @@ export interface AppListItem {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "AppListQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppListQuery {
     // (undocumented)
@@ -286,8 +238,6 @@ export interface AppListQuery {
     rateInterval: string;
 }
 
-// Warning: (ae-missing-release-tag) "AppQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppQuery {
     // (undocumented)
@@ -296,8 +246,6 @@ export interface AppQuery {
     rateInterval: string;
 }
 
-// Warning: (ae-missing-release-tag) "AppWorkload" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AppWorkload {
     // (undocumented)
@@ -314,8 +262,6 @@ export interface AppWorkload {
     workloadName: string;
 }
 
-// Warning: (ae-missing-release-tag) "AttributeInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AttributeInfo {
     // (undocumented)
@@ -324,8 +270,6 @@ export interface AttributeInfo {
     valueType: string;
 }
 
-// Warning: (ae-missing-release-tag) "AuthConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AuthConfig {
     // (undocumented)
@@ -338,23 +282,17 @@ export interface AuthConfig {
     strategy: AuthStrategy;
 }
 
-// Warning: (ae-missing-release-tag) "AuthInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type AuthInfo = {
     sessionInfo: SessionInfo;
 } & AuthConfig;
 
-// Warning: (ae-missing-release-tag) "AuthorizationPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AuthorizationPolicy extends IstioObject {
     // (undocumented)
     spec: AuthorizationPolicySpec;
 }
 
-// Warning: (ae-missing-release-tag) "AuthorizationPolicyRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AuthorizationPolicyRule {
     // (undocumented)
@@ -365,8 +303,6 @@ export interface AuthorizationPolicyRule {
     when?: Condition[];
 }
 
-// Warning: (ae-missing-release-tag) "AuthorizationPolicySpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AuthorizationPolicySpec {
     // (undocumented)
@@ -377,8 +313,6 @@ export interface AuthorizationPolicySpec {
     selector?: AuthorizationPolicyWorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "AuthorizationPolicyWorkloadSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface AuthorizationPolicyWorkloadSelector {
     // (undocumented)
@@ -387,8 +321,6 @@ export interface AuthorizationPolicyWorkloadSelector {
     };
 }
 
-// Warning: (ae-missing-release-tag) "AuthResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum AuthResult {
     // (undocumented)
@@ -401,8 +333,6 @@ export enum AuthResult {
     SUCCESS = "success"
 }
 
-// Warning: (ae-missing-release-tag) "AuthStrategy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum AuthStrategy {
     // (undocumented)
@@ -417,24 +347,18 @@ export enum AuthStrategy {
     token = "token"
 }
 
-// Warning: (ae-missing-release-tag) "BootstrapSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface BootstrapSummary {
     // (undocumented)
     bootstrap: any;
 }
 
-// Warning: (ae-missing-release-tag) "BoundsInMilliseconds" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type BoundsInMilliseconds = {
     from?: TimeInMilliseconds;
     to?: TimeInMilliseconds;
 };
 
-// Warning: (ae-missing-release-tag) "BoxByType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum BoxByType {
     // (undocumented)
@@ -445,8 +369,6 @@ export enum BoxByType {
     NAMESPACE = "namespace"
 }
 
-// Warning: (ae-missing-release-tag) "BucketDataPoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type BucketDataPoint = {
     name: string;
@@ -457,8 +379,6 @@ export type BucketDataPoint = {
     style?: Style;
 };
 
-// Warning: (ae-missing-release-tag) "CanaryUpgradeStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface CanaryUpgradeStatus {
     // (undocumented)
@@ -471,8 +391,6 @@ export interface CanaryUpgradeStatus {
     upgradeVersion: string;
 }
 
-// Warning: (ae-missing-release-tag) "CaptureMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum CaptureMode {
     // (undocumented)
@@ -483,8 +401,6 @@ export enum CaptureMode {
     NONE = "NONE"
 }
 
-// Warning: (ae-missing-release-tag) "CertsInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface CertsInfo {
     // (undocumented)
@@ -507,8 +423,6 @@ export interface CertsInfo {
     subject: string;
 }
 
-// Warning: (ae-missing-release-tag) "ChartModel" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ChartModel {
     // (undocumented)
@@ -535,13 +449,9 @@ export interface ChartModel {
     xAxis?: XAxisType;
 }
 
-// Warning: (ae-missing-release-tag) "ChartType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ChartType = 'area' | 'line' | 'bar' | 'scatter';
 
-// Warning: (ae-missing-release-tag) "ClientTLSSettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ClientTLSSettings {
     // (undocumented)
@@ -558,13 +468,9 @@ export interface ClientTLSSettings {
     subjectAltNames?: string[] | null;
 }
 
-// Warning: (ae-missing-release-tag) "CLUSTER_DEFAULT" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const CLUSTER_DEFAULT = "Kubernetes";
 
-// Warning: (ae-missing-release-tag) "ClusterMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ClusterMatch {
     // (undocumented)
@@ -577,8 +483,6 @@ export interface ClusterMatch {
     subset?: string;
 }
 
-// Warning: (ae-missing-release-tag) "ClusterSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ClusterSummary {
     // (undocumented)
@@ -595,8 +499,6 @@ export interface ClusterSummary {
     type: number;
 }
 
-// Warning: (ae-missing-release-tag) "ClusterWorkloadsResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ClusterWorkloadsResponse {
     // (undocumented)
@@ -607,13 +509,9 @@ export interface ClusterWorkloadsResponse {
     workloads: WorkloadListItem[];
 }
 
-// Warning: (ae-missing-release-tag) "compareResourceVersion" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const compareResourceVersion: (oldIstioConfigDetails: IstioConfigDetails, newIstioConfigDetails: IstioConfigDetails) => [boolean, string, string];
 
-// Warning: (ae-missing-release-tag) "ComponentStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ComponentStatus {
     // (undocumented)
@@ -624,15 +522,11 @@ export interface ComponentStatus {
     status: StatusTypes;
 }
 
-// Warning: (ae-missing-release-tag) "ComputedServerConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ComputedServerConfig = ServerConfig & {
     durations: Durations;
 };
 
-// Warning: (ae-missing-release-tag) "Condition" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Condition {
     // (undocumented)
@@ -643,8 +537,6 @@ export interface Condition {
     values?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "ConnectionPoolSettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ConnectionPoolSettings {
     // (undocumented)
@@ -653,8 +545,6 @@ export interface ConnectionPoolSettings {
     tcp?: ConnectionPoolSettingsTCPSettings;
 }
 
-// Warning: (ae-missing-release-tag) "ConnectionPoolSettingsHTTPSettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ConnectionPoolSettingsHTTPSettings {
     // (undocumented)
@@ -671,8 +561,6 @@ export interface ConnectionPoolSettingsHTTPSettings {
     maxRetries?: number;
 }
 
-// Warning: (ae-missing-release-tag) "ConnectionPoolSettingsTCPSettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ConnectionPoolSettingsTCPSettings {
     // (undocumented)
@@ -683,8 +571,6 @@ export interface ConnectionPoolSettingsTCPSettings {
     tcpKeepalive?: TcpKeepalive;
 }
 
-// Warning: (ae-missing-release-tag) "ConsistentHashLB" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ConsistentHashLB {
     // (undocumented)
@@ -699,8 +585,6 @@ export interface ConsistentHashLB {
     useSourceIp?: boolean | null;
 }
 
-// Warning: (ae-missing-release-tag) "ContainerInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ContainerInfo {
     // (undocumented)
@@ -713,8 +597,6 @@ export interface ContainerInfo {
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "ControlPlaneMetricsMap" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ControlPlaneMetricsMap = {
     istiod_proxy_time?: Metric[];
@@ -724,8 +606,6 @@ export type ControlPlaneMetricsMap = {
     istiod_process_mem?: Metric[];
 };
 
-// Warning: (ae-missing-release-tag) "CorsPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface CorsPolicy {
     // (undocumented)
@@ -742,8 +622,6 @@ export interface CorsPolicy {
     maxAge?: string;
 }
 
-// Warning: (ae-missing-release-tag) "CytoscapeBaseEvent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface CytoscapeBaseEvent {
     // (undocumented)
@@ -752,8 +630,6 @@ export interface CytoscapeBaseEvent {
     summaryType: SummaryType;
 }
 
-// Warning: (ae-missing-release-tag) "CytoscapeGlobalScratchData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type CytoscapeGlobalScratchData = {
     activeNamespaces: Namespace[];
@@ -767,13 +643,9 @@ export type CytoscapeGlobalScratchData = {
     trafficRates: TrafficRate[];
 };
 
-// Warning: (ae-missing-release-tag) "CytoscapeGlobalScratchNamespace" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const CytoscapeGlobalScratchNamespace = "_global";
 
-// Warning: (ae-missing-release-tag) "DashboardModel" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DashboardModel {
     // (undocumented)
@@ -788,8 +660,6 @@ export interface DashboardModel {
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "DashboardQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DashboardQuery extends MetricsQuery {
     // (undocumented)
@@ -806,8 +676,6 @@ export interface DashboardQuery extends MetricsQuery {
     workloadType?: string;
 }
 
-// Warning: (ae-missing-release-tag) "DashboardRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DashboardRef {
     // (undocumented)
@@ -816,13 +684,9 @@ export interface DashboardRef {
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "Datapoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Datapoint = [number, number, number?];
 
-// Warning: (ae-missing-release-tag) "DecoratedGraphEdgeData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DecoratedGraphEdgeData extends GraphEdgeData {
     // (undocumented)
@@ -867,16 +731,12 @@ export interface DecoratedGraphEdgeData extends GraphEdgeData {
     throughput: number;
 }
 
-// Warning: (ae-missing-release-tag) "DecoratedGraphEdgeWrapper" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DecoratedGraphEdgeWrapper {
     // (undocumented)
     data: DecoratedGraphEdgeData;
 }
 
-// Warning: (ae-missing-release-tag) "DecoratedGraphElements" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DecoratedGraphElements {
     // (undocumented)
@@ -885,8 +745,6 @@ export interface DecoratedGraphElements {
     nodes?: DecoratedGraphNodeWrapper[];
 }
 
-// Warning: (ae-missing-release-tag) "DecoratedGraphNodeData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DecoratedGraphNodeData extends GraphNodeData {
     // (undocumented)
@@ -927,31 +785,21 @@ export interface DecoratedGraphNodeData extends GraphNodeData {
     traffic: never;
 }
 
-// Warning: (ae-missing-release-tag) "DecoratedGraphNodeWrapper" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DecoratedGraphNodeWrapper {
     // (undocumented)
     data: DecoratedGraphNodeData;
 }
 
-// Warning: (ae-missing-release-tag) "DEFAULT_LABEL_OPERATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const DEFAULT_LABEL_OPERATION: LabelOperation;
 
-// Warning: (ae-missing-release-tag) "DefaultTrafficRates" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const DefaultTrafficRates: TrafficRate[];
 
-// Warning: (ae-missing-release-tag) "DEGRADED" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const DEGRADED: Status;
 
-// Warning: (ae-missing-release-tag) "Delay" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Delay {
     // (undocumented)
@@ -960,8 +808,6 @@ export interface Delay {
     percentage?: Percent;
 }
 
-// Warning: (ae-missing-release-tag) "Delegate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Delegate {
     // (undocumented)
@@ -970,8 +816,6 @@ export interface Delegate {
     namespace?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Destination" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Destination {
     // (undocumented)
@@ -982,16 +826,12 @@ export interface Destination {
     subset?: string;
 }
 
-// Warning: (ae-missing-release-tag) "DestinationRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DestinationRule extends IstioObject {
     // (undocumented)
     spec: DestinationRuleSpec;
 }
 
-// Warning: (ae-missing-release-tag) "DestinationRuleSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DestinationRuleSpec {
     // (undocumented)
@@ -1004,9 +844,6 @@ export interface DestinationRuleSpec {
     trafficPolicy?: TrafficPolicy | null;
 }
 
-// Warning: (ae-missing-release-tag) "DestService" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "DestService" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface DestService {
     // (undocumented)
@@ -1027,20 +864,14 @@ export interface DestService {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "dicTypeToGVK" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const dicTypeToGVK: {
     [key in gvkType]: GroupVersionKind;
 };
 
-// Warning: (ae-missing-release-tag) "Direction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Direction = 'inbound' | 'outbound';
 
-// Warning: (ae-missing-release-tag) "Distribute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Distribute {
     // (undocumented)
@@ -1051,25 +882,17 @@ export interface Distribute {
     };
 }
 
-// Warning: (ae-missing-release-tag) "DRAWER" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const DRAWER = "drawer";
 
-// Warning: (ae-missing-release-tag) "DurationInSeconds" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type DurationInSeconds = number;
 
-// Warning: (ae-missing-release-tag) "Durations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Durations = {
     [key: number]: string;
 };
 
-// Warning: (ae-missing-release-tag) "EdgeAttr" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const EdgeAttr: {
     destPrincipal: string;
@@ -1097,8 +920,6 @@ export const EdgeAttr: {
     throughput: string;
 };
 
-// Warning: (ae-missing-release-tag) "EdgeLabelMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum EdgeLabelMode {
     // (undocumented)
@@ -1123,8 +944,6 @@ export enum EdgeLabelMode {
     TRAFFIC_RATE = "trafficRate"
 }
 
-// Warning: (ae-missing-release-tag) "EdgeMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum EdgeMode {
     // (undocumented)
@@ -1135,13 +954,9 @@ export enum EdgeMode {
     UNHEALTHY = "unhealthy"
 }
 
-// Warning: (ae-missing-release-tag) "emptyWorkload" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const emptyWorkload: Workload;
 
-// Warning: (ae-missing-release-tag) "Endpoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Endpoint {
     // (undocumented)
@@ -1156,8 +971,6 @@ export interface Endpoint {
     };
 }
 
-// Warning: (ae-missing-release-tag) "Endpoints" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Endpoints {
     // Warning: (ae-forgotten-export) The symbol "EndpointAddress" needs to be exported by the entry point index.d.ts
@@ -1168,21 +981,15 @@ export interface Endpoints {
     ports?: ServicePort[];
 }
 
-// Warning: (ae-missing-release-tag) "ENTITY" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ENTITY = "entity";
 
-// Warning: (ae-missing-release-tag) "EnvoyConfigDump" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EnvoyConfigDump {
     // (undocumented)
     configs: any[];
 }
 
-// Warning: (ae-missing-release-tag) "EnvoyConfigObjectMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EnvoyConfigObjectMatch {
     // (undocumented)
@@ -1197,8 +1004,6 @@ export interface EnvoyConfigObjectMatch {
     routeConfiguration?: RouteConfigurationMatch;
 }
 
-// Warning: (ae-missing-release-tag) "EnvoyConfigObjectPatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EnvoyConfigObjectPatch {
     // (undocumented)
@@ -1209,16 +1014,12 @@ export interface EnvoyConfigObjectPatch {
     patch?: Patch;
 }
 
-// Warning: (ae-missing-release-tag) "EnvoyFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EnvoyFilter extends IstioObject {
     // (undocumented)
     spec: EnvoyFilterSpec;
 }
 
-// Warning: (ae-missing-release-tag) "EnvoyFilterSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EnvoyFilterSpec {
     // (undocumented)
@@ -1227,8 +1028,6 @@ export interface EnvoyFilterSpec {
     workloadSelector?: WorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "EnvoyProxyDump" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EnvoyProxyDump {
     // (undocumented)
@@ -1243,29 +1042,21 @@ export interface EnvoyProxyDump {
     routes?: RouteSummary[];
 }
 
-// Warning: (ae-missing-release-tag) "EnvoySpanInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type EnvoySpanInfo = OpenTracingHTTPInfo & {
     peer?: Target;
     responseFlags?: string;
 };
 
-// Warning: (ae-missing-release-tag) "EnvoySummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type EnvoySummary = ClusterSummary | RouteSummary | ListenerSummary;
 
-// Warning: (ae-missing-release-tag) "ErrorMsg" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ErrorMsg = {
     title: string;
     description: string;
 };
 
-// Warning: (ae-missing-release-tag) "ErrorRatio" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ErrorRatio {
     // (undocumented)
@@ -1288,16 +1079,12 @@ export interface ErrorRatio {
     };
 }
 
-// Warning: (ae-missing-release-tag) "ExecHealthCheckConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ExecHealthCheckConfig {
     // (undocumented)
     command?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "ExternalLink" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ExternalLink {
     // (undocumented)
@@ -1308,8 +1095,6 @@ export interface ExternalLink {
     variables: ExternalLinkVariables;
 }
 
-// Warning: (ae-missing-release-tag) "ExternalLinkVariables" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ExternalLinkVariables {
     // (undocumented)
@@ -1324,8 +1109,6 @@ export interface ExternalLinkVariables {
     workload?: string;
 }
 
-// Warning: (ae-missing-release-tag) "ExternalServiceInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ExternalServiceInfo {
     // (undocumented)
@@ -1336,8 +1119,6 @@ export interface ExternalServiceInfo {
     version?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Failover" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Failover {
     // (undocumented)
@@ -1346,23 +1127,15 @@ export interface Failover {
     to?: string;
 }
 
-// Warning: (ae-missing-release-tag) "FAILURE" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const FAILURE: Status;
 
-// Warning: (ae-missing-release-tag) "FILTER_ACTION_APPEND" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const FILTER_ACTION_APPEND = "append";
 
-// Warning: (ae-missing-release-tag) "FILTER_ACTION_UPDATE" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const FILTER_ACTION_UPDATE = "update";
 
-// Warning: (ae-missing-release-tag) "FilterChainMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface FilterChainMatch {
     // (undocumented)
@@ -1377,8 +1150,6 @@ export interface FilterChainMatch {
     transportProtocol?: string;
 }
 
-// Warning: (ae-missing-release-tag) "FilterMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface FilterMatch {
     // (undocumented)
@@ -1387,8 +1158,6 @@ export interface FilterMatch {
     subFilter?: SubFilterMatch;
 }
 
-// Warning: (ae-missing-release-tag) "FilterType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface FilterType {
     // (undocumented)
@@ -1405,8 +1174,6 @@ export interface FilterType {
     placeholder: string;
 }
 
-// Warning: (ae-missing-release-tag) "FilterValue" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface FilterValue {
     // (undocumented)
@@ -1415,8 +1182,6 @@ export interface FilterValue {
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "FromNamespaces" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface FromNamespaces {
     // (undocumented)
@@ -1425,16 +1190,12 @@ export interface FromNamespaces {
     selector: LabelSelector;
 }
 
-// Warning: (ae-missing-release-tag) "Gateway" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Gateway extends IstioObject {
     // (undocumented)
     spec: GatewaySpec;
 }
 
-// Warning: (ae-missing-release-tag) "GatewaySpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GatewaySpec {
     // (undocumented)
@@ -1445,16 +1206,12 @@ export interface GatewaySpec {
     servers?: Server[];
 }
 
-// Warning: (ae-missing-release-tag) "GrafanaInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GrafanaInfo {
     // (undocumented)
     externalLinks: ExternalLink[];
 }
 
-// Warning: (ae-missing-release-tag) "GraphDefinition" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphDefinition {
     // (undocumented)
@@ -1467,8 +1224,6 @@ export interface GraphDefinition {
     timestamp: number;
 }
 
-// Warning: (ae-missing-release-tag) "GraphEdgeData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphEdgeData {
     // (undocumented)
@@ -1489,16 +1244,12 @@ export interface GraphEdgeData {
     traffic?: ProtocolTraffic;
 }
 
-// Warning: (ae-missing-release-tag) "GraphEdgeWrapper" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphEdgeWrapper {
     // (undocumented)
     data: GraphEdgeData;
 }
 
-// Warning: (ae-missing-release-tag) "GraphElements" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphElements {
     // (undocumented)
@@ -1507,8 +1258,6 @@ export interface GraphElements {
     nodes?: GraphNodeWrapper[];
 }
 
-// Warning: (ae-missing-release-tag) "GraphElementsQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphElementsQuery {
     // (undocumented)
@@ -1541,16 +1290,12 @@ export interface GraphElementsQuery {
     waypoints?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "GraphEvent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphEvent extends CytoscapeBaseEvent {
     // (undocumented)
     isPF?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "GraphNodeAppHealth" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphNodeAppHealth {
     // (undocumented)
@@ -1559,8 +1304,6 @@ export interface GraphNodeAppHealth {
     workloadStatuses: GraphWorkloadStatus[];
 }
 
-// Warning: (ae-missing-release-tag) "GraphNodeData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphNodeData {
     // (undocumented)
@@ -1651,21 +1394,15 @@ export interface GraphNodeData {
     workload?: string;
 }
 
-// Warning: (ae-missing-release-tag) "GraphNodeHealthData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type GraphNodeHealthData = GraphNodeAppHealth | GraphNodeWorkloadHealth | GraphNodeServiceHealth | [] | null;
 
-// Warning: (ae-missing-release-tag) "GraphNodeServiceHealth" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphNodeServiceHealth {
     // (undocumented)
     requests: GraphRequestsHealth;
 }
 
-// Warning: (ae-missing-release-tag) "GraphNodeWorkloadHealth" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphNodeWorkloadHealth {
     // (undocumented)
@@ -1674,16 +1411,12 @@ export interface GraphNodeWorkloadHealth {
     workloadStatus: GraphWorkloadStatus;
 }
 
-// Warning: (ae-missing-release-tag) "GraphNodeWrapper" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphNodeWrapper {
     // (undocumented)
     data: GraphNodeData;
 }
 
-// Warning: (ae-missing-release-tag) "GraphRequestsHealth" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphRequestsHealth {
     // (undocumented)
@@ -1704,8 +1437,6 @@ export interface GraphRequestsHealth {
     };
 }
 
-// Warning: (ae-missing-release-tag) "GraphType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum GraphType {
     // (undocumented)
@@ -1718,8 +1449,6 @@ export enum GraphType {
     WORKLOAD = "workload"
 }
 
-// Warning: (ae-missing-release-tag) "GraphWorkloadStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GraphWorkloadStatus {
     // (undocumented)
@@ -1734,8 +1463,6 @@ export interface GraphWorkloadStatus {
     syncedProxies: number;
 }
 
-// Warning: (ae-missing-release-tag) "GroupVersionKind" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GroupVersionKind {
     // (undocumented)
@@ -1746,8 +1473,6 @@ export interface GroupVersionKind {
     Version: string;
 }
 
-// Warning: (ae-missing-release-tag) "gvkType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum gvkType {
     // (undocumented)
@@ -1810,8 +1535,6 @@ export enum gvkType {
     WorkloadGroup = "WorkloadGroup"
 }
 
-// Warning: (ae-missing-release-tag) "HeaderOperations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HeaderOperations {
     // (undocumented)
@@ -1826,8 +1549,6 @@ export interface HeaderOperations {
     };
 }
 
-// Warning: (ae-missing-release-tag) "Headers" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 interface Headers_2 {
     // (undocumented)
@@ -1837,31 +1558,23 @@ interface Headers_2 {
 }
 export { Headers_2 as Headers }
 
-// Warning: (ae-missing-release-tag) "HealthAnnotationConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum HealthAnnotationConfig {
     // (undocumented)
     HEALTH_RATE = "health.kiali.io/rate"
 }
 
-// Warning: (ae-missing-release-tag) "HealthAnnotationType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type HealthAnnotationType = {
     [key: string]: string;
 };
 
-// Warning: (ae-missing-release-tag) "HealthConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HealthConfig {
     // (undocumented)
     rate: RateHealthConfig[];
 }
 
-// Warning: (ae-missing-release-tag) "HealthItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HealthItem {
     // (undocumented)
@@ -1874,8 +1587,6 @@ export interface HealthItem {
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "HealthItemConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HealthItemConfig {
     // (undocumented)
@@ -1890,8 +1601,6 @@ export interface HealthItemConfig {
     value: number;
 }
 
-// Warning: (ae-missing-release-tag) "HealthSubItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HealthSubItem {
     // (undocumented)
@@ -1902,13 +1611,9 @@ export interface HealthSubItem {
     value?: number;
 }
 
-// Warning: (ae-missing-release-tag) "HEALTHY" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const HEALTHY: Status;
 
-// Warning: (ae-missing-release-tag) "HelpMessage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HelpMessage {
     // (undocumented)
@@ -1917,8 +1622,6 @@ export interface HelpMessage {
     objectField: string;
 }
 
-// Warning: (ae-missing-release-tag) "Host" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Host {
     // (undocumented)
@@ -1929,8 +1632,6 @@ export interface Host {
     service: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTP_VERBS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum HTTP_VERBS {
     // (undocumented)
@@ -1945,8 +1646,6 @@ export enum HTTP_VERBS {
     PUT = "put"
 }
 
-// Warning: (ae-missing-release-tag) "HTTPCookie" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPCookie {
     // (undocumented)
@@ -1957,8 +1656,6 @@ export interface HTTPCookie {
     ttl: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPFaultInjection" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPFaultInjection {
     // (undocumented)
@@ -1967,8 +1664,6 @@ export interface HTTPFaultInjection {
     delay?: Delay;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPHeader" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPHeader {
     // (undocumented)
@@ -1977,8 +1672,6 @@ export interface HTTPHeader {
     value?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPHealthCheckConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPHealthCheckConfig {
     // (undocumented)
@@ -1993,8 +1686,6 @@ export interface HTTPHealthCheckConfig {
     scheme?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPMatch {
     // (undocumented)
@@ -2005,8 +1696,6 @@ export interface HTTPMatch {
     value?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPMatchRequest" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPMatchRequest {
     // (undocumented)
@@ -2045,8 +1734,6 @@ export interface HTTPMatchRequest {
     };
 }
 
-// Warning: (ae-missing-release-tag) "HTTPRedirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPRedirect {
     // (undocumented)
@@ -2057,8 +1744,6 @@ export interface HTTPRedirect {
     uri?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPRetry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPRetry {
     // (undocumented)
@@ -2071,8 +1756,6 @@ export interface HTTPRetry {
     retryRemoteLocalities?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPRewrite" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPRewrite {
     // (undocumented)
@@ -2081,8 +1764,6 @@ export interface HTTPRewrite {
     uri?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPRoute {
     // (undocumented)
@@ -2113,8 +1794,6 @@ export interface HTTPRoute {
     timeout?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HTTPRouteDestination" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface HTTPRouteDestination {
     // (undocumented)
@@ -2125,68 +1804,42 @@ export interface HTTPRouteDestination {
     weight?: number;
 }
 
-// Warning: (ae-missing-release-tag) "ID_LABEL_OPERATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ID_LABEL_OPERATION = "opLabel";
 
-// Warning: (ae-missing-release-tag) "IntervalInMilliseconds" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type IntervalInMilliseconds = number;
 
-// Warning: (ae-missing-release-tag) "isGrpcRate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isGrpcRate: (rate: TrafficRate) => boolean;
 
-// Warning: (ae-missing-release-tag) "isHttpRate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isHttpRate: (rate: TrafficRate) => boolean;
 
-// Warning: (ae-missing-release-tag) "isResponseTimeMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isResponseTimeMode: (mode: EdgeLabelMode) => boolean;
 
-// Warning: (ae-missing-release-tag) "isTcpRate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isTcpRate: (rate: TrafficRate) => boolean;
 
-// Warning: (ae-missing-release-tag) "isThroughputMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isThroughputMode: (mode: EdgeLabelMode) => boolean;
 
-// Warning: (ae-missing-release-tag) "ISTIO_CONTROL_PLANE_DASHBOARD" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ISTIO_CONTROL_PLANE_DASHBOARD = "Istio Control Plane Dashboard";
 
-// Warning: (ae-missing-release-tag) "ISTIO_DASHBOARDS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ISTIO_DASHBOARDS: string[];
 
-// Warning: (ae-missing-release-tag) "ISTIO_MESH_DASHBOARD" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ISTIO_MESH_DASHBOARD = "Istio Mesh Dashboard";
 
-// Warning: (ae-missing-release-tag) "ISTIO_PERFORMANCE_DASHBOARD" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ISTIO_PERFORMANCE_DASHBOARD = "Istio Performance Dashboard";
 
-// Warning: (ae-missing-release-tag) "ISTIO_WASM_EXTENSION_DASHBOARD" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ISTIO_WASM_EXTENSION_DASHBOARD = "Istio Wasm Extension Dashboard";
 
-// Warning: (ae-missing-release-tag) "IstioConfigDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigDetails {
     // (undocumented)
@@ -2205,8 +1858,6 @@ export interface IstioConfigDetails {
     validation: ObjectValidation;
 }
 
-// Warning: (ae-missing-release-tag) "IstioConfigDetailsQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigDetailsQuery {
     // (undocumented)
@@ -2215,8 +1866,6 @@ export interface IstioConfigDetailsQuery {
     validate?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "IstioConfigId" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigId {
     // (undocumented)
@@ -2227,8 +1876,6 @@ export interface IstioConfigId {
     objectType: string;
 }
 
-// Warning: (ae-missing-release-tag) "IstioConfigItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigItem extends TypeMeta {
     // (undocumented)
@@ -2247,8 +1894,6 @@ export interface IstioConfigItem extends TypeMeta {
     validation?: ObjectValidation;
 }
 
-// Warning: (ae-missing-release-tag) "IstioConfigList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigList {
     // (undocumented)
@@ -2263,8 +1908,6 @@ export interface IstioConfigList {
     validations: Validations;
 }
 
-// Warning: (ae-missing-release-tag) "IstioConfigListQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigListQuery {
     // (undocumented)
@@ -2277,23 +1920,17 @@ export interface IstioConfigListQuery {
     workloadSelector?: string;
 }
 
-// Warning: (ae-missing-release-tag) "IstioConfigsMap" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type IstioConfigsMap = {
     [key: string]: IstioConfigList;
 };
 
-// Warning: (ae-missing-release-tag) "IstioConfigsMapQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioConfigsMapQuery extends IstioConfigListQuery {
     // (undocumented)
     namespaces?: string;
 }
 
-// Warning: (ae-missing-release-tag) "IstiodResourceThresholds" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstiodResourceThresholds {
     // (undocumented)
@@ -2302,8 +1939,6 @@ export interface IstiodResourceThresholds {
     memory: number;
 }
 
-// Warning: (ae-missing-release-tag) "IstioEgressListener" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioEgressListener {
     // (undocumented)
@@ -2318,8 +1953,6 @@ export interface IstioEgressListener {
     port?: Port;
 }
 
-// Warning: (ae-missing-release-tag) "IstioEnvironment" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioEnvironment {
     // (undocumented)
@@ -2328,8 +1961,6 @@ export interface IstioEnvironment {
     istioAPIEnabled: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "IstioIngressListener" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioIngressListener {
     // (undocumented)
@@ -2344,13 +1975,9 @@ export interface IstioIngressListener {
     port: Port;
 }
 
-// Warning: (ae-missing-release-tag) "IstioLabelKey" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type IstioLabelKey = 'ambientWaypointLabel' | 'ambientWaypointLabelValue' | 'appLabelName' | 'versionLabelName' | 'injectionLabelName' | 'injectionLabelRev';
 
-// Warning: (ae-missing-release-tag) "IstioLevelToSeverity" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const IstioLevelToSeverity: {
     UNKNOWN: ValidationTypes;
@@ -2359,8 +1986,6 @@ export const IstioLevelToSeverity: {
     INFO: ValidationTypes;
 };
 
-// Warning: (ae-missing-release-tag) "IstioMetricsMap" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type IstioMetricsMap = {
     grpc_received?: Metric[];
@@ -2381,8 +2006,6 @@ export type IstioMetricsMap = {
     process_resident_memory_bytes?: Metric[];
 };
 
-// Warning: (ae-missing-release-tag) "IstioMetricsOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioMetricsOptions extends MetricsQuery {
     // (undocumented)
@@ -2399,8 +2022,6 @@ export interface IstioMetricsOptions extends MetricsQuery {
     requestProtocol?: string;
 }
 
-// Warning: (ae-missing-release-tag) "IstioObject" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioObject extends TypeMeta {
     // (undocumented)
@@ -2409,8 +2030,6 @@ export interface IstioObject extends TypeMeta {
     status?: IstioStatus;
 }
 
-// Warning: (ae-missing-release-tag) "IstioPermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioPermissions {
     // (undocumented)
@@ -2419,8 +2038,6 @@ export interface IstioPermissions {
     };
 }
 
-// Warning: (ae-missing-release-tag) "IstioService" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioService {
     // (undocumented)
@@ -2437,8 +2054,6 @@ export interface IstioService {
     service?: string;
 }
 
-// Warning: (ae-missing-release-tag) "IstioStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface IstioStatus {
     // (undocumented)
@@ -2447,8 +2062,6 @@ export interface IstioStatus {
     validationMessages?: ValidationMessage[];
 }
 
-// Warning: (ae-missing-release-tag) "JaegerTrace" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type JaegerTrace = TraceData<RichSpanData> & {
     duration: number;
@@ -2462,8 +2075,6 @@ export type JaegerTrace = TraceData<RichSpanData> & {
     traceName: string;
 };
 
-// Warning: (ae-missing-release-tag) "Jwt" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Jwt {
     // (undocumented)
@@ -2478,8 +2089,6 @@ export interface Jwt {
     jwtParams: string[];
 }
 
-// Warning: (ae-missing-release-tag) "JWTHeader" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface JWTHeader {
     // (undocumented)
@@ -2488,8 +2097,6 @@ export interface JWTHeader {
     prefix?: string;
 }
 
-// Warning: (ae-missing-release-tag) "JWTRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface JWTRule {
     // (undocumented)
@@ -2510,24 +2117,18 @@ export interface JWTRule {
     outputPayloadToHeader?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sCommonRouteSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sCommonRouteSpec {
     // (undocumented)
     parentRefs?: ParentRef[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sGateway" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGateway extends IstioObject {
     // (undocumented)
     spec: K8sGatewaySpec;
 }
 
-// Warning: (ae-missing-release-tag) "K8sGatewaySpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGatewaySpec {
     // (undocumented)
@@ -2538,8 +2139,6 @@ export interface K8sGatewaySpec {
     listeners?: Listener[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sGRPCHeaderMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGRPCHeaderMatch {
     // (undocumented)
@@ -2550,8 +2149,6 @@ export interface K8sGRPCHeaderMatch {
     value?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sGRPCMethodMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGRPCMethodMatch {
     // (undocumented)
@@ -2562,16 +2159,12 @@ export interface K8sGRPCMethodMatch {
     type?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sGRPCRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGRPCRoute extends IstioObject {
     // (undocumented)
     spec: K8sGRPCRouteSpec;
 }
 
-// Warning: (ae-missing-release-tag) "K8sGRPCRouteMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGRPCRouteMatch {
     // (undocumented)
@@ -2580,8 +2173,6 @@ export interface K8sGRPCRouteMatch {
     method?: K8sGRPCMethodMatch;
 }
 
-// Warning: (ae-missing-release-tag) "K8sGRPCRouteRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGRPCRouteRule {
     // (undocumented)
@@ -2590,8 +2181,6 @@ export interface K8sGRPCRouteRule {
     matches?: K8sGRPCRouteMatch[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sGRPCRouteSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sGRPCRouteSpec extends K8sCommonRouteSpec {
     // (undocumented)
@@ -2600,9 +2189,6 @@ export interface K8sGRPCRouteSpec extends K8sCommonRouteSpec {
     rules?: K8sGRPCRouteRule[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPHeaderFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sHTTPHeaderFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPHeaderFilter {
     // (undocumented)
@@ -2623,8 +2209,6 @@ export interface K8sHTTPHeaderFilter {
     set?: HTTPHeader[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPMatch {
     // (undocumented)
@@ -2635,9 +2219,6 @@ export interface K8sHTTPMatch {
     value?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRequestMirrorFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sHTTPRequestMirrorFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRequestMirrorFilter {
     // (undocumented)
@@ -2650,17 +2231,12 @@ export interface K8sHTTPRequestMirrorFilter {
     backendRef?: K8sRouteBackendRef;
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRoute extends IstioObject {
     // (undocumented)
     spec: K8sHTTPRouteSpec;
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRouteFilter {
     // (undocumented)
@@ -2685,9 +2261,6 @@ export interface K8sHTTPRouteFilter {
     type?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRouteMatch {
     // (undocumented)
@@ -2712,9 +2285,6 @@ export interface K8sHTTPRouteMatch {
     queryParams?: K8sHTTPMatch[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteRequestRedirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteRequestRedirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRouteRequestRedirect {
     // (undocumented)
@@ -2739,8 +2309,6 @@ export interface K8sHTTPRouteRequestRedirect {
     statusCode?: number;
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRouteRule {
     // (undocumented)
@@ -2751,9 +2319,6 @@ export interface K8sHTTPRouteRule {
     matches?: K8sHTTPRouteMatch[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sHTTPRouteSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sHTTPRouteSpec {
     // (undocumented)
@@ -2772,16 +2337,12 @@ export interface K8sHTTPRouteSpec extends K8sCommonRouteSpec {
     rules?: K8sHTTPRouteRule[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sInitializer" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sInitializer {
     // (undocumented)
     name?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sInitializers" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sInitializers {
     // (undocumented)
@@ -2790,8 +2351,6 @@ export interface K8sInitializers {
     result?: K8sStatus;
 }
 
-// Warning: (ae-missing-release-tag) "K8sMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sMetadata {
     // (undocumented)
@@ -2832,8 +2391,6 @@ export interface K8sMetadata {
     uid?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sOwnerReference" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sOwnerReference {
     // (undocumented)
@@ -2850,16 +2407,12 @@ export interface K8sOwnerReference {
     uid: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sReferenceGrant" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sReferenceGrant extends IstioObject {
     // (undocumented)
     spec: K8sReferenceGrantSpec;
 }
 
-// Warning: (ae-missing-release-tag) "K8sReferenceGrantSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sReferenceGrantSpec {
     // (undocumented)
@@ -2868,8 +2421,6 @@ export interface K8sReferenceGrantSpec {
     to?: K8sReferenceRule[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sReferenceRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sReferenceRule {
     // (undocumented)
@@ -2880,17 +2431,12 @@ export interface K8sReferenceRule {
     namespace?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sResource" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sResource extends TypeMeta {
     // (undocumented)
     metadata: K8sMetadata;
 }
 
-// Warning: (ae-missing-release-tag) "K8sRouteBackendRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "K8sRouteBackendRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sRouteBackendRef {
     // (undocumented)
@@ -2919,8 +2465,6 @@ export interface K8sRouteBackendRef {
     weight?: number;
 }
 
-// Warning: (ae-missing-release-tag) "K8sRouteRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sRouteRule {
     // (undocumented)
@@ -2931,8 +2475,6 @@ export interface K8sRouteRule {
     matches?: K8sHTTPRouteMatch[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sStatus {
     // (undocumented)
@@ -2943,48 +2485,36 @@ export interface K8sStatus {
     status?: string;
 }
 
-// Warning: (ae-missing-release-tag) "K8sTCPRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sTCPRoute extends IstioObject {
     // (undocumented)
     spec: K8sTCPRouteSpec;
 }
 
-// Warning: (ae-missing-release-tag) "K8sTCPRouteRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sTCPRouteRule {
     // (undocumented)
     backendRefs?: K8sRouteBackendRef[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sTCPRouteSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sTCPRouteSpec extends K8sCommonRouteSpec {
     // (undocumented)
     rules?: K8sTCPRouteRule[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sTLSRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sTLSRoute extends IstioObject {
     // (undocumented)
     spec: K8sTLSRouteSpec;
 }
 
-// Warning: (ae-missing-release-tag) "K8sTLSRouteRule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sTLSRouteRule {
     // (undocumented)
     backendRefs?: K8sRouteBackendRef[];
 }
 
-// Warning: (ae-missing-release-tag) "K8sTLSRouteSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface K8sTLSRouteSpec extends K8sCommonRouteSpec {
     // (undocumented)
@@ -2993,8 +2523,6 @@ export interface K8sTLSRouteSpec extends K8sCommonRouteSpec {
     rules?: K8sTLSRouteRule[];
 }
 
-// Warning: (ae-missing-release-tag) "KeyValuePair" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type KeyValuePair = {
     key: string;
@@ -3002,13 +2530,9 @@ export type KeyValuePair = {
     value: any;
 };
 
-// Warning: (ae-missing-release-tag) "KIALI_THEME" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const KIALI_THEME = "kiali-theme";
 
-// Warning: (ae-missing-release-tag) "KialiCrippledFeatures" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface KialiCrippledFeatures {
     // (undocumented)
@@ -3031,8 +2555,6 @@ export interface KialiCrippledFeatures {
     responseTimePercentiles: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "KialiError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface KialiError {
     // (undocumented)
@@ -3041,8 +2563,6 @@ export interface KialiError {
     error: string;
 }
 
-// Warning: (ae-missing-release-tag) "KialiInstance" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface KialiInstance {
     // (undocumented)
@@ -3057,13 +2577,9 @@ export interface KialiInstance {
     version: string;
 }
 
-// Warning: (ae-missing-release-tag) "KioskMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type KioskMode = string;
 
-// Warning: (ae-missing-release-tag) "L4MatchAttributes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface L4MatchAttributes {
     // (undocumented)
@@ -3080,25 +2596,17 @@ export interface L4MatchAttributes {
     sourceName?: string;
 }
 
-// Warning: (ae-missing-release-tag) "LabelDisplayName" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type LabelDisplayName = string;
 
-// Warning: (ae-missing-release-tag) "LabelOperation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type LabelOperation = 'and' | 'or';
 
-// Warning: (ae-missing-release-tag) "Labels" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Labels = {
     [key: string]: string;
 };
 
-// Warning: (ae-missing-release-tag) "LabelSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface LabelSelector {
     // (undocumented)
@@ -3107,16 +2615,12 @@ export interface LabelSelector {
     };
 }
 
-// Warning: (ae-missing-release-tag) "Layout" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Layout {
     // (undocumented)
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "LegendInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface LegendInfo {
     // (undocumented)
@@ -3127,8 +2631,6 @@ export interface LegendInfo {
     itemsPerRow: number;
 }
 
-// Warning: (ae-missing-release-tag) "LegendItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type LegendItem = {
     name: string;
@@ -3138,8 +2640,6 @@ export type LegendItem = {
     };
 };
 
-// Warning: (ae-missing-release-tag) "LineInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type LineInfo = {
     name: string;
@@ -3150,8 +2650,6 @@ export type LineInfo = {
     scaleFactor?: number;
 };
 
-// Warning: (ae-missing-release-tag) "Listener" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Listener {
     // (undocumented)
@@ -3166,8 +2664,6 @@ export interface Listener {
     protocol: string;
 }
 
-// Warning: (ae-missing-release-tag) "ListenerMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ListenerMatch {
     // (undocumented)
@@ -3176,8 +2672,6 @@ export interface ListenerMatch {
     portNumber?: number;
 }
 
-// Warning: (ae-missing-release-tag) "ListenerSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ListenerSummary {
     // (undocumented)
@@ -3190,8 +2684,6 @@ export interface ListenerSummary {
     port: number;
 }
 
-// Warning: (ae-missing-release-tag) "LoadBalancerSettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface LoadBalancerSettings {
     // (undocumented)
@@ -3202,8 +2694,6 @@ export interface LoadBalancerSettings {
     simple?: string | null;
 }
 
-// Warning: (ae-missing-release-tag) "Localhost" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Localhost {
     // (undocumented)
@@ -3212,8 +2702,6 @@ export interface Localhost {
     serverTls?: ServerTLSSettings;
 }
 
-// Warning: (ae-missing-release-tag) "LocalityLoadBalancerSetting" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface LocalityLoadBalancerSetting {
     // (undocumented)
@@ -3224,16 +2712,12 @@ export interface LocalityLoadBalancerSetting {
     failover?: Failover[];
 }
 
-// Warning: (ae-missing-release-tag) "Log" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Log = {
     fields: Array<KeyValuePair>;
     timestamp: number;
 };
 
-// Warning: (ae-missing-release-tag) "LogEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type LogEntry = {
     accessLog?: AccessLog;
@@ -3244,16 +2728,12 @@ export type LogEntry = {
     timestampUnix: TimeInSeconds;
 };
 
-// Warning: (ae-missing-release-tag) "LogLevelQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface LogLevelQuery {
     // (undocumented)
     level: string;
 }
 
-// Warning: (ae-missing-release-tag) "Match" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Match {
     // (undocumented)
@@ -3264,13 +2744,9 @@ export interface Match {
     };
 }
 
-// Warning: (ae-missing-release-tag) "MAX_PORT" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const MAX_PORT = 65535;
 
-// Warning: (ae-missing-release-tag) "MeshCluster" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MeshCluster {
     // (undocumented)
@@ -3287,13 +2763,9 @@ export interface MeshCluster {
     secretName: string;
 }
 
-// Warning: (ae-missing-release-tag) "MeshClusters" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type MeshClusters = MeshCluster[];
 
-// Warning: (ae-missing-release-tag) "MessageType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum MessageType {
     // (undocumented)
@@ -3306,8 +2778,6 @@ export enum MessageType {
     WARNING = "warning"
 }
 
-// Warning: (ae-missing-release-tag) "Metric" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Metric {
     // (undocumented)
@@ -3320,8 +2790,6 @@ export interface Metric {
     stat?: string;
 }
 
-// Warning: (ae-missing-release-tag) "MetricsObjectTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum MetricsObjectTypes {
     // (undocumented)
@@ -3332,8 +2800,6 @@ export enum MetricsObjectTypes {
     WORKLOAD = 1
 }
 
-// Warning: (ae-missing-release-tag) "MetricsQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MetricsQuery {
     // (undocumented)
@@ -3354,8 +2820,6 @@ export interface MetricsQuery {
     step?: number;
 }
 
-// Warning: (ae-missing-release-tag) "MetricsStats" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MetricsStats {
     // (undocumented)
@@ -3364,15 +2828,11 @@ export interface MetricsStats {
     responseTimes: Stat[];
 }
 
-// Warning: (ae-missing-release-tag) "MetricsStatsMap" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type MetricsStatsMap = {
     [key: string]: MetricsStats;
 };
 
-// Warning: (ae-missing-release-tag) "MetricsStatsQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MetricsStatsQuery {
     // (undocumented)
@@ -3391,8 +2851,6 @@ export interface MetricsStatsQuery {
     target: Target;
 }
 
-// Warning: (ae-missing-release-tag) "MetricsStatsResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MetricsStatsResult {
     // (undocumented)
@@ -3401,18 +2859,12 @@ export interface MetricsStatsResult {
     warnings?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "MILLISECONDS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const MILLISECONDS = 1000;
 
-// Warning: (ae-missing-release-tag) "MIN_PORT" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const MIN_PORT = 0;
 
-// Warning: (ae-missing-release-tag) "MTLSStatuses" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum MTLSStatuses {
     // (undocumented)
@@ -3433,8 +2885,6 @@ export enum MTLSStatuses {
     PARTIALLY_DEFAULT = "MTLS_PARTIALLY_ENABLED_DEFAULT"
 }
 
-// Warning: (ae-missing-release-tag) "MutualTls" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MutualTls {
     // (undocumented)
@@ -3443,8 +2893,6 @@ export interface MutualTls {
     mode: MutualTlsMode;
 }
 
-// Warning: (ae-missing-release-tag) "MutualTlsMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum MutualTlsMode {
     // (undocumented)
@@ -3453,8 +2901,6 @@ export enum MutualTlsMode {
     STRICT = "STRICT"
 }
 
-// Warning: (ae-missing-release-tag) "NA" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const NA: Status;
 
@@ -3476,8 +2922,6 @@ export interface Namespace {
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "NamespaceHealthQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface NamespaceHealthQuery {
     // (undocumented)
@@ -3488,8 +2932,6 @@ export interface NamespaceHealthQuery {
     type: string;
 }
 
-// Warning: (ae-missing-release-tag) "NamespaceInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type NamespaceInfo = {
     annotations?: {
@@ -3511,8 +2953,6 @@ export type NamespaceInfo = {
     validations?: ValidationStatus;
 };
 
-// Warning: (ae-missing-release-tag) "NamespaceStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type NamespaceStatus = {
     inError: string[];
@@ -3522,8 +2962,6 @@ export type NamespaceStatus = {
     notAvailable: string[];
 };
 
-// Warning: (ae-missing-release-tag) "NodeAttr" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const NodeAttr: {
     aggregate: string;
@@ -3573,8 +3011,6 @@ export const NodeAttr: {
     workload: string;
 };
 
-// Warning: (ae-missing-release-tag) "NodeParamsType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface NodeParamsType {
     // (undocumented)
@@ -3597,8 +3033,6 @@ export interface NodeParamsType {
     workload: string;
 }
 
-// Warning: (ae-missing-release-tag) "NodeType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum NodeType {
     // (undocumented)
@@ -3615,8 +3049,6 @@ export enum NodeType {
     WORKLOAD = "workload"
 }
 
-// Warning: (ae-missing-release-tag) "NonInputTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum NonInputTypes {
     // (undocumented)
@@ -3629,13 +3061,9 @@ export enum NonInputTypes {
     typeAhead = "typeahead"
 }
 
-// Warning: (ae-missing-release-tag) "NOT_READY" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const NOT_READY: Status;
 
-// Warning: (ae-missing-release-tag) "NotificationGroup" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface NotificationGroup {
     // (undocumented)
@@ -3650,8 +3078,6 @@ export interface NotificationGroup {
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "NotificationMessage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface NotificationMessage {
     // (undocumented)
@@ -3678,13 +3104,9 @@ export interface NotificationMessage {
     type: MessageType;
 }
 
-// Warning: (ae-missing-release-tag) "numLabels" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const numLabels: (modes: EdgeLabelMode[]) => number;
 
-// Warning: (ae-missing-release-tag) "ObjectCheck" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ObjectCheck {
     // (undocumented)
@@ -3697,8 +3119,6 @@ export interface ObjectCheck {
     severity: ValidationTypes;
 }
 
-// Warning: (ae-missing-release-tag) "ObjectReference" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ObjectReference {
     // (undocumented)
@@ -3709,8 +3129,6 @@ export interface ObjectReference {
     objectGVK: GroupVersionKind;
 }
 
-// Warning: (ae-missing-release-tag) "ObjectValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ObjectValidation {
     // (undocumented)
@@ -3725,16 +3143,12 @@ export interface ObjectValidation {
     valid: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "OpenTracingBaseInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type OpenTracingBaseInfo = {
     component?: string;
     hasError: boolean;
 };
 
-// Warning: (ae-missing-release-tag) "OpenTracingHTTPInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type OpenTracingHTTPInfo = OpenTracingBaseInfo & {
     direction?: 'inbound' | 'outbound';
@@ -3743,8 +3157,6 @@ export type OpenTracingHTTPInfo = OpenTracingBaseInfo & {
     url?: string;
 };
 
-// Warning: (ae-missing-release-tag) "OpenTracingTCPInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type OpenTracingTCPInfo = OpenTracingBaseInfo & {
     direction?: 'inbound' | 'outbound';
@@ -3753,8 +3165,6 @@ export type OpenTracingTCPInfo = OpenTracingBaseInfo & {
     topic?: string;
 };
 
-// Warning: (ae-missing-release-tag) "Operation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Operation {
     // (undocumented)
@@ -3775,24 +3185,18 @@ export interface Operation {
     ports?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "OriginAuthenticationMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface OriginAuthenticationMethod {
     // (undocumented)
     jwt: Jwt;
 }
 
-// Warning: (ae-missing-release-tag) "OutboundTrafficPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface OutboundTrafficPolicy {
     // (undocumented)
     mode?: string;
 }
 
-// Warning: (ae-missing-release-tag) "OutlierDetection" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface OutlierDetection {
     // (undocumented)
@@ -3809,16 +3213,12 @@ export interface OutlierDetection {
     minHealthPercent?: number;
 }
 
-// Warning: (ae-missing-release-tag) "Overlay" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Overlay<T extends LineInfo> = {
     vcLine: VCLine<VCDataPoint & T>;
     info: OverlayInfo<T>;
 };
 
-// Warning: (ae-missing-release-tag) "OverlayInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type OverlayInfo<T extends LineInfo> = {
     lineInfo: T;
@@ -3826,8 +3226,6 @@ export type OverlayInfo<T extends LineInfo> = {
     buckets?: number;
 };
 
-// Warning: (ae-missing-release-tag) "ParentRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ParentRef {
     // (undocumented)
@@ -3836,8 +3234,6 @@ export interface ParentRef {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "ParsedSearch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ParsedSearch {
     // (undocumented)
@@ -3846,13 +3242,9 @@ export interface ParsedSearch {
     type?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Password" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Password = string;
 
-// Warning: (ae-missing-release-tag) "Patch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Patch {
     // (undocumented)
@@ -3861,32 +3253,24 @@ export interface Patch {
     value?: any;
 }
 
-// Warning: (ae-missing-release-tag) "PeerAuthentication" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PeerAuthentication extends IstioObject {
     // (undocumented)
     spec: PeerAuthenticationSpec;
 }
 
-// Warning: (ae-missing-release-tag) "PeerAuthenticationMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PeerAuthenticationMethod {
     // (undocumented)
     mtls: MutualTls;
 }
 
-// Warning: (ae-missing-release-tag) "PeerAuthenticationMutualTls" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PeerAuthenticationMutualTls {
     // (undocumented)
     mode: PeerAuthenticationMutualTLSMode;
 }
 
-// Warning: (ae-missing-release-tag) "PeerAuthenticationMutualTLSMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum PeerAuthenticationMutualTLSMode {
     // (undocumented)
@@ -3899,8 +3283,6 @@ export enum PeerAuthenticationMutualTLSMode {
     UNSET = "UNSET"
 }
 
-// Warning: (ae-missing-release-tag) "PeerAuthenticationSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PeerAuthenticationSpec {
     // (undocumented)
@@ -3913,8 +3295,6 @@ export interface PeerAuthenticationSpec {
     selector?: PeerAuthenticationWorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "PeerAuthenticationWorkloadSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PeerAuthenticationWorkloadSelector {
     // (undocumented)
@@ -3923,40 +3303,28 @@ export interface PeerAuthenticationWorkloadSelector {
     };
 }
 
-// Warning: (ae-missing-release-tag) "Percent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Percent {
     // (undocumented)
     value: number;
 }
 
-// Warning: (ae-missing-release-tag) "PercentageOfTrafficByFlag" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PercentageOfTrafficByFlag = {
     [flag: string]: string;
 };
 
-// Warning: (ae-missing-release-tag) "PercentageOfTrafficByHost" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PercentageOfTrafficByHost = {
     [host: string]: string;
 };
 
-// Warning: (ae-missing-release-tag) "PF_THEME_DARK" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const PF_THEME_DARK = "pf-v5-theme-dark";
 
-// Warning: (ae-missing-release-tag) "PFColorVal" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PFColorVal = string;
 
-// Warning: (ae-missing-release-tag) "Pod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Pod {
     // (undocumented)
@@ -3995,13 +3363,9 @@ export interface Pod {
     versionLabel: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "POD_STATUS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const POD_STATUS = "Pod Status";
 
-// Warning: (ae-missing-release-tag) "PodLogs" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PodLogs {
     // (undocumented)
@@ -4010,8 +3374,6 @@ export interface PodLogs {
     linesTruncated?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "PodLogsQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PodLogsQuery {
     // (undocumented)
@@ -4026,8 +3388,6 @@ export interface PodLogsQuery {
     sinceTime?: number;
 }
 
-// Warning: (ae-missing-release-tag) "PodReference" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PodReference {
     // (undocumented)
@@ -4036,8 +3396,6 @@ export interface PodReference {
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "Port" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Port {
     // (undocumented)
@@ -4050,8 +3408,6 @@ export interface Port {
     targetPort?: number;
 }
 
-// Warning: (ae-missing-release-tag) "PortSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PortSelector {
     // (undocumented)
@@ -4060,8 +3416,6 @@ export interface PortSelector {
     number: number;
 }
 
-// Warning: (ae-missing-release-tag) "PortTrafficPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface PortTrafficPolicy {
     // (undocumented)
@@ -4076,8 +3430,6 @@ export interface PortTrafficPolicy {
     tls?: ClientTLSSettings;
 }
 
-// Warning: (ae-missing-release-tag) "PrincipalBinding" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum PrincipalBinding {
     // (undocumented)
@@ -4086,21 +3438,15 @@ export enum PrincipalBinding {
     USE_PEER = "USE_PEER"
 }
 
-// Warning: (ae-missing-release-tag) "Process" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Process = {
     serviceName: string;
     tags: Array<KeyValuePair>;
 };
 
-// Warning: (ae-missing-release-tag) "PromLabel" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PromLabel = string;
 
-// Warning: (ae-missing-release-tag) "Protocol" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum Protocol {
     // (undocumented)
@@ -4111,20 +3457,14 @@ export enum Protocol {
     TCP = "tcp"
 }
 
-// Warning: (ae-missing-release-tag) "ProtocolNoTraffic" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ProtocolNoTraffic = {
     protocol: ValidProtocols;
 };
 
-// Warning: (ae-missing-release-tag) "ProtocolTraffic" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ProtocolTraffic = ProtocolWithTraffic | ProtocolNoTraffic;
 
-// Warning: (ae-missing-release-tag) "ProtocolTrafficGrpc" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ProtocolTrafficGrpc = {
     protocol: 'grpc';
@@ -4135,8 +3475,6 @@ export type ProtocolTrafficGrpc = {
     responses: Responses;
 };
 
-// Warning: (ae-missing-release-tag) "ProtocolTrafficHttp" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ProtocolTrafficHttp = {
     protocol: 'http';
@@ -4147,8 +3485,6 @@ export type ProtocolTrafficHttp = {
     responses: Responses;
 };
 
-// Warning: (ae-missing-release-tag) "ProtocolTrafficTcp" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ProtocolTrafficTcp = {
     protocol: 'tcp';
@@ -4158,13 +3494,9 @@ export type ProtocolTrafficTcp = {
     responses: Responses;
 };
 
-// Warning: (ae-missing-release-tag) "ProtocolWithTraffic" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ProtocolWithTraffic = ProtocolTrafficHttp | ProtocolTrafficTcp | ProtocolTrafficGrpc;
 
-// Warning: (ae-missing-release-tag) "ProxyMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ProxyMatch {
     // (undocumented)
@@ -4175,8 +3507,6 @@ export interface ProxyMatch {
     proxyVersion?: string;
 }
 
-// Warning: (ae-missing-release-tag) "ProxyStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ProxyStatus {
     // (undocumented)
@@ -4189,8 +3519,6 @@ export interface ProxyStatus {
     RDS: string;
 }
 
-// Warning: (ae-missing-release-tag) "RankMode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum RankMode {
     // (undocumented)
@@ -4199,15 +3527,11 @@ export enum RankMode {
     RANK_BY_OUTBOUND_EDGES = "outboundEdges"
 }
 
-// Warning: (ae-missing-release-tag) "RankResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RankResult = {
     upperBound: number;
 };
 
-// Warning: (ae-missing-release-tag) "Rate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Rate {
     // (undocumented)
@@ -4218,8 +3542,6 @@ export interface Rate {
     requestRate: number;
 }
 
-// Warning: (ae-missing-release-tag) "RateHealthConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RateHealthConfig {
     // (undocumented)
@@ -4232,23 +3554,15 @@ export interface RateHealthConfig {
     tolerance: ToleranceConfig[];
 }
 
-// Warning: (ae-missing-release-tag) "RATIO_NA" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const RATIO_NA = -1;
 
-// Warning: (ae-missing-release-tag) "RawDate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RawDate = string;
 
-// Warning: (ae-missing-release-tag) "RawOrBucket" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RawOrBucket<T extends LineInfo> = T & (VCDataPoint | BucketDataPoint);
 
-// Warning: (ae-missing-release-tag) "ReadinessProbe" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ReadinessProbe {
     // (undocumented)
@@ -4269,8 +3583,6 @@ export interface ReadinessProbe {
     timeoutSeconds?: number;
 }
 
-// Warning: (ae-missing-release-tag) "References" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface References {
     // (undocumented)
@@ -4281,26 +3593,18 @@ export interface References {
     workloadReferences: WorkloadReference[];
 }
 
-// Warning: (ae-missing-release-tag) "RegexConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RegexConfig = string | RegExp;
 
-// Warning: (ae-missing-release-tag) "Reporter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Reporter = 'source' | 'destination' | 'both';
 
-// Warning: (ae-missing-release-tag) "RequestAuthentication" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RequestAuthentication extends IstioObject {
     // (undocumented)
     spec: RequestAuthenticationSpec;
 }
 
-// Warning: (ae-missing-release-tag) "RequestAuthenticationSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RequestAuthenticationSpec {
     // (undocumented)
@@ -4309,8 +3613,6 @@ export interface RequestAuthenticationSpec {
     selector?: WorkloadMatchSelector;
 }
 
-// Warning: (ae-missing-release-tag) "RequestHealth" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RequestHealth {
     // (undocumented)
@@ -4321,8 +3623,6 @@ export interface RequestHealth {
     outbound: RequestType;
 }
 
-// Warning: (ae-missing-release-tag) "RequestTolerance" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RequestTolerance {
     // (undocumented)
@@ -4333,8 +3633,6 @@ export interface RequestTolerance {
     tolerance: ToleranceConfig;
 }
 
-// Warning: (ae-missing-release-tag) "RequestType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RequestType {
     // (undocumented)
@@ -4343,8 +3641,6 @@ export interface RequestType {
     };
 }
 
-// Warning: (ae-missing-release-tag) "ResourcePermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ResourcePermissions {
     // (undocumented)
@@ -4355,28 +3651,20 @@ export interface ResourcePermissions {
     update: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "ResponseDetail" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ResponseDetail = {
     flags: PercentageOfTrafficByFlag;
     hosts: PercentageOfTrafficByHost;
 };
 
-// Warning: (ae-missing-release-tag) "Responses" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Responses = {
     [responseCode: string]: ResponseDetail;
 };
 
-// Warning: (ae-missing-release-tag) "RichDataPoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RichDataPoint = VCDataPoint & LineInfo;
 
-// Warning: (ae-missing-release-tag) "RichSpanData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RichSpanData = Span & {
     app: string;
@@ -4391,8 +3679,6 @@ export type RichSpanData = Span & {
     workload?: string;
 };
 
-// Warning: (ae-missing-release-tag) "RouteConfigurationMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RouteConfigurationMatch {
     // (undocumented)
@@ -4407,8 +3693,6 @@ export interface RouteConfigurationMatch {
     vhost?: VirtualHostMatch;
 }
 
-// Warning: (ae-missing-release-tag) "RouteDestination" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RouteDestination {
     // (undocumented)
@@ -4417,8 +3701,6 @@ export interface RouteDestination {
     weight?: number;
 }
 
-// Warning: (ae-missing-release-tag) "RouteMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RouteMatch {
     // (undocumented)
@@ -4427,8 +3709,6 @@ export interface RouteMatch {
     name?: string;
 }
 
-// Warning: (ae-missing-release-tag) "RouteSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RouteSummary {
     // (undocumented)
@@ -4441,32 +3721,24 @@ export interface RouteSummary {
     virtual_service: string;
 }
 
-// Warning: (ae-missing-release-tag) "RuleFrom" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RuleFrom {
     // (undocumented)
     source: Source;
 }
 
-// Warning: (ae-missing-release-tag) "RuleTo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RuleTo {
     // (undocumented)
     operation: Operation;
 }
 
-// Warning: (ae-missing-release-tag) "RunnableFilter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RunnableFilter<T> extends FilterType {
     // (undocumented)
     run: (item: T, filters: ActiveFiltersInfo) => boolean;
 }
 
-// Warning: (ae-missing-release-tag) "Runtime" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Runtime {
     // (undocumented)
@@ -4475,8 +3747,6 @@ export interface Runtime {
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "safeDumpOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const safeDumpOptions: {
     styles: {
@@ -4484,8 +3754,6 @@ export const safeDumpOptions: {
     };
 };
 
-// Warning: (ae-missing-release-tag) "SEInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SEInfo {
     // (undocumented)
@@ -4496,8 +3764,6 @@ export interface SEInfo {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "Server" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Server {
     // (undocumented)
@@ -4508,8 +3774,6 @@ export interface Server {
     tls?: ServerTLSSettings;
 }
 
-// Warning: (ae-missing-release-tag) "ServerConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServerConfig {
     // (undocumented)
@@ -4561,8 +3825,6 @@ export interface ServerConfig {
     };
 }
 
-// Warning: (ae-missing-release-tag) "ServerForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServerForm {
     // (undocumented)
@@ -4583,8 +3845,6 @@ export interface ServerForm {
     tlsServerCertificate: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServerPort" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServerPort {
     // (undocumented)
@@ -4595,8 +3855,6 @@ export interface ServerPort {
     protocol: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServerTLSSettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServerTLSSettings {
     // (undocumented)
@@ -4625,8 +3883,6 @@ export interface ServerTLSSettings {
     verifyCertificateSpki?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "Service" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Service {
     // (undocumented)
@@ -4661,8 +3917,6 @@ export interface Service {
     type: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceDetailsInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceDetailsInfo {
     // (undocumented)
@@ -4701,8 +3955,6 @@ export interface ServiceDetailsInfo {
     workloads?: WorkloadOverviewServiceView[];
 }
 
-// Warning: (ae-missing-release-tag) "ServiceDetailsQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceDetailsQuery {
     // (undocumented)
@@ -4711,16 +3963,12 @@ export interface ServiceDetailsQuery {
     validate?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceEntry extends IstioObject {
     // (undocumented)
     spec: ServiceEntrySpec;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceEntrySpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceEntrySpec {
     // (undocumented)
@@ -4743,8 +3991,6 @@ export interface ServiceEntrySpec {
     workloadSelector?: WorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceId" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceId {
     // (undocumented)
@@ -4753,8 +3999,6 @@ export interface ServiceId {
     service: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceList {
     // (undocumented)
@@ -4765,8 +4009,6 @@ export interface ServiceList {
     validations: Validations;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceListItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceListItem extends ServiceOverview {
     // (undocumented)
@@ -4775,8 +4017,6 @@ export interface ServiceListItem extends ServiceOverview {
     validation?: ObjectValidation;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceListQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceListQuery {
     // (undocumented)
@@ -4789,8 +4029,6 @@ export interface ServiceListQuery {
     rateInterval: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceOverview" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceOverview {
     // (undocumented)
@@ -4821,8 +4059,6 @@ export interface ServiceOverview {
     serviceRegistry: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServicePort" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServicePort {
     // (undocumented)
@@ -4839,8 +4075,6 @@ export interface ServicePort {
     tlsMode: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceReference" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceReference {
     // (undocumented)
@@ -4849,8 +4083,6 @@ export interface ServiceReference {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "ServiceViewIstio" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ServiceViewIstio {
     // (undocumented)
@@ -4873,8 +4105,6 @@ export interface ServiceViewIstio {
     type: string;
 }
 
-// Warning: (ae-missing-release-tag) "SessionInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SessionInfo {
     // (undocumented)
@@ -4883,16 +4113,12 @@ export interface SessionInfo {
     username?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Sidecar" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Sidecar extends IstioObject {
     // (undocumented)
     spec: SidecarSpec;
 }
 
-// Warning: (ae-missing-release-tag) "SidecarSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SidecarSpec {
     // (undocumented)
@@ -4907,15 +4133,11 @@ export interface SidecarSpec {
     workloadSelector?: WorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "SingleLabelValues" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SingleLabelValues = {
     [key: string]: boolean;
 };
 
-// Warning: (ae-missing-release-tag) "SortField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SortField<T> {
     // Warning: (ae-forgotten-export) The symbol "WithHealth" needs to be exported by the entry point index.d.ts
@@ -4932,8 +4154,6 @@ export interface SortField<T> {
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "Source" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Source {
     // (undocumented)
@@ -4954,8 +4174,6 @@ export interface Source {
     requestPrincipals?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "Span" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Span = SpanData & {
     depth: number;
@@ -4967,8 +4185,6 @@ export type Span = SpanData & {
     warnings: NonNullable<SpanData['warnings']>;
 };
 
-// Warning: (ae-missing-release-tag) "SpanData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SpanData = {
     duration: number;
@@ -4983,8 +4199,6 @@ export type SpanData = {
     warnings?: Array<string> | null;
 };
 
-// Warning: (ae-missing-release-tag) "SpanReference" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SpanReference = {
     refType: 'CHILD_OF' | 'FOLLOWS_FROM';
@@ -4993,8 +4207,6 @@ export type SpanReference = {
     traceID: string;
 };
 
-// Warning: (ae-missing-release-tag) "SpanTracing" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SpanTracing = {
     traceID: string;
@@ -5007,13 +4219,9 @@ export type SpanTracing = {
     traceSize: number;
 };
 
-// Warning: (ae-missing-release-tag) "SpanValue" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SpanValue = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
-// Warning: (ae-missing-release-tag) "Stat" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Stat {
     // (undocumented)
@@ -5022,8 +4230,6 @@ export interface Stat {
     value: number;
 }
 
-// Warning: (ae-missing-release-tag) "Status" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Status {
     // (undocumented)
@@ -5038,8 +4244,6 @@ export interface Status {
     priority: number;
 }
 
-// Warning: (ae-missing-release-tag) "StatusCondition" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface StatusCondition {
     // (undocumented)
@@ -5050,8 +4254,6 @@ export interface StatusCondition {
     type: string;
 }
 
-// Warning: (ae-missing-release-tag) "StatusKey" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum StatusKey {
     // (undocumented)
@@ -5072,15 +4274,11 @@ export enum StatusKey {
     MESH_VERSION = "Mesh version"
 }
 
-// Warning: (ae-missing-release-tag) "StatusMap" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type StatusMap = {
     [K in StatusKey]?: string;
 };
 
-// Warning: (ae-missing-release-tag) "StatusState" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface StatusState {
     // (undocumented)
@@ -5095,8 +4293,6 @@ export interface StatusState {
     warningMessages: string[];
 }
 
-// Warning: (ae-missing-release-tag) "StatusTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum StatusTypes {
     // (undocumented)
@@ -5111,8 +4307,6 @@ export enum StatusTypes {
     Unreachable = "Unreachable"
 }
 
-// Warning: (ae-missing-release-tag) "StringMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface StringMatch {
     // (undocumented)
@@ -5123,21 +4317,15 @@ export interface StringMatch {
     regex?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Style" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Style = any;
 
-// Warning: (ae-missing-release-tag) "SubFilterMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SubFilterMatch {
     // (undocumented)
     name?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Subset" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Subset {
     // (undocumented)
@@ -5150,13 +4338,9 @@ export interface Subset {
     trafficPolicy?: TrafficPolicy;
 }
 
-// Warning: (ae-missing-release-tag) "SUMMARY_PANEL_CHART_WIDTH" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const SUMMARY_PANEL_CHART_WIDTH = 250;
 
-// Warning: (ae-missing-release-tag) "SummaryData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SummaryData {
     // (undocumented)
@@ -5167,8 +4351,6 @@ export interface SummaryData {
     summaryType: SummaryType;
 }
 
-// Warning: (ae-missing-release-tag) "SummaryPanelPropType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SummaryPanelPropType {
     // (undocumented)
@@ -5193,13 +4375,9 @@ export interface SummaryPanelPropType {
     trafficRates: TrafficRate[];
 }
 
-// Warning: (ae-missing-release-tag) "SummaryType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SummaryType = 'graph' | 'node' | 'edge' | 'box';
 
-// Warning: (ae-missing-release-tag) "Tag" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Tag = {
     key: string;
@@ -5207,8 +4385,6 @@ export type Tag = {
     value: any;
 };
 
-// Warning: (ae-missing-release-tag) "Target" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Target {
     // (undocumented)
@@ -5221,13 +4397,9 @@ export interface Target {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "TargetKind" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TargetKind = 'app' | 'service' | 'workload';
 
-// Warning: (ae-missing-release-tag) "TargetSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TargetSelector {
     // (undocumented)
@@ -5236,8 +4408,6 @@ export interface TargetSelector {
     ports?: PortSelector[];
 }
 
-// Warning: (ae-missing-release-tag) "TCPHealthCheckConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TCPHealthCheckConfig {
     // (undocumented)
@@ -5246,8 +4416,6 @@ export interface TCPHealthCheckConfig {
     port: number;
 }
 
-// Warning: (ae-missing-release-tag) "TcpKeepalive" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TcpKeepalive {
     // (undocumented)
@@ -5258,8 +4426,6 @@ export interface TcpKeepalive {
     time?: string;
 }
 
-// Warning: (ae-missing-release-tag) "TCPRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TCPRoute {
     // (undocumented)
@@ -5268,29 +4434,21 @@ export interface TCPRoute {
     route?: RouteDestination[];
 }
 
-// Warning: (ae-missing-release-tag) "Telemetry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Telemetry extends IstioObject {
     // (undocumented)
     spec: TelemetrySpec;
 }
 
-// Warning: (ae-missing-release-tag) "TelemetrySpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TelemetrySpec extends IstioObject {
     // (undocumented)
     workloadSelector?: WorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "TEMPO" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const TEMPO = "tempo";
 
-// Warning: (ae-missing-release-tag) "TextInputTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum TextInputTypes {
     // (undocumented)
@@ -5317,8 +4475,6 @@ export enum TextInputTypes {
     url = "url"
 }
 
-// Warning: (ae-missing-release-tag) "Theme" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const enum Theme {
     // (undocumented)
@@ -5327,8 +4483,6 @@ export const enum Theme {
     LIGHT = "Light"
 }
 
-// Warning: (ae-missing-release-tag) "ThresholdStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ThresholdStatus {
     // (undocumented)
@@ -5339,18 +4493,12 @@ export interface ThresholdStatus {
     violation?: string;
 }
 
-// Warning: (ae-missing-release-tag) "TimeInMilliseconds" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TimeInMilliseconds = number;
 
-// Warning: (ae-missing-release-tag) "TimeInSeconds" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TimeInSeconds = number;
 
-// Warning: (ae-missing-release-tag) "TimeRange" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TimeRange = {
     from?: TimeInMilliseconds;
@@ -5358,8 +4506,6 @@ export type TimeRange = {
     rangeDuration?: DurationInSeconds;
 };
 
-// Warning: (ae-missing-release-tag) "TLSMatchAttributes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TLSMatchAttributes {
     // (undocumented)
@@ -5378,8 +4524,6 @@ export interface TLSMatchAttributes {
     sourceName?: string;
 }
 
-// Warning: (ae-missing-release-tag) "TLSRoute" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TLSRoute {
     // (undocumented)
@@ -5388,8 +4532,6 @@ export interface TLSRoute {
     route?: RouteDestination[];
 }
 
-// Warning: (ae-missing-release-tag) "TLSStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TLSStatus {
     // (undocumented)
@@ -5400,8 +4542,6 @@ export interface TLSStatus {
     status: string;
 }
 
-// Warning: (ae-missing-release-tag) "ToggleType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ToggleType {
     // (undocumented)
@@ -5412,18 +4552,12 @@ export interface ToggleType {
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "toGrpcRate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const toGrpcRate: (rate: string) => TrafficRate | undefined;
 
-// Warning: (ae-missing-release-tag) "toHttpRate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const toHttpRate: (rate: string) => TrafficRate | undefined;
 
-// Warning: (ae-missing-release-tag) "ToleranceConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ToleranceConfig {
     // (undocumented)
@@ -5438,8 +4572,6 @@ export interface ToleranceConfig {
     protocol?: RegexConfig;
 }
 
-// Warning: (ae-missing-release-tag) "TraceData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TraceData<S extends SpanData> = {
     matched?: number;
@@ -5448,8 +4580,6 @@ export type TraceData<S extends SpanData> = {
     traceID: string;
 };
 
-// Warning: (ae-missing-release-tag) "TracingError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TracingError = {
     code?: number;
@@ -5457,8 +4587,6 @@ export type TracingError = {
     traceID?: string;
 };
 
-// Warning: (ae-missing-release-tag) "TracingInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TracingInfo {
     // (undocumented)
@@ -5475,8 +4603,6 @@ export interface TracingInfo {
     whiteListIstioSystem: string[];
 }
 
-// Warning: (ae-missing-release-tag) "TracingQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TracingQuery = {
     startMicros: number;
@@ -5486,8 +4612,6 @@ export type TracingQuery = {
     minDuration?: number;
 };
 
-// Warning: (ae-missing-release-tag) "TracingResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TracingResponse = {
     data: JaegerTrace[] | null;
@@ -5496,16 +4620,12 @@ export type TracingResponse = {
     tracingServiceName: string;
 };
 
-// Warning: (ae-missing-release-tag) "TracingSingleResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type TracingSingleResponse = {
     data: JaegerTrace | null;
     errors: TracingError[];
 };
 
-// Warning: (ae-missing-release-tag) "TrafficPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TrafficPolicy {
     // (undocumented)
@@ -5520,8 +4640,6 @@ export interface TrafficPolicy {
     tls?: ClientTLSSettings | null;
 }
 
-// Warning: (ae-missing-release-tag) "TrafficRate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum TrafficRate {
     // (undocumented)
@@ -5548,13 +4666,9 @@ export enum TrafficRate {
     TCP_TOTAL = "tcpTotal"
 }
 
-// Warning: (ae-missing-release-tag) "TRAFFICSTATUS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const TRAFFICSTATUS = "Traffic Status";
 
-// Warning: (ae-missing-release-tag) "TypeMeta" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface TypeMeta {
     // (undocumented)
@@ -5563,8 +4677,6 @@ export interface TypeMeta {
     kind: string;
 }
 
-// Warning: (ae-missing-release-tag) "UNIT_TIME" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const UNIT_TIME: {
     SECOND: number;
@@ -5573,18 +4685,12 @@ export const UNIT_TIME: {
     DAY: number;
 };
 
-// Warning: (ae-missing-release-tag) "UNKNOWN" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const UNKNOWN = "unknown";
 
-// Warning: (ae-missing-release-tag) "UserName" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type UserName = string;
 
-// Warning: (ae-missing-release-tag) "ValidationMessage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ValidationMessage {
     // (undocumented)
@@ -5597,16 +4703,12 @@ export interface ValidationMessage {
     type: ValidationMessageType;
 }
 
-// Warning: (ae-missing-release-tag) "ValidationMessageType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ValidationMessageType {
     // (undocumented)
     code: string;
 }
 
-// Warning: (ae-missing-release-tag) "Validations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Validations = {
     [key1: string]: {
@@ -5614,8 +4716,6 @@ export type Validations = {
     };
 };
 
-// Warning: (ae-missing-release-tag) "ValidationStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ValidationStatus {
     // (undocumented)
@@ -5626,8 +4726,6 @@ export interface ValidationStatus {
     warnings: number;
 }
 
-// Warning: (ae-missing-release-tag) "ValidationTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum ValidationTypes {
     // (undocumented)
@@ -5640,13 +4738,9 @@ export enum ValidationTypes {
     Warning = "warning"
 }
 
-// Warning: (ae-missing-release-tag) "ValidProtocols" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ValidProtocols = 'http' | 'grpc' | 'tcp';
 
-// Warning: (ae-missing-release-tag) "VCDataPoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type VCDataPoint = {
     name: string;
@@ -5656,8 +4750,6 @@ export type VCDataPoint = {
     style?: Style;
 };
 
-// Warning: (ae-missing-release-tag) "VCLine" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type VCLine<T extends RichDataPoint> = {
     datapoints: T[];
@@ -5665,13 +4757,9 @@ export type VCLine<T extends RichDataPoint> = {
     legendItem: LegendItem;
 };
 
-// Warning: (ae-missing-release-tag) "VCLines" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type VCLines<T extends RichDataPoint> = VCLine<T>[];
 
-// Warning: (ae-missing-release-tag) "VirtualHostMatch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface VirtualHostMatch {
     // (undocumented)
@@ -5680,16 +4768,12 @@ export interface VirtualHostMatch {
     route?: RouteMatch;
 }
 
-// Warning: (ae-missing-release-tag) "VirtualService" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface VirtualService extends IstioObject {
     // (undocumented)
     spec: VirtualServiceSpec;
 }
 
-// Warning: (ae-missing-release-tag) "VirtualServiceSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface VirtualServiceSpec {
     // (undocumented)
@@ -5706,16 +4790,12 @@ export interface VirtualServiceSpec {
     tls?: TLSRoute[];
 }
 
-// Warning: (ae-missing-release-tag) "WasmPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WasmPlugin extends IstioObject {
     // (undocumented)
     spec: WasmPluginSpec;
 }
 
-// Warning: (ae-missing-release-tag) "WasmPluginSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WasmPluginSpec extends IstioObject {
     // (undocumented)
@@ -5726,16 +4806,12 @@ export interface WasmPluginSpec extends IstioObject {
     workloadSelector?: WorkloadSelector;
 }
 
-// Warning: (ae-missing-release-tag) "WEInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WEInfo {
     // (undocumented)
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "Workload" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Workload {
     // (undocumented)
@@ -5786,16 +4862,12 @@ export interface Workload {
     waypointWorkloads: Workload[];
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadEntry extends IstioObject {
     // (undocumented)
     spec: WorkloadEntrySpec;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadEntrySpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadEntrySpec {
     // (undocumented)
@@ -5818,16 +4890,12 @@ export interface WorkloadEntrySpec {
     weight?: number;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadGroup" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadGroup extends IstioObject {
     // (undocumented)
     spec: WorkloadGroupSpec;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadGroupSpec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadGroupSpec {
     // (undocumented)
@@ -5838,8 +4906,6 @@ export interface WorkloadGroupSpec {
     template: WorkloadEntrySpec;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadHealthResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadHealthResponse {
     // (undocumented)
@@ -5848,8 +4914,6 @@ export interface WorkloadHealthResponse {
     workloadStatus: WorkloadStatus;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadId" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadId {
     // (undocumented)
@@ -5858,8 +4922,6 @@ export interface WorkloadId {
     workload: string;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type WorkloadInfo = {
     cluster: string;
@@ -5869,16 +4931,12 @@ export type WorkloadInfo = {
     type?: string;
 };
 
-// Warning: (ae-missing-release-tag) "WorkloadListItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadListItem extends WorkloadOverview {
     // (undocumented)
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadListQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadListQuery {
     // (undocumented)
@@ -5889,8 +4947,6 @@ export interface WorkloadListQuery {
     rateInterval: string;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadMatchSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadMatchSelector {
     // (undocumented)
@@ -5899,8 +4955,6 @@ export interface WorkloadMatchSelector {
     };
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadNamespaceResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadNamespaceResponse {
     // (undocumented)
@@ -5911,8 +4965,6 @@ export interface WorkloadNamespaceResponse {
     workloads: WorkloadOverview[];
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadOverview" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadOverview {
     // (undocumented)
@@ -5945,8 +4997,6 @@ export interface WorkloadOverview {
     versionLabel: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadOverviewServiceView" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadOverviewServiceView {
     // (undocumented)
@@ -5969,8 +5019,6 @@ export interface WorkloadOverviewServiceView {
     type: string;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadQuery {
     // (undocumented)
@@ -5981,8 +5029,6 @@ export interface WorkloadQuery {
     validate: 'true' | 'false';
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadReference" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadReference {
     // (undocumented)
@@ -5991,8 +5037,6 @@ export interface WorkloadReference {
     namespace: string;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadSelector {
     // (undocumented)
@@ -6001,8 +5045,6 @@ export interface WorkloadSelector {
     };
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface WorkloadStatus {
     // (undocumented)
@@ -6017,8 +5059,6 @@ export interface WorkloadStatus {
     syncedProxies: number;
 }
 
-// Warning: (ae-missing-release-tag) "WorkloadType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const WorkloadType: {
     CronJob: string;
@@ -6032,8 +5072,6 @@ export const WorkloadType: {
     StatefulSet: string;
 };
 
-// Warning: (ae-missing-release-tag) "XAxisType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type XAxisType = 'time' | 'series';
 

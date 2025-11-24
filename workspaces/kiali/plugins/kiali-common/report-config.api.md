@@ -4,8 +4,6 @@
 
 ```ts
 
-// Warning: (ae-missing-release-tag) "config" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const config: {
     session: {
@@ -153,69 +151,50 @@ export const config: {
 };
 
 // Warning: (ae-forgotten-export) The symbol "ComputedServerConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "defaultServerConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const defaultServerConfig: ComputedServerConfig;
 
 // Warning: (ae-forgotten-export) The symbol "RegexConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "getExpr" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const getExpr: (value: RegexConfig | undefined, isCode?: boolean) => RegExp;
 
 // Warning: (ae-forgotten-export) The symbol "MeshCluster" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "homeCluster" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export let homeCluster: MeshCluster | undefined;
 
-// Warning: (ae-missing-release-tag) "humanDurations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const humanDurations: (cfg: ComputedServerConfig, prefix?: string, suffix?: string) => {
     [x: number]: string;
 };
 
-// Warning: (ae-missing-release-tag) "isConfiguredCluster" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isConfiguredCluster: (cluster: string) => boolean;
 
-// Warning: (ae-missing-release-tag) "isHomeCluster" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isHomeCluster: (cluster: string) => boolean;
 
-// Warning: (ae-missing-release-tag) "isIstioNamespace" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isIstioNamespace: (namespace: string) => boolean;
 
-// Warning: (ae-missing-release-tag) "isMultiCluster" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isMultiCluster: boolean;
 
 // Warning: (ae-forgotten-export) The symbol "HealthConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "parseHealthConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const parseHealthConfig: (healthConfig: HealthConfig) => HealthConfig;
 
-// Warning: (ae-missing-release-tag) "serverConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export let serverConfig: ComputedServerConfig;
 
 // Warning: (ae-forgotten-export) The symbol "ServerConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "setServerConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const setServerConfig: (cfg: ServerConfig) => void;
 
-// Warning: (ae-missing-release-tag) "toValidDuration" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const toValidDuration: (duration: number) => number;
 

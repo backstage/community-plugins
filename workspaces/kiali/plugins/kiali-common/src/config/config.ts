@@ -20,6 +20,7 @@ import { MILLISECONDS, UNIT_TIME } from '../types';
 // We assume this is always defined in the .env file
 const documentationUrl = process.env.REACT_APP_KIALI_DOC_URL!;
 
+/* @public */
 const conf = {
   /** Configuration related with session */
   session: {
@@ -253,5 +254,8 @@ const conf = {
   },
 };
 
-// @public
+/**
+ * Configuration object for Kiali plugin.
+ * @public
+ */
 export const config = deepFreeze(conf) as typeof conf;

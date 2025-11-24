@@ -146,7 +146,10 @@ interface Thresholds {
   unit: string;
 }
 
-/** @public */
+/**
+ * Check threshold status for ascending values.
+ * @public
+ */
 export const ascendingThresholdCheck = (
   value: number,
   thresholds: Thresholds,
@@ -174,7 +177,10 @@ export const ascendingThresholdCheck = (
   return { value: value, status: HEALTHY };
 };
 
-/** @public */
+/**
+ * Get request errors status from ratio and tolerance.
+ * @public
+ */
 export const getRequestErrorsStatus = (
   ratio: number,
   tolerance?: ToleranceConfig,
