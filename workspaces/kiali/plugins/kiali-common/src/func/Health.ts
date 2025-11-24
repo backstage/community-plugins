@@ -46,6 +46,7 @@ interface HealthConfig {
   statusConfig?: HealthItemConfig;
 }
 
+/** @public */
 export const ratioCheck = (
   availableReplicas: number,
   currentReplicas: number,
@@ -145,6 +146,7 @@ interface Thresholds {
   unit: string;
 }
 
+/** @public */
 export const ascendingThresholdCheck = (
   value: number,
   thresholds: Thresholds,
@@ -172,6 +174,7 @@ export const ascendingThresholdCheck = (
   return { value: value, status: HEALTHY };
 };
 
+/** @public */
 export const getRequestErrorsStatus = (
   ratio: number,
   tolerance?: ToleranceConfig,
@@ -191,6 +194,7 @@ export const getRequestErrorsStatus = (
   };
 };
 
+/** @public */
 export const getRequestErrorsSubItem = (
   thresholdStatus: ThresholdStatus,
   prefix: string,
@@ -206,6 +210,7 @@ export const getRequestErrorsSubItem = (
   };
 };
 
+/** @public */
 export abstract class Health {
   constructor(public health: HealthConfig) {}
 
@@ -265,6 +270,7 @@ interface HealthContext {
   hasAmbient: boolean;
 }
 
+/** @public */
 export class ServiceHealth extends Health {
   public static fromJson = (
     ns: string,
@@ -339,6 +345,7 @@ export class ServiceHealth extends Health {
   }
 }
 
+/** @public */
 export class AppHealth extends Health {
   public static fromJson = (
     ns: string,
@@ -451,6 +458,7 @@ export class AppHealth extends Health {
   }
 }
 
+/** @public */
 export class WorkloadHealth extends Health {
   public static fromJson = (
     ns: string,
@@ -586,6 +594,7 @@ export class WorkloadHealth extends Health {
   }
 }
 
+/** @public */
 export const healthNotAvailable = (): AppHealth => {
   return new AppHealth(
     '',
@@ -597,17 +606,25 @@ export const healthNotAvailable = (): AppHealth => {
   );
 };
 
+/** @public */
 export type NamespaceAppHealth = { [app: string]: AppHealth };
+/** @public */
 export type NamespaceServiceHealth = { [service: string]: ServiceHealth };
+/** @public */
 export type NamespaceWorkloadHealth = { [workload: string]: WorkloadHealth };
 
+/** @public */
 export type WithAppHealth<T> = T & { health: AppHealth };
+/** @public */
 export type WithServiceHealth<T> = T & { health: ServiceHealth };
+/** @public */
 export type WithWorkloadHealth<T> = T & { health: WorkloadHealth };
 
+/** @public */
 export type WithHealth<T> =
   | WithAppHealth<T>
   | WithServiceHealth<T>
   | WithWorkloadHealth<T>;
 // @ts-expect-error
+/** @public */
 export const hasHealth = <T>(val: T): val is WithHealth<T> => !!val.health;

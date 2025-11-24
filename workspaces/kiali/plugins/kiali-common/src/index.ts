@@ -21,4 +21,4 @@
  */
 
 export * from './constants';
-export type { DurationInSeconds } from './types';
+export type { DurationInSeconds } from './types/Common';

@@ -16,6 +16,7 @@
 
 import { ComputedServerConfig, ResourcePermissions } from '../types';
 
+/** @public */
 export function canCreate(
   serverConfig: ComputedServerConfig,
   privs?: ResourcePermissions,
@@ -25,6 +26,7 @@ export function canCreate(
   );
 }
 
+/** @public */
 export function canUpdate(
   serverConfig: ComputedServerConfig,
   privs?: ResourcePermissions,
@@ -34,6 +36,7 @@ export function canUpdate(
   );
 }
 
+/** @public */
 export function canDelete(
   serverConfig: ComputedServerConfig,
   privs?: ResourcePermissions,
