@@ -208,8 +208,6 @@ export interface AppList {
 export interface AppListItem {
     // (undocumented)
     cluster?: string;
-    // Warning: (ae-forgotten-export) The symbol "AppHealth" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     health: AppHealth;
     // (undocumented)
@@ -755,8 +753,6 @@ export interface DecoratedGraphNodeData extends GraphNodeData {
     grpcInNoResponse: number;
     // (undocumented)
     grpcOut: number;
-    // Warning: (ae-forgotten-export) The symbol "Health" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     health: Health;
     // (undocumented)
@@ -885,7 +881,7 @@ export interface Distribute {
 // @public (undocumented)
 export const DRAWER = "drawer";
 
-// @public (undocumented)
+// @public
 export type DurationInSeconds = number;
 
 // @public (undocumented)
@@ -973,8 +969,6 @@ export interface Endpoint {
 
 // @public (undocumented)
 export interface Endpoints {
-    // Warning: (ae-forgotten-export) The symbol "EndpointAddress" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     addresses?: EndpointAddress[];
     // (undocumented)
@@ -3786,8 +3780,6 @@ export interface ServerConfig {
     clusters: {
         [key: string]: MeshCluster;
     };
-    // Warning: (ae-forgotten-export) The symbol "DeploymentConfig" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     deployment: DeploymentConfig;
     // (undocumented)
@@ -3796,12 +3788,8 @@ export interface ServerConfig {
     healthConfig: HealthConfig;
     // (undocumented)
     installationTag?: string;
-    // Warning: (ae-forgotten-export) The symbol "IstioAnnotations" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     istioAnnotations: IstioAnnotations;
-    // Warning: (ae-forgotten-export) The symbol "IstioCanaryRevision" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     istioCanaryRevision: IstioCanaryRevision;
     // (undocumented)
@@ -3812,8 +3800,6 @@ export interface ServerConfig {
     };
     // (undocumented)
     istioNamespace: string;
-    // Warning: (ae-forgotten-export) The symbol "KialiFeatureFlags" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     kialiFeatureFlags: KialiFeatureFlags;
     // (undocumented)
@@ -3923,8 +3909,6 @@ export interface ServiceDetailsInfo {
     destinationRules: DestinationRule[];
     // (undocumented)
     endpoints?: Endpoints[];
-    // Warning: (ae-forgotten-export) The symbol "ServiceHealth" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     health?: ServiceHealth;
     // (undocumented)
@@ -4140,8 +4124,6 @@ export type SingleLabelValues = {
 
 // @public (undocumented)
 export interface SortField<T> {
-    // Warning: (ae-forgotten-export) The symbol "WithHealth" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     compare: (a: T | WithHealth<T>, b: T | WithHealth<T>) => number;
     // (undocumented)
@@ -4973,8 +4955,6 @@ export interface WorkloadOverview {
     appLabel: boolean;
     // (undocumented)
     cluster?: string;
-    // Warning: (ae-forgotten-export) The symbol "WorkloadHealth" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     health: WorkloadHealth;
     // (undocumented)

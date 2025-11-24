@@ -631,6 +631,6 @@ export type WithHealth<T> =
   | WithAppHealth<T>
   | WithServiceHealth<T>
   | WithWorkloadHealth<T>;
-// @ts-expect-error
 /** @public */
-export const hasHealth = <T>(val: T): val is WithHealth<T> => !!val.health;
+export const hasHealth = <T extends object>(val: T): val is WithHealth<T> =>
+  'health' in val;

@@ -4,39 +4,24 @@
 
 ```ts
 
-// Warning: (ae-forgotten-export) The symbol "GroupVersionKind" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "gvkType" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function getGVKTypeString(gvk: GroupVersionKind | gvkType): string;
 
-// Warning: (ae-forgotten-export) The symbol "IstioConfigDetails" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "IstioConfigItem" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "IstioObject" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const getIstioObject: (istioObjectDetails?: IstioConfigDetails | IstioConfigItem) => IstioObject | undefined;
 
 // @public (undocumented)
 export function getIstioObjectGVK(apiVersion?: string, kind?: string): GroupVersionKind;
 
-// Warning: (ae-forgotten-export) The symbol "ComputedServerConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const getName: (durationSeconds: number, serverConfig: ComputedServerConfig) => string;
 
-// Warning: (ae-forgotten-export) The symbol "StatusCondition" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const getReconciliationCondition: (istioConfigDetails?: IstioConfigDetails | IstioConfigItem) => StatusCondition | undefined;
 
-// Warning: (ae-forgotten-export) The symbol "IntervalInMilliseconds" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const getRefreshIntervalName: (refreshInterval: IntervalInMilliseconds) => string;
 
-// Warning: (ae-forgotten-export) The symbol "Validations" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const hasMissingAuthPolicy: (workloadName: string, validations: Validations | undefined) => boolean;
 
@@ -61,8 +46,6 @@ export const isValidDuration: (duration: string) => boolean;
 // @public (undocumented)
 export const isValidIp: (ip: string) => boolean;
 
-// Warning: (ae-forgotten-export) The symbol "OutlierDetection" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const isValidOutlierDetection: (outlierDetection: OutlierDetection) => boolean;
 

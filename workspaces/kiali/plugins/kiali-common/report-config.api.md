@@ -4,7 +4,7 @@
 
 ```ts
 
-// @public (undocumented)
+// @public
 export const config: {
     session: {
         timeOutforWarningUser: number;
@@ -150,18 +150,12 @@ export const config: {
     };
 };
 
-// Warning: (ae-forgotten-export) The symbol "ComputedServerConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const defaultServerConfig: ComputedServerConfig;
 
-// Warning: (ae-forgotten-export) The symbol "RegexConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const getExpr: (value: RegexConfig | undefined, isCode?: boolean) => RegExp;
 
-// Warning: (ae-forgotten-export) The symbol "MeshCluster" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export let homeCluster: MeshCluster | undefined;
 
@@ -182,16 +176,12 @@ export const isIstioNamespace: (namespace: string) => boolean;
 // @public (undocumented)
 export const isMultiCluster: boolean;
 
-// Warning: (ae-forgotten-export) The symbol "HealthConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const parseHealthConfig: (healthConfig: HealthConfig) => HealthConfig;
 
 // @public (undocumented)
 export let serverConfig: ComputedServerConfig;
 
-// Warning: (ae-forgotten-export) The symbol "ServerConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const setServerConfig: (cfg: ServerConfig) => void;
 

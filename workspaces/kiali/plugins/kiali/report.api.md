@@ -38,6 +38,4 @@ overview: SubRouteRef<undefined>;
 workloads: SubRouteRef<undefined>;
 }, {}, {}>;
 
-// (No @packageDocumentation comment for this package)
-
 ```

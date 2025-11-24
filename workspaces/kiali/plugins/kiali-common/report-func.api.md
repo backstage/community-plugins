@@ -11,88 +11,63 @@ import type { IMarker } from 'react-ace';
 import { isAxiosError } from 'axios';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 
-// Warning: (ae-forgotten-export) The symbol "RequestType" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ToleranceConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "RequestTolerance" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const aggregate: (request: RequestType, tolerances?: ToleranceConfig[]) => RequestTolerance[];
 
 // @public (undocumented)
 export class AppHealth extends Health {
-    // Warning: (ae-forgotten-export) The symbol "WorkloadStatus" needs to be exported by the entry point index.d.ts
     constructor(ns: string, app: string, workloadStatuses: WorkloadStatus[], requests: RequestHealth, ctx: HealthContext, serverConfig: ComputedServerConfig);
-    // Warning: (ae-forgotten-export) The symbol "HealthContext" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "ComputedServerConfig" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static fromJson: (ns: string, app: string, json: any, ctx: HealthContext, serverConfig: ComputedServerConfig) => AppHealth;
-    // Warning: (ae-forgotten-export) The symbol "RequestHealth" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     requests: RequestHealth;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Thresholds" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ThresholdStatus" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const ascendingThresholdCheck: (value: number, thresholds: Thresholds) => ThresholdStatus;
 
-// Warning: (ae-forgotten-export) The symbol "BoundsInMilliseconds" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "DurationInSeconds" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const boundsToDuration: (bounds: BoundsInMilliseconds) => DurationInSeconds;
 
-// @public (undocumented)
+// @public
 export const calculateErrorRate: (ns: string, name: string, kind: string, requests: RequestHealth, serverConfig: ComputedServerConfig) => {
     errorRatio: ErrorRatio;
     config: ToleranceConfig[];
 };
 
-// @public (undocumented)
+// @public
 export const calculateStatus: (requestTolerances: RequestTolerance[]) => {
     status: ThresholdStatus;
     protocol: string;
     toleranceConfig?: ToleranceConfig;
 };
 
-// Warning: (ae-forgotten-export) The symbol "ResourcePermissions" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export function canCreate(serverConfig: ComputedServerConfig, privs?: ResourcePermissions): boolean;
 
-// @public (undocumented)
+// @public
 export function canDelete(serverConfig: ComputedServerConfig, privs?: ResourcePermissions): boolean | undefined;
 
-// @public (undocumented)
+// @public
 export function canUpdate(serverConfig: ComputedServerConfig, privs?: ResourcePermissions): boolean;
 
-// Warning: (ae-forgotten-export) The symbol "RegexConfig" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const checkExpr: (value: RegexConfig | undefined, testV: string) => boolean;
 
-// Warning: (ae-forgotten-export) The symbol "ObjectValidation" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ObjectCheck" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const checkForPath: (object: ObjectValidation | undefined, path: string) => ObjectCheck[];
 
-// @public (undocumented)
+// @public
 export const configCache: {
     [key: string]: RateHealthConfig;
 };
 
-// @public (undocumented)
+// @public
 export const DEFAULTCONF: {
     http: RegExp;
     grpc: RegExp;
 };
 
-// Warning: (ae-forgotten-export) The symbol "DestinationRule" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export class DestinationRuleC implements DestinationRule {
     constructor(dr: DestinationRule);
@@ -104,28 +79,19 @@ export class DestinationRuleC implements DestinationRule {
     hasPeerAuthentication(): string;
     // (undocumented)
     kind: string;
-    // Warning: (ae-forgotten-export) The symbol "K8sMetadata" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     metadata: K8sMetadata;
-    // Warning: (ae-forgotten-export) The symbol "DestinationRuleSpec" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     spec: DestinationRuleSpec;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Validations" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "IstioConfigItem" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const drToIstioItems: (drs: DestinationRule[], validations: Validations, cluster?: string) => IstioConfigItem[];
 
-// @public (undocumented)
+// @public
 export const durationToBounds: (duration: DurationInSeconds) => BoundsInMilliseconds;
 
-// Warning: (ae-forgotten-export) The symbol "Rate" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const emptyRate: () => Rate;
 
 // @public (undocumented)
@@ -150,21 +116,15 @@ export interface ErrorRatio {
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "TimeRange" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const evalTimeRange: (range: TimeRange) => [Date, Date];
 
-// Warning: (ae-forgotten-export) The symbol "Gateway" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function filterAutogeneratedGateways(gws: Gateway[]): Gateway[];
 
 // @public (undocumented)
 export const filterByConfigValidation: (unfiltered: IstioConfigItem[], configFilters: string[]) => IstioConfigItem[];
 
-// Warning: (ae-forgotten-export) The symbol "IstioConfigList" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const filterByName: (unfiltered: IstioConfigList, names: string[]) => IstioConfigList;
 
@@ -178,12 +138,10 @@ export const generateRateForTolerance: (tol: RequestTolerance, requests: {
     };
 }) => void;
 
-// Warning: (ae-forgotten-export) The symbol "Target" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const genStatsKey: (target: Target, peer: Target | undefined, direction: string, interval: string) => string;
 
-// @public (undocumented)
+// @public
 export const getErrorCodeRate: (requests: RequestHealth) => {
     inbound: number;
     outbound: number;
@@ -192,34 +150,24 @@ export const getErrorCodeRate: (requests: RequestHealth) => {
 // @public (undocumented)
 export function getGatewaysAsList(gws: Gateway[]): string[];
 
-// Warning: (ae-forgotten-export) The symbol "HealthAnnotationType" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const getHealthRateAnnotation: (config?: HealthAnnotationType) => string | undefined;
 
-// Warning: (ae-forgotten-export) The symbol "K8sGateway" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function getK8sGatewaysAsList(k8sGws: K8sGateway[]): string[];
 
-// Warning: (ae-forgotten-export) The symbol "K8sHTTPRoute" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function getK8sHTTPRouteUpdateLabel(k8sr: K8sHTTPRoute | K8sHTTPRoute[] | null): string;
 
-// @public (undocumented)
+// @public
 export const getRateHealthConfig: (ns: string, name: string, kind: string, serverConfig: ComputedServerConfig) => RateHealthConfig;
 
-// @public (undocumented)
+// @public
 export const getRequestErrorsStatus: (ratio: number, tolerance?: ToleranceConfig) => ThresholdStatus;
 
-// Warning: (ae-forgotten-export) The symbol "HealthSubItem" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const getRequestErrorsSubItem: (thresholdStatus: ThresholdStatus, prefix: string) => HealthSubItem;
 
-// Warning: (ae-forgotten-export) The symbol "ServiceDetailsInfo" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function getServiceDetailsUpdateLabel(serviceDetails: ServiceDetailsInfo | null): string;
 
@@ -228,13 +176,9 @@ export function getServicePort(ports: {
     [key: string]: number;
 }): number;
 
-// Warning: (ae-forgotten-export) The symbol "Service" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function getServiceWizardLabel(serviceDetails: Service): string;
 
-// Warning: (ae-forgotten-export) The symbol "VirtualService" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function getVirtualServiceUpdateLabel(vs: VirtualService | VirtualService[] | null): string;
 
@@ -244,18 +188,15 @@ export function getWizardUpdateLabel(vs: VirtualService | VirtualService[] | nul
 // @public (undocumented)
 export const globalChecks: (object: ObjectValidation) => ObjectCheck[];
 
-// @public (undocumented)
+// @public
 export function guardTimeRange<T>(range: TimeRange, ifDuration: (d: DurationInSeconds) => T, ifBounded: (b: BoundsInMilliseconds) => T): T;
 
 // @public (undocumented)
 export const gwToIstioItems: (gws: Gateway[], vss: VirtualService[], validations: Validations, cluster?: string) => IstioConfigItem[];
 
 // @public (undocumented)
-export const hasHealth: <T>(val: T) => val is WithHealth<T>;
+export const hasHealth: <T extends object>(val: T) => val is WithHealth<T>;
 
-// Warning: (ae-forgotten-export) The symbol "ProtocolTraffic" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ProtocolWithTraffic" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const hasProtocolTraffic: (protocolTraffic: ProtocolTraffic) => protocolTraffic is ProtocolWithTraffic;
 
@@ -268,20 +209,14 @@ export function hasServiceDetailsTrafficRouting(vsList: VirtualService[], drList
 // @public (undocumented)
 export abstract class Health {
     constructor(health: HealthConfig_2);
-    // Warning: (ae-forgotten-export) The symbol "Status" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getGlobalStatus(): Status;
     // (undocumented)
     getStatusConfig(serverConfig: ComputedServerConfig): ToleranceConfig | undefined;
-    // Warning: (ae-forgotten-export) The symbol "HealthItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getTrafficStatus(): HealthItem | undefined;
     // (undocumented)
     getWorkloadStatus(): HealthItem | undefined;
-    // Warning: (ae-forgotten-export) The symbol "HealthConfig_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     health: HealthConfig_2;
 }
@@ -296,8 +231,6 @@ export class HealthAnnotation {
 // @public (undocumented)
 export const healthNotAvailable: () => AppHealth;
 
-// Warning: (ae-forgotten-export) The symbol "ValidationTypes" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const higherSeverity: (a: ValidationTypes, b: ValidationTypes) => boolean;
 
@@ -307,22 +240,18 @@ export const highestSeverity: (checks: ObjectCheck[]) => ValidationTypes;
 // @public (undocumented)
 export const isApiError: isAxiosError;
 
-// @public (undocumented)
+// @public
 export const isEqualTimeRange: (t1: TimeRange, t2: TimeRange) => boolean;
 
 // @public (undocumented)
 export const isProxyStatusComponentSynced: (componentStatus: string) => boolean;
 
-// Warning: (ae-forgotten-export) The symbol "ProxyStatus" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const isProxyStatusSynced: (status: ProxyStatus) => boolean;
 
 // @public (undocumented)
 export const jsYaml: any;
 
-// Warning: (ae-forgotten-export) The symbol "K8sGRPCRoute" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const k8sGRPCRouteToIstioItems: (grpcRoutes: K8sGRPCRoute[], validations: Validations, cluster?: string) => IstioConfigItem[];
 
@@ -332,8 +261,6 @@ export const k8sGwToIstioItems: (gws: K8sGateway[], k8srs: K8sHTTPRoute[], k8sgr
 // @public (undocumented)
 export const k8sHTTPRouteToIstioItems: (routes: K8sHTTPRoute[], validations: Validations, cluster?: string) => IstioConfigItem[];
 
-// Warning: (ae-forgotten-export) The symbol "LegendItem" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const makeLegend: (name: string, color: string, type?: string) => LegendItem;
 
@@ -360,8 +287,6 @@ export const namespacesFromString: (namespaces: string) => {
     name: string;
 }[];
 
-// Warning: (ae-forgotten-export) The symbol "Namespace" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const namespacesToString: (namespaces: Namespace[]) => string;
 
@@ -373,13 +298,9 @@ export type NamespaceWorkloadHealth = {
 // @public (undocumented)
 export const nsWideMTLSStatus: (nsStatus: string, meshStatus: string) => string;
 
-// Warning: (ae-forgotten-export) The symbol "HelpMessage" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const parseHelpAnnotations: (yaml: string, helpMessages: HelpMessage[]) => Annotation[];
 
-// Warning: (ae-forgotten-export) The symbol "AceValidations" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const parseKialiValidations: (yamlInput: string, kialiValidations?: ObjectValidation) => AceValidations;
 
@@ -389,8 +310,6 @@ export const parseLine: (yaml: string, row: number) => string;
 // @public (undocumented)
 export const parseYamlValidations: (yamlInput: string) => AceValidations;
 
-// Warning: (ae-forgotten-export) The symbol "ValidProtocols" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const prettyProtocol: (protocol: ValidProtocols) => string;
 
@@ -427,7 +346,7 @@ export interface RateHealthConfig {
 // @public (undocumented)
 export const ratioCheck: (availableReplicas: number, currentReplicas: number, desiredReplicas: number, syncedProxies: number) => Status;
 
-// @public (undocumented)
+// @public
 export const requestsErrorRateCode: (requests: RequestType) => number;
 
 // @public (undocumented)
@@ -442,30 +361,22 @@ export class ServiceHealth extends Health {
     requests: RequestHealth;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ServiceEntry" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const seToIstioItems: (see: ServiceEntry[], validations: Validations, cluster?: string) => IstioConfigItem[];
 
-// Warning: (ae-forgotten-export) The symbol "MetricsStatsQuery" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const statsQueryToKey: (q: MetricsStatsQuery) => string;
 
-// @public (undocumented)
+// @public
 export const sumRequests: (inbound: RequestType, outbound: RequestType) => RequestType;
 
 // @public (undocumented)
 export const toIstioItems: (istioConfigList: IstioConfigList, cluster?: string) => IstioConfigItem[];
 
-// Warning: (ae-forgotten-export) The symbol "TrafficRate" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const toTcpRate: (rate: string) => TrafficRate | undefined;
 
-// Warning: (ae-forgotten-export) The symbol "Responses" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export const transformEdgeResponses: (requests: Responses, protocol: string) => RequestType;
 
 // @public (undocumented)

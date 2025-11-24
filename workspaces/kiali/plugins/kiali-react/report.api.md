@@ -7,11 +7,9 @@
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { Model } from '@patternfly/react-topology';
 
-// @public (undocumented)
+// @public
 export const TrafficGraph: (props: {
     model: Model;
 }) => JSX_2.Element;
-
-// (No @packageDocumentation comment for this package)
 
 ```

@@ -12,15 +12,28 @@ import type { LoggerService } from '@backstage/backend-plugin-api';
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// @public (undocumented)
+// @public
+export class KialiApiImpl implements KialiApi {
+    constructor(options: Options);
+    // (undocumented)
+    cleanVersion: (version: string) => Number[] | undefined;
+    // (undocumented)
+    compareVersions: (v1: string, v2: string) => number;
+    // (undocumented)
+    proxy(endpoint: string): Promise<any>;
+    // (undocumented)
+    status(): Promise<any>;
+    // (undocumented)
+    supportedVersion: (version: string) => string | undefined;
+}
+
+// @public
 const kialiPlugin: BackendFeature;
 export default kialiPlugin;
 export { kialiPlugin }
 
-// @public (undocumented)
+// @public
 export interface KialiProvidersApi {
-    // Warning: (ae-forgotten-export) The symbol "KialiApiImpl" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     api: KialiApiImpl;
     // (undocumented)
@@ -29,17 +42,15 @@ export interface KialiProvidersApi {
     urlExternal: string;
 }
 
-// @public (undocumented)
+// @public
 export const makeRouter: (logger: LoggerService, kialiApis: KialiProvidersApi[], config: Config) => express.Router;
 
-// @public (undocumented)
+// @public
 export interface RouterOptions {
     // (undocumented)
     config: Config;
     // (undocumented)
     logger: LoggerService;
 }
-
-// (No @packageDocumentation comment for this package)
 
 ```
