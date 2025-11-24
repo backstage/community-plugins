@@ -14,33 +14,37 @@
  * limitations under the License.
  */
 import { TableColumn } from '@backstage/core-components';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { jfrogArtifactoryTranslationRef } from '../../translations';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-export const columns: TableColumn[] = [
+export const getColumns = (
+  t: TranslationFunction<typeof jfrogArtifactoryTranslationRef.T>,
+): TableColumn[] => [
   {
-    title: 'Version',
+    title: t('table.columns.version'),
     field: 'name',
     type: 'string',
     highlight: true,
   },
   {
-    title: 'Repositories',
+    title: t('table.columns.repositories'),
     field: 'repositories',
     type: 'string',
   },
   {
-    title: 'Manifest',
+    title: t('table.columns.manifest'),
     field: 'manifest_digest',
     type: 'string',
   },
   {
-    title: 'Modified',
+    title: t('table.columns.modified'),
     field: 'last_modified',
     type: 'date',
   },
   {
-    title: 'Size',
+    title: t('table.columns.size'),
     field: 'size',
     type: 'string',
   },
