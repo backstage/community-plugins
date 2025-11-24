@@ -286,8 +286,8 @@ export class KChart<T extends LineInfo> extends React.Component<
     const renderE = this.props.chart.error
       ? this.renderError()
       : this.isEmpty()
-        ? this.renderEmpty()
-        : this.renderChart();
+      ? this.renderEmpty()
+      : this.renderChart();
     return (
       <div className={kchartStyle}>
         <div

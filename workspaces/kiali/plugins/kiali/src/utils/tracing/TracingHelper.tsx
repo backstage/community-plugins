@@ -287,11 +287,11 @@ export const extractSpanInfo = (span: Span) => {
     type === 'envoy'
       ? extractEnvoySpanInfo(span)
       : // eslint-disable-next-line no-nested-ternary
-        type === 'http'
-        ? extractOpenTracingHTTPInfo(span)
-        : type === 'tcp'
-          ? extractOpenTracingTCPInfo(span)
-          : extractOpenTracingBaseInfo(span);
+      type === 'http'
+      ? extractOpenTracingHTTPInfo(span)
+      : type === 'tcp'
+      ? extractOpenTracingTCPInfo(span)
+      : extractOpenTracingBaseInfo(span);
   return { type: type, info: info };
 };
 

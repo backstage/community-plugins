@@ -208,8 +208,8 @@ export const transformSpanData = (
   const namespace = workloadNs
     ? workloadNs.namespace
     : split.length > 1
-      ? split[1]
-      : undefined;
+    ? split[1]
+    : undefined;
 
   const linkToApp = namespace
     ? `/namespaces/${namespace}/applications/${app}`

@@ -300,8 +300,8 @@ export const IstioMetrics = (props: Props) => {
         props.objectType === MetricsObjectTypes.APP
           ? 'applications'
           : props.objectType === MetricsObjectTypes.SERVICE
-            ? 'services'
-            : 'workloads';
+          ? 'services'
+          : 'workloads';
 
       history.push(
         `/namespaces/${props.namespace}/${domain}/${props.object}?tab=traces&${URLParam.TRACING_TRACE_ID}=${traceId}&${URLParam.TRACING_SPAN_ID}=${spanId}`,

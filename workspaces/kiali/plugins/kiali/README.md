@@ -41,6 +41,7 @@ The Kiali plugin has the following capabilities:
    ```
 
 2. Select the components that you want to use, such as:
+
    - `KialiPage`: This is a standalone page or dashboard displaying all namespaces in the mesh. You can add `KialiPage` to `packages/app/src/App.tsx` file as follows:
 
      ```tsx title="packages/app/src/App.tsx"
