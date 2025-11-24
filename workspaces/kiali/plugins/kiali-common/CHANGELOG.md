@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-common
 
+## 0.8.0
+
+### Minor Changes
+
+- f1697c9: Fix header styles for OpenShift. Use new cluster metrics API.
+
 ## 0.7.0
 
 ### Minor Changes
