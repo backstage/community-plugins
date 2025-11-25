@@ -45,15 +45,28 @@ export const searchModuleConfluenceCollator = createBackendModule({
         };
 
         const confluenceConfigs = config.getConfig('confluence');
-        const instanceKeys = confluenceConfigs.keys();
+
+        // Support either a single-instance shape:
+        // confluence:
+        //   baseUrl: ...
+        // or multi-instance:
+        // confluence:
+        //   default: { baseUrl: ... }
+        //   other: { baseUrl: ... }
+        const isSingleInstance = confluenceConfigs.has('baseUrl');
+        const instanceKeys = isSingleInstance
+          ? ['default']
+          : confluenceConfigs.keys();
 
         for (const instanceKey of instanceKeys) {
+          const actualInstanceKey = isSingleInstance ? 'default' : instanceKey;
           const collatorKey =
-            instanceKey === 'default'
+            actualInstanceKey === 'default'
               ? 'confluence'
-              : `confluence${instanceKey
+              : `confluence${actualInstanceKey
                   .charAt(0)
-                  .toUpperCase()}${instanceKey.slice(1)}`;
+                  .toUpperCase()}${actualInstanceKey.slice(1)}`;
+          // (removed duplicate collatorKey declaration)
 
           const schedulePath = `search.collators.${collatorKey}.schedule`;
           const schedule = config.has(schedulePath)
@@ -64,7 +77,7 @@ export const searchModuleConfluenceCollator = createBackendModule({
 
           logger.info(
             `Indexing Confluence instance: "${confluenceConfigs
-              .getConfig(instanceKey)
+              .getConfig(actualInstanceKey)
               .getString('baseUrl')}"`,
           );
           logger.info(
@@ -76,7 +89,7 @@ export const searchModuleConfluenceCollator = createBackendModule({
             factory: ConfluenceCollatorFactory.fromConfig(
               config,
               { logger },
-              instanceKey,
+              actualInstanceKey,
               collatorKey,
             ),
           });

@@ -181,7 +181,20 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     instanceKey = 'default',
     type = 'confluence',
   ) {
-    const conf = config.getConfig(`confluence.${instanceKey}`);
+    // Support both single-instance config (confluence: { baseUrl: ... })
+    // and multi-instance config (confluence: { default: { baseUrl: ... }, other: { ... } }).
+    const rootConf = config.getConfig('confluence');
+    let conf: Config;
+    if (rootConf.has(instanceKey)) {
+      conf = rootConf.getConfig(instanceKey);
+    } else if (rootConf.has('baseUrl')) {
+      // single-instance shape, use rootConf directly
+      conf = rootConf;
+    } else {
+      // Neither the named instance nor a single-instance config exists -> will throw below when trying to read required values
+      conf = rootConf.getConfig(instanceKey);
+    }
+
     const baseUrl = conf.getString('baseUrl');
     const auth = conf.getOptionalString('auth.type') ?? 'bearer';
     const token = conf.getOptionalString('auth.token');
