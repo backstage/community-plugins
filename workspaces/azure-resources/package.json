@@ -41,7 +41,7 @@
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.29.7",
     "@microsoft/api-extractor-model": "^7.31.2",
-    "@microsoft/tsdoc": "^0.15.1",
+    "@microsoft/tsdoc": "^0.16.0",
     "@microsoft/tsdoc-config": "^0.17.1",
     "@types/node": "24.9.1",
     "@useoptic/optic": "^1.0.9",
