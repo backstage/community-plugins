@@ -1560,9 +1560,11 @@ __metadata:
   dependencies:
     "@backstage/cli": "npm:^0.34.4"
     "@backstage/core-app-api": "npm:^1.19.1"
+    "@backstage/core-compat-api": "npm:^0.5.3"
     "@backstage/core-components": "npm:^0.18.2"
     "@backstage/core-plugin-api": "npm:^1.11.1"
     "@backstage/dev-utils": "npm:^1.1.15"
+    "@backstage/frontend-plugin-api": "npm:^0.12.1"
     "@backstage/plugin-catalog-react": "npm:^1.21.2"
     "@backstage/test-utils": "npm:^1.7.12"
     "@backstage/theme": "npm:^0.7.0"

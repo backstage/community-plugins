@@ -13,4 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ProjectTable } from './ProjectTable';
+export * from './alpha/index';
+export { default } from './alpha/index';
