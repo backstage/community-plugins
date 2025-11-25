@@ -52,6 +52,12 @@ export type TimeInMilliseconds = number;
 export type TimeInSeconds = number;
 
 export type IntervalInMilliseconds = number;
+
+/**
+ * Duration in seconds.
+ *
+ * @public
+ */
 export type DurationInSeconds = number;
 
 export type BoundsInMilliseconds = {

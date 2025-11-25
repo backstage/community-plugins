@@ -24,6 +24,7 @@ import {
   announcementsSearchResultListItem,
 } from './alpha/search';
 import { rootRouteRef } from './routes';
+import { announcementsBanner } from './alpha/banner';
 
 /**
  * @alpha
@@ -40,5 +41,6 @@ export default createFrontendPlugin({
     announcementsNavItem,
     announcementsSearchResultListItem,
     announcementsSearchFilterResultType,
+    announcementsBanner,
   ],
 });

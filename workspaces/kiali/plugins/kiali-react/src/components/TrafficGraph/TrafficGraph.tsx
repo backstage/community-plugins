@@ -38,6 +38,11 @@ const getVisualization = (): Visualization => {
   return vis;
 };
 
+/**
+ * TrafficGraph component for visualizing traffic topology.
+ *
+ * @public
+ */
 export const TrafficGraph = (props: { model: Model }) => {
   const [controller] = useState(getVisualization());
   const [renderKey, setRenderKey] = useState(0);

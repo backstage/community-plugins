@@ -13,4 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Common types, utilities, and constants for the Kiali plugin.
+ *
+ * @packageDocumentation
+ */
+
 export * from './constants';
+export type { DurationInSeconds } from './types/Common';

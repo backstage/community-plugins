@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.9.1
+
+### Patch Changes
+
+- 5199ebc: Added documentation for the New Frontend System
+
 ## 0.9.0
 
 ### Minor Changes

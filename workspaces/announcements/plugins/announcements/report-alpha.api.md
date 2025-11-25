@@ -14,6 +14,7 @@ import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -46,6 +47,45 @@ const _default: OverridableFrontendPlugin<
       >(
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
+    }>;
+    'app-root-element:announcements/banner': ExtensionDefinition<{
+      config: {
+        variant: 'block' | 'floating';
+        max: number | undefined;
+        category: string | undefined;
+        active: boolean | undefined;
+        current: boolean | undefined;
+        tags: string[] | undefined;
+      };
+      configInput: {
+        variant?: 'block' | 'floating' | undefined;
+        max?: number | undefined;
+        active?: boolean | undefined;
+        current?: boolean | undefined;
+        tags?: string[] | undefined;
+        category?: string | undefined;
+      };
+      output: ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>;
+      inputs: {
+        [x: string]: ExtensionInput<
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
+          {
+            optional: boolean;
+            singleton: boolean;
+          }
+        >;
+      };
+      kind: 'app-root-element';
+      name: 'banner';
+      params: {
+        element: JSX.Element;
+      };
     }>;
     'entity-card:announcements/announcements': ExtensionDefinition<{
       kind: 'entity-card';

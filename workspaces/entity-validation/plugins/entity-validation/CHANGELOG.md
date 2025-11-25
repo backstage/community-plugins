@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.13.1
+
+### Patch Changes
+
+- cff7154: Added documentation for the New Frontend System
+
 ## 0.13.0
 
 ### Minor Changes
