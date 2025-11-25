@@ -3102,7 +3102,7 @@ __metadata:
     "@changesets/cli": "npm:^2.29.7"
     "@microsoft/api-extractor-model": "npm:^7.31.2"
     "@microsoft/tsdoc": "npm:^0.16.0"
-    "@microsoft/tsdoc-config": "npm:^0.17.1"
+    "@microsoft/tsdoc-config": "npm:^0.18.0"
     "@types/node": "npm:24.9.1"
     "@useoptic/optic": "npm:^1.0.9"
     knip: "npm:^5.66.2"
@@ -3725,7 +3725,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc-config@npm:^0.17.1, @microsoft/tsdoc-config@npm:~0.17.1":
+"@microsoft/tsdoc-config@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@microsoft/tsdoc-config@npm:0.18.0"
+  dependencies:
+    "@microsoft/tsdoc": "npm:0.16.0"
+    ajv: "npm:~8.12.0"
+    jju: "npm:~1.4.0"
+    resolve: "npm:~1.22.2"
+  checksum: 10/0470df5326181d876faba51617d011a632b2e3b420953e521bb865715d0db2fb0b8bfb3ccbcaef267356a1a7150d2ffba40022db5930db6b15fcb348bf846a4b
+  languageName: node
+  linkType: hard
+
+"@microsoft/tsdoc-config@npm:~0.17.1":
   version: 0.17.1
   resolution: "@microsoft/tsdoc-config@npm:0.17.1"
   dependencies:
@@ -3744,7 +3756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc@npm:^0.16.0":
+"@microsoft/tsdoc@npm:0.16.0, @microsoft/tsdoc@npm:^0.16.0":
   version: 0.16.0
   resolution: "@microsoft/tsdoc@npm:0.16.0"
   checksum: 10/1eaad3605234dc7e44898c15d1ba3c97fb968af1117025400cba572ce268da05afc36634d1fb9e779457af3ff7f13330aee07a962510a4d9c6612c13f71ee41e
