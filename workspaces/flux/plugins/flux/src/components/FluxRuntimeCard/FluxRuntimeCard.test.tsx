@@ -36,6 +36,10 @@ import {
 import { FluxRelease, Namespace } from '../../objects';
 import { waitFor } from '@testing-library/react';
 
+const { setTimeout } = require('node:timers/promises');
+
+const delay = setTimeout;
+
 const release = {
   name: 'v3.1.2',
 } as FluxRelease;
@@ -270,11 +274,12 @@ describe('<FluxRuntimeCard />', () => {
               ],
             ]}
           >
-            <FluxRuntimeCard />
+            <FluxRuntimeCard many={false} />
           </TestApiProvider>
         </Wrapper>,
       );
 
+      await delay(700);
       const { getByText } = result;
 
       const testCases = [

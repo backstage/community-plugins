@@ -32,9 +32,11 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { EntityFluxSourcesCard } from './EntityFluxSourcesCard';
 import {
-  makeTestGitRepository,
-  makeTestHelmRepository,
-  makeTestOCIRepository,
+  makeTestGitRepositoryV1,
+  makeTestHelmRepositoryV1beta2,
+  makeTestHelmRepositoryV1,
+  makeTestOCIRepositoryV1beta2,
+  makeTestOCIRepositoryV1,
 } from '../utils-test';
 import { shortenSha } from '../helpers';
 
@@ -64,25 +66,29 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestGitRepository(
+                makeTestGitRepositoryV1(
                   'sockshop',
                   'https://github.com/weaveworks/backstage-sockshop',
                   'main',
                 ),
-                makeTestGitRepository(
+                makeTestGitRepositoryV1(
                   'backstage',
                   'https://github.com/weaveworks/weaveworks-backstage',
                   'main',
                 ),
-                makeTestOCIRepository(
+                makeTestOCIRepositoryV1beta2(
                   'podinfoOCI',
                   'oci://ghcr.io/stefanprodan/manifests/podinfo',
                 ),
-                makeTestHelmRepository(
+                makeTestOCIRepositoryV1(
+                  'fluxOperator',
+                  'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator',
+                ),
+                makeTestHelmRepositoryV1beta2(
                   'podinfoHelm',
                   'https://stefanprodan.github.io/podinfo',
                 ),
-                makeTestHelmRepository(
+                makeTestHelmRepositoryV1(
                   'bitnami',
                   'https://repo.vmware.com/bitnami-files/index.yaml',
                 ),
@@ -158,7 +164,8 @@ describe('<EntityFluxSourcesCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <EntityFluxSourcesCard />
+              {/* Setting many to false to remove filtering, pagination and search options in card table */}
+              <EntityFluxSourcesCard many={false} />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,
@@ -186,6 +193,12 @@ describe('<EntityFluxSourcesCard />', () => {
           artifact: 'latest',
         },
         {
+          name: 'fluxOperator',
+          url: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator',
+          cluster: 'demo-cluster',
+          artifact: '2.6.3',
+        },
+        {
           name: 'podinfoHelm',
           url: 'https://stefanprodan.github.io/podinfo',
           cluster: 'demo-cluster',
@@ -197,7 +210,7 @@ describe('<EntityFluxSourcesCard />', () => {
           url: 'https://repo.vmware.com/bitnami-files/index.yaml',
           cluster: 'demo-cluster',
           artifact:
-            'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e ',
+            'sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456',
         },
       ];
 

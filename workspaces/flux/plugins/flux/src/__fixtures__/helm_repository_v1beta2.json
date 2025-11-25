@@ -24,10 +24,10 @@
     "artifact": {
       "digest": "sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e",
       "lastUpdateTime": "2023-06-29T13:50:22Z",
-      "path": "helmrepository/backstage/podinfo/index-80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e.yaml",
+      "path": "helmrepository/default/podinfo/index-80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e.yaml",
       "revision": "sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e",
       "size": 43126,
-      "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/backstage/podinfo/index-80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e.yaml"
+      "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/default/podinfo/index-80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e.yaml"
     },
     "conditions": [
       {
@@ -48,6 +48,6 @@
       }
     ],
     "observedGeneration": 1,
-    "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/backstage/podinfo/index.yaml"
+    "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/default/podinfo/index.yaml"
   }
 }

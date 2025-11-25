@@ -32,7 +32,7 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { EntityFluxOCIRepositoriesCard } from './EntityFluxOCIRepositoriesCard';
 
-const makeTestOCIRepository = (name: string, url: string) => {
+const makeTestOCIRepositoryV1beta2 = (name: string, url: string) => {
   return {
     apiVersion: 'source.toolkit.fluxcd.io/v1beta2',
     kind: 'OCIRepository',
@@ -107,6 +107,71 @@ const makeTestOCIRepository = (name: string, url: string) => {
   };
 };
 
+const makeTestOCIRepositoryV1 = (name: string, url: string) => {
+  return {
+    apiVersion: 'source.toolkit.fluxcd.io/v1',
+    kind: 'OCIRepository',
+    metadata: {
+      creationTimestamp: '2025-11-19T05:06:49Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      generation: 1,
+      name: name,
+      namespace: 'default',
+      resourceVersion: '646569528',
+      uid: '128fa370-57b9-4ec2-89d2-fea2cf8b3db4',
+    },
+    spec: {
+      interval: '5m',
+      provider: 'generic',
+      timeout: '60s',
+      url: url,
+      verify: {
+        provider: 'cosign',
+      },
+    },
+    status: {
+      artifact: {
+        digest:
+          'sha256:93f4425d8b6c04852e5d96491e309a7e7fb24bad13c89b3ece3e1b776a395c26',
+        lastUpdateTime: '2025-11-19T05:07:58Z',
+        metadata: {
+          'org.opencontainers.image.created': '2025-11-09T17:37:25Z',
+          'org.opencontainers.image.version': '2.6.3',
+          'org.opencontainers.image.source':
+            'https://github.com/backstage/charts',
+        },
+        path: 'ocirepository/default/backstage/sha256:89f24382c5997a1bad8921826e3b6e5ff83505def0e1274f492b25059bd82fb4.tar.gz',
+        revision:
+          '2.6.3@sha256:89f24382c5997a1bad8921826e3b6e5ff83505def0e1274f492b25059bd82fb4',
+        size: 150412,
+        url: 'http://source-controller.flux-system.svc.cluster.local./ocirepository/default/backstage/sha256:89f24382c5997a1bad8921826e3b6e5ff83505def0e1274f492b25059bd82fb4.tar.gz',
+      },
+      conditions: [
+        {
+          lastTransitionTime: '2025-11-19T05:07:58Z',
+          message:
+            "stored artifact for digest '2.6.3@sha256:89f24382c5997a1bad8921826e3b6e5ff83505def0e1274f492b25059bd82fb4'",
+          observedGeneration: 2,
+          reason: 'Succeeded',
+          status: 'True',
+          type: 'Ready',
+        },
+        {
+          lastTransitionTime: '2025-11-19T05:07:58Z',
+          message:
+            "stored artifact for digest '2.6.3@sha256:89f24382c5997a1bad8921826e3b6e5ff83505def0e1274f492b25059bd82fb4'",
+          observedGeneration: 2,
+          reason: 'Succeeded',
+          status: 'True',
+          type: 'ArtifactInStorage',
+        },
+      ],
+      observedGeneration: 2,
+      url: ' http://source-controller.flux-system.svc.cluster.local./ocirepository/default/backstage/latest.tar.gz',
+    },
+  };
+};
+
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
 
@@ -133,9 +198,13 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestOCIRepository(
+                makeTestOCIRepositoryV1beta2(
                   'podinfo',
                   'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                ),
+                makeTestOCIRepositoryV1(
+                  'backstage',
+                  'oci://ghcr.io/backstage/charts/backstage',
                 ),
               ],
             },

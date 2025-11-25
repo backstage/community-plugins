@@ -32,7 +32,11 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 
-const makeTestHelmRelease = (name: string, chart: string, version: string) => {
+const makeTestHelmReleaseV2beta1 = (
+  name: string,
+  chart: string,
+  version: string,
+) => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
     kind: 'HelmRelease',
@@ -75,6 +79,53 @@ const makeTestHelmRelease = (name: string, chart: string, version: string) => {
   };
 };
 
+const makeTestHelmReleaseV2 = (
+  name: string,
+  chart: string,
+  version: string,
+) => {
+  return {
+    apiVersion: 'helm.toolkit.fluxcd.io/v2',
+    kind: 'HelmRelease',
+    metadata: {
+      annotations: {
+        'metadata.weave.works/test': 'value',
+      },
+      creationTimestamp: '2025-09-18T14:20:30Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      name: name,
+      namespace: 'harbor',
+    },
+    spec: {
+      interval: '5m',
+      chart: {
+        spec: {
+          chart,
+          version: '1.x',
+          sourceRef: {
+            kind: 'HelmRepository',
+            name: 'harbor',
+            namespace: 'harbor',
+          },
+          interval: '60m',
+        },
+      },
+    },
+    status: {
+      lastAppliedRevision: version,
+      conditions: [
+        {
+          lastTransitionTime: '2025-09-18T14:20:35Z',
+          message: `pulled "${chart}" chart with version "${version}"`,
+          reason: 'ChartPullSucceeded',
+          status: 'True',
+          type: 'Ready',
+        },
+      ],
+    },
+  };
+};
+
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
 
@@ -101,8 +152,13 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestHelmRelease('redis', 'redis', '1.2.3'),
-                makeTestHelmRelease('normal', 'kube-prometheus-stack', '6.3.5'),
+                makeTestHelmReleaseV2beta1('redis', 'redis', '1.2.3'),
+                makeTestHelmReleaseV2beta1(
+                  'normal',
+                  'kube-prometheus-stack',
+                  '6.3.5',
+                ),
+                makeTestHelmReleaseV2('default', 'harbor', '1.18.0'),
               ],
             },
           ],
