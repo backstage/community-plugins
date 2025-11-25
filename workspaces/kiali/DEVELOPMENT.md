@@ -5,7 +5,7 @@
 This document provides an overview of how to set up and work with the development environment for this project.  
 It describes how to run the application locally, how to prepare an OpenShift-based development environment, and important considerations to keep in mind when upgrading the Backstage version.
 
-## Table of Contents
+## Contents
 
 - [Setting up the local development environment](#setting-up-the-local-development-environment)
 - [Setting up the OpenShift development environment](#setting-up-the-openshift-development-environment)
@@ -97,7 +97,7 @@ community-plugins/workspaces/kiali/plugins/kiali$ yarn install
 community-plugins/workspaces/kiali/plugins/kiali$ npx @red-hat-developer-hub/cli plugin export
 ```
 
-Copy the generated files in rhdh:
+Copy the generated files in RHDH:
 
 ```bash
 cp -r dist-dynamic/* rhdh-local/local-plugins/kiali-frontend/
@@ -169,13 +169,13 @@ plugins:
                 path: /kiali
 ```
 
-In order to docker compose have access to Kiali in crc, we can update;
+In order for docker compose to have access to Kiali in crc, we can update;
 
 ```bash
 ~/dev/rhdh-local$ nano compose.yaml
 ```
 
-And add network_mode:
+And add the network_mode:
 
 ```bash
 rhdh:
@@ -206,13 +206,13 @@ If the installer is working but there is no process running, we can check it her
 docker logs rhdh
 ```
 
-We can check if everything is working in:
+We can check if everything is working on:
 
 http://localhost:7007/
 
 ## Considerations when upgrading backstage
 
-Before upgrading, it is important to check the compatibility with the rhdh version.
+Before upgrading, it is important to [check the compatibility](https://github.com/redhat-developer/rhdh-plugin-export-overlays?tab=readme-ov-file#backstage-compatibility) with the RHDH version.
 
 Once checked, follow the steps:
 
