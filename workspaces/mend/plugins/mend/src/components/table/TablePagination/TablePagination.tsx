@@ -1,7 +1,21 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { MouseEvent, ChangeEventHandler } from 'react';
 import MaterialTablePagination from '@mui/material/TablePagination';
-import type { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import { TablePaginationActions } from './TablePaginationActions';
 
 type TablePaginationProps = {
@@ -19,25 +33,6 @@ type TablePaginationProps = {
   >;
 };
 
-const useStyles = makeStyles<Theme>(theme => ({
-  root: {
-    color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
-    backgroundColor:
-      theme.palette.mode === 'light'
-        ? 'white'
-        : theme.palette.background.default,
-  },
-  input: {
-    marginRight: 'auto',
-  },
-  spacer: {
-    flex: 'none',
-  },
-  selectIcon: {
-    color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
-  },
-}));
-
 export const TablePagination = ({
   rowsPerPageOptions,
   colSpan,
@@ -47,11 +42,26 @@ export const TablePagination = ({
   onPageChange,
   onRowsPerPageChange,
 }: TablePaginationProps) => {
-  const classes = useStyles();
+  const theme = useTheme();
   return (
     <MaterialTablePagination
       component="div"
-      classes={classes}
+      sx={{
+        color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
+        backgroundColor:
+          theme.palette.mode === 'light'
+            ? 'white'
+            : theme.palette.background.default,
+        '& .MuiTablePagination-input': {
+          marginRight: 'auto',
+        },
+        '& .MuiTablePagination-spacer': {
+          flex: 'none',
+        },
+        '& .MuiTablePagination-selectIcon': {
+          color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
+        },
+      }}
       rowsPerPageOptions={rowsPerPageOptions}
       colSpan={colSpan}
       count={count}

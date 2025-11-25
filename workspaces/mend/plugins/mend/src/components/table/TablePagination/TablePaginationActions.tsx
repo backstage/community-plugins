@@ -1,10 +1,22 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { MouseEvent } from 'react';
-import type { Theme } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
-
-import { makeStyles } from '@mui/styles';
 
 type TablePaginationActionsProps = {
   count: number;
@@ -61,23 +73,6 @@ const ArrowRight = () => (
   </SvgIcon>
 );
 
-const useStyles = makeStyles<Theme>(theme => ({
-  container: {
-    display: 'flex',
-    gap: '8px',
-    alignItems: 'center',
-    paddingLeft: '24px',
-    paddingRight: '12px',
-  },
-  buttonContainer: {
-    padding: '0',
-    color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
-    '&:disabled': {
-      color: '#C4C6CB',
-    },
-  },
-}));
-
 export const TablePaginationActions = ({
   count,
   page,
@@ -102,16 +97,28 @@ export const TablePaginationActions = ({
     onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
-  const classes = useStyles();
-
   return (
-    <div className={classes.container}>
+    <div
+      style={{
+        display: 'flex',
+        gap: '8px',
+        alignItems: 'center',
+        paddingLeft: '24px',
+        paddingRight: '12px',
+      }}
+    >
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
         aria-label="first page"
-        className={classes.buttonContainer}
         size="large"
+        sx={{
+          padding: '0',
+          color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
+          '&:disabled': {
+            color: '#C4C6CB',
+          },
+        }}
       >
         {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
@@ -119,18 +126,32 @@ export const TablePaginationActions = ({
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
-        className={classes.buttonContainer}
         size="large"
+        sx={{
+          padding: '0',
+          color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
+          '&:disabled': {
+            color: '#C4C6CB',
+          },
+        }}
       >
         {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
       </IconButton>
-      <span>{`Page ${page + 1} of ${Math.ceil(count / rowsPerPage)}`}</span>
+      <span style={{ whiteSpace: 'nowrap' }}>{`Page ${page + 1} of ${Math.ceil(
+        count / rowsPerPage,
+      )}`}</span>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
-        className={classes.buttonContainer}
         size="large"
+        sx={{
+          padding: '0',
+          color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
+          '&:disabled': {
+            color: '#C4C6CB',
+          },
+        }}
       >
         {theme.direction === 'rtl' ? <ArrowLeft /> : <ArrowRight />}
       </IconButton>
@@ -138,8 +159,14 @@ export const TablePaginationActions = ({
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
-        className={classes.buttonContainer}
         size="large"
+        sx={{
+          padding: '0',
+          color: theme.palette.mode === 'light' ? '#073C8C' : 'white',
+          '&:disabled': {
+            color: '#C4C6CB',
+          },
+        }}
       >
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>

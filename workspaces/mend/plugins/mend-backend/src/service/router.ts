@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import express from 'express';
 import Router from 'express-promise-router';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
@@ -6,11 +21,9 @@ import {
   DiscoveryService,
   AuthService,
   HttpAuthService,
-  PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import {
   dataFindingParser,
   dataMatcher,
@@ -29,12 +42,6 @@ import {
   ContainersFindingSuccessResponseData,
   Finding,
 } from './data.service.types';
-import {
-  mendReadPermission,
-  transformConditions,
-  permissionIntegrationRouter,
-  type FilterProps,
-} from '../permission';
 import { MEND_API_VERSION } from '../constants';
 
 /** @internal */
@@ -44,7 +51,6 @@ export type RouterOptions = {
   discovery: DiscoveryService;
   auth: AuthService;
   httpAuth: HttpAuthService;
-  permissions: PermissionsService;
 };
 
 enum ROUTE {
@@ -56,12 +62,10 @@ enum ROUTE {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, discovery, auth, httpAuth, permissions } = options;
+  const { logger, config, discovery, auth, httpAuth } = options;
 
   const router = Router();
   router.use(express.json());
-
-  router.use(permissionIntegrationRouter);
 
   const checkForAuth = (
     _request: express.Request,
@@ -96,6 +100,39 @@ export async function createRouter(
   // Init catalog client
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
+  /**
+   * Filters project IDs based on mend.permissionControl configuration
+   * @param projectItems - Array of project items to filter
+   * @returns Filtered array of project items
+   */
+  const filterProjectsByPermissionControl = <T extends { uuid: string }>(
+    projectItems: T[],
+  ): T[] => {
+    const permissionControl = config.getOptionalConfig(
+      'mend.permissionControl',
+    );
+
+    if (!permissionControl) {
+      // No permission control configured, return all items
+      return projectItems;
+    }
+
+    const ids = permissionControl.getOptionalStringArray('ids') || [];
+    const exclude = permissionControl.getOptionalBoolean('exclude') ?? true;
+
+    if (ids.length === 0) {
+      // No IDs configured, return all items
+      return projectItems;
+    }
+
+    return projectItems.filter(item => {
+      const isInList = ids.includes(item.uuid);
+      // If exclude is true (blocklist mode): filter out items in the list
+      // If exclude is false (allowlist mode): only include items in the list
+      return exclude ? !isInList : isInList;
+    });
+  };
+
   // Routes
   router.get(ROUTE.PROJECT, checkForAuth, async (request, response) => {
     try {
@@ -120,27 +157,10 @@ export async function createRouter(
         ),
       ]);
 
-      // permission - filter to exclude or include project
-      const decision = (
-        await permissions.authorizeConditional(
-          [{ permission: mendReadPermission }],
-          {
-            credentials,
-          },
-        )
-      )[0];
+      // Apply permission control from config
+      const filteredItems = filterProjectsByPermissionControl(results[1]);
 
-      let items;
-      if (decision.result === AuthorizeResult.CONDITIONAL) {
-        const filter = transformConditions(decision.conditions) as FilterProps;
-        items = results[1].filter(item =>
-          filter?.exclude
-            ? !filter.ids.includes(item.uuid)
-            : filter.ids.includes(item.uuid),
-        );
-      }
-
-      const data = dataMatcher(results[0].items, items || results[1]);
+      const data = dataMatcher(results[0].items, filteredItems);
 
       // parse data
       const projects = dataProjectParser(data, results[2]);
@@ -187,30 +207,10 @@ export async function createRouter(
         ),
       ]);
 
-      // permission - filter to exclude or include project
-      const decision = (
-        await permissions.authorizeConditional(
-          [{ permission: mendReadPermission }],
-          {
-            credentials,
-          },
-        )
-      )[0];
+      // Apply permission control from config
+      const filteredItems = filterProjectsByPermissionControl(projectResult[1]);
 
-      let items;
-      if (decision.result === AuthorizeResult.CONDITIONAL) {
-        const filter = transformConditions(decision.conditions) as FilterProps;
-        items = projectResult[1].filter(item =>
-          filter?.exclude
-            ? !filter.ids.includes(item.uuid)
-            : filter.ids.includes(item.uuid),
-        );
-      }
-
-      const data = dataMatcher(
-        projectResult[0].items,
-        items || projectResult[1],
-      );
+      const data = dataMatcher(projectResult[0].items, filteredItems);
 
       const entityURL = parseEntityURL(
         projectResult[0].items[0]?.metadata?.annotations?.[

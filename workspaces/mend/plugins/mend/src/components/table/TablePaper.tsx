@@ -1,5 +1,21 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { ReactNode, CSSProperties, FC } from 'react';
-import Grid from '@mui/material/Grid';
+import { Fragment } from 'react';
+import Grid from '@mui/material/Unstable_Grid2';
 import Paper from '@mui/material/Paper';
 
 type TablePaperProps = {
@@ -10,12 +26,12 @@ type TablePaperProps = {
 export const TablePaper: FC<TablePaperProps> = ({ children, style }) => {
   return (
     <Grid direction="column" xs={12} style={{ width: '100%' }}>
-      {[
-        children[1],
-        <Paper elevation={3} style={{ ...style, marginTop: '50px' }}>
-          {[children[2], children[3], children[5]]}
-        </Paper>,
-      ]}
+      <Fragment key="toolbar">{children[1]}</Fragment>
+      <Paper key="paper" elevation={3} style={{ ...style, marginTop: '50px' }}>
+        <Fragment key="content-2">{children[2]}</Fragment>
+        <Fragment key="content-3">{children[3]}</Fragment>
+        <Fragment key="content-5">{children[5]}</Fragment>
+      </Paper>
     </Grid>
   );
 };
