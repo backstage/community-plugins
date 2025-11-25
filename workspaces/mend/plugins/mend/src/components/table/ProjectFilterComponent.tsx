@@ -1,14 +1,19 @@
-/**
- * ProjectFilterComponent
+/*
+ * Copyright 2025 The Backstage Authors
  *
- * A controlled multi-select filter used to filter entities by project name.
- * - Displays chips for selected projects with ability to delete individually.
- * - Includes an ALL option with mutually-exclusive selection semantics.
- * - Uses Material-UI Select with custom MenuProps for positioning and height.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * State is owned by the parent; this component receives current selections and
- * a setter via props and renders accordingly.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
@@ -182,7 +187,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
               label="Filter by Project Name"
             />
           }
-          SelectDisplayProps={{ style: { paddingTop: 12, paddingBottom: 20 } }}
+          SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 15 } }}
           renderValue={selected => {
             const values = Array.isArray(selected)
               ? (selected as string[])
@@ -202,18 +207,12 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
                       sx={{
                         '& [class*="MuiChip-deleteIcon"]': {
                           // default icon color
-                          color:
-                            theme.palette.mode === 'dark'
-                              ? 'rgba(255, 255, 255, 0.26)'
-                              : 'rgba(0, 0, 0, 0.26)',
+                          color: theme.palette.action.disabled,
                           transition: 'color 0.3s ease',
                         },
                         '&:hover [class*="MuiChip-deleteIcon"]': {
                           // icon color on chip hover
-                          color:
-                            theme.palette.mode === 'dark'
-                              ? 'rgba(255, 255, 255, 0.40)'
-                              : 'gray',
+                          color: theme.palette.text.secondary,
                         },
                       }}
                     />
