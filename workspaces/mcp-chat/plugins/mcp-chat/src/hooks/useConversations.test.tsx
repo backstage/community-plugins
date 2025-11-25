@@ -105,7 +105,7 @@ describe('useConversations', () => {
     expect(result.current.error).toBeUndefined();
   });
 
-  it('should handle other errors', async () => {
+  it('should handle other errors gracefully', async () => {
     mockMcpChatApi.getConversations.mockRejectedValue(
       new Error('Network error'),
     );
@@ -116,7 +116,9 @@ describe('useConversations', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(result.current.error).toBe('Network error');
+    // All errors are handled gracefully by returning empty array
+    expect(result.current.conversations).toEqual([]);
+    expect(result.current.error).toBeUndefined();
   });
 
   it('should cache conversations to prevent flickering during refetch', async () => {

@@ -52,13 +52,9 @@ export function useConversations() {
       const response = await mcpChatApi.getConversations();
       return response.conversations;
     } catch (err: any) {
-      if (
-        err?.message?.includes('500') ||
-        err?.message?.includes('Internal Server Error')
-      ) {
-        return [];
-      }
-      throw err;
+      // Gracefully handle all errors by returning empty array
+      // Conversation history is a nice-to-have feature, not critical
+      return [];
     }
   }, [mcpChatApi, identityApi, refreshKey]);
 

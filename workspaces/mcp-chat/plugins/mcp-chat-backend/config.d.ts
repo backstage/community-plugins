@@ -101,5 +101,18 @@ export interface Config {
      * @visibility backend
      */
     systemPrompt?: string;
+    /**
+     * Conversation history settings
+     * @visibility backend
+     */
+    conversationHistory?: {
+      /**
+       * Number of recent conversations to display in the UI
+       * Note: ALL conversations are stored in the database, this only controls what's displayed
+       * @visibility backend
+       * @default 10
+       */
+      displayLimit?: number;
+    };
   };
 }

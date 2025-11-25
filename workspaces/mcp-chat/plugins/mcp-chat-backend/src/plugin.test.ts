@@ -85,8 +85,8 @@ jest.mock('./services/MCPClientServiceImpl', () => ({
 }));
 
 jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
   validateConfig: jest.fn(),
-  validateMessages: jest.fn().mockReturnValue({ isValid: true }),
 }));
 
 const mockConfig = {
@@ -109,7 +109,6 @@ const mockConfig = {
 
 describe('mcpChatPlugin', () => {
   let backend: TestBackend;
-  const { validateMessages } = require('./utils');
 
   beforeEach(async () => {
     backend = await startTestBackend({
@@ -120,7 +119,6 @@ describe('mcpChatPlugin', () => {
         }),
       ],
     });
-    validateMessages.mockReturnValue({ isValid: true });
   });
 
   afterEach(async () => {
@@ -220,7 +218,7 @@ describe('mcpChatPlugin', () => {
         .send({ messages: [] })
         .expect(400);
 
-      expect(response.body.error).toBe('Messages array is required');
+      expect(response.body.error).toBe('At least one message is required');
     });
 
     it('should reject invalid enabledTools', async () => {

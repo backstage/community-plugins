@@ -26,7 +26,7 @@ describe('ChatConversationStore', () => {
   const config = new ConfigReader({
     mcpChat: {
       conversationHistory: {
-        displayLimit: 10,
+        displayLimit: 25,
       },
     },
   });
@@ -39,15 +39,9 @@ describe('ChatConversationStore', () => {
       useNullAsDefault: true,
     });
 
-    // Create table
-    await db.schema.createTable('mcp_chat_conversations', table => {
-      table.uuid('id').primary().notNullable();
-      table.string('user_id').notNullable();
-      table.text('messages').notNullable();
-      table.text('tools_used').nullable();
-      table.timestamp('created_at').notNullable();
-      table.timestamp('updated_at').notNullable();
-      table.index('user_id', 'idx_mcp_chat_conversations_user_id');
+    // Run migrations to create tables
+    await db.migrate.latest({
+      directory: './plugins/mcp-chat-backend/migrations',
     });
   });
 
@@ -108,8 +102,8 @@ describe('ChatConversationStore', () => {
     const store = new ChatConversationStore(db, logger, config);
     const userId = 'user:default/testuser';
 
-    // Save 15 conversations
-    for (let i = 0; i < 15; i++) {
+    // Save 30 conversations
+    for (let i = 0; i < 30; i++) {
       const messages: ChatMessage[] = [
         { role: 'user', content: `Message ${i}` },
         { role: 'assistant', content: `Response ${i}` },
@@ -119,19 +113,19 @@ describe('ChatConversationStore', () => {
       await new Promise(resolve => setTimeout(resolve, 10));
     }
 
-    // Should return only 10 conversations (displayLimit from config)
+    // Should return only 25 conversations (displayLimit from config)
     const conversations = await store.getConversations(userId);
-    expect(conversations.length).toBe(10);
+    expect(conversations.length).toBe(25);
 
-    // Verify they are the most recent ones
+    // Verify they are the most recent ones (Message 29 is the last/most recent)
     const firstMessage = conversations[0].messages[0];
-    expect(firstMessage.content).toContain('Message 14');
+    expect(firstMessage.content).toContain('Message 29');
 
-    // Verify all 15 are actually stored in DB
+    // Verify all 30 are actually stored in DB
     const allInDb = await db('mcp_chat_conversations')
       .where({ user_id: userId })
       .count('* as count');
-    expect(Number(allInDb[0].count)).toBe(15);
+    expect(Number(allInDb[0].count)).toBe(30);
   });
 
   it('should return null for non-existent conversation', async () => {

@@ -290,15 +290,7 @@ mcpChat:
 
 ### Database Storage
 
-Conversations are stored using Backstage's configured database (SQLite, PostgreSQL, MySQL, etc.). To use persistent storage instead of in-memory:
-
-```yaml
-backend:
-  database:
-    client: better-sqlite3
-    connection: './backstage.sqlite' # File-based storage
-    # Or use ':memory:' for in-memory (data lost on restart)
-```
+Conversations are stored using Backstage's configured database (SQLite, PostgreSQL, MySQL, etc.). For information on configuring your database, see the [Backstage database configuration documentation](https://backstage.io/docs/tutorials/configuring-plugin-databases/#configuration).
 
 ## Development
 

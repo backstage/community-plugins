@@ -68,7 +68,7 @@ export async function createRouter({
     const { messages, enabledTools, conversationId } = req.body;
 
     // Validate messages
-    if (!Array.isArray(messages) || messages.length === 0) {
+    if (!Array.isArray(messages)) {
       return res.status(400).json({ error: 'Messages array is required' });
     }
 

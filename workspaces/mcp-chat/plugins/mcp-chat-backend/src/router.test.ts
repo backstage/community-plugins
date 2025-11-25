@@ -287,7 +287,7 @@ describe('createRouter', () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'Messages array is required',
+        error: 'At least one message is required',
       });
     });
 

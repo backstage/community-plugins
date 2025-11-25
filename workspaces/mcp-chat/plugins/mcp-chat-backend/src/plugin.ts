@@ -47,34 +47,23 @@ export const mcpChatPlugin = createBackendPlugin({
 
         // Run migrations
         logger.info('Running database migrations for MCP Chat...');
-        try {
-          const migrationsDir = resolvePackagePath(
-            '@backstage-community/plugin-mcp-chat-backend',
-            'migrations',
-          );
-          logger.info(`Migrations directory: ${migrationsDir}`);
+        const migrationsDir = resolvePackagePath(
+          '@backstage-community/plugin-mcp-chat-backend',
+          'migrations',
+        );
+        logger.info(`Migrations directory: ${migrationsDir}`);
 
-          const [batchNo, log] = await db.migrate.latest({
-            directory: migrationsDir,
+        const [batchNo, log] = await db.migrate.latest({
+          directory: migrationsDir,
+        });
+
+        if (log.length === 0) {
+          logger.info('Database is already up to date');
+        } else {
+          logger.info(`Batch ${batchNo} run: ${log.length} migrations applied`);
+          log.forEach((migration: string) => {
+            logger.info(`  - ${migration}`);
           });
-
-          if (log.length === 0) {
-            logger.info('Database is already up to date');
-          } else {
-            logger.info(
-              `Batch ${batchNo} run: ${log.length} migrations applied`,
-            );
-            log.forEach((migration: string) => {
-              logger.info(`  - ${migration}`);
-            });
-          }
-        } catch (error) {
-          logger.error(
-            `Failed to run migrations: ${
-              error instanceof Error ? error.message : error
-            }`,
-          );
-          throw error;
         }
 
         // Initialize services
