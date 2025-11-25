@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr
 
+## 0.17.2
+
+### Patch Changes
+
+- 2fdcd62: Add support for showing svg images in ADR documents
+
 ## 0.17.1
 
 ### Patch Changes

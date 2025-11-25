@@ -9,9 +9,9 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { JSX as JSX_3 } from 'react/jsx-runtime';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
@@ -30,7 +30,7 @@ entityContent: RouteRef_2<undefined>;
 
 // @public
 const bookmarksPlugin_2: OverridableFrontendPlugin<    {}, {}, {
-"entity-content:bookmarks": ExtensionDefinition<    {
+"entity-content:bookmarks": OverridableExtensionDefinition<    {
 kind: "entity-content";
 name: undefined;
 config: {
@@ -67,7 +67,7 @@ routeRef?: RouteRef;
 filter?: string | EntityPredicate | ((entity: Entity) => boolean);
 };
 }>;
-"translation:bookmarks/bookmarksTranslations": ExtensionDefinition<    {
+"translation:bookmarks/bookmarksTranslations": OverridableExtensionDefinition<    {
 kind: "translation";
 name: "bookmarksTranslations";
 config: {};

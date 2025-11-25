@@ -73,7 +73,11 @@ export const CreateAnnouncementPage = (props: CreateAnnouncementPageProps) => {
         ...request,
         category: request.category?.toLocaleLowerCase('en-US'),
       });
-      alertApi.post({ message: alertMsg, severity: 'success' });
+      alertApi.post({
+        message: alertMsg,
+        severity: 'success',
+        display: 'transient',
+      });
 
       navigate(rootPage());
     } catch (err) {

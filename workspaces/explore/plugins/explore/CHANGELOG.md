@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 0.14.2
+
+### Patch Changes
+
+- b0af0e8: Added documentation for the New Frontend System
+
 ## 0.14.1
 
 ### Patch Changes

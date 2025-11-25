@@ -40,7 +40,7 @@ export const adrDecoratorFactories = Object.freeze({
   createRewriteRelativeEmbedsDecorator(): AdrContentDecorator {
     return ({ baseUrl, content }) => ({
       content: content.replace(
-        /!\[([^\[\]]*)\]\((?!https?:\/\/)(.*?)(\.png|\.jpg|\.jpeg|\.gif|\.webp)(.*)\)/gim,
+        /!\[([^\[\]]*)\]\((?!https?:\/\/)(.*?)(\.png|\.jpg|\.jpeg|\.gif|\.webp|\.svg)(.*)\)/gim,
         `![$1](${baseUrl}/$2$3$4)`,
       ),
     });

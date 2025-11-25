@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-azure-resources
 
+## 0.2.1
+
+### Patch Changes
+
+- 9267a90: fix repository link in package.json to remediate publish errors
+
 ## 0.2.0
 
 ### Minor Changes

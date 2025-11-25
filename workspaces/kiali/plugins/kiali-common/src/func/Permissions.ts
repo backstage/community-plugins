@@ -16,6 +16,10 @@
 
 import { ComputedServerConfig, ResourcePermissions } from '../types';
 
+/**
+ * Check if user can create resources.
+ * @public
+ */
 export function canCreate(
   serverConfig: ComputedServerConfig,
   privs?: ResourcePermissions,
@@ -25,6 +29,10 @@ export function canCreate(
   );
 }
 
+/**
+ * Check if user can update resources.
+ * @public
+ */
 export function canUpdate(
   serverConfig: ComputedServerConfig,
   privs?: ResourcePermissions,
@@ -34,6 +42,10 @@ export function canUpdate(
   );
 }
 
+/**
+ * Check if user can delete resources.
+ * @public
+ */
 export function canDelete(
   serverConfig: ComputedServerConfig,
   privs?: ResourcePermissions,

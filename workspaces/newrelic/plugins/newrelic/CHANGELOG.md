@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic
 
+## 0.15.1
+
+### Patch Changes
+
+- 71b618d: Added documentation for the New Frontend System
+
 ## 0.15.0
 
 ### Minor Changes

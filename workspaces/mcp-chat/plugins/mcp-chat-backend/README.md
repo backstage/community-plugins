@@ -10,7 +10,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 
 ## Features
 
-- 🤖 **Multi-Provider AI Support**: Works with OpenAI, Claude, Gemini, Ollama, and LiteLLM
+- 🤖 **Multi-Provider AI Support**: Works with OpenAI, Claude, Gemini, Ollama, LiteLLM, and OpenAI Responses API
 - 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, SSE, Streamable HTTP)
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
@@ -20,14 +20,99 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 
 The following AI providers and models have been thoroughly tested:
 
-| Provider    | Model              | Status          | Notes                                                         |
-| ----------- | ------------------ | --------------- | ------------------------------------------------------------- |
-| **OpenAI**  | `gpt-4o-mini`      | ✅ Fully Tested | Recommended for production use                                |
-| **Gemini**  | `gemini-2.5-flash` | ✅ Fully Tested | Excellent performance with tool calling                       |
-| **Ollama**  | `llama3.1:8b`      | ✅ Tested       | Works well, but `llama3.1:30b` recommended for better results |
-| **LiteLLM** | Various            | ✅ Tested       | Proxy for 100+ LLMs with unified API interface                |
+| Provider                 | Model              | Status          | Notes                                                         |
+| ------------------------ | ------------------ | --------------- | ------------------------------------------------------------- |
+| **OpenAI**               | `gpt-4o-mini`      | ✅ Fully Tested | Recommended for production use                                |
+| **OpenAI Responses API** | Various            | ✅ Tested       | Handles MCP tool execution internally (see below)             |
+| **Gemini**               | `gemini-2.5-flash` | ✅ Fully Tested | Excellent performance with tool calling                       |
+| **Ollama**               | `llama3.1:8b`      | ✅ Tested       | Works well, but `llama3.1:30b` recommended for better results |
+| **LiteLLM**              | Various            | ✅ Tested       | Proxy for 100+ LLMs with unified API interface                |
 
 > **Note**: While other providers and models may work, they have not been extensively tested. The plugin supports any provider that implements tool calling functionality, but compatibility is not guaranteed for untested configurations.
+
+### OpenAI Responses API Provider
+
+The **OpenAI Responses API** provider is a special provider type that delegates MCP tool discovery and execution to the API itself, rather than handling tools locally. This is useful when:
+
+- You have a centralized API gateway that manages MCP servers
+- You want to offload tool execution to a remote service
+- Your MCP servers are only accessible from a specific network/environment
+
+**Key Differences from Standard Providers:**
+
+- **Tool Execution**: The API handles all MCP tool calls internally
+- **MCP Server Requirements**: Only URL-based MCP servers are supported (no STDIO/npxCommand)
+- **Configuration**: MCP server configs are sent to the API in each request
+- **UI Experience**: The chat UI displays tool outputs identically to standard providers
+
+**Example Configuration:**
+
+```yaml
+mcpChat:
+  providers:
+    - id: openai-responses
+      baseUrl: 'http://gemini-mcp-servers.apps.example.com/v1/openai/v1'
+      model: 'gemini/models/gemini-2.5-flash'
+      token: 'your-api-token' # Optional
+
+  mcpServers:
+    - id: k8s
+      name: Kubernetes Server
+      url: 'https://kubernetes-mcp-server.example.com/mcp'
+      type: streamable-http
+
+    - id: brave-search
+      name: Brave Search
+      url: 'https://brave-search-mcp.example.com/mcp'
+      type: streamable-http
+```
+
+**Authorization Headers Support:**
+
+The Responses API provider supports passing authorization headers to MCP servers that require authentication. Headers configured in your MCP server config are automatically forwarded to the API:
+
+```yaml
+mcpServers:
+  - id: github-copilot
+    name: GitHub Copilot MCP
+    url: 'https://api.githubcopilot.com/mcp'
+    type: streamable-http
+    headers:
+      Authorization: 'Bearer ghp_your_github_token_here'
+
+  - id: backstage-server
+    name: Backstage MCP Server
+    url: 'http://localhost:7007/api/mcp-actions/v1'
+    type: streamable-http
+    headers:
+      Authorization: 'Bearer your_backstage_token'
+      X-Custom-Header: 'custom-value'
+```
+
+The headers are included in the Responses API request for each server:
+
+```json
+{
+  "tools": [
+    {
+      "type": "mcp",
+      "server_url": "https://api.githubcopilot.com/mcp",
+      "server_label": "github-copilot",
+      "require_approval": "never",
+      "headers": {
+        "Authorization": "Bearer ghp_your_github_token_here"
+      }
+    }
+  ]
+}
+```
+
+**Important Notes:**
+
+- The `baseUrl` must point to a Responses API compatible endpoint
+- MCP servers must be configured with `url` (STDIO servers will be ignored)
+- Headers are optional - servers without headers work normally
+- Multiple custom headers can be specified per server
 
 ## Quick Start with Gemini (Free)
 
@@ -143,11 +228,15 @@ Add the following configuration to your `app-config.yaml`:
 ```yaml
 mcpChat:
   # Configure AI providers (currently only the first provider is used)
-  # Supported Providers: OpenAI, Gemini, Claude, Ollama, and LiteLLM
+  # Supported Providers: OpenAI, OpenAI Responses API, Gemini, Claude, Ollama, and LiteLLM
   providers:
     - id: openai # OpenAI provider
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini # or gpt-4, gpt-3.5-turbo, etc.
+    - id: openai-responses # OpenAI Responses API provider (handles MCP internally)
+      baseUrl: 'http://your-responses-api-endpoint.com/v1/openai/v1'
+      model: 'gemini/models/gemini-2.5-flash'
+      token: ${API_TOKEN} # Optional, depends on your API setup
     - id: claude # Claude provider
       token: ${CLAUDE_API_KEY}
       model: claude-sonnet-4-20250514 # or claude-3-7-sonnet-latest
@@ -178,12 +267,19 @@ mcpChat:
       env:
         KUBECONFIG: ${KUBECONFIG}
 
-    # Backstage server integration
+    # Backstage server integration (with authorization headers)
     - id: backstage-server
       name: Backstage Server
       url: 'http://localhost:7007/api/mcp-actions/v1'
       headers:
         Authorization: 'Bearer ${BACKSTAGE_MCP_TOKEN}'
+
+    # GitHub Copilot MCP (requires authentication)
+    - id: github-copilot
+      name: GitHub Copilot MCP
+      url: 'https://api.githubcopilot.com/mcp'
+      headers:
+        Authorization: 'Bearer ${GITHUB_TOKEN}'
 
   # Optional: Customize the system prompt for the AI assistant
   # If not specified, uses a default prompt optimized for tool usage
@@ -253,6 +349,7 @@ export LITELLM_API_KEY="sk-..." # Optional, for LiteLLM proxy authentication
 # MCP Server Configuration
 export BRAVE_API_KEY="..."
 export BACKSTAGE_MCP_TOKEN="..."
+export GITHUB_TOKEN="ghp_..."  # For GitHub Copilot MCP or other GitHub integrations
 export KUBECONFIG="/path/to/your/kubeconfig.yaml"
 ```
 

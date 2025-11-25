@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.15.1
+
+### Patch Changes
+
+- 6891b47: Added documentation for the New Frontend System
+
 ## 0.15.0
 
 ### Minor Changes

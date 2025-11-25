@@ -11,36 +11,36 @@ on:
       - 'workspace/**'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: prior-release-workspace-${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-    # ADDED: Checks if PR is a Version Packages PR on workspace/** branch
-    #        and validates PR title, author, branch and merged status.
+  # ADDED: Checks if PR is a Version Packages PR on workspace/** branch
+  #        and validates PR title, author, branch and merged status.
   check-merged-pr:
     name: Check if PR is a Version Packages PR on workspace/** branch
     runs-on: ubuntu-latest
     outputs:
-        is_version_pr: ${{ steps.check_pr.outputs.is_version_pr }}
-        workspace_name: ${{ steps.extract_workspace.outputs.workspace_name }}
+      is_version_pr: ${{ steps.check_pr.outputs.is_version_pr }}
+      workspace_name: ${{ steps.extract_workspace.outputs.workspace_name }}
     steps:
-        - name: Check PR title, author, branch and merged status
-          id: check_pr
-          run: |
-              if [[ "${{ github.event.pull_request.title }}" == Version*Packages* \
-              && "${{ github.event.pull_request.user.login }}" == "backstage-service" ]] \
-              && [[ "${{ github.event.pull_request.head.ref }}" == maintenance-changesets-release/* ]] \
-              && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
-                echo "is_version_pr=true" >> $GITHUB_OUTPUT
-              else
-                echo "is_version_pr=false" >> $GITHUB_OUTPUT
-              fi
+      - name: Check PR title, author, branch and merged status
+        id: check_pr
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" == Version*Packages* \
+          && "${{ github.event.pull_request.user.login }}" == "backstage-service" ]] \
+          && [[ "${{ github.event.pull_request.head.ref }}" == maintenance-changesets-release/* ]] \
+          && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            echo "is_version_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_version_pr=false" >> $GITHUB_OUTPUT
+          fi
 
-        # ADDED: Extracts workspace name from branch, ensuring it is a workspace/** branch
-        - name: Extract Workspace name from branch
-          id: extract_workspace
-          run: |
-              WORKSPACE_NAME=$(echo "${{ github.event.pull_request.base.ref }}" | cut -d'/' -f2)
-              echo "workspace_name=$WORKSPACE_NAME" >> $GITHUB_OUTPUT
+      # ADDED: Extracts workspace name from branch, ensuring it is a workspace/** branch
+      - name: Extract Workspace name from branch
+        id: extract_workspace
+        run: |
+          WORKSPACE_NAME=$(echo "${{ github.event.pull_request.base.ref }}" | cut -d'/' -f2)
+          echo "workspace_name=$WORKSPACE_NAME" >> $GITHUB_OUTPUT
 
   changesets-pr:
     name: Update Version Packages PR for ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
@@ -59,7 +59,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
-         ref: ${{ github.ref }}
+          ref: ${{ github.ref }}
 
       - name: Verify maintenance-changesets-release branch does not exist
         run: |
@@ -77,7 +77,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-             
+
       - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
@@ -144,7 +144,7 @@ jobs:
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org/  # Needed for auth
+          registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Install root dependencies
         run: yarn install --immutable
@@ -157,10 +157,10 @@ jobs:
       - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-            path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', needs.check-merged-pr.outputs.workspace_name)) }}
-            restore-keys: |
-                ${{ runner.os }}-yarn-
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', needs.check-merged-pr.outputs.workspace_name)) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - name: yarn install
         run: yarn install --immutable
 
@@ -177,10 +177,10 @@ jobs:
           yarn workspaces foreach -v --no-private npm publish --access public --provenance --tolerate-republish --tag "maintenance"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+
       - name: Create tag
         working-directory: ${{ github.workspace }}/scripts/ci
         run: node create-tag.js
         env:
-            WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
-            GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
+          GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}

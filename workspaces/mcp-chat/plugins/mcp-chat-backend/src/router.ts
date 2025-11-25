@@ -60,7 +60,7 @@ export async function createRouter({
 
   // MCP Chat route
   router.post('/chat', async (req, res) => {
-    const { messages, enabledTools = [] } = req.body;
+    const { messages, enabledTools } = req.body;
 
     const validation = validateMessages(messages);
     if (!validation.isValid) {

@@ -33,7 +33,7 @@ on:
         type: string
 
 concurrency:
-  group: ${{ github.workflow }}-${{ inputs.workspace }}
+  group: release-workspace-${{ github.workflow }}-${{ inputs.workspace }}
 
 jobs:
   changesets-pr:

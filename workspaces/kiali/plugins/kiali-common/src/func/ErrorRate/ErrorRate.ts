@@ -35,6 +35,7 @@ import {
   getRateHealthConfig,
 } from './utils';
 
+/** @public */
 export const generateRateForTolerance = (
   tol: RequestTolerance,
   requests: { [key: string]: { [key: string]: number } },
@@ -63,7 +64,10 @@ export const generateRateForTolerance = (
   }
 };
 
-// Aggregate the results
+/**
+ * Aggregate the results
+ * @public
+ */
 export const aggregate = (
   request: RequestType,
   tolerances?: ToleranceConfig[],
@@ -79,7 +83,10 @@ export const aggregate = (
   return result;
 };
 
-// Sum the inbound and outbound request for calculating the global status
+/**
+ * Sum the inbound and outbound request for calculating the global status
+ * @public
+ */
 export const sumRequests = (
   inbound: RequestType,
   outbound: RequestType,
@@ -130,6 +137,10 @@ const getAggregate = (
   };
 };
 
+/**
+ * Calculate status from request tolerances.
+ * @public
+ */
 export const calculateStatus = (
   requestTolerances: RequestTolerance[],
 ): {
@@ -172,6 +183,10 @@ export const calculateStatus = (
   return result;
 };
 
+/**
+ * Calculate error rate for a resource.
+ * @public
+ */
 export const calculateErrorRate = (
   ns: string,
   name: string,

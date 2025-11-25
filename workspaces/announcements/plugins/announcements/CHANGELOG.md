@@ -1,5 +1,20 @@
 # @backstage-community/plugin-announcements
 
+## 0.16.2
+
+### Patch Changes
+
+- 43e6d99: Added analytics event tracking for announcement link clicks. When users click on an announcement with a `link` property, an analytics event is now captured using the [Plugin Analytics](https://backstage.io/docs/plugins/analytics/#capturing-events). This applies to the following components: `AnnouncementsCard`, `AnnouncementPage`,`NewAnnouncementBanner`.
+- 0b8dedf: Fix Announcements banner error `Routing context is not available` when using the banner with the new frontend system.
+
+## 0.16.1
+
+### Patch Changes
+
+- 9987329: The success message shown when an announcement is created is now transient
+- ffb26dc: Fixed routing issue where some links were incorrectly redirecting to `/announcements/admin` instead of `/announcements`. Changed `<AnnouncementsAdminPortal />` from a routable extension to a component extension to resolve the mount point conflict with the main `<AnnouncementsPage />`.
+- f39d97f: Added announcement banner as app root element for the new frontend system.
+
 ## 0.16.0
 
 ### Minor Changes

@@ -19,6 +19,7 @@ import {
   MetricsType,
 } from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
+import { formatDate } from '../utils/dateUtils';
 import {
   convertToTeamSeatAnalysis,
   filterBaseMetrics,
@@ -73,7 +74,9 @@ export async function discoverOrganizationTeamMetrics({
 
         const lastDay = await db.getMostRecentDayFromMetricsV2(type, team.slug);
         logger.info(
-          `[discoverOrganizationTeamMetrics] Found last day: ${lastDay}`,
+          `[discoverOrganizationTeamMetrics] Found last day: ${formatDate(
+            lastDay,
+          )}`,
         );
 
         const newMetrics: CopilotMetrics[] = filterNewMetricsV2(
@@ -184,14 +187,14 @@ export async function discoverOrganizationTeamMetrics({
         }
       } catch (error) {
         logger.error(
-          `[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}`,
+          `[discoverOrganizationTeamMetrics] Failed to process metrics for team ${team.slug}.`,
           error,
         );
       }
     }
   } catch (error) {
     logger.error(
-      '[discoverOrganizationTeamMetrics] Error fetching teams',
+      `[discoverOrganizationTeamMetrics] Failed to fetch teams.`,
       error,
     );
     throw error;

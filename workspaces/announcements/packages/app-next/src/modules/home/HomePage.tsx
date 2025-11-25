@@ -17,7 +17,6 @@
 import {
   AnnouncementsCard,
   AnnouncementsTimeline,
-  NewAnnouncementBanner,
 } from '@backstage-community/plugin-announcements';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -90,12 +89,25 @@ export const HomePage = () => {
           <Grid item>
             <Card>
               <CardContent>
-                <Typography variant="h6">New Announcement Banner</Typography>
+                <Typography variant="h6">Announcements Banner</Typography>
                 <Typography variant="body2" paragraph>
-                  Surfaces the most recent announcements (real-time if using the
-                  optional Backstage Signals integration)
+                  The banner now renders globally via the new frontend system.
+                  Adjust its behavior through the <code>app.extensions</code>{' '}
+                  config using the
+                  <code>announcements/banner</code> key.
                 </Typography>
-                <NewAnnouncementBanner max={2} />
+                <Typography variant="body2" color="text.secondary">
+                  Example:
+                </Typography>
+                <Typography component="pre" variant="body2">
+                  {`app:
+  extensions:
+    - announcements/banner:
+        config:
+          variant: floating
+          max: 2
+          tags: ['kubernetes']`}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>

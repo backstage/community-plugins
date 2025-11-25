@@ -364,15 +364,80 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       rateInterval: rateParams.rateInterval,
       direction: directionType,
       reporter: directionType === 'inbound' ? 'destination' : 'source',
+      includeAmbient: serverConfig?.ambientEnabled ?? false,
     };
-    return Promise.all(
-      chunk.map(nsInfo => {
-        if (nsInfo.cluster && isMultiCluster) {
-          options.clusterName = nsInfo.cluster;
+
+    // Group namespaces by cluster if multi-cluster
+    if (isMultiCluster) {
+      const clusterGroups = new Map<string, NamespaceInfo[]>();
+      chunk.forEach(nsInfo => {
+        const cluster = nsInfo.cluster || 'default';
+        if (!clusterGroups.has(cluster)) {
+          clusterGroups.set(cluster, []);
         }
-        return kialiClient
-          .getNamespaceMetrics(nsInfo.name, options)
-          .then(rs => {
+        clusterGroups.get(cluster)!.push(nsInfo);
+      });
+
+      // Make one call per cluster
+      const clusterPromises = Array.from(clusterGroups.entries()).map(
+        ([cluster, nsList]) => {
+          const clusterOptions = { ...options, clusterName: cluster };
+          const namespacesList = nsList.map(ns => ns.name).join(',');
+          return kialiClient
+            .getNamespaceMetrics(namespacesList, clusterOptions)
+            .then(metricsMap => {
+              nsList.forEach(nsInfo => {
+                const rs = metricsMap.get(nsInfo.name);
+                if (rs) {
+                  nsInfo.metrics = rs.request_count;
+                  nsInfo.errorMetrics = rs.request_error_count;
+                  if (
+                    serverConfig &&
+                    serverConfig.istioNamespace &&
+                    nsInfo.name === serverConfig.istioNamespace
+                  ) {
+                    nsInfo.controlPlaneMetrics = {
+                      istiod_proxy_time: rs.pilot_proxy_convergence_time,
+                      istiod_container_cpu:
+                        rs.container_cpu_usage_seconds_total,
+                      istiod_container_mem:
+                        rs.container_memory_working_set_bytes,
+                      istiod_process_cpu: rs.process_cpu_seconds_total,
+                      istiod_process_mem: rs.process_resident_memory_bytes,
+                    };
+                  }
+                }
+              });
+              return nsList;
+            })
+            .catch(err => {
+              kialiState.alertUtils!.add(
+                `Could not fetch metrics for cluster ${cluster}: ${getErrorString(
+                  err,
+                )}`,
+              );
+              return nsList;
+            });
+        },
+      );
+
+      return Promise.all(clusterPromises)
+        .then(results => results.flat())
+        .catch(err => {
+          kialiState.alertUtils!.add(
+            `Could not fetch metrics: ${getErrorString(err)}`,
+          );
+          return chunk;
+        });
+    }
+    // Single cluster: make one call for all namespaces
+    const namespacesList = chunk.map(ns => ns.name).join(',');
+    return kialiClient
+      .getNamespaceMetrics(namespacesList, options)
+      .then(metricsMap => {
+        chunk.forEach(nsInfo => {
+          const rs = metricsMap.get(nsInfo.name);
+          if (rs) {
             nsInfo.metrics = rs.request_count;
             nsInfo.errorMetrics = rs.request_error_count;
             if (
@@ -388,14 +453,16 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                 istiod_process_mem: rs.process_resident_memory_bytes,
               };
             }
-            return nsInfo;
-          });
-      }),
-    ).catch(err =>
-      kialiState.alertUtils!.add(
-        `Could not fetch metrics: ${getErrorString(err)}`,
-      ),
-    );
+          }
+        });
+        return chunk;
+      })
+      .catch(err => {
+        kialiState.alertUtils!.add(
+          `Could not fetch metrics: ${getErrorString(err)}`,
+        );
+        return chunk;
+      });
   };
 
   const fetchMetrics = async (nss: NamespaceInfo[]) => {
@@ -405,9 +472,36 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         .registerChained('metricschunks', undefined, () =>
           fetchMetricsChunk(chunk),
         )
-        .then(() => {
-          nss.slice();
-          setActiveNs(filterActiveNamespaces(nss));
+        .then(updatedChunk => {
+          // fetchMetricsChunk modifies the chunk array in place and returns it
+          // Update namespaces state with the updated chunk, preserving ALL existing data
+          if (updatedChunk && Array.isArray(updatedChunk)) {
+            setNamespaces(prevNamespaces => {
+              // Only update namespaces that are in the updated chunk
+              // Preserve all other data including metrics from other chunks
+              const updated = prevNamespaces.map(prevNs => {
+                const updatedNs = updatedChunk.find(
+                  n => n.name === prevNs.name,
+                );
+                if (updatedNs && updatedNs.metrics) {
+                  // Only update if we have new metrics, preserve everything else
+                  return {
+                    ...prevNs,
+                    metrics: updatedNs.metrics,
+                    errorMetrics: updatedNs.errorMetrics,
+                    controlPlaneMetrics: updatedNs.controlPlaneMetrics,
+                  };
+                }
+                // Keep existing namespace with all its data (including metrics)
+                return prevNs;
+              });
+
+              // Update activeNs with the updated namespaces
+              setActiveNs(filterActiveNamespaces(updated));
+
+              return updated;
+            });
+          }
         });
     });
   };
@@ -440,11 +534,29 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         const sortField = FilterHelper.currentSortField(Sorts.sortFields);
         const sortNs = sortedNamespaces(allNamespaces);
 
+        // Preserve existing metrics when refreshing to avoid showing "No traffic" message
+        const namespacesWithMetrics = sortNs.map(ns => {
+          const previous = namespaces.find(prev => prev.name === ns.name);
+          return {
+            ...ns,
+            // Preserve all previous data, not just metrics
+            status: previous?.status,
+            tlsStatus: previous?.tlsStatus,
+            metrics: previous?.metrics,
+            errorMetrics: previous?.errorMetrics,
+            validations: previous?.validations,
+            controlPlaneMetrics: previous?.controlPlaneMetrics,
+          };
+        });
+        setNamespaces(namespacesWithMetrics);
+
+        // Update activeNs immediately with preserved metrics
+        setActiveNs(filterActiveNamespaces(namespacesWithMetrics));
+
         fetchHealth(isAscending, sortField, overviewType, sortNs);
         fetchTLS(sortNs, isAscending, sortField);
         fetchValidations(sortNs, isAscending, sortField);
         fetchMetrics(sortNs);
-        setNamespaces(sortNs);
         promises.waitAll();
       })
       .catch(error => {

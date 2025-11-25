@@ -1,5 +1,29 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.4
+
+### Patch Changes
+
+- 14bf95c: Improves error logging. Changes Octokit to use the built in CreateAppAuth in order to automatically refresh expired tokens.
+
+## 0.15.3
+
+### Patch Changes
+
+- 53e4a3b: fixes sql for engagement-metrics with the change from null to empty string.
+
+## 0.15.2
+
+### Patch Changes
+
+- 1b7adc8: Fixed a mismatch between the backend requiring copilot.host and the config declaration stating it was optional.
+
+## 0.15.1
+
+### Patch Changes
+
+- 3fd5298: Fixed an issue causing incorrect metrics to be displayed due to duplicate database entries for the same day.
+
 ## 0.15.0
 
 ### Minor Changes

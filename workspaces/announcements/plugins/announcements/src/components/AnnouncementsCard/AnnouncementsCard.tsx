@@ -21,7 +21,7 @@ import {
   Link,
   Progress,
 } from '@backstage/core-components';
-import { useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 import {
   announcementCreateRouteRef,
@@ -86,6 +86,7 @@ export const AnnouncementsCard = ({
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const createAnnouncementLink = useRouteRef(announcementCreateRouteRef);
   const lastSeen = announcementsApi.lastSeenDate();
+  const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
 
   const { announcements, loading, error } = useAnnouncements({
@@ -139,6 +140,14 @@ export const AnnouncementsCard = ({
                 <Link
                   to={viewAnnouncementLink({ id: announcement.id })}
                   variant="inherit"
+                  onClick={() =>
+                    analytics.captureEvent('click', announcement.title, {
+                      attributes: {
+                        announcementId: announcement.id,
+                        location: 'AnnouncementsCard',
+                      },
+                    })
+                  }
                 >
                   {announcement.title}
                 </Link>
