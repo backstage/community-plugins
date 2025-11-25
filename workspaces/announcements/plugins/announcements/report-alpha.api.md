@@ -13,10 +13,10 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
@@ -31,7 +31,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:announcements': ExtensionDefinition<{
+    'api:announcements': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -48,7 +48,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'app-root-element:announcements/banner': ExtensionDefinition<{
+    'app-root-element:announcements/banner': OverridableExtensionDefinition<{
       config: {
         variant: 'block' | 'floating';
         max: number | undefined;
@@ -76,8 +76,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -87,7 +87,7 @@ const _default: OverridableFrontendPlugin<
         element: JSX.Element;
       };
     }>;
-    'entity-card:announcements/announcements': ExtensionDefinition<{
+    'entity-card:announcements/announcements': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'announcements';
       config: {
@@ -128,7 +128,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'nav-item:announcements': ExtensionDefinition<{
+    'nav-item:announcements': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -149,7 +149,7 @@ const _default: OverridableFrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:announcements': ExtensionDefinition<{
+    'page:announcements': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
@@ -176,7 +176,7 @@ const _default: OverridableFrontendPlugin<
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
     }>;
-    'search-filter-result-type:announcements': ExtensionDefinition<{
+    'search-filter-result-type:announcements': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
       name: undefined;
       config: {};
@@ -185,7 +185,7 @@ const _default: OverridableFrontendPlugin<
         {
           value: string;
           name: string;
-          icon: JSX.Element;
+          icon: JSX_2.Element;
         },
         'search.filters.result-types.type',
         {}
@@ -193,7 +193,7 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: SearchFilterResultTypeBlueprintParams;
     }>;
-    'search-result-list-item:announcements': ExtensionDefinition<{
+    'search-result-list-item:announcements': OverridableExtensionDefinition<{
       kind: 'search-result-list-item';
       name: undefined;
       config: {
@@ -206,6 +206,7 @@ const _default: OverridableFrontendPlugin<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
         },
         'search.search-result-list-item.item',
         {}
