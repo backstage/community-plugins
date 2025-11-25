@@ -456,7 +456,7 @@ export class DatabaseHandler {
     type: MetricsType,
     teamName?: string,
   ): Promise<EngagementMetrics[]> {
-    let query = this.db('copilot_metrics as cm')
+    const query = this.db('copilot_metrics as cm')
       .select(
         'cm.day',
         'cm.type',
@@ -483,61 +483,48 @@ export class DatabaseHandler {
       .leftJoin('ide_completions', join => {
         join
           .on('ide_completions.day', '=', 'cm.day')
-          .andOn('ide_completions.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn(
+          .andOn('ide_completions.type', '=', 'cm.type')
+          .andOn(
             'ide_completions.team_name',
             '=',
-            this.db.raw('?', [teamName]),
+            this.db.raw('?', [teamName ?? '']),
           );
-        } else {
-          join.andOnNull('ide_completions.team_name');
-        }
       })
       .leftJoin('ide_chats', join => {
         join
           .on('ide_chats.day', '=', 'cm.day')
-          .andOn('ide_chats.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn('ide_chats.team_name', '=', this.db.raw('?', [teamName]));
-        } else {
-          join.andOnNull('ide_chats.team_name');
-        }
+          .andOn('ide_chats.type', '=', 'cm.type')
+          .andOn(
+            'ide_chats.team_name',
+            '=',
+            this.db.raw('?', [teamName ?? '']),
+          );
       })
       .leftJoin('dotcom_chats', join => {
         join
           .on('dotcom_chats.day', '=', 'cm.day')
-          .andOn('dotcom_chats.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn(
+          .andOn('dotcom_chats.type', '=', 'cm.type')
+          .andOn(
             'dotcom_chats.team_name',
             '=',
-            this.db.raw('?', [teamName]),
+            this.db.raw('?', [teamName ?? '']),
           );
-        } else {
-          join.andOnNull('dotcom_chats.team_name');
-        }
       })
       .leftJoin('dotcom_prs', join => {
         join
           .on('dotcom_prs.day', '=', 'cm.day')
-          .andOn('dotcom_prs.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn('dotcom_prs.team_name', '=', this.db.raw('?', [teamName]));
-        } else {
-          join.andOnNull('dotcom_prs.team_name');
-        }
+          .andOn('dotcom_prs.type', '=', 'cm.type')
+          .andOn(
+            'dotcom_prs.team_name',
+            '=',
+            this.db.raw('?', [teamName ?? '']),
+          );
       })
       .where('cm.type', type)
+      .where('cm.team_name', teamName ?? '')
       .whereBetween('cm.day', [startDate, endDate])
       .groupBy('cm.day', 'cm.type', 'cm.team_name')
       .orderBy('cm.day', 'asc');
-
-    if (teamName) {
-      query = query.where('cm.team_name', teamName);
-    } else {
-      query = query.whereNull('cm.team_name');
-    }
 
     return await query;
   }

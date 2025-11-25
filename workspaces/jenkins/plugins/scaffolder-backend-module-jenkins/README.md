@@ -66,8 +66,8 @@ This scaffolder requires the path to a Jenkins job config.xml file. config.xml i
 
 | Action              | Description          |
 | ------------------- | -------------------- |
-| jenking:job:build   | Run a job            |
-| jenking:job:copy    | Copy an existing job |
+| jenkins:job:build   | Run a job            |
+| jenkins:job:copy    | Copy an existing job |
 | jenkins:job:create  | Create a job         |
 | jenkins:job:destroy | Destroy a job        |
 | jenkins:job:disable | Disable a job        |
@@ -91,10 +91,12 @@ Below, there is an example for each action
   ```yaml
   - id: jenkins-job-build
     name: Jenkins Job Build
-    action: jenkins:job:build
-    input:
-      jobName: first-job
-      jobParameters: some-value
+  action: jenkins:job:build
+  input:
+   jobName: first-job
+   jobParameters:
+     parameters:
+       PARAM1: value1
   ```
 
 - Copy job
@@ -188,18 +190,17 @@ Below, there is an example for each action
 
   **Action input parameters**
 
-  | Action          | Description                                    |
-  | --------------- | ---------------------------------------------- |
-  | _jobName_       | Name of job                                    |
-  | _jobParameters_ | optional job parameters (object) to execute it |
+| Action    | Description |
+| --------- | ----------- |
+| _jobName_ | Name of job |
 
-  ```yaml
-  - id: jenkins-job-enable
-    name: Jenkins Job Enable
-    action: jenkins:job:enable
-    input:
-      jobName: first-job
-  ```
+```yaml
+- id: jenkins-job-enable
+  name: Jenkins Job Enable
+  action: jenkins:job:enable
+  input:
+    jobName: first-job
+```
 
 **`NOTE: no output will be provided after action excution`**
 

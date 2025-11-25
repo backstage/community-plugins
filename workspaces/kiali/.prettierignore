@@ -3,3 +3,7 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
+
+# Generated API reports
+**/report*.api.md
+**/knip-report.md

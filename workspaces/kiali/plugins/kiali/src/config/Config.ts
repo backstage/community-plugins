@@ -207,7 +207,7 @@ const conf = {
       configValidations: () => `api/istio/validations`,
       meshTls: () => 'api/mesh/tls',
       istioStatus: () => 'api/istio/status',
-      istioCertsInfo: () => 'api/istio/certs',
+      istioCertsInfo: () => 'api/clusters/tls',
       pod: (namespace: string, pod: string) =>
         `api/namespaces/${namespace}/pods/${pod}`,
       podLogs: (namespace: string, pod: string) =>
@@ -234,6 +234,7 @@ const conf = {
         `api/namespaces/${namespace}/services/${service}/dashboard`,
       clustersApps: () => `api/clusters/apps`,
       clustersServices: () => `api/clusters/services`,
+      clustersMetrics: () => `api/clusters/metrics`,
       status: 'api/status',
       workload: (namespace: string, workload: string) =>
         `api/namespaces/${namespace}/workloads/${workload}`,

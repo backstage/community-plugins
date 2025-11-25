@@ -137,7 +137,7 @@ export const KialiProvider: React.FC<Props> = ({
   const kialiClient = useApi(kialiApiRef);
   kialiClient.setEntity(entity);
   const alertUtils = new AlertUtils(messageDispatch);
-  const fetchNamespaces = async (provider: string) => {
+  const fetchNamespaces = async () => {
     if (!namespaceState || !namespaceState.isFetching) {
       namespaceDispatch(NamespaceActions.requestStarted());
       return kialiClient
@@ -154,18 +154,14 @@ export const KialiProvider: React.FC<Props> = ({
           namespaceDispatch(
             NamespaceActions.receiveList([...data], new Date()),
           );
-          namespaceDispatch(
-            NamespaceActions.setActiveNamespaces([
-              ...data.filter(ns => ns.cluster === provider),
-            ]),
-          );
+          namespaceDispatch(NamespaceActions.setActiveNamespaces([...data]));
         })
         .catch(() => namespaceDispatch(NamespaceActions.requestFailed()));
     }
     return () => {};
   };
 
-  const fetchPostLogin = async (provider: string) => {
+  const fetchPostLogin = async () => {
     try {
       const getAuthpromise = promises
         .register('getAuth', kialiClient.getAuthInfo())
@@ -182,9 +178,6 @@ export const KialiProvider: React.FC<Props> = ({
         .then(response =>
           meshTLSStatusDispatch(MeshTlsActions.setinfo(response)),
         );
-      const getIstioCerts = promises
-        .register('getIstioCerts', kialiClient.getIstioCertsInfo())
-        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       const getServerConfig = promises
         .register('getServerConfig', kialiClient.getServerConfig())
         .then(resp => {
@@ -200,7 +193,19 @@ export const KialiProvider: React.FC<Props> = ({
       const getIstioStatus = promises
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));
-      await fetchNamespaces(provider);
+      await fetchNamespaces();
+      // Build namespaces string from active namespaces (after they are loaded)
+      const namespacesString = namespaceState.activeNamespaces
+        .map(ns => ns.name)
+        .join(',');
+      const clusterName = providerState.activeProvider || undefined;
+
+      const getIstioCerts = promises
+        .register(
+          'getIstioCerts',
+          kialiClient.getIstioCertsInfo(namespacesString, clusterName),
+        )
+        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       await Promise.all([
         getAuthpromise,
         getStatusPromise,
@@ -241,7 +246,7 @@ export const KialiProvider: React.FC<Props> = ({
           );
           kialiClient.setAnnotation(KIALI_PROVIDER, status.providers[0]);
         }
-        fetchPostLogin(status.providers[0]);
+        fetchPostLogin();
       }
     } catch (err) {
       let errDetails: string | undefined = undefined;

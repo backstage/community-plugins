@@ -37,6 +37,6 @@ export interface Config {
     /**
      * The host for GitHub Copilot integration.
      */
-    host?: string;
+    host: string;
   };
 }

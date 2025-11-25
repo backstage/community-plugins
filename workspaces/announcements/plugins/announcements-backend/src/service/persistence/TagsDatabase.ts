@@ -15,7 +15,7 @@
  */
 import { Knex } from 'knex';
 
-export interface Tag {
+interface Tag {
   slug: string;
   title: string;
 }

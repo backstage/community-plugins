@@ -36,7 +36,7 @@
     "@mui/material": "^6.4.2",
     "@mui/x-data-grid": "^7.25.0",
     "@patternfly/react-charts": "7.4.9",
-    "@patternfly/react-component-groups": "^5.2.0",
+    "@patternfly/react-component-groups": "^6.0.0",
     "@patternfly/react-core": "5.4.14",
     "@patternfly/react-icons": "5.4.2",
     "@patternfly/react-styles": "5.4.1",

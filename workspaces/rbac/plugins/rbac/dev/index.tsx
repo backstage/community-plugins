@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@backstage/ui/css/styles.css';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import {
-  MockConfigApi,
-  MockPermissionApi,
-  TestApiProvider,
-} from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import {
   PermissionAction,
@@ -153,7 +150,6 @@ class MockRBACApi implements RBACAPI {
   }
 }
 
-const mockPermissionApi = new MockPermissionApi();
 const mockRBACApi = new MockRBACApi([
   {
     memberReferences: ['user:default/guest'],
@@ -164,10 +160,8 @@ const mockRBACApi = new MockRBACApi([
     name: 'role:default/rbac_admin',
   },
 ]);
-const mockConfigApi = new MockConfigApi({
-  permission: {
-    enabled: true,
-  },
+const mockConfigApi = mockApis.config({
+  data: { permission: { enabled: true } },
 });
 
 createDevApp()
@@ -179,7 +173,7 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
           [rbacApiRef, mockRBACApi],
           [configApiRef, mockConfigApi],
         ]}

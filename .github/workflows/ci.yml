@@ -4,7 +4,7 @@ on:
   pull_request:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -92,7 +92,7 @@ jobs:
 
       - name: prettier
         run: yarn prettier:check
-      
+
       - name: read knipReports flag from bcp.json
         id: bcpKnipReports
         run: |
@@ -127,7 +127,7 @@ jobs:
 
       - name: check list deprecations
         if: ${{ steps.bcpListDeprecations.outputs.list_deprecations == 'true' }}
-        run: yarn backstage-cli repo list-deprecations  
+        run: yarn backstage-cli repo list-deprecations
 
       - name: check api reports and generate API reference
         run: yarn build:api-reports:only --ci

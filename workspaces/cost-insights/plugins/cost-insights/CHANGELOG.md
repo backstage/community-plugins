@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.22.1
+
+### Patch Changes
+
+- 2b0eb8c: Added documentation for the New Frontend System
+
 ## 0.22.0
 
 ### Minor Changes

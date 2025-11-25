@@ -16,7 +16,7 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Link } from '@backstage/core-components';
-import { useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import { announcementViewRouteRef } from '../../routes';
 import {
   announcementsApiRef,
@@ -91,6 +91,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
+  const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
   const [bannerOpen, setBannerOpen] = useState(true);
   const variant = props.variant || 'block';
@@ -98,11 +99,33 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const titleLength = props.cardOptions?.titleLength;
   const excerptLength = props.cardOptions?.excerptLength;
 
-  const handleClick = () => {
+  const markSeen = () => {
     announcementsApi.markLastSeenDate(
       DateTime.fromISO(announcement.created_at),
     );
     setBannerOpen(false);
+  };
+
+  const handleLinkClick = () => {
+    analytics.captureEvent('click', announcement.title, {
+      attributes: {
+        announcementId: announcement.id,
+        location: 'NewAnnouncementBanner',
+      },
+    });
+
+    markSeen();
+  };
+
+  const handleDismiss = () => {
+    analytics.captureEvent('dismiss', announcement.title, {
+      attributes: {
+        announcementId: announcement.id,
+        location: 'NewAnnouncementBanner',
+      },
+    });
+
+    markSeen();
   };
 
   const title = titleLength
@@ -124,13 +147,26 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
       <Link
         to={viewAnnouncementLink({ id: announcement.id })}
         variant="inherit"
-        onClick={handleClick}
+        onClick={handleLinkClick}
       >
         {title}
       </Link>
       &nbsp;– {excerpt}
     </>
   );
+
+  useEffect(() => {
+    if (!bannerOpen) {
+      return;
+    }
+
+    analytics.captureEvent('view', announcement.title, {
+      attributes: {
+        announcementId: announcement.id,
+        location: 'NewAnnouncementBanner',
+      },
+    });
+  }, [analytics, announcement.id, announcement.title, bannerOpen]);
 
   return (
     <Snackbar
@@ -150,7 +186,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
             key="dismiss"
             title={t('newAnnouncementBanner.markAsSeen')}
             color="inherit"
-            onClick={handleClick}
+            onClick={handleDismiss}
           >
             <Close className={classes.icon} />
           </IconButton>,

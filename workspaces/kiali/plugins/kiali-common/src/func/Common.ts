@@ -16,6 +16,10 @@
 import { defaultMetricsDuration } from '../';
 import { BoundsInMilliseconds, DurationInSeconds, TimeRange } from '../types';
 
+/**
+ * Convert bounds in milliseconds to duration in seconds.
+ * @public
+ */
 export const boundsToDuration = (
   bounds: BoundsInMilliseconds,
 ): DurationInSeconds => {
@@ -26,6 +30,10 @@ export const boundsToDuration = (
   );
 };
 
+/**
+ * Convert duration in seconds to bounds in milliseconds.
+ * @public
+ */
 export const durationToBounds = (
   duration: DurationInSeconds,
 ): BoundsInMilliseconds => {
@@ -34,6 +42,10 @@ export const durationToBounds = (
   };
 };
 
+/**
+ * Check if two time ranges are equal.
+ * @public
+ */
 export const isEqualTimeRange = (t1: TimeRange, t2: TimeRange): boolean => {
   if (t1.from && t2.from && t1.from !== t2.from) {
     return false;
@@ -51,7 +63,10 @@ export const isEqualTimeRange = (t1: TimeRange, t2: TimeRange): boolean => {
   return true;
 };
 
-// Type-guarding TimeRange: executes first callback when range is a duration, or second callback when it's a bounded range, mapping to a value
+/**
+ * Type-guarding TimeRange: executes first callback when range is a duration, or second callback when it's a bounded range, mapping to a value.
+ * @public
+ */
 export function guardTimeRange<T>(
   range: TimeRange,
   ifDuration: (d: DurationInSeconds) => T,
@@ -73,6 +88,10 @@ export function guardTimeRange<T>(
   return ifDuration(defaultMetricsDuration);
 }
 
+/**
+ * Evaluate time range to get start and end dates.
+ * @public
+ */
 export const evalTimeRange = (range: TimeRange): [Date, Date] => {
   const bounds = guardTimeRange(range, durationToBounds, b => b);
   return [

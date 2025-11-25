@@ -371,12 +371,22 @@ export class MockKialiClient implements KialiApi {
   }
 
   async getNamespaceMetrics(
-    namespace: string,
+    namespaces: string,
     params: IstioMetricsOptions,
-  ): Promise<Readonly<IstioMetricsMap>> {
-    return kialiData.namespacesData[namespace].metrics[params.direction][
-      params.duration as number
-    ];
+  ): Promise<Map<string, Readonly<IstioMetricsMap>>> {
+    const metricsMap = new Map<string, Readonly<IstioMetricsMap>>();
+    const namespaceList = namespaces.split(',');
+    namespaceList.forEach(namespace => {
+      const trimmedNs = namespace.trim();
+      if (kialiData.namespacesData[trimmedNs]) {
+        const metrics =
+          kialiData.namespacesData[trimmedNs].metrics[params.direction][
+            params.duration as number
+          ];
+        metricsMap.set(trimmedNs, metrics);
+      }
+    });
+    return metricsMap;
   }
 
   async getIstioStatus(cluster?: string): Promise<ComponentStatus[]> {
@@ -387,7 +397,7 @@ export class MockKialiClient implements KialiApi {
     return kialiData.istioStatus;
   }
 
-  async getIstioCertsInfo(): Promise<CertsInfo[]> {
+  async getIstioCertsInfo(_: string, __?: string): Promise<CertsInfo[]> {
     return kialiData.istioCertsInfo;
   }
   isDevEnv(): boolean {
