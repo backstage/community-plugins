@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.13.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
 ## 0.12.1
 
 ### Patch Changes
