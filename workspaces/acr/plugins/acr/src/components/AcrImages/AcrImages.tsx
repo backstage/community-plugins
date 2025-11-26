@@ -18,8 +18,10 @@ import { Box } from '@material-ui/core';
 import { formatDate } from '../../utils/acr-utils';
 
 import { useTags } from '../../hooks/useTags';
+import { useTranslation } from '../../hooks/useTranslation';
+import { acrTranslationRef } from '../../translations';
 import { Tag, TagRow } from '../../types';
-import { columns } from './tableHeading';
+import { getColumns } from './tableHeading';
 
 type AcrImagesProps = {
   image: string;
@@ -27,7 +29,11 @@ type AcrImagesProps = {
 };
 
 export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
-  const title = `Azure Container Registry Repository: ${image}`;
+  const { t } = useTranslation();
+  const title = t(
+    'page.title' as keyof typeof acrTranslationRef.T,
+    { image } as Record<string, string>,
+  );
 
   const { loading, value, error } = useTags(image, registryName);
 
@@ -52,11 +58,15 @@ export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
   return (
     <Table
       title={title}
-      columns={columns}
+      columns={getColumns(t)}
       isLoading={loading}
       data={data}
       options={{ paging: true, padding: 'dense' }}
       emptyContent={emptyContent}
+      localization={{
+        toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+        pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+      }}
     />
   );
 };

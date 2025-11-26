@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
-import 'cross-fetch/polyfill';
+import {
+  useTranslationRef,
+  TranslationFunction,
+} from '@backstage/core-plugin-api/alpha';
+import { acrTranslationRef } from '../translations';
 
-import { mockUseTranslation } from './test-utils/mockTranslations';
-
-// Global mock for useTranslation hook
-jest.mock('./hooks/useTranslation', () => ({
-  useTranslation: mockUseTranslation,
-}));
+/**
+ * @alpha
+ */
+export const useTranslation = (): {
+  t: TranslationFunction<typeof acrTranslationRef.T>;
+} => useTranslationRef(acrTranslationRef);
