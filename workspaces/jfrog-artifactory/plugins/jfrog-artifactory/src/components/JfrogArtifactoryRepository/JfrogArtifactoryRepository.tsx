@@ -26,6 +26,7 @@ import { Edge } from '../../types';
 import { getColumns, useStyles } from './tableHeading';
 import { formatByteSize, formatDate } from '../../utils';
 import { useTranslation } from '../../hooks/useTranslation';
+import { jfrogArtifactoryTranslationRef } from '../../translations';
 
 const useLocalStyles = makeStyles({
   chip: {
@@ -44,7 +45,10 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
   const localClasses = useLocalStyles();
   const { t } = useTranslation();
   const [edges, setEdges] = useState<Edge[]>([]);
-  const titleprop = t('page.title' as any, { replace: { image } });
+  const titleprop = t(
+    'page.title' as keyof typeof jfrogArtifactoryTranslationRef.T,
+    { image } as Record<string, string>,
+  );
 
   const { loading } = useAsync(async () => {
     const tagsResponse = await jfrogArtifactoryClient.getTags(image, target);
