@@ -264,7 +264,15 @@ describe('createRouter', () => {
       expect(response.body).toEqual({
         role: 'assistant',
         content: 'I found some search results.',
-        toolResponses: [{ toolName: 'search_web', result: 'Results here' }],
+        toolResponses: [
+          {
+            id: 'call_456',
+            name: 'search_web',
+            arguments: {},
+            result: 'Results here',
+            serverId: 'test-server',
+          },
+        ],
         toolsUsed: ['search_web'],
       });
     });
