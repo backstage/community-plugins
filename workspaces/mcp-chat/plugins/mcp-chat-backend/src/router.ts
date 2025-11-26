@@ -20,6 +20,14 @@ import Router from 'express-promise-router';
 import { MCPClientService } from './services/MCPClientService';
 import { validateMessages } from './utils';
 
+/**
+ * Creates an Express router with MCP chat endpoints.
+ * Provides /chat, /tools, /provider/status, and /mcp/status endpoints.
+ *
+ * @param options - Router options including logger and MCP client service
+ * @returns Express router
+ * @public
+ */
 export async function createRouter({
   logger,
   mcpClientService,

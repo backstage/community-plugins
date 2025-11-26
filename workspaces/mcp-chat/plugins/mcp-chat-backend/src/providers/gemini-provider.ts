@@ -31,6 +31,11 @@ import {
   Part,
 } from '@google/generative-ai';
 
+/**
+ * Google Gemini API provider.
+ *
+ * @public
+ */
 export class GeminiProvider extends LLMProvider {
   private genAI: GoogleGenerativeAI;
   private geminiModel: GenerativeModel;

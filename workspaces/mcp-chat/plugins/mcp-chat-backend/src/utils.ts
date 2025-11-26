@@ -17,10 +17,28 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { ServerConfig, VALID_ROLES, MCPServerType } from './types';
+import {
+  MCPServerFullConfig,
+  VALID_ROLES,
+  MCPServerType,
+  ToolCall,
+  ServerTool,
+  ToolExecutionResult,
+  MessageValidationResult,
+} from './types';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
-export function loadServerConfigs(config: RootConfigService): ServerConfig[] {
+/**
+ * Loads MCP server configurations from Backstage config.
+ * Reads from the `mcpChat.mcpServers` configuration section.
+ *
+ * @param config - The Backstage root config service
+ * @returns Array of server configurations including secrets
+ * @public
+ */
+export function loadServerConfigs(
+  config: RootConfigService,
+): MCPServerFullConfig[] {
   const mcpServers = config.getOptionalConfigArray('mcpChat.mcpServers') || [];
 
   return mcpServers?.map(serverConfig => {
@@ -58,10 +76,12 @@ export function loadServerConfigs(config: RootConfigService): ServerConfig[] {
 }
 
 /**
- * Helper function to find npx executable path
- * Searches common installation locations and validates the executable works
- * @returns Promise<string> Path to the npx executable
+ * Helper function to find npx executable path.
+ * Searches common installation locations and validates the executable works.
+ *
+ * @returns Promise resolving to the path to the npx executable
  * @throws Error if npx cannot be found or is not functional
+ * @public
  */
 export async function findNpxPath(): Promise<string> {
   // Get the directory where node is installed
@@ -116,16 +136,17 @@ export async function findNpxPath(): Promise<string> {
  * Executes a tool call using the MCP client.
  * Finds the appropriate server based on the tool's serverId and executes the tool call.
  *
- * @param toolCall - The tool call object containing function name and arguments
+ * @param toolCall - The tool call from the LLM containing function name and arguments
  * @param tools - List of available tools with their server IDs
- * @param mcpClients - Map of server IDs to MCP clients
- * @returns Promise resolving to the result of the tool call
+ * @param mcpClients - Map of server IDs to MCP client instances
+ * @returns Promise resolving to the tool execution result
+ * @public
  */
 export async function executeToolCall(
-  toolCall: any,
-  tools: any[],
+  toolCall: ToolCall,
+  tools: ServerTool[],
   mcpClients: Map<string, Client>,
-) {
+): Promise<ToolExecutionResult> {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || '{}');
 
@@ -179,6 +200,7 @@ export async function executeToolCall(
  * Throws an error if any configuration is invalid.
  *
  * @param config - The root configuration service
+ * @public
  */
 export const validateConfig = (config: RootConfigService) => {
   const providerConfig =
@@ -247,17 +269,27 @@ export const validateConfig = (config: RootConfigService) => {
 };
 
 /**
- * Validates the structure and content of chat messages
+ * Validates the structure and content of chat messages.
+ * Checks for required fields, valid roles, and proper message format.
+ *
  * @param messages - Array of messages to validate
- * @returns Object with isValid boolean and error message if invalid
+ * @returns Validation result with isValid flag and optional error message
+ *
+ * @example
+ * ```typescript
+ * const result = validateMessages([
+ *   { role: 'user', content: 'Hello' }
+ * ]);
+ * if (!result.isValid) {
+ *   throw new Error(result.error);
+ * }
+ * ```
+ *
+ * @public
  */
-
 export const validateMessages = (
-  messages: any,
-): {
-  isValid: boolean;
-  error?: string;
-} => {
+  messages: unknown,
+): MessageValidationResult => {
   // Check if messages exists and is an array
   if (!messages) {
     return { isValid: false, error: 'Messages field is required' };

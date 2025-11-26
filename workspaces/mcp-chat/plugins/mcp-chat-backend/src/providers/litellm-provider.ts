@@ -39,6 +39,12 @@ import { ChatMessage, Tool, ChatResponse } from '../types';
  *       model: gpt-4  # Any model supported by your LiteLLM instance
  * ```
  */
+/**
+ * LiteLLM proxy provider.
+ * Provides unified access to 100+ LLM APIs through LiteLLM.
+ *
+ * @public
+ */
 export class LiteLLMProvider extends LLMProvider {
   async sendMessage(
     messages: ChatMessage[],

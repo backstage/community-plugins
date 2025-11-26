@@ -57,10 +57,20 @@
     "directory": "workspaces/mcp-chat/plugins/mcp-chat-backend"
   },
   "keywords": [
+    "backstage",
     "backstage-plugin",
-    "chat-interface",
+    "backstage-backend-plugin",
+    "llm",
+    "llm-integration",
+    "openai",
+    "claude",
+    "gemini",
+    "ollama",
+    "litellm",
     "mcp",
-    "model-context-protocol"
+    "model-context-protocol",
+    "ai",
+    "chat"
   ],
   "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-chat/plugins/mcp-chat-backend",
   "bugs": "https://github.com/backstage/community-plugins/issues",

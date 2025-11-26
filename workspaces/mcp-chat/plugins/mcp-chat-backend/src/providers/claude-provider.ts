@@ -16,6 +16,11 @@
 import { LLMProvider } from './base-provider';
 import { ChatMessage, Tool, ChatResponse, ToolCall } from '../types';
 
+/**
+ * Anthropic Claude API provider.
+ *
+ * @public
+ */
 export class ClaudeProvider extends LLMProvider {
   async sendMessage(
     messages: ChatMessage[],

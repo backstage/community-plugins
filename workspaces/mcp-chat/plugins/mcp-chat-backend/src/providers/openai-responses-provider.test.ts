@@ -18,7 +18,7 @@ import { OpenAIResponsesProvider } from './openai-responses-provider';
 import {
   ProviderConfig,
   ChatMessage,
-  ServerConfig,
+  MCPServerFullConfig,
   MCPServerType,
   ResponsesApiResponse,
 } from '../types';
@@ -37,7 +37,7 @@ describe('OpenAIResponsesProvider', () => {
     model: 'gemini/models/gemini-2.5-flash',
   };
 
-  const mockServerConfigs: ServerConfig[] = [
+  const mockMCPServerFullConfigs: MCPServerFullConfig[] = [
     {
       id: 'k8s',
       name: 'Kubernetes Server',
@@ -55,7 +55,7 @@ describe('OpenAIResponsesProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     provider = new OpenAIResponsesProvider(config);
-    provider.setMcpServerConfigs(mockServerConfigs);
+    provider.setMcpServerConfigs(mockMCPServerFullConfigs);
   });
 
   describe('constructor', () => {
@@ -66,7 +66,7 @@ describe('OpenAIResponsesProvider', () => {
 
   describe('setMcpServerConfigs', () => {
     it('should store MCP server configurations', () => {
-      const newConfigs: ServerConfig[] = [
+      const newConfigs: MCPServerFullConfig[] = [
         {
           id: 'test-server',
           name: 'Test Server',
@@ -294,7 +294,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should filter out non-URL servers', async () => {
-      const mixedConfigs: ServerConfig[] = [
+      const mixedConfigs: MCPServerFullConfig[] = [
         {
           id: 'url-server',
           name: 'URL Server',
@@ -421,7 +421,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should include headers in tools when server has headers', async () => {
-      const serverWithHeaders: ServerConfig[] = [
+      const serverWithHeaders: MCPServerFullConfig[] = [
         {
           id: 'github-server',
           name: 'GitHub Server',
@@ -490,7 +490,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should not include headers field when server has no headers', async () => {
-      const serverWithoutHeaders: ServerConfig[] = [
+      const serverWithoutHeaders: MCPServerFullConfig[] = [
         {
           id: 'k8s-server',
           name: 'Kubernetes Server',
@@ -544,7 +544,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should handle multiple servers with mixed header configurations', async () => {
-      const mixedServers: ServerConfig[] = [
+      const mixedServers: MCPServerFullConfig[] = [
         {
           id: 'github-server',
           name: 'GitHub Server',

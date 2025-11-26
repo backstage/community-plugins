@@ -243,7 +243,15 @@ describe('createRouter', () => {
       const mockResponse = {
         reply: 'I found some search results.',
         toolCalls: [mockToolCall],
-        toolResponses: [{ toolName: 'search_web', result: 'Results here' }],
+        toolResponses: [
+          {
+            id: 'call_456',
+            name: 'search_web',
+            arguments: {},
+            result: 'Results here',
+            serverId: 'test-server',
+          },
+        ],
       };
 
       mcpClientService.processQuery.mockResolvedValue(mockResponse);

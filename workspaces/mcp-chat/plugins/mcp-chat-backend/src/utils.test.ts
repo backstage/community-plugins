@@ -585,6 +585,7 @@ describe('Utils', () => {
     it('should execute tool call successfully', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'test_tool',
           arguments: JSON.stringify({ param: 'value' }),
@@ -609,6 +610,7 @@ describe('Utils', () => {
     it('should handle different result formats', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'test_tool',
           arguments: JSON.stringify({ param: 'value' }),
@@ -627,6 +629,7 @@ describe('Utils', () => {
     it('should handle empty arguments', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'test_tool',
           arguments: '',
@@ -645,6 +648,7 @@ describe('Utils', () => {
     it('should throw error when tool not found', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'nonexistent_tool',
           arguments: JSON.stringify({ param: 'value' }),
@@ -659,6 +663,7 @@ describe('Utils', () => {
     it('should throw error when client not found', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'test_tool',
           arguments: JSON.stringify({ param: 'value' }),
@@ -667,7 +672,12 @@ describe('Utils', () => {
 
       const toolsWithMissingServer = [
         {
-          function: { name: 'test_tool' },
+          type: 'function' as const,
+          function: {
+            name: 'test_tool',
+            description: 'Test tool',
+            parameters: {},
+          },
           serverId: 'missing_server',
         },
       ];
@@ -680,6 +690,7 @@ describe('Utils', () => {
     it('should handle malformed JSON arguments', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'test_tool',
           arguments: 'invalid json{',
@@ -694,6 +705,7 @@ describe('Utils', () => {
     it('should propagate client errors', async () => {
       const toolCall = {
         id: 'call_123',
+        type: 'function' as const,
         function: {
           name: 'test_tool',
           arguments: JSON.stringify({ param: 'value' }),
