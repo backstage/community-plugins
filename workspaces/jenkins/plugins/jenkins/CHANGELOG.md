@@ -1,5 +1,12 @@
 # @backstage-community/plugin-jenkins
 
+## 0.25.1
+
+### Patch Changes
+
+- Updated dependencies [cac3437]
+  - @backstage-community/plugin-jenkins-common@0.13.0
+
 ## 0.25.0
 
 ### Minor Changes

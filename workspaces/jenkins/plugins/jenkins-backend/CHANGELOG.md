@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.21.0
+
+### Minor Changes
+
+- cac3437: Replace the deprecated `jenkins` NPM package with a built-in, light-weight client.
+
+### Patch Changes
+
+- Updated dependencies [cac3437]
+  - @backstage-community/plugin-jenkins-common@0.13.0
+
 ## 0.20.0
 
 ### Minor Changes
