@@ -12,11 +12,11 @@ import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprint } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { GraphQLEndpoint } from '@backstage-community/plugin-graphiql';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -27,7 +27,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:graphiql': ExtensionDefinition<{
+    'api:graphiql': OverridableExtensionDefinition<{
       config: {};
       configInput: {};
       output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
@@ -56,7 +56,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'graphiql-endpoint:graphiql/gitlab': ExtensionDefinition<{
+    'graphiql-endpoint:graphiql/gitlab': OverridableExtensionDefinition<{
       config: {
         id: string;
         title: string;
@@ -82,8 +82,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -93,7 +93,7 @@ const _default: OverridableFrontendPlugin<
         endpoint: GraphQLEndpoint;
       };
     }>;
-    'nav-item:graphiql': ExtensionDefinition<{
+    'nav-item:graphiql': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -114,7 +114,7 @@ const _default: OverridableFrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:graphiql': ExtensionDefinition<{
+    'page:graphiql': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
@@ -146,7 +146,7 @@ const _default: OverridableFrontendPlugin<
 export default _default;
 
 // @alpha (undocumented)
-export const graphiqlBrowseApi: ExtensionDefinition<{
+export const graphiqlBrowseApi: OverridableExtensionDefinition<{
   config: {};
   configInput: {};
   output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
@@ -190,7 +190,7 @@ export const GraphiQLEndpointBlueprint: ExtensionBlueprint<{
 }>;
 
 // @alpha (undocumented)
-export const graphiqlNavItem: ExtensionDefinition<{
+export const graphiqlNavItem: OverridableExtensionDefinition<{
   kind: 'nav-item';
   name: undefined;
   config: {};
@@ -213,7 +213,7 @@ export const graphiqlNavItem: ExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const graphiqlPage: ExtensionDefinition<{
+export const graphiqlPage: OverridableExtensionDefinition<{
   kind: 'page';
   name: undefined;
   config: {
