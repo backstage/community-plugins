@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.11.0
+
+### Minor Changes
+
+- bc8d728: Backstage version bump to v1.45.1
+
 ## 0.10.1
 
 ### Patch Changes
