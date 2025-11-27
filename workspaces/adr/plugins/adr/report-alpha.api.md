@@ -12,9 +12,9 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
@@ -23,7 +23,7 @@ import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-re
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
-export const adrApiExtension: ExtensionDefinition<{
+export const adrApiExtension: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'adr-api';
   config: {};
@@ -42,7 +42,7 @@ export const adrApiExtension: ExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const adrEntityContentExtension: ExtensionDefinition<{
+export const adrEntityContentExtension: OverridableExtensionDefinition<{
   kind: 'entity-content';
   name: 'entity';
   config: {
@@ -112,7 +112,7 @@ export const adrEntityContentExtension: ExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const adrSearchResultListItemExtension: ExtensionDefinition<{
+export const adrSearchResultListItemExtension: OverridableExtensionDefinition<{
   config: {
     lineClamp: number;
   } & {
@@ -127,6 +127,7 @@ export const adrSearchResultListItemExtension: ExtensionDefinition<{
     {
       predicate?: SearchResultItemExtensionPredicate | undefined;
       component: SearchResultItemExtensionComponent;
+      icon?: JSX_2.Element | undefined;
     },
     'search.search-result-list-item.item',
     {}
@@ -141,8 +142,8 @@ export const adrSearchResultListItemExtension: ExtensionDefinition<{
         }
       >,
       {
-        optional: boolean;
         singleton: boolean;
+        optional: boolean;
       }
     >;
   };
@@ -166,7 +167,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:adr/adr-api': ExtensionDefinition<{
+    'api:adr/adr-api': OverridableExtensionDefinition<{
       kind: 'api';
       name: 'adr-api';
       config: {};
@@ -183,7 +184,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-content:adr/entity': ExtensionDefinition<{
+    'entity-content:adr/entity': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {
@@ -251,7 +252,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'search-result-list-item:adr': ExtensionDefinition<{
+    'search-result-list-item:adr': OverridableExtensionDefinition<{
       config: {
         lineClamp: number;
       } & {
@@ -266,6 +267,7 @@ const _default: OverridableFrontendPlugin<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
         },
         'search.search-result-list-item.item',
         {}
@@ -280,8 +282,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
