@@ -13,8 +13,8 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -23,7 +23,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:azure-devops': ExtensionDefinition<{
+    'api:azure-devops': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -40,7 +40,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:azure-devops/readme': ExtensionDefinition<{
+    'entity-card:azure-devops/readme': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'readme';
       config: {
@@ -81,7 +81,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:azure-devops/git-tags': ExtensionDefinition<{
+    'entity-content:azure-devops/git-tags': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'git-tags';
       config: {
@@ -149,7 +149,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'entity-content:azure-devops/pipelines': ExtensionDefinition<{
+    'entity-content:azure-devops/pipelines': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'pipelines';
       config: {
@@ -217,7 +217,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'entity-content:azure-devops/pull-requests': ExtensionDefinition<{
+    'entity-content:azure-devops/pull-requests': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'pull-requests';
       config: {
@@ -285,7 +285,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'page:azure-devops': ExtensionDefinition<{
+    'page:azure-devops': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
