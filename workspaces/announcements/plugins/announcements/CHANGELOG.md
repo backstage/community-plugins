@@ -1,5 +1,18 @@
 # @backstage-community/plugin-announcements
 
+## 0.17.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- 21f564f: Switched the entity card extension to be disabled by default.
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+  - @backstage-community/plugin-announcements-react@0.15.0
+
 ## 0.16.2
 
 ### Patch Changes

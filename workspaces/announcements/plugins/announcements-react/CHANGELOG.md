@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.15.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+
 ## 0.14.1
 
 ### Patch Changes

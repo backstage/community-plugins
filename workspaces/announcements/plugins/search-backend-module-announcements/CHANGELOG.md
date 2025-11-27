@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.10.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+  - @backstage-community/plugin-announcements-node@0.11.0
+
 ## 0.9.1
 
 ### Patch Changes
