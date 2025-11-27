@@ -31,17 +31,18 @@ import {
   announcementDeletePermission,
   Tag,
 } from '@backstage-community/plugin-announcements-common';
-import { TagsForm } from '../../TagsForm';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
 import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
-import { useDeleteTagDialogState } from '../../TagsPage/useDeleteTagDialogState';
 import { ResponseError } from '@backstage/errors';
-import { DeleteTagDialog } from '../../TagsPage/DeleteTagDialog';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import { useDeleteTagDialogState } from './useDeleteTagDialogState';
+import { DeleteTagDialog } from './DeleteTagDialog';
+import { TagsForm } from './TagsForm';
 
 export const TagsContent = () => {
   const [showNewTagForm, setShowNewTagForm] = useState(false);
