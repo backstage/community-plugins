@@ -10,10 +10,10 @@ import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -24,7 +24,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:tech-radar': ExtensionDefinition<{
+    'api:tech-radar': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -41,7 +41,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'nav-item:tech-radar': ExtensionDefinition<{
+    'nav-item:tech-radar': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -62,7 +62,7 @@ const _default: OverridableFrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:tech-radar': ExtensionDefinition<{
+    'page:tech-radar': OverridableExtensionDefinition<{
       config: {
         title: string;
         subtitle: string;
@@ -101,8 +101,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -120,7 +120,7 @@ const _default: OverridableFrontendPlugin<
 export default _default;
 
 // @alpha (undocumented)
-export const techRadarApi: ExtensionDefinition<{
+export const techRadarApi: OverridableExtensionDefinition<{
   kind: 'api';
   name: undefined;
   config: {};
@@ -139,7 +139,7 @@ export const techRadarApi: ExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const techRadarNavItem: ExtensionDefinition<{
+export const techRadarNavItem: OverridableExtensionDefinition<{
   kind: 'nav-item';
   name: undefined;
   config: {};
@@ -162,7 +162,7 @@ export const techRadarNavItem: ExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const techRadarPage: ExtensionDefinition<{
+export const techRadarPage: OverridableExtensionDefinition<{
   config: {
     title: string;
     subtitle: string;
@@ -201,8 +201,8 @@ export const techRadarPage: ExtensionDefinition<{
         }
       >,
       {
-        optional: boolean;
         singleton: boolean;
+        optional: boolean;
       }
     >;
   };
