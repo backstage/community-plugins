@@ -20,7 +20,7 @@ import {
 import { buildJenkinsClient } from '../../config';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import fs from 'fs/promises';
-import Jenkins from 'jenkins';
+import { Jenkins } from '@backstage-community/plugin-jenkins-common';
 
 /**
  * This createJob function, creates a job given a job name and own configuration file as xml format
