@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
+import {
   useState,
   useEffect,
   useMemo,
   useRef,
   useCallback,
+  ChangeEvent,
 } from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
@@ -187,7 +188,7 @@ export const Participants = ({
   }, [entityService, searchTerm, searchLimit, page]);
 
   // Handle search input with debounce
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setInputValue(value); // Update input value immediately for responsiveness
 
