@@ -40,15 +40,26 @@ import {
   QueryResponse,
   ServerTool,
   MCPServerType,
-  ServerConfig,
+  MCPServerFullConfig,
   ResponsesApiMcpCall,
 } from '../types';
 
+/**
+ * Options for creating an MCPClientServiceImpl instance.
+ *
+ * @public
+ */
 export type Options = {
   logger: LoggerService;
   config: RootConfigService;
 };
 
+/**
+ * Implementation of the MCP Client Service.
+ * Provides full MCP integration with LLM providers.
+ *
+ * @public
+ */
 export class MCPClientServiceImpl implements MCPClientService {
   private readonly logger: LoggerService;
   private readonly config: RootConfigService;
@@ -58,7 +69,7 @@ export class MCPClientServiceImpl implements MCPClientService {
   private connected = false;
   private mcpServers: Promise<MCPServer[]> | null = null;
   private readonly systemPrompt: string;
-  private serverConfigs: ServerConfig[] = [];
+  private serverConfigs: MCPServerFullConfig[] = [];
 
   constructor(options: Options) {
     this.logger = options.logger;

@@ -292,7 +292,7 @@ describe('OllamaProvider', () => {
               type: 'function',
               function: {
                 name: 'get_weather',
-                arguments: { location: 'New York' }, // Already an object
+                arguments: JSON.stringify({ location: 'New York' }),
               },
             },
           ],

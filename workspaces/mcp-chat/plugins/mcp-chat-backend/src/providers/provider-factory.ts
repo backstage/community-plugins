@@ -23,7 +23,19 @@ import { OllamaProvider } from './ollama-provider';
 import { LiteLLMProvider } from './litellm-provider';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
+/**
+ * Factory class for creating LLM provider instances.
+ * Supports OpenAI, Claude, Gemini, Ollama, LiteLLM, and OpenAI Responses API.
+ *
+ * @public
+ */
 export class ProviderFactory {
+  /**
+   * Creates an LLM provider instance based on the configuration.
+   *
+   * @param config - The provider configuration
+   * @returns An LLM provider instance
+   */
   static createProvider(config: ProviderConfig): LLMProvider {
     switch (config.type) {
       case 'openai':
@@ -50,6 +62,14 @@ export class ProviderFactory {
   }
 }
 
+/**
+ * Parses and returns the LLM provider configuration from Backstage config.
+ * Reads from mcpChat.providers configuration section.
+ *
+ * @param config - The Backstage root config service
+ * @returns The provider configuration
+ * @public
+ */
 export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const providers = config.getOptionalConfigArray('mcpChat.providers') || [];
 
@@ -144,7 +164,13 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   return configTemplate as ProviderConfig;
 }
 
-// Export provider info for status display
+/**
+ * Returns provider information for status display purposes.
+ *
+ * @param config - The Backstage root config service
+ * @returns Provider info including type, model, and base URL
+ * @public
+ */
 export function getProviderInfo(config: RootConfigService) {
   const providerConfig = getProviderConfig(config);
   return {
