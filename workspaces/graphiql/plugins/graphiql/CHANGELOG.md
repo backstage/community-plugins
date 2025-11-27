@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.10.0
+
+### Minor Changes
+
+- 3e23035: Backstage version bump to v1.45.1
+
 ## 0.9.1
 
 ### Patch Changes
