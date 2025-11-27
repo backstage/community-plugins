@@ -9,7 +9,8 @@ import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
@@ -21,7 +22,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:stack-overflow': ExtensionDefinition<{
+    'api:stack-overflow': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -38,7 +39,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'search-filter-result-type:stack-overflow': ExtensionDefinition<{
+    'search-filter-result-type:stack-overflow': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
       name: undefined;
       config: {};
@@ -47,7 +48,7 @@ const _default: OverridableFrontendPlugin<
         {
           value: string;
           name: string;
-          icon: JSX.Element;
+          icon: JSX_2.Element;
         },
         'search.filters.result-types.type',
         {}
@@ -55,7 +56,7 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: SearchFilterResultTypeBlueprintParams;
     }>;
-    'search-result-list-item:stack-overflow': ExtensionDefinition<{
+    'search-result-list-item:stack-overflow': OverridableExtensionDefinition<{
       kind: 'search-result-list-item';
       name: undefined;
       config: {
@@ -68,6 +69,7 @@ const _default: OverridableFrontendPlugin<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
         },
         'search.search-result-list-item.item',
         {}
