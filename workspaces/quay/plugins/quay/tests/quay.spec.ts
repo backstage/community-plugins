@@ -69,6 +69,18 @@ test.describe('Quay plugin', () => {
     await expect(page.getByText('Unsupported')).toBeVisible();
   });
 
+  test('Filtering works', async () => {
+    const tbody = page.locator('tbody');
+    const rows = tbody.getByRole('row').filter({ hasText: 'sha' });
+
+    await page.getByPlaceholder('Filter').fill('v3');
+    await expect(rows).toHaveCount(1);
+    await expect(tbody.getByText('Passed')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Clear Search' }).click();
+    await expect(rows).toHaveCount(5);
+  });
+
   test.describe('Vulnerability details', () => {
     test.beforeAll(async () => {
       await page.getByRole('link', { name: 'High' }).first().click();
@@ -105,6 +117,17 @@ test.describe('Quay plugin', () => {
       await expect(tbody.getByText('High')).toHaveCount(2);
       await expect(tbody.getByText('Medium')).toHaveCount(2);
       await expect(tbody.getByText(/^Low$/)).toHaveCount(1);
+    });
+
+    test('Filtering works', async () => {
+      const tbody = page.locator('tbody');
+      const rows = tbody.getByRole('row').filter({ hasText: 'RHSA' });
+
+      await page.getByPlaceholder('Filter').fill('high');
+      await expect(rows).toHaveCount(2);
+
+      await page.getByRole('button', { name: 'Clear Search' }).click();
+      await expect(rows).toHaveCount(5);
     });
 
     test('Link back to repository works', async () => {
