@@ -1,0 +1,2244 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: not-exist-apiiro
+  namespace: default
+  annotations:
+    backstage.io/source-location: url:https://github.com/test/not-exist-apiiro
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: common-node-js
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/common-node-js
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-bench
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-bench
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pr-block
+  namespace: apiiro-gitlab-smoketest
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/smoketest/pr-block
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo31
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo31
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo32
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo32
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo6
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo6
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: BranchProtectionRequireApprovalMostRecentPushDisabledForSmokeTe
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/BranchProtectionRequireApprovalMostRecentPushDisabledForSmokeTest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-apache-felix
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-apache-felix
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: gs-spring-boot
+  namespace: apiiro-gitlab-cs-test
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/cs-test/gs-spring-boot
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-javafx-study
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-javafx-study
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: idanb-test-project
+  namespace: apiiro-gitlab-urik-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/urik-group/idanb-test-project
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: common-go
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/common-go
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: OrionSDK
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/OrionSDK
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-wrap-astyanax
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-wrap-astyanax
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vulnerable
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/vulnerable
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-util
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-util
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juice-shop
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juice-shop
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: testproject
+  namespace: apiiro-gitlab-talfin
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/talfin/testproject
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tieqiang-dc-heacth
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/tieqiang-dc-heacth
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: selenium
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/selenium
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: haimon
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/haimon
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo18
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo18
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: acceptreject.cron.api
+  namespace: apiiro-gitlab-urik-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/urik-group/acceptreject.cron.api
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: iamurdoom
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/iamurdoom
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: curamba
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/curamba
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sim_test
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/sim_test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: alpinereg
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/alpinereg
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: snow-test
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/snow-test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: alfresco-repository
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/alfresco-repository
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo4
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo4
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo8
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo8
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-version-tester
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-version-tester
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juicy-statistics
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juicy-statistics
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-jenkins-tester-ecosystem
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-jenkins-tester-ecosystem
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo16
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo16
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: placeholderrepo
+  namespace: apiiro-gitlab-cs-test
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/cs-test/placeholderrepo
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: urik-new-project
+  namespace: apiiro-gitlab-urik-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/urik-group/urik-new-project
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: WebGoat
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/WebGoat
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: reg1-7
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/reg1-7
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: crAPI
+  namespace: apiiro-gitlab-test2281316
+  annotations:
+    backstage.io/source-location: url:https://gitlab.com/test2281316/crAPI
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: multi-juicer
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/multi-juicer
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: rachel_project
+  namespace: apiiro-gitlab-rachel-new-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/rachel-new-group/rachel_project
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: broadleafcommerce
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/broadleafcommerce
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dingdong
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/dingdong
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-feed-series-client
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-feed-series-client
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: licensetest
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/licensetest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: RepositoryAccessForSmokeTest
+  namespace: apiiro-gitlab-smoketest
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/smoketest/RepositoryAccessForSmokeTest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-apache-aries
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-apache-aries
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-vert.x.osgi
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-vert.x.osgi
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: martin-project
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/martin-project
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: common-js
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/common-js
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: zendesk
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/zendesk
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: www-project-juice-shop
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/www-project-juice-shop
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: log-table-test
+  namespace: apiiro-gitlab-reut-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/reut-group/log-table-test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: gamba
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/gamba
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-webstart
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-webstart
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo19
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo19
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: snir-test
+  namespace: apiiro-gitlab-test-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/test-group/snir-test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-feed-ddf
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-feed-ddf
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: p3
+  namespace: apiiro-gitlab-group-of-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/group-of-group/subgroup1/p3
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Caramon
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/Caramon
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-client-php
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-client-php
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-jenkins-cascade-plugin
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-jenkins-cascade-plugin
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pr-block
+  namespace: apiiro-gitlab-staging-selfserve
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/staging-selfserve/pr-block
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: multi-repo
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/multi-repo
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: zamboni
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/zamboni
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: jenkins
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/jenkins
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo7
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo7
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: WebGoat
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/WebGoat
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: c1
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/c1
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pr-block
+  namespace: apiiro-gitlab-dev-selfserve
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/dev-selfserve/pr-block
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: avp-petstore-sample-v2
+  namespace: apiiro-gitlab-cs-test
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/cs-test/avp-petstore-sample-v2
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-vert.x.io
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-vert.x.io
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-feed-ddf-example
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-feed-ddf-example
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: apiiro-gitlab-demo
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/apiiro-gitlab-demo
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dev-selfserve
+  namespace: apiiro-gitlab-efrat
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/efrat/dev-selfserve
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: 26-3
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/26-3
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-block-merge-request
+  namespace: apiiro-gitlab-block-mr
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/block-mr/test-block-merge-request
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-archon
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-archon
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dependencies-vulnerabilities
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/dependencies-vulnerabilities
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-jenkins-tester
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-jenkins-tester
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: EVO-Exchange-BE-2019
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/EVO-Exchange-BE-2019
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: hyrule
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/hyrule
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo17
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo17
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dc.carrier.onboarding.api
+  namespace: apiiro-gitlab-rachel-new-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/rachel-new-group/dc.carrier.onboarding.api
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-vert.x.mod-rxvertx
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-vert.x.mod-rxvertx
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-client-js
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-client-js
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: blackduck-alert
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/blackduck-alert
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: glprblock
+  namespace: apiiro-gitlab-dev-selfserve
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/dev-selfserve/glprblock
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dc.carrier.onboarding.api
+  namespace: apiiro-gitlab-urik-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/urik-group/dc.carrier.onboarding.api
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: mybatis-3
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/mybatis-3
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: type-graphql-series
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/type-graphql-series
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: raistlin
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/raistlin
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cs-test
+  namespace: apiiro-gitlab-cs-test
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/cs-test/cs-test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-algorithms
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-algorithms
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-jenkins-m2release-plugin
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-jenkins-m2release-plugin
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: helloworld
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/helloworld
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: p5
+  namespace: apiiro-gitlab-group-of-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/group-of-group/p5
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: reg19-2
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/reg19-2
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo13
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo13
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-project-netty
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-project-netty
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dumdum2
+  namespace: apiiro-gitlab-mygroup
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/mygroup/dumdum2
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-client-rust
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-client-rust
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo2
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo2
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: crAPI
+  namespace: apiiro-github-appsec-playground
+  annotations:
+    backstage.io/source-location: url:https://github.com/appsec-playground/crAPI
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/.github
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: demo-repository
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/demo-repository
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vulnerable-node
+  namespace: apiiro-gitlab-test2281316
+  annotations:
+    backstage.io/source-location: url:https://gitlab.com/test2281316/vulnerable-node
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: glprblock
+  namespace: apiiro-gitlab-staging-selfserve
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/staging-selfserve/glprblock
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Noi
+  namespace: apiiro-gitlab-cs-test
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/cs-test/Noi
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bla
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/bla
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: in-group-project
+  namespace: apiiro-gitlab-test-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/test-group/in-group-project
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: WebGoat
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/WebGoat
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sca
+  namespace: apiiro-gitlab-urik-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/urik-group/sca
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sca-urik
+  namespace: apiiro-gitlab-urik-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/urik-group/sca-urik
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: new-server-gh
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/new-server-gh
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ExternalSecrets
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/ExternalSecrets
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dumdum
+  namespace: apiiro-gitlab-mygroup
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/mygroup/dumdum
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ci-monitoring
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/ci-monitoring
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: evals
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/evals
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juice-shop-tutorials
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juice-shop-tutorials
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-apache-cassandra
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-apache-cassandra
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo10
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo10
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo9
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo9
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-client-java
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-client-java
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-vert.x.examples
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-vert.x.examples
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-openmama
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-openmama
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juicy-coupon-bot
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juicy-coupon-bot
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: secrets-only-in-history
+  namespace: apiiro-gitlab-reut-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/reut-group/secrets-only-in-history
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: BranchProtectionForSmokeTest
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/BranchProtectionForSmokeTest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo11
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo11
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo3
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo3
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: externalsecrets
+  namespace: apiiro-gitlab-smoketest
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/smoketest/externalsecrets
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: integrationtest
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/integrationtest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo5
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo5
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-guava-libraries
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-guava-libraries
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo12
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo12
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: goodstuff
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/goodstuff
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-apache-shiro
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-apache-shiro
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dc-heacth
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/dc-heacth
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-example-java
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-example-java
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: scates
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/scates
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: BranchProtectionDisabledForSmokeTest
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/BranchProtectionDisabledForSmokeTest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: BranchProtectionRequireApprovalMostRecentPushForSmokeTest
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/BranchProtectionRequireApprovalMostRecentPushForSmokeTest
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: shake-logger
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/shake-logger
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deleted-branches-test
+  namespace: apiiro-gitlab-reut-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/reut-group/deleted-branches-test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juice-shop-ctf
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juice-shop-ctf
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: p1
+  namespace: apiiro-gitlab-group-of-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/group-of-group/subgroup2/p1
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: donkey
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/donkey
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juicy-chat-bot
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juicy-chat-bot
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: smoke_literal_samples
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/smoke_literal_samples
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-udt
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-udt
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: testproject
+  namespace: apiiro-gitlab-snirburkush
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/snirburkush/testproject
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: testproject
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/testproject
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: haimico
+  namespace: apiiro-gitlab-mygroup
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/mygroup/haimico
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-secret-detection-public
+  namespace: apiiro-gitlab-root
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/root/test-secret-detection-public
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: snir112
+  namespace: apiiro-gitlab-test-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/test-group/snir112
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-aries-versioning
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-aries-versioning
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: CircularDep
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/CircularDep
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: elasticsearch
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/elasticsearch
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: reg59
+  namespace: apiiro-gitlab-test-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/test-group/reg59
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-client-python
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-client-python
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: generative-ai
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/generative-ai
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: p2
+  namespace: apiiro-gitlab-group-of-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/group-of-group/subgroup2/p2
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: GoPlsRunner
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/GoPlsRunner
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dodongo
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/dodongo
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sweet
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/sweet
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: secrets-in-history
+  namespace: apiiro-gitlab-reut-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/reut-group/secrets-in-history
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: DeepSeek-V3
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/DeepSeek-V3
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my_project
+  namespace: apiiro-gitlab-lim
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/LIM/my_project
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: clean
+  namespace: apiiro-gitlab-test-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/test-group/clean
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juicy-malware
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/juicy-malware
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-ondemand-client-golang
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-ondemand-client-golang
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo15
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo15
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: go-docker
+  namespace: apiiro-gitlab-cs-test
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/cs-test/go-docker
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: p4
+  namespace: apiiro-gitlab-group-of-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/group-of-group/subgroup1/p4
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo30
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo30
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: historical-repo14
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/historical-repo14
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: barchart-netty4
+  namespace: apiiro-github-barchart
+  annotations:
+    backstage.io/source-location: url:https://github.com/barchart/barchart-netty4
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tal-test
+  namespace: apiiro-gitlab-test-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.apiiro.com/test-group/tal-test
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: issuer
+  namespace: apiiro-github-apiirolab
+  annotations:
+    backstage.io/source-location: url:https://github.com/apiirolab/issuer
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pwning-juice-shop
+  namespace: apiiro-github-juice-shop
+  annotations:
+    backstage.io/source-location: url:https://github.com/juice-shop/pwning-juice-shop
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: mama
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/mama
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: regression
+  namespace: apiiro-azure-amilebo222
+  annotations:
+    backstage.io/source-location: url:https://dev.azure.com/amilebo222/regression/_git/regression
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: testrepo
+  namespace: apiiro-github-shukibakbuki
+  annotations:
+    backstage.io/source-location: url:https://github.com/shukibakbuki/testrepo
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests

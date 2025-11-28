@@ -1,0 +1,81 @@
+{
+  "name": "@backstage-community/plugin-apiiro",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/apiiro/plugins/apiiro"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "apiiro",
+    "pluginPackages": [
+      "@backstage-community/plugin-apiiro",
+      "@backstage-community/plugin-apiiro-backend",
+      "@backstage-community/plugin-apiiro-common"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-apiiro-common": "workspace:^",
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.18.2",
+    "@backstage/core-plugin-api": "^1.11.1",
+    "@backstage/plugin-catalog-react": "^1.21.2",
+    "@backstage/theme": "^0.7.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^5.18.0",
+    "@mui/x-charts": "^7.29.1",
+    "@mui/x-data-grid": "^8.13.1",
+    "@react-spring/web": "^10.0.3",
+    "@tanstack/react-query": "^5.90.3",
+    "react-calendar": "^4.8.0",
+    "react-use": "^17.2.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.34.4",
+    "@backstage/core-app-api": "^1.19.1",
+    "@backstage/dev-utils": "^1.1.15",
+    "@backstage/test-utils": "^1.7.12",
+    "@tanstack/eslint-plugin-query": "^5.91.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/react": "^19.2.2",
+    "msw": "^1.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.1"
+  },
+  "resolutions": {
+    "react-is": "^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
