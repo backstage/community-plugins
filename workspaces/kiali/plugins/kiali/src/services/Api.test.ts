@@ -227,6 +227,8 @@ describe('KialiApiClient', () => {
       const result = await apiClient.getClustersServices('default', {
         rateInterval: '60s',
         health: 'true',
+        istioResources: 'false',
+        onlyDefinitions: 'false',
       });
       expect(result).toEqual(mockServices);
       expect(global.fetch).toHaveBeenCalled();
@@ -238,7 +240,16 @@ describe('KialiApiClient', () => {
         json: async () => ({ services: [], validations: {} }),
       });
 
-      await apiClient.getClustersServices('default', {}, 'cluster1');
+      await apiClient.getClustersServices(
+        'default',
+        {
+          health: 'false',
+          istioResources: 'false',
+          onlyDefinitions: 'false',
+          rateInterval: '60s',
+        },
+        'cluster1',
+      );
       expect(global.fetch).toHaveBeenCalled();
     });
   });
@@ -262,7 +273,11 @@ describe('KialiApiClient', () => {
         json: async () => mockWorkloads,
       });
 
-      const result = await apiClient.getClustersWorkloads('default', {});
+      const result = await apiClient.getClustersWorkloads('default', {
+        health: 'false',
+        istioResources: 'false',
+        rateInterval: '60s',
+      });
       expect(result).toEqual(mockWorkloads);
       expect(global.fetch).toHaveBeenCalled();
     });
@@ -286,7 +301,11 @@ describe('KialiApiClient', () => {
         json: async () => mockApps,
       });
 
-      const result = await apiClient.getClustersApps('default', {});
+      const result = await apiClient.getClustersApps('default', {
+        health: 'false',
+        istioResources: 'false',
+        rateInterval: '60s',
+      });
       expect(result).toEqual(mockApps);
       expect(global.fetch).toHaveBeenCalled();
     });
@@ -306,11 +325,11 @@ describe('KialiApiClient', () => {
         json: async () => mockWorkload,
       });
 
-      const result = await apiClient.getWorkload(
-        'default',
-        'test-workload',
-        {},
-      );
+      const result = await apiClient.getWorkload('default', 'test-workload', {
+        health: 'false',
+        rateInterval: '60s',
+        validate: 'false',
+      });
       expect(result).toEqual(mockWorkload);
       expect(global.fetch).toHaveBeenCalled();
     });
@@ -352,7 +371,7 @@ describe('KialiApiClient', () => {
         'test-service',
         false,
         undefined,
-        { rateInterval: '60s' },
+        60,
       );
       expect(global.fetch).toHaveBeenCalled();
     });
@@ -372,7 +391,10 @@ describe('KialiApiClient', () => {
         json: async () => mockApp,
       });
 
-      const result = await apiClient.getApp('default', 'test-app', {});
+      const result = await apiClient.getApp('default', 'test-app', {
+        health: 'false',
+        rateInterval: '60s',
+      });
       expect(result).toEqual(mockApp);
       expect(global.fetch).toHaveBeenCalled();
     });
