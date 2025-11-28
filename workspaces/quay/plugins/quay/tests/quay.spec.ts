@@ -25,18 +25,13 @@ test.describe('Quay plugin', () => {
     const context = await browser.newContext();
     page = await context.newPage();
     common = new Common(page);
-
     await common.loginAsGuest();
     await expect(
       page.getByRole('link', { name: 'backstage-test/test-images' }),
-    ).toBeEnabled({ timeout: 20000 });
+    ).toBeEnabled();
   });
 
-  test.afterAll(async ({ browser }) => {
-    await browser.close();
-  });
-
-  test('All columns are shown in the table', async () => {
+  test('All necessary elements are visible', async ({ browser }, testInfo) => {
     const columns = [
       'Tag',
       'Last Modified',
@@ -45,11 +40,17 @@ test.describe('Quay plugin', () => {
       'Expires',
       'Manifest',
     ];
-    const thead = page.locator('thead');
+    const table = page.getByTestId('quay-repo-table');
 
-    for (const col of columns) {
-      await expect(thead.getByText(col)).toBeVisible();
+    await expect(table).toBeVisible();
+    await expect(table.getByPlaceholder('Filter')).toBeVisible();
+
+    for (const column of columns) {
+      await expect(
+        table.getByRole('columnheader', { name: column }),
+      ).toBeVisible();
     }
+    await common.a11yCheck(testInfo);
   });
 
   test('Vulnerabilities are listed', async () => {
@@ -62,36 +63,78 @@ test.describe('Quay plugin', () => {
     }
   });
 
-  test('Vulnerability details are accessible', async () => {
-    await page.getByRole('link', { name: 'High' }).first().click();
-    await expect(page.getByText('Vulnerabilities for')).toBeVisible({
-      timeout: 15000,
-    });
+  test('Different scan results exist', async () => {
+    await expect(page.getByRole('link', { name: 'Passed' })).toBeVisible();
+    await expect(page.getByText('Queued')).toBeVisible();
+    await expect(page.getByText('Unsupported')).toBeVisible();
   });
 
-  test('Vulnerability columns are shown', async () => {
-    const columns = [
-      'Advisory',
-      'Severity',
-      'Package Name',
-      'Current Version',
-      'Fixed By',
-    ];
-
-    for (const col of columns) {
-      await expect(page.getByText(col)).toBeVisible();
-    }
-  });
-
-  test('Vulnerability rows are shown', async () => {
+  test('Filtering works', async () => {
     const tbody = page.locator('tbody');
-    await expect(tbody.locator('tr')).toHaveCount(5);
+    const rows = tbody.getByRole('row').filter({ hasText: 'sha' });
+
+    await page.getByPlaceholder('Filter').fill('v3');
+    await expect(rows).toHaveCount(1);
+    await expect(tbody.getByText('Passed')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Clear Search' }).click();
+    await expect(rows).toHaveCount(5);
   });
 
-  test('Link back to repository works', async () => {
-    await page.getByRole('link', { name: 'Back to repository' }).click();
-    await expect(
-      page.getByRole('link', { name: 'backstage-test/test-images' }),
-    ).toBeEnabled();
+  test.describe('Vulnerability details', () => {
+    test.beforeAll(async () => {
+      await page.getByRole('link', { name: 'High' }).first().click();
+    });
+
+    test('Vulnerability details are accessible', async ({
+      browser,
+    }, testInfo) => {
+      await expect(page.getByText('Vulnerabilities for')).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: `Vulnerabilities for` }),
+      ).toBeVisible();
+      await expect(page.getByPlaceholder('Filter')).toBeVisible();
+      await common.a11yCheck(testInfo);
+    });
+
+    test('Vulnerability columns are shown', async () => {
+      const columns = [
+        'Advisory',
+        'Severity',
+        'Package Name',
+        'Current Version',
+        'Fixed By',
+      ];
+
+      for (const col of columns) {
+        await expect(page.getByText(col)).toBeVisible();
+      }
+    });
+
+    test('Vulnerability rows are shown', async () => {
+      const tbody = page.locator('tbody');
+      await expect(tbody.getByRole('row')).toHaveCount(5);
+      await expect(tbody.getByText('High')).toHaveCount(2);
+      await expect(tbody.getByText('Medium')).toHaveCount(2);
+      await expect(tbody.getByText(/^Low$/)).toHaveCount(1);
+    });
+
+    test('Filtering works', async () => {
+      const tbody = page.locator('tbody');
+      const rows = tbody.getByRole('row').filter({ hasText: 'RHSA' });
+
+      await page.getByPlaceholder('Filter').fill('high');
+      await expect(rows).toHaveCount(2);
+
+      await page.getByRole('button', { name: 'Clear Search' }).click();
+      await expect(rows).toHaveCount(5);
+    });
+
+    test('Link back to repository works', async () => {
+      await page.getByRole('link', { name: 'Back to repository' }).click();
+      await expect(
+        page.getByRole('link', { name: 'backstage-test/test-images' }),
+      ).toBeEnabled();
+    });
   });
 });
