@@ -1,5 +1,11 @@
 # @backstage-community/plugin-wheel-of-names
 
+## 0.5.1
+
+### Patch Changes
+
+- 5d7bc2d: Update to modern JSX transform (react-jsx)
+
 ## 0.5.0
 
 ### Minor Changes
