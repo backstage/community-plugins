@@ -46,6 +46,8 @@ integrations:
         - personalAccessToken: ${PERSONAL_ACCESS_TOKEN}
 ```
 
+To use other authentication methods, see the [documentation.](https://backstage.io/docs/integrations/azure/locations)
+
 ## Usage
 
 You can use the action in any of the steps of your [Software Template](https://backstage.io/docs/features/software-templates/).
