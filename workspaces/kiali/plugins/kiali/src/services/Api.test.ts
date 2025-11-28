@@ -16,7 +16,6 @@
 
 import { KialiApiClient } from './Api';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-import { HTTP_VERBS } from '@backstage-community/plugin-kiali-common/types';
 
 // Mock fetch globally
 global.fetch = jest.fn();

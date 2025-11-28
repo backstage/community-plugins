@@ -20,51 +20,11 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { WorkloadListPage } from './WorkloadListPage';
 import { kialiApiRef } from '../../services/Api';
 import { KialiProvider } from '../../store/KialiProvider';
-import { Entity } from '@backstage/catalog-model';
-
-// Mock the KialiApi
-const createMockKialiApi = () =>
-  ({
-    isDevEnv: jest.fn().mockReturnValue(false),
-    getAuthInfo: jest.fn().mockResolvedValue({
-      strategy: 'anonymous',
-      sessionInfo: { username: 'anonymous', expiresOn: '' },
-    }),
-    getStatus: jest.fn().mockResolvedValue({
-      status: { 'Kiali version': 'v1.86.0', 'Kiali state': 'running' },
-    }),
-    status: jest.fn().mockResolvedValue({}),
-    getNamespaces: jest
-      .fn()
-      .mockResolvedValue([{ name: 'default', cluster: 'Kubernetes' }]),
-    getServerConfig: jest.fn().mockResolvedValue({
-      installationTag: 'Kiali Console',
-      istioNamespace: 'istio-system',
-      clusters: {
-        Kubernetes: {},
-      },
-    }),
-    getMeshTls: jest.fn().mockResolvedValue({
-      status: 'MTLS_ENABLED',
-    }),
-    getIstioStatus: jest.fn().mockResolvedValue([]),
-    getIstioCertsInfo: jest.fn().mockResolvedValue([]),
-    getClustersWorkloads: jest.fn().mockResolvedValue({
-      workloads: [
-        {
-          name: 'test-workload',
-          namespace: 'default',
-          cluster: 'Kubernetes',
-          health: {},
-          istioSidecar: true,
-          istioAmbient: false,
-        },
-      ],
-      validations: {},
-    }),
-    setEntity: jest.fn(),
-    setAnnotation: jest.fn(),
-  }) as any;
+import {
+  createMockKialiApi,
+  createMockEntity,
+  ERROR_MESSAGES,
+} from '../__test-helpers__/pageTestHelpers';
 
 describe('WorkloadListPage', () => {
   let mockKialiApi: ReturnType<typeof createMockKialiApi>;
@@ -74,7 +34,7 @@ describe('WorkloadListPage', () => {
     mockKialiApi = createMockKialiApi();
   });
 
-  it('should render without entity', async () => {
+  it('should fetch server config and namespaces on mount', async () => {
     render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
         <KialiProvider>
@@ -98,18 +58,8 @@ describe('WorkloadListPage', () => {
     );
   });
 
-  it('should render with entity', async () => {
-    const mockEntity: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
-      metadata: {
-        name: 'test-entity',
-        namespace: 'default',
-        annotations: {
-          'kiali.io/namespace': 'default',
-        },
-      },
-    };
+  it('should call setEntity when entity prop is provided', async () => {
+    const mockEntity = createMockEntity();
 
     render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
@@ -126,49 +76,12 @@ describe('WorkloadListPage', () => {
     });
   });
 
-  it('should handle loading state', async () => {
-    const { container } = render(
-      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
-        <KialiProvider>
-          <WorkloadListPage />
-        </KialiProvider>
-      </TestApiProvider>,
-    );
-
-    await waitFor(() => {
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  it('should fetch workloads when namespaces are available', async () => {
-    render(
-      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
-        <KialiProvider>
-          <WorkloadListPage />
-        </KialiProvider>
-      </TestApiProvider>,
-    );
-
-    await waitFor(
-      () => {
-        expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
-    );
-
-    await waitFor(
-      () => {
-        expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
-    );
-  });
-
-  it('should handle error when fetching namespaces fails', async () => {
+  it('should display error message when namespace fetch fails', async () => {
     const errorApi = createMockKialiApi();
+    const errorMessage = ERROR_MESSAGES.namespaces;
     errorApi.getNamespaces = jest
       .fn()
-      .mockRejectedValue(new Error('Failed to fetch namespaces'));
+      .mockRejectedValue(new Error(errorMessage));
 
     render(
       <TestApiProvider apis={[[kialiApiRef, errorApi]]}>
@@ -180,21 +93,49 @@ describe('WorkloadListPage', () => {
 
     await waitFor(
       () => {
-        expect(errorApi.getServerConfig).toHaveBeenCalled();
+        expect(errorApi.getNamespaces).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
 
+    // Verify error message is displayed in the UI
     await waitFor(
       () => {
-        expect(errorApi.getNamespaces).toHaveBeenCalled();
+        const errorText = screen.queryByText(/Error providing namespaces/i);
+        expect(errorText).toBeInTheDocument();
       },
       { timeout: 3000 },
     );
   });
 
-  it('should render with ENTITY view', async () => {
+  it('should fetch workloads when namespaces are successfully loaded', async () => {
     render(
+      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
+        <KialiProvider>
+          <WorkloadListPage />
+        </KialiProvider>
+      </TestApiProvider>,
+    );
+
+    await waitFor(
+      () => {
+        expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
+        expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
+      },
+      { timeout: 3000 },
+    );
+
+    // Workloads should be fetched after namespaces are loaded
+    await waitFor(
+      () => {
+        expect(mockKialiApi.getClustersWorkloads).toHaveBeenCalled();
+      },
+      { timeout: 3000 },
+    );
+  });
+
+  it('should render with ENTITY view without duration controls', async () => {
+    const { container } = render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
         <KialiProvider>
           <WorkloadListPage view="entity" />
@@ -204,16 +145,62 @@ describe('WorkloadListPage', () => {
 
     await waitFor(
       () => {
-        expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
-    );
-
-    await waitFor(
-      () => {
         expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
+
+    // In ENTITY view, the duration dropdown should not be present
+    const durationDropdown = container.querySelector(
+      '#workload-list-duration-dropdown',
+    );
+    expect(durationDropdown).not.toBeInTheDocument();
+  });
+
+  it('should handle workload fetch with rate interval parameters', async () => {
+    render(
+      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
+        <KialiProvider>
+          <WorkloadListPage />
+        </KialiProvider>
+      </TestApiProvider>,
+    );
+
+    await waitFor(
+      () => {
+        expect(mockKialiApi.getClustersWorkloads).toHaveBeenCalled();
+      },
+      { timeout: 3000 },
+    );
+
+    // Verify the API was called with correct parameters
+    expect(mockKialiApi.getClustersWorkloads).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        rateInterval: expect.any(String),
+        health: 'true',
+        istioResources: 'true',
+      }),
+      expect.any(String),
+    );
+  });
+
+  it('should filter workloads by entity namespace', async () => {
+    const testNamespace = 'test-namespace';
+    const mockEntity = createMockEntity(testNamespace);
+
+    render(
+      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
+        <EntityProvider entity={mockEntity}>
+          <KialiProvider entity={mockEntity}>
+            <WorkloadListPage entity={mockEntity} />
+          </KialiProvider>
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+
+    await waitFor(() => {
+      expect(mockKialiApi.setEntity).toHaveBeenCalledWith(mockEntity);
+    });
   });
 });

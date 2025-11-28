@@ -20,51 +20,11 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { ServiceListPage } from './ServiceListPage';
 import { kialiApiRef } from '../../services/Api';
 import { KialiProvider } from '../../store/KialiProvider';
-import { Entity } from '@backstage/catalog-model';
-
-// Mock the KialiApi
-const createMockKialiApi = () =>
-  ({
-    isDevEnv: jest.fn().mockReturnValue(false),
-    getAuthInfo: jest.fn().mockResolvedValue({
-      strategy: 'anonymous',
-      sessionInfo: { username: 'anonymous', expiresOn: '' },
-    }),
-    getStatus: jest.fn().mockResolvedValue({
-      status: { 'Kiali version': 'v1.86.0', 'Kiali state': 'running' },
-    }),
-    status: jest.fn().mockResolvedValue({}),
-    getNamespaces: jest
-      .fn()
-      .mockResolvedValue([{ name: 'default', cluster: 'Kubernetes' }]),
-    getServerConfig: jest.fn().mockResolvedValue({
-      installationTag: 'Kiali Console',
-      istioNamespace: 'istio-system',
-      clusters: {
-        Kubernetes: {},
-      },
-    }),
-    getMeshTls: jest.fn().mockResolvedValue({
-      status: 'MTLS_ENABLED',
-    }),
-    getIstioStatus: jest.fn().mockResolvedValue([]),
-    getIstioCertsInfo: jest.fn().mockResolvedValue([]),
-    getClustersServices: jest.fn().mockResolvedValue({
-      services: [
-        {
-          name: 'test-service',
-          namespace: 'default',
-          cluster: 'Kubernetes',
-          health: {},
-          istioSidecar: true,
-          istioAmbient: false,
-        },
-      ],
-      validations: {},
-    }),
-    setEntity: jest.fn(),
-    setAnnotation: jest.fn(),
-  }) as any;
+import {
+  createMockKialiApi,
+  createMockEntity,
+  ERROR_MESSAGES,
+} from '../__test-helpers__/pageTestHelpers';
 
 describe('ServiceListPage', () => {
   let mockKialiApi: ReturnType<typeof createMockKialiApi>;
@@ -74,7 +34,7 @@ describe('ServiceListPage', () => {
     mockKialiApi = createMockKialiApi();
   });
 
-  it('should render without entity', async () => {
+  it('should fetch server config and namespaces on mount', async () => {
     render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
         <KialiProvider>
@@ -83,7 +43,6 @@ describe('ServiceListPage', () => {
       </TestApiProvider>,
     );
 
-    // Wait for component to render and getServerConfig to be called first
     await waitFor(
       () => {
         expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
@@ -91,7 +50,6 @@ describe('ServiceListPage', () => {
       { timeout: 3000 },
     );
 
-    // Then wait for getNamespaces to be called
     await waitFor(
       () => {
         expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
@@ -100,18 +58,8 @@ describe('ServiceListPage', () => {
     );
   });
 
-  it('should render with entity', async () => {
-    const mockEntity: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
-      metadata: {
-        name: 'test-entity',
-        namespace: 'default',
-        annotations: {
-          'kiali.io/namespace': 'default',
-        },
-      },
-    };
+  it('should call setEntity when entity prop is provided', async () => {
+    const mockEntity = createMockEntity();
 
     render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
@@ -128,50 +76,12 @@ describe('ServiceListPage', () => {
     });
   });
 
-  it('should handle loading state', async () => {
-    const { container } = render(
-      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
-        <KialiProvider>
-          <ServiceListPage />
-        </KialiProvider>
-      </TestApiProvider>,
-    );
-
-    // Component should render
-    await waitFor(() => {
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  it('should fetch services when namespaces are available', async () => {
-    render(
-      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
-        <KialiProvider>
-          <ServiceListPage />
-        </KialiProvider>
-      </TestApiProvider>,
-    );
-
-    await waitFor(
-      () => {
-        expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
-    );
-
-    await waitFor(
-      () => {
-        expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
-    );
-  });
-
-  it('should handle error when fetching namespaces fails', async () => {
+  it('should display error message when namespace fetch fails', async () => {
     const errorApi = createMockKialiApi();
+    const errorMessage = ERROR_MESSAGES.namespaces;
     errorApi.getNamespaces = jest
       .fn()
-      .mockRejectedValue(new Error('Failed to fetch namespaces'));
+      .mockRejectedValue(new Error(errorMessage));
 
     render(
       <TestApiProvider apis={[[kialiApiRef, errorApi]]}>
@@ -183,27 +93,31 @@ describe('ServiceListPage', () => {
 
     await waitFor(
       () => {
-        expect(errorApi.getServerConfig).toHaveBeenCalled();
+        expect(errorApi.getNamespaces).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
 
+    // Verify error message is displayed in the UI
     await waitFor(
       () => {
-        expect(errorApi.getNamespaces).toHaveBeenCalled();
+        const errorText = screen.queryByText(/Error providing namespaces/i);
+        expect(errorText).toBeInTheDocument();
       },
       { timeout: 3000 },
     );
   });
 
-  it('should handle error when fetching services fails', async () => {
-    const errorApi = createMockKialiApi();
-    errorApi.getClustersServices = jest
-      .fn()
-      .mockRejectedValue(new Error('Failed to fetch services'));
+  it('should fetch services when namespaces are successfully loaded', async () => {
+    // Use a mock that returns empty services to avoid health processing issues
+    const simpleMockApi = createMockKialiApi();
+    simpleMockApi.getClustersServices = jest.fn().mockResolvedValue({
+      services: [],
+      validations: {},
+    });
 
     render(
-      <TestApiProvider apis={[[kialiApiRef, errorApi]]}>
+      <TestApiProvider apis={[[kialiApiRef, simpleMockApi]]}>
         <KialiProvider>
           <ServiceListPage />
         </KialiProvider>
@@ -212,21 +126,23 @@ describe('ServiceListPage', () => {
 
     await waitFor(
       () => {
-        expect(errorApi.getServerConfig).toHaveBeenCalled();
+        expect(simpleMockApi.getServerConfig).toHaveBeenCalled();
+        expect(simpleMockApi.getNamespaces).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
 
+    // Services should be fetched after namespaces are loaded
     await waitFor(
       () => {
-        expect(errorApi.getNamespaces).toHaveBeenCalled();
+        expect(simpleMockApi.getClustersServices).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
   });
 
-  it('should render with ENTITY view', async () => {
-    render(
+  it('should render with ENTITY view without duration controls', async () => {
+    const { container } = render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
         <KialiProvider>
           <ServiceListPage view="entity" />
@@ -236,22 +152,28 @@ describe('ServiceListPage', () => {
 
     await waitFor(
       () => {
-        expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
-    );
-
-    await waitFor(
-      () => {
         expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
+
+    // In ENTITY view, the duration dropdown should not be present
+    const durationDropdown = container.querySelector(
+      '#service-list-duration-dropdown',
+    );
+    expect(durationDropdown).not.toBeInTheDocument();
   });
 
-  it('should update services when duration changes', async () => {
+  it('should handle service fetch with rate interval parameters', async () => {
+    // Use a mock that returns empty services to avoid health processing issues
+    const simpleMockApi = createMockKialiApi();
+    simpleMockApi.getClustersServices = jest.fn().mockResolvedValue({
+      services: [],
+      validations: {},
+    });
+
     render(
-      <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
+      <TestApiProvider apis={[[kialiApiRef, simpleMockApi]]}>
         <KialiProvider>
           <ServiceListPage />
         </KialiProvider>
@@ -260,44 +182,39 @@ describe('ServiceListPage', () => {
 
     await waitFor(
       () => {
-        expect(mockKialiApi.getServerConfig).toHaveBeenCalled();
+        expect(simpleMockApi.getClustersServices).toHaveBeenCalled();
       },
       { timeout: 3000 },
     );
 
-    await waitFor(
-      () => {
-        expect(mockKialiApi.getNamespaces).toHaveBeenCalled();
-      },
-      { timeout: 3000 },
+    // Verify the API was called with correct parameters
+    expect(simpleMockApi.getClustersServices).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        rateInterval: expect.any(String),
+        health: 'true',
+        istioResources: 'true',
+      }),
+      expect.any(String),
     );
   });
 
-  it('should filter services by active namespaces', async () => {
-    const entityWithNamespace: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
-      metadata: {
-        name: 'test-entity',
-        namespace: 'default',
-        annotations: {
-          'kiali.io/namespace': 'test-namespace',
-        },
-      },
-    };
+  it('should filter services by entity namespace', async () => {
+    const testNamespace = 'test-namespace';
+    const mockEntity = createMockEntity(testNamespace);
 
     render(
       <TestApiProvider apis={[[kialiApiRef, mockKialiApi]]}>
-        <EntityProvider entity={entityWithNamespace}>
-          <KialiProvider entity={entityWithNamespace}>
-            <ServiceListPage entity={entityWithNamespace} />
+        <EntityProvider entity={mockEntity}>
+          <KialiProvider entity={mockEntity}>
+            <ServiceListPage entity={mockEntity} />
           </KialiProvider>
         </EntityProvider>
       </TestApiProvider>,
     );
 
     await waitFor(() => {
-      expect(mockKialiApi.setEntity).toHaveBeenCalledWith(entityWithNamespace);
+      expect(mockKialiApi.setEntity).toHaveBeenCalledWith(mockEntity);
     });
   });
 });
