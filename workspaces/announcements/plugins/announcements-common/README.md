@@ -1,6 +1,6 @@
 # @backstage-community/plugin-announcements-common
 
-This package provides shared types and utilities for the Announcements plugin.
+This package provides shared types and utilities for all Announcements-related plugins.
 
 ## Installation
 

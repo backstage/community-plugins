@@ -22,6 +22,7 @@
 
 export { searchModuleAnnouncementsCollator as default } from './module';
 
+// todo: I dont think these need to be exported anymore
 export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
 export type {
   IndexableAnnouncementDocument,

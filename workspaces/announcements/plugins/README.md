@@ -1,9 +1,7 @@
-# The Plugins Folder
+# Announcements Plugins
 
-This is where your own plugins and their associated modules live, each in a
-separate folder of its own.
+This is where the plugins and their associated modules for the Announcements plugin live, each in a
+separate folder.
 
-If you want to create a new plugin here, go to your project root directory, run
+If you want to create a new plugin here, go to the project root directory, run
 the command `yarn new`, and follow the on-screen instructions.
-
-You can also check out existing plugins on [the plugin marketplace](https://backstage.io/plugins)!

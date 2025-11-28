@@ -1,6 +1,6 @@
-# Announcements plugin for Backstage
+# Backstage Announcements Plugin
 
-The Announcements plugin manages and displays announcements within Backstage.
+The Announcements plugin manages and displays announcements within Backstage with support for categories and tags.
 
 ## Plugins
 
@@ -8,9 +8,10 @@ This plugin is composed of several packages:
 
 - [announcements](./plugins/announcements/README.md) - The frontend plugin that provides the UI components and pages.
 - [announcements-backend](./plugins/announcements-backend/README.md) - The backend plugin that provides the REST API and database model.
-- [announcements-node](./plugins/announcements-node/README.md) - A node library containing reusable service logic.
 - [announcements-common](./plugins/announcements-common/README.md) - A common library containing shared types and utilities.
+- [announcements-node](./plugins/announcements-node/README.md) - A node library containing reusable service logic.
 - [announcements-react](./plugins/announcements-react/README.md) - A web library containing announcements-related react components.
+- [search-backend-module-announcements](./plugins/search-backend-module-announcements/README.md) - A backend module that provides search capabilities for announcements.
 
 ## Quick start
 

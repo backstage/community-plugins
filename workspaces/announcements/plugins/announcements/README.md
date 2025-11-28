@@ -2,14 +2,12 @@
 
 The frontend for the Announcements plugin.
 
-## Features
+## Table of Contents
 
-This plugin provides:
-
-- pages to list, view, create, edit and delete announcements
-- a component to display the latest announcements, for example on a homepage
-- a component to display the latest announcement as a banner, if there is one
-- an admin portal to manage announcements
+- [Installation](#installation)
+- [New Frontend System (Alpha)](#new-frontend-system-alpha)
+- [Components](#components)
+- [Customization](#customization)
 
 ## Installation
 
@@ -31,14 +29,15 @@ const AppRoutes = () => (
   <FlatRoutes>
     // ...
     <Route path="/announcements" element={<AnnouncementsPage />} />
+    <Route path="/announcements/admin" element={<AdminPortal />} />
     // ...
   </FlatRoutes>
 );
 ```
 
-An interface to create/update/edit/delete announcements is now available at `/announcements`.
+Viewing announcements is now available at `/announcements`. Managing announcements, categories and tags is now available at `/announcements/admin`. The admin portal is also available via the context menu on the announcements page.
 
-## New Frontend System Setup (Alpha)
+### New Frontend System (Alpha)
 
 Add the plugin to your frontend app:
 
@@ -86,6 +85,8 @@ app:
 
 ## Components
 
+- Page to view announcements
+- Unified admin portal to manage announcements, categories and tags
 - [Display latest announcements on a page](./docs/latest-announcements-on-page.md)
 - [Display a banner for the latest announcement](./docs/latest-announcement-banner.md)
 - [Display announcements in a timeline](./docs/announcement-timeline.md)
@@ -130,16 +131,6 @@ Example
 <AnnouncementsPage category="conferences" />
 ```
 
-### Overriding the AnnouncementCreateButton
-
-It is possible to specify the text for the "New announcement" button rendered on the `AnnouncementsPage`. You can do this by passing a `buttonOptions` prop to the `AnnouncementsPage` component. The `buttonOptions` prop accepts an object with the following properties:
-
-```ts
-{
-  name: string; // defaults to 'announcement'
-}
-```
-
 ### Overriding the NewAnnouncementBanner
 
 It is possible to specify the length of the title for announcements rendered on the `NewAnnouncementBanner`. You can do this by passing a `cardOptions` prop to the `NewAnnouncementBanner` component. The `cardOptions` prop accepts an object with the following properties:
@@ -174,16 +165,6 @@ You can select the markdown renderer when using the AnnouncementsPage component:
 ```
 
 Select the renderer that best fits your needs based on whether theme consistency or markdown feature completeness is more important for your use case.
-
-## Development
-
-### Getting started
-
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/announcements](http://localhost:3000/announcements).
-
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
 
 ## Previously maintained by
 
