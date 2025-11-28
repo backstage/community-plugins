@@ -144,6 +144,26 @@ jobs:
       - name: test changed packages
         run: yarn test:all --maxWorkers=3
 
+      - name: read playwrightTests flag from bcp.json
+        id: bcpPlaywrightTests
+        run: |
+          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
+          if [ -f bcp.json ]; then
+            echo "Reading playwrightTests flag..."
+            PLAYWRIGHT_TESTS=$(jq -r '.["playwrightTests"]' bcp.json)
+            echo "playwrightTests value: $PLAYWRIGHT_TESTS"
+            echo "playwright_tests=$PLAYWRIGHT_TESTS" >> $GITHUB_OUTPUT
+          else
+            echo "bcp.json not found. Defaulting list_deprecations to false."
+            echo "playwright_tests=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: playwright tests
+        if: ${{ steps.bcpPlaywrightTests.outputs.playwright_tests == 'true' }}
+        run: |
+          yarn playwright install --with-deps chromium chrome
+          yarn playwright test
+
       - name: ensure clean working directory
         run: |
           if files=$(git ls-files --exclude-standard --others --modified) && [[ -z "$files" ]]; then
