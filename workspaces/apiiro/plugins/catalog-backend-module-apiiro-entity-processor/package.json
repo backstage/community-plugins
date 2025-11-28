@@ -18,7 +18,8 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "pluginId": "catalog"
+    "pluginId": "catalog",
+    "pluginPackage": "@backstage/plugin-catalog-backend"
   },
   "scripts": {
     "start": "backstage-cli package start",
