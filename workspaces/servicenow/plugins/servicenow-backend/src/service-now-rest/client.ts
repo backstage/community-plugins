@@ -26,7 +26,12 @@ import {
   IncidentPick,
   PaginatedIncidents,
 } from '@backstage-community/plugin-servicenow-common';
-import { OAuthConfig, ServiceNowConfig } from '../../config';
+import {
+  OAuthConfig,
+  ServiceNowConfig,
+  ServiceNowIncidentFilter,
+  ServiceNowIncidentFilterGroup,
+} from '../../config';
 
 export type IncidentQueryParams = {
   userEmail?: string;
@@ -203,12 +208,30 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     throw new Error('No authentication method configured.');
   }
 
+  private buildQuery(
+    filter: ServiceNowIncidentFilter | ServiceNowIncidentFilterGroup,
+  ): string {
+    if ('type' in filter) {
+      const operator = filter.type === 'and' ? '^' : '^OR';
+      return filter.rules.map(rule => this.buildQuery(rule)).join(operator);
+    }
+    return `${filter.field}${filter.operator}${filter.value}`;
+  }
+
   async fetchIncidents(options: IncidentQueryParams): Promise<{
     items: IncidentPick[];
     totalCount: number;
   }> {
     const authHeaders = await this.getAuthHeaders();
     const queryParts: string[] = [];
+
+    console.log(`==== config :${JSON.stringify(this.config)}`);
+    if (this.config.servicenow?.incidentFilter) {
+      console.log(`filter is here!`);
+      queryParts.push(
+        this.buildQuery(this.config.servicenow.incidentFilter),
+      );
+    }
 
     if (options.userEmail) {
       const id = await this.getUserSysIdByEmail(options.userEmail);
@@ -226,6 +249,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     }
 
     if (options.entityId) {
+      console.log(`==== Entity id: ${options.entityId}`);
       queryParts.push(`u_backstage_entity_id=${options.entityId}`);
     }
 
@@ -238,6 +262,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     }
 
     const sysparmQuery = queryParts.join('^');
+    console.log(`system param Query ${sysparmQuery}`)
 
     const params = new URLSearchParams();
     if (sysparmQuery) params.append('sysparm_query', sysparmQuery);
@@ -245,7 +270,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
       params.append('sysparm_limit', String(options.limit));
     if (options.offset !== undefined)
       params.append('sysparm_offset', String(options.offset));
-    params.append(
+    params.append( // todo
       'sysparm_fields',
       'sys_id,number,short_description,description,sys_created_on,priority,incident_state',
     );
@@ -275,6 +300,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
           ...incident,
           url: `${this.instanceUrl}/nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`,
         })) ?? [];
+      console.log(`${JSON.stringify(items)}`);
 
       return { items, totalCount };
     } catch (error: any) {
