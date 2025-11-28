@@ -30,7 +30,6 @@ import {
   useAnalytics,
 } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
@@ -38,6 +37,7 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 import { Grid, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,
