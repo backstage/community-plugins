@@ -201,6 +201,21 @@ spec:
           **pipeline output:** `${{ steps['runAzurePipeline'].output.pipelineOutput['myOutputVar'].value }}` }}
 ```
 
+### Example running a pipeline, waiting for it to complete, and failing the action if the pipeline is unsuccessful using the `azure:pipeline:run` action
+
+```yaml
+spec:
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        #[...]
+        pollingInterval: 10 # Poll for pipeline run status every 10 seconds
+        pipelineTimeout: 300 # Timeout after 5 minutes
+        failIfNotSuccessful: true # Fail the scaffolder step when the run is not successful
+```
+
 ### Example: Create Azure Pipeline
 
 ```yaml
