@@ -82,7 +82,7 @@ export const AdminPortal = (props?: AdminPortalProps) => {
   const { t } = useAnnouncementsTranslation();
 
   return (
-    <Page themeId={themeId ?? 'home'}>
+    <Page themeId={themeId ?? 'tool'}>
       <Header
         title={title ?? t('admin.adminPortal.title')}
         subtitle={subtitle ?? t('admin.adminPortal.title')}
