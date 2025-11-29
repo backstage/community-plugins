@@ -1,0 +1,433 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {
+  Box,
+  Chip,
+  Divider,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
+  makeStyles,
+} from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import SendIcon from '@material-ui/icons/Send';
+import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import { Message } from '../types';
+import { ChatMessage } from './ChatMessage';
+
+const useStyles = makeStyles(theme => ({
+  chatContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[1],
+    overflow: 'hidden',
+    minHeight: 0,
+  },
+  messagesContainer: {
+    flexGrow: 1,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(1),
+    minHeight: 0,
+  },
+  inputContainer: {
+    display: 'flex',
+    gap: theme.spacing(1),
+    alignItems: 'flex-end',
+  },
+  typingIndicator: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    fontSize: '14px',
+    color: theme.palette.text.secondary,
+    marginTop: theme.spacing(0.5),
+    fontStyle: 'italic',
+  },
+  spinnerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: theme.spacing(1),
+  },
+  '@keyframes spin': {
+    '0%': {
+      transform: 'rotate(0deg)',
+    },
+    '100%': {
+      transform: 'rotate(360deg)',
+    },
+  },
+  '@keyframes pulse': {
+    '0%, 100%': {
+      opacity: 1,
+    },
+    '50%': {
+      opacity: 0.5,
+    },
+  },
+  spinner: {
+    width: 20,
+    height: 20,
+    border: `3px solid ${
+      theme.palette.type === 'dark'
+        ? 'rgba(255, 255, 255, 0.1)'
+        : 'rgba(0, 0, 0, 0.1)'
+    }`,
+    borderTop: `3px solid ${theme.palette.primary.main}`,
+    borderRadius: '50%',
+    animation: '$spin 0.8s linear infinite',
+  },
+  spinnerDots: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    '& > span': {
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      backgroundColor: theme.palette.primary.main,
+      animation: '$pulse 1.4s ease-in-out infinite',
+      '&:nth-child(1)': {
+        animationDelay: '0s',
+      },
+      '&:nth-child(2)': {
+        animationDelay: '0.2s',
+      },
+      '&:nth-child(3)': {
+        animationDelay: '0.4s',
+      },
+    },
+  },
+  suggestionsContainer: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(1),
+  },
+  inputField: {
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.type === 'dark' ? '#00ccff' : undefined,
+      opacity: theme.palette.type === 'dark' ? 1 : undefined,
+    },
+  },
+  suggestionChip: {
+    backgroundColor: 'transparent',
+    borderColor: theme.palette.type === 'dark' ? '#0099ff' : '#0288d1',
+    color: theme.palette.type === 'dark' ? '#00ccff' : '#0277bd',
+    '&:hover': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(0, 153, 255, 0.15)'
+          : 'rgba(2, 136, 209, 0.1)',
+      borderColor: theme.palette.type === 'dark' ? '#00ccff' : '#01579b',
+    },
+    '&:active': {
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? 'rgba(0, 204, 255, 0.25)'
+          : 'rgba(2, 136, 209, 0.2)',
+    },
+  },
+}));
+
+/**
+ * Props for the ChatContainer component
+ * @public
+ */
+export interface ChatContainerProps {
+  messages: Message[];
+  userInput: string;
+  setUserInput: (input: string) => void;
+  isTyping: boolean;
+  suggestions: string[];
+  thinkingMessages: string[];
+  thinkingMessagesInterval?: number;
+  botName: string;
+  botIcon?: string;
+  inputPlaceholder?: string;
+  fontSizes?: {
+    messageText?: string;
+    codeBlock?: string;
+    inlineCode?: string;
+    suggestionChip?: string;
+    inputField?: string;
+    timestamp?: string;
+  };
+  onMessageSubmit: (messageText?: string) => void;
+  onReset: () => void;
+  onSuggestionClick: (suggestion: string) => void;
+  
+  // Operational mode for special handling of system messages
+  currentOperation?: string | null;
+  isInOperationalMode?: boolean;
+}
+
+/**
+ * Memoized messages list to prevent re-renders when only input changes
+ */
+const MessagesList = memo(function MessagesList({
+  messages,
+  botName,
+  botIcon,
+  fontSizes,
+}: {
+  messages: Message[];
+  botName: string;
+  botIcon?: string;
+  fontSizes?: {
+    messageText?: string;
+    codeBlock?: string;
+    inlineCode?: string;
+    timestamp?: string;
+  };
+}) {
+  // Memoize font sizes to prevent re-creating object on every render
+  const memoizedFontSizes = useMemo(() => ({
+    messageText: fontSizes?.messageText,
+    codeBlock: fontSizes?.codeBlock,
+    inlineCode: fontSizes?.inlineCode,
+    timestamp: fontSizes?.timestamp,
+  }), [fontSizes?.messageText, fontSizes?.codeBlock, fontSizes?.inlineCode, fontSizes?.timestamp]);
+
+  return (
+    <>
+      {messages.map((message, index) => (
+             <ChatMessage
+               key={`${index}-${message.timestamp}`} // Simplified, stable key
+               message={message}
+               botName={botName}
+               botIcon={botIcon}
+               fontSizes={memoizedFontSizes}
+             />
+           ))}
+    </>
+  );
+});
+
+/**
+ * Chat container component that handles message display and input
+ * Memoized to prevent re-renders when only input changes
+ * @public
+ */
+export const ChatContainer = memo(function ChatContainer({
+  messages,
+  userInput,
+  setUserInput,
+  isTyping,
+  suggestions,
+  thinkingMessages,
+  thinkingMessagesInterval = 7000,
+  botName,
+  botIcon,
+  inputPlaceholder,
+  fontSizes,
+  onMessageSubmit,
+  onReset,
+  onSuggestionClick,
+  currentOperation,
+  isInOperationalMode,
+}: ChatContainerProps) {
+  const classes = useStyles();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [thinkingMessageIndex, setThinkingMessageIndex] = useState(0);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+  }, []);
+
+  const scrollToPosition = useCallback((position: number, smooth = true) => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: position,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+    }
+  }, []);
+
+  // Optimized auto-scroll that only tracks essential changes
+  const lastMessageText = useMemo(() => {
+    if (messages.length === 0) return '';
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage.isUser ? '' : lastMessage.text || '';
+  }, [messages]);
+
+  useEffect(() => {
+    if (isTyping) {
+      // Clear any existing timeout to prevent scroll spam
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      // During streaming, follow the text to the bottom
+      scrollTimeoutRef.current = setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+    }
+
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [lastMessageText, scrollToBottom, isTyping]); // Only track last message text, not full array
+
+  // Scroll to top of last response when streaming completes
+  // Optimized: Only track essential properties, simplified DOM access
+  useEffect(() => {
+    if (!isTyping && messagesContainerRef.current && messages.length > 0) {
+      // Small delay to ensure final text is rendered
+      setTimeout(() => {
+        // Find the last message (current response)
+        const messageElements = messagesContainerRef.current!.querySelectorAll('[class*="message"]');
+        const lastMessageElement = messageElements[messageElements.length - 1] as HTMLElement;
+        
+        if (lastMessageElement) {
+          // Scroll to top of the last response box with 60px extra space above
+          scrollToPosition(Math.max(0, lastMessageElement.offsetTop - 60), true);
+        }
+      }, 200);
+    }
+  }, [isTyping, messages.length, scrollToPosition]);
+
+  // Show random thinking messages while typing
+  useEffect(() => {
+    if (isTyping) {
+      // Start with a random message
+      setThinkingMessageIndex(
+        Math.floor(Math.random() * thinkingMessages.length),
+      );
+
+      const interval = setInterval(() => {
+        // Pick a random message each time
+        setThinkingMessageIndex(
+          Math.floor(Math.random() * thinkingMessages.length),
+        );
+      }, thinkingMessagesInterval);
+
+      return () => clearInterval(interval);
+    }
+    return undefined;
+  }, [isTyping, thinkingMessages.length, thinkingMessagesInterval]);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      onMessageSubmit();
+    }
+  };
+
+  const isInputDisabled = isTyping;
+
+  return (
+    <div className={classes.chatContainer}>
+        <div className={classes.messagesContainer} ref={messagesContainerRef}>
+        <MessagesList
+          messages={messages}
+          botName={botName}
+          botIcon={botIcon}
+          fontSizes={fontSizes}
+        />
+
+        {isTyping && (
+          <Box className={classes.typingIndicator}>
+            <div className={classes.spinnerDots}>
+              <span />
+              <span />
+              <span />
+            </div>
+            <Typography variant="caption" style={{ marginLeft: 8 }}>
+              {isInOperationalMode && currentOperation 
+                ? `🔧 ${currentOperation}...` 
+                : `${thinkingMessages[thinkingMessageIndex]}...`}
+            </Typography>
+          </Box>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+      <Divider />
+      <Box p={2} className={classes.inputContainer}>
+        <TextField
+          fullWidth
+          multiline
+          minRows={1}
+          maxRows={4}
+          variant="outlined"
+          placeholder={inputPlaceholder || `Ask ${botName} anything...`}
+          value={userInput}
+          onChange={e => setUserInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={isInputDisabled}
+          className={classes.inputField}
+          InputProps={{
+            style: { fontSize: fontSizes?.inputField || '1rem' },
+          }}
+        />
+        <Tooltip title="Send message">
+          <span>
+            <IconButton
+              color="primary"
+              onClick={() => onMessageSubmit()}
+              disabled={isInputDisabled || !userInput.trim()}
+              aria-label="send message"
+            >
+              <SendIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+        <Tooltip title="Reset chat">
+          <span>
+            <IconButton
+              color="secondary"
+              onClick={onReset}
+              aria-label="reset chat"
+              disabled={isInputDisabled}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
+      {suggestions.length > 0 && (
+        <Box className={classes.suggestionsContainer}>
+          {suggestions.map((suggestion, index) => (
+            <Chip
+              key={index}
+              label={suggestion}
+              onClick={() => onSuggestionClick(suggestion)}
+              clickable
+              color="primary"
+              variant="outlined"
+              disabled={isInputDisabled}
+              className={classes.suggestionChip}
+              style={{ fontSize: fontSizes?.suggestionChip || '0.875rem' }}
+            />
+          ))}
+        </Box>
+      )}
+    </div>
+  );
+});

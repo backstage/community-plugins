@@ -2,7 +2,7 @@
 
 This plugin is part of the [**CAIPE (Community AI Platform Engineering)**](https://cnoe-io.github.io/ai-platform-engineering/) initiative, providing seamless integration between Backstage and the multi-agentic AI systems developed by the CNOE (Cloud Native Operational Excellence) community.
 
-![jarvis_1](images/jarvis_2.png)
+![jarvis_1](https://raw.githubusercontent.com/cnoe-io/community-plugins/agent-forge/workspaces/agent-forge/plugins/agent-forge/images/jarvis_1.png)
 
 ## What is CAIPE?
 
@@ -41,46 +41,49 @@ To start using the Agent-Forge Plugin, follow these steps:
 
    ```bash
    # From your Backstage root directory
-   yarn --cwd packages/app add @backstage-community/plugin-agent-forge
+   yarn --cwd packages/app add @caipe/plugin-agent-forge
    ```
 
-2. **Configure App.tsx**:
+2. **Configure App.tsx** (New Frontend System):
 
    ```tsx
-   import { ChatAssistantPage } from '@backstage-community/plugin-agent-forge';
+   import agentForgePlugin from '@caipe/plugin-agent-forge/alpha';
 
-   ...
+   const app = createApp({
+     features: [
+       // ... other features
+       agentForgePlugin,
+     ],
+   });
+   ```
 
-   // Add <ChatAssistantPage /> to the AppRouter
-   export default app.createRoot(
-   <>
-    ...
-    <AppRouter>
-      ...
-      <Root>{routes}</Root>
-      <ChatAssistantPage />
-      ...
-    </AppRouter>
-   </>
-   );
+3. **Add Navigation**:
+
+   ```tsx
+   // In your Sidebar component
+   import ChatIcon from '@material-ui/icons/Chat';
+
+   <SidebarItem icon={ChatIcon} to="agent-forge" text="Agent Forge" />;
    ```
 
 ## Configuration
 
 ### CAIPE Agent Integration
 
-To configure the plugin to connect to CAIPE agents, you need to configure the base URL of the running CAIPE system in your Backstage portal config file:
-
-```yaml
-agentForge:
-  baseUrl: http://127.0.0.1:8000
-```
+To configure the plugin to connect to CAIPE agents, add the base URL of your running CAIPE system to your Backstage config:
 
 The plugin can display pre-defined options based on the agent's available skills. To enable this feature, set the `showOptions` configuration to true:
 
 ```yaml
 agentForge:
   showOptions: true
+  botName: Agent Forge # Optional: Customize the bot name
+  botIcon: url goes here # Optional: Customize the bot icon
+  initialSuggestions: # Optional: Customize initial suggestion prompts
+    - 'What can you do?'
+    - 'How do I configure agents?'
+    - 'Help me with platform engineering tasks'
+    - 'Show me the latest deployments'
 ```
 
 ### CAIPE Setup
@@ -96,9 +99,17 @@ Before using this plugin, you need to have CAIPE running locally or have access 
 #### Quick Start with Docker
 
 1. **Configure Agent Secrets and LLM Providers**
+   <<<<<<< HEAD
+   <<<<<<< HEAD
 
-   - Set up your API keys and credentials for the agents you plan to use
-   - Configure your preferred LLM provider
+=======
+
+> > > > > > > # 6f47b7100 (docs: add CAIPE AgentForge Backstage plugin documentation)
+
+> > > > > > > 9b722fec3 (docs: fix yarn prettier)
+
+- Set up your API keys and credentials for the agents you plan to use
+- Configure your preferred LLM provider
 
 2. **Run CAIPE with Docker Compose**
 
@@ -134,9 +145,7 @@ For detailed information on agent capabilities, prompt examples, and advanced us
 
 Use the chat interface to ask questions or perform required tasks. The system supports a wide range of platform engineering operations including incident management, version control, project management, team communication, continuous deployment, and cloud infrastructure management.
 
-![jarvis_1](images/jarvis_1.png)
-
-![jarvis_1](images/jarvis_3.png)
+![jarvis_1](https://raw.githubusercontent.com/cnoe-io/community-plugins/agent-forge/workspaces/agent-forge/plugins/agent-forge/images/jarvis_1.png)
 
 ## Community and Resources
 
