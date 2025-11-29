@@ -45,10 +45,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-manage-common": "workspace:^",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/core-components": "^0.18.2",
-    "@backstage/core-plugin-api": "^1.11.1",
-    "@backstage/plugin-catalog-react": "^1.21.2",
+    "@backstage/catalog-model": "^1.7.6",
+    "@backstage/core-components": "^0.18.3",
+    "@backstage/core-plugin-api": "^1.12.0",
+    "@backstage/plugin-catalog-react": "^1.21.3",
     "@backstage/types": "^1.2.2",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
@@ -67,7 +67,7 @@
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.4",
+    "@backstage/cli": "^0.34.5",
     "@types/pluralize": "^0.0.33",
     "@types/react": "^18.3.12"
   },

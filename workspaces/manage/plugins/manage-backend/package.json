@@ -37,19 +37,19 @@
   "dependencies": {
     "@backstage-community/plugin-manage-common": "workspace:^",
     "@backstage-community/plugin-manage-node": "workspace:^",
-    "@backstage/backend-defaults": "^0.13.0",
-    "@backstage/backend-plugin-api": "^1.4.4",
-    "@backstage/catalog-client": "^1.12.0",
-    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/backend-defaults": "^0.13.1",
+    "@backstage/backend-plugin-api": "^1.5.0",
+    "@backstage/catalog-client": "^1.12.1",
+    "@backstage/catalog-model": "^1.7.6",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-node": "^1.19.1",
+    "@backstage/plugin-catalog-node": "^1.20.0",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.9.1",
-    "@backstage/cli": "^0.34.4",
+    "@backstage/backend-test-utils": "^1.10.0",
+    "@backstage/cli": "^0.34.5",
     "@types/express": "^4.17.6",
     "@types/supertest": "^2.0.12",
     "supertest": "^6.2.4"
