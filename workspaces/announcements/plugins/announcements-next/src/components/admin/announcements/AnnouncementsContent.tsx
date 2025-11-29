@@ -48,10 +48,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
 import { DateTime } from 'luxon';
-import { useDeleteAnnouncementDialogState } from './useDeleteAnnouncementDialogState';
-import { DeleteAnnouncementDialog } from './DeleteAnnouncementDialog';
 import { AnnouncementForm } from './AnnouncementForm';
 import { Container } from '@backstage/ui';
+import {
+  DeleteConfirmationDialog,
+  useDeleteConfirmationDialogState,
+} from '../shared';
 
 type AnnouncementsContentProps = {
   defaultInactive?: boolean;
@@ -95,8 +97,8 @@ export const AnnouncementsContent = ({
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    announcement: announcementToDelete,
-  } = useDeleteAnnouncementDialogState();
+    item: announcementToDelete,
+  } = useDeleteConfirmationDialogState<Announcement>();
 
   const onCreateButtonClick = () => {
     setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
@@ -318,8 +320,8 @@ export const AnnouncementsContent = ({
   ];
 
   return (
-    <Container>
-      <RequirePermission permission={announcementCreatePermission}>
+    <RequirePermission permission={announcementCreatePermission}>
+      <Container>
         <Grid container>
           <Grid item xs={12}>
             <Button
@@ -355,14 +357,15 @@ export const AnnouncementsContent = ({
               }
             />
 
-            <DeleteAnnouncementDialog
+            <DeleteConfirmationDialog
+              type="announcement"
               open={isDeleteDialogOpen}
               onCancel={onCancelDelete}
               onConfirm={onConfirmDelete}
             />
           </Grid>
         </Grid>
-      </RequirePermission>
-    </Container>
+      </Container>
+    </RequirePermission>
   );
 };

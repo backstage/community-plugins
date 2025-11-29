@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tag } from '@backstage-community/plugin-announcements-common';
-import { useCallback, useState } from 'react';
+import { useState, useCallback } from "react";
 
-type DeleteTagDialogState = {
-  open: (t: Tag) => void;
+type DeleteConfirmationDialogState<T> = {
+  open: (t: T) => void;
   close: () => void;
-
   isOpen: boolean;
-  tag?: Tag;
+  item?: T;
 };
 
-export function useDeleteTagDialogState(): DeleteTagDialogState {
+export function useDeleteConfirmationDialogState<
+  T,
+>(): DeleteConfirmationDialogState<T> {
   const [state, setState] = useState<{
     open: boolean;
-    tag?: Tag;
+    item?: T;
   }>({ open: false });
 
   const setOpen = useCallback(
-    (t: Tag) => {
+    (t: T) => {
       setState({
         open: true,
-        tag: t,
+        item: t,
       });
     },
     [setState],
@@ -43,7 +43,7 @@ export function useDeleteTagDialogState(): DeleteTagDialogState {
   const setClosed = useCallback(() => {
     setState({
       open: false,
-      tag: undefined,
+      item: undefined,
     });
   }, [setState]);
 
@@ -51,7 +51,7 @@ export function useDeleteTagDialogState(): DeleteTagDialogState {
     open: setOpen,
     close: setClosed,
 
-    tag: state.tag,
+    item: state.item,
     isOpen: state.open,
   };
 }

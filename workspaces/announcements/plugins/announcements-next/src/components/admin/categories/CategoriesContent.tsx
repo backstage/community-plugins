@@ -40,9 +40,9 @@ import { ResponseError } from '@backstage/errors';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import { CategoriesForm } from './CategoriesForm';
-import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
-import { DeleteCategoryDialog } from './DeleteCategoryDialog';
 import { Container } from '@backstage/ui';
+import { DeleteConfirmationDialog } from '../shared';
+import { useDeleteConfirmationDialogState } from '../shared/DeleteConfirmationDialog';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
@@ -55,8 +55,8 @@ export const CategoriesContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    category: categoryToDelete,
-  } = useDeleteCategoryDialogState();
+    item: categoryToDelete,
+  } = useDeleteConfirmationDialogState<Category>();
 
   const { loading: loadingCreatePermission, allowed: canCreateCategory } =
     usePermission({
@@ -156,8 +156,8 @@ export const CategoriesContent = () => {
   ];
 
   return (
-    <Container>
-      <RequirePermission permission={announcementCreatePermission}>
+    <RequirePermission permission={announcementCreatePermission}>
+      <Container>
         <Grid container>
           <Grid item xs={12}>
             <Button
@@ -194,13 +194,14 @@ export const CategoriesContent = () => {
             />
           </Grid>
 
-          <DeleteCategoryDialog
+          <DeleteConfirmationDialog
+            type="category"
             open={isDeleteDialogOpen}
             onCancel={onCancelDelete}
             onConfirm={onConfirmDelete}
           />
         </Grid>
-      </RequirePermission>
-    </Container>
+      </Container>
+    </RequirePermission>
   );
 };

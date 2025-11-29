@@ -40,9 +40,11 @@ import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TagsForm } from './TagsForm';
-import { useDeleteTagDialogState } from './useDeleteTagDialogState';
-import { DeleteTagDialog } from './DeleteTagDialog';
 import { Container } from '@backstage/ui';
+import {
+  DeleteConfirmationDialog,
+  useDeleteConfirmationDialogState,
+} from '../shared';
 
 export const TagsContent = () => {
   const [showNewTagForm, setShowNewTagForm] = useState(false);
@@ -55,8 +57,8 @@ export const TagsContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    tag: tagToDelete,
-  } = useDeleteTagDialogState();
+    item: tagToDelete,
+  } = useDeleteConfirmationDialogState<Tag>();
 
   const { loading: loadingCreatePermission, allowed: canCreateTag } =
     usePermission({
@@ -162,8 +164,8 @@ export const TagsContent = () => {
   ];
 
   return (
-    <Container>
-      <RequirePermission permission={announcementCreatePermission}>
+    <RequirePermission permission={announcementCreatePermission}>
+      <Container>
         <Grid container>
           <Grid item xs={12}>
             <Button
@@ -197,13 +199,14 @@ export const TagsContent = () => {
             />
           </Grid>
 
-          <DeleteTagDialog
+          <DeleteConfirmationDialog
+            type="tag"
             open={isDeleteDialogOpen}
             onCancel={onCancelDelete}
             onConfirm={onConfirmDelete}
           />
         </Grid>
-      </RequirePermission>
-    </Container>
+      </Container>
+    </RequirePermission>
   );
 };
