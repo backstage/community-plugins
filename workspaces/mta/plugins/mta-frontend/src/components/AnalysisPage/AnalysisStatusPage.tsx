@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from '@material-ui/core';
 import { useFetchAppTasks } from '../../queries/mta';
 import { Application } from '../../api/api';
