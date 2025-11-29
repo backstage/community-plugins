@@ -23,8 +23,10 @@ import { Box, Chip, makeStyles } from '@material-ui/core';
 
 import { jfrogArtifactoryApiRef } from '../../api';
 import { Edge } from '../../types';
-import { columns, useStyles } from './tableHeading';
+import { getColumns, useStyles } from './tableHeading';
 import { formatByteSize, formatDate } from '../../utils';
+import { useTranslation } from '../../hooks/useTranslation';
+import { jfrogArtifactoryTranslationRef } from '../../translations';
 
 const useLocalStyles = makeStyles({
   chip: {
@@ -41,8 +43,12 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
   const jfrogArtifactoryClient = useApi(jfrogArtifactoryApiRef);
   const classes = useStyles();
   const localClasses = useLocalStyles();
+  const { t } = useTranslation();
   const [edges, setEdges] = useState<Edge[]>([]);
-  const titleprop = `Jfrog Artifactory repository: ${image}`;
+  const titleprop = t(
+    'page.title' as keyof typeof jfrogArtifactoryTranslationRef.T,
+    { image } as Record<string, string>,
+  );
 
   const { loading } = useAsync(async () => {
     const tagsResponse = await jfrogArtifactoryClient.getTags(image, target);
@@ -66,7 +72,7 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
       size: formatByteSize(Number(edge.node.size)),
       manifest_digest: (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Chip label="sha256" className={localClasses.chip} />
+          <Chip label={t('manifest.sha256')} className={localClasses.chip} />
           {shortHash}
         </Box>
       ),
@@ -83,13 +89,19 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
         title={titleprop}
         options={{ paging: true, padding: 'dense' }}
         data={data}
-        columns={columns}
+        columns={getColumns(t)}
         emptyContent={
           <div className={classes.empty}>
-            No data was added yet,&nbsp;
-            <Link to="https://backstage.io/">learn how to add data</Link>.
+            {t('table.emptyContent.message')}&nbsp;
+            <Link to="https://backstage.io/">
+              {t('table.emptyContent.learnMore')}
+            </Link>
           </div>
         }
+        localization={{
+          toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+          pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+        }}
       />
     </div>
   );
