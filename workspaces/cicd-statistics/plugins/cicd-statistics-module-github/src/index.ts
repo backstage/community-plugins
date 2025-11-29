@@ -20,5 +20,5 @@
  * @packageDocumentation
  */
 
-export { CicdStatisticsApiGithub, GITHUB_ACTIONS_ANNOTATION } from './api';
+export { CicdStatisticsApiGithub } from './api';
 export type { GithubClient } from './api';
