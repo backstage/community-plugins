@@ -13,25 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { rootRouteRef } from './router';
-import { announcementsApi, announcementsPage } from './extensions';
-
-
-/**
- * The announcements-next frontend plugin. Contains all the necessary configuration
- * for the announcements-next plugin.
- *
- * @public
- */
-export default createFrontendPlugin({
-  pluginId: 'announcements',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
-  extensions: [
-    announcementsApi,
-    announcementsPage,
-  ],
-});
+export { announcementsApi } from './apis';
+export { announcementsPage } from './pages';

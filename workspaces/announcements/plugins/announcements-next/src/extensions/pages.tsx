@@ -15,7 +15,7 @@
  */
 import { compatWrapper } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
-import { rootRouteRef } from './router';
+import { rootRouteRef } from '../router';
 
 /**
  * @alpha
@@ -25,6 +25,6 @@ export const announcementsPage = PageBlueprint.make({
     path: '/announcements',
     routeRef: rootRouteRef,
     loader: async () =>
-      import('./router').then(m => compatWrapper(<m.AnnouncementsRouter />)),
+      import('../router').then(m => compatWrapper(<m.AnnouncementsRouter />)),
   },
 });
