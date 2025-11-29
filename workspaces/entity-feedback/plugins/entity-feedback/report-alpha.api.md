@@ -13,9 +13,9 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -26,7 +26,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:entity-feedback': ExtensionDefinition<{
+    'api:entity-feedback': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -43,7 +43,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:entity-feedback/ratings-buttons': ExtensionDefinition<{
+    'entity-card:entity-feedback/ratings-buttons': OverridableExtensionDefinition<{
       config: {
         title: string;
         variant: 'starred' | 'like-dislike';
@@ -107,8 +107,8 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -120,7 +120,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:entity-feedback/ratings-table': ExtensionDefinition<{
+    'entity-card:entity-feedback/ratings-table': OverridableExtensionDefinition<{
       config: {
         title: string | undefined;
         allEntities: boolean | undefined;
@@ -170,8 +170,8 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -183,7 +183,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:entity-feedback': ExtensionDefinition<{
+    'entity-content:entity-feedback': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: undefined;
       config: {
