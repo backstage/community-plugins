@@ -28,9 +28,6 @@ export class CicdStatisticsApiGithub implements CicdStatisticsApi {
   getConfiguration(): Promise<Partial<CicdConfiguration>>;
 }
 
-// @public (undocumented)
-export const GITHUB_ACTIONS_ANNOTATION = 'github.com/project-slug';
-
 // @public
 export type GithubClient = {
   octokit: InstanceType<typeof Octokit>;
