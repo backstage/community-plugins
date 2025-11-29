@@ -1,0 +1,52 @@
+diff --git a/rules/no-undeclared-imports.js b/rules/no-undeclared-imports.js
+index 17331d2fced77d13e9eb76631210e26524c83f26..5cf8935c11b07d38e2f548a9307a6ef8a2e69913 100644
+--- a/rules/no-undeclared-imports.js
++++ b/rules/no-undeclared-imports.js
+@@ -22,6 +22,20 @@ const visitImports = require('../lib/visitImports');
+ const minimatch = require('minimatch');
+ const { execFileSync } = require('child_process');
+ 
++/**
++ * Runs the Yarn CLI with the provided arguments in a cross-platform way.
++ *
++ * @param {string[]} args
++ * @param {import('child_process').ExecFileSyncOptions} options
++ */
++function runYarn(args, options) {
++  if (process.platform === 'win32') {
++    execFileSync('cmd', ['/c', 'yarn', ...args], options);
++    return;
++  }
++  execFileSync('yarn', args, options);
++}
++
+ const depFields = /** @type {const} */ ({
+   dep: 'dependencies',
+   dev: 'devDependencies',
+@@ -186,7 +200,7 @@ function addMissingImports(toAdd, packages, localPkg) {
+     // The security implication of this is a bit interesting, as crafted add-import
+     // directives could be used to install malicious packages. However, the same is true
+     // for adding malicious packages to package.json, so there's no significant difference.
+-    execFileSync('yarn', ['add', ...(flag ? [flag] : []), ...namesWithQuery], {
++    runYarn(['add', ...(flag ? [flag] : []), ...namesWithQuery], {
+       cwd: localPkg.dir,
+       stdio: 'inherit',
+     });
+@@ -211,7 +225,7 @@ function removeInlineImports(toInline, localPkg) {
+     }
+   }
+   if (toRemove.size > 0) {
+-    execFileSync('yarn', ['remove', ...toRemove], {
++    runYarn(['remove', ...toRemove], {
+       cwd: localPkg.dir,
+       stdio: 'inherit',
+     });
+@@ -265,7 +279,7 @@ function addForwardedInlineImports(toInline, localPkg) {
+     const namesWithQuery = [...byName.entries()].map(
+       ([name, query]) => `${name}@${query}`,
+     );
+-    execFileSync('yarn', ['add', ...(flag ? [flag] : []), ...namesWithQuery], {
++    runYarn(['add', ...(flag ? [flag] : []), ...namesWithQuery], {
+       cwd: localPkg.dir,
+       stdio: 'inherit',
+     });

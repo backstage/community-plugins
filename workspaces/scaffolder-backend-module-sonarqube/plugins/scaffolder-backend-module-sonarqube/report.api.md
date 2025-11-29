@@ -4,9 +4,53 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
+// Warning: (ae-missing-release-tag) "CREATE_CONFIGURED_SONARQUBE_PROJECT_ID" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
+export const CREATE_CONFIGURED_SONARQUBE_PROJECT_ID =
+  'sonarqube:project:create';
+
+// @public
+export const createConfiguredSonarQubeProjectAction: (
+  config: Config,
+) => TemplateAction<
+  {
+    projectKey: string;
+    projectName: string;
+    organization?: string | undefined;
+    visibility?: 'public' | 'private' | undefined;
+  },
+  {
+    projectUrl: string;
+  },
+  'v2'
+>;
+
+// Warning: (ae-missing-release-tag) "CreateProjectParams" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface CreateProjectParams {
+  // (undocumented)
+  name: string;
+  // (undocumented)
+  organization?: string;
+  // (undocumented)
+  project: string;
+  // (undocumented)
+  visibility?: 'public' | 'private';
+}
+
+// Warning: (ae-missing-release-tag) "createSonarQubeClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function createSonarQubeClient(
+  options: SonarQubeClientOptions,
+): SonarQubeClient;
+
+// @public @deprecated (undocumented)
 export const createSonarQubeProjectAction: () => TemplateAction<
   {
     baseUrl: string;
@@ -24,7 +68,46 @@ export const createSonarQubeProjectAction: () => TemplateAction<
   'v2'
 >;
 
+// Warning: (ae-missing-release-tag) "GenerateTokenParams" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface GenerateTokenParams {
+  // (undocumented)
+  name: string;
+  // (undocumented)
+  organization?: string;
+  // (undocumented)
+  projectKey: string;
+  // (undocumented)
+  type: 'PROJECT_ANALYSIS_TOKEN';
+}
+
 // @public (undocumented)
 const scaffolderModuleSonarqubeActions: BackendFeature;
 export default scaffolderModuleSonarqubeActions;
+
+// Warning: (ae-missing-release-tag) "SonarQubeClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class SonarQubeClient {
+  constructor(options: SonarQubeClientOptions);
+  // (undocumented)
+  createProject(params: CreateProjectParams): Promise<{
+    key: string;
+  }>;
+  // (undocumented)
+  generateToken(params: GenerateTokenParams): Promise<{
+    token: string;
+  }>;
+}
+
+// Warning: (ae-missing-release-tag) "SonarQubeClientOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface SonarQubeClientOptions {
+  // (undocumented)
+  baseUrl: string;
+  // (undocumented)
+  token: string;
+}
 ```

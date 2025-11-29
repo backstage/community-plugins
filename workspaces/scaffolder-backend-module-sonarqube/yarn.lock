@@ -1514,8 +1514,10 @@ __metadata:
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.4"
     "@backstage/cli": "npm:^0.34.4"
+    "@backstage/config": "npm:^1.1.1"
     "@backstage/plugin-scaffolder-node": "npm:^0.12.0"
     "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.3.4"
+    cross-fetch: "npm:^4.1.0"
     yaml: "npm:^2.3.3"
   languageName: unknown
   linkType: soft
@@ -1895,7 +1897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config@npm:^1.3.5":
+"@backstage/config@npm:^1.1.1, @backstage/config@npm:^1.3.5":
   version: 1.3.5
   resolution: "@backstage/config@npm:1.3.5"
   dependencies:
@@ -1931,13 +1933,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/eslint-plugin@npm:^0.1.12":
+"@backstage/eslint-plugin@npm:0.1.12":
   version: 0.1.12
   resolution: "@backstage/eslint-plugin@npm:0.1.12"
   dependencies:
     "@manypkg/get-packages": "npm:^1.1.3"
     minimatch: "npm:^9.0.0"
   checksum: 10/1656bc6e1862c55ee26ab909fd028d922a6097b32d89f39b55a3e7d9b5fff338f5ead4330323be7cb468e45c308359463bbf3c0048d53418f3a82c24a4ea789e
+  languageName: node
+  linkType: hard
+
+"@backstage/eslint-plugin@patch:@backstage/eslint-plugin@npm%3A0.1.12#./.yarn/patches/@backstage-eslint-plugin-npm-0.1.12-dce2230ed2.patch::locator=%40internal%2Fscaffolder-backend-module-sonarqube%40workspace%3A.":
+  version: 0.1.12
+  resolution: "@backstage/eslint-plugin@patch:@backstage/eslint-plugin@npm%3A0.1.12#./.yarn/patches/@backstage-eslint-plugin-npm-0.1.12-dce2230ed2.patch::version=0.1.12&hash=d6aa33&locator=%40internal%2Fscaffolder-backend-module-sonarqube%40workspace%3A."
+  dependencies:
+    "@manypkg/get-packages": "npm:^1.1.3"
+    minimatch: "npm:^9.0.0"
+  checksum: 10/fb5ed012589ae343ad3ce1e1c0d9df6488338024ab1dac27a7a3f1a5081eeae411ad3b2e1ef422c33aef0236101e0ec8399ceb8fa201bb877251f639c7d38fca
   languageName: node
   linkType: hard
 
@@ -8988,12 +9000,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "cross-fetch@npm:4.0.0"
+"cross-fetch@npm:^4.0.0, cross-fetch@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "cross-fetch@npm:4.1.0"
   dependencies:
-    node-fetch: "npm:^2.6.12"
-  checksum: 10/e231a71926644ef122d334a3a4e73d9ba3ba4b480a8a277fb9badc434c1ba905b3d60c8034e18b348361a09afbec40ba9371036801ba2b675a7b84588f9f55d8
+    node-fetch: "npm:^2.7.0"
+  checksum: 10/07624940607b64777d27ec9c668ddb6649e8c59ee0a5a10e63a51ce857e2bbb1294a45854a31c10eccb91b65909a5b199fcb0217339b44156f85900a7384f489
   languageName: node
   linkType: hard
 
@@ -15303,7 +15315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9, node-fetch@npm:^2.7.0":
+"node-fetch@npm:^2.6.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:

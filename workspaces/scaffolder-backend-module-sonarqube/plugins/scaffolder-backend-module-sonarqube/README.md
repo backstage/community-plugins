@@ -4,7 +4,8 @@ This module provides [Backstage](https://backstage.io/) template [actions](https
 
 The following actions are currently supported in this module:
 
-- Create a SonarQube [project](https://docs.sonarqube.org/latest/user-guide/project-page/)
+- `sonarqube:project:create` – Creates projects using shared SonarQube credentials that live in Backstage configuration (**recommended**)
+- `sonarqube:create-project` – Legacy action that allows passing SonarQube credentials through template input (**deprecated**, kept for backward compatibility)
 
 ## Prerequisites
 
@@ -36,24 +37,58 @@ backend.start();
 
 ## Configuration
 
-Add the SonarQube actions to your templates, see the [examples](./examples/templates) directory of this repository for complete usage examples
+Configure the SonarQube integration once in your Backstage backend:
 
-```yaml
-action: sonarqube:create-project
-id: 'create-sonar-project'
-name: 'Create SonarQube Project'
-input:
-  baseUrl: 'https://sonarqube.com'
-  token: '4518a13e-093f-4b66-afac-46a1aece3149'
-  name: 'My SonarQube Project'
-  key: 'my-sonarqube-project'
-  branch: 'main'
-  visibility: 'public'
+```yaml title="app-config.yaml"
+sonarqube:
+  baseUrl: https://sonarqube.company.com
+  token:
+    $env: SONARQUBE_TOKEN # or any other secret source
 ```
 
-## Usage
+Then add the module to your backend and reference the recommended action in your templates:
 
-### Action: sonarqube:create-project
+```yaml
+action: sonarqube:project:create
+id: create-sonar-project
+name: Create SonarQube Project
+input:
+  projectKey: my-sonarqube-project
+  projectName: My SonarQube Project
+  organization: demo-org
+  visibility: private
+```
+
+See the [examples](./examples/templates) directory for complete usage examples.
+
+If you still rely on the legacy `sonarqube:create-project` action you can continue to pass the credentials directly inside the template input (see below), but please plan to migrate to the new action soon.
+
+## Actions
+
+### Action: sonarqube:project:create (recommended)
+
+This action uses the shared SonarQube configuration, so no credentials need to be passed through the template.
+
+#### Input
+
+| Parameter Name |  Type  | Required | Description                                                                           | Example    |
+| -------------- | :----: | :------: | ------------------------------------------------------------------------------------- | ---------- |
+| projectKey     | string |   Yes    | Unique SonarQube project key                                                          | my-service |
+| projectName    | string |   Yes    | Display name for the project                                                          | My Service |
+| organization   | string |    No    | SonarQube organization key (only needed on SonarQube Cloud)                           | demo-org   |
+| visibility     | string |    No    | Whether the project is `public` or `private`. Defaults to the SonarQube server value. | private    |
+
+#### Output
+
+| Name       |  Type  | Description                                  |
+| ---------- | :----: | -------------------------------------------- |
+| projectUrl | string | SonarQube project URL created by this action |
+
+### Action: sonarqube:create-project (legacy / deprecated)
+
+> **Warning**
+>
+> This action is kept for backwards compatibility. Please migrate to `sonarqube:project:create`, which avoids handling credentials in templates.
 
 #### Input
 
@@ -68,13 +103,61 @@ input:
 | username       | string |    No    | SonarQube username                                                                                                       |                         |
 | password       | string |    No    | SonarQube password                                                                                                       |                         |
 
-> **Warning**
->
 > Either the `token` or `username` and `password` input combination are required.
-> If the three of them are provided, the `token` will take precedence
+> If the three of them are provided, the `token` will take precedence.
 
 #### Output
 
 | Name       |  Type  | Description                                  |
 | ---------- | :----: | -------------------------------------------- |
 | projectUrl | string | SonarQube project URL created by this action |
+
+## Programmatic usage
+
+The package also exports a light-weight `SonarQubeClient` that can be used in custom code or other actions:
+
+```ts
+import { createSonarQubeClient } from '@backstage-community/plugin-scaffolder-backend-module-sonarqube';
+
+const sonarQube = createSonarQubeClient({
+  baseUrl: 'https://sonarqube.company.com',
+  token: process.env.SONARQUBE_TOKEN!,
+});
+
+await sonarQube.createProject({
+  project: 'my-service',
+  name: 'My Service',
+});
+```
+
+## Local testing
+
+You can validate the new config-driven action against a local SonarQube instance.
+
+1. Start SonarQube using the provided compose file:
+
+   ```bash
+   cd workspaces/scaffolder-backend-module-sonarqube
+   docker compose -f docker-compose.test.yml up -d
+   ```
+
+   SonarQube will be available at `http://localhost:9000`.
+
+2. Create an admin token in SonarQube (or reuse an existing one) and reference it from `plugins/scaffolder-backend-module-sonarqube/app-config.local.yaml`:
+
+   ```yaml
+   sonarqube:
+     baseUrl: http://localhost:9000
+     token: ${SONARQUBE_TOKEN}
+   ```
+
+   Export `SONARQUBE_TOKEN` in your shell so the config can resolve it.
+
+3. Run the action tests from the plugin directory:
+
+   ```bash
+   cd plugins/scaffolder-backend-module-sonarqube
+   yarn test src/actions/createConfiguredSonarQubeProject.test.ts --runTestsByPath
+   ```
+
+   When the base URL and token are available (either via env vars or `app-config.local.yaml`), the test suite automatically enables the “live” scenario and exercises the action against your running SonarQube container in addition to the mocked unit tests.
