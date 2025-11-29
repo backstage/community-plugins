@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
-import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 
 import {
@@ -26,22 +25,25 @@ import {
   announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
+import {
+  Card,
+  Box,
+  Grid,
+  Button,
+  Text,
+  TextField,
+  Flex,
+  Switch,
+} from '@backstage/ui';
+
+// todo: replace with @backstage/ui when Date option is available
+import MuiTextField from '@mui/material/TextField';
 
 import CategoryInput from './CategoryInput';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -78,19 +80,19 @@ export const AnnouncementForm = ({
     initialData.on_behalf_of || '',
   );
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.id]: event.target.value,
-    });
-  };
+  // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   setForm({
+  //     ...form,
+  //     [event.target.id]: event.target.value,
+  //   });
+  // };
 
-  const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.checked,
-    });
-  };
+  // const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
+  //   setForm({
+  //     ...form,
+  //     [event.target.name]: event.target.checked,
+  //   });
+  // };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -143,46 +145,35 @@ export const AnnouncementForm = ({
   };
 
   return (
-    <InfoCard>
-      <Box p={3}>
-        <Typography variant="h5" gutterBottom>
+    <Card>
+      <Box p="3">
+        <Text variant="title-medium">
           {initialData.title
             ? t('announcementForm.editAnnouncement')
             : t('announcementForm.newAnnouncement')}
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
+        </Text>
+
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
+          <Grid.Root columns="12">
+            <Grid.Item colSpan={{ xs: '12' }}>
               <TextField
-                id="title"
                 label={t('announcementForm.title')}
                 value={form.title}
-                onChange={handleChange}
-                variant="outlined"
-                fullWidth
-                required
+                onChange={value => setForm({ ...form, title: value })}
+                isRequired
               />
-            </Grid>
-
-            <Grid item xs={12}>
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12' }}>
               <TextField
                 id="excerpt"
                 label={t('announcementForm.excerpt')}
                 value={form.excerpt}
-                onChange={handleChange}
-                variant="outlined"
-                fullWidth
-                required
-                multiline
+                onChange={value => setForm({ ...form, excerpt: value })}
+                isRequired
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Paper
-                variant="outlined"
-                sx={{ borderRadius: 2, borderColor: 'divider', p: 2 }}
-              >
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12' }}>
+              <Card>
                 <MDEditor
                   value={form.body}
                   style={{ minHeight: '30rem' }}
@@ -190,30 +181,26 @@ export const AnnouncementForm = ({
                     setForm({ ...form, ...{ body: value || '' } })
                   }
                 />
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
+              </Card>
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
                 initialValue={initialData.category?.title ?? ''}
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+              <TagsInput setForm={setForm} form={form} />
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
               <OnBehalfTeamDropdown
                 selectedTeam={onBehalfOfSelectedTeam}
                 onChange={setOnBehalfOfSelectedTeam}
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TagsInput setForm={setForm} form={form} />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12', md: '6' }}>
+              <MuiTextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}
                 id="start-at-date"
@@ -229,17 +216,14 @@ export const AnnouncementForm = ({
                   })
                 }
               />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                variant="outlined"
+            </Grid.Item>
+            <Grid.Item colSpan={{ xs: '12', md: '6' }}>
+              <MuiTextField
                 label={t('announcementForm.untilDate')}
                 id="until-date"
                 type="date"
                 value={form.until_date}
                 InputLabelProps={{ shrink: true }}
-                fullWidth
                 onChange={e =>
                   setForm({
                     ...form,
@@ -253,51 +237,39 @@ export const AnnouncementForm = ({
                     .toISODate(),
                 }}
               />
-            </Grid>
+            </Grid.Item>
 
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormGroup row style={{ justifyContent: 'flex-end' }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      name="active"
-                      checked={form.active}
-                      onChange={handleChangeActive}
-                      color="primary"
-                    />
-                  }
+            <Grid.Item colSpan={{ xs: '12' }}>
+              <Flex justify="end">
+                <Switch
+                  name="active"
+                  isSelected={form.active}
+                  onChange={value => setForm({ ...form, active: value })}
                   label={t('announcementForm.active')}
                 />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      name="sendNotification"
-                      checked={form.sendNotification}
-                      onChange={handleChangeActive}
-                      color="primary"
-                    />
+                <Switch
+                  name="sendNotification"
+                  isSelected={form.sendNotification}
+                  onChange={value =>
+                    setForm({ ...form, sendNotification: value })
                   }
+                  // todo: add missing translation
                   label="Send Notification"
                 />
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="primary"
                   type="submit"
-                  disabled={loading || !form.body}
-                  size="large"
-                  startIcon={<SaveAltIcon />}
+                  isDisabled={loading || !form.body}
+                  size="medium"
+                  iconStart={<SaveAltIcon />}
                 >
                   {t('announcementForm.submit')}
                 </Button>
-              </FormGroup>
-            </Grid>
-          </Grid>
+              </Flex>
+            </Grid.Item>
+          </Grid.Root>
         </form>
       </Box>
-    </InfoCard>
+    </Card>
   );
 };

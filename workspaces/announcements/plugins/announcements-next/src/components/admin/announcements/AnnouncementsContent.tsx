@@ -43,8 +43,7 @@ import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
-import { Container } from '@backstage/ui';
-import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
+import { Text, Box, ButtonIcon, Container, Grid, Button } from '@backstage/ui';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
@@ -174,64 +173,44 @@ export const AnnouncementsContent = ({
 
   const columns: TableColumn<Announcement>[] = [
     {
-      title: (
-        <Typography>{t('admin.announcementsContent.table.title')}</Typography>
-      ),
+      title: t('admin.announcementsContent.table.title'),
       sorting: true,
       field: 'title',
       render: rowData => rowData.title,
     },
     {
-      title: (
-        <Typography>{t('admin.announcementsContent.table.body')}</Typography>
-      ),
+      title: t('admin.announcementsContent.table.body'),
       sorting: true,
       field: 'body',
       render: rowData => rowData.body,
     },
     {
-      title: (
-        <Typography>
-          {t('admin.announcementsContent.table.publisher')}
-        </Typography>
-      ),
+      title: t('admin.announcementsContent.table.publisher'),
       sorting: true,
       field: 'publisher',
       render: rowData => rowData.publisher,
     },
     {
-      title: (
-        <Typography>
-          {t('admin.announcementsContent.table.onBehalfOf')}
-        </Typography>
-      ),
+      title: t('admin.announcementsContent.table.onBehalfOf'),
       sorting: true,
       field: 'on_behalf_of',
       render: rowData => rowData.on_behalf_of,
     },
 
     {
-      title: (
-        <Typography>
-          {t('admin.announcementsContent.table.category')}
-        </Typography>
-      ),
+      title: t('admin.announcementsContent.table.category'),
       sorting: true,
       field: 'category',
       render: rowData => rowData.category?.title ?? '',
     },
     {
-      title: (
-        <Typography>{t('admin.announcementsContent.table.tags')}</Typography>
-      ),
+      title: t('admin.announcementsContent.table.tags'),
       sorting: true,
       field: 'tags',
       render: rowData => rowData.tags?.map(tag => tag.title).join(', ') || '',
     },
     {
-      title: (
-        <Typography>{t('admin.announcementsContent.table.status')}</Typography>
-      ),
+      title: t('admin.announcementsContent.table.status'),
       sorting: true,
       field: 'active',
       render: rowData =>
@@ -244,11 +223,7 @@ export const AnnouncementsContent = ({
         ),
     },
     {
-      title: (
-        <Typography>
-          {t('admin.announcementsContent.table.created_at')}
-        </Typography>
-      ),
+      title: t('admin.announcementsContent.table.created_at'),
       sorting: true,
       field: 'created_at',
       type: 'date',
@@ -256,11 +231,7 @@ export const AnnouncementsContent = ({
         DateTime.fromISO(rowData.created_at).toFormat('M/d/yyyy'),
     },
     {
-      title: (
-        <Typography>
-          {t('admin.announcementsContent.table.start_at')}
-        </Typography>
-      ),
+      title: t('admin.announcementsContent.table.start_at'),
       sorting: true,
       field: 'start_at',
       type: 'date',
@@ -268,11 +239,7 @@ export const AnnouncementsContent = ({
         DateTime.fromISO(rowData.start_at).toFormat('M/d/yyyy'),
     },
     {
-      title: (
-        <Typography>
-          {t('admin.announcementsContent.table.until_date')}
-        </Typography>
-      ),
+      title: t('admin.announcementsContent.table.until_date'),
       sorting: true,
       field: 'until_date',
       type: 'date',
@@ -282,37 +249,34 @@ export const AnnouncementsContent = ({
           : '-',
     },
     {
-      title: (
-        <Typography>{t('admin.announcementsContent.table.actions')}</Typography>
-      ),
+      title: t('admin.announcementsContent.table.actions'),
       render: rowData => {
         return (
-          <Box display="flex" flexDirection="row">
-            <IconButton
+          <Box display="flex">
+            <ButtonIcon
               aria-label="preview"
+              icon={<PreviewIcon fontSize="small" data-testid="preview" />}
+              size="small"
+              variant="tertiary"
               onClick={() => onTitleClick(rowData)}
-              size="small"
-            >
-              <PreviewIcon fontSize="small" data-testid="preview" />
-            </IconButton>
-
-            <IconButton
+            />
+            <ButtonIcon
               aria-label="edit"
-              disabled={loadingUpdatePermission || !canUpdateAnnouncement}
+              icon={<EditIcon fontSize="small" data-testid="edit-icon" />}
+              size="small"
+              variant="tertiary"
+              isDisabled={loadingUpdatePermission || !canUpdateAnnouncement}
               onClick={() => onEdit(rowData)}
-              size="small"
-            >
-              <EditIcon fontSize="small" data-testid="edit-icon" />
-            </IconButton>
+            />
 
-            <IconButton
+            <ButtonIcon
               aria-label="delete"
-              disabled={loadingDeletePermission || !canDeleteAnnouncement}
-              onClick={() => openDeleteDialog(rowData)}
+              icon={<DeleteIcon fontSize="small" data-testid="delete-icon" />}
               size="small"
-            >
-              <DeleteIcon fontSize="small" data-testid="delete-icon" />
-            </IconButton>
+              variant="tertiary"
+              isDisabled={loadingDeletePermission || !canDeleteAnnouncement}
+              onClick={() => openDeleteDialog(rowData)}
+            />
           </Box>
         );
       },
@@ -322,38 +286,38 @@ export const AnnouncementsContent = ({
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
-        <Grid container>
-          <Grid item xs={12}>
+        <Grid.Root columns="1">
+          <Grid.Item>
             <Button
-              disabled={loadingCreatePermission || !canCreateAnnouncement}
-              variant="contained"
+              isDisabled={loadingCreatePermission || !canCreateAnnouncement}
+              variant="primary"
               onClick={() => onCreateButtonClick()}
             >
               {showCreateAnnouncementForm
                 ? t('admin.announcementsContent.cancelButton')
                 : t('admin.announcementsContent.createButton')}
             </Button>
-          </Grid>
+          </Grid.Item>
 
           {showCreateAnnouncementForm && (
-            <Grid item xs={12}>
+            <Grid.Item>
               <AnnouncementForm
                 initialData={{ active: !defaultInactive } as Announcement}
                 onSubmit={onSubmit}
               />
-            </Grid>
+            </Grid.Item>
           )}
 
-          <Grid item xs={12}>
+          <Grid.Item>
             <Table
               title={t('admin.announcementsContent.announcements')}
               options={{ pageSize: 20, search: true }}
               columns={columns}
               data={announcements?.results ?? []}
               emptyContent={
-                <Typography style={{ padding: 2, textAlign: 'center' }}>
+                <Text style={{ padding: 2, textAlign: 'center' }}>
                   {t('admin.announcementsContent.noAnnouncementsFound')}
-                </Typography>
+                </Text>
               }
             />
 
@@ -363,8 +327,8 @@ export const AnnouncementsContent = ({
               onCancel={onCancelDelete}
               onConfirm={onConfirmDelete}
             />
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Container>
     </RequirePermission>
   );
