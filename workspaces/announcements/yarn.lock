@@ -1662,6 +1662,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-announcements-next@workspace:^, @backstage-community/plugin-announcements-next@workspace:plugins/announcements-next":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-announcements-next@workspace:plugins/announcements-next"
+  dependencies:
+    "@backstage/cli": "npm:^0.34.5"
+    "@backstage/core-app-api": "npm:^1.19.2"
+    "@backstage/core-plugin-api": "npm:^1.12.0"
+    "@backstage/dev-utils": "npm:^1.1.17"
+    "@backstage/test-utils": "npm:^1.7.13"
+    "@backstage/theme": "npm:^0.7.0"
+    "@backstage/ui": "npm:^0.9.1"
+    "@testing-library/jest-dom": "npm:^6.0.0"
+    "@testing-library/react": "npm:^14.0.0"
+    "@testing-library/user-event": "npm:^14.0.0"
+    msw: "npm:^1.0.0"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-use: "npm:^17.2.4"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-announcements-node@workspace:^, @backstage-community/plugin-announcements-node@workspace:plugins/announcements-node":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-announcements-node@workspace:plugins/announcements-node"
@@ -3864,6 +3886,26 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/3f71f6115bcee79b2546944d564b9f9e6b3fac69b82176e2d8662f21625c240fc40d603a42c789dca21983a248a7a0a44d2ed1d717ddde26a32608e78018e5cc
+  languageName: node
+  linkType: hard
+
+"@backstage/ui@npm:^0.9.1":
+  version: 0.9.1
+  resolution: "@backstage/ui@npm:0.9.1"
+  dependencies:
+    "@remixicon/react": "npm:^4.6.0"
+    "@tanstack/react-table": "npm:^8.21.3"
+    clsx: "npm:^2.1.1"
+    react-aria-components: "npm:^1.13.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/a600bf5df2955f5cf279a792a44196df4737f190a88b7d77fc88940a175ae5dd7ef6f388a4a075428e1da63e2db87711c55e70860f95037e429de85b88e667e5
   languageName: node
   linkType: hard
 
@@ -13752,6 +13794,7 @@ __metadata:
   resolution: "app-next@workspace:packages/app-next"
   dependencies:
     "@backstage-community/plugin-announcements": "workspace:^"
+    "@backstage-community/plugin-announcements-next": "workspace:^"
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/core-compat-api": "npm:^0.5.4"
     "@backstage/core-components": "npm:^0.18.3"
@@ -25037,7 +25080,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:^1.3.2":
+"msw@npm:^1.0.0, msw@npm:^1.3.2":
   version: 1.3.5
   resolution: "msw@npm:1.3.5"
   dependencies:

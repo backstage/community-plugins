@@ -22,12 +22,13 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { homeModule } from './modules/home';
 import SignalsDisplay from '@backstage/plugin-signals/alpha';
-import announcementsPlugin from '@backstage-community/plugin-announcements/alpha';
+// import announcementsPlugin from '@backstage-community/plugin-announcements/alpha';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import notificationsPlugin from '@backstage/plugin-notifications/alpha';
 import searchApi from '@backstage/plugin-search/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import visualizerPlugin from '@backstage/plugin-app-visualizer';
+import { announcementsNextPlugin } from '@backstage-community/plugin-announcements-next';
 
 const signInPage = SignInPageBlueprint.make({
   params: {
@@ -50,6 +51,7 @@ export default createApp({
       pluginId: 'app',
       extensions: [signInPage],
     }),
-    announcementsPlugin,
+    // announcementsPlugin,
+    announcementsNextPlugin,
   ],
 });

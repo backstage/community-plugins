@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements": "workspace:^",
+    "@backstage-community/plugin-announcements-next": "workspace:^",
     "@backstage/cli": "^0.34.5",
     "@backstage/core-compat-api": "^0.5.4",
     "@backstage/core-components": "^0.18.3",
