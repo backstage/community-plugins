@@ -43,13 +43,13 @@ import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
+import { Container } from '@backstage/ui';
 import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
 import { DateTime } from 'luxon';
 import { AnnouncementForm } from './AnnouncementForm';
-import { Container } from '@backstage/ui';
 import {
   DeleteConfirmationDialog,
   useDeleteConfirmationDialogState,

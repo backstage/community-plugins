@@ -15,12 +15,6 @@
  */
 import { useState } from 'react';
 import {
-  ErrorPanel,
-  Progress,
-  Table,
-  TableColumn,
-} from '@backstage/core-components';
-import {
   CreateTagRequest,
   announcementsApiRef,
   useAnnouncementsTranslation,
@@ -37,10 +31,16 @@ import {
   usePermission,
 } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
+import { Container } from '@backstage/ui';
+import {
+  ErrorPanel,
+  Progress,
+  Table,
+  TableColumn,
+} from '@backstage/core-components';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TagsForm } from './TagsForm';
-import { Container } from '@backstage/ui';
 import {
   DeleteConfirmationDialog,
   useDeleteConfirmationDialogState,

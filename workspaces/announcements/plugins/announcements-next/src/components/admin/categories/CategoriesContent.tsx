@@ -41,8 +41,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import { CategoriesForm } from './CategoriesForm';
 import { Container } from '@backstage/ui';
-import { DeleteConfirmationDialog } from '../shared';
-import { useDeleteConfirmationDialogState } from '../shared/DeleteConfirmationDialog';
+import {
+  DeleteConfirmationDialog,
+  useDeleteConfirmationDialogState,
+} from '../shared';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
