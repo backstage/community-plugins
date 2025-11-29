@@ -21,10 +21,7 @@ import {
 import { CatalogService } from '@backstage/plugin-catalog-node';
 
 import { OwnedEntitiesService } from '@backstage-community/plugin-manage-node';
-import {
-  BackstageCredentials,
-  BackstageUserPrincipal,
-} from '@backstage/backend-plugin-api';
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
 
 export class OwnedEntitiesImpl implements OwnedEntitiesService {
   constructor(private readonly catalog: CatalogService) {}
@@ -32,7 +29,7 @@ export class OwnedEntitiesImpl implements OwnedEntitiesService {
   async getOwnedEntitiesByOwnerEntities(
     ownerEntities: readonly Entity[],
     entityKind: readonly string[],
-    credentials: BackstageCredentials<BackstageUserPrincipal>,
+    credentials: BackstageCredentials,
   ): Promise<Entity[]> {
     const lcKinds = new Set(
       entityKind.map(kind => kind.toLocaleLowerCase('en-US')),

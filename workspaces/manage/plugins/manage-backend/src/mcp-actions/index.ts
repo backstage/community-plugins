@@ -14,14 +14,4 @@
  * limitations under the License.
  */
 
-import { BackstageCredentials } from '@backstage/backend-plugin-api';
-
-import { OwnersAndOwnedEntities } from '@backstage-community/plugin-manage-common';
-
-export interface ManageService {
-  getOwnersAndOwnedEntities(
-    ownershipEntityRefs: string[],
-    kinds: readonly string[],
-    credentials: BackstageCredentials,
-  ): Promise<OwnersAndOwnedEntities>;
-}
+export { registerMcpActions } from './actions';
