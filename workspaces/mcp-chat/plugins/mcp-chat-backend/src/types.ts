@@ -646,3 +646,31 @@ export interface ResponsesApiResponse {
   /** Truncation settings */
   truncation?: unknown;
 }
+
+// =============================================================================
+// Conversation Storage Types
+// =============================================================================
+
+/**
+ * A stored conversation in the database
+ */
+export interface ConversationRecord {
+  id: string;
+  userId: string;
+  messages: ChatMessage[];
+  toolsUsed?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Database row representation of a conversation
+ */
+export interface ConversationRow {
+  id: string;
+  user_id: string;
+  messages: string; // JSON string
+  tools_used: string | null; // JSON string
+  created_at: Date;
+  updated_at: Date;
+}

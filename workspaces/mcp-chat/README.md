@@ -14,6 +14,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 - 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, SSE, Streamable HTTP)
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
+- 📝 **Conversation History**: Automatically saves and retrieves past conversations (authenticated users only)
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
 
 ## Supported AI Providers
@@ -204,6 +205,11 @@ mcpChat:
       description: 'Query the Backstage software catalog'
       prompt: 'Describe the "example-app" microservice in our Backstage catalog'
       category: Catalog
+
+  # Conversation history settings (optional)
+  conversationHistory:
+    displayLimit: 10 # Number of recent conversations to show in UI (default: 10)
+    # Note: ALL conversations are stored in the database, this only controls what's displayed
 ```
 
 For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, SSE, custom scripts, and arguments), see [SERVER_CONFIGURATION](docs/SERVER_CONFIGURATION.md).
@@ -244,6 +250,47 @@ export KUBECONFIG="/path/to/your/kubeconfig.yaml"
 | "Search for the latest news about Kubernetes security"             | Brave Search        | Find relevant articles and news |
 | "Show me all pods in the default namespace"                        | Kubernetes          | Query cluster resources         |
 | "Describe the "example-app" microservice in our Backstage catalog" | Backstage           | Access catalog entity           |
+
+## Conversation History
+
+### Overview
+
+The MCP Chat plugin automatically saves conversation history for authenticated users. This allows users to:
+
+- 📜 **View past conversations** in the left sidebar
+- 🔄 **Resume previous chats** by clicking on them
+- 🗑️ **Start fresh** with the "New Chat" button
+
+### Guest User Behavior
+
+**Guest users** (users with entity ref `user:development/guest`) have a **stateless experience**:
+
+- ✅ Can use all chat features and MCP tools
+- ❌ Conversations are **not saved** to the database
+- ❌ No conversation history displayed in the sidebar
+- ⚡ **Optimized performance** - no database queries for guests
+
+This design ensures:
+
+- Guest users have instant access without database overhead
+- Production users get full conversation history tracking
+- No unnecessary database storage for temporary/demo users
+
+### Configuration
+
+Control how many conversations are displayed in the UI:
+
+```yaml
+mcpChat:
+  conversationHistory:
+    displayLimit: 10 # Show last 10 conversations (default)
+```
+
+**Note**: All conversations are stored in the database regardless of this limit. This setting only affects what's displayed in the UI.
+
+### Database Storage
+
+Conversations are stored using Backstage's configured database (SQLite, PostgreSQL, MySQL, etc.). For information on configuring your database, see the [Backstage database configuration documentation](https://backstage.io/docs/tutorials/configuring-plugin-databases/#configuration).
 
 ## Development
 
@@ -331,12 +378,16 @@ Use these endpoints for debugging:
 
 ### Backend Endpoints
 
-| Endpoint                        | Method | Description                           |
-| ------------------------------- | ------ | ------------------------------------- |
-| `/api/mcp-chat/chat`            | POST   | Send chat messages                    |
-| `/api/mcp-chat/provider/status` | GET    | Get status of connected AI provider   |
-| `/api/mcp-chat/mcp/status`      | GET    | Get status of connected MCP servers   |
-| `/api/mcp-chat/tools`           | GET    | List available MCP tools from servers |
+| Endpoint                          | Method | Description                                    |
+| --------------------------------- | ------ | ---------------------------------------------- |
+| `/api/mcp-chat/chat`              | POST   | Send chat messages and receive AI responses    |
+| `/api/mcp-chat/conversations`     | GET    | Get conversation history (authenticated users) |
+| `/api/mcp-chat/conversations/:id` | GET    | Get a specific conversation by ID              |
+| `/api/mcp-chat/provider/status`   | GET    | Get status of connected AI provider            |
+| `/api/mcp-chat/mcp/status`        | GET    | Get status of connected MCP servers            |
+| `/api/mcp-chat/tools`             | GET    | List available MCP tools from servers          |
+
+**Note**: Guest users (`user:development/guest`) will receive empty responses for conversation endpoints.
 
 ## Contributing
 
