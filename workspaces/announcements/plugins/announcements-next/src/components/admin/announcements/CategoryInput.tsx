@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 import { SetStateAction } from 'react';
-import TextField from '@mui/material/TextField';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import {
   useAnnouncementsTranslation,
   useCategories,
 } from '@backstage-community/plugin-announcements-react';
+
+import TextField from '@mui/material/TextField';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 
 type CategoryInputProps = {

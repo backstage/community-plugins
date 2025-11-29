@@ -26,6 +26,7 @@ export const announcementsTranslationRef = createTranslationRef({
       submit: 'Submit',
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
+      sendNotification: 'Send Notification',
       startAt: 'Announcement start date',
       untilDate: 'Announcement end date',
       onBehalfOf: 'On behalf of',

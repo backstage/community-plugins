@@ -159,7 +159,7 @@ export const AnnouncementForm = ({
               <TextField
                 label={t('announcementForm.title')}
                 value={form.title}
-                onChange={value => setForm({ ...form, title: value })}
+                onChange={val => setForm({ ...form, title: val })}
                 isRequired
               />
             </Grid.Item>
@@ -168,20 +168,16 @@ export const AnnouncementForm = ({
                 id="excerpt"
                 label={t('announcementForm.excerpt')}
                 value={form.excerpt}
-                onChange={value => setForm({ ...form, excerpt: value })}
+                onChange={val => setForm({ ...form, excerpt: val })}
                 isRequired
               />
             </Grid.Item>
             <Grid.Item colSpan={{ xs: '12' }}>
-              <Card>
-                <MDEditor
-                  value={form.body}
-                  style={{ minHeight: '30rem' }}
-                  onChange={value =>
-                    setForm({ ...form, ...{ body: value || '' } })
-                  }
-                />
-              </Card>
+              <MDEditor
+                value={form.body}
+                style={{ minHeight: '30rem' }}
+                onChange={val => setForm({ ...form, ...{ body: val || '' } })}
+              />
             </Grid.Item>
             <Grid.Item colSpan={{ xs: '12', md: '4' }}>
               <CategoryInput
@@ -199,7 +195,7 @@ export const AnnouncementForm = ({
                 onChange={setOnBehalfOfSelectedTeam}
               />
             </Grid.Item>
-            <Grid.Item colSpan={{ xs: '12', md: '6' }}>
+            <Grid.Item colSpan={{ xs: '12', md: '3' }}>
               <MuiTextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}
@@ -217,13 +213,14 @@ export const AnnouncementForm = ({
                 }
               />
             </Grid.Item>
-            <Grid.Item colSpan={{ xs: '12', md: '6' }}>
+            <Grid.Item colSpan={{ xs: '12', md: '3' }}>
               <MuiTextField
                 label={t('announcementForm.untilDate')}
                 id="until-date"
                 type="date"
                 value={form.until_date}
                 InputLabelProps={{ shrink: true }}
+                fullWidth
                 onChange={e =>
                   setForm({
                     ...form,
@@ -239,22 +236,19 @@ export const AnnouncementForm = ({
               />
             </Grid.Item>
 
-            <Grid.Item colSpan={{ xs: '12' }}>
+            <Grid.Item colSpan={{ xs: '12', md: '6' }}>
               <Flex justify="end">
                 <Switch
                   name="active"
                   isSelected={form.active}
-                  onChange={value => setForm({ ...form, active: value })}
+                  onChange={val => setForm({ ...form, active: val })}
                   label={t('announcementForm.active')}
                 />
                 <Switch
                   name="sendNotification"
                   isSelected={form.sendNotification}
-                  onChange={value =>
-                    setForm({ ...form, sendNotification: value })
-                  }
-                  // todo: add missing translation
-                  label="Send Notification"
+                  onChange={val => setForm({ ...form, sendNotification: val })}
+                  label={t('announcementForm.sendNotification')}
                 />
                 <Button
                   variant="primary"

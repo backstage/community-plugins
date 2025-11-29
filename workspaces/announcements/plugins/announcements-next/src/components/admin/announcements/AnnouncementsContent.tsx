@@ -83,7 +83,7 @@ export const AnnouncementsContent = ({
     });
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
-    useState(false);
+    useState(true);
 
   const {
     loading,
