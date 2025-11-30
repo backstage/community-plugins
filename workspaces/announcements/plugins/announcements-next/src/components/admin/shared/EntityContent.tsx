@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
-import {
-  ErrorPanel,
-  Progress,
-  Table,
-  TableColumn,
-} from '@backstage/core-components';
+import { useState, useMemo } from 'react';
+import { ErrorPanel, Progress } from '@backstage/core-components';
 import {
   announcementsApiRef,
   useAnnouncementsTranslation,
@@ -30,7 +25,24 @@ import { useApi, alertApiRef, AlertApi } from '@backstage/core-plugin-api';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Container, Grid, Button, Text, Flex, ButtonIcon } from '@backstage/ui';
+import {
+  Container,
+  Grid,
+  Button,
+  Text,
+  Flex,
+  ButtonIcon,
+  Table,
+  TableHeader,
+  Column,
+  TableBody,
+  Row,
+  Cell,
+  TablePagination,
+  useTable,
+  Box,
+} from '@backstage/ui';
+import type { SortDescriptor } from 'react-aria-components';
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog';
 import { useDeleteConfirmationDialogState } from './useDeleteConfirmationDialogState';
 import { useAnnouncementsPermissions } from './useAnnouncementsPermissions';
@@ -108,6 +120,9 @@ export function EntityContent<
   } = config;
 
   const [showForm, setShowForm] = useState(false);
+  const [sortDescriptor, setSortDescriptor] = useState<
+    SortDescriptor | undefined
+  >(undefined);
   const { items, loading, error, retry: refresh } = useEntityHook();
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
@@ -172,44 +187,56 @@ export function EntityContent<
     refresh();
   };
 
+  // Sort data
+  const sortedData = useMemo(() => {
+    let data = items ?? [];
+
+    if (sortDescriptor?.column) {
+      data = [...data].sort((a, b) => {
+        let aValue: any;
+        let bValue: any;
+
+        switch (sortDescriptor.column) {
+          case 'title':
+            aValue = a.title;
+            bValue = b.title;
+            break;
+          case 'slug':
+            aValue = a.slug;
+            bValue = b.slug;
+            break;
+          default:
+            return 0;
+        }
+
+        if (aValue < bValue) {
+          return sortDescriptor.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortDescriptor.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return data;
+  }, [items, sortDescriptor]);
+
+  // Use table hook for pagination
+  const { data: paginatedData, paginationProps } = useTable<T>({
+    data: sortedData,
+    pagination: {
+      defaultPageSize: 20,
+      showPageSizeOptions: true,
+    },
+  });
+
   if (loading) {
     return <Progress />;
   }
   if (error) {
     return <ErrorPanel error={error} />;
   }
-
-  const columns: TableColumn<T>[] = [
-    {
-      title: <Text>{t(translationKeys.table.title)}</Text>,
-      sorting: true,
-      field: 'title',
-      render: rowData => rowData.title,
-    },
-    {
-      title: <Text>{t(translationKeys.table.slug)}</Text>,
-      sorting: true,
-      field: 'slug',
-      render: rowData => rowData.slug,
-    },
-    {
-      title: <Text>{t(translationKeys.table.actions)}</Text>,
-      render: rowData => {
-        return (
-          <ButtonIcon
-            aria-label="delete"
-            isDisabled={
-              permissions.delete.loading || !permissions.delete.allowed
-            }
-            onClick={() => openDeleteDialog(rowData)}
-            icon={<DeleteIcon fontSize="small" data-testid="delete-icon" />}
-            size="small"
-            variant="tertiary"
-          />
-        );
-      },
-    },
-  ];
 
   return (
     <RequirePermission permission={announcementCreatePermission}>
@@ -242,16 +269,53 @@ export function EntityContent<
 
           <Grid.Item colSpan="12">
             <Table
-              title={tableTitle}
-              options={{ pageSize: 20, search: true }}
-              columns={columns}
-              data={items ?? []}
-              emptyContent={
-                <Text style={{ padding: 2, textAlign: 'center' }}>
-                  {t(translationKeys.noItemsFound)}
-                </Text>
-              }
-            />
+              onSortChange={setSortDescriptor}
+              sortDescriptor={sortDescriptor}
+              aria-label={tableTitle}
+            >
+              <TableHeader>
+                <Column isRowHeader allowsSorting>
+                  {t(translationKeys.table.title)}
+                </Column>
+                <Column allowsSorting>{t(translationKeys.table.slug)}</Column>
+                <Column>{t(translationKeys.table.actions)}</Column>
+              </TableHeader>
+
+              <TableBody
+                renderEmptyState={() => (
+                  <Box p="4">
+                    <Text>{t(translationKeys.noItemsFound)}</Text>
+                  </Box>
+                )}
+              >
+                {paginatedData?.map(item => (
+                  <Row key={item.slug} id={item.slug}>
+                    <Cell title={item.title} />
+                    <Cell title={item.slug} />
+                    <Cell title={t(translationKeys.table.actions)}>
+                      <ButtonIcon
+                        aria-label="delete"
+                        isDisabled={
+                          permissions.delete.loading ||
+                          !permissions.delete.allowed
+                        }
+                        onClick={() => openDeleteDialog(item)}
+                        icon={
+                          <DeleteIcon
+                            fontSize="small"
+                            data-testid="delete-icon"
+                          />
+                        }
+                        size="small"
+                        variant="tertiary"
+                      />
+                    </Cell>
+                  </Row>
+                ))}
+              </TableBody>
+            </Table>
+
+            {sortedData.length > 0 && <TablePagination {...paginationProps} />}
           </Grid.Item>
 
           <DeleteConfirmationDialog
