@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Table,
-  TableColumn,
-  StatusOK,
-  StatusPending,
-} from '@backstage/core-components';
+import { useState, useMemo } from 'react';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
@@ -30,7 +25,22 @@ import {
   announcementUpdatePermission,
 } from '@backstage-community/plugin-announcements-common';
 import { useNavigate } from 'react-router-dom';
-import { Text, Box, ButtonIcon } from '@backstage/ui';
+import {
+  Text,
+  Box,
+  ButtonIcon,
+  Table,
+  TableHeader,
+  Column,
+  TableBody,
+  Row,
+  Cell,
+  TablePagination,
+  useTable,
+  SearchField,
+  ColumnProps,
+} from '@backstage/ui';
+import type { SortDescriptor } from 'react-aria-components';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
@@ -43,15 +53,21 @@ import { usePermission } from '@backstage/plugin-permission-react';
 
 type AnnouncementsTableProps = {
   announcements: Announcement[];
+  searchText: string;
 };
 
 export const AnnouncementsTable = ({
   announcements,
+  searchText,
 }: AnnouncementsTableProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const navigate = useNavigate();
   const { t } = useAnnouncementsTranslation();
+
+  const [sortDescriptor, setSortDescriptor] = useState<
+    SortDescriptor | undefined
+  >(undefined);
 
   const {
     isOpen: isDeleteDialogOpen,
@@ -96,131 +112,214 @@ export const AnnouncementsTable = ({
     // retry();
   };
 
-  const columns: TableColumn<Announcement>[] = [
-    {
-      title: t('admin.announcementsContent.table.title'),
-      sorting: true,
-      field: 'title',
-      render: rowData => rowData.title,
-    },
-    {
-      title: t('admin.announcementsContent.table.body'),
-      sorting: true,
-      field: 'body',
-      render: rowData => rowData.body,
-    },
-    {
-      title: t('admin.announcementsContent.table.publisher'),
-      sorting: true,
-      field: 'publisher',
-      render: rowData => rowData.publisher,
-    },
-    {
-      title: t('admin.announcementsContent.table.onBehalfOf'),
-      sorting: true,
-      field: 'on_behalf_of',
-      render: rowData => rowData.on_behalf_of,
-    },
+  // Filter and sort data
+  const filteredAndSortedData = useMemo(() => {
+    let data = announcements ?? [];
 
-    {
-      title: t('admin.announcementsContent.table.category'),
-      sorting: true,
-      field: 'category',
-      render: rowData => rowData.category?.title ?? '',
-    },
-    {
-      title: t('admin.announcementsContent.table.tags'),
-      sorting: true,
-      field: 'tags',
-      render: rowData => rowData.tags?.map(tag => tag.title).join(', ') || '',
-    },
-    {
-      title: t('admin.announcementsContent.table.status'),
-      sorting: true,
-      field: 'active',
-      render: rowData =>
-        rowData.active ? (
-          <StatusOK>{t('admin.announcementsContent.table.active')}</StatusOK>
-        ) : (
-          <StatusPending>
-            {t('admin.announcementsContent.table.inactive')}
-          </StatusPending>
-        ),
-    },
-    {
-      title: t('admin.announcementsContent.table.created_at'),
-      sorting: true,
-      field: 'created_at',
-      type: 'date',
-      render: rowData =>
-        DateTime.fromISO(rowData.created_at).toFormat('M/d/yyyy'),
-    },
-    {
-      title: t('admin.announcementsContent.table.start_at'),
-      sorting: true,
-      field: 'start_at',
-      type: 'date',
-      render: rowData =>
-        DateTime.fromISO(rowData.start_at).toFormat('M/d/yyyy'),
-    },
-    {
-      title: t('admin.announcementsContent.table.until_date'),
-      sorting: true,
-      field: 'until_date',
-      type: 'date',
-      render: rowData =>
-        rowData?.until_date
-          ? DateTime.fromISO(rowData.until_date).toFormat('M/d/yyyy')
-          : '-',
-    },
-    {
-      title: t('admin.announcementsContent.table.actions'),
-      render: rowData => {
-        return (
-          <Box display="flex">
-            <ButtonIcon
-              aria-label="preview"
-              icon={<PreviewIcon fontSize="small" data-testid="preview" />}
-              size="small"
-              variant="tertiary"
-              onClick={() => onTitleClick(rowData)}
-            />
-            <ButtonIcon
-              aria-label="edit"
-              icon={<EditIcon fontSize="small" data-testid="edit-icon" />}
-              size="small"
-              variant="tertiary"
-              isDisabled={loadingUpdatePermission || !canUpdateAnnouncement}
-              onClick={() => onEdit(rowData)}
-            />
+    // Apply search filter
+    if (searchText) {
+      const searchLower = searchText.toLowerCase();
+      data = data.filter(announcement => {
+        const searchableFields = [
+          announcement.title,
+          announcement.body,
+          announcement.publisher,
+          announcement.on_behalf_of,
+          announcement.category?.title,
+          announcement.tags?.map(tag => tag.title).join(' '),
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
 
-            <ButtonIcon
-              aria-label="delete"
-              icon={<DeleteIcon fontSize="small" data-testid="delete-icon" />}
-              size="small"
-              variant="tertiary"
-              isDisabled={loadingDeletePermission || !canDeleteAnnouncement}
-              onClick={() => openDeleteDialog(rowData)}
-            />
-          </Box>
-        );
-      },
+        return searchableFields.includes(searchLower);
+      });
+    }
+
+    // Apply sorting
+    if (sortDescriptor?.column) {
+      data = [...data].sort((a, b) => {
+        let aValue: any;
+        let bValue: any;
+
+        switch (sortDescriptor.column) {
+          case 'title':
+            aValue = a.title;
+            bValue = b.title;
+            break;
+          case 'body':
+            aValue = a.body;
+            bValue = b.body;
+            break;
+          case 'publisher':
+            aValue = a.publisher;
+            bValue = b.publisher;
+            break;
+          case 'on_behalf_of':
+            aValue = a.on_behalf_of;
+            bValue = b.on_behalf_of;
+            break;
+          case 'category':
+            aValue = a.category?.title ?? '';
+            bValue = b.category?.title ?? '';
+            break;
+          case 'tags':
+            aValue = a.tags?.map(tag => tag.title).join(', ') || '';
+            bValue = b.tags?.map(tag => tag.title).join(', ') || '';
+            break;
+          case 'active':
+            aValue = a.active ? 1 : 0;
+            bValue = b.active ? 1 : 0;
+            break;
+          case 'created_at':
+            aValue = new Date(a.created_at).getTime();
+            bValue = new Date(b.created_at).getTime();
+            break;
+          case 'start_at':
+            aValue = new Date(a.start_at).getTime();
+            bValue = new Date(b.start_at).getTime();
+            break;
+          case 'until_date':
+            aValue = a.until_date
+              ? new Date(a.until_date).getTime()
+              : Number.MAX_SAFE_INTEGER;
+            bValue = b.until_date
+              ? new Date(b.until_date).getTime()
+              : Number.MAX_SAFE_INTEGER;
+            break;
+          default:
+            return 0;
+        }
+
+        if (aValue < bValue) {
+          return sortDescriptor.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortDescriptor.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return data;
+  }, [announcements, searchText, sortDescriptor]);
+
+  // Use table hook for pagination
+  const { data: paginatedData, paginationProps } = useTable<Announcement>({
+    data: filteredAndSortedData,
+    pagination: {
+      defaultPageSize: 5,
+      showPageSizeOptions: true,
     },
-  ];
+  });
 
   return (
     <>
       <Table
-        title={t('admin.announcementsContent.announcements')}
-        options={{ pageSize: 5, search: true }}
-        columns={columns}
-        data={announcements ?? []}
-        emptyContent={
-          <Text style={{ padding: 2, textAlign: 'center' }}>
-            {t('admin.announcementsContent.noAnnouncementsFound')}
-          </Text>
-        }
-      />
+        onSortChange={setSortDescriptor}
+        sortDescriptor={sortDescriptor}
+        aria-label={t('admin.announcementsContent.announcements')}
+      >
+        <TableHeader>
+          <Column isRowHeader>
+            {t('admin.announcementsContent.table.title')}
+          </Column>
+          <Column>{t('admin.announcementsContent.table.body')}</Column>
+          <Column>{t('admin.announcementsContent.table.publisher')}</Column>
+          <Column>{t('admin.announcementsContent.table.onBehalfOf')}</Column>
+          <Column>{t('admin.announcementsContent.table.category')}</Column>
+          <Column>{t('admin.announcementsContent.table.tags')}</Column>
+          <Column>{t('admin.announcementsContent.table.status')}</Column>
+          <Column>{t('admin.announcementsContent.table.created_at')}</Column>
+          <Column>{t('admin.announcementsContent.table.start_at')}</Column>
+          <Column>{t('admin.announcementsContent.table.until_date')}</Column>
+          <Column>{t('admin.announcementsContent.table.actions')}</Column>
+        </TableHeader>
+
+        <TableBody
+          renderEmptyState={() => (
+            <Box p="4">
+              <Text>
+                {t('admin.announcementsContent.noAnnouncementsFound')}
+              </Text>
+            </Box>
+          )}
+        >
+          {paginatedData?.map(announcement => (
+            <Row key={announcement.id} id={announcement.id}>
+              <Cell title={announcement.title} />
+              <Cell title={announcement.body} />
+              <Cell title={announcement.publisher} />
+              <Cell title={announcement.on_behalf_of ?? ''} />
+              <Cell title={announcement.category?.title ?? ''} />
+              <Cell
+                title={
+                  announcement.tags?.map(tag => tag.title).join(', ') ?? ''
+                }
+              />
+              <Cell
+                title={
+                  announcement.active
+                    ? t('admin.announcementsContent.table.active')
+                    : t('admin.announcementsContent.table.inactive')
+                }
+              />
+              <Cell
+                title={DateTime.fromISO(announcement.created_at).toFormat(
+                  'M/d/yyyy',
+                )}
+              />
+              <Cell
+                title={DateTime.fromISO(announcement.start_at).toFormat(
+                  'M/d/yyyy',
+                )}
+              />
+              <Cell
+                title={
+                  announcement.until_date
+                    ? DateTime.fromISO(announcement.until_date).toFormat(
+                        'M/d/yyyy',
+                      )
+                    : '-'
+                }
+              />
+
+              {/* todo: actions not working - cell requires title which overrides children */}
+              {/* <Cell title={t('admin.announcementsContent.table.actions')}>
+                <ButtonIcon
+                  aria-label="preview"
+                  icon={<PreviewIcon fontSize="small" data-testid="preview" />}
+                  size="small"
+                  variant="tertiary"
+                  onClick={() => onTitleClick(announcement)}
+                />
+                <ButtonIcon
+                  aria-label="edit"
+                  icon={<EditIcon fontSize="small" data-testid="edit-icon" />}
+                  size="small"
+                  variant="tertiary"
+                  isDisabled={loadingUpdatePermission || !canUpdateAnnouncement}
+                  onClick={() => onEdit(announcement)}
+                />
+                <ButtonIcon
+                  aria-label="delete"
+                  icon={
+                    <DeleteIcon fontSize="small" data-testid="delete-icon" />
+                  }
+                  size="small"
+                  variant="tertiary"
+                  isDisabled={loadingDeletePermission || !canDeleteAnnouncement}
+                  onClick={() => openDeleteDialog(announcement)}
+                />
+              </Cell> */}
+            </Row>
+          ))}
+        </TableBody>
+      </Table>
+
+      {filteredAndSortedData.length > 0 && (
+        <TablePagination {...paginationProps} />
+      )}
 
       <DeleteConfirmationDialog
         type="announcement"

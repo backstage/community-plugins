@@ -33,7 +33,15 @@ import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
-import { Container, Grid, Button } from '@backstage/ui';
+import {
+  Container,
+  Grid,
+  Button,
+  Text,
+  Flex,
+  Box,
+  SearchField,
+} from '@backstage/ui';
 import { AnnouncementForm } from './AnnouncementForm';
 import { AnnouncementsTable } from './AnnouncementsTable';
 
@@ -48,6 +56,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
+  const [searchText, setSearchText] = useState('');
 
   const { loading: loadingCreatePermission, allowed: canCreateAnnouncement } =
     usePermission({
@@ -115,30 +124,45 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
-        <Grid.Root columns="1">
-          <Grid.Item>
-            <Button
-              isDisabled={loadingCreatePermission || !canCreateAnnouncement}
-              variant="primary"
-              onClick={() => onCreateButtonClick()}
-            >
-              {showCreateAnnouncementForm
-                ? t('admin.announcementsContent.cancelButton')
-                : t('admin.announcementsContent.createButton')}
-            </Button>
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="8">
+            <Text variant="title-medium">Announcements</Text>
+          </Grid.Item>
+          <Grid.Item colSpan="4">
+            <Flex justify="end" align="center">
+              <Button
+                isDisabled={loadingCreatePermission || !canCreateAnnouncement}
+                variant="primary"
+                onClick={() => onCreateButtonClick()}
+              >
+                {showCreateAnnouncementForm
+                  ? t('admin.announcementsContent.cancelButton')
+                  : t('admin.announcementsContent.createButton')}
+              </Button>
+            </Flex>
+          </Grid.Item>
+
+          <Grid.Item colSpan="12">
+            <SearchField
+              placeholder="Search announcements..."
+              value={searchText}
+              onChange={setSearchText}
+            />
           </Grid.Item>
 
           {showCreateAnnouncementForm && (
-            <Grid.Item>
+            <Grid.Item colSpan="12" rowSpan="2">
               <AnnouncementForm
                 initialData={{ active: !defaultInactive } as Announcement}
                 onSubmit={onSubmit}
               />
             </Grid.Item>
           )}
-
-          <Grid.Item>
-            <AnnouncementsTable announcements={announcements?.results ?? []} />
+          <Grid.Item colSpan="12">
+            <AnnouncementsTable
+              announcements={announcements?.results ?? []}
+              searchText={searchText}
+            />
           </Grid.Item>
         </Grid.Root>
       </Container>
