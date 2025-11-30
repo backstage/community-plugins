@@ -15,11 +15,13 @@
  */
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { Box } from '@material-ui/core';
+import { useMemo } from 'react';
 import { formatDate } from '../../utils/acr-utils';
 
 import { useTags } from '../../hooks/useTags';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Tag, TagRow } from '../../types';
-import { columns } from './tableHeading';
+import { getColumns } from './tableHeading';
 
 type AcrImagesProps = {
   image: string;
@@ -27,7 +29,8 @@ type AcrImagesProps = {
 };
 
 export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
-  const title = `Azure Container Registry Repository: ${image}`;
+  const { t } = useTranslation();
+  const title = t('page.title', { image } as Record<string, string>);
 
   const { loading, value, error } = useTags(image, registryName);
 
@@ -49,6 +52,8 @@ export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
     </Box>
   ) : null;
 
+  const columns = useMemo(() => getColumns(t), [t]);
+
   return (
     <Table
       title={title}
@@ -57,6 +62,10 @@ export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
       data={data}
       options={{ paging: true, padding: 'dense' }}
       emptyContent={emptyContent}
+      localization={{
+        toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+        pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+      }}
     />
   );
 };

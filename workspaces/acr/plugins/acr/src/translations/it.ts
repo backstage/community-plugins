@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
-import 'cross-fetch/polyfill';
+import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
+import { acrTranslationRef } from './ref';
 
-import { mockUseTranslation } from './test-utils/mockTranslations';
+const acrTranslationIt = createTranslationMessages({
+  ref: acrTranslationRef,
+  messages: {
+    'page.title': 'Repository Azure Container Registry: {{image}}',
+    'table.searchPlaceholder': 'Filtra',
+    'table.labelRowsSelect': 'Righe',
+    'table.columns.tag': 'Tag',
+    'table.columns.created': 'Creato',
+    'table.columns.lastModified': 'Ultima modifica',
+    'table.columns.manifest': 'Manifesto',
+  },
+});
 
-// Global mock for useTranslation hook
-jest.mock('./hooks/useTranslation', () => ({
-  useTranslation: mockUseTranslation,
-}));
+export default acrTranslationIt;
