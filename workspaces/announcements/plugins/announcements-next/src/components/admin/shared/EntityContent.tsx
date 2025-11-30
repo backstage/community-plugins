@@ -30,8 +30,7 @@ import { useApi, alertApiRef, AlertApi } from '@backstage/core-plugin-api';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
-import { Container } from '@backstage/ui';
+import { Container, Grid, Button, Text, Flex, ButtonIcon } from '@backstage/ui';
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog';
 import { useDeleteConfirmationDialogState } from './useDeleteConfirmationDialogState';
 import { useAnnouncementsPermissions } from './useAnnouncementsPermissions';
@@ -182,28 +181,31 @@ export function EntityContent<
 
   const columns: TableColumn<T>[] = [
     {
-      title: <Typography>{t(translationKeys.table.title)}</Typography>,
+      title: <Text>{t(translationKeys.table.title)}</Text>,
       sorting: true,
       field: 'title',
       render: rowData => rowData.title,
     },
     {
-      title: <Typography>{t(translationKeys.table.slug)}</Typography>,
+      title: <Text>{t(translationKeys.table.slug)}</Text>,
       sorting: true,
       field: 'slug',
       render: rowData => rowData.slug,
     },
     {
-      title: <Typography>{t(translationKeys.table.actions)}</Typography>,
+      title: <Text>{t(translationKeys.table.actions)}</Text>,
       render: rowData => {
         return (
-          <IconButton
+          <ButtonIcon
             aria-label="delete"
-            disabled={permissions.delete.loading || !permissions.delete.allowed}
+            isDisabled={
+              permissions.delete.loading || !permissions.delete.allowed
+            }
             onClick={() => openDeleteDialog(rowData)}
-          >
-            <DeleteIcon fontSize="small" data-testid="delete-icon" />
-          </IconButton>
+            icon={<DeleteIcon fontSize="small" data-testid="delete-icon" />}
+            size="small"
+            variant="tertiary"
+          />
         );
       },
     },
@@ -212,40 +214,45 @@ export function EntityContent<
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
-        <Grid container>
-          <Grid item xs={12}>
-            <Button
-              disabled={
-                permissions.create.loading || !permissions.create.allowed
-              }
-              variant="contained"
-              onClick={onCreateButtonClick}
-            >
-              {showForm
-                ? t(translationKeys.cancelButton)
-                : t(translationKeys.createButton)}
-            </Button>
-          </Grid>
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="8">
+            <Text variant="title-medium">{tableTitle}</Text>
+          </Grid.Item>
+          <Grid.Item colSpan="4">
+            <Flex justify="end" align="center">
+              <Button
+                isDisabled={
+                  permissions.create.loading || !permissions.create.allowed
+                }
+                variant="primary"
+                onClick={onCreateButtonClick}
+              >
+                {showForm
+                  ? t(translationKeys.cancelButton)
+                  : t(translationKeys.createButton)}
+              </Button>
+            </Flex>
+          </Grid.Item>
 
           {showForm && (
-            <Grid item xs={12}>
+            <Grid.Item colSpan="12" rowSpan="2">
               <FormComponent initialData={{} as T} onSubmit={onSubmit} />
-            </Grid>
+            </Grid.Item>
           )}
 
-          <Grid item xs={12}>
+          <Grid.Item colSpan="12">
             <Table
               title={tableTitle}
               options={{ pageSize: 20, search: true }}
               columns={columns}
               data={items ?? []}
               emptyContent={
-                <Typography style={{ padding: 2, textAlign: 'center' }}>
+                <Text style={{ padding: 2, textAlign: 'center' }}>
                   {t(translationKeys.noItemsFound)}
-                </Typography>
+                </Text>
               }
             />
-          </Grid>
+          </Grid.Item>
 
           <DeleteConfirmationDialog
             type={deleteDialogType}
@@ -253,7 +260,7 @@ export function EntityContent<
             onCancel={onCancelDelete}
             onConfirm={onConfirmDelete}
           />
-        </Grid>
+        </Grid.Root>
       </Container>
     </RequirePermission>
   );
