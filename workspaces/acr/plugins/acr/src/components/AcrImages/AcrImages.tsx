@@ -15,11 +15,11 @@
  */
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { Box } from '@material-ui/core';
+import { useMemo } from 'react';
 import { formatDate } from '../../utils/acr-utils';
 
 import { useTags } from '../../hooks/useTags';
 import { useTranslation } from '../../hooks/useTranslation';
-import { acrTranslationRef } from '../../translations';
 import { Tag, TagRow } from '../../types';
 import { getColumns } from './tableHeading';
 
@@ -30,10 +30,7 @@ type AcrImagesProps = {
 
 export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
   const { t } = useTranslation();
-  const title = t(
-    'page.title' as keyof typeof acrTranslationRef.T,
-    { image } as Record<string, string>,
-  );
+  const title = t('page.title', { image } as Record<string, string>);
 
   const { loading, value, error } = useTags(image, registryName);
 
@@ -55,10 +52,12 @@ export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
     </Box>
   ) : null;
 
+  const columns = useMemo(() => getColumns(t), [t]);
+
   return (
     <Table
       title={title}
-      columns={getColumns(t)}
+      columns={columns}
       isLoading={loading}
       data={data}
       options={{ paging: true, padding: 'dense' }}

@@ -16,12 +16,22 @@
 import {
   useTranslationRef,
   TranslationFunction,
+  TranslationRef,
 } from '@backstage/core-plugin-api/alpha';
 import { acrTranslationRef } from '../translations';
+
+type AcrMessages = typeof acrTranslationRef extends TranslationRef<
+  string,
+  infer TMessages extends { [x: string]: string }
+>
+  ? TMessages
+  : never;
 
 /**
  * @alpha
  */
 export const useTranslation = (): {
-  t: TranslationFunction<typeof acrTranslationRef.T>;
-} => useTranslationRef(acrTranslationRef);
+  t: TranslationFunction<AcrMessages>;
+} => {
+  return useTranslationRef(acrTranslationRef);
+};
