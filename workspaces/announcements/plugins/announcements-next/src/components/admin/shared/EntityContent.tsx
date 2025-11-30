@@ -262,7 +262,7 @@ export function EntityContent<
           </Grid.Item>
 
           {showForm && (
-            <Grid.Item colSpan="12" rowSpan="2">
+            <Grid.Item colSpan="4" rowSpan="2">
               <FormComponent initialData={{} as T} onSubmit={onSubmit} />
             </Grid.Item>
           )}
