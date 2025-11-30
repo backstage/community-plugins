@@ -1,0 +1,150 @@
+/* Color variables for Apiiro plugin */
+:root {
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-blue-gray-10: #fbfbfe;
+  --color-blue-gray-15: #f6f6f9;
+  --color-blue-gray-20: #f0f1f5;
+  --color-blue-gray-25: #e2e2e9;
+  --color-blue-gray-30: #d3d4df;
+  --color-blue-gray-35: #c4c7d4;
+  --color-blue-gray-40: #b6b9c9;
+  --color-blue-gray-45: #a1a5ba;
+  --color-blue-gray-50: #8a8fa8;
+  --color-blue-gray-55: #6c7393;
+  --color-blue-gray-60: #575c75;
+  --color-blue-gray-65: #414558;
+  --color-blue-gray-70: #21263f;
+  --color-blue-gray-75: #191c2e;
+  --color-blue-gray-80: #10121e;
+
+  --color-blue-15: #f9fbff;
+  --color-blue-20: #f7fafe;
+  --color-blue-25: #f2f6fd;
+  --color-blue-30: #ebf1fa;
+  --color-blue-35: #e1eaf8;
+  --color-blue-40: #d5e2f4;
+  --color-blue-45: #c5d7ef;
+  --color-blue-50: #b3c9e9;
+  --color-blue-55: #9db9e2;
+  --color-blue-60: #769cd6;
+  --color-blue-65: #2e5a9e;
+  --color-blue-70: #012b70;
+  --color-blue-75: #001d4c;
+  --color-blue-80: #001538;
+
+  --color-yellow-10: #fffdf5;
+  --color-yellow-15: #fffae5;
+  --color-yellow-20: #fff6cc;
+  --color-yellow-25: #ffeea3;
+  --color-yellow-30: #ffe98a;
+  --color-yellow-35: #ffe366;
+  --color-yellow-40: #ffdb3d;
+  --color-yellow-45: #ffd51a;
+  --color-yellow-50: #f5c800;
+  --color-yellow-55: #cca700;
+  --color-yellow-60: #a88900;
+  --color-yellow-65: #8f7500;
+  --color-yellow-70: #705c00;
+  --color-yellow-75: #524300;
+  --color-yellow-80: #332a00;
+
+  --color-orange-10: #fffdfa;
+  --color-orange-15: #fffbf5;
+  --color-orange-20: #fff6e5;
+  --color-orange-25: #ffeccc;
+  --color-orange-30: #ffe3b3;
+  --color-orange-35: #ffda99;
+  --color-orange-40: #ffd080;
+  --color-orange-45: #ffc35c;
+  --color-orange-50: #ffb433;
+  --color-orange-55: #ffa70f;
+  --color-orange-60: #cc8100;
+  --color-orange-65: #996100;
+  --color-orange-70: #613d00;
+  --color-orange-75: #472d00;
+  --color-orange-80: #2e1d00;
+
+  --color-red-10: #fffafb;
+  --color-red-15: #fef5f7;
+  --color-red-20: #fde7eb;
+  --color-red-25: #fccfd7;
+  --color-red-30: #fab7c3;
+  --color-red-35: #f8a0ae;
+  --color-red-40: #f7889a;
+  --color-red-45: #f45d76;
+  --color-red-50: #f2405e;
+  --color-red-55: #ee1136;
+  --color-red-60: #bf0d2b;
+  --color-red-65: #9d0b23;
+  --color-red-70: #690718;
+  --color-red-75: #43050f;
+  --color-red-80: #2b030a;
+
+  --color-pink-10: #fffafc;
+  --color-pink-15: #fef6f9;
+  --color-pink-20: #fde7ef;
+  --color-pink-25: #fbd0df;
+  --color-pink-30: #fab8d0;
+  --color-pink-35: #f8a0c0;
+  --color-pink-40: #f688b0;
+  --color-pink-45: #f4679a;
+  --color-pink-50: #f14181;
+  --color-pink-55: #ed1261;
+  --color-pink-60: #bc0e4d;
+  --color-pink-65: #9d0c40;
+  --color-pink-70: #68082b;
+  --color-pink-75: #42051b;
+  --color-pink-80: #2b0312;
+
+  --color-green-10: #f6fefd;
+  --color-green-15: #e8fcfa;
+  --color-green-20: #d9fcf8;
+  --color-green-25: #b8faf2;
+  --color-green-30: #97f7ec;
+  --color-green-35: #71f4e5;
+  --color-green-40: #50f2df;
+  --color-green-45: #2eefd9;
+  --color-green-50: #11e4cb;
+  --color-green-55: #0ebeac;
+  --color-green-60: #0b9887;
+  --color-green-65: #09776a;
+  --color-green-70: #06554c;
+  --color-green-75: #042f2a;
+  --color-green-80: #021c19;
+
+  --color-purple-10: #fcfafe;
+  --color-purple-15: #f8f6fe;
+  --color-purple-20: #eee8fc;
+  --color-purple-25: #ded2f9;
+  --color-purple-30: #cdbbf6;
+  --color-purple-35: #bda5f3;
+  --color-purple-40: #ac8ef1;
+  --color-purple-45: #956eec;
+  --color-purple-50: #7a4ae8;
+  --color-purple-55: #591de2;
+  --color-purple-60: #4717b5;
+  --color-purple-65: #361188;
+  --color-purple-70: #270d63;
+  --color-purple-75: #19083f;
+  --color-purple-80: #100529;
+
+  --color-success: var(--color-green-50);
+  --color-failure: var(--color-red-50);
+}
+
+/* Global font family for Apiiro plugin */
+.apiiro-plugin * {
+  font-family: 'Mulish', HelveticaNeue, 'Helvetica Neue', Helvetica,
+    'Courier Prime', Arial, sans-serif !important;
+}
+
+/* Ensure MUI components also use the font */
+.apiiro-plugin .MuiTypography-root,
+.apiiro-plugin .MuiButton-root,
+.apiiro-plugin .MuiTextField-root,
+.apiiro-plugin .MuiInputBase-root {
+  font-family: 'Mulish', HelveticaNeue, 'Helvetica Neue', Helvetica,
+    'Courier Prime', Arial, sans-serif !important;
+}
