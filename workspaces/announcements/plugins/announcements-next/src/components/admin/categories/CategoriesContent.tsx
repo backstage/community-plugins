@@ -13,188 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
-import {
-  ErrorPanel,
-  Progress,
-  Table,
-  TableColumn,
-} from '@backstage/core-components';
+import { useMemo } from 'react';
 import {
   CreateCategoryRequest,
-  announcementsApiRef,
-  useAnnouncementsTranslation,
   useCategories,
+  AnnouncementsApi,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  announcementCreatePermission,
-  Category,
-} from '@backstage-community/plugin-announcements-common';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import { RequirePermission } from '@backstage/plugin-permission-react';
-import { ResponseError } from '@backstage/errors';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
+import { Category } from '@backstage-community/plugin-announcements-common';
 import { CategoriesForm } from './CategoriesForm';
-import { Container } from '@backstage/ui';
-import {
-  DeleteConfirmationDialog,
-  useDeleteConfirmationDialogState,
-  useAnnouncementsPermissions,
-} from '../shared';
+import { EntityContent } from '../shared';
 
 export const CategoriesContent = () => {
-  const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
-  const { categories, loading, error, retry: refresh } = useCategories();
-  const announcementsApi = useApi(announcementsApiRef);
-  const alertApi = useApi(alertApiRef);
-  const { t } = useAnnouncementsTranslation();
+  const { categories, loading, error, retry } = useCategories();
 
-  const {
-    isOpen: isDeleteDialogOpen,
-    open: openDeleteDialog,
-    close: closeDeleteDialog,
-    item: categoryToDelete,
-  } = useDeleteConfirmationDialogState<Category>();
-
-  const permissions = useAnnouncementsPermissions();
-
-  const onSubmit = async (request: CreateCategoryRequest) => {
-    const { title } = request;
-
-    try {
-      await announcementsApi.createCategory({
-        title,
-      });
-
-      alertApi.post({
-        message: `${title} ${t('admin.categoriesContent.createdMessage')}`,
-        severity: 'success',
-      });
-
-      refresh();
-    } catch (err) {
-      alertApi.post({ message: (err as Error).message, severity: 'error' });
-    }
-  };
-
-  const onCreateButtonClick = () => {
-    setShowNewCategoryForm(!showNewCategoryForm);
-  };
-
-  const onCancelDelete = () => {
-    closeDeleteDialog();
-  };
-
-  const onConfirmDelete = async () => {
-    closeDeleteDialog();
-
-    try {
-      await announcementsApi.deleteCategory(categoryToDelete!.slug);
-
-      alertApi.post({
-        message: t('admin.categoriesContent.table.categoryDeleted'),
-        severity: 'success',
-      });
-    } catch (err) {
-      alertApi.post({
-        message: (err as ResponseError).body.error.message,
-        severity: 'error',
-      });
-    }
-
-    refresh();
-  };
-
-  if (loading) {
-    return <Progress />;
-  }
-  if (error) {
-    return <ErrorPanel error={error} />;
-  }
-
-  const columns: TableColumn<Category>[] = [
-    {
-      title: (
-        <Typography>{t('admin.categoriesContent.table.title')}</Typography>
-      ),
-      sorting: true,
-      field: 'title',
-      render: rowData => rowData.title,
-    },
-    {
-      title: <Typography>{t('admin.categoriesContent.table.slug')}</Typography>,
-      sorting: true,
-      field: 'slug',
-      render: rowData => rowData.slug,
-    },
-    {
-      title: (
-        <Typography>{t('admin.categoriesContent.table.actions')}</Typography>
-      ),
-      render: rowData => {
-        return (
-          <IconButton
-            aria-label="delete"
-            disabled={permissions.delete.loading || !permissions.delete.allowed}
-            onClick={() => openDeleteDialog(rowData)}
-          >
-            <DeleteIcon fontSize="small" data-testid="delete-icon" />
-          </IconButton>
-        );
+  const config = useMemo(
+    () => ({
+      useEntityHook: () => ({
+        items: categories ?? [],
+        loading,
+        error,
+        retry,
+      }),
+      createEntity: async (
+        api: AnnouncementsApi,
+        request: CreateCategoryRequest,
+      ) => {
+        await api.createCategory(request);
       },
-    },
-  ];
-
-  return (
-    <RequirePermission permission={announcementCreatePermission}>
-      <Container>
-        <Grid container>
-          <Grid item xs={12}>
-            <Button
-              disabled={
-                permissions.create.loading || !permissions.create.allowed
-              }
-              variant="contained"
-              onClick={() => onCreateButtonClick()}
-            >
-              {showNewCategoryForm
-                ? t('admin.categoriesContent.cancelButton')
-                : t('admin.categoriesContent.createButton')}
-            </Button>
-          </Grid>
-
-          {showNewCategoryForm && (
-            <Grid item xs={12}>
-              <CategoriesForm
-                initialData={{} as Category}
-                onSubmit={onSubmit}
-              />
-            </Grid>
-          )}
-
-          <Grid item xs={12}>
-            <Table
-              title="Categories"
-              options={{ pageSize: 20, search: true }}
-              columns={columns}
-              data={categories ?? []}
-              emptyContent={
-                <Typography style={{ padding: 2, textAlign: 'center' }}>
-                  {t('admin.categoriesContent.table.noCategoriesFound')}
-                </Typography>
-              }
-            />
-          </Grid>
-
-          <DeleteConfirmationDialog
-            type="category"
-            open={isDeleteDialogOpen}
-            onCancel={onCancelDelete}
-            onConfirm={onConfirmDelete}
-          />
-        </Grid>
-      </Container>
-    </RequirePermission>
+      deleteEntity: async (api: AnnouncementsApi, slug: string) => {
+        await api.deleteCategory(slug);
+      },
+      FormComponent: CategoriesForm,
+      translationKeys: {
+        createButton: 'admin.categoriesContent.createButton',
+        cancelButton: 'admin.categoriesContent.cancelButton',
+        createdMessage: 'admin.categoriesContent.createdMessage',
+        deletedMessage: 'admin.categoriesContent.table.categoryDeleted',
+        noItemsFound: 'admin.categoriesContent.table.noCategoriesFound',
+        table: {
+          title: 'admin.categoriesContent.table.title',
+          slug: 'admin.categoriesContent.table.slug',
+          actions: 'admin.categoriesContent.table.actions',
+        },
+      },
+      tableTitle: 'Categories',
+      deleteDialogType: 'category' as const,
+    }),
+    [categories, loading, error, retry],
   );
+
+  return <EntityContent<Category, CreateCategoryRequest> config={config} />;
 };

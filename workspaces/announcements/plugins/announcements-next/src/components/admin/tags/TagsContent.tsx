@@ -13,191 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useMemo } from 'react';
 import {
   CreateTagRequest,
-  announcementsApiRef,
   useAnnouncementsTranslation,
   useTags,
+  AnnouncementsApi,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  announcementCreatePermission,
-  Tag,
-} from '@backstage-community/plugin-announcements-common';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import { RequirePermission } from '@backstage/plugin-permission-react';
-import { ResponseError } from '@backstage/errors';
-import { Container } from '@backstage/ui';
-import {
-  ErrorPanel,
-  Progress,
-  Table,
-  TableColumn,
-} from '@backstage/core-components';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Tag } from '@backstage-community/plugin-announcements-common';
+import { AlertApi } from '@backstage/core-plugin-api';
 import { TagsForm } from './TagsForm';
-import {
-  DeleteConfirmationDialog,
-  useDeleteConfirmationDialogState,
-  useAnnouncementsPermissions,
-} from '../shared';
+import { EntityContent } from '../shared';
 
 export const TagsContent = () => {
-  const [showNewTagForm, setShowNewTagForm] = useState(false);
-  const { tags, loading, error, retry: refresh } = useTags();
-  const announcementsApi = useApi(announcementsApiRef);
-  const alertApi = useApi(alertApiRef);
+  const { tags, loading, error, retry } = useTags();
   const { t } = useAnnouncementsTranslation();
 
-  const {
-    isOpen: isDeleteDialogOpen,
-    open: openDeleteDialog,
-    close: closeDeleteDialog,
-    item: tagToDelete,
-  } = useDeleteConfirmationDialogState<Tag>();
-
-  const permissions = useAnnouncementsPermissions();
-
-  const onSubmit = async (request: CreateTagRequest) => {
-    const { title } = request;
-
-    try {
-      await announcementsApi.createTag({
-        title,
-      });
-
-      alertApi.post({
-        message: `${title} ${t('admin.tagsContent.createdMessage')}`,
-        severity: 'success',
-      });
-
-      refresh();
-    } catch (err: any) {
-      if (err.response?.status === 409) {
-        alertApi.post({
-          message: t('admin.tagsContent.errors.alreadyExists'),
-          severity: 'error',
-        });
-      } else {
-        alertApi.post({
-          message: (err as Error).message,
-          severity: 'error',
-        });
-      }
-    }
-  };
-
-  const onCreateButtonClick = () => {
-    setShowNewTagForm(!showNewTagForm);
-  };
-
-  const onCancelDelete = () => {
-    closeDeleteDialog();
-  };
-
-  const onConfirmDelete = async () => {
-    closeDeleteDialog();
-
-    try {
-      await announcementsApi.deleteTag(tagToDelete!.slug);
-
-      alertApi.post({
-        message: t('admin.tagsContent.table.tagDeleted'),
-        severity: 'success',
-      });
-    } catch (err) {
-      alertApi.post({
-        message: (err as ResponseError).body.error.message,
-        severity: 'error',
-      });
-    }
-
-    refresh();
-  };
-
-  if (loading) {
-    return <Progress />;
-  }
-  if (error) {
-    return <ErrorPanel error={error} />;
-  }
-
-  const columns: TableColumn<Tag>[] = [
-    {
-      title: <Typography>{t('admin.tagsContent.table.title')}</Typography>,
-      sorting: true,
-      field: 'title',
-      render: rowData => rowData.title,
-    },
-    {
-      title: <Typography>{t('admin.tagsContent.table.slug')}</Typography>,
-      sorting: true,
-      field: 'slug',
-      render: rowData => rowData.slug,
-    },
-    {
-      title: <Typography>{t('admin.tagsContent.table.actions')}</Typography>,
-      render: rowData => {
-        return (
-          <IconButton
-            aria-label="delete"
-            disabled={permissions.delete.loading || !permissions.delete.allowed}
-            onClick={() => openDeleteDialog(rowData)}
-          >
-            <DeleteIcon fontSize="small" data-testid="delete-icon" />
-          </IconButton>
-        );
+  const config = useMemo(
+    () => ({
+      useEntityHook: () => ({
+        items: tags ?? [],
+        loading,
+        error,
+        retry,
+      }),
+      createEntity: async (
+        api: AnnouncementsApi,
+        request: CreateTagRequest,
+      ) => {
+        await api.createTag(request);
       },
-    },
-  ];
-
-  return (
-    <RequirePermission permission={announcementCreatePermission}>
-      <Container>
-        <Grid container>
-          <Grid item xs={12}>
-            <Button
-              disabled={
-                permissions.create.loading || !permissions.create.allowed
-              }
-              variant="contained"
-              onClick={() => onCreateButtonClick()}
-            >
-              {showNewTagForm
-                ? t('admin.tagsContent.cancelButton')
-                : t('admin.tagsContent.createButton')}
-            </Button>
-          </Grid>
-
-          {showNewTagForm && (
-            <Grid item xs={12}>
-              <TagsForm initialData={{} as Tag} onSubmit={onSubmit} />
-            </Grid>
-          )}
-
-          <Grid item xs={12}>
-            <Table
-              title="Tags"
-              options={{ pageSize: 20, search: true }}
-              columns={columns}
-              data={tags ?? []}
-              emptyContent={
-                <Typography style={{ padding: 2, textAlign: 'center' }}>
-                  {t('admin.tagsContent.table.noTagsFound')}
-                </Typography>
-              }
-            />
-          </Grid>
-
-          <DeleteConfirmationDialog
-            type="tag"
-            open={isDeleteDialogOpen}
-            onCancel={onCancelDelete}
-            onConfirm={onConfirmDelete}
-          />
-        </Grid>
-      </Container>
-    </RequirePermission>
+      deleteEntity: async (api: AnnouncementsApi, slug: string) => {
+        await api.deleteTag(slug);
+      },
+      FormComponent: TagsForm,
+      translationKeys: {
+        createButton: 'admin.tagsContent.createButton',
+        cancelButton: 'admin.tagsContent.cancelButton',
+        createdMessage: 'admin.tagsContent.createdMessage',
+        deletedMessage: 'admin.tagsContent.table.tagDeleted',
+        noItemsFound: 'admin.tagsContent.table.noTagsFound',
+        table: {
+          title: 'admin.tagsContent.table.title',
+          slug: 'admin.tagsContent.table.slug',
+          actions: 'admin.tagsContent.table.actions',
+        },
+        errors: {
+          alreadyExists: 'admin.tagsContent.errors.alreadyExists',
+        },
+      },
+      tableTitle: 'Tags',
+      deleteDialogType: 'tag' as const,
+      handleCreateError: (err: any, alert: AlertApi, translate: typeof t) => {
+        if (err.response?.status === 409) {
+          alert.post({
+            message: translate('admin.tagsContent.errors.alreadyExists'),
+            severity: 'error',
+          });
+        } else {
+          alert.post({
+            message: (err as Error).message,
+            severity: 'error',
+          });
+        }
+      },
+    }),
+    [tags, loading, error, retry],
   );
+
+  return <EntityContent<Tag, CreateTagRequest> config={config} />;
 };
