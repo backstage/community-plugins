@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
+export { DeleteConfirmationDialog } from './DeleteConfirmationDialog';
 export { useDeleteConfirmationDialogState } from './useDeleteConfirmationDialogState';
 export { TableActions } from './TableActions';
 export { useAnnouncementsPermissions } from './useAnnouncementsPermissions';
 export { EntityContent } from './EntityContent';
+export { EntityForm } from './EntityForm';

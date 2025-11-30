@@ -1653,7 +1653,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-announcements-common@workspace:^, @backstage-community/plugin-announcements-common@workspace:plugins/announcements-common":
+"@backstage-community/plugin-announcements-common@workspace:*, @backstage-community/plugin-announcements-common@workspace:^, @backstage-community/plugin-announcements-common@workspace:plugins/announcements-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-announcements-common@workspace:plugins/announcements-common"
   dependencies:
@@ -1666,6 +1666,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-announcements-next@workspace:plugins/announcements-next"
   dependencies:
+    "@backstage-community/plugin-announcements-common": "workspace:*"
+    "@backstage-community/plugin-announcements-react": "workspace:*"
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/core-app-api": "npm:^1.19.2"
     "@backstage/core-plugin-api": "npm:^1.12.0"
@@ -1698,7 +1700,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-announcements-react@workspace:^, @backstage-community/plugin-announcements-react@workspace:plugins/announcements-react":
+"@backstage-community/plugin-announcements-react@workspace:*, @backstage-community/plugin-announcements-react@workspace:^, @backstage-community/plugin-announcements-react@workspace:plugins/announcements-react":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-announcements-react@workspace:plugins/announcements-react"
   dependencies:

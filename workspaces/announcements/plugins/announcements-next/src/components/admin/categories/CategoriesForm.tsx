@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FormEvent, useState } from 'react';
-import { Card, Button, TextField } from '@backstage/ui';
-import {
-  CreateCategoryRequest,
-  useAnnouncementsTranslation,
-} from '@backstage-community/plugin-announcements-react';
+import { CreateCategoryRequest } from '@backstage-community/plugin-announcements-react';
 import { Category } from '@backstage-community/plugin-announcements-common';
-import { useAnnouncementsPermissions } from '../shared';
+import { EntityForm } from '../shared';
 
 export type CategoriesFormProps = {
   initialData: Category;
@@ -31,49 +26,17 @@ export const CategoriesForm = ({
   initialData,
   onSubmit,
 }: CategoriesFormProps) => {
-  const [form, setForm] = useState(initialData);
-  const [loading, setLoading] = useState(false);
-  const { t } = useAnnouncementsTranslation();
-  const permissions = useAnnouncementsPermissions();
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    setLoading(true);
-    event.preventDefault();
-
-    await onSubmit(form);
-    setLoading(false);
-  };
-
   return (
-    <Card
-      title={
-        initialData.title
-          ? t('categoriesForm.editCategory')
-          : t('categoriesForm.newCategory')
-      }
-    >
-      <form onSubmit={handleSubmit}>
-        <TextField
-          id="title"
-          type="text"
-          label={t('categoriesForm.titleLabel')}
-          value={form.title}
-          isRequired
-          onChange={e => setForm({ ...form, title: e })}
-        />
-        <Button
-          type="submit"
-          variant="primary"
-          isDisabled={
-            loading ||
-            !form ||
-            permissions.create.loading ||
-            !permissions.create.allowed
-          }
-        >
-          {t('categoriesForm.submit')}
-        </Button>
-      </form>
-    </Card>
+    <EntityForm<Category, CreateCategoryRequest>
+      initialData={initialData}
+      onSubmit={onSubmit}
+      translationKeys={{
+        editLabel: 'categoriesForm.editCategory',
+        newLabel: 'categoriesForm.newCategory',
+        titleLabel: 'categoriesForm.titleLabel',
+        submit: 'categoriesForm.submit',
+      }}
+      validateForm={form => Boolean(form)}
+    />
   );
 };
