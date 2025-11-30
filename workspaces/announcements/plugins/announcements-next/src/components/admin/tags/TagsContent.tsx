@@ -22,14 +22,10 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 import {
   announcementCreatePermission,
-  announcementDeletePermission,
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
 import { Container } from '@backstage/ui';
 import {
@@ -44,6 +40,7 @@ import { TagsForm } from './TagsForm';
 import {
   DeleteConfirmationDialog,
   useDeleteConfirmationDialogState,
+  useAnnouncementsPermissions,
 } from '../shared';
 
 export const TagsContent = () => {
@@ -60,15 +57,7 @@ export const TagsContent = () => {
     item: tagToDelete,
   } = useDeleteConfirmationDialogState<Tag>();
 
-  const { loading: loadingCreatePermission, allowed: canCreateTag } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
-
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const onSubmit = async (request: CreateTagRequest) => {
     const { title } = request;
@@ -153,7 +142,7 @@ export const TagsContent = () => {
         return (
           <IconButton
             aria-label="delete"
-            disabled={loadingDeletePermission || !canDeleteAnnouncement}
+            disabled={permissions.delete.loading || !permissions.delete.allowed}
             onClick={() => openDeleteDialog(rowData)}
           >
             <DeleteIcon fontSize="small" data-testid="delete-icon" />
@@ -169,7 +158,9 @@ export const TagsContent = () => {
         <Grid container>
           <Grid item xs={12}>
             <Button
-              disabled={loadingCreatePermission || !canCreateTag}
+              disabled={
+                permissions.create.loading || !permissions.create.allowed
+              }
               variant="contained"
               onClick={() => onCreateButtonClick()}
             >

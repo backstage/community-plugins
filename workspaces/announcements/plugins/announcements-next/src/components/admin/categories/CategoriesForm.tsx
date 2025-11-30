@@ -19,11 +19,8 @@ import {
   CreateCategoryRequest,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  announcementCreatePermission,
-  Category,
-} from '@backstage-community/plugin-announcements-common';
-import { usePermission } from '@backstage/plugin-permission-react';
+import { Category } from '@backstage-community/plugin-announcements-common';
+import { useAnnouncementsPermissions } from '../shared';
 
 export type CategoriesFormProps = {
   initialData: Category;
@@ -37,11 +34,7 @@ export const CategoriesForm = ({
   const [form, setForm] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const { t } = useAnnouncementsTranslation();
-
-  const { loading: loadingCreatePermission, allowed: canCreateCategory } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -72,7 +65,10 @@ export const CategoriesForm = ({
           type="submit"
           variant="primary"
           isDisabled={
-            loading || !form || loadingCreatePermission || !canCreateCategory
+            loading ||
+            !form ||
+            permissions.create.loading ||
+            !permissions.create.allowed
           }
         >
           {t('categoriesForm.submit')}

@@ -29,21 +29,18 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import slugify from 'slugify';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import {
   Container,
   Grid,
   Button,
   Text,
   Flex,
-  Box,
   SearchField,
 } from '@backstage/ui';
 import { AnnouncementForm } from './AnnouncementForm';
 import { AnnouncementsTable } from './AnnouncementsTable';
+import { useAnnouncementsPermissions } from '../shared';
 
 type AnnouncementsContentProps = {
   defaultInactive?: boolean;
@@ -57,11 +54,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
   const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
   const [searchText, setSearchText] = useState('');
-
-  const { loading: loadingCreatePermission, allowed: canCreateAnnouncement } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
@@ -131,7 +124,9 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
           <Grid.Item colSpan="4">
             <Flex justify="end" align="center">
               <Button
-                isDisabled={loadingCreatePermission || !canCreateAnnouncement}
+                isDisabled={
+                  permissions.create.loading || !permissions.create.allowed
+                }
                 variant="primary"
                 onClick={() => onCreateButtonClick()}
               >

@@ -16,3 +16,4 @@
 export { DeleteConfirmationDialog } from './DeleteConfirmationDialog'
 export { useDeleteConfirmationDialogState } from './useDeleteConfirmationDialogState';
 export { TableActions } from './TableActions';
+export { useAnnouncementsPermissions } from './useAnnouncementsPermissions';

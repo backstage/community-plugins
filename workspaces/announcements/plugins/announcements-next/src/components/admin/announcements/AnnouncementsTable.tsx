@@ -19,11 +19,7 @@ import {
   announcementsApiRef,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  Announcement,
-  announcementDeletePermission,
-  announcementUpdatePermission,
-} from '@backstage-community/plugin-announcements-common';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useNavigate } from 'react-router-dom';
 import {
   Text,
@@ -37,8 +33,6 @@ import {
   Cell,
   TablePagination,
   useTable,
-  SearchField,
-  ColumnProps,
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -48,8 +42,8 @@ import { DateTime } from 'luxon';
 import {
   DeleteConfirmationDialog,
   useDeleteConfirmationDialogState,
+  useAnnouncementsPermissions,
 } from '../shared';
-import { usePermission } from '@backstage/plugin-permission-react';
 
 type AnnouncementsTableProps = {
   announcements: Announcement[];
@@ -76,15 +70,7 @@ export const AnnouncementsTable = ({
     item: announcementToDelete,
   } = useDeleteConfirmationDialogState<Announcement>();
 
-  const { loading: loadingUpdatePermission, allowed: canUpdateAnnouncement } =
-    usePermission({
-      permission: announcementUpdatePermission,
-    });
-
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const onTitleClick = (announcement: Announcement) => {
     navigate(`/announcements/view/${announcement.id}`);
@@ -285,7 +271,7 @@ export const AnnouncementsTable = ({
               />
 
               {/* todo: actions not working - cell requires title which overrides children */}
-              {/* <Cell title={t('admin.announcementsContent.table.actions')}>
+              <Cell title={t('admin.announcementsContent.table.actions')}>
                 <ButtonIcon
                   aria-label="preview"
                   icon={<PreviewIcon fontSize="small" data-testid="preview" />}
@@ -298,7 +284,9 @@ export const AnnouncementsTable = ({
                   icon={<EditIcon fontSize="small" data-testid="edit-icon" />}
                   size="small"
                   variant="tertiary"
-                  isDisabled={loadingUpdatePermission || !canUpdateAnnouncement}
+                  isDisabled={
+                    permissions.update.loading || !permissions.update.allowed
+                  }
                   onClick={() => onEdit(announcement)}
                 />
                 <ButtonIcon
@@ -308,10 +296,12 @@ export const AnnouncementsTable = ({
                   }
                   size="small"
                   variant="tertiary"
-                  isDisabled={loadingDeletePermission || !canDeleteAnnouncement}
+                  isDisabled={
+                    permissions.delete.loading || !permissions.delete.allowed
+                  }
                   onClick={() => openDeleteDialog(announcement)}
                 />
-              </Cell> */}
+              </Cell>
             </Row>
           ))}
         </TableBody>
