@@ -1,0 +1,7 @@
+apiiro:
+  accessToken:
+  # Optional Configuration for allow and disallow the component
+  permissionControl:
+    entityNames:
+      - component:default/example-website
+    exclude: true
