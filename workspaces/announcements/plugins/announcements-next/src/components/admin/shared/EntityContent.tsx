@@ -242,11 +242,25 @@ export function EntityContent<
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
         <Grid.Root columns="12">
-          <Grid.Item colSpan="8">
-            <Text variant="title-medium">{tableTitle}</Text>
-          </Grid.Item>
-          <Grid.Item colSpan="4">
-            <Flex justify="end" align="center">
+          <Grid.Item colSpan="12">
+            <Text variant="title-medium">
+              {tableTitle}
+              <Box pl="3" as="span">
+                <Button
+                  size="small"
+                  isDisabled={
+                    permissions.create.loading || !permissions.create.allowed
+                  }
+                  variant="primary"
+                  onClick={onCreateButtonClick}
+                >
+                  {showForm
+                    ? t(translationKeys.cancelButton)
+                    : t(translationKeys.createButton)}
+                </Button>
+              </Box>
+            </Text>
+            {/* <Flex>
               <Button
                 isDisabled={
                   permissions.create.loading || !permissions.create.allowed
@@ -258,7 +272,7 @@ export function EntityContent<
                   ? t(translationKeys.cancelButton)
                   : t(translationKeys.createButton)}
               </Button>
-            </Flex>
+            </Flex> */}
           </Grid.Item>
 
           {showForm && (
