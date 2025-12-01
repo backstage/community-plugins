@@ -17,6 +17,21 @@
       "@backstage-community/plugin-jfrog-artifactory"
     ]
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "build": "backstage-cli package build",
