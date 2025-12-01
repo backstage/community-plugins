@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   useAnnouncementsTranslation,
@@ -24,7 +21,12 @@ import {
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo } from 'react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
+
+// todo: migrate to @backstage/ui components
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
 type OnBehalfTeamDropdownProps = {

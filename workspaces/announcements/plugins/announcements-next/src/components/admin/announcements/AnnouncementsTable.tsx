@@ -35,10 +35,13 @@ import {
   useTable,
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
+import { DateTime } from 'luxon';
+
+// todo: figure out how we are supposed to migrate to bui icons
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
-import { DateTime } from 'luxon';
+
 import {
   DeleteConfirmationDialog,
   useDeleteConfirmationDialogState,
@@ -50,10 +53,9 @@ type AnnouncementsTableProps = {
   searchText: string;
 };
 
-export const AnnouncementsTable = ({
-  announcements,
-  searchText,
-}: AnnouncementsTableProps) => {
+export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
+  const { announcements, searchText } = props;
+
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const navigate = useNavigate();
@@ -190,7 +192,6 @@ export const AnnouncementsTable = ({
     return data;
   }, [announcements, searchText, sortDescriptor]);
 
-  // Use table hook for pagination
   const { data: paginatedData, paginationProps } = useTable<Announcement>({
     data: filteredAndSortedData,
     pagination: {

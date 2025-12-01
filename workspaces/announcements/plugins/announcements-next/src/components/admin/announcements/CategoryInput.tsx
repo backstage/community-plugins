@@ -20,6 +20,7 @@ import {
   useCategories,
 } from '@backstage-community/plugin-announcements-react';
 
+// todo: migrate once an autocomplete component is available in @backstage/ui
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';

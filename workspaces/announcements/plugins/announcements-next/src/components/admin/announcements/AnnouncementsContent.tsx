@@ -38,6 +38,7 @@ import {
   Flex,
   SearchField,
 } from '@backstage/ui';
+
 import { AnnouncementForm } from './AnnouncementForm';
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { useAnnouncementsPermissions } from '../shared';
@@ -119,6 +120,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
       <Container>
         <Grid.Root columns="12">
           <Grid.Item colSpan="8">
+            {/* todo: add translation */}
             <Text variant="title-medium">Announcements</Text>
           </Grid.Item>
           <Grid.Item colSpan="4">
@@ -139,6 +141,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
 
           <Grid.Item colSpan="12">
             <SearchField
+              // todo: add translation
               placeholder="Search announcements..."
               value={searchText}
               onChange={setSearchText}
@@ -146,7 +149,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
           </Grid.Item>
 
           {showCreateAnnouncementForm && (
-            <Grid.Item colSpan="12" rowSpan="2">
+            <Grid.Item colSpan="12">
               <AnnouncementForm
                 initialData={{ active: !defaultInactive } as Announcement}
                 onSubmit={onSubmit}

@@ -18,13 +18,6 @@ import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-
-import {
-  CreateAnnouncementRequest,
-  useAnnouncementsTranslation,
-  announcementsApiRef,
-} from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
 import {
   Card,
   Box,
@@ -35,25 +28,31 @@ import {
   Flex,
   Switch,
 } from '@backstage/ui';
+import {
+  CreateAnnouncementRequest,
+  useAnnouncementsTranslation,
+  announcementsApiRef,
+} from '@backstage-community/plugin-announcements-react';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 
 // todo: replace with @backstage/ui when Date option is available
 import MuiTextField from '@mui/material/TextField';
 
+// todo: figure out how we are supposed to migrate to bui icons
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+
 import CategoryInput from './CategoryInput';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
-
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
   onSubmit: (data: CreateAnnouncementRequest) => Promise<void>;
 };
 
-export const AnnouncementForm = ({
-  initialData,
-  onSubmit,
-}: AnnouncementFormProps) => {
+export const AnnouncementForm = (props: AnnouncementFormProps) => {
+  const { initialData, onSubmit } = props;
+
   const identityApi = useApi(identityApiRef);
   const announcementsApi = useApi(announcementsApiRef);
   const { t } = useAnnouncementsTranslation();
@@ -79,20 +78,6 @@ export const AnnouncementForm = ({
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
     initialData.on_behalf_of || '',
   );
-
-  // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   setForm({
-  //     ...form,
-  //     [event.target.id]: event.target.value,
-  //   });
-  // };
-
-  // const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
-  //   setForm({
-  //     ...form,
-  //     [event.target.name]: event.target.checked,
-  //   });
-  // };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);

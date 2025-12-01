@@ -52,47 +52,110 @@ type EntityWithSlug = {
   title: string;
 };
 
+/**
+ * Configuration object for the EntityContent component.
+ * This type defines all the required and optional properties needed to configure
+ * a generic entity management interface (e.g., categories, tags).
+ *
+ * @template T - The entity type that extends EntityWithSlug (must have slug and title properties)
+ * @template TRequest - The request type used for creating/updating entities (must have title property)
+ */
 type EntityContentConfig<T extends EntityWithSlug, TRequest> = {
-  // Data fetching
+  /**
+   * Custom hook that provides entity data and state management.
+   * Should return an object with items array, loading state, error state, and retry function.
+   */
   useEntityHook: () => {
+    /** Array of entity items to display in the table */
     items: T[];
+    /** Whether the data is currently being loaded */
     loading: boolean;
+    /** Error object if data fetching failed, undefined otherwise */
     error: Error | undefined;
+    /** Function to retry fetching data after an error */
     retry: () => void;
   };
 
-  // API methods
+  /**
+   * Function to create a new entity via the API.
+   * @param api - The announcements API instance
+   * @param request - The request object containing entity data to create
+   * @returns Promise that resolves when the entity is created
+   */
   createEntity: (api: AnnouncementsApi, request: TRequest) => Promise<void>;
+
+  /**
+   * Function to delete an entity via the API.
+   * @param api - The announcements API instance
+   * @param slug - The slug identifier of the entity to delete
+   * @returns Promise that resolves when the entity is deleted
+   */
   deleteEntity: (api: AnnouncementsApi, slug: string) => Promise<void>;
 
-  // Form component
+  /**
+   * React component for the entity form.
+   * Used for both creating new entities and editing existing ones.
+   * Should accept initialData and onSubmit props.
+   */
   FormComponent: React.ComponentType<{
+    /** Initial data to populate the form (empty object for new entities) */
     initialData: T;
+    /** Callback function called when the form is submitted */
     onSubmit: (data: TRequest) => Promise<void>;
   }>;
 
-  // Translation keys
+  /**
+   * Translation keys for all user-facing text in the component.
+   * These keys are used with the translation function to provide localized strings.
+   */
   translationKeys: {
+    /** Translation key for the create button label */
     createButton: string;
+    /** Translation key for the cancel button label */
     cancelButton: string;
+    /** Translation key for the success message when an entity is created */
     createdMessage: string;
+    /** Translation key for the success message when an entity is deleted */
     deletedMessage: string;
+    /** Translation key for the message shown when no items are found */
     noItemsFound: string;
+    /** Translation keys for table column headers */
     table: {
+      /** Translation key for the title column header */
       title: string;
+      /** Translation key for the slug column header */
       slug: string;
+      /** Translation key for the actions column header */
       actions: string;
     };
+    /** Optional translation keys for error messages */
     errors?: {
+      /** Translation key for the error message when an entity already exists */
       alreadyExists?: string;
     };
   };
 
-  // UI labels
+  /**
+   * Title displayed at the top of the table section.
+   * Used as the main heading for the entity management interface.
+   */
   tableTitle: string;
+
+  /**
+   * Type of entity for the delete confirmation dialog.
+   * Determines the dialog's messaging and behavior.
+   */
   deleteDialogType: 'category' | 'tag';
 
-  // Error handling
+  /**
+   * Optional custom error handler for entity creation failures.
+   * If provided, this function will be called instead of the default error handling.
+   * Useful for handling specific error cases (e.g., duplicate entity errors).
+   *
+   * @param err - The error object thrown during entity creation
+   * @param alertApi - The alert API instance for displaying notifications
+   * @param t - The translation function for localized error messages
+   */
   handleCreateError?: (
     err: any,
     alertApi: AlertApi,

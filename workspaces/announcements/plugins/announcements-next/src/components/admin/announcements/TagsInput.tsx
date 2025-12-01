@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 import { useMemo } from 'react';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
 import {
   useTags,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
 import { Tag } from '@backstage-community/plugin-announcements-common';
+
+// todo: migrate to @backstage/ui components
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export interface TagOption extends Tag {
   inputValue?: string;

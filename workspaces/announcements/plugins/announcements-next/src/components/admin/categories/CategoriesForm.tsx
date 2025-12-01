@@ -15,6 +15,7 @@
  */
 import { CreateCategoryRequest } from '@backstage-community/plugin-announcements-react';
 import { Category } from '@backstage-community/plugin-announcements-common';
+
 import { EntityForm } from '../shared';
 
 export type CategoriesFormProps = {
@@ -22,10 +23,9 @@ export type CategoriesFormProps = {
   onSubmit: (data: CreateCategoryRequest) => Promise<void>;
 };
 
-export const CategoriesForm = ({
-  initialData,
-  onSubmit,
-}: CategoriesFormProps) => {
+export const CategoriesForm = (props: CategoriesFormProps) => {
+  const { initialData, onSubmit } = props;
+
   return (
     <EntityForm<Category, CreateCategoryRequest>
       initialData={initialData}

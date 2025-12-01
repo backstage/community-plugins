@@ -20,6 +20,7 @@ import {
   AnnouncementsApi,
 } from '@backstage-community/plugin-announcements-react';
 import { Category } from '@backstage-community/plugin-announcements-common';
+
 import { CategoriesForm } from './CategoriesForm';
 import { EntityContent } from '../shared';
 
