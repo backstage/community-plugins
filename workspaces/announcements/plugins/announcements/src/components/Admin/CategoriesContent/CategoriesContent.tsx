@@ -31,17 +31,18 @@ import {
   announcementDeletePermission,
   Category,
 } from '@backstage-community/plugin-announcements-common';
-import { CategoriesForm } from '../../CategoriesForm';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
 import {
   RequirePermission,
   usePermission,
 } from '@backstage/plugin-permission-react';
-import { useDeleteCategoryDialogState } from '../../CategoriesPage/useDeleteCategoryDialogState';
 import { ResponseError } from '@backstage/errors';
-import { DeleteCategoryDialog } from '../../CategoriesPage/DeleteCategoryDialog';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import { CategoriesForm } from './CategoriesForm';
+import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
+import { DeleteCategoryDialog } from './DeleteCategoryDialog';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);

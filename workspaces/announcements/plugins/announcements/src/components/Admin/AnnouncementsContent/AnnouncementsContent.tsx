@@ -37,10 +37,10 @@ import {
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { useDeleteAnnouncementDialogState } from '../../AnnouncementsPage/useDeleteAnnouncementDialogState';
-import { DeleteAnnouncementDialog } from '../../AnnouncementsPage/DeleteAnnouncementDialog';
+import { useDeleteAnnouncementDialogState } from './useDeleteAnnouncementDialogState';
+import { DeleteAnnouncementDialog } from './DeleteAnnouncementDialog';
 import { useNavigate } from 'react-router-dom';
-import { AnnouncementForm } from '../../AnnouncementForm';
+import { AnnouncementForm } from './AnnouncementForm';
 import slugify from 'slugify';
 import {
   RequirePermission,

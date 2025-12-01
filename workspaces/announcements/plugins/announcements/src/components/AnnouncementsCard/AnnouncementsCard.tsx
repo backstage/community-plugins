@@ -24,7 +24,7 @@ import {
 import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 import {
-  announcementCreateRouteRef,
+  announcementAdminRouteRef,
   announcementViewRouteRef,
   rootRouteRef,
 } from '../../routes';
@@ -84,7 +84,7 @@ export const AnnouncementsCard = ({
   const announcementsApi = useApi(announcementsApiRef);
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
-  const createAnnouncementLink = useRouteRef(announcementCreateRouteRef);
+  const announcementAdminLink = useRouteRef(announcementAdminRouteRef);
   const lastSeen = announcementsApi.lastSeenDate();
   const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
@@ -207,7 +207,7 @@ export const AnnouncementsCard = ({
           <ListItem>
             <ListItemText>
               {`${t('announcementsCard.noAnnouncements')} `}
-              <Link to={createAnnouncementLink()} variant="inherit">
+              <Link to={announcementAdminLink()} variant="inherit">
                 {t('announcementsCard.addOne')}
               </Link>
               ?

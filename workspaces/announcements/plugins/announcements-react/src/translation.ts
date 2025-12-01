@@ -55,9 +55,7 @@ export const announcementsTranslationRef = createTranslationRef({
         announcementDeleted: 'Announcement deleted.',
       },
       contextMenu: {
-        admin: 'Admin',
-        categories: 'Categories',
-        tags: 'Tags',
+        admin: 'Manage announcements',
       },
     },
     deleteDialog: {
