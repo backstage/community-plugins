@@ -16,6 +16,8 @@ import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @alpha
 export const acrApi: ExtensionDefinition<{
@@ -105,6 +107,23 @@ export const acrImagesEntityContent: ExtensionDefinition<{
     filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
   };
 }>;
+
+// @alpha
+export const acrTranslationRef: TranslationRef<
+  'plugin.acr',
+  {
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.tag': string;
+    readonly 'table.columns.created': string;
+    readonly 'table.columns.lastModified': string;
+    readonly 'table.columns.manifest': string;
+    readonly 'page.title': string;
+  }
+>;
+
+// @alpha
+export const acrTranslations: TranslationResource<'plugin.acr'>;
 
 // @alpha
 const _default: OverridableFrontendPlugin<

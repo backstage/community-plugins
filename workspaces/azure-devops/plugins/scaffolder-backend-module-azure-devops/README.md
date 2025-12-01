@@ -46,6 +46,8 @@ integrations:
         - personalAccessToken: ${PERSONAL_ACCESS_TOKEN}
 ```
 
+To use other authentication methods, see the [documentation.](https://backstage.io/docs/integrations/azure/locations)
+
 ## Usage
 
 You can use the action in any of the steps of your [Software Template](https://backstage.io/docs/features/software-templates/).
@@ -197,6 +199,21 @@ spec:
           **pipelineRunStatus:** `${{ steps['runAzurePipeline'].output.pipelineRunStatus }}` }}
           **pipelineRunId:** `${{ steps['runAzurePipeline'].output.pipelineRunId }}` }}
           **pipeline output:** `${{ steps['runAzurePipeline'].output.pipelineOutput['myOutputVar'].value }}` }}
+```
+
+### Example running a pipeline, waiting for it to complete, and failing the action if the pipeline is unsuccessful using the `azure:pipeline:run` action
+
+```yaml
+spec:
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        #[...]
+        pollingInterval: 10 # Poll for pipeline run status every 10 seconds
+        pipelineTimeout: 300 # Timeout after 5 minutes
+        failIfNotSuccessful: true # Fail the scaffolder step when the run is not successful
 ```
 
 ### Example: Create Azure Pipeline

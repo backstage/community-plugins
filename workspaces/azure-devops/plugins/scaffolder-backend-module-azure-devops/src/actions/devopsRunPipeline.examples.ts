@@ -129,4 +129,25 @@ export const examples: TemplateExample[] = [
       ],
     }),
   },
+  {
+    description:
+      'Run Azure Pipeline, wait for completion, and fail if unsuccessful',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'runAzurePipeline',
+          action: 'azure:pipeline:run',
+          name: 'Run Azure Devops Pipeline and fail if unsuccessful',
+          input: {
+            organization: 'organization',
+            pipelineId: 'pipelineId',
+            project: 'project',
+            pollingInterval: 10,
+            pipelineTimeout: 300,
+            failIfNotSuccessful: true,
+          },
+        },
+      ],
+    }),
+  },
 ];

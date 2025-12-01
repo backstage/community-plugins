@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.23.0
+
+### Minor Changes
+
+- 7ea11e7: Add internationalization (i18n) support with German, French, Italian, and Spanish translations.
+
 ## 1.22.0
 
 ### Minor Changes

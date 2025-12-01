@@ -18,7 +18,7 @@ import {
   UrlReaderService,
   UrlReaderServiceReadTreeResponse,
 } from '@backstage/backend-plugin-api';
-import { CatalogApi, GetEntitiesResponse } from '@backstage/catalog-client';
+import { CatalogApi } from '@backstage/catalog-client';
 import { Results } from 'linguist-js/dist/types';
 import { DateTime } from 'luxon';
 import { LinguistBackendStore } from '../db';
@@ -142,54 +142,124 @@ describe('Linguist backend API', () => {
     });
   });
 
-  it('should insert new entities', async () => {
-    const testEntityListResponse: GetEntitiesResponse = {
-      items: [
-        {
-          apiVersion: 'backstage.io/v1beta1',
-          metadata: {
-            name: 'service-one',
-          },
-          kind: 'Component',
-        },
-        {
-          apiVersion: 'backstage.io/v1beta1',
-          metadata: {
-            name: 'service-two',
-          },
-          kind: 'Component',
-        },
-        {
-          apiVersion: 'backstage.io/v1beta1',
-          metadata: {
-            name: 'service-three',
-          },
-          kind: 'Component',
-        },
-      ],
-    };
-    catalogApi.getEntities.mockResolvedValue(testEntityListResponse);
+  it('should synchronize entities with catalog efficiently - add new and remove stale', async () => {
+    const catalogEntities = [
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-one' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-two' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-three' },
+        kind: 'Component',
+      },
+    ];
 
-    await api.addNewEntities();
-    expect(store.insertNewEntity).toHaveBeenCalledTimes(3);
-  });
+    catalogApi.getEntities.mockResolvedValue({ items: catalogEntities });
 
-  it('should delete entities not in Catalog', async () => {
     store.getAllEntities.mockResolvedValue([
-      'component:default/service-one',
-      'component:default/stale-service-two',
+      'component:default/service-one', // exists in both (keep)
+      'component:default/stale-service', // only in store (remove)
     ]);
 
-    catalogApi.getEntityByRef.mockResolvedValueOnce({
-      apiVersion: 'backstage.io/v1beta1',
-      metadata: {
-        name: 'service-one',
-      },
-      kind: 'Component',
-    });
+    await api.synchronizeEntitiesWithCatalog();
 
-    await api.cleanEntities();
+    // Should add 2 new entities (service-two, service-three)
+    expect(store.insertNewEntity).toHaveBeenCalledTimes(2);
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-two',
+    );
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-three',
+    );
+
+    // Should remove 1 stale entity
     expect(store.deleteEntity).toHaveBeenCalledTimes(1);
+    expect(store.deleteEntity).toHaveBeenCalledWith(
+      'component:default/stale-service',
+    );
+
+    // Should only make 1 catalog API call (not N+1)
+    expect(catalogApi.getEntities).toHaveBeenCalledTimes(1);
+    expect(catalogApi.getEntityByRef).not.toHaveBeenCalled();
+  });
+
+  it('should synchronize entities with catalog - no changes needed', async () => {
+    const catalogEntities = [
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-one' },
+        kind: 'Component',
+      },
+    ];
+
+    catalogApi.getEntities.mockResolvedValue({ items: catalogEntities });
+    store.getAllEntities.mockResolvedValue(['component:default/service-one']);
+
+    await api.synchronizeEntitiesWithCatalog();
+
+    // Should not add or remove any entities
+    expect(store.insertNewEntity).not.toHaveBeenCalled();
+    expect(store.deleteEntity).not.toHaveBeenCalled();
+  });
+
+  it('should synchronize entities with catalog - only additions needed', async () => {
+    // Mock catalog having more entities than store
+    const catalogEntities = [
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-one' },
+        kind: 'Component',
+      },
+      {
+        apiVersion: 'backstage.io/v1beta1',
+        metadata: { name: 'service-two' },
+        kind: 'Component',
+      },
+    ];
+
+    catalogApi.getEntities.mockResolvedValue({ items: catalogEntities });
+    store.getAllEntities.mockResolvedValue(['component:default/service-one']);
+
+    await api.synchronizeEntitiesWithCatalog();
+
+    // Should add 1 new entity
+    expect(store.insertNewEntity).toHaveBeenCalledTimes(1);
+    expect(store.insertNewEntity).toHaveBeenCalledWith(
+      'component:default/service-two',
+    );
+
+    // Should not remove any entities
+    expect(store.deleteEntity).not.toHaveBeenCalled();
+  });
+
+  it('should synchronize entities with catalog - only removals needed', async () => {
+    // Mock store having more entities than catalog
+    catalogApi.getEntities.mockResolvedValue({ items: [] });
+    store.getAllEntities.mockResolvedValue([
+      'component:default/service-one',
+      'component:default/service-two',
+    ]);
+
+    await api.synchronizeEntitiesWithCatalog();
+
+    // Should not add any entities
+    expect(store.insertNewEntity).not.toHaveBeenCalled();
+
+    // Should remove 2 entities
+    expect(store.deleteEntity).toHaveBeenCalledTimes(2);
+    expect(store.deleteEntity).toHaveBeenCalledWith(
+      'component:default/service-one',
+    );
+    expect(store.deleteEntity).toHaveBeenCalledWith(
+      'component:default/service-two',
+    );
   });
 
   it('should get default entity overview', async () => {

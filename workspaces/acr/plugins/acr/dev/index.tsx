@@ -25,6 +25,7 @@ import {
   AzureContainerRegistryApiV1,
 } from '../src/api';
 import { AcrImagesEntityContent, acrPlugin } from '../src/plugin';
+import { acrTranslations } from '../src/translations';
 import { TagsResponse } from '../src/types';
 
 class MockAzureContainerRegistryApiClient
@@ -43,6 +44,8 @@ class MockAzureContainerRegistryApiClient
 
 createDevApp()
   .registerPlugin(acrPlugin)
+  .addTranslationResource(acrTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .addPage({
     element: (
       <TestApiProvider

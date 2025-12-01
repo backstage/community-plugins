@@ -13,6 +13,7 @@
     "rootDir": ".",
     "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
     "target": "ES2022",
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "jsx": "react-jsx"
   }
 }

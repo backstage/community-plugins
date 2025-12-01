@@ -377,4 +377,48 @@ describe('publish:azure', () => {
       expect.objectContaining({ var2: { isSecret: true, value: 'bar' } }),
     );
   });
+
+  it('should fail if pipeline failIfNotSuccessful is true and no pollingInterval is set', async () => {
+    await expect(
+      action.handler({
+        ...mockContext,
+        input: {
+          host: 'dev.azure.com',
+          organization: 'org',
+          pipelineId: '1',
+          project: 'project',
+          token: 'input-token',
+          failIfNotSuccessful: true,
+        },
+      }),
+    ).rejects.toThrow(
+      'The parameter failIfNotSuccessful option requires pollingInterval to be set',
+    );
+  });
+
+  it('should fail if pipeline not successful and failIfNotSuccessful is true', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      result: RunResult.Failed,
+      state: RunState.Completed,
+    }));
+
+    await expect(
+      action.handler({
+        ...mockContext,
+        input: {
+          host: 'dev.azure.com',
+          organization: 'org',
+          pipelineId: '1',
+          project: 'project',
+          token: 'input-token',
+          failIfNotSuccessful: true,
+          pollingInterval: 1,
+        },
+      }),
+    ).rejects.toThrow('Pipeline run was not successful');
+  });
 });

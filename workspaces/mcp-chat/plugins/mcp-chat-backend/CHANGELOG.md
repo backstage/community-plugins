@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- 4abb76c: support use as a reusable library
+
 ## 0.3.0
 
 ### Minor Changes
