@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAsync } from 'react-use';
 
 import { Link, Progress, Table } from '@backstage/core-components';
@@ -26,7 +26,6 @@ import { Edge } from '../../types';
 import { getColumns, useStyles } from './tableHeading';
 import { formatByteSize, formatDate } from '../../utils';
 import { useTranslation } from '../../hooks/useTranslation';
-import { jfrogArtifactoryTranslationRef } from '../../translations';
 
 const useLocalStyles = makeStyles({
   chip: {
@@ -45,10 +44,7 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
   const localClasses = useLocalStyles();
   const { t } = useTranslation();
   const [edges, setEdges] = useState<Edge[]>([]);
-  const titleprop = t(
-    'page.title' as keyof typeof jfrogArtifactoryTranslationRef.T,
-    { image } as Record<string, string>,
-  );
+  const titleprop = t('page.title', { image } as Record<string, string>);
 
   const { loading } = useAsync(async () => {
     const tagsResponse = await jfrogArtifactoryClient.getTags(image, target);
@@ -57,6 +53,8 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
 
     return tagsResponse;
   });
+
+  const columns = useMemo(() => getColumns(t), [t]);
 
   if (loading) {
     return <Progress />;
@@ -89,7 +87,7 @@ export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
         title={titleprop}
         options={{ paging: true, padding: 'dense' }}
         data={data}
-        columns={getColumns(t)}
+        columns={columns}
         emptyContent={
           <div className={classes.empty}>
             {t('table.emptyContent.message')}&nbsp;

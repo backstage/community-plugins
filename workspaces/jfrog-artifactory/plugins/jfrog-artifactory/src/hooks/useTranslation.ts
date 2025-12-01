@@ -16,12 +16,23 @@
 import {
   useTranslationRef,
   TranslationFunction,
+  TranslationRef,
 } from '@backstage/core-plugin-api/alpha';
 import { jfrogArtifactoryTranslationRef } from '../translations';
+
+type JfrogArtifactoryMessages =
+  typeof jfrogArtifactoryTranslationRef extends TranslationRef<
+    string,
+    infer TMessages extends { [x: string]: string }
+  >
+    ? TMessages
+    : never;
 
 /**
  * @alpha
  */
 export const useTranslation = (): {
-  t: TranslationFunction<typeof jfrogArtifactoryTranslationRef.T>;
-} => useTranslationRef(jfrogArtifactoryTranslationRef);
+  t: TranslationFunction<JfrogArtifactoryMessages>;
+} => {
+  return useTranslationRef(jfrogArtifactoryTranslationRef);
+};
