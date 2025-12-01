@@ -13,6 +13,13 @@ With this major release, we are consolidating all functionality into the admin p
 
 As the plugin's adoption grew, more requests to hide UI components based on permissions came in. This decision was made to simplify the plugin and reduce the complexity of the codebase. It also provides a more consistent UX for admin operations and allows for more flexibility in the future.
 
+## Highlights
+
+- The button to create a new announcement has been removed from the announcements page. This button is now only available in the admin portal.
+- The context menu has been updated to only include a link to the admin portal. Links to the individual pages for categories and tags have been removed.
+- All admin operations (create/edit announcements, manage categories, manage tags) are now accessible through a unified tabbed interface in the Admin Portal.
+- The `AnnouncementsCard` component now links to the admin portal instead of the create page.
+
 ## Breaking Changes
 
 ### Removed Routes
@@ -23,6 +30,17 @@ The following route references have been removed and are no longer available:
 - `announcementEditRouteRef` - Use `announcementAdminRouteRef` instead
 - `categoriesListRouteRef` - Categories are now managed within the Admin Portal
 - `tagsListRouteRef` - Tags are now managed within the Admin Portal
+
+## Translation Changes
+
+The following translation keys have been removed:
+
+- `announcementsPage.contextMenu.categories`
+- `announcementsPage.contextMenu.tags`
+
+The following translation keys have been updated:
+
+- `announcementsPage.contextMenu.admin` - Updated to "Manage announcements"
 
 ### Removed Components
 
@@ -35,29 +53,15 @@ The following components have been removed:
 - `NewCategoryDialog` - Category creation is now handled inline within the Categories tab
 - `NewTagDialog` - Tag creation is now handled inline within the Tags tab
 
-### Component Reorganization
-
-Admin-related components have been reorganized into feature-specific directories:
-
-- `Admin/AnnouncementsContent/` - Contains announcement management components
-- `Admin/CategoriesContent/` - Contains category management components
-- `Admin/TagsContent/` - Contains tag management components
-
 ## Benefits
+
+A big benefit of this consolidation is it reduces the amount of code we must migrate to support both the new frontend system and the new `@backstage/ui` library which we are in the process of doing. Others include:
 
 - Single entry point for all admin operations (`/announcements/admin`)
 - Less code to maintain - removed duplicate page components
 - Reduction in code duplication - shared form logic consolidated
-- Less code to migrate to `@backstage/ui` and the new frontend system
 - Improved UX with tabbed interface for related admin operations
 - Better permission handling - all admin operations gated through one portal
-
-## Highlights
-
-- The button to create a new announcement has been removed from the announcements page. This button is now only available in the admin portal.
-- The context menu has been updated to only include a link to the admin portal. Links to the individual pages for categories and tags have been removed.
-- All admin operations (create/edit announcements, manage categories, manage tags) are now accessible through a unified tabbed interface in the Admin Portal.
-- The `AnnouncementsCard` component now links to the admin portal instead of the create page.
 
 ## Migration Guide
 
@@ -77,4 +81,4 @@ import { announcementAdminRouteRef } from '@backstage-community/plugin-announcem
 const adminLink = useRouteRef(announcementAdminRouteRef);
 ```
 
-All admin functionality is now accessible at the `/admin` route under the announcements root path.
+All admin functionality is now accessible at the `/announcements/admin` route.
