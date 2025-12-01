@@ -123,9 +123,9 @@ export const nexusRepositoryManagerTranslationRef: TranslationRef<
     readonly 'table.searchPlaceholder': string;
     readonly 'table.labelRowsSelect': string;
     readonly 'table.columns.version': string;
+    readonly 'table.columns.checksum': string;
     readonly 'table.columns.artifact': string;
     readonly 'table.columns.repositoryType': string;
-    readonly 'table.columns.checksum': string;
     readonly 'table.columns.modified': string;
     readonly 'table.columns.size': string;
     readonly 'table.emptyValue': string;
