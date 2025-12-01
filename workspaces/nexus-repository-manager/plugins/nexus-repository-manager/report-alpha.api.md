@@ -16,6 +16,8 @@ import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
 const nexusRepositoryManagerPlugin: OverridableFrontendPlugin<
@@ -112,6 +114,29 @@ const nexusRepositoryManagerPlugin: OverridableFrontendPlugin<
   }
 >;
 export default nexusRepositoryManagerPlugin;
+
+// @public
+export const nexusRepositoryManagerTranslationRef: TranslationRef<
+  'plugin.nexus-repository-manager',
+  {
+    readonly 'table.title': string;
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.version': string;
+    readonly 'table.columns.artifact': string;
+    readonly 'table.columns.repositoryType': string;
+    readonly 'table.columns.checksum': string;
+    readonly 'table.columns.modified': string;
+    readonly 'table.columns.size': string;
+    readonly 'table.emptyValue': string;
+    readonly 'table.emptyContent.message': string;
+    readonly 'table.emptyContent.linkText': string;
+    readonly 'entityContent.title': string;
+  }
+>;
+
+// @public
+export const nexusRepositoryManagerTranslations: TranslationResource<'plugin.nexus-repository-manager'>;
 
 // (No @packageDocumentation comment for this package)
 ```
