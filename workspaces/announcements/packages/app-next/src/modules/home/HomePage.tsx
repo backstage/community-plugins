@@ -49,25 +49,28 @@ export const HomePage = () => {
                     </MuiLink>
                   </Grid>
                   <Grid item>
-                    <MuiLink component={RouterLink} to="/announcements/create">
-                      Create Announcement
-                    </MuiLink>
-                  </Grid>
-                  <Grid item>
                     <MuiLink component={RouterLink} to="/announcements/admin">
                       Admin Portal
                     </MuiLink>
                   </Grid>
                   <Grid item>
+                    <MuiLink component={RouterLink} to="/announcements/admin">
+                      Create Announcement
+                    </MuiLink>
+                  </Grid>
+                  <Grid item>
                     <MuiLink
                       component={RouterLink}
-                      to="/announcements/categories"
+                      to="/announcements/admin/categories"
                     >
                       Categories
                     </MuiLink>
                   </Grid>
                   <Grid item>
-                    <MuiLink component={RouterLink} to="/announcements/tags">
+                    <MuiLink
+                      component={RouterLink}
+                      to="/announcements/admin/tags"
+                    >
                       Tags
                     </MuiLink>
                   </Grid>

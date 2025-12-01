@@ -24,6 +24,8 @@ import {
   Button,
   SearchField,
   Select,
+  Link,
+  Text,
 } from '@backstage/ui';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
@@ -102,6 +104,30 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
       });
   }, [searchQuery, categoryFilter, announcements?.results]);
 
+  const emptyStateMessage = useMemo(() => {
+    const hasAnnouncements = (announcements?.results?.length ?? 0) > 0;
+    const hasActiveFilters = searchQuery || categoryFilter !== 'all';
+
+    // TODO: Add translation
+
+    if (!hasAnnouncements) {
+      // TODO: Add translation
+      const AdminLink = <Link href="/announcements/admin">Admin Portal</Link>;
+      // return `Get started by creating an announcement in the ${AdminLink}.`;
+      return (
+        <Text>Get started by creating an announcement in the {AdminLink}.</Text>
+      );
+    }
+
+    // Check for having announcements but none match the current filters
+    if (hasActiveFilters) {
+      // TODO: Add translation
+      return 'No announcements match your search criteria. Try adjusting your filters.';
+    }
+
+    return 'There are no announcements at this time. Check back later!';
+  }, [announcements?.results?.length, searchQuery, categoryFilter]);
+
   const handleViewAnnouncement = (announcement: Announcement) => {
     setSelectedAnnouncement(announcement);
     setIsDialogOpen(true);
@@ -169,20 +195,22 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
             )}
           </Flex>
 
-          <Grid.Root columns={{ xs: '1', md: '2', lg: '3' }} gap="4">
-            {filteredAnnouncements.length ? (
-              filteredAnnouncements?.map(announcement => (
+          {filteredAnnouncements.length ? (
+            <Grid.Root columns={{ xs: '1', md: '2', lg: '3' }} gap="4">
+              {filteredAnnouncements?.map(announcement => (
                 <Grid.Item key={announcement.id}>
                   <AnnouncementCard
                     announcement={announcement}
                     onView={handleViewAnnouncement}
                   />
                 </Grid.Item>
-              ))
-            ) : (
-              <EmptyState message="There are no announcements at this time. Check back later!" />
-            )}
-          </Grid.Root>
+              ))}
+            </Grid.Root>
+          ) : (
+            <Flex justify="center">
+              <EmptyState message={emptyStateMessage} />
+            </Flex>
+          )}
         </Flex>
       </Box>
 

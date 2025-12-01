@@ -34,6 +34,7 @@ import {
   Settings as SidebarSettings,
 } from '@backstage/plugin-user-settings';
 import { SidebarSearchModal } from '@backstage/plugin-search';
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
 
 export const SidebarContent = NavContentBlueprint.make({
   params: {
@@ -42,12 +43,22 @@ export const SidebarContent = NavContentBlueprint.make({
         <Sidebar>
           <SidebarLogo />
           <SidebarDivider />
-          <SidebarItem icon={HomeIcon} to="/" text="Home" />
+
+          <SidebarItem
+            icon={LibraryBooks}
+            to="announcements"
+            text="Announcements"
+          />
+
           <SidebarItem
             icon={AdminPanelSettingsIcon}
             to="announcements/admin"
-            text="Admin"
+            text="Admin Portal"
           />
+
+          <SidebarDivider />
+
+          <SidebarItem icon={HomeIcon} to="/" text="Home" />
 
           <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
             <SidebarSearchModal />
