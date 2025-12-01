@@ -42,6 +42,7 @@ import {
   useTable,
   Box,
 } from '@backstage/ui';
+import { Cell as AriaCell } from 'react-aria-components';
 import type { SortDescriptor } from 'react-aria-components';
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog';
 import { useDeleteConfirmationDialogState } from './useDeleteConfirmationDialogState';
@@ -323,19 +324,6 @@ export function EntityContent<
                 </Button>
               </Box>
             </Text>
-            {/* <Flex>
-              <Button
-                isDisabled={
-                  permissions.create.loading || !permissions.create.allowed
-                }
-                variant="primary"
-                onClick={onCreateButtonClick}
-              >
-                {showForm
-                  ? t(translationKeys.cancelButton)
-                  : t(translationKeys.createButton)}
-              </Button>
-            </Flex> */}
           </Grid.Item>
 
           {showForm && (
@@ -369,7 +357,7 @@ export function EntityContent<
                   <Row key={item.slug} id={item.slug}>
                     <Cell title={item.title} />
                     <Cell title={item.slug} />
-                    <Cell title={t(translationKeys.table.actions)}>
+                    <AriaCell textValue={t(translationKeys.table.actions)}>
                       <ButtonIcon
                         aria-label="delete"
                         isDisabled={
@@ -386,7 +374,7 @@ export function EntityContent<
                         size="small"
                         variant="tertiary"
                       />
-                    </Cell>
+                    </AriaCell>
                   </Row>
                 ))}
               </TableBody>

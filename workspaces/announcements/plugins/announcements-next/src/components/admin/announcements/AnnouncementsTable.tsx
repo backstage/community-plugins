@@ -36,6 +36,7 @@ import {
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
 import { DateTime } from 'luxon';
+import { Cell as AriaCell } from 'react-aria-components';
 
 // todo: figure out how we are supposed to migrate to bui icons
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -272,7 +273,9 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
               />
 
               {/* todo: actions not working - cell requires title which overrides children */}
-              <Cell title={t('admin.announcementsContent.table.actions')}>
+              <AriaCell
+                textValue={t('admin.announcementsContent.table.actions')}
+              >
                 <ButtonIcon
                   aria-label="preview"
                   icon={<PreviewIcon fontSize="small" data-testid="preview" />}
@@ -302,7 +305,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                   }
                   onClick={() => openDeleteDialog(announcement)}
                 />
-              </Cell>
+              </AriaCell>
             </Row>
           ))}
         </TableBody>
