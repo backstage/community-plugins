@@ -35,9 +35,9 @@
     "directory": "workspaces/agent-forge"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.3",
+    "@backstage/cli": "^0.34.5",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.15.2",
+    "@backstage/repo-tools": "^0.16.0",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
