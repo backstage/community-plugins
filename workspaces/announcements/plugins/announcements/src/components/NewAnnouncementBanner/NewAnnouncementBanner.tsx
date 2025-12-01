@@ -17,7 +17,6 @@ import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Link } from '@backstage/core-components';
 import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
-import { announcementViewRouteRef } from '../../routes';
 import {
   announcementsApiRef,
   useAnnouncements,
@@ -40,6 +39,8 @@ import {
 } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { Alert } from '@material-ui/lab';
+
+import { announcementViewRouteRef } from '../../routes';
 import { truncate } from '../utils/truncateUtils';
 
 const useStyles = makeStyles(theme => {

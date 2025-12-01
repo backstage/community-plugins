@@ -191,9 +191,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
-    readonly 'announcementsPage.contextMenu.tags': 'Tags';
-    readonly 'announcementsPage.contextMenu.admin': 'Admin';
-    readonly 'announcementsPage.contextMenu.categories': 'Categories';
+    readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';

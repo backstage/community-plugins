@@ -148,7 +148,6 @@ describe('AnnouncementsPage', () => {
       expect(screen.getByText('Announcements')).toBeInTheDocument();
       expect(screen.queryByText('announcement-title')).toBeNull();
       expect(screen.getByText('announcement-...')).toBeInTheDocument();
-      expect(screen.getByText('New customNoun')).toBeInTheDocument();
 
       fireEvent.mouseOver(screen.getByText('announcement-...'));
       expect(await screen.findByText('announcement-title')).toBeInTheDocument();
