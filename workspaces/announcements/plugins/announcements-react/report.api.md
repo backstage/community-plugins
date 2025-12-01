@@ -127,6 +127,23 @@ export type AnnouncementsOptions = {
   dependencies?: any[];
 };
 
+// @public
+export type AnnouncementsPermissionsResult = {
+  create: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  delete: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  update: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  isLoading: boolean;
+};
+
 // @public (undocumented)
 export const announcementsTranslationRef: TranslationRef<
   'announcements',
@@ -293,6 +310,9 @@ export const useAnnouncements: (
   error: Error | undefined;
   retry: () => void;
 };
+
+// @public
+export const useAnnouncementsPermissions: () => AnnouncementsPermissionsResult;
 
 // @public
 export const useAnnouncementsTranslation: () => any;

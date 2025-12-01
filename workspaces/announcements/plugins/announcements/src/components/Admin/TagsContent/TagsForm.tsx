@@ -18,12 +18,9 @@ import { InfoCard } from '@backstage/core-components';
 import {
   CreateTagRequest,
   useAnnouncementsTranslation,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  announcementCreatePermission,
-  Tag,
-} from '@backstage-community/plugin-announcements-common';
-import { usePermission } from '@backstage/plugin-permission-react';
+import { Tag } from '@backstage-community/plugin-announcements-common';
 import { Button, makeStyles, TextField } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => {
@@ -49,11 +46,7 @@ export const TagsForm = ({
   const [form, setForm] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const { t } = useAnnouncementsTranslation();
-
-  const { loading: loadingCreatePermission, allowed: canCreateTag } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -95,7 +88,10 @@ export const TagsForm = ({
           color="primary"
           type="submit"
           disabled={
-            loading || !form.title || loadingCreatePermission || !canCreateTag
+            loading ||
+            !form.title ||
+            permissions.create.loading ||
+            !permissions.create.allowed
           }
           data-testid="tag-submit-button"
         >

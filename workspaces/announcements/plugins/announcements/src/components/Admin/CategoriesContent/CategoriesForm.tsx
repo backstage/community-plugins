@@ -18,12 +18,9 @@ import { InfoCard } from '@backstage/core-components';
 import {
   CreateCategoryRequest,
   useAnnouncementsTranslation,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  announcementCreatePermission,
-  Category,
-} from '@backstage-community/plugin-announcements-common';
-import { usePermission } from '@backstage/plugin-permission-react';
+import { Category } from '@backstage-community/plugin-announcements-common';
 import { Button, makeStyles, TextField } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => {
@@ -49,11 +46,7 @@ export const CategoriesForm = ({
   const [form, setForm] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const { t } = useAnnouncementsTranslation();
-
-  const { loading: loadingCreatePermission, allowed: canCreateCategory } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -94,7 +87,10 @@ export const CategoriesForm = ({
           color="primary"
           type="submit"
           disabled={
-            loading || !form || loadingCreatePermission || !canCreateCategory
+            loading ||
+            !form ||
+            permissions.create.loading ||
+            !permissions.create.allowed
           }
         >
           {t('categoriesForm.submit')}
