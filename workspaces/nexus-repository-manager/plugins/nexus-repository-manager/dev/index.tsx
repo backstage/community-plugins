@@ -11,9 +11,12 @@ import {
   NexusRepositoryManagerPage,
   nexusRepositoryManagerPlugin,
 } from '../src/plugin';
+import { nexusRepositoryManagerTranslations } from '../src/translations';
 
 createDevApp()
   .registerPlugin(nexusRepositoryManagerPlugin)
+  .addTranslationResource(nexusRepositoryManagerTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .addPage({
     element: (
       <TestApiProvider

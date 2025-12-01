@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { Fragment } from 'react';
 import {
   Typography,
   Button,
@@ -88,7 +88,7 @@ export const ParticipantsList = (
       <Paper className={classes.selectedParticipantsList}>
         <List dense>
           {participants.map(participant => (
-            <React.Fragment key={participant.id}>
+            <Fragment key={participant.id}>
               <ListItem className={getParticipantClassName(participant)}>
                 <Avatar
                   className={
@@ -119,7 +119,7 @@ export const ParticipantsList = (
                 </ListItemSecondaryAction>
               </ListItem>
               <Divider component="li" />
-            </React.Fragment>
+            </Fragment>
           ))}
         </List>
       </Paper>

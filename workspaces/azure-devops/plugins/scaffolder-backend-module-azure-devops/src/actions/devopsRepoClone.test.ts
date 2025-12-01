@@ -100,7 +100,7 @@ describe('createAzureDevOpsCloneRepoAction', () => {
     await createAzureDevOpsCloneRepoAction({ integrations }).handler(ctx);
     expect(cloneRepo).toHaveBeenCalledWith(
       expect.objectContaining({
-        auth: { token: 'bearer-token' },
+        auth: { username: 'not-empty', password: 'bearer-token' },
       }),
     );
   });

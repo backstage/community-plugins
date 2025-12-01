@@ -10,8 +10,8 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -22,7 +22,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'entity-card:github-pull-requests-board/overview': ExtensionDefinition<{
+    'entity-card:github-pull-requests-board/overview': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'overview';
       config: {
@@ -63,7 +63,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:github-pull-requests-board/entity': ExtensionDefinition<{
+    'entity-content:github-pull-requests-board/entity': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {

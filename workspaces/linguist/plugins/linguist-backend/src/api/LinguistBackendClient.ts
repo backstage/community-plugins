@@ -91,18 +91,19 @@ export class LinguistBackendClient implements LinguistBackendApi {
   }
 
   async processEntities(): Promise<void> {
-    this.logger?.info('Updating list of entities');
-    await this.addNewEntities();
-
-    this.logger?.info('Cleaning list of entities');
-    await this.cleanEntities();
+    this.logger?.info('Synchronizing list of entities');
+    await this.synchronizeEntitiesWithCatalog();
 
     this.logger?.info('Processing applicable entities through Linguist');
     await this.generateEntitiesLanguages();
   }
 
   /** @internal */
-  async addNewEntities(): Promise<void> {
+  async synchronizeEntitiesWithCatalog(): Promise<void> {
+    this.logger?.info(
+      'Synchronizing entities between Catalog and Linguist store',
+    );
+
     const annotationKey = this.useSourceLocation
       ? ANNOTATION_SOURCE_LOCATION
       : LINGUIST_ANNOTATION;
@@ -119,33 +120,42 @@ export class LinguistBackendClient implements LinguistBackendApi {
       targetPluginId: 'catalog',
     });
     const response = await this.catalogApi.getEntities(request, { token });
-    const entities = response.items;
+    const catalogEntities = response.items;
 
-    entities.forEach(entity => {
-      const entityRef = stringifyEntityRef(entity);
-      this.store.insertNewEntity(entityRef);
-    });
-  }
+    const catalogEntityRefs = new Set(
+      catalogEntities.map(entity => stringifyEntityRef(entity)),
+    );
 
-  /** @internal */
-  async cleanEntities(): Promise<void> {
-    this.logger?.info('Cleaning entities in Linguist queue');
-    const allEntities = await this.store.getAllEntities();
+    const storedEntityRefs = new Set(await this.store.getAllEntities());
 
-    for (const entityRef of allEntities) {
-      const { token } = await this.auth.getPluginRequestToken({
-        onBehalfOf: await this.auth.getOwnServiceCredentials(),
-        targetPluginId: 'catalog',
+    const entitiesToAdd = [...catalogEntityRefs].filter(
+      entityRef => !storedEntityRefs.has(entityRef),
+    );
+
+    const entitiesToRemove = [...storedEntityRefs].filter(
+      entityRef => !catalogEntityRefs.has(entityRef),
+    );
+
+    if (entitiesToAdd.length > 0) {
+      this.logger?.info(`Adding ${entitiesToAdd.length} new entities`);
+      entitiesToAdd.forEach(entityRef => {
+        this.store.insertNewEntity(entityRef);
       });
-      const result = await this.catalogApi.getEntityByRef(entityRef, { token });
+    }
 
-      if (!result) {
+    if (entitiesToRemove.length > 0) {
+      this.logger?.info(`Removing ${entitiesToRemove.length} stale entities`);
+      for (const entityRef of entitiesToRemove) {
         this.logger?.info(
           `Entity ${entityRef} was not found in the Catalog, it will be deleted`,
         );
         await this.store.deleteEntity(entityRef);
       }
     }
+
+    this.logger?.info(
+      `Synchronization complete: ${entitiesToAdd.length} added, ${entitiesToRemove.length} removed, ${catalogEntityRefs.size} total in catalog`,
+    );
   }
 
   /** @internal */

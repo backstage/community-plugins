@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 import { TableColumn } from '@backstage/core-components';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 
 import { TagRow } from '../../types';
+import { acrTranslationRef } from '../../translations';
 import { ManifestDigestChip } from './ManifestDigestChip';
 
-export const columns: TableColumn<TagRow>[] = [
+export const getColumns = (
+  t: TranslationFunction<typeof acrTranslationRef.T>,
+): TableColumn<TagRow>[] => [
   {
-    title: 'Tag',
+    title: t('table.columns.tag'),
     field: 'name',
     type: 'string',
     highlight: true,
   },
   {
-    title: 'Created',
+    title: t('table.columns.created'),
     field: 'createdTime',
     type: 'date',
   },
   {
-    title: 'Last Modified',
+    title: t('table.columns.lastModified'),
     field: 'lastModified',
     type: 'date',
   },
   {
-    title: 'Manifest',
+    title: t('table.columns.manifest'),
     field: 'manifestDigest',
     type: 'string',
     render: (row): React.ReactNode => {

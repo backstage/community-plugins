@@ -102,19 +102,23 @@ export async function getGitCredentials(
     DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
   const credentials = await credentialProvider.getCredentials({ url: url });
 
-  let auth: { username: string; password: string } | { token: string };
   if (token) {
-    auth = { username: 'not-empty', password: token };
-  } else if (credentials?.type === 'pat') {
-    auth = { username: 'not-empty', password: credentials.token };
-  } else if (credentials?.type === 'bearer') {
-    auth = { token: credentials.token };
-  } else {
+    return { username: 'not-empty', password: token };
+  }
+
+  if (!credentials) {
     throw new InputError(
-      `No credentials provided ${url}, please check your integrations config`,
+      `No credentials provided for ${url}, please check your integrations config`,
     );
   }
-  return auth;
+
+  if (credentials.type === 'pat' || credentials.type === 'bearer') {
+    return { username: 'not-empty', password: credentials.token };
+  }
+
+  throw new InputError(
+    `Unsupported credential type '${credentials.type}' for ${url}`,
+  );
 }
 
 export async function getAuthHandler(

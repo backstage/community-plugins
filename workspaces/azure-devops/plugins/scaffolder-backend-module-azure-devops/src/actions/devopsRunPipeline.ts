@@ -21,6 +21,7 @@ import { WebApi } from 'azure-devops-node-api';
 import {
   RunPipelineParameters,
   RunState,
+  RunResult,
 } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
 import { getAuthHandler } from './helpers';
 /**
@@ -76,6 +77,13 @@ export function createAzureDevopsRunPipelineAction(options: {
               'Azure DevOps pipeline template parameters in key-value pairs.',
             )
             .optional(),
+        failIfNotSuccessful: d =>
+          d
+            .boolean()
+            .describe(
+              'The action should fail if the pipeline run was not successful.',
+            )
+            .optional(),
       },
       output: {
         pipelineRunUrl: d => d.string().describe('Url of the pipeline'),
@@ -114,7 +122,14 @@ export function createAzureDevopsRunPipelineAction(options: {
         templateParameters,
         pollingInterval,
         pipelineTimeout,
+        failIfNotSuccessful,
       } = ctx.input;
+
+      if (failIfNotSuccessful && !pollingInterval) {
+        throw new Error(
+          'The parameter failIfNotSuccessful option requires pollingInterval to be set',
+        );
+      }
 
       const url = `https://${host}/${organization}`;
       const authHandler = await getAuthHandler(
@@ -199,6 +214,10 @@ export function createAzureDevopsRunPipelineAction(options: {
         ctx.logger.info(
           `Pipeline run result: ${pipelineRun.result.toString()}`,
         );
+      }
+
+      if (failIfNotSuccessful && pipelineRun.result !== RunResult.Succeeded) {
+        throw new Error('Pipeline run was not successful');
       }
 
       // Log the entire pipeline run object for debugging purposes

@@ -22,6 +22,7 @@ import { jfrogArtifactoryApiRef, JfrogArtifactoryApiV1 } from '../src/api';
 import { mockTags } from '../src/__fixtures__/mockTags';
 import { TagsResponse } from '../src/types';
 import { TestApiProvider } from '@backstage/test-utils';
+import { jfrogArtifactoryTranslations } from '../src/translations';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -49,6 +50,9 @@ const mockJfrogArtifactoryApi = new MockJfrogArtifactoryApi();
 
 createDevApp()
   .registerPlugin(jfrogArtifactoryPlugin)
+  .addTranslationResource(jfrogArtifactoryTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setDefaultLanguage('en')
   .addPage({
     element: (
       <TestApiProvider

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Content, Page, ContentHeader } from '@backstage/core-components';
 import { Wheel } from '../../components/Wheel';
