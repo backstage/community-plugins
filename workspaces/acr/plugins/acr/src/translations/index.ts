@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
-import 'cross-fetch/polyfill';
+import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { acrTranslationRef } from './ref';
 
-import { mockUseTranslation } from './test-utils/mockTranslations';
+/**
+ * Translation resources for the ACR plugin.
+ * @alpha
+ */
+export const acrTranslations = createTranslationResource({
+  ref: acrTranslationRef,
+  translations: {
+    de: () => import('./de'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+    es: () => import('./es'),
+    ja: () => import('./ja'),
+  },
+});
 
-// Global mock for useTranslation hook
-jest.mock('./hooks/useTranslation', () => ({
-  useTranslation: mockUseTranslation,
-}));
+export { acrTranslationRef };

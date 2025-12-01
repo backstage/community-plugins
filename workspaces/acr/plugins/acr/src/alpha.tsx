@@ -79,3 +79,9 @@ export default createFrontendPlugin({
   pluginId: 'acr',
   extensions: [acrApi, acrImagesEntityContent],
 });
+
+/**
+ * @alpha
+ * Translation resources for the ACR plugin
+ */
+export * from './translations';
