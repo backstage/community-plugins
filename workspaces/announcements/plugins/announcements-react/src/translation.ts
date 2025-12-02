@@ -59,7 +59,21 @@ export const announcementsTranslationRef = createTranslationRef({
       },
     },
     deleteDialog: {
+      /**
+       * @deprecated Use confirmDeleteDialog.title instead
+       */
       title: 'Are you sure you want to delete this announcement?',
+      /**
+       * @deprecated Use confirmDeleteDialog.cancel instead
+       */
+      cancel: 'Cancel',
+      /**
+       * @deprecated Use confirmDeleteDialog.delete instead
+       */
+      delete: 'Delete',
+    },
+    confirmDeleteDialog: {
+      title: 'Are you sure you want to delete?',
       cancel: 'Cancel',
       delete: 'Delete',
     },

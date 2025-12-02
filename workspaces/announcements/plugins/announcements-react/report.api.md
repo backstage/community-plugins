@@ -221,6 +221,9 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
+    readonly 'confirmDeleteDialog.cancel': 'Cancel';
+    readonly 'confirmDeleteDialog.title': 'Are you sure you want to delete?';
+    readonly 'confirmDeleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';

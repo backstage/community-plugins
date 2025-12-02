@@ -38,8 +38,7 @@ import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { CategoriesForm } from './CategoriesForm';
-import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
-import { DeleteCategoryDialog } from './DeleteCategoryDialog';
+import { useDeleteDialogState, DeleteDialog } from '../shared';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
@@ -52,8 +51,8 @@ export const CategoriesContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    category: categoryToDelete,
-  } = useDeleteCategoryDialogState();
+    item: categoryToDelete,
+  } = useDeleteDialogState<Category>();
 
   const permissions = useAnnouncementsPermissions();
 
@@ -179,8 +178,8 @@ export const CategoriesContent = () => {
           />
         </Grid>
 
-        <DeleteCategoryDialog
-          open={isDeleteDialogOpen}
+        <DeleteDialog
+          isOpen={isDeleteDialogOpen}
           onCancel={onCancelDelete}
           onConfirm={onConfirmDelete}
         />
