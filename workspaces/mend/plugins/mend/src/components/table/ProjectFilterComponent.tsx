@@ -25,7 +25,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { SelectItem } from '@backstage/core-components';
+import type { SelectItem } from '@backstage/core-components';
 import type { MenuProps as MUIMenuProps } from '@mui/material/Menu';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import Cancel from '@mui/icons-material/Cancel';
@@ -181,29 +181,42 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
           multiple
           value={projectNameFilter}
           onChange={handleProjectNameChange}
+          sx={{
+            '& [class*="MuiSelect-select"]': {
+              display: 'flex',
+              alignItems: 'center',
+              paddingTop: '1rem',
+            },
+          }}
           input={
             <OutlinedInput
               id="select-multiple-project"
               label="Filter by Project Name"
             />
           }
-          SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 15 } }}
           renderValue={selected => {
             const values = Array.isArray(selected)
               ? (selected as string[])
               : [String(selected)];
             return (
-              <Box display="flex" flexWrap="wrap">
+              <Box display="flex" flexWrap="wrap" alignItems="center">
                 {values.map(value =>
                   value === ALL_OPTION.value ? (
-                    <Chip key={ALL_OPTION.value} label={ALL_OPTION.label} />
+                    <Chip
+                      key={ALL_OPTION.value}
+                      label={ALL_OPTION.label}
+                      size="small"
+                    />
                   ) : (
                     <Chip
                       key={value}
                       label={value}
+                      size="small"
                       onMouseDown={e => e.stopPropagation()}
                       onDelete={() => handleChipDelete(value)}
-                      deleteIcon={<Cancel sx={{ marginRight: 1 }} />}
+                      deleteIcon={
+                        <Cancel sx={{ marginRight: 0.5, fontSize: '1.2rem' }} />
+                      }
                       sx={{
                         '& [class*="MuiChip-deleteIcon"]': {
                           // default icon color
