@@ -75,43 +75,33 @@ export function EntityForm<
   const isValid = validateForm ? validateForm(form) : Boolean(form?.title);
 
   return (
-    <Card
-      title={
-        initialData.title
-          ? t(translationKeys.editLabel)
-          : t(translationKeys.newLabel)
-      }
-    >
-      <CardBody>
-        <Box p="1">
-          <form onSubmit={handleSubmit} data-testid={testIds?.form}>
-            <TextField
-              id="title"
-              type="text"
-              label={t(translationKeys.titleLabel)}
-              value={form.title || ''}
-              isRequired
-              onChange={value => setForm({ ...form, title: value } as T)}
-              data-testid={testIds?.titleInput}
-            />
-            <Flex justify="end" pt="3">
-              <Button
-                type="submit"
-                variant="primary"
-                isDisabled={
-                  loading ||
-                  !isValid ||
-                  permissions.create.loading ||
-                  !permissions.create.allowed
-                }
-                data-testid={testIds?.submitButton}
-              >
-                {t(translationKeys.submit)}
-              </Button>
-            </Flex>
-          </form>
-        </Box>
-      </CardBody>
-    </Card>
+    <Box p="1">
+      <form onSubmit={handleSubmit} data-testid={testIds?.form}>
+        <TextField
+          id="title"
+          type="text"
+          label={t(translationKeys.titleLabel)}
+          value={form.title || ''}
+          isRequired
+          onChange={value => setForm({ ...form, title: value } as T)}
+          data-testid={testIds?.titleInput}
+        />
+        <Flex justify="end" pt="3">
+          <Button
+            type="submit"
+            variant="primary"
+            isDisabled={
+              loading ||
+              !isValid ||
+              permissions.create.loading ||
+              !permissions.create.allowed
+            }
+            data-testid={testIds?.submitButton}
+          >
+            {t(translationKeys.submit)}
+          </Button>
+        </Flex>
+      </form>
+    </Box>
   );
 }

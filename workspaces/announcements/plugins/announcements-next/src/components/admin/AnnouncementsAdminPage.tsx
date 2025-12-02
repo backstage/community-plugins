@@ -20,6 +20,7 @@ import {
   adminCategoriesRouteRef,
   adminRouteRef,
   adminTagsRouteRef,
+  adminManageRouteRef,
 } from '../../router/routes';
 
 export type AnnouncementsAdminPageProps = {
@@ -32,6 +33,7 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
   const adminRoute = useRouteRef(adminRouteRef)();
   const adminCategoriesRoute = useRouteRef(adminCategoriesRouteRef)();
   const adminTagsRoute = useRouteRef(adminTagsRouteRef)();
+  const adminManageRoute = useRouteRef(adminManageRouteRef)();
 
   return (
     <>
@@ -53,6 +55,11 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
             id: 'tags',
             label: 'Tags',
             href: adminTagsRoute,
+          },
+          {
+            id: 'manage',
+            label: 'Manage',
+            href: adminManageRoute,
           },
         ]}
       />

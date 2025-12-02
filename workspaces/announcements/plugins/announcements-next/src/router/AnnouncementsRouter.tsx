@@ -21,6 +21,7 @@ import {
   AnnouncementsContent,
   CategoriesContent,
   TagsContent,
+  ManageContent,
 } from '../components';
 
 type RouterProps = {
@@ -59,6 +60,7 @@ export const AnnouncementsRouter = (props: RouterProps) => {
         <Route path="" element={<AnnouncementsContent />} />
         <Route path="categories" element={<CategoriesContent />} />
         <Route path="tags" element={<TagsContent />} />
+        <Route path="manage" element={<ManageContent />} />
       </Route>
     </Routes>
   );

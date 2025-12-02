@@ -17,3 +17,4 @@ export { AnnouncementsAdminPage, type AnnouncementsAdminPageProps } from './Anno
 export { CategoriesContent } from './categories/CategoriesContent';
 export { TagsContent } from './tags/TagsContent';
 export { AnnouncementsContent } from './announcements/AnnouncementsContent';
+export { ManageContent } from './manage';
