@@ -65,7 +65,7 @@ export const Router = (props: RouterProps) => {
         path="/admin/*"
         element={
           <RequirePermission permission={announcementCreatePermission}>
-            <AdminPortal />
+            <AdminPortal defaultInactive={props.defaultInactive} />
           </RequirePermission>
         }
       />

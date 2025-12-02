@@ -16,6 +16,7 @@
 export * from './plugin';
 
 export type {
+  AdminPortalProps,
   AnnouncementsTimelineProps,
   AnnouncementSearchResultProps,
   MarkdownRendererTypeProps,

@@ -48,3 +48,9 @@ export const adminTagsRouteRef = createSubRouteRef({
   parent: rootRouteRef,
   path: '/admin/tags',
 });
+
+/**
+ * @deprecated Use `adminRouteRef` instead. This route ref will be removed in a future release.
+ * @public
+ */
+export const announcementAdminRouteRef = adminRouteRef;

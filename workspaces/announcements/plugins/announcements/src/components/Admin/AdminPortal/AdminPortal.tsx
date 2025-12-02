@@ -40,16 +40,35 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-type AdminPortalProps = {
+/**
+ * Configurable props for the AdminPortal component.
+ *
+ * @public
+ */
+export type AdminPortalProps = {
+  /**
+   * The theme ID to use for the AdminPortal.
+   * @public
+   */
   themeId?: string;
+  /**
+   * The title to use for the AdminPortal.
+   * @public
+   */
   title?: string;
+  /**
+   * The subtitle to use for the AdminPortal.
+   * @public
+   */
   subtitle?: string;
+  /**
+   * Whether to default to creating announcements as inactive.
+   * @public
+   */
   defaultInactive?: boolean;
 };
 
-type AdminPortalContentProps = {
-  defaultInactive?: boolean;
-};
+type AdminPortalContentProps = Pick<AdminPortalProps, 'defaultInactive'>;
 
 const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
   const classes = useStyles();
@@ -109,7 +128,11 @@ const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
   );
 };
 
-/** @public */
+/**
+ * The centralized portal for managing announcements, categories, and tags.
+ *
+ * @public
+ */
 export const AdminPortal = (props?: AdminPortalProps) => {
   const { title, subtitle, themeId } = props ?? {};
   const { t } = useAnnouncementsTranslation();

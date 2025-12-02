@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { AdminPortal } from './AdminPortal';
+export { AdminPortal, type AdminPortalProps } from './AdminPortal';

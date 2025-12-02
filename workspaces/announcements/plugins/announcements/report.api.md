@@ -12,17 +12,19 @@ import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import { SubRouteRef } from '@backstage/core-plugin-api';
+
+// @public
+export type AdminPortalProps = {
+  themeId?: string;
+  title?: string;
+  subtitle?: string;
+  defaultInactive?: boolean;
+};
 
 // @public (undocumented)
 export const AnnouncementsAdminPortal: (
-  props?:
-    | {
-        themeId?: string | undefined;
-        title?: string | undefined;
-        subtitle?: string | undefined;
-        defaultInactive?: boolean | undefined;
-      }
-    | undefined,
+  props?: AdminPortalProps | undefined,
 ) => JSX_2.Element;
 
 // @public (undocumented)
@@ -90,6 +92,10 @@ export const AnnouncementsPage: (props: {
 export const announcementsPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
+    admin: SubRouteRef<undefined>;
+    adminAnnouncements: SubRouteRef<undefined>;
+    adminCategories: SubRouteRef<undefined>;
+    adminTags: SubRouteRef<undefined>;
   },
   {},
   {}

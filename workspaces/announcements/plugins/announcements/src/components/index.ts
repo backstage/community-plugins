@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 export * from './AnnouncementsTimeline';
-export { AdminPortal, AnnouncementsContent } from './Admin';
+export {
+  AdminPortal,
+  AnnouncementsContent,
+  type AdminPortalProps,
+} from './Admin';
 export type { AnnouncementsTimelineProps } from './AnnouncementsTimeline';
 export type { AnnouncementSearchResultProps } from './AnnouncementSearchResultListItem';
 export type { MarkdownRendererTypeProps } from './MarkdownRenderer';
