@@ -45,13 +45,21 @@ export const TablePagination = ({
   const theme = useTheme();
   return (
     <MaterialTablePagination
-      component="div"
+      component="td"
       sx={{
         color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
         backgroundColor:
           theme.palette.mode === 'light'
             ? 'white'
             : theme.palette.background.default,
+        '&[class*="MuiTablePagination-root"]:last-child': {
+          width: '100vw',
+          justifyContent: 'space-between',
+        },
+        '&[class*="MuiTablePagination-toolbar"]': {
+          width: '100vw',
+          justifyContent: 'flex-start',
+        },
         '& .MuiTablePagination-input': {
           marginRight: 'auto',
         },
@@ -68,8 +76,12 @@ export const TablePagination = ({
       rowsPerPage={rowsPerPage}
       page={page}
       onPageChange={onPageChange}
-      SelectProps={{
-        inputProps: { 'aria-label': 'per page' },
+      slotProps={{
+        select: {
+          inputProps: {
+            'aria-label': 'per page',
+          },
+        },
       }}
       onRowsPerPageChange={onRowsPerPageChange}
       ActionsComponent={TablePaginationActions}
