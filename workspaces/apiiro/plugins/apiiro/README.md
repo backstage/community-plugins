@@ -51,7 +51,7 @@ Offers a high-level overview of the repository, including programming languages 
 Add the following annotation into your catalog.
 
 - `apiiro.com/repo-id`: `<repo-key>`
-- `apiiro.com/allow-metrics-view`: `"true"` or `"false"` (controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget, Default: `"false"`)
+- `apiiro.com/allow-metrics-view`: `"true"` or `"false"` (controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget)
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -90,7 +90,13 @@ Add your Apiiro Access Token to your `app-config.yaml` or `app-config.production
 ```yaml
 apiiro:
   accessToken: ${APIIRO_TOKEN}
+  defaultAllowMetricsView: true
 ```
+
+Where:
+
+- `accessToken` is your Apiiro Access Token
+- `defaultAllowMetricsView` is a boolean value that controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget by default. If annotation is not set, this value will be used. Default value is `true`.
 
 **How to Retrieve an Access Token from Apiiro:**
 

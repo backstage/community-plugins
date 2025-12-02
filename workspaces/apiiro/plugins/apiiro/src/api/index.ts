@@ -14,24 +14,38 @@
  * limitations under the License.
  */
 import { QueryClient } from '@tanstack/react-query';
-import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
+import {
+  ConfigApi,
+  createApiRef,
+  DiscoveryApi,
+} from '@backstage/core-plugin-api';
 
 /**
  * Plugin API
  */
 export type ApiiroApi = {
   discoveryApi: DiscoveryApi;
+  getDefaultAllowMetricsView: () => boolean;
 };
 
 export const apiiroApiRef = createApiRef<ApiiroApi>({
   id: 'plugin.apiiro.service',
 });
 
-export class ApiiroClient {
+export class ApiiroClient implements ApiiroApi {
   discoveryApi: DiscoveryApi;
+  private readonly configApi: ConfigApi;
 
-  constructor(options: { discoveryApi: DiscoveryApi }) {
+  constructor(options: { discoveryApi: DiscoveryApi; configApi: ConfigApi }) {
     this.discoveryApi = options.discoveryApi;
+    this.configApi = options.configApi;
+  }
+
+  getDefaultAllowMetricsView(): boolean {
+    return (
+      this.configApi.getOptionalBoolean('apiiro.defaultAllowMetricsView') ??
+      true
+    );
   }
 }
 

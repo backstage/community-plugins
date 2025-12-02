@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { formatNumberWithSuffix } from './numberFormatter';
-export {
-  formatDateWithTimeCheck,
-  formatActivityTooltip,
-} from './dateFormatter';
-export { isApiiroRepoAvailable } from './utils';
-export { isApiiroMetricViewAvailable } from './utils';
+
+export interface Config {
+  /**
+   * Apiiro plugin configuration.
+   * @visibility frontend
+   */
+  apiiro?: {
+    /**
+     * Default value for the allow metrics view annotation
+     * @visibility frontend
+     * @default true
+     */
+    defaultAllowMetricsView: boolean;
+  };
+}

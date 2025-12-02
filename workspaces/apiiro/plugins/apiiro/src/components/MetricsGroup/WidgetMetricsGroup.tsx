@@ -19,16 +19,26 @@ import { TopRiskTile } from '../tiles/TopRiskTile';
 import '../../theme/global.css';
 import StatusTile from '../tiles/StatusTile';
 import { RepositoryType } from '../../queries';
+import { useApi } from '@backstage/core-plugin-api';
+import { isApiiroMetricViewAvailable } from '../../utils';
+import type { Entity } from '@backstage/catalog-model';
+import { apiiroApiRef } from '../../api';
 
 export const WidgetMetricsGroup = ({
   repositoryData,
   repoId,
   entityRef,
+  entity,
 }: {
   repositoryData: RepositoryType;
   repoId: string;
   entityRef: string;
+  entity: Entity;
 }) => {
+  const apiiroApi = useApi(apiiroApiRef);
+  const defaultViewChart = apiiroApi.getDefaultAllowMetricsView();
+  const allowViewChart =
+    isApiiroMetricViewAvailable(entity) ?? defaultViewChart;
   return (
     <Grid container spacing={3} direction="column">
       <Grid container spacing={3}>
@@ -38,12 +48,16 @@ export const WidgetMetricsGroup = ({
             detailViewLink={`${repositoryData.entityUrl}/apiiro`}
           />
         </Grid>
-        <Grid xs={12} sm={6} lg={6}>
-          <TopLanguagesTile data={repositoryData?.languagePercentages} />
-        </Grid>
-        <Grid xs={12} sm={6} lg={6}>
-          <TopRiskTile repoId={repoId} entityRef={entityRef} />
-        </Grid>
+        {allowViewChart && (
+          <>
+            <Grid xs={12} sm={6} lg={6}>
+              <TopLanguagesTile data={repositoryData?.languagePercentages} />
+            </Grid>
+            <Grid xs={12} sm={6} lg={6}>
+              <TopRiskTile repoId={repoId} entityRef={entityRef} />
+            </Grid>
+          </>
+        )}
       </Grid>
     </Grid>
   );

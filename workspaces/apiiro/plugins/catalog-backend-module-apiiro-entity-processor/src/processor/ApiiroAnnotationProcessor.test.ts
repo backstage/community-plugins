@@ -229,7 +229,9 @@ describe('ApiiroAnnotationProcessor', () => {
         },
       });
 
-      jest.spyOn(processor as any, 'getRepoKey' as any).mockResolvedValue(null);
+      jest
+        .spyOn(processor as any, 'getRepoKey' as any)
+        .mockResolvedValue('new-key');
 
       const entity: Entity = {
         apiVersion: 'backstage.io/v1alpha1',
@@ -253,9 +255,9 @@ describe('ApiiroAnnotationProcessor', () => {
         mockCache,
       );
 
-      expect(result.metadata.annotations![APIIRO_METRICS_VIEW_ANNOTATION]).toBe(
-        'true',
-      );
+      expect(
+        result.metadata.annotations?.[APIIRO_METRICS_VIEW_ANNOTATION],
+      ).toBe('true');
     });
   });
 

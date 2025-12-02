@@ -44,9 +44,8 @@ backend.add(
 );
 ```
 
-After the catalog processing interval elapses, entities that have a valid
-`backstage.io/source-location` will be updated with Apiiro annotations when
-they are missing.
+After the catalog processing interval elapses, entities that have a valid `backstage.io/source-location`
+will be updated with Apiiro annotations when they are missing.
 
 ### 2. Apiiro annotations
 
@@ -57,9 +56,8 @@ The processor works with the following annotations:
 
 ### Notes
 
-- Annotation values are derived from the value of `backstage.io/source-location`.
+- Annotation values are derived from the value of `backstage.io/source-location`. If `backstage.io/source-location` is not present, Apiiro annotations will not be added.
 - If Apiiro annotations already exist on an entity, they take precedence and will **not** be overwritten.
-- If `backstage.io/source-location` is not present, Apiiro annotations will not be added.
 
 ## Permissions and Metrics View
 
@@ -70,6 +68,7 @@ widgets. In `app-config.yaml` or `app-config.production.yaml`:
 ```yaml
 apiiro:
   accessToken: ${APIIRO_TOKEN}
+  defaultAllowMetricsView: true
   # Optional configuration to allow or disallow metric views for specific entities
   permissionControl:
     entityNames:
@@ -77,15 +76,15 @@ apiiro:
     exclude: true
 ```
 
-Where:
+Where the parameters in the `permissionControl`:
 
-- `entityNames` is a list of entity references to control access.
+- `entityNames` is a list of entity references to control the metrics view access.
 - `exclude: true` → **blocklist mode** (allow all entities except those listed).
 - `exclude: false` → **allowlist mode** (deny all entities except those listed).
 
 The `apiiro.com/allow-metrics-view` annotation and the above configuration
-together determine whether a given entity can display Apiiro metrics and
-widgets.
+together determine whether a given entity can display metrics on Apiiro Tab and Apiiro Widget.
+If you configure this list it will override the `defaultAllowMetricsView` configuration.
 
 ## Development
 

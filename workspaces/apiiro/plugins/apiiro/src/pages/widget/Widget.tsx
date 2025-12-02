@@ -165,6 +165,7 @@ export const Widget = () => {
         repositoryData={repositoryData}
         repoId={repoId!}
         entityRef={entityRef}
+        entity={entity}
       />
     </>
   );

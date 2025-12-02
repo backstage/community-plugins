@@ -18,5 +18,3 @@ export { ApiiroSidebar } from './components';
 export { ApiiroTab } from './pages/tab';
 export { ApiiroWidget } from './pages/widget';
 export { isApiiroRepoAvailable } from './utils';
-export { isApiiroMetricViewAvailable } from './utils';
-export { isApiiroWidgetAllowed } from './utils';

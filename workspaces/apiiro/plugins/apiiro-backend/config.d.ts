@@ -17,16 +17,23 @@
 export interface Config {
   /**
    * Apiiro plugin configuration.
+   * @visibility frontend
    */
-  apiiro: {
+  apiiro?: {
     /**
-     * @visibility secret
      * Bearer access token used to authorize calls to Apiiro REST API.
+     * @visibility secret
      */
     accessToken: string;
     /**
-     * Permission control configuration for entity access.
-     * Controls which entities users can view Apiiro data for.
+     * Default value for the allow metrics view annotation
+     * @visibility frontend
+     * @default true
+     */
+    defaultAllowMetricsView?: boolean;
+    /**
+     * Permission control configuration for metric view access.
+     * Controls which entities users can view metrics for.
      * @visibility frontend
      */
     permissionControl?: {
@@ -36,8 +43,6 @@ export interface Config {
        *
        * Examples:
        * - 'component:default/example-website'
-       *
-       * @items.format entity-ref
        */
       entityNames: string[];
 

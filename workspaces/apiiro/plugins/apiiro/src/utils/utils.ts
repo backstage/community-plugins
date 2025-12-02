@@ -59,15 +59,15 @@ export const isApiiroRepoAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[APIIRO_PROJECT_ANNOTATION]);
 
 /**
- * @public
  * Checks if the entity has the APIIRO project annotation.
  */
-export const isApiiroMetricViewAvailable = (entity: Entity) =>
-  entity.metadata.annotations?.[APIIRO_METRICS_VIEW_ANNOTATION] === 'true';
+export const isApiiroMetricViewAvailable = (entity: Entity) => {
+  const metricViewAnnotation =
+    entity.metadata.annotations?.[APIIRO_METRICS_VIEW_ANNOTATION];
 
-/**
- * @public
- * Checks if the entity has both the APIIRO project annotation and the APIIRO metrics view annotation.
- */
-export const isApiiroWidgetAllowed = (entity: Entity) =>
-  isApiiroRepoAvailable(entity) && isApiiroMetricViewAvailable(entity);
+  if (metricViewAnnotation === undefined) {
+    return undefined;
+  }
+
+  return metricViewAnnotation.toLocaleLowerCase() === 'true';
+};

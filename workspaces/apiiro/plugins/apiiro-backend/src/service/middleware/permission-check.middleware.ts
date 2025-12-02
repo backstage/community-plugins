@@ -15,6 +15,7 @@
  */
 import * as express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
 import { Entity } from '@backstage/catalog-model';
 import { APIIRO_METRICS_VIEW_ANNOTATION } from '@backstage-community/plugin-apiiro-common';
 import { createUnifiedErrorResponse } from '../utils';
@@ -28,7 +29,10 @@ import { createUnifiedErrorResponse } from '../utils';
  * - Must run after authentication middleware
  * - Must run after entity-access middleware (expects req.entity to be set)
  */
-export function createPermissionCheckMiddleware(logger: LoggerService) {
+export function createPermissionCheckMiddleware(
+  config: Config,
+  logger: LoggerService,
+) {
   return (
     req: express.Request,
     res: express.Response,
@@ -63,7 +67,10 @@ export function createPermissionCheckMiddleware(logger: LoggerService) {
     const hasAnnotation =
       entity.metadata?.annotations?.[APIIRO_METRICS_VIEW_ANNOTATION] === 'true';
 
-    if (!hasAnnotation) {
+    const defaultPermission =
+      config.getOptionalBoolean('apiiro.defaultAllowMetricsView') ?? true;
+
+    if (!hasAnnotation && !defaultPermission) {
       logger.warn(
         `${endpoint} - Permission denied: Entity does not have the access to view metrics for '${entityRef}'`,
         {

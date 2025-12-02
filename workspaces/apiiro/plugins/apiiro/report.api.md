@@ -32,13 +32,7 @@ export const ApiiroTab: () => JSX_2.Element;
 export const ApiiroWidget: () => JSX_2.Element;
 
 // @public
-export const isApiiroMetricViewAvailable: (entity: Entity) => boolean;
-
-// @public
 export const isApiiroRepoAvailable: (entity: Entity) => boolean;
-
-// @public
-export const isApiiroWidgetAllowed: (entity: Entity) => boolean;
 
 // (No @packageDocumentation comment for this package)
 ```

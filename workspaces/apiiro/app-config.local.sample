@@ -1,5 +1,6 @@
 apiiro:
   accessToken:
+  defaultAllowMetricsView: true
   # Optional Configuration for allow and disallow the component
   permissionControl:
     entityNames:

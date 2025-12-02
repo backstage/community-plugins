@@ -334,6 +334,12 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
         'apiiro.permissionControl.entityNames',
       ) ?? [];
 
+    if (entityNames.length === 0) {
+      return (
+        this.config.getOptionalBoolean('apiiro.defaultAllowMetricsView') ?? true
+      );
+    }
+
     const entityRef = this.createEntityReference(entity);
     const isInList = entityNames.includes(entityRef);
 
@@ -364,10 +370,13 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
 
     // Add metrics view annotation if allowed and not already set
     if (
-      allowMetricsView &&
+      (repoKey ||
+        Object.keys(annotations).includes(APIIRO_PROJECT_ANNOTATION)) &&
       !Object.keys(annotations).includes(APIIRO_METRICS_VIEW_ANNOTATION)
     ) {
-      annotations[APIIRO_METRICS_VIEW_ANNOTATION] = 'true';
+      annotations[APIIRO_METRICS_VIEW_ANNOTATION] = allowMetricsView
+        ? 'true'
+        : 'false';
     }
 
     return annotations;

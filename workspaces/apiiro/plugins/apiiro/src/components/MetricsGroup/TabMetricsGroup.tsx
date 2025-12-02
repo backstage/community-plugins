@@ -21,7 +21,9 @@ import '../../theme/global.css';
 import { RepositoryType } from '../../queries';
 import StatusTile from '../tiles/StatusTile';
 import type { Entity } from '@backstage/catalog-model';
+import { useApi } from '@backstage/core-plugin-api';
 import { isApiiroMetricViewAvailable } from '../../utils';
+import { apiiroApiRef } from '../../api';
 
 export const TabMetricsGroup = ({
   repositoryData,
@@ -34,7 +36,10 @@ export const TabMetricsGroup = ({
   repoId: string;
   entityRef: string;
 }) => {
-  const allowViewChart = isApiiroMetricViewAvailable(entity);
+  const apiiroApi = useApi(apiiroApiRef);
+  const defaultViewChart = apiiroApi.getDefaultAllowMetricsView();
+  const allowViewChart =
+    isApiiroMetricViewAvailable(entity) ?? defaultViewChart;
   return (
     <Grid container spacing={3} direction="column">
       <Grid container spacing={3}>

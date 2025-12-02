@@ -18,6 +18,7 @@ import {
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
+  configApiRef,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -34,8 +35,10 @@ export const apiiroPlugin = createPlugin({
       api: apiiroApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
+        configApi: configApiRef,
       },
-      factory: ({ discoveryApi }) => new ApiiroClient({ discoveryApi }),
+      factory: ({ discoveryApi, configApi }) =>
+        new ApiiroClient({ discoveryApi, configApi }),
     }),
   ],
 });

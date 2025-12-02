@@ -105,7 +105,7 @@ export async function createRouter(
   // Initialize middleware
   const checkForAuth = createAuthMiddleware(config, logger);
   const checkEntityAccess = createEntityAccessMiddleware(entityService, logger);
-  const checkViewPermission = createPermissionCheckMiddleware(logger);
+  const checkViewPermission = createPermissionCheckMiddleware(config, logger);
   const jsonErrorHandler = createJsonErrorHandlerMiddleware(logger);
 
   // Apply global middleware

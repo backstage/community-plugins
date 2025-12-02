@@ -76,7 +76,6 @@ import {
   ApiiroTab,
   ApiiroWidget,
   isApiiroRepoAvailable,
-  isApiiroWidgetAllowed,
 } from '@backstage-community/plugin-apiiro';
 
 const techdocsContent = (
@@ -162,7 +161,7 @@ const overviewContent = (
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
     <EntitySwitch>
-      <EntitySwitch.Case if={isApiiroWidgetAllowed}>
+      <EntitySwitch.Case if={isApiiroRepoAvailable}>
         <Grid item md={12} xs={12}>
           <ApiiroWidget />
         </Grid>
