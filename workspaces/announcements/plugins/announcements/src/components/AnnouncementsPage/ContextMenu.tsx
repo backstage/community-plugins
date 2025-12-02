@@ -29,7 +29,7 @@ import {
 } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Description from '@material-ui/icons/Description';
-import { announcementAdminRouteRef } from '../../routes';
+import { adminRouteRef } from '../../routes';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 export function ContextMenu() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
-  const announcementsLink = useRouteRef(announcementAdminRouteRef);
+  const announcementsLink = useRouteRef(adminRouteRef);
   const navigate = useNavigate();
   const { t } = useAnnouncementsTranslation();
 

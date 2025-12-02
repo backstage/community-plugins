@@ -19,14 +19,32 @@ export const rootRouteRef = createRouteRef({
   id: 'announcements',
 });
 
-export const announcementAdminRouteRef = createSubRouteRef({
-  id: 'announcements/admin',
-  path: '/admin',
-  parent: rootRouteRef,
-});
-
 export const announcementViewRouteRef = createSubRouteRef({
   id: 'announcements/view',
   path: '/view/:id',
   parent: rootRouteRef,
+});
+
+export const adminRouteRef = createSubRouteRef({
+  id: 'announcements-admin',
+  parent: rootRouteRef,
+  path: '/admin',
+});
+
+export const adminAnnouncementsRouteRef = createSubRouteRef({
+  id: 'announcements-admin-announcements',
+  parent: rootRouteRef,
+  path: '/admin/announcements',
+});
+
+export const adminCategoriesRouteRef = createSubRouteRef({
+  id: 'announcements-admin-categories',
+  parent: rootRouteRef,
+  path: '/admin/categories',
+});
+
+export const adminTagsRouteRef = createSubRouteRef({
+  id: 'announcements-admin-tags',
+  parent: rootRouteRef,
+  path: '/admin/tags',
 });

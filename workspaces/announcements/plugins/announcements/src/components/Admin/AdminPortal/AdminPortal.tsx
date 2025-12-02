@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChangeEvent, useState } from 'react';
 import { Page, Header, Content } from '@backstage/core-components';
-import { AnnouncementsContent } from '../AnnouncementsContent';
-import { CategoriesContent } from '../CategoriesContent';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import { useRouteRef } from '@backstage/core-plugin-api';
 import { makeStyles, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
+
+import {
+  adminAnnouncementsRouteRef,
+  adminCategoriesRouteRef,
+  adminTagsRouteRef,
+} from '../../../routes';
+
+import { AnnouncementsContent } from '../AnnouncementsContent';
+import { CategoriesContent } from '../CategoriesContent';
 import { TagsContent } from '../TagsContent';
 
 const useStyles = makeStyles(() => ({
@@ -44,14 +53,38 @@ type AdminPortalContentProps = {
 
 const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
   const classes = useStyles();
-  const [tab, setTab] = useState('announcements');
+  const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useAnnouncementsTranslation();
-  const handleChange = (_event: ChangeEvent<{}>, tabValue: string) => {
-    setTab(tabValue);
+
+  const announcementsPath = useRouteRef(adminAnnouncementsRouteRef);
+  const categoriesPath = useRouteRef(adminCategoriesRouteRef);
+  const tagsPath = useRouteRef(adminTagsRouteRef);
+
+  // Determine current tab from URL
+  const getCurrentTab = () => {
+    if (location.pathname.includes('/categories')) return 'categories';
+    if (location.pathname.includes('/tags')) return 'tags';
+    return 'announcements';
   };
 
+  const handleChange = (_event: React.ChangeEvent<{}>, tabValue: string) => {
+    switch (tabValue) {
+      case 'categories':
+        navigate(categoriesPath());
+        break;
+      case 'tags':
+        navigate(tagsPath());
+        break;
+      default:
+        navigate(announcementsPath());
+    }
+  };
+
+  const currentTab = getCurrentTab();
+
   return (
-    <TabContext value={tab}>
+    <TabContext value={currentTab}>
       <TabList onChange={handleChange}>
         <Tab
           label={t('admin.adminPortal.announcementsLabels')}

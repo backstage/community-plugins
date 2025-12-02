@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
-import { announcementAdminRouteRef, announcementViewRouteRef } from '../routes';
+import { announcementViewRouteRef } from '../routes';
 import { AnnouncementsPage, AnnouncementsPageProps } from './AnnouncementsPage';
 import { AnnouncementPage } from './AnnouncementPage';
 import { AdminPortal } from './Admin';
@@ -57,16 +57,12 @@ export const Router = (props: RouterProps) => {
         path={`${announcementViewRouteRef.path}`}
         element={<AnnouncementPage {...propsWithDefaults} />}
       />
+
+      {/* Redirect /admin to /admin/announcements */}
+      <Route path="/admin" element={<Navigate to="announcements" replace />} />
+
       <Route
-        path={`${announcementAdminRouteRef.path}`}
-        element={
-          <RequirePermission permission={announcementCreatePermission}>
-            <AdminPortal />
-          </RequirePermission>
-        }
-      />
-      <Route
-        path={`${announcementAdminRouteRef.path}`}
+        path="/admin/*"
         element={
           <RequirePermission permission={announcementCreatePermission}>
             <AdminPortal />

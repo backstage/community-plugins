@@ -27,12 +27,19 @@ import {
   createSearchResultListItemExtension,
   SearchResultListItemExtensionProps,
 } from '@backstage/plugin-search-react';
-import { AnnouncementSearchResultProps } from './components/AnnouncementSearchResultListItem';
-import { rootRouteRef } from './routes';
 import {
   announcementsApiRef,
   AnnouncementsClient,
 } from '@backstage-community/plugin-announcements-react';
+
+import { AnnouncementSearchResultProps } from './components';
+import {
+  adminAnnouncementsRouteRef,
+  adminCategoriesRouteRef,
+  adminRouteRef,
+  adminTagsRouteRef,
+  rootRouteRef,
+} from './routes';
 
 /**
  * @public
@@ -41,6 +48,10 @@ export const announcementsPlugin = createPlugin({
   id: 'announcements',
   routes: {
     root: rootRouteRef,
+    admin: adminRouteRef,
+    adminAnnouncements: adminAnnouncementsRouteRef,
+    adminCategories: adminCategoriesRouteRef,
+    adminTags: adminTagsRouteRef,
   },
   apis: [
     createApiFactory({

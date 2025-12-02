@@ -22,7 +22,7 @@ import {
 } from '@backstage/core-components';
 import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import {
-  announcementAdminRouteRef,
+  adminRouteRef,
   announcementViewRouteRef,
   rootRouteRef,
 } from '../../routes';
@@ -83,7 +83,7 @@ export const AnnouncementsCard = ({
   const announcementsApi = useApi(announcementsApiRef);
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
-  const announcementAdminLink = useRouteRef(announcementAdminRouteRef);
+  const announcementAdminLink = useRouteRef(adminRouteRef);
   const lastSeen = announcementsApi.lastSeenDate();
   const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
