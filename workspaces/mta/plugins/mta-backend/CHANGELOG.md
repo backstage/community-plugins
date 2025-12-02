@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.5.2
+
+### Patch Changes
+
+- b7af400: Updated dependency `dotenv` to `^17.0.0`.
+
 ## 0.5.1
 
 ### Patch Changes
