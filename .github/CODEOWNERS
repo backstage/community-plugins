@@ -74,7 +74,6 @@ yarn.lock                                                               @backsta
 /workspaces/linguist                                                    @backstage/community-plugins-maintainers  @awanlin
 /workspaces/linkerd                                                     @backstage/community-plugins-maintainers
 /workspaces/manage                                                      @backstage/community-plugins-maintainers  @grantila
-/workspaces/matomo                                                      @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/mcp-chat                                                    @backstage/community-plugins-maintainers  @Lucifergene @christoph-jerolimov @Eswaraiahsapram
 /workspaces/mend                                                        @backstage/community-plugins-maintainers  @NormanWenzelWSS @rupalvihol @hetsaliya-crestdata
 /workspaces/microsoft-calendar                                          @backstage/community-plugins-maintainers
