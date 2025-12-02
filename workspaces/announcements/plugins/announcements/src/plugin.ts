@@ -33,13 +33,7 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 
 import { AnnouncementSearchResultProps } from './components';
-import {
-  adminAnnouncementsRouteRef,
-  adminCategoriesRouteRef,
-  adminRouteRef,
-  adminTagsRouteRef,
-  rootRouteRef,
-} from './routes';
+import { announcementViewRouteRef, rootRouteRef } from './routes';
 
 /**
  * @public
@@ -48,10 +42,7 @@ export const announcementsPlugin = createPlugin({
   id: 'announcements',
   routes: {
     root: rootRouteRef,
-    admin: adminRouteRef,
-    adminAnnouncements: adminAnnouncementsRouteRef,
-    adminCategories: adminCategoriesRouteRef,
-    adminTags: adminTagsRouteRef,
+    view: announcementViewRouteRef,
   },
   apis: [
     createApiFactory({
@@ -64,10 +55,10 @@ export const announcementsPlugin = createPlugin({
       },
       factory: ({ discoveryApi, identityApi, errorApi, fetchApi }) => {
         return new AnnouncementsClient({
-          discoveryApi: discoveryApi,
-          identityApi: identityApi,
-          errorApi: errorApi,
-          fetchApi: fetchApi,
+          discoveryApi,
+          identityApi,
+          errorApi,
+          fetchApi,
         });
       },
     }),
@@ -87,6 +78,7 @@ export const AnnouncementsPage = announcementsPlugin.provide(
 
 /**
  * @public
+ * @deprecated - access via the _manage announcements_ context menu
  */
 export const AnnouncementsAdminPortal = announcementsPlugin.provide(
   createComponentExtension({

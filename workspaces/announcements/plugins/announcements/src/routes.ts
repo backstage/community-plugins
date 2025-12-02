@@ -51,6 +51,5 @@ export const adminTagsRouteRef = createSubRouteRef({
 
 /**
  * @deprecated Use `adminRouteRef` instead. This route ref will be removed in a future release.
- * @public
  */
 export const announcementAdminRouteRef = adminRouteRef;

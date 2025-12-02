@@ -18,16 +18,19 @@ import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { PathParams } from '@backstage/core-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
+import { SubRouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
+    view: SubRouteRef<PathParams<'/view/:id'>>;
   },
   {},
   {
@@ -61,9 +64,9 @@ const _default: OverridableFrontendPlugin<
         variant?: 'block' | 'floating' | undefined;
         max?: number | undefined;
         active?: boolean | undefined;
-        current?: boolean | undefined;
-        tags?: string[] | undefined;
         category?: string | undefined;
+        tags?: string[] | undefined;
+        current?: boolean | undefined;
       };
       output: ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>;
       inputs: {

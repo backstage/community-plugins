@@ -9,6 +9,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
 import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { PathParams } from '@backstage/core-plugin-api';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
@@ -22,7 +23,7 @@ export type AdminPortalProps = {
   defaultInactive?: boolean;
 };
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const AnnouncementsAdminPortal: (
   props?: AdminPortalProps | undefined,
 ) => JSX_2.Element;
@@ -92,10 +93,7 @@ export const AnnouncementsPage: (props: {
 export const announcementsPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
-    admin: SubRouteRef<undefined>;
-    adminAnnouncements: SubRouteRef<undefined>;
-    adminCategories: SubRouteRef<undefined>;
-    adminTags: SubRouteRef<undefined>;
+    view: SubRouteRef<PathParams<'/view/:id'>>;
   },
   {},
   {}
@@ -138,6 +136,9 @@ export const NewAnnouncementBanner: (props: {
   cardOptions?:
     | {
         titleLength?: number | undefined;
+        /**
+         * @public
+         */
         excerptLength?: number | undefined;
       }
     | undefined;

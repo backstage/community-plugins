@@ -23,7 +23,7 @@ import {
   announcementsSearchFilterResultType,
   announcementsSearchResultListItem,
 } from './alpha/search';
-import { rootRouteRef } from './routes';
+import { announcementViewRouteRef, rootRouteRef } from './routes';
 import { announcementsBanner } from './alpha/banner';
 
 /**
@@ -33,6 +33,7 @@ export default createFrontendPlugin({
   pluginId: 'announcements',
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
+    view: announcementViewRouteRef,
   }),
   extensions: [
     announcementsApiExtension,
