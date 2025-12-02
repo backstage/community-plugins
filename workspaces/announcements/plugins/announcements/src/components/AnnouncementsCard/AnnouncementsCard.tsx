@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { DateTime } from 'luxon';
-import { usePermission } from '@backstage/plugin-permission-react';
 import {
   InfoCard,
   InfoCardVariants,
@@ -22,7 +21,6 @@ import {
   Progress,
 } from '@backstage/core-components';
 import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
-import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 import {
   announcementAdminRouteRef,
   announcementViewRouteRef,
@@ -33,6 +31,7 @@ import {
   announcementsApiRef,
   useAnnouncements,
   useAnnouncementsTranslation,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   makeStyles,
@@ -98,10 +97,7 @@ export const AnnouncementsCard = ({
     current,
   });
 
-  const { announcementCreatePermission } = announcementEntityPermissions;
-  const { loading: loadingPermission, allowed: canAdd } = usePermission({
-    permission: announcementCreatePermission,
-  });
+  const permissions = useAnnouncementsPermissions();
 
   if (loading) {
     return <Progress />;
@@ -203,17 +199,19 @@ export const AnnouncementsCard = ({
             />{' '}
           </ListItem>
         ))}
-        {announcements.count === 0 && !loadingPermission && canAdd && (
-          <ListItem>
-            <ListItemText>
-              {`${t('announcementsCard.noAnnouncements')} `}
-              <Link to={announcementAdminLink()} variant="inherit">
-                {t('announcementsCard.addOne')}
-              </Link>
-              ?
-            </ListItemText>
-          </ListItem>
-        )}
+        {announcements.count === 0 &&
+          !permissions.create.loading &&
+          permissions.create.allowed && (
+            <ListItem>
+              <ListItemText>
+                {`${t('announcementsCard.noAnnouncements')} `}
+                <Link to={announcementAdminLink()} variant="inherit">
+                  {t('announcementsCard.addOne')}
+                </Link>
+                ?
+              </ListItemText>
+            </ListItem>
+          )}
       </List>
     </InfoCard>
   );

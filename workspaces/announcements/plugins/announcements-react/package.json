@@ -43,6 +43,7 @@
     "@backstage/core-plugin-api": "^1.12.0",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-react": "^1.21.3",
+    "@backstage/plugin-permission-react": "^0.4.38",
     "luxon": "^3.4.4",
     "react-use": "^17.2.4"
   },

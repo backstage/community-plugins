@@ -28,12 +28,11 @@ import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
   useCategories,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
   announcementCreatePermission,
-  announcementDeletePermission,
-  announcementUpdatePermission,
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
@@ -42,10 +41,7 @@ import { DeleteAnnouncementDialog } from './DeleteAnnouncementDialog';
 import { useNavigate } from 'react-router-dom';
 import { AnnouncementForm } from './AnnouncementForm';
 import slugify from 'slugify';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -64,21 +60,7 @@ export const AnnouncementsContent = ({
   const navigate = useNavigate();
   const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
-
-  const { loading: loadingCreatePermission, allowed: canCreateAnnouncement } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
-
-  const { loading: loadingUpdatePermission, allowed: canUpdateAnnouncement } =
-    usePermission({
-      permission: announcementUpdatePermission,
-    });
-
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
@@ -352,8 +334,8 @@ export const AnnouncementsContent = ({
             <IconButton
               aria-label="edit"
               disabled={
-                loadingUpdatePermission ||
-                !canUpdateAnnouncement ||
+                permissions.update.loading ||
+                !permissions.update.allowed ||
                 editingAnnouncementId === rowData.id
               }
               onClick={() => onEdit(rowData)}
@@ -364,7 +346,9 @@ export const AnnouncementsContent = ({
 
             <IconButton
               aria-label="delete"
-              disabled={loadingDeletePermission || !canDeleteAnnouncement}
+              disabled={
+                permissions.delete.loading || !permissions.delete.allowed
+              }
               onClick={() => openDeleteDialog(rowData)}
               size="small"
             >
@@ -382,7 +366,9 @@ export const AnnouncementsContent = ({
         {!editingAnnouncementId && (
           <Grid item xs={12}>
             <Button
-              disabled={loadingCreatePermission || !canCreateAnnouncement}
+              disabled={
+                permissions.create.loading || !permissions.create.allowed
+              }
               variant="contained"
               onClick={() => onCreateButtonClick()}
             >

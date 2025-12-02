@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { usePermission } from '@backstage/plugin-permission-react';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
-import { announcementDeletePermission } from '@backstage-community/plugin-announcements-common';
-import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import {
+  useAnnouncementsTranslation,
+  useAnnouncementsPermissions,
+} from '@backstage-community/plugin-announcements-react';
 
 type DeleteAnnouncementDialogProps = {
   open: boolean;
@@ -29,10 +30,7 @@ export const DeleteAnnouncementDialog = (
 ) => {
   const { open, onConfirm, onCancel } = props;
 
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
   const { t } = useAnnouncementsTranslation();
 
   return (
@@ -42,7 +40,7 @@ export const DeleteAnnouncementDialog = (
         <Button onClick={onCancel}>{t('deleteDialog.cancel')}</Button>
 
         <Button
-          disabled={loadingDeletePermission || !canDeleteAnnouncement}
+          disabled={permissions.delete.loading || !permissions.delete.allowed}
           onClick={onConfirm}
           color="secondary"
         >

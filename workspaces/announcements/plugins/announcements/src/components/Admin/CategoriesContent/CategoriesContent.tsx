@@ -25,17 +25,14 @@ import {
   announcementsApiRef,
   useAnnouncementsTranslation,
   useCategories,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   announcementCreatePermission,
-  announcementDeletePermission,
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -58,15 +55,7 @@ export const CategoriesContent = () => {
     category: categoryToDelete,
   } = useDeleteCategoryDialogState();
 
-  const { loading: loadingCreatePermission, allowed: canCreateCategory } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
-
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const onSubmit = async (request: CreateCategoryRequest) => {
     const { title } = request;
@@ -145,7 +134,7 @@ export const CategoriesContent = () => {
         return (
           <IconButton
             aria-label="delete"
-            disabled={loadingDeletePermission || !canDeleteAnnouncement}
+            disabled={permissions.delete.loading || !permissions.delete.allowed}
             onClick={() => openDeleteDialog(rowData)}
           >
             <DeleteIcon fontSize="small" data-testid="delete-icon" />
@@ -160,7 +149,7 @@ export const CategoriesContent = () => {
       <Grid container>
         <Grid item xs={12}>
           <Button
-            disabled={loadingCreatePermission || !canCreateCategory}
+            disabled={permissions.create.loading || !permissions.create.allowed}
             variant="contained"
             onClick={() => onCreateButtonClick()}
           >
