@@ -18,7 +18,7 @@ import { EntityAirbrakeWidget } from './EntityAirbrakeWidget';
 import exampleData from '../../api/mock/airbrakeGroupsApiMock.json';
 import {
   renderInTestApp,
-  setupRequestMockHandlers,
+  registerMswTestHooks,
   TestApiProvider,
 } from '@backstage/test-utils';
 import {
@@ -33,7 +33,7 @@ import { setupServer } from 'msw/node';
 
 describe('EntityAirbrakeWidget', () => {
   const worker = setupServer();
-  setupRequestMockHandlers(worker);
+  registerMswTestHooks(worker);
 
   it('renders all errors sent from Airbrake', async () => {
     const widget = await renderInTestApp(
