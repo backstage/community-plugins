@@ -19,7 +19,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { rootRouteRef } from '../../routes';
 import {
-  setupRequestMockHandlers,
+  registerMswTestHooks,
   renderInTestApp,
   TestApiRegistry,
 } from '@backstage/test-utils';
@@ -30,7 +30,7 @@ import { ApiProvider } from '@backstage/core-app-api';
 describe('CodeScenePageComponent', () => {
   const server = setupServer();
   // Enable sane handlers for network requests
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
   let apis: TestApiRegistry;
 
   // setup mock response
