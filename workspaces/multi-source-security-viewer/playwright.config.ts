@@ -39,9 +39,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [['html', { open: 'never', outputFolder: 'e2e-test-report' }]],
   use: {
-    baseURL:
-      process.env.PLAYWRIGHT_URL ??
-      (process.env.CI ? 'http://localhost:7007' : 'http://localhost:3000'),
+    baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
   },
