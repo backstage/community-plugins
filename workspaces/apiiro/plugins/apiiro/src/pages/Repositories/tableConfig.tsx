@@ -19,6 +19,7 @@ import { Chip, ChipsList, RiskLevel, SimpleTooltip } from '../../components';
 import { commonRiskColorMappings } from '../../components/RiskLevel';
 import { scmProviderIcons } from '../../components/common/scmProviders';
 import { formatDate } from '../../utils/utils';
+import Typography from '@mui/material/Typography';
 
 // Color mapping for business impact
 export const businessImpactColorMapping = {
@@ -214,7 +215,7 @@ export const repositoryColumns: GridColDef[] = [
           : 'No sensitive data';
       return (
         <SimpleTooltip title={tooltipText} centered>
-          <span>{displayValue}</span>
+          <Typography>{displayValue}</Typography>
         </SimpleTooltip>
       );
     },

@@ -67,6 +67,7 @@ Optionally, define a list of entities that should have restricted access to Apii
 ```yaml
 apiiro:
   accessToken: ${APIIRO_TOKEN}
+  defaultAllowMetricsView: true
   # Optional configuration to allow or disallow metric views for specific entities
   permissionControl:
     entityNames:

@@ -11,7 +11,7 @@ The Apiiro plugin empowers developers to code securely by automatically checking
 - **Dashboard View**: Repository list with comprehensive statistics from Apiiro
 - **Apiiro Tab**: Detailed risk metrics and security insights for each repository
 - **Apiiro Widget**: Embeddable widget for custom entity tabs
-- **Permission Control**: Fine-grained access control for Apiiro metrics view and Widget
+- **Permission Control**: Fine-grained access control for Apiiro metrics view on Apiiro Tab and Apiiro Widget
 
 ## Plugin Compatibility
 
@@ -45,18 +45,23 @@ This repository contains the following plugin packages:
 - Node.js (v18 or higher recommended)
 - Yarn package manager
 - Apiiro Access Token with at least read permissions
-- Backstage instance (v1.40.x or higher)
 
 ## Configuration
 
 ### 1. Configure Access Token
 
-Add your Apiiro Access Token to `app-config.yaml` or `app-config.production.yaml`:
+Add your Apiiro Access Token to `app-config.local.yaml`:
 
 ```yaml
 apiiro:
   accessToken: ${APIIRO_TOKEN}
+  defaultAllowMetricsView: true
 ```
+
+Where:
+
+- `accessToken` is your Apiiro Access Token
+- `defaultAllowMetricsView` is a boolean value that controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget by default. If annotation is not set, this value will be used. Default value is `true`.
 
 **How to Retrieve an Access Token from Apiiro:**
 
@@ -72,16 +77,14 @@ To restrict access to Apiiro metrics for specific entities:
 ```yaml
 apiiro:
   accessToken: ${APIIRO_TOKEN}
+  defaultAllowMetricsView: true
   permissionControl:
     entityNames:
       - component:<namespace>/<entity-name>
     exclude: true # true = blocklist mode, false = allowlist mode
-
-permission:
-  enabled: true
 ```
 
-See the [backend plugin documentation](./plugins/apiiro-backend/README.md#configure-permissions-optional) for detailed permission setup instructions.
+See the [backend plugin documentation](./plugins/apiiro-backend/README.md#automatically-adding-apiiro-annotations-optional) for detailed permission setup instructions.
 
 ## Documentation
 
@@ -99,9 +102,7 @@ apiiro-backstage/
 │   ├── apiiro-backend/      # Backend plugin
 │   ├── apiiro-common/       # Common package
 │   └── catalog-backend-module-apiiro-entity-processor/  # Catalog backend module for Apiiro annotations
-├── packages/
-│   ├── app/                 # Backstage app
-│   └── backend/             # Backstage backend
+├── app-config.local.sample  # Sample development configuration
 ├── app-config.yaml          # Development configuration
 └── app-config.production.yaml  # Production configuration
 ```

@@ -11,9 +11,9 @@
 
 | Name                          | Location          | Severity |
 | :---------------------------- | :---------------- | :------- |
-| @tanstack/eslint-plugin-query | package.json:65:6 | error    |
-| @testing-library/user-event   | package.json:68:6 | error    |
+| @tanstack/eslint-plugin-query | package.json:66:6 | error    |
+| @testing-library/user-event   | package.json:69:6 | error    |
 | @backstage/core-app-api       | package.json:62:6 | error    |
-| @testing-library/react        | package.json:67:6 | error    |
-| @backstage/test-utils         | package.json:64:6 | error    |
-| msw                           | package.json:70:6 | error    |
+| @testing-library/react        | package.json:68:6 | error    |
+| @backstage/test-utils         | package.json:65:6 | error    |
+| msw                           | package.json:71:6 | error    |

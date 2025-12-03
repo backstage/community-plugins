@@ -70,7 +70,7 @@ Please find the steps to add the annotation automatically [here](../apiiro-backe
 From your Backstage root directory, run:
 
 ```bash
-yarn --cwd packages/app add @backstage-community/plugin-apiiro @backstage-community/plugin-apiiro-common
+yarn --cwd packages/app add @backstage-community/plugin-apiiro
 yarn --cwd packages/backend add @backstage-community/plugin-apiiro-backend
 ```
 
@@ -211,5 +211,4 @@ To run the entire project including the backend, run `yarn start` from the works
 ## Links
 
 - [Backend Plugin Documentation](../apiiro-backend/README.md)
-- [Common Plugin Documentation](../apiiro-common/README.md)
 - [Add Annotation Automatically](../apiiro-backend/README.md#automatically-adding-apiiro-annotations-optional)

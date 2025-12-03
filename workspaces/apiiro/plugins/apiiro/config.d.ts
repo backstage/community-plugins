@@ -25,6 +25,6 @@ export interface Config {
      * @visibility frontend
      * @default true
      */
-    defaultAllowMetricsView: boolean;
+    defaultAllowMetricsView?: boolean;
   };
 }

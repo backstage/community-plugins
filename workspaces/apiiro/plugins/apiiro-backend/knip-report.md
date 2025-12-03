@@ -11,5 +11,5 @@
 
 | Name             | Location          | Severity |
 | :--------------- | :---------------- | :------- |
-| @types/supertest | package.json:53:6 | error    |
-| supertest        | package.json:54:6 | error    |
+| @types/supertest | package.json:56:6 | error    |
+| supertest        | package.json:57:6 | error    |

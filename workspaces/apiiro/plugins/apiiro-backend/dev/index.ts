@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 import { createBackend } from '@backstage/backend-defaults';
-import { mockServices } from '@backstage/backend-test-utils';
 
 const backend = createBackend();
 
-// Use mock auth for local development. Swap these with real auth backends if
-// you want to verify end-to-end authentication flows.
-backend.add(mockServices.auth.factory());
-backend.add(mockServices.httpAuth.factory());
+// the auth plugin is needed to setup a fully authenticated backend for the catalog backend
+backend.add(import('@backstage/plugin-auth-backend'));
+// this is the simplest authentication provider
+backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+// See https://backstage.io/docs/auth/guest/provider
+
+// We need the catalog plugin to get the example entities and make the front entity page functional
+backend.add(import('@backstage/plugin-catalog-backend'));
 
 // Load the plugins
-backend.add(import('../src'));
+backend.add(import('../src/index'));
+backend.add(
+  import(
+    '@backstage-community/plugin-catalog-backend-module-apiiro-entity-processor'
+  ),
+);
 
 backend.start();
