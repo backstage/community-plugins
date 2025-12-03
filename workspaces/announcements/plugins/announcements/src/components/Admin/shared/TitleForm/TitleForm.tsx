@@ -16,7 +16,7 @@
 import { ChangeEvent, FormEvent, useMemo, useState } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { useAnnouncementsPermissions } from '@backstage-community/plugin-announcements-react';
-import { Button, TextField } from '@material-ui/core';
+import { Box, Button, TextField } from '@material-ui/core';
 
 type TitleFormTranslationKeys = {
   new: string;
@@ -89,17 +89,20 @@ export const TitleForm = <T extends TitleFormRequest>(
       title={initialData?.title ? translationKeys.edit : translationKeys.new}
     >
       <form onSubmit={handleSubmit} data-testid={testIds?.form ?? 'title-form'}>
-        <TextField
-          id="title"
-          data-testid={testIds?.input ?? 'title-input'}
-          type="text"
-          label={translationKeys.titleLabel}
-          value={form.title}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          required
-        />
+        <Box py={2}>
+          <TextField
+            id="title"
+            data-testid={testIds?.input ?? 'title-input'}
+            type="text"
+            label={translationKeys.titleLabel}
+            value={form.title}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            required
+          />
+        </Box>
+
         <Button
           variant="contained"
           color="primary"
