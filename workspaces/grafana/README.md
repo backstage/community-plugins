@@ -1,10 +1,7 @@
-# [Backstage](https://backstage.io)
+# Grafana
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for integrating [Grafana](https://grafana.com/) into Backstage, allowing you to view dashboards and alerts directly within your developer portal.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [grafana](./plugins/grafana/README.md): Frontend plugin that provides UI components to display dashboards and alerts for your entities.
