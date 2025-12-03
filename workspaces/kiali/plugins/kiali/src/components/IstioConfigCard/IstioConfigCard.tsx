@@ -110,6 +110,7 @@ export const IstioConfigCard: React.FC<IstioConfigCardProps> = (
               columns={columns}
               rows={rows}
               emptyState={noIstioConfig}
+              data-test="kiali-istio-config-table"
             />
           </CardContent>
         </>
@@ -121,6 +122,7 @@ export const IstioConfigCard: React.FC<IstioConfigCardProps> = (
             columns={columns}
             rows={rows}
             emptyState={noIstioConfig}
+            data-test="kiali-istio-config-table"
           />
         </CardContent>
       )}

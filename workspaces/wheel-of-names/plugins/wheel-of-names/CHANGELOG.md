@@ -1,5 +1,15 @@
 # @backstage-community/plugin-wheel-of-names
 
+## 0.6.0
+
+### Minor Changes
+
+- f70cce3: Added support for new Frontend
+
+### Patch Changes
+
+- 5d7bc2d: Update to modern JSX transform (react-jsx)
+
 ## 0.5.0
 
 ### Minor Changes

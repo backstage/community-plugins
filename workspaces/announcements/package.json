@@ -13,6 +13,7 @@
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "build:knip-reports": "backstage-repo-tools knip-reports",
+    "build:list-deprecations": "backstage-cli repo list-deprecations",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
@@ -25,7 +26,8 @@
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope @backstage-community",
+    "validate": "yarn build:all && yarn lint && yarn prettier:fix && yarn test:all && yarn build:list-deprecations"
   },
   "repository": {
     "type": "git",

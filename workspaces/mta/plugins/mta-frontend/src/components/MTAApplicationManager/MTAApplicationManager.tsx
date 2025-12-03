@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, Tab, Tabs, makeStyles } from '@material-ui/core';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
@@ -35,9 +35,9 @@ export const MTAApplicationManager = () => {
 
   const [application, setApplication] =
     useState<Application>(initialApplication);
-  const [isWaiting, setIsWaiting] = React.useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (entity) {
       catalogApi
         .getEntityByRef(
@@ -58,7 +58,7 @@ export const MTAApplicationManager = () => {
     }
   }, [entity, catalogApi]);
 
-  const [tab, setTab] = React.useState(0);
+  const [tab, setTab] = useState(0);
 
   const handleTabChange = (newValue: any) => {
     setTab(newValue);

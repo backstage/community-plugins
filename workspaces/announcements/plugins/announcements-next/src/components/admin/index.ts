@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { AnnouncementsAdminPage, type AnnouncementsAdminPageProps } from './AnnouncementsAdminPage';
+export {
+  AnnouncementsAdminPage,
+  type AnnouncementsAdminPageProps,
+} from './AnnouncementsAdminPage';
 export { CategoriesContent } from './categories/CategoriesContent';
 export { TagsContent } from './tags/TagsContent';
 export { AnnouncementsContent } from './announcements/AnnouncementsContent';

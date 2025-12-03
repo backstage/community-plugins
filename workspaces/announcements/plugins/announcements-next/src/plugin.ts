@@ -18,7 +18,6 @@ import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from './router';
 import { announcementsApi, announcementsPage } from './extensions';
 
-
 /**
  * The announcements-next frontend plugin. Contains all the necessary configuration
  * for the announcements-next plugin.
@@ -30,8 +29,5 @@ export default createFrontendPlugin({
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
-  extensions: [
-    announcementsApi,
-    announcementsPage,
-  ],
+  extensions: [announcementsApi, announcementsPage],
 });

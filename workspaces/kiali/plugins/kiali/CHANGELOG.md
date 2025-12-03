@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.47.0
+
+### Minor Changes
+
+- 9c32784: Add e2e tests
+
 ## 1.46.0
 
 ### Minor Changes

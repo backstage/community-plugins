@@ -55,15 +55,8 @@ import {
   DialogHeader,
   DialogBody,
   Header,
-  ButtonIcon,
 } from '@backstage/ui';
-import {
-  RiAddLine,
-  RiCloudy2Line,
-  RiEmotionHappyLine,
-  RiHeartLine,
-  RiBook2Fill,
-} from '@remixicon/react';
+import { RiAddLine, RiBook2Fill } from '@remixicon/react';
 
 import { AnnouncementForm } from '../announcements/AnnouncementForm';
 import { AnnouncementsTable } from '../announcements/AnnouncementsTable';
@@ -86,7 +79,7 @@ export const ManageContent = (props: ManageContentProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
-  const [searchText, setSearchText] = useState('');
+  const [searchText, _setSearchText] = useState('');
   const permissions = useAnnouncementsPermissions();
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =

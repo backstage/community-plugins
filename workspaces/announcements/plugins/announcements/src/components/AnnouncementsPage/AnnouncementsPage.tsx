@@ -15,11 +15,7 @@
  */
 import { useState, ReactNode, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { usePermission } from '@backstage/plugin-permission-react';
-import {
-  announcementCreatePermission,
-  Announcement,
-} from '@backstage-community/plugin-announcements-common';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import {
   Page,
@@ -34,6 +30,7 @@ import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
   useAnnouncements,
   useAnnouncementsTranslation,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   Box,
@@ -263,8 +260,7 @@ export type AnnouncementsPageProps = {
 export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const { loading: loadingCreatePermission, allowed: canCreate } =
-    usePermission({ permission: announcementCreatePermission });
+  const permissions = useAnnouncementsPermissions();
 
   const {
     hideContextMenu,
@@ -283,9 +279,9 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   return (
     <Page themeId={themeId}>
       <Header title={title} subtitle={subtitle}>
-        {!hideContextMenu && !loadingCreatePermission && canCreate && (
-          <ContextMenu />
-        )}
+        {!hideContextMenu &&
+          !permissions.create.loading &&
+          permissions.create.allowed && <ContextMenu />}
       </Header>
 
       <Content>

@@ -25,7 +25,6 @@ import {
   SearchField,
   Select,
   Link,
-  Text,
 } from '@backstage/ui';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
@@ -104,7 +103,7 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
       });
   }, [searchQuery, categoryFilter, announcements?.results]);
 
-  const emptyStateMessage = useMemo(() => {
+  const emptyStateMessage: string = useMemo(() => {
     const hasAnnouncements = (announcements?.results?.length ?? 0) > 0;
     const hasActiveFilters = searchQuery || categoryFilter !== 'all';
 
@@ -114,9 +113,7 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
       // TODO: Add translation
       const AdminLink = <Link href="/announcements/admin">Admin Portal</Link>;
       // return `Get started by creating an announcement in the ${AdminLink}.`;
-      return (
-        <Text>Get started by creating an announcement in the {AdminLink}.</Text>
-      );
+      return `Get started by creating an announcement in the ${AdminLink}.`;
     }
 
     // Check for having announcements but none match the current filters

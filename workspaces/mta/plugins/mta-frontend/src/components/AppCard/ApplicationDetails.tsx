@@ -1,4 +1,3 @@
-import React from 'react';
 import { InfoCard, LinkButton } from '@backstage/core-components';
 import {
   Grid,

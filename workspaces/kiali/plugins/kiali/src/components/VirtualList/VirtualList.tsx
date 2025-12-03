@@ -169,7 +169,7 @@ export const VirtualList = <R extends RenderResource>(
       <Paper className="Paper">
         {listProps.tableToolbar}
         <TableContainer style={heightStyle}>
-          <Table stickyHeader>
+          <Table stickyHeader data-test={`kiali-${listProps.type}-table`}>
             <TableHead style={{ border: 'collapse', background: 'white' }}>
               <TableRow>
                 {columns.map((column: ResourceType<any>, index: number) => (

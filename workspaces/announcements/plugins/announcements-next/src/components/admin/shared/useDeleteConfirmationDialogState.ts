@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 type DeleteConfirmationDialogState<T> = {
   open: (t: T) => void;

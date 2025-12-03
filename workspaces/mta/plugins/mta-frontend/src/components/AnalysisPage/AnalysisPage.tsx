@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import {
   Button,
   FormControl,
@@ -26,7 +26,7 @@ export const AnalysisPage = () => {
       targetList: [],
     },
   });
-  const [isAnalyzing, setIsAnalyzing] = React.useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const entity = useEntity();
 
   const { targets } = useFetchTargets();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { FormEvent, useState } from 'react';
-import { Card, Button, TextField, CardBody, Box, Flex } from '@backstage/ui';
+import { Button, TextField, Box, Flex } from '@backstage/ui';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import { useAnnouncementsPermissions } from './useAnnouncementsPermissions';
 

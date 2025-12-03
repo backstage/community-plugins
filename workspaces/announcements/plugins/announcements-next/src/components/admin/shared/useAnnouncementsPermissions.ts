@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import { usePermission } from '@backstage/plugin-permission-react';
-import {
-  announcementEntityPermissions
-} from '@backstage-community/plugin-announcements-common';
+import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 
 /**
  * Hook that provides all announcement-related permissions in a single place.
@@ -27,26 +25,21 @@ import {
  * @public
  */
 export function useAnnouncementsPermissions() {
-  const { announcementCreatePermission, announcementDeletePermission, announcementUpdatePermission } = announcementEntityPermissions;
-
   const {
-    loading: loadingCreate,
-    allowed: canCreate,
-  } = usePermission({
+    announcementCreatePermission,
+    announcementDeletePermission,
+    announcementUpdatePermission,
+  } = announcementEntityPermissions;
+
+  const { loading: loadingCreate, allowed: canCreate } = usePermission({
     permission: announcementCreatePermission,
   });
 
-  const {
-    loading: loadingDelete,
-    allowed: canDelete,
-  } = usePermission({
+  const { loading: loadingDelete, allowed: canDelete } = usePermission({
     permission: announcementDeletePermission,
   });
 
-  const {
-    loading: loadingUpdate,
-    allowed: canUpdate,
-  } = usePermission({
+  const { loading: loadingUpdate, allowed: canUpdate } = usePermission({
     permission: announcementUpdatePermission,
   });
 

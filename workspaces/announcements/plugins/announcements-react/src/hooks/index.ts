@@ -21,3 +21,7 @@ export { useCategories } from './useCategories';
 export { useTags } from './useTags';
 export { useAnnouncementsTranslation } from './useAnnouncementsTranslation';
 export { useCatalogEntities } from './useCatalogEntities';
+export {
+  useAnnouncementsPermissions,
+  type AnnouncementsPermissionsResult,
+} from './useAnnouncementsPermissions';
