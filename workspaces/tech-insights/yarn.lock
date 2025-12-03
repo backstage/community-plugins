@@ -2795,7 +2795,7 @@ __metadata:
     semver: "npm:^7.5.3"
     supertest: "npm:^7.0.0"
     uuid: "npm:^9.0.0"
-    wait-for-expect: "npm:^3.0.2"
+    wait-for-expect: "npm:^4.0.0"
     yn: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
@@ -31683,10 +31683,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-for-expect@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "wait-for-expect@npm:3.0.2"
-  checksum: 10/023333b36e962e23a56b4f4ce2ab7166bdba036f096a59f1c531fbfcf1341b43b102ad54f3b684b37a492a53c03ba92829276101070563940be6e29901a532e0
+"wait-for-expect@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "wait-for-expect@npm:4.0.0"
+  checksum: 10/f9a07b1cdc1dc203030bb9f24dfa6772839db825535519cc47263a497a5a8436dcb2e9a81934574ea6699c51e128c8512edf87cd873a9b611e8e09240853f927
   languageName: node
   linkType: hard
 
