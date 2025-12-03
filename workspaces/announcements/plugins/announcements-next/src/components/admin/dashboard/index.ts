@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ManageContent } from './ManageContent';
+export { AdminDashboard } from './AdminDashboard';

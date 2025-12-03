@@ -20,7 +20,7 @@ import {
   adminCategoriesRouteRef,
   adminRouteRef,
   adminTagsRouteRef,
-  adminManageRouteRef,
+  adminDashboardRouteRef,
 } from '../../router/routes';
 
 export type AnnouncementsAdminPageProps = {
@@ -33,7 +33,7 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
   const adminRoute = useRouteRef(adminRouteRef)();
   const adminCategoriesRoute = useRouteRef(adminCategoriesRouteRef)();
   const adminTagsRoute = useRouteRef(adminTagsRouteRef)();
-  const adminManageRoute = useRouteRef(adminManageRouteRef)();
+  const adminDashboardRoute = useRouteRef(adminDashboardRouteRef)();
 
   return (
     <>
@@ -41,6 +41,11 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
         title={title ?? 'Announcements Admin Portal'}
         breadcrumbs={[{ label: 'Home', href: '/' }]}
         tabs={[
+          {
+            id: 'dashboard',
+            label: 'Dashboard',
+            href: adminDashboardRoute,
+          },
           {
             id: 'announcements',
             label: 'Announcements',
@@ -55,11 +60,6 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
             id: 'tags',
             label: 'Tags',
             href: adminTagsRoute,
-          },
-          {
-            id: 'manage',
-            label: 'Manage',
-            href: adminManageRoute,
           },
         ]}
       />

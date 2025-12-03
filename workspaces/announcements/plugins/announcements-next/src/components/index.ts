@@ -23,5 +23,5 @@ export {
   CategoriesContent,
   TagsContent,
   AnnouncementsContent,
-  ManageContent,
+  AdminDashboard,
 } from './admin';

@@ -37,8 +37,8 @@ export const adminTagsRouteRef = createSubRouteRef({
   parent: rootRouteRef,
 });
 
-export const adminManageRouteRef = createSubRouteRef({
-  id: 'announcements-next-admin-manage',
-  path: '/admin/manage',
+export const adminDashboardRouteRef = createSubRouteRef({
+  id: 'announcements-next-admin-dashboard',
+  path: '/admin/dashboard',
   parent: rootRouteRef,
 });
