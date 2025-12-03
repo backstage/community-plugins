@@ -37,8 +37,7 @@ import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { useDeleteTagDialogState } from './useDeleteTagDialogState';
-import { DeleteTagDialog } from './DeleteTagDialog';
+import { useDeleteDialogState, DeleteDialog } from '../DeleteDialog';
 import { TagsForm } from './TagsForm';
 
 export const TagsContent = () => {
@@ -52,8 +51,8 @@ export const TagsContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    tag: tagToDelete,
-  } = useDeleteTagDialogState();
+    item: tagToDelete,
+  } = useDeleteDialogState<Tag>();
 
   const permissions = useAnnouncementsPermissions();
 
@@ -185,8 +184,8 @@ export const TagsContent = () => {
           />
         </Grid>
 
-        <DeleteTagDialog
-          open={isDeleteDialogOpen}
+        <DeleteDialog
+          isOpen={isDeleteDialogOpen}
           onCancel={onCancelDelete}
           onConfirm={onConfirmDelete}
         />

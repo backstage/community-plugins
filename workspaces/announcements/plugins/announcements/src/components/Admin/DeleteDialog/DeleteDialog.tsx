@@ -19,32 +19,34 @@ import {
   useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 
-type DeleteAnnouncementDialogProps = {
-  open: boolean;
-  onConfirm: () => any;
-  onCancel: () => any;
+type DeleteDialogProps = {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
 };
 
-export const DeleteAnnouncementDialog = (
-  props: DeleteAnnouncementDialogProps,
-) => {
-  const { open, onConfirm, onCancel } = props;
+export const DeleteDialog = (props: DeleteDialogProps) => {
+  const { isOpen, onConfirm, onCancel } = props;
 
-  const permissions = useAnnouncementsPermissions();
   const { t } = useAnnouncementsTranslation();
+  const permissions = useAnnouncementsPermissions();
+
+  const dialogTitle = t('confirmDeleteDialog.title');
+  const cancelText = t('confirmDeleteDialog.cancel');
+  const deleteText = t('confirmDeleteDialog.delete');
 
   return (
-    <Dialog open={open} onClose={onCancel}>
-      <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
+    <Dialog open={isOpen} onClose={onCancel}>
+      <DialogTitle>{dialogTitle}</DialogTitle>
       <DialogActions>
-        <Button onClick={onCancel}>{t('deleteDialog.cancel')}</Button>
+        <Button onClick={onCancel}>{cancelText}</Button>
 
         <Button
           disabled={permissions.delete.loading || !permissions.delete.allowed}
           onClick={onConfirm}
           color="secondary"
         >
-          {t('deleteDialog.delete')}
+          {deleteText}
         </Button>
       </DialogActions>
     </Dialog>

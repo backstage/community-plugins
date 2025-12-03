@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tag } from '@backstage-community/plugin-announcements-common';
 import { useCallback, useState } from 'react';
 
-type DeleteTagDialogState = {
-  open: (t: Tag) => void;
+type DeleteDialogState<T> = {
+  open: (item: T) => void;
   close: () => void;
-
   isOpen: boolean;
-  tag?: Tag;
+  item?: T;
 };
 
-export function useDeleteTagDialogState(): DeleteTagDialogState {
+export function useDeleteDialogState<T>(): DeleteDialogState<T> {
   const [state, setState] = useState<{
     open: boolean;
-    tag?: Tag;
+    item?: T;
   }>({ open: false });
 
   const setOpen = useCallback(
-    (t: Tag) => {
+    (item: T) => {
       setState({
         open: true,
-        tag: t,
+        item,
       });
     },
     [setState],
@@ -43,15 +41,14 @@ export function useDeleteTagDialogState(): DeleteTagDialogState {
   const setClosed = useCallback(() => {
     setState({
       open: false,
-      tag: undefined,
+      item: undefined,
     });
   }, [setState]);
 
   return {
     open: setOpen,
     close: setClosed,
-
-    tag: state.tag,
+    item: state.item,
     isOpen: state.open,
   };
 }
