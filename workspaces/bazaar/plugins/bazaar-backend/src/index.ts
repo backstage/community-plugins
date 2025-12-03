@@ -15,5 +15,3 @@
  */
 
 export { bazaarBackendPlugin as default } from './plugin';
-
-export * from './service/router';
