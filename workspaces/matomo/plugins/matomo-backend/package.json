@@ -47,8 +47,8 @@
     "@backstage/backend-test-utils": "^1.7.0",
     "@backstage/cli": "^0.33.1",
     "@types/express": "*",
-    "@types/supertest": "^2.0.12",
-    "supertest": "^6.2.4"
+    "@types/supertest": "^6.0.0",
+    "supertest": "^7.0.0"
   },
   "files": [
     "dist",
