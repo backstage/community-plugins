@@ -79,17 +79,28 @@ export class Common {
   async clickButton(
     label: string,
     clickOpts?: Parameters<Locator['click']>[0],
-    getByTextOpts: Parameters<Locator['getByText']>[1] = { exact: true },
+    // getByTextOpts: Parameters<Locator['getByText']>[1] = { exact: true },
   ) {
     const muiButtonLabel =
       'span[class^="MuiButton-label"],button[class*="MuiButton-root"]';
     const selector = `${muiButtonLabel}:has-text("${label}")`;
     const button = this.page
       .locator(selector)
-      .getByText(label, getByTextOpts)
+      .filter({ hasText: label })
       .first();
-    await button.waitFor({ state: 'visible' });
+
+    // Wait for button to be visible with explicit timeout
+    await button.waitFor({
+      state: 'visible',
+      timeout: 30000,
+    });
+    // await button.scrollIntoViewIfNeeded()));
+
     await button.click(clickOpts);
+
+    // await button.waitFor({ state: 'attached', timeout: 30000 });
+    // await button.scrollIntoViewIfNeeded();
+    // await button.click(clickOpts);
   }
 
   async waitForSideBarVisible() {
@@ -103,8 +114,15 @@ export class Common {
       await dialog.accept();
     });
 
-    await this.verifyHeading('Select a sign-in method');
+    await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible();
     await this.clickButton('Enter');
     await this.waitForSideBarVisible();
+  }
+
+  async switchToLocale(page: Page, locale: string): Promise<void> {
+    if (locale !== 'en') {
+      await page.getByRole('button', { name: 'Language' }).click();
+      await page.getByRole('menuitem', { name: locale }).click();
+    }
   }
 }
