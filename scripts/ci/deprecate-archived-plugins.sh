@@ -28,7 +28,7 @@ jq -r '
 ' "$ARCHIVED_FILE" | while IFS='|' read -r package_name workspace plugin reason; do
 
     # Check if already deprecated
-    if npm view "$package_name" deprecated 2>/dev/null | grep -q "true\|deprecated"; then
+    if npm view "$package_name" deprecated 2>/dev/null | grep -q .; then
         echo "Already deprecated: $package_name"
         continue
     fi
