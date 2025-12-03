@@ -57,7 +57,9 @@ export class Common {
       await dialog.accept();
     });
 
-    await this.verifyHeading('Select a sign-in method');
+    await expect(
+      this.page.getByText('Enter as a Guest User. You'),
+    ).toBeVisible();
     await this.clickButton('Enter');
     await this.waitForSideBarVisible();
   }

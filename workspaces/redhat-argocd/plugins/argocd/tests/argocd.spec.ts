@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { expect, Page, test } from '@playwright/test';
+import { runAccessibilityTests } from './accessibility';
 
 import {
   mockApplication,
@@ -26,6 +27,23 @@ import { verifyAppCard, verifyAppSidebar } from './utils';
 test.describe('ArgoCD plugin', () => {
   let argocdPage: Page;
   let common: Common;
+
+  const navigateToArgoCD = async () => {
+    const navSelector = 'nav [aria-label="Administration"]';
+    const navElement = argocdPage.locator(navSelector);
+    const isNavSelectorPresent = await navElement
+      .isVisible()
+      .catch(() => false);
+
+    if (isNavSelectorPresent) {
+      await navElement.click();
+    } else {
+      const argocdNavSelector = argocdPage.getByRole('link', {
+        name: 'ArgoCD',
+      });
+      await argocdNavSelector.click();
+    }
+  };
 
   test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext();
@@ -50,6 +68,7 @@ test.describe('ArgoCD plugin', () => {
       test(`Verify ${app.metadata.name} card`, async () => {
         const card = argocdPage.getByTestId(`${app.metadata.name}-card`);
         await expect(card).toBeVisible();
+        await runAccessibilityTests(argocdPage);
         await verifyAppCard(app, card, index);
       });
 
@@ -58,6 +77,7 @@ test.describe('ArgoCD plugin', () => {
         await argocdPage.getByTestId(`${app.metadata.name}-card`).click();
         const sideBar = argocdPage.locator(`.MuiDrawer-paper`);
         await expect(sideBar).toBeVisible();
+        await runAccessibilityTests(argocdPage);
         await verifyAppSidebar(app, sideBar, index);
         await sideBar.getByRole('button', { name: 'Close the drawer' }).click();
         await expect(sideBar).toBeVisible({ visible: false });
@@ -79,9 +99,9 @@ test.describe('ArgoCD plugin', () => {
 
     test.beforeAll(async () => {
       await argocdPage.getByRole('link', { name: 'Summary' }).click();
-      await expect(argocdPage.getByRole('heading')).toHaveText(
-        'Deployment summary',
-      );
+      await expect(
+        argocdPage.getByRole('heading', { name: 'Deployment Summary' }),
+      ).toBeVisible();
     });
 
     test('Verify column names', async () => {
@@ -90,6 +110,7 @@ test.describe('ArgoCD plugin', () => {
           argocdPage.getByRole('columnheader', { name: col }),
         ).toBeVisible();
       }
+      await runAccessibilityTests(argocdPage);
     });
 
     for (const app of apps) {
@@ -97,25 +118,31 @@ test.describe('ArgoCD plugin', () => {
 
       /* eslint-disable-next-line  no-loop-func */
       test(`Verify ${appName} row`, async () => {
-        const row = argocdPage.locator('.MuiTableRow-root', {
-          hasText: appName,
-        });
-        const revision = app.status.history
+        const revision = app.status?.history
           ?.slice(-1)[0]
-          .revision.substring(0, 7);
+          ?.revision?.substring(0, 7);
 
+        await runAccessibilityTests(argocdPage);
         await expect(
-          row.locator('td', { hasText: app.metadata.instance.name }),
+          argocdPage.getByRole('cell', { name: 'quarkus-app-dev' }).first(),
         ).toBeVisible();
         await expect(
-          row.locator('td', { hasText: app.spec.destination.server }),
-        ).toBeVisible();
-        await expect(row.locator('td', { hasText: revision })).toBeVisible();
-        await expect(
-          row.locator('td', { hasText: app.status.health.status }),
+          argocdPage
+            .getByRole('cell', { name: app.spec.destination.server })
+            .first(),
         ).toBeVisible();
         await expect(
-          row.locator('td', { hasText: app.status.sync.status }),
+          argocdPage.getByRole('cell', { name: revision }).first(),
+        ).toBeVisible();
+        await expect(
+          argocdPage
+            .getByRole('cell', { name: app.status.health.status })
+            .first(),
+        ).toBeVisible();
+        await expect(
+          argocdPage
+            .getByRole('cell', { name: app.status.sync.status })
+            .first(),
         ).toBeVisible();
       });
     }
