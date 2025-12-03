@@ -30,7 +30,7 @@ import {
 } from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
-  getInstanceName,
+  getInstanceNames,
   getUniqueRevisions,
   removeDuplicateRevisions,
 } from '../../utils/utils';
@@ -69,12 +69,15 @@ const DeploymentLifecycle = () => {
   const configApi = useApi(configApiRef);
 
   const { instances, intervalMs } = useArgocdConfig();
-  const instanceName = getInstanceName(entity) || instances?.[0]?.name;
+  const instanceNames = useMemo(
+    () => getInstanceNames(entity, instances),
+    [instances, entity],
+  );
   const { appSelector, appName, projectName, appNamespace } =
     getArgoCdAppConfig({ entity });
 
   const { apps, loading, error } = useApplications({
-    instanceName,
+    instanceNames,
     intervalMs,
     appSelector,
     appName,
@@ -107,7 +110,6 @@ const DeploymentLifecycle = () => {
       api
         .getRevisionDetailsList({
           apps: apps,
-          instanceName,
           revisionIDs: uniqRevisions,
         })
         .then(data => {
@@ -127,7 +129,6 @@ const DeploymentLifecycle = () => {
     api,
     apps,
     entity,
-    instanceName,
     uniqRevisions,
     keepDuplicateRevisions,
     uniqCachedRevisions,

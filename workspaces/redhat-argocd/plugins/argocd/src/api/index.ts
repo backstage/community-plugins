@@ -39,7 +39,6 @@ export type RevisionDetailsOptions = {
 export type RevisionDetailsListOptions = {
   appNamespace?: string;
   revisionIDs: string[];
-  instanceName?: string;
   apps: Application[];
 };
 
@@ -185,7 +184,6 @@ export class ArgoCDApiClient implements ArgoCDApi {
   async getRevisionDetailsList(options: {
     appNamespace: string;
     revisionIDs: string[];
-    instanceName: string;
     apps: Application[];
   }): Promise<RevisionInfo[]> {
     if (!options.revisionIDs || options.revisionIDs.length < 1) {
@@ -203,7 +201,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
           this.getRevisionDetails({
             app: application.metadata.name as string,
             appNamespace: options.appNamespace,
-            instanceName: options.instanceName,
+            instanceName: application.metadata.instance.name,
             revisionID,
           }),
         );
@@ -227,7 +225,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
             this.getRevisionDetails({
               app: multiSourceApp.metadata.name as string,
               appNamespace: options.appNamespace,
-              instanceName: options.instanceName,
+              instanceName: multiSourceApp.metadata.instance.name,
               revisionID: revisionID,
               sourceIndex: revisionSourceIndex,
             }),

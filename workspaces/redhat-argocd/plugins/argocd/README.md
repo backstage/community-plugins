@@ -205,7 +205,7 @@ const cicdcontent = (
 You can use these additional annotations with the base annotations:
 
 - `argocd/project-name`: The name of the Application's project
-- `argocd/app-namespace`: The namespace of the Application
+- `argocd/app-namespace`: The namespace of the Application, supports a single namespace due to restrictions in the ArgoCD API. To query for applications across multiple namespaces, use the `argocd/app-selector` annotation.
 
 - To switch between argocd instances, you can use the following annotation
 
@@ -215,4 +215,12 @@ You can use these additional annotations with the base annotations:
     argocd/instance-name: 'argoInstance2'
 ```
 
-> [!Note] > **If this annotation is not set, the plugin will default to the first Argo CD instance configured in the `app.config.yaml`**
+- To fetch data from multiple Argo CD instances, separate the instance names with commas:
+
+```yaml
+ annotations:
+   ...
+    argocd/instance-name: 'argoInstance1,argoInstance2'
+```
+
+> [!Note] > **If this annotation is not set, the plugin will search all available Argo CD instances configured in the `app.config.yaml`. It is advised to add the `argocd/instance-name` annotations for better performance.**

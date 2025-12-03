@@ -22,7 +22,7 @@ import { argoCDApiRef } from '../api';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface AppOptions {
-  instanceName: string;
+  instanceNames: string[];
   appSelector: string;
   intervalMs?: number;
   projectName?: string;
@@ -33,7 +33,7 @@ interface AppOptions {
 export const useApplications = ({
   appName,
   appNamespace,
-  instanceName,
+  instanceNames,
   appSelector,
   projectName,
   intervalMs = 10000,
@@ -49,27 +49,43 @@ export const useApplications = ({
 
   const api = useApi(argoCDApiRef);
 
+  const addInstanceName = (item: any, instanceName: string) => {
+    if (!item.metadata.instance) {
+      item.metadata.instance = { name: instanceName };
+    }
+    return item;
+  };
+
   const getApplications = useCallback(async () => {
-    return await api
-      .listApps({
-        url: `/argoInstance/${instanceName}`,
-        appSelector,
-        projectName,
-        appNamespace,
-      })
-      .then(applications => setApps(applications?.items ?? []));
-  }, [api, appSelector, instanceName, projectName, appNamespace]);
+    const promises = instanceNames.map(instanceName =>
+      api
+        .listApps({
+          url: `/argoInstance/${instanceName}`,
+          appSelector,
+          projectName,
+          appNamespace,
+        })
+        .then(applications => applications?.items ?? []),
+    );
+    const results = await Promise.all(promises);
+    setApps(results.flat());
+  }, [api, appSelector, instanceNames, projectName, appNamespace]);
 
   const getApplication = useCallback(async () => {
-    return await api
-      .getApplication({
-        url: `/argoInstance/${instanceName}`,
-        appName: appName as string,
-        appNamespace,
-        project: projectName,
-      })
-      .then(application => setApps([application]));
-  }, [api, appName, appNamespace, projectName, instanceName]);
+    const promises = instanceNames.map(instanceName =>
+      api
+        .getApplication({
+          url: `/argoInstance/${instanceName}`,
+          appName: appName as string,
+          appNamespace,
+          project: projectName,
+        })
+        // Roadie doesn't include instance in its getApplication response
+        .then(application => addInstanceName(application, instanceName)),
+    );
+    const results = await Promise.all(promises);
+    setApps(results);
+  }, [api, appName, appNamespace, projectName, instanceNames]);
 
   const { error, loading, retry } = useAsyncRetry(async () => {
     if (appName) {

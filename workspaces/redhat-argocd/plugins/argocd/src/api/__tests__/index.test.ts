@@ -260,7 +260,6 @@ describe('API calls', () => {
       });
 
       const data = await client.getRevisionDetailsList({
-        instanceName: 'main',
         apps: [mockApplication],
         revisionIDs: [],
         appNamespace: '',
@@ -276,7 +275,6 @@ describe('API calls', () => {
       });
 
       await client.getRevisionDetailsList({
-        instanceName: 'main',
         apps: [mockApplication],
         revisionIDs: ['90f9758b7033a4bbb7c33a35ee474d61091644bc'],
         appNamespace: '',

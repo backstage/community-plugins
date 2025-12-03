@@ -106,7 +106,7 @@ argocd:
           password: ${ARGOCD_STAGING_PASSWORD}
 ```
 
-**Note**: When using multiple instances, specify the target instance in your entity using the `argocd/instance-name` annotation. If not specified, the first configured instance will be used.
+**Note**: When using multiple instances, specify the target instances (comma separated) in your entity using the `argocd/instance-name` annotation. If not specified, the plugin will search all available Argo CD instances. It is advised to add this annotation for better performance. More information about available Argo CD annotations can be found in this [documentation](../argocd/README.md#how-to-add-argo-cd-frontend-plugin-to-backstage-app).
 
 ## Development
 

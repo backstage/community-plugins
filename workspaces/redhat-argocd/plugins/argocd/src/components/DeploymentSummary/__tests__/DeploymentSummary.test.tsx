@@ -63,7 +63,6 @@ describe('DeploymentSummary', () => {
       baseUrl: '',
       instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
   });
 
@@ -92,7 +91,6 @@ describe('DeploymentSummary', () => {
       baseUrl: 'https://baseurl.com',
       instances: [{ name: 'test', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
 
     await renderInTestApp(<DeploymentSummary />);
@@ -129,7 +127,6 @@ describe('DeploymentSummary', () => {
     (useArgocdConfig as any).mockReturnValue({
       instances: [{ name: 'test', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'test',
     });
 
     await renderInTestApp(<DeploymentSummary />);
@@ -159,7 +156,6 @@ describe('DeploymentSummary', () => {
       baseUrl: 'https://baseurl.com',
       instances: [],
       intervalMs: 10000,
-      instanceName: 'main',
     });
     await renderInTestApp(<DeploymentSummary />);
 

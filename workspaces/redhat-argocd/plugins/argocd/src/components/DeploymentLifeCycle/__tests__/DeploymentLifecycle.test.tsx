@@ -117,7 +117,6 @@ describe('DeploymentLifecycle', () => {
       baseUrl: 'https://baseurl.com',
       instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
 
     // Setup useAPI implementation mock with defaults

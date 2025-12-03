@@ -17,7 +17,11 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { renderHook, waitFor } from '@testing-library/react';
 
-import { mockApplication } from '../../../dev/__data__';
+import {
+  mockApplication,
+  mockQuarkusApplication,
+  preProdApplication,
+} from '../../../dev/__data__';
 import { useApplications } from '../useApplications';
 
 jest.mock('@backstage/core-plugin-api', () => ({
@@ -45,7 +49,7 @@ describe('useApplications', () => {
     });
     const { result } = renderHook(() =>
       useApplications({
-        instanceName: 'main',
+        instanceNames: ['main'],
         appSelector: null as unknown as string,
       }),
     );
@@ -64,7 +68,7 @@ describe('useApplications', () => {
     });
     const { result } = renderHook(() =>
       useApplications({
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
       }),
@@ -81,7 +85,7 @@ describe('useApplications', () => {
   test('should return the applications and loading state', async () => {
     const { result } = renderHook(() =>
       useApplications({
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
       }),
@@ -104,7 +108,7 @@ describe('useApplications', () => {
 
     const { result, rerender } = renderHook(prop => useApplications(prop), {
       initialProps: {
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: 'rht.gitops.com/quarkus-app-test',
       },
@@ -116,7 +120,7 @@ describe('useApplications', () => {
     });
 
     rerender({
-      instanceName: 'main',
+      instanceNames: ['main'],
       intervalMs: 10000,
       appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
     });
@@ -142,7 +146,7 @@ describe('useApplications', () => {
 
     renderHook(() =>
       useApplications({
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
       }),
@@ -164,7 +168,7 @@ describe('useApplications', () => {
 
     renderHook(() =>
       useApplications({
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: null as unknown as string,
         appName: 'quarkus-app-bootstrap',
@@ -186,7 +190,7 @@ describe('useApplications', () => {
 
     const { result } = renderHook(prop => useApplications(prop), {
       initialProps: {
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: null as unknown as string,
         appName: 'quarkus-app-test',
@@ -212,7 +216,7 @@ describe('useApplications', () => {
 
     const { result, rerender } = renderHook(prop => useApplications(prop), {
       initialProps: {
-        instanceName: 'main',
+        instanceNames: ['main'],
         intervalMs: 10000,
         appSelector: null as unknown as string,
         appName: 'quarkus-app',
@@ -225,7 +229,7 @@ describe('useApplications', () => {
     });
 
     rerender({
-      instanceName: 'main',
+      instanceNames: ['main'],
       intervalMs: 10000,
       appSelector: null as unknown as string,
       appName: 'quarkus-test-app',
@@ -238,6 +242,140 @@ describe('useApplications', () => {
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
       expect(result.current.apps).toHaveLength(1);
+    });
+  });
+
+  describe('multiple instances', () => {
+    test('should invoke listApps method for each instance when appSelector is passed', async () => {
+      const mockListApps = jest.fn().mockResolvedValue({ items: [] });
+
+      (useApi as any).mockReturnValue({
+        listApps: mockListApps,
+      });
+
+      renderHook(() =>
+        useApplications({
+          instanceNames: ['main', 'secondary'],
+          intervalMs: 10000,
+          appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
+        }),
+      );
+
+      await waitFor(() => {
+        expect(mockListApps).toHaveBeenCalledTimes(2);
+        expect(mockListApps).toHaveBeenCalledWith(
+          expect.objectContaining({ url: '/argoInstance/main' }),
+        );
+        expect(mockListApps).toHaveBeenCalledWith(
+          expect.objectContaining({ url: '/argoInstance/secondary' }),
+        );
+      });
+    });
+
+    test('should invoke getApplication method for each instance if appName is passed', async () => {
+      const mockGetApplication = jest.fn().mockResolvedValue(mockApplication);
+
+      (useApi as any).mockReturnValue({
+        getApplication: mockGetApplication,
+      });
+
+      renderHook(() =>
+        useApplications({
+          instanceNames: ['main', 'secondary'],
+          intervalMs: 10000,
+          appSelector: null as unknown as string,
+          appName: 'quarkus-app-dev',
+        }),
+      );
+
+      await waitFor(() => {
+        expect(mockGetApplication).toHaveBeenCalledTimes(2);
+        expect(mockGetApplication).toHaveBeenCalledWith(
+          expect.objectContaining({ url: '/argoInstance/main' }),
+        );
+        expect(mockGetApplication).toHaveBeenCalledWith(
+          expect.objectContaining({ url: '/argoInstance/secondary' }),
+        );
+      });
+    });
+
+    test('should combine applications from multiple instances when using appSelector', async () => {
+      (useApi as any).mockReturnValue({
+        listApps: jest
+          .fn()
+          .mockResolvedValueOnce({ items: [mockApplication] })
+          .mockResolvedValueOnce({ items: [] })
+          .mockResolvedValueOnce({
+            items: [mockQuarkusApplication, preProdApplication],
+          }),
+      });
+
+      const { result } = renderHook(() =>
+        useApplications({
+          instanceNames: ['main', 'secondary', 'tertiary'],
+          intervalMs: 10000,
+          appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.apps).toHaveLength(3);
+        expect(result.current.apps[0].metadata?.name).toBe('quarkus-app-dev');
+        expect(result.current.apps[1].metadata?.name).toBe('quarkus-app');
+        expect(result.current.apps[2].metadata?.name).toBe(
+          'quarkus-app-preprod',
+        );
+      });
+    });
+
+    test('should combine applications from multiple instances when using appName', async () => {
+      (useApi as any).mockReturnValue({
+        getApplication: jest
+          .fn()
+          .mockResolvedValueOnce(mockApplication)
+          .mockResolvedValueOnce({
+            items: [mockQuarkusApplication, preProdApplication],
+          }),
+      });
+
+      const { result } = renderHook(() =>
+        useApplications({
+          instanceNames: ['main', 'secondary', 'tertiary'],
+          intervalMs: 10000,
+          appSelector: null as unknown as string,
+          appName: 'quarkus-app',
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.apps).toHaveLength(3);
+        expect(result.current.apps[0].metadata?.name).toBe('quarkus-app-dev');
+        expect(result.current.apps[1].metadata?.name).toBe('quarkus-app');
+        expect(result.current.apps[2].metadata?.name).toBe(
+          'quarkus-app-preprod',
+        );
+      });
+    });
+
+    test('should return empty array when no applications are found across multiple instances', async () => {
+      (useApi as any).mockReturnValue({
+        listApps: jest.fn().mockResolvedValue({ items: [] }),
+      });
+
+      const { result } = renderHook(() =>
+        useApplications({
+          instanceNames: ['main', 'secondary', 'tertiary'],
+          intervalMs: 10000,
+          appSelector: 'rht.gitops.com/quarkus-app-bootstrap',
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.apps).toHaveLength(0);
+      });
     });
   });
 });
