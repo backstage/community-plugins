@@ -27,13 +27,19 @@
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:*",
     "@backstage-community/plugin-announcements-react": "workspace:*",
+    "@backstage/core-components": "^0.18.3",
     "@backstage/core-plugin-api": "^1.12.0",
+    "@backstage/plugin-permission-react": "^0.4.38",
     "@backstage/theme": "^0.7.0",
     "@backstage/ui": "^0.9.1",
-    "react-use": "^17.2.4"
+    "@remixicon/react": "^4.7.0",
+    "react-stately": "^3.42.0",
+    "react-use": "^17.2.4",
+    "slugify": "1.6.6"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.34.5",
