@@ -15,7 +15,7 @@
  */
 
 import { UrlPatternDiscovery } from '@backstage/core-app-api';
-import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { registerMswTestHooks } from '@backstage/test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { ApacheAirflowClient } from './index';
@@ -101,7 +101,7 @@ const dagRuns: DagRun[] = [
 ];
 
 describe('ApacheAirflowClient', () => {
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   const mockBaseUrl = 'http://backstage:9191/api/proxy';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
