@@ -31,7 +31,7 @@ type TitleFormTestIds = {
   button?: string;
 };
 
-type TitleFormRequest = {
+export type TitleFormRequest = {
   title: string;
 };
 
