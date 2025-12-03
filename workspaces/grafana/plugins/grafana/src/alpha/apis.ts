@@ -49,6 +49,12 @@ export const grafanaApiExtension = ApiBlueprint.make({
             discoveryApi,
             domain: configApi.getString('grafana.domain'),
             proxyPath: configApi.getOptionalString('grafana.proxyPath'),
+            grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+              'grafana.grafanaDashboardSearchLimit',
+            ),
+            grafanaDashboardMaxPages: configApi.getOptionalNumber(
+              'grafana.grafanaDashboardMaxPages',
+            ),
           });
         }
 
@@ -57,6 +63,12 @@ export const grafanaApiExtension = ApiBlueprint.make({
           discoveryApi,
           domain: configApi.getString('grafana.domain'),
           proxyPath: configApi.getOptionalString('grafana.proxyPath'),
+          grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardSearchLimit',
+          ),
+          grafanaDashboardMaxPages: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardMaxPages',
+          ),
         });
       },
     }),
