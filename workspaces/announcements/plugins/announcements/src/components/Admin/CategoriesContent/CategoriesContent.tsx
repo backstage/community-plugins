@@ -38,7 +38,7 @@ import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { CategoriesForm } from './CategoriesForm';
-import { useDeleteDialogState, DeleteDialog } from '../shared';
+import { useDeleteDialogState, DeleteDialog } from '../DeleteDialog';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
