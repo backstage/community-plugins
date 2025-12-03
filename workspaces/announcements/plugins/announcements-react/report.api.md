@@ -218,9 +218,6 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
-    readonly 'deleteDialog.cancel': 'Cancel';
-    readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
-    readonly 'deleteDialog.delete': 'Delete';
     readonly 'confirmDeleteDialog.cancel': 'Cancel';
     readonly 'confirmDeleteDialog.title': 'Are you sure you want to delete?';
     readonly 'confirmDeleteDialog.delete': 'Delete';
