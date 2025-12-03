@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.14.1
+
+### Patch Changes
+
+- 52a7d15: Replaces global JSX reference with import from react
+
 ## 0.14.0
 
 ### Minor Changes
