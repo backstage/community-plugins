@@ -43,8 +43,6 @@ site
 
 # Local configuration files
 *.local.yaml
-app-config.yaml
-
 # Sensitive credentials
 *-credentials.yaml
 
