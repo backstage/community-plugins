@@ -3045,18 +3045,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-backend-module-allow-all-policy@npm:^0.2.14":
-  version: 0.2.14
-  resolution: "@backstage/plugin-permission-backend-module-allow-all-policy@npm:0.2.14"
-  dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.5.0"
-    "@backstage/plugin-auth-node": "npm:^0.6.9"
-    "@backstage/plugin-permission-common": "npm:^0.9.3"
-    "@backstage/plugin-permission-node": "npm:^0.10.6"
-  checksum: 10/7da236037b68ba917e56b93c18feb6a15d12b5c65a26c127d8b13cccb14d8e1da9a37240d15667a83157c668cc30064f58c5347cd2c659460c47d42f2a23eab3
-  languageName: node
-  linkType: hard
-
 "@backstage/plugin-permission-backend@npm:^0.7.6":
   version: 0.7.6
   resolution: "@backstage/plugin-permission-backend@npm:0.7.6"
@@ -13813,24 +13801,20 @@ __metadata:
     "@backstage/backend-defaults": "npm:^0.13.1"
     "@backstage/backend-plugin-api": "npm:^1.5.0"
     "@backstage/cli": "npm:^0.34.5"
-    "@backstage/config": "npm:^1.3.6"
     "@backstage/plugin-app-backend": "npm:^0.5.8"
     "@backstage/plugin-auth-backend": "npm:^0.25.6"
     "@backstage/plugin-auth-backend-module-guest-provider": "npm:^0.2.14"
-    "@backstage/plugin-auth-node": "npm:^0.6.9"
     "@backstage/plugin-catalog-backend": "npm:^3.2.0"
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.16"
     "@backstage/plugin-events-backend": "npm:^0.5.8"
     "@backstage/plugin-notifications-backend": "npm:^0.6.0"
     "@backstage/plugin-permission-backend": "npm:^0.7.6"
-    "@backstage/plugin-permission-backend-module-allow-all-policy": "npm:^0.2.14"
     "@backstage/plugin-permission-common": "npm:^0.9.3"
     "@backstage/plugin-permission-node": "npm:^0.10.6"
     "@backstage/plugin-proxy-backend": "npm:^0.6.8"
     "@backstage/plugin-search-backend": "npm:^2.0.8"
     "@backstage/plugin-search-backend-module-catalog": "npm:^0.3.10"
     "@backstage/plugin-search-backend-module-pg": "npm:^0.5.50"
-    "@backstage/plugin-search-backend-node": "npm:^1.3.17"
     "@backstage/plugin-signals-backend": "npm:^0.3.10"
     app: "link:../app"
     better-sqlite3: "npm:^9.0.0"
