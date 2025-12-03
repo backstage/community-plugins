@@ -3,7 +3,8 @@
 '@backstage-community/plugin-mend': major
 ---
 
-**BREAKING** The permission-policy-based project filtering has been removed in favor of configuration-based `mend.permissionControl`. This is only applicable if you previously used the Mend permissions in your `PermissionPolicy` to control which project IDs are visible.
+- Updated Frontend system to provide the Backstage Portal Support
+- **BREAKING** The permission-policy-based project filtering has been removed in favor of configuration-based `mend.permissionControl`. This is only applicable if you previously used the Mend permissions in your `PermissionPolicy` to control which project IDs are visible.
 
 Previously, you might have configured project filtering like this in your organization policy:
 

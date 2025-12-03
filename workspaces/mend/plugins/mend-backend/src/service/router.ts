@@ -23,7 +23,7 @@ import {
   HttpAuthService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
-import { Config } from '@backstage/config';
+import type { Config } from '@backstage/config';
 import {
   dataFindingParser,
   dataMatcher,

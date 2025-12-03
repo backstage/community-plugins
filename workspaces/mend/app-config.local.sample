@@ -1,0 +1,7 @@
+mend:
+  activationKey:
+  # Optional Configuration for allow and disallow the mend Projects
+  permissionControl:
+    ids:
+      - component:default/example-website
+    exclude: true

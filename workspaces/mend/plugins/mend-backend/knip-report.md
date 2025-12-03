@@ -15,4 +15,4 @@
 
 | Name | Location          | Severity |
 | :--- | :---------------- | :------- |
-| msw  | package.json:60:6 | error    |
+| msw  | package.json:61:6 | error    |

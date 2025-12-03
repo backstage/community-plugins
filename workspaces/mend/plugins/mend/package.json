@@ -47,36 +47,39 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/core-compat-api": "^0.5.3",
     "@backstage/core-components": "^0.18.4",
     "@backstage/core-plugin-api": "^1.12.1",
+    "@backstage/frontend-plugin-api": "^0.12.1",
     "@backstage/plugin-catalog-react": "^1.21.4",
     "@backstage/theme": "^0.7.1",
-    "@backstage/core-compat-api": "^0.5.3",
-    "@backstage/frontend-plugin-api": "^0.12.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@material-table/core": "4.3.46",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
-    "@mui/styles": "^5.18.0",
     "@tanstack/react-query": "^5.51.11",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.25.1"
+    "react-router-dom": "^6.30.1"
   },
   "devDependencies": {
     "@backstage/cli": "^0.35.1",
     "@backstage/core-app-api": "^1.19.3",
     "@backstage/dev-utils": "^1.1.18",
+    "@backstage/plugin-catalog": "^1.31.4",
     "@backstage/test-utils": "^1.7.14",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
+    "@types/react": "^19.2.2",
     "msw": "^1.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.25.1"
+    "react-router-dom": "^6.30.1"
   },
   "resolutions": {
     "react-is": "^17.0.0 || ^18.0.0"
