@@ -1,5 +1,35 @@
 # @backstage-community/plugin-announcements
 
+## 1.1.0
+
+### Minor Changes
+
+- 40b8d32: Internal refactor to consolidate delete dialog state management in the admin portal. Refactoring categories and tags to the shared component added support for translations which was previously missing.
+
+  The refactor includes a new set of translation keys for the generic delete dialog.
+
+  ### Translation Changes
+
+  Added new translation keys for the delete dialog:
+
+  - `confirmDeleteDialog.title`
+  - `confirmDeleteDialog.cancel`
+  - `confirmDeleteDialog.delete`
+
+  Deprecated the following translation keys:
+
+  - `deleteDialog.title`
+  - `deleteDialog.cancel`
+  - `deleteDialog.delete`
+
+### Patch Changes
+
+- e6b9dd8: Replaces global `JSX` namespace with `React.JSX` to resolve deprecation
+- 6b45ee7: Adds a new useAnnouncementsPermissions hook users can leverage when needing quick access to all permissions, something we commonly do throughout the admin portal. All components now leverage this hook instead of using the usePermission hook directly.
+- Updated dependencies [6b45ee7]
+- Updated dependencies [40b8d32]
+  - @backstage-community/plugin-announcements-react@0.16.0
+
 ## 1.0.0
 
 ### Major Changes
