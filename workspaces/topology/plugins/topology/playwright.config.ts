@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { defineConfig, devices } from '@playwright/test';
 
-import { defineConfig } from '@playwright/test';
-
+/**
+ * See https://playwright.dev/docs/test-configuration.
+ */
 export default defineConfig({
-  webServer: process.env.PLAYWRIGHT_URL
-    ? []
-    : {
-        command: 'yarn start',
-        cwd: 'plugins/topology',
-        port: 3000,
-        reuseExistingServer: true,
-      },
-
+  /* Run tests in files in parallel */
+  fullyParallel: true,
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  forbidOnly: !!process.env.CI,
+  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-
-  reporter: [['html', { open: 'never', outputFolder: 'e2e-test-report' }]],
-
+  /* Run tests in sequence. */
+  workers: 1,
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  reporter: process.env.CI ? 'github' : 'list',
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
+    baseURL: process.env.PLUGIN_BASE_URL || 'http://localhost:3000',
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
   },
 
   outputDir: 'node_modules/.cache/e2e-test-results',
@@ -41,7 +43,7 @@ export default defineConfig({
   projects: [
     {
       name: 'en',
-      testDir: './plugins/topology/tests',
+      testDir: './tests',
       use: {
         channel: 'chrome',
         locale: 'en',
@@ -49,7 +51,7 @@ export default defineConfig({
     },
     {
       name: 'fr',
-      testDir: './plugins/topology/tests',
+      testDir: './tests',
       use: {
         channel: 'chrome',
         locale: 'fr',
