@@ -37,7 +37,7 @@ import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { useDeleteDialogState, DeleteDialog } from '../DeleteDialog';
+import { useDeleteDialogState, DeleteDialog } from '../shared';
 import { TagsForm } from './TagsForm';
 
 export const TagsContent = () => {

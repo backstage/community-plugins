@@ -36,7 +36,7 @@ import {
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { useDeleteDialogState, DeleteDialog } from '../DeleteDialog';
+import { useDeleteDialogState, DeleteDialog } from '../shared';
 import { useNavigate } from 'react-router-dom';
 import { AnnouncementForm } from './AnnouncementForm';
 import slugify from 'slugify';
