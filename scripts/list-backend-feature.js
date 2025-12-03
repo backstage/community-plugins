@@ -20,7 +20,7 @@ import { getPackages } from '@manypkg/get-packages';
 import { resolve, join } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
-import { listWorkspaces } from './list-workspaces.js';
+import { execSync } from 'child_process';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -35,8 +35,12 @@ async function main(args) {
 
   const backendFeatureReports = [];
 
-  // Get workspaces
-  const workspaces = await listWorkspaces();
+  // Get workspaces using community-cli
+  const workspaces = JSON.parse(
+    execSync('npx community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
+  );
 
   // Loop through workspaces
   for (const workspace of workspaces) {

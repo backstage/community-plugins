@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-import fs from 'fs-extra';
 import { getPackages } from '@manypkg/get-packages';
 import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
 import * as codeowners from 'codeowners-utils';
-import { listWorkspaces } from './list-workspaces.js';
+import { execSync } from 'child_process';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -35,8 +34,12 @@ async function main(args) {
   const codeownersPath = resolve(rootPath, '.github', 'CODEOWNERS');
   const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
 
-  // Get workspaces
-  const workspaces = await listWorkspaces();
+  // Get workspaces using community-cli
+  const workspaces = JSON.parse(
+    execSync('yarn community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
+  );
 
   // Loop through workspaces
   for (const workspace of workspaces) {
