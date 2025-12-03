@@ -13,15 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createBackend } from '@backstage/backend-defaults';
-
-const backend = createBackend();
-
-backend.add(import('@backstage/plugin-auth-backend'));
-backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
-
-// We need the catalog plugin to get the example entities and make the front entity page functional
-backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(import('../src/index'));
-
-backend.start();
+console.log('Hello from ${{ values.name }}!');

@@ -18,6 +18,7 @@ import {
   ApiBlueprint,
   PageBlueprint,
   NavItemBlueprint,
+  FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
@@ -87,7 +88,7 @@ export const mendNavItem = NavItemBlueprint.make({
  *
  * @alpha
  */
-export const mendTab = EntityContentBlueprint.make({
+export const mendTab: any = EntityContentBlueprint.make({
   name: 'acrImagesEntityContent',
   params: {
     path: 'mend',
@@ -102,10 +103,12 @@ export const mendTab = EntityContentBlueprint.make({
  *
  * @alpha
  */
-export default createFrontendPlugin({
+const mendPlugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'mend-plugin',
   extensions: [mendApi, mendPage, mendNavItem, mendTab],
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
 });
+
+export default mendPlugin;

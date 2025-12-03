@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 export type Config = {
-  mend: {
+  mend?: {
     /**
      * @visibility secret
      */
