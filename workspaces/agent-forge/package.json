@@ -1,5 +1,5 @@
 {
-  "name": "@internal/agent-forge",
+  "name": "@caipe/agent-forge-workspace",
   "version": "1.0.0",
   "private": true,
   "engines": {
