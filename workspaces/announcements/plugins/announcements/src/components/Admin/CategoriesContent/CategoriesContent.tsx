@@ -37,8 +37,7 @@ import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { CategoriesForm } from './CategoriesForm';
-import { useDeleteDialogState, DeleteDialog } from '../shared';
+import { useDeleteDialogState, DeleteDialog, TitleForm } from '../shared';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
@@ -55,6 +54,13 @@ export const CategoriesContent = () => {
   } = useDeleteDialogState<Category>();
 
   const permissions = useAnnouncementsPermissions();
+
+  const translationKeys = {
+    new: t('categoriesForm.newCategory'),
+    edit: t('categoriesForm.editCategory'),
+    titleLabel: t('categoriesForm.titleLabel'),
+    submit: t('categoriesForm.submit'),
+  };
 
   const onSubmit = async (request: CreateCategoryRequest) => {
     const { title } = request;
@@ -160,7 +166,10 @@ export const CategoriesContent = () => {
 
         {showNewCategoryForm && (
           <Grid item xs={12}>
-            <CategoriesForm initialData={{} as Category} onSubmit={onSubmit} />
+            <TitleForm<Category>
+              translationKeys={translationKeys}
+              onSubmit={onSubmit}
+            />
           </Grid>
         )}
 

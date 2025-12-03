@@ -36,7 +36,7 @@ type TitleFormRequest = {
 };
 
 export type TitleFormProps<T extends TitleFormRequest> = {
-  initialData: T;
+  initialData?: T;
   translationKeys: TitleFormTranslationKeys;
   onSubmit: (data: T) => Promise<void>;
   testIds?: TitleFormTestIds;
@@ -47,7 +47,7 @@ export const TitleForm = <T extends TitleFormRequest>(
 ) => {
   const { initialData, translationKeys, onSubmit, testIds } = props;
 
-  const [form, setForm] = useState<T>(initialData);
+  const [form, setForm] = useState<T>(initialData ?? ({ title: '' } as T));
   const [loading, setLoading] = useState(false);
   const permissions = useAnnouncementsPermissions();
 
@@ -86,7 +86,7 @@ export const TitleForm = <T extends TitleFormRequest>(
 
   return (
     <InfoCard
-      title={initialData.title ? translationKeys.edit : translationKeys.new}
+      title={initialData?.title ? translationKeys.edit : translationKeys.new}
     >
       <form onSubmit={handleSubmit} data-testid={testIds?.form ?? 'title-form'}>
         <TextField
