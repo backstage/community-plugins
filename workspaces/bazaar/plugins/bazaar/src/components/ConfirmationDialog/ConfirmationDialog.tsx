@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { JSX } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import {
