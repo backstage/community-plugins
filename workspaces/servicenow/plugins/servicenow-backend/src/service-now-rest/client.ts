@@ -123,7 +123,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     params.append('sysparm_fields', responseFields.join(','));
     params.append('sysparm_count', 'true');
 
-    const requestUrl = `${this.conn.getInstanceUrl()}/api/now/table/incident?${params.toString()}`;
+    const requestUrl = `/api/now/table/incident?${params.toString()}`;
     this.logger.info(`Fetching incidents from ServiceNow: ${requestUrl}`);
 
     try {
@@ -142,9 +142,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
       const items =
         response.data?.result?.map((incident: any) => ({
           ...incident,
-          url: `${this.conn.getInstanceUrl()}/nav_to.do?uri=incident.do?sys_id=${
-            incident.sys_id
-          }`,
+          url: `nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`,
         })) ?? [];
 
       return { items, totalCount };
@@ -158,7 +156,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
 
   private async getUserSysIdByEmail(email: string): Promise<string | null> {
     const authHeaders = await this.conn.getAuthHeaders();
-    const url = `${this.conn.getInstanceUrl()}/api/now/table/sys_user?sysparm_query=email=${encodeURIComponent(
+    const url = `api/now/table/sys_user?sysparm_query=email=${encodeURIComponent(
       email,
     )}&sysparm_fields=sys_id`;
     const response = await this.conn.getAxiosInstance().get(url, {

@@ -32,7 +32,7 @@ export class ServiceNowSchemaChecker {
   private async fetchIncidentSchema(): Promise<Set<string>> {
     const authHeaders = await this.conn.getAuthHeaders();
 
-    const url = `${this.conn.getInstanceUrl()}/api/now/table/sys_dictionary`;
+    const url = `api/now/table/sys_dictionary`;
     const response = await this.conn.getAxiosInstance().get(url, {
       headers: {
         ...authHeaders,

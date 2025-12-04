@@ -63,6 +63,7 @@ export class ServiceNowConnection {
     }
 
     this.axiosInstance = axios.create({
+      baseURL: this.instanceUrl,
       httpsAgent: new https.Agent({ keepAlive: true, maxSockets: 10 }),
       timeout: 10000,
     });
@@ -70,10 +71,6 @@ export class ServiceNowConnection {
 
   getAxiosInstance(): AxiosInstance {
     return this.axiosInstance;
-  }
-
-  getInstanceUrl() {
-    return this.instanceUrl;
   }
 
   private setupOAuthClient(oauth: OAuthConfig) {
