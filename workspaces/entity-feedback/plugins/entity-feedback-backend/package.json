@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.13.1",
-    "@backstage/backend-test-utils": "^1.10.0",
+    "@backstage/backend-test-utils": "^1.10.1",
     "@backstage/cli": "^0.34.5",
     "@backstage/plugin-auth-backend": "^0.25.6",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.14",
