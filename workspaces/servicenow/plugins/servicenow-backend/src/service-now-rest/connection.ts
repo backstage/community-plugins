@@ -21,12 +21,15 @@ import {
   ModuleOptions,
   AccessToken,
 } from 'simple-oauth2';
+import axios, { AxiosInstance } from 'axios';
+import https from 'https';
 
 export class ServiceNowConnection {
   private oauthClient?: ClientCredentials | ResourceOwnerPassword;
   private readonly instanceUrl: string;
   private readonly config: ServiceNowConfig;
   private readonly logger: LoggerService;
+  private axiosInstance: AxiosInstance;
 
   constructor(config: ServiceNowConfig, logger: LoggerService) {
     this.config = config;
@@ -58,6 +61,15 @@ export class ServiceNowConnection {
         'Basic authentication is configured for ServiceNow. This is not recommended for production environments.',
       );
     }
+
+    this.axiosInstance = axios.create({
+      httpsAgent: new https.Agent({ keepAlive: true, maxSockets: 10 }),
+      timeout: 10000,
+    });
+  }
+
+  getAxiosInstance(): AxiosInstance {
+    return this.axiosInstance;
   }
 
   getInstanceUrl() {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios from 'axios';
+
 import { ServiceNowConnection } from './connection';
 
 type CachedSchema = {
@@ -33,8 +33,7 @@ export class ServiceNowSchemaChecker {
     const authHeaders = await this.conn.getAuthHeaders();
 
     const url = `${this.conn.getInstanceUrl()}/api/now/table/sys_dictionary`;
-    console.log(`==== ${url} ${authHeaders.Authorization}`);
-    const response = await axios.get(url, {
+    const response = await this.conn.getAxiosInstance().get(url, {
       headers: {
         ...authHeaders,
         Accept: 'application/json',

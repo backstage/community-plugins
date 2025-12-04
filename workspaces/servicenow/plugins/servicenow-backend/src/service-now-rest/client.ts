@@ -15,7 +15,6 @@
  */
 
 import { LoggerService } from '@backstage/backend-plugin-api';
-import axios from 'axios';
 import {
   IncidentPick,
   PaginatedIncidents,
@@ -128,7 +127,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     this.logger.info(`Fetching incidents from ServiceNow: ${requestUrl}`);
 
     try {
-      const response = await axios.get(requestUrl, {
+      const response = await this.conn.getAxiosInstance().get(requestUrl, {
         headers: {
           ...authHeaders,
           Accept: 'application/json',
@@ -162,7 +161,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     const url = `${this.conn.getInstanceUrl()}/api/now/table/sys_user?sysparm_query=email=${encodeURIComponent(
       email,
     )}&sysparm_fields=sys_id`;
-    const response = await axios.get(url, {
+    const response = await this.conn.getAxiosInstance().get(url, {
       headers: {
         ...authHeaders,
         Accept: 'application/json',
