@@ -1,0 +1,56 @@
+{
+  "name": "@backstage-community/plugin-persisted-feature-flags-react",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "Web library for the persisted-feature-flags plugin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/persisted-feature-flags/plugins/persisted-feature-flags-react"
+  },
+  "backstage": {
+    "role": "web-library",
+    "pluginId": "persisted-feature-flags",
+    "pluginPackages": [
+      "@backstage-community/plugin-persisted-feature-flags",
+      "@backstage-community/plugin-persisted-feature-flags-react"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/types": "backstage:^",
+    "react-use": "^17.6.0",
+    "zen-observable": "^0.10.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/zen-observable": "0.8.7",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

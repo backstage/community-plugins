@@ -1,0 +1,52 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "main": "dist/index.cjs.js",
+  "types": "src/index.ts",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/persisted-feature-flags/packages/backend"
+  },
+  "backstage": {
+    "role": "backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "build-image": "docker build ../.. -f Dockerfile --tag backstage"
+  },
+  "dependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/plugin-app-backend": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-gitlab-provider": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-auth-node": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-events-backend": "backstage:^",
+    "@backstage/plugin-notifications-backend": "backstage:^",
+    "@backstage/plugin-proxy-backend": "backstage:^",
+    "@backstage/plugin-signals-backend": "backstage:^",
+    "@backstage/plugin-user-settings-backend": "backstage:^",
+    "app": "link:../app-next",
+    "better-sqlite3": "^9.0.0",
+    "dockerode": "^3.3.1",
+    "node-gyp": "^9.0.0",
+    "pg": "^8.11.3",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^"
+  },
+  "files": [
+    "dist"
+  ]
+}
