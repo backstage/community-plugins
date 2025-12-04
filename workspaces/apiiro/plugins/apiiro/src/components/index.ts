@@ -28,7 +28,6 @@ export { RepositoryDisplay } from './RepositoryDisplay';
 export { TagsList } from './TagsList';
 export { TeamsDisplay } from './TeamsDisplay';
 export { SourcesDisplay } from './SourcesDisplay';
-export { VendorIcon } from './VendorIcon';
 export { DueDateDisplay } from './DueDate';
 export { FilterDropdown } from './filters/FilterDropdown';
 export { RiskInsightFilter } from './filters/RiskInsightFilter';

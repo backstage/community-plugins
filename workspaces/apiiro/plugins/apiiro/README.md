@@ -9,7 +9,7 @@ The plugin has been successfully tested with Backstage v1.44.0 If you are using 
 ## Features
 
 - **Dashboard View**: Repository list with statistics sourced from Apiiro
-- **Apiiro Tab**: In-depth view of repository risks and detailed metrics
+- **Apiiro Tab**: In-depth view of repository open risks and detailed metrics
 - **Apiiro Widget**: High-level overview widget that can be embedded in custom entity tabs
 - **Permission Control**: Conditional permissions for fine-grained access control to Apiiro metrics
 
@@ -23,7 +23,7 @@ Displays the list of integrated repositories along with statistics sourced from 
 
 ### Apiiro Tab
 
-Provides an in-depth look at each repository's risks and detailed metrics retrieved from Apiiro.
+Provides an in-depth look at each repository's open risks and detailed metrics retrieved from Apiiro.
 
 ![Apiiro Tab](../../assets/apiiro-tab.png)
 

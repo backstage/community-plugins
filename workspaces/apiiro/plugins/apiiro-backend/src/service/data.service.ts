@@ -105,6 +105,9 @@ export class ApiiroConfig {
     // Apiiro expects camel-cased RepositoryId and indexed array keys
     params.append('filters[RepositoryId][0]', repositoryId);
 
+    // Only fetch the Open risks
+    params.append('filters[RiskStatus]', 'Open');
+
     const appendIndexed = (key: string, values?: string[]) => {
       if (!values || values.length === 0) return;
       values.forEach((v, idx) => params.append(`filters[${key}][${idx}]`, v));

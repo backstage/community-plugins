@@ -181,7 +181,7 @@ export const risksColumns: GridColDef[] = [
     field: 'source',
     headerName: 'Source',
     flex: 1,
-    minWidth: 170,
+    minWidth: 200,
     headerAlign: 'center',
     valueGetter: (_, row) =>
       row.source.map((source: any) => source.name).join(', '),
