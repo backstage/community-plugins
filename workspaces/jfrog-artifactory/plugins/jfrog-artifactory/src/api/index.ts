@@ -89,6 +89,7 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
           packageId: `docker://${repo}`,
           name: '*',
           ignorePreRelease: false,
+          // TO-DO
         },
         first: 100,
         orderBy: {
