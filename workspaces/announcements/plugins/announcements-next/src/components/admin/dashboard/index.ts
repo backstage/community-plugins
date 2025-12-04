@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { AdminDashboard } from './AdminDashboard';
+export { MetricsSection } from './MetricsSection';

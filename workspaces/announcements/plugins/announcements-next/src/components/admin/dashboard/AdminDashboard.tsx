@@ -29,6 +29,7 @@ import { Container, Grid } from '@backstage/ui';
 import { AnnouncementsSection } from './AnnouncementsSection';
 import { CategoriesSection } from './CategoriesSection';
 import { TagsSection } from './TagsSection';
+import { MetricsSection } from './MetricsSection';
 
 type AdminDashboardProps = {
   defaultInactive?: boolean;
@@ -50,12 +51,14 @@ export const AdminDashboard = (props: AdminDashboardProps) => {
   const {
     loading: categoriesLoading,
     error: categoriesError,
+    categories,
     retry: retryCategories,
   } = useCategories();
 
   const {
     loading: tagsLoading,
     error: tagsError,
+    tags,
     retry: retryTags,
   } = useTags();
 
@@ -78,6 +81,14 @@ export const AdminDashboard = (props: AdminDashboardProps) => {
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
         <Grid.Root columns="12">
+          <Grid.Item colSpan="12">
+            <MetricsSection
+              announcements={announcements?.results ?? []}
+              categoriesCount={categories?.length ?? 0}
+              tagsCount={tags?.length ?? 0}
+            />
+          </Grid.Item>
+
           <Grid.Item colSpan="12">
             <AnnouncementsSection
               announcements={announcements?.results ?? []}

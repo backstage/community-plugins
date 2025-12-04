@@ -212,15 +212,14 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
           <Column isRowHeader>
             {t('admin.announcementsContent.table.title')}
           </Column>
-          <Column>{t('admin.announcementsContent.table.body')}</Column>
+          <Column maxWidth="8">
+            {t('admin.announcementsContent.table.body')}
+          </Column>
           <Column>{t('admin.announcementsContent.table.publisher')}</Column>
           <Column>{t('admin.announcementsContent.table.onBehalfOf')}</Column>
           <Column>{t('admin.announcementsContent.table.category')}</Column>
           <Column>{t('admin.announcementsContent.table.tags')}</Column>
           <Column>{t('admin.announcementsContent.table.status')}</Column>
-          <Column>{t('admin.announcementsContent.table.created_at')}</Column>
-          <Column>{t('admin.announcementsContent.table.start_at')}</Column>
-          <Column>{t('admin.announcementsContent.table.until_date')}</Column>
           <Column>{t('admin.announcementsContent.table.actions')}</Column>
         </TableHeader>
 
@@ -237,12 +236,12 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
             <Row key={announcement.id} id={announcement.id}>
               <Cell title={announcement.title} />
               <Cell title={announcement.body} />
-              <Cell title={announcement.publisher} />
-              <Cell title={announcement.on_behalf_of ?? ''} />
-              <Cell title={announcement.category?.title ?? ''} />
+              <Cell title={announcement.publisher ?? '---'} />
+              <Cell title={announcement.on_behalf_of ?? '---'} />
+              <Cell title={announcement.category?.title ?? '---'} />
               <Cell
                 title={
-                  announcement.tags?.map(tag => tag.title).join(', ') ?? ''
+                  announcement.tags?.map(tag => tag.title).join(', ') ?? '---'
                 }
               />
               <Cell
@@ -250,25 +249,6 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                   announcement.active
                     ? t('admin.announcementsContent.table.active')
                     : t('admin.announcementsContent.table.inactive')
-                }
-              />
-              <Cell
-                title={DateTime.fromISO(announcement.created_at).toFormat(
-                  'M/d/yyyy',
-                )}
-              />
-              <Cell
-                title={DateTime.fromISO(announcement.start_at).toFormat(
-                  'M/d/yyyy',
-                )}
-              />
-              <Cell
-                title={
-                  announcement.until_date
-                    ? DateTime.fromISO(announcement.until_date).toFormat(
-                        'M/d/yyyy',
-                      )
-                    : '-'
                 }
               />
 
@@ -311,7 +291,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
         </TableBody>
       </Table>
 
-      {filteredAndSortedData.length > 0 && (
+      {filteredAndSortedData.length > 5 && (
         <TablePagination {...paginationProps} />
       )}
 
