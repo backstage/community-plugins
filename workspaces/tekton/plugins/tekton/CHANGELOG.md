@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.31.1
+
+### Patch Changes
+
+- b5310cb: Updated dependency `@types/lodash` to `4.17.21`.
+
 ## 3.31.0
 
 ### Minor Changes
