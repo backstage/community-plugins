@@ -395,6 +395,9 @@ export function DataGrid<T extends GridValidRowModel>({
           },
           columnsManagement: {
             disableResetButton: true,
+            searchInputProps: {
+              type: 'text',
+            },
           },
         }}
         sx={{
