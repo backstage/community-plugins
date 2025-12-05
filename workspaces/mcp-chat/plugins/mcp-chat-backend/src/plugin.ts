@@ -16,9 +16,11 @@
 import {
   coreServices,
   createBackendPlugin,
+  resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { MCPClientServiceImpl } from './services';
+import { MCPClientServiceImpl } from './services/MCPClientServiceImpl';
+import { ChatConversationStore } from './services/ChatConversationStore';
 import { validateConfig } from './utils';
 
 /**
@@ -34,17 +36,50 @@ export const mcpChatPlugin = createBackendPlugin({
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         httpRouter: coreServices.httpRouter,
+        database: coreServices.database,
+        httpAuth: coreServices.httpAuth,
       },
-      async init({ logger, httpRouter, config }) {
+      async init({ logger, httpRouter, config, database, httpAuth }) {
         validateConfig(config);
+
+        // Initialize database connection
+        const db = await database.getClient();
+
+        // Run migrations
+        logger.info('Running database migrations for MCP Chat...');
+        const migrationsDir = resolvePackagePath(
+          '@backstage-community/plugin-mcp-chat-backend',
+          'migrations',
+        );
+        logger.info(`Migrations directory: ${migrationsDir}`);
+
+        const [batchNo, log] = await db.migrate.latest({
+          directory: migrationsDir,
+        });
+
+        if (log.length === 0) {
+          logger.info('Database is already up to date');
+        } else {
+          logger.info(`Batch ${batchNo} run: ${log.length} migrations applied`);
+          log.forEach((migration: string) => {
+            logger.info(`  - ${migration}`);
+          });
+        }
+
+        // Initialize services
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
         });
+
+        const conversationStore = new ChatConversationStore(db, logger, config);
+
         httpRouter.use(
           await createRouter({
             logger,
             mcpClientService,
+            conversationStore,
+            httpAuth,
           }),
         );
       },
