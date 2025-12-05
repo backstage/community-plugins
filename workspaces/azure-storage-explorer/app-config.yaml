@@ -51,5 +51,6 @@ azureStorage:
   blobContainers:
     - accountName: ${AZURE_STO_ACCOUNT_NAME}
       authType: accessToken
+      allowedContainers: ["container1", "container2"] # this is optional field
       auth:
         accessToken: ${AZURE_STO_ACCESS_TOKEN}

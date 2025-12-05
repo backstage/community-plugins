@@ -68,11 +68,20 @@ export class AzureStorageProvider {
     );
   }
 
+  private getAllowedContainers(account: string): string[]{
+    const acc = this.azureStorageConfig.blobContainers.find(
+      a => a.accountName === account
+    );
+    return acc?.allowedContainers ?? []
+  }
   async listContainers(storageAccount: string) {
     const blobServiceClient = this.getblobServiceClient(storageAccount);
+    const allowed = this.getAllowedContainers(storageAccount)
     const contianerList = [];
     for await (const container of blobServiceClient.listContainers()) {
+      if (allowed.length === 0 || allowed.includes(container.name)){
       contianerList.push(container.name);
+      }
     }
     return contianerList;
   }
