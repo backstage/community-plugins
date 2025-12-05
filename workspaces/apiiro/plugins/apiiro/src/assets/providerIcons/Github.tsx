@@ -1,0 +1,32 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+export const Github = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="#20303c"
+        d="M12 2C6.477 2 2 6.59 2 12.253c0 4.53 2.865 8.373 6.839 9.729.5.094.682-.222.682-.494 0-.243-.008-.888-.013-1.744-2.782.62-3.369-1.374-3.369-1.374-.454-1.185-1.11-1.5-1.11-1.5-.908-.636.069-.624.069-.624 1.003.073 1.531 1.057 1.531 1.057.892 1.567 2.341 1.114 2.91.852.092-.662.35-1.114.636-1.37-2.22-.26-4.555-1.139-4.555-5.068 0-1.119.39-2.035 1.029-2.751-.103-.26-.446-1.302.098-2.714 0 0 .84-.275 2.75 1.052.797-.228 1.653-.342 2.503-.346.85.004 1.705.118 2.504.346 1.909-1.327 2.747-1.052 2.747-1.052.546 1.412.203 2.455.1 2.714.64.716 1.028 1.632 1.028 2.751 0 3.94-2.339 4.806-4.566 5.06.359.316.678.942.678 1.898 0 1.37-.012 2.477-.012 2.813 0 .274.18.593.688.493C19.137 20.622 22 16.782 22 12.253 22 6.59 17.522 2 12 2"
+      />
+    </svg>
+  );
+};
+
+export default Github;
