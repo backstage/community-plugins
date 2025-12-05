@@ -1910,6 +1910,7 @@ __metadata:
     "@material-ui/core": "npm:^4.9.13"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"
+    "@patternfly/react-tokens": "npm:^6.0.0"
     "@patternfly/react-topology": "npm:6.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
@@ -1941,6 +1942,7 @@ __metadata:
     "@patternfly/react-charts": "npm:^7.1.1"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"
+    "@patternfly/react-tokens": "npm:^6.0.0"
     "@patternfly/react-topology": "npm:6.0.0"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
@@ -8638,7 +8640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-tokens@npm:^6.4.0":
+"@patternfly/react-tokens@npm:^6.0.0, @patternfly/react-tokens@npm:^6.4.0":
   version: 6.4.0
   resolution: "@patternfly/react-tokens@npm:6.4.0"
   checksum: 10/86a4407dde1316d76b18f5b3dec42981b174e7ef0bcf77ccfebea4cfd56ad4a36851022dfd8f26984de27602592d969cf586c6927d4a7f734c5306e165f13be5
