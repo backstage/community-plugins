@@ -19,8 +19,7 @@ export const loadMatomo = (matomoUrl: string, siteId: number) => {
   if (isInitialized) return;
 
   const _paq = ((window as any)._paq = (window as any)._paq || []);
-  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-  _paq.push(['trackPageView']);
+  /* Do not queue a page view yet; MatomoAnalytics controls when to emit it */
   _paq.push(['enableLinkTracking']);
   (() => {
     const u = `//${matomoUrl}/`;
