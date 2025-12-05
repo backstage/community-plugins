@@ -39,7 +39,7 @@ export class ServiceNowSchemaChecker {
         Accept: 'application/json',
       },
       params: {
-        sysparm_query: `name=${INCIDENT_TABLE_NAME}^elementSTARTSWITHu_`,
+        sysparm_query: `name=${INCIDENT_TABLE_NAME}`,
         sysparm_fields: 'element',
         sysparm_limit: 500,
       },
