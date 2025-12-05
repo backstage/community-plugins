@@ -6,7 +6,6 @@
 /// <reference types="node" />
 
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { CacheService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { IndexableDocument } from '@backstage/plugin-search-common';
@@ -21,6 +20,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   static fromConfig(
     config: Config,
     options: ConfluenceCollatorFactoryOptions,
+    instanceKey?: string,
+    type?: string,
   ): ConfluenceCollatorFactory;
   // (undocumented)
   getCollator(): Promise<Readable>;
@@ -40,9 +41,8 @@ export type ConfluenceCollatorFactoryOptions = {
   query?: string;
   parallelismLimit?: number;
   maxRequestsPerSecond?: number;
+  type?: string;
   logger: LoggerService;
-  cache?: CacheService;
-  documentCacheTtl?: number;
 };
 
 // @public
