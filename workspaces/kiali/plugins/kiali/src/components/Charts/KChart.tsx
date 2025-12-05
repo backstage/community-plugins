@@ -32,8 +32,8 @@ import {
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
+  Icon,
 } from '@patternfly/react-core';
 import { CubesIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
@@ -238,7 +238,11 @@ export class KChart<T extends LineInfo> extends React.Component<
         }}
       >
         <EmptyState variant={EmptyStateVariant.sm} className={emptyStyle}>
-          {this.props.isMaximized && <EmptyStateIcon icon={CubesIcon} />}
+          {this.props.isMaximized && (
+            <Icon>
+              <CubesIcon />
+            </Icon>
+          )}
           <EmptyStateBody className={emptyStyle}>
             No data available
           </EmptyStateBody>
@@ -261,15 +265,13 @@ export class KChart<T extends LineInfo> extends React.Component<
       >
         <EmptyState variant={EmptyStateVariant.sm} className={emptyStyle}>
           {this.props.isMaximized && (
-            <EmptyStateIcon
-              icon={() => (
-                <ErrorCircleOIcon
-                  style={{ color: PFColors.Danger }}
-                  width={32}
-                  height={32}
-                />
-              )}
-            />
+            <Icon>
+              <ErrorCircleOIcon
+                style={{ color: PFColors.Danger }}
+                width={32}
+                height={32}
+              />
+            </Icon>
           )}
           <EmptyStateBody className={emptyStyle}>
             An error occured while fetching this metric:
