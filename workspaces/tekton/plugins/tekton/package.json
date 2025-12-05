@@ -9,6 +9,11 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "tekton",
@@ -38,6 +43,7 @@
     "@backstage/catalog-model": "^1.7.5",
     "@backstage/core-components": "^0.18.2",
     "@backstage/core-plugin-api": "^1.11.1",
+    "@backstage/frontend-plugin-api": "^0.13.1",
     "@backstage/plugin-catalog-react": "^1.21.2",
     "@backstage/plugin-kubernetes-common": "^0.9.7",
     "@backstage/plugin-kubernetes-react": "^0.5.12",
