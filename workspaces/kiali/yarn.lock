@@ -1946,7 +1946,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/lodash": "npm:^4.14.151"
-    "@types/node": "npm:22.15.29"
+    "@types/node": "npm:22.19.1"
     "@types/react": "npm:^18.2.58"
     "@types/react-copy-to-clipboard": "npm:5.0.7"
     "@types/react-dom": "npm:^18.2.19"
@@ -14387,12 +14387,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.15.29, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
-  version: 22.15.29
-  resolution: "@types/node@npm:22.15.29"
+"@types/node@npm:*, @types/node@npm:22.19.1, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
+  version: 22.19.1
+  resolution: "@types/node@npm:22.19.1"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/3426790c5aa22df445213d7f37e57ea261cf3013030fe9b3025d87c302097799a9db3b848e2a9bdb07cab8ec6c7e9947ac770cf11e12e420148296b63d63e7db
+  checksum: 10/40d5368faa6d9be6c27ebca2362734bc9e035a742e0b5cafee40ba3b355d7cfcaedbc93618c76465451e53f1af0c811b4b85ee9b85e2e942f34a4c5310fa047b
   languageName: node
   linkType: hard
 
