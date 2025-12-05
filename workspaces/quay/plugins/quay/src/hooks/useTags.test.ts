@@ -22,7 +22,12 @@ import { useTags } from './quay';
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn().mockReturnValue({
-    getSecurityDetails: (param: any) => param,
+    getSecurityDetails: (
+      _instance: string | undefined,
+      org: string,
+      _repo: string,
+      _digest: string,
+    ) => org,
     getTags: jest.fn().mockReturnValue({
       tags: [{ name: 'tag1', manifest_digest: 'manifestDigest' }],
     }),
@@ -30,8 +35,8 @@ jest.mock('@backstage/core-plugin-api', () => ({
 }));
 
 describe('useTags', () => {
-  it('should return tags for provided org and repo', async () => {
-    const { result } = renderHook(() => useTags('foo', 'bar'));
+  it('should return tags for provided instance, org and repo', async () => {
+    const { result } = renderHook(() => useTags(undefined, 'foo', 'bar'));
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.data).toHaveLength(1);
@@ -47,7 +52,7 @@ describe('useTags', () => {
         tags: [{ name: 'tag1', manifest_digest: 'manifestDigest' }],
       }),
     });
-    const { result } = renderHook(() => useTags('foo', 'bar'));
+    const { result } = renderHook(() => useTags(undefined, 'foo', 'bar'));
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.data).toHaveLength(1);
@@ -65,7 +70,7 @@ describe('useTags', () => {
         tags: [{ name: 'tag1', manifest_digest: 'manifestDigest' }],
       }),
     });
-    const { result } = renderHook(() => useTags('foo', 'bar'));
+    const { result } = renderHook(() => useTags(undefined, 'foo', 'bar'));
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.data).toHaveLength(1);

@@ -47,7 +47,7 @@ export const quayPlugin = createPlugin({
         identityApi: identityApiRef,
       },
       factory: ({ discoveryApi, configApi, identityApi }) =>
-        new QuayApiClient({ discoveryApi, configApi, identityApi }),
+        QuayApiClient.fromConfig({ discoveryApi, configApi, identityApi }),
     }),
   ],
 });

@@ -19,16 +19,18 @@
  * instead of using the proxy.
  */
 
-import { UrlPatternDiscovery } from '@backstage/core-app-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { mockApis } from '@backstage/test-utils';
 
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
+import { QUAY_SINGLE_INSTANCE_NAME } from '@backstage-community/plugin-quay-common';
+
 import { QuayApiClient, QuayApiV1 } from './index';
 
 const LOCAL_API_ADDR = 'https://localhost:7070/api/quay';
-const DEFAULT_PROXY_ADDR = 'https://localhost:7070';
+const DEFAULT_PROXY_ADDR = 'https://localhost:7070/api/proxy';
 
 const apiHandlers = [
   // Default proxy request if apiUrl is not set.
@@ -53,34 +55,40 @@ const apiHandlers = [
       );
     },
   ),
-  rest.get(`${LOCAL_API_ADDR}/repository/foo/bar/tag?`, (req, res, ctx) => {
-    if (req.url.searchParams.get('limit') === '1') {
+  rest.get(
+    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/tag?`,
+    (req, res, ctx) => {
+      if (req.url.searchParams.get('limit') === '1') {
+        return res(
+          ctx.status(200),
+          ctx.json(require(`${__dirname}/fixtures/tags/foo_limit.json`)),
+        );
+      } else if (req.url.searchParams.get('page') === '2') {
+        return res(
+          ctx.status(200),
+          ctx.json(require(`${__dirname}/fixtures/tags/foo_page2.json`)),
+        );
+      }
+
       return res(
         ctx.status(200),
-        ctx.json(require(`${__dirname}/fixtures/tags/foo_limit.json`)),
+        ctx.json(require(`${__dirname}/fixtures/tags/foo_page1.json`)),
       );
-    } else if (req.url.searchParams.get('page') === '2') {
-      return res(
-        ctx.status(200),
-        ctx.json(require(`${__dirname}/fixtures/tags/foo_page2.json`)),
-      );
-    }
-
-    return res(
-      ctx.status(200),
-      ctx.json(require(`${__dirname}/fixtures/tags/foo_page1.json`)),
-    );
-  }),
-
-  rest.get(`${LOCAL_API_ADDR}/repository/not/found/tag?`, (_, res, ctx) => {
-    return res(
-      ctx.status(404),
-      ctx.json(require(`${__dirname}/fixtures/tags/not_found.json`)),
-    );
-  }),
+    },
+  ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
+    `${LOCAL_API_ADDR}/:instance/repository/not/found/tag?`,
+    (_, res, ctx) => {
+      return res(
+        ctx.status(404),
+        ctx.json(require(`${__dirname}/fixtures/tags/not_found.json`)),
+      );
+    },
+  ),
+
+  rest.get(
+    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -90,7 +98,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
+    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -100,7 +108,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/labels`,
+    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/labels`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -110,7 +118,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
+    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -128,26 +136,8 @@ afterAll(() => server.close());
 
 describe('QuayApiClient-Backend', () => {
   let quayApi: QuayApiV1;
+  let fetchSpy: jest.SpyInstance;
   const bearerToken = 'Bearer token';
-
-  const getConfigApi = (configValues: Record<string, string | undefined>) => ({
-    has: jest.fn(),
-    keys: jest.fn(),
-    get: jest.fn(),
-    getBoolean: jest.fn(),
-    getConfig: jest.fn(),
-    getConfigArray: jest.fn(),
-    getNumber: jest.fn(),
-    getString: jest.fn(),
-    getStringArray: jest.fn(),
-    getOptional: jest.fn(),
-    getOptionalStringArray: jest.fn(),
-    getOptionalBoolean: jest.fn(),
-    getOptionalConfig: jest.fn(),
-    getOptionalConfigArray: jest.fn(),
-    getOptionalNumber: jest.fn(),
-    getOptionalString: jest.fn((key: string) => configValues[key]),
-  });
 
   const identityApi = {
     async getCredentials() {
@@ -157,40 +147,124 @@ describe('QuayApiClient-Backend', () => {
     },
   } as IdentityApi;
 
-  beforeEach(() => {
-    quayApi = new QuayApiClient({
-      configApi: getConfigApi({
-        'quay.apiUrl': 'https://quay.io',
-      }),
-      discoveryApi: UrlPatternDiscovery.compile(LOCAL_API_ADDR),
-      identityApi: identityApi,
-    });
+  const mockDiscoveryApi = mockApis.discovery.mock({
+    getBaseUrl: async (pluginId: string) =>
+      `https://localhost:7070/api/${pluginId}`,
   });
 
-  it('should default to proxy if apiUrl is not set.', async () => {
+  beforeEach(() => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            apiUrl: 'https://quay.example.io',
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+    fetchSpy = jest.spyOn(global, 'fetch');
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+  });
+
+  it('should default to proxy if apiUrl is not set', async () => {
     // Proxy
-    quayApi = new QuayApiClient({
-      configApi: getConfigApi({}),
-      discoveryApi: UrlPatternDiscovery.compile(DEFAULT_PROXY_ADDR),
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({ data: {} }),
+      discoveryApi: mockDiscoveryApi,
       identityApi: identityApi,
     });
 
-    const proxyResult = await quayApi.getTags('foo', 'bar');
+    const proxyResult = await quayApi.getTags(undefined, 'foo', 'bar');
 
     expect(proxyResult).toEqual(
       require(`${__dirname}/fixtures/tags/foo_page1.json`),
     );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(DEFAULT_PROXY_ADDR),
+      expect.anything(),
+    );
+  });
+
+  it('should use default instance when single-instance config', async () => {
+    const result = await quayApi.getTags(undefined, 'foo', 'bar');
+
+    expect(result).toEqual(
+      require(`${__dirname}/fixtures/tags/foo_page1.json`),
+    );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`${LOCAL_API_ADDR}/${QUAY_SINGLE_INSTANCE_NAME}`),
+      expect.anything(),
+    );
+  });
+
+  it('should use default instance (first) when multi-instance config', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [
+              { name: 'devel', apiUrl: 'https://quay.staging.example.io' },
+              { name: 'staging', apiUrl: 'https://quay.staging.example.io' },
+            ],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    const result = await quayApi.getTags(undefined, 'foo', 'bar');
+
+    expect(result).toEqual(
+      require(`${__dirname}/fixtures/tags/foo_page1.json`),
+    );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`${LOCAL_API_ADDR}/devel`),
+      expect.anything(),
+    );
+  });
+
+  it('should use custom instance (from annotation) when multi-instance config', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [
+              { name: 'devel', apiUrl: 'https://quay.staging.example.io' },
+              { name: 'staging', apiUrl: 'https://quay.staging.example.io' },
+            ],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    const result = await quayApi.getTags('staging', 'foo', 'bar');
+
+    expect(result).toEqual(
+      require(`${__dirname}/fixtures/tags/foo_page1.json`),
+    );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`${LOCAL_API_ADDR}/staging`),
+      expect.anything(),
+    );
   });
 
   it('should throw an error when the response is not ok', async () => {
-    await expect(quayApi.getTags('not', 'found')).rejects.toEqual(
+    await expect(quayApi.getTags(undefined, 'not', 'found')).rejects.toEqual(
       new Error('failed to fetch data, status 404: Not Found'),
     );
   });
 
   describe('getTags', () => {
     it('should correctly get tags without optional arguments', async () => {
-      const result = await quayApi.getTags('foo', 'bar');
+      const result = await quayApi.getTags(undefined, 'foo', 'bar');
 
       expect(result).toEqual(
         require(`${__dirname}/fixtures/tags/foo_page1.json`),
@@ -198,14 +272,20 @@ describe('QuayApiClient-Backend', () => {
     });
 
     it('should correctly get tags with a limit', async () => {
-      const result = await quayApi.getTags('foo', 'bar', undefined, 1);
+      const result = await quayApi.getTags(
+        undefined,
+        'foo',
+        'bar',
+        undefined,
+        1,
+      );
 
       expect(result).toEqual(
         require(`${__dirname}/fixtures/tags/foo_limit.json`),
       );
     });
     it('should correctly get tags with a page number', async () => {
-      const result = await quayApi.getTags('foo', 'bar', 2);
+      const result = await quayApi.getTags(undefined, 'foo', 'bar', 2);
 
       expect(result).toEqual(
         require(`${__dirname}/fixtures/tags/foo_page2.json`),
@@ -217,6 +297,7 @@ describe('QuayApiClient-Backend', () => {
     it('should correctly get the manifest using its digest', async () => {
       const manifest = require(`${__dirname}/fixtures/manifests/foo.json`);
       const result = await quayApi.getManifestByDigest(
+        undefined,
         'foo',
         'bar',
         manifest.digest,
@@ -229,16 +310,22 @@ describe('QuayApiClient-Backend', () => {
   describe('getLabels', () => {
     it('should correctly get the labels using the manifest digest', async () => {
       const manifest = require(`${__dirname}/fixtures/manifests/bar.json`);
-      const result = await quayApi.getLabels('foo', 'bar', manifest.digest);
+      const result = await quayApi.getLabels(
+        undefined,
+        'foo',
+        'bar',
+        manifest.digest,
+      );
 
       expect(result).toEqual(require(`${__dirname}/fixtures/labels/foo.json`));
     });
   });
 
   describe('getSecurityDetails', () => {
-    it('should correctly get secuity details using the manifest digest', async () => {
+    it('should correctly get security details using the manifest digest', async () => {
       const manifest = require(`${__dirname}/fixtures/manifests/bar.json`);
       const result = await quayApi.getSecurityDetails(
+        undefined,
         'foo',
         'bar',
         manifest.digest,

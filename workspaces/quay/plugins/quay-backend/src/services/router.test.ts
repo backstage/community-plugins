@@ -44,6 +44,7 @@ describe('createRouter', () => {
   };
 
   const mockQuayService = {
+    getQuayInstance: jest.fn(),
     getTags: jest.fn(),
     getLabels: jest.fn(),
     getManifestByDigest: jest.fn(),
@@ -69,6 +70,11 @@ describe('createRouter', () => {
       { result: AuthorizeResult.ALLOW },
     ]);
     mockHttpAuth.credentials.mockResolvedValue({ token: 'test-token' });
+    mockQuayService.getQuayInstance.mockReturnValue({
+      name: 'default',
+      apiUrl: 'https://quay.example.com',
+      token: 'test-token',
+    });
 
     const router = await createRouter({
       quayService: mockQuayService as unknown as QuayService,
@@ -81,7 +87,7 @@ describe('createRouter', () => {
     app = express().use(router);
   });
 
-  describe('GET /repository/:org/:repo/tag', () => {
+  describe('GET /:instance/repository/:org/:repo/tag', () => {
     const mockTags: Tag[] = [
       {
         name: 'prod',
@@ -113,11 +119,12 @@ describe('createRouter', () => {
       mockQuayService.getTags.mockResolvedValue(expectedTagResponse);
 
       const response = await request(app)
-        .get('/repository/org/repo/tag')
+        .get('/default/repository/org/repo/tag')
         .expect(200);
 
       expect(response.body).toEqual(expectedTagResponse);
       expect(mockQuayService.getTags).toHaveBeenCalledWith(
+        'default',
         'org',
         'repo',
         undefined,
@@ -135,28 +142,20 @@ describe('createRouter', () => {
       mockQuayService.getTags.mockResolvedValue(expectedTagWithParamsResponse);
 
       await request(app)
-        .get('/repository/org/repo/tag?page=2&limit=10')
+        .get('/default/repository/org/repo/tag?page=2&limit=10')
         .expect(200);
 
       expect(mockQuayService.getTags).toHaveBeenCalledWith(
+        'default',
         'org',
         'repo',
         2,
         10,
       );
     });
-
-    it('should require authorization', async () => {
-      mockPermissions.authorize.mockResolvedValue([
-        { result: AuthorizeResult.DENY },
-      ]);
-
-      const response = await request(app).get('/repository/org/repo/tag');
-      expect(response.status).toEqual(403);
-    });
   });
 
-  describe('GET /repository/:org/:repo/manifest/:digest/labels', () => {
+  describe('GET /:instance/repository/:org/:repo/manifest/:digest/labels', () => {
     const mockLabels: Label[] = [
       {
         id: 'asdfghjkl12345',
@@ -181,11 +180,12 @@ describe('createRouter', () => {
     it('should return labels when authorized', async () => {
       mockQuayService.getLabels.mockResolvedValue(expectedLabelsResponse);
       const response = await request(app)
-        .get('/repository/org/repo/manifest/sha256:123/labels')
+        .get('/default/repository/org/repo/manifest/sha256:123/labels')
         .expect(200);
 
       expect(response.body).toEqual(expectedLabelsResponse);
       expect(mockQuayService.getLabels).toHaveBeenCalledWith(
+        'default',
         'org',
         'repo',
         'sha256:123',
@@ -193,7 +193,7 @@ describe('createRouter', () => {
     });
   });
 
-  describe('GET /repository/:org/:repo/manifest/:digest/security', () => {
+  describe('GET /:instance/repository/:org/:repo/manifest/:digest/security', () => {
     const expectedSecurityDetailsResponse: SecurityDetailsResponse = {
       status: 'scanned',
       data: {
@@ -213,11 +213,12 @@ describe('createRouter', () => {
       );
 
       const response = await request(app)
-        .get('/repository/org/repo/manifest/sha256:123/security')
+        .get('/default/repository/org/repo/manifest/sha256:123/security')
         .expect(200);
 
       expect(response.body).toEqual(expectedSecurityDetailsResponse);
       expect(mockQuayService.getSecurityDetails).toHaveBeenCalledWith(
+        'default',
         'org',
         'repo',
         'sha256:123',
@@ -225,7 +226,7 @@ describe('createRouter', () => {
     });
   });
 
-  describe('GET /repository/:org/:repo/manifest/:digest', () => {
+  describe('GET /:instance/repository/:org/:repo/manifest/:digest', () => {
     const expectedManifestResponse: ManifestByDigestResponse = {
       digest: 'sha256:123',
       isManifestList: false,
@@ -241,15 +242,62 @@ describe('createRouter', () => {
       );
 
       const response = await request(app)
-        .get('/repository/org/repo/manifest/sha256:123')
+        .get('/default/repository/org/repo/manifest/sha256:123')
         .expect(200);
 
       expect(response.body).toEqual(expectedManifestResponse);
       expect(mockQuayService.getManifestByDigest).toHaveBeenCalledWith(
+        'default',
         'org',
         'repo',
         'sha256:123',
       );
     });
+  });
+
+  describe('Error handling', () => {
+    const endpoints = [
+      {
+        endpoint: '/quay-instance/repository/org/repo/tag',
+        description: 'getTags',
+      },
+      {
+        endpoint:
+          '/quay-instance/repository/org/repo/manifest/sha256:123/labels',
+        description: 'getLabels',
+      },
+      {
+        endpoint:
+          '/quay-instance/repository/org/repo/manifest/sha256:123/security',
+        description: 'getSecurityDetails',
+      },
+      {
+        endpoint: '/quay-instance/repository/org/repo/manifest/sha256:123',
+        description: 'getManifestByDigest',
+      },
+    ];
+
+    it.each(endpoints)(
+      'should return 404 for $description when Quay instance not found',
+      async ({ endpoint }) => {
+        mockQuayService.getQuayInstance.mockReturnValueOnce(undefined);
+
+        const response = await request(app).get(endpoint);
+        expect(response.status).toEqual(404);
+        expect(response.body.error).toContain('not found in configuration');
+      },
+    );
+
+    it.each(endpoints)(
+      'should return 403 for $description when unauthorized',
+      async ({ endpoint }) => {
+        mockPermissions.authorize.mockResolvedValueOnce([
+          { result: AuthorizeResult.DENY },
+        ]);
+
+        const response = await request(app).get(endpoint);
+        expect(response.status).toEqual(403);
+      },
+    );
   });
 });

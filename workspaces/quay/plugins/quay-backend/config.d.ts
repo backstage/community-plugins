@@ -15,16 +15,41 @@
  */
 export interface Config {
   /** Configurations for the Quay backend plugin */
-  quay: {
-    /**
-     * The api url of the Quay instance.
-     * @visibility backend
-     */
-    apiUrl: string;
-    /**
-     * The api token of the Quay instance.
-     * @visibility secret
-     */
-    apiKey?: string;
-  };
+  quay:
+    | {
+        /**
+         * Multiple Quay instances configuration.
+         * Use this to configure multiple Quay instances for your organization.
+         * @visibility frontend
+         */
+        instances: Array<{
+          /**
+           * The name identifier for this Quay instance.
+           * @visibility frontend
+           */
+          name: string;
+          /**
+           * The api url of the Quay instance.
+           * @visibility frontend
+           */
+          apiUrl: string;
+          /**
+           * The api token of the Quay instance.
+           * @visibility secret
+           */
+          apiKey?: string;
+        }>;
+      }
+    | {
+        /**
+         * The api url of the Quay instance.
+         * @visibility backend
+         */
+        apiUrl: string;
+        /**
+         * The api token of the Quay instance.
+         * @visibility secret
+         */
+        apiKey?: string;
+      };
 }

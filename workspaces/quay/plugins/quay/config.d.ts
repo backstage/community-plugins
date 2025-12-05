@@ -15,24 +15,57 @@
  */
 export interface Config {
   /** Configurations for the Quay plugin */
-  quay?: {
-    /**
-     * The proxy path for the Quay instance.
-     * @visibility frontend
-     */
-    proxyPath?: string;
-    /**
-     * The UI url of the Quay instance.
-     * @visibility frontend
-     */
-    uiUrl?: string;
-    /**
-     * The API URl for a quay instance.
-     * This is set for the quay-backend plugin.
-     * If this is set, we use the quay-backend plugin.
-     * If not, we default to using the proxy config.
-     * @visibility frontend
-     */
-    apiUrl?: string;
-  };
+  quay:
+    | {
+        /**
+         * Multiple Quay instances configuration.
+         * @visibility frontend
+         */
+        instances: Array<{
+          /**
+           * The name identifier for this Quay instance.
+           * @visibility frontend
+           */
+          name: string;
+          /**
+           * The UI url of the Quay instance.
+           * @visibility frontend
+           */
+          uiUrl?: string;
+          /**
+           * The proxy path for this Quay instance.
+           * Only used if apiUrl is not set.
+           * @visibility frontend
+           */
+          proxyPath?: string;
+          /**
+           * The API URL for a quay instance.
+           * This is set for the quay-backend plugin.
+           * If this is set, we use the quay-backend plugin.
+           * If not, we default to using the proxy config.
+           * @visibility frontend
+           */
+          apiUrl?: string;
+        }>;
+      }
+    | {
+        /**
+         * The proxy path for the Quay instance.
+         * @visibility frontend
+         */
+        proxyPath?: string;
+        /**
+         * The UI url of the Quay instance.
+         * @visibility frontend
+         */
+        uiUrl?: string;
+        /**
+         * The API URL for a quay instance.
+         * This is set for the quay-backend plugin.
+         * If this is set, we use the quay-backend plugin.
+         * If not, we default to using the proxy config.
+         * @visibility frontend
+         */
+        apiUrl?: string;
+      };
 }
