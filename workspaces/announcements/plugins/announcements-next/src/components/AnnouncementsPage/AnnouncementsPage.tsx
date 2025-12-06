@@ -36,7 +36,13 @@ import { AnnouncementCard } from './AnnouncementCard';
 import { LoadingSkeleton } from './LoadingSkeleton';
 import { AnnouncementDetailDialog } from './AnnouncementDetailDialog';
 
-const Categories = () => {
+const Categories = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) => {
   const { categories } = useCategories();
   const options = useMemo(() => {
     return [{ slug: 'all', title: 'All' }, ...categories].map(category => ({
@@ -55,6 +61,13 @@ const Categories = () => {
         secondaryLabel="Select one"
         options={options}
         placeholder="Select Category"
+        value={value}
+        onChange={selectedValue => {
+          // Handle Key | Key[] | null from react-aria-components
+          const stringValue =
+            selectedValue === null ? 'all' : String(selectedValue);
+          onChange(stringValue);
+        }}
       />
     </Box>
   );
@@ -201,7 +214,7 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
             colSpan={{ xs: '12', md: '2' }}
             // colStart={{ xs: '12', md: '2' }}
           >
-            <Categories />
+            <Categories value={categoryFilter} onChange={setCategoryFilter} />
           </Grid.Item>
           <Grid.Item colSpan={{ xs: '12', md: '10' }}>
             <Flex direction="row">
