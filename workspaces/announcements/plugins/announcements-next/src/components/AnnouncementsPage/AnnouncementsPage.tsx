@@ -91,6 +91,7 @@ const Tags = () => {
       searchPlaceholder="Search tags..."
       options={options}
       placeholder="Select Tags"
+      defaultOpen
     />
   );
 };
@@ -242,14 +243,11 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
         </Grid.Root>
 
         <Grid.Root columns="12" mt="4">
-          {/* <Grid.Item colSpan={{ xs: '12', md: '2' }}>
+          <Grid.Item colSpan={{ xs: '12', md: '2' }}>
             <Tags />
-          </Grid.Item> */}
+          </Grid.Item>
 
-          <Grid.Item
-            colSpan={{ xs: '12', md: '10' }}
-            colStart={{ xs: '12', md: '2' }}
-          >
+          <Grid.Item colSpan={{ xs: '12', md: '10' }} colStart={{ xs: '12' }}>
             <Flex direction="column">
               {filteredAnnouncements.length ? (
                 <Grid.Root columns={{ xs: '1' }} gap="4">

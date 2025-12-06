@@ -40,6 +40,7 @@ import {
 } from '@backstage/ui';
 
 import { AnnouncementForm } from './AnnouncementForm';
+import { AnnouncementFormCard } from './AnnouncementFormCard';
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { useAnnouncementsPermissions } from '../shared';
 import { AnnouncementDetailDialog } from '../../AnnouncementsPage/AnnouncementDetailDialog';
@@ -219,7 +220,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
 
           {showCreateAnnouncementForm && (
             <Grid.Item colSpan="12">
-              <AnnouncementForm
+              <AnnouncementFormCard
                 initialData={{ active: !defaultInactive } as Announcement}
                 onSubmit={onSubmit}
               />
@@ -228,7 +229,7 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
 
           {editingAnnouncementId && announcementToEdit && (
             <Grid.Item colSpan="12">
-              <AnnouncementForm
+              <AnnouncementFormCard
                 initialData={announcementToEdit}
                 onSubmit={onUpdate}
               />

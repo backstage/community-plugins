@@ -19,3 +19,4 @@ export { TableActions } from './TableActions';
 export { useAnnouncementsPermissions } from './useAnnouncementsPermissions';
 export { EntityContent } from './EntityContent';
 export { EntityForm } from './EntityForm';
+export { FormCard } from './FormCard';
