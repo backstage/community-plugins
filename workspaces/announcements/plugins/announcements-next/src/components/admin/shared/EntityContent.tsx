@@ -36,10 +36,10 @@ import {
   Column,
   TableBody,
   Row,
-  Cell,
   TablePagination,
   useTable,
   Box,
+  CellText,
 } from '@backstage/ui';
 import { Cell as AriaCell } from 'react-aria-components';
 import type { SortDescriptor } from 'react-aria-components';
@@ -354,8 +354,8 @@ export function EntityContent<
               >
                 {paginatedData?.map(item => (
                   <Row key={item.slug} id={item.slug}>
-                    <Cell title={item.title} />
-                    <Cell title={item.slug} />
+                    <CellText title={item.title} />
+                    <CellText title={item.slug} />
                     <AriaCell textValue={t(translationKeys.table.actions)}>
                       <ButtonIcon
                         aria-label="delete"

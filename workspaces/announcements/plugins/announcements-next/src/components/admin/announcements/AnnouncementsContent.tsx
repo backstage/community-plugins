@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ErrorPanel, Progress } from '@backstage/core-components';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
@@ -42,6 +42,7 @@ import {
 import { AnnouncementForm } from './AnnouncementForm';
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { useAnnouncementsPermissions } from '../shared';
+import { AnnouncementDetailDialog } from '../../AnnouncementsPage/AnnouncementDetailDialog';
 
 type AnnouncementsContentProps = {
   defaultInactive?: boolean;
@@ -59,6 +60,12 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState<
+    string | null
+  >(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] =
+    useState<Announcement | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const {
     loading,
@@ -69,6 +76,22 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
 
   const onCreateButtonClick = () => {
     setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
+    setEditingAnnouncementId(null);
+  };
+
+  const onEdit = (announcement: Announcement) => {
+    setEditingAnnouncementId(announcement.id);
+    setShowCreateAnnouncementForm(false);
+  };
+
+  const onPreview = (announcement: Announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedAnnouncement(null);
   };
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
@@ -106,6 +129,52 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }
   };
+
+  const onUpdate = async (request: CreateAnnouncementRequest) => {
+    if (!editingAnnouncementId) {
+      return;
+    }
+
+    const { category } = request;
+
+    const slugs = categories.map((c: Category) => c.slug);
+    let updateMsg = t('admin.announcementsContent.alertMessage') as string;
+
+    try {
+      if (category) {
+        const categorySlug = slugify(category, {
+          lower: true,
+        });
+        if (slugs.indexOf(categorySlug) === -1) {
+          updateMsg = updateMsg.replace('.', '');
+          updateMsg = `${updateMsg} ${t(
+            'admin.announcementsContent.alertMessageWithNewCategory',
+          )} ${category}.`;
+
+          await announcementsApi.createCategory({
+            title: category,
+          });
+        }
+      }
+
+      await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
+      alertApi.post({ message: updateMsg, severity: 'success' });
+
+      setEditingAnnouncementId(null);
+      retry();
+    } catch (err) {
+      alertApi.post({ message: (err as Error).message, severity: 'error' });
+    }
+  };
+
+  const announcementToEdit = useMemo(() => {
+    if (!editingAnnouncementId || !announcements?.results) {
+      return null;
+    }
+    return (
+      announcements.results.find(a => a.id === editingAnnouncementId) ?? null
+    );
+  }, [editingAnnouncementId, announcements?.results]);
 
   if (loading) {
     return <Progress />;
@@ -156,13 +225,31 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
               />
             </Grid.Item>
           )}
+
+          {editingAnnouncementId && announcementToEdit && (
+            <Grid.Item colSpan="12">
+              <AnnouncementForm
+                initialData={announcementToEdit}
+                onSubmit={onUpdate}
+              />
+            </Grid.Item>
+          )}
+
           <Grid.Item colSpan="12">
             <AnnouncementsTable
               announcements={announcements?.results ?? []}
               searchText={searchText}
+              onPreview={onPreview}
+              onEdit={onEdit}
             />
           </Grid.Item>
         </Grid.Root>
+
+        <AnnouncementDetailDialog
+          announcement={selectedAnnouncement}
+          isOpen={isDialogOpen}
+          onClose={handleCloseDialog}
+        />
       </Container>
     </RequirePermission>
   );

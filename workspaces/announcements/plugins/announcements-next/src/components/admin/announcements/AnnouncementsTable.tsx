@@ -20,7 +20,6 @@ import {
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { useNavigate } from 'react-router-dom';
 import {
   Text,
   Box,
@@ -30,12 +29,11 @@ import {
   Column,
   TableBody,
   Row,
-  Cell,
   TablePagination,
   useTable,
+  CellText,
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
-import { DateTime } from 'luxon';
 import { Cell as AriaCell } from 'react-aria-components';
 
 // todo: figure out how we are supposed to migrate to bui icons
@@ -52,14 +50,15 @@ import {
 type AnnouncementsTableProps = {
   announcements: Announcement[];
   searchText: string;
+  onPreview: (announcement: Announcement) => void;
+  onEdit: (announcement: Announcement) => void;
 };
 
 export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
-  const { announcements, searchText } = props;
+  const { announcements, searchText, onPreview, onEdit } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
-  const navigate = useNavigate();
   const { t } = useAnnouncementsTranslation();
 
   const [sortDescriptor, setSortDescriptor] = useState<
@@ -74,14 +73,6 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
   } = useDeleteConfirmationDialogState<Announcement>();
 
   const permissions = useAnnouncementsPermissions();
-
-  const onTitleClick = (announcement: Announcement) => {
-    navigate(`/announcements/view/${announcement.id}`);
-  };
-
-  const onEdit = (announcement: Announcement) => {
-    navigate(`/announcements/edit/${announcement.id}`);
-  };
 
   const onCancelDelete = () => {
     closeDeleteDialog();
@@ -234,17 +225,17 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
         >
           {paginatedData?.map(announcement => (
             <Row key={announcement.id} id={announcement.id}>
-              <Cell title={announcement.title} />
-              <Cell title={announcement.body} />
-              <Cell title={announcement.publisher ?? '---'} />
-              <Cell title={announcement.on_behalf_of ?? '---'} />
-              <Cell title={announcement.category?.title ?? '---'} />
-              <Cell
+              <CellText title={announcement.title} />
+              <CellText title={announcement.body} />
+              <CellText title={announcement.publisher ?? '---'} />
+              <CellText title={announcement.on_behalf_of ?? '---'} />
+              <CellText title={announcement.category?.title ?? '---'} />
+              <CellText
                 title={
                   announcement.tags?.map(tag => tag.title).join(', ') ?? '---'
                 }
               />
-              <Cell
+              <CellText
                 title={
                   announcement.active
                     ? t('admin.announcementsContent.table.active')
@@ -261,7 +252,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                   icon={<PreviewIcon fontSize="small" data-testid="preview" />}
                   size="small"
                   variant="tertiary"
-                  onClick={() => onTitleClick(announcement)}
+                  onClick={() => onPreview(announcement)}
                 />
                 <ButtonIcon
                   aria-label="edit"

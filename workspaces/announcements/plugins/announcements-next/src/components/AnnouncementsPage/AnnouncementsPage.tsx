@@ -199,11 +199,11 @@ export function AnnouncementsPage(props: AnnouncementsPageProps) {
         <Grid.Root columns="12">
           <Grid.Item
             colSpan={{ xs: '12', md: '2' }}
-            colStart={{ xs: '12', md: '2' }}
+            // colStart={{ xs: '12', md: '2' }}
           >
             <Categories />
           </Grid.Item>
-          <Grid.Item colSpan={{ xs: '12', md: '8' }}>
+          <Grid.Item colSpan={{ xs: '12', md: '10' }}>
             <Flex direction="row">
               <SearchField
                 placeholder="Search announcements..."

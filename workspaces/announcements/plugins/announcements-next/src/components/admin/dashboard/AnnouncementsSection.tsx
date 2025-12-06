@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
@@ -41,6 +41,7 @@ import { RiAddLine, RiBook2Line } from '@remixicon/react';
 import { AnnouncementForm } from '../announcements/AnnouncementForm';
 import { AnnouncementsTable } from '../announcements/AnnouncementsTable';
 import { useAnnouncementsPermissions } from '../shared';
+import { AnnouncementDetailDialog } from '../../AnnouncementsPage/AnnouncementDetailDialog';
 
 type AnnouncementsSectionProps = {
   announcements: Announcement[];
@@ -60,9 +61,35 @@ export const AnnouncementsSection = (props: AnnouncementsSectionProps) => {
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState<
+    string | null
+  >(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] =
+    useState<Announcement | null>(null);
+  const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
 
   const onCreateAnnouncementClick = () => {
     setShowCreateAnnouncementForm(true);
+    setEditingAnnouncementId(null);
+  };
+
+  const onPreview = (announcement: Announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsPreviewDialogOpen(true);
+  };
+
+  const handleClosePreviewDialog = () => {
+    setIsPreviewDialogOpen(false);
+    setSelectedAnnouncement(null);
+  };
+
+  const onEdit = (announcement: Announcement) => {
+    setEditingAnnouncementId(announcement.id);
+    setShowCreateAnnouncementForm(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditingAnnouncementId(null);
   };
 
   const onAnnouncementSubmit = async (request: CreateAnnouncementRequest) => {
@@ -101,6 +128,50 @@ export const AnnouncementsSection = (props: AnnouncementsSectionProps) => {
     }
   };
 
+  const onUpdate = async (request: CreateAnnouncementRequest) => {
+    if (!editingAnnouncementId) {
+      return;
+    }
+
+    const { category } = request;
+
+    const slugs = categories.map((c: Category) => c.slug);
+    let updateMsg = t('admin.announcementsContent.alertMessage') as string;
+
+    try {
+      if (category) {
+        const categorySlug = slugify(category, {
+          lower: true,
+        });
+        if (slugs.indexOf(categorySlug) === -1) {
+          updateMsg = updateMsg.replace('.', '');
+          updateMsg = `${updateMsg} ${t(
+            'admin.announcementsContent.alertMessageWithNewCategory',
+          )} ${category}.`;
+
+          await announcementsApi.createCategory({
+            title: category,
+          });
+        }
+      }
+
+      await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
+      alertApi.post({ message: updateMsg, severity: 'success' });
+
+      setEditingAnnouncementId(null);
+      onRefresh();
+    } catch (err) {
+      alertApi.post({ message: (err as Error).message, severity: 'error' });
+    }
+  };
+
+  const announcementToEdit = useMemo(() => {
+    if (!editingAnnouncementId || !announcements) {
+      return null;
+    }
+    return announcements.find(a => a.id === editingAnnouncementId) ?? null;
+  }, [editingAnnouncementId, announcements]);
+
   return (
     <>
       <Card>
@@ -126,6 +197,8 @@ export const AnnouncementsSection = (props: AnnouncementsSectionProps) => {
           <AnnouncementsTable
             announcements={announcements}
             searchText={searchText}
+            onPreview={onPreview}
+            onEdit={onEdit}
           />
         </CardBody>
       </Card>
@@ -144,6 +217,29 @@ export const AnnouncementsSection = (props: AnnouncementsSectionProps) => {
           />
         </DialogBody>
       </Dialog>
+
+      {editingAnnouncementId && announcementToEdit && (
+        <Dialog
+          isOpen={!!editingAnnouncementId}
+          onOpenChange={open => !open && handleCloseEditDialog()}
+          width="90%"
+          style={{ maxWidth: '800px' }}
+        >
+          <DialogHeader>{t('announcementForm.editAnnouncement')}</DialogHeader>
+          <DialogBody>
+            <AnnouncementForm
+              initialData={announcementToEdit}
+              onSubmit={onUpdate}
+            />
+          </DialogBody>
+        </Dialog>
+      )}
+
+      <AnnouncementDetailDialog
+        announcement={selectedAnnouncement}
+        isOpen={isPreviewDialogOpen}
+        onClose={handleClosePreviewDialog}
+      />
     </>
   );
 };
