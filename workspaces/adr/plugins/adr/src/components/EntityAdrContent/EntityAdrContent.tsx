@@ -25,10 +25,10 @@ import groupBy from 'lodash/groupBy';
 import {
   Content,
   ContentHeader,
+  ErrorPanel,
   InfoCard,
   Progress,
   SupportButton,
-  WarningPanel,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
@@ -248,7 +248,7 @@ export const EntityAdrContent = (props: {
       {loading && <Progress />}
 
       {entityHasAdrs && !loading && error && (
-        <WarningPanel title={t('failedToFetch')} message={error?.message} />
+        <ErrorPanel title={t('failedToFetch')} error={error} />
       )}
 
       {entityHasAdrs &&
