@@ -39,15 +39,13 @@
     "@types/express": "*",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
-    "http-proxy-middleware": "^2.0.0",
-    "yn": "^4.0.0"
+    "http-proxy-middleware": "^2.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
-    "@types/http-proxy-middleware": "^1.0.0",
     "@types/supertest": "^6.0.0",
     "supertest": "^7.0.0"
   },
