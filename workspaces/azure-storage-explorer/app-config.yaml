@@ -50,6 +50,7 @@ catalog:
 azureStorage:
   blobContainers:
     - accountName: ${AZURE_STO_ACCOUNT_NAME}
+      allowedContainers: ['container1', 'container2'] # this is optional field
       authType: accessToken
       auth:
         accessToken: ${AZURE_STO_ACCESS_TOKEN}

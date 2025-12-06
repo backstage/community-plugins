@@ -94,6 +94,7 @@ Setup Azure Storage accounts in `app-config.yaml`
 azureStorage:
   blobContainers:
     - accountName: 'storageAccount'
+      allowedContainers: ['container1', 'container2'] # this is optional field to filter out the containers
       authType: accessToken
       auth:
         accessToken: 'STORAGE ACCOUNT ACCESS TOKEN'

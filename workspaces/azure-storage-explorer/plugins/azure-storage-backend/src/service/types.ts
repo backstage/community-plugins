@@ -19,4 +19,5 @@ export type BlobContainer = {
   accountName: string;
   authType: string;
   auth: Config;
+  allowedContainers?: string[];
 };
