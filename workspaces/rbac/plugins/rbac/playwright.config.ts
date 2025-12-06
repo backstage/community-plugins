@@ -39,6 +39,7 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
+  outputDir: 'node_modules/.cache/e2e-test-results',
   /* Configure projects for major browsers */
   projects: [
     {
