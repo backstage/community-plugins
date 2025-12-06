@@ -47,13 +47,10 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "backstage:^",
-    "@backstage/config": "backstage:^",
-    "@backstage/plugin-auth-node": "backstage:^",
     "@types/express": "^4.17.6",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
-    "knex": "^3.0.0",
-    "yn": "^4.0.0"
+    "knex": "^3.0.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "backstage:^",
