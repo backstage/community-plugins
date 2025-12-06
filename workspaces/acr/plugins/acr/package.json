@@ -58,10 +58,12 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "^0.34.4",
     "@backstage/core-app-api": "^1.19.1",
     "@backstage/dev-utils": "^1.1.15",
     "@backstage/test-utils": "^1.7.12",
+    "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
     "@testing-library/react-hooks": "8.0.1",
