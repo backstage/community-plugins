@@ -1,0 +1,67 @@
+/*
+ * AnnouncementCard styles
+ * Following @backstage/ui theming patterns with CSS variables
+ */
+
+.announcement-card {
+  background: var(--bui-color-background-default);
+  border: 1px solid var(--bui-color-border-default);
+  border-radius: var(--bui-radius-md);
+  padding: var(--bui-space-lg);
+  height: 100%;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.announcement-card:hover {
+  border-color: var(--bui-color-border-hover);
+  box-shadow: var(--bui-shadow-md);
+}
+
+.announcement-card__title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.announcement-card__title-link:hover {
+  text-decoration: underline;
+}
+
+.announcement-card__excerpt {
+  /* Clamp to 2-3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.announcement-card__footer {
+  margin-top: auto;
+  padding-top: var(--bui-space-md);
+  border-top: 1px solid var(--bui-color-border-subtle);
+}
+
+/* Category tag color variants */
+.category-tag {
+  text-transform: capitalize;
+}
+
+.category-tag--default {
+  background: var(--bui-color-background-subtle);
+  color: var(--bui-color-text-secondary);
+}
+
+.category-tag--error {
+  background: var(--bui-color-background-error-subtle);
+  color: var(--bui-color-text-error);
+}
+
+.category-tag--warning {
+  background: var(--bui-color-background-warning-subtle);
+  color: var(--bui-color-text-warning);
+}
+
+.category-tag--success {
+  background: var(--bui-color-background-success-subtle);
+  color: var(--bui-color-text-success);
+}

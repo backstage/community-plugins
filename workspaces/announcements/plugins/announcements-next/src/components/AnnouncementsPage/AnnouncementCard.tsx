@@ -29,6 +29,8 @@ import {
 } from '@backstage/ui';
 import { formatRelativeTime } from '../utils';
 
+import './AnnouncementCard.css';
+
 interface AnnouncementCardProps {
   announcement: Announcement;
   onView: (announcement: Announcement) => void;
@@ -79,7 +81,8 @@ export function AnnouncementCard({
           )}
         </Flex>
       </CardBody>
-      <CardFooter>
+
+      <CardFooter style={{ borderTop: '1px solid #e0e0e0' }}>
         <Flex justify="between" align="center" style={{ width: '100%' }}>
           <Flex align="center" gap="2">
             <Avatar size="small" name={announcement.publisher} src="" />

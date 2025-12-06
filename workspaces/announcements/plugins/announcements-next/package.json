@@ -31,7 +31,7 @@
     "@backstage/core-plugin-api": "^1.12.0",
     "@backstage/plugin-permission-react": "^0.4.38",
     "@backstage/theme": "^0.7.0",
-    "@backstage/ui": "^0.9.1",
+    "@backstage/ui": "0.10.0-next.1",
     "@remixicon/react": "^4.7.0",
     "react-stately": "^3.42.0",
     "react-use": "^17.2.4",
