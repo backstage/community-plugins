@@ -18,13 +18,13 @@ import { ProductionAirbrakeApi } from './ProductionApi';
 import { rest } from 'msw';
 import mockGroupsData from './mock/airbrakeGroupsApiMock.json';
 import { setupServer } from 'msw/node';
-import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { registerMswTestHooks } from '@backstage/test-utils';
 import { localDiscoveryApi } from './mock';
 
 describe('The production Airbrake API', () => {
   const productionApi = new ProductionAirbrakeApi(localDiscoveryApi);
   const worker = setupServer();
-  setupRequestMockHandlers(worker);
+  registerMswTestHooks(worker);
 
   it('fetches groups using the provided project ID', async () => {
     worker.use(
