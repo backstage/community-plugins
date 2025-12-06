@@ -25,14 +25,31 @@ exports.seed = async function seed(knex) {
     { slug: 'infrastructure', title: 'Infrastructure' },
     { slug: 'internal-developer-portal', title: 'IDP' },
     { slug: 'cost-savings', title: 'Cost Savings' },
-    { slug: 'javascript', title: 'Javascript' },
-    { slug: 'ruby-on-rails', title: 'Ruby on Rails' },
     { slug: 'monolith', title: 'Monolith' },
     { slug: 'micro-service', title: 'Micro Service' },
     { slug: 'engineering-community', title: 'Engineering Community' },
     { slug: 'product-updates', title: 'Product Updates' },
-    { slug: 'security', title: 'Security' },
     { slug: 'documentation', title: 'Documenation' },
     { slug: 'events', title: 'Events' },
+    {
+      slug: 'platform-updates',
+      title: 'Platform Updates',
+    },
+    {
+      slug: 'security',
+      title: 'Security & Compliance',
+    },
+    {
+      slug: 'feature-releases',
+      title: 'Feature Releases',
+    },
+    {
+      slug: 'maintenance',
+      title: 'Maintenance',
+    },
+    {
+      slug: 'policy',
+      title: 'Policy Changes',
+    },
   ]);
 };
