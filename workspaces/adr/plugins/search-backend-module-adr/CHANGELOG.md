@@ -1,5 +1,11 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.13.1
+
+### Patch Changes
+
+- 0b42b41: Remove unused dependencies luxon and marked
+
 ## 0.13.0
 
 ### Minor Changes
