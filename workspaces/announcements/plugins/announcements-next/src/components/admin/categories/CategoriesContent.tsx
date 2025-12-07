@@ -48,6 +48,7 @@ export const CategoriesContent = () => {
       translationKeys: {
         createButton: 'admin.categoriesContent.createButton',
         cancelButton: 'admin.categoriesContent.cancelButton',
+        dialogTitle: 'categoriesForm.newCategory',
         createdMessage: 'admin.categoriesContent.createdMessage',
         deletedMessage: 'admin.categoriesContent.table.categoryDeleted',
         noItemsFound: 'admin.categoriesContent.table.noCategoriesFound',

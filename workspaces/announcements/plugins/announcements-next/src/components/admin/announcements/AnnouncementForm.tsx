@@ -157,11 +157,7 @@ export const AnnouncementForm = (props: AnnouncementFormProps) => {
           />
         </Grid.Item>
         <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-          <CategoryInput
-            setForm={setForm}
-            form={form}
-            initialValue={initialData.category?.title ?? ''}
-          />
+          <CategoryInput setForm={setForm} form={form} />
         </Grid.Item>
         <Grid.Item colSpan={{ xs: '12', md: '4' }}>
           <TagsInput setForm={setForm} form={form} />
@@ -213,7 +209,7 @@ export const AnnouncementForm = (props: AnnouncementFormProps) => {
           />
         </Grid.Item>
 
-        <Grid.Item colSpan={{ xs: '12', md: '6' }}>
+        <Grid.Item colSpan={{ xs: '12' }}>
           <Flex justify="end">
             <Switch
               name="active"
@@ -231,7 +227,7 @@ export const AnnouncementForm = (props: AnnouncementFormProps) => {
               variant="primary"
               type="submit"
               isDisabled={loading || !form.body}
-              size="medium"
+              size="small"
               iconStart={<SaveAltIcon />}
             >
               {t('announcementForm.submit')}

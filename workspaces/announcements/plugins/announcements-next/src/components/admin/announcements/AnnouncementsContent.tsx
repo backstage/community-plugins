@@ -37,10 +37,13 @@ import {
   Text,
   Flex,
   SearchField,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  Card,
 } from '@backstage/ui';
 
 import { AnnouncementForm } from './AnnouncementForm';
-import { AnnouncementFormCard } from './AnnouncementFormCard';
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { useAnnouncementsPermissions } from '../shared';
 import { AnnouncementDetailDialog } from '../../AnnouncementsPage/AnnouncementDetailDialog';
@@ -76,13 +79,21 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
   } = useAsyncRetry(async () => await announcementsApi.announcements({}));
 
   const onCreateButtonClick = () => {
-    setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
+    setShowCreateAnnouncementForm(true);
     setEditingAnnouncementId(null);
   };
 
   const onEdit = (announcement: Announcement) => {
     setEditingAnnouncementId(announcement.id);
     setShowCreateAnnouncementForm(false);
+  };
+
+  const handleCloseCreateDialog = () => {
+    setShowCreateAnnouncementForm(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditingAnnouncementId(null);
   };
 
   const onPreview = (announcement: Announcement) => {
@@ -189,12 +200,14 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
         <Grid.Root columns="12">
-          <Grid.Item colSpan="8">
-            {/* todo: add translation */}
-            <Text variant="title-medium">Announcements</Text>
+          <Grid.Item colSpan="12">
+            <Text variant="title-medium">
+              {t('admin.announcementsContent.announcements')}
+            </Text>
           </Grid.Item>
-          <Grid.Item colSpan="4">
-            <Flex justify="end" align="center">
+
+          <Grid.Item colSpan="12">
+            <Flex direction="row">
               <Button
                 isDisabled={
                   permissions.create.loading || !permissions.create.allowed
@@ -202,49 +215,62 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
                 variant="primary"
                 onClick={() => onCreateButtonClick()}
               >
-                {showCreateAnnouncementForm
-                  ? t('admin.announcementsContent.cancelButton')
-                  : t('admin.announcementsContent.createButton')}
+                {t('admin.announcementsContent.createButton')}
               </Button>
+              <SearchField
+                // todo: add translation
+                placeholder="Search announcements..."
+                value={searchText}
+                onChange={setSearchText}
+              />
             </Flex>
           </Grid.Item>
 
           <Grid.Item colSpan="12">
-            <SearchField
-              // todo: add translation
-              placeholder="Search announcements..."
-              value={searchText}
-              onChange={setSearchText}
-            />
-          </Grid.Item>
-
-          {showCreateAnnouncementForm && (
-            <Grid.Item colSpan="12">
-              <AnnouncementFormCard
-                initialData={{ active: !defaultInactive } as Announcement}
-                onSubmit={onSubmit}
+            <Card>
+              <AnnouncementsTable
+                announcements={announcements?.results ?? []}
+                searchText={searchText}
+                onPreview={onPreview}
+                onEdit={onEdit}
               />
-            </Grid.Item>
-          )}
+            </Card>
+          </Grid.Item>
+        </Grid.Root>
 
-          {editingAnnouncementId && announcementToEdit && (
-            <Grid.Item colSpan="12">
-              <AnnouncementFormCard
+        <Dialog
+          isOpen={showCreateAnnouncementForm}
+          onOpenChange={setShowCreateAnnouncementForm}
+          width="90%"
+          style={{ maxWidth: '800px' }}
+        >
+          <DialogHeader>{t('announcementForm.newAnnouncement')}</DialogHeader>
+          <DialogBody>
+            <AnnouncementForm
+              initialData={{ active: !defaultInactive } as Announcement}
+              onSubmit={onSubmit}
+            />
+          </DialogBody>
+        </Dialog>
+
+        {editingAnnouncementId && announcementToEdit && (
+          <Dialog
+            isOpen={!!editingAnnouncementId}
+            onOpenChange={open => !open && handleCloseEditDialog()}
+            width="90%"
+            style={{ maxWidth: '800px' }}
+          >
+            <DialogHeader>
+              {t('announcementForm.editAnnouncement')}
+            </DialogHeader>
+            <DialogBody>
+              <AnnouncementForm
                 initialData={announcementToEdit}
                 onSubmit={onUpdate}
               />
-            </Grid.Item>
-          )}
-
-          <Grid.Item colSpan="12">
-            <AnnouncementsTable
-              announcements={announcements?.results ?? []}
-              searchText={searchText}
-              onPreview={onPreview}
-              onEdit={onEdit}
-            />
-          </Grid.Item>
-        </Grid.Root>
+            </DialogBody>
+          </Dialog>
+        )}
 
         <AnnouncementDetailDialog
           announcement={selectedAnnouncement}

@@ -50,6 +50,7 @@ export const TagsContent = () => {
       translationKeys: {
         createButton: 'admin.tagsContent.createButton',
         cancelButton: 'admin.tagsContent.cancelButton',
+        dialogTitle: 'tagsForm.newTag',
         createdMessage: 'admin.tagsContent.createdMessage',
         deletedMessage: 'admin.tagsContent.table.tagDeleted',
         noItemsFound: 'admin.tagsContent.table.noTagsFound',

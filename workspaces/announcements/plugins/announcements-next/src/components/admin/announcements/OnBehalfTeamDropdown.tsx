@@ -21,13 +21,7 @@ import {
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo } from 'react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-
-// todo: migrate to @backstage/ui components
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
+import { Select } from '@backstage/ui';
 
 type OnBehalfTeamDropdownProps = {
   selectedTeam: string;
@@ -53,64 +47,48 @@ export default function OnBehalfTeamDropdown({
     return [identity.userEntityRef, ...identity.ownershipEntityRefs];
   }, [identityApi]);
 
-  const { entities: teams, loading: teamsLoading } = useCatalogEntities(
+  const { entities: teams } = useCatalogEntities(
     userOwns, // refs
     '', // searchTerm
     25, // limit
     'Group', // kind
   );
 
-  const teamOptions = useMemo(() => {
-    return teams.map(team => ({
-      entityRef: stringifyEntityRef(team),
-      displayName: getTeamDisplayName(team),
-    }));
+  const options = useMemo(() => {
+    return teams.map(team => {
+      const entityRef = stringifyEntityRef(team);
+      const displayName = getTeamDisplayName(team);
+      // Use displayName if available, otherwise fall back to entityRef
+      const label = displayName || entityRef;
+      return {
+        value: entityRef,
+        label: label,
+      };
+    });
   }, [teams]);
 
-  const selectedTeamOption = useMemo(() => {
-    return teamOptions.find(team => team.entityRef === selectedTeam) || null;
-  }, [teamOptions, selectedTeam]);
+  const placeholder = useMemo(() => {
+    if (options.length === 0) {
+      return 'No teams found';
+    }
+    return 'Select Team';
+  }, [options.length]);
 
   return (
-    <Autocomplete
-      value={selectedTeamOption}
-      onChange={(_, newValue) => {
-        onChange(newValue?.entityRef || '');
+    <Select
+      name="team"
+      label={t('announcementForm.onBehalfOf')}
+      searchable
+      searchPlaceholder="Search teams..."
+      options={options}
+      isDisabled={options.length === 0}
+      placeholder={placeholder}
+      value={selectedTeam || null}
+      onChange={selectedValue => {
+        // Handle Key | Key[] | null from react-aria-components
+        const stringValue = selectedValue === null ? '' : String(selectedValue);
+        onChange(stringValue);
       }}
-      options={teamOptions}
-      getOptionLabel={team => team.entityRef}
-      loading={teamsLoading}
-      id="team-dropdown-field"
-      renderOption={(props, team) => (
-        <Box component="li" {...props}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="body1">{team.entityRef}</Typography>
-            {team.displayName && (
-              <Typography variant="caption" color="text.secondary">
-                {team.displayName}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      )}
-      renderInput={params => (
-        <TextField
-          {...params}
-          id="team"
-          label={t('announcementForm.onBehalfOf')}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {teamsLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
     />
   );
 }

@@ -40,6 +40,10 @@ import {
   useTable,
   Box,
   CellText,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  Flex,
 } from '@backstage/ui';
 import { Cell as AriaCell } from 'react-aria-components';
 import type { SortDescriptor } from 'react-aria-components';
@@ -113,6 +117,8 @@ type EntityContentConfig<T extends EntityWithSlug, TRequest> = {
     createButton: string;
     /** Translation key for the cancel button label */
     cancelButton: string;
+    /** Translation key for the dialog title when creating a new entity */
+    dialogTitle: string;
     /** Translation key for the success message when an entity is created */
     createdMessage: string;
     /** Translation key for the success message when an entity is deleted */
@@ -223,7 +229,7 @@ export function EntityContent<
   };
 
   const onCreateButtonClick = () => {
-    setShowForm(!showForm);
+    setShowForm(true);
   };
 
   const onCancelDelete = () => {
@@ -304,34 +310,26 @@ export function EntityContent<
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
-        <Grid.Root columns="12">
-          <Grid.Item colSpan="12">
-            <Text variant="title-medium">
-              {tableTitle}
-              <Box pl="3" as="span">
-                <Button
-                  size="small"
-                  isDisabled={
-                    permissions.create.loading || !permissions.create.allowed
-                  }
-                  variant="primary"
-                  onClick={onCreateButtonClick}
-                >
-                  {showForm
-                    ? t(translationKeys.cancelButton)
-                    : t(translationKeys.createButton)}
-                </Button>
-              </Box>
-            </Text>
+        <Grid.Root columns="6">
+          <Grid.Item colSpan="2">
+            <Text variant="title-medium"> {tableTitle}</Text>
+          </Grid.Item>
+          <Grid.Item colSpan="4">
+            <Box pl="3" as="span">
+              <Button
+                size="small"
+                isDisabled={
+                  permissions.create.loading || !permissions.create.allowed
+                }
+                variant="primary"
+                onClick={onCreateButtonClick}
+              >
+                {t(translationKeys.createButton)}
+              </Button>
+            </Box>
           </Grid.Item>
 
-          {showForm && (
-            <Grid.Item colSpan="4" rowSpan="2">
-              <FormComponent initialData={{} as T} onSubmit={onSubmit} />
-            </Grid.Item>
-          )}
-
-          <Grid.Item colSpan="12">
+          <Grid.Item colSpan="3">
             <Table
               onSortChange={setSortDescriptor}
               sortDescriptor={sortDescriptor}
@@ -389,6 +387,13 @@ export function EntityContent<
             onConfirm={onConfirmDelete}
           />
         </Grid.Root>
+
+        <Dialog isOpen={showForm} onOpenChange={setShowForm} width="500px">
+          <DialogHeader>{t(translationKeys.dialogTitle)}</DialogHeader>
+          <DialogBody>
+            <FormComponent initialData={{} as T} onSubmit={onSubmit} />
+          </DialogBody>
+        </Dialog>
       </Container>
     </RequirePermission>
   );

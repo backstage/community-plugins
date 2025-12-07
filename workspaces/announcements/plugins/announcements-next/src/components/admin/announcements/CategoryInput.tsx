@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SetStateAction } from 'react';
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { SetStateAction, useMemo } from 'react';
 import {
   useAnnouncementsTranslation,
   useCategories,
 } from '@backstage-community/plugin-announcements-react';
-
-// todo: migrate once an autocomplete component is available in @backstage/ui
-import TextField from '@mui/material/TextField';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Select } from '@backstage/ui';
 
 type CategoryInputProps = {
   setForm: (
@@ -58,101 +53,34 @@ type CategoryInputProps = {
     sendNotification: boolean;
     updated_at: string;
   };
-  initialValue: string;
 };
 
-const filter = createFilterOptions<Category>();
-
-function prepareCategoryFromInput(
-  inputCategory: Category | string,
-  localizedCreate?: string,
-): string {
-  return (
-    typeof inputCategory === 'string' ? inputCategory : inputCategory.title
-  )
-    .replace(localizedCreate ? `${localizedCreate} ` : 'Create ', '')
-    .replaceAll('"', '');
-}
-
-export default function CategoryInput({
-  setForm,
-  form,
-  initialValue,
-}: CategoryInputProps) {
-  const { categories, loading: categoriesLoading } = useCategories();
+export default function CategoryInput({ setForm, form }: CategoryInputProps) {
+  const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
 
+  const options = useMemo(() => {
+    return categories.map(category => ({
+      value: category.slug,
+      label: category.title,
+    }));
+  }, [categories]);
+
   return (
-    <Autocomplete
-      fullWidth
-      value={initialValue ?? ''}
-      onChange={async (_, newValue) => {
-        if (!newValue) {
-          setForm({ ...form, category: undefined });
-          return;
-        }
-
-        const newCategory = prepareCategoryFromInput(
-          newValue,
-          t('announcementForm.categoryInput.create'),
-        );
-        setForm({ ...form, category: newCategory });
+    <Select
+      name="category"
+      label={t('announcementForm.categoryInput.label')}
+      searchable
+      searchPlaceholder="Search categories..."
+      options={options}
+      placeholder="Select Category"
+      value={form.category || null}
+      onChange={selectedValue => {
+        // Handle Key | Key[] | null from react-aria-components
+        const stringValue =
+          selectedValue === null ? undefined : String(selectedValue);
+        setForm({ ...form, category: stringValue });
       }}
-      filterOptions={(options, params) => {
-        const filtered = filter(options, params);
-        const { inputValue } = params;
-
-        /*
-          Suggest the creation of a new category. This adds the new value to the list of options
-          and creates the new category when the form is submitted.
-        */
-        const isExisting = options.some(
-          option =>
-            inputValue.toLocaleLowerCase('en-US') ===
-            option.title.toLocaleLowerCase('en-US'),
-        );
-        if (inputValue !== '' && !isExisting) {
-          filtered.push({
-            title: `${t(
-              'announcementForm.categoryInput.create',
-            )} "${inputValue}"`,
-            slug: inputValue.toLocaleLowerCase('en-US'),
-          });
-        }
-
-        return filtered;
-      }}
-      selectOnFocus
-      handleHomeEndKeys
-      loading={categoriesLoading}
-      id="category-input-field"
-      options={categories || []}
-      getOptionLabel={option => {
-        // Value selected with enter, right from the input
-        return prepareCategoryFromInput(option);
-      }}
-      renderOption={(props, option) => <li {...props}>{option.title}</li>}
-      freeSolo
-      renderInput={params => (
-        <TextField
-          {...params}
-          id="category"
-          label={t('announcementForm.categoryInput.label')}
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {categoriesLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
     />
   );
 }

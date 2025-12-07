@@ -18,30 +18,7 @@ import {
   useTags,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import { Tag } from '@backstage-community/plugin-announcements-common';
-
-// todo: migrate to @backstage/ui components
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
-
-export interface TagOption extends Tag {
-  inputValue?: string;
-  isNew?: boolean;
-}
-
-const filter = createFilterOptions<TagOption>();
-
-function prepareTagFromInput(input: string | TagOption): string {
-  if (typeof input === 'string') {
-    return input.toLocaleLowerCase('en-US');
-  }
-  if (input.inputValue) {
-    return input.inputValue.toLocaleLowerCase('en-US');
-  }
-  return input.title.toLocaleLowerCase('en-US');
-}
+import { Select } from '@backstage/ui';
 
 interface TagsInputProps {
   setForm: (form: any) => void;
@@ -49,102 +26,41 @@ interface TagsInputProps {
 }
 
 export default function TagsInput({ setForm, form }: TagsInputProps) {
-  const { tags, loading } = useTags();
+  const { tags } = useTags();
   const { t } = useAnnouncementsTranslation();
-  const createLabel = t('announcementForm.tagsInput.create');
 
-  const existingTags = useMemo(() => {
-    if (!form.tags || form.tags.length === 0) return [];
-    return form.tags.map((tagSlug: string) => {
-      const foundTag = tags?.find(tag => tag.slug === tagSlug);
-      return foundTag || { title: tagSlug, slug: tagSlug };
-    });
-  }, [form.tags, tags]);
+  const options = useMemo(() => {
+    return tags.map(tag => ({
+      value: tag.slug,
+      label: tag.title,
+    }));
+  }, [tags]);
 
-  const handleTagChange = (_event: any, newValue: (string | TagOption)[]) => {
-    if (!newValue || newValue.length === 0) {
-      setForm({ ...form, tags: [] });
-      return;
-    }
-
-    const processedTags = newValue.map(item => prepareTagFromInput(item));
-    const uniqueTags = Array.from(new Set(processedTags));
-
-    setForm({ ...form, tags: uniqueTags });
-  };
+  const selectedValues = useMemo(() => {
+    if (!form.tags || form.tags.length === 0) return null;
+    return form.tags;
+  }, [form.tags]);
 
   return (
-    <Autocomplete
-      fullWidth
-      multiple
-      freeSolo
-      clearOnBlur
-      value={existingTags}
-      onChange={handleTagChange}
-      options={tags || []}
-      loading={loading}
-      getOptionLabel={(option: string | TagOption) =>
-        typeof option === 'string' ? option : option.title
-      }
-      filterOptions={(options, params) => {
-        const filtered = filter(options as TagOption[], params);
-        const { inputValue } = params;
-        if (
-          inputValue.trim() !== '' &&
-          !options.some(
-            option =>
-              typeof option !== 'string' &&
-              inputValue.toLocaleLowerCase('en-US') ===
-                option.title.toLocaleLowerCase('en-US'),
-          )
-        ) {
-          filtered.push({
-            title: `${createLabel} "${inputValue}"`,
-            slug: inputValue.toLocaleLowerCase('en-US'),
-            inputValue,
-            isNew: true,
-          });
+    <Select
+      name="tags"
+      label={t('announcementForm.tagsInput.label')}
+      searchable
+      selectionMode="multiple"
+      searchPlaceholder="Search tags..."
+      options={options}
+      placeholder="Select Tags"
+      value={selectedValues}
+      onChange={selectedValue => {
+        // Handle Key | Key[] | null from react-aria-components
+        if (selectedValue === null) {
+          setForm({ ...form, tags: [] });
+        } else if (Array.isArray(selectedValue)) {
+          setForm({ ...form, tags: selectedValue.map(v => String(v)) });
+        } else {
+          setForm({ ...form, tags: [String(selectedValue)] });
         }
-        return filtered;
       }}
-      renderTags={(value: (string | TagOption)[], getTagProps) =>
-        value.map((option, index) => {
-          const tag =
-            typeof option === 'string'
-              ? { title: option, slug: option.toLocaleLowerCase('en-US') }
-              : option;
-
-          const tagProps = getTagProps({ index });
-          const { key, ...chipProps } = tagProps;
-
-          return (
-            <Chip
-              key={key}
-              variant="outlined"
-              label={tag.title}
-              {...chipProps}
-            />
-          );
-        })
-      }
-      renderInput={params => (
-        <TextField
-          {...params}
-          label="Tags"
-          variant="outlined"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
     />
   );
 }

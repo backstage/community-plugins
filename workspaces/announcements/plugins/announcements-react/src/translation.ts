@@ -165,7 +165,7 @@ export const announcementsTranslationRef = createTranslationRef({
         alertMessage: 'Announcement created.',
         alertMessageWithNewCategory: 'with new category',
         cancelButton: 'Cancel',
-        createButton: 'Create Announcement',
+        createButton: 'Create',
         announcements: 'Announcements',
         noAnnouncementsFound: 'No announcements found',
         table: {
