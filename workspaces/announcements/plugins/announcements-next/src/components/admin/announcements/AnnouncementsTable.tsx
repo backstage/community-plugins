@@ -283,7 +283,9 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
       </Table>
 
       {filteredAndSortedData.length > 5 && (
-        <TablePagination {...paginationProps} />
+        <Box px="2">
+          <TablePagination {...paginationProps} />
+        </Box>
       )}
 
       <DeleteConfirmationDialog
