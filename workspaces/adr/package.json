@@ -6,6 +6,7 @@
     "node": "18 || 20 || 22"
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-adr --include @backstage-community/plugin-adr-backend --parallel -v -i run start",
     "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
