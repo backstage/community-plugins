@@ -37,6 +37,7 @@ import {
   DialogHeader,
   DialogBody,
   Header,
+  Box,
 } from '@backstage/ui';
 import { RiAddLine, RiBookmarkLine } from '@remixicon/react';
 
@@ -194,7 +195,11 @@ export const CategoriesSection = (props: CategoriesSectionProps) => {
               )}
             </TagGroup>
           ) : (
-            <Text>{t('admin.categoriesContent.table.noCategoriesFound')}</Text>
+            <Box px="2">
+              <Text>
+                {t('admin.categoriesContent.table.noCategoriesFound')}
+              </Text>
+            </Box>
           )}
         </CardBody>
       </Card>

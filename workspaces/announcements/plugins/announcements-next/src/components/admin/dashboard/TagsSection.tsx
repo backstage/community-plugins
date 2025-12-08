@@ -37,6 +37,7 @@ import {
   DialogHeader,
   DialogBody,
   Header,
+  Box,
 } from '@backstage/ui';
 import { RiAddLine, RiHashtag } from '@remixicon/react';
 
@@ -200,7 +201,9 @@ export const TagsSection = (props: TagsSectionProps) => {
               )}
             </TagGroup>
           ) : (
-            <Text>{t('admin.tagsContent.table.noTagsFound')}</Text>
+            <Box px="2">
+              <Text>{t('admin.tagsContent.table.noTagsFound')}</Text>
+            </Box>
           )}
           {/* </Container> */}
         </CardBody>

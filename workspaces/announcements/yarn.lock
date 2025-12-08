@@ -1668,6 +1668,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-announcements-common": "workspace:*"
     "@backstage-community/plugin-announcements-react": "workspace:*"
+    "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/core-app-api": "npm:^1.19.2"
     "@backstage/core-components": "npm:^0.18.3"

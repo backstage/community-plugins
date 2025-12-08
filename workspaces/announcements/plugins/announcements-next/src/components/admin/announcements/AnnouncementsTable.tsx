@@ -32,6 +32,7 @@ import {
   TablePagination,
   useTable,
   CellText,
+  Cell,
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
 import { Cell as AriaCell } from 'react-aria-components';
@@ -46,6 +47,8 @@ import {
   useDeleteConfirmationDialogState,
   useAnnouncementsPermissions,
 } from '../shared';
+
+import { parseEntityRef } from '@backstage/catalog-model';
 
 type AnnouncementsTableProps = {
   announcements: Announcement[];
@@ -227,8 +230,10 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
             <Row key={announcement.id} id={announcement.id}>
               <CellText title={announcement.title} />
               <CellText title={announcement.body} />
-              <CellText title={announcement.publisher ?? '---'} />
-              <CellText title={announcement.on_behalf_of ?? '---'} />
+              <CellText
+                title={parseEntityRef(announcement.publisher).name ?? '---'}
+              />
+              <Cell>{announcement.on_behalf_of ?? '---'}</Cell>
               <CellText title={announcement.category?.title ?? '---'} />
               <CellText
                 title={
