@@ -30,24 +30,51 @@ export class ServiceNowSchemaChecker {
   constructor(private readonly conn: ServiceNowConnection) {}
 
   private async fetchIncidentSchema(): Promise<Set<string>> {
-    const authHeaders = await this.conn.getAuthHeaders();
+    try {
+      const authHeaders = await this.conn.getAuthHeaders();
+      const url = `api/now/table/sys_dictionary`;
 
-    const url = `api/now/table/sys_dictionary`;
-    const response = await this.conn.getAxiosInstance().get(url, {
-      headers: {
-        ...authHeaders,
-        Accept: 'application/json',
-      },
-      params: {
-        sysparm_query: `name=${INCIDENT_TABLE_NAME}`,
-        sysparm_fields: 'element',
-        sysparm_limit: 500,
-      },
-    });
+      const response = await this.conn.getAxiosInstance().get(url, {
+        headers: {
+          ...authHeaders,
+          Accept: 'application/json',
+        },
+        params: {
+          sysparm_query: `name=${INCIDENT_TABLE_NAME}`,
+          sysparm_fields: 'element',
+          sysparm_limit: 500,
+        },
+        responseType: 'json',
+      });
 
-    const result = response.data?.result ?? [];
+      if (response.status !== 200) {
+        throw new Error(`ServiceNow API returned status ${response.status}`);
+      }
 
-    return new Set(result.map((r: any) => r.element));
+      const contentType = response.headers['content-type'] ?? '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(
+          `Expected JSON response but got Content-Type: ${contentType}`,
+        );
+      }
+
+      const data = response.data;
+      if (!data || typeof data !== 'object') {
+        throw new Error('ServiceNow API returned invalid JSON response');
+      }
+
+      if (data.error) {
+        throw new Error(`ServiceNow API Error: ${data.error.message}`);
+      }
+
+      const result = data.result ?? [];
+      return new Set(result.map((r: any) => r.element));
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new Error(`Failed to fetch incident schema: ${e.message}`);
+      }
+      throw e;
+    }
   }
 
   private async getIncidentFields(): Promise<Set<string>> {
