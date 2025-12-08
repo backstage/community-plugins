@@ -1,0 +1,42 @@
+# Example configuration for the Confluence TechDocs module
+# Add this to your app-config.yaml or app-config.local.yaml
+
+confluence:
+  # Base URL for your Confluence instance
+  # For Confluence Cloud (Atlassian):
+  baseUrl: https://your-company.atlassian.net/wiki
+
+  # For Confluence Server/Data Center:
+  # baseUrl: https://confluence.company.com
+
+  auth:
+    # Option 1: Bearer Token (Recommended for Confluence Cloud)
+    # Create a token at: https://id.atlassian.com/manage-profile/security/api-tokens
+    type: bearer
+    token: ${CONFLUENCE_TOKEN}
+
+    # Option 2: Basic Authentication (Email + Token for Confluence Cloud)
+    # type: basic
+    # token: ${CONFLUENCE_TOKEN}
+    # email: example@company.org
+
+    # Option 3: Username/Password (For Confluence Server/Data Center)
+    # type: userpass
+    # username: ${CONFLUENCE_USERNAME}
+    # password: ${CONFLUENCE_PASSWORD}
+
+  # Optional: Page tree processing options
+  # pageTree:
+  #   # Enable parallel fetching of child pages (default: true)
+  #   # Set to false if your Confluence API has rate limiting issues
+  #   parallel: true
+  #
+  #   # Maximum depth to traverse when fetching child pages (default: 0 = unlimited)
+  #   # Useful for limiting very deep page hierarchies
+  #   maxDepth: 0
+
+# You'll also need to set the environment variables:
+# CONFLUENCE_TOKEN=your-api-token
+# OR
+# CONFLUENCE_USERNAME=your-username
+# CONFLUENCE_PASSWORD=your-password
