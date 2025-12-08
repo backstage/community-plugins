@@ -34,7 +34,6 @@ confluence:
   #   # Maximum depth to traverse when fetching child pages (default: 0 = unlimited)
   #   # Useful for limiting very deep page hierarchies
   #   maxDepth: 0
-
 # You'll also need to set the environment variables:
 # CONFLUENCE_TOKEN=your-api-token
 # OR
