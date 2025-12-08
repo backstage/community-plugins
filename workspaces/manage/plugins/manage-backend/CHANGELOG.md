@@ -1,5 +1,17 @@
 # @backstage-community/plugin-manage-backend
 
+## 1.4.0
+
+### Minor Changes
+
+- 483cbdb: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [483cbdb]
+  - @backstage-community/plugin-manage-common@1.4.0
+  - @backstage-community/plugin-manage-node@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes
