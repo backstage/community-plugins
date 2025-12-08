@@ -200,11 +200,18 @@ export const AnnouncementsContent = (props: AnnouncementsContentProps) => {
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
         <Grid.Root columns="12">
-          <Grid.Item colSpan="12">
-            <Text variant="title-medium">
-              {t('admin.announcementsContent.announcements')}
-            </Text>
-          </Grid.Item>
+          {/* <Grid.Item colSpan="12">
+            <Button
+              isDisabled={
+                permissions.create.loading || !permissions.create.allowed
+              }
+              variant="primary"
+              size="small"
+              onClick={() => onCreateButtonClick()}
+            >
+              {t('admin.announcementsContent.createButton')}
+            </Button>
+          </Grid.Item> */}
 
           <Grid.Item colSpan="12">
             <Flex direction="row">

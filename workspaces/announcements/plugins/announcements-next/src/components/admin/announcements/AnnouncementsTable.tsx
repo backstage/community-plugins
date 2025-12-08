@@ -35,7 +35,6 @@ import {
   Cell,
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
-import { Cell as AriaCell } from 'react-aria-components';
 
 // todo: figure out how we are supposed to migrate to bui icons
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -206,9 +205,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
           <Column isRowHeader>
             {t('admin.announcementsContent.table.title')}
           </Column>
-          <Column maxWidth="8">
-            {t('admin.announcementsContent.table.body')}
-          </Column>
+          <Column>{t('admin.announcementsContent.table.body')}</Column>
           <Column>{t('admin.announcementsContent.table.publisher')}</Column>
           <Column>{t('admin.announcementsContent.table.onBehalfOf')}</Column>
           <Column>{t('admin.announcementsContent.table.category')}</Column>
@@ -249,9 +246,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
               />
 
               {/* todo: actions not working - cell requires title which overrides children */}
-              <AriaCell
-                textValue={t('admin.announcementsContent.table.actions')}
-              >
+              <Cell textValue={t('admin.announcementsContent.table.actions')}>
                 <ButtonIcon
                   aria-label="preview"
                   icon={<PreviewIcon fontSize="small" data-testid="preview" />}
@@ -281,7 +276,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                   }
                   onClick={() => openDeleteDialog(announcement)}
                 />
-              </AriaCell>
+              </Cell>
             </Row>
           ))}
         </TableBody>

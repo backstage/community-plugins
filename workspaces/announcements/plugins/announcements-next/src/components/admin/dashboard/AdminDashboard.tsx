@@ -79,7 +79,7 @@ export const AdminDashboard = (props: AdminDashboardProps) => {
 
   return (
     <RequirePermission permission={announcementCreatePermission}>
-      <Container>
+      <Container mb="4">
         <Grid.Root columns="12">
           <Grid.Item colSpan="12">
             <MetricsSection
