@@ -35,7 +35,7 @@ const INCIDENT_QUERY_KEYS_ARRAY = [
 
 export type IncidentQueryKeyString = (typeof INCIDENT_QUERY_KEYS_ARRAY)[number];
 
-// Plugins specific query parameters (pagination, search, ordering, )
+// Plugin UI specific query parameters (pagination, search, ordering, tickets filter)
 export type PredefinedIncidentQueryParams = {
   [K in IncidentQueryKeyString]?: K extends 'order'
     ? 'asc' | 'desc'
@@ -73,7 +73,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     const queryParts: string[] = [];
 
     const responseFields = [
-      ' sys_id',
+      'sys_id',
       'number',
       'short_description',
       'description',

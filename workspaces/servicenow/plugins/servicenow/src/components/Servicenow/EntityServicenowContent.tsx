@@ -83,16 +83,14 @@ export const EntityServicenowContent = () => {
     const annotations = entity.metadata.annotations;
     const snAnnotations: Record<string, string> = {};
     if (annotations) {
-      for (const key in annotations) {
-        if (Object.prototype.hasOwnProperty.call(annotations, key)) {
-          if (key.startsWith('servicenow.com/entity-id')) {
-            snAnnotations.entityId = annotations[key];
-            continue;
-          }
-          if (key.startsWith('servicenow.com/')) {
-            const field = key.substring('servicenow.com/'.length);
-            snAnnotations[field] = annotations[key];
-          }
+      for (const [key, value] of Object.entries(annotations)) {
+        if (key.startsWith('servicenow.com/entity-id')) {
+          snAnnotations.entityId = value;
+          continue;
+        }
+        if (key.startsWith('servicenow.com/')) {
+          const field = key.substring('servicenow.com/'.length);
+          snAnnotations[field] = value;
         }
       }
     }
