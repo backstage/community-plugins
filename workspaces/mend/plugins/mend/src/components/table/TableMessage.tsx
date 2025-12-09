@@ -38,7 +38,7 @@ export const TableMessage = ({ icon, message, title }: TableMessageProps) => {
     >
       <div
         style={{
-          backgroundColor: '#DBE8F8',
+          backgroundColor: icon === TableIcon.ERROR ? '#f8dbdbff' : '#DBE8F8',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

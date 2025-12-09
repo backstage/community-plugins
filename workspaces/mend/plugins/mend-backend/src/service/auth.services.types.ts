@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { LoggerService } from '@backstage/backend-plugin-api';
+
 export type MendConfig = {
   apiVersion: string;
   activationKey: string;
+  logger: LoggerService;
 };
 
 export type LoginSuccessResponseData = {

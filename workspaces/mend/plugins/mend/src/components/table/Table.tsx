@@ -142,8 +142,10 @@ export const Table = ({
             <TableMessage
               icon={TableIcon.ERROR}
               title="Oops! Something Went Wrong"
-              message="An unexpected error occurred when loading this table. Please try
-        refreshing the page."
+              message={
+                tableDataError.message ||
+                'An unexpected error occurred when loading this table. Please try refreshing the page.'
+              }
             />
           ) : (
             <TableMessage
