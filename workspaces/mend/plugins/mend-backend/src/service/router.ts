@@ -72,6 +72,15 @@ export async function createRouter(
     response: express.Response,
     next: express.NextFunction,
   ) => {
+    // Check if activation key is configured
+    if (!MendAuthSevice.isConfigured()) {
+      response.status(401).json({
+        name: 'ConfigurationError',
+        message: MendAuthSevice.getConfigurationError(),
+      });
+      return;
+    }
+
     if (MendAuthSevice.getAuthToken()) {
       next();
       return;
@@ -89,12 +98,20 @@ export async function createRouter(
       });
   };
 
-  const activationKey = config.getString('mend.activationKey');
+  const activationKey = config.getOptionalString('mend.activationKey') ?? '';
+
+  // Init auth service with logger (logs warning if activation key is missing/invalid)
+  MendAuthSevice.init({
+    apiVersion: MEND_API_VERSION,
+    activationKey,
+    logger,
+  });
 
   // Init api service
   const mendDataService = new MendDataService({
     apiVersion: MEND_API_VERSION,
     activationKey,
+    logger,
   });
 
   // Init catalog client
