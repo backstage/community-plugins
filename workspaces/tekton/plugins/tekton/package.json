@@ -67,10 +67,11 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "^0.34.4",
     "@backstage/dev-utils": "^1.1.15",
     "@backstage/test-utils": "^1.7.12",
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
     "@types/dagre": "^0.7.52",

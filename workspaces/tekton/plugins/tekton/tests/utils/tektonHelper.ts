@@ -13,37 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect, type Locator, type Page } from '@playwright/test';
+import { AxeBuilder } from '@axe-core/playwright';
+import { expect, TestInfo, type Page } from '@playwright/test';
 
 export class Common {
   page: Page;
 
   constructor(page: Page) {
     this.page = page;
-  }
-
-  async verifyHeading(heading: string) {
-    const headingLocator = this.page
-      .locator('h1, h2, h3, h4, h5, h6')
-      .filter({ hasText: heading })
-      .first();
-    await headingLocator.waitFor({ state: 'visible', timeout: 30000 });
-    await expect(headingLocator).toBeVisible();
-  }
-
-  async clickButton(
-    label: string,
-    clickOpts?: Parameters<Locator['click']>[0],
-    getByTextOpts: Parameters<Locator['getByText']>[1] = { exact: true },
-  ) {
-    const muiButtonLabel = 'span[class^="MuiButton-label"]';
-    const selector = `${muiButtonLabel}:has-text("${label}")`;
-    const button = this.page
-      .locator(selector)
-      .getByText(label, getByTextOpts)
-      .first();
-    await button.waitFor({ state: 'visible' });
-    await button.click(clickOpts);
   }
 
   async waitForSideBarVisible() {
@@ -57,8 +34,27 @@ export class Common {
       await dialog.accept();
     });
 
-    await this.verifyHeading('Select a sign-in method');
-    await this.clickButton('Enter');
+    await this.page.getByRole('button', { name: 'Enter' }).click();
     await this.waitForSideBarVisible();
+  }
+
+  async switchToLocale(locale: string) {
+    if (locale !== 'en') {
+      await this.page.getByRole('button', { name: 'Language' }).click();
+      await this.page.getByRole('menuitem', { name: locale }).click();
+    }
+  }
+
+  async a11yCheck(testInfo: TestInfo) {
+    const accessibilityScanResults = await new AxeBuilder({
+      page: this.page as any,
+    })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+
+    await testInfo.attach('accessibility-scan-results.json', {
+      body: JSON.stringify(accessibilityScanResults.violations, null, 2),
+      contentType: 'application/json',
+    });
   }
 }
