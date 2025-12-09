@@ -67,7 +67,7 @@ metadata:
     servicenow.com/u_service: my-service-value # filters incidents where u_service field equals "my-service-value"
 ```
 
-Or filter by system fields like `category` or `subcategory`:
+Or filter by system fields like `category` and`subcategory`:
 
 ```yaml
 metadata:
