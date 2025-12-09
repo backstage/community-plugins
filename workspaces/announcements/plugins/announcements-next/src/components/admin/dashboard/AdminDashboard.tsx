@@ -30,6 +30,7 @@ import { AnnouncementsSection } from './AnnouncementsSection';
 import { CategoriesSection } from './CategoriesSection';
 import { TagsSection } from './TagsSection';
 import { MetricsSection } from './MetricsSection';
+import { RiAddBoxLine } from '@remixicon/react';
 
 type AdminDashboardProps = {
   defaultInactive?: boolean;
@@ -81,20 +82,25 @@ export const AdminDashboard = (props: AdminDashboardProps) => {
     <RequirePermission permission={announcementCreatePermission}>
       <Container mb="4">
         <Grid.Root columns="12">
-          <Grid.Item colSpan="12">
+          <Grid.Item colSpan="2">
+            <Flex direction="column" justify="start">
+              <Button variant="primary" iconEnd={<RiAddBoxLine />}>
+                Announcement
+              </Button>
+              <Button variant="primary" iconEnd={<RiAddBoxLine />}>
+                Category
+              </Button>
+              <Button variant="primary" iconEnd={<RiAddBoxLine />}>
+                Tag
+              </Button>
+            </Flex>
+          </Grid.Item>
+          <Grid.Item colSpan="10">
             <MetricsSection
               announcements={announcements?.results ?? []}
               categoriesCount={categories?.length ?? 0}
               tagsCount={tags?.length ?? 0}
             />
-          </Grid.Item>
-
-          <Grid.Item colSpan="12">
-            <Flex justify="end">
-              <Button variant="primary">Create Announcement</Button>
-              <Button variant="primary">Create Category</Button>
-              <Button variant="primary">Create Tag</Button>
-            </Flex>
           </Grid.Item>
 
           <Grid.Item colSpan="9">
