@@ -174,18 +174,18 @@ export const TagsSection = (props: TagsSectionProps) => {
           <Header
             title="Tags"
             icon={<RiHashtag />}
-            customActions={
-              <Button
-                onClick={onCreateTagClick}
-                iconEnd={<RiAddLine />}
-                isDisabled={
-                  permissions.create.loading || !permissions.create.allowed
-                }
-                variant="primary"
-              >
-                Create tag
-              </Button>
-            }
+            // customActions={
+            //   <Button
+            //     onClick={onCreateTagClick}
+            //     iconEnd={<RiAddLine />}
+            //     isDisabled={
+            //       permissions.create.loading || !permissions.create.allowed
+            //     }
+            //     variant="primary"
+            //   >
+            //     Create tag
+            //   </Button>
+            // }
           />
         </CardHeader>
         <CardBody>

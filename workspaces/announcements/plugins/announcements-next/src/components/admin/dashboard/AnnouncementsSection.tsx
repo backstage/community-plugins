@@ -179,18 +179,18 @@ export const AnnouncementsSection = (props: AnnouncementsSectionProps) => {
           <Header
             title="Announcements"
             icon={<RiBook2Line />}
-            customActions={
-              <Button
-                onClick={onCreateAnnouncementClick}
-                iconEnd={<RiAddLine />}
-                isDisabled={
-                  permissions.create.loading || !permissions.create.allowed
-                }
-                variant="primary"
-              >
-                Create announcement
-              </Button>
-            }
+            // customActions={
+            //   <Button
+            //     onClick={onCreateAnnouncementClick}
+            //     iconEnd={<RiAddLine />}
+            //     isDisabled={
+            //       permissions.create.loading || !permissions.create.allowed
+            //     }
+            //     variant="primary"
+            //   >
+            //     Create announcement
+            //   </Button>
+            // }
           />
         </CardHeader>
         <CardBody>

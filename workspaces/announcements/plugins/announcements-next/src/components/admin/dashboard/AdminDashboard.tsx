@@ -24,7 +24,7 @@ import {
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Container, Grid } from '@backstage/ui';
+import { Box, Button, Container, Flex, Grid } from '@backstage/ui';
 
 import { AnnouncementsSection } from './AnnouncementsSection';
 import { CategoriesSection } from './CategoriesSection';
@@ -90,6 +90,14 @@ export const AdminDashboard = (props: AdminDashboardProps) => {
           </Grid.Item>
 
           <Grid.Item colSpan="12">
+            <Flex justify="end">
+              <Button variant="primary">Create Announcement</Button>
+              <Button variant="primary">Create Category</Button>
+              <Button variant="primary">Create Tag</Button>
+            </Flex>
+          </Grid.Item>
+
+          <Grid.Item colSpan="9">
             <AnnouncementsSection
               announcements={announcements?.results ?? []}
               searchText={searchText}
@@ -98,12 +106,11 @@ export const AdminDashboard = (props: AdminDashboardProps) => {
             />
           </Grid.Item>
 
-          <Grid.Item colSpan="6">
-            <CategoriesSection onRefresh={handleRefresh} />
-          </Grid.Item>
-
-          <Grid.Item colSpan="6">
-            <TagsSection onRefresh={handleRefresh} />
+          <Grid.Item colSpan="3">
+            <Flex direction="column" gap="2">
+              <CategoriesSection onRefresh={handleRefresh} />
+              <TagsSection onRefresh={handleRefresh} />
+            </Flex>
           </Grid.Item>
         </Grid.Root>
       </Container>

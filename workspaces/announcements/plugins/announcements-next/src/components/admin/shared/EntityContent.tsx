@@ -44,6 +44,8 @@ import {
   DialogHeader,
   DialogBody,
   Flex,
+  SearchField,
+  Card,
 } from '@backstage/ui';
 import { Cell as AriaCell } from 'react-aria-components';
 import type { SortDescriptor } from 'react-aria-components';
@@ -189,6 +191,7 @@ export function EntityContent<
   } = config;
 
   const [showForm, setShowForm] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [sortDescriptor, setSortDescriptor] = useState<
     SortDescriptor | undefined
   >(undefined);
@@ -256,10 +259,24 @@ export function EntityContent<
     refresh();
   };
 
-  // Sort data
-  const sortedData = useMemo(() => {
+  // Filter and sort data
+  const filteredAndSortedData = useMemo(() => {
     let data = items ?? [];
 
+    // Apply search filter
+    if (searchText) {
+      const searchLower = searchText.toLowerCase();
+      data = data.filter(item => {
+        const searchableFields = [item.title, item.slug]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
+        return searchableFields.includes(searchLower);
+      });
+    }
+
+    // Apply sorting
     if (sortDescriptor?.column) {
       data = [...data].sort((a, b) => {
         let aValue: any;
@@ -289,11 +306,11 @@ export function EntityContent<
     }
 
     return data;
-  }, [items, sortDescriptor]);
+  }, [items, searchText, sortDescriptor]);
 
   // Use table hook for pagination
   const { data: paginatedData, paginationProps } = useTable<T>({
-    data: sortedData,
+    data: filteredAndSortedData,
     pagination: {
       defaultPageSize: 20,
       showPageSizeOptions: true,
@@ -310,14 +327,10 @@ export function EntityContent<
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Container>
-        <Grid.Root columns="6">
-          <Grid.Item colSpan="2">
-            <Text variant="title-medium"> {tableTitle}</Text>
-          </Grid.Item>
-          <Grid.Item colSpan="4">
-            <Box pl="3" as="span">
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="12">
+            <Flex direction="row">
               <Button
-                size="small"
                 isDisabled={
                   permissions.create.loading || !permissions.create.allowed
                 }
@@ -326,58 +339,68 @@ export function EntityContent<
               >
                 {t(translationKeys.createButton)}
               </Button>
-            </Box>
+              <SearchField
+                placeholder={`Search ${tableTitle.toLowerCase()}...`}
+                value={searchText}
+                onChange={setSearchText}
+              />
+            </Flex>
           </Grid.Item>
 
-          <Grid.Item colSpan="3">
-            <Table
-              onSortChange={setSortDescriptor}
-              sortDescriptor={sortDescriptor}
-              aria-label={tableTitle}
-            >
-              <TableHeader>
-                <Column isRowHeader allowsSorting>
-                  {t(translationKeys.table.title)}
-                </Column>
-                <Column allowsSorting>{t(translationKeys.table.slug)}</Column>
-                <Column>{t(translationKeys.table.actions)}</Column>
-              </TableHeader>
-
-              <TableBody
-                renderEmptyState={() => (
-                  <Box p="4">
-                    <Text>{t(translationKeys.noItemsFound)}</Text>
-                  </Box>
-                )}
+          <Grid.Item colSpan="12">
+            {filteredAndSortedData.length > 0 && (
+              <TablePagination {...paginationProps} />
+            )}
+          </Grid.Item>
+          <Grid.Item colSpan="12">
+            <Card>
+              <Table
+                onSortChange={setSortDescriptor}
+                sortDescriptor={sortDescriptor}
+                aria-label={tableTitle}
               >
-                {paginatedData?.map(item => (
-                  <Row key={item.slug} id={item.slug}>
-                    <CellText title={item.title} />
-                    <CellText title={item.slug} />
-                    <AriaCell textValue={t(translationKeys.table.actions)}>
-                      <ButtonIcon
-                        aria-label="delete"
-                        isDisabled={
-                          permissions.delete.loading ||
-                          !permissions.delete.allowed
-                        }
-                        onClick={() => openDeleteDialog(item)}
-                        icon={
-                          <DeleteIcon
-                            fontSize="small"
-                            data-testid="delete-icon"
-                          />
-                        }
-                        size="small"
-                        variant="tertiary"
-                      />
-                    </AriaCell>
-                  </Row>
-                ))}
-              </TableBody>
-            </Table>
+                <TableHeader>
+                  <Column isRowHeader allowsSorting>
+                    {t(translationKeys.table.title)}
+                  </Column>
+                  <Column allowsSorting>{t(translationKeys.table.slug)}</Column>
+                  <Column>{t(translationKeys.table.actions)}</Column>
+                </TableHeader>
 
-            {sortedData.length > 0 && <TablePagination {...paginationProps} />}
+                <TableBody
+                  renderEmptyState={() => (
+                    <Box p="4">
+                      <Text>{t(translationKeys.noItemsFound)}</Text>
+                    </Box>
+                  )}
+                >
+                  {paginatedData?.map(item => (
+                    <Row key={item.slug} id={item.slug}>
+                      <CellText title={item.title} />
+                      <CellText title={item.slug} />
+                      <AriaCell textValue={t(translationKeys.table.actions)}>
+                        <ButtonIcon
+                          aria-label="delete"
+                          isDisabled={
+                            permissions.delete.loading ||
+                            !permissions.delete.allowed
+                          }
+                          onClick={() => openDeleteDialog(item)}
+                          icon={
+                            <DeleteIcon
+                              fontSize="small"
+                              data-testid="delete-icon"
+                            />
+                          }
+                          size="small"
+                          variant="tertiary"
+                        />
+                      </AriaCell>
+                    </Row>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
           </Grid.Item>
 
           <DeleteConfirmationDialog

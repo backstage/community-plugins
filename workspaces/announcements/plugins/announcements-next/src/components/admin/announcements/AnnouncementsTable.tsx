@@ -33,8 +33,6 @@ import {
   useTable,
   CellText,
   Cell,
-  Switch,
-  Flex,
   TagGroup,
   Tag,
 } from '@backstage/ui';
@@ -260,7 +258,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                 <ButtonIcon
                   aria-label="preview"
                   icon={<PreviewIcon data-testid="preview" />}
-                  // size="small"
+                  size="small"
                   variant="tertiary"
                   onClick={() => onPreview(announcement)}
                 />
@@ -278,7 +276,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                   aria-label="delete"
                   icon={
                     <DeleteIcon
-                      color="error"
+                      // color="error"
                       // fontSize="small"
                       data-testid="delete-icon"
                     />

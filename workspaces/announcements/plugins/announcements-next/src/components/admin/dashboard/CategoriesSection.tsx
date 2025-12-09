@@ -167,18 +167,18 @@ export const CategoriesSection = (props: CategoriesSectionProps) => {
           <Header
             title="Categories"
             icon={<RiBookmarkLine />}
-            customActions={
-              <Button
-                onClick={onCreateCategoryClick}
-                iconEnd={<RiAddLine />}
-                isDisabled={
-                  permissions.create.loading || !permissions.create.allowed
-                }
-                variant="primary"
-              >
-                Create category
-              </Button>
-            }
+            // customActions={
+            //   <Button
+            //     onClick={onCreateCategoryClick}
+            //     iconEnd={<RiAddLine />}
+            //     isDisabled={
+            //       permissions.create.loading || !permissions.create.allowed
+            //     }
+            //     variant="primary"
+            //   >
+            //     Create category
+            //   </Button>
+            // }
           />
         </CardHeader>
         <CardBody>
