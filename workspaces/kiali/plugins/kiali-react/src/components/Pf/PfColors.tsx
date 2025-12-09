@@ -73,7 +73,7 @@ export enum PFColors {
   Danger = 'var(--pf-t--global--icon--color--severity--critical--default)',
   Info = 'var(--pf-t--global--icon--color--severity--none--default)',
   InfoBackground = 'var(--pf-t--color--blue--70)',
-  Success = 'var(--pf-t--chart--color--green--300)',
+  Success = 'var(--pf-t--color--green--50)',
   SuccessBackground = 'var(--pf-t--color--green--70)',
   Warning = 'var(--pf-t--global--icon--color--severity--moderate--default)',
 
