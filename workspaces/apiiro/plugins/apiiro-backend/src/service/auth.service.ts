@@ -27,7 +27,7 @@ export class ApiiroAuthService {
 
   static async connect(config: Config): Promise<void> {
     try {
-      const token = config.getString('apiiro.accessToken');
+      const token = config.getOptionalString('apiiro.accessToken') || '';
       const base = APIIRO_DEFAULT_BASE_URL;
 
       ApiiroAuthService.authToken = token;

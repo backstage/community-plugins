@@ -125,13 +125,8 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
    * Retrieves the Apiiro access token from configuration.
    * @throws {Error} If the access token is not configured
    */
-  private getAccessToken(): string {
+  private getAccessToken(): string | undefined {
     const accessToken = this.config.getOptionalString('apiiro.accessToken');
-    if (!accessToken) {
-      throw new Error(
-        'Apiiro access token not configured. Please set apiiro.accessToken in your app-config.',
-      );
-    }
     return accessToken;
   }
 
@@ -141,9 +136,9 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
    * @returns Page of repositories with next cursor
    */
   private async fetchRepositoriesPage(
+    accessToken: string,
     pageCursor?: string,
   ): Promise<ApiiroRepositoriesResponse> {
-    const accessToken = this.getAccessToken();
     const baseUrl = APIIRO_DEFAULT_BASE_URL;
 
     const params = new URLSearchParams();
@@ -198,7 +193,20 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
         );
       }
 
-      const page = await this.fetchRepositoriesPage(nextCursor ?? undefined);
+      const accessToken = this.getAccessToken();
+      if (!accessToken) {
+        console.warn(
+          '[ApiiroAnnotationProcessor] Apiiro access token not configured. Please set apiiro.accessToken in your app-config.',
+        );
+        return {
+          items: [],
+          totalCount: 0,
+        };
+      }
+      const page = await this.fetchRepositoriesPage(
+        accessToken,
+        nextCursor ?? undefined,
+      );
       items.push(...page.items);
       nextCursor = page.next;
     } while (nextCursor);

@@ -43,6 +43,20 @@ import {
 } from '../constants';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 import { fetchWithErrorHandling, fetchAllPages } from './utils';
+import { LoggerService } from '@backstage/backend-plugin-api';
+
+/**
+ * Custom error class for Apiiro configuration errors.
+ * Used to signal that Apiiro is not configured, allowing routers to return 401.
+ */
+export class ApiiroNotConfiguredError extends Error {
+  constructor(
+    message = 'Apiiro is not configured. Please set apiiro.accessToken in your app-config.',
+  ) {
+    super(message);
+    this.name = 'ApiiroNotConfiguredError';
+  }
+}
 
 export type ApiiroConfigOptions = {
   baseUrl: string;
@@ -57,21 +71,26 @@ export class ApiiroConfig {
   private readonly fetchFn: typeof fetch;
   private readonly timeoutMs: number;
 
-  static fromConfig(config: Config) {
+  static fromConfig(
+    config: Config,
+    logger: LoggerService,
+  ): ApiiroConfig | undefined {
     const baseUrl = APIIRO_DEFAULT_BASE_URL;
 
     try {
-      const accessToken = config.getString('apiiro.accessToken');
+      const accessToken = config.getOptionalString('apiiro.accessToken') || '';
       if (!accessToken || accessToken.trim() === '') {
-        throw new Error('Apiiro access token is required but not configured');
+        logger.warn('Apiiro access token is required but not configured');
+        return undefined;
       }
       return new ApiiroConfig({ baseUrl, accessToken });
     } catch (error) {
-      throw new Error(
+      logger.error(
         `Failed to load Apiiro configuration: ${
           error instanceof Error ? error.message : 'Unknown error'
         }`,
       );
+      return undefined;
     }
   }
 
@@ -409,15 +428,26 @@ export class ApiiroConfig {
 }
 
 export class ApiiroDataService {
-  private client: ApiiroConfig;
+  private client: ApiiroConfig | undefined;
 
-  constructor(client: ApiiroConfig) {
+  constructor(client: ApiiroConfig | undefined) {
     this.client = client;
   }
 
-  static fromConfig(config: Config) {
-    const client = ApiiroConfig.fromConfig(config);
+  static fromConfig(config: Config, logger: LoggerService): ApiiroDataService {
+    const client = ApiiroConfig.fromConfig(config, logger);
     return new ApiiroDataService(client);
+  }
+
+  isConfigured(): boolean {
+    return this.client !== undefined;
+  }
+
+  private ensureClient(): ApiiroConfig {
+    if (!this.client) {
+      throw new ApiiroNotConfiguredError();
+    }
+    return this.client;
   }
 
   /**
@@ -427,7 +457,10 @@ export class ApiiroDataService {
     pageCursor?: string,
     repositoryName?: string,
   ): Promise<ApiiroRepositoriesPage> {
-    return this.client.fetchRepositoriesPage(pageCursor, repositoryName);
+    return this.ensureClient().fetchRepositoriesPage(
+      pageCursor,
+      repositoryName,
+    );
   }
 
   /**
@@ -438,15 +471,16 @@ export class ApiiroDataService {
     pageCursor?: string,
     repositoryName?: string,
   ): Promise<RepositoriesAggregation> {
+    const client = this.ensureClient();
     if (pageCursor) {
-      const page = await this.client.fetchRepositoriesPage(
+      const page = await client.fetchRepositoriesPage(
         pageCursor,
         repositoryName,
       );
       return { repositories: page.items, totalCount: page.items.length };
     }
 
-    const allRepos = await this.client.fetchAllRepositories(repositoryName);
+    const allRepos = await client.fetchAllRepositories(repositoryName);
     return { repositories: allRepos.items, totalCount: allRepos.totalCount };
   }
 
@@ -458,7 +492,11 @@ export class ApiiroDataService {
     filters: RiskFilters = {},
     pageCursor?: string,
   ): Promise<ApiiroRisksPage> {
-    return this.client.fetchRisksPage(repositoryId, filters, pageCursor);
+    return this.ensureClient().fetchRisksPage(
+      repositoryId,
+      filters,
+      pageCursor,
+    );
   }
 
   /**
@@ -470,8 +508,9 @@ export class ApiiroDataService {
     filters: RiskFilters = {},
     pageCursor?: string,
   ): Promise<RisksAggregation> {
+    const client = this.ensureClient();
     if (pageCursor) {
-      const page = await this.client.fetchRisksPage(
+      const page = await client.fetchRisksPage(
         repositoryId,
         filters,
         pageCursor,
@@ -479,7 +518,7 @@ export class ApiiroDataService {
       return { risks: page.items, totalCount: page.items.length };
     }
 
-    const allRisks = await this.client.fetchAllRisks(repositoryId, filters);
+    const allRisks = await client.fetchAllRisks(repositoryId, filters);
     return { risks: allRisks.items, totalCount: allRisks.totalCount };
   }
 
@@ -488,7 +527,7 @@ export class ApiiroDataService {
    * Uses static mock data for now, ready to be replaced with real API call.
    */
   async getMttrStatistics(repositoryKey: string): Promise<MttrResponse> {
-    return this.client.fetchMttrStatistics(repositoryKey);
+    return this.ensureClient().fetchMttrStatistics(repositoryKey);
   }
 
   /**
@@ -502,7 +541,7 @@ export class ApiiroDataService {
   async getRiskScoreOverTime(
     repositoryKey: string,
   ): Promise<RiskScoreOverTimeResponse> {
-    return this.client.fetchRiskScoreOverTime(repositoryKey);
+    return this.ensureClient().fetchRiskScoreOverTime(repositoryKey);
   }
 
   /**
@@ -515,7 +554,7 @@ export class ApiiroDataService {
   async getSlaBreachStatistics(
     repositoryKey: string,
   ): Promise<SlaBreachResponse> {
-    return this.client.fetchSlaBreachStatistics(repositoryKey);
+    return this.ensureClient().fetchSlaBreachStatistics(repositoryKey);
   }
 
   /**
@@ -528,7 +567,7 @@ export class ApiiroDataService {
   async getTopRisksStatistics(
     repositoryKey: string,
   ): Promise<TopRisksResponse> {
-    return this.client.fetchTopRisksStatistics(repositoryKey);
+    return this.ensureClient().fetchTopRisksStatistics(repositoryKey);
   }
 
   /**
@@ -538,6 +577,6 @@ export class ApiiroDataService {
    * @returns Promise that resolves to ApiiroFilterOptionsResponse containing all filter categories and options
    */
   async getFilterOptions(): Promise<ApiiroFilterOptionsResponse> {
-    return this.client.fetchFilterOptions();
+    return this.ensureClient().fetchFilterOptions();
   }
 }

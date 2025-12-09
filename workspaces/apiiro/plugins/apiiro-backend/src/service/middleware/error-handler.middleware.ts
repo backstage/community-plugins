@@ -16,9 +16,10 @@
 import * as express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { createUnifiedErrorResponse } from '../utils';
+import { ApiiroNotConfiguredError } from '../data.service';
 
 /**
- * Middleware to handle JSON parsing errors from body-parser
+ * Middleware to handle JSON parsing errors and Apiiro-specific errors
  */
 export function createJsonErrorHandlerMiddleware(logger: LoggerService) {
   return (
@@ -27,6 +28,23 @@ export function createJsonErrorHandlerMiddleware(logger: LoggerService) {
     res: express.Response,
     next: express.NextFunction,
   ): void => {
+    // Check if Apiiro is not configured - return 401
+    if (err instanceof ApiiroNotConfiguredError) {
+      logger.warn('Apiiro not configured:', {
+        message: err.message,
+        path: req.path,
+        method: req.method,
+      });
+
+      const response = createUnifiedErrorResponse(401, 'Unauthorized', {
+        message: err.message,
+        name: err.name,
+      });
+
+      res.status(401).json(response);
+      return;
+    }
+
     // Check if it's a JSON parsing error from body-parser
     if (
       err instanceof SyntaxError &&

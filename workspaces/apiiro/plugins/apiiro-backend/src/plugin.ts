@@ -59,7 +59,7 @@ export const apiiroBackendPlugin = createBackendPlugin({
         scheduler,
       }) {
         // Initialize cache service
-        const dataService = ApiiroDataService.fromConfig(config);
+        const dataService = ApiiroDataService.fromConfig(config, logger);
         const cacheService = new RepositoryCacheService(dataService, logger);
 
         // Schedule periodic cache refresh

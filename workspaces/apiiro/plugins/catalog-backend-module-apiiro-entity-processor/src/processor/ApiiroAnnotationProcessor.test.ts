@@ -262,7 +262,7 @@ describe('ApiiroAnnotationProcessor', () => {
   });
 
   describe('getAccessToken', () => {
-    it('throws when access token is not configured', () => {
+    it('returns undefined when access token is not configured', () => {
       const configWithoutToken = new ConfigReader({
         apiiro: {},
       });
@@ -271,9 +271,9 @@ describe('ApiiroAnnotationProcessor', () => {
         configWithoutToken,
       );
 
-      expect(() => (processorWithoutToken as any).getAccessToken()).toThrow(
-        'Apiiro access token not configured. Please set apiiro.accessToken in your app-config.',
-      );
+      const token = (processorWithoutToken as any).getAccessToken();
+
+      expect(token).toBeUndefined();
     });
 
     it('returns access token when configured', () => {

@@ -89,7 +89,7 @@ export async function createRouter(
   const router = Router();
 
   // Initialize services
-  const dataService = ApiiroDataService.fromConfig(config);
+  const dataService = ApiiroDataService.fromConfig(config, logger);
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
   const entityService = new EntityService({
     httpAuth,
@@ -112,7 +112,6 @@ export async function createRouter(
   // Add request size limit to prevent memory exhaustion attacks
   router.use(express.json({ limit: '1mb' }));
   router.use(createContentTypeValidationMiddleware);
-  router.use(jsonErrorHandler);
 
   // Initialize handlers with dependencies
   const repositoriesHandler = createRepositoriesHandler({
@@ -229,8 +228,12 @@ export async function createRouter(
     },
   );
 
-  // Apply error handling middleware
-  // This catches any errors thrown by handlers or middleware
+  // Apply custom error handling middleware
+  // This catches ApiiroNotConfiguredError and JSON parsing errors
+  router.use(jsonErrorHandler);
+
+  // Apply default error handling middleware
+  // This catches any remaining errors thrown by handlers or middleware
   const middleware = MiddlewareFactory.create({ logger, config });
   router.use(middleware.error());
 

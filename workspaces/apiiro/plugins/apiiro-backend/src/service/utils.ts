@@ -15,6 +15,7 @@
  */
 import * as express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { ApiiroNotConfiguredError } from './data.service';
 
 /**
  * Unified error response structure for all API endpoints
@@ -121,6 +122,15 @@ export function handleApiError(
           ),
         );
     }
+  } else if (err instanceof ApiiroNotConfiguredError) {
+    // Apiiro not configured - return 401
+    logger.warn(`${endpoint} - Apiiro not configured:`, {
+      message: err.message,
+    });
+    const errorResponse = createUnifiedErrorResponse(401, 'Unauthorized', {
+      message: err.message,
+    });
+    res.status(401).json(errorResponse);
   } else {
     // Generic error for non-API errors
     logger.error(`${endpoint} - Non-API error:`, err);
