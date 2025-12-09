@@ -39,7 +39,15 @@ export const DeleteConfirmationDialog = (
 
   return (
     <DialogTrigger>
-      <Dialog isOpen={open} isDismissable>
+      <Dialog
+        isOpen={open}
+        isDismissable
+        onOpenChange={isOpen => {
+          if (!isOpen) {
+            onCancel();
+          }
+        }}
+      >
         <DialogHeader>{title}</DialogHeader>
         <DialogBody>{body}</DialogBody>
         <DialogFooter>

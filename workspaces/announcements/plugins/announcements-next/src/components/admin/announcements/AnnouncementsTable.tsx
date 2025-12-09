@@ -33,6 +33,10 @@ import {
   useTable,
   CellText,
   Cell,
+  Switch,
+  Flex,
+  TagGroup,
+  Tag,
 } from '@backstage/ui';
 import type { SortDescriptor } from 'react-aria-components';
 
@@ -48,6 +52,7 @@ import {
 } from '../shared';
 
 import { parseEntityRef } from '@backstage/catalog-model';
+import { RiCheckboxCircleLine, RiCloseCircleLine } from '@remixicon/react';
 
 type AnnouncementsTableProps = {
   announcements: Announcement[];
@@ -231,33 +236,38 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                 title={parseEntityRef(announcement.publisher).name ?? '---'}
               />
               <Cell>{announcement.on_behalf_of ?? '---'}</Cell>
-              <CellText title={announcement.category?.title ?? '---'} />
-              <CellText
-                title={
-                  announcement.tags?.map(tag => tag.title).join(', ') ?? '---'
-                }
-              />
-              <CellText
-                title={
-                  announcement.active
-                    ? t('admin.announcementsContent.table.active')
-                    : t('admin.announcementsContent.table.inactive')
-                }
-              />
-
+              <Cell>{announcement.category?.title ?? '---'}</Cell>
+              <Cell>
+                <TagGroup>
+                  {announcement.tags?.map(tag => (
+                    <Tag key={tag.slug} size="small">
+                      {tag.title}
+                    </Tag>
+                  ))}
+                </TagGroup>
+              </Cell>
+              <Cell>
+                <Box pl="2">
+                  {announcement.active ? (
+                    <RiCheckboxCircleLine style={{ color: 'green' }} />
+                  ) : (
+                    <RiCloseCircleLine style={{ color: 'red' }} />
+                  )}
+                </Box>
+              </Cell>
               {/* todo: actions not working - cell requires title which overrides children */}
               <Cell textValue={t('admin.announcementsContent.table.actions')}>
                 <ButtonIcon
                   aria-label="preview"
-                  icon={<PreviewIcon fontSize="small" data-testid="preview" />}
-                  size="small"
+                  icon={<PreviewIcon data-testid="preview" />}
+                  // size="small"
                   variant="tertiary"
                   onClick={() => onPreview(announcement)}
                 />
                 <ButtonIcon
                   aria-label="edit"
-                  icon={<EditIcon fontSize="small" data-testid="edit-icon" />}
-                  size="small"
+                  icon={<EditIcon data-testid="edit-icon" />}
+                  // size="small"
                   variant="tertiary"
                   isDisabled={
                     permissions.update.loading || !permissions.update.allowed
@@ -267,9 +277,13 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
                 <ButtonIcon
                   aria-label="delete"
                   icon={
-                    <DeleteIcon fontSize="small" data-testid="delete-icon" />
+                    <DeleteIcon
+                      color="error"
+                      // fontSize="small"
+                      data-testid="delete-icon"
+                    />
                   }
-                  size="small"
+                  // size="small"
                   variant="tertiary"
                   isDisabled={
                     permissions.delete.loading || !permissions.delete.allowed
@@ -282,7 +296,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
         </TableBody>
       </Table>
 
-      {filteredAndSortedData.length > 5 && (
+      {filteredAndSortedData.length > 0 && (
         <Box px="2">
           <TablePagination {...paginationProps} />
         </Box>
