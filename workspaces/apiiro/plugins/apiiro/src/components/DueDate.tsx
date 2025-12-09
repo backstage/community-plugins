@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 import { formatDate } from '../utils/utils';
 import SimpleTooltip from './SimpleTooltip';
 
 export const DueDateDisplay = ({ dateString }: { dateString: string }) => {
+  const theme = useTheme();
   const rawDate = dateString;
 
   if (!rawDate) {
@@ -49,7 +51,7 @@ export const DueDateDisplay = ({ dateString }: { dateString: string }) => {
         <Box
           component="span"
           sx={{
-            color: isOverdue ? '#bf0d2b' : 'inherit',
+            color: isOverdue ? theme.palette.error.main : 'inherit',
           }}
         >
           {formattedDate}

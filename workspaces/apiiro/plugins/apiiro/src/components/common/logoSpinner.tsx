@@ -15,6 +15,7 @@
  */
 import { ApiiroSmall } from '../../assets/apiiroLogo/apiiroSmall';
 import { styled, keyframes } from '@mui/material/styles';
+import { getSpinnerColor } from '../../theme/themeUtils';
 
 const rotate3d = keyframes`
   25% {
@@ -28,8 +29,8 @@ const rotate3d = keyframes`
   }
 `;
 
-const AnimatedLogo = styled(ApiiroSmall)(() => ({
-  color: '#2eefd9',
+const AnimatedLogo = styled(ApiiroSmall)(({ theme }) => ({
+  color: getSpinnerColor(theme),
   animation: `${rotate3d} 3s infinite`,
   display: 'inline-block',
   transformStyle: 'preserve-3d',

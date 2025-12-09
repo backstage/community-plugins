@@ -15,9 +15,10 @@
  */
 import { PieChart as MuiPieChart } from '@mui/x-charts/PieChart';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { FONT_FAMILY } from '../../theme/fonts';
 import { languageIconMap, LanguageKey } from '../common/languageIcons';
+import { getBlueColorVariants } from '../../theme/themeUtils';
 
 const PIE_CHART_MAX_ITEMS_LIMIT = 5;
 export interface PieChartData {
@@ -102,6 +103,10 @@ export const PieChart = ({
   generateColor,
   onDataProcessed,
 }: PieChartProps) => {
+  const theme = useTheme();
+  const blueColorVariants = getBlueColorVariants(theme);
+  const defaultColor = blueColorVariants[0];
+
   // Sort data by value in descending order and generate colors
   const dataWithColors = useMemo(() => {
     // Calculate the sum of all percentage values
@@ -152,10 +157,10 @@ export const PieChart = ({
       ...item,
       color:
         item.color ||
-        (generateColor ? generateColor(index, item.id) : '#012b70'),
+        (generateColor ? generateColor(index, item.id) : defaultColor),
       isMaxItem: index === 0, // First item after sorting is the max item
     }));
-  }, [data, generateColor]);
+  }, [data, generateColor, defaultColor]);
 
   // Calculate dimensions using the same formula
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
@@ -294,18 +299,18 @@ export const PieChart = ({
               : {}),
             // Disable CSS hover effects to prevent conflicts
             '& .MuiPieArc-root:hover': {
-              transform: 'none !important',
-              filter: 'none !important',
+              transform: 'none',
+              filter: 'none',
               cursor: 'default',
             },
             '& .MuiPieArcLabel-root': {
-              display: 'none !important',
+              display: 'none',
             },
             '& .MuiPieChart-root text': {
-              display: 'none !important',
+              display: 'none',
             },
             '& .MuiChartsLegend-root': {
-              display: 'none !important',
+              display: 'none',
             },
           }}
         />

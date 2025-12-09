@@ -25,27 +25,31 @@ import Box from '@mui/material/Box';
 import { styled, useTheme } from '@mui/material/styles';
 import { ApiiroLogo } from '../../assets/apiiroLogo';
 import { APIIRO_PROJECT_ANNOTATION } from '@backstage-community/plugin-apiiro-common';
+import { getLogoContainerColors } from '../../theme/themeUtils';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 
-const LogoContainer = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '12px 15px',
-  gap: '10px',
-  width: '109px',
-  height: '40px',
-  background: '#E6E6E6',
-  borderRadius: '10px',
-  '& svg': {
-    width: '79px',
-    height: '22px',
-    '& path': {
-      fill: '#21263F',
+const LogoContainer = styled(Box)(({ theme }) => {
+  const logoColors = getLogoContainerColors(theme);
+  return {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '12px 15px',
+    gap: '10px',
+    width: '109px',
+    height: '40px',
+    background: logoColors.background,
+    borderRadius: '10px',
+    '& svg': {
+      width: '79px',
+      height: '22px',
+      '& path': {
+        fill: logoColors.logoFill,
+      },
     },
-  },
-}));
+  };
+});
 
 export const Widget = () => {
   const theme = useTheme();
@@ -75,7 +79,7 @@ export const Widget = () => {
           flexDirection="column"
           minHeight="300px"
           sx={{
-            border: '1px solid #ccc',
+            border: `1px solid ${theme.palette.divider}`,
             borderRadius: '12px',
             backgroundColor: theme.palette.background.paper,
             boxShadow: theme.shadows[1],
@@ -107,7 +111,7 @@ export const Widget = () => {
           flexDirection="column"
           minHeight="300px"
           sx={{
-            border: '1px solid #ccc',
+            border: `1px solid ${theme.palette.divider}`,
             borderRadius: '12px',
             backgroundColor: theme.palette.background.paper,
             boxShadow: theme.shadows[1],
@@ -136,7 +140,7 @@ export const Widget = () => {
           flexDirection="column"
           minHeight="300px"
           sx={{
-            border: '1px solid #ccc',
+            border: `1px solid ${theme.palette.divider}`,
             borderRadius: '12px',
             backgroundColor: theme.palette.background.paper,
             boxShadow: theme.shadows[1],

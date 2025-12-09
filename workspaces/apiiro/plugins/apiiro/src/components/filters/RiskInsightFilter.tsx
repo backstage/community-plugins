@@ -42,6 +42,7 @@ import type {
 } from './RiskInsightFilter.types';
 import { FilterDropdownSearch } from './FilterDropdownSearch';
 import { FilterDropdownClear } from './FilterDropdownClear';
+import { getCountBadgeColors } from '../../theme/themeUtils';
 
 const GROUP_DISPLAY_LIMIT = 5;
 const GROUP_OPTION_LIMIT = 4;
@@ -345,8 +346,8 @@ export const RiskInsightFilter = ({
                 px: 1,
                 py: 0.25,
                 borderRadius: 999,
-                backgroundColor: '#dfe4ff',
-                color: '#2b3ba8',
+                backgroundColor: getCountBadgeColors(theme).background,
+                color: getCountBadgeColors(theme).text,
                 fontSize: 12,
                 fontWeight: 600,
               }}

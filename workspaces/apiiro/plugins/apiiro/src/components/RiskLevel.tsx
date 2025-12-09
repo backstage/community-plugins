@@ -17,7 +17,8 @@ import { RiskLevel as RiskIcon } from '../assets/RiskIcon';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { SxProps, Theme } from '@mui/material/styles';
+import { SxProps, Theme, useTheme } from '@mui/material/styles';
+import { getRiskColors } from '../theme/themeUtils';
 
 export type RiskLevelValue =
   | 'High'
@@ -35,12 +36,6 @@ export interface RiskLevelProps {
    * The risk level value to display
    */
   level: string;
-
-  /**
-   * Color mapping object where keys are risk levels and values are colors
-   * Example: { 'High': '#f44336', 'Medium': '#ff9800', 'Low': '#4caf50' }
-   */
-  colorMapping?: ColorMapping;
 
   /**
    * Default color to use if level is not found in colorMapping
@@ -80,36 +75,53 @@ export interface RiskLevelProps {
  * // Basic usage with color mapping
  * <RiskLevel
  *   level="High"
- *   colorMapping={{ 'High': '#f44336', 'Medium': '#ff9800', 'Low': '#4caf50' }}
  * />
  *
  * @example
  * // With label and custom styling
  * <RiskLevel
  *   level="Critical"
- *   colorMapping={riskColorMapping}
  *   showLabel={true}
  *   iconSize="large"
  * />
  */
+
+/**
+ * Creates theme-aware risk color mappings.
+ * Use this function with useTheme() to get colors that work in both light and dark modes.
+ */
+export const createRiskColorMappings = (theme: Theme): ColorMapping => {
+  const riskColors = getRiskColors(theme);
+
+  return {
+    Critical: riskColors.critical,
+    High: riskColors.high,
+    Medium: riskColors.medium,
+    Low: riskColors.low,
+    AutoIgnored: riskColors.autoIgnored,
+  };
+};
+
 export const RiskLevel = ({
   level,
-  colorMapping,
-  defaultColor = '#757575',
+  defaultColor,
   iconSize = 'medium',
   showLabel = false,
   sx,
   iconSx,
   textSx,
 }: RiskLevelProps) => {
+  const theme = useTheme();
+  const themeDefaultColor = defaultColor ?? theme.palette.grey[500];
+  const colorMapping: ColorMapping = createRiskColorMappings(theme);
   // Determine the color based on mapping
   const getRiskColor = (): string => {
     if (!colorMapping) {
-      return defaultColor;
+      return themeDefaultColor;
     }
 
     const mappedColor = colorMapping[level];
-    return mappedColor || defaultColor;
+    return mappedColor || themeDefaultColor;
   };
 
   const riskColor = getRiskColor();
@@ -163,30 +175,5 @@ export const RiskLevel = ({
     </Box>
   );
 };
-
-// Common color mappings for risk levels
-export const commonRiskColorMappings = {
-  standard: {
-    Critical: '#bc0e4d', // Dark red
-    High: '#f2405e', // Red
-    Medium: '#ffa70f', // Orange
-    Low: '#ffe366', // Yellow
-    AutoIgnored: '#9e9e9e', // Gray
-  },
-  severity: {
-    Critical: '#b71c1c', // Very dark red
-    High: '#d32f2f', // Dark red
-    Medium: '#f57c00', // Dark orange
-    Low: '#388e3c', // Dark green
-    AutoIgnored: '#757575', // Dark gray
-  },
-  pastel: {
-    Critical: '#ef5350', // Light red
-    High: '#ff7043', // Light red-orange
-    Medium: '#ffb74d', // Light orange
-    Low: '#81c784', // Light green
-    AutoIgnored: '#bdbdbd', // Light gray
-  },
-} as const;
 
 export default RiskLevel;

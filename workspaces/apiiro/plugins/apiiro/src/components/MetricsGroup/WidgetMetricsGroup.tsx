@@ -16,7 +16,6 @@
 import Grid from '@mui/material/Unstable_Grid2';
 import { TopLanguagesTile } from '../tiles/TopLanguagesTile';
 import { TopRiskTile } from '../tiles/TopRiskTile';
-import '../../theme/global.css';
 import StatusTile from '../tiles/StatusTile';
 import { RepositoryType } from '../../queries';
 import { useApi } from '@backstage/core-plugin-api';

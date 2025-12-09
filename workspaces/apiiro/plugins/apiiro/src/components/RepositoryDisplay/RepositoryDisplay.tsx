@@ -16,8 +16,10 @@
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Link from '@mui/material/Link';
+import { useTheme, Theme } from '@mui/material/styles';
 import { SimpleTooltip } from '../SimpleTooltip';
 import { scmProviderIcons } from '../../utils/utils';
+import { getBusinessImpactColors } from '../../theme/themeUtils';
 
 interface Repository {
   details: {
@@ -48,16 +50,17 @@ interface RepositoryDisplayProps {
   entity: Repository;
 }
 
-const getBusinessImpactColor = (impact: string): string => {
+const getBusinessImpactColor = (impact: string, theme: Theme): string => {
+  const impactColors = getBusinessImpactColors(theme);
   switch (impact.toLowerCase()) {
     case 'high':
-      return '#d32f2f'; // Red
+      return impactColors.high;
     case 'medium':
-      return '#f57c00'; // Orange
+      return impactColors.medium;
     case 'low':
-      return '#388e3c'; // Green
+      return impactColors.low;
     default:
-      return '#757575'; // Grey
+      return impactColors.default;
   }
 };
 
@@ -84,6 +87,8 @@ const getScmProvider = (serverUrl: string, provider?: string): string => {
 };
 
 export const RepositoryDisplay = ({ entity }: RepositoryDisplayProps) => {
+  const theme = useTheme();
+
   if (!entity || !entity.details) {
     return '';
   }
@@ -118,7 +123,9 @@ export const RepositoryDisplay = ({ entity }: RepositoryDisplayProps) => {
       <SimpleTooltip title={getTooltipContent()}>
         <Box display="flex" alignItems="center" gap={0.5}>
           {IconComponent && (
-            <IconComponent style={{ fontSize: '1rem', color: '#333' }} />
+            <IconComponent
+              style={{ fontSize: '1rem', color: theme.palette.text.primary }}
+            />
           )}
           <Link
             href={details.profileUrl}
@@ -139,8 +146,11 @@ export const RepositoryDisplay = ({ entity }: RepositoryDisplayProps) => {
             size="small"
             variant="outlined"
             style={{
-              borderColor: getBusinessImpactColor(details.businessImpact),
-              color: getBusinessImpactColor(details.businessImpact),
+              borderColor: getBusinessImpactColor(
+                details.businessImpact,
+                theme,
+              ),
+              color: getBusinessImpactColor(details.businessImpact, theme),
               backgroundColor: 'transparent',
               fontSize: '0.75rem',
               height: 20,

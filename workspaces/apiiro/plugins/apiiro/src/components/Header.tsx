@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 import { Header as CoreHeader } from '@backstage/core-components';
+import { useTheme } from '@mui/material/styles';
 import { ApiiroLogo } from '../assets/apiiroLogo';
+import { getHeaderBackground } from '../theme/themeUtils';
 
-export const Header = () => (
-  <CoreHeader
-    title={
-      <div style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <ApiiroLogo />
-      </div>
-    }
-    pageTitleOverride="Apiiro"
-    style={{
-      backgroundImage: 'none',
-      backgroundColor: '#21263F',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  />
-);
+export const Header = () => {
+  const theme = useTheme();
+  const headerBackground = getHeaderBackground(theme);
+
+  return (
+    <CoreHeader
+      title={
+        <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <ApiiroLogo />
+        </div>
+      }
+      pageTitleOverride="Apiiro"
+      style={{
+        backgroundImage: 'none',
+        backgroundColor: headerBackground,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    />
+  );
+};

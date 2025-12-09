@@ -15,7 +15,9 @@
  */
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 import { SimpleTooltip } from '../SimpleTooltip';
+import { getAvatarColors } from '../../theme/themeUtils';
 
 interface Contributor {
   email: string;
@@ -36,27 +38,19 @@ const getInitials = (name: string): string => {
     .slice(0, 2);
 };
 
-const getAvatarColor = (name: string): string => {
-  // Generate a consistent color based on the name
-  const colors = [
-    '#1976d2', // Blue
-    '#388e3c', // Green
-    '#f57c00', // Orange
-    '#7b1fa2', // Purple
-    '#c62828', // Red
-    '#00796b', // Teal
-    '#5d4037', // Brown
-    '#455a64', // Blue Grey
-  ];
-
+const getAvatarColorIndex = (name: string): number => {
+  // Generate a consistent color index based on the name
   const hash = name.split('').reduce((acc, char) => {
     return char.charCodeAt(0) + ((acc << 5) - acc);
   }, 0);
 
-  return colors[Math.abs(hash) % colors.length];
+  return Math.abs(hash) % 8; // 8 colors available
 };
 
 export const MainContributors = ({ contributors }: MainContributorsProps) => {
+  const theme = useTheme();
+  const avatarColors = getAvatarColors(theme);
+
   // Filter contributors to only show those with "Main contributor" in their reason
   const mainContributors = contributors.filter(
     contributor =>
@@ -87,7 +81,8 @@ export const MainContributors = ({ contributors }: MainContributorsProps) => {
         >
           <Avatar
             style={{
-              backgroundColor: getAvatarColor(contributor.name),
+              backgroundColor:
+                avatarColors[getAvatarColorIndex(contributor.name)],
               color: 'white',
               width: 24,
               height: 24,

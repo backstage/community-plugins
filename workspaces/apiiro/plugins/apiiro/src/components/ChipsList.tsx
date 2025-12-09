@@ -193,11 +193,15 @@ export const ChipsList = ({
   let chipBackgroundColor = 'transparent';
   if (variant === 'filled') {
     chipBackgroundColor =
-      theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
+      theme.palette.mode === 'dark'
+        ? theme.palette.grey[700]
+        : theme.palette.grey[300];
   }
 
   const chipBorderColor =
-    theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#d0d0d0';
+    theme.palette.mode === 'dark'
+      ? theme.palette.grey[700]
+      : theme.palette.grey[400];
 
   const renderChip = (item: ChipsListItem) => {
     const chip = (

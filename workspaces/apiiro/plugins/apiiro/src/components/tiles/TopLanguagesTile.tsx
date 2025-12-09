@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import { getBlueColorVariants, getOtherColor } from '../../theme/themeUtils';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
@@ -102,6 +103,10 @@ export const TopLanguagesTile = ({
   data = {},
   width = '100%',
 }: TopLanguagesTileProps) => {
+  const theme = useTheme();
+  const blueColorVariants = getBlueColorVariants(theme);
+  const otherColor = getOtherColor(theme);
+
   const chartData = useMemo(() => {
     if (data && Object.keys(data).length > 0) {
       const mappedData = mapLanguagePercentagesToPieData(data);
@@ -128,37 +133,23 @@ export const TopLanguagesTile = ({
     </CustomHeader>
   );
   // Generate colors for legend items based on data length
-  const generateColor = useCallback((index: number, itemId: string): string => {
-    const blueColorVariants = [
-      '#012b70', // --color-blue-70
-      '#2e5a9e', // --color-blue-65
-      '#769cd6', // --color-blue-60
-      '#9db9e2', // --color-blue-55
-      '#b3c9e9', // --color-blue-50
-      '#c5d7ef', // --color-blue-45
-      '#d5e2f4', // --color-blue-40
-      '#e1eaf8', // --color-blue-35
-      '#ebf1fa', // --color-blue-30
-      '#f2f6fd', // --color-blue-25
-      '#f7fafe', // --color-blue-20
-      '#f9fbff', // --color-blue-15
-    ];
+  const generateColor = useCallback(
+    (index: number, itemId: string): string => {
+      // If item id is "other", always use the other color
+      if (itemId === 'other') {
+        return otherColor;
+      }
 
-    const otherColor = '#e2e2e9'; // --color-blue-gray-25
+      // If index is within blue variants, use blue colors
+      if (index < blueColorVariants.length) {
+        return blueColorVariants[index];
+      }
 
-    // If item id is "other", always use the other color
-    if (itemId === 'other') {
+      // For additional items beyond blue variants, use the other color
       return otherColor;
-    }
-
-    // If index is within blue variants, use blue colors
-    if (index < blueColorVariants.length) {
-      return blueColorVariants[index];
-    }
-
-    // For additional items beyond blue variants, use the other color
-    return otherColor;
-  }, []);
+    },
+    [blueColorVariants, otherColor],
+  );
 
   const legend = (
     <LegendContainer>

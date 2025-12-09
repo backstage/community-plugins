@@ -29,7 +29,6 @@ import {
   TagsList,
   TeamsDisplay,
 } from '../../components';
-import { commonRiskColorMappings } from '../../components/RiskLevel';
 import { formatDate } from '../../utils/utils';
 
 export const risksColumns: GridColDef[] = [
@@ -61,11 +60,7 @@ export const risksColumns: GridColDef[] = [
     },
     renderCell: (params: any) => (
       <SimpleTooltip title={params.value ?? ''} centered>
-        <RiskLevel
-          level={params.value}
-          colorMapping={commonRiskColorMappings.standard}
-          iconSize="large"
-        />
+        <RiskLevel level={params.value} iconSize="large" />
       </SimpleTooltip>
     ),
   },

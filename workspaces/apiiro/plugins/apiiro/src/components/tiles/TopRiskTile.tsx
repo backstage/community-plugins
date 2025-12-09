@@ -24,7 +24,7 @@ import { TopRiskDataPoint } from '../../queries/queries.type';
 import { CustomTooltip, NotFound, SomethingWentWrong } from '../common';
 import { LogoSpinner } from '../common/logoSpinner';
 import { FONT_FAMILY } from '../../theme/fonts';
-import { commonRiskColorMappings, RiskLevel } from '../RiskLevel';
+import { RiskLevel } from '../RiskLevel';
 import { ApiiroSmall } from '../../assets/apiiroLogo';
 
 export interface TopRiskData {
@@ -253,11 +253,7 @@ export const TopRiskTile = ({
         {finalData.map((risk, index) => (
           <RiskItem key={`${risk.ruleName}-${index}`}>
             <RiskContent>
-              <RiskLevel
-                level={risk.severity}
-                colorMapping={commonRiskColorMappings.standard}
-                iconSize="large"
-              />
+              <RiskLevel level={risk.severity} iconSize="large" />
               <TooltipWrapper>
                 <CustomTooltip title={risk.ruleName}>
                   <RiskName>{risk.ruleName}</RiskName>

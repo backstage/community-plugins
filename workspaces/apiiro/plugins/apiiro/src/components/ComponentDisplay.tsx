@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useTheme } from '@mui/material/styles';
 import { FONT_FAMILY } from '../theme/fonts';
 import { SimpleTooltip } from './SimpleTooltip';
 
@@ -35,6 +36,7 @@ export const ComponentDisplay = ({
   filePath = '',
   component,
 }: ComponentDisplayProps) => {
+  const theme = useTheme();
   const tooltipText = `${filePath}\n${component}`;
 
   return (
@@ -53,7 +55,11 @@ export const ComponentDisplay = ({
           padding: 0,
         }}
       >
-        <div style={{ fontSize: '0.75rem', color: '#666' }}>{filePath}</div>
+        <div
+          style={{ fontSize: '0.75rem', color: theme.palette.text.secondary }}
+        >
+          {filePath}
+        </div>
         <div style={{ fontSize: '0.875rem', fontFamily: FONT_FAMILY }}>
           {component}
         </div>

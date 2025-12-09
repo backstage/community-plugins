@@ -16,7 +16,6 @@
 import { GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { Chip, ChipsList, RiskLevel, SimpleTooltip } from '../../components';
-import { commonRiskColorMappings } from '../../components/RiskLevel';
 import { scmProviderIcons } from '../../components/common/scmProviders';
 import { formatDate } from '../../utils/utils';
 import Typography from '@mui/material/Typography';
@@ -116,11 +115,7 @@ export const repositoryColumns: GridColDef[] = [
     headerAlign: 'center',
     renderCell: (params: any) => (
       <SimpleTooltip title={params.value ?? ''} centered>
-        <RiskLevel
-          level={params.value}
-          colorMapping={commonRiskColorMappings.standard}
-          iconSize="large"
-        />
+        <RiskLevel level={params.value} iconSize="large" />
       </SimpleTooltip>
     ),
   },

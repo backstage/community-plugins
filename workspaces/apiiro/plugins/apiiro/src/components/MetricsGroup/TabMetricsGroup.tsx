@@ -17,7 +17,6 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { MttrVsSLATile } from '../tiles/MttrVsSLATile';
 import { SLAAdherenceTile } from '../tiles/SLAAdherenceTile';
 import { RiskOverTimeTile } from '../tiles/RiskOverTimeTile';
-import '../../theme/global.css';
 import { RepositoryType } from '../../queries';
 import StatusTile from '../tiles/StatusTile';
 import type { Entity } from '@backstage/catalog-model';

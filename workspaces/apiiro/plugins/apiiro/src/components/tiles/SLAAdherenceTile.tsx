@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 import { fetchApiRef, useApi } from '@backstage/core-plugin-api';
+import { getSlaColors } from '../../theme/themeUtils';
 import { ChartBox } from '../common/ChartBox';
 import ColumnChart, { ColumnData } from '../charts/ColumnChart';
 import { useSlaBreachData } from '../../queries/sla-breach.queries';
@@ -49,6 +51,8 @@ export const SLAAdherenceTile = ({
   entityRef,
 }: SLAAdherenceTileProps) => {
   // Use API hooks internally
+  const theme = useTheme();
+  const slaColors = getSlaColors(theme);
   const connectBackendApi = useApi(apiiroApiRef);
   const { fetch } = useApi(fetchApiRef);
 
@@ -154,17 +158,17 @@ export const SLAAdherenceTile = ({
       {
         label: 'SLA breaches',
         value: item.slaBreaches,
-        color: '#f2405e', // Red color for breaches
+        color: slaColors.breach,
       },
       {
         label: 'SLA adherence',
         value: item.slaAdherence,
-        color: '#a8c5ff', // Light blue for adherence
+        color: slaColors.adherence,
       },
       {
         label: 'Due date not set',
         value: item.dueDateNotSet,
-        color: '#e0e0e0', // Gray for not set
+        color: slaColors.notSet,
       },
     ],
   }));

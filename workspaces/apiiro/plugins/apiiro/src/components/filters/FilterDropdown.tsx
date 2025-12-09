@@ -28,6 +28,7 @@ import { FilterDropdownClear } from './FilterDropdownClear';
 import { FilterDropdownList } from './FilterDropdownList';
 import { FilterDropdownProps } from './FilterDropdown.types';
 import { SimpleTooltip } from '../SimpleTooltip';
+import { getCountBadgeColors } from '../../theme/themeUtils';
 
 type DropdownButtonProps = {
   open: boolean;
@@ -92,18 +93,21 @@ const DropdownButton = styled(ButtonBase, {
   };
 });
 
-const CountBadge = styled('span')(({ theme }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minWidth: 26,
-  padding: theme.spacing(0.25, 1),
-  borderRadius: 999,
-  backgroundColor: '#dfe4ff',
-  color: '#2b3ba8',
-  fontSize: 12,
-  fontWeight: 600,
-}));
+const CountBadge = styled('span')(({ theme }) => {
+  const badgeColors = getCountBadgeColors(theme);
+  return {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 26,
+    padding: theme.spacing(0.25, 1),
+    borderRadius: 999,
+    backgroundColor: badgeColors.background,
+    color: badgeColors.text,
+    fontSize: 12,
+    fontWeight: 600,
+  };
+});
 
 export const FilterDropdown = ({
   label,

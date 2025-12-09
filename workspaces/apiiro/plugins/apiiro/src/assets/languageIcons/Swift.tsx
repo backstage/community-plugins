@@ -22,11 +22,10 @@ interface IconProps {
 
 export const Swift: FC<IconProps> = ({ color: colorProp }) => {
   const theme = useTheme();
-  const isDark = theme.palette.mode === 'dark';
   // Use provided color or theme's text color
   const mainColor = colorProp || 'currentColor';
-  // Use white for dark theme, black for light theme
-  const contrastColor = isDark ? 'gray' : '#FFFFFF';
+  // Use theme's background color for contrast
+  const contrastColor = theme.palette.background.paper;
 
   return (
     <svg

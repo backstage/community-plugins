@@ -60,7 +60,7 @@ export const FilterDropdownSearch = ({
             <IconButton
               onClick={handleClear}
               size="small"
-              sx={{ color: '#9e9e9e' }}
+              sx={{ color: theme.palette.text.secondary }}
             >
               <ClearIcon fontSize="small" />
             </IconButton>

@@ -37,7 +37,6 @@ import {
 } from '../../queries/filterOptions.queries';
 import { columnVisibilityModal, risksColumns } from './tableConfig';
 import Box from '@mui/material/Box';
-import { commonRiskColorMappings } from '../../components/RiskLevel';
 
 // Helper function to format date without timezone conversion
 const formatDateForAPI = (date: Date): string => {
@@ -59,13 +58,7 @@ const transformToRiskLevelOptions = (filterDef: FilterDefinition) => {
   return filterDef.filterOptions.map(option => ({
     value: option.name,
     label: option.displayName,
-    icon: (
-      <RiskLevel
-        level={option.name as any}
-        colorMapping={commonRiskColorMappings.standard}
-        iconSize="large"
-      />
-    ),
+    icon: <RiskLevel level={option.name as any} iconSize="large" />,
   }));
 };
 

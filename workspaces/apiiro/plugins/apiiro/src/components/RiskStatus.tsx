@@ -15,21 +15,27 @@
  */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useTheme, Theme } from '@mui/material/styles';
+import { getRiskStatusColors } from '../theme/themeUtils';
 
-// Color mapping for risk statuses
-export const riskStatusColorMapping = {
-  Open: '#f2405e', // Reddish-pink
-  Accepted: '#00d0b3', // Turquoise
-  Ignored: '#bdbdbd', // Gray
-} as const;
-
-type RiskStatusLevel = keyof typeof riskStatusColorMapping;
+/**
+ * Creates theme-aware risk status color mappings.
+ * Use this function with useTheme() to get colors that work in both light and dark modes.
+ */
+export const createRiskStatusColorMapping = (theme: Theme) => {
+  const statusColors = getRiskStatusColors(theme);
+  return {
+    Open: statusColors.open,
+    Accepted: statusColors.accepted,
+    Ignored: statusColors.ignored,
+  };
+};
 
 interface RiskStatusProps {
   /**
    * The status level to display
    */
-  status: RiskStatusLevel;
+  status: string;
 
   /**
    * Show the status label next to the icon
@@ -50,7 +56,11 @@ export const RiskStatus = ({
   showLabel = true,
   iconSize = 'medium',
 }: RiskStatusProps) => {
-  const color = riskStatusColorMapping[status] || '#ccc';
+  const theme = useTheme();
+  const themeAwareColors = createRiskStatusColorMapping(theme);
+  const color =
+    themeAwareColors[status as keyof typeof themeAwareColors] ||
+    theme.palette.grey[400];
 
   const sizeMap = {
     small: '8px',

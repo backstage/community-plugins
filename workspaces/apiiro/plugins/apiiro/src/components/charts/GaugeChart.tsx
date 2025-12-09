@@ -17,14 +17,19 @@ import { useGaugeState, Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { FONT_FAMILY } from '../../theme/fonts';
+import { getGaugeColors } from '../../theme/themeUtils';
 import CustomTooltip from '../common/CustomTooltip';
 import Typography from '@mui/material/Typography';
 
-const getArcColor = (value: number, tickValue: number) => {
+const getArcColor = (
+  value: number,
+  tickValue: number,
+  gaugeColors: ReturnType<typeof getGaugeColors>,
+) => {
   if (tickValue === 0) {
-    return '#f6f6f9';
+    return gaugeColors.background;
   }
-  return value > tickValue ? '#f2405e' : '#2eefd9';
+  return value > tickValue ? gaugeColors.warning : gaugeColors.success;
 };
 
 function GaugeCenterLabel({
@@ -126,6 +131,8 @@ function GaugePointer({
   max?: number;
   displayMarkerValue?: number;
 }) {
+  const theme = useTheme();
+  const gaugeColors = getGaugeColors(theme);
   const { startAngle, endAngle, innerRadius, outerRadius, cx, cy } =
     useGaugeState();
 
@@ -157,13 +164,13 @@ function GaugePointer({
 
   return (
     <g>
-      {/* Black pointer line */}
+      {/* Pointer line */}
       <line
         x1={x1}
         y1={y1}
         x2={x2}
         y2={y2}
-        stroke="black"
+        stroke={gaugeColors.pointer}
         strokeWidth={2}
         strokeLinecap="round"
       />
@@ -175,6 +182,7 @@ function GaugePointer({
         fontSize="12px"
         textAnchor="middle"
         dominantBaseline="middle"
+        fill={theme.palette.text.primary}
         style={{
           fontFamily: FONT_FAMILY,
         }}
@@ -210,6 +218,8 @@ export default function GaugeChart({
   displayValue?: number;
   displayTickValue?: number;
 }) {
+  const theme = useTheme();
+  const gaugeColors = getGaugeColors(theme);
   const [animatedValue, setAnimatedValue] = useState(0);
   const animationRef = useRef<number>();
   const currentValueRef = useRef(0);
@@ -266,7 +276,7 @@ export default function GaugeChart({
 
   const innerRadius = outerRadius * 0.72;
 
-  const arcColor = getArcColor(value, tickValue);
+  const arcColor = getArcColor(value, tickValue, gaugeColors);
 
   // 72.73 * 0.67 ≈ 48.72
 
@@ -288,7 +298,7 @@ export default function GaugeChart({
           transition: 'none', // Disable default transitions to let react-spring handle it
         },
         [`& .${gaugeClasses.referenceArc}`]: {
-          fill: '#f6f6f9',
+          fill: gaugeColors.background,
         },
       })}
     >

@@ -81,7 +81,7 @@ export function DataGrid<T extends GridValidRowModel>({
     borderRadius = '12px',
     headerBackgroundColor = theme.palette.mode === 'dark'
       ? theme.palette.background.paper
-      : '#f0f1f5',
+      : theme.palette.grey[100],
     backgroundColor = theme.palette.background.paper,
     height = 'auto',
   } = styling;
@@ -280,7 +280,9 @@ export function DataGrid<T extends GridValidRowModel>({
                         : 'auto',
                     width: '3px',
                     backgroundColor:
-                      dropTarget === col.field ? '#1976d2' : 'transparent',
+                      dropTarget === col.field
+                        ? theme.palette.primary.main
+                        : 'transparent',
                     transition: 'background 0.1s ease',
                   }
                 : {},
@@ -410,17 +412,18 @@ export function DataGrid<T extends GridValidRowModel>({
             {
               outline: 'none',
             },
-          '& .MuiDataGrid-columnHeader, & .MuiDataGrid-filler': {
-            backgroundColor: `${headerBackgroundColor} !important`,
-          },
+          '&.MuiDataGrid-root .MuiDataGrid-columnHeader, &.MuiDataGrid-root .MuiDataGrid-filler':
+            {
+              backgroundColor: headerBackgroundColor,
+            },
           // Column resize line styling
           '& .MuiDataGrid-columnSeparator--resizable': {
             '&:hover': {
-              color: '#1976d2', // Blue color on hover
+              color: theme.palette.primary.main,
             },
           },
           '& .MuiDataGrid-columnSeparator--resizing': {
-            color: '#1976d2 !important', // Blue color when actively resizing
+            color: theme.palette.primary.main,
             opacity: 1,
           },
           ...pinnedColumnStyles,

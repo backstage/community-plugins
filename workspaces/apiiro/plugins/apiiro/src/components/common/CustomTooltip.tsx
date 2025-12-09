@@ -199,7 +199,9 @@ export const CustomTooltip = ({
   const getArrowStyle = () => {
     // Get theme-aware arrow color
     const arrowColor =
-      theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ffffff';
+      theme.palette.mode === 'dark'
+        ? theme.palette.grey[700]
+        : theme.palette.common.white;
 
     const baseArrow = {
       position: 'absolute' as const,
@@ -293,7 +295,9 @@ export const CustomTooltip = ({
           left: `${tooltipPosition.left}px`,
           visibility: isTooltipVisible ? 'visible' : 'hidden',
           backgroundColor:
-            theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ffffff',
+            theme.palette.mode === 'dark'
+              ? theme.palette.grey[700]
+              : theme.palette.common.white,
           color:
             theme.palette.mode === 'dark'
               ? theme.palette.common.white

@@ -15,7 +15,8 @@
  */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import { getTrendColors } from '../../theme/themeUtils';
 import { fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import { ChartBox } from '../common/ChartBox';
 import { LineChart, LineChartSeries } from '../charts/LineChart';
@@ -135,6 +136,8 @@ export const RiskOverTimeTile = ({
   entityRef,
 }: RiskOverTimeTileProps) => {
   // Use API hooks internally
+  const theme = useTheme();
+  const trendColors = getTrendColors(theme);
   const connectBackendApi = useApi(apiiroApiRef);
   const { fetch } = useApi(fetchApiRef);
 
@@ -252,26 +255,26 @@ export const RiskOverTimeTile = ({
   const isNeutralChange = calculatedPercentageChange === 0;
   const isPositiveChange = calculatedPercentageChange > 0;
 
-  // Set colors based on change type
+  // Set colors based on change type using theme-aware colors
   let lineColor: string;
   let indicatorColor: string;
   let indicatorTextColor: string;
   let TrendIcon: typeof TrendingUpIcon;
 
   if (isNeutralChange) {
-    lineColor = '#769cd6'; // Blue for neutral
-    indicatorColor = '#ebf1fa'; // Light blue background
-    indicatorTextColor = '#012b70'; // Dark blue text
+    lineColor = trendColors.neutral.line;
+    indicatorColor = trendColors.neutral.background;
+    indicatorTextColor = trendColors.neutral.text;
     TrendIcon = RemoveIcon; // Minus/horizontal icon for no trend
   } else if (isPositiveChange) {
-    lineColor = '#f44336'; // Red for positive
-    indicatorColor = '#fde7eb'; // Light red background
-    indicatorTextColor = '#9d0b23'; // Dark red text
+    lineColor = trendColors.positive.line;
+    indicatorColor = trendColors.positive.background;
+    indicatorTextColor = trendColors.positive.text;
     TrendIcon = TrendingUpIcon; // Up icon for positive
   } else {
-    lineColor = '#2eefd9'; // Teal for negative
-    indicatorColor = '#d9fcf8'; // Light green background
-    indicatorTextColor = '#09776a'; // Dark green text
+    lineColor = trendColors.negative.line;
+    indicatorColor = trendColors.negative.background;
+    indicatorTextColor = trendColors.negative.text;
     TrendIcon = TrendingDownIcon; // Down icon for negative
   }
 

@@ -20,13 +20,17 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
+import { useTheme } from '@mui/material/styles';
 import { CustomSearchToolbarProps } from './types';
+import { getSearchToolbarColors } from '../../theme/themeUtils';
 
 export function CustomSearchToolbar({
   apiRef,
   placeholder,
   customFilters,
 }: CustomSearchToolbarProps) {
+  const theme = useTheme();
+  const searchColors = getSearchToolbarColors(theme);
   // Get initial search value from URL parameter
   const getInitialSearchValue = (): string => {
     if (typeof window !== 'undefined') {
@@ -93,11 +97,11 @@ export function CustomSearchToolbar({
           size="small"
           InputProps={{
             sx: {
-              borderRadius: '40px !important',
+              borderRadius: '40px',
             },
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#9e9e9e' }} />
+                <SearchIcon sx={{ color: searchColors.iconColor }} />
               </InputAdornment>
             ),
             endAdornment: searchText && (
@@ -105,7 +109,7 @@ export function CustomSearchToolbar({
                 <IconButton
                   onClick={handleClearSearch}
                   size="small"
-                  sx={{ color: '#9e9e9e' }}
+                  sx={{ color: searchColors.iconColor }}
                 >
                   <ClearIcon fontSize="small" />
                 </IconButton>
@@ -116,15 +120,15 @@ export function CustomSearchToolbar({
             minWidth: 300,
             maxWidth: 400,
             '& .MuiOutlinedInput-root': {
-              backgroundColor: '#fafafa',
+              backgroundColor: searchColors.backgroundColor,
               '& fieldset': {
-                borderColor: '#e0e0e0',
+                borderColor: searchColors.borderColor,
               },
               '&:hover fieldset': {
-                borderColor: '#bdbdbd',
+                borderColor: searchColors.hoverBorderColor,
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+                borderColor: searchColors.focusBorderColor,
               },
             },
           }}

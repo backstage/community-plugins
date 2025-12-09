@@ -423,7 +423,7 @@ export const LineChart = ({
                         top: '10%',
                         width: '3px',
                         height: '16px',
-                        backgroundColor: '#f44336',
+                        backgroundColor: theme.palette.primary.main,
                         borderRadius: '2px',
                       },
                     },

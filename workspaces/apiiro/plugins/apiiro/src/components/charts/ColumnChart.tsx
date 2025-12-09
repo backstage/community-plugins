@@ -17,7 +17,7 @@ import { useMemo, useRef, useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { FONT_FAMILY } from '../../theme/fonts';
 import { formatNumberWithSuffix } from '../../utils/numberFormatter';
 
@@ -92,6 +92,7 @@ export const ColumnChart = ({
   showLegend = true,
   legendPosition = 'bottom',
 }: ColumnChartProps) => {
+  const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(width);
 
@@ -123,7 +124,7 @@ export const ColumnChart = ({
 
       const color =
         data.flatMap(item => item.values).find(value => value.label === label)
-          ?.color || '#ccc';
+          ?.color || theme.palette.grey[400];
 
       return {
         data: seriesData,
@@ -138,7 +139,7 @@ export const ColumnChart = ({
     const seriesColors = allLabels.map(label => {
       return (
         data.flatMap(item => item.values).find(value => value.label === label)
-          ?.color || '#ccc'
+          ?.color || theme.palette.grey[400]
       );
     });
 
@@ -222,7 +223,7 @@ export const ColumnChart = ({
         rightMargin,
       },
     };
-  }, [data, width, containerWidth]);
+  }, [data, width, containerWidth, theme.palette.grey]);
 
   const yAxisMax = useMemo(() => {
     if (maxValue) return maxValue;
@@ -336,7 +337,7 @@ export const ColumnChart = ({
           colors={colors}
           legend={{ hidden: true }}
           grid={{ horizontal: true, vertical: false }}
-          sx={theme => ({
+          sx={{
             [`.${axisClasses.left} .${axisClasses.label}`]: {
               transform: 'translate(-10px, 0)',
             },
@@ -364,7 +365,7 @@ export const ColumnChart = ({
               transformOrigin: 'center bottom',
               transform: `scaleX(${responsiveConfig.transformScale})`,
             },
-          })}
+          }}
           tooltip={{
             axisContent: (props: any) => {
               const dataIndex = props?.dataIndex ?? 0;
@@ -445,7 +446,7 @@ export const ColumnChart = ({
                   enabled: false,
                 },
               ],
-              sx: theme => ({
+              sx: {
                 '& .MuiChartsTooltip-root': {
                   backgroundColor: theme.palette.background.paper,
                   border: `1px solid ${theme.palette.divider}`,
@@ -512,7 +513,7 @@ export const ColumnChart = ({
                     },
                   },
                 },
-              }),
+              },
             },
           }}
         />

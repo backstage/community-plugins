@@ -22,11 +22,10 @@ interface IconProps {
 
 export const Clojure: FC<IconProps> = ({ color: colorProp }) => {
   const theme = useTheme();
-  const isDark = theme.palette.mode === 'dark';
   // Use provided color or theme's text color
   const mainColor = colorProp || 'currentColor';
-  // Use white for dark theme, black for light theme
-  const contrastColor = isDark ? 'gray' : '#FFFFFF';
+  // Use theme's background color for contrast
+  const contrastColor = theme.palette.background.paper;
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

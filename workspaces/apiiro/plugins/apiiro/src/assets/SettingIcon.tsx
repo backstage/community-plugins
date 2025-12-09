@@ -28,7 +28,7 @@ const StyledSvg = styled('svg')({
 
 export const SettingIcon = () => {
   const theme = useTheme();
-  const iconColor = theme.palette.mode === 'dark' ? '#ffffff' : '#8a8fa8';
+  const iconColor = theme.palette.text.secondary;
 
   return (
     <CustomTooltip

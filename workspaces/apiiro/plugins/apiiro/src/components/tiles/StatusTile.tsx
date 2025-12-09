@@ -17,6 +17,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import { FONT_FAMILY } from '../../theme/fonts';
+import {
+  getActivityStatusColors,
+  getLogoContainerColors,
+} from '../../theme/themeUtils';
 import { Link } from 'react-router-dom';
 import { ApiiroLogo } from '../../assets/apiiroLogo';
 import { formatNumberWithSuffix } from '../../utils';
@@ -41,15 +45,20 @@ const ThemedIcon = styled('span')(({ theme }) => ({
   },
 }));
 
-const StatusIndicator = styled('span')(
-  ({ isActive }: { isActive: boolean }) => ({
-    display: 'inline-block',
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    backgroundColor: isActive ? '#11e4cb' : '#c4c7d4',
-    marginRight: 8,
-  }),
+const StatusIndicator = styled('span')<{ isActive: boolean }>(
+  ({ theme, isActive }) => {
+    const activityColors = getActivityStatusColors(theme);
+    return {
+      display: 'inline-block',
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      backgroundColor: isActive
+        ? activityColors.active
+        : activityColors.inactive,
+      marginRight: 8,
+    };
+  },
 );
 
 export interface StatusTileProps {
@@ -155,25 +164,28 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
-const LogoContainer = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '12px 15px',
-  gap: '10px',
-  width: '109px',
-  height: '40px',
-  background: '#E6E6E6',
-  borderRadius: '10px',
-  '& svg': {
-    width: '79px',
-    height: '22px',
-    '& path': {
-      fill: '#21263F',
+const LogoContainer = styled(Box)(({ theme }) => {
+  const logoColors = getLogoContainerColors(theme);
+  return {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '12px 15px',
+    gap: '10px',
+    width: '109px',
+    height: '40px',
+    background: logoColors.background,
+    borderRadius: '10px',
+    '& svg': {
+      width: '79px',
+      height: '22px',
+      '& path': {
+        fill: logoColors.logoFill,
+      },
     },
-  },
-}));
+  };
+});
 
 const CustomHeaderData = ({ title }: { title: string }) => (
   <CustomHeader>

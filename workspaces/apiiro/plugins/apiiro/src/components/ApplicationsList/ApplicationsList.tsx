@@ -16,9 +16,11 @@
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Link from '@mui/material/Link';
+import { useTheme, Theme } from '@mui/material/styles';
 import { SimpleTooltip } from '../SimpleTooltip';
 import { CustomTooltip } from '../common/CustomTooltip';
 import { FONT_FAMILY } from '../../theme/fonts';
+import { getBusinessImpactColors } from '../../theme/themeUtils';
 
 interface Application {
   apiiroUrl: string;
@@ -32,16 +34,17 @@ interface ApplicationsListProps {
   maxVisible?: number;
 }
 
-const getBusinessImpactColor = (impact: string): string => {
+const getBusinessImpactColor = (impact: string, theme: Theme): string => {
+  const impactColors = getBusinessImpactColors(theme);
   switch (impact.toLowerCase()) {
     case 'high':
-      return '#d32f2f'; // Red
+      return impactColors.high;
     case 'medium':
-      return '#f57c00'; // Orange
+      return impactColors.medium;
     case 'low':
-      return '#388e3c'; // Green
+      return impactColors.low;
     default:
-      return '#757575'; // Grey
+      return impactColors.default;
   }
 };
 
@@ -49,6 +52,8 @@ export const ApplicationsList = ({
   applications,
   maxVisible = 1,
 }: ApplicationsListProps) => {
+  const theme = useTheme();
+
   if (!applications || applications.length === 0) {
     return '';
   }
@@ -84,8 +89,8 @@ export const ApplicationsList = ({
           size="small"
           variant="outlined"
           style={{
-            borderColor: getBusinessImpactColor(app.businessImpact),
-            color: getBusinessImpactColor(app.businessImpact),
+            borderColor: getBusinessImpactColor(app.businessImpact, theme),
+            color: getBusinessImpactColor(app.businessImpact, theme),
             backgroundColor: 'transparent',
             fontSize: '0.75rem',
             height: 20,
@@ -120,8 +125,8 @@ export const ApplicationsList = ({
               size="small"
               variant="outlined"
               style={{
-                borderColor: getBusinessImpactColor(app.businessImpact),
-                color: getBusinessImpactColor(app.businessImpact),
+                borderColor: getBusinessImpactColor(app.businessImpact, theme),
+                color: getBusinessImpactColor(app.businessImpact, theme),
                 backgroundColor: 'transparent',
                 fontSize: '0.75rem',
                 height: 20,
@@ -165,8 +170,11 @@ export const ApplicationsList = ({
                 size="small"
                 variant="outlined"
                 style={{
-                  borderColor: getBusinessImpactColor(app.businessImpact),
-                  color: getBusinessImpactColor(app.businessImpact),
+                  borderColor: getBusinessImpactColor(
+                    app.businessImpact,
+                    theme,
+                  ),
+                  color: getBusinessImpactColor(app.businessImpact, theme),
                   backgroundColor: 'transparent',
                   fontSize: '0.75rem',
                   height: 20,
