@@ -121,7 +121,7 @@ const overlayLegendStyle = kialiStyle({
   flexWrap: 'wrap',
   flexDirection: 'column',
   position: 'relative',
-  background: 'var(--pf-v5-global--BackgroundColor--dark-100)',
+  background: 'var(--pf-v6-global--BackgroundColor--dark-100)',
   opacity: 0.7,
   overflow: 'auto',
 });

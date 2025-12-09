@@ -86,9 +86,9 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   const htmlElement = document.getElementsByTagName('html')[0];
   if (htmlElement) {
     if (theme.palette.type === 'dark') {
-      htmlElement.classList.add('pf-v5-theme-dark');
+      htmlElement.classList.add('pf-v6-theme-dark');
     } else {
-      htmlElement.classList.remove('pf-v5-theme-dark');
+      htmlElement.classList.remove('pf-v6-theme-dark');
     }
   }
 

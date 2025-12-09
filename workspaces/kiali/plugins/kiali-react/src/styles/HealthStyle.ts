@@ -24,7 +24,7 @@ export const healthIndicatorStyle = style({
     },
 
     '& .pf-v5-c-content ul': {
-      marginBottom: 'var(--pf-v5-c-content--ul--MarginTop)',
+      marginBottom: 'var(--pf-v6-c-content--ul--MarginTop)',
       marginTop: 0,
       color: PFColors.Color100,
     },

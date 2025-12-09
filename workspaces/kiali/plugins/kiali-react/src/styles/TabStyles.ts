@@ -18,11 +18,11 @@ import { PFColors } from '../components/Pf/PfColors';
 
 export const basicTabStyle = style({
   $nest: {
-    '& .pf-v5-c-tabs__list': {
+    '& .pf-v6-c-tabs__list': {
       marginLeft: '20px',
     },
 
-    '& .pf-v5-c-tab-content': {
+    '& .pf-v6-c-tab-content': {
       overflowY: 'auto',
       height: '600px',
     },
@@ -31,7 +31,7 @@ export const basicTabStyle = style({
 
 export const traceTabStyle = style({
   $nest: {
-    '& .pf-v5-c-tabs__list': {
+    '& .pf-v6-c-tabs__list': {
       backgroundColor: PFColors.BackgroundColor100,
       borderBottom: `1px solid ${PFColors.BorderColor100}`,
     },

@@ -44,7 +44,7 @@ export const usePlatformDetection = (): boolean => {
       const hasOpenShiftConsoleElements =
         document.querySelector('[data-test="user-dropdown"]') !== null ||
         document.querySelector('.pf-c-page__header') !== null ||
-        document.querySelector('.pf-v5-c-page__header') !== null ||
+        document.querySelector('.pf-v6-c-page__header') !== null ||
         document.querySelector('[data-test="perspective-switcher"]') !== null ||
         (window as any).SERVER_FLAGS !== undefined;
 

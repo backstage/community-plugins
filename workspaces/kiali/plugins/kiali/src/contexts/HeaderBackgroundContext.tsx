@@ -61,13 +61,13 @@ export const HeaderBackgroundProvider = ({
       const isOpenShiftConsole =
         document.querySelector('[data-test="user-dropdown"]') !== null ||
         document.querySelector('.pf-c-page__header') !== null ||
-        document.querySelector('.pf-v5-c-page__header') !== null ||
+        document.querySelector('.pf-v6-c-page__header') !== null ||
         document.querySelector('[data-test="perspective-switcher"]') !== null ||
         (window as any).SERVER_FLAGS !== undefined;
 
       // Try all possible selectors based on detected platform
       const selectors = isOpenShiftConsole
-        ? ['.pf-c-page__header', '.pf-v5-c-page__header', 'header']
+        ? ['.pf-c-page__header', '.pf-v6-c-page__header', 'header']
         : [
             'header[role="banner"]',
             'header.MuiPaper-root',
