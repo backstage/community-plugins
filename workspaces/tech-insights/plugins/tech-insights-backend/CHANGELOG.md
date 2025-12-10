@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.4.3
+
+### Patch Changes
+
+- 7793cf3: Updated dependency `wait-for-expect` to `^4.0.0`.
+
 ## 2.4.2
 
 ### Patch Changes
