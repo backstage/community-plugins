@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-frontend
 
+## 0.4.1
+
+### Patch Changes
+
+- 94731be: Update to modern jsx transform (react-jsx)
+
 ## 0.4.0
 
 ### Minor Changes
