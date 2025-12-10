@@ -78,14 +78,14 @@ export const AnnouncementsPage = announcementsPlugin.provide(
 /**
  * @public
  */
-export const AnnouncementsAdminPortal = announcementsPlugin.provide(
-  createComponentExtension({
-    name: 'AnnouncementsAdminPortal',
-    component: {
-      lazy: () => import('./components/Admin').then(m => m.AdminPortal),
-    },
-  }),
-);
+// export const AnnouncementsAdminPortal = announcementsPlugin.provide(
+//   createComponentExtension({
+//     name: 'AnnouncementsAdminPortal',
+//     component: {
+//       lazy: () => import('./components/Admin').then(m => m.AdminPortal),
+//     },
+//   }),
+// );
 
 /**
  * @public

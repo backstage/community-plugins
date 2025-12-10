@@ -1723,6 +1723,7 @@ __metadata:
     "@backstage/plugin-signals-react": "npm:^0.0.17"
     "@backstage/test-utils": "npm:^1.7.13"
     "@backstage/theme": "npm:^0.7.0"
+    "@backstage/ui": "npm:^0.10.0-next.1"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -3845,6 +3846,26 @@ __metadata:
   version: 1.2.2
   resolution: "@backstage/types@npm:1.2.2"
   checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
+  languageName: node
+  linkType: hard
+
+"@backstage/ui@npm:^0.10.0-next.1":
+  version: 0.10.0-next.1
+  resolution: "@backstage/ui@npm:0.10.0-next.1"
+  dependencies:
+    "@remixicon/react": "npm:^4.6.0"
+    "@tanstack/react-table": "npm:^8.21.3"
+    clsx: "npm:^2.1.1"
+    react-aria-components: "npm:^1.13.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/72a872cdc74d0dbced02832f7def0f7980b6741a89d579722a1a63e644ca1bdfb62d1f8ca9632b3f6a7d7c52d877f63b2190a5612aebb51dda0a6fb6b0457195
   languageName: node
   linkType: hard
 

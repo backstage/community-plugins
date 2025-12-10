@@ -35,7 +35,7 @@ import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import {
   AnnouncementsPage,
-  AnnouncementsAdminPortal,
+  // AnnouncementsAdminPortal,
 } from '@backstage-community/plugin-announcements';
 import { Home } from './components/HomePage';
 import { SignalsDisplay } from '@backstage/plugin-signals';
@@ -68,7 +68,7 @@ const routes = (
     <Route path="/announcements" element={<AnnouncementsPage />} />
 
     {/* announcement admin route */}
-    <Route path="/announcements/admin" element={<AnnouncementsAdminPortal />} />
+    {/* <Route path="/announcements/admin" element={<AnnouncementsAdminPortal />} /> */}
 
     {/* search page with example search result component */}
     <Route path="/search" element={<SearchPage />}>
