@@ -30,6 +30,7 @@ import {
   TeamsDisplay,
 } from '../../components';
 import { formatDate } from '../../utils/utils';
+import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 
 export const risksColumns: GridColDef[] = [
   {
@@ -74,7 +75,14 @@ export const risksColumns: GridColDef[] = [
     valueGetter: (_, row) => row.ruleName,
     renderCell: (params: any) => (
       <SimpleTooltip title={params.value ?? ''}>
-        {params.value ?? ''}
+        <Link
+          href={`${APIIRO_DEFAULT_BASE_URL}/profiles/repositories/${params.row.entity?.details?.key}/risk/development?fl[RiskStatus][values][0]=${params.row.riskStatus}&trigger=${params.row.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          color="inherit"
+        >
+          {params.value ?? ''}
+        </Link>
       </SimpleTooltip>
     ),
   },
