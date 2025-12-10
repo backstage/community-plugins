@@ -3314,7 +3314,7 @@ export type PercentageOfTrafficByHost = {
 };
 
 // @public (undocumented)
-export const PF_THEME_DARK = "pf-v5-theme-dark";
+export const PF_THEME_DARK = "pf-v6-theme-dark";
 
 // @public (undocumented)
 export type PFColorVal = string;

@@ -39,129 +39,129 @@ export const linkStyle: string;
 // @public (undocumented)
 export enum PFColors {
     // (undocumented)
-    Active = "var(--pf-v5-global--active-color--400)",
+    Active = "var(--pf-t--color--blue--50)",
     // (undocumented)
-    ActiveText = "var(--pf-v5-global--primary-color--200)",
+    ActiveText = "var(--pf-t--color--blue--20)",
     // (undocumented)
-    BackgroundColor100 = "var(--pf-v5-global--BackgroundColor--100)",
+    BackgroundColor100 = "var(--pf-t--global--background--color--primary--default)",
     // (undocumented)
-    BackgroundColor150 = "var(--pf-v5-global--BackgroundColor--150)",
+    BackgroundColor150 = "var(--pf-t--global--background--color--tertiary--default)",
     // (undocumented)
-    BackgroundColor200 = "var(--pf-v5-global--BackgroundColor--200)",
+    BackgroundColor200 = "var(--pf-t--global--background--color--secondary--default)",
     // (undocumented)
-    Badge = "var(--pf-v5-global--palette--blue-300)",
+    Badge = "var(--pf-t--color--blue--30)",
     // (undocumented)
-    Black100 = "var(--pf-v5-global--palette--black-100)",
+    Black100 = "var(--pf-t--color--gray--10)",
     // (undocumented)
-    Black1000 = "var(--pf-v5-global--palette--black-1000)",
+    Black1000 = "var(--pf-t--color--gray--95)",
     // (undocumented)
-    Black150 = "var(--pf-v5-global--palette--black-150)",
+    Black150 = "var(--pf-t--color--gray--10)",
     // (undocumented)
-    Black200 = "var(--pf-v5-global--palette--black-200)",
+    Black200 = "var(--pf-t--color--gray--20)",
     // (undocumented)
-    Black300 = "var(--pf-v5-global--palette--black-300)",
+    Black300 = "var(--pf-t--color--gray--30)",
     // (undocumented)
-    Black400 = "var(--pf-v5-global--palette--black-400)",
+    Black400 = "var(--pf-t--color--gray--40)",
     // (undocumented)
-    Black500 = "var(--pf-v5-global--palette--black-500)",
+    Black500 = "var(--pf-t--color--gray--50)",
     // (undocumented)
-    Black600 = "var(--pf-v5-global--palette--black-600)",
+    Black600 = "var(--pf-t--color--gray--60)",
     // (undocumented)
-    Black700 = "var(--pf-v5-global--palette--black-700)",
+    Black700 = "var(--pf-t--color--gray--70)",
     // (undocumented)
-    Black800 = "var(--pf-v5-global--palette--black-800)",
+    Black800 = "var(--pf-t--color--gray--80)",
     // (undocumented)
-    Black900 = "var(--pf-v5-global--palette--black-900)",
+    Black900 = "var(--pf-t--color--gray--90)",
     // (undocumented)
-    Blue200 = "var(--pf-v5-global--palette--blue-200)",
+    Blue200 = "var(--pf-t--color--blue--20)",
     // (undocumented)
-    Blue300 = "var(--pf-v5-global--palette--blue-300)",
+    Blue300 = "var(--pf-t--color--blue--30)",
     // (undocumented)
-    Blue400 = "var(--pf-v5-global--palette--blue-400)",
+    Blue400 = "var(--pf-t--color--blue--40)",
     // (undocumented)
-    Blue50 = "var(--pf-v5-global--palette--blue-50)",
+    Blue50 = "var(--pf-t--color--blue--10)",
     // (undocumented)
-    Blue500 = "var(--pf-v5-global--palette--blue-500)",
+    Blue500 = "var(--pf-t--color--blue--50)",
     // (undocumented)
-    Blue600 = "var(--pf-v5-global--palette--blue-600)",
+    Blue600 = "var(--pf-t--color--teal--70)",
     // (undocumented)
-    BorderColor100 = "var(--pf-v5-global--BorderColor--100)",
+    BorderColor100 = "var(--pf-t--global--border--color--100)",
     // (undocumented)
-    BorderColor200 = "var(--pf-v5-global--BorderColor--200)",
+    BorderColor200 = "var(--pf-t--global--border--color--200)",
     // (undocumented)
-    BorderColor300 = "var(--pf-v5-global--BorderColor--300)",
+    BorderColor300 = "var(--pf-t--global--border--color--300)",
     // (undocumented)
-    BorderColorLight100 = "var(--pf-v5-global--BorderColor--light-100)",
+    BorderColorLight100 = "var(--pf-t--global--border--color--50)",
     // (undocumented)
-    ChartDanger = "var(--pf-v5-global--danger-color--300)",
+    ChartDanger = "var(--pf-t--chart--color--red-orange--500)",
     // (undocumented)
-    ChartOther = "var(--pf-v5-global--palette-black-1000)",
+    ChartOther = "var(--pf-t--color--gray--95)",
     // (undocumented)
-    ChartWarning = "var(--pf-v5-global--danger-color--100)",
+    ChartWarning = "var(--pf-t--chart--color--red-orange--400)",
     // (undocumented)
-    Color100 = "var(--pf-v5-global--Color--100)",
+    Color100 = "var(--pf-t--color--black)",
     // (undocumented)
-    Color200 = "var(--pf-v5-global--Color--200)",
+    Color200 = "var(--pf-t--color--gray--50)",
     // (undocumented)
-    ColorLight100 = "var(--pf-v5-global--Color--light-100)",
+    ColorLight100 = "var(--pf-t--color--white)",
     // (undocumented)
-    ColorLight200 = "var(--pf-v5-global--Color--light-200)",
+    ColorLight200 = "var(--pf-t--color--gray--20)",
     // (undocumented)
-    ColorLight300 = "var(--pf-v5-global--Color--light-300)",
+    ColorLight300 = "var(--pf-t--color--gray--30)",
     // (undocumented)
-    Cyan300 = "var(--pf-v5-global--palette--cyan-300)",
+    Cyan300 = "var(--pf-t--color--teal--40)",
     // (undocumented)
-    Danger = "var(--pf-v5-global--danger-color--100)",
+    Danger = "var(--pf-t--global--icon--color--severity--critical--default)",
     // (undocumented)
-    Gold400 = "var(--pf-v5-global--palette--gold-400)",
+    Gold400 = "var(--pf-t--color--yellow--40)",
     // (undocumented)
-    Green300 = "var(--pf-v5-global--palette--green-300)",
+    Green300 = "var(--pf-t--color--green--30)",
     // (undocumented)
-    Green400 = "var(--pf-v5-global--palette--green-400)",
+    Green400 = "var(--pf-t--color--green--40)",
     // (undocumented)
-    Green500 = "var(--pf-v5-global--palette--green-500)",
+    Green500 = "var(--pf-t--color--green--50)",
     // (undocumented)
-    Green600 = "var(--pf-v5-global--palette--green-600)",
+    Green600 = "var(--pf-t--color--green--60)",
     // (undocumented)
-    Info = "var(--pf-v5-global--info-color--100)",
+    Info = "var(--pf-t--global--icon--color--severity--none--default)",
     // (undocumented)
-    InfoBackground = "var(--pf-v5-global--info-color--200)",
+    InfoBackground = "var(--pf-t--color--blue--70)",
     // (undocumented)
-    LightBlue400 = "var(--pf-v5-global--palette--light-blue-400)",
+    LightBlue400 = "var(--pf-t--chart--color--teal--200)",
     // (undocumented)
-    LightGreen400 = "var(--pf-v5-global--palette--light-green-400)",
+    LightGreen400 = "var(--pf-t--color--green--40)",
     // (undocumented)
-    LightGreen500 = "var(--pf-v5-global--palette--light-green-500)",
+    LightGreen500 = "var(--pf-t--color--green--50)",
     // (undocumented)
-    Link = "var(--pf-v5-global--link--Color)",
+    Link = "var(--pf-t--color--blue--50)",
     // (undocumented)
-    Orange400 = "var(--pf-v5-global--palette--orange-400)",
+    Orange400 = "var(--pf-t--color--orange--40)",
     // (undocumented)
-    Orange50 = "var(--pf-v5-global--palette--orange-50)",
+    Orange50 = "var(--pf-t--color--orange--10)",
     // (undocumented)
-    Purple100 = "var(--pf-v5-global--palette--purple-100)",
+    Purple100 = "var(--pf-t--color--purple--10)",
     // (undocumented)
-    Purple200 = "var(--pf-v5-global--palette--purple-200)",
+    Purple200 = "var(--pf-t--color--purple--20)",
     // (undocumented)
-    Purple500 = "var(--pf-v5-global--palette--purple-500)",
+    Purple500 = "var(--pf-t--color--purple--40)",
     // (undocumented)
-    Red100 = "var(--pf-v5-global--palette--red-100)",
+    Red100 = "var(--pf-t--color--red--10)",
     // (undocumented)
-    Red200 = "var(--pf-v5-global--palette--red-200)",
+    Red200 = "var(--pf-t--color--red--20)",
     // (undocumented)
-    Red50 = "var(--pf-v5-global--palette--red-50)",
+    Red50 = "var(--pf-t--color--red--10)",
     // (undocumented)
-    Red500 = "var(--pf-v5-global--palette--red-500)",
+    Red500 = "var(--pf-t--color--red--50)",
     // (undocumented)
-    Replay = "var(--pf-v5-global--active-color--300)",
+    Replay = "var(--pf-t--global--color--brand--100)",
     // (undocumented)
-    Success = "var(--pf-v5-global--success-color--100)",
+    Success = "var(--pf-t--color--green--50)",
     // (undocumented)
-    SuccessBackground = "var(--pf-v5-global--success-color--200)",
+    SuccessBackground = "var(--pf-t--color--green--70)",
     // (undocumented)
-    Warning = "var(--pf-v5-global--warning-color--100)",
+    Warning = "var(--pf-t--global--icon--color--severity--moderate--default)",
     // (undocumented)
-    White = "var(--pf-v5-global--palette--white)"
+    White = "var(--pf-t--color--white)"
 }
 
 // @public (undocumented)
