@@ -34,26 +34,26 @@ const DEFAULT_PROXY_PATH = '/quay/api';
 export interface QuayApiV1 {
   getQuayInstance(instanceName?: string): QuayInstanceConfig | undefined;
   getTags(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     page?: number,
     limit?: number,
   ): Promise<TagsResponse>;
   getLabels(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     digest: string,
   ): Promise<LabelsResponse>;
   getManifestByDigest(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     digest: string,
   ): Promise<ManifestByDigestResponse>;
   getSecurityDetails(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     digest: string,
@@ -201,14 +201,14 @@ export class QuayApiClient implements QuayApiV1 {
   }
 
   async getTags(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     page?: number,
     limit?: number,
     specificTag?: string,
   ) {
-    const baseUrl = await this.getBaseUrl(instance);
+    const baseUrl = await this.getBaseUrl(instanceName);
     const params = this.encodeGetParams({
       limit,
       page,
@@ -222,12 +222,12 @@ export class QuayApiClient implements QuayApiV1 {
   }
 
   async getLabels(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     digest: string,
   ) {
-    const baseUrl = await this.getBaseUrl(instance);
+    const baseUrl = await this.getBaseUrl(instanceName);
 
     return (await this.fetcher(
       `${baseUrl}/repository/${org}/${repo}/manifest/${digest}/labels`,
@@ -235,12 +235,12 @@ export class QuayApiClient implements QuayApiV1 {
   }
 
   async getManifestByDigest(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     digest: string,
   ) {
-    const baseUrl = await this.getBaseUrl(instance);
+    const baseUrl = await this.getBaseUrl(instanceName);
 
     return (await this.fetcher(
       `${baseUrl}/repository/${org}/${repo}/manifest/${digest}`,
@@ -248,12 +248,12 @@ export class QuayApiClient implements QuayApiV1 {
   }
 
   async getSecurityDetails(
-    instance: string | undefined,
+    instanceName: string | undefined,
     org: string,
     repo: string,
     digest: string,
   ) {
-    const baseUrl = await this.getBaseUrl(instance);
+    const baseUrl = await this.getBaseUrl(instanceName);
 
     return (await this.fetcher(
       `${baseUrl}/repository/${org}/${repo}/manifest/${digest}/security`,

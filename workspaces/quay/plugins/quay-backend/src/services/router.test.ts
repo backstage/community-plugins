@@ -87,7 +87,7 @@ describe('createRouter', () => {
     app = express().use(router);
   });
 
-  describe('GET /:instance/repository/:org/:repo/tag', () => {
+  describe('GET /:instanceName/repository/:org/:repo/tag', () => {
     const mockTags: Tag[] = [
       {
         name: 'prod',
@@ -155,7 +155,7 @@ describe('createRouter', () => {
     });
   });
 
-  describe('GET /:instance/repository/:org/:repo/manifest/:digest/labels', () => {
+  describe('GET /:instanceName/repository/:org/:repo/manifest/:digest/labels', () => {
     const mockLabels: Label[] = [
       {
         id: 'asdfghjkl12345',
@@ -193,7 +193,7 @@ describe('createRouter', () => {
     });
   });
 
-  describe('GET /:instance/repository/:org/:repo/manifest/:digest/security', () => {
+  describe('GET /:instanceName/repository/:org/:repo/manifest/:digest/security', () => {
     const expectedSecurityDetailsResponse: SecurityDetailsResponse = {
       status: 'scanned',
       data: {
@@ -226,7 +226,7 @@ describe('createRouter', () => {
     });
   });
 
-  describe('GET /:instance/repository/:org/:repo/manifest/:digest', () => {
+  describe('GET /:instanceName/repository/:org/:repo/manifest/:digest', () => {
     const expectedManifestResponse: ManifestByDigestResponse = {
       digest: 'sha256:123',
       isManifestList: false,

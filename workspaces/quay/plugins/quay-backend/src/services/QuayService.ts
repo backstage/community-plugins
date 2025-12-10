@@ -28,26 +28,26 @@ import {
 export interface QuayService {
   getQuayInstance(instanceName?: string): QuayInstance | undefined;
   getTags(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     page?: number,
     limit?: number,
   ): Promise<TagsResponse>;
   getLabels(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     digest: string,
   ): Promise<LabelsResponse>;
   getManifestByDigest(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     digest: string,
   ): Promise<ManifestByDigestResponse>;
   getSecurityDetails(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     digest: string,
@@ -155,7 +155,7 @@ export class QuayService {
   }
 
   async getTags(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     page?: number,
@@ -172,31 +172,36 @@ export class QuayService {
 
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/tag?${params.toString()}`,
-      instance,
+      instanceName,
     ) as Promise<TagsResponse>;
   }
 
-  async getLabels(instance: string, org: string, repo: string, digest: string) {
+  async getLabels(
+    instanceName: string,
+    org: string,
+    repo: string,
+    digest: string,
+  ) {
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/manifest/${digest}/labels`,
-      instance,
+      instanceName,
     ) as Promise<LabelsResponse>;
   }
 
   async getManifestByDigest(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     digest: string,
   ) {
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/manifest/${digest}`,
-      instance,
+      instanceName,
     ) as Promise<ManifestByDigestResponse>;
   }
 
   async getSecurityDetails(
-    instance: string,
+    instanceName: string,
     org: string,
     repo: string,
     digest: string,
@@ -206,7 +211,7 @@ export class QuayService {
 
     return this.fetchFromQuay(
       `/api/v1/repository/${org}/${repo}/manifest/${digest}/security?${params}`,
-      instance,
+      instanceName,
     ) as Promise<SecurityDetailsResponse>;
   }
 }

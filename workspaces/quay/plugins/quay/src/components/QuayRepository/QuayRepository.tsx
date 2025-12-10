@@ -28,10 +28,10 @@ import { columns } from './tableHeading';
 type QuayRepositoryProps = Record<never, any>;
 
 export function QuayRepository(_props: QuayRepositoryProps) {
-  const { instance, repository, organization } = useRepository();
+  const { instanceName, repository, organization } = useRepository();
   const quayApi = useApi(quayApiRef);
 
-  const instanceConfig = quayApi.getQuayInstance(instance);
+  const instanceConfig = quayApi.getQuayInstance(instanceName);
   const quayUiUrl = instanceConfig?.apiUrl ?? instanceConfig?.uiUrl;
 
   const hasViewPermission = useQuayViewPermission();
@@ -46,7 +46,7 @@ export function QuayRepository(_props: QuayRepositoryProps) {
   ) : (
     `Quay repository: ${organization}/${repository}`
   );
-  const { loading, data } = useTags(instance, organization, repository);
+  const { loading, data } = useTags(instanceName, organization, repository);
 
   if (!hasViewPermission) {
     return <PermissionAlert />;

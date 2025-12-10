@@ -26,14 +26,14 @@ import { QuayTagDetails } from '../QuayTagDetails';
 
 export const QuayTagPage = () => {
   const rootLink = useRouteRef(rootRouteRef);
-  const { instance, repository, organization } = useRepository();
+  const { instanceName, repository, organization } = useRepository();
   const { digest } = useParams();
   const hasViewPermission = useQuayViewPermission();
   if (!digest) {
     throw new Error('digest is not defined');
   }
   const { loading, value } = useTagDetails(
-    instance,
+    instanceName,
     organization,
     repository,
     digest,

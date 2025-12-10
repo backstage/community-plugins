@@ -27,7 +27,7 @@ jest.mock('react-use', () => ({
 
 jest.mock('../../hooks/', () => ({
   useRepository: () => ({
-    instance: undefined,
+    instanceName: undefined,
     repository: 'redhat-backstage-build',
     organization: 'backstage-community',
   }),

@@ -38,7 +38,7 @@ const useLocalStyles = makeStyles({
 });
 
 export const useTags = (
-  instance: string | undefined,
+  instanceName: string | undefined,
   organization: string,
   repository: string,
 ) => {
@@ -54,7 +54,7 @@ export const useTags = (
 
   const fetchSecurityDetails = async (tag: Tag) => {
     const securityDetails = await quayClient.getSecurityDetails(
-      instance,
+      instanceName,
       organization,
       repository,
       tag.manifest_digest,
@@ -64,7 +64,7 @@ export const useTags = (
 
   const { loading } = useAsync(async () => {
     const tagsResponse = await quayClient.getTags(
-      instance,
+      instanceName,
       organization,
       repository,
       undefined,
@@ -126,7 +126,7 @@ export const useTags = (
 };
 
 export const QUAY_ANNOTATION_REPOSITORY = 'quay.io/repository-slug';
-export const QUAY_ANNOTATION_INSTANCE = 'quay.io/instance';
+export const QUAY_ANNOTATION_INSTANCE = 'quay.io/instance-name';
 
 export const useQuayAppData = ({ entity }: { entity: Entity }) => {
   const instanceSlug = entity?.metadata.annotations?.[QUAY_ANNOTATION_INSTANCE];
@@ -141,20 +141,22 @@ export const useQuayAppData = ({ entity }: { entity: Entity }) => {
 
 export const useRepository = () => {
   const { entity } = useEntity();
-  const { instanceSlug: instance, repositorySlug } = useQuayAppData({ entity });
+  const { instanceSlug: instanceName, repositorySlug } = useQuayAppData({
+    entity,
+  });
   const info = repositorySlug.split('/');
 
   const organization = info.shift() as 'string';
   const repository = info.join('/');
   return {
-    instance,
+    instanceName,
     organization,
     repository,
   };
 };
 
 export const useTagDetails = (
-  instance: string | undefined,
+  instanceName: string | undefined,
   org: string,
   repo: string,
   digest: string,
@@ -162,7 +164,7 @@ export const useTagDetails = (
   const quayClient = useApi(quayApiRef);
   const result = useAsync(async () => {
     const manifestLayer = await quayClient.getSecurityDetails(
-      instance,
+      instanceName,
       org,
       repo,
       digest,

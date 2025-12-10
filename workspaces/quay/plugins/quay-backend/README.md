@@ -56,16 +56,16 @@ quay:
       apiKey: 'staging-xyz456'
 ```
 
-When using multiple instances, specify the target instance in your entity using the `quay.io/instance` annotation:
+When using multiple instances, specify the target instance in your entity using the `quay.io/instance-name` annotation:
 
 ```yaml title="catalog-info.yaml"
 metadata:
   annotations:
     'quay.io/repository-slug': '<ORGANIZATION>/<REPOSITORY>'
-    'quay.io/instance': 'production'
+    'quay.io/instance-name': 'production'
 ```
 
-**Note:** If the `quay.io/instance` annotation is not specified, the plugin will automatically use the first configured instance as the default.
+**Note:** If the `quay.io/instance-name` annotation is not specified, the plugin will automatically use the first configured instance as the default.
 
 ### Catalog
 
@@ -77,7 +77,7 @@ metadata:
     quay.io/repository-slug: '<organization>/<repository>'
 ```
 
-To connect Catalog components to different Quay instances, specify the target instance in your entity using the `quay.io/instance` annotation. The instance name must match a name defined in your instances configuration. If omitted, the first configured instance is used by default.
+To connect Catalog components to different Quay instances, specify the target instance in your entity using the `quay.io/instance-name` annotation. The instance name must match a name defined in your instances configuration. If omitted, the first configured instance is used by default.
 
 ```yaml
 metadata:

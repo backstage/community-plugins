@@ -56,7 +56,7 @@ const apiHandlers = [
     },
   ),
   rest.get(
-    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/tag?`,
+    `${LOCAL_API_ADDR}/:instanceName/repository/foo/bar/tag?`,
     (req, res, ctx) => {
       if (req.url.searchParams.get('limit') === '1') {
         return res(
@@ -78,7 +78,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/:instance/repository/not/found/tag?`,
+    `${LOCAL_API_ADDR}/:instanceName/repository/not/found/tag?`,
     (_, res, ctx) => {
       return res(
         ctx.status(404),
@@ -88,7 +88,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
+    `${LOCAL_API_ADDR}/:instanceName/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -98,7 +98,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
+    `${LOCAL_API_ADDR}/:instanceName/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -118,7 +118,7 @@ const apiHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_API_ADDR}/:instance/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
+    `${LOCAL_API_ADDR}/:instanceName/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
