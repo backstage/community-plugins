@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
+  "configSchema": "config.d.ts",
   "publishConfig": {
     "access": "public",
     "main": "dist/index.cjs.js",
@@ -36,7 +37,8 @@
     "@backstage/plugin-catalog-common": "backstage:^"
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
   "dependencies": {
     "@azure/arm-resourcegraph": "^4.2.1",
