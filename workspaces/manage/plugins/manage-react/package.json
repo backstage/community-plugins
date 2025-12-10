@@ -56,7 +56,7 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
-    "already": "^2.2.1",
+    "already": "^3.0.0",
     "pluralize": "^8.0.0",
     "react-use": "^17.5.0"
   },

@@ -1725,7 +1725,7 @@ __metadata:
     "@mui/styles": "npm:^5"
     "@types/pluralize": "npm:^0.0.33"
     "@types/react": "npm:^18.3.12"
-    already: "npm:^2.2.1"
+    already: "npm:^3.0.0"
     pluralize: "npm:^8.0.0"
     react-use: "npm:^17.5.0"
   peerDependencies:
@@ -14210,10 +14210,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"already@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "already@npm:2.2.1"
-  checksum: 10/1c55b50667c3dbe9d40716454d4a870f5758143061a0e39c0a7077eab2c6dbec116edf081796afb6f441462096bf68ef72a4daad074843a0d970527f29037ffe
+"already@npm:^3.0.0":
+  version: 3.4.1
+  resolution: "already@npm:3.4.1"
+  checksum: 10/d00080be95e21acdfff4244b7a8c9cc790deea72075395044062a823ea4f7e148797d653c9e0ad3c702300cf38cd1fd7a26409203cfe68c3abeece129ae60d37
   languageName: node
   linkType: hard
 
