@@ -52,6 +52,12 @@ export const grafanaPlugin = createPlugin({
             fetchApi,
             domain: configApi.getString('grafana.domain'),
             proxyPath: configApi.getOptionalString('grafana.proxyPath'),
+            grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+              'grafana.grafanaDashboardSearchLimit',
+            ),
+            grafanaDashboardMaxPages: configApi.getOptionalNumber(
+              'grafana.grafanaDashboardMaxPages',
+            ),
           });
         }
 
@@ -60,6 +66,12 @@ export const grafanaPlugin = createPlugin({
           fetchApi,
           domain: configApi.getString('grafana.domain'),
           proxyPath: configApi.getOptionalString('grafana.proxyPath'),
+          grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardSearchLimit',
+          ),
+          grafanaDashboardMaxPages: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardMaxPages',
+          ),
         });
       },
     }),
