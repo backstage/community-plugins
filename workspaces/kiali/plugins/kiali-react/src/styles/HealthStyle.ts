@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { style } from 'typestyle';
-import { PFColors } from '../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 export const healthIndicatorStyle = style({
   $nest: {

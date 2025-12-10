@@ -24,7 +24,7 @@ import {
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 import { ComponentClass, CSSProperties } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 const validationStyle = kialiStyle({
   textAlign: 'left',

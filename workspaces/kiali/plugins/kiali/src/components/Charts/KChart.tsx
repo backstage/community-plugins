@@ -37,7 +37,7 @@ import {
 } from '@patternfly/react-core';
 import { CubesIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
-import { PFColors } from '../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 import {

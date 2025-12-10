@@ -24,7 +24,7 @@ import {
 import { Card, CardContent, Grid, Tooltip } from '@material-ui/core';
 import { default as React } from 'react';
 import { SparklineChart } from '../../../components/Charts/SparklineChart';
-import { PFColors } from '../../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { KialiIcon } from '../../../config/KialiIcon';
 import { kialiStyle } from '../../../styles/StyleUtils';
 import { toLocaleStringWithConditionalDate } from '../../../utils/Date';

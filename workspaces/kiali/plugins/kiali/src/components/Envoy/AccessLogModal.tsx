@@ -30,7 +30,7 @@ import {
 } from '@patternfly/react-core';
 import { default as React } from 'react';
 import { classes } from 'typestyle';
-import { PFColors } from '../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { kialiStyle } from '../../styles/StyleUtils';
 
 export interface AccessLogModalProps {

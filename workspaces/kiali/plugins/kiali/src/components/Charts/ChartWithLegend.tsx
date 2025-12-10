@@ -43,7 +43,7 @@ import regression from 'regression';
 import { VictoryBoxPlot } from 'victory-box-plot';
 import { VictoryPortal } from 'victory-core';
 import { VictoryVoronoiContainer } from 'victory-voronoi-container';
-import { PFColors } from '../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { getFormatter, getUnit } from '../../utils/Formatter';

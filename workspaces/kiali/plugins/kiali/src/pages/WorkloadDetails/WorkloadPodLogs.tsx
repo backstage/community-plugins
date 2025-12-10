@@ -52,7 +52,10 @@ import { history, URLParam } from '../../app/History';
 import { AccessLogModal } from '../../components/Envoy/AccessLogModal';
 import { RenderComponentScroll } from '../../components/Nav/Page/RenderComponentScroll';
 import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
-import { PFColors, PFColorVal } from '../../components/Pf/PfColors';
+import {
+  PFColors,
+  PFColorVal,
+} from '@backstage-community/plugin-kiali-common/styles';
 import { ToolbarDropdown } from '../../components/ToolbarDropdown/ToolbarDropdown';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiApiRef } from '../../services/Api';
