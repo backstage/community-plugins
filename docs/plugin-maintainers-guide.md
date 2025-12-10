@@ -15,6 +15,7 @@
   - [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
   - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
+  - [Opt-in to Playwright UI Check](#opt-in-to-playwright-ui-check)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
   - [FAQ](#faq)
@@ -134,6 +135,28 @@ Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` fi
 
 Plugins owners can opt into the List Deprecations check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "listDeprecations": true }`. This ensures that you aren't using deprecated code in your workspace making it easier when deprecated code is finally removed.
 
+## Opt-in to Playwright UI Check
+
+Plugin owners can opt into running any Playwright-based tests from their workspace by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "playwrightTests": true }`. This is intended for quick fontend tests using the plugin's dev pages. The following commands will be run in the root of the workspace as part of the CI workflow:
+
+```shell
+yarn playwright install --with-deps chromium chrome
+yarn playwright test
+```
+
+There are several requirements for this check to run green:
+
+- The workspace has a dependency on `@playwright/test` package
+- The root of the workspace contains a playwright configuration file
+- Currently supported browsers are Chromium and Chrome
+- Launching the plugin needs to be part of the test configuration
+
+Test file selection is based solely on the config file. Launching the plugin can be done using the `webServer` option in the config file as well. For more details about configuration, see the [documentation](https://playwright.dev/docs/test-configuration).
+
+Note that since there is no per-plugin configuration for the workflow, there is no place to store secrets for the CI, in case any communication with external services is required. For the sake of consistency, we recommend testing using static data for the dev pages, or [mocking](https://playwright.dev/docs/mock#mock-api-requests) any external APIs during as part of the tests themselves.
+
+For a working example, check out the [quay](/workspaces/quay/) workspace. In particular, the [config](/workspaces/quay/playwright.config.ts) file, and the [tests](/workspaces/quay/plugins/quay/tests/) might be of interest.
+
 ## Maintaining and patching an older release line
 
 It may be necessary to patch a prior release line of a plugin when users depend on an older, but stable version and while a newer, incompatible, major version of the plugin exists. Typically for these older releases, only major bugs and security issues will need to be remediated. Not every plugin will need this workflow.
@@ -203,7 +226,7 @@ When patching an older release, follow the steps below to ensure the correct wor
    - This is necessary for history to be clear on the latest branch.
    - You can use `git cherry-pick --no-commit workspace/${workspace}` and only commit the `CHANGELOG` files.
 
------
+---
 
 ## FAQ
 
@@ -215,7 +238,7 @@ If your change affects any code inside a `plugins/` or `packages/` directory, it
 
 ### My PR is full of unrelated files ("Knip" changes, `yarn.lock` conflicts)\!
 
-This happens when your branch is out-of-date with the main `main` branch. You need to rebase your branch to include the latest changes *before* your commits.
+This happens when your branch is out-of-date with the main `main` branch. You need to rebase your branch to include the latest changes _before_ your commits.
 
 1.  Make sure your local `main` branch is up-to-date:
     ```bash
