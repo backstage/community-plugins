@@ -25,7 +25,7 @@ import { TagsResponse } from '../types';
 const DEFAULT_PROXY_PATH = '/jfrog-artifactory/api';
 
 export interface JfrogArtifactoryApiV1 {
-  getTags(repo: string, target?: string): Promise<TagsResponse>;
+  getTags(image: string, target?: string, repo?: string): Promise<TagsResponse>;
 }
 
 export const jfrogArtifactoryApiRef = createApiRef<JfrogArtifactoryApiV1>({
@@ -79,21 +79,42 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     return await response.json();
   }
 
-  async getTags(repo: string, target?: string) {
+  private getSortField(): string {
+    const sortField = this.configApi.getOptionalString(
+      'jfrogArtifactory.sortField',
+    );
+
+    // Only allow valid sort fields
+    if (sortField === 'MODIFIED' || sortField === 'NAME_SEMVER') {
+      return sortField;
+    }
+
+    // Default to NAME_SEMVER if not specified or invalid
+    return 'NAME_SEMVER';
+  }
+
+  async getTags(image: string, target?: string, repo?: string) {
     const proxyUrl = await this.getBaseUrl(target);
+
+    const filter: any = {
+      packageId: `docker://${image}`,
+      name: '*',
+      ignorePreRelease: false,
+    };
+
+    if (repo) {
+      filter.repositoriesIn = {
+        name: repo,
+      };
+    }
     const tagQuery = {
       query:
         'query ($filter: VersionFilter!, $first: Int, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } } }',
       variables: {
-        filter: {
-          packageId: `docker://${repo}`,
-          name: '*',
-          ignorePreRelease: false,
-          // TO-DO
-        },
+        filter,
         first: 100,
         orderBy: {
-          field: 'NAME_SEMVER',
+          field: this.getSortField(),
           direction: 'DESC',
         },
       },

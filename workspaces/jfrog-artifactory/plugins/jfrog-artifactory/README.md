@@ -14,9 +14,15 @@ The Jfrog Artifactory plugin displays information about your container images wi
    yarn workspace app add @backstage-community/plugin-jfrog-artifactory
    ```
 
-1. Set the proxy to the desired Artifactory server in the `app-config.yaml` file as follows:
+1. Configure the Artifactory plugin in the `app-config.yaml` file as follows:
 
    ```yaml title="app-config.yaml"
+   # JFrog Artifactory configuration
+   jfrogArtifactory:
+     proxyPath: /jfrog-artifactory/api
+     # Sort field for artifacts: 'NAME_SEMVER' or 'MODIFIED'
+     sortField: 'MODIFIED'
+
    proxy:
      endpoints:
        '/jfrog-artifactory/api':
@@ -26,6 +32,11 @@ The Jfrog Artifactory plugin displays information about your container images wi
          # Change to "false" in case of using self hosted artifactory instance with a self-signed certificate
          secure: true
    ```
+
+   The `sortField` option determines how artifacts are sorted in the UI:
+
+   - `NAME_SEMVER`: Sort by semantic version name (default if not specified)
+   - `MODIFIED`: Sort by last modified date
 
 If you have multiple instances of artifactory supported, you can set up multiple proxy target paths as follows:
 
@@ -72,10 +83,19 @@ proxy:
    metadata:
      annotations:
        'jfrog-artifactory/image-name': '<IMAGE-NAME>'
+       # Optional: Specify the repository name to filter artifacts
+       'jfrog-artifactory/repo-name': '<REPOSITORY-NAME>'
+       # e.g. 'docker-prod-federated'
        # if your app supports multiple artifactory instances,
        # you'll need to specify the instance proxy target path your image belongs to
        'jfrog-artifactory/target-proxy': '/<PROXY-TARGET>' # e.g. `/jfrog-instance1` from the example above
    ```
+
+   The annotations serve the following purposes:
+
+   - `jfrog-artifactory/image-name`: Specifies the image name to display in the Artifactory tab
+   - `jfrog-artifactory/repo-name`: Filters artifacts to show only those from the specified repository
+   - `jfrog-artifactory/target-proxy`: Specifies which Artifactory instance to use (for multiple instances)
 
 ## For users
 

@@ -20,7 +20,15 @@ import { useJfrogArtifactoryAppData } from '../useJfrogArtifactoryAppData';
 
 export const JfrogArtifactoryDashboardPage = () => {
   const { entity } = useEntity();
-  const { imageName, targetProxy } = useJfrogArtifactoryAppData({ entity });
+  const { imageName, targetProxy, repoName } = useJfrogArtifactoryAppData({
+    entity,
+  });
 
-  return <JfrogArtifactoryRepository image={imageName} target={targetProxy} />;
+  return (
+    <JfrogArtifactoryRepository
+      image={imageName}
+      target={targetProxy}
+      repo={repoName}
+    />
+  );
 };
