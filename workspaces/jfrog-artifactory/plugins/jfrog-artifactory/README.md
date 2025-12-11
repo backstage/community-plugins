@@ -24,6 +24,8 @@ The Jfrog Artifactory plugin displays information about your container images wi
      sortField: 'MODIFIED'
      # Repository filter for artifacts
      repoFilter: '*-prod-federated'
+     # Maximum number of artifacts to fetch per request (default: 100)
+     pageLimit: 100
 
    proxy:
      endpoints:
@@ -35,12 +37,15 @@ The Jfrog Artifactory plugin displays information about your container images wi
          secure: true
    ```
 
-   The `sortField` option determines how artifacts are sorted in the UI:
-
+   - The `sortField` option determines how artifacts are sorted in the UI:
    - `NAME_SEMVER`: Sort by semantic version name (default if not specified)
    - `MODIFIED`: Sort by last modified date
 
-   The `repoFilter` option determines which repositories to include when displaying artifacts. It supports wildcard patterns (e.g., '\*-prod-federated') to filter artifacts by repository name. When specified, only artifacts from repositories matching this pattern will be shown.
+   - The `repoFilter` option determines which repositories to include when displaying artifacts. It supports wildcard patterns (e.g., '\*-prod-federated') to filter artifacts by repository name. When specified, only artifacts from repositories matching this pattern will be shown.
+
+   - The `pageLimit`: Controls the maximum number of artifacts fetched per request (default: 100)
+     - **Note**: This setting limits the number of artifacts displayed in the UI
+     - If you have many artifacts, consider increasing this value to see more results
 
 If you have multiple instances of artifactory supported, you can set up multiple proxy target paths as follows:
 
