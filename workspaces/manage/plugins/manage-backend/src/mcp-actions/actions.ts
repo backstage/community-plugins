@@ -37,8 +37,8 @@ export function registerMcpActions({
     attributes: {
       readOnly: true,
     },
-    name: 'my-entities',
-    title: 'My entities',
+    name: 'get-managed-entities',
+    title: 'List entities owned by a user or any of their groups',
     description:
       'Returns the entities (Components, Systems, etc) owned by a user or a ' +
       'group the user belongs to (including parent and child groups).',
@@ -62,15 +62,6 @@ export function registerMcpActions({
               'A list of Backstage entities owned either by the user or any ' +
                 'group the user belongs to, or a parent or child group of any ' +
                 'of those groups.',
-            ),
-          ownerEntities: z
-            .array(z.object({}).passthrough())
-            .describe(
-              'A list of Backstage entities representing the user and groups ' +
-                'the user belongs to, or their parent or child groups all ' +
-                'the way up to the root group and down to leaf groups. ' +
-                'The relations between groups are stored in the ' +
-                '`relations` property of type `childOf` or `parentOf`.',
             ),
         }),
     },
@@ -101,7 +92,9 @@ export function registerMcpActions({
         );
 
       return {
-        output: ownersAndOwnedEntities,
+        output: {
+          ownedEntities: ownersAndOwnedEntities.ownedEntities,
+        },
       };
     },
   });
