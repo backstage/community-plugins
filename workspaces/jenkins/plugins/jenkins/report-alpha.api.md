@@ -13,9 +13,9 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -26,7 +26,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:jenkins/jenkins': ExtensionDefinition<{
+    'api:jenkins/jenkins': OverridableExtensionDefinition<{
       kind: 'api';
       name: 'jenkins';
       config: {};
@@ -43,7 +43,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:jenkins/latest-run': ExtensionDefinition<{
+    'entity-card:jenkins/latest-run': OverridableExtensionDefinition<{
       config: {
         branch: string;
         variant: 'flex' | 'fullHeight' | 'gridItem' | undefined;
@@ -91,8 +91,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -104,7 +104,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:jenkins/projects': ExtensionDefinition<{
+    'entity-content:jenkins/projects': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'projects';
       config: {
