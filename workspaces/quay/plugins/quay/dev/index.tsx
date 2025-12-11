@@ -53,7 +53,7 @@ const mockEntity: Entity = {
 
 export class MockQuayApiClient implements QuayApiV1 {
   getQuayInstance(_?: string): QuayInstanceConfig | undefined {
-    return { name: 'default' };
+    return { name: 'default', apiUrl: 'https://quay.io' };
   }
 
   async getTags() {
@@ -68,7 +68,7 @@ export class MockQuayApiClient implements QuayApiV1 {
     return manifestDigest;
   }
 
-  async getSecurityDetails(_: string, __: string, digest: string) {
+  async getSecurityDetails(_: string, __: string, ___: string, digest: string) {
     if (
       digest ===
       'sha256:79c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775d'
