@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { HeaderPage } from '@backstage/ui';
+import { Container, HeaderPage } from '@backstage/ui';
 import { Outlet } from 'react-router-dom';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import {
   adminCategoriesRouteRef,
   announcementAdminRouteRef,
   adminTagsRouteRef,
-} from '../../routes';
+} from '../../../routes';
 
 export type AnnouncementsAdminPageProps = {
   title?: string;
@@ -57,7 +57,9 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
         ]}
       />
 
-      <Outlet />
+      <Container>
+        <Outlet />
+      </Container>
     </>
   );
 }

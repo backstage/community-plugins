@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 import { Routes, Route } from 'react-router-dom';
-import { RequirePermission } from '@backstage/plugin-permission-react';
-import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
-import { announcementAdminRouteRef, announcementViewRouteRef } from '../routes';
-import { AnnouncementsPage, AnnouncementsPageProps } from './AnnouncementsPage';
-import { AnnouncementPage } from './AnnouncementPage';
-import { AdminPortal } from './Admin';
-import { MarkdownRendererTypeProps } from './MarkdownRenderer';
+import { AnnouncementsAdminPage } from './components/admin/AnnouncementsAdminPage';
+import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
+import {
+  AnnouncementsPage,
+  AnnouncementsPageProps,
+} from '../components/AnnouncementsPage';
+import { CategoriesContent } from '../components/Admin/CategoriesContent';
+import { TagsContent } from '../components/Admin/TagsContent';
 
 type RouterProps = {
   themeId?: string;
@@ -53,26 +54,12 @@ export const Router = (props: RouterProps) => {
   return (
     <Routes>
       <Route path="/" element={<AnnouncementsPage {...propsWithDefaults} />} />
-      <Route
-        path={`${announcementViewRouteRef.path}`}
-        element={<AnnouncementPage {...propsWithDefaults} />}
-      />
-      <Route
-        path={`${announcementAdminRouteRef.path}`}
-        element={
-          <RequirePermission permission={announcementCreatePermission}>
-            <AdminPortal />
-          </RequirePermission>
-        }
-      />
-      <Route
-        path={`${announcementAdminRouteRef.path}`}
-        element={
-          <RequirePermission permission={announcementCreatePermission}>
-            <AdminPortal />
-          </RequirePermission>
-        }
-      />
+
+      <Route path="/admin" element={<AnnouncementsAdminPage />}>
+        <Route path="" element={<AnnouncementsContent />} />
+        <Route path="categories" element={<CategoriesContent />} />
+        <Route path="tags" element={<TagsContent />} />
+      </Route>
     </Routes>
   );
 };
