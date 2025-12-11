@@ -24,6 +24,7 @@ import {
 
 export type AnnouncementsAdminPageProps = {
   title?: string;
+  defaultInactive?: boolean;
 };
 
 export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
@@ -57,7 +58,7 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
         ]}
       />
 
-      <Container>
+      <Container data-testid="announcements-admin-page-container-outlet">
         <Outlet />
       </Container>
     </>
