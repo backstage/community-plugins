@@ -22,6 +22,8 @@ The Jfrog Artifactory plugin displays information about your container images wi
      proxyPath: /jfrog-artifactory/api
      # Sort field for artifacts: 'NAME_SEMVER' or 'MODIFIED'
      sortField: 'MODIFIED'
+     # Repository filter for artifacts
+     repoFilter: '*-prod-federated'
 
    proxy:
      endpoints:
@@ -37,6 +39,8 @@ The Jfrog Artifactory plugin displays information about your container images wi
 
    - `NAME_SEMVER`: Sort by semantic version name (default if not specified)
    - `MODIFIED`: Sort by last modified date
+
+   The `repoFilter` option determines which repositories to include when displaying artifacts. It supports wildcard patterns (e.g., '\*-prod-federated') to filter artifacts by repository name. When specified, only artifacts from repositories matching this pattern will be shown.
 
 If you have multiple instances of artifactory supported, you can set up multiple proxy target paths as follows:
 
@@ -83,9 +87,6 @@ proxy:
    metadata:
      annotations:
        'jfrog-artifactory/image-name': '<IMAGE-NAME>'
-       # Optional: Specify the repository name to filter artifacts
-       'jfrog-artifactory/repo-name': '<REPOSITORY-NAME>'
-       # e.g. 'docker-prod-federated'
        # if your app supports multiple artifactory instances,
        # you'll need to specify the instance proxy target path your image belongs to
        'jfrog-artifactory/target-proxy': '/<PROXY-TARGET>' # e.g. `/jfrog-instance1` from the example above
@@ -94,7 +95,6 @@ proxy:
    The annotations serve the following purposes:
 
    - `jfrog-artifactory/image-name`: Specifies the image name to display in the Artifactory tab
-   - `jfrog-artifactory/repo-name`: Filters artifacts to show only those from the specified repository
    - `jfrog-artifactory/target-proxy`: Specifies which Artifactory instance to use (for multiple instances)
 
 ## For users

@@ -38,11 +38,7 @@ const useLocalStyles = makeStyles({
   },
 });
 
-export function JfrogArtifactoryRepository({
-  image,
-  target,
-  repo,
-}: RepositoryProps) {
+export function JfrogArtifactoryRepository({ image, target }: RepositoryProps) {
   const jfrogArtifactoryClient = useApi(jfrogArtifactoryApiRef);
   const classes = useStyles();
   const localClasses = useLocalStyles();
@@ -51,11 +47,7 @@ export function JfrogArtifactoryRepository({
   const titleprop = t('page.title', { image } as Record<string, string>);
 
   const { loading } = useAsync(async () => {
-    const tagsResponse = await jfrogArtifactoryClient.getTags(
-      image,
-      target,
-      repo,
-    );
+    const tagsResponse = await jfrogArtifactoryClient.getTags(image, target);
 
     setEdges(tagsResponse.data.versions.edges);
 
@@ -85,7 +77,7 @@ export function JfrogArtifactoryRepository({
       repositories:
         `${edge.node.repos.length}` +
         ' | ' +
-        `${edge.node.repos.map(repository => repository.name).join('| ')}`,
+        `${edge.node.repos.map(repo => repo.name).join('| ')}`,
     };
   });
 
@@ -116,5 +108,4 @@ export function JfrogArtifactoryRepository({
 interface RepositoryProps {
   image: string;
   target?: string;
-  repo?: string;
 }

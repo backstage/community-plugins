@@ -25,7 +25,7 @@ import { TagsResponse } from '../types';
 const DEFAULT_PROXY_PATH = '/jfrog-artifactory/api';
 
 export interface JfrogArtifactoryApiV1 {
-  getTags(image: string, target?: string, repo?: string): Promise<TagsResponse>;
+  getTags(image: string, target?: string): Promise<TagsResponse>;
 }
 
 export const jfrogArtifactoryApiRef = createApiRef<JfrogArtifactoryApiV1>({
@@ -93,26 +93,34 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     return 'NAME_SEMVER';
   }
 
-  async getTags(image: string, target?: string, repo?: string) {
+  private getRepoFilter(): string {
+    return (
+      this.configApi.getOptionalString('jfrogArtifactory.repoFilter') || '*'
+    );
+  }
+
+  private getPageLimit(): number {
+    return (
+      this.configApi.getOptionalNumber('jfrogArtifactory.pageLimit') || 100
+    );
+  }
+
+  async getTags(image: string, target?: string) {
     const proxyUrl = await this.getBaseUrl(target);
 
-    const filter: any = {
-      packageId: `docker://${image}`,
-      name: '*',
-      ignorePreRelease: false,
-    };
-
-    if (repo) {
-      filter.repositoriesIn = {
-        name: repo,
-      };
-    }
     const tagQuery = {
       query:
         'query ($filter: VersionFilter!, $first: Int, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } } }',
       variables: {
-        filter,
-        first: 100,
+        filter: {
+          packageId: `docker://${image}`,
+          name: '*',
+          ignorePreRelease: false,
+          repositoriesIn: {
+            name: this.getRepoFilter(),
+          },
+        },
+        first: this.getPageLimit(),
         orderBy: {
           field: this.getSortField(),
           direction: 'DESC',
