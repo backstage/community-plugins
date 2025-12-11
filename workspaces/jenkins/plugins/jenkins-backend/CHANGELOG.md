@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.22.0
+
+### Minor Changes
+
+- daa9057: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [daa9057]
+  - @backstage-community/plugin-jenkins-common@0.14.0
+
 ## 0.21.0
 
 ### Minor Changes
