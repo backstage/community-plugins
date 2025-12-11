@@ -18,6 +18,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 
 import {
   ownedEntitesExtensionRef,
@@ -29,6 +30,7 @@ import {
 import { OwnershipServiceImpl } from './services/OwnershipService';
 import { OwnedEntitiesImpl } from './services/OwnedEntities';
 import { ManageServiceImpl } from './services/Manage';
+import { registerMcpActions } from './mcp-actions';
 import { createRouter } from './router';
 
 /**
@@ -58,12 +60,21 @@ export const managePlugin = createBackendPlugin({
 
     env.registerInit({
       deps: {
+        auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
         catalog: catalogServiceRef,
         userInfo: coreServices.userInfo,
+        actionsRegistry: actionsRegistryServiceRef,
       },
-      async init({ httpAuth, httpRouter, catalog, userInfo }) {
+      async init({
+        auth,
+        httpAuth,
+        httpRouter,
+        catalog,
+        userInfo,
+        actionsRegistry,
+      }) {
         const ownershipService: OwnershipService =
           ownershipExtension.ownershipService ??
           new OwnershipServiceImpl(catalog);
@@ -76,6 +87,8 @@ export const managePlugin = createBackendPlugin({
           ownershipService,
           ownedEntitiesService,
         );
+
+        registerMcpActions({ auth, catalog, actionsRegistry, manageService });
 
         httpRouter.use(
           await createRouter({
