@@ -17,7 +17,6 @@ import { mockApplication, mockEntity } from '../../../dev/__data__';
 import {
   Application,
   History,
-  Instance,
   Status,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import {
@@ -76,43 +75,19 @@ describe('Utils', () => {
   });
 
   describe('getInstanceNames', () => {
-    test('should return all instance names from instances config if instance name is not set', () => {
-      expect(
-        getInstanceNames(
-          {
-            ...mockEntity,
-            metadata: {
-              ...mockEntity.metadata,
-              annotations: {},
-            },
-          },
-          [
-            { name: 'instance-1' } as Instance,
-            { name: 'instance-2' } as Instance,
-          ],
-        ),
-      ).toEqual(['instance-1', 'instance-2']);
-    });
-
     test('should return the instance name', () => {
       expect(getInstanceName(mockEntity)).toEqual('instance-1');
     });
 
     test('should return multiple instance names', () => {
       expect(
-        getInstanceNames(
-          {
-            ...mockEntity,
-            metadata: {
-              ...mockEntity.metadata,
-              annotations: { 'argocd/instance-name': 'instance-1,,instance-2' },
-            },
+        getInstanceNames({
+          ...mockEntity,
+          metadata: {
+            ...mockEntity.metadata,
+            annotations: { 'argocd/instance-name': 'instance-1,,instance-2' },
           },
-          [
-            { name: 'instance-1' } as Instance,
-            { name: 'instance-2' } as Instance,
-          ],
-        ),
+        }),
       ).toEqual(['instance-1', 'instance-2']);
     });
   });

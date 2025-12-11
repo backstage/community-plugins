@@ -22,7 +22,6 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
-import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
 import {
   Application,
@@ -68,17 +67,12 @@ const DeploymentLifecycle = () => {
   const api = useApi(argoCDApiRef);
   const configApi = useApi(configApiRef);
 
-  const { instances, intervalMs } = useArgocdConfig();
-  const instanceNames = useMemo(
-    () => getInstanceNames(entity, instances),
-    [instances, entity],
-  );
+  const instanceNames = useMemo(() => getInstanceNames(entity), [entity]);
   const { appSelector, appName, projectName, appNamespace } =
     getArgoCdAppConfig({ entity });
 
   const { apps, loading, error } = useApplications({
     instanceNames,
-    intervalMs,
     appSelector,
     appName,
     appNamespace,

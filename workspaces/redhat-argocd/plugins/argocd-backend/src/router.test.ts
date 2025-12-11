@@ -42,6 +42,7 @@ describe('router', () => {
     listArgoApps: jest.fn(),
     getRevisionDetails: jest.fn(),
     getApplication: jest.fn(),
+    findApplications: jest.fn(),
   };
 
   const mockHttpAuth = {
@@ -66,6 +67,34 @@ describe('router', () => {
     });
 
     app = express().use(router);
+  });
+
+  describe('GET /find/name/:appName', () => {
+    it('should return applications with appName and appNamespace', async () => {
+      const expectedApplicationResponse = [
+        {
+          name: 'main',
+          url: 'https:/kubernetes.default.svc',
+          appName: ['staging-app'],
+          applications: mockApplications.filter(
+            application => application.metadata.name === 'staging-app',
+          ),
+        },
+      ];
+      mockArgoCDService.findApplications.mockResolvedValue(
+        expectedApplicationResponse,
+      );
+      const response = await request(app)
+        .get('/find/name/staging-app?appNamespace=staging')
+        .expect(200);
+
+      expect(response.body).toEqual(expectedApplicationResponse);
+      expect(mockArgoCDService.findApplications).toHaveBeenCalledWith({
+        appName: 'staging-app',
+        project: undefined,
+        appNamespace: 'staging',
+      });
+    });
   });
 
   describe('GET /argoInstance/:instanceName/applications/selector/:selector', () => {

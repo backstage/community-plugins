@@ -207,7 +207,7 @@ You can use these additional annotations with the base annotations:
 - `argocd/project-name`: The name of the Application's project
 - `argocd/app-namespace`: The namespace of the Application, supports a single namespace due to restrictions in the ArgoCD API. To query for applications across multiple namespaces, use the `argocd/app-selector` annotation.
 
-- To switch between argocd instances, you can use the following annotation
+- To switch between ArgoCD instances, you can use the following annotation
 
 ```yaml
  annotations:
@@ -215,7 +215,7 @@ You can use these additional annotations with the base annotations:
     argocd/instance-name: 'argoInstance2'
 ```
 
-- To fetch data from multiple Argo CD instances, separate the instance names with commas:
+- To fetch data from multiple ArgoCD instances, separate the instance names with commas:
 
 ```yaml
  annotations:
@@ -223,4 +223,8 @@ You can use these additional annotations with the base annotations:
     argocd/instance-name: 'argoInstance1,argoInstance2'
 ```
 
-> [!Note] > **If this annotation is not set, the plugin will search all available Argo CD instances configured in the `app.config.yaml`. It is advised to add the `argocd/instance-name` annotations for better performance.**
+> [!Note] > **If `argocd/instance-name` annotation is not set, the plugin will search all available ArgoCD instances configured in the `app.config.yaml`. It is advised to add this annotation to entities for better performance.**
+
+> [!Important]
+> Use `argocd/app-selector` to display multiple ArgoCD applications per entity. Annotation `argocd/app-name` is limited to returning the first application from each ArgoCD instance, this is necessary
+> for compatibility with the Roadie backend plugin that uses this annotation for 'single application' setup.

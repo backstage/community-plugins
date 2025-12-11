@@ -43,19 +43,14 @@ import { useTranslation } from '../../hooks/useTranslation';
 const DeploymentSummary = () => {
   const { entity } = useEntity();
 
-  const { baseUrl, instances, intervalMs } = useArgocdConfig();
-
-  const instanceNames = useMemo(
-    () => getInstanceNames(entity, instances),
-    [entity, instances],
-  );
+  const { baseUrl } = useArgocdConfig();
+  const instanceNames = useMemo(() => getInstanceNames(entity), [entity]);
 
   const { appSelector, appName, projectName, appNamespace } =
     getArgoCdAppConfig({ entity });
 
   const { apps, loading, error } = useApplications({
     instanceNames,
-    intervalMs,
     appSelector,
     projectName,
     appName,
@@ -64,14 +59,8 @@ const DeploymentSummary = () => {
 
   const hasArgocdViewAccess = useArgocdViewPermission();
 
-  const supportsMultipleArgoInstances = !!instances.length;
   const getBaseUrl = (row: any): string | undefined => {
-    if (supportsMultipleArgoInstances && !baseUrl) {
-      return instances?.find(
-        value => value?.name === row.metadata?.instance?.name,
-      )?.url;
-    }
-    return baseUrl;
+    return row?.metadata?.instance?.url ?? baseUrl;
   };
 
   const buildAppUrl = (row: any): string | undefined => {

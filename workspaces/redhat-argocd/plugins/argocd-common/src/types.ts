@@ -33,6 +33,13 @@ export interface Instance {
   username?: string;
 }
 
+export interface InstanceApplications {
+  name: string;
+  url: string;
+  appName: string[];
+  applications?: Application[];
+}
+
 export interface Spec {
   source: Source;
   sources?: Source[];

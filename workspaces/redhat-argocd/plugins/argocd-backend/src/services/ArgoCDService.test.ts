@@ -16,13 +16,9 @@
 import { ArgoCDService } from './ArgoCDService';
 import { RevisionInfo } from '@backstage-community/plugin-redhat-argocd-common';
 import { mockApplications, mockConfig } from '../__data__/mockdata';
+import { mockServices } from '@backstage/backend-test-utils';
 
-const mockLogger = {
-  error: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn(),
-} as any;
+const mockLogger = mockServices.logger.mock();
 
 describe('ArgoCDService', () => {
   let service: ArgoCDService;
@@ -392,6 +388,179 @@ describe('ArgoCDService', () => {
         }),
       ).rejects.toThrow(
         "Failed to fetch Application from Instance 'staging-instance' with appName 'wrong-app' with appNamespace 'staging' : Request to https://argocd.staging.example.com/api/v1/applications/wrong-app?appNamespace=staging failed with 500 Internal Server Error",
+      );
+    });
+  });
+
+  describe('findApplications', () => {
+    it('should return applications from single instance', async () => {
+      const expectedApplications = mockApplications.filter(
+        application => application.metadata.name === 'test-app',
+      );
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: expectedApplications,
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [],
+          }),
+        });
+
+      const result = await service.findApplications({ appName: 'test-app' });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+          applications: expectedApplications,
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return applications from multiple instances', async () => {
+      const expectedApplications = [
+        mockApplications[0],
+        {
+          ...mockApplications[2],
+          metadata: { ...mockApplications[2].metadata, name: 'test-app' },
+        },
+        {
+          ...mockApplications[1],
+          metadata: { ...mockApplications[1].metadata, name: 'test-app' },
+        },
+      ];
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[0], expectedApplications[1]],
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[2]],
+          }),
+        });
+
+      const result = await service.findApplications({ appName: 'test-app' });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+          applications: [expectedApplications[0], expectedApplications[1]],
+        },
+        {
+          name: 'staging-instance',
+          url: 'https://argocd.staging.example.com',
+          appName: ['test-app'],
+          applications: [expectedApplications[2]],
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.staging.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-staging-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+    });
+
+    it('should handle no applications returned from an instance', async () => {
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          items: [],
+        }),
+      });
+
+      const result = await service.findApplications({ appName: 'test-app' });
+      expect(result).toEqual([]);
+    });
+
+    it('should return applications from single instance filtered by appName and project', async () => {
+      const expectedApplications = mockApplications.filter(
+        application =>
+          application.metadata.name === 'test-app' &&
+          application.metadata.namespace === 'test',
+      );
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: expectedApplications,
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+        appNamespace: 'test',
+        project: 'custom',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+          applications: expectedApplications,
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.example.com/api/v1/applications?name=test-app&project=custom&appNamespace=test',
+        {
+          headers: {
+            Authorization: 'Bearer test-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+    });
+
+    it('should handle errors when fetching applications from an instance', async () => {
+      fetchMock.mockResolvedValue({
+        ok: false,
+        statusText: 'Internal Server Error',
+      });
+
+      await expect(
+        service.findApplications({ appName: 'nonexistent-app' }),
+      ).rejects.toThrow(
+        "Failed to retrieve ArgoCD Applications from Instance 'test-instance' with name 'nonexistent-app' : Request to https://argocd.example.com/api/v1/applications?name=nonexistent-app failed with 500 Internal Server Error",
       );
     });
   });

@@ -18,7 +18,6 @@ import pluralize from 'pluralize';
 
 import {
   Application,
-  Instance,
   OperationPhases,
   OperationState,
   Resource,
@@ -50,20 +49,12 @@ export const getInstanceName = (entity: Entity): string => {
 
 /**
  * Gets the instance names from entity annotations.
- * If entity doesn't have instance annotations, uses all available instance names from config
  *
  * @param entity - The entity to extract instance annotations from
- * @param instances - All configured ArgoCD instances
  * @returns ArgoCD instance names to use for the entity
  */
-export const getInstanceNames = (
-  entity: Entity,
-  instances: Instance[],
-): string[] => {
+export const getInstanceNames = (entity: Entity): string[] => {
   const instanceAnnotation = getInstanceName(entity);
-  if (!instanceAnnotation) {
-    return instances.map(instance => instance.name);
-  }
   return instanceAnnotation
     .split(',')
     .map(name => name.trim())

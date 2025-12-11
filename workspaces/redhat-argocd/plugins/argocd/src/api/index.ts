@@ -18,6 +18,7 @@ import { createApiRef, IdentityApi } from '@backstage/core-plugin-api';
 import {
   Application,
   RevisionInfo,
+  InstanceApplications,
 } from '@backstage-community/plugin-redhat-argocd-common';
 
 export type ArgoCDAppDeployRevisionDetails = RevisionInfo;
@@ -49,6 +50,13 @@ export type GetApplicationOptions = {
   project?: string;
   instance?: string;
 };
+
+export type FindApplicationsOptions = {
+  appName: string;
+  appNamespace?: string;
+  project?: string;
+};
+
 export interface ArgoCDApi {
   listApps(options: listAppsOptions): Promise<{ items: Application[] }>;
   getRevisionDetails(
@@ -58,6 +66,9 @@ export interface ArgoCDApi {
     options: RevisionDetailsListOptions,
   ): Promise<ArgoCDAppDeployRevisionDetails[]>;
   getApplication(options: GetApplicationOptions): Promise<Application>;
+  findApplications(
+    options: FindApplicationsOptions,
+  ): Promise<InstanceApplications[]>;
 }
 
 export const argoCDApiRef = createApiRef<ArgoCDApi>({
@@ -155,6 +166,21 @@ export class ArgoCDApiClient implements ArgoCDApi {
     return this.fetcher(
       `${proxyUrl}${options.url}/applications/${encodeURIComponent(
         options.appName,
+      )}${query}`,
+    );
+  }
+
+  async findApplications(
+    options: FindApplicationsOptions,
+  ): Promise<InstanceApplications[]> {
+    const proxyUrl = await this.getBaseUrl();
+    const query = this.getQueryParams({
+      appNamespace: options.appNamespace,
+      project: options.project,
+    });
+    return this.fetcher(
+      `${proxyUrl}/find/name/${encodeURIComponent(
+        options.appName as string,
       )}${query}`,
     );
   }

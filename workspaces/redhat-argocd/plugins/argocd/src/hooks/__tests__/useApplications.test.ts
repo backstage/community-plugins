@@ -23,21 +23,30 @@ import {
   preProdApplication,
 } from '../../../dev/__data__';
 import { useApplications } from '../useApplications';
+import { useArgocdConfig } from '../useArgocdConfig';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn(),
 }));
 
+jest.mock('../useArgocdConfig', () => ({
+  useArgocdConfig: jest.fn(),
+}));
+
 describe('useApplications', () => {
   beforeEach(() => {
     (useApi as any).mockReturnValue({
       getApplication: async () => {
-        return Promise.resolve({ items: [mockApplication] });
+        return Promise.resolve(mockApplication);
       },
       listApps: async () => {
         return Promise.resolve({ items: [mockApplication] });
       },
+    });
+    (useArgocdConfig as any).mockReturnValue({
+      instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
+      intervalMs: 10000,
     });
   });
 
@@ -60,7 +69,7 @@ describe('useApplications', () => {
     });
   });
 
-  test('should return empty if no applicaitons are available', async () => {
+  test('should return empty if no applications are available', async () => {
     (useApi as any).mockReturnValue({
       listApps: async () => {
         return Promise.resolve({});
@@ -207,10 +216,43 @@ describe('useApplications', () => {
     });
   });
 
+  test('should add instance to single application if missing from response when the appName is passed', async () => {
+    (useApi as any).mockReturnValue({
+      getApplication: async () => {
+        return Promise.resolve({
+          ...mockApplication,
+          metadata: { ...mockApplication.metadata, instance: {} },
+        });
+      },
+    });
+
+    const { result } = renderHook(prop => useApplications(prop), {
+      initialProps: {
+        instanceNames: ['main'],
+        intervalMs: 10000,
+        appSelector: null as unknown as string,
+        appName: 'quarkus-app-test',
+      },
+    });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.apps).toHaveLength(1);
+      expect(result.current.apps[0].metadata.instance).toEqual({
+        name: 'main',
+        url: 'https://main-instance-url.com',
+      });
+    });
+  });
+
   test('should return the applications and loading state when the app name updates', async () => {
     (useApi as any).mockReturnValue({
       getApplication: async () => {
-        return Promise.resolve({ items: [mockApplication] });
+        return Promise.resolve(mockApplication);
       },
     });
 
@@ -334,8 +376,9 @@ describe('useApplications', () => {
         getApplication: jest
           .fn()
           .mockResolvedValueOnce(mockApplication)
+          .mockResolvedValueOnce({})
           .mockResolvedValueOnce({
-            items: [mockQuarkusApplication, preProdApplication],
+            mockQuarkusApplication,
           }),
       });
 
@@ -350,12 +393,9 @@ describe('useApplications', () => {
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
-        expect(result.current.apps).toHaveLength(3);
+        expect(result.current.apps).toHaveLength(2);
         expect(result.current.apps[0].metadata?.name).toBe('quarkus-app-dev');
         expect(result.current.apps[1].metadata?.name).toBe('quarkus-app');
-        expect(result.current.apps[2].metadata?.name).toBe(
-          'quarkus-app-preprod',
-        );
       });
     });
 
