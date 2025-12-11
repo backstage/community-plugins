@@ -1,0 +1,53 @@
+{
+  "apiVersion": "source.toolkit.fluxcd.io/v1",
+  "kind": "HelmRepository",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"source.toolkit.fluxcd.io/v1\",\"kind\":\"HelmRepository\",\"metadata\":{\"annotations\":{},\"name\":\"backstage\",\"namespace\":\"default\"},\"spec\":{\"interval\":\"1m\",\"url\":\"https://backstage.github.io/charts\"}}\n"
+    },
+    "creationTimestamp": "2025-11-09T14:30:45Z",
+    "finalizers": ["finalizers.fluxcd.io"],
+    "generation": 1,
+    "name": "backstage",
+    "namespace": "default",
+    "resourceVersion": "9183746",
+    "uid": "c4d5e6f7-8901-2345-6789-0abcdef12345"
+  },
+  "spec": {
+    "interval": "1m",
+    "provider": "generic",
+    "timeout": "60s",
+    "url": "https://backstage.github.io/charts",
+    "suspend": false
+  },
+  "status": {
+    "artifact": {
+      "digest": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+      "lastUpdateTime": "2025-11-09T14:30:50Z",
+      "path": "helmrepository/default/backstage/index-a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456.yaml",
+      "revision": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+      "size": 52341,
+      "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/default/backstage/index-a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456.yaml"
+    },
+    "conditions": [
+      {
+        "lastTransitionTime": "2025-11-09T14:30:50Z",
+        "message": "stored artifact: revision 'sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastTransitionTime": "2025-11-09T14:30:50Z",
+        "message": "stored artifact: revision 'sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "ArtifactInStorage"
+      }
+    ],
+    "observedGeneration": 1,
+    "url": "http://source-controller.flux-system.svc.cluster.local./helmrepository/default/backstage/index.yaml"
+  }
+}

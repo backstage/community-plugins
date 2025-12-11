@@ -490,38 +490,74 @@ export class ImagePolicy extends ImageUpdateAutomation {
   }
 }
 
-export const helmReleaseGVK: CustomResourceMatcher = {
+export const helmReleaseV2beta1GVK: CustomResourceMatcher = {
   apiVersion: 'v2beta1',
   group: 'helm.toolkit.fluxcd.io',
   plural: 'helmreleases',
 };
 
-export const gitRepositoriesGVK: CustomResourceMatcher = {
+export const helmReleaseV2GVK: CustomResourceMatcher = {
+  apiVersion: 'v2',
+  group: 'helm.toolkit.fluxcd.io',
+  plural: 'helmreleases',
+};
+
+export const gitRepositoriesV1beta2GVK: CustomResourceMatcher = {
   apiVersion: 'v1beta2',
   group: 'source.toolkit.fluxcd.io',
   plural: 'gitrepositories',
 };
 
-export const ociRepositoriesGVK: CustomResourceMatcher = {
+export const gitRepositoriesV1GVK: CustomResourceMatcher = {
+  apiVersion: 'v1',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'gitrepositories',
+};
+
+export const ociRepositoriesV1beta2GVK: CustomResourceMatcher = {
   apiVersion: 'v1beta2',
   group: 'source.toolkit.fluxcd.io',
   plural: 'ocirepositories',
 };
 
-export const helmRepositoryGVK: CustomResourceMatcher = {
+export const ociRepositoriesV1GVK: CustomResourceMatcher = {
+  apiVersion: 'v1',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'ocirepositories',
+};
+
+export const helmRepositoryV1beta2GVK: CustomResourceMatcher = {
   apiVersion: 'v1beta2',
   group: 'source.toolkit.fluxcd.io',
   plural: 'helmrepositories',
 };
 
-export const kustomizationGVK: CustomResourceMatcher = {
+export const helmRepositoryV1GVK: CustomResourceMatcher = {
+  apiVersion: 'v1',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'helmrepositories',
+};
+
+export const kustomizationV1beta2GVK: CustomResourceMatcher = {
   apiVersion: 'v1beta2',
   group: 'kustomize.toolkit.fluxcd.io',
   plural: 'kustomizations',
 };
 
-export const imagePolicyGVK: CustomResourceMatcher = {
+export const kustomizationV1GVK: CustomResourceMatcher = {
+  apiVersion: 'v1',
+  group: 'kustomize.toolkit.fluxcd.io',
+  plural: 'kustomizations',
+};
+
+export const imagePolicyV1beta1GVK: CustomResourceMatcher = {
   apiVersion: 'v1beta1',
+  group: 'image.toolkit.fluxcd.io',
+  plural: 'imagepolicies',
+};
+
+export const imagePolicyV1GVK: CustomResourceMatcher = {
+  apiVersion: 'v1',
   group: 'image.toolkit.fluxcd.io',
   plural: 'imagepolicies',
 };
@@ -531,17 +567,17 @@ export function gvkFromKind(
 ): CustomResourceMatcher | undefined {
   switch (kind) {
     case 'HelmRelease':
-      return helmReleaseGVK;
+      return helmReleaseV2GVK;
     case 'HelmRepository':
-      return helmRepositoryGVK;
+      return helmRepositoryV1GVK;
     case 'GitRepository':
-      return gitRepositoriesGVK;
+      return gitRepositoriesV1GVK;
     case 'OCIRepository':
-      return ociRepositoriesGVK;
+      return ociRepositoriesV1GVK;
     case 'Kustomization':
-      return kustomizationGVK;
+      return kustomizationV1GVK;
     case 'ImagePolicy':
-      return imagePolicyGVK;
+      return imagePolicyV1GVK;
     default:
       break;
   }

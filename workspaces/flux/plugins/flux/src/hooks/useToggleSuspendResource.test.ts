@@ -195,7 +195,7 @@ describe('toggleSuspendResource', () => {
         },
         method: 'PATCH',
       },
-      path: '/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/test-namespace/helmreleases/test-name',
+      path: '/apis/helm.toolkit.fluxcd.io/v2/namespaces/test-namespace/helmreleases/test-name',
     });
 
     expect(alertApi.post).toHaveBeenCalledWith({
