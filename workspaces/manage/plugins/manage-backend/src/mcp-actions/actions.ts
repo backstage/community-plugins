@@ -38,7 +38,7 @@ export function registerMcpActions({
       readOnly: true,
     },
     name: 'get-managed-entities',
-    title: 'List entities owned by a user or any of their groups',
+    title: 'Get Managed Entities',
     description:
       'Returns the entities (Components, Systems, etc) owned by a user or a ' +
       'group the user belongs to (including parent and child groups).',
