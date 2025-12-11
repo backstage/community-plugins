@@ -83,7 +83,7 @@ To connect Catalog components to different Quay instances, specify the target in
 metadata:
   annotations:
     quay.io/repository-slug: '<organization>/<repository>'
-    quay.io/instance: 'production'
+    quay.io/instance-name: 'production'
 ```
 
 ## Development
