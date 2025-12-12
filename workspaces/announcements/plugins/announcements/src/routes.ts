@@ -15,28 +15,43 @@
  */
 import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
 
+/**
+ * The root route for the announcements plugin
+ */
 export const rootRouteRef = createRouteRef({
   id: 'announcements',
 });
 
+/**
+ * The route for viewing a single announcement
+ */
 export const announcementViewRouteRef = createSubRouteRef({
   id: 'announcements/view',
   path: '/view/:id',
   parent: rootRouteRef,
 });
 
+/**
+ * The route for the admin portal, defaulting to the announcements tab
+ */
 export const announcementAdminRouteRef = createSubRouteRef({
   id: 'announcements/admin',
   path: '/admin',
   parent: rootRouteRef,
 });
 
+/**
+ * The route for the categories tab in the admin portal
+ */
 export const adminCategoriesRouteRef = createSubRouteRef({
   id: 'announcements-admin-categories',
   path: '/admin/categories',
   parent: rootRouteRef,
 });
 
+/**
+ * The route for the tags tab in the admin portal
+ */
 export const adminTagsRouteRef = createSubRouteRef({
   id: 'announcements-admin-tags',
   path: '/admin/tags',

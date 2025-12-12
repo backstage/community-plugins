@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 // HomePage for app-next replicating legacy Home announcements showcase
-import {
-  AnnouncementsCard,
-  AnnouncementsTimeline,
-} from '@backstage-community/plugin-announcements';
+import { AnnouncementsCard } from '@backstage-community/plugin-announcements';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -120,19 +117,6 @@ export const HomePage = () => {
                   You can tweak size and filtering in the future roadmap.
                 </Typography>
                 <AnnouncementsCard max={2} />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Announcements Timeline</Typography>
-                <Typography variant="body2" paragraph>
-                  Chronological view for browsing historical context or updates.
-                  Embed on a dedicated announcements page or a knowledge base
-                  section.
-                </Typography>
-                <AnnouncementsTimeline />
               </CardContent>
             </Card>
           </Grid>
