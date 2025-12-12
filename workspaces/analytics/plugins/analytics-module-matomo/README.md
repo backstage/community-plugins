@@ -64,9 +64,18 @@ app:
     matomo:
       host: ${ANALYTICS_MATOMO_INSTANCE_URL}
       siteId: ${ANALYTICS_MATOMO_SITE_ID}
-      identity: optional # (optional) to enable user tracking. Is disabled by default
-      sendPlainUserId: optional # (optional) to not hash User ID when user tracking is enabled. User ID is hashed by default.
+      identity: optional # disabled|optional|required; enables user tracking (disabled by default)
+      sendPlainUserId: optional # if set, do not hash User ID when user tracking is enabled (hashed by default)
+      enhancedTracking: true # enables extended tracking (navigate events buffering, identity gating)
+      deferInitialPageView: true # only if enhancedTracking=true; defers first PV until identity resolved
 ```
+
+Additional optional properties:
+
+- identity: "disabled" | "optional" | "required" (default: disabled)
+- sendPlainUserId: boolean; if true, raw userEntityRef sent (privacy: consider hashing)
+- enhancedTracking: boolean; adds buffering before identity ready & explicit page view handling
+- deferInitialPageView: boolean; when enhancedTracking=true, delays initial page view until identity is available
 
 4. Update CSP in your `app-config.yaml`:(optional)
 
