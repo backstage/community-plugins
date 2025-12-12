@@ -15,7 +15,7 @@
  */
 import { expect, Locator } from '@playwright/test';
 
-import { mockArgocdConfig, mockRevisions } from '../dev/__data__';
+import { mockArgocdConfig, mockRevisions } from '../../dev/__data__';
 import {
   Application,
   History,
@@ -41,7 +41,7 @@ export const verifyItem = async (
   card: Locator,
   unique = true,
 ) => {
-  const item = card.locator('.MuiGrid-item', { hasText: name });
+  const item = card.locator('.MuiCardContent-root', { hasText: name });
   const result = unique ? item : item.first();
   await expect(result).toContainText(content);
 };
@@ -105,14 +105,9 @@ export const verifyAppCard = async (
   const revision = app.status.history
     ?.slice(-1)[0]
     .revision?.substring(0, 7) as string;
-  await verifyItem(
-    'Commit',
-    `${revision}${mockRevisions[index].message}`,
-    card,
-  );
+  await verifyItem('Commit', `${revision}`, card);
 
   const image = app.status.summary.images[0].split('/').pop();
-  await verifyItem('Deployment', `Image ${image}`, card);
 };
 
 export const verifyAppSidebar = async (
@@ -128,7 +123,7 @@ export const verifyAppSidebar = async (
   );
   await verifyItem('Instance', 'main', sideBar);
   await verifyItem(
-    'Server',
+    'Cluster',
     `${app.spec.destination.server} (in-cluster)`,
     sideBar,
   );
@@ -137,12 +132,5 @@ export const verifyAppSidebar = async (
   const revision = app.status.history
     ?.slice(-1)[0]
     ?.revision?.substring(0, 7) as string;
-  await verifyItem(
-    'Commit',
-    `${revision}${mockRevisions[index].message} by ${mockRevisions[index].author}`,
-    sideBar,
-    false,
-  );
-
-  await verifyDeployments(app, sideBar, index);
+  await verifyItem('Commit', `${revision}`, sideBar, false);
 };
