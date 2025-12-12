@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.23.0
+
+### Minor Changes
+
+- 293b051: Added forked Azure DevOps Wiki collator
+
 ## 0.22.0
 
 ### Minor Changes
