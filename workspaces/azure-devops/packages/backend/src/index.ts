@@ -48,8 +48,8 @@ backend.add(
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
-// backend.add(import('@backstage/plugin-search-backend-module-catalog'));
-// backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog'));
+backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // Azure DevOps plugin
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
