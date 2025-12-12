@@ -71,6 +71,10 @@ export interface Config {
        * @visibility frontend
        */
       policyDecisionPrecedence?: 'basic' | 'conditional';
+      /**
+       * The default role to assign to all authenticated users.
+       */
+      defaultRole?: string;
     };
   };
 }
