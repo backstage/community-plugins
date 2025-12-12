@@ -60,6 +60,7 @@ export class AzureDevOpsWikiReader {
         {
           method: 'POST',
           body: JSON.stringify(body),
+          headers: { 'Content-type': 'application/json' },
         },
       );
 
@@ -106,7 +107,7 @@ export class AzureDevOpsWikiReader {
         this.organization,
         this.project,
         this.wikiIdentifier,
-      )}${url}`,
+      )}/${url}`,
       {
         ...options,
         headers: { ...options?.headers, Authorization: `Basic ${credentials}` },

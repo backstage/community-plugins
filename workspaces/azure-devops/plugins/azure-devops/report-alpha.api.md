@@ -316,7 +316,7 @@ const _default: OverridableFrontendPlugin<
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
     }>;
-    'search-filter-result-type:azure-devops/azure-devops-wiki-article-results-type': ExtensionDefinition<{
+    'search-filter-result-type:azure-devops/azure-devops-wiki-article-results-type': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
       name: 'azure-devops-wiki-article-results-type';
       config: {};
@@ -325,7 +325,7 @@ const _default: OverridableFrontendPlugin<
         {
           value: string;
           name: string;
-          icon: JSX.Element;
+          icon: JSX_2.Element;
         },
         'search.filters.result-types.type',
         {}
@@ -333,7 +333,7 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: SearchFilterResultTypeBlueprintParams;
     }>;
-    'search-result-list-item:azure-devops': ExtensionDefinition<{
+    'search-result-list-item:azure-devops': OverridableExtensionDefinition<{
       kind: 'search-result-list-item';
       name: undefined;
       config: {
@@ -346,6 +346,7 @@ const _default: OverridableFrontendPlugin<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
         },
         'search.search-result-list-item.item',
         {}
