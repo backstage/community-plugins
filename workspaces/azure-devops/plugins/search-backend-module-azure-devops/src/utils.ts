@@ -41,7 +41,6 @@ export async function fetchWithRetry(
     return response;
   } catch (err) {
     if (retries > 0) {
-      console.warn(`Network error, retrying... (${retries} left)`);
       await new Promise(res => setTimeout(res, backoff));
       return fetchWithRetry(url, options, retries - 1, backoff * 2);
     }

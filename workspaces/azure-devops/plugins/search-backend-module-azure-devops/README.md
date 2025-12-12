@@ -12,7 +12,7 @@ This plugin provides the pieces necessary to have Backstage index articles and e
 
 In the root directory of your Backstage project:
 
-```console
+```bash
 yarn add --cwd packages/backend @backstage-community/plugin-search-backend-module-azure-devops
 ```
 
