@@ -83,7 +83,7 @@ backend.add(import('@backstage-community/plugin-apiiro-backend');
 
 **Note:** The Backstage frontend plugin will not function without the backend plugin.
 
-### 3. Configure Access Token
+### 3. Configuration
 
 Add your Apiiro Access Token to your `app-config.yaml` or `app-config.production.yaml`:
 
@@ -91,12 +91,31 @@ Add your Apiiro Access Token to your `app-config.yaml` or `app-config.production
 apiiro:
   accessToken: ${APIIRO_TOKEN}
   defaultAllowMetricsView: true
+  # Optional: Configure default risk filters for the Apiiro Risk Table (Example configuration)
+  defaultRiskFilters:
+    RiskLevel:
+      - Critical
+      - High
+    RiskInsight:
+      - Internet exposed
+      - Deployed
+    RiskCategory:
+      - SAST findings
+      - Secrets
+    Provider:
+      - ApiiroSca
+      - AkamaiApiSecurity
 ```
 
 Where:
 
 - `accessToken` is your Apiiro Access Token
 - `defaultAllowMetricsView` is a boolean value that controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget by default. If annotation is not set, this value will be used. Default value is `true`.
+- `defaultRiskFilters` (optional) configures default filters for the Apiiro Risk Table. When configured, only the specified filter options will be available and applied by default:
+  - `RiskLevel`: Filter by risk severity (provide display names, e.g., "Critical", "High", "Medium", "Low")
+  - `RiskInsight`: Filter by risk insights (provide display names, e.g., "Internet exposed", "Deployed")
+  - `RiskCategory`: Filter by risk category (provide display names, e.g., "SAST findings", "Secrets")
+  - `Provider`: Filter by Sources (provide API supported values, e.g., "ApiiroSca", "AkamaiApiSecurity")
 
 **How to Retrieve an Access Token from Apiiro:**
 

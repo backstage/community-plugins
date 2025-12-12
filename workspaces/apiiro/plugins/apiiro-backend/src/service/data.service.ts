@@ -40,6 +40,7 @@ import {
   APIIRO_TOP_RISKS_PATH,
   APIIRO_FILTER_OPTIONS_PATH,
   APIIRO_DEFAULT_PAGE_LIMIT,
+  FILTER_OPTIONS_CACHE_TTL_MS,
 } from '../constants';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 import { fetchWithErrorHandling, fetchAllPages } from './utils';
@@ -58,11 +59,28 @@ export class ApiiroNotConfiguredError extends Error {
   }
 }
 
+export type DefaultRiskFilters = {
+  RiskLevel?: string[];
+  RiskInsight?: string[];
+  RiskCategory?: string[];
+  Provider?: string[];
+};
+
 export type ApiiroConfigOptions = {
   baseUrl: string;
   accessToken: string;
   fetchFn?: typeof fetch;
   timeoutMs?: number;
+  defaultRiskFilters?: DefaultRiskFilters;
+};
+
+// Type for the displayName to name mapping
+type FilterDisplayNameToNameMap = Record<string, Record<string, string>>;
+
+// Cache structure for filter options
+type FilterOptionsCache = {
+  data: ApiiroFilterOptionsResponse;
+  timestamp: number;
 };
 
 export class ApiiroConfig {
@@ -70,6 +88,9 @@ export class ApiiroConfig {
   private readonly accessToken: string;
   private readonly fetchFn: typeof fetch;
   private readonly timeoutMs: number;
+  private readonly defaultRiskFilters: DefaultRiskFilters;
+  private filterDisplayNameToNameMap: FilterDisplayNameToNameMap = {};
+  private filterOptionsCache: FilterOptionsCache | null = null;
 
   static fromConfig(
     config: Config,
@@ -83,7 +104,12 @@ export class ApiiroConfig {
         logger.warn('Apiiro access token is required but not configured');
         return undefined;
       }
-      return new ApiiroConfig({ baseUrl, accessToken });
+      const defaultRiskFilters =
+        (config.getOptional<DefaultRiskFilters>('apiiro.defaultRiskFilters') as
+          | DefaultRiskFilters
+          | undefined) ?? {};
+
+      return new ApiiroConfig({ baseUrl, accessToken, defaultRiskFilters });
     } catch (error) {
       logger.error(
         `Failed to load Apiiro configuration: ${
@@ -99,6 +125,7 @@ export class ApiiroConfig {
     this.accessToken = options.accessToken;
     this.fetchFn = options.fetchFn ?? fetch;
     this.timeoutMs = options.timeoutMs ?? APIIRO_DEFAULT_TIMEOUT_MS;
+    this.defaultRiskFilters = options.defaultRiskFilters ?? {};
   }
 
   private buildUrl(pageCursor?: string, repositoryName?: string) {
@@ -124,18 +151,53 @@ export class ApiiroConfig {
     // Apiiro expects camel-cased RepositoryId and indexed array keys
     params.append('filters[RepositoryId][0]', repositoryId);
 
-    // Only fetch the Open risks
+    // Default Filter: Only fetch the Open risks
     params.append('filters[RiskStatus]', 'Open');
 
-    const appendIndexed = (key: string, values?: string[]) => {
+    // Get default filter values by converting displayNames from config to API names
+    const getDefaultFilterValues = (key: string): string[] => {
+      const configDisplayNames =
+        this.defaultRiskFilters[key as keyof DefaultRiskFilters] ?? [];
+      if (configDisplayNames.length === 0) {
+        return [];
+      }
+      return this.convertDisplayNamesToApiNames(key, configDisplayNames);
+    };
+
+    const appendIndexed = (key: string, values: string[]) => {
       if (!values || values.length === 0) return;
       values.forEach((v, idx) => params.append(`filters[${key}][${idx}]`, v));
     };
 
-    appendIndexed('RiskLevel', filters.RiskLevel);
-    appendIndexed('RiskCategory', filters.RiskCategory);
-    appendIndexed('RiskInsight', filters.RiskInsight);
-    appendIndexed('FindingCategory', filters.FindingCategory);
+    // For each filter: if user provides values, use only user values; otherwise use defaults from config
+    const riskLevelValues =
+      filters.RiskLevel && filters.RiskLevel.length > 0
+        ? filters.RiskLevel
+        : getDefaultFilterValues('RiskLevel');
+    appendIndexed('RiskLevel', riskLevelValues);
+
+    const riskCategoryValues =
+      filters.RiskCategory && filters.RiskCategory.length > 0
+        ? filters.RiskCategory
+        : getDefaultFilterValues('RiskCategory');
+    appendIndexed('RiskCategory', riskCategoryValues);
+
+    const riskInsightValues =
+      filters.RiskInsight && filters.RiskInsight.length > 0
+        ? filters.RiskInsight
+        : getDefaultFilterValues('RiskInsight');
+    appendIndexed('RiskInsight', riskInsightValues);
+
+    // FindingCategory - user values only (no default config for this)
+    if (filters.FindingCategory && filters.FindingCategory.length > 0) {
+      appendIndexed('FindingCategory', filters.FindingCategory);
+    }
+
+    // Provider filter from defaults (if configured and no user override)
+    const providerValues = getDefaultFilterValues('Provider');
+    if (providerValues.length > 0) {
+      appendIndexed('Provider', providerValues);
+    }
 
     // DiscoveredOn requires exactly 2 indexed parameters (start and end)
     if (filters.DiscoveredOn) {
@@ -276,6 +338,9 @@ export class ApiiroConfig {
     filters: RiskFilters = {},
     pageCursor?: string,
   ): Promise<ApiiroRisksPage> {
+    // Ensure filter options are loaded to have the displayName to name mapping
+    await this.ensureFilterOptionsLoaded();
+
     const url = this.buildRisksUrl(repositoryId, filters, pageCursor);
     const response = await fetchWithErrorHandling(
       url,
@@ -413,17 +478,140 @@ export class ApiiroConfig {
   }
 
   /**
-   * Fetches filter options from Apiiro API.
-   * Returns the available filter categories and their options.
+   * Ensures filter options are loaded and the displayName to name mapping is available.
+   * Only fetches if the mapping hasn't been built yet.
+   */
+  private async ensureFilterOptionsLoaded(): Promise<void> {
+    if (Object.keys(this.filterDisplayNameToNameMap).length === 0) {
+      await this.fetchFilterOptions();
+    }
+  }
+
+  /**
+   * Checks if the filter options cache is valid (exists and not expired).
+   */
+  private isCacheValid(): boolean {
+    if (!this.filterOptionsCache) {
+      return false;
+    }
+    const now = Date.now();
+    return (
+      now - this.filterOptionsCache.timestamp < FILTER_OPTIONS_CACHE_TTL_MS
+    );
+  }
+
+  /**
+   * Fetches filter options from Apiiro API with caching.
+   * Returns cached data if available and not expired (60 minutes TTL).
+   * Also builds the displayName to name mapping for filter conversion.
+   * If defaultRiskFilters are configured, filters the options to only include matching displayNames.
    *
    * @returns Promise resolving to the filter options response
    */
   async fetchFilterOptions(): Promise<ApiiroFilterOptionsResponse> {
+    // Return cached data if valid
+    if (this.isCacheValid()) {
+      return this.filterOptionsCache!.data;
+    }
+
+    // Fetch fresh data from API
     const url = `${this.baseUrl}${APIIRO_FILTER_OPTIONS_PATH}`;
-    return this.fetchStatisticsData<ApiiroFilterOptionsResponse>(
-      url,
-      'filter options',
-    );
+    const rawFilterOptions =
+      await this.fetchStatisticsData<ApiiroFilterOptionsResponse>(
+        url,
+        'filter options',
+      );
+
+    // Build the displayName to name mapping
+    this.buildFilterDisplayNameToNameMap(rawFilterOptions);
+
+    // Apply default filters if configured
+    const filteredOptions = this.applyDefaultFilters(rawFilterOptions);
+
+    // Update cache with filtered data
+    this.filterOptionsCache = {
+      data: filteredOptions,
+      timestamp: Date.now(),
+    };
+
+    return filteredOptions;
+  }
+
+  /**
+   * Applies default risk filters to filter options.
+   * Filters each category's options to only include those matching configured displayNames.
+   */
+  private applyDefaultFilters(
+    filterOptions: ApiiroFilterOptionsResponse,
+  ): ApiiroFilterOptionsResponse {
+    // If no default filters configured, return as is
+    if (Object.keys(this.defaultRiskFilters).length === 0) {
+      return filterOptions;
+    }
+
+    return filterOptions.map(filter => {
+      const filterName = filter.name as keyof DefaultRiskFilters;
+      const defaultValues = this.defaultRiskFilters[filterName];
+
+      // If no default values configured for this filter, return as is
+      if (!defaultValues || defaultValues.length === 0) {
+        return filter;
+      }
+
+      // Filter the filterOptions based on displayName matching default values (case-insensitive)
+      const normalizedDefaults = defaultValues.map(v => v.trim().toLowerCase());
+      const filteredFilterOptions =
+        filter.filterOptions?.filter(option =>
+          normalizedDefaults.includes(
+            option.displayName?.trim().toLowerCase() ?? '',
+          ),
+        ) ?? [];
+
+      return {
+        ...filter,
+        filterOptions: filteredFilterOptions,
+      };
+    });
+  }
+
+  /**
+   * Builds a mapping from displayName to name for each filter category.
+   * This allows converting user-friendly displayNames from config to API names.
+   */
+  private buildFilterDisplayNameToNameMap(
+    filterOptions: ApiiroFilterOptionsResponse,
+  ): void {
+    this.filterDisplayNameToNameMap = {};
+    for (const category of filterOptions) {
+      if (category.name && category.filterOptions) {
+        const mapping: Record<string, string> = {};
+        for (const option of category.filterOptions) {
+          if (option.displayName && option.name) {
+            mapping[option.displayName.toLowerCase()] = option.name;
+          }
+        }
+        this.filterDisplayNameToNameMap[category.name] = mapping;
+      }
+    }
+  }
+
+  /**
+   * Converts displayName values from config to API name values.
+   * @param filterKey - The filter category key (e.g., 'RiskLevel', 'RiskInsight')
+   * @param displayNames - Array of displayName values from config
+   * @returns Array of corresponding API name values
+   */
+  private convertDisplayNamesToApiNames(
+    filterKey: string,
+    displayNames: string[],
+  ): string[] {
+    const mapping = this.filterDisplayNameToNameMap[filterKey] ?? {};
+    return displayNames
+      .map(
+        displayName =>
+          mapping[displayName.trim().toLocaleLowerCase()] || displayName.trim(),
+      )
+      .filter((name): name is string => name !== undefined && name.length > 0);
   }
 }
 
@@ -573,6 +761,7 @@ export class ApiiroDataService {
   /**
    * Return filter options from Apiiro API.
    * Fetches the available filter categories and their options for risk filtering.
+   * Filtering based on defaultRiskFilters is handled by ApiiroConfig.
    *
    * @returns Promise that resolves to ApiiroFilterOptionsResponse containing all filter categories and options
    */

@@ -26,12 +26,8 @@ export interface FilterOptionsHandlerDependencies {
 
 /**
  * Handler for filter options endpoint.
- * Fetches filter options from Apiiro API and transforms them into a simplified format.
- *
- * Transforms the response by:
- * 1. Checking if filterOptions array exists and has length > 0
- * 2. Extracting the 'name' field from each filter option
- * 3. Returning a map of filter category names to arrays of option names
+ * Fetches filter options from Apiiro API.
+ * The filtering based on defaultRiskFilters config is handled by ApiiroDataService.
  */
 export function createFilterOptionsHandler(
   deps: FilterOptionsHandlerDependencies,
@@ -42,11 +38,10 @@ export function createFilterOptionsHandler(
     try {
       logger.debug(`${ROUTER_PATH_FILTER_OPTIONS} - Fetching filter options`);
 
-      // Fetch raw filter options from Apiiro API
-      const rawFilterOptions = await dataService.getFilterOptions();
+      // Fetch filter options (already filtered by defaultRiskFilters in data service)
+      const filterOptions = await dataService.getFilterOptions();
 
-      // Return the raw response as is
-      res.json(rawFilterOptions);
+      res.json(filterOptions);
     } catch (err: any) {
       handleApiError(err, res, logger, ROUTER_PATH_FILTER_OPTIONS);
     }

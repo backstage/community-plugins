@@ -31,6 +31,41 @@ export interface Config {
      * @default true
      */
     defaultAllowMetricsView?: boolean;
+
+    /**
+     * Default risk filters configuration.
+     * @visibility frontend
+     */
+    defaultRiskFilters?: {
+      /**
+       * Default risk insights filter values.
+       * Provide display name of the filter option.
+       * @visibility frontend
+       */
+      RiskInsight?: string[];
+
+      /**
+       * Default risk level filter values.
+       * Provide display name of the filter option.
+       * @visibility frontend
+       */
+      RiskLevel?: string[];
+
+      /**
+       * Default risk category filter values.
+       * Provide display name of the filter option.
+       * @visibility frontend
+       */
+      RiskCategory?: string[];
+
+      /**
+       * Default Sources filter values.
+       * Provide API supported value of the filter option.
+       * @visibility frontend
+       */
+      Provider?: string[];
+    };
+
     /**
      * Permission control configuration for metric view access.
      * Controls which entities users can view metrics for.

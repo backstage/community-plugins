@@ -86,6 +86,37 @@ apiiro:
 
 After the catalog processing interval elapses, the Apiiro annotations will be added or updated on the corresponding Backstage entities.
 
+## Configure Default Risk Filters (Optional)
+
+You can configure default filters for the Apiiro Risk Table. When configured, only the specified filter options will be available in the filter dropdowns and will be applied by default when fetching risks.
+
+```yaml
+apiiro:
+  accessToken: ${APIIRO_TOKEN}
+  defaultAllowMetricsView: true
+  # Optional: Configure default risk filters for the Apiiro Risk Table
+  defaultRiskFilters:
+    RiskLevel:
+      - Critical
+      - High
+    RiskInsight:
+      - Internet exposed
+      - Deployed
+    RiskCategory:
+      - SAST findings
+      - Secrets
+    Provider:
+      - ApiiroSca
+      - AkamaiApiSecurity
+```
+
+**Configuration options:**
+
+- **RiskLevel**: Filter by risk severity. Provide display names (e.g., "Critical", "High", "Medium", "Low").
+- **RiskInsight**: Filter by risk insights. Provide display names (e.g., "Internet exposed", "Deployed", "Fixable").
+- **RiskCategory**: Filter by risk category. Provide display names (e.g., "SAST findings", "Secrets", "OSS security").
+- **Provider**: Filter by source provider. Provide API supported values (e.g., "ApiiroSca", "AkamaiApiSecurity").
+
 ## Development
 
 This plugin backend can be started in a standalone mode from directly in this package with `yarn start`. This is a limited setup that is most convenient when developing the plugin backend itself.

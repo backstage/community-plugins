@@ -63,7 +63,7 @@ export const apiiroBackendPlugin = createBackendPlugin({
         const cacheService = new RepositoryCacheService(dataService, logger);
 
         // Schedule periodic cache refresh
-        // Runs every 10 minutes to keep repository data fresh
+        // Runs every 60 minutes to keep repository data fresh
         await scheduler.scheduleTask({
           id: 'apiiro-refresh-repositories-cache',
           frequency: { minutes: REPOSITORY_CACHE_REFRESH_INTERVAL_MINUTES },

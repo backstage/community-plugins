@@ -236,11 +236,12 @@ export type TopRisksResponse = TopRiskItem[];
 
 /**
  * Represents a single filter option item.
- * Only includes the name field which is used for transformation.
+ * Includes name and displayName fields used for transformation.
  */
 export type FilterOption = {
   name: string | null;
-  [key: string]: any; // Allow other fields from API but we only use 'name'
+  displayName: string | null;
+  [key: string]: any; // Allow other fields from API
 };
 
 /**

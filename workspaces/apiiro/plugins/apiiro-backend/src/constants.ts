@@ -20,6 +20,10 @@ export const APIIRO_DEFAULT_PAGE_LIMIT = '1000';
 export const REPOSITORY_CACHE_REFRESH_INTERVAL_MINUTES = 60; // How often to refresh the cache
 export const REPOSITORY_CACHE_REFRESH_TIMEOUT_MINUTES = 5; // Timeout for cache refresh operation
 
+// Filter options cache configuration
+// Cache TTL for filter options (1 hour)
+export const FILTER_OPTIONS_CACHE_TTL_MS = 60 * 60 * 1000;
+
 // Apiiro API endpoint paths
 export const APIIRO_REPOSITORIES_PATH = '/rest-api/v2/repositories';
 export const APIIRO_RISKS_PATH = '/rest-api/v2/risks';

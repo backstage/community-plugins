@@ -86,6 +86,30 @@ apiiro:
 
 See the [backend plugin documentation](./plugins/apiiro-backend/README.md#automatically-adding-apiiro-annotations-optional) for detailed permission setup instructions.
 
+### 3. Optional: Configure Default Risk Filters
+
+Configure default filters for the Apiiro Risk Table to limit which filter options are available and applied by default:
+
+```yaml
+apiiro:
+  accessToken: ${APIIRO_TOKEN}
+  defaultRiskFilters:
+    RiskLevel:
+      - Critical
+      - High
+    RiskInsight:
+      - Internet exposed
+      - Deployed
+    RiskCategory:
+      - SAST findings
+      - Secrets
+    Provider:
+      - ApiiroSca
+      - AkamaiApiSecurity
+```
+
+See the [backend plugin documentation](./plugins/apiiro-backend/README.md#configure-default-risk-filters-optional) for detailed configuration options.
+
 ## Documentation
 
 - **[Frontend Plugin](./plugins/apiiro/README.md)** - Installation and usage guide for the frontend plugin
