@@ -19,6 +19,8 @@ import { ResponseError } from '@backstage/errors';
 import {
   ChatMessage,
   ChatResponse,
+  ConversationRecord,
+  ConversationsResponse,
   MCPServerStatusData,
   ProviderStatusData,
   ToolsResponse,
@@ -32,10 +34,13 @@ export interface McpChatApi {
     messages: ChatMessage[],
     enabledTools?: string[],
     signal?: AbortSignal,
+    conversationId?: string,
   ): Promise<ChatResponse>;
   getMCPServerStatus(): Promise<MCPServerStatusData>;
   getAvailableTools(): Promise<ToolsResponse>;
   getProviderStatus(): Promise<ProviderStatusData>;
+  getConversations(): Promise<ConversationsResponse>;
+  getConversationById(id: string): Promise<ConversationRecord>;
 }
 
 export class McpChat implements McpChatApi {
@@ -51,6 +56,7 @@ export class McpChat implements McpChatApi {
     messages: ChatMessage[],
     enabledTools: string[] = [],
     signal?: AbortSignal,
+    conversationId?: string,
   ): Promise<ChatResponse> {
     const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
 
@@ -62,6 +68,7 @@ export class McpChat implements McpChatApi {
       body: JSON.stringify({
         messages,
         enabledTools,
+        conversationId,
       }),
       signal,
     });
@@ -98,6 +105,32 @@ export class McpChat implements McpChatApi {
     const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
 
     const response = await this.fetchApi.fetch(`${baseUrl}/provider/status`);
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    return response.json();
+  }
+
+  async getConversations(): Promise<ConversationsResponse> {
+    const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
+
+    const response = await this.fetchApi.fetch(`${baseUrl}/conversations`);
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    return response.json();
+  }
+
+  async getConversationById(id: string): Promise<ConversationRecord> {
+    const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
+
+    const response = await this.fetchApi.fetch(
+      `${baseUrl}/conversations/${id}`,
+    );
 
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
