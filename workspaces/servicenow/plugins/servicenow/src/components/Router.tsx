@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
+import { MemoryRouter } from 'react-router-dom';
+import { EntityServicenowContent } from './Servicenow';
 
 /**
- * Check if the current entity has a ServiceNow annotation.
+ * separately export the router
+ *
  * @public
  */
-export const isServicenowAvailable = (entity: Entity): boolean => {
-  if (!entity.metadata.annotations) {
-    return false;
-  }
-
-  return Object.keys(entity.metadata.annotations).some(key =>
-    key.startsWith('servicenow.com/'),
+export const Router = () => {
+  return (
+    <MemoryRouter>
+      <EntityServicenowContent />
+    </MemoryRouter>
   );
 };
