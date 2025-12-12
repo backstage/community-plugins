@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiRef, IdentityApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/core-plugin-api';
 
 import {
   Application,
@@ -21,9 +21,12 @@ import {
   InstanceApplications,
 } from '@backstage-community/plugin-redhat-argocd-common';
 
+export { ArgoCDApiClient } from './ArgoCDApiClient';
+export { ArgoCDInstanceApiClient } from './ArgoCDInstanceApiClient';
+
 export type ArgoCDAppDeployRevisionDetails = RevisionInfo;
 
-export type listAppsOptions = {
+export type ListAppsOptions = {
   url: string;
   appSelector?: string;
   appNamespace?: string;
@@ -58,7 +61,7 @@ export type FindApplicationsOptions = {
 };
 
 export interface ArgoCDApi {
-  listApps(options: listAppsOptions): Promise<{ items: Application[] }>;
+  listApps(options: ListAppsOptions): Promise<{ items: Application[] }>;
   getRevisionDetails(
     options: RevisionDetailsOptions,
   ): Promise<ArgoCDAppDeployRevisionDetails>;
@@ -75,191 +78,30 @@ export const argoCDApiRef = createApiRef<ArgoCDApi>({
   id: 'plugin.argo.cd.service',
 });
 
-export type Options = {
-  backendBaseUrl: string;
-  identityApi: IdentityApi;
-  proxyPath?: string;
-  useNamespacedApps: boolean;
-};
-
-const APP_NAMESPACE_QUERY_PARAM = 'appNamespace';
-
-interface QueryParams {
-  [key: string]: string | number | undefined;
+export interface SearchApplicationsOptions {
+  appSelector?: string;
+  appName?: string;
+  appNamespace?: string;
+  project?: string;
 }
 
-export class ArgoCDApiClient implements ArgoCDApi {
-  private readonly backendBaseUrl: string;
-  private readonly identityApi: IdentityApi;
-  private readonly useNamespacedApps: boolean;
-
-  constructor(options: Options) {
-    this.backendBaseUrl = options.backendBaseUrl;
-    this.identityApi = options.identityApi;
-    this.useNamespacedApps = options.useNamespacedApps;
-  }
-
-  async getBaseUrl() {
-    return `${this.backendBaseUrl}/api/argocd`;
-  }
-
-  getQueryParams(params: QueryParams) {
-    const result = Object.entries(params)
-      // Remove undefined values
-      .filter(([_, value]) => value !== undefined)
-      // Handle namespace param based on config
-      .filter(
-        ([key]) => this.useNamespacedApps || key !== APP_NAMESPACE_QUERY_PARAM,
-      )
-      // Create encoded key-value pairs
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`,
-      )
-      .join('&');
-
-    return result ? `?${result}` : '';
-  }
-
-  async fetcher(url: string) {
-    const { token } = await this.identityApi.getCredentials();
-    const response = await fetch(url, {
-      headers: token
-        ? {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          }
-        : undefined,
-    });
-    if (!response.ok) {
-      throw new Error(
-        `failed to fetch data, status ${response.status}: ${response.statusText}`,
-      );
-    }
-    const json = await response.json();
-    return json;
-  }
-
-  async listApps(options: {
-    url: string;
-    appSelector?: string;
-    appNamespace?: string;
-    projectName?: string;
-  }) {
-    const proxyUrl = await this.getBaseUrl();
-    const query = this.getQueryParams({
-      selector: options.appSelector,
-      project: options.projectName,
-      appNamespace: options.appNamespace,
-    });
-    return this.fetcher(
-      `${proxyUrl}${options.url}/applications/selector/${options.appSelector}${query}`,
-    );
-  }
-
-  async getApplication(options: GetApplicationOptions) {
-    const proxyUrl = await this.getBaseUrl();
-    const query = this.getQueryParams({
-      appNamespace: options.appNamespace,
-      project: options.project,
-    });
-    return this.fetcher(
-      `${proxyUrl}${options.url}/applications/${encodeURIComponent(
-        options.appName,
-      )}${query}`,
-    );
-  }
-
-  async findApplications(
-    options: FindApplicationsOptions,
-  ): Promise<InstanceApplications[]> {
-    const proxyUrl = await this.getBaseUrl();
-    const query = this.getQueryParams({
-      appNamespace: options.appNamespace,
-      project: options.project,
-    });
-    return this.fetcher(
-      `${proxyUrl}/find/name/${encodeURIComponent(
-        options.appName as string,
-      )}${query}`,
-    );
-  }
-
-  async getRevisionDetails(options: {
-    app: string;
-    appNamespace?: string;
-    revisionID: string;
-    instanceName: string;
-    sourceIndex?: number;
-  }) {
-    const proxyUrl = await this.getBaseUrl();
-
-    const query = this.getQueryParams({
-      appNamespace: options.appNamespace,
-      sourceIndex: options.sourceIndex,
-    });
-    return this.fetcher(
-      `${proxyUrl}/argoInstance/${
-        options.instanceName
-      }/applications/name/${encodeURIComponent(
-        options.app,
-      )}/revisions/${encodeURIComponent(options.revisionID)}/metadata${query}`,
-    );
-  }
-
-  async getRevisionDetailsList(options: {
-    appNamespace: string;
-    revisionIDs: string[];
-    apps: Application[];
-  }): Promise<RevisionInfo[]> {
-    if (!options.revisionIDs || options.revisionIDs.length < 1) {
-      return Promise.resolve([]);
-    }
-    const promises: any = [];
-
-    options.revisionIDs.forEach((revisionID: string) => {
-      const application = options.apps.find(app =>
-        app?.status?.history?.find(h => h.revision === revisionID),
-      );
-
-      if (application) {
-        promises.push(
-          this.getRevisionDetails({
-            app: application.metadata.name as string,
-            appNamespace: options.appNamespace,
-            instanceName: application.metadata.instance.name,
-            revisionID,
-          }),
-        );
-      }
-
-      const multiSourceApp = options.apps.find(app => {
-        return app?.status?.history?.find(h => {
-          return h?.revisions?.includes(revisionID);
-        });
-      });
-
-      if (multiSourceApp) {
-        const history = multiSourceApp.status?.history ?? [];
-        const relevantHistories = history.filter(h =>
-          h?.revisions?.includes(revisionID),
-        );
-
-        relevantHistories.forEach(h => {
-          const revisionSourceIndex = h.revisions?.indexOf(revisionID);
-          promises.push(
-            this.getRevisionDetails({
-              app: multiSourceApp.metadata.name as string,
-              appNamespace: options.appNamespace,
-              instanceName: multiSourceApp.metadata.instance.name,
-              revisionID: revisionID,
-              sourceIndex: revisionSourceIndex,
-            }),
-          );
-        });
-      }
-    });
-
-    return Promise.all(promises);
-  }
+/**
+ * API for fetching ArgoCD applications across instances.
+ */
+export interface ArgoCDInstanceApi {
+  /**
+   * Lists applications from ArgoCD instances.
+   *
+   * @param {string[]} instanceNames - An array of ArgoCD instance names to search. If empty, searches all instances.
+   * @param {SearchApplicationsOptions} options - Options for filtering applications.
+   * @returns {Promise<Application[]>} A promise that resolves to an array of Applications. Empty if no applications are found.
+   */
+  searchApplications(
+    instanceNames: string[],
+    options: SearchApplicationsOptions,
+  ): Promise<Application[]>;
 }
+
+export const argoCDInstanceApiRef = createApiRef<ArgoCDInstanceApi>({
+  id: 'plugin.argo.cd.instance',
+});

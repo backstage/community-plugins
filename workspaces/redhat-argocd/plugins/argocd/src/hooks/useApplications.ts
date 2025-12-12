@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { argoCDApiRef } from '../api';
+import { argoCDInstanceApiRef } from '../api';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import { useArgocdConfig } from './useArgocdConfig';
 
@@ -45,127 +45,19 @@ export const useApplications = ({
   const [, setAppSelector] = useState<string>(appSelector ?? '');
   const [, setAppName] = useState<string | undefined>(appName ?? '');
   const [apps, setApps] = useState<Application[]>([]);
-  const { intervalMs, instances } = useArgocdConfig();
+  const { intervalMs } = useArgocdConfig();
 
-  const api = useApi(argoCDApiRef);
-
-  const addInstanceToApplication = useCallback(
-    (item: Application, instanceName: string) => {
-      if (
-        item.metadata &&
-        (!item.metadata.instance?.name || !item.metadata.instance?.url)
-      ) {
-        const instanceUrl =
-          item.metadata.instance?.url ??
-          instances.find(instance => instance.name === instanceName)?.url;
-        item.metadata.instance = { name: instanceName, url: instanceUrl };
-      }
-      return item;
-    },
-    [instances],
-  );
-
-  const listApplications = useCallback(async () => {
-    // Search all instances if no concrete instances to search
-    const instanceNamesToSearch =
-      instanceNames.length === 0 ? instances.map(i => i.name) : instanceNames;
-    const promises = instanceNamesToSearch.map(instanceName =>
-      api
-        .listApps({
-          url: `/argoInstance/${instanceName}`,
-          appSelector,
-          projectName,
-          appNamespace,
-        })
-        .then(applications =>
-          // Roadie doesn't include full instance in its getApplications response
-          (applications?.items ?? []).map(application =>
-            addInstanceToApplication(application, instanceName),
-          ),
-        ),
-    );
-    const results = await Promise.all(promises);
-    setApps(results.flat());
-  }, [
-    api,
-    appSelector,
-    instanceNames,
-    projectName,
-    appNamespace,
-    instances,
-    addInstanceToApplication,
-  ]);
-
-  // Get application by application name from Argo instance, application must exist there, otherwise Error
-  const getApplication = useCallback(
-    (instanceName: string, applicationName: string) => {
-      return (
-        api
-          .getApplication({
-            url: `/argoInstance/${instanceName}`,
-            appName: applicationName,
-            appNamespace,
-            project: projectName,
-          })
-          // Roadie doesn't include instance in its getApplication response
-          .then(application =>
-            addInstanceToApplication(application, instanceName),
-          )
-      );
-    },
-    [api, appNamespace, projectName, addInstanceToApplication],
-  );
-
-  const getApplications = useCallback(async () => {
-    const promises = instanceNames.map(instanceName =>
-      getApplication(instanceName, appName as string),
-    );
-    const results = await Promise.all(promises);
-    setApps(results);
-  }, [instanceNames, appName, getApplication]);
-
-  // Find applications across Argo instances
-  const findApplications = useCallback(async () => {
-    const instanceApplicationsList = await api.findApplications({
-      appName: appName as string,
-      appNamespace,
-      project: projectName,
-    });
-
-    const applicationsExpanded = instanceApplicationsList.some(
-      instance => instance.applications,
-    );
-    if (applicationsExpanded) {
-      setApps(
-        instanceApplicationsList
-          .flatMap(instanceApplications => instanceApplications.applications)
-          .filter(app => app !== undefined),
-      );
-      return;
-    }
-
-    // Roadie doesn't directly return all application data, we need to fetch it for each application
-    const promises = instanceApplicationsList.flatMap(instanceApplications =>
-      instanceApplications.appName.map(currentAppName =>
-        getApplication(instanceApplications.name, currentAppName),
-      ),
-    );
-    const applications = await Promise.all(promises);
-    setApps(applications);
-  }, [api, appName, appNamespace, projectName, getApplication]);
+  const api = useApi(argoCDInstanceApiRef);
 
   const { error, loading, retry } = useAsyncRetry(async () => {
-    if (appName && instanceNames.length === 0) {
-      // Don't have concrete ArgoCD instances to search => search all ArgoCD instances for applications
-      return await findApplications();
-    }
-    if (appName) {
-      // Get applications from concrete ArgoCD instances, returns Error if application doesn't exist in ArgoCD instance
-      return await getApplications();
-    }
-    // Future: we could call listApplications for all use cases, as Argo supports filtering by app name here (Roadie doesn't yet)
-    return await listApplications();
-  }, [listApplications, getApplications]);
+    const applications = await api.searchApplications(instanceNames, {
+      appSelector,
+      appNamespace,
+      project: projectName,
+      appName,
+    });
+    setApps(applications);
+  }, [api, instanceNames, appSelector, appNamespace, projectName, appName]);
 
   useInterval(() => retry(), intervalMs);
 

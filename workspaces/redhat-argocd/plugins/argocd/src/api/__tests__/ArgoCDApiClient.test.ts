@@ -299,7 +299,6 @@ describe('API calls', () => {
       });
 
       await client.getRevisionDetailsList({
-        instanceName: 'main',
         apps: [multiSourceArgoApp],
         revisionIDs: [
           '331386ce09e4536a730a16f10d1bce8dfca0c8b1',

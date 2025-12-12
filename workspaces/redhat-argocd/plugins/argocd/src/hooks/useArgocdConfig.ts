@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import type { Config } from '@backstage/config';
 
 import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
-import { useMemo } from 'react';
+
+export const getArgocdInstances = (configApi: Config) => {
+  return (
+    configApi
+      .getConfigArray('argocd.appLocatorMethods')
+      .find(value => value.getOptionalString('type') === 'config')
+      ?.getOptionalConfigArray('instances') ?? []
+  ).map(config => ({
+    name: config.getOptionalString('name') ?? '',
+    url: config.getOptionalString('url') ?? '',
+  }));
+};
 
 export const useArgocdConfig = (): {
   instances: Instance[];
@@ -25,19 +37,7 @@ export const useArgocdConfig = (): {
 } => {
   const configApi = useApi(configApiRef);
 
-  const instances = useMemo(
-    () =>
-      (
-        configApi
-          .getConfigArray('argocd.appLocatorMethods')
-          .find(value => value.getOptionalString('type') === 'config')
-          ?.getOptionalConfigArray('instances') ?? []
-      ).map(config => ({
-        name: config.getOptionalString('name') ?? '',
-        url: config.getOptionalString('url') ?? '',
-      })),
-    [configApi],
-  );
+  const instances = getArgocdInstances(configApi);
   const intervalMs =
     configApi.getOptionalNumber('argocd.refreshInterval') ?? 10000;
   const baseUrl = configApi.getOptionalString('argocd.baseUrl');
