@@ -30,7 +30,7 @@ search:
     reportPortal:
       # Configure schdeule for indexing
       schedule: # Example :down:
-        frequency: { minutes: 10 }
+        frequency: { minutes: 60 }
         timeout: { minutes: 5 }
         initialDelay: { seconds: 3 }
       # Base location for collated resources, should be same as your frontend plugin route.
