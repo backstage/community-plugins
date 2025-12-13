@@ -14,9 +14,19 @@ The Jfrog Artifactory plugin displays information about your container images wi
    yarn workspace app add @backstage-community/plugin-jfrog-artifactory
    ```
 
-1. Set the proxy to the desired Artifactory server in the `app-config.yaml` file as follows:
+1. Configure the Artifactory plugin in the `app-config.yaml` file as follows:
 
    ```yaml title="app-config.yaml"
+   # JFrog Artifactory configuration
+   jfrogArtifactory:
+     proxyPath: /jfrog-artifactory/api
+     # Sort field for artifacts: 'NAME_SEMVER' or 'MODIFIED'
+     sortField: 'MODIFIED'
+     # Repository filter for artifacts
+     repoFilter: '*-prod-federated'
+     # Maximum number of artifacts to fetch per request (default: 100)
+     pageLimit: 100
+
    proxy:
      endpoints:
        '/jfrog-artifactory/api':
@@ -26,6 +36,16 @@ The Jfrog Artifactory plugin displays information about your container images wi
          # Change to "false" in case of using self hosted artifactory instance with a self-signed certificate
          secure: true
    ```
+
+   - The `sortField` option determines how artifacts are sorted in the UI:
+   - `NAME_SEMVER`: Sort by semantic version name (default if not specified)
+   - `MODIFIED`: Sort by last modified date
+
+   - The `repoFilter` option determines which repositories to include when displaying artifacts. It supports wildcard patterns (e.g., '\*-prod-federated') to filter artifacts by repository name. When specified, only artifacts from repositories matching this pattern will be shown.
+
+   - The `pageLimit`: Controls the maximum number of artifacts fetched per request (default: 100)
+     - **Note**: This setting limits the number of artifacts displayed in the UI
+     - If you have many artifacts, consider increasing this value to see more results
 
 If you have multiple instances of artifactory supported, you can set up multiple proxy target paths as follows:
 
@@ -76,6 +96,11 @@ proxy:
        # you'll need to specify the instance proxy target path your image belongs to
        'jfrog-artifactory/target-proxy': '/<PROXY-TARGET>' # e.g. `/jfrog-instance1` from the example above
    ```
+
+   The annotations serve the following purposes:
+
+   - `jfrog-artifactory/image-name`: Specifies the image name to display in the Artifactory tab
+   - `jfrog-artifactory/target-proxy`: Specifies which Artifactory instance to use (for multiple instances)
 
 ## For users
 
