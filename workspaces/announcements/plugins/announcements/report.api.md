@@ -12,7 +12,7 @@ import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const AnnouncementsAdminPortal: (
   props?:
     | {
@@ -94,7 +94,7 @@ export const announcementsPlugin: BackstagePlugin<
   {}
 >;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const AnnouncementsTimeline: ({
   maxResults,
   timelineAlignment,

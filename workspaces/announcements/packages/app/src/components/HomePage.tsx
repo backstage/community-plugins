@@ -15,7 +15,6 @@
  */
 import {
   AnnouncementsCard,
-  AnnouncementsTimeline,
   NewAnnouncementBanner,
 } from '@backstage-community/plugin-announcements';
 import { Grid, Typography } from '@material-ui/core';
@@ -36,10 +35,6 @@ export const Home = () => {
         <Grid item xs={12}>
           <Typography variant="h4">Homepage component</Typography>
           <AnnouncementsCard max={2} />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h4">Announcements Timeline</Typography>
-          <AnnouncementsTimeline />
         </Grid>
       </Grid>
     </Content>
