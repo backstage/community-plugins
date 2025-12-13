@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-search-backend-module-confluence-collator": "workspace:^",
+    "@backstage-community/plugin-techdocs-backend-module-confluence": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/plugin-app-backend": "backstage:^",
