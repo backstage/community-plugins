@@ -65,6 +65,7 @@
     "@types/lodash": "^4.17.20"
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ]
 }
