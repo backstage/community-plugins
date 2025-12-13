@@ -2806,7 +2806,7 @@ __metadata:
     "@mui/x-data-grid": "npm:^7.25.0"
     "@patternfly/react-charts": "npm:7.4.9"
     "@patternfly/react-component-groups": "npm:^6.0.0"
-    "@patternfly/react-core": "npm:5.4.14"
+    "@patternfly/react-core": "npm:6.4.0"
     "@patternfly/react-icons": "npm:5.4.2"
     "@patternfly/react-styles": "npm:5.4.1"
     "@patternfly/react-table": "npm:5.4.16"
@@ -9529,24 +9529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:5.4.14, @patternfly/react-core@npm:^5.1.1, @patternfly/react-core@npm:^5.4.14":
-  version: 5.4.14
-  resolution: "@patternfly/react-core@npm:5.4.14"
-  dependencies:
-    "@patternfly/react-icons": "npm:^5.4.2"
-    "@patternfly/react-styles": "npm:^5.4.1"
-    "@patternfly/react-tokens": "npm:^5.4.1"
-    focus-trap: "npm:7.6.2"
-    react-dropzone: "npm:^14.2.3"
-    tslib: "npm:^2.7.0"
-  peerDependencies:
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
-  checksum: 10/14d1bdcbfa941025b9368121c1b42dd88be7bb6e42abbd3284e788bc2a9524c4efde927076527640a2da3c308d01c8ea891aefe110db3a8a284a890357b0a9ab
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^6.0.0, @patternfly/react-core@npm:^6.4.0":
+"@patternfly/react-core@npm:6.4.0, @patternfly/react-core@npm:^6.0.0, @patternfly/react-core@npm:^6.4.0":
   version: 6.4.0
   resolution: "@patternfly/react-core@npm:6.4.0"
   dependencies:
@@ -9560,6 +9543,23 @@ __metadata:
     react: ^17 || ^18 || ^19
     react-dom: ^17 || ^18 || ^19
   checksum: 10/e35bf937e6c1f4d8dc8d95d4aaf02815a151332e298d7fdedd9fd6a644c023c7eb28e79636607b7043d8da5613db79a2704ef2356cbab5131e4662c37e81e0fb
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-core@npm:^5.1.1, @patternfly/react-core@npm:^5.4.14":
+  version: 5.4.14
+  resolution: "@patternfly/react-core@npm:5.4.14"
+  dependencies:
+    "@patternfly/react-icons": "npm:^5.4.2"
+    "@patternfly/react-styles": "npm:^5.4.1"
+    "@patternfly/react-tokens": "npm:^5.4.1"
+    focus-trap: "npm:7.6.2"
+    react-dropzone: "npm:^14.2.3"
+    tslib: "npm:^2.7.0"
+  peerDependencies:
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: 10/14d1bdcbfa941025b9368121c1b42dd88be7bb6e42abbd3284e788bc2a9524c4efde927076527640a2da3c308d01c8ea891aefe110db3a8a284a890357b0a9ab
   languageName: node
   linkType: hard
 
