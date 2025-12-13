@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { FlatRoutes } from '@backstage/core-app-api';
-import { convertLegacyApp } from '@backstage/core-compat-api';
+import { convertLegacyAppRoot } from '@backstage/core-compat-api';
 import { createApp } from '@backstage/frontend-defaults';
 import {
   createFrontendModule,
@@ -47,13 +47,13 @@ const homePageExtension = PageBlueprint.make({
   },
 });
 
-const collectedLegacyPlugins = convertLegacyApp(
+const collectedLegacyPlugins = convertLegacyAppRoot(
   <FlatRoutes>
     <Route path="/api-docs" element={<ApiExplorerPage />} />
   </FlatRoutes>,
 );
 
-export const app = createApp({
+export default createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
@@ -66,5 +66,3 @@ export const app = createApp({
     }),
   ],
 });
-
-export default app.createRoot();
