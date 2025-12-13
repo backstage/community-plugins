@@ -77,7 +77,6 @@
     "@backstage/frontend-defaults": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/lodash": "^4.14.151",
