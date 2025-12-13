@@ -1833,6 +1833,7 @@ __metadata:
     "@backstage/core-components": "npm:^0.18.3"
     "@backstage/core-plugin-api": "npm:^1.12.0"
     "@backstage/dev-utils": "npm:^1.1.17"
+    "@backstage/frontend-plugin-api": "npm:^0.13.1"
     "@backstage/plugin-catalog-react": "npm:^1.21.3"
     "@backstage/plugin-kubernetes-common": "npm:^0.9.8"
     "@backstage/plugin-kubernetes-react": "npm:^0.5.13"
@@ -2558,7 +2559,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.13.0":
+"@backstage/frontend-plugin-api@npm:^0.13.0, @backstage/frontend-plugin-api@npm:^0.13.1":
   version: 0.13.1
   resolution: "@backstage/frontend-plugin-api@npm:0.13.1"
   dependencies:
@@ -6058,7 +6059,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/tekton@workspace:."
   dependencies:
-    "@axe-core/playwright": "npm:^4.11.0"
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/e2e-test-utils": "npm:^0.1.1"
     "@backstage/repo-tools": "npm:^0.16.0"
