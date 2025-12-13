@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-jaeger": "workspace:^",
-    "@backstage-community/plugin-tech-radar": "^0.7.4",
+    "@backstage-community/plugin-tech-radar": "^1.0.0",
     "@backstage/app-defaults": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/cli": "backstage:^",
