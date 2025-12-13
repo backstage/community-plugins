@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 3.16.0
+
+### Minor Changes
+
+- 16e9fae: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- b5310cb: Updated dependency `@types/lodash` to `4.17.21`.
+
 ## 3.15.0
 
 ### Minor Changes
