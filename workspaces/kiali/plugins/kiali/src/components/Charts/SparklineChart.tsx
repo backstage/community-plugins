@@ -32,7 +32,7 @@ import {
 } from '@patternfly/react-charts';
 import { default as React } from 'react';
 import { addLegendEvent, VCEvent } from '../../utils/VictoryEvents';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { CustomTooltip } from './CustomTooltip';
 
 type Props = ChartProps & {

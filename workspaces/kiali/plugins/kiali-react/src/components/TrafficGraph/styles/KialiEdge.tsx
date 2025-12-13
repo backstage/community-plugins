@@ -23,7 +23,7 @@ import {
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
 import { default as React } from 'react';
 import { classes, style } from 'typestyle';
-import { PFColors } from '../../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 // This is our styled edge component registered in stylesComponentFactory.tsx.  It is responsible for adding customizations that then get passed down to DefaultEdge.  The current customizations:
 //   data.pathStyle?: React.CSSProperties // additional CSS stylings for the edge/path (not the endpoint).

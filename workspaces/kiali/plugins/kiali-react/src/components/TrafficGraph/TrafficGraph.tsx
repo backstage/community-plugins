@@ -24,7 +24,7 @@ import {
   VisualizationProvider,
   VisualizationSurface,
 } from '@patternfly/react-topology';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { KialiComponentFactory } from './factories/KialiComponentFactory';
 import { KialiLayoutFactory } from './factories/KialiLayoutFactory';
 
@@ -45,29 +45,30 @@ const getVisualization = (): Visualization => {
  */
 export const TrafficGraph = (props: { model: Model }) => {
   const [controller] = useState(getVisualization());
-  const [renderKey, setRenderKey] = useState(0);
+  const prevModelRef = useRef<Model | null>(null);
 
   useEffect(() => {
-    if (
-      (props.model.nodes && props.model.nodes.length > 0) ||
-      (props.model.edges && props.model.edges.length > 0)
-    ) {
-      // Force layout when updating the model
-      controller.fromModel(props.model, true);
-      // Auto-fit the graph to screen after loading
-      setTimeout(() => {
-        if (controller.getGraph()) {
-          controller.getGraph().fit(80);
-        }
-      }, 50);
-      // Force re-render by updating the key
-      setRenderKey(prev => prev + 1);
+    // Only update if model actually changed
+    if (prevModelRef.current === props.model) {
+      return;
     }
+
+    const hasData =
+      (props.model.nodes?.length ?? 0) > 0 ||
+      (props.model.edges?.length ?? 0) > 0;
+
+    if (hasData) {
+      controller.fromModel(props.model, true);
+      setTimeout(() => {
+        controller.getGraph()?.fit(80);
+      }, 50);
+    }
+
+    prevModelRef.current = props.model;
   }, [props.model, controller]);
 
   return (
     <TopologyView
-      key={renderKey}
       controlBar={
         <TopologyControlBar
           controlButtons={createTopologyControlButtons({

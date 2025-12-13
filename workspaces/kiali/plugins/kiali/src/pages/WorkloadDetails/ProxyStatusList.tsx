@@ -19,7 +19,7 @@ import {
 } from '@backstage-community/plugin-kiali-common/func';
 import { ProxyStatus } from '@backstage-community/plugin-kiali-common/types';
 import { default as React } from 'react';
-import { PFColors } from '../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { kialiStyle } from '../../styles/StyleUtils';
 
 type Props = {

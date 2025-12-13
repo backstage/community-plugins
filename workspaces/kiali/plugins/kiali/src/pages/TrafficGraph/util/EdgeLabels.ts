@@ -45,7 +45,7 @@ import {
   NodeStatus,
 } from '@patternfly/react-topology';
 import _ from 'lodash';
-import { PFColors } from '../../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { serverConfig } from '../../../config';
 import { icons } from '../../../config/Icons';
 import { EdgeData } from '../types/EdgeData';

@@ -29,7 +29,7 @@ export enum HTTP_VERBS {
   PUT = 'put',
 }
 
-export const PF_THEME_DARK = 'pf-v5-theme-dark';
+export const PF_THEME_DARK = 'pf-v6-theme-dark';
 export const KIALI_THEME = 'kiali-theme';
 
 export const enum Theme {

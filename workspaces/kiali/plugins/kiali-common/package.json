@@ -14,6 +14,7 @@
     "./func": "./src/func/index.ts",
     "./utils": "./src/utils/index.ts",
     "./config": "./src/config/index.ts",
+    "./styles": "./src/styles/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -29,6 +30,9 @@
       ],
       "config": [
         "src/config/index.ts"
+      ],
+      "styles": [
+        "src/styles/index.ts"
       ],
       "package.json": [
         "package.json"

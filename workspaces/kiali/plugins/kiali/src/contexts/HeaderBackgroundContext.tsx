@@ -58,16 +58,27 @@ export const HeaderBackgroundProvider = ({
       attempts++;
 
       // Detect platform first
+      // Support PF4 (pf-c-), PF5 (pf-v5-), and PF6 (pf-v6-) class prefixes
       const isOpenShiftConsole =
         document.querySelector('[data-test="user-dropdown"]') !== null ||
         document.querySelector('.pf-c-page__header') !== null ||
         document.querySelector('.pf-v5-c-page__header') !== null ||
+        document.querySelector('.pf-v5-c-masthead') !== null ||
+        document.querySelector('.pf-v6-c-page__header') !== null ||
+        document.querySelector('.pf-v6-c-masthead') !== null ||
         document.querySelector('[data-test="perspective-switcher"]') !== null ||
         (window as any).SERVER_FLAGS !== undefined;
 
       // Try all possible selectors based on detected platform
       const selectors = isOpenShiftConsole
-        ? ['.pf-c-page__header', '.pf-v5-c-page__header', 'header']
+        ? [
+            '.pf-c-page__header',
+            '.pf-v5-c-page__header',
+            '.pf-v5-c-masthead',
+            '.pf-v6-c-page__header',
+            '.pf-v6-c-masthead',
+            'header',
+          ]
         : [
             'header[role="banner"]',
             'header.MuiPaper-root',

@@ -27,7 +27,7 @@ import {
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
 import { default as React } from 'react';
 import { style } from 'typestyle';
-import { PFColors } from '../../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 // This is the registered Node component override that utilizes our customized Node.tsx component.
 

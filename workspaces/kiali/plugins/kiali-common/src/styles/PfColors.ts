@@ -25,80 +25,80 @@
 
 // Colors used by Kiali for CSS styling
 export enum PFColors {
-  Black100 = 'var(--pf-v5-global--palette--black-100)',
-  Black150 = 'var(--pf-v5-global--palette--black-150)',
-  Black200 = 'var(--pf-v5-global--palette--black-200)',
-  Black300 = 'var(--pf-v5-global--palette--black-300)',
-  Black400 = 'var(--pf-v5-global--palette--black-400)',
-  Black500 = 'var(--pf-v5-global--palette--black-500)',
-  Black600 = 'var(--pf-v5-global--palette--black-600)',
-  Black700 = 'var(--pf-v5-global--palette--black-700)',
-  Black800 = 'var(--pf-v5-global--palette--black-800)',
-  Black900 = 'var(--pf-v5-global--palette--black-900)',
-  Black1000 = 'var(--pf-v5-global--palette--black-1000)',
-  Blue50 = 'var(--pf-v5-global--palette--blue-50)',
-  Blue200 = 'var(--pf-v5-global--palette--blue-200)',
-  Blue300 = 'var(--pf-v5-global--palette--blue-300)',
-  Blue400 = 'var(--pf-v5-global--palette--blue-400)',
-  Blue500 = 'var(--pf-v5-global--palette--blue-500)',
-  Blue600 = 'var(--pf-v5-global--palette--blue-600)',
-  Cyan300 = 'var(--pf-v5-global--palette--cyan-300)',
-  Gold400 = 'var(--pf-v5-global--palette--gold-400)',
-  Green300 = 'var(--pf-v5-global--palette--green-300)',
-  Green400 = 'var(--pf-v5-global--palette--green-400)',
-  Green500 = 'var(--pf-v5-global--palette--green-500)',
-  Green600 = 'var(--pf-v5-global--palette--green-600)',
-  LightBlue400 = 'var(--pf-v5-global--palette--light-blue-400)',
-  LightGreen400 = 'var(--pf-v5-global--palette--light-green-400)',
-  LightGreen500 = 'var(--pf-v5-global--palette--light-green-500)',
-  Orange50 = 'var(--pf-v5-global--palette--orange-50)',
-  Orange400 = 'var(--pf-v5-global--palette--orange-400)',
-  Purple100 = 'var(--pf-v5-global--palette--purple-100)',
-  Purple200 = 'var(--pf-v5-global--palette--purple-200)',
-  Purple500 = 'var(--pf-v5-global--palette--purple-500)',
-  Red50 = 'var(--pf-v5-global--palette--red-50)',
-  Red100 = 'var(--pf-v5-global--palette--red-100)',
-  Red200 = 'var(--pf-v5-global--palette--red-200)',
-  Red500 = 'var(--pf-v5-global--palette--red-500)',
-  White = 'var(--pf-v5-global--palette--white)',
+  Black100 = 'var(--pf-t--color--gray--10)',
+  Black150 = 'var(--pf-t--color--gray--10)',
+  Black200 = 'var(--pf-t--color--gray--20)',
+  Black300 = 'var(--pf-t--color--gray--30)',
+  Black400 = 'var(--pf-t--color--gray--40)',
+  Black500 = 'var(--pf-t--color--gray--50)',
+  Black600 = 'var(--pf-t--color--gray--60)',
+  Black700 = 'var(--pf-t--color--gray--70)',
+  Black800 = 'var(--pf-t--color--gray--80)',
+  Black900 = 'var(--pf-t--color--gray--90)',
+  Black1000 = 'var(--pf-t--color--gray--95)',
+  Blue50 = 'var(--pf-t--color--blue--10)',
+  Blue200 = 'var(--pf-t--color--blue--20)',
+  Blue300 = 'var(--pf-t--color--blue--30)',
+  Blue400 = 'var(--pf-t--color--blue--40)',
+  Blue500 = 'var(--pf-t--color--blue--50)',
+  Blue600 = 'var(--pf-t--color--teal--70)',
+  Cyan300 = 'var(--pf-t--color--teal--40)',
+  Gold400 = 'var(--pf-t--color--yellow--40)',
+  Green300 = 'var(--pf-t--color--green--30)',
+  Green400 = 'var(--pf-t--color--green--40)',
+  Green500 = 'var(--pf-t--color--green--50)',
+  Green600 = 'var(--pf-t--color--green--60)',
+  LightBlue400 = 'var(--pf-t--chart--color--teal--200)',
+  LightGreen400 = 'var(--pf-t--color--green--40)',
+  LightGreen500 = 'var(--pf-t--color--green--50)',
+  Orange50 = 'var(--pf-t--color--orange--10)',
+  Orange400 = 'var(--pf-t--color--orange--40)',
+  Purple100 = 'var(--pf-t--color--purple--10)',
+  Purple200 = 'var(--pf-t--color--purple--20)',
+  Purple500 = 'var(--pf-t--color--purple--40)',
+  Red50 = 'var(--pf-t--color--red--10)',
+  Red100 = 'var(--pf-t--color--red--10)',
+  Red200 = 'var(--pf-t--color--red--20)',
+  Red500 = 'var(--pf-t--color--red--50)',
+  White = 'var(--pf-t--color--white)',
 
   // semantic kiali colors
-  Active = 'var(--pf-v5-global--active-color--400)',
-  ActiveText = 'var(--pf-v5-global--primary-color--200)',
-  Badge = 'var(--pf-v5-global--palette--blue-300)',
-  Replay = 'var(--pf-v5-global--active-color--300)',
-  Link = 'var(--pf-v5-global--link--Color)',
+  Active = 'var(--pf-t--color--blue--50)',
+  ActiveText = 'var(--pf-t--color--blue--20)',
+  Badge = 'var(--pf-t--color--blue--30)',
+  Replay = 'var(--pf-t--global--color--brand--100)',
+  Link = 'var(--pf-t--color--blue--50)',
 
   // Health/Alert colors https://www.patternfly.org/v4/design-guidelines/styles/colors
-  Danger = 'var(--pf-v5-global--danger-color--100)',
-  Info = 'var(--pf-v5-global--info-color--100)',
-  InfoBackground = 'var(--pf-v5-global--info-color--200)',
-  Success = 'var(--pf-v5-global--success-color--100)',
-  SuccessBackground = 'var(--pf-v5-global--success-color--200)',
-  Warning = 'var(--pf-v5-global--warning-color--100)',
+  Danger = 'var(--pf-t--global--icon--color--severity--critical--default)',
+  Info = 'var(--pf-t--global--icon--color--severity--none--default)',
+  InfoBackground = 'var(--pf-t--color--blue--70)',
+  Success = 'var(--pf-t--color--green--50)',
+  SuccessBackground = 'var(--pf-t--color--green--70)',
+  Warning = 'var(--pf-t--global--icon--color--severity--moderate--default)',
 
   // chart-specific color values, for rates charts where 4xx is really Danger not Warning
-  ChartDanger = 'var(--pf-v5-global--danger-color--300)',
-  ChartOther = 'var(--pf-v5-global--palette-black-1000)',
-  ChartWarning = 'var(--pf-v5-global--danger-color--100)',
+  ChartDanger = 'var(--pf-t--chart--color--red-orange--500)',
+  ChartOther = 'var(--pf-t--color--gray--95)',
+  ChartWarning = 'var(--pf-t--chart--color--red-orange--400)',
 
   // PF background colors (compatible with dark mode)
-  BackgroundColor100 = 'var(--pf-v5-global--BackgroundColor--100)',
-  BackgroundColor150 = 'var(--pf-v5-global--BackgroundColor--150)',
-  BackgroundColor200 = 'var(--pf-v5-global--BackgroundColor--200)',
+  BackgroundColor100 = 'var(--pf-t--global--background--color--primary--default)',
+  BackgroundColor150 = 'var(--pf-t--global--background--color--tertiary--default)',
+  BackgroundColor200 = 'var(--pf-t--global--background--color--secondary--default)',
 
   // PF standard colors (compatible with dark mode)
-  Color100 = 'var(--pf-v5-global--Color--100)',
-  Color200 = 'var(--pf-v5-global--Color--200)',
-  ColorLight100 = 'var(--pf-v5-global--Color--light-100)',
-  ColorLight200 = 'var(--pf-v5-global--Color--light-200)',
-  ColorLight300 = 'var(--pf-v5-global--Color--light-300)',
+  Color100 = 'var(--pf-t--color--black)',
+  Color200 = 'var(--pf-t--color--gray--50)',
+  ColorLight100 = 'var(--pf-t--color--white)',
+  ColorLight200 = 'var(--pf-t--color--gray--20)',
+  ColorLight300 = 'var(--pf-t--color--gray--30)',
 
   // PF border colors (compatible with dark mode)
-  BorderColor100 = 'var(--pf-v5-global--BorderColor--100)',
-  BorderColor200 = 'var(--pf-v5-global--BorderColor--200)',
-  BorderColor300 = 'var(--pf-v5-global--BorderColor--300)',
-  BorderColorLight100 = 'var(--pf-v5-global--BorderColor--light-100)',
+  BorderColor100 = 'var(--pf-t--global--border--color--100)',
+  BorderColor200 = 'var(--pf-t--global--border--color--200)',
+  BorderColor300 = 'var(--pf-t--global--border--color--300)',
+  BorderColorLight100 = 'var(--pf-t--global--border--color--50)',
 }
 
 // The hex string value of the PF CSS variable
@@ -146,8 +146,8 @@ export let PFColorVals: PFColorValues;
 
 /*
   Extract color from var
-  Input : var(--pf-v5-global--palette--black-100)
-  Output:  --pf-v5-global--palette--black-100
+  Input : var(--pf-t--color--gray--10)
+  Output:  --pf-t--color--gray--10
 
   - In case there is not var then return the same input
 */

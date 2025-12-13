@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PFColors } from '../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { kialiStyle } from './StyleUtils';
 
 export const basicTabStyle = kialiStyle({
   $nest: {
-    '& .pf-v5-c-tabs__list': {
+    '& .pf-v6-c-tabs__list': {
       marginLeft: '20px',
     },
 
-    '& .pf-v5-c-tab-content': {
+    '& .pf-v6-c-tab-content': {
       overflowY: 'auto',
       height: '600px',
     },
@@ -31,7 +31,7 @@ export const basicTabStyle = kialiStyle({
 
 export const traceTabStyle = kialiStyle({
   $nest: {
-    '& .pf-v5-c-tabs__list': {
+    '& .pf-v6-c-tabs__list': {
       backgroundColor: PFColors.BackgroundColor100,
       borderBottom: `1px solid ${PFColors.BorderColor100}`,
     },

@@ -23,6 +23,11 @@ type Size = 'sm' | 'md' | 'lg' | 'xl';
 export const createIcon = (status: Status, size?: Size) => {
   const classForColor = kialiStyle({
     color: status.color,
+    $nest: {
+      '& svg': {
+        fill: status.color,
+      },
+    },
   });
   return React.createElement(
     Icon,

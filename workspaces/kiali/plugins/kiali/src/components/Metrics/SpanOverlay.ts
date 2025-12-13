@@ -26,7 +26,7 @@ import {
   TimeRange,
   TracingQuery,
 } from '@backstage-community/plugin-kiali-common/types';
-import { PFColors } from '../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { KialiApi } from '../../services/Api';
 import { KialiAppState } from '../../store';
 import { toOverlay } from '../../utils/VictoryChartsUtils';

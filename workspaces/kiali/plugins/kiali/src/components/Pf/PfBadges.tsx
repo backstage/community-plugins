@@ -16,7 +16,7 @@
 import { Badge, Tooltip, TooltipPosition } from '@patternfly/react-core';
 import React, { CSSProperties } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PFColors } from './PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 export type PFBadgeType = {
   badge: string;
@@ -141,7 +141,7 @@ export const kialiBadge = kialiStyle({
   color: PFColors.White,
   borderRadius: '20px',
   flexShrink: 0,
-  fontFamily: 'var(--pf-v5-global--FontFamily--text)',
+  fontFamily: 'var(--pf-v6-global--FontFamily--text)',
   fontSize: 'var(--kiali-global--font-size)',
   lineHeight: '16px',
   marginRight: '4px',
@@ -156,7 +156,7 @@ export const kialiBadgeSmall = kialiStyle({
   color: PFColors.White,
   borderRadius: '20px',
   flexShrink: 0,
-  fontFamily: 'var(--pf-v5-global--FontFamily--text)',
+  fontFamily: 'var(--pf-v6-global--FontFamily--text)',
   fontSize: '12px',
   lineHeight: '13px',
   marginRight: '5px',

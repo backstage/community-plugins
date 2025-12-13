@@ -20,7 +20,7 @@ import {
 } from '@backstage-community/plugin-kiali-common/types';
 import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { Validation } from './Validation';
 
 type ValidationStackProps = {

@@ -74,7 +74,7 @@ import {
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 import { default as React } from 'react';
 import { classes } from 'typestyle';
-import { PFColors } from '../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { kialiStyle } from '../styles/StyleUtils';
 
 export const defaultIconStyle = kialiStyle({
@@ -104,7 +104,14 @@ const conversorIconProps = (
         color: colorI,
       })
     : undefined;
-  return <Icon className={`${props.className} ${classNameIcon}`}>{icon}</Icon>;
+  return (
+    <Icon
+      className={`${props.className} ${classNameIcon || ''}`}
+      color={colorI}
+    >
+      {icon}
+    </Icon>
+  );
 };
 
 // keep alphabetized
