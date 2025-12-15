@@ -1,5 +1,11 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.12.1
+
+### Patch Changes
+
+- 2d627a1: enable knip reports and remove unused dependencies
+
 ## 10.12.0
 
 ### Minor Changes
