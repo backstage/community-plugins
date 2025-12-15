@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 7.6.0
+
+### Minor Changes
+
+- e2d17e1: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- 636525d: Updated dependency `@types/express` to `4.17.25`.
+- Updated dependencies [e2d17e1]
+  - @backstage-community/plugin-rbac-common@1.22.0
+  - @backstage-community/plugin-rbac-node@1.16.0
+
 ## 7.5.0
 
 ### Minor Changes
