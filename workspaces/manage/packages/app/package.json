@@ -23,7 +23,6 @@
     "@backstage-community/plugin-manage-module-tech-insights": "workspace:^",
     "@backstage-community/plugin-manage-react": "workspace:^",
     "@backstage-community/plugin-tech-insights": "^0.6.0",
-    "@backstage-community/plugin-tech-radar": "^1.0.0",
     "@backstage/app-defaults": "^1.7.2",
     "@backstage/catalog-model": "^1.7.6",
     "@backstage/cli": "^0.34.5",
