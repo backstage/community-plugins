@@ -52,6 +52,9 @@ test.describe('RBAC plugin', () => {
 
   const finishAndVerifyUpdate = async (button: string, message: string) => {
     await common.clickButton(translations.roleForm.steps.next);
+    await page
+      .getByText(translations.permissionPolicies.helperText)
+      .waitFor({ state: 'hidden' });
     await common.clickButton(button);
 
     await verifyText(message, page);
@@ -60,7 +63,6 @@ test.describe('RBAC plugin', () => {
         .locator(`a`)
         .filter({ hasText: translations.page.title })
         .click();
-      await page.waitForLoadState('domcontentloaded');
     }
   };
 
@@ -204,6 +206,9 @@ test.describe('RBAC plugin', () => {
     );
     await common.clickButton(translations.roleForm.steps.next);
     await common.clickButton(translations.roleForm.steps.next);
+    await page
+      .getByText(translations.permissionPolicies.helperText)
+      .waitFor({ state: 'hidden' });
     await common.clickButton(translations.roleForm.steps.save);
     await verifyText(
       replaceTemplate(translations.common.roleActionSuccessfully, {
@@ -289,6 +294,9 @@ test.describe('RBAC plugin', () => {
       // page.getByRole('cell', { name: `${translations.permissionPolicies.permissionPolicies} (7)` }),
       page.getByRole('cell', { name: 'Permission policies (7)' }),
     ).toBeVisible();
+    await page
+      .getByText(translations.permissionPolicies.helperText)
+      .waitFor({ state: 'hidden' });
     await common.clickButton(translations.roleForm.steps.save);
     await verifyText(
       replaceTemplate(translations.common.roleActionSuccessfully, {
