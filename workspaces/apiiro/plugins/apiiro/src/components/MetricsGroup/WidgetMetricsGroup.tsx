@@ -45,6 +45,7 @@ export const WidgetMetricsGroup = ({
           <StatusTile
             repository={repositoryData}
             detailViewLink={`${repositoryData.entityUrl}/apiiro`}
+            allowViewChart={allowViewChart}
           />
         </Grid>
         {allowViewChart && (

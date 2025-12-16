@@ -67,6 +67,7 @@ export interface StatusTileProps {
   height?: string | number;
   repository: RepositoryType;
   detailViewLink?: string | null;
+  allowViewChart?: boolean;
 }
 
 export const StatusBox = styled(Box)<{
@@ -204,6 +205,7 @@ export const StatusTile = ({
   height = 'auto',
   repository,
   detailViewLink = null,
+  allowViewChart = true,
 }: StatusTileProps) => {
   // Show message when no data is available
   if (Object.keys(repository).length === 0) {
@@ -280,13 +282,15 @@ export const StatusTile = ({
           </Link>
         </StatusRow>
         <ActionLinks>
-          <ActionLink
-            to={apiiroRepoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Go to Apiiro →
-          </ActionLink>
+          {allowViewChart && (
+            <ActionLink
+              to={apiiroRepoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Go to Apiiro →
+            </ActionLink>
+          )}
           {detailViewLink && (
             <ActionLink to={detailViewLink}>Detail View →</ActionLink>
           )}

@@ -43,7 +43,10 @@ export const TabMetricsGroup = ({
     <Grid container spacing={3} direction="column">
       <Grid container spacing={3}>
         <Grid xs={12} sm={12}>
-          <StatusTile repository={repositoryData} />
+          <StatusTile
+            repository={repositoryData}
+            allowViewChart={allowViewChart}
+          />
         </Grid>
         {allowViewChart && (
           <>
