@@ -16,7 +16,7 @@
 import * as express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { createUnifiedErrorResponse } from '../utils';
-import { ApiiroNotConfiguredError } from '../data.service';
+import { ApiiroNotConfiguredError } from '../utils/errors';
 
 /**
  * Middleware to handle JSON parsing errors and Apiiro-specific errors

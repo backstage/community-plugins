@@ -45,19 +45,7 @@ import {
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 import { fetchWithErrorHandling, fetchAllPages } from './utils';
 import { LoggerService } from '@backstage/backend-plugin-api';
-
-/**
- * Custom error class for Apiiro configuration errors.
- * Used to signal that Apiiro is not configured, allowing routers to return 401.
- */
-export class ApiiroNotConfiguredError extends Error {
-  constructor(
-    message = 'Apiiro is not configured. Please set apiiro.accessToken in your app-config.',
-  ) {
-    super(message);
-    this.name = 'ApiiroNotConfiguredError';
-  }
-}
+import { ApiiroNotConfiguredError } from './utils/errors';
 
 export type DefaultRiskFilters = {
   RiskLevel?: string[];

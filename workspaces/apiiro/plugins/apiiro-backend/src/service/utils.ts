@@ -15,7 +15,7 @@
  */
 import * as express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { ApiiroNotConfiguredError } from './data.service';
+import { ApiiroNotConfiguredError } from './utils/errors';
 
 /**
  * Unified error response structure for all API endpoints
