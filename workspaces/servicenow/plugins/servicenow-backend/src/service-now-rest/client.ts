@@ -123,7 +123,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
     params.append('sysparm_fields', responseFields.join(','));
     params.append('sysparm_count', 'true');
 
-    const requestUrl = `/api/now/table/incident?${params.toString()}`;
+    const requestUrl = `api/now/table/incident?${params.toString()}`;
     this.logger.info(`Fetching incidents from ServiceNow: ${requestUrl}`);
 
     try {
