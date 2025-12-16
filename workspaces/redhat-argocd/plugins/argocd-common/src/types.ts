@@ -15,6 +15,9 @@
  */
 import { V1ObjectMeta } from '@kubernetes/client-node';
 
+/**
+ * @public
+ */
 export interface Application {
   apiVersion?: string;
   kind?: string;
@@ -25,6 +28,9 @@ export interface Application {
   isAppOfAppsPattern?: boolean;
 }
 
+/**
+ * @public
+ */
 export interface Instance {
   name: string;
   url: string;
@@ -33,6 +39,9 @@ export interface Instance {
   username?: string;
 }
 
+/**
+ * @public
+ */
 export interface InstanceApplications {
   name: string;
   url: string;
@@ -40,6 +49,9 @@ export interface InstanceApplications {
   applications?: Application[];
 }
 
+/**
+ * @public
+ */
 export interface Spec {
   source: Source;
   sources?: Source[];
@@ -47,11 +59,17 @@ export interface Spec {
   project: string;
 }
 
+/**
+ * @public
+ */
 export interface Destination {
   server: string;
   namespace: string;
 }
 
+/**
+ * @public
+ */
 export interface Source {
   chart?: string;
   repoURL: string;
@@ -65,6 +83,9 @@ export interface Source {
   targetRevision?: string;
 }
 
+/**
+ * @public
+ */
 export interface Status {
   sync: StatusSync;
   health: Health;
@@ -78,10 +99,16 @@ export interface Status {
   summary: Summary;
 }
 
+/**
+ * @public
+ */
 export interface Health {
   status: string;
 }
 
+/**
+ * @public
+ */
 export interface History {
   revision?: string;
   revisions?: string[];
@@ -93,6 +120,9 @@ export interface History {
   initiatedBy?: InitiatedBy;
 }
 
+/**
+ * @public
+ */
 export interface OperationState {
   operation: Operation;
   phase?: string;
@@ -102,16 +132,25 @@ export interface OperationState {
   finishedAt?: string;
 }
 
+/**
+ * @public
+ */
 export interface Operation {
   sync: OperationSync;
   initiatedBy?: InitiatedBy;
   retry?: {};
 }
 
+/**
+ * @public
+ */
 export interface InitiatedBy {
   username: string;
 }
 
+/**
+ * @public
+ */
 export interface OperationSync {
   prune?: boolean;
   revision?: string;
@@ -121,10 +160,16 @@ export interface OperationSync {
   syncOptions?: string[];
 }
 
+/**
+ * @public
+ */
 export interface SyncStrategy {
   hook: {};
 }
 
+/**
+ * @public
+ */
 export interface SyncResult {
   resources: SyncResultResource[];
   revision: string;
@@ -133,6 +178,9 @@ export interface SyncResult {
   sources?: Source[];
 }
 
+/**
+ * @public
+ */
 export interface SyncResultResource {
   group: string;
   version: string;
@@ -145,10 +193,16 @@ export interface SyncResultResource {
   syncPhase: string;
 }
 
+/**
+ * @public
+ */
 export interface Summary {
   images: string[];
 }
 
+/**
+ * @public
+ */
 export interface StatusSync {
   status: string;
   comparedTo?: {
@@ -160,6 +214,9 @@ export interface StatusSync {
   revisions?: string[];
 }
 
+/**
+ * @public
+ */
 export interface RevisionInfo {
   author: string;
   date: Date;
@@ -167,6 +224,9 @@ export interface RevisionInfo {
   revisionID?: string;
 }
 
+/**
+ * @public
+ */
 export enum HealthStatus {
   Healthy = 'Healthy',
   Suspended = 'Suspended',
@@ -176,14 +236,23 @@ export enum HealthStatus {
   Unknown = 'Unknown',
 }
 
+/**
+ * @public
+ */
 export type SyncStatusCode = 'Unknown' | 'Synced' | 'OutOfSync';
 
+/**
+ * @public
+ */
 export const SyncStatuses: { [key: string]: SyncStatusCode } = {
   Synced: 'Synced',
   Unknown: 'Unknown',
   OutOfSync: 'OutOfSync',
 };
 
+/**
+ * @public
+ */
 export type OperationPhase =
   | 'Running'
   | 'Error'
@@ -191,6 +260,9 @@ export type OperationPhase =
   | 'Succeeded'
   | 'Terminating';
 
+/**
+ * @public
+ */
 export const OperationPhases: { [key: string]: OperationPhase } = {
   Running: 'Running',
   Failed: 'Failed',
@@ -199,17 +271,29 @@ export const OperationPhases: { [key: string]: OperationPhase } = {
   Terminating: 'Terminating',
 };
 
+/**
+ * @public
+ */
 export type Instances = {
   name: string;
   url: string;
 }[];
 
+/**
+ * @public
+ */
 export type Order = 'asc' | 'desc';
 
+/**
+ * @public
+ */
 export type OpenRowStatus = {
   [x: string]: boolean;
 };
 
+/**
+ * @public
+ */
 export interface Resource {
   version: string;
   kind: string;
@@ -221,4 +305,7 @@ export interface Resource {
   createTimestamp?: string;
 }
 
+/**
+ * @public
+ */
 export type HealthStatusType = keyof typeof HealthStatus;

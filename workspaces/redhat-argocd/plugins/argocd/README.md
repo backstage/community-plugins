@@ -215,7 +215,7 @@ You can use these additional annotations with the base annotations:
     argocd/instance-name: 'argoInstance2'
 ```
 
-- To fetch data from multiple ArgoCD instances, separate the instance names with commas:
+- To fetch data from multiple ArgoCD instances, separate the instance names with commas. The order of displayed applications is determined by the order of instance names in this annotation. If it is missing, the order is determined by the order of instances in the configuration. Example configuration:
 
 ```yaml
  annotations:
@@ -223,8 +223,9 @@ You can use these additional annotations with the base annotations:
     argocd/instance-name: 'argoInstance1,argoInstance2'
 ```
 
-> [!Note] > **If `argocd/instance-name` annotation is not set, the plugin will search all available ArgoCD instances configured in the `app.config.yaml`. It is advised to add this annotation to entities for better performance.**
+> [!Note]
+> If `argocd/instance-name` annotation is not set, the plugin will search all available ArgoCD instances configured in the `app.config.yaml`. It is advised to add this annotation to entities for better performance.
 
 > [!Important]
 > Use `argocd/app-selector` to display multiple ArgoCD applications per entity. Annotation `argocd/app-name` is limited to returning the first application from each ArgoCD instance, this is necessary
-> for compatibility with the Roadie backend plugin that uses this annotation for 'single application' setup.
+> for compatibility with the [RoadieHQ ArgoCD Backend Plugin](https://github.com/RoadieHQ/roadie-backstage-plugins/blob/main/plugins/backend/backstage-plugin-argo-cd-backend/README.md) that uses this annotation for 'single application' setup.
