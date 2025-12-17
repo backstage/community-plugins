@@ -195,6 +195,7 @@ export const announcementsTranslationRef = createTranslationRef({
           actions: 'Actions',
           addTooltip: 'Add',
           noCategoriesFound: 'No categories found.',
+          search: 'Search categories...',
         },
       },
       tagsContent: {
