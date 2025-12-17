@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 import { Routes, Route } from 'react-router-dom';
+import { RequirePermission } from '@backstage/plugin-permission-react';
+import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsAdminPage } from './components/admin/AnnouncementsAdminPage';
 import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
 import {
   AnnouncementsPage,
   AnnouncementsPageProps,
 } from '../components/AnnouncementsPage';
+import { AnnouncementPage } from '../components/AnnouncementPage';
 import { CategoriesContent } from '../components/Admin/CategoriesContent';
 import { TagsContent } from '../components/Admin/TagsContent';
 
@@ -51,12 +54,39 @@ export const Router = (props: RouterProps) => {
     ...props,
   };
 
+  // Extract props for AnnouncementPage
+  const announcementPageProps = {
+    themeId: propsWithDefaults.themeId,
+    title: propsWithDefaults.title,
+    subtitle: propsWithDefaults.subtitle,
+    markdownRenderer: propsWithDefaults.markdownRenderer,
+    titleLength: props.cardOptions?.titleLength,
+  };
+
   return (
     <Routes>
       <Route path="/" element={<AnnouncementsPage {...propsWithDefaults} />} />
-
-      <Route path="/admin" element={<AnnouncementsAdminPage />}>
-        <Route path="" element={<AnnouncementsContent />} />
+      <Route
+        path="/view/:id"
+        element={<AnnouncementPage {...announcementPageProps} />}
+      />
+      <Route
+        path="/admin"
+        element={
+          <RequirePermission permission={announcementCreatePermission}>
+            <AnnouncementsAdminPage
+              title={props.title}
+              defaultInactive={props.defaultInactive}
+            />
+          </RequirePermission>
+        }
+      >
+        <Route
+          path=""
+          element={
+            <AnnouncementsContent defaultInactive={props.defaultInactive} />
+          }
+        />
         <Route path="categories" element={<CategoriesContent />} />
         <Route path="tags" element={<TagsContent />} />
       </Route>
