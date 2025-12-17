@@ -17,12 +17,13 @@ For local development, you can use this configuration:
 
 ```
 argocd:
+  namespacedApps: true
+  localDevelopment: true
   appLocatorMethods:
     - type: 'config'
       instances:
         - name: local
           url: https://localhost:53204
-          insecure: true
           username: ${ARGOCD_USERNAME}
           password: ${ARGOCD_PASSWORD}
 ```
