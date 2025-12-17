@@ -345,7 +345,7 @@ export class ArgoCDService {
    * @param {string} [options.appName] - Application name
    * @param {string} [options.project] - The project the ArgoCD Application lives in
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
-   * @param {string} [options.expand] - If set to applications, return expanded InstanceApplications with applications 
+   * @param {string} [options.expand] - If set to applications, return expanded InstanceApplications with applications
    * @returns {Promise<InstanceApplications[]>} - Instance application data
    * @throws {Error} - When error occurs
    */
