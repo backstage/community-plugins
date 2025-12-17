@@ -109,33 +109,22 @@ test('Overview card content', async ({ page }) => {
   const inboundSparkline = page.locator(
     '[data-test="sparkline-inbound-duration-10m"]',
   );
-  await expect(inboundSparkline).toBeAttached({ timeout: 30000 });
+  await expect(inboundSparkline).toBeVisible();
 
-  // Wait for React to finish rendering the chart
-  // Use waitForFunction to wait until the SVG and paths are in the DOM
-  // This handles React's asynchronous rendering better than expect().toBeAttached()
-  await page.waitForFunction(
-    () => {
-      const container = document.querySelector(
-        '[data-test="sparkline-inbound-duration-10m"]',
-      );
-      if (!container) return false;
-      const svg = container.querySelector('svg');
-      if (!svg) return false;
-      const paths = svg.querySelectorAll('path');
-      return paths.length > 0;
-    },
-    { timeout: 30000 },
-  );
+  const overviewcard = page.locator('[data-test="overview-card-bookinfo"]');
 
-  // TODO
   // Verify the sparkline contains a chart (SVG element)
-  // const sparklineChart = inboundSparkline.locator('svg').first();
-  // await expect(sparklineChart).toBeAttached();
+  const sparklineChart = overviewcard.locator('svg').first();
+  await expect(sparklineChart).toBeVisible();
 
   // Verify the chart has data points (path elements)
-  // const chartPaths = sparklineChart.locator('path');
-  // await expect(chartPaths.first()).toBeAttached();
+  // Use a more specific selector that waits for paths with data (those with 'd' attribute)
+  const chartPaths = sparklineChart.locator('path[role="presentation"]');
+  await expect(chartPaths.first()).toBeVisible();
+
+  // Additional verification: ensure there are path elements (data points) in the chart
+  const pathCount = await chartPaths.count();
+  expect(pathCount).toBeGreaterThan(0);
 });
 
 test('Traffic card content', async ({ page }) => {

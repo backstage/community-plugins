@@ -19,15 +19,20 @@ import { useTagDetails } from './quay';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest
-    .fn()
-    .mockReturnValue({ getSecurityDetails: (param: any) => param }),
+  useApi: jest.fn().mockReturnValue({
+    getSecurityDetails: (
+      _instance: string | undefined,
+      org: string,
+      _repo: string,
+      _digest: string,
+    ) => org,
+  }),
 }));
 
 describe('useTagDetails', () => {
-  it('should return tag details for provided org, repo and digest', async () => {
+  it('should return tag details for provided instance, org, repo and digest', async () => {
     const { result } = renderHook(() =>
-      useTagDetails('foo', 'bar', 'mock-digest'),
+      useTagDetails(undefined, 'foo', 'bar', 'mock-digest'),
     );
     await waitFor(() => {
       expect(result.current).toEqual({ loading: false, value: 'foo' });

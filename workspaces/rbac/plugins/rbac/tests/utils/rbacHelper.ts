@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export const verifyCellsInTable = async (
   cellIdentifier: (string | RegExp)[],
   page: Page,
 ) => {
   for (const text of cellIdentifier) {
-    const cellLocator = page
-      .locator('td[class*="MuiTableCell-root"]')
-      .filter({ hasText: text });
-    const count = await cellLocator.count();
-
-    if (count === 0) {
-      throw new Error(
-        `Expected at least one cell with text matching ${text}, but none were found.`,
-      );
-    }
+    const cellLocator = page.getByRole('cell').filter({ hasText: text });
+    expect(await cellLocator.count()).toBeGreaterThan(0);
 
     // Checks if all matching cells are visible.
-    for (let i = 0; i < count; i++) {
-      await expect(cellLocator.nth(i)).toBeVisible();
+    for (const cell of await cellLocator.all()) {
+      await expect(cell).toBeVisible();
     }
   }
 };
@@ -56,7 +48,6 @@ export const verifyText = async (
   exact: boolean = true,
 ) => {
   const element = page.getByText(text, { exact: exact }).first();
-  await element.scrollIntoViewIfNeeded();
   await expect(element).toBeVisible();
 };
 
@@ -69,42 +60,36 @@ export class Common {
 
   async verifyHeading(heading: string | RegExp) {
     const headingLocator = this.page
-      .locator('h1, h2, h3, h4, h5, h6')
-      .filter({ hasText: heading })
+      .getByRole('heading', { name: heading })
       .first();
-    await headingLocator.waitFor({ state: 'visible', timeout: 30000 });
     await expect(headingLocator).toBeVisible();
   }
 
-  async clickButton(
-    label: string,
-    clickOpts?: Parameters<Locator['click']>[0],
-    getByTextOpts: Parameters<Locator['getByText']>[1] = { exact: true },
-  ) {
-    const muiButtonLabel =
-      'span[class^="MuiButton-label"],button[class*="MuiButton-root"]';
-    const selector = `${muiButtonLabel}:has-text("${label}")`;
-    const button = this.page
-      .locator(selector)
-      .getByText(label, getByTextOpts)
-      .first();
-    await button.waitFor({ state: 'visible' });
-    await button.click(clickOpts);
+  async clickButton(label: string) {
+    const button = this.page.getByRole('button', { name: label, exact: true });
+    await expect(button).toHaveCount(1);
+    await button.click();
   }
 
   async waitForSideBarVisible() {
-    await this.page.waitForSelector('nav a', { timeout: 120000 });
+    await this.page.waitForSelector('nav a');
   }
 
   async loginAsGuest() {
     await this.page.goto('/');
-    // TODO - Remove it after https://issues.redhat.com/browse/RHIDP-2043. A Dynamic plugin for Guest Authentication Provider needs to be created
     this.page.on('dialog', async dialog => {
       await dialog.accept();
     });
 
-    await this.verifyHeading('Select a sign-in method');
+    await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible();
     await this.clickButton('Enter');
     await this.waitForSideBarVisible();
+  }
+
+  async switchToLocale(page: Page, locale: string): Promise<void> {
+    if (locale !== 'en') {
+      await page.getByRole('button', { name: 'Language' }).click();
+      await page.getByRole('menuitem', { name: locale }).click();
+    }
   }
 }
