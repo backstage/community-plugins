@@ -38,6 +38,7 @@ export type tRow = {
 interface SimpleTableProps {
   className?: string;
   columns: SortableTh[] | TableCellProps[];
+  'data-test'?: string;
   emptyState?: React.ReactNode;
   label: string;
   rows: tRow;
@@ -55,7 +56,7 @@ export const SimpleTable: React.FC<SimpleTableProps> = (
   });
 
   return (
-    <Table className={props.className}>
+    <Table className={props.className} data-test={props['data-test']}>
       {!props.emptyState && (
         <TableHead>
           <TableRow>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -39,11 +39,22 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
+  outputDir: 'node_modules/.cache/e2e-test-results',
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'en',
+      testDir: './tests',
+      use: {
+        locale: 'en',
+      },
+    },
+    {
+      name: 'fr',
+      testDir: './tests',
+      use: {
+        locale: 'fr',
+      },
     },
   ],
 });

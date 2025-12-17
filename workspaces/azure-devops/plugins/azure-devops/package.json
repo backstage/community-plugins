@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-devops",
-  "version": "0.21.0",
+  "version": "0.23.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "azure-devops",
@@ -60,6 +60,8 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-permission-react": "backstage:^",
+    "@backstage/plugin-search-common": "backstage:^",
+    "@backstage/plugin-search-react": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",

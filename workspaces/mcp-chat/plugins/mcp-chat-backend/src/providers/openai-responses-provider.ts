@@ -18,7 +18,7 @@ import {
   ChatMessage,
   Tool,
   ChatResponse,
-  ServerConfig,
+  MCPServerFullConfig,
   ResponsesApiResponse,
   ResponsesApiMcpTool,
   ResponsesApiMcpCall,
@@ -26,13 +26,22 @@ import {
   ToolCall,
 } from '../types';
 
+/**
+ * OpenAI Responses API provider with native MCP support.
+ * Delegates MCP tool discovery and execution to the API itself.
+ *
+ * @public
+ */
 export class OpenAIResponsesProvider extends LLMProvider {
-  private mcpServerConfigs: ServerConfig[] = [];
+  private mcpServerConfigs: MCPServerFullConfig[] = [];
 
   /**
-   * Set MCP server configurations that will be converted to Responses API format
+   * Sets the MCP server configurations for native tool support.
+   * These servers will be passed to the OpenAI Responses API.
+   *
+   * @param configs - Array of MCP server configurations
    */
-  setMcpServerConfigs(configs: ServerConfig[]): void {
+  setMcpServerConfigs(configs: MCPServerFullConfig[]): void {
     this.mcpServerConfigs = configs;
   }
 

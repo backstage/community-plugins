@@ -16,6 +16,11 @@
 import { LLMProvider } from './base-provider';
 import { ChatMessage, Tool, ChatResponse } from '../types';
 
+/**
+ * OpenAI Chat Completions API provider.
+ *
+ * @public
+ */
 export class OpenAIProvider extends LLMProvider {
   async sendMessage(
     messages: ChatMessage[],

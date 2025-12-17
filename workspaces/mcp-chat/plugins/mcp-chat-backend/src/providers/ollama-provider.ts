@@ -17,6 +17,11 @@ import { LLMProvider } from './base-provider';
 import { ChatMessage, Tool, ChatResponse } from '../types';
 import { Ollama } from 'ollama';
 
+/**
+ * Ollama local LLM provider.
+ *
+ * @public
+ */
 export class OllamaProvider extends LLMProvider {
   private ollama: Ollama;
 

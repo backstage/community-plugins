@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Grid, CircularProgress } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { Application } from '../../api/api';

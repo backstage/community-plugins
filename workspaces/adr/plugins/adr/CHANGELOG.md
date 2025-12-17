@@ -1,5 +1,29 @@
 # @backstage-community/plugin-adr
 
+## 0.18.1
+
+### Patch Changes
+
+- 0b42b41: Switch for errors from `WarningPanel` to `ErrorPanel` to allow users to see error stacktraces
+
+## 0.18.0
+
+### Minor Changes
+
+- 1afca36: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- 685783e: FrontMatter decorator shows now a local date without time and timezone instead of a full `Date.toString()` string. It also uppercase the first character for lowercase-only strings.
+- 7bc52c7: Change status badge (tag/chip) to more colorful variants:
+
+  1. "good" labels for the status "accepted" from the primary theme color to the success palette color.
+  2. "warning" labels for the status "deprecated" from the secondary theme color to the warning palette color.
+  3. "dangerous" labels for the status "rejected" from the secondary theme color to the error palette color.
+
+- Updated dependencies [1afca36]
+  - @backstage-community/plugin-adr-common@0.14.0
+
 ## 0.17.2
 
 ### Patch Changes

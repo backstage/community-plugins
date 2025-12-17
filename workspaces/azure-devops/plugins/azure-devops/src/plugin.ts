@@ -37,6 +37,8 @@ import {
   AZURE_DEVOPS_PROJECT_ANNOTATION,
   AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION,
 } from '@backstage-community/plugin-azure-devops-common';
+import { createSearchResultListItemExtension } from '@backstage/plugin-search-react';
+import { WikiArticleSearchResultListItemProps } from './components/WikiArticleSearchResultListItem';
 
 /** @public */
 export const isAzureDevOpsAvailable = (entity: Entity) =>
@@ -119,5 +121,23 @@ export const EntityAzureReadmeCard = azureDevOpsPlugin.provide(
     component: {
       lazy: () => import('./components/ReadmeCard').then(m => m.ReadmeCard),
     },
+  }),
+);
+
+/**
+ * React extension used to render results on Search page or modal
+ *
+ * @public
+ */
+export const AzureDevOpsWikiArticleSearchResultListItem: (
+  props: WikiArticleSearchResultListItemProps,
+) => React.JSX.Element | null = azureDevOpsPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'WikiArticleSearchResultListItem',
+    component: () =>
+      import('./components/WikiArticleSearchResultListItem').then(
+        m => m.WikiArticleSearchResultListItem,
+      ),
+    predicate: result => result.type === 'adr',
   }),
 );

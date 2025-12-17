@@ -468,6 +468,47 @@ Use these endpoints for debugging:
 | `/api/mcp-chat/mcp/status`      | GET    | Get status of connected MCP servers   |
 | `/api/mcp-chat/tools`           | GET    | List available MCP tools from servers |
 
+## Using as a Library
+
+This plugin can be used as a **reusable library** in your own Backstage backend plugins. Instead of building your own LLM integration, you can import the provider system, MCP client service, and utilities directly.
+
+### Quick Example
+
+```typescript
+import {
+  ProviderFactory,
+  getProviderConfig,
+  MCPClientServiceImpl,
+  type ChatMessage,
+} from '@backstage-community/plugin-mcp-chat-backend';
+
+// Create an LLM provider from config
+const providerConfig = getProviderConfig(config);
+const provider = ProviderFactory.createProvider(providerConfig);
+
+// Or use the full MCP service with tool support
+const mcpService = new MCPClientServiceImpl({ logger, config });
+await mcpService.initializeMCPServers();
+
+const result = await mcpService.processQuery([
+  { role: 'user', content: 'List all pods in default namespace' },
+]);
+```
+
+### What's Exported
+
+| Category      | Exports                                                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Providers** | `LLMProvider`, `ProviderFactory`, `OpenAIProvider`, `ClaudeProvider`, `GeminiProvider`, `OllamaProvider`, `LiteLLMProvider`, `OpenAIResponsesProvider` |
+| **Services**  | `MCPClientService`, `MCPClientServiceImpl`                                                                                                             |
+| **Types**     | `ChatMessage`, `ChatResponse`, `ProviderConfig`, `ServerConfig`, `Tool`, `ToolCall`, and more                                                          |
+| **Utilities** | `validateConfig`, `validateMessages`, `loadServerConfigs`, `executeToolCall`                                                                           |
+| **Router**    | `createRouter` - reuse the standard API endpoints                                                                                                      |
+
+### Full Documentation
+
+For comprehensive API documentation, usage examples, and integration patterns, see **[USAGE.md](./USAGE.md)**.
+
 ## Contributing
 
 Please see our [Contributing Guidelines](../../CONTRIBUTING.md) for detailed information.

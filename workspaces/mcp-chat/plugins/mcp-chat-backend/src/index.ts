@@ -13,4 +13,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// =============================================================================
+// Plugin
+// =============================================================================
 export { mcpChatPlugin as default } from './plugin';
+
+// =============================================================================
+// LLM Providers
+// =============================================================================
+export {
+  LLMProvider,
+  ProviderFactory,
+  getProviderConfig,
+  getProviderInfo,
+  OpenAIProvider,
+  OpenAIResponsesProvider,
+  ClaudeProvider,
+  GeminiProvider,
+  OllamaProvider,
+  LiteLLMProvider,
+} from './providers';
+
+// =============================================================================
+// Services
+// =============================================================================
+export type { MCPClientService } from './services/MCPClientService';
+export {
+  MCPClientServiceImpl,
+  type Options as MCPClientServiceOptions,
+} from './services/MCPClientServiceImpl';
+
+// =============================================================================
+// Types
+// =============================================================================
+export type {
+  // Provider types
+  ProviderConfig,
+  ProviderStatusData,
+  ProviderInfo,
+  ProviderConnectionStatus,
+  LLMProviderType,
+
+  // MCP Server types
+  MCPServerConfig,
+  MCPServerSecrets,
+  MCPServerFullConfig,
+  MCPServer,
+  MCPServerStatusData,
+
+  // Chat types
+  ChatMessage,
+  ChatResponse,
+  QueryResponse,
+
+  // Tool types
+  Tool,
+  ToolCall,
+  ServerTool,
+  ToolExecutionResult,
+
+  // Validation types
+  MessageValidationResult,
+
+  // OpenAI Responses API types
+  ResponsesApiMcpTool,
+  ResponsesApiMcpListTools,
+  ResponsesApiMcpCall,
+  ResponsesApiMessage,
+  ResponsesApiResponse,
+  ResponsesApiOutputEvent,
+} from './types';
+
+// Enums and Constants
+export { MCPServerType, VALID_ROLES } from './types';
+
+// =============================================================================
+// Utilities
+// =============================================================================
+export {
+  validateConfig,
+  validateMessages,
+  loadServerConfigs,
+  executeToolCall,
+  findNpxPath,
+} from './utils';
+
+// =============================================================================
+// Router
+// =============================================================================
+export { createRouter } from './router';

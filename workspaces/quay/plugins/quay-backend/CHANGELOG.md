@@ -1,5 +1,32 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.10.0
+
+### Minor Changes
+
+- 482a213: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [482a213]
+  - @backstage-community/plugin-quay-common@1.15.0
+
+## 1.9.0
+
+### Minor Changes
+
+- 40d312e: **BREAKING**: Added support for multiple Quay instances. Backend plugin routes now require an `:instance-name` parameter to support multiple Quay instances:
+
+  - `/repository/:org/:repo/tag` → `/:instanceName/repository/:org/:repo/tag`
+  - `/repository/:org/:repo/manifest/{digest}` → `/:instanceName/repository/:org/:repo/manifest/{digest}`
+  - `/repository/:org/:repo/manifest/{digest}/labels` → `/:instanceName/repository/:org/:repo/manifest/{digest}/labels`
+  - `/repository/:org/:repo/manifest/{digest}/security` → `/instanceName/repository/:org/:repo/manifest/{digest}/security`
+
+### Patch Changes
+
+- Updated dependencies [40d312e]
+  - @backstage-community/plugin-quay-common@1.14.0
+
 ## 1.8.0
 
 ### Minor Changes

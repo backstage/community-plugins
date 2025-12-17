@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect, type Locator, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { expect, TestInfo, type Locator, type Page } from '@playwright/test';
 
 export class Common {
   page: Page;
@@ -60,5 +61,17 @@ export class Common {
     await this.verifyHeading('Select a sign-in method');
     await this.clickButton('Enter');
     await this.waitForSideBarVisible();
+  }
+
+  async a11yCheck(testInfo: TestInfo) {
+    const page = this.page;
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+
+    await testInfo.attach('accessibility-scan-results.json', {
+      body: JSON.stringify(accessibilityScanResults.violations, null, 2),
+      contentType: 'application/json',
+    });
   }
 }

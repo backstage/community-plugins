@@ -1,5 +1,21 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.18.0
+
+### Minor Changes
+
+- c2644cb: Add option that marks action as failed if pipeline result is not successful
+
+### Patch Changes
+
+- 3c0a6e4: Fix bearer token authentication for Git clone operations
+
+## 0.17.0
+
+### Minor Changes
+
+- 840c7dc: Backstage version bump to v1.45.1
+
 ## 0.16.1
 
 ### Patch Changes

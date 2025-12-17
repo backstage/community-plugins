@@ -14,7 +14,7 @@ metadata:
   name: guests
 spec:
   type: team
-  children: []
+  children: [sub-guests]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Group
@@ -33,3 +33,11 @@ spec:
   children:
     - guests
     - employees
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: sub-guests
+spec:
+  type: team
+  children: []

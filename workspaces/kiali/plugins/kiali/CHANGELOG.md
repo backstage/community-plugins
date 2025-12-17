@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 1.47.0
+
+### Minor Changes
+
+- 9c32784: Add e2e tests
+
+## 1.46.0
+
+### Minor Changes
+
+- f1697c9: Fix header styles for OpenShift. Use new cluster metrics API.
+
+### Patch Changes
+
+- Updated dependencies [f1697c9]
+  - @backstage-community/plugin-kiali-common@0.8.0
+  - @backstage-community/plugin-kiali-react@0.5.2
+
 ## 1.45.1
 
 ### Patch Changes

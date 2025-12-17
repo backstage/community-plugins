@@ -12,13 +12,15 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @alpha
-export const acrApi: ExtensionDefinition<{
+export const acrApi: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'acrApi';
   config: {};
@@ -37,7 +39,7 @@ export const acrApi: ExtensionDefinition<{
 }>;
 
 // @alpha
-export const acrImagesEntityContent: ExtensionDefinition<{
+export const acrImagesEntityContent: OverridableExtensionDefinition<{
   kind: 'entity-content';
   name: 'acrImagesEntityContent';
   config: {
@@ -107,11 +109,28 @@ export const acrImagesEntityContent: ExtensionDefinition<{
 }>;
 
 // @alpha
+export const acrTranslationRef: TranslationRef<
+  'plugin.acr',
+  {
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.tag': string;
+    readonly 'table.columns.created': string;
+    readonly 'table.columns.lastModified': string;
+    readonly 'table.columns.manifest': string;
+    readonly 'page.title': string;
+  }
+>;
+
+// @alpha
+export const acrTranslations: TranslationResource<'plugin.acr'>;
+
+// @alpha
 const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:acr/acrApi': ExtensionDefinition<{
+    'api:acr/acrApi': OverridableExtensionDefinition<{
       kind: 'api';
       name: 'acrApi';
       config: {};
@@ -128,7 +147,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-content:acr/acrImagesEntityContent': ExtensionDefinition<{
+    'entity-content:acr/acrImagesEntityContent': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'acrImagesEntityContent';
       config: {

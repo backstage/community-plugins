@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-mcp-chat-backend",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -57,10 +57,20 @@
     "directory": "workspaces/mcp-chat/plugins/mcp-chat-backend"
   },
   "keywords": [
+    "backstage",
     "backstage-plugin",
-    "chat-interface",
+    "backstage-backend-plugin",
+    "llm",
+    "llm-integration",
+    "openai",
+    "claude",
+    "gemini",
+    "ollama",
+    "litellm",
     "mcp",
-    "model-context-protocol"
+    "model-context-protocol",
+    "ai",
+    "chat"
   ],
   "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-chat/plugins/mcp-chat-backend",
   "bugs": "https://github.com/backstage/community-plugins/issues",

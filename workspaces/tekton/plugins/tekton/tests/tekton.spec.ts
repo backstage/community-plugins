@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { expect, Locator, Page, test } from '@playwright/test';
-
-import { Common } from './tektonHelper';
+import { Common } from './utils/tektonHelper';
 
 test.describe('Tekton plugin', () => {
   let page: Page;
   let common: Common;
+
   test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext();
     page = await context.newPage();
@@ -28,14 +28,10 @@ test.describe('Tekton plugin', () => {
     await common.loginAsGuest();
     await expect(
       page.getByRole('heading', { name: 'Pipeline Runs' }),
-    ).toBeVisible({ timeout: 20000 });
+    ).toBeVisible();
   });
 
-  test.afterAll(async ({ browser }) => {
-    await browser.close();
-  });
-
-  test('Control elements are shown', async () => {
+  test('Control elements are shown', async ({ browser }, testInfo) => {
     const clusterSelect = page.locator('.bs-tkn-cluster-selector');
     await expect(
       clusterSelect.getByText('Cluster', { exact: true }),
@@ -61,6 +57,7 @@ test.describe('Tekton plugin', () => {
         thead.getByRole('columnheader', { name: col, exact: true }),
       ).toBeVisible();
     }
+    await common.a11yCheck(testInfo);
   });
 
   test('Pipelines are shown', async () => {
@@ -69,6 +66,17 @@ test.describe('Tekton plugin', () => {
     for (const plr of await plrLabel.all()) {
       expect(plr).toBeVisible();
     }
+  });
+
+  test('Filtering works', async () => {
+    const search = page.getByPlaceholder('Search');
+    const rows = page.getByRole('row').filter({ hasText: 'PLR' });
+
+    await search.fill('sbom');
+    await expect(rows).toHaveCount(2);
+
+    await page.getByRole('button', { name: 'clear search' }).click();
+    await expect(rows).toHaveCount(5);
   });
 
   test('Pipeline without scan or sbom only shows logs', async () => {
@@ -201,7 +209,7 @@ test.describe('Tekton plugin', () => {
       await checkCards(card, cards, 'deployment-check-table', policyColumns);
     });
 
-    test('Check other output', async () => {
+    test('Check other output', async ({ browser }, testInfo) => {
       const card = page.locator('[id="others"]');
       await card.locator(`[id='others-toggle-button']`).click();
       await card.scrollIntoViewIfNeeded();
@@ -215,10 +223,14 @@ test.describe('Tekton plugin', () => {
         .last()
         .textContent()) as string;
       expect(JSON.parse(text)).toEqual(output);
+
+      await common.a11yCheck(testInfo);
     });
   });
 
-  test('Pipeline with sbom has the show sbom action', async () => {
+  test('Pipeline with sbom has the show sbom action', async ({
+    browser,
+  }, testInfo) => {
     const row = page.getByRole('row', { name: 'pipelinerun-with-sbom-task' });
     await expect(row.getByRole('cell').nth(2)).toHaveText('-');
 
@@ -230,6 +242,7 @@ test.describe('Tekton plugin', () => {
     const dialog = page.getByTitle('PipelineRun Logs');
     await expect(dialog.getByText('sbom-task')).toBeVisible();
 
+    await common.a11yCheck(testInfo);
     await page.getByLabel('close').click();
   });
 
@@ -269,7 +282,7 @@ test.describe('Tekton plugin', () => {
       );
     });
 
-    test('View output action is enabled', async () => {
+    test('View output action is enabled', async ({ browser }, testInfo) => {
       const viewOutput = row.getByTestId('view-output-icon');
       await expect(viewOutput).toBeEnabled();
 
@@ -280,6 +293,7 @@ test.describe('Tekton plugin', () => {
       await expect(dialog.locator('tbody')).toContainText('MY_SCAN_OUTPUT');
       const text = (await dialog.locator('td').last().textContent()) as string;
       expect(JSON.parse(text)).toEqual(output);
+      await common.a11yCheck(testInfo);
       await page.getByLabel('close').click();
     });
   });
@@ -326,12 +340,11 @@ async function checkVulnerabilities(
   const vuln = row.locator('.severity');
   let i = 0;
 
-  for (const prop in vulnerabilities) {
-    if (vulnerabilities[prop] > 0) {
-      await expect(vuln.nth(i)).toContainText(
-        new RegExp(`${prop}\s*${vulnerabilities[prop]}`),
-        { ignoreCase: true },
-      );
+  for (const [key, value] of Object.entries(vulnerabilities)) {
+    if (value > 0) {
+      await expect(vuln.nth(i)).toContainText(new RegExp(`${key}\s*${value}`), {
+        ignoreCase: true,
+      });
       i++;
     }
   }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
-import Jenkins from 'jenkins';
+import { Jenkins } from '@backstage-community/plugin-jenkins-common';
 
 /**
  * This copyJob function, creates a job given a source job name

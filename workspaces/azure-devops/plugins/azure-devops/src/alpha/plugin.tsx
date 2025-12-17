@@ -30,8 +30,13 @@ import {
   EntityCardBlueprint,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
+import {
+  SearchFilterResultTypeBlueprint,
+  SearchResultListItemBlueprint,
+} from '@backstage/plugin-search-react/alpha';
 import { azurePullRequestDashboardRouteRef } from '../routes';
 import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '../plugin';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 
 /** @alpha */
 export const azureDevOpsApi = ApiBlueprint.make({
@@ -115,6 +120,27 @@ export const azureDevOpsReadmeEntityCard = EntityCardBlueprint.make({
   },
 });
 
+export const azureDevOpsWikiArticleSearchResultListItem =
+  SearchResultListItemBlueprint.make({
+    params: {
+      predicate: result => result.type === 'azure-devops-wiki-article',
+      component: () =>
+        import('../components/WikiArticleSearchResultListItem').then(
+          m => m.WikiArticleSearchResultListItem,
+        ),
+    },
+  });
+
+const azureDevOpsWikiArticleSearchFilterResultType =
+  SearchFilterResultTypeBlueprint.make({
+    name: 'azure-devops-wiki-article-results-type',
+    params: {
+      value: 'azure-devops-wiki-article',
+      name: 'Azure DevOps Wiki',
+      icon: <LibraryBooksIcon />,
+    },
+  });
+
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'azure-devops',
@@ -125,5 +151,7 @@ export default createFrontendPlugin({
     azureDevOpsGitTagsEntityContent,
     azureDevOpsPullRequestsEntityContent,
     azureDevOpsPullRequestPage,
+    azureDevOpsWikiArticleSearchResultListItem,
+    azureDevOpsWikiArticleSearchFilterResultType,
   ],
 });

@@ -1,5 +1,25 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.16.1
+
+### Patch Changes
+
+- 0b42b41: Remove unused dependencies (@backstage/catalog-client, @backstage/config, @backstage/integration, @backstage/plugin-search-common, luxon, node-fetch and yn)
+- Updated dependencies [0b42b41]
+  - @backstage-community/search-backend-module-adr@0.13.1
+
+## 0.16.0
+
+### Minor Changes
+
+- 1afca36: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [1afca36]
+  - @backstage-community/plugin-adr-common@0.14.0
+  - @backstage-community/search-backend-module-adr@0.13.0
+
 ## 0.15.0
 
 ### Minor Changes

@@ -15,25 +15,30 @@
  */
 
 import { JenkinsApiImpl } from './jenkinsApi';
-import jenkins from 'jenkins';
+import {
+  Jenkins,
+  type JenkinsBuild,
+} from '@backstage-community/plugin-jenkins-common';
 import { JenkinsInfo } from './jenkinsInfoProvider';
-import { JenkinsBuild, JenkinsProject } from '../types';
+import { JenkinsProject } from '../types';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import fetch, { Response } from 'node-fetch';
 import { mockServices } from '@backstage/backend-test-utils';
 
-jest.mock('jenkins');
+jest.mock('@backstage-community/plugin-jenkins-common');
 jest.mock('node-fetch');
 const mockedJenkinsClient = {
   job: {
     get: jest.fn(),
     build: jest.fn(),
+    getBuilds: jest.fn(),
   },
   build: {
     get: jest.fn(),
+    getConsoleText: jest.fn(),
   },
 };
-const mockedJenkins = jenkins as jest.Mocked<any>;
+const mockedJenkins = Jenkins as jest.Mocked<any>;
 mockedJenkins.mockReturnValue(mockedJenkinsClient);
 
 const resourceRef = 'component:default/example-component';
@@ -777,9 +782,9 @@ describe('JenkinsApi', () => {
         json: async () => {},
       } as Response);
       await jenkinsApi.getJobBuilds(jenkinsInfo, jobs);
-      expect(mockFetch).toHaveBeenCalledWith(
-        'https://jenkins.example.com/job/example-jobName/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
-        { headers: { headerName: 'headerValue' }, method: 'get' },
+      expect(mockedJenkinsClient.job.getBuilds).toHaveBeenCalledWith(
+        ['example-jobName', 'foo'],
+        'name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
       );
     });
 
@@ -790,21 +795,18 @@ describe('JenkinsApi', () => {
       } as Response);
       const fullJobName = ['test', 'folder', 'depth', 'foo'];
       await jenkinsApi.getJobBuilds(jenkinsInfo, fullJobName);
-      expect(mockFetch).toHaveBeenCalledWith(
-        'https://jenkins.example.com/job/test/job/folder/job/depth/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
-        { headers: { headerName: 'headerValue' }, method: 'get' },
+      expect(mockedJenkinsClient.job.getBuilds).toHaveBeenCalledWith(
+        ['test', 'folder', 'depth', 'foo'],
+        'name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
       );
     });
   });
   describe('getBuildConsoleText', () => {
     it('should return the console text for a build', async () => {
       const mockedConsoleText = 'Build Ran';
-      mockFetch.mockResolvedValueOnce({
-        status: 200,
-        text: async () => {
-          return mockedConsoleText;
-        },
-      } as unknown as Response);
+      mockedJenkinsClient.build.getConsoleText.mockResolvedValueOnce(
+        mockedConsoleText,
+      );
 
       const consoleText = await jenkinsApi.getBuildConsoleText(
         jenkinsInfo,
@@ -813,9 +815,9 @@ describe('JenkinsApi', () => {
       );
 
       expect(consoleText).toBe('Build Ran');
-      expect(mockFetch).toHaveBeenCalledWith(
-        'https://jenkins.example.com/job/example-jobName/job/foo/19/consoleText',
-        { headers: { headerName: 'headerValue' }, method: 'get' },
+      expect(mockedJenkinsClient.build.getConsoleText).toHaveBeenCalledWith(
+        ['example-jobName', 'foo'],
+        19,
       );
     });
   });

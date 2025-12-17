@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck-node
 
+## 0.7.0
+
+### Minor Changes
+
+- e95e193: Backstage version bump to v1.45.1
+
 ## 0.6.0
 
 ### Minor Changes

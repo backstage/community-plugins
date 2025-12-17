@@ -1,5 +1,22 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.21.1
+
+### Patch Changes
+
+- 462895f: Replace O(n) REST calls to catalog backend with single call when cleaning up linguist entities by merging it with the add call.
+
+## 0.21.0
+
+### Minor Changes
+
+- 2d8cd5b: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [2d8cd5b]
+  - @backstage-community/plugin-linguist-common@0.14.0
+
 ## 0.20.1
 
 ### Patch Changes

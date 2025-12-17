@@ -1,5 +1,17 @@
 # @backstage-community/plugin-jenkins-common
 
+## 0.14.0
+
+### Minor Changes
+
+- daa9057: Backstage version bump to v1.45.3
+
+## 0.13.0
+
+### Minor Changes
+
+- cac3437: Replace the deprecated `jenkins` NPM package with a built-in, light-weight client.
+
 ## 0.12.0
 
 ### Minor Changes

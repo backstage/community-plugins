@@ -12,8 +12,8 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
@@ -22,7 +22,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:linguist': ExtensionDefinition<{
+    'api:linguist': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -39,7 +39,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:linguist/languages': ExtensionDefinition<{
+    'entity-card:linguist/languages': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'languages';
       config: {

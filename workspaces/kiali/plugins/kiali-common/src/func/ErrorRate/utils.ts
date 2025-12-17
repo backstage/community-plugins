@@ -26,15 +26,27 @@ import {
   Responses,
 } from '../../types';
 
+/**
+ * Create an empty rate object.
+ * @public
+ */
 export const emptyRate = (): Rate => {
   return { requestRate: 0, errorRate: 0, errorRatio: 0 };
 };
 
+/**
+ * Default configuration for error rate detection.
+ * @public
+ */
 export const DEFAULTCONF = {
   http: new RegExp('^[4|5]\\d\\d$'),
   grpc: new RegExp('^[1-9]$|^1[0-6]$'),
 };
 
+/**
+ * Calculate error rate code from requests.
+ * @public
+ */
 export const requestsErrorRateCode = (requests: RequestType): number => {
   const rate: Rate = emptyRate();
   for (const [protocol, req] of Object.entries(requests)) {
@@ -53,6 +65,11 @@ export const requestsErrorRateCode = (requests: RequestType): number => {
     : (rate.errorRate / rate.requestRate) * 100;
 };
 
+/** @public */
+/**
+ * Get health rate annotation from config.
+ * @public
+ */
 export const getHealthRateAnnotation = (
   config?: HealthAnnotationType,
 ): string | undefined => {
@@ -61,6 +78,11 @@ export const getHealthRateAnnotation = (
     : undefined;
 };
 
+/** @public */
+/**
+ * Get error code rate from requests.
+ * @public
+ */
 export const getErrorCodeRate = (
   requests: RequestHealth,
 ): { inbound: number; outbound: number } => {
@@ -72,6 +94,11 @@ export const getErrorCodeRate = (
 
 /*
 Cached this method to avoid use regexp in next calculations to improve performance
+ */
+/** @public */
+/**
+ * Check if a value matches a regex configuration.
+ * @public
  */
 export const checkExpr = (
   value: RegexConfig | undefined,
@@ -87,9 +114,17 @@ export const checkExpr = (
   return (reg as RegExp).test(testV);
 };
 
-// Cache the configuration to avoid multiple calls to regExp
+/**
+ * Cache the configuration to avoid multiple calls to regExp.
+ * @public
+ */
 export const configCache: { [key: string]: RateHealthConfig } = {};
 
+/** @public */
+/**
+ * Get rate health configuration for a resource.
+ * @public
+ */
 export const getRateHealthConfig = (
   ns: string,
   name: string,
@@ -137,6 +172,11 @@ For Responses object like { "200": { flags: { "-": 1.2, "XXX": 3.1}, hosts: ...}
 
 Return object like:  {"http": { "200": 4.3}}
 */
+/** @public */
+/**
+ * Transform edge responses to request type.
+ * @public
+ */
 export const transformEdgeResponses = (
   requests: Responses,
   protocol: string,

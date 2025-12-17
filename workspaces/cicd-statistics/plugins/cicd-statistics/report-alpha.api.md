@@ -9,8 +9,8 @@ import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -21,7 +21,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'entity-content:cicd-statistics/entity': ExtensionDefinition<{
+    'entity-content:cicd-statistics/entity': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {

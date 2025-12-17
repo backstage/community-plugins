@@ -1,5 +1,17 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- c20a704: This PR adds a new optional configuration field `allowedContainers` to the Azure Blob Storage Backstage plugin. This allows users to restrict which storage containers are shown in the UI.
+
+## 0.10.0
+
+### Minor Changes
+
+- eaffbd7: Backstage version bump to v1.45.1
+
 ## 0.9.0
 
 ### Minor Changes

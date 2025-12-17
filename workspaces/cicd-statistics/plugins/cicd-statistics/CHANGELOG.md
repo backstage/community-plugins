@@ -1,5 +1,17 @@
 # @backstage-community/plugin-cicd-statistics
 
+## 0.13.1
+
+### Patch Changes
+
+- 33e38a5: Replaces global JSX reference with React.JSX import
+
+## 0.13.0
+
+### Minor Changes
+
+- 060f3b1: Backstage version bump to v1.45.1
+
 ## 0.12.1
 
 ### Patch Changes

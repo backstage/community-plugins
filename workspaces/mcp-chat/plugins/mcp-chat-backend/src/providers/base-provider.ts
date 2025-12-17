@@ -16,7 +16,12 @@
 import { ResponseError } from '@backstage/errors';
 import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
 
-// Abstract base class for all LLM providers
+/**
+ * Abstract base class for all LLM providers.
+ * Extend this class to create custom LLM provider implementations.
+ *
+ * @public
+ */
 export abstract class LLMProvider {
   protected apiKey?: string; // Made optional
   protected baseUrl: string;

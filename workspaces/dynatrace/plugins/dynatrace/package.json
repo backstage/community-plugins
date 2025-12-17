@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-dynatrace",
-  "version": "10.11.0",
+  "version": "10.12.1",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "dynatrace",
@@ -50,7 +50,6 @@
     "@backstage/dev-utils": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
@@ -59,7 +58,7 @@
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "peerDependencies": {
-    "@backstage/plugin-catalog-react": "^1.21.2",
+    "@backstage/plugin-catalog-react": "^1.21.3",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"

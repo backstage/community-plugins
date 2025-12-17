@@ -16,7 +16,6 @@
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
-import { announcementViewRouteRef } from '../../routes';
 import {
   useAnnouncements,
   useAnnouncementsTranslation,
@@ -34,6 +33,7 @@ import {
 import { Box, Typography } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 
+import { announcementViewRouteRef } from '../../routes';
 /**
  * Props for the AnnouncementsTimeline component.
  *

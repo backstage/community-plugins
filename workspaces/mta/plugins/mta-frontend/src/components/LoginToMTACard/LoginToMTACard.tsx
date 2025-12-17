@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid, Button } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 

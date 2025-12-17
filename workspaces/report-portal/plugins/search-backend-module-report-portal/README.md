@@ -30,9 +30,12 @@ search:
     reportPortal:
       # Configure schdeule for indexing
       schedule: # Example :down:
-        frequency: { minutes: 10 }
+        frequency: { minutes: 60 }
         timeout: { minutes: 5 }
         initialDelay: { seconds: 3 }
       # Base location for collated resources, should be same as your frontend plugin route.
       locationTemplate: '/report-portal'
 ```
+
+**Note:** that frequent calls to some ReportPortal API endpoints (e.g., `/project/list`) can create additional load on the ReportPortal database due to extensive aggregations performed internally.\
+Therefore, it is strongly recommended to use a low frequency (e.g., `frequency: { minutes: 60 }`) if you have a large number of projects/launches in your ReportPortal instance.

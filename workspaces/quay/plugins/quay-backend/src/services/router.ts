@@ -77,28 +77,47 @@ export async function createRouter(
     }
   };
 
-  router.use('/repository', checkPermission);
+  router.use('/:instanceName/repository', checkPermission);
 
   const validateParams = (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
   ): void => {
-    const { org, repo } = req.params;
-    if (!org?.trim() || !repo?.trim()) {
+    const { instanceName, org, repo } = req.params;
+    if (!instanceName?.trim() || !org?.trim() || !repo?.trim()) {
       res.status(400).json({ error: 'Missing required parameters' });
       return;
     }
     next();
   };
 
-  router.use('/repository/:org/:repo', validateParams);
+  router.use('/:instanceName/repository/:org/:repo', validateParams);
 
-  router.get('/repository/:org/:repo/tag', async (req, res) => {
-    const { org, repo } = req.params;
+  const checkInstanceIsConfigured = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ): Promise<void> => {
+    const { instanceName } = req.params;
+    const instanceConfig = quayService.getQuayInstance(instanceName);
+    if (instanceConfig === undefined) {
+      res.status(404).json({
+        error: `Quay instance "${instanceName}" not found in configuration.`,
+      });
+      return;
+    }
+    next();
+  };
+
+  router.use('/:instanceName', checkInstanceIsConfigured);
+
+  router.get('/:instanceName/repository/:org/:repo/tag', async (req, res) => {
+    const { instanceName, org, repo } = req.params;
     const { page, limit } = req.query;
 
     const tags = await quayService.getTags(
+      instanceName,
       org,
       repo,
       page ? Number(page) : undefined,
@@ -109,21 +128,28 @@ export async function createRouter(
   });
 
   router.get(
-    '/repository/:org/:repo/manifest/:digest/labels',
+    '/:instanceName/repository/:org/:repo/manifest/:digest/labels',
     async (req, res) => {
-      const { org, repo, digest } = req.params;
-      const labels = await quayService.getLabels(org, repo, digest);
+      const { instanceName, org, repo, digest } = req.params;
+
+      const labels = await quayService.getLabels(
+        instanceName,
+        org,
+        repo,
+        digest,
+      );
 
       res.status(200).json(labels);
     },
   );
 
   router.get(
-    '/repository/:org/:repo/manifest/:digest/security',
+    '/:instanceName/repository/:org/:repo/manifest/:digest/security',
     async (req, res) => {
-      const { org, repo, digest } = req.params;
+      const { instanceName, org, repo, digest } = req.params;
 
       const securityDetails = await quayService.getSecurityDetails(
+        instanceName,
         org,
         repo,
         digest,
@@ -133,12 +159,21 @@ export async function createRouter(
     },
   );
 
-  router.get('/repository/:org/:repo/manifest/:digest', async (req, res) => {
-    const { org, repo, digest } = req.params;
-    const manifest = await quayService.getManifestByDigest(org, repo, digest);
+  router.get(
+    '/:instanceName/repository/:org/:repo/manifest/:digest',
+    async (req, res) => {
+      const { instanceName, org, repo, digest } = req.params;
 
-    res.status(200).json(manifest);
-  });
+      const manifest = await quayService.getManifestByDigest(
+        instanceName,
+        org,
+        repo,
+        digest,
+      );
+
+      res.status(200).json(manifest);
+    },
+  );
 
   return router;
 }

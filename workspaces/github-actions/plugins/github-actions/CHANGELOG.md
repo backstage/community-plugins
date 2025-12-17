@@ -1,5 +1,19 @@
 # @backstage-community/plugin-github-actions
 
+## 0.18.0
+
+### Minor Changes
+
+- 88fe001: Backstage version bump to v1.45.1
+
+## 0.17.0
+
+### Minor Changes
+
+- 5724534: Added a config for the entity content extension to change component layout between table and cards.
+
+  **Breaking** Changed the name of the entity content extension from `entity-content:github-actions/github-actions-entity-content` to `entity-content:github-actions`.
+
 ## 0.16.0
 
 ### Minor Changes

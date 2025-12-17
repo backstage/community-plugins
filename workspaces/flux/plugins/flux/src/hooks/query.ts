@@ -27,13 +27,19 @@ import {
   OCIRepository,
   Kustomization,
   ImagePolicy,
-  gitRepositoriesGVK,
-  helmReleaseGVK,
-  ociRepositoriesGVK,
-  kustomizationGVK,
-  helmRepositoryGVK,
+  gitRepositoriesV1beta2GVK,
+  gitRepositoriesV1GVK,
+  helmReleaseV2beta1GVK,
+  helmReleaseV2GVK,
+  ociRepositoriesV1beta2GVK,
+  ociRepositoriesV1GVK,
+  kustomizationV1beta2GVK,
+  kustomizationV1GVK,
+  helmRepositoryV1beta2GVK,
+  helmRepositoryV1GVK,
   HelmRepository,
-  imagePolicyGVK,
+  imagePolicyV1beta1GVK,
+  imagePolicyV1GVK,
 } from '../objects';
 import { Deployment, Source } from '../components/helpers';
 
@@ -106,7 +112,8 @@ export interface Response<T> {
  */
 export function useHelmReleases(entity: Entity): Response<HelmRelease> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    helmReleaseGVK,
+    helmReleaseV2beta1GVK,
+    helmReleaseV2GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<HelmRelease>(
@@ -129,7 +136,8 @@ export function useHelmReleases(entity: Entity): Response<HelmRelease> {
  */
 export function useGitRepositories(entity: Entity): Response<GitRepository> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    gitRepositoriesGVK,
+    gitRepositoriesV1beta2GVK,
+    gitRepositoriesV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<GitRepository>(
@@ -152,7 +160,8 @@ export function useGitRepositories(entity: Entity): Response<GitRepository> {
  */
 export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    ociRepositoriesGVK,
+    ociRepositoriesV1beta2GVK,
+    ociRepositoriesV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<OCIRepository>(
@@ -175,7 +184,8 @@ export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
  */
 export function useKustomizations(entity: Entity): Response<Kustomization> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    kustomizationGVK,
+    kustomizationV1beta2GVK,
+    kustomizationV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<Kustomization>(
@@ -198,7 +208,8 @@ export function useKustomizations(entity: Entity): Response<Kustomization> {
  */
 export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    helmRepositoryGVK,
+    helmRepositoryV1beta2GVK,
+    helmRepositoryV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<HelmRepository>(
@@ -222,8 +233,10 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
 
 export function useFluxDeployments(entity: Entity): Response<Deployment> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    helmReleaseGVK,
-    kustomizationGVK,
+    helmReleaseV2beta1GVK,
+    helmReleaseV2GVK,
+    kustomizationV1beta2GVK,
+    kustomizationV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<Deployment>(item => {
@@ -249,9 +262,12 @@ export function useFluxDeployments(entity: Entity): Response<Deployment> {
 
 export function useFluxSources(entity: Entity): Response<Source> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    helmRepositoryGVK,
-    ociRepositoriesGVK,
-    gitRepositoriesGVK,
+    helmRepositoryV1beta2GVK,
+    helmRepositoryV1GVK,
+    ociRepositoriesV1beta2GVK,
+    ociRepositoriesV1GVK,
+    gitRepositoriesV1beta2GVK,
+    gitRepositoriesV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<Source>(item => {
@@ -282,7 +298,8 @@ export function useFluxSources(entity: Entity): Response<Source> {
  */
 export function useImagePolicies(entity: Entity): Response<ImagePolicy> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    imagePolicyGVK,
+    imagePolicyV1beta1GVK,
+    imagePolicyV1GVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<ImagePolicy>(
