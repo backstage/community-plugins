@@ -153,6 +153,136 @@ describe('API calls', () => {
     });
   });
 
+  describe('findApplications', () => {
+    beforeEach(() => {
+      fetchSpy.mockImplementation(() =>
+        Promise.resolve<Response>({
+          ok: true,
+          json: () => Promise.resolve([]),
+        } as Response),
+      );
+    });
+
+    test('should fetch applications by appName', async () => {
+      const client = new ArgoCDApiClient({
+        backendBaseUrl: 'https://test.com',
+        useNamespacedApps: false,
+        identityApi: getIdentityApiStub,
+      });
+
+      await client.findApplications({
+        appName: 'my-test-app',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.com/api/argocd/find/name/my-test-app',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer fake-jwt-token',
+          },
+        }),
+      );
+    });
+
+    test('should fetch applications with expand when passed', async () => {
+      const client = new ArgoCDApiClient({
+        backendBaseUrl: 'https://test.com',
+        useNamespacedApps: false,
+        identityApi: getIdentityApiStub,
+      });
+
+      await client.findApplications({
+        appName: 'my-test-app',
+        expand: 'applications',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.com/api/argocd/find/name/my-test-app?expand=applications',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer fake-jwt-token',
+          },
+        }),
+      );
+    });
+
+    test('should fetch applications with expand, appNamespace and project when passed', async () => {
+      const client = new ArgoCDApiClient({
+        backendBaseUrl: 'https://test.com',
+        useNamespacedApps: true,
+        identityApi: getIdentityApiStub,
+      });
+
+      await client.findApplications({
+        appName: 'my-test-app',
+        appNamespace: 'my-namespace',
+        project: 'my-project',
+        expand: 'applications',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.com/api/argocd/find/name/my-test-app?appNamespace=my-namespace&project=my-project&expand=applications',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer fake-jwt-token',
+          },
+        }),
+      );
+    });
+
+    test('should fetch applications without appNamespace when useNamespacedApps is false', async () => {
+      const client = new ArgoCDApiClient({
+        backendBaseUrl: 'https://test.com',
+        useNamespacedApps: false,
+        identityApi: getIdentityApiStub,
+      });
+
+      await client.findApplications({
+        appName: 'my-test-app',
+        appNamespace: 'my-namespace',
+        project: 'my-project',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.com/api/argocd/find/name/my-test-app?project=my-project',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer fake-jwt-token',
+          },
+        }),
+      );
+    });
+
+    test('should throw error in case of any internal API failure', async () => {
+      fetchSpy.mockImplementation(() =>
+        Promise.resolve<Response>({
+          ok: false,
+          status: 'Internal server error',
+          statusText: 'Something went wrong',
+          json: () => Promise.reject({ status: 'Internal server error' }),
+        } as unknown as Response),
+      );
+
+      const client = new ArgoCDApiClient({
+        backendBaseUrl: 'https://test.com',
+        useNamespacedApps: false,
+        identityApi: getIdentityApiStub,
+      });
+
+      await expect(
+        client.findApplications({
+          appName: 'my-test-app',
+        }),
+      ).rejects.toThrow(
+        'failed to fetch data, status Internal server error: Something went wrong',
+      );
+    });
+  });
+
   describe('getApplication', () => {
     beforeEach(() => {
       fetchSpy.mockImplementation(() =>

@@ -70,15 +70,12 @@ describe('router', () => {
   });
 
   describe('GET /find/name/:appName', () => {
-    it('should return applications with appName and appNamespace', async () => {
+    it('should return instances with applications filtered by appName and appNamespace', async () => {
       const expectedApplicationResponse = [
         {
           name: 'main',
           url: 'https:/kubernetes.default.svc',
           appName: ['staging-app'],
-          applications: mockApplications.filter(
-            application => application.metadata.name === 'staging-app',
-          ),
         },
       ];
       mockArgoCDService.findApplications.mockResolvedValue(
@@ -93,6 +90,34 @@ describe('router', () => {
         appName: 'staging-app',
         project: undefined,
         appNamespace: 'staging',
+        expand: undefined,
+      });
+    });
+
+    it('should return instances with expanded applications filtered by appName', async () => {
+      const expectedApplicationResponse = [
+        {
+          name: 'main',
+          url: 'https:/kubernetes.default.svc',
+          appName: ['staging-app'],
+          applications: mockApplications.filter(
+            application => application.metadata.name === 'staging-app',
+          ),
+        },
+      ];
+      mockArgoCDService.findApplications.mockResolvedValue(
+        expectedApplicationResponse,
+      );
+      const response = await request(app)
+        .get('/find/name/staging-app?appNamespace=staging&expand=applications')
+        .expect(200);
+
+      expect(response.body).toEqual(expectedApplicationResponse);
+      expect(mockArgoCDService.findApplications).toHaveBeenCalledWith({
+        appName: 'staging-app',
+        project: undefined,
+        appNamespace: 'staging',
+        expand: 'applications',
       });
     });
   });

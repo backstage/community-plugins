@@ -123,6 +123,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
     const query = this.getQueryParams({
       appNamespace: options.appNamespace,
       project: options.project,
+      expand: options.expand,
     });
     return this.fetcher(
       `${proxyUrl}/find/name/${encodeURIComponent(

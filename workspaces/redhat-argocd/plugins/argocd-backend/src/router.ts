@@ -77,12 +77,13 @@ export async function createRouter(
     '/find/name/:appName',
     async (req: express.Request, res: express.Response) => {
       const { appName } = req.params;
-      const { project, appNamespace } = req.query;
+      const { project, appNamespace, expand } = req.query;
       res.send(
         await service.findApplications({
           appName,
           project: project as string,
           appNamespace: appNamespace as string,
+          expand: expand as string,
         }),
       );
     },

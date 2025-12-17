@@ -393,7 +393,7 @@ describe('ArgoCDService', () => {
   });
 
   describe('findApplications', () => {
-    it('should return applications from single instance', async () => {
+    it('should return instances with applications filtered by appName from single instance', async () => {
       const expectedApplications = mockApplications.filter(
         application => application.metadata.name === 'test-app',
       );
@@ -419,13 +419,48 @@ describe('ArgoCDService', () => {
           name: 'test-instance',
           url: 'https://argocd.example.com',
           appName: ['test-app'],
+        },
+      ]);
+      expect(result[0].applications).toBeUndefined();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return instances with expanded applications filtered by appName from single instance when expand=applications', async () => {
+      const expectedApplications = mockApplications.filter(
+        application => application.metadata.name === 'test-app',
+      );
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: expectedApplications,
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+        expand: 'applications',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
           applications: expectedApplications,
         },
       ]);
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
-    it('should return applications from multiple instances', async () => {
+    it('should return instances with applications filtered by appName from multiple instances', async () => {
       const expectedApplications = [
         mockApplications[0],
         {
@@ -453,7 +488,76 @@ describe('ArgoCDService', () => {
           }),
         });
 
-      const result = await service.findApplications({ appName: 'test-app' });
+      const result = await service.findApplications({
+        appName: 'test-app',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+        },
+        {
+          name: 'staging-instance',
+          url: 'https://argocd.staging.example.com',
+          appName: ['test-app'],
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.staging.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-staging-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+    });
+
+    it('should return instances with expanded applications filtered by appName from multiple instances when expand=applications', async () => {
+      const expectedApplications = [
+        mockApplications[0],
+        {
+          ...mockApplications[2],
+          metadata: { ...mockApplications[2].metadata, name: 'test-app' },
+        },
+        {
+          ...mockApplications[1],
+          metadata: { ...mockApplications[1].metadata, name: 'test-app' },
+        },
+      ];
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[0], expectedApplications[1]],
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[2]],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+        expand: 'applications',
+      });
       expect(result).toEqual([
         {
           name: 'test-instance',
@@ -503,7 +607,7 @@ describe('ArgoCDService', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return applications from single instance filtered by appName and project', async () => {
+    it('should return expanded instances with applications filtered by appName and project from single instance', async () => {
       const expectedApplications = mockApplications.filter(
         application =>
           application.metadata.name === 'test-app' &&
@@ -529,6 +633,7 @@ describe('ArgoCDService', () => {
         appName: 'test-app',
         appNamespace: 'test',
         project: 'custom',
+        expand: 'applications',
       });
       expect(result).toEqual([
         {

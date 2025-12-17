@@ -58,6 +58,7 @@ export type FindApplicationsOptions = {
   appName: string;
   appNamespace?: string;
   project?: string;
+  expand?: string;
 };
 
 export interface ArgoCDApi {

@@ -146,6 +146,7 @@ export class ArgoCDInstanceApiClient implements ArgoCDInstanceApi {
       appName,
       appNamespace,
       project,
+      expand: 'applications',
     });
 
     const applicationsExpanded = instanceApplicationsList.some(

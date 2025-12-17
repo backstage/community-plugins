@@ -382,6 +382,7 @@ describe('ArgoCDInstanceApiClient', () => {
           appName: 'quarkus-app',
           appNamespace: undefined,
           project: undefined,
+          expand: 'applications',
         });
         expect(mockArgoCDApiClient.getApplication).not.toHaveBeenCalled();
         expect(mockArgoCDApiClient.listApps).not.toHaveBeenCalled();
@@ -407,6 +408,7 @@ describe('ArgoCDInstanceApiClient', () => {
           appName: 'quarkus-app',
           appNamespace: 'test',
           project: 'custom',
+          expand: 'applications',
         });
       });
 
@@ -435,6 +437,7 @@ describe('ArgoCDInstanceApiClient', () => {
           appName: 'quarkus-app',
           appNamespace: undefined,
           project: undefined,
+          expand: 'applications',
         });
         expect(result).toHaveLength(2);
         expect(result[0]).toEqual(mockQuarkusDevApplicationWithAppName);

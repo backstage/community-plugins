@@ -345,6 +345,7 @@ export class ArgoCDService {
    * @param {string} [options.appName] - Application name
    * @param {string} [options.project] - The project the ArgoCD Application lives in
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
+   * @param {string} [options.expand] - If set to applications, return expanded InstanceApplications with applications 
    * @returns {Promise<InstanceApplications[]>} - Instance application data
    * @throws {Error} - When error occurs
    */
@@ -352,8 +353,11 @@ export class ArgoCDService {
     appName: string;
     project?: string;
     appNamespace?: string;
+    expand?: string;
   }): Promise<InstanceApplications[]> {
-    const { appName, appNamespace, project } = options;
+    const { appName, appNamespace, project, expand } = options;
+    const includeApplications = expand === 'applications';
+
     const applications = await Promise.all(
       this.getArgoInstances().map(instance =>
         this.listArgoApps(instance.name, {
@@ -373,9 +377,9 @@ export class ArgoCDService {
           name: instanceName,
           url: app.metadata.instance.url,
           appName: [appName],
-          applications: [app],
+          ...(includeApplications && { applications: [app] }),
         };
-      } else {
+      } else if (includeApplications) {
         // don't duplicate appName in appName array - always the same as we search by it
         instanceMap[instanceName].applications?.push(app);
       }
