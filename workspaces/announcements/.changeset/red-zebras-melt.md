@@ -7,4 +7,5 @@
 '@backstage-community/plugin-announcements': minor
 ---
 
-Backstage version bump to v1.46.0
+Backstage version bump to v1.46.0.
+This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
