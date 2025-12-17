@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
-import { ErrorPanel, Progress } from '@backstage/core-components';
+import { useState } from 'react';
 import {
   CreateCategoryRequest,
   announcementsApiRef,
@@ -22,59 +21,36 @@ import {
   useCategories,
   useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
-import {
-  announcementCreatePermission,
-  Category,
-} from '@backstage-community/plugin-announcements-common';
+import { Category } from '@backstage-community/plugin-announcements-common';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
-import {
-  Button,
-  Grid,
-  Table,
-  TableHeader,
-  Column,
-  TableBody,
-  Row,
-  CellText,
-  TablePagination,
-  Card,
-  CardBody,
-} from '@backstage/ui';
 
 import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
-  TitleForm,
 } from '../shared';
+import { CreateCatagoryDialog } from './CreateCatagoryDialog';
+import { CategoriesTableCard } from './CategoriesTableCard';
 
+/**
+ * @internal
+ */
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
-  const [pageSize, setPageSize] = useState(20);
-  const [offset, setOffset] = useState(0);
-  const { categories, loading, error, retry: refresh } = useCategories();
+  const { categories, retry: refresh } = useCategories();
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
+  const permissions = useAnnouncementsPermissions();
 
   const {
     isOpen: isDeleteDialogOpen,
-    open: openDeleteDialog,
     close: closeDeleteDialog,
+    open: openDeleteDialog,
     item: categoryToDelete,
   } = useDeleteConfirmationDialogState<Category>();
 
-  const permissions = useAnnouncementsPermissions();
-
-  const translationKeys = {
-    new: t('categoriesForm.newCategory'),
-    edit: t('categoriesForm.editCategory'),
-    titleLabel: t('categoriesForm.titleLabel'),
-    submit: t('categoriesForm.submit'),
-  };
-
-  const onSubmit = async (request: CreateCategoryRequest) => {
+  const onConfirmCreate = async (request: CreateCategoryRequest) => {
     const { title } = request;
 
     try {
@@ -87,6 +63,7 @@ export const CategoriesContent = () => {
         severity: 'success',
       });
 
+      setShowNewCategoryForm(false);
       refresh();
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
@@ -94,7 +71,11 @@ export const CategoriesContent = () => {
   };
 
   const onCreateButtonClick = () => {
-    setShowNewCategoryForm(!showNewCategoryForm);
+    setShowNewCategoryForm(true);
+  };
+
+  const onCancelCreate = () => {
+    setShowNewCategoryForm(false);
   };
 
   const onCancelDelete = () => {
@@ -121,104 +102,38 @@ export const CategoriesContent = () => {
     refresh();
   };
 
-  // Paginate categories
-  const paginatedCategories = useMemo(() => {
-    const start = offset;
-    const end = offset + pageSize;
-    return categories.slice(start, end);
-  }, [categories, offset, pageSize]);
+  const onDeleteClick = (category: Category) => {
+    openDeleteDialog(category);
+  };
 
-  if (loading) {
-    return <Progress />;
-  }
-  if (error) {
-    return <ErrorPanel error={error} />;
-  }
+  const canCreate = !permissions.create.loading && permissions.create.allowed;
+  const canDelete = !permissions.delete.loading && permissions.delete.allowed;
 
   return (
-    <RequirePermission permission={announcementCreatePermission}>
-      <Grid.Root columns="1">
-        <Grid.Item colSpan="1">
-          <Button
-            isDisabled={
-              permissions.create.loading || !permissions.create.allowed
-            }
-            onClick={() => onCreateButtonClick()}
-          >
-            {showNewCategoryForm
-              ? t('admin.categoriesContent.cancelButton')
-              : t('admin.categoriesContent.createButton')}
-          </Button>
-        </Grid.Item>
+    <>
+      <CategoriesTableCard
+        categories={categories ?? []}
+        onCreateClick={onCreateButtonClick}
+        onDeleteClick={onDeleteClick}
+        canCreate={canCreate}
+        canDelete={canDelete}
+      />
 
-        {showNewCategoryForm && (
-          <Grid.Item colSpan="1">
-            <TitleForm<Category>
-              translationKeys={translationKeys}
-              onSubmit={onSubmit}
-            />
-          </Grid.Item>
-        )}
+      <CreateCatagoryDialog
+        open={showNewCategoryForm}
+        onConfirm={onConfirmCreate}
+        onCancel={onCancelCreate}
+        canSubmit={canCreate}
+      />
 
-        <Grid.Item colSpan="1">
-          <Grid.Root columns="1">
-            <Grid.Item colSpan="1">
-              <Card>
-                <CardBody>
-                  <Table>
-                    <TableHeader>
-                      <Column id="title" allowsSorting isRowHeader>
-                        {t('admin.categoriesContent.table.title')}
-                      </Column>
-                      <Column id="slug" allowsSorting>
-                        {t('admin.categoriesContent.table.slug')}
-                      </Column>
-                    </TableHeader>
-                    <TableBody>
-                      {paginatedCategories.length === 0 ? (
-                        <Row>
-                          <CellText
-                            colSpan={2}
-                            title={t(
-                              'admin.categoriesContent.table.noCategoriesFound',
-                            )}
-                          />
-                        </Row>
-                      ) : (
-                        paginatedCategories.map(category => (
-                          <Row key={category.slug} id={category.slug}>
-                            <CellText title={category.title} />
-                            <CellText title={category.slug} />
-                          </Row>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </CardBody>
-              </Card>
-            </Grid.Item>
-
-            {categories.length > 0 && (
-              <Grid.Item colSpan="1">
-                <TablePagination
-                  offset={offset}
-                  pageSize={pageSize}
-                  setOffset={setOffset}
-                  setPageSize={setPageSize}
-                  rowCount={categories.length}
-                />
-              </Grid.Item>
-            )}
-          </Grid.Root>
-        </Grid.Item>
-
-        <DeleteConfirmationDialog
-          type="category"
-          open={isDeleteDialogOpen}
-          onCancel={onCancelDelete}
-          onConfirm={onConfirmDelete}
-        />
-      </Grid.Root>
-    </RequirePermission>
+      <DeleteConfirmationDialog
+        type="category"
+        itemTitle={categoryToDelete?.title}
+        open={isDeleteDialogOpen}
+        onCancel={onCancelDelete}
+        onConfirm={onConfirmDelete}
+        canDelete={canDelete}
+      />
+    </>
   );
 };

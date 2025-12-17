@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  useAnnouncementsPermissions,
-  useAnnouncementsTranslation,
-} from '@backstage-community/plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   Button,
   Dialog,
@@ -29,18 +26,19 @@ import {
 
 type DeleteConfirmationDialogProps = {
   type: 'announcement' | 'category' | 'tag';
+  itemTitle?: string;
   open: boolean;
   onConfirm: () => any;
   onCancel: () => any;
+  canDelete?: boolean;
 };
 
 export const DeleteConfirmationDialog = (
   props: DeleteConfirmationDialogProps,
 ) => {
-  const { type, open, onConfirm, onCancel } = props;
+  const { type, open, onConfirm, onCancel, itemTitle, canDelete } = props;
 
   const { t } = useAnnouncementsTranslation();
-  const permissions = useAnnouncementsPermissions();
 
   const title = t('confirmDeleteDialog.title');
   const body = t('confirmDeleteDialog.body', { type });
@@ -59,14 +57,12 @@ export const DeleteConfirmationDialog = (
         }}
       >
         <DialogHeader>{title}</DialogHeader>
-        <DialogBody>{body}</DialogBody>
+        <DialogBody>{itemTitle ? itemTitle : body}</DialogBody>
         <DialogFooter>
           <Button
             onClick={onConfirm}
             variant="primary"
-            isDisabled={
-              permissions.delete.loading || !permissions.delete.allowed
-            }
+            isDisabled={canDelete === false}
           >
             {deleteText}
           </Button>
