@@ -1,10 +1,7 @@
-# [Backstage](https://backstage.io)
+# GraphiQL
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for integrating [GraphiQL](https://github.com/graphql/graphiql), an in-browser IDE for exploring GraphQL, into Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [graphiql](./plugins/graphiql/README.md): Frontend plugin that provides the GraphiQL IDE interface within Backstage.
