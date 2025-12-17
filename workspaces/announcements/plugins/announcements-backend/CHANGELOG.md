@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.18.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+
 ## 0.17.0
 
 ### Minor Changes
