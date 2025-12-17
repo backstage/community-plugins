@@ -22,8 +22,9 @@ import {
   AnnouncementsPage,
   AnnouncementsPageProps,
 } from '../components/AnnouncementsPage';
+import { CategoriesContent } from './components/admin/categories';
+
 import { AnnouncementPage } from '../components/AnnouncementPage';
-import { CategoriesContent } from '../components/Admin/CategoriesContent';
 import { TagsContent } from '../components/Admin/TagsContent';
 
 type RouterProps = {
