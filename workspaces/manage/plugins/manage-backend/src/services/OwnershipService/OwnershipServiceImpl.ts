@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 import { OwnershipService } from '@backstage-community/plugin-manage-node';
-import {
-  BackstageCredentials,
-  BackstageUserPrincipal,
-} from '@backstage/backend-plugin-api';
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import {
   Entity,
   RELATION_CHILD_OF,
+  RELATION_PARENT_OF,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { CatalogService } from '@backstage/plugin-catalog-node';
@@ -28,45 +26,100 @@ import { CatalogService } from '@backstage/plugin-catalog-node';
 export class OwnershipServiceImpl implements OwnershipService {
   constructor(private readonly catalogService: CatalogService) {}
 
-  // Given a set of ownership entity refs (e.g. direct group memberships),
-  // get the parent groups of each group, recursively.
-  public async getOwnedGroups(
-    ownershipEntityRefs: readonly string[],
-    credentials: BackstageCredentials<BackstageUserPrincipal>,
-  ): Promise<Entity[]> {
-    const entityMap = new Map<string, Entity>();
-
-    const recurse = async (children: readonly string[]) => {
-      const entities = await this.catalogService.getEntitiesByRefs(
+  private async getEntitiesByRefs(
+    entityRefs: readonly string[],
+    credentials: BackstageCredentials,
+  ) {
+    return (
+      await this.catalogService.getEntitiesByRefs(
         {
-          entityRefs: Array.from(children),
+          entityRefs: Array.from(entityRefs),
         },
         {
           credentials,
         },
-      );
+      )
+    ).items.filter((entity): entity is Entity => !!entity);
+  }
 
-      entities.items
-        .filter((entity): entity is Entity => !!entity)
-        .forEach(entity => {
+  private getRelations(entities: Entity[], relationType: string): string[] {
+    return Array.from(
+      new Set(
+        entities.flatMap(entity =>
+          (entity.relations ?? [])
+            .filter(rel => rel.type === relationType)
+            .map(rel => rel.targetRef),
+        ),
+      ),
+    );
+  }
+
+  private async recurseGroups(
+    ownershipEntityRefs: readonly string[],
+    relationType: string,
+    credentials: BackstageCredentials,
+  ): Promise<Entity[]> {
+    const visited = new Set<string>();
+    const result: Entity[] = [];
+
+    let currentRefs = Array.from(ownershipEntityRefs);
+
+    while (currentRefs.length > 0) {
+      const entities = await this.getEntitiesByRefs(currentRefs, credentials);
+
+      currentRefs = this.getRelations(
+        entities.flatMap(entity => {
           const entityRef = stringifyEntityRef(entity);
-          entityMap.set(entityRef, entity);
-        });
 
-      const parents = entities.items.flatMap(entity =>
-        (entity?.relations || [])
-          .filter(rel => rel.type === RELATION_CHILD_OF)
-          .map(rel => rel.targetRef),
-      );
+          if (visited.has(entityRef) || entity.kind !== 'Group') {
+            return [];
+          }
+          visited.add(entityRef);
+          result.push(entity);
 
-      const unseenParents = parents.filter(parent => !entityMap.has(parent));
+          return [entity];
+        }),
+        relationType,
+      ).filter(ref => !visited.has(ref));
+    }
 
-      if (unseenParents.length > 0) {
-        await recurse(unseenParents);
-      }
-    };
+    return result;
+  }
 
-    await recurse(ownershipEntityRefs);
+  // Given a set of ownership entity refs (e.g. direct group memberships),
+  // get the parent groups and child groups of each group, recursively.
+  public async getOwnedGroups(
+    ownershipEntityRefs: readonly string[],
+    credentials: BackstageCredentials,
+  ): Promise<Entity[]> {
+    const entityMap = new Map<string, Entity>();
+
+    const immediateEntities = await this.getEntitiesByRefs(
+      ownershipEntityRefs,
+      credentials,
+    );
+
+    const immediateGroups = immediateEntities.filter(
+      entity => entity.kind === 'Group',
+    );
+    const parentGroupEntityRefs = this.getRelations(
+      immediateGroups,
+      RELATION_CHILD_OF,
+    );
+    const childGroupEntityRefs = this.getRelations(
+      immediateGroups,
+      RELATION_PARENT_OF,
+    );
+
+    const [parentGroups, childGroups] = await Promise.all([
+      this.recurseGroups(parentGroupEntityRefs, RELATION_CHILD_OF, credentials),
+      this.recurseGroups(childGroupEntityRefs, RELATION_PARENT_OF, credentials),
+    ]);
+
+    [...immediateEntities, ...childGroups, ...parentGroups].forEach(entity => {
+      const entityRef = stringifyEntityRef(entity);
+      entityMap.set(entityRef, entity);
+    });
 
     return [...entityMap.values()];
   }

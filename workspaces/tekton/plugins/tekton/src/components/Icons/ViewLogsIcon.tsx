@@ -21,10 +21,10 @@ import classNames from 'classnames';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     icon: {
-      fill: 'var(--pf-t--global--icon--color--100)',
+      fill: theme.palette.text.primary,
     },
     disabledButton: {
-      fill: theme.palette.grey[600],
+      fill: theme.palette.text.disabled,
     },
   }),
 );

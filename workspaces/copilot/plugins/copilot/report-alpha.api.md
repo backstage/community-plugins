@@ -10,9 +10,9 @@ import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SubRouteRef } from '@backstage/frontend-plugin-api';
@@ -26,7 +26,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:copilot': ExtensionDefinition<{
+    'api:copilot': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -43,7 +43,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'nav-item:copilot': ExtensionDefinition<{
+    'nav-item:copilot': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -64,7 +64,7 @@ const _default: OverridableFrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:copilot': ExtensionDefinition<{
+    'page:copilot': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {

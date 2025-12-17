@@ -1,5 +1,17 @@
 # @backstage-community/plugin-manage-backend
 
+## 1.5.0
+
+### Minor Changes
+
+- 1aea844: - Include child groups (not only parent groups) in the ownership of entities. Solves #4569.
+  - Added an (mcp) action to query owned entities.
+
+### Patch Changes
+
+- Updated dependencies [1aea844]
+  - @backstage-community/plugin-manage-node@1.5.0
+
 ## 1.4.0
 
 ### Minor Changes

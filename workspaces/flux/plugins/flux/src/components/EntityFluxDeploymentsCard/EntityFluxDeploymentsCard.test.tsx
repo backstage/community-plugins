@@ -32,7 +32,7 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { EntityFluxDeploymentsCard } from './EntityFluxDeploymentsCard';
 
-const makeTestKustomization = (name: string, path: string) => {
+const makeTestKustomizationV1 = (name: string, path: string) => {
   return {
     apiVersion: 'kustomize.toolkit.fluxcd.io/v1',
     kind: 'Kustomization',
@@ -234,7 +234,12 @@ const makeTestKustomization = (name: string, path: string) => {
     },
   };
 };
-const makeTestHelmRelease = (name: string, chart: string, version: string) => {
+
+const makeTestHelmReleaseV2beta1 = (
+  name: string,
+  chart: string,
+  version: string,
+) => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
     kind: 'HelmRelease',
@@ -277,6 +282,53 @@ const makeTestHelmRelease = (name: string, chart: string, version: string) => {
   };
 };
 
+const makeTestHelmReleaseV2 = (
+  name: string,
+  chart: string,
+  version: string,
+) => {
+  return {
+    apiVersion: 'helm.toolkit.fluxcd.io/v2',
+    kind: 'HelmRelease',
+    metadata: {
+      annotations: {
+        'metadata.weave.works/test': 'value',
+      },
+      creationTimestamp: '2025-09-18T14:20:30Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      name: name,
+      namespace: 'harbor',
+    },
+    spec: {
+      interval: '5m',
+      chart: {
+        spec: {
+          chart,
+          version: '1.x',
+          sourceRef: {
+            kind: 'HelmRepository',
+            name: 'harbor',
+            namespace: 'harbor',
+          },
+          interval: '60m',
+        },
+      },
+    },
+    status: {
+      lastAppliedRevision: version,
+      conditions: [
+        {
+          lastTransitionTime: '2025-09-18T14:20:35Z',
+          message: `pulled "${chart}" chart with version "${version}"`,
+          reason: 'ChartPullSucceeded',
+          status: 'True',
+          type: 'Ready',
+        },
+      ],
+    },
+  };
+};
+
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
 
@@ -303,8 +355,13 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestKustomization('flux-system', './clusters/my-cluster'),
-                makeTestHelmRelease('normal', 'kube-prometheus-stack', '6.3.5'),
+                makeTestKustomizationV1('flux-system', './clusters/my-cluster'),
+                makeTestHelmReleaseV2beta1(
+                  'normal',
+                  'kube-prometheus-stack',
+                  '6.3.5',
+                ),
+                makeTestHelmReleaseV2('harbor', 'harbor', '1.18.0'),
               ],
             },
           ],
@@ -395,6 +452,11 @@ describe('<EntityFluxDeploymentsCard />', () => {
           name: 'default/normal',
           repo: 'prometheus-community',
           reference: 'kube-prometheus-stack/6.3.5',
+        },
+        {
+          name: 'harbor/harbor',
+          repo: 'harbor',
+          reference: 'harbor/1.18.0',
         },
       ];
 
