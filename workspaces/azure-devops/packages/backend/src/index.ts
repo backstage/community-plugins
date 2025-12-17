@@ -63,4 +63,7 @@ backend.add(
 );
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
+backend.add(
+  import('@backstage-community/plugin-search-backend-module-azure-devops'),
+);
 backend.start();

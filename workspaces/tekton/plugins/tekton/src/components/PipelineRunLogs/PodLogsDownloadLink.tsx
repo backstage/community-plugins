@@ -21,9 +21,8 @@ import { useApi } from '@backstage/core-plugin-api';
 import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { V1Pod } from '@kubernetes/client-node';
-import { createStyles, Link, makeStyles, Theme } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import DownloadIcon from '@mui/icons-material/FileDownloadOutlined';
-import classNames from 'classnames';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { ContainerScope } from '../../hooks/usePodLogsOfPipelineRun';
@@ -33,27 +32,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 import { downloadLogFile } from '../../utils/download-log-file-utils';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    downloadAction: {
-      position: 'relative',
-      marginBottom: 'var(--pf-t--global--spacer--sm)',
-      color: 'var(--pf-t--global--icon--color--100)',
-      cursor: 'pointer',
-    },
-    buttonDisabled: {
-      color: theme.palette.grey[400],
-      cursor: 'not-allowed',
-    },
-  }),
-);
-
 const PodLogsDownloadLink: FC<{
   pods: V1Pod[];
   fileName: string;
   downloadTitle: string;
 }> = ({ pods, fileName, downloadTitle, ...props }): ReactElement => {
-  const classes = useStyles();
   const [downloading, setDownloading] = useState<boolean>(false);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
   const { t } = useTranslationRef(tektonTranslationRef);
@@ -73,10 +56,7 @@ const PodLogsDownloadLink: FC<{
   };
 
   return (
-    <Link
-      component="button"
-      variant="body2"
-      underline="none"
+    <Button
       disabled={downloading}
       title={
         downloading
@@ -96,14 +76,11 @@ const PodLogsDownloadLink: FC<{
             setDownloading(false);
           });
       }}
-      className={classNames(classes.downloadAction, {
-        [classes.buttonDisabled]: downloading,
-      })}
       {...props}
     >
       <DownloadIcon style={{ verticalAlign: '-0.180em' }} />
       {downloadTitle || t('pipelineRunLogs.podLogsDownloadLink.title')}
-    </Link>
+    </Button>
   );
 };
 export default PodLogsDownloadLink;

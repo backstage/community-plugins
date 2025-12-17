@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-report-portal
 
+## 1.1.2
+
+### Patch Changes
+
+- 4259d74: Increase the default request frequency and update docs
+
 ## 1.1.1
 
 ### Patch Changes

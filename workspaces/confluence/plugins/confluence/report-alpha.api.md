@@ -6,7 +6,8 @@
 /// <reference types="react" />
 
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
@@ -21,7 +22,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'search-filter-result-type:confluence/confluence-results-type': ExtensionDefinition<{
+    'search-filter-result-type:confluence/confluence-results-type': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
       name: 'confluence-results-type';
       config: {};
@@ -30,7 +31,7 @@ const _default: OverridableFrontendPlugin<
         {
           value: string;
           name: string;
-          icon: JSX.Element;
+          icon: JSX_2.Element;
         },
         'search.filters.result-types.type',
         {}
@@ -38,7 +39,7 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: SearchFilterResultTypeBlueprintParams;
     }>;
-    'search-result-list-item:confluence/search-result': ExtensionDefinition<{
+    'search-result-list-item:confluence/search-result': OverridableExtensionDefinition<{
       kind: 'search-result-list-item';
       name: 'search-result';
       config: {
@@ -51,6 +52,7 @@ const _default: OverridableFrontendPlugin<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
         },
         'search.search-result-list-item.item',
         {}

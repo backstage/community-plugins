@@ -3028,7 +3028,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^3.0.0"
     "@backstage/plugin-notifications-node": "npm:^0.2.17"
     "@types/express": "npm:*"
-    "@types/nodemailer": "npm:7.0.3"
+    "@types/nodemailer": "npm:7.0.4"
     "@types/supertest": "npm:2.0.16"
     axios: "npm:^1.6.4"
     express: "npm:^4.17.1"
@@ -10264,13 +10264,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:7.0.3":
-  version: 7.0.3
-  resolution: "@types/nodemailer@npm:7.0.3"
+"@types/nodemailer@npm:7.0.4":
+  version: 7.0.4
+  resolution: "@types/nodemailer@npm:7.0.4"
   dependencies:
     "@aws-sdk/client-sesv2": "npm:^3.839.0"
     "@types/node": "npm:*"
-  checksum: 10/9b1dd2e1ff8eea4ec0392d9cc6ac250f93e4517ad5529787c71d6437e53a6ca418c70517cb3a4790ba23f31c9a82c35fa8b747c1f366de98c8f67eba3a639504
+  checksum: 10/dbba903cd64d6501b2dfba9ea268b71996dcff3dba24e839385954a4462ae6515d53afc93e8eff3a5b657e5319acdfb6dcd85c10a3216bacbc3c08fabdcf4125
   languageName: node
   linkType: hard
 
@@ -22310,9 +22310,9 @@ __metadata:
   linkType: hard
 
 "nodemailer@npm:^7.0.7":
-  version: 7.0.9
-  resolution: "nodemailer@npm:7.0.9"
-  checksum: 10/88883c58afe356d2b4c24b1e976c04857e8a7a7145e1752dab69072900b0cc2e3daa0964a08c653e692fb64382453e1cfcee3d863828844c8d6f6239727b9023
+  version: 7.0.11
+  resolution: "nodemailer@npm:7.0.11"
+  checksum: 10/2ad4dd56a4caf84a83aa6f4378ded26d5ef8a644ca3be09c3b4fb2255d861369e620f29be6c3c97148ac4a50aa5fdff6240b9d60805362bd99ca15f2ea62e8a2
   languageName: node
   linkType: hard
 

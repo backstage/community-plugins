@@ -19,23 +19,35 @@ import { renderHook } from '@testing-library/react';
 import { PropsWithChildren } from 'react';
 import { useWeaveGitOpsDeepLink } from './useWeaveGitOpsDeepLink';
 import { GitRepository, HelmRelease, OCIRepository } from '../objects';
-import * as unverifiedGitRepository from '../__fixtures__/unverified_git_repository.json';
-import * as unverifiedOCIRepository from '../__fixtures__/unverified_oci_repository.json';
+import * as unverifiedGitRepositoryV1 from '../__fixtures__/unverified_git_repository_v1.json';
+import * as unverifiedOCIRepositoryV1beta2 from '../__fixtures__/unverified_oci_repository_v1beta2.json';
+import * as unverifiedOCIRepositoryV1 from '../__fixtures__/unverified_oci_repository_v1.json';
 
-const testHelmRelease = new HelmRelease({
+const testHelmReleaseV2beta1 = new HelmRelease({
   clusterName: 'Default',
   payload:
     '{"apiVersion":"helm.toolkit.fluxcd.io/v2beta1","kind":"HelmRelease","metadata":{"annotations":{"metadata.weave.works/test":"value"},"creationTimestamp":"2023-05-25T14:14:46Z","finalizers":["finalizers.fluxcd.io"],"generation":5,"name":"normal","namespace":"default","resourceVersion":"1","uid":"82231842-2224-4f22-8576-5babf08d746d"}}',
 });
 
-const testGitRepository = new GitRepository({
+const testHelmReleaseV2 = new HelmRelease({
   clusterName: 'Default',
-  payload: JSON.stringify(unverifiedGitRepository),
+  payload:
+    '{"apiVersion":"helm.toolkit.fluxcd.io/v2","kind":"HelmRelease","metadata":{"creationTimestamp":"2025-09-18T14:20:30Z","finalizers":["finalizers.fluxcd.io"],"generation":1,"name":"harbor","namespace":"harbor","resourceVersion":"6847291","uid":"e8f9a0b1-2345-6789-0123-456789abcdef"},"spec":{"interval":"5m","chart":{"spec":{"chart":"harbor","version":"1.18.0","sourceRef":{"kind":"HelmRepository","name":"harbor","namespace":"harbor"},"interval":"60m"}}},"status":{"lastAppliedRevision":"1.18.0","conditions":[{"lastTransitionTime":"2025-09-18T14:20:35Z","message":"Release reconciliation succeeded","reason":"ReconciliationSucceeded","status":"True","type":"Ready"}]}}',
 });
 
-const testOCIRepository = new OCIRepository({
+const testGitRepositoryV1 = new GitRepository({
+  clusterName: 'Default',
+  payload: JSON.stringify(unverifiedGitRepositoryV1),
+});
+
+const testOCIRepositoryV1beta2 = new OCIRepository({
   clusterName: 'demo-cluster',
-  payload: JSON.stringify(unverifiedOCIRepository),
+  payload: JSON.stringify(unverifiedOCIRepositoryV1beta2),
+});
+
+const testOCIRepositoryV1 = new OCIRepository({
+  clusterName: 'demo-cluster',
+  payload: JSON.stringify(unverifiedOCIRepositoryV1),
 });
 
 let gitOpsUrl: string | undefined;
@@ -59,11 +71,11 @@ describe('useWeaveGitOpsDeepLink', () => {
   });
 
   describe('when configured with a gitops url', () => {
-    it('calculates a url for HelmReleases', async () => {
+    it('calculates a url for HelmReleases (v2beta1)', async () => {
       gitOpsUrl = 'https://example.com';
 
       const { result } = renderHook(
-        () => useWeaveGitOpsDeepLink(testHelmRelease),
+        () => useWeaveGitOpsDeepLink(testHelmReleaseV2beta1),
         {
           wrapper,
         },
@@ -73,11 +85,25 @@ describe('useWeaveGitOpsDeepLink', () => {
       );
     });
 
-    it('calculates a url for GitRepositories', async () => {
+    it('calculates a url for HelmReleases (v2)', async () => {
       gitOpsUrl = 'https://example.com';
 
       const { result } = renderHook(
-        () => useWeaveGitOpsDeepLink(testGitRepository),
+        () => useWeaveGitOpsDeepLink(testHelmReleaseV2),
+        {
+          wrapper,
+        },
+      );
+      expect(result.current).toBe(
+        'https://example.com/helm_release/details?clusterName=Default&name=harbor&namespace=harbor',
+      );
+    });
+
+    it('calculates a url for GitRepositories (v1)', async () => {
+      gitOpsUrl = 'https://example.com';
+
+      const { result } = renderHook(
+        () => useWeaveGitOpsDeepLink(testGitRepositoryV1),
         {
           wrapper,
         },
@@ -87,17 +113,31 @@ describe('useWeaveGitOpsDeepLink', () => {
       );
     });
 
-    it('calculates a url for OCIRepositories', async () => {
+    it('calculates a url for OCIRepositories (v1beta2)', async () => {
       gitOpsUrl = 'https://example.com';
 
       const { result } = renderHook(
-        () => useWeaveGitOpsDeepLink(testOCIRepository),
+        () => useWeaveGitOpsDeepLink(testOCIRepositoryV1beta2),
         {
           wrapper,
         },
       );
       expect(result.current).toBe(
         'https://example.com/oci/details?clusterName=demo-cluster&name=testing&namespace=default',
+      );
+    });
+
+    it('calculates a url for OCIRepositories (v1)', async () => {
+      gitOpsUrl = 'https://example.com';
+
+      const { result } = renderHook(
+        () => useWeaveGitOpsDeepLink(testOCIRepositoryV1),
+        {
+          wrapper,
+        },
+      );
+      expect(result.current).toBe(
+        'https://example.com/oci/details?clusterName=demo-cluster&name=backstage&namespace=default',
       );
     });
   });
@@ -107,7 +147,7 @@ describe('useWeaveGitOpsDeepLink', () => {
       gitOpsUrl = 'https://example.com/';
 
       const { result } = renderHook(
-        () => useWeaveGitOpsDeepLink(testHelmRelease),
+        () => useWeaveGitOpsDeepLink(testHelmReleaseV2beta1),
         {
           wrapper,
         },
@@ -121,7 +161,7 @@ describe('useWeaveGitOpsDeepLink', () => {
   describe('when configured without a gitops url', () => {
     it('returns undefined', async () => {
       const { result } = renderHook(
-        () => useWeaveGitOpsDeepLink(testHelmRelease),
+        () => useWeaveGitOpsDeepLink(testHelmReleaseV2beta1),
         {
           wrapper,
         },

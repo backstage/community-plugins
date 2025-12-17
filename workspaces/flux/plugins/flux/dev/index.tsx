@@ -43,13 +43,17 @@ import {
   EntityFluxImagePoliciesCard,
 } from '../src/plugin';
 import {
-  newTestHelmRelease,
-  newTestOCIRepository,
-  newTestGitRepository,
-  newTestKustomization,
-  newTestHelmRepository,
-  newTestImagePolicy,
-  newTestFluxController,
+  newTestHelmReleaseV2beta1,
+  newTestHelmReleaseV2,
+  newTestOCIRepositoryV1beta2,
+  newTestOCIRepositoryV1,
+  newTestGitRepositoryV1,
+  newTestKustomizationV1,
+  newTestHelmRepositoryV1beta2,
+  newTestHelmRepositoryV1,
+  newTestImagePolicyV1beta1,
+  newTestImagePolicyV1,
+  newTestFluxControllerV1,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
@@ -346,34 +350,102 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestHelmRelease(
+              newTestHelmReleaseV2(
+                'harbor',
+                'harbor',
+                'harbor',
+                'harbor',
+                '2.14.0',
+                'True',
+                true,
+              ),
+              newTestHelmReleaseV2(
+                'flux-operator',
+                'fluxcd',
+                'flux',
+                'flux-system',
+                '0.36.0',
+                'False',
+                true,
+              ),
+              newTestHelmReleaseV2(
+                'cilium',
+                'cilium',
+                'cilium',
+                'kube-system',
+                '1.19.0-pre.3',
+                'False',
+                false,
+              ),
+              newTestHelmReleaseV2beta1(
                 'prometheus1',
+                'prometheus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'True',
                 false,
               ),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
                 'prometheus2',
+                'prometheus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'True',
                 false,
               ),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
                 'prometheus3',
+                'prometheus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'False',
                 true,
               ),
-              newTestHelmRelease('redis1', 'redis', '7.0.1', 'False', false),
-              newTestHelmRelease('redis2', 'redis', '7.0.1', 'True', true),
-              newTestHelmRelease('http-api', 'redis', '1.2.5', 'False', false),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
+                'redis1',
+                'example',
+                'service',
+                'demo',
+                '7.0.1',
+                'False',
+                false,
+              ),
+              newTestHelmReleaseV2beta1(
+                'redis2',
+                'example',
+                'service',
+                'demo',
+                '7.0.1',
+                'True',
+                true,
+              ),
+              newTestHelmReleaseV2beta1(
+                'http-api',
+                'example',
+                'service',
+                'demo',
+                '1.2.5',
+                'False',
+                false,
+              ),
+              newTestHelmReleaseV2beta1(
                 'queue-runner',
-                'redis',
+                'example',
+                'service',
+                'demo',
                 '1.0.1',
+                'True',
+                false,
+              ),
+              newTestHelmReleaseV2(
+                'nats',
+                'nats',
+                'nats',
+                'demo',
+                '2.12.2',
                 'True',
                 false,
               ),
@@ -409,34 +481,102 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestHelmRelease(
+              newTestHelmReleaseV2(
+                'harbor',
+                'harbor',
+                'harbor',
+                'harbor',
+                '2.14.0',
+                'True',
+                true,
+              ),
+              newTestHelmReleaseV2(
+                'flux-operator',
+                'fluxcd',
+                'flux',
+                'flux-system',
+                '0.36.0',
+                'False',
+                true,
+              ),
+              newTestHelmReleaseV2(
+                'cilium',
+                'cilium',
+                'cilium',
+                'kube-system',
+                '1.19.0-pre.3',
+                'False',
+                false,
+              ),
+              newTestHelmReleaseV2beta1(
                 'prometheus1',
+                'prometheus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'True',
                 false,
               ),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
                 'prometheus2',
+                'prometheus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'True',
                 false,
               ),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
                 'prometheus3',
+                'prometheus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'False',
                 true,
               ),
-              newTestHelmRelease('redis1', 'redis', '7.0.1', 'False', false),
-              newTestHelmRelease('redis2', 'redis', '7.0.1', 'True', true),
-              newTestHelmRelease('http-api', 'redis', '1.2.5', 'False', false),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
+                'redis1',
+                'example',
+                'service',
+                'demo',
+                '7.0.1',
+                'False',
+                false,
+              ),
+              newTestHelmReleaseV2beta1(
+                'redis2',
+                'example',
+                'service',
+                'demo',
+                '7.0.1',
+                'True',
+                true,
+              ),
+              newTestHelmReleaseV2beta1(
+                'http-api',
+                'example',
+                'service',
+                'demo',
+                '1.2.5',
+                'False',
+                false,
+              ),
+              newTestHelmReleaseV2beta1(
                 'queue-runner',
-                'redis',
+                'example',
+                'service',
+                'demo',
                 '1.0.1',
+                'True',
+                false,
+              ),
+              newTestHelmReleaseV2(
+                'nats',
+                'nats',
+                'nats',
+                'demo',
+                '2.12.2',
                 'True',
                 false,
               ),
@@ -474,22 +614,26 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'podinfo',
+                'default',
                 'https://github.com/stefanprodan/podinfo',
                 { verify: true, verified: true },
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'weave-gitops',
+                'flux-system',
                 'https://github.com/weaveworks/weave-gitops',
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'weaveworks-backstage',
+                'flux-system',
                 'https://github.com/weaveworks/weaveworks-backstage',
                 { verify: true, verified: false },
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'weave-gitops-enterprise',
+                'flux-system',
                 'https://github.com/weaveworks/weave-gitops-enterprise',
               ),
             ]),
@@ -525,32 +669,38 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestOCIRepository(
+              newTestOCIRepositoryV1beta2(
                 'podinfo',
+                'default',
                 'oci://ghcr.io/stefanprodan/manifests/podinfo',
                 { verify: true, verified: true },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1beta2(
                 'redis',
+                'demo',
                 'oci://registry-1.docker.io/bitnamicharts/redis',
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1beta2(
                 'postgresql',
+                'persisted-app',
                 'oci://registry-1.docker.io/bitnamicharts/postgresql',
                 { verify: true, verified: false },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1(
                 'apache',
+                'demo',
                 'oci://registry-1.docker.io/bitnamicharts/apache',
                 { ready: false },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1(
                 'supabase',
+                'persisted-app',
                 'oci://registry-1.docker.io/bitnamicharts/supabase',
                 { verify: true, pending: true },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1(
                 'mariadb',
+                'demo',
                 'oci://registry-1.docker.io/bitnamicharts/mariadb',
                 { verify: true, verified: false },
               ),
@@ -588,13 +738,13 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestKustomization(
+              newTestKustomizationV1(
                 'flux-system',
                 './clusters/my-cluster',
                 true,
                 true,
               ),
-              newTestKustomization(
+              newTestKustomizationV1(
                 'test-kustomization',
                 './clusters/my-test-cluster',
                 true,
@@ -634,11 +784,30 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestHelmRepository(
+              newTestHelmRepositoryV1beta2(
                 'podinfo',
-                'https://stefanprodan.github.io/podinfo',
+                'https://backstage.github.io/charts',
                 true,
                 false,
+              ),
+              newTestHelmRepositoryV1beta2(
+                'podinfo',
+                'https://stefanprodan.github.io/podinfo',
+                false,
+                false,
+              ),
+
+              newTestHelmRepositoryV1(
+                'bitnami',
+                'https://repo.vmware.com/bitnami-files/index.yaml',
+                false,
+                true,
+              ),
+              newTestHelmRepositoryV1(
+                'harbor',
+                'https://repo.vmware.com/bitnami-files/index.yaml',
+                true,
+                true,
               ),
             ]),
           ],
@@ -674,15 +843,17 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestKustomization(
+              newTestKustomizationV1(
                 'flux-system',
                 './clusters/my-cluster',
                 true,
                 false,
               ),
-              newTestHelmRelease(
+              newTestHelmReleaseV2beta1(
                 'prometheus1',
+                'promehteus-community',
                 'kube-prometheus-stack',
+                'monitoring',
                 '6.3.5',
                 'True',
                 true,
@@ -721,57 +892,67 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestHelmRepository(
+              newTestHelmRepositoryV1(
                 'podinfo',
                 'https://stefanprodan.github.io/podinfo',
                 true,
                 true,
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1beta2(
                 'podinfo',
+                'default',
                 'oci://ghcr.io/stefanprodan/manifests/podinfo',
                 { verify: true, verified: true },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1beta2(
                 'redis',
+                'demo',
                 'oci://registry-1.docker.io/bitnamicharts/redis',
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1beta2(
                 'postgresql',
+                'persisted-app',
                 'oci://registry-1.docker.io/bitnamicharts/postgresql',
                 { verify: true, verified: false },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1(
                 'apache',
+                'persisted-app',
                 'oci://registry-1.docker.io/bitnamicharts/apache',
                 { ready: false },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1(
                 'supabase',
-                'oci://registry-1.docker.io/bitnamicharts/supabase',
+                'persisted-app',
+                'oci://registry-1.docker.io/bitnamicharts/  ',
                 { verify: true, pending: true },
               ),
-              newTestOCIRepository(
+              newTestOCIRepositoryV1(
                 'mariadb',
+                'demo',
                 'oci://registry-1.docker.io/bitnamicharts/mariadb',
                 { verify: true, verified: false },
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'podinfo',
+                'default',
                 'https://github.com/stefanprodan/podinfo',
                 { verify: true, verified: true },
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'weave-gitops',
+                'flux-system',
                 'https://github.com/weaveworks/weave-gitops',
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'weaveworks-backstage',
+                'flux-system',
                 'https://github.com/weaveworks/weaveworks-backstage',
                 { verify: true, verified: false },
               ),
-              newTestGitRepository(
+              newTestGitRepositoryV1(
                 'weave-gitops-enterprise',
+                'flux-system',
                 'https://github.com/weaveworks/weave-gitops-enterprise',
               ),
             ]),
@@ -808,17 +989,35 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestImagePolicy(
+              newTestImagePolicyV1(
+                'prometheus-operator',
+                'monitoring',
+                { semver: { range: '3.x.x' } },
+                'promehteus-operator',
+                'quay.io/prometheus-operator/prometheus-operator:v0.86.2',
+              ),
+              newTestImagePolicyV1(
+                'nats',
+                'nats',
+                { numerical: { order: 'asc' } },
+                'nats',
+                'public.ecr.aws/docker/library/nats:2.12.2-alpine',
+                'False',
+              ),
+              newTestImagePolicyV1beta1(
                 'podinfo',
+                'default',
                 { semver: { range: '5.0.x' } },
                 'podinfo',
                 'ghcr.io/stefanprodan/podinfo:5.0.3',
               ),
-              newTestImagePolicy(
+              newTestImagePolicyV1beta1(
+                'test',
                 'test',
                 { numerical: { order: 'asc' } },
                 'test',
                 'ghcr.io/user/test:1.0.0',
+                'False',
               ),
             ]),
           ],
@@ -853,7 +1052,7 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestFluxController('helm-controller', 'flux-system', {
+              newTestFluxControllerV1('helm-controller', 'flux-system', {
                 'app.kubernetes.io/component': 'helm-controller',
                 'app.kubernetes.io/instance': 'flux-system',
                 'app.kubernetes.io/part-of': 'flux',
@@ -862,7 +1061,7 @@ createDevApp()
                 'kustomize.toolkit.fluxcd.io/name': 'flux-system',
                 'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
               }),
-              newTestFluxController(
+              newTestFluxControllerV1(
                 'image-automation-controller',
                 'flux-system',
                 {
@@ -875,15 +1074,19 @@ createDevApp()
                   'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
                 },
               ),
-              newTestFluxController('image-automation-controller', 'default', {
-                'app.kubernetes.io/component': 'image-automation-controller',
-                'app.kubernetes.io/instance': 'default',
-                'app.kubernetes.io/part-of': 'flux',
-                'app.kubernetes.io/version': 'v2.1.2',
-                'control-plane': 'controller',
-                'kustomize.toolkit.fluxcd.io/name': 'default',
-                'kustomize.toolkit.fluxcd.io/namespace': 'default',
-              }),
+              newTestFluxControllerV1(
+                'image-automation-controller',
+                'default',
+                {
+                  'app.kubernetes.io/component': 'image-automation-controller',
+                  'app.kubernetes.io/instance': 'default',
+                  'app.kubernetes.io/part-of': 'flux',
+                  'app.kubernetes.io/version': 'v2.1.2',
+                  'control-plane': 'controller',
+                  'kustomize.toolkit.fluxcd.io/name': 'default',
+                  'kustomize.toolkit.fluxcd.io/namespace': 'default',
+                },
+              ),
             ]),
           ],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],

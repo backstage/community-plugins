@@ -28,7 +28,7 @@ const defaults: {
   locationTemplate: string;
 } = {
   schedule: {
-    frequency: { minutes: 10 },
+    frequency: { minutes: 60 },
     timeout: { minutes: 5 },
     initialDelay: { seconds: 3 },
   },

@@ -13,10 +13,25 @@ kind: Component
 metadata:
   name: example-service
   annotations:
+    backstage.io/kubernetes-id: example-service
+    # backstage.io/kubernetes-namespace: example-namespace
     tekton.dev/cicd: 'true'
 spec:
   type: service
   lifecycle: experimental
   owner: guests
   system: examples
-  providesApis: [example-grpc-api]
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: another-service-without-tekton
+  annotations:
+    backstage.io/kubernetes-id: example-service
+    # backstage.io/kubernetes-namespace: example-namespace
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: examples

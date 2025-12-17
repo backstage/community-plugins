@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.20.0
+
+### Minor Changes
+
+- 6c3c0ee: Backstage version bump to v1.45.3
+
+## 1.19.1
+
+### Patch Changes
+
+- c83e644: Added internationalization (i18n) support for German (de), French (fr), Italian (it), Spanish (es), and Japanese (ja).
+
 ## 1.19.0
 
 ### Minor Changes

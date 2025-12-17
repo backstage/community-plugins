@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   ErrorPanel,
   Progress,
@@ -28,24 +28,19 @@ import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
   useCategories,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
   announcementCreatePermission,
-  announcementDeletePermission,
-  announcementUpdatePermission,
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { useDeleteAnnouncementDialogState } from '../../AnnouncementsPage/useDeleteAnnouncementDialogState';
-import { DeleteAnnouncementDialog } from '../../AnnouncementsPage/DeleteAnnouncementDialog';
+import { useDeleteDialogState, DeleteDialog } from '../shared';
 import { useNavigate } from 'react-router-dom';
-import { AnnouncementForm } from '../../AnnouncementForm';
+import { AnnouncementForm } from './AnnouncementForm';
 import slugify from 'slugify';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -64,24 +59,13 @@ export const AnnouncementsContent = ({
   const navigate = useNavigate();
   const { categories } = useCategories();
   const { t } = useAnnouncementsTranslation();
-
-  const { loading: loadingCreatePermission, allowed: canCreateAnnouncement } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
-
-  const { loading: loadingUpdatePermission, allowed: canUpdateAnnouncement } =
-    usePermission({
-      permission: announcementUpdatePermission,
-    });
-
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState<
+    string | null
+  >(null);
 
   const {
     loading,
@@ -94,11 +78,12 @@ export const AnnouncementsContent = ({
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    announcement: announcementToDelete,
-  } = useDeleteAnnouncementDialogState();
+    item: announcementToDelete,
+  } = useDeleteDialogState<Announcement>();
 
   const onCreateButtonClick = () => {
     setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
+    setEditingAnnouncementId(null);
   };
 
   const onTitleClick = (announcement: Announcement) => {
@@ -106,7 +91,12 @@ export const AnnouncementsContent = ({
   };
 
   const onEdit = (announcement: Announcement) => {
-    navigate(`/announcements/edit/${announcement.id}`);
+    setEditingAnnouncementId(announcement.id);
+    setShowCreateAnnouncementForm(false);
+  };
+
+  const onCancelEdit = () => {
+    setEditingAnnouncementId(null);
   };
 
   const onCancelDelete = () => {
@@ -161,6 +151,53 @@ export const AnnouncementsContent = ({
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }
   };
+
+  const onUpdate = async (request: CreateAnnouncementRequest) => {
+    if (!editingAnnouncementId) {
+      return;
+    }
+
+    const { category } = request;
+
+    const slugs = categories.map((c: Category) => c.slug);
+    let updateMsg = t('editAnnouncementPage.updatedMessage') as string;
+
+    try {
+      if (category) {
+        const categorySlug = slugify(category, {
+          lower: true,
+        });
+
+        if (slugs.indexOf(categorySlug) === -1) {
+          updateMsg = updateMsg.replace('.', '');
+          updateMsg = `${updateMsg} ${t(
+            'editAnnouncementPage.updatedMessageWithNewCategory',
+          )} ${category}.`;
+
+          await announcementsApi.createCategory({
+            title: category,
+          });
+        }
+      }
+
+      await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
+      alertApi.post({ message: updateMsg, severity: 'success' });
+
+      setEditingAnnouncementId(null);
+      retry();
+    } catch (err) {
+      alertApi.post({ message: (err as Error).message, severity: 'error' });
+    }
+  };
+
+  const announcementToEdit = useMemo(() => {
+    if (!editingAnnouncementId || !announcements?.results) {
+      return null;
+    }
+    return (
+      announcements.results.find(a => a.id === editingAnnouncementId) ?? null
+    );
+  }, [editingAnnouncementId, announcements?.results]);
 
   if (loading) {
     return <Progress />;
@@ -295,7 +332,11 @@ export const AnnouncementsContent = ({
 
             <IconButton
               aria-label="edit"
-              disabled={loadingUpdatePermission || !canUpdateAnnouncement}
+              disabled={
+                permissions.update.loading ||
+                !permissions.update.allowed ||
+                editingAnnouncementId === rowData.id
+              }
               onClick={() => onEdit(rowData)}
               size="small"
             >
@@ -304,7 +345,9 @@ export const AnnouncementsContent = ({
 
             <IconButton
               aria-label="delete"
-              disabled={loadingDeletePermission || !canDeleteAnnouncement}
+              disabled={
+                permissions.delete.loading || !permissions.delete.allowed
+              }
               onClick={() => openDeleteDialog(rowData)}
               size="small"
             >
@@ -319,17 +362,21 @@ export const AnnouncementsContent = ({
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Grid container>
-        <Grid item xs={12}>
-          <Button
-            disabled={loadingCreatePermission || !canCreateAnnouncement}
-            variant="contained"
-            onClick={() => onCreateButtonClick()}
-          >
-            {showCreateAnnouncementForm
-              ? t('admin.announcementsContent.cancelButton')
-              : t('admin.announcementsContent.createButton')}
-          </Button>
-        </Grid>
+        {!editingAnnouncementId && (
+          <Grid item xs={12}>
+            <Button
+              disabled={
+                permissions.create.loading || !permissions.create.allowed
+              }
+              variant="contained"
+              onClick={() => onCreateButtonClick()}
+            >
+              {showCreateAnnouncementForm
+                ? t('admin.announcementsContent.cancelButton')
+                : t('admin.announcementsContent.createButton')}
+            </Button>
+          </Grid>
+        )}
 
         {showCreateAnnouncementForm && (
           <Grid item xs={12}>
@@ -337,6 +384,29 @@ export const AnnouncementsContent = ({
               initialData={{ active: !defaultInactive } as Announcement}
               onSubmit={onSubmit}
             />
+          </Grid>
+        )}
+
+        {editingAnnouncementId && announcementToEdit && (
+          <Grid item xs={12}>
+            <Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                style={{ marginBottom: 16 }}
+              >
+                <Typography variant="h6">
+                  {t('announcementForm.editAnnouncement')}
+                </Typography>
+                <Button variant="outlined" onClick={onCancelEdit} size="small">
+                  {t('admin.announcementsContent.cancelButton')}
+                </Button>
+              </Box>
+              <AnnouncementForm
+                initialData={announcementToEdit}
+                onSubmit={onUpdate}
+              />
+            </Box>
           </Grid>
         )}
 
@@ -353,8 +423,8 @@ export const AnnouncementsContent = ({
             }
           />
 
-          <DeleteAnnouncementDialog
-            open={isDeleteDialogOpen}
+          <DeleteDialog
+            isOpen={isDeleteDialogOpen}
             onCancel={onCancelDelete}
             onConfirm={onConfirmDelete}
           />

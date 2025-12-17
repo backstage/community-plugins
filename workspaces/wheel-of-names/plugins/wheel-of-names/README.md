@@ -20,6 +20,10 @@ yarn --cwd packages/app add @backstage-community/plugin-wheel-of-names
 
 ## Configuration
 
+### Legacy Frontend System
+
+If you are still using the legacy frontend system:
+
 1. Add the plugin to your Backstage application:
 
 ```tsx

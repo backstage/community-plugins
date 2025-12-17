@@ -6171,6 +6171,7 @@ __metadata:
     "@backstage/repo-tools": "npm:^0.15.3"
     "@changesets/cli": "npm:^2.27.1"
     "@ianvs/prettier-plugin-sort-imports": "npm:^4.3.1"
+    "@playwright/test": "npm:^1.32.3"
     "@types/babel__core": "npm:^7"
     "@types/deep-freeze": "npm:^0.1.5"
     concurrently: "npm:^9.0.0"

@@ -62,10 +62,104 @@ describe('findVerificationCondition', () => {
     expect(condition).toBeUndefined();
   });
 
-  it('returns the condition with a verified condition', () => {
+  it('returns undefined with no verified conditions (v1)', () => {
+    const condition = findVerificationCondition(
+      new OCIRepository({
+        payload: `{"apiVersion":"source.toolkit.fluxcd.io/v1","kind":"OCIRepository","metadata":{"creationTimestamp":"2023-06-23T07:50:47Z","finalizers":["finalizers.fluxcd.io"],"generation":1,"name":"podinfo","namespace":"default","resourceVersion":"143955","uid":"1ec54278-ed2d-4f31-9bb0-39dc7163730e"},"spec":{"interval":"5m","provider":"generic","timeout":"60s","url":"oci://ghcr.io/stefanprodan/manifests/podinfo","verify":{"provider":"cosign"}},"status":{"artifact":{"digest":"sha256:62df151eb3714d9dfa943c7d88192d72466bffa268b25595f85530b793f77524","lastUpdateTime":"2023-06-23T07:50:53Z","metadata":{"org.opencontainers.image.created":"2023-05-03T14:30:58Z","org.opencontainers.image.revision":"6.3.6/073f1ec5aff930bd3411d33534e91cbe23302324","org.opencontainers.image.source":"https://github.com/stefanprodan/podinfo"},"path":"ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz","revision":"latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4","size":1071,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz"},"conditions":[{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"Ready"},{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"ArtifactInStorage"}],"observedGeneration":1,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/latest.tar.gz"}}`,
+      }),
+    );
+
+    expect(condition).toBeUndefined();
+  });
+
+  it('returns the condition with a verified condition (v1beta2)', () => {
     const condition = findVerificationCondition(
       new OCIRepository({
         payload: `{"apiVersion":"source.toolkit.fluxcd.io/v1beta2","kind":"OCIRepository","metadata":{"creationTimestamp":"2023-06-23T07:50:47Z","finalizers":["finalizers.fluxcd.io"],"generation":1,"name":"podinfo","namespace":"default","resourceVersion":"143955","uid":"1ec54278-ed2d-4f31-9bb0-39dc7163730e"},"spec":{"interval":"5m","provider":"generic","timeout":"60s","url":"oci://ghcr.io/stefanprodan/manifests/podinfo","verify":{"provider":"cosign"}},"status":{"artifact":{"digest":"sha256:62df151eb3714d9dfa943c7d88192d72466bffa268b25595f85530b793f77524","lastUpdateTime":"2023-06-23T07:50:53Z","metadata":{"org.opencontainers.image.created":"2023-05-03T14:30:58Z","org.opencontainers.image.revision":"6.3.6/073f1ec5aff930bd3411d33534e91cbe23302324","org.opencontainers.image.source":"https://github.com/stefanprodan/podinfo"},"path":"ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz","revision":"latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4","size":1071,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz"},"conditions":[{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"Ready"},{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"ArtifactInStorage"},{"lastTransitionTime":"2023-06-23T07:50:52Z","message":"verified signature of revision latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4","observedGeneration":1,"reason":"Succeeded","status":"True","type":"SourceVerified"}],"observedGeneration":1,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/latest.tar.gz"}}`,
+      }),
+    );
+
+    expect(condition).toEqual({
+      message:
+        'verified signature of revision latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4',
+      reason: 'Succeeded',
+      status: 'True',
+      timestamp: '2023-06-23T07:50:52Z',
+      type: 'SourceVerified',
+    });
+  });
+
+  it('returns the condition with a verified condition (v1)', () => {
+    const condition = findVerificationCondition(
+      new OCIRepository({
+        payload: `{"apiVersion":"source.toolkit.fluxcd.io/v1","kind":"OCIRepository","metadata":{"creationTimestamp":"2025-11-09T16:20:15Z","finalizers":["finalizers.fluxcd.io"],"generation":1,"name":"backstage","namespace":"default","resourceVersion":"5836472","uid":"b2c3d4e5-f678-9012-3456-789abcdef012"},"spec":{"interval":"5m","provider":"generic","timeout":"60s","url":"oci://ghcr.io/backstage/charts/backstage","verify":{"provider":"cosign"}},"status":{"artifact":{"digest":"sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456","lastUpdateTime":"2025-11-09T16:20:20Z","metadata":{"org.opencontainers.image.created":"2025-11-09T16:00:00Z","org.opencontainers.image.revision":"2.6.3/f1e2d3c4b5a6978012345678901234567890abcd","org.opencontainers.image.source":"https://github.com/backstage/backstage"},"path":"ocirepository/default/backstage/sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456.tar.gz","revision":"2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456","size":21845,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/backstage/sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456.tar.gz"},"conditions":[{"lastTransitionTime":"2025-11-09T16:20:20Z","message":"stored artifact for digest '2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"Ready"},{"lastTransitionTime":"2025-11-09T16:20:20Z","message":"stored artifact for digest '2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"ArtifactInStorage"},{"lastTransitionTime":"2025-11-09T16:20:22Z","message":"verified signature of revision 2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456","observedGeneration":1,"reason":"Succeeded","status":"True","type":"SourceVerified"}],"observedGeneration":1,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/backstage/2.6.3.tar.gz"}}`,
+      }),
+    );
+
+    expect(condition).toEqual({
+      message:
+        'verified signature of revision 2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456',
+      reason: 'Succeeded',
+      status: 'True',
+      timestamp: '2025-11-09T16:20:22Z',
+      type: 'SourceVerified',
+    });
+  });
+});
+
+/**
+ * Flux stable APIs
+ */
+describe('automationLastUpdatedV2', () => {
+  it('returns an empty string when no conditions', () => {
+    const latest = automationLastUpdated(
+      new HelmRelease({
+        payload:
+          '{"apiVersion":"helm.toolkit.fluxcd.io/v2","kind":"HelmRelease","metadata":{"annotations":{"metadata.weave.works/test":"value"},"creationTimestamp":"2023-05-25T14:14:46Z","finalizers":["finalizers.fluxcd.io"],"generation":5,"name":"normal","namespace":"default","resourceVersion":"1","uid":"82231842-2224-4f22-8576-5babf08d746d"}}',
+      }),
+    );
+
+    expect(latest).toEqual('');
+  });
+
+  it('returns the timestamp of the first Ready condition', () => {
+    const latest = automationLastUpdated(
+      new HelmRelease({
+        payload:
+          '{"apiVersion":"helm.toolkit.fluxcd.io/v2","kind":"HelmRelease","metadata":{"annotations":{"metadata.weave.works/test":"value"},"creationTimestamp":"2023-05-25T14:14:46Z","finalizers":["finalizers.fluxcd.io"],"generation":5,"name":"normal","namespace":"default","resourceVersion":"1","uid":"82231842-2224-4f22-8576-5babf08d746d"},"status":{"conditions":[{"lastTransitionTime":"2023-05-25T15:03:33Z","message":"pulled \'test\' chart with version \'1.0.0\'","observedGeneration":1,"reason":"ChartPullSucceeded","status":"True","type":"Ready"}]}}',
+      }),
+    );
+
+    expect(latest).toEqual('2023-05-25T15:03:33Z');
+  });
+
+  it('returns the timestamp even when the condition is not Ready', () => {
+    const latest = automationLastUpdated(
+      new HelmRelease({
+        payload:
+          '{"apiVersion":"helm.toolkit.fluxcd.io/v2","kind":"HelmRelease","metadata":{"annotations":{"metadata.weave.works/test":"value"},"creationTimestamp":"2023-05-25T14:14:46Z","finalizers":["finalizers.fluxcd.io"],"generation":5,"name":"normal","namespace":"default","resourceVersion":"1","uid":"82231842-2224-4f22-8576-5babf08d746d"},"status":{"conditions":[{"lastTransitionTime":"2023-05-25T15:03:33Z","message":"pulled \'test\' chart with version \'1.0.0\'","observedGeneration":1,"reason":"ChartPullSucceeded","status":"False","type":"Ready"}]}}',
+      }),
+    );
+
+    expect(latest).toEqual('2023-05-25T15:03:33Z');
+  });
+});
+
+describe('findVerificationConditionV1', () => {
+  it('returns undefined with no verified conditions', () => {
+    const condition = findVerificationCondition(
+      new OCIRepository({
+        payload: `{"apiVersion":"source.toolkit.fluxcd.io/v1","kind":"OCIRepository","metadata":{"creationTimestamp":"2023-06-23T07:50:47Z","finalizers":["finalizers.fluxcd.io"],"generation":1,"name":"podinfo","namespace":"default","resourceVersion":"143955","uid":"1ec54278-ed2d-4f31-9bb0-39dc7163730e"},"spec":{"interval":"5m","provider":"generic","timeout":"60s","url":"oci://ghcr.io/stefanprodan/manifests/podinfo","verify":{"provider":"cosign"}},"status":{"artifact":{"digest":"sha256:62df151eb3714d9dfa943c7d88192d72466bffa268b25595f85530b793f77524","lastUpdateTime":"2023-06-23T07:50:53Z","metadata":{"org.opencontainers.image.created":"2023-05-03T14:30:58Z","org.opencontainers.image.revision":"6.3.6/073f1ec5aff930bd3411d33534e91cbe23302324","org.opencontainers.image.source":"https://github.com/stefanprodan/podinfo"},"path":"ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz","revision":"latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4","size":1071,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz"},"conditions":[{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"Ready"},{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"ArtifactInStorage"}],"observedGeneration":1,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/latest.tar.gz"}}`,
+      }),
+    );
+
+    expect(condition).toBeUndefined();
+  });
+
+  it('returns the condition with a verified condition', () => {
+    const condition = findVerificationCondition(
+      new OCIRepository({
+        payload: `{"apiVersion":"source.toolkit.fluxcd.io/v1","kind":"OCIRepository","metadata":{"creationTimestamp":"2023-06-23T07:50:47Z","finalizers":["finalizers.fluxcd.io"],"generation":1,"name":"podinfo","namespace":"default","resourceVersion":"143955","uid":"1ec54278-ed2d-4f31-9bb0-39dc7163730e"},"spec":{"interval":"5m","provider":"generic","timeout":"60s","url":"oci://ghcr.io/stefanprodan/manifests/podinfo","verify":{"provider":"cosign"}},"status":{"artifact":{"digest":"sha256:62df151eb3714d9dfa943c7d88192d72466bffa268b25595f85530b793f77524","lastUpdateTime":"2023-06-23T07:50:53Z","metadata":{"org.opencontainers.image.created":"2023-05-03T14:30:58Z","org.opencontainers.image.revision":"6.3.6/073f1ec5aff930bd3411d33534e91cbe23302324","org.opencontainers.image.source":"https://github.com/stefanprodan/podinfo"},"path":"ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz","revision":"latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4","size":1071,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz"},"conditions":[{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"Ready"},{"lastTransitionTime":"2023-06-23T07:50:53Z","message":"stored artifact for digest 'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'","observedGeneration":1,"reason":"Succeeded","status":"True","type":"ArtifactInStorage"},{"lastTransitionTime":"2023-06-23T07:50:52Z","message":"verified signature of revision latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4","observedGeneration":1,"reason":"Succeeded","status":"True","type":"SourceVerified"}],"observedGeneration":1,"url":"http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/latest.tar.gz"}}`,
       }),
     );
 

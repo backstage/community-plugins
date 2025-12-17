@@ -25,23 +25,19 @@ import {
   announcementsApiRef,
   useAnnouncementsTranslation,
   useTags,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   announcementCreatePermission,
-  announcementDeletePermission,
   Tag,
 } from '@backstage-community/plugin-announcements-common';
-import { TagsForm } from '../../TagsForm';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
-import { useDeleteTagDialogState } from '../../TagsPage/useDeleteTagDialogState';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
-import { DeleteTagDialog } from '../../TagsPage/DeleteTagDialog';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import { useDeleteDialogState, DeleteDialog, TitleForm } from '../shared';
 
 export const TagsContent = () => {
   const [showNewTagForm, setShowNewTagForm] = useState(false);
@@ -54,18 +50,17 @@ export const TagsContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    tag: tagToDelete,
-  } = useDeleteTagDialogState();
+    item: tagToDelete,
+  } = useDeleteDialogState<Tag>();
 
-  const { loading: loadingCreatePermission, allowed: canCreateTag } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const translationKeys = {
+    new: t('tagsForm.newTag'),
+    edit: t('tagsForm.editTag'),
+    titleLabel: t('tagsForm.titleLabel'),
+    submit: t('tagsForm.submit'),
+  };
 
   const onSubmit = async (request: CreateTagRequest) => {
     const { title } = request;
@@ -150,7 +145,7 @@ export const TagsContent = () => {
         return (
           <IconButton
             aria-label="delete"
-            disabled={loadingDeletePermission || !canDeleteAnnouncement}
+            disabled={permissions.delete.loading || !permissions.delete.allowed}
             onClick={() => openDeleteDialog(rowData)}
           >
             <DeleteIcon fontSize="small" data-testid="delete-icon" />
@@ -165,7 +160,7 @@ export const TagsContent = () => {
       <Grid container>
         <Grid item xs={12}>
           <Button
-            disabled={loadingCreatePermission || !canCreateTag}
+            disabled={permissions.create.loading || !permissions.create.allowed}
             variant="contained"
             onClick={() => onCreateButtonClick()}
           >
@@ -177,7 +172,15 @@ export const TagsContent = () => {
 
         {showNewTagForm && (
           <Grid item xs={12}>
-            <TagsForm initialData={{} as Tag} onSubmit={onSubmit} />
+            <TitleForm<Tag>
+              translationKeys={translationKeys}
+              onSubmit={onSubmit}
+              testIds={{
+                form: 'tag-form',
+                input: 'tag-title-input',
+                button: 'tag-submit-button',
+              }}
+            />
           </Grid>
         )}
 
@@ -195,8 +198,8 @@ export const TagsContent = () => {
           />
         </Grid>
 
-        <DeleteTagDialog
-          open={isDeleteDialogOpen}
+        <DeleteDialog
+          isOpen={isDeleteDialogOpen}
           onCancel={onCancelDelete}
           onConfirm={onConfirmDelete}
         />
