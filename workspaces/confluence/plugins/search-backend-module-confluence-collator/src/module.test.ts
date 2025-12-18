@@ -45,10 +45,13 @@ describe('searchModuleConfluenceCollator', () => {
               },
             },
             confluence: {
-              baseUrl: 'https://confluence.mock',
-              auth: {
-                type: 'bearer',
-                token: 'M0ck1ng.confluence',
+              default: {
+                // <-- nest config under 'default'
+                baseUrl: 'https://confluence.mock',
+                auth: {
+                  type: 'bearer',
+                  token: 'M0ck1ng.confluence',
+                },
               },
             },
           },
