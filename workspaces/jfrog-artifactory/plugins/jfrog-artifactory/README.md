@@ -95,12 +95,23 @@ proxy:
        # if your app supports multiple artifactory instances,
        # you'll need to specify the instance proxy target path your image belongs to
        'jfrog-artifactory/target-proxy': '/<PROXY-TARGET>' # e.g. `/jfrog-instance1` from the example above
+       # Optional: filter repositories by name pattern
+       'jfrog-artifactory/repo-filter': '*-prod-federated'
    ```
 
    The annotations serve the following purposes:
 
    - `jfrog-artifactory/image-name`: Specifies the image name to display in the Artifactory tab
    - `jfrog-artifactory/target-proxy`: Specifies which Artifactory instance to use (for multiple instances)
+
+- `jfrog-artifactory/repo-filter`: Optional filter to limit which repositories are displayed for this entity (supports wildcard patterns)
+
+**Note on repository filtering:**
+
+- The `jfrog-artifactory/repo-filter` annotation provides entity-specific repository filtering
+- If the annotation is not defined for an entity, the global `repoFilter` from app-config.yaml will be used
+- Entity-level annotation takes precedence over the global configuration
+- This allows for both global defaults and per-entity customization
 
 ## For users
 

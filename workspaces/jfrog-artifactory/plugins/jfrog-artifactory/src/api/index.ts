@@ -25,7 +25,11 @@ import { TagsResponse } from '../types';
 const DEFAULT_PROXY_PATH = '/jfrog-artifactory/api';
 
 export interface JfrogArtifactoryApiV1 {
-  getTags(image: string, target?: string): Promise<TagsResponse>;
+  getTags(
+    image: string,
+    target?: string,
+    repoFilter?: string,
+  ): Promise<TagsResponse>;
 }
 
 export const jfrogArtifactoryApiRef = createApiRef<JfrogArtifactoryApiV1>({
@@ -93,10 +97,8 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     return 'NAME_SEMVER';
   }
 
-  private getRepoFilter(): string {
-    return (
-      this.configApi.getOptionalString('jfrogArtifactory.repoFilter') || '*'
-    );
+  private getRepoFilter(): string | undefined {
+    return this.configApi.getOptionalString('jfrogArtifactory.repoFilter');
   }
 
   private getPageLimit(): number {
@@ -105,21 +107,27 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     );
   }
 
-  async getTags(image: string, target?: string) {
+  async getTags(image: string, target?: string, repoFilter?: string) {
     const proxyUrl = await this.getBaseUrl(target);
+
+    const filter: any = {
+      packageId: `docker://${image}`,
+      name: '*',
+      ignorePreRelease: false,
+    };
+
+    const repositoryFilter = repoFilter || this.getRepoFilter();
+    if (repositoryFilter) {
+      filter.repositoriesIn = {
+        name: repositoryFilter,
+      };
+    }
 
     const tagQuery = {
       query:
         'query ($filter: VersionFilter!, $first: Int, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } } }',
       variables: {
-        filter: {
-          packageId: `docker://${image}`,
-          name: '*',
-          ignorePreRelease: false,
-          repositoriesIn: {
-            name: this.getRepoFilter(),
-          },
-        },
+        filter,
         first: this.getPageLimit(),
         orderBy: {
           field: this.getSortField(),
