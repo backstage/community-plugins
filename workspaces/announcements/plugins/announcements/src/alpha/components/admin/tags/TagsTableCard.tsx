@@ -24,6 +24,7 @@ import {
   CardFooter,
   CardHeader,
   Text,
+  Flex,
 } from '@backstage/ui';
 
 import { TagsTable } from './TagsTable';
@@ -55,29 +56,23 @@ export const TagsTableCard = (props: TagsTableCardProps) => {
     return tags.slice(start, end);
   }, [tags, offset, pageSize]);
 
+  const title = `${t('tagsPage.title')} (${tags.length})`;
+
   return (
-    <Card style={{ marginBottom: 8 }}>
+    <Card>
       <CardHeader>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Text variant="title-x-small">Tags ({tags.length})</Text>
+        <Flex justify="between" align="center">
+          <Text variant="title-x-small">{title}</Text>
           <Button isDisabled={!canCreate} onClick={onCreateClick}>
             {t('admin.tagsContent.createButton')}
           </Button>
-        </div>
+        </Flex>
       </CardHeader>
 
       <CardBody>
         <TagsTable
           data={paginatedTags}
           onDeleteClick={canDelete ? onDeleteClick : undefined}
-          showEmptyState={tags.length === 0}
         />
       </CardBody>
 

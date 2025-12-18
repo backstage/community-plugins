@@ -28,23 +28,53 @@ import {
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 
+const TagsTableEmptyState = () => {
+  const { t } = useAnnouncementsTranslation();
+
+  return (
+    <Row>
+      <CellText colSpan={3} title={t('admin.tagsContent.table.noTagsFound')} />
+    </Row>
+  );
+};
+
+type TagTableRowProps = {
+  tag: Tag;
+  onDeleteClick?: (tag: Tag) => void;
+};
+
+const TagTableRow = (props: TagTableRowProps) => {
+  const { tag, onDeleteClick } = props;
+
+  return (
+    <Row key={tag.slug}>
+      <CellText title={tag.title} />
+      <CellText title={tag.slug} />
+      <Cell>
+        <ButtonIcon
+          icon={<RiDeleteBinLine />}
+          variant="tertiary"
+          onClick={() => onDeleteClick!(tag)}
+        />
+      </Cell>
+    </Row>
+  );
+};
+
 /**
  * @internal
  */
 type TagsTableProps = {
   data: Tag[];
   onDeleteClick?: (tag: Tag) => void;
-  showEmptyState?: boolean;
 };
 
 /**
  * @internal
  */
 export const TagsTable = (props: TagsTableProps) => {
-  const { data, onDeleteClick, showEmptyState = false } = props;
+  const { data, onDeleteClick } = props;
   const { t } = useAnnouncementsTranslation();
-
-  const hasActions = onDeleteClick !== undefined;
 
   return (
     <Table>
@@ -53,34 +83,19 @@ export const TagsTable = (props: TagsTableProps) => {
           {t('admin.tagsContent.table.title')}
         </Column>
         <Column id="slug">{t('admin.tagsContent.table.slug')}</Column>
-        {hasActions && (
-          <Column id="actions">{t('admin.tagsContent.table.actions')}</Column>
-        )}
+        <Column id="actions">{t('admin.tagsContent.table.actions')}</Column>
       </TableHeader>
       <TableBody>
-        {showEmptyState || data.length === 0 ? (
-          <Row>
-            <CellText
-              colSpan={hasActions ? 3 : 2}
-              title={t('admin.tagsContent.table.noTagsFound')}
-            />
-          </Row>
-        ) : (
+        {data.length > 0 ? (
           data.map(tag => (
-            <Row key={tag.slug} id={tag.slug}>
-              <CellText title={tag.title} />
-              <CellText title={tag.slug} />
-              {hasActions && (
-                <Cell>
-                  <ButtonIcon
-                    icon={<RiDeleteBinLine />}
-                    variant="tertiary"
-                    onClick={() => onDeleteClick!(tag)}
-                  />
-                </Cell>
-              )}
-            </Row>
+            <TagTableRow
+              key={tag.slug}
+              tag={tag}
+              onDeleteClick={onDeleteClick}
+            />
           ))
+        ) : (
+          <TagsTableEmptyState />
         )}
       </TableBody>
     </Table>
