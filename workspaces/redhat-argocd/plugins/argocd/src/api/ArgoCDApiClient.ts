@@ -126,9 +126,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
       expand: options.expand,
     });
     return this.fetcher(
-      `${proxyUrl}/find/name/${encodeURIComponent(
-        options.appName as string,
-      )}${query}`,
+      `${proxyUrl}/find/name/${encodeURIComponent(options.appName)}${query}`,
     );
   }
 

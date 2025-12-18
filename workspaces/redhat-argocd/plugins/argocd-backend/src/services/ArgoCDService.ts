@@ -153,7 +153,7 @@ export class ArgoCDService {
    * @param {string} [options.name] - ArgoCD Application name
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
    * @param {string} [options.project] - The project the ArgoCD Application lives in
-   * @returns {Promise<{ items: Application[] }} Array of applications
+   * @returns {Promise<{ items: Application[] }>} Array of applications
    * @throws {Error} - When error occurs
    */
   async listArgoApps(
