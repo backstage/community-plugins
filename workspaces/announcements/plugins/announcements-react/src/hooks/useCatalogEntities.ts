@@ -73,16 +73,27 @@ export const useCatalogEntities = (
     }
 
     const items: Entity[] = [];
-    let response = await catalogApi.queryEntities(queryOptions);
-    items.push(...response.items);
-    const totalItems = response.totalItems;
+    let totalItems = 0;
+    let offset = 0;
+    let hasMoreEntities = true;
 
-    while (response.pageInfo?.nextCursor) {
-      response = await catalogApi.queryEntities({
+    while (hasMoreEntities) {
+      const response = await catalogApi.queryEntities({
         ...queryOptions,
-        cursor: response.pageInfo.nextCursor,
+        offset,
       });
+
+      if (!totalItems) {
+        totalItems = response.totalItems;
+      }
+
       items.push(...response.items);
+
+      if (items.length >= totalItems || response.items.length < limit) {
+        hasMoreEntities = false;
+      } else {
+        offset += limit;
+      }
     }
 
     return {
