@@ -24,7 +24,7 @@ import {
   DialogFooter,
 } from '@backstage/ui';
 
-type TitleFormDialogTranslationKeys = {
+type CreateTitleDialogTranslationKeys = {
   new: string;
   edit: string;
   titleLabel: string;
@@ -32,28 +32,28 @@ type TitleFormDialogTranslationKeys = {
   cancel?: string;
 };
 
-type TitleFormDialogTestIds = {
+type CreateTitleDialogTestIds = {
   form?: string;
   input?: string;
   button?: string;
 };
 
-export type TitleFormDialogRequest = {
+export type CreateTitleDialogRequest = {
   title: string;
 };
 
-export type TitleFormDialogProps<T extends TitleFormDialogRequest> = {
+export type CreateTitleDialogProps<T extends CreateTitleDialogRequest> = {
   initialData?: T;
-  translationKeys: TitleFormDialogTranslationKeys;
+  translationKeys: CreateTitleDialogTranslationKeys;
   onSubmit: (data: T) => Promise<void>;
   open: boolean;
   onCancel: () => void;
-  testIds?: TitleFormDialogTestIds;
+  testIds?: CreateTitleDialogTestIds;
   canSubmit?: boolean;
 };
 
-export const TitleFormDialog = <T extends TitleFormDialogRequest>(
-  props: TitleFormDialogProps<T>,
+export const CreateTitleDialog = <T extends CreateTitleDialogRequest>(
+  props: CreateTitleDialogProps<T>,
 ) => {
   const {
     initialData,

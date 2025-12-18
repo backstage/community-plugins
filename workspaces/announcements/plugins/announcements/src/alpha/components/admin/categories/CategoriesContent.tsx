@@ -29,7 +29,7 @@ import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { CreateCategoryDialog } from './CreateCategoryDialog';
+import { CreateCatagoryDialog } from './CreateCatagoryDialog';
 import { CategoriesTableCard } from './CategoriesTableCard';
 
 /**
@@ -121,7 +121,7 @@ export const CategoriesContent = () => {
         canDelete={canDelete}
       />
 
-      <CreateCategoryDialog
+      <CreateCatagoryDialog
         open={showNewCategoryForm}
         onConfirm={onConfirmCreate}
         onCancel={onCancelCreate}

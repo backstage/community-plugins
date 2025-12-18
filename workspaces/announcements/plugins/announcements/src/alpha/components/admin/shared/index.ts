@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 export * from './DeleteConfirmationDialog';
-export * from './TitleFormDialog';
-export * from './SlugTitleTableCard';
+export * from './CreateTitleDialog';

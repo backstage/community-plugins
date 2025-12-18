@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useState, useMemo } from 'react';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import {
+  Button,
+  TablePagination,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Text,
+  Flex,
+} from '@backstage/ui';
 
-import { SlugTitleTableCard } from '../shared';
 import { CategoriesTable } from './CategoriesTable';
 
 /**
@@ -37,22 +47,47 @@ export const CategoriesTableCard = (props: CategoriesTableCardProps) => {
   const { categories, onCreateClick, onDeleteClick, canCreate, canDelete } =
     props;
 
+  const [pageSize, setPageSize] = useState(5);
+  const [offset, setOffset] = useState(0);
   const { t } = useAnnouncementsTranslation();
 
+  const paginatedCategories = useMemo(() => {
+    const start = offset;
+    const end = offset + pageSize;
+    return categories.slice(start, end);
+  }, [categories, offset, pageSize]);
+
+  const title = `${t('categoriesPage.title')} (${categories.length})`;
+
   return (
-    <SlugTitleTableCard
-      items={categories}
-      onCreateClick={onCreateClick}
-      onDeleteClick={onDeleteClick}
-      canCreate={canCreate}
-      canDelete={canDelete}
-      translationKeys={{
-        pageTitle: t('categoriesPage.title'),
-        createButton: t('admin.categoriesContent.createButton'),
-      }}
-      renderTable={({ data, onDeleteClick: onDelete }) => (
-        <CategoriesTable data={data} onDeleteClick={onDelete} />
+    <Card>
+      <CardHeader>
+        <Flex justify="between" align="center">
+          <Text variant="title-x-small">{title}</Text>
+          <Button isDisabled={!canCreate} onClick={onCreateClick}>
+            {t('admin.categoriesContent.createButton')}
+          </Button>
+        </Flex>
+      </CardHeader>
+
+      <CardBody>
+        <CategoriesTable
+          data={paginatedCategories}
+          onDeleteClick={canDelete ? onDeleteClick : undefined}
+        />
+      </CardBody>
+
+      {categories.length > 0 && (
+        <CardFooter>
+          <TablePagination
+            offset={offset}
+            pageSize={pageSize}
+            setOffset={setOffset}
+            setPageSize={setPageSize}
+            rowCount={categories.length}
+          />
+        </CardFooter>
       )}
-    />
+    </Card>
   );
 };

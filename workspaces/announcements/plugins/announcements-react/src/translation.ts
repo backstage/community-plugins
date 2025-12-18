@@ -157,7 +157,7 @@ export const announcementsTranslationRef = createTranslationRef({
         announcementsLabels: 'Announcements',
         categoriesLabel: 'Categories',
         tagsLabel: 'Tags',
-        title: 'Admin Portal',
+        title: 'Admin Portal for Announcements',
         subtitle: 'Manage announcements and categories',
       },
       announcementsContent: {

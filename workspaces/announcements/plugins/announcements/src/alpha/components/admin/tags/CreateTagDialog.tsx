@@ -18,7 +18,7 @@ import {
   CreateTagRequest,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import { TitleFormDialog } from '../shared';
+import { CreateTitleDialog } from '../shared';
 
 /**
  * @internal
@@ -47,7 +47,7 @@ export const CreateTagDialog = (props: CreateTagDialogProps) => {
   };
 
   return (
-    <TitleFormDialog<CreateTagRequest>
+    <CreateTitleDialog<CreateTagRequest>
       open={open}
       onCancel={onCancel}
       translationKeys={translationKeys}
