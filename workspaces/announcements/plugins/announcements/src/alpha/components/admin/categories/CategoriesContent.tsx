@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { useState } from 'react';
+import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import { ResponseError } from '@backstage/errors';
 import {
   CreateCategoryRequest,
   announcementsApiRef,
@@ -22,8 +24,6 @@ import {
   useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import { Category } from '@backstage-community/plugin-announcements-common';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import { ResponseError } from '@backstage/errors';
 
 import {
   useDeleteConfirmationDialogState,
@@ -36,12 +36,14 @@ import { CategoriesTableCard } from './CategoriesTableCard';
  * @internal
  */
 export const CategoriesContent = () => {
-  const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
-  const { categories, retry: refresh } = useCategories();
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
+
+  const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
+
+  const { categories, retry: refresh } = useCategories();
 
   const {
     isOpen: isDeleteDialogOpen,

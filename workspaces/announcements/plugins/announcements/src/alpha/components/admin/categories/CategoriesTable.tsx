@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { Category } from '@backstage-community/plugin-announcements-common';
-import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   CellText,
   Column,
@@ -28,23 +25,59 @@ import {
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 
+import { Category } from '@backstage-community/plugin-announcements-common';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+
+const CategoriesTableEmptyState = () => {
+  const { t } = useAnnouncementsTranslation();
+
+  return (
+    <Row>
+      <CellText
+        colSpan={3}
+        title={t('admin.categoriesContent.table.noCategoriesFound')}
+      />
+    </Row>
+  );
+};
+
+type CategoryTableRowProps = {
+  category: Category;
+  onDeleteClick?: (category: Category) => void;
+};
+
+const CategoryTableRow = (props: CategoryTableRowProps) => {
+  const { category, onDeleteClick } = props;
+
+  return (
+    <Row key={category.slug}>
+      <CellText title={category.title} />
+      <CellText title={category.slug} />
+      <Cell>
+        <ButtonIcon
+          icon={<RiDeleteBinLine />}
+          variant="tertiary"
+          onClick={() => onDeleteClick!(category)}
+        />
+      </Cell>
+    </Row>
+  );
+};
+
 /**
  * @internal
  */
 type CategoriesTableProps = {
   data: Category[];
   onDeleteClick?: (category: Category) => void;
-  showEmptyState?: boolean;
 };
 
 /**
  * @internal
  */
 export const CategoriesTable = (props: CategoriesTableProps) => {
-  const { data, onDeleteClick, showEmptyState = false } = props;
+  const { data, onDeleteClick } = props;
   const { t } = useAnnouncementsTranslation();
-
-  const hasActions = onDeleteClick !== undefined;
 
   return (
     <Table>
@@ -53,36 +86,21 @@ export const CategoriesTable = (props: CategoriesTableProps) => {
           {t('admin.categoriesContent.table.title')}
         </Column>
         <Column id="slug">{t('admin.categoriesContent.table.slug')}</Column>
-        {hasActions && (
-          <Column id="actions">
-            {t('admin.categoriesContent.table.actions')}
-          </Column>
-        )}
+        <Column id="actions">
+          {t('admin.categoriesContent.table.actions')}
+        </Column>
       </TableHeader>
       <TableBody>
-        {showEmptyState || data.length === 0 ? (
-          <Row>
-            <CellText
-              colSpan={hasActions ? 3 : 2}
-              title={t('admin.categoriesContent.table.noCategoriesFound')}
-            />
-          </Row>
-        ) : (
+        {data.length > 0 ? (
           data.map(category => (
-            <Row key={category.slug} id={category.slug}>
-              <CellText title={category.title} />
-              <CellText title={category.slug} />
-              {hasActions && (
-                <Cell>
-                  <ButtonIcon
-                    icon={<RiDeleteBinLine />}
-                    variant="tertiary"
-                    onClick={() => onDeleteClick!(category)}
-                  />
-                </Cell>
-              )}
-            </Row>
+            <CategoryTableRow
+              key={category.slug}
+              category={category}
+              onDeleteClick={onDeleteClick}
+            />
           ))
+        ) : (
+          <CategoriesTableEmptyState />
         )}
       </TableBody>
     </Table>

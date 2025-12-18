@@ -24,6 +24,7 @@ import {
   CardFooter,
   CardHeader,
   Text,
+  Flex,
 } from '@backstage/ui';
 
 import { CategoriesTable } from './CategoriesTable';
@@ -56,29 +57,23 @@ export const CategoriesTableCard = (props: CategoriesTableCardProps) => {
     return categories.slice(start, end);
   }, [categories, offset, pageSize]);
 
+  const title = `${t('categoriesPage.title')} (${categories.length})`;
+
   return (
-    <Card style={{ marginBottom: 8 }}>
+    <Card>
       <CardHeader>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Text variant="title-x-small">Categories ({categories.length})</Text>
+        <Flex justify="between" align="center">
+          <Text variant="title-x-small">{title}</Text>
           <Button isDisabled={!canCreate} onClick={onCreateClick}>
             {t('admin.categoriesContent.createButton')}
           </Button>
-        </div>
+        </Flex>
       </CardHeader>
 
       <CardBody>
         <CategoriesTable
           data={paginatedCategories}
           onDeleteClick={canDelete ? onDeleteClick : undefined}
-          showEmptyState={categories.length === 0}
         />
       </CardBody>
 
