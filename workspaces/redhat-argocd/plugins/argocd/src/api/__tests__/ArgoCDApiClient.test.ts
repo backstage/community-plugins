@@ -120,7 +120,7 @@ describe('API calls', () => {
         error = e;
       } finally {
         expect(error.message).toBe(
-          'failed to fetch data, status Internal server error: Something went wrong',
+          'Failed to fetch data, status Internal server error: Something went wrong',
         );
       }
     });
@@ -278,7 +278,7 @@ describe('API calls', () => {
           appName: 'my-test-app',
         }),
       ).rejects.toThrow(
-        'failed to fetch data, status Internal server error: Something went wrong',
+        'Failed to fetch data, status Internal server error: Something went wrong',
       );
     });
   });

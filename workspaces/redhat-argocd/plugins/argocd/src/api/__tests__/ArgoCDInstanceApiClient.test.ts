@@ -342,10 +342,66 @@ describe('ArgoCDInstanceApiClient', () => {
         expect(result[1].metadata?.instance.url).toBeDefined();
       });
 
-      test('should raise Error if getApplication raises Error', async () => {
+      test('should not throw error when application with appName does not exist in instance', async () => {
         const errorMessage =
-          'Failed to fetch Application quarkus-app from Instance main : Internal Server Error';
-        // "Failed to retrieve ArgoCD Applications from Instance 'test-instance' with name 'nonexistent-app' : Request to https://argocd.example.com/api/v1/applications?name=nonexistent-app failed with 500 Internal Server Error"
+          'Failed to fetch data, status 403: Insufficient permissions for ArgoCD server';
+        const mockGetApplication = jest
+          .fn()
+          .mockResolvedValueOnce(mockQuarkusDevApplicationWithAppName)
+          .mockRejectedValueOnce(new Error(errorMessage));
+        const mockFindApplications = jest.fn().mockResolvedValue([
+          {
+            name: 'main',
+            url: 'https://kubernetes.default.svc',
+            appName: ['quarkus-app'],
+          },
+        ]);
+
+        mockArgoCDApiClient.getApplication = mockGetApplication;
+        mockArgoCDApiClient.findApplications = mockFindApplications;
+
+        const result = await client.searchApplications(['main', 'secondary'], {
+          appName: 'quarkus-app', // Exists on main, does not exist on secondary
+        });
+
+        expect(mockGetApplication).toHaveBeenCalledTimes(2);
+        expect(mockFindApplications).toHaveBeenCalledWith({
+          appName: 'quarkus-app',
+          appNamespace: undefined,
+          project: undefined,
+        });
+        // Only main instance should be returned, secondary does not throw
+        expect(result).toHaveLength(1);
+        expect(result[0].metadata?.name).toBe('quarkus-app');
+      });
+
+      test('should throw 403 Error if fetching application throws 403 error and app exists in instance', async () => {
+        const errorMessage =
+          'Failed to fetch data, status 403: Insufficient permissions for ArgoCD server';
+        const mockGetApplication = jest
+          .fn()
+          .mockRejectedValueOnce(new Error(errorMessage));
+        const mockFindApplications = jest.fn().mockResolvedValue([
+          {
+            name: 'main',
+            url: 'https://kubernetes.default.svc',
+            appName: ['quarkus-app'],
+          },
+        ]);
+
+        mockArgoCDApiClient.getApplication = mockGetApplication;
+        mockArgoCDApiClient.findApplications = mockFindApplications;
+
+        await expect(
+          client.searchApplications(['main'], {
+            appName: 'quarkus-app',
+          }),
+        ).rejects.toThrow(errorMessage);
+      });
+
+      test('should throw error if fetching application raises non-403 error', async () => {
+        const errorMessage =
+          'Failed to fetch data, status 500: Internal Server Error';
         const mockGetApplication = jest
           .fn()
           .mockResolvedValueOnce(mockQuarkusDevApplicationWithAppName)
@@ -360,6 +416,32 @@ describe('ArgoCDInstanceApiClient', () => {
         ).rejects.toThrow(errorMessage);
 
         expect(mockGetApplication).toHaveBeenCalledTimes(2);
+        expect(mockArgoCDApiClient.findApplications).not.toHaveBeenCalled();
+      });
+
+      test('should return empty array when no applications found across instances', async () => {
+        const errorMessage =
+          'Failed to fetch data, status 403: Insufficient permissions for ArgoCD server';
+        const mockGetApplication = jest
+          .fn()
+          .mockRejectedValueOnce(new Error(errorMessage))
+          .mockRejectedValueOnce(new Error(errorMessage));
+        const mockFindApplications = jest.fn().mockResolvedValue([]);
+
+        mockArgoCDApiClient.getApplication = mockGetApplication;
+        mockArgoCDApiClient.findApplications = mockFindApplications;
+
+        const result = await client.searchApplications(['main', 'secondary'], {
+          appName: 'quarkus-app',
+        });
+
+        expect(mockGetApplication).toHaveBeenCalledTimes(2);
+        expect(mockFindApplications).toHaveBeenCalledWith({
+          appName: 'quarkus-app',
+          appNamespace: undefined,
+          project: undefined,
+        });
+        expect(result).toHaveLength(0);
       });
     });
 
@@ -442,6 +524,23 @@ describe('ArgoCDInstanceApiClient', () => {
         expect(result).toHaveLength(2);
         expect(result[0]).toEqual(mockQuarkusDevApplicationWithAppName);
         expect(result[1]).toEqual(mockQuarkusApplication);
+      });
+
+      test('should return empty array when no applications found across instances', async () => {
+        const mockFindApplications = jest.fn().mockResolvedValue([]);
+        mockArgoCDApiClient.findApplications = mockFindApplications;
+
+        const result = await client.searchApplications([], {
+          appName: 'quarkus-app',
+        });
+
+        expect(mockFindApplications).toHaveBeenCalledWith({
+          appName: 'quarkus-app',
+          appNamespace: undefined,
+          project: undefined,
+          expand: 'applications',
+        });
+        expect(result).toHaveLength(0);
       });
 
       test('should fetch application details when findApplications returns no expanded applications (Roadie)', async () => {

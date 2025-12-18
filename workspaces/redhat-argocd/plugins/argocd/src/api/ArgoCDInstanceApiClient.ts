@@ -58,7 +58,7 @@ export class ArgoCDInstanceApiClient implements ArgoCDInstanceApi {
 
     if (appName) {
       // Get app from specific ArgoCD instances
-      return await Promise.all(
+      const applications = await Promise.all(
         instanceNames.map(instanceName =>
           this.getApplicationByName(instanceName, {
             appName,
@@ -66,6 +66,9 @@ export class ArgoCDInstanceApiClient implements ArgoCDInstanceApi {
             project,
           }),
         ),
+      );
+      return applications.filter(
+        (app): app is Application => app !== undefined,
       );
     }
 
@@ -125,17 +128,40 @@ export class ArgoCDInstanceApiClient implements ArgoCDInstanceApi {
   private async getApplicationByName(
     instanceName: string,
     options: FindApplicationsOptions,
-  ): Promise<Application> {
+  ): Promise<Application | undefined> {
     const { appName, appNamespace, project } = options;
-    const application = await this.argoCDApi.getApplication({
-      url: `/argoInstance/${instanceName}`,
-      appName,
-      appNamespace,
-      project,
-    });
 
-    // Roadie doesn't include instance in its getApplication response
-    return this.enrichApplicationWithInstance(application, instanceName);
+    try {
+      const application = await this.argoCDApi.getApplication({
+        url: `/argoInstance/${instanceName}`,
+        appName,
+        appNamespace,
+        project,
+      });
+
+      // Roadie doesn't include instance in its getApplication response
+      return this.enrichApplicationWithInstance(application, instanceName);
+    } catch (error) {
+      // ArgoCD /applications/:appName endpoint throws 403 Insufficient permissions for ArgoCD server when app doesn't exist
+      if (!error?.message?.includes('status 403')) {
+        throw error;
+      }
+      // Check if the application actually exists in instance
+      const instanceApplicationsList = await this.argoCDApi.findApplications({
+        appName,
+        appNamespace,
+        project,
+      });
+
+      const applicationExistsInInstance = instanceApplicationsList.some(
+        instance => instance.name === instanceName,
+      );
+      if (!applicationExistsInInstance) {
+        // don't throw error when application with appName doesn't exist in instance
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   private async findApplicationsByName(
@@ -170,6 +196,7 @@ export class ArgoCDInstanceApiClient implements ArgoCDInstanceApi {
       ),
     );
 
-    return Promise.all(promises);
+    const applications = await Promise.all(promises);
+    return applications.filter((app): app is Application => app !== undefined);
   }
 }

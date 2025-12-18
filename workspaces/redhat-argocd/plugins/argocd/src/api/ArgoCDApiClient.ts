@@ -79,7 +79,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
     });
     if (!response.ok) {
       throw new Error(
-        `failed to fetch data, status ${response.status}: ${response.statusText}`,
+        `Failed to fetch data, status ${response.status}: ${response.statusText}`,
       );
     }
     const json = await response.json();
