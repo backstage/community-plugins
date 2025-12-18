@@ -15,7 +15,7 @@
  */
 
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 import { Typography } from '@material-ui/core';
 import { tektonTranslationRef } from '../../translations';
 import { Output } from './Output';

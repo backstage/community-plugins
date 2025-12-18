@@ -19,7 +19,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { isEqual } from 'lodash';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@backstage-community/plugin-tekton-react';
 
 import { useKubernetesObjects } from '@backstage/plugin-kubernetes-react';
 import { TektonResourcesContextData, TektonResponseData } from '../types/types';

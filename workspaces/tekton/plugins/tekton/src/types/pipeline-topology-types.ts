@@ -24,7 +24,7 @@ import {
   PipelineRunKind,
   PipelineTask,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { AddNodeDirection, NodeType } from '../consts/pipeline-topology-const';
 

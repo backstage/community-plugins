@@ -29,7 +29,7 @@ import {
   pipelineRunFilterReducer,
   PipelineRunKind,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import {

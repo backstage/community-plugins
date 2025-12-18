@@ -30,7 +30,10 @@ import {
 } from '@aonic-ui/pipelines';
 import { Grid, Paper, Typography } from '@material-ui/core';
 
-import { PipelineRunKind, TaskRunKind } from '@janus-idp/shared-react';
+import {
+  PipelineRunKind,
+  TaskRunKind,
+} from '@backstage-community/plugin-tekton-react';
 import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { TektonResourcesContextData } from '../../types/types';
