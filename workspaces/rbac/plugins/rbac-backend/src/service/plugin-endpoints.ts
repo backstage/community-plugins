@@ -29,11 +29,9 @@ import { isError } from '@backstage/errors';
 import {
   isResourcePermission,
   Permission,
+  type MetadataResponse,
+  type MetadataResponseSerializedRule,
 } from '@backstage/plugin-permission-common';
-import type {
-  MetadataResponse,
-  MetadataResponseSerializedRule,
-} from '@backstage/plugin-permission-node';
 
 import {
   policyEntityPermissions,

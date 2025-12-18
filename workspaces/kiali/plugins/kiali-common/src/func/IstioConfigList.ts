@@ -103,7 +103,7 @@ export const filterByNamespaces = (
     const resourceKey = getGVKTypeString(value);
 
     // Check if the resource exists in the unfiltered list, then filter by namespace
-    if (unfiltered.resources[resourceKey]) {
+    if (unfiltered.resources && unfiltered.resources[resourceKey]) {
       filteredResources[resourceKey] = unfiltered.resources[resourceKey].filter(
         resource => includesNamespace(resource, namespaceSet),
       );

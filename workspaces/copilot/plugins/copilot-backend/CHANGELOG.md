@@ -1,5 +1,57 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.15.5
+
+### Patch Changes
+
+- 0a904fd: Normalized date format in task logs. Dates now display in ISO 8601 UTC format (`2025-11-03T00:00:00.000Z`) instead of locale-specific format (`Mon Nov 03 2025 01:00:00 GMT+0100 (Central European Standard Time)`).
+
+## 0.15.4
+
+### Patch Changes
+
+- 14bf95c: Improves error logging. Changes Octokit to use the built in CreateAppAuth in order to automatically refresh expired tokens.
+
+## 0.15.3
+
+### Patch Changes
+
+- 53e4a3b: fixes sql for engagement-metrics with the change from null to empty string.
+
+## 0.15.2
+
+### Patch Changes
+
+- 1b7adc8: Fixed a mismatch between the backend requiring copilot.host and the config declaration stating it was optional.
+
+## 0.15.1
+
+### Patch Changes
+
+- 3fd5298: Fixed an issue causing incorrect metrics to be displayed due to duplicate database entries for the same day.
+
+## 0.15.0
+
+### Minor Changes
+
+- 4d1cf33: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [4d1cf33]
+  - @backstage-community/plugin-copilot-common@0.14.0
+
+## 0.14.0
+
+### Minor Changes
+
+- 8c60a7f: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [8c60a7f]
+  - @backstage-community/plugin-copilot-common@0.13.0
+
 ## 0.13.0
 
 ### Minor Changes

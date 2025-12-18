@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@backstage/ui/css/styles.css';
+
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
-import { quayApiRef, QuayApiV1 } from '../src/api';
+import { quayApiRef, QuayApiV1, QuayInstanceConfig } from '../src/api';
 import { QuayPage, quayPlugin } from '../src/plugin';
 import { labels } from './__data__/labels';
 import { manifestDigest } from './__data__/manifest_digest';
@@ -50,6 +52,10 @@ const mockEntity: Entity = {
 };
 
 export class MockQuayApiClient implements QuayApiV1 {
+  getQuayInstance(_?: string): QuayInstanceConfig | undefined {
+    return { name: 'default', apiUrl: 'https://quay.io' };
+  }
+
   async getTags() {
     return tags;
   }
@@ -62,7 +68,7 @@ export class MockQuayApiClient implements QuayApiV1 {
     return manifestDigest;
   }
 
-  async getSecurityDetails(_: string, __: string, digest: string) {
+  async getSecurityDetails(_: string, __: string, ___: string, digest: string) {
     if (
       digest ===
       'sha256:79c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775d'
@@ -93,7 +99,6 @@ export class MockQuayApiClient implements QuayApiV1 {
     return securityDetails;
   }
 }
-const mockPermissionApi = new MockPermissionApi();
 
 createDevApp()
   .registerPlugin(quayPlugin)
@@ -102,7 +107,7 @@ createDevApp()
       <TestApiProvider
         apis={[
           [quayApiRef, new MockQuayApiClient()],
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
         ]}
       >
         <EntityProvider entity={mockEntity}>

@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  BackstageCredentials,
-  BackstageUserPrincipal,
-} from '@backstage/backend-plugin-api';
+
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 
 /**
@@ -35,7 +33,7 @@ export interface OwnershipService {
    */
   getOwnedGroups(
     ownershipEntityRefs: readonly string[],
-    credentials: BackstageCredentials<BackstageUserPrincipal>,
+    credentials: BackstageCredentials,
   ): Promise<Entity[]>;
 }
 

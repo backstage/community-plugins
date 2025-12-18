@@ -14,8 +14,11 @@
   - [Version Bumping](#version-bumping)
   - [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
+  - [Opt-in to List Deprecations Check](#opt-in-to-list-deprecations-check)
+  - [Opt-in to Playwright UI Check](#opt-in-to-playwright-ui-check)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
+  - [FAQ](#faq)
 
 ## Plugin Owner Expectations
 
@@ -27,7 +30,9 @@ Plugin ownership is a responsibility often taken on voluntarily and/or in additi
 
 Plugin owners are assumed to have full autonomy over reviewing and merging PRs for their workspace. This includes the merging of Version Packages PRs to trigger a new release.
 
-It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces (such as dependency updates), as these may be landed by `@backstage/community-plugin-maintainers`.
+It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces, as these may be landed by `@backstage/community-plugin-maintainers`.
+
+In the case of PRs for dependency updates, if these are not handled and become stale, `@backstage/community-plugin-maintainers` will take action to merge or close them.
 
 ### Issue Triage
 
@@ -87,6 +92,8 @@ Follow these steps to archive a plugin or workspace:
 
    - Record Git tag references using `package.json` versions (`@backstage-community/plugin-example@1.2.3`)
    - Add entries to `.github/archived-plugins.json` and `ARCHIVED_WORKSPACES.md`
+   - Remove entries from `docs/README.md`
+   - If archiving an entire workspace, remove entries from `.github/ISSUE_TEMPLATE/1-bug.yaml`, `.github/ISSUE_TEMPLATE/2-feature.yaml`, `.github/ISSUE_TEMPLATE/snippets/workspaces-dropdown.yaml`, `.github/labeler.yml`, `.github/CODEOWNERS`, and `docs/compatibility/compatibility.md`
 
 2. Dry run the following script to verify which packages would be deprecated:
 
@@ -94,7 +101,7 @@ Follow these steps to archive a plugin or workspace:
    ./scripts/ci/deprecate-archived-plugins.sh --dry-run
    ```
 
-3. Delete the workspace or plugin(s) from the repository.
+3. Delete the workspace or plugin(s) from the repository. Ensure that any relevant documentation has been appropriately updated to reflect the removal of the workspace/plugin.
 
 4. Open a PR with the changes including:
 
@@ -123,6 +130,32 @@ These automated PRs are intended as a convenience to open the version bump for y
 Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "knipReports": true }`. This ensures that knip reports in your workspace stay up to date.
 
 [Knip](https://knip.dev/) is a tool that helps with clean-up and maintenance by identifying unused dependencies within workspaces. Regularly reviewing and addressing these reports can significantly improve code quality and reduce bloat.
+
+## Opt-in to List Deprecations Check
+
+Plugins owners can opt into the List Deprecations check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "listDeprecations": true }`. This ensures that you aren't using deprecated code in your workspace making it easier when deprecated code is finally removed.
+
+## Opt-in to Playwright UI Check
+
+Plugin owners can opt into running any Playwright-based tests from their workspace by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/bcp.json`) with the content `{ "playwrightTests": true }`. This is intended for quick fontend tests using the plugin's dev pages. The following commands will be run in the root of the workspace as part of the CI workflow:
+
+```shell
+yarn playwright install --with-deps chromium chrome
+yarn playwright test
+```
+
+There are several requirements for this check to run green:
+
+- The workspace has a dependency on `@playwright/test` package
+- The root of the workspace contains a playwright configuration file
+- Currently supported browsers are Chromium and Chrome
+- Launching the plugin needs to be part of the test configuration
+
+Test file selection is based solely on the config file. Launching the plugin can be done using the `webServer` option in the config file as well. For more details about configuration, see the [documentation](https://playwright.dev/docs/test-configuration).
+
+Note that since there is no per-plugin configuration for the workflow, there is no place to store secrets for the CI, in case any communication with external services is required. For the sake of consistency, we recommend testing using static data for the dev pages, or [mocking](https://playwright.dev/docs/mock#mock-api-requests) any external APIs during as part of the tests themselves.
+
+For a working example, check out the [quay](/workspaces/quay/) workspace. In particular, the [config](/workspaces/quay/playwright.config.ts) file, and the [tests](/workspaces/quay/plugins/quay/tests/) might be of interest.
 
 ## Maintaining and patching an older release line
 
@@ -192,3 +225,72 @@ When patching an older release, follow the steps below to ensure the correct wor
 7. Open a PR with the `CHANGELOG` additions to `backstage/community-plugins` main branch:
    - This is necessary for history to be clear on the latest branch.
    - You can use `git cherry-pick --no-commit workspace/${workspace}` and only commit the `CHANGELOG` files.
+
+---
+
+## FAQ
+
+Here are some common issues and questions that contributors often face.
+
+### The bot says I'm missing a changeset. How do I add one?
+
+If your change affects any code inside a `plugins/` or `packages/` directory, it needs a changeset file to document the change for the release. Please follow the [Backstage contributing guide on creating changesets](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#creating-changesets).
+
+### My PR is full of unrelated files ("Knip" changes, `yarn.lock` conflicts)\!
+
+This happens when your branch is out-of-date with the main `main` branch. You need to rebase your branch to include the latest changes _before_ your commits.
+
+1.  Make sure your local `main` branch is up-to-date:
+    ```bash
+    git checkout main
+    git pull origin main
+    ```
+2.  Switch back to your feature branch:
+    ```bash
+    git checkout my-feature-branch
+    ```
+3.  Rebase your branch on top of `main`:
+    ```bash
+    git rebase main
+    ```
+4.  Fix any merge conflicts that come up.
+5.  Force-push your rebased branch. This will update your PR with a clean history:
+    ```bash
+    git push --force-with-lease
+    ```
+
+### A GitHub check is stuck "waiting for status to be reported".
+
+The easiest way to fix it is to close your Pull Request and then immediately reopen it. This forces GitHub to re-trigger the checks.
+
+### The "API Report" check is failing.
+
+This means you changed an exported type, function, or class, and the API documentation needs to be updated.
+
+1.  Run `yarn backstage-cli api-report:ci` from the root of the repo.
+2.  This will automatically update the `api-report.md` file for your plugin.
+3.  Commit this updated file to your PR.
+
+### My build is failing with errors about `package.json` metadata.
+
+The `package.json` for your plugin might be missing required fields or have incorrect values.
+
+1.  Go to your plugin's workspace directory (e.g., `workspaces/my-plugin/`).
+2.  Run `yarn backstage-cli repo fix --publish`
+3.  This will check for and automatically fix common `package.json` issues. Commit any changes.
+
+### My CI workflow is failing due to linting errors.
+
+This means your code doesn't match the project's automatic formatting rules.
+
+1.  Run `yarn lint --fix` from the root of the repo. This will automatically fix most linting errors.
+2.  Commit the changes that the linter made to your files.
+
+### How do I create a new plugin?
+
+1.  From the root of the `community-plugins` repository, run the new plugin creation script:
+    ```bash
+    yarn new
+    ```
+2.  Follow the interactive prompts. It will ask you for the plugin name, what kind of plugin it is (frontend, backend, etc.), and will create all the boilerplate files for you in a new folder under `workspaces/`.
+3.  Commit all the newly created files and open a PR.

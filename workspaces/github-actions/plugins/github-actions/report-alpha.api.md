@@ -13,9 +13,9 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -26,7 +26,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:github-actions': ExtensionDefinition<{
+    'api:github-actions': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -43,7 +43,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:github-actions/latest-branch-workflow-runs': ExtensionDefinition<{
+    'entity-card:github-actions/latest-branch-workflow-runs': OverridableExtensionDefinition<{
       config: {
         props: {
           branch?: string | undefined;
@@ -95,8 +95,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -108,7 +108,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:github-actions/latest-workflow-run': ExtensionDefinition<{
+    'entity-card:github-actions/latest-workflow-run': OverridableExtensionDefinition<{
       config: {
         props: {
           branch?: string | undefined;
@@ -160,8 +160,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -173,12 +173,12 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:github-actions/recent-workflow-runs': ExtensionDefinition<{
+    'entity-card:github-actions/recent-workflow-runs': OverridableExtensionDefinition<{
       config: {
         props: {
           dense: boolean;
-          branch?: string | undefined;
           limit?: number | undefined;
+          branch?: string | undefined;
         };
       } & {
         filter: EntityPredicate | undefined;
@@ -188,8 +188,8 @@ const _default: OverridableFrontendPlugin<
         props?:
           | {
               dense?: boolean | undefined;
-              branch?: string | undefined;
               limit?: number | undefined;
+              branch?: string | undefined;
             }
           | undefined;
       } & {
@@ -229,8 +229,8 @@ const _default: OverridableFrontendPlugin<
             }
           >,
           {
-            optional: boolean;
             singleton: boolean;
+            optional: boolean;
           }
         >;
       };
@@ -242,57 +242,18 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:github-actions/workflow-runs': ExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'workflow-runs';
+    'entity-content:github-actions': OverridableExtensionDefinition<{
       config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
-      };
-      configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
-      };
-      output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ExtensionDataRef<
-            (entity: Entity) => boolean,
-            'catalog.entity-filter-function',
-            {
-              optional: true;
-            }
-          >
-        | ExtensionDataRef<
-            string,
-            'catalog.entity-filter-expression',
-            {
-              optional: true;
-            }
-          >
-        | ExtensionDataRef<
-            EntityCardType,
-            'catalog.entity-card-type',
-            {
-              optional: true;
-            }
-          >;
-      inputs: {};
-      params: {
-        loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
-        type?: EntityCardType | undefined;
-      };
-    }>;
-    'entity-content:github-actions/entity': ExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'entity';
-      config: {
+        layout: 'table' | 'cards';
+      } & {
         path: string | undefined;
         title: string | undefined;
         filter: EntityPredicate | undefined;
         group: string | false | undefined;
       };
       configInput: {
+        layout?: 'table' | 'cards' | undefined;
+      } & {
         filter?: EntityPredicate | undefined;
         title?: string | undefined;
         path?: string | undefined;
@@ -330,7 +291,23 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {};
+      inputs: {
+        [x: string]: ExtensionInput<
+          ExtensionDataRef<
+            unknown,
+            string,
+            {
+              optional?: true | undefined;
+            }
+          >,
+          {
+            singleton: boolean;
+            optional: boolean;
+          }
+        >;
+      };
+      kind: 'entity-content';
+      name: undefined;
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;

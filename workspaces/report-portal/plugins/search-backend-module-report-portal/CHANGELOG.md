@@ -1,5 +1,19 @@
 # @backstage-community/plugin-search-backend-module-report-portal
 
+## 1.1.2
+
+### Patch Changes
+
+- 4259d74: Increase the default request frequency and update docs
+
+## 1.1.1
+
+### Patch Changes
+
+- 2b5f93e: - fix: handle startTime in both formats number/string
+- Updated dependencies [2b5f93e]
+  - @backstage-community/plugin-report-portal-common@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes

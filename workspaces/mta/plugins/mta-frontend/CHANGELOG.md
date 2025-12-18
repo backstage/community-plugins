@@ -1,5 +1,21 @@
 # @backstage-community/backstage-plugin-mta-frontend
 
+## 0.4.1
+
+### Patch Changes
+
+- 94731be: Update to modern jsx transform (react-jsx)
+
+## 0.4.0
+
+### Minor Changes
+
+- eb387c6: Updated MTA plugins for Backstage v1.42.5:
+
+  - Migrated dynamic plugin installer from legacy to new format
+  - Enhanced scaffolder action with better type safety and output handling
+  - Updated dependencies to align with Backstage v1.42.5
+
 ## 0.3.0
 
 ### Minor Changes

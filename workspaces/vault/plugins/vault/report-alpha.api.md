@@ -7,7 +7,7 @@ import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 
 // @alpha
@@ -15,7 +15,7 @@ const _default: OverridableFrontendPlugin<{}, {}, {}>;
 export default _default;
 
 // @alpha
-export const vaultApi: ExtensionDefinition<{
+export const vaultApi: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'vaultApi';
   config: {};

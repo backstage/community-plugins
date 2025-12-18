@@ -1,5 +1,23 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.12.1
+
+### Patch Changes
+
+- 20f8821: Updated dependency `uuid` to `^13.0.0` and remove deprecated and redundant `@types/uuid` package.
+
+## 0.12.0
+
+### Minor Changes
+
+- 2c99537: Backstage version bump to v1.44.0
+
+## 0.11.0
+
+### Minor Changes
+
+- acc7272: Backstage version bump to v1.43.2
+
 ## 0.10.0
 
 ### Minor Changes

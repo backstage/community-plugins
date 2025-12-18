@@ -1,5 +1,29 @@
 # @backstage-community/plugin-grafana
 
+## 0.11.0
+
+### Minor Changes
+
+- bc8d728: Backstage version bump to v1.45.1
+
+## 0.10.1
+
+### Patch Changes
+
+- 45ce0ac: Added documentation for the New Frontend System
+
+## 0.10.0
+
+### Minor Changes
+
+- 81cd200: Backstage version bump to v1.44.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 59e5a3f: Backstage version bump to v1.43.2
+
 ## 0.8.0
 
 ### Minor Changes

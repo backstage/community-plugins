@@ -106,6 +106,9 @@ workspace/feedback:
 workspace/firehydrant:
   - "Workspace\\s*firehydrant"
 
+workspace/flux:
+  - "Workspace\\s*flux"
+
 workspace/fossa:
   - "Workspace\\s*fossa"
 
@@ -181,8 +184,8 @@ workspace/linkerd:
 workspace/manage:
   - "Workspace\\s*manage"
 
-workspace/matomo:
-  - "Workspace\\s*matomo"
+workspace/mcp-chat:
+  - "Workspace\\s*mcp-chat"
 
 workspace/mend:
   - "Workspace\\s*mend"
@@ -213,9 +216,6 @@ workspace/ocm:
 
 workspace/octopus-deploy:
   - "Workspace\\s*octopus-deploy"
-
-workspace/odo:
-  - "Workspace\\s*odo"
 
 workspace/opencost:
   - "Workspace\\s*opencost"

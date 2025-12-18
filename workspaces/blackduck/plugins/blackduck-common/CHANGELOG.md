@@ -1,5 +1,23 @@
 # @backstage-community/plugin-blackduck-common
 
+## 0.9.0
+
+### Minor Changes
+
+- e95e193: Backstage version bump to v1.45.1
+
+## 0.8.0
+
+### Minor Changes
+
+- 9fb289a: Backstage version bump to v1.44.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 65f6e45: Backstage version bump to v1.43.2
+
 ## 0.6.0
 
 ### Minor Changes

@@ -16,8 +16,10 @@
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { InputError } from '@backstage/errors';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import type { MetadataResponse } from '@backstage/plugin-permission-node';
+import {
+  AuthorizeResult,
+  type MetadataResponse,
+} from '@backstage/plugin-permission-common';
 
 import express from 'express';
 import request from 'supertest';

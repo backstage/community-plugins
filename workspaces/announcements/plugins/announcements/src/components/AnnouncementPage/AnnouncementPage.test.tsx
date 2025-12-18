@@ -20,10 +20,16 @@ import {
   announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
-import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
+import {
+  mockApis,
+  TestApiProvider,
+  renderInTestApp,
+} from '@backstage/test-utils';
 import { Route } from 'react-router-dom';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { DateTime } from 'luxon';
+import { analyticsApiRef } from '@backstage/core-plugin-api';
+import { waitFor } from '@testing-library/react';
 
 const announcementsApiMock: jest.Mocked<
   Pick<
@@ -36,9 +42,18 @@ const announcementsApiMock: jest.Mocked<
   markLastSeenDate: jest.fn(),
 };
 
-const renderAnnouncementPage = () => {
+type AnalyticsMock = ReturnType<typeof mockApis.analytics.mock>;
+
+const renderAnnouncementPage = (analyticsApi?: AnalyticsMock) => {
+  const analytics = analyticsApi ?? mockApis.analytics.mock();
+
   return renderInTestApp(
-    <TestApiProvider apis={[[announcementsApiRef, announcementsApiMock]]}>
+    <TestApiProvider
+      apis={[
+        [announcementsApiRef, announcementsApiMock],
+        [analyticsApiRef, analytics],
+      ]}
+    >
       <FlatRoutes>
         <Route
           path="/announcements/view/:id"
@@ -53,7 +68,7 @@ const renderAnnouncementPage = () => {
       },
       routeEntries: ['/announcements/view/1'],
     },
-  );
+  ).then(result => ({ renderResult: result, analytics }));
 };
 
 describe('AnnouncementPage', () => {
@@ -67,6 +82,7 @@ describe('AnnouncementPage', () => {
     active: true,
     start_at: '2025-01-10T00:00:00.000Z',
     until_date: '2025-02-10T00:00:00.000Z',
+    updated_at: '2025-01-10T00:00:00.000Z',
   };
 
   afterEach(() => {
@@ -76,10 +92,10 @@ describe('AnnouncementPage', () => {
   it('should render announcement', async () => {
     announcementsApiMock.announcementByID.mockResolvedValue(announcement);
 
-    const { getByText } = await renderAnnouncementPage();
+    const { renderResult } = await renderAnnouncementPage();
 
     expect(announcementsApiMock.announcementByID).toHaveBeenCalledWith('1');
-    expect(getByText('Announcement title')).toBeInTheDocument();
+    expect(renderResult.getByText('Announcement title')).toBeInTheDocument();
   });
 
   it('should update the last seen date if the announcement is newer than previously displayed announcements', async () => {
@@ -113,8 +129,32 @@ describe('AnnouncementPage', () => {
       new Error('Announcement not found'),
     );
 
-    const { getByText } = await renderAnnouncementPage();
+    const { renderResult } = await renderAnnouncementPage();
 
-    expect(getByText('Announcement not found')).toBeInTheDocument();
+    expect(
+      renderResult.getByText('Announcement not found'),
+    ).toBeInTheDocument();
+  });
+
+  it('captures analytics view event for announcements', async () => {
+    const analyticsApi = mockApis.analytics.mock();
+    announcementsApiMock.announcementByID.mockResolvedValue(announcement);
+
+    const { analytics } = await renderAnnouncementPage(analyticsApi);
+
+    await waitFor(() => {
+      expect(analytics.captureEvent).toHaveBeenCalledTimes(1);
+    });
+
+    expect(analytics.captureEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'view',
+        subject: 'Announcement title',
+        attributes: {
+          announcementId: '1',
+          location: 'AnnouncementPage',
+        },
+      }),
+    );
   });
 });

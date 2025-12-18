@@ -1,5 +1,53 @@
 # @backstage-community/plugin-explore
 
+## 0.15.0
+
+### Minor Changes
+
+- 2982a68: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [2982a68]
+  - @backstage-community/plugin-explore-common@0.10.0
+  - @backstage-community/plugin-explore-react@0.10.0
+
+## 0.14.2
+
+### Patch Changes
+
+- b0af0e8: Added documentation for the New Frontend System
+
+## 0.14.1
+
+### Patch Changes
+
+- f38ab58: Fixed slow rendering of group diagram for bigger organisations
+
+## 0.14.0
+
+### Minor Changes
+
+- 37cee38: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [37cee38]
+  - @backstage-community/plugin-explore-common@0.9.0
+  - @backstage-community/plugin-explore-react@0.9.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 0264565: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [0264565]
+  - @backstage-community/plugin-explore-common@0.8.0
+  - @backstage-community/plugin-explore-react@0.8.0
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 3.15.0
+
+### Minor Changes
+
+- bc9ce12: Backstage version bump to v1.44.1
+
+## 3.14.2
+
+### Patch Changes
+
+- 150b47c: Updated dependency `@keycloak/keycloak-admin-client` to `26.3.4`.
+
 ## 3.14.1
 
 ### Patch Changes

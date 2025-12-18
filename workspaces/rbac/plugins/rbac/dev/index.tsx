@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@backstage/ui/css/styles.css';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import {
-  MockConfigApi,
-  MockPermissionApi,
-  TestApiProvider,
-} from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import {
   PermissionAction,
@@ -38,6 +35,7 @@ import { mockPolicies } from '../src/__fixtures__/mockPolicies';
 import { RBACAPI, rbacApiRef } from '../src/api/RBACBackendClient';
 import { RbacPage, rbacPlugin } from '../src/plugin';
 import { MemberEntity, RoleBasedConditions, RoleError } from '../src/types';
+import { rbacTranslations } from '../src/translations';
 
 class MockRBACApi implements RBACAPI {
   readonly resources;
@@ -152,7 +150,6 @@ class MockRBACApi implements RBACAPI {
   }
 }
 
-const mockPermissionApi = new MockPermissionApi();
 const mockRBACApi = new MockRBACApi([
   {
     memberReferences: ['user:default/guest'],
@@ -163,19 +160,20 @@ const mockRBACApi = new MockRBACApi([
     name: 'role:default/rbac_admin',
   },
 ]);
-const mockConfigApi = new MockConfigApi({
-  permission: {
-    enabled: true,
-  },
+const mockConfigApi = mockApis.config({
+  data: { permission: { enabled: true } },
 });
 
 createDevApp()
   .registerPlugin(rbacPlugin)
+  .addTranslationResource(rbacTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setDefaultLanguage('en')
   .addPage({
     element: (
       <TestApiProvider
         apis={[
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
           [rbacApiRef, mockRBACApi],
           [configApiRef, mockConfigApi],
         ]}

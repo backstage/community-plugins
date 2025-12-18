@@ -1,5 +1,44 @@
 ### Dependencies
 
+## 1.20.0
+
+### Minor Changes
+
+- 6c3c0ee: Backstage version bump to v1.45.3
+
+## 1.19.1
+
+### Patch Changes
+
+- c83e644: Added internationalization (i18n) support for German (de), French (fr), Italian (it), Spanish (es), and Japanese (ja).
+
+## 1.19.0
+
+### Minor Changes
+
+- 40f287c: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 1.18.0
+
+### Minor Changes
+
+- 8b13979: Backstage version bump to v1.43.3
+
+## 1.17.0
+
+### Minor Changes
+
+- 7a9aec6: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+- 4523634: Updated dependency `@testing-library/jest-dom` to `6.7.0`.
+
 ## 1.16.0
 
 ### Minor Changes

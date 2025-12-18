@@ -15,22 +15,10 @@
  */
 import { Routes, Route } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import {
-  announcementCreatePermission,
-  announcementUpdatePermission,
-} from '@backstage-community/plugin-announcements-common';
-import {
-  announcementAdminRouteRef,
-  announcementCreateRouteRef,
-  announcementEditRouteRef,
-  announcementViewRouteRef,
-  categoriesListRouteRef,
-} from '../routes';
+import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
+import { announcementAdminRouteRef, announcementViewRouteRef } from '../routes';
 import { AnnouncementsPage, AnnouncementsPageProps } from './AnnouncementsPage';
 import { AnnouncementPage } from './AnnouncementPage';
-import { CreateAnnouncementPage } from './CreateAnnouncementPage';
-import { EditAnnouncementPage } from './EditAnnouncementPage';
-import { CategoriesPage } from './CategoriesPage';
 import { AdminPortal } from './Admin';
 import { MarkdownRendererTypeProps } from './MarkdownRenderer';
 
@@ -49,6 +37,7 @@ type RouterProps = {
   hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
+  defaultInactive?: boolean;
 };
 
 export const Router = (props: RouterProps) => {
@@ -69,18 +58,10 @@ export const Router = (props: RouterProps) => {
         element={<AnnouncementPage {...propsWithDefaults} />}
       />
       <Route
-        path={`${announcementCreateRouteRef.path}`}
+        path={`${announcementAdminRouteRef.path}`}
         element={
           <RequirePermission permission={announcementCreatePermission}>
-            <CreateAnnouncementPage {...propsWithDefaults} />
-          </RequirePermission>
-        }
-      />
-      <Route
-        path={`${announcementEditRouteRef.path}`}
-        element={
-          <RequirePermission permission={announcementUpdatePermission}>
-            <EditAnnouncementPage {...propsWithDefaults} />
+            <AdminPortal />
           </RequirePermission>
         }
       />
@@ -91,11 +72,6 @@ export const Router = (props: RouterProps) => {
             <AdminPortal />
           </RequirePermission>
         }
-      />
-
-      <Route
-        path={`${categoriesListRouteRef.path}`}
-        element={<CategoriesPage themeId={propsWithDefaults.themeId} />}
       />
     </Routes>
   );

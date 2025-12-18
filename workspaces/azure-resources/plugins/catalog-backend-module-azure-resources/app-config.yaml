@@ -1,0 +1,90 @@
+backend:
+  baseUrl: http://localhost:7007
+
+catalog:
+  providers:
+    # Configure one or more Azure Resources providers
+    azureResources:
+      - # Unique identifier for this provider instance
+        id: dev
+
+        # Azure Resource Graph query (KQL syntax)
+        # This example queries for storage accounts and web apps
+        query: "Resources | where type =~ 'microsoft.web/sites' | limit 1"
+
+        # Scope: define which subscriptions/management groups to query
+        scope:
+          # Replace with your actual subscription IDs
+          subscriptions:
+            - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+          # Or use management groups:
+          # managementGroups:
+          #   - mg-id-1
+          #   - mg-id-2
+
+        # Refresh schedule
+        schedule:
+          frequency:
+            minutes: 30
+          timeout:
+            minutes: 3
+
+        # Optional: customize entity mapping
+        # Maps Azure resource properties to Backstage entity fields
+        mapping:
+          metadata:
+            name: name # Use resource name as entity name
+            annotations:
+              azure.com/resource-id: id
+              azure.com/location: location
+              azure.com/resource-group: resourceGroup
+          spec:
+            type: type # Use Azure resource type as entity type
+
+        # Optional: default owner for resources without owner tags
+        # If a resource doesn't have a 'backstage.io-owner' tag,
+        # this value will be used as the owner
+        defaultOwner: team-backstage
+
+      - # Unique identifier for this provider instance
+        id: subscriptions
+
+        # Azure Resource Graph query (KQL syntax)
+        # This example queries for storage accounts and web apps
+        query: "ResourceContainers | where type =~ 'microsoft.resources/subscriptions' | limit 10"
+
+        # Scope: define which subscriptions/management groups to query
+        scope:
+          # Or use management groups:
+          managementGroups:
+            - example-management-group-1
+            - example-management-group-2
+        # Refresh schedule
+        schedule:
+          frequency:
+            minutes: 30
+          timeout:
+            minutes: 3
+
+        # Optional: customize entity mapping
+        # Maps Azure resource properties to Backstage entity fields
+        mapping:
+          metadata:
+            name: name # Use resource name as entity name
+            annotations:
+              flysas.tech/sandbox: tags.sandbox
+          spec:
+            owner: tags["catalog.owner"] # Use Azure resource owner tag as entity owner
+            # type: azure-subscription # Use Azure resource type as entity type
+
+        # Optional: default owner for resources without owner tags
+        # If a resource doesn't have a 'backstage.io-owner' tag,
+        # this value will be used as the owner
+        defaultOwner: team-backstage
+# Optional: Configure Azure credentials
+# If not provided, DefaultAzureCredential will be used
+# azure-resources:
+#   credentials:
+#     tenantId: your-tenant-id
+#     clientId: your-client-id
+#     clientSecret: your-client-secret

@@ -13,8 +13,8 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -23,7 +23,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:newrelic-dashboard': ExtensionDefinition<{
+    'api:newrelic-dashboard': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -40,7 +40,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:newrelic-dashboard/EntityNewRelicDashboardCard': ExtensionDefinition<{
+    'entity-card:newrelic-dashboard/EntityNewRelicDashboardCard': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'EntityNewRelicDashboardCard';
       config: {
@@ -81,7 +81,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:newrelic-dashboard/EntityNewRelicDashboardContent': ExtensionDefinition<{
+    'entity-content:newrelic-dashboard/EntityNewRelicDashboardContent': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'EntityNewRelicDashboardContent';
       config: {

@@ -1,15 +1,28 @@
 {
   "name": "@backstage-community/plugin-analytics-module-ga4",
-  "version": "0.10.0",
+  "version": "0.13.0",
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "app",
     "pluginPackage": "@backstage/plugin-app-backend"
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "homepage": "https://backstage.io",
   "repository": {

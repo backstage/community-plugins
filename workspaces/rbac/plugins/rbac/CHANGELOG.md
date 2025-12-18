@@ -1,5 +1,51 @@
 ### Dependencies
 
+## 1.47.0
+
+### Minor Changes
+
+- e2d17e1: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [e2d17e1]
+  - @backstage-community/plugin-rbac-common@1.22.0
+
+## 1.46.0
+
+### Minor Changes
+
+- 2d1f63f: Backstage version bump to v1.44.2
+
+### Patch Changes
+
+- Updated dependencies [2d1f63f]
+  - @backstage-community/plugin-rbac-common@1.21.0
+
+## 1.45.1
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- 3944da5: undo Editrole page submit button label
+
+## 1.45.0
+
+### Minor Changes
+
+- 232a84d: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [232a84d]
+  - @backstage-community/plugin-rbac-common@1.20.0
+
+## 1.44.0
+
+### Minor Changes
+
+- 3719f79: Add internationalization (i18n) support with German, French, Italian, and Spanish translations.
+
 ## 1.43.0
 
 ### Minor Changes

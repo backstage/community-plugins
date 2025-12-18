@@ -49,6 +49,7 @@ body:
         - explore
         - feedback
         - firehydrant
+        - flux
         - fossa
         - gcalendar
         - gcp-projects
@@ -74,7 +75,7 @@ body:
         - linguist
         - linkerd
         - manage
-        - matomo
+        - mcp-chat
         - mend
         - microsoft-calendar
         - mta
@@ -85,7 +86,6 @@ body:
         - npm
         - ocm
         - octopus-deploy
-        - odo
         - opencost
         - periskop
         - pingidentity

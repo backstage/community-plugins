@@ -1,5 +1,51 @@
 ### Dependencies
 
+## 1.21.0
+
+### Minor Changes
+
+- 9a1ce4e: Backstage version bump to v1.45.1
+
+## 1.20.0
+
+### Minor Changes
+
+- 1e3b40b: Backstage version bump to v1.44.0
+
+## 1.19.1
+
+### Patch Changes
+
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 1.19.0
+
+### Minor Changes
+
+- 2258b1a: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- eac91f6: Added support for Backstage's New Frontend System.
+
+  If you're migrating to the new frontend system, you no longer need to wire up an API implementation in `apis.ts`. Instead, pass the module in to the `createApp()` function:
+
+  ```tsx
+  import matomoModule from '@backstage-community/plugin-analytics-module-matomo/alpha';
+
+  const app = createApp({
+    features: [matomoModule],
+  });
+  ```
+
+  This can be skipped if you have feature discovery enabled.
+
+## 1.18.1
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
 ## 1.18.0
 
 ### Minor Changes

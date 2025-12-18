@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-scaffolder-backend-module-annotator",
   "description": "The annotator module for @backstage/plugin-scaffolder-backend",
-  "version": "2.8.0",
+  "version": "2.12.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -39,16 +39,16 @@
     "prettier:fix": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.4.1",
-    "@backstage/plugin-scaffolder-node": "^0.10.0",
+    "@backstage/backend-plugin-api": "^1.5.0",
+    "@backstage/plugin-scaffolder-node": "^0.12.1",
     "fs-extra": "^11.2.0",
     "lodash": "^4.17.21",
     "yaml": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.7.0",
-    "@backstage/cli": "^0.33.1",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.1",
+    "@backstage/backend-test-utils": "^1.10.1",
+    "@backstage/cli": "^0.34.5",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.5",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.13"
   },

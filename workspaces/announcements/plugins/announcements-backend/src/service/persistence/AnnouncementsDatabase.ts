@@ -29,13 +29,14 @@ const announcementsTable = 'announcements';
  */
 type AnnouncementUpsert = Omit<
   Announcement,
-  'category' | 'tags' | 'created_at' | 'start_at' | 'until_date'
+  'category' | 'tags' | 'created_at' | 'start_at' | 'until_date' | 'updated_at'
 > & {
   category?: string;
   tags?: string[];
   created_at: DateTime;
   start_at: DateTime;
-  until_date: DateTime;
+  until_date?: DateTime;
+  updated_at: DateTime;
 };
 
 /**
@@ -48,7 +49,7 @@ type DbAnnouncement = Omit<
   category?: string;
   tags?: string | string[];
   start_at: string;
-  until_date: string;
+  until_date: string | null;
 };
 
 /**
@@ -68,17 +69,16 @@ type AnnouncementModelsList = {
 };
 
 export const timestampToDateTime = (input: Date | string): DateTime => {
-  if (typeof input === 'object') {
+  if (input instanceof Date) {
     return DateTime.fromJSDate(input).toUTC();
   }
-
-  const result = input.includes(' ')
-    ? DateTime.fromSQL(input, { zone: 'utc' })
-    : DateTime.fromISO(input, { zone: 'utc' });
+  const trimmed = input.trim();
+  const result = trimmed.includes(' ')
+    ? DateTime.fromSQL(trimmed, { zone: 'utc' })
+    : DateTime.fromISO(trimmed, { zone: 'utc' });
   if (!result.isValid) {
     throw new TypeError('Not valid');
   }
-
   return result;
 };
 
@@ -125,9 +125,12 @@ const announcementUpsertToDB = (
     body: announcement.body,
     publisher: announcement.publisher,
     created_at: announcement.created_at.toSQL()!,
+    updated_at: announcement.updated_at.toSQL()!,
     active: announcement.active,
     start_at: announcement.start_at.toSQL()!,
-    until_date: announcement.until_date.toSQL()!,
+    until_date: announcement.until_date
+      ? announcement.until_date.toSQL()!
+      : null,
     on_behalf_of: announcement.on_behalf_of,
     tags:
       announcement.tags && announcement.tags.length > 0
@@ -164,7 +167,10 @@ const DBToAnnouncementWithCategory = (
     created_at: timestampToDateTime(announcementDb.created_at),
     active: announcementDb.active,
     start_at: timestampToDateTime(announcementDb.start_at),
-    until_date: timestampToDateTime(announcementDb.until_date),
+    until_date: announcementDb.until_date
+      ? timestampToDateTime(announcementDb.until_date)
+      : null,
+    updated_at: timestampToDateTime(announcementDb.updated_at),
     on_behalf_of: announcementDb.on_behalf_of,
   };
 };
@@ -239,6 +245,7 @@ export class AnnouncementsDatabase {
         'until_date',
         'on_behalf_of',
         'tags',
+        'updated_at',
       )
       .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
@@ -319,6 +326,7 @@ export class AnnouncementsDatabase {
           'until_date',
           'on_behalf_of',
           'tags',
+          'updated_at',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)

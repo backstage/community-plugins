@@ -1,5 +1,21 @@
 # @backstage-community/plugin-azure-resources-node
 
+## 0.5.0
+
+### Minor Changes
+
+- 02d4d48: Backstage version bump to v1.45.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 5f4404d: Backstage version bump to v1.44.1
+
+### Patch Changes
+
+- 50a0b4c: Initial version Azure resources provider module
+
 ## 0.3.0
 
 ### Minor Changes

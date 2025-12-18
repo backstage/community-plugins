@@ -170,11 +170,14 @@ export interface KialiApi {
     cluster?: string,
   ): Promise<IstioConfigList>;
   getNamespaceMetrics(
-    namespace: string,
+    namespaces: string,
     params: IstioMetricsOptions,
-  ): Promise<Readonly<IstioMetricsMap>>;
+  ): Promise<Map<string, Readonly<IstioMetricsMap>>>;
   getIstioStatus(cluster?: string): Promise<ComponentStatus[]>;
-  getIstioCertsInfo(): Promise<CertsInfo[]>;
+  getIstioCertsInfo(
+    namespaces: string,
+    clusterName?: string,
+  ): Promise<CertsInfo[]>;
   getClustersWorkloads(
     namespaces: string,
     params: AppListQuery,
@@ -346,7 +349,33 @@ export class KialiApiClient implements KialiApi {
       },
     );
 
-    return jsonResponse.json() as T;
+    if (!jsonResponse.ok) {
+      return jsonResponse.json() as T;
+    }
+
+    const responseData = await jsonResponse.json();
+
+    return responseData as T;
+  };
+
+  getApiVersionForObjectType = (objectType: string): string => {
+    const apiVersionMap: { [key: string]: string } = {
+      VirtualService: 'networking.istio.io/v1',
+      DestinationRule: 'networking.istio.io/v1',
+      Gateway: 'networking.istio.io/v1',
+      ServiceEntry: 'networking.istio.io/v1',
+      Sidecar: 'networking.istio.io/v1',
+      WorkloadEntry: 'networking.istio.io/v1',
+      WorkloadGroup: 'networking.istio.io/v1',
+      AuthorizationPolicy: 'security.istio.io/v1',
+      PeerAuthentication: 'security.istio.io/v1',
+      RequestAuthentication: 'security.istio.io/v1',
+      Telemetry: 'telemetry.istio.io/v1',
+      EnvoyFilter: 'networking.istio.io/v1alpha3',
+      WasmPlugin: 'extensions.istio.io/v1alpha1',
+    };
+
+    return apiVersionMap[objectType] || 'networking.istio.io/v1';
   };
 
   getCustomParams = (queryParams: any): string => {
@@ -354,10 +383,10 @@ export class KialiApiClient implements KialiApi {
     for (const key in queryParams) {
       if (Array.isArray(queryParams[key])) {
         for (let i = 0; i < queryParams[key].length; i++) {
-          params += `${key}[]=${queryParams[key]}&`;
+          params += `${key}[]=${encodeURIComponent(queryParams[key][i])}&`;
         }
       } else {
-        params += `${key}=${queryParams[key]}&`;
+        params += `${key}=${encodeURIComponent(queryParams[key])}&`;
       }
     }
     return params.slice(0, -1);
@@ -674,24 +703,59 @@ export class KialiApiClient implements KialiApi {
       queryParams.help = true;
     }
 
+    const apiVersion = this.getApiVersionForObjectType(objectType);
+    const url = urls.istioConfigDetail(
+      namespace,
+      objectType,
+      object,
+      apiVersion,
+    );
+
     return this.newRequest<IstioConfigDetails>(
       HTTP_VERBS.GET,
-      urls.istioConfigDetail(namespace, objectType, object),
+      url,
       queryParams,
       {},
     );
   };
 
   getNamespaceMetrics = (
-    namespace: string,
+    namespaces: string,
     params: IstioMetricsOptions,
-  ): Promise<Readonly<IstioMetricsMap>> => {
-    return this.newRequest<Readonly<IstioMetricsMap>>(
+  ): Promise<Map<string, Readonly<IstioMetricsMap>>> => {
+    const queryParams: any = {
+      ...params,
+      namespaces: namespaces,
+    };
+    // Only include includeAmbient if it's explicitly set to true
+    if (params.includeAmbient === true) {
+      queryParams.includeAmbient = true;
+    }
+    // Ensure filters is an array for customParams formatting
+    if (queryParams.filters && !Array.isArray(queryParams.filters)) {
+      queryParams.filters = [queryParams.filters];
+    }
+    return this.newRequest<Map<string, Readonly<IstioMetricsMap>>>(
       HTTP_VERBS.GET,
-      urls.namespaceMetrics(namespace),
-      params,
+      urls.clustersMetrics(),
+      queryParams,
       {},
-    ).then(resp => resp);
+      true,
+      true, // customParams to format filters[] correctly
+    ).then(resp => {
+      // Convert response to Map if it's not already
+      if (resp instanceof Map) {
+        return resp;
+      }
+      // If response is an object, convert it to Map
+      const metricsMap = new Map<string, Readonly<IstioMetricsMap>>();
+      if (typeof resp === 'object' && resp !== null) {
+        Object.entries(resp).forEach(([namespace, metrics]) => {
+          metricsMap.set(namespace, metrics as Readonly<IstioMetricsMap>);
+        });
+      }
+      return metricsMap;
+    });
   };
 
   getIstioStatus = (cluster?: string): Promise<ComponentStatus[]> => {
@@ -707,11 +771,20 @@ export class KialiApiClient implements KialiApi {
     ).then(resp => resp);
   };
 
-  getIstioCertsInfo = (): Promise<CertsInfo[]> => {
+  getIstioCertsInfo = (
+    namespaces: string,
+    clusterName?: string,
+  ): Promise<CertsInfo[]> => {
+    const queryParams: any = {
+      namespaces: namespaces,
+    };
+    if (clusterName) {
+      queryParams.clusterName = clusterName;
+    }
     return this.newRequest<CertsInfo[]>(
       HTTP_VERBS.GET,
       urls.istioCertsInfo(),
-      {},
+      queryParams,
       {},
     ).then(resp => resp);
   };

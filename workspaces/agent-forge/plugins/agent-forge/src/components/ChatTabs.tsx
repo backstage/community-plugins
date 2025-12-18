@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable react/react-in-jsx-scope*/
+
 import logo from '../icons/jarvis.png';
 import useStyles from './useStyles';
 import Box from '@mui/material/Box';
@@ -23,10 +25,15 @@ import Button from '@mui/material/Button';
 interface ChatTabsProps {
   handleMessageSubmit: (msg?: string) => void;
   isFullScreen?: boolean;
+  suggestions: string[] | [];
 }
-const suggestions: any[] = [];
+// const suggestions: any[] = ["hello", "bello"];
 
-function ChatTabs({ handleMessageSubmit, isFullScreen }: ChatTabsProps) {
+function ChatTabs({
+  handleMessageSubmit,
+  isFullScreen,
+  suggestions,
+}: ChatTabsProps) {
   const handleTabClick = (message: string) => () => {
     handleMessageSubmit(message);
   };
@@ -51,7 +58,6 @@ function ChatTabs({ handleMessageSubmit, isFullScreen }: ChatTabsProps) {
         </div>
         <Grid
           container
-          display="none"
           maxHeight="70%"
           marginBottom={10}
           gap={2}
@@ -87,7 +93,17 @@ function ChatTabs({ handleMessageSubmit, isFullScreen }: ChatTabsProps) {
     >
       <div className={styles.greetingSection}>
         <img className={styles.greetingLogo} src={logo} alt="Logo" />
-        <div className={styles.greetingText}>Hi there.</div>
+      </div>
+      <div className={styles.tabs}>
+        {suggestions.map(s => (
+          <Button
+            key={s}
+            className={styles.tabButton}
+            onClick={handleTabClick(s)}
+          >
+            {s}
+          </Button>
+        ))}
       </div>
     </div>
   );

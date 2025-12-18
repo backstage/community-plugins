@@ -6,8 +6,44 @@
       "workspace": "analytics",
       "plugin": "analytics-module-ga",
       "gitTag": "@backstage-community/plugin-analytics-module-ga@0.9.0",
-      "reason": "Built for Universal Analytics, which has been deprecated",
+      "reason": "Built for Universal Analytics, which has now been deprecated",
       "archivedDate": "2025-08-18"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-odo-module-devfile-field-extension",
+      "version": "0.24.0",
+      "workspace": "odo",
+      "plugin": "odo-module-devfile-field-extension",
+      "gitTag": "@backstage-community/plugin-odo-module-devfile-field-extension@0.24.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2025-09-18"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-scaffolder-backend-module-odo",
+      "version": "0.24.0",
+      "workspace": "odo",
+      "plugin": "scaffolder-backend-module-odo",
+      "gitTag": "@backstage-community/plugin-scaffolder-backend-module-odo@0.24.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2025-09-18"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-matomo",
+      "version": "1.13.1",
+      "workspace": "matomo",
+      "plugin": "matomo",
+      "gitTag": "@backstage-community/plugin-matomo@1.13.1",
+      "reason": "No longer maintained",
+      "archivedDate": "2025-12-02"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-matomo-backend",
+      "version": "1.14.0",
+      "workspace": "matomo",
+      "plugin": "matomo-backend",
+      "gitTag": "@backstage-community/plugin-matomo-backend@1.14.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2025-12-02"
     }
   ]
 }

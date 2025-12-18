@@ -29,7 +29,7 @@ import {
 } from '../../consts/tekton-const';
 import PodLogsDownloadLink from './PodLogsDownloadLink';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 const PipelineRunLogDownloader: FC<{
   pods: V1Pod[];

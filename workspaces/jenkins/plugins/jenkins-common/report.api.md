@@ -5,11 +5,128 @@
 ```ts
 import { ResourcePermission } from '@backstage/plugin-permission-common';
 
+// @public (undocumented)
+export interface CommonBuild {
+  // (undocumented)
+  building: boolean;
+  // (undocumented)
+  displayName: string;
+  // (undocumented)
+  duration: number;
+  // (undocumented)
+  fullDisplayName: string;
+  // (undocumented)
+  number: number;
+  // (undocumented)
+  result?: string;
+  // (undocumented)
+  timestamp: number;
+  // (undocumented)
+  url: string;
+}
+
+// @public (undocumented)
+export interface CrumbData {
+  // (undocumented)
+  cookies?: string[];
+  // (undocumented)
+  headerName: string;
+  // (undocumented)
+  headerValue: string;
+}
+
+// @public (undocumented)
+export interface CrumbDataHeaderValues {
+  // (undocumented)
+  crumb: string;
+  // (undocumented)
+  crumbRequestField: string;
+}
+
+// @public (undocumented)
+export type HeaderValue = string | string[] | undefined;
+
+// @public (undocumented)
+export class Jenkins {
+  constructor(opts: JenkinsClientOptions);
+  // (undocumented)
+  build: {
+    get: (
+      name: string | string[],
+      buildNumber: string | number,
+    ) => Promise<JenkinsBuild>;
+    getConsoleText: (
+      name: string | string[],
+      buildNumber: string | number,
+    ) => Promise<string>;
+  };
+  // (undocumented)
+  job: {
+    get: (input: JobGetOptions) => Promise<any>;
+    getBuilds: (name: string | string[], tree?: string) => Promise<unknown>;
+    build: (
+      name: string | string[],
+      opts?: JobBuildOptions | undefined,
+    ) => Promise<unknown>;
+    copy: (name: string | string[], from: string) => Promise<void>;
+    create: (name: string | string[], xml: string) => Promise<void>;
+    destroy: (name: string | string[]) => Promise<void>;
+    enable: (name: string | string[]) => Promise<void>;
+    disable: (name: string | string[]) => Promise<void>;
+  };
+  // (undocumented)
+  readonly opts: JenkinsClientOptions;
+}
+
+// @public (undocumented)
+export interface JenkinsBuild extends CommonBuild {
+  // (undocumented)
+  actions: any;
+}
+
+// @public (undocumented)
+export interface JenkinsClientOptions {
+  // (undocumented)
+  baseUrl: string;
+  // (undocumented)
+  crumbIssuer?: boolean | ((client: any) => Promise<CrumbData>) | undefined;
+  // (undocumented)
+  headers?: Record<string, HeaderValue>;
+  // (undocumented)
+  promisify?: boolean;
+}
+
 // @public
 export const jenkinsExecutePermission: ResourcePermission<'catalog-entity'>;
 
+// @public (undocumented)
+export type JenkinsParams =
+  | Record<string, unknown>
+  | URLSearchParams
+  | undefined;
+
 // @public
 export const jenkinsPermissions: ResourcePermission<'catalog-entity'>[];
+
+// @public (undocumented)
+export interface JobBuildOptions {
+  // (undocumented)
+  delay?: string;
+  // (undocumented)
+  parameters?: JenkinsParams;
+  // (undocumented)
+  token?: string;
+}
+
+// @public (undocumented)
+export interface JobGetOptions {
+  // (undocumented)
+  depth?: number;
+  // (undocumented)
+  name: string | string[];
+  // (undocumented)
+  tree?: string;
+}
 
 // (No @packageDocumentation comment for this package)
 ```

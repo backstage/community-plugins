@@ -111,6 +111,32 @@ import { AdrDocument } from '@backstage-community/plugin-adr-common';
 </SearchResult>
 ```
 
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import adrPlugin from '@backstage-community/plugin-adr/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    adrPlugin,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `entity-content:adr/entity`
+- `search-result-list-item:adr`
+- `api:adr/adr-api`
+
 ## Custom ADR formats
 
 By default, this plugin will parse ADRs according to the format specified by the [Markdown Architecture Decision Record (MADR) v2.x template](https://github.com/adr/madr/tree/2.1.2) or the [Markdown Any Decision Record (MADR) 3.x template](https://github.com/adr/madr/tree/3.0.0). If your ADRs are written using a different format, you can apply the following customizations to correctly identify and parse your documents:
@@ -145,7 +171,12 @@ import {
 
 ...
 
-const myCustomDecorator: AdrContentDecorator = ({ content }) => {
+const myCustomDecorator: AdrContentDecorator = ({ content, filename }) => {
+  if (filename?.includes('security')) {
+    // Apply security-specific formatting
+    return { content: applySecurityFormatting(content) };
+  }
+
   return { content: applyCustomContentTransformation(content) };
 };
 

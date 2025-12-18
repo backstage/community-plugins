@@ -1,5 +1,23 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 2.1.4
+
+### Patch Changes
+
+- e7c2fba: Updated dependency `@types/nodemailer` to `7.0.3`.
+
+## 2.1.3
+
+### Patch Changes
+
+- b051519: Updated dependency `@types/nodemailer` to `6.4.21`.
+
+## 2.1.2
+
+### Patch Changes
+
+- 08bfa95: Added optional config setting for supplying the Jira API host, to support using scoped API tokens with Jira Cloud.
+
 ## 2.1.1
 
 ### Patch Changes

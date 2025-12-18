@@ -1,5 +1,44 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.15.0
+
+### Minor Changes
+
+- 76ff504: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [76ff504]
+  - @backstage-community/plugin-playlist-common@0.12.0
+
+## 0.14.1
+
+### Patch Changes
+
+- 20f8821: Updated dependency `uuid` to `^13.0.0` and remove deprecated and redundant `@types/uuid` package.
+
+## 0.14.0
+
+### Minor Changes
+
+- e2408fb: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [e2408fb]
+  - @backstage-community/plugin-playlist-common@0.11.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 6724458: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [6724458]
+  - @backstage-community/plugin-playlist-common@0.10.0
+
 ## 0.12.0
 
 ### Minor Changes

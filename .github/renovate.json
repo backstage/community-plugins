@@ -4,9 +4,9 @@
     ":gitSignOff",
     ":rebaseStalePrs",
     "group:linters",
-    "group:test",
     ":preserveSemverRanges"
   ],
+  "prConcurrentLimit": 20,
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["dependencies"],
   "postUpdateOptions": ["yarnDedupeHighest"],

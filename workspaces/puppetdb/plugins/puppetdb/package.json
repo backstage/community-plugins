@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-puppetdb",
-  "version": "0.10.0",
+  "version": "0.13.0",
   "description": "Backstage plugin to visualize resource information and Puppet facts from PuppetDB.",
   "backstage": {
     "role": "frontend-plugin",

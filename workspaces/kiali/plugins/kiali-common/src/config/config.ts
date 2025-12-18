@@ -20,6 +20,7 @@ import { MILLISECONDS, UNIT_TIME } from '../types';
 // We assume this is always defined in the .env file
 const documentationUrl = process.env.REACT_APP_KIALI_DOC_URL!;
 
+/* @public */
 const conf = {
   /** Configuration related with session */
   session: {
@@ -165,7 +166,11 @@ const conf = {
         namespace: string,
         objectType: string,
         object: string,
-      ) => `api/namespaces/${namespace}/istio/${objectType}/${object}`,
+        apiVersion?: string,
+      ) =>
+        apiVersion
+          ? `api/namespaces/${namespace}/istio/${apiVersion}/${objectType}/${object}`
+          : `api/namespaces/${namespace}/istio/${objectType}/${object}`,
       istioConfigDelete: (
         namespace: string,
         objectType: string,
@@ -200,7 +205,7 @@ const conf = {
       configValidations: () => `api/istio/validations`,
       meshTls: () => 'api/mesh/tls',
       istioStatus: () => 'api/istio/status',
-      istioCertsInfo: () => 'api/istio/certs',
+      istioCertsInfo: () => 'api/clusters/tls',
       pod: (namespace: string, pod: string) =>
         `api/namespaces/${namespace}/pods/${pod}`,
       podLogs: (namespace: string, pod: string) =>
@@ -227,6 +232,7 @@ const conf = {
         `api/namespaces/${namespace}/services/${service}/dashboard`,
       clustersApps: () => `api/clusters/apps`,
       clustersServices: () => `api/clusters/services`,
+      clustersMetrics: () => `api/clusters/metrics`,
       status: 'api/status',
       workload: (namespace: string, workload: string) =>
         `api/namespaces/${namespace}/workloads/${workload}`,
@@ -248,5 +254,8 @@ const conf = {
   },
 };
 
-// @public
+/**
+ * Configuration object for Kiali plugin.
+ * @public
+ */
 export const config = deepFreeze(conf) as typeof conf;

@@ -25,6 +25,7 @@
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "workspace:^",
     "@backstage-community/plugin-scaffolder-backend-module-azure-devops": "workspace:^",
     "@backstage-community/plugin-scaffolder-backend-module-dotnet": "workspace:^",
+    "@backstage-community/plugin-search-backend-module-azure-devops": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/plugin-app-backend": "backstage:^",

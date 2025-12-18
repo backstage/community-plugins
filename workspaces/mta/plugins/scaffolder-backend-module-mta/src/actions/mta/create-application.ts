@@ -1,5 +1,6 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { Issuer } from 'openid-client';
+
 /**
  * Creates an action that creates an application in MTA.
  */
@@ -8,28 +9,18 @@ import { Issuer } from 'openid-client';
 export function createMTAApplicationAction(opts: any) {
   const { config, logger } = opts;
 
-  return createTemplateAction<{
-    name: string;
-    url: string;
-    branch: string;
-    rootPath: string;
-  }>({
+  return createTemplateAction({
     id: 'mta:createApplication',
     description: 'Create application in MTA',
-    schema: {
-      input: {
-        type: 'object',
-        required: ['name', 'url', 'branch', 'rootPath'],
-        properties: {
-          name: { title: 'Name of the application', type: 'string' },
-          url: { title: 'Repository URL', type: 'string' },
-          branch: { title: 'Branch', type: 'string' },
-          rootPath: { title: 'Root Path', type: 'string' },
-        },
-      },
-    },
+    supportsDryRun: false,
     async handler(ctx) {
-      const { name, url, branch, rootPath } = ctx.input;
+      const { name, url, branch, rootPath } = ctx.input as {
+        name: string;
+        url: string;
+        branch: string;
+        rootPath: string;
+      };
+
       const baseUrl = config.getString('mta.url');
       const baseURLHub = `${baseUrl}/hub`;
       const realm = config.getString('mta.providerAuth.realm');
@@ -58,9 +49,9 @@ export function createMTAApplicationAction(opts: any) {
 
         const repository = {
           kind: 'git',
-          url: url.trim(),
-          branch: branch.trim(),
-          path: rootPath.trim(),
+          url: String(url).trim(),
+          branch: String(branch).trim(),
+          path: String(rootPath).trim(),
         };
         const body = JSON.stringify({ name, repository });
 
@@ -85,6 +76,10 @@ export function createMTAApplicationAction(opts: any) {
         logger.info(
           `Application created successfully: ${JSON.stringify(responseData)}`,
         );
+
+        // Set outputs for use in subsequent steps
+        ctx.output('applicationId', responseData.id);
+        ctx.output('applicationName', responseData.name);
       } catch (error: any) {
         logger.error(
           `Error in creating application: ${error?.message as string}`,

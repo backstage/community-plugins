@@ -17,13 +17,17 @@ import { forwardRef } from 'react';
 
 import { errorApiRef } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
-import { MockErrorApi, TestApiProvider } from '@backstage/test-utils';
-import { MockTranslationApi } from '@backstage/test-utils/alpha';
+import { mockApis, MockErrorApi, TestApiProvider } from '@backstage/test-utils';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useFormik } from 'formik';
 
+import { mockUseLanguage } from '../../test-utils/mockTranslations';
 import { RoleForm } from './RoleForm';
+
+jest.mock('../../hooks/useLanguage', () => ({
+  useLanguage: mockUseLanguage,
+}));
 
 jest.mock('@mui/styles', () => ({
   ...jest.requireActual('@mui/styles'),
@@ -66,7 +70,7 @@ describe('Create RoleForm', () => {
     render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >
@@ -121,7 +125,7 @@ describe('Create RoleForm', () => {
     render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >
@@ -173,7 +177,7 @@ describe('Create RoleForm', () => {
     const { getByRole } = render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >
@@ -230,7 +234,7 @@ describe('Edit RoleForm', () => {
     render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >
@@ -303,7 +307,7 @@ describe('Edit RoleForm', () => {
     render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >
@@ -432,7 +436,7 @@ describe('Edit RoleForm', () => {
     render(
       <TestApiProvider
         apis={[
-          [translationApiRef, MockTranslationApi.create()],
+          [translationApiRef, mockApis.translation()],
           [errorApiRef, new MockErrorApi()],
         ]}
       >

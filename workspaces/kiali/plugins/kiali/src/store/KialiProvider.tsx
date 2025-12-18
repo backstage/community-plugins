@@ -33,7 +33,7 @@ import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
 import { ProviderActions } from '../actions/ProviderAction';
-import { setServerConfig } from '../config/ServerConfig';
+import { ServerConfigActions } from '../actions/ServerConfigActions';
 import { KialiHelper } from '../pages/Kiali/KialiHelper';
 import { KialiNoResources } from '../pages/Kiali/KialiNoResources';
 import {
@@ -47,6 +47,8 @@ import {
 } from '../reducers';
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
+import { ServerConfigStateReducer } from '../reducers/ServerConfigState';
+import { INITIAL_TRACING_STATE } from '../reducers/Tracing';
 import { kialiApiRef } from '../services/Api';
 import { AlertUtils } from '../utils/Alertutils';
 import { PromisesRegistry } from '../utils/CancelablePromises';
@@ -127,11 +129,15 @@ export const KialiProvider: React.FC<Props> = ({
     IstioCertsInfoStateReducer,
     initialStore.istioCertsInfo,
   );
+  const [serverConfigState, serverConfigDispatch] = React.useReducer(
+    ServerConfigStateReducer,
+    initialStore.serverConfig,
+  );
 
   const kialiClient = useApi(kialiApiRef);
   kialiClient.setEntity(entity);
   const alertUtils = new AlertUtils(messageDispatch);
-  const fetchNamespaces = async (provider: string) => {
+  const fetchNamespaces = async () => {
     if (!namespaceState || !namespaceState.isFetching) {
       namespaceDispatch(NamespaceActions.requestStarted());
       return kialiClient
@@ -148,18 +154,14 @@ export const KialiProvider: React.FC<Props> = ({
           namespaceDispatch(
             NamespaceActions.receiveList([...data], new Date()),
           );
-          namespaceDispatch(
-            NamespaceActions.setActiveNamespaces([
-              ...data.filter(ns => ns.cluster === provider),
-            ]),
-          );
+          namespaceDispatch(NamespaceActions.setActiveNamespaces([...data]));
         })
         .catch(() => namespaceDispatch(NamespaceActions.requestFailed()));
     }
     return () => {};
   };
 
-  const fetchPostLogin = async (provider: string) => {
+  const fetchPostLogin = async () => {
     try {
       const getAuthpromise = promises
         .register('getAuth', kialiClient.getAuthInfo())
@@ -176,16 +178,34 @@ export const KialiProvider: React.FC<Props> = ({
         .then(response =>
           meshTLSStatusDispatch(MeshTlsActions.setinfo(response)),
         );
-      const getIstioCerts = promises
-        .register('getIstioCerts', kialiClient.getIstioCertsInfo())
-        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       const getServerConfig = promises
         .register('getServerConfig', kialiClient.getServerConfig())
-        .then(resp => setServerConfig(resp));
+        .then(resp => {
+          // Convert ServerConfig to ComputedServerConfig by adding durations
+          const computedConfig = {
+            ...resp,
+            durations: {}, // Will be computed by the reducer
+          };
+          serverConfigDispatch(
+            ServerConfigActions.setServerConfig(computedConfig),
+          );
+        });
       const getIstioStatus = promises
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));
-      await fetchNamespaces(provider);
+      await fetchNamespaces();
+      // Build namespaces string from active namespaces (after they are loaded)
+      const namespacesString = namespaceState.activeNamespaces
+        .map(ns => ns.name)
+        .join(',');
+      const clusterName = providerState.activeProvider || undefined;
+
+      const getIstioCerts = promises
+        .register(
+          'getIstioCerts',
+          kialiClient.getIstioCertsInfo(namespacesString, clusterName),
+        )
+        .then(resp => istioCertsDispatch(IstioCertsInfoActions.setinfo(resp)));
       await Promise.all([
         getAuthpromise,
         getStatusPromise,
@@ -226,7 +246,7 @@ export const KialiProvider: React.FC<Props> = ({
           );
           kialiClient.setAnnotation(KIALI_PROVIDER, status.providers[0]);
         }
-        fetchPostLogin(status.providers[0]);
+        fetchPostLogin();
       }
     } catch (err) {
       let errDetails: string | undefined = undefined;
@@ -292,13 +312,16 @@ export const KialiProvider: React.FC<Props> = ({
         providers: providerState,
         userSettings: userSettingState,
         istioStatus: istioStatusState,
-        istioCertsState: istioCertsState,
+        istioCertsInfo: istioCertsState,
+        serverConfig: serverConfigState,
+        tracingState: INITIAL_TRACING_STATE,
         dispatch: {
           messageDispatch: messageDispatch,
           namespaceDispatch: namespaceDispatch,
           providerDispatch: providerDispatch,
           userSettingDispatch: userSettingDispatch,
           istioStatusDispatch: istioStatusDispatch,
+          serverConfigDispatch: serverConfigDispatch,
         },
         alertUtils: alertUtils,
       }}

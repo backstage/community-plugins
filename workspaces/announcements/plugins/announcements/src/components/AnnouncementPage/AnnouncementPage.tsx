@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { DateTime } from 'luxon';
 import {
@@ -27,24 +27,31 @@ import {
   useApi,
   useRouteRef,
   useRouteRefParams,
+  useAnalytics,
 } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { Grid, Typography } from '@material-ui/core';
+import {
+  Announcement,
+  MAX_TITLE_LENGTH,
+} from '@backstage-community/plugin-announcements-common';
+import { Grid, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,
 } from '../MarkdownRenderer';
+import { truncate } from '../utils/truncateUtils';
 
 const AnnouncementDetails = ({
   announcement,
   markdownRenderer,
+  titleLength,
 }: {
   announcement: Announcement;
   markdownRenderer?: MarkdownRendererTypeProps;
+  titleLength?: number;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
@@ -62,12 +69,19 @@ const AnnouncementDetails = ({
     </Typography>
   );
 
+  const maxLength = titleLength ?? MAX_TITLE_LENGTH;
+  const title = truncate(announcement.title, maxLength);
+  const isTruncated = announcement.title.length > maxLength;
+
+  const titleElement = isTruncated ? (
+    <Tooltip title={announcement.title} arrow>
+      <Typography component="span">{title}</Typography>
+    </Tooltip>
+  ) : (
+    title
+  );
   return (
-    <InfoCard
-      title={announcement.title}
-      subheader={subHeader}
-      deepLink={deepLink}
-    >
+    <InfoCard title={titleElement} subheader={subHeader} deepLink={deepLink}>
       <MarkdownRenderer
         content={announcement.body}
         rendererType={markdownRenderer}
@@ -81,11 +95,13 @@ type AnnouncementPageProps = {
   title: string;
   subtitle?: ReactNode;
   markdownRenderer?: MarkdownRendererTypeProps;
+  titleLength?: number;
 };
 
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const { id } = useRouteRefParams(announcementViewRouteRef);
+  const analytics = useAnalytics();
   const { value, loading, error } = useAsync(
     async () => announcementsApi.announcementByID(id),
     [id],
@@ -104,6 +120,7 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
       <AnnouncementDetails
         announcement={value!}
         markdownRenderer={props.markdownRenderer}
+        titleLength={props.titleLength}
       />
     );
 
@@ -114,6 +131,19 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
       announcementsApi.markLastSeenDate(announcementCreatedAt);
     }
   }
+
+  useEffect(() => {
+    if (!value) {
+      return;
+    }
+
+    analytics.captureEvent('view', value.title, {
+      attributes: {
+        announcementId: value.id,
+        location: 'AnnouncementPage',
+      },
+    });
+  }, [analytics, value]);
 
   return (
     <Page themeId={props.themeId}>

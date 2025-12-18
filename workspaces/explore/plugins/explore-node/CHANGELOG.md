@@ -1,5 +1,38 @@
 # @backstage-community/plugin-explore-node
 
+## 0.11.0
+
+### Minor Changes
+
+- 2982a68: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [2982a68]
+  - @backstage-community/plugin-explore-common@0.10.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 37cee38: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [37cee38]
+  - @backstage-community/plugin-explore-common@0.9.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 0264565: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [0264565]
+  - @backstage-community/plugin-explore-common@0.8.0
+
 ## 0.8.0
 
 ### Minor Changes

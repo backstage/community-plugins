@@ -15,15 +15,14 @@
  */
 
 import { Config } from '@backstage/config';
-import {
-  DefaultGithubCredentialsProvider,
-  GithubCredentials,
-  ScmIntegrations,
-} from '@backstage/integration';
+import { ScmIntegrations } from '@backstage/integration';
+import { type StrategyOptions } from '@octokit/auth-app';
+
+export type OctokitAuthStrategy = StrategyOptions | string;
 
 export type CopilotCredentials = {
-  enterprise?: GithubCredentials;
-  organization?: GithubCredentials;
+  enterprise?: OctokitAuthStrategy;
+  organization?: OctokitAuthStrategy;
 };
 
 export type CopilotConfig = {
@@ -44,7 +43,7 @@ export const getCopilotConfig = (config: Config): CopilotConfig => {
 
   if (!githubConfig) {
     throw new Error(
-      `GitHub configuration for host "${host}" is missing or incomplete. Please check the integretions configuration section.`,
+      `GitHub configuration for host "${host}" is missing or incomplete. Please check the integrations configuration section.`,
     );
   }
 
@@ -94,30 +93,38 @@ export const getGithubCredentials = async (
         `Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "${host}" in the config.`,
       );
     } else {
-      credentials.enterprise = {
-        type: 'token',
-        headers: { Authorization: `Bearer ${githubConfig.token}` },
-        token: githubConfig.token,
-      };
+      // Use token string for enterprise (PAT tokens) - Octokit will handle it
+      credentials.enterprise = githubConfig.token;
     }
   }
 
   if (organization) {
-    if (githubConfig.apps) {
-      const githubCredentialsProvider =
-        DefaultGithubCredentialsProvider.fromIntegrations(integrations);
-
-      credentials.organization = await githubCredentialsProvider.getCredentials(
-        {
-          url: `https://${host}/${organization}`,
-        },
+    if (githubConfig.apps && githubConfig.apps.length > 0) {
+      // Filter apps that allow this organization (case-insensitive comparison)
+      const orgLowerCase = organization.toLowerCase();
+      const allowedApp = githubConfig.apps.find(
+        app =>
+          !app.allowedInstallationOwners ||
+          app.allowedInstallationOwners.length === 0 ||
+          app.allowedInstallationOwners.some(
+            owner => owner.toLowerCase() === orgLowerCase,
+          ),
       );
-    } else if (githubConfig.token) {
+
+      if (!allowedApp) {
+        throw new Error(
+          `No GitHub App configured for organization "${organization}". Check allowedInstallationOwners in your GitHub integration config.`,
+        );
+      }
+
+      // Use app auth strategy for GitHub Apps - handles automatic token refresh
       credentials.organization = {
-        type: 'token',
-        headers: { Authorization: `Bearer ${githubConfig.token}` },
-        token: githubConfig.token,
+        appId: allowedApp.appId,
+        privateKey: allowedApp.privateKey,
       };
+    } else if (githubConfig.token) {
+      // Use token string for organization (PAT tokens) - Octokit will handle it
+      credentials.organization = githubConfig.token;
     } else {
       throw new Error(
         `Organization API for copilot works with both classic and fine grained PAT tokens or GitHub apps. No token or app is configured for "${host}" in the config.`,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { RootConfigService } from '@backstage/backend-plugin-api';
-import Jenkins from 'jenkins';
+import { Jenkins } from '@backstage-community/plugin-jenkins-common';
 
 export function buildJenkinsClient(config: RootConfigService) {
   const baseUrl = new URL(config.getString('jenkins.baseUrl'));

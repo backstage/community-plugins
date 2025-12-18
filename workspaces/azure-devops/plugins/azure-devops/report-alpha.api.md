@@ -13,17 +13,21 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
+import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:azure-devops': ExtensionDefinition<{
+    'api:azure-devops': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -40,7 +44,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:azure-devops/readme': ExtensionDefinition<{
+    'entity-card:azure-devops/readme': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'readme';
       config: {
@@ -81,7 +85,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:azure-devops/git-tags': ExtensionDefinition<{
+    'entity-content:azure-devops/git-tags': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'git-tags';
       config: {
@@ -149,7 +153,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'entity-content:azure-devops/pipelines': ExtensionDefinition<{
+    'entity-content:azure-devops/pipelines': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'pipelines';
       config: {
@@ -217,7 +221,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'entity-content:azure-devops/pull-requests': ExtensionDefinition<{
+    'entity-content:azure-devops/pull-requests': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'pull-requests';
       config: {
@@ -285,7 +289,7 @@ const _default: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'page:azure-devops': ExtensionDefinition<{
+    'page:azure-devops': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
@@ -311,6 +315,44 @@ const _default: OverridableFrontendPlugin<
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
+    }>;
+    'search-filter-result-type:azure-devops/azure-devops-wiki-article-results-type': OverridableExtensionDefinition<{
+      kind: 'search-filter-result-type';
+      name: 'azure-devops-wiki-article-results-type';
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<
+        {
+          value: string;
+          name: string;
+          icon: JSX_2.Element;
+        },
+        'search.filters.result-types.type',
+        {}
+      >;
+      inputs: {};
+      params: SearchFilterResultTypeBlueprintParams;
+    }>;
+    'search-result-list-item:azure-devops': OverridableExtensionDefinition<{
+      kind: 'search-result-list-item';
+      name: undefined;
+      config: {
+        noTrack: boolean;
+      };
+      configInput: {
+        noTrack?: boolean | undefined;
+      };
+      output: ExtensionDataRef<
+        {
+          predicate?: SearchResultItemExtensionPredicate | undefined;
+          component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
+        },
+        'search.search-result-list-item.item',
+        {}
+      >;
+      inputs: {};
+      params: SearchResultListItemBlueprintParams;
     }>;
   }
 >;

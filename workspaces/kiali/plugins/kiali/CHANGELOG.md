@@ -1,5 +1,87 @@
 ### Dependencies
 
+## 1.47.0
+
+### Minor Changes
+
+- 9c32784: Add e2e tests
+
+## 1.46.0
+
+### Minor Changes
+
+- f1697c9: Fix header styles for OpenShift. Use new cluster metrics API.
+
+### Patch Changes
+
+- Updated dependencies [f1697c9]
+  - @backstage-community/plugin-kiali-common@0.8.0
+  - @backstage-community/plugin-kiali-react@0.5.2
+
+## 1.45.1
+
+### Patch Changes
+
+- 556b381: Updated dependency `micro-memoize` to `4.2.0`.
+
+## 1.45.0
+
+### Minor Changes
+
+- 2312f93: Improved namespace selector usability, update certs API call to the backend
+- b9ac9d9: The provider doesn't need to match the cluster
+
+### Patch Changes
+
+- e6bd3fc: Updated dependency `cytoscape` to `3.33.1`.
+- Updated dependencies [2312f93]
+  - @backstage-community/plugin-kiali-common@0.7.0
+  - @backstage-community/plugin-kiali-react@0.5.1
+
+## 1.44.0
+
+### Minor Changes
+
+- 5e4b727: Backstage update to 1.44.1
+
+### Patch Changes
+
+- Updated dependencies [5e4b727]
+  - @backstage-community/plugin-kiali-common@0.6.0
+  - @backstage-community/plugin-kiali-react@0.5.0
+
+## 1.43.0
+
+### Minor Changes
+
+- 6de7980: Fix for issue: Could not fetch health
+  Fix for: The Istio Config drawer is blank
+  Fix Incorrect column names in the resources tables (All are named config)
+  Improve header styles
+  Backstage version update (1.42.5 -> 1.43.3)
+
+### Patch Changes
+
+- Updated dependencies [6de7980]
+  - @backstage-community/plugin-kiali-common@0.5.0
+  - @backstage-community/plugin-kiali-react@0.4.0
+
+## 1.42.0
+
+### Minor Changes
+
+- d0926d5: Upgrade backstage 1.42.5
+
+### Patch Changes
+
+- 396515d: Fix for graph loading issue – it was not rendering when the page was first displayed, only after a refresh.
+  Added detail pages as a drawer that opens when clicking on each workload, service, or application link.
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- Updated dependencies [396515d]
+- Updated dependencies [d0926d5]
+  - @backstage-community/plugin-kiali-react@0.3.0
+  - @backstage-community/plugin-kiali-common@0.4.0
+
 ## 1.41.0
 
 ### Minor Changes

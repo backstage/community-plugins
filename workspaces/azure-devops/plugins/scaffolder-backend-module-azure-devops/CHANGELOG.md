@@ -1,5 +1,51 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.18.0
+
+### Minor Changes
+
+- c2644cb: Add option that marks action as failed if pipeline result is not successful
+
+### Patch Changes
+
+- 3c0a6e4: Fix bearer token authentication for Git clone operations
+
+## 0.17.0
+
+### Minor Changes
+
+- 840c7dc: Backstage version bump to v1.45.1
+
+## 0.16.1
+
+### Patch Changes
+
+- e05584e: Added validation to prevent branch names with spaces
+
+## 0.16.0
+
+### Minor Changes
+
+- ff113c2: Backstage version bump to v1.44.0
+
+## 0.15.1
+
+### Patch Changes
+
+- 93cfa0a: Added fetch depth option to the `azure:repository:clone` action.
+
+## 0.15.0
+
+### Minor Changes
+
+- 40839b2: Backstage version bump to v1.43.2
+
+## 0.14.0
+
+### Minor Changes
+
+- 1e1ece3: Add new actions for Azure DevOps: Git Clone, Push and Create new Pull Request
+
 ## 0.13.0
 
 ### Minor Changes

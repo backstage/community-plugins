@@ -1,5 +1,47 @@
 ### Dependencies
 
+## 2.9.0
+
+### Minor Changes
+
+- 291a51f: Backstage version bump to v1.45.3
+
+## 2.8.0
+
+### Minor Changes
+
+- bfd2756: Backstage version bump to v1.44.2
+
+## 2.7.1
+
+### Patch Changes
+
+- be63603: move Status and hooks into plugin
+
+## 2.7.0
+
+### Minor Changes
+
+- 0348763: Backstage version bump to v1.43.3
+
+## 2.6.1
+
+### Patch Changes
+
+- 1defa96: Fix rendering of markdown on the missing permission page
+
+## 2.6.0
+
+### Minor Changes
+
+- 561e5d1: Add i18n support
+
+## 2.5.0
+
+### Minor Changes
+
+- c850e6d: Backstage version bump to v1.42.5
+
 ## 2.4.2
 
 ### Patch Changes

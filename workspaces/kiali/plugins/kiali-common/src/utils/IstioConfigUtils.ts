@@ -27,6 +27,7 @@ import {
   Validations,
 } from '../types';
 
+/** @public */
 export const mergeJsonPatch = (
   objectModified: object,
   object?: object,
@@ -61,6 +62,7 @@ const ipRegexp =
 const durationRegexp = /^[\d]{1,10}\.?[\d]{0,10}(h|m|s|ms)$/;
 
 // K8s gateway hosts have only dnsName
+/** @public */
 export const isK8sGatewayHostValid = (k8sGatewayHost: string): boolean => {
   if (k8sGatewayHost.length < 1 && k8sGatewayHost.length > 253) {
     return false;
@@ -78,6 +80,7 @@ export const isK8sGatewayHostValid = (k8sGatewayHost: string): boolean => {
 };
 
 // Used to check if Sidecar and Gateway host expressions are valid
+/** @public */
 export const isServerHostValid = (
   serverHost: string,
   nsMandatory: boolean,
@@ -118,10 +121,12 @@ export const isServerHostValid = (
   return dnsValid && hostValid;
 };
 
+/** @public */
 export const isValidIp = (ip: string): boolean => {
   return ipRegexp.test(ip);
 };
 
+/** @public */
 export const isValidUrl = (url: string): boolean => {
   try {
     // eslint-disable-next-line no-new
@@ -132,6 +137,7 @@ export const isValidUrl = (url: string): boolean => {
   return true;
 };
 
+/** @public */
 export const isValidDuration = (duration: string): boolean => {
   if (
     duration === '0ms' ||
@@ -144,10 +150,12 @@ export const isValidDuration = (duration: string): boolean => {
   return durationRegexp.test(duration);
 };
 
+/** @public */
 export const isValidAbortStatusCode = (statusCode: number): boolean => {
   return statusCode >= 100 && statusCode <= 599;
 };
 
+/** @public */
 export const isValidOutlierDetection = (
   outlierDetection: OutlierDetection,
 ): boolean => {
@@ -166,6 +174,7 @@ export const isValidOutlierDetection = (
   return true;
 };
 
+/** @public */
 export const hasMissingAuthPolicy = (
   workloadName: string,
   validations: Validations | undefined,
@@ -189,6 +198,7 @@ export const hasMissingAuthPolicy = (
   return hasMissingAP;
 };
 
+/** @public */
 export const getIstioObject = (
   istioObjectDetails?: IstioConfigDetails | IstioConfigItem,
 ): IstioObject | undefined => {
@@ -199,6 +209,7 @@ export const getIstioObject = (
   return istioObject;
 };
 
+/** @public */
 export const getReconciliationCondition = (
   istioConfigDetails?: IstioConfigDetails | IstioConfigItem,
 ): StatusCondition | undefined => {
@@ -208,6 +219,7 @@ export const getReconciliationCondition = (
   );
 };
 
+/** @public */
 export function getIstioObjectGVK(
   apiVersion?: string,
   kind?: string,
@@ -223,6 +235,7 @@ export function getIstioObjectGVK(
   return { Group: parts[0], Version: parts[1], Kind: kind! };
 }
 
+/** @public */
 export function getGVKTypeString(gvk: GroupVersionKind | gvkType): string {
   if (typeof gvk === 'string') {
     const gvkEntry = dicTypeToGVK[gvk];
@@ -244,6 +257,7 @@ function gvkToString(gvk: GroupVersionKind): string {
   return `${gvk.Group}/${gvk.Version}, Kind=${gvk.Kind}`;
 }
 
+/** @public */
 export function stringToGVK(gvk: string): GroupVersionKind {
   const parts = gvk.split(',');
   if (parts.length !== 2) {
@@ -258,6 +272,7 @@ export function stringToGVK(gvk: string): GroupVersionKind {
   return { Group: apiParts[0], Version: apiParts[1], Kind: parts[1] };
 }
 
+/** @public */
 export function kindToStringIncludeK8s(
   apiVersion?: string,
   kind?: string,
@@ -271,12 +286,14 @@ export function kindToStringIncludeK8s(
   return kind;
 }
 
+/** @public */
 export function istioTypesToGVKString(istioTypes: string[]): string[] {
   return istioTypes.map(type => {
     return gvkToString(dicTypeToGVK[type as gvkType]);
   });
 }
 
+/** @public */
 export function isGVKSupported(gvk: GroupVersionKind): boolean {
   return (
     getGVKTypeString(gvk) === getGVKTypeString(gvkType[gvk.Kind as gvkType]) &&

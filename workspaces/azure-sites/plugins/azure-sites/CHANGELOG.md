@@ -1,5 +1,38 @@
 # @backstage-community/plugin-azure-sites
 
+## 0.11.0
+
+### Minor Changes
+
+- 0686b85: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [0686b85]
+  - @backstage-community/plugin-azure-sites-common@0.11.0
+
+## 0.10.0
+
+### Minor Changes
+
+- a05e53f: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [a05e53f]
+  - @backstage-community/plugin-azure-sites-common@0.10.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 4dfc8bf: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [4dfc8bf]
+  - @backstage-community/plugin-azure-sites-common@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes

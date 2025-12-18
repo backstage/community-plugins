@@ -61,14 +61,14 @@ export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
  *
  * @public
  */
-export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
+export const EVENTS_ACTION_CREATE_TAG = 'create_tag';
 
 /**
  * Event action for deleting a tag
  *
  * @public
  */
-export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
+export const EVENTS_ACTION_DELETE_TAG = 'delete_tag';
 
 /**
  * Channel name for new announcement signals
@@ -83,3 +83,52 @@ export const SIGNALS_CHANNEL_ANNOUNCEMENTS = 'announcements:new';
  * @public
  */
 export const MAX_TITLE_TAG_LENGTH = 100;
+
+/**
+ * Maximum length shown for announcement excerpt
+ *
+ * @public
+ */
+export const MAX_EXCERPT_LENGTH = 50;
+
+/**
+ * Maximum length shown for announcement title
+ *
+ * @public
+ */
+export const MAX_TITLE_LENGTH = 50;
+
+/**
+ * Announcement mutate event ID for auditor mutations
+ *
+ * @public
+ */
+export const AUDITOR_MUTATE_EVENT_ID = 'announcements-mutate';
+
+/**
+ * Event action for creating an announcement
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_CREATE = 'create';
+
+/**
+ * Event action for updating an announcement
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_UPDATE = 'update';
+
+/**
+ * Event action for deleting an announcement
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_DELETE = 'delete';
+
+/**
+ * Announcement fetch event ID for auditor read/query operations
+ *
+ * @public
+ */
+export const AUDITOR_FETCH_EVENT_ID = 'announcements-fetch';

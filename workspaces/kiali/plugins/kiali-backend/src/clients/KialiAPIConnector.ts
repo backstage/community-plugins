@@ -34,6 +34,12 @@ interface StatusState {
 export interface KialiApi {
   proxy(endpoint: string, method?: string): Promise<any>;
 }
+
+/**
+ * Implementation of the Kiali API client.
+ *
+ * @public
+ */
 export class KialiApiImpl implements KialiApi {
   private kialiFetcher: KialiFetcher;
   private logger: LoggerService;

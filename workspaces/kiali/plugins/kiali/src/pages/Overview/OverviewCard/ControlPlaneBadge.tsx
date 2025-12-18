@@ -48,7 +48,7 @@ export const ControlPlaneBadge = (props: Props): React.JSX.Element => {
         variant="outlined"
       />
       {isRemoteCluster(props.annotations) && <RemoteClusterBadge />}
-      {serverConfig.ambientEnabled && (
+      {serverConfig?.ambientEnabled && (
         <AmbientBadge tooltip="Istio Ambient ztunnel detected in the Control plane" />
       )}{' '}
       <IstioStatusInline {...props} />

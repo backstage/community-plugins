@@ -1,5 +1,56 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- 9a1ce4e: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- a7d24b9: Updated dependency `@types/react` to `18.3.27`.
+
+## 1.21.0
+
+### Minor Changes
+
+- 1e3b40b: Backstage version bump to v1.44.0
+
+## 1.20.1
+
+### Patch Changes
+
+- 469f51c: Updated dependency `@types/react` to `18.3.26`.
+- 9f1486f: Updated dependency `@testing-library/jest-dom` to `6.9.1`.
+
+## 1.20.0
+
+### Minor Changes
+
+- 2258b1a: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 13b3e1f: Added support for Backstage's New Frontend System.
+
+  If you're migrating to the new frontend system, you no longer need to wire up an API implementation in `apis.ts`. Instead, pass the plugin in to the `createApp()` function:
+
+  ```tsx
+  import analyticsProviderSegmentPlugin from '@backstage-community/plugin-analytics-provider-segment/alpha';
+
+  const app = createApp({
+    features: [analyticsProviderSegmentPlugin],
+  });
+  ```
+
+  This can be skipped if you have feature discovery enabled.
+
+## 1.19.1
+
+### Patch Changes
+
+- 4819a06: Updated dependency `@testing-library/jest-dom` to `6.8.0`.
+
 ## 1.19.0
 
 ### Minor Changes

@@ -1,5 +1,41 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- e95e193: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [e95e193]
+  - @backstage-community/plugin-blackduck-common@0.9.0
+  - @backstage-community/plugin-blackduck-node@0.7.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 9fb289a: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [9fb289a]
+  - @backstage-community/plugin-blackduck-common@0.8.0
+  - @backstage-community/plugin-blackduck-node@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 65f6e45: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [65f6e45]
+  - @backstage-community/plugin-blackduck-common@0.7.0
+  - @backstage-community/plugin-blackduck-node@0.5.0
+
 ## 0.7.0
 
 ### Minor Changes

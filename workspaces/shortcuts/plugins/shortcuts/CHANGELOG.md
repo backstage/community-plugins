@@ -1,5 +1,29 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.15.0
+
+### Minor Changes
+
+- b37db43: Backstage version bump to v1.45.1
+
+## 0.14.1
+
+### Patch Changes
+
+- 20f8821: Updated dependency `uuid` to `^13.0.0` and remove deprecated and redundant `@types/uuid` package.
+
+## 0.14.0
+
+### Minor Changes
+
+- 82a607a: Backstage version bump to v1.44.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 0cace7c: Backstage version bump to v1.43.2
+
 ## 0.12.0
 
 ### Minor Changes

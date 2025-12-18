@@ -55,6 +55,39 @@ describe('AnnouncementsDatabase', () => {
     });
   });
 
+  it('should handle an announcement without until_date (open-ended)', async () => {
+    await store.insertAnnouncement({
+      id: 'open-ended',
+      publisher: 'publisher',
+      title: 'title',
+      excerpt: 'excerpt',
+      body: 'body',
+      created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
+      start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      // no until_date provided
+      on_behalf_of: 'group:default/team-a',
+      updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+    });
+
+    const announcement = await store.announcementByID('open-ended');
+    expect(announcement).toEqual({
+      id: 'open-ended',
+      publisher: 'publisher',
+      title: 'title',
+      excerpt: 'excerpt',
+      body: 'body',
+      category: undefined,
+      tags: [],
+      created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+      active: 1,
+      start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+      until_date: null,
+      on_behalf_of: 'group:default/team-a',
+      updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+    });
+  });
+
   it('should return an announcement by id', async () => {
     await store.insertAnnouncement({
       id: 'id',
@@ -67,6 +100,7 @@ describe('AnnouncementsDatabase', () => {
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
       until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
+      updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
     });
 
     const announcement = await store.announcementByID('id');
@@ -84,6 +118,7 @@ describe('AnnouncementsDatabase', () => {
       start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
       until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
+      updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
     });
   });
 
@@ -99,6 +134,7 @@ describe('AnnouncementsDatabase', () => {
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
       until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
+      updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
     });
 
     const announcements = await store.announcements({});
@@ -119,6 +155,7 @@ describe('AnnouncementsDatabase', () => {
           start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
           until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
+          updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
         },
       ],
     });
@@ -136,7 +173,10 @@ describe('AnnouncementsDatabase', () => {
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
       until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
+      updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
     });
+
+    const time = DateTime.utc().startOf('millisecond');
 
     await store.updateAnnouncement({
       id: 'id',
@@ -149,6 +189,7 @@ describe('AnnouncementsDatabase', () => {
       start_at: DateTime.fromISO('2025-02-01T13:00:00.708Z'),
       until_date: DateTime.fromISO('2025-03-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
+      updated_at: time,
     });
 
     const announcements = await store.announcements({});
@@ -169,6 +210,7 @@ describe('AnnouncementsDatabase', () => {
           start_at: timestampToDateTime('2025-02-01T13:00:00.708Z'),
           until_date: timestampToDateTime('2025-03-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
+          updated_at: timestampToDateTime(time.toISO()),
         },
       ],
     });
@@ -186,6 +228,7 @@ describe('AnnouncementsDatabase', () => {
       start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
       until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
+      updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
     });
 
     expect((await store.announcements({})).count).toBe(1);
@@ -232,6 +275,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -246,6 +290,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -260,6 +305,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -285,6 +331,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
           {
             id: 'id',
@@ -302,6 +349,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
         ],
       });
@@ -319,6 +367,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -332,6 +381,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -354,6 +404,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
         ],
       });
@@ -371,6 +422,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -384,6 +436,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -397,6 +450,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -410,6 +464,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -432,6 +487,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
         ],
       });
@@ -449,6 +505,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -462,6 +519,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -475,6 +533,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -488,6 +547,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -510,6 +570,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
           {
             id: 'id2',
@@ -524,6 +585,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
         ],
       });
@@ -541,6 +603,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -554,6 +617,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-19T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-19T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-27T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -577,6 +641,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-19T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-19T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
           },
           {
             id: 'id1',
@@ -591,6 +656,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
         ],
       });
@@ -608,6 +674,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -621,6 +688,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-19T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-27T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -644,6 +712,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
           {
             id: 'id2',
@@ -658,6 +727,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-19T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
           },
         ],
       });
@@ -675,6 +745,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-17T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-17T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-25T15:28:08.539Z'),
       });
 
       await store.insertAnnouncement({
@@ -688,6 +759,7 @@ describe('AnnouncementsDatabase', () => {
         start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
       const announcements = await store.announcements({
@@ -711,6 +783,7 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
           },
           {
             id: 'id1',
@@ -725,6 +798,78 @@ describe('AnnouncementsDatabase', () => {
             start_at: timestampToDateTime('2025-01-17T13:00:00.708Z'),
             until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-25T15:28:08.539Z'),
+          },
+        ],
+      });
+    });
+
+    it('sortBy updated_at desc', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-25T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-17T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-17T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2025-10-25T15:28:08.539Z'),
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2025-10-27T15:28:08.539Z'),
+      });
+
+      const announcements = await store.announcements({
+        sortBy: 'updated_at',
+        order: 'desc',
+      });
+
+      expect(announcements).toEqual({
+        count: 2,
+        results: [
+          {
+            id: 'id2',
+            publisher: 'publisher2',
+            title: 'title2',
+            excerpt: 'excerpt2',
+            body: 'body2',
+            category: undefined,
+            tags: [],
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
+            on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2025-10-27T15:28:08.539Z'),
+          },
+          {
+            id: 'id1',
+            publisher: 'publisher1',
+            title: 'title1',
+            excerpt: 'excerpt1',
+            body: 'body1',
+            category: undefined,
+            tags: [],
+            created_at: timestampToDateTime('2023-10-25T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-17T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
+            on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2025-10-25T15:28:08.539Z'),
           },
         ],
       });

@@ -1,5 +1,54 @@
 ### Dependencies
 
+## 5.11.1
+
+### Patch Changes
+
+- 636525d: Updated dependency `@types/express` to `4.17.25`.
+- 43ee3e5: Updated dependency `@openapitools/openapi-generator-cli` to `2.25.2`.
+
+## 5.11.0
+
+### Minor Changes
+
+- 296d257: Backstage version bump to v1.44.2
+
+### Patch Changes
+
+- 1993915: Updated dependency `@openapitools/openapi-generator-cli` to `2.25.0`.
+- Updated dependencies [296d257]
+  - @backstage-community/plugin-ocm-common@3.14.0
+
+## 5.10.0
+
+### Minor Changes
+
+- 36f2716: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 7b478dd: Updated dependency `@openapitools/openapi-generator-cli` to `2.24.0`.
+- Updated dependencies [36f2716]
+  - @backstage-community/plugin-ocm-common@3.13.0
+
+## 5.9.1
+
+### Patch Changes
+
+- 10cfc05: Updated dependency `@openapitools/openapi-generator-cli` to `2.23.4`.
+- 282405e: Update `@kubernetes/client-node` to `1.1.2`
+
+## 5.9.0
+
+### Minor Changes
+
+- 402db3a: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [402db3a]
+  - @backstage-community/plugin-ocm-common@3.12.0
+
 ## 5.8.1
 
 ### Patch Changes

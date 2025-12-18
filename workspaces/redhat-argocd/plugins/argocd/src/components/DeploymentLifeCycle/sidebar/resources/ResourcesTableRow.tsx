@@ -32,6 +32,7 @@ import { ResourceSyncStatus } from './ResourcesSyncStatus';
 import { ResourceHealthStatus } from './ResourcesHealthStatus';
 import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import ResourceMetadata from './resource/ResourceMetadata';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 type ResourcesTableRowProps = {
   uid: string;
@@ -68,13 +69,17 @@ export const ResourcesTableRow: FC<ResourcesTableRowProps> = ({ uid, row }) => {
     [row?.createTimestamp],
   );
 
+  const { t } = useTranslation();
+
   return (
     <>
       <TableRow className={classes.resourceRow}>
         <TableCell>
           <IconButton
             data-testid={`expander-${uid}`}
-            aria-label="expand row"
+            aria-label={t(
+              'deploymentLifecycle.sidebar.resources.resourcesTableRow.ariaLabel',
+            )}
             size="small"
             onClick={() => setOpen(!open)}
           >

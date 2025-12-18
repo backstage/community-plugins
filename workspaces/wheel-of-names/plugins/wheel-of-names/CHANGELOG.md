@@ -1,5 +1,33 @@
 # @backstage-community/plugin-wheel-of-names
 
+## 0.7.0
+
+### Minor Changes
+
+- 3d395e6: Backstage version bump to v1.45.2
+
+## 0.6.0
+
+### Minor Changes
+
+- f70cce3: Added support for new Frontend
+
+### Patch Changes
+
+- 5d7bc2d: Update to modern JSX transform (react-jsx)
+
+## 0.5.0
+
+### Minor Changes
+
+- 5a28929: Backstage version bump to v1.44.0
+
+## 0.4.0
+
+### Minor Changes
+
+- e9987bf: Backstage version bump to v1.43.2
+
 ## 0.3.1
 
 ### Patch Changes

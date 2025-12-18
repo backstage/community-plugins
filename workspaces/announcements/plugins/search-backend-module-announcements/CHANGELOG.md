@@ -1,5 +1,78 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.11.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+  - @backstage-community/plugin-announcements-node@0.12.0
+
+## 0.10.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+  - @backstage-community/plugin-announcements-node@0.11.0
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+  - @backstage-community/plugin-announcements-node@0.10.1
+
+## 0.9.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+  - @backstage-community/plugin-announcements-node@0.10.0
+
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+  - @backstage-community/plugin-announcements-node@0.9.1
+
+## 0.8.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+  - @backstage-community/plugin-announcements-node@0.9.0
+
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+  - @backstage-community/plugin-announcements-node@0.8.2
+
 ## 0.7.1
 
 ### Patch Changes

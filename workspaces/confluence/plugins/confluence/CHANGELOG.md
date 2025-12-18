@@ -1,5 +1,29 @@
 # @backstage-community/plugin-confluence
 
+## 0.13.0
+
+### Minor Changes
+
+- 439ddeb: Backstage version bump to v1.45.1
+
+## 0.12.0
+
+### Minor Changes
+
+- a543616: Backstage version bump to v1.44.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 3e41304: Backstage version bump to v1.43.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 20ccec6: Export `ConfluenceSearchResultListItem` as a search result list item extension. Also update component to accept `limeClamp` and custom `icon` parameters along with minor tweaks to styling to be consistent with other search result list item components.
+
 ## 0.9.0
 
 ### Minor Changes

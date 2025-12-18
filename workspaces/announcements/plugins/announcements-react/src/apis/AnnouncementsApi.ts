@@ -46,7 +46,7 @@ export interface AnnouncementsApi {
     category?: string;
     tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
     current?: boolean;
   }): Promise<AnnouncementsList>;

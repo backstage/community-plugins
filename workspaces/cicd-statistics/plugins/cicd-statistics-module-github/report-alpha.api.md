@@ -7,15 +7,15 @@ import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendModule } from '@backstage/frontend-plugin-api';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 const cicdStatisticsExtensionOverrides: FrontendModule;
 export default cicdStatisticsExtensionOverrides;
 
 // @alpha (undocumented)
-export const cicdStatisticsGithubExtension: ExtensionDefinition<{
+export const cicdStatisticsGithubExtension: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'cicd-statistics-github-api';
   config: {};

@@ -40,7 +40,7 @@ export const adrDecoratorFactories = Object.freeze({
   createRewriteRelativeEmbedsDecorator(): AdrContentDecorator {
     return ({ baseUrl, content }) => ({
       content: content.replace(
-        /!\[([^\[\]]*)\]\((?!https?:\/\/)(.*?)(\.png|\.jpg|\.jpeg|\.gif|\.webp)(.*)\)/gim,
+        /!\[([^\[\]]*)\]\((?!https?:\/\/)(.*?)(\.png|\.jpg|\.jpeg|\.gif|\.webp|\.svg)(.*)\)/gim,
         `![$1](${baseUrl}/$2$3$4)`,
       ),
     });
@@ -54,14 +54,27 @@ export const adrDecoratorFactories = Object.freeze({
       let table = '';
       const attrs = parsedFrontmatter.attributes;
       if (Object.keys(attrs).length > 0) {
-        const stripNewLines = (val: unknown) =>
-          String(val).replaceAll('\n', '<br/>');
+        // Convert "alllowercase" strings into "First char uppercase" variants
+        const uppercaseFirstChar = (val: string) => {
+          if (val.match(/^[a-z]+$/)) {
+            return val.substring(0, 1).toUpperCase() + val.substring(1);
+          }
+          return val;
+        };
+        const stripNewLines = (val: unknown) => {
+          if (val instanceof Date) {
+            return val.toLocaleString(undefined, { dateStyle: 'medium' });
+          }
+          return String(val).replaceAll('\n', '<br/>');
+        };
         const row = (vals: string[]) => `|${vals.join('|')}|\n`;
-        table = `${row(Object.keys(attrs))}`;
-        table += `${row(Object.keys(attrs).map(() => '---'))}`;
-        table += `${row(Object.values(attrs).map(stripNewLines))}\n\n`;
+        table = row(Object.keys(attrs).map(uppercaseFirstChar));
+        table += row(Object.keys(attrs).map(() => '---'));
+        table += row(Object.values(attrs).map(stripNewLines));
+        table += '\n';
+        return { content: table + parsedFrontmatter.content };
       }
-      return { content: table + parsedFrontmatter.content };
+      return { content };
     };
   },
 });

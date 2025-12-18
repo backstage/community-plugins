@@ -53,9 +53,14 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
 import { searchPage } from './components/search/SearchPage';
+import { argocdTranslations } from '@backstage-community/plugin-redhat-argocd/alpha';
 
 const app = createApp({
   apis,
+  __experimentalTranslations: {
+    availableLanguages: ['en'],
+    resources: [argocdTranslations],
+  },
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,

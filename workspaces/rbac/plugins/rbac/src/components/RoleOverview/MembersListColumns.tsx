@@ -16,46 +16,52 @@
 import { Link, TableColumn } from '@backstage/core-components';
 
 import { MembersData } from '../../types';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { rbacTranslationRef } from '../../translations';
 
-export const columns: TableColumn<MembersData>[] = [
-  {
-    title: 'Name',
-    field: 'name',
-    type: 'string',
-    render: props => {
-      return (
-        <Link
-          to={`/catalog/${props.ref.namespace}/${props.ref.kind}/${props.ref.name}`}
-        >
-          {props.name}
-        </Link>
-      );
+export const getColumns = (
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+): TableColumn<MembersData>[] => {
+  return [
+    {
+      title: t('common.name'),
+      field: 'name',
+      type: 'string',
+      render: props => {
+        return (
+          <Link
+            to={`/catalog/${props.ref.namespace}/${props.ref.kind}/${props.ref.name}`}
+          >
+            {props.name}
+          </Link>
+        );
+      },
     },
-  },
-  {
-    title: 'Type',
-    field: 'type',
-    type: 'string',
-  },
-  {
-    title: 'Members',
-    field: 'members',
-    type: 'numeric',
-    align: 'left',
-    render: (props: MembersData) => {
-      return props.type === 'User' ? '-' : props.members;
+    {
+      title: t('common.type'),
+      field: 'type',
+      type: 'string',
     },
-    customSort: (a, b) => {
-      if (a.members === 0) {
-        return -1;
-      }
-      if (b.members === 0) {
-        return 1;
-      }
-      if (a.members === b.members) {
-        return 0;
-      }
-      return a.members < b.members ? -1 : 1;
+    {
+      title: t('common.members'),
+      field: 'members',
+      type: 'numeric',
+      align: 'left',
+      render: (props: MembersData) => {
+        return props.type === 'User' ? '-' : props.members;
+      },
+      customSort: (a, b) => {
+        if (a.members === 0) {
+          return -1;
+        }
+        if (b.members === 0) {
+          return 1;
+        }
+        if (a.members === b.members) {
+          return 0;
+        }
+        return a.members < b.members ? -1 : 1;
+      },
     },
-  },
-];
+  ];
+};

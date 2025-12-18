@@ -1,5 +1,4 @@
 // Example of a React component using Material-UI for the dropdown
-import React from 'react';
 import { MenuItem, FormControl, Select, InputLabel } from '@material-ui/core';
 
 const ApplicationSelector = ({ applications, onSelect }: any) => (

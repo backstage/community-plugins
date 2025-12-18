@@ -37,3 +37,27 @@ import { EntityCicdStatisticsContent } from '@backstage-community/plugin-cicd-st
   <EntityCicdStatisticsContent />
 </EntityLayout.Route>;
 ```
+
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import cicdStatisticsPluginGitlabModule from '@backstage-community/plugin-cicd-statistics-module-gitlab/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    cicdStatisticsPluginGitlabModule,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:cicd-statistics/cicd-statistics-gitlab-api`

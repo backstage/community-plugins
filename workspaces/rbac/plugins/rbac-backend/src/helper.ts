@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { AuditorService, AuthService } from '@backstage/backend-plugin-api';
-import type { MetadataResponse } from '@backstage/plugin-permission-node';
+import type { MetadataResponse } from '@backstage/plugin-permission-common';
 
 import {
   difference,

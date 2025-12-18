@@ -1,5 +1,55 @@
 ### Dependencies
 
+## 1.28.0
+
+### Minor Changes
+
+- 482a213: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [482a213]
+  - @backstage-community/plugin-quay-common@1.15.0
+
+## 1.27.0
+
+### Minor Changes
+
+- 40d312e: **BREAKING**: Added support for multiple Quay instances. Backend plugin routes now require an `:instance-name` parameter to support multiple Quay instances:
+
+  - `/repository/:org/:repo/tag` → `/:instanceName/repository/:org/:repo/tag`
+  - `/repository/:org/:repo/manifest/{digest}` → `/:instanceName/repository/:org/:repo/manifest/{digest}`
+  - `/repository/:org/:repo/manifest/{digest}/labels` → `/:instanceName/repository/:org/:repo/manifest/{digest}/labels`
+  - `/repository/:org/:repo/manifest/{digest}/security` → `/instanceName/repository/:org/:repo/manifest/{digest}/security`
+
+### Patch Changes
+
+- Updated dependencies [40d312e]
+  - @backstage-community/plugin-quay-common@1.14.0
+
+## 1.26.0
+
+### Minor Changes
+
+- 54a1b43: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [54a1b43]
+  - @backstage-community/plugin-quay-common@1.13.0
+
+## 1.25.0
+
+### Minor Changes
+
+- 5c7023b: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 9ffcad1: Updated dependency `start-server-and-test` to `2.1.2`.
+- Updated dependencies [5c7023b]
+  - @backstage-community/plugin-quay-common@1.12.0
+
 ## 1.24.0
 
 ### Minor Changes

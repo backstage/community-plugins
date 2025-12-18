@@ -4,7 +4,7 @@ This plugin integrates Mend.io functionality seamlessly into your Backstage appl
 
 ### Plugin Compatibility
 
-The plugin has been successfully tested with Backstage v1.28. If you are using a newer version of Backstage, please file an issue, and we will provide guidance on the best integration practices for your specific version.
+The plugin has been successfully tested with Backstage v1.40.0 If you are using a newer version of Backstage, please file an issue, and we will provide guidance on the best integration practices for your specific version.
 
 ### Features
 

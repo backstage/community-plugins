@@ -1,5 +1,48 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.14.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+## 0.13.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+## 0.12.1
+
+### Patch Changes
+
+- 95470f7: Add auditing of announcement creation, updates, and deletions via [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor/).
+
+## 0.12.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+## 0.11.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+## 0.10.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
+## 0.9.1
+
+### Patch Changes
+
+- 2007a96: Fixed #5322 that caused `500` errors when fetching existing announcements with null `until_date`.
+
 ## 0.9.0
 
 ### Minor Changes

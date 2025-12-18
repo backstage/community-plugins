@@ -16,8 +16,7 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Link } from '@backstage/core-components';
-import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { announcementViewRouteRef } from '../../routes';
+import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
   useAnnouncements,
@@ -26,6 +25,8 @@ import {
 import {
   Announcement,
   AnnouncementSignal,
+  MAX_EXCERPT_LENGTH,
+  MAX_TITLE_LENGTH,
   SIGNALS_CHANNEL_ANNOUNCEMENTS,
 } from '@backstage-community/plugin-announcements-common';
 import { useSignal } from '@backstage/plugin-signals-react';
@@ -38,6 +39,9 @@ import {
 } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { Alert } from '@material-ui/lab';
+
+import { announcementViewRouteRef } from '../../routes';
+import { truncate } from '../utils/truncateUtils';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -73,26 +77,64 @@ const useStyles = makeStyles(theme => {
   };
 });
 
+type CardOptions = {
+  titleLength?: number;
+  excerptLength?: number;
+};
+
 type AnnouncementBannerProps = {
   announcement: Announcement;
   variant?: 'block' | 'floating';
+  cardOptions?: CardOptions;
 };
 
 const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
+  const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
   const [bannerOpen, setBannerOpen] = useState(true);
   const variant = props.variant || 'block';
   const announcement = props.announcement;
+  const titleLength = props.cardOptions?.titleLength;
+  const excerptLength = props.cardOptions?.excerptLength;
 
-  const handleClick = () => {
+  const markSeen = () => {
     announcementsApi.markLastSeenDate(
       DateTime.fromISO(announcement.created_at),
     );
     setBannerOpen(false);
   };
+
+  const handleLinkClick = () => {
+    analytics.captureEvent('click', announcement.title, {
+      attributes: {
+        announcementId: announcement.id,
+        location: 'NewAnnouncementBanner',
+      },
+    });
+
+    markSeen();
+  };
+
+  const handleDismiss = () => {
+    analytics.captureEvent('dismiss', announcement.title, {
+      attributes: {
+        announcementId: announcement.id,
+        location: 'NewAnnouncementBanner',
+      },
+    });
+
+    markSeen();
+  };
+
+  const title = titleLength
+    ? truncate(announcement.title, titleLength)
+    : announcement.title;
+  const excerpt = excerptLength
+    ? truncate(announcement.excerpt, excerptLength)
+    : announcement.excerpt;
 
   const message = (
     <>
@@ -106,12 +148,26 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
       <Link
         to={viewAnnouncementLink({ id: announcement.id })}
         variant="inherit"
+        onClick={handleLinkClick}
       >
-        {announcement.title}
+        {title}
       </Link>
-      &nbsp;– {announcement.excerpt}
+      &nbsp;– {excerpt}
     </>
   );
+
+  useEffect(() => {
+    if (!bannerOpen) {
+      return;
+    }
+
+    analytics.captureEvent('view', announcement.title, {
+      attributes: {
+        announcementId: announcement.id,
+        location: 'NewAnnouncementBanner',
+      },
+    });
+  }, [analytics, announcement.id, announcement.title, bannerOpen]);
 
   return (
     <Snackbar
@@ -131,7 +187,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
             key="dismiss"
             title={t('newAnnouncementBanner.markAsSeen')}
             color="inherit"
-            onClick={handleClick}
+            onClick={handleDismiss}
           >
             <Close className={classes.icon} />
           </IconButton>,
@@ -148,10 +204,24 @@ type NewAnnouncementBannerProps = {
   active?: boolean;
   current?: boolean;
   tags?: string[];
+  sortBy?: 'created_at' | 'updated_at';
+  cardOptions?: CardOptions;
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
-  const { max, category, tags, active, variant, current } = props;
+  const {
+    max,
+    category,
+    tags,
+    active,
+    variant,
+    current,
+    sortBy,
+    cardOptions = {
+      titleLength: MAX_TITLE_LENGTH,
+      excerptLength: MAX_EXCERPT_LENGTH,
+    },
+  } = props;
 
   const announcementsApi = useApi(announcementsApiRef);
 
@@ -165,6 +235,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
     tags,
     active,
     current,
+    sortBy,
   });
   const lastSeen = announcementsApi.lastSeenDate();
 
@@ -209,6 +280,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
           key={announcement.id}
           announcement={announcement}
           variant={variant}
+          cardOptions={cardOptions}
         />
       ))}
     </>

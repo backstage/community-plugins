@@ -25,10 +25,10 @@ import groupBy from 'lodash/groupBy';
 import {
   Content,
   ContentHeader,
+  ErrorPanel,
   InfoCard,
   Progress,
   SupportButton,
-  WarningPanel,
 } from '@backstage/core-components';
 import { configApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
@@ -67,6 +67,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   adrMenu: {
     backgroundColor: theme.palette.background.paper,
   },
+  adrLabelGood: {
+    borderColor: theme.palette.success.main,
+    color: theme.palette.success.contrastText,
+    backgroundColor: theme.palette.success.main,
+  },
+  adrLabelWarning: {
+    borderColor: theme.palette.warning.main,
+    color: theme.palette.warning.contrastText,
+    backgroundColor: theme.palette.warning.main,
+  },
+  adrLabelDangerous: {
+    borderColor: theme.palette.error.main,
+    color: theme.palette.error.contrastText,
+    backgroundColor: theme.palette.error.main,
+  },
   adrContainerTitle: {
     color: theme.palette.grey[700],
     marginBottom: theme.spacing(1),
@@ -89,14 +104,18 @@ const AdrListContainer = (props: {
   const [open, setOpen] = React.useState(true);
 
   const getChipColor = (status: string) => {
-    switch (status) {
+    if (!status) {
+      return '';
+    }
+    switch (status.toLowerCase()) {
       case 'accepted':
-        return 'primary';
-      case 'rejected':
+        return classes.adrLabelGood;
       case 'deprecated':
-        return 'secondary';
+        return classes.adrLabelWarning;
+      case 'rejected':
+        return classes.adrLabelDangerous;
       default:
-        return 'default';
+        return '';
     }
   };
 
@@ -139,10 +158,10 @@ const AdrListContainer = (props: {
                     {adr.date}
                     {adr.status && (
                       <Chip
-                        color={getChipColor(adr.status)}
                         label={adr.status}
                         size="small"
                         variant="outlined"
+                        className={getChipColor(adr.status)}
                       />
                     )}
                   </Box>
@@ -229,7 +248,7 @@ export const EntityAdrContent = (props: {
       {loading && <Progress />}
 
       {entityHasAdrs && !loading && error && (
-        <WarningPanel title={t('failedToFetch')} message={error?.message} />
+        <ErrorPanel title={t('failedToFetch')} error={error} />
       )}
 
       {entityHasAdrs &&

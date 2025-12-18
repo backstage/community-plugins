@@ -1,5 +1,29 @@
 # @backstage-community/plugin-graphiql
 
+## 0.10.0
+
+### Minor Changes
+
+- 3e23035: Backstage version bump to v1.45.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 5199ebc: Added documentation for the New Frontend System
+
+## 0.9.0
+
+### Minor Changes
+
+- bcb0e17: Backstage version bump to v1.44.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 2efccf2: Backstage version bump to v1.43.2
+
 ## 0.7.0
 
 ### Minor Changes

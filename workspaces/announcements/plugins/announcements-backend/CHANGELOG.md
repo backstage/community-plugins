@@ -1,5 +1,93 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.18.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+
+## 0.17.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+
+## 0.16.0
+
+### Minor Changes
+
+- fdec0dd: Remove unused dependencies and update `uuid` to v13.
+
+## 0.15.1
+
+### Patch Changes
+
+- 95470f7: Add auditing of announcement creation, updates, and deletions via [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor/).
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
+## 0.15.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+
+## 0.14.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 5827ca1: Fire signal or notification only on active announcement
+
+## 0.12.0
+
+### Minor Changes
+
+- 58ccd64: Fixed handling of `active` prop in NewAnnouncementBanner
+  Extended signal and notification on update when the annoucencement is activated
+  Updated `EditAnnoucementPage` to navigate to root path as the announcement creation page
+  Updated `EditAnnoucementPage` alertApi on success to be transient
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+
+## 0.11.1
+
+### Patch Changes
+
+- 2007a96: Fixed #5322 that caused `500` errors when fetching existing announcements with null `until_date`.
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+
 ## 0.11.0
 
 ### Minor Changes

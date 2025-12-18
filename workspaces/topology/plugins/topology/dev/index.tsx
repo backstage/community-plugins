@@ -27,6 +27,7 @@ import {
 } from '@backstage/plugin-kubernetes-react';
 import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
 import { TopologyPage, topologyPlugin } from '../src/plugin';
+import { topologyTranslations } from '../src/translations';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -154,6 +155,9 @@ const mockKubernetesAuthProviderApiRef = {
 
 createDevApp()
   .registerPlugin(topologyPlugin)
+  .addTranslationResource(topologyTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setDefaultLanguage('en')
   .addPage({
     element: (
       <TestApiProvider

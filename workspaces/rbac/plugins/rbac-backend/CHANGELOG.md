@@ -1,5 +1,61 @@
 ### Dependencies
 
+## 7.6.0
+
+### Minor Changes
+
+- e2d17e1: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- 636525d: Updated dependency `@types/express` to `4.17.25`.
+- Updated dependencies [e2d17e1]
+  - @backstage-community/plugin-rbac-common@1.22.0
+  - @backstage-community/plugin-rbac-node@1.16.0
+
+## 7.5.0
+
+### Minor Changes
+
+- 2d1f63f: Backstage version bump to v1.44.2
+
+### Patch Changes
+
+- Updated dependencies [2d1f63f]
+  - @backstage-community/plugin-rbac-common@1.21.0
+  - @backstage-community/plugin-rbac-node@1.15.0
+
+## 7.4.2
+
+### Patch Changes
+
+- de412d4: Fix issue with extra delimiter in conditional yaml.
+- 93ce408: Compare parent reference in sqlite memo using entity ref
+
+## 7.4.1
+
+### Patch Changes
+
+- db1ab9d: Updated dependency `knex-mock-client` to `3.0.2`.
+
+## 7.4.0
+
+### Minor Changes
+
+- 232a84d: Backstage version bump to v1.42.5
+
+### Patch Changes
+
+- Updated dependencies [232a84d]
+  - @backstage-community/plugin-rbac-common@1.20.0
+  - @backstage-community/plugin-rbac-node@1.14.0
+
+## 7.3.0
+
+### Minor Changes
+
+- 5260b5c: support config to set permission vs conditional policy evaluation order
+
 ## 7.2.0
 
 ### Minor Changes

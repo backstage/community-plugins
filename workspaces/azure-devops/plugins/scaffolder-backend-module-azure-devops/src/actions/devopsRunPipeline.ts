@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
-import {
-  DefaultAzureDevOpsCredentialsProvider,
-  ScmIntegrationRegistry,
-} from '@backstage/integration';
+import { ScmIntegrationRegistry } from '@backstage/integration';
 import { examples } from './devopsRunPipeline.examples';
 
-import { InputError } from '@backstage/errors';
-import {
-  getBearerHandler,
-  getPersonalAccessTokenHandler,
-  WebApi,
-} from 'azure-devops-node-api';
+import { WebApi } from 'azure-devops-node-api';
 import {
   RunPipelineParameters,
   RunState,
+  RunResult,
 } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
+import { getAuthHandler } from './helpers';
 /**
- * Creates an `acme:example` Scaffolder action.
- *
- * @remarks
- *
- * See {@link https://example.com} for more information.
+ * Creates an `azure:pipeline:run` Scaffolder action.
  *
  * @public
  */
@@ -87,6 +77,13 @@ export function createAzureDevopsRunPipelineAction(options: {
               'Azure DevOps pipeline template parameters in key-value pairs.',
             )
             .optional(),
+        failIfNotSuccessful: d =>
+          d
+            .boolean()
+            .describe(
+              'The action should fail if the pipeline run was not successful.',
+            )
+            .optional(),
       },
       output: {
         pipelineRunUrl: d => d.string().describe('Url of the pipeline'),
@@ -125,23 +122,21 @@ export function createAzureDevopsRunPipelineAction(options: {
         templateParameters,
         pollingInterval,
         pipelineTimeout,
+        failIfNotSuccessful,
       } = ctx.input;
 
-      const url = `https://${host}/${organization}`;
-      const credentialProvider =
-        DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
-      const credentials = await credentialProvider.getCredentials({ url: url });
-
-      if (credentials === undefined && ctx.input.token === undefined) {
-        throw new InputError(
-          `No credentials provided ${url}, please check your integrations config`,
+      if (failIfNotSuccessful && !pollingInterval) {
+        throw new Error(
+          'The parameter failIfNotSuccessful option requires pollingInterval to be set',
         );
       }
 
-      const authHandler =
-        ctx.input.token || credentials?.type === 'pat'
-          ? getPersonalAccessTokenHandler(ctx.input.token ?? credentials!.token)
-          : getBearerHandler(credentials!.token);
+      const url = `https://${host}/${organization}`;
+      const authHandler = await getAuthHandler(
+        integrations,
+        url,
+        ctx.input.token,
+      );
 
       const webApi = new WebApi(url, authHandler);
       const client = await webApi.getPipelinesApi();
@@ -219,6 +214,10 @@ export function createAzureDevopsRunPipelineAction(options: {
         ctx.logger.info(
           `Pipeline run result: ${pipelineRun.result.toString()}`,
         );
+      }
+
+      if (failIfNotSuccessful && pipelineRun.result !== RunResult.Succeeded) {
+        throw new Error('Pipeline run was not successful');
       }
 
       // Log the entire pipeline run object for debugging purposes

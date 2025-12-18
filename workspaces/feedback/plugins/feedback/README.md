@@ -79,6 +79,7 @@ It is dedicated to simplifying the process of gathering and managing user feedba
          confirmationSubTitle: 'Each time a friend submits a experience, it creates a task for our developer team to resolve it with priority.'
          confirmationEventMessage: 'Submitted the feedback'
 
+       # Provide an empty list to disable a type (experience or error). At least one must be enabled.
        # List of experiences to show in feedback form, (note: jira is not created for "excellent" and "good" feedbacks)
        experienceList:
          - Excellent

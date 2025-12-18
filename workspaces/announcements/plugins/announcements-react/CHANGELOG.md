@@ -1,5 +1,101 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.17.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+
+## 0.16.0
+
+### Minor Changes
+
+- 40b8d32: Internal refactor to consolidate delete dialog state management in the admin portal. Refactoring categories and tags to the shared component added support for translations which was previously missing.
+
+  The refactor includes a new set of translation keys for the generic delete dialog.
+
+  ### Translation Changes
+
+  Added new translation keys for the delete dialog:
+
+  - `confirmDeleteDialog.title`
+  - `confirmDeleteDialog.cancel`
+  - `confirmDeleteDialog.delete`
+
+  Deprecated the following translation keys:
+
+  - `deleteDialog.title`
+  - `deleteDialog.cancel`
+  - `deleteDialog.delete`
+
+### Patch Changes
+
+- 6b45ee7: Adds a new useAnnouncementsPermissions hook users can leverage when needing quick access to all permissions, something we commonly do throughout the admin portal. All components now leverage this hook instead of using the usePermission hook directly.
+
+## 0.15.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+
+## 0.14.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+
+## 0.13.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+
 ## 0.11.0
 
 ### Minor Changes

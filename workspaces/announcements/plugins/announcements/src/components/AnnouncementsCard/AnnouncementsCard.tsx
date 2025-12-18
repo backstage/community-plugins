@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 import { DateTime } from 'luxon';
-import { usePermission } from '@backstage/plugin-permission-react';
 import {
   InfoCard,
   InfoCardVariants,
   Link,
   Progress,
 } from '@backstage/core-components';
-import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
+import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import {
-  announcementCreateRouteRef,
+  announcementAdminRouteRef,
   announcementViewRouteRef,
   rootRouteRef,
 } from '../../routes';
@@ -33,6 +31,7 @@ import {
   announcementsApiRef,
   useAnnouncements,
   useAnnouncementsTranslation,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   makeStyles,
@@ -84,8 +83,9 @@ export const AnnouncementsCard = ({
   const announcementsApi = useApi(announcementsApiRef);
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
-  const createAnnouncementLink = useRouteRef(announcementCreateRouteRef);
+  const announcementAdminLink = useRouteRef(announcementAdminRouteRef);
   const lastSeen = announcementsApi.lastSeenDate();
+  const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
 
   const { announcements, loading, error } = useAnnouncements({
@@ -97,10 +97,7 @@ export const AnnouncementsCard = ({
     current,
   });
 
-  const { announcementCreatePermission } = announcementEntityPermissions;
-  const { loading: loadingPermission, allowed: canAdd } = usePermission({
-    permission: announcementCreatePermission,
-  });
+  const permissions = useAnnouncementsPermissions();
 
   if (loading) {
     return <Progress />;
@@ -139,6 +136,14 @@ export const AnnouncementsCard = ({
                 <Link
                   to={viewAnnouncementLink({ id: announcement.id })}
                   variant="inherit"
+                  onClick={() =>
+                    analytics.captureEvent('click', announcement.title, {
+                      attributes: {
+                        announcementId: announcement.id,
+                        location: 'AnnouncementsCard',
+                      },
+                    })
+                  }
                 >
                   {announcement.title}
                 </Link>
@@ -194,17 +199,19 @@ export const AnnouncementsCard = ({
             />{' '}
           </ListItem>
         ))}
-        {announcements.count === 0 && !loadingPermission && canAdd && (
-          <ListItem>
-            <ListItemText>
-              {`${t('announcementsCard.noAnnouncements')} `}
-              <Link to={createAnnouncementLink()} variant="inherit">
-                {t('announcementsCard.addOne')}
-              </Link>
-              ?
-            </ListItemText>
-          </ListItem>
-        )}
+        {announcements.count === 0 &&
+          !permissions.create.loading &&
+          permissions.create.allowed && (
+            <ListItem>
+              <ListItemText>
+                {`${t('announcementsCard.noAnnouncements')} `}
+                <Link to={announcementAdminLink()} variant="inherit">
+                  {t('announcementsCard.addOne')}
+                </Link>
+                ?
+              </ListItemText>
+            </ListItem>
+          )}
       </List>
     </InfoCard>
   );

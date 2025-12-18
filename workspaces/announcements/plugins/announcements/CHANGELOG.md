@@ -1,5 +1,253 @@
 # @backstage-community/plugin-announcements
 
+## 1.2.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- 0768c4e: - New dedicated routes to the admin portal (`/announcements/admin`, `/announcements/admin/categories`, `/announcements/admin/tags`)
+
+  - The exported `AnnouncementsTimeline` and `AnnouncementsAdminPortal` components have been deprecated as they will not be migrated to the new frontend system. Please see each component's deprecation notice for more details.
+
+  ### New frontend system + @backstage/ui updates
+
+  We are rebuilding several major components of the announcements plugin from scratch leveraging the `@backstage/ui` library. To start, the admin portal now leverages the new header component from the `@backstage/ui` library. Users who have migrated to the new frontend system will gradually receive these until the plugin is fully migrated. Users on the existing frontend system will not see any changes.
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+  - @backstage-community/plugin-announcements-react@0.17.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 40b8d32: Internal refactor to consolidate delete dialog state management in the admin portal. Refactoring categories and tags to the shared component added support for translations which was previously missing.
+
+  The refactor includes a new set of translation keys for the generic delete dialog.
+
+  ### Translation Changes
+
+  Added new translation keys for the delete dialog:
+
+  - `confirmDeleteDialog.title`
+  - `confirmDeleteDialog.cancel`
+  - `confirmDeleteDialog.delete`
+
+  Deprecated the following translation keys:
+
+  - `deleteDialog.title`
+  - `deleteDialog.cancel`
+  - `deleteDialog.delete`
+
+### Patch Changes
+
+- e6b9dd8: Replaces global `JSX` namespace with `React.JSX` to resolve deprecation
+- 6b45ee7: Adds a new useAnnouncementsPermissions hook users can leverage when needing quick access to all permissions, something we commonly do throughout the admin portal. All components now leverage this hook instead of using the usePermission hook directly.
+- Updated dependencies [6b45ee7]
+- Updated dependencies [40b8d32]
+  - @backstage-community/plugin-announcements-react@0.16.0
+
+## 1.0.0
+
+### Major Changes
+
+- dc3ce7f: # Major Release: Admin Portal Consolidation
+
+  Releases the first major version of the plugin with support for two primary entry points:
+
+  - `AnnouncementsPage` - A page that displays all announcements that end users consume
+  - `AdminPortal` - A unified portal for managing announcements, categories, and tags
+
+  With this major release, we are consolidating all functionality into the admin portal. The previous version provides individual pages for each of these entry points which have now been removed.
+
+  As the plugin's adoption grew, more requests to hide UI components based on permissions came in. This decision was made to simplify the plugin and reduce the complexity of the codebase. It also provides a more consistent UX for admin operations and allows for more flexibility in the future.
+
+  ## Highlights
+
+  - The button to create a new announcement has been removed from the announcements page. This button is now only available in the admin portal.
+  - The context menu has been updated to only include a link to the admin portal. Links to the individual pages for categories and tags have been removed.
+  - All admin operations (create/edit announcements, manage categories, manage tags) are now accessible through a unified tabbed interface in the Admin Portal.
+  - The `AnnouncementsCard` component now links to the admin portal instead of the create page.
+
+  ## Breaking Changes
+
+  ### Removed Routes
+
+  The following route references have been removed and are no longer available:
+
+  - `announcementCreateRouteRef` - Use `announcementAdminRouteRef` instead
+  - `announcementEditRouteRef` - Use `announcementAdminRouteRef` instead
+  - `categoriesListRouteRef` - Categories are now managed within the Admin Portal
+  - `tagsListRouteRef` - Tags are now managed within the Admin Portal
+
+  ## Translation Changes
+
+  The following translation keys have been removed:
+
+  - `announcementsPage.contextMenu.categories`
+  - `announcementsPage.contextMenu.tags`
+
+  The following translation keys have been updated:
+
+  - `announcementsPage.contextMenu.admin` - Updated to "Manage announcements"
+
+  ### Removed Components
+
+  The following components have been removed:
+
+  - `CreateAnnouncementPage` - Replaced by `AdminPortal` with Announcements tab
+  - `EditAnnouncementPage` - Replaced by `AdminPortal` with Announcements tab
+  - `CategoriesPage` - Replaced by `AdminPortal` with Categories tab
+  - `TagsPage` - Replaced by `AdminPortal` with Tags tab
+  - `NewCategoryDialog` - Category creation is now handled inline within the Categories tab
+  - `NewTagDialog` - Tag creation is now handled inline within the Tags tab
+
+  ## Benefits
+
+  A big benefit of this consolidation is it reduces the amount of code we must migrate to support both the new frontend system and the new `@backstage/ui` library which we are in the process of doing. Others include:
+
+  - Single entry point for all admin operations (`/announcements/admin`)
+  - Less code to maintain - removed duplicate page components
+  - Reduction in code duplication - shared form logic consolidated
+  - Improved UX with tabbed interface for related admin operations
+  - Better permission handling - all admin operations gated through one portal
+
+  ## Migration Guide
+
+  If you have custom integrations or links to the old routes, update them as follows:
+
+  **Before:**
+
+  ```tsx
+  import { announcementCreateRouteRef } from '@backstage-community/plugin-announcements';
+  const createLink = useRouteRef(announcementCreateRouteRef);
+  ```
+
+  **After:**
+
+  ```tsx
+  import { announcementAdminRouteRef } from '@backstage-community/plugin-announcements';
+  const adminLink = useRouteRef(announcementAdminRouteRef);
+  ```
+
+  All admin functionality is now accessible at the `/announcements/admin` route.
+
+### Patch Changes
+
+- 0fb63ba: Adds support for editing an announcement in the admin portal. Clicking the edit icon will no longer take the end user to a separate edit page.
+
+## 0.17.0
+
+### Minor Changes
+
+- bda0481: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- 21f564f: Switched the entity card extension to be disabled by default.
+- Updated dependencies [bda0481]
+  - @backstage-community/plugin-announcements-common@0.13.0
+  - @backstage-community/plugin-announcements-react@0.15.0
+
+## 0.16.2
+
+### Patch Changes
+
+- 43e6d99: Added analytics event tracking for announcement link clicks. When users click on an announcement with a `link` property, an analytics event is now captured using the [Plugin Analytics](https://backstage.io/docs/plugins/analytics/#capturing-events). This applies to the following components: `AnnouncementsCard`, `AnnouncementPage`,`NewAnnouncementBanner`.
+- 0b8dedf: Fix Announcements banner error `Routing context is not available` when using the banner with the new frontend system.
+
+## 0.16.1
+
+### Patch Changes
+
+- 9987329: The success message shown when an announcement is created is now transient
+- ffb26dc: Fixed routing issue where some links were incorrectly redirecting to `/announcements/admin` instead of `/announcements`. Changed `<AnnouncementsAdminPortal />` from a routable extension to a component extension to resolve the mount point conflict with the main `<AnnouncementsPage />`.
+- f39d97f: Added announcement banner as app root element for the new frontend system.
+
+## 0.16.0
+
+### Minor Changes
+
+- 1c076d9: - Centered text for empty tables in:
+  - Announcements
+  - Category
+  - Tags
+  - Properly mounted in the frontend the `/tags` path
+  - Updated `CategoriesPage` and `TagsPage` in order to display the `ContextMenu`
+  - Added titleLength prop in order to truncate title on `AnnouncementDetails`
+  - Fixed insert of Categories from `CategoriesPage` and clean up on dialog
+  - Added in the `NewAnnouncementBanner` a `cardOptions={{titleLength,excerptLength }}` props, this would allow to truncate text. Default is 50.
+  - Now in the `NewAnnouncementBanner` when the title get clicked, the alert is dismissed as user navigate to alert details
+
+### Patch Changes
+
+- Updated dependencies [95470f7]
+  - @backstage-community/plugin-announcements-common@0.12.1
+  - @backstage-community/plugin-announcements-react@0.14.1
+
+## 0.15.0
+
+### Minor Changes
+
+- cd040b2: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [cd040b2]
+  - @backstage-community/plugin-announcements-common@0.12.0
+  - @backstage-community/plugin-announcements-react@0.14.0
+
+## 0.14.0
+
+### Minor Changes
+
+- d34e875: Added updated_at field, extended sorting capabilities NewAnnouncementsBanner
+
+### Patch Changes
+
+- Updated dependencies [d34e875]
+  - @backstage-community/plugin-announcements-common@0.11.0
+  - @backstage-community/plugin-announcements-react@0.13.0
+
+## 0.13.1
+
+### Patch Changes
+
+- 93bb787: Fixed the typings for the Announcements new frontend system plugin, which previously prevented correct overriding.
+- 6efe1a3: - Fixed table rendering in `<AnnouncementsPage markdownRenderer="md-editor" />`. Table styling was not correctly applied when using the Backstage Light theme.
+  - Updated `@uiw/react-md-editor` dependency to `^4.0.8`.
+
+## 0.13.0
+
+### Minor Changes
+
+- aca5bee: Adds `defaultInactive` prop to `AnnouncementsPage`, to be used as the initial form value of `active` for new announcements.
+- 58ccd64: Fixed handling of `active` prop in NewAnnouncementBanner
+  Extended signal and notification on update when the annoucencement is activated
+  Updated `EditAnnoucementPage` to navigate to root path as the announcement creation page
+  Updated `EditAnnoucementPage` alertApi on success to be transient
+- 2d1724c: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 0d56a66: Added search extensions for new frontend system
+- Updated dependencies [2d1724c]
+  - @backstage-community/plugin-announcements-common@0.10.0
+  - @backstage-community/plugin-announcements-react@0.12.0
+
+## 0.12.1
+
+### Patch Changes
+
+- 2007a96: Fixed #5322 that caused `500` errors when fetching existing announcements with null `until_date`.
+- Updated dependencies [2007a96]
+  - @backstage-community/plugin-announcements-common@0.9.1
+  - @backstage-community/plugin-announcements-react@0.11.1
+
 ## 0.12.0
 
 ### Minor Changes

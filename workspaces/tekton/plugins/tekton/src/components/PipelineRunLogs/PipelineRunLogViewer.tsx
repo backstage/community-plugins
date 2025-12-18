@@ -20,7 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePodLogsOfPipelineRun } from '../../hooks/usePodLogsOfPipelineRun';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translation';
+import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineRunLogViewerProps = { pod: V1Pod };
 

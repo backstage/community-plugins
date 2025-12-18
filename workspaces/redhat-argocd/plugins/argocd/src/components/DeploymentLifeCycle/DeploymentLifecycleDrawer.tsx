@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { FC } from 'react';
-
+import Rollouts from './sidebar/rollouts/Rollouts';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import {
@@ -40,6 +40,7 @@ import Metadata from '../Common/Metadata';
 import MetadataItem from '../Common/MetadataItem';
 import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface DeploymentLifecycleDrawerProps {
   isOpen: boolean;
@@ -73,7 +74,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 }) => {
   const {
     application: app,
-    revisionsMap,
+    revisions,
     appHistory,
     latestRevision,
   } = useDrawerContext();
@@ -83,6 +84,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 
   const firstRevision = appHistory?.[0];
   const createdAt = firstRevision?.deployedAt;
+  const { t } = useTranslation();
 
   if (!app) {
     return null;
@@ -107,7 +109,9 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 
               <IconButton
                 key="dismiss"
-                title="Close the drawer"
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.iconButtonTitle',
+                )}
                 onClick={onClose}
                 color="inherit"
               >
@@ -121,24 +125,43 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 
           <Grid item xs={12}>
             <Metadata>
-              <MetadataItem title="Instance">
-                {app?.metadata?.instance?.name ?? 'default'}
+              <MetadataItem
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.instance',
+                )}
+              >
+                {app?.metadata?.instance?.name ??
+                  t(
+                    'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue',
+                  )}
               </MetadataItem>
 
-              <MetadataItem title="Cluster">
+              <MetadataItem
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.cluster',
+                )}
+              >
                 <AppServerLink application={app} />
               </MetadataItem>
 
-              <MetadataItem title="Namespace">
+              <MetadataItem
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.namespace',
+                )}
+              >
                 <AppNamespace app={app} />
               </MetadataItem>
 
               {!isAppHelmChartType(app) ? (
-                <MetadataItem title="Commit">
+                <MetadataItem
+                  title={t(
+                    'deploymentLifecycle.deploymentLifecycleDrawer.commit',
+                  )}
+                >
                   <AppCommitLink
                     application={app}
                     entity={entity}
-                    revisionsMap={revisionsMap}
+                    revisions={revisions}
                     latestRevision={latestRevision}
                     showAuthor
                   />
@@ -147,13 +170,19 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                 <></>
               )}
 
-              <MetadataItem title="Revision">
+              <MetadataItem
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleDrawer.revision',
+                )}
+              >
                 {app?.spec?.source?.targetRevision}
               </MetadataItem>
             </Metadata>
           </Grid>
           <Grid item xs={12}>
-            <Typography color="textPrimary">Resources</Typography>
+            <Typography color="textPrimary">
+              {t('deploymentLifecycle.deploymentLifecycleDrawer.resources')}
+            </Typography>
             <Card
               elevation={2}
               key="resoucres-container"
@@ -164,6 +193,9 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                 createdAt={createdAt}
               />
             </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Rollouts />
           </Grid>
         </Grid>
       </CardContent>

@@ -13,18 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ObjectReference } from '@backstage-community/plugin-kiali-common/types';
+import {
+  DRAWER,
+  ObjectReference,
+} from '@backstage-community/plugin-kiali-common/types';
 import { List, ListItem, Typography } from '@material-ui/core';
+import { default as React } from 'react';
 import { ReferenceIstioObjectLink } from '../../components/Link/IstioObjectLink';
+import { PFBadge } from '../../components/Pf/PfBadges';
+import { GVKToBadge } from '../../components/VirtualList/Config';
+import { getGVKTypeString } from '../../utils/IstioConfigUtils';
 
 interface IstioConfigReferencesProps {
   objectReferences: ObjectReference[];
   cluster?: string;
+  view?: string;
 }
 
 export const IstioConfigValidationReferences = (
   props: IstioConfigReferencesProps,
 ) => {
+  const renderIstioObjectItem = (
+    namespace: string,
+    name: string,
+    objectGVK: any,
+  ): React.ReactNode => {
+    let link: React.ReactNode;
+
+    if (props.view === DRAWER) {
+      const badge = GVKToBadge[getGVKTypeString(objectGVK)];
+      link = (
+        <>
+          <PFBadge badge={badge} />
+          <Typography component="span" style={{ marginLeft: 8 }}>
+            {name}
+          </Typography>
+        </>
+      );
+    } else {
+      link = (
+        <ReferenceIstioObjectLink
+          name={name}
+          namespace={namespace}
+          objectGVK={objectGVK}
+          cluster={props.cluster}
+        />
+      );
+    }
+
+    return link;
+  };
+
   return (
     <>
       <Typography variant="h6" gutterBottom style={{ marginTop: 10 }}>
@@ -35,12 +74,11 @@ export const IstioConfigValidationReferences = (
           props.objectReferences.map((reference, i) => {
             return (
               <ListItem style={{ padding: 0 }} key={i}>
-                <ReferenceIstioObjectLink
-                  name={reference.name}
-                  namespace={reference.namespace}
-                  cluster={props.cluster}
-                  objectGVK={reference.objectGVK}
-                />
+                {renderIstioObjectItem(
+                  reference.namespace,
+                  reference.name,
+                  reference.objectGVK,
+                )}
               </ListItem>
             );
           })}

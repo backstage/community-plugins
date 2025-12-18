@@ -1,5 +1,48 @@
 # @backstage-community/plugin-npm
 
+## 1.15.0
+
+### Minor Changes
+
+- 8716cb6: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [8716cb6]
+  - @backstage-community/plugin-npm-common@1.15.0
+
+## 1.14.0
+
+### Minor Changes
+
+- 945db23: This version changes the translation import from `@backstage/core-plugin-api/alpha` to the new frontend system import `@backstage/frontend-plugin-api` and exports now a TranslationBlueprint also in the NFS `/alpha` export.
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.14.0
+
+## 1.13.0
+
+### Minor Changes
+
+- bb724ca: Backstage version bump to v1.44.0
+
+### Patch Changes
+
+- Updated dependencies [bb724ca]
+  - @backstage-community/plugin-npm-common@1.13.0
+
+## 1.12.0
+
+### Minor Changes
+
+- fcd92b0: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- Updated dependencies [fcd92b0]
+  - @backstage-community/plugin-npm-common@1.12.0
+
 ## 1.11.0
 
 ### Minor Changes

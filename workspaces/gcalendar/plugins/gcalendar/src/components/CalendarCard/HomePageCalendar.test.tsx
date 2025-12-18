@@ -16,7 +16,7 @@
 
 import { googleAuthApiRef, storageApiRef } from '@backstage/core-plugin-api';
 import {
-  MockStorageApi,
+  mockApis,
   TestApiProvider,
   renderInTestApp,
 } from '@backstage/test-utils';
@@ -60,7 +60,7 @@ describe('<HomePageCalendar />', () => {
     getAccessToken: jest.fn().mockResolvedValue(token),
   });
 
-  const mockStorage = MockStorageApi.create();
+  const mockStorage = mockApis.storage();
 
   it('should render "Sign in" button if user not signed in', async () => {
     const rendered = await renderInTestApp(

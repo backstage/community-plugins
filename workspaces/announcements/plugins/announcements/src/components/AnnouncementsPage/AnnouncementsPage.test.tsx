@@ -148,7 +148,6 @@ describe('AnnouncementsPage', () => {
       expect(screen.getByText('Announcements')).toBeInTheDocument();
       expect(screen.queryByText('announcement-title')).toBeNull();
       expect(screen.getByText('announcement-...')).toBeInTheDocument();
-      expect(screen.getByText('New customNoun')).toBeInTheDocument();
 
       fireEvent.mouseOver(screen.getByText('announcement-...'));
       expect(await screen.findByText('announcement-title')).toBeInTheDocument();
@@ -170,6 +169,7 @@ describe('AnnouncementsPage', () => {
             active: true,
             start_at: today,
             until_date: weekFromToday,
+            updated_at: today,
           },
         ],
       };
@@ -217,6 +217,7 @@ describe('AnnouncementsPage', () => {
             active: true,
             start_at: today,
             until_date: weekFromToday,
+            updated_at: today,
           },
         ],
       };
@@ -257,6 +258,7 @@ describe('AnnouncementsPage', () => {
             active: true,
             start_at: '2023-01-01T10:00:00.000Z',
             until_date: '2023-02-01T10:00:00.000Z',
+            updated_at: '2023-01-01T10:00:00.000Z',
             tags: [
               { slug: 'important', title: 'Important' },
               { slug: 'release', title: 'Release' },
@@ -313,6 +315,7 @@ describe('AnnouncementsPage', () => {
             body: 'Full content',
             publisher: 'default:user/user',
             created_at: '2023-01-01T10:00:00.000Z',
+            updated_at: '2023-01-01T10:00:00.000Z',
             active: true,
             start_at: '2023-01-01T10:00:00.000Z',
             until_date: '2023-02-01T10:00:00.000Z',

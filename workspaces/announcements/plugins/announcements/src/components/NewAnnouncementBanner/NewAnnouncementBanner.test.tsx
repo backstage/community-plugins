@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
+import {
+  mockApis,
+  TestApiProvider,
+  renderInTestApp,
+} from '@backstage/test-utils';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { NewAnnouncementBanner } from './NewAnnouncementBanner';
 import { rootRouteRef } from '../../routes';
+import { analyticsApiRef } from '@backstage/core-plugin-api';
 
 const mockAnnouncementsApi = (announcements: AnnouncementsList) => ({
   announcements: jest.fn().mockResolvedValue(announcements),
@@ -27,9 +32,21 @@ const mockAnnouncementsApi = (announcements: AnnouncementsList) => ({
   markLastSeenDate: jest.fn(),
 });
 
-const renderNewAnnouncementBanner = async (mockApi: any) => {
-  return await renderInTestApp(
-    <TestApiProvider apis={[[announcementsApiRef, mockApi]]}>
+type AnalyticsMock = ReturnType<typeof mockApis.analytics.mock>;
+
+const renderNewAnnouncementBanner = async (
+  mockApi: any,
+  analyticsApi?: AnalyticsMock,
+) => {
+  const analytics = analyticsApi ?? mockApis.analytics.mock();
+
+  await renderInTestApp(
+    <TestApiProvider
+      apis={[
+        [announcementsApiRef, mockApi],
+        [analyticsApiRef, analytics],
+      ]}
+    >
       <NewAnnouncementBanner />
     </TestApiProvider>,
     {
@@ -38,6 +55,8 @@ const renderNewAnnouncementBanner = async (mockApi: any) => {
       },
     },
   );
+
+  return { analytics };
 };
 
 describe('NewAnnouncementBanner', () => {
@@ -56,6 +75,7 @@ describe('NewAnnouncementBanner', () => {
           body: 'Full details of the announcement',
           publisher: 'Publisher 1',
           created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
           until_date: DateTime.now().plus({ days: 7 }).toISO(),
@@ -80,6 +100,7 @@ describe('NewAnnouncementBanner', () => {
           body: 'Full details of the announcement',
           publisher: 'Publisher 1',
           created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
           active: true,
           start_at: DateTime.now().toISO(),
           until_date: DateTime.now().plus({ days: 7 }).toISO(),
@@ -108,5 +129,94 @@ describe('NewAnnouncementBanner', () => {
     await renderNewAnnouncementBanner(mockApi);
 
     expect(screen.queryByText(/new announcement/i)).not.toBeInTheDocument();
+  });
+
+  it('captures analytics view events when banner displays', async () => {
+    const analyticsApi = mockApis.analytics.mock();
+    const announcementsList: AnnouncementsList = {
+      count: 1,
+      results: [
+        {
+          id: '1',
+          title: 'Viewed Announcement',
+          excerpt: 'Look at me',
+          body: 'Body',
+          publisher: 'Publisher 1',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+          active: true,
+          start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
+        },
+      ],
+    };
+
+    await renderNewAnnouncementBanner(
+      mockAnnouncementsApi(announcementsList),
+      analyticsApi,
+    );
+
+    await waitFor(() => {
+      expect(analyticsApi.captureEvent).toHaveBeenCalledTimes(1);
+    });
+
+    expect(analyticsApi.captureEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'view',
+        subject: 'Viewed Announcement',
+        attributes: {
+          announcementId: '1',
+          location: 'NewAnnouncementBanner',
+        },
+      }),
+    );
+  });
+
+  it('captures analytics click events when banner link selected', async () => {
+    const analyticsApi = mockApis.analytics.mock();
+    const announcementsList: AnnouncementsList = {
+      count: 1,
+      results: [
+        {
+          id: '1',
+          title: 'Clickable Banner Announcement',
+          excerpt: 'Click me',
+          body: 'Body',
+          publisher: 'Publisher 1',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+          active: true,
+          start_at: DateTime.now().toISO(),
+          until_date: DateTime.now().plus({ days: 7 }).toISO(),
+        },
+      ],
+    };
+
+    await renderNewAnnouncementBanner(
+      mockAnnouncementsApi(announcementsList),
+      analyticsApi,
+    );
+
+    const link = await screen.findByText('Clickable Banner Announcement');
+    fireEvent.click(link);
+
+    await waitFor(() => {
+      expect(analyticsApi.captureEvent).toHaveBeenCalled();
+    });
+
+    const events = analyticsApi.captureEvent.mock.calls.map(([event]) => event);
+
+    expect(events).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          action: 'view',
+          subject: 'Clickable Banner Announcement',
+          attributes: {
+            announcementId: '1',
+            location: 'NewAnnouncementBanner',
+          },
+        }),
+      ]),
+    );
   });
 });

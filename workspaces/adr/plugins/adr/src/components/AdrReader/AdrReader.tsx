@@ -71,10 +71,10 @@ export const AdrReader = (props: {
 
     return adrDecorators.reduce(
       (content, decorator) =>
-        decorator({ baseUrl: adrLocationUrl, content }).content,
+        decorator({ baseUrl: adrLocationUrl, content, filename: adr }).content,
       value.data,
     );
-  }, [adrLocationUrl, decorators, value]);
+  }, [adrLocationUrl, decorators, value, adr]);
 
   return (
     <CookieAuthRefreshProvider pluginId="adr">

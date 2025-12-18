@@ -17,10 +17,16 @@ import { config } from '../config';
 import { ComputedServerConfig } from '../types';
 import { IntervalInMilliseconds } from '../types/Common';
 
+/** @public */
 export const getName = (
   durationSeconds: number,
   serverConfig: ComputedServerConfig,
 ): string => {
+  // Add checks for serverConfig
+  if (!serverConfig || !serverConfig.durations) {
+    return `${durationSeconds} seconds`;
+  }
+
   const name = serverConfig.durations[durationSeconds];
   if (name) {
     return name;
@@ -28,6 +34,7 @@ export const getName = (
   return `${durationSeconds} seconds`;
 };
 
+/** @public */
 export const getRefreshIntervalName = (
   refreshInterval: IntervalInMilliseconds,
 ): string => {

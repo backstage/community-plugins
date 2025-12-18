@@ -1,5 +1,39 @@
 # @backstage-community/plugin-scaffolder-backend-module-jenkins
 
+## 0.16.0
+
+### Minor Changes
+
+- daa9057: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [daa9057]
+  - @backstage-community/plugin-jenkins-common@0.14.0
+
+## 0.15.0
+
+### Minor Changes
+
+- cac3437: Replace the deprecated `jenkins` NPM package with a built-in, light-weight client.
+
+### Patch Changes
+
+- Updated dependencies [cac3437]
+  - @backstage-community/plugin-jenkins-common@0.13.0
+
+## 0.14.0
+
+### Minor Changes
+
+- 0291a99: Backstage version bump to v1.44.0
+
+## 0.13.0
+
+### Minor Changes
+
+- f5374b3: Backstage version bump to v1.43.2
+
 ## 0.12.0
 
 ### Minor Changes

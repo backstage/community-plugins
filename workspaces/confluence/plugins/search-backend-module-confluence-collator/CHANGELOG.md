@@ -1,5 +1,29 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.15.0
+
+### Minor Changes
+
+- 439ddeb: Backstage version bump to v1.45.1
+
+## 0.14.0
+
+### Minor Changes
+
+- a543616: Backstage version bump to v1.44.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 3e41304: Backstage version bump to v1.43.2
+
+## 0.12.2
+
+### Patch Changes
+
+- 20ccec6: Fallback to document modified by display name if public name is not defined
+
 ## 0.12.1
 
 ### Patch Changes

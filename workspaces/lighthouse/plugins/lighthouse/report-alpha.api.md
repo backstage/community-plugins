@@ -13,9 +13,9 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -24,7 +24,7 @@ const lighthousePlugin: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:lighthouse': ExtensionDefinition<{
+    'api:lighthouse': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -41,7 +41,7 @@ const lighthousePlugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:lighthouse/lighthouse': ExtensionDefinition<{
+    'entity-card:lighthouse/lighthouse': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'lighthouse';
       config: {
@@ -82,7 +82,7 @@ const lighthousePlugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:lighthouse/lighthouse': ExtensionDefinition<{
+    'entity-content:lighthouse/lighthouse': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'lighthouse';
       config: {
@@ -150,7 +150,7 @@ const lighthousePlugin: OverridableFrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'nav-item:lighthouse': ExtensionDefinition<{
+    'nav-item:lighthouse': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -171,7 +171,7 @@ const lighthousePlugin: OverridableFrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:lighthouse': ExtensionDefinition<{
+    'page:lighthouse': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {

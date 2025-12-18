@@ -12,8 +12,8 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 
 // @alpha
@@ -21,7 +21,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:grafana': ExtensionDefinition<{
+    'api:grafana': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -38,7 +38,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:grafana/alerts': ExtensionDefinition<{
+    'entity-card:grafana/alerts': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'alerts';
       config: {
@@ -79,7 +79,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:grafana/dashboards': ExtensionDefinition<{
+    'entity-card:grafana/dashboards': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'dashboards';
       config: {
@@ -120,7 +120,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:grafana/overview-dashboard': ExtensionDefinition<{
+    'entity-card:grafana/overview-dashboard': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'overview-dashboard';
       config: {

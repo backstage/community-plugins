@@ -18,38 +18,57 @@ import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
-import { homeCluster } from '../../../config';
+import {
+  HeaderBackgroundProvider,
+  useHeaderBackground,
+} from '../../../contexts/HeaderBackgroundContext';
+import { useServerConfig } from '../../../hooks/useServerConfig';
 import { KialiAppState, KialiContext } from '../../../store';
 import { HelpKiali } from './HelpKiali';
 import { NamespaceSelector } from './NamespaceSelector';
 import { ProviderSelector } from './ProviderSelector';
 
-export const KialiHeader = () => {
+const KialiHeaderContent = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const { serverConfig } = useServerConfig();
+  const hasBackgroundImage = useHeaderBackground();
+
+  // Get home cluster from server config
+  const homeCluster = React.useMemo(() => {
+    if (!serverConfig?.clusters) return null;
+    return Object.values(serverConfig.clusters).find(
+      cluster => cluster.isKialiHome,
+    );
+  }, [serverConfig]);
+
+  const textColor = hasBackgroundImage ? 'white' : undefined;
+  const iconColor = hasBackgroundImage ? 'white' : undefined;
 
   return (
     <Header
       title="Kiali"
       subtitle={
-        <>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <ProviderSelector page />
           <NamespaceSelector page />
-        </>
+        </div>
       }
     >
       <Tooltip
-        title={<div>Kiali home cluster: {homeCluster?.name}</div>}
-        style={{ marginTop: '10px', color: 'white' }}
+        title={
+          <div>Kiali home cluster: {homeCluster?.name || 'Not configured'}</div>
+        }
+        style={{ marginTop: '10px' }}
       >
         <Chip
           variant="outlined"
-          icon={<ClusterIcon />}
-          label={homeCluster?.name}
+          icon={<ClusterIcon style={{ color: iconColor }} />}
+          label={homeCluster?.name || 'Home Cluster'}
           data-test="home-cluster"
-          style={{ color: 'white' }}
+          style={{ color: textColor, borderColor: textColor }}
         />
       </Tooltip>
-      <HelpKiali color="white" />
+      <HelpKiali />
       <MessageCenter />
       {kialiState.authentication.session && (
         <div
@@ -57,16 +76,24 @@ export const KialiHeader = () => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            color: 'white',
+            color: textColor,
           }}
           data-test="user"
         >
-          <Typography style={{ margin: '10px' }}>
+          <Typography style={{ margin: '10px', color: textColor }}>
             <b>User : </b>
             {kialiState.authentication.session.username || 'anonymous'}
           </Typography>
         </div>
       )}
     </Header>
+  );
+};
+
+export const KialiHeader = () => {
+  return (
+    <HeaderBackgroundProvider>
+      <KialiHeaderContent />
+    </HeaderBackgroundProvider>
   );
 };

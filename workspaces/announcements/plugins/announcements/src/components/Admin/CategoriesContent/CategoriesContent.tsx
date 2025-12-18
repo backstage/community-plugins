@@ -25,23 +25,19 @@ import {
   announcementsApiRef,
   useAnnouncementsTranslation,
   useCategories,
+  useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import {
   announcementCreatePermission,
-  announcementDeletePermission,
   Category,
 } from '@backstage-community/plugin-announcements-common';
-import { CategoriesForm } from '../../CategoriesForm';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
-import { useDeleteCategoryDialogState } from '../../CategoriesPage/useDeleteCategoryDialogState';
+import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ResponseError } from '@backstage/errors';
-import { DeleteCategoryDialog } from '../../CategoriesPage/DeleteCategoryDialog';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import { useDeleteDialogState, DeleteDialog, TitleForm } from '../shared';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
@@ -54,18 +50,17 @@ export const CategoriesContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    category: categoryToDelete,
-  } = useDeleteCategoryDialogState();
+    item: categoryToDelete,
+  } = useDeleteDialogState<Category>();
 
-  const { loading: loadingCreatePermission, allowed: canCreateCategory } =
-    usePermission({
-      permission: announcementCreatePermission,
-    });
+  const permissions = useAnnouncementsPermissions();
 
-  const { loading: loadingDeletePermission, allowed: canDeleteAnnouncement } =
-    usePermission({
-      permission: announcementDeletePermission,
-    });
+  const translationKeys = {
+    new: t('categoriesForm.newCategory'),
+    edit: t('categoriesForm.editCategory'),
+    titleLabel: t('categoriesForm.titleLabel'),
+    submit: t('categoriesForm.submit'),
+  };
 
   const onSubmit = async (request: CreateCategoryRequest) => {
     const { title } = request;
@@ -144,7 +139,7 @@ export const CategoriesContent = () => {
         return (
           <IconButton
             aria-label="delete"
-            disabled={loadingDeletePermission || !canDeleteAnnouncement}
+            disabled={permissions.delete.loading || !permissions.delete.allowed}
             onClick={() => openDeleteDialog(rowData)}
           >
             <DeleteIcon fontSize="small" data-testid="delete-icon" />
@@ -159,7 +154,7 @@ export const CategoriesContent = () => {
       <Grid container>
         <Grid item xs={12}>
           <Button
-            disabled={loadingCreatePermission || !canCreateCategory}
+            disabled={permissions.create.loading || !permissions.create.allowed}
             variant="contained"
             onClick={() => onCreateButtonClick()}
           >
@@ -171,7 +166,10 @@ export const CategoriesContent = () => {
 
         {showNewCategoryForm && (
           <Grid item xs={12}>
-            <CategoriesForm initialData={{} as Category} onSubmit={onSubmit} />
+            <TitleForm<Category>
+              translationKeys={translationKeys}
+              onSubmit={onSubmit}
+            />
           </Grid>
         )}
 
@@ -182,15 +180,15 @@ export const CategoriesContent = () => {
             columns={columns}
             data={categories ?? []}
             emptyContent={
-              <Typography style={{ padding: 2 }}>
+              <Typography style={{ padding: 2, textAlign: 'center' }}>
                 {t('admin.categoriesContent.table.noCategoriesFound')}
               </Typography>
             }
           />
         </Grid>
 
-        <DeleteCategoryDialog
-          open={isDeleteDialogOpen}
+        <DeleteDialog
+          isOpen={isDeleteDialogOpen}
           onCancel={onCancelDelete}
           onConfirm={onConfirmDelete}
         />

@@ -6,7 +6,7 @@
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsFilters } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -15,7 +15,7 @@ import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { Tag } from '@backstage-community/plugin-announcements-common';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 
 // @public
 export interface AnnouncementsApi {
@@ -28,7 +28,7 @@ export interface AnnouncementsApi {
     category?: string;
     tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
     current?: boolean;
   }): Promise<AnnouncementsList>;
@@ -83,7 +83,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     category?: string;
     tags?: string[];
     active?: boolean;
-    sortBy?: 'created_at' | 'start_at';
+    sortBy?: 'created_at' | 'start_at' | 'updated_at';
     order?: 'asc' | 'desc';
     current?: boolean;
   }): Promise<AnnouncementsList>;
@@ -125,6 +125,23 @@ export type AnnouncementsClientOptions = {
 // @public
 export type AnnouncementsOptions = {
   dependencies?: any[];
+};
+
+// @public
+export type AnnouncementsPermissionsResult = {
+  create: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  delete: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  update: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  isLoading: boolean;
 };
 
 // @public (undocumented)
@@ -191,9 +208,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
-    readonly 'announcementsPage.contextMenu.tags': 'Tags';
-    readonly 'announcementsPage.contextMenu.admin': 'Admin';
-    readonly 'announcementsPage.contextMenu.categories': 'Categories';
+    readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';
@@ -203,9 +218,9 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
-    readonly 'deleteDialog.cancel': 'Cancel';
-    readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
-    readonly 'deleteDialog.delete': 'Delete';
+    readonly 'confirmDeleteDialog.cancel': 'Cancel';
+    readonly 'confirmDeleteDialog.title': 'Are you sure you want to delete?';
+    readonly 'confirmDeleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';
@@ -295,6 +310,9 @@ export const useAnnouncements: (
   error: Error | undefined;
   retry: () => void;
 };
+
+// @public
+export const useAnnouncementsPermissions: () => AnnouncementsPermissionsResult;
 
 // @public
 export const useAnnouncementsTranslation: () => any;
