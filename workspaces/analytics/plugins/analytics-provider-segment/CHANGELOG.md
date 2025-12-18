@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- 9a1ce4e: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- a7d24b9: Updated dependency `@types/react` to `18.3.27`.
+
 ## 1.21.0
 
 ### Minor Changes

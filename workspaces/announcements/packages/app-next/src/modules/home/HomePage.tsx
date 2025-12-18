@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 // HomePage for app-next replicating legacy Home announcements showcase
-import {
-  AnnouncementsCard,
-  AnnouncementsTimeline,
-} from '@backstage-community/plugin-announcements';
+import { AnnouncementsCard } from '@backstage-community/plugin-announcements';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -53,11 +50,6 @@ export const HomePage = () => {
                     </MuiLink>
                   </Grid>
                   <Grid item>
-                    <MuiLink component={RouterLink} to="/announcements/create">
-                      Create Announcement
-                    </MuiLink>
-                  </Grid>
-                  <Grid item>
                     <MuiLink component={RouterLink} to="/announcements/admin">
                       Admin Portal
                     </MuiLink>
@@ -65,13 +57,16 @@ export const HomePage = () => {
                   <Grid item>
                     <MuiLink
                       component={RouterLink}
-                      to="/announcements/categories"
+                      to="/announcements/admin/categories"
                     >
                       Categories
                     </MuiLink>
                   </Grid>
                   <Grid item>
-                    <MuiLink component={RouterLink} to="/announcements/tags">
+                    <MuiLink
+                      component={RouterLink}
+                      to="/announcements/admin/tags"
+                    >
                       Tags
                     </MuiLink>
                   </Grid>
@@ -120,19 +115,6 @@ export const HomePage = () => {
                   You can tweak size and filtering in the future roadmap.
                 </Typography>
                 <AnnouncementsCard max={2} />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Announcements Timeline</Typography>
-                <Typography variant="body2" paragraph>
-                  Chronological view for browsing historical context or updates.
-                  Embed on a dedicated announcements page or a knowledge base
-                  section.
-                </Typography>
-                <AnnouncementsTimeline />
               </CardContent>
             </Card>
           </Grid>

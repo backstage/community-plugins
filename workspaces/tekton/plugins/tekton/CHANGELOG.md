@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 3.32.0
+
+### Minor Changes
+
+- 776a43f: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- b5310cb: Updated dependency `@types/lodash` to `4.17.21`.
+- 714f99c: fix an issue with the detail buttons in the dark theme
+- Updated dependencies [776a43f]
+  - @backstage-community/plugin-tekton-common@1.15.0
+
 ## 3.31.0
 
 ### Minor Changes
