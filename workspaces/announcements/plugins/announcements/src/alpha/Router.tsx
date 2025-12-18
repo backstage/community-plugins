@@ -16,16 +16,17 @@
 import { Routes, Route } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
-import { AnnouncementsAdminPage } from './components/admin/AnnouncementsAdminPage';
+import {
+  AnnouncementsAdminPage,
+  CategoriesContent,
+  TagsContent,
+} from './components';
 import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
 import {
   AnnouncementsPage,
   AnnouncementsPageProps,
 } from '../components/AnnouncementsPage';
-import { CategoriesContent } from './components/admin/categories';
-
 import { AnnouncementPage } from '../components/AnnouncementPage';
-import { TagsContent } from '../components/Admin/TagsContent';
 
 type RouterProps = {
   themeId?: string;

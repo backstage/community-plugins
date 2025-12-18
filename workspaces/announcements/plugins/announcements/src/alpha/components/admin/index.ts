@@ -13,4 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './admin';
+export { AnnouncementsAdminPage } from './AnnouncementsAdminPage';
+export { CategoriesContent } from './categories';
+export { TagsContent } from './tags';
