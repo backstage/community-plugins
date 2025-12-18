@@ -16,16 +16,13 @@
 import { AllureReportComponent } from './AllureReportComponent';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import {
-  setupRequestMockHandlers,
-  renderInTestApp,
-} from '@backstage/test-utils';
+import { registerMswTestHooks, renderInTestApp } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 
 describe('ExampleComponent', () => {
   const server = setupServer();
   // Enable sane handlers for network requests
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   // setup mock response
   beforeEach(() => {
