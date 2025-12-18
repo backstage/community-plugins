@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
-import { HumanDuration } from '@backstage/types';
 
 export interface Config {
   search?: {
@@ -30,81 +29,159 @@ export interface Config {
       };
     };
   };
-  confluence?: {
-    /**
-     * The base URL for accessing the Confluence API
-     * Typically: https://{org-name}.atlassian.net/wiki
-     */
-    baseUrl: string;
-    /**
-     * Confluence API credentials
-     */
-    auth: {
-      /**
-       * Authentication method - basic, bearer, or userpass
-       */
-      type: 'basic' | 'bearer' | 'userpass';
-      /**
-       * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
-       * Reference the Confluence documentation to generate an API token:
-       * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
-       * @visibility secret
-       */
-      token?: string;
-      /**
-       * Email associated with the token, only required if type is set to 'basic'.
-       * @visibility secret
-       */
-      email?: string;
-      /**
-       * Confluence basic authentication username, only required if type is set to 'userpass'.
-       * While Confluence supports BASIC authentication, using an API token is preferred.
-       * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
-       */
-      username?: string;
-      /**
-       * Confluence basic authentication password, only required if type is set to 'userpass'.
-       * While Confluence supports BASIC authentication, using an API token is preferred.
-       * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
-       * @visibility secret
-       */
-      password?: string;
-    };
-    /**
-     * Array of Confluence spaces to index. If omitted, all spaces will be indexed.
-     * See: https://support.atlassian.com/confluence-cloud/docs/use-spaces-to-organize-your-work/
-     */
-    spaces?: string[];
-    /**
-     * CQL query to select the pages to index. It is combined via 'AND' with spaces parameter above when finding documents.
-     * Reference the Confluence documentation for information about CQL syntax:
-     * https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/
-     */
-    query?: string;
-    /**
-     * An abstract value that controls the concurrency level of the
-     * collation process. Increasing this value will both increase the
-     * number of entities fetched at a time from the catalog, as well as how
-     * many things are being processed concurrently.
-     *
-     * Defaults to `15`.
-     * @deprecated Use `maxRequestsPerSecond` instead.
-     */
-    parallelismLimit?: number;
-    /**
-     * The maximum number of requests per second to make to the Confluence API.
-     * @visibility backend
-     */
-    maxRequestsPerSecond?: number;
-    /**
-     * How long to cache Confluence documents. Can be long if you have memory, as cache is keyed by Confluence version info.
-     * Example: '24h', '7d', '1h 30m'.
-     */
-    documentCacheTtl?: HumanDuration;
-    /**
-     * Set to false to disable all Confluence document caching.
-     * Default: false (cache disabled)
-     */
-    documentCacheEnabled?: boolean;
-  };
+  confluence?:
+    | {
+        /**
+         * The base URL for accessing the Confluence API
+         * Typically: https://{org-name}.atlassian.net/wiki
+         * @deprecated Use `confluence.default.baseUrl` instead.
+         */
+        baseUrl: string;
+        /**
+         * Confluence API credentials
+         * @deprecated Use `confluence.default.auth` instead.
+         */
+        auth: {
+          /**
+           * Authentication method - basic, bearer, or userpass
+           * @deprecated Use `confluence.default.auth.type` instead.
+           */
+          type: 'basic' | 'bearer' | 'userpass';
+          /**
+           * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
+           * Reference the Confluence documentation to generate an API token:
+           * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+           * @visibility secret
+           * @deprecated Use `confluence.default.auth.token` instead.
+           */
+          token?: string;
+          /**
+           * Email associated with the token, only required if type is set to 'basic'.
+           * @visibility secret
+           * @deprecated Use `confluence.default.auth.email` instead.
+           */
+          email?: string;
+          /**
+           * Confluence basic authentication username, only required if type is set to 'userpass'.
+           * While Confluence supports BASIC authentication, using an API token is preferred.
+           * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+           * @deprecated Use `confluence.default.auth.username` instead.
+           */
+          username?: string;
+          /**
+           * Confluence basic authentication password, only required if type is set to 'userpass'.
+           * While Confluence supports BASIC authentication, using an API token is preferred.
+           * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+           * @visibility secret
+           * @deprecated Use `confluence.default.auth.password` instead.
+           */
+          password?: string;
+        };
+        /**
+         * Array of Confluence spaces to index. If omitted, all spaces will be indexed.
+         * See: https://support.atlassian.com/confluence-cloud/docs/use-spaces-to-organize-your-work/
+         * @deprecated Use `confluence.default.spaces` instead.
+         */
+        spaces?: string[];
+        /**
+         * CQL query to select the pages to index. It is combined via 'AND' with spaces parameter above when finding documents.
+         * Reference the Confluence documentation for information about CQL syntax:
+         * https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/
+         * @deprecated Use `confluence.default.query` instead.
+         */
+        query?: string;
+        /**
+         * An abstract value that controls the concurrency level of the
+         * collation process. Increasing this value will both increase the
+         * number of entities fetched at a time from the catalog, as well as how
+         * many things are being processed concurrently.
+         *
+         * Defaults to `15`.
+         * @deprecated Use `confluence.default.maxRequestsPerSecond` instead.
+         */
+        parallelismLimit?: number;
+        /**
+         * The maximum number of requests per second to make to the Confluence API.
+         *
+         * If not specified, no explicit rate limiting is applied and requests
+         * are sent without throttling.
+         *
+         * @visibility backend
+         * @deprecated Use `confluence.default.maxRequestsPerSecond` instead.
+         */
+        maxRequestsPerSecond?: number;
+      }
+    | {
+        [instanceKey: string]: {
+          /**
+           * The base URL for accessing the Confluence API
+           * Typically: https://{org-name}.atlassian.net/wiki
+           */
+          baseUrl: string;
+          /**
+           * Confluence API credentials
+           */
+          auth: {
+            /**
+             * Authentication method - basic, bearer, or userpass
+             */
+            type: 'basic' | 'bearer' | 'userpass';
+            /**
+             * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
+             * Reference the Confluence documentation to generate an API token:
+             * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+             * @visibility secret
+             */
+            token?: string;
+            /**
+             * Email associated with the token, only required if type is set to 'basic'.
+             * @visibility secret
+             */
+            email?: string;
+            /**
+             * Confluence basic authentication username, only required if type is set to 'userpass'.
+             * While Confluence supports BASIC authentication, using an API token is preferred.
+             * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+             */
+            username?: string;
+            /**
+             * Confluence basic authentication password, only required if type is set to 'userpass'.
+             * While Confluence supports BASIC authentication, using an API token is preferred.
+             * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+             * @visibility secret
+             */
+            password?: string;
+          };
+          /**
+           * Array of Confluence spaces to index. If omitted, all spaces will be indexed.
+           * See: https://support.atlassian.com/confluence-cloud/docs/use-spaces-to-organize-your-work/
+           */
+          spaces?: string[];
+          /**
+           * CQL query to select the pages to index. It is combined via 'AND' with spaces parameter above when finding documents.
+           * Reference the Confluence documentation for information about CQL syntax:
+           * https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/
+           */
+          query?: string;
+          /**
+           * An abstract value that controls the concurrency level of the
+           * collation process. Increasing this value will both increase the
+           * number of entities fetched at a time from the catalog, as well as how
+           * many things are being processed concurrently.
+           *
+           * Defaults to `15`.
+           * @deprecated Use `maxRequestsPerSecond` instead.
+           */
+          parallelismLimit?: number;
+          /**
+           * The maximum number of requests per second to make to the Confluence API.
+           *
+           * If not specified, no explicit rate limiting is applied and requests
+           * are sent without throttling.
+           *
+           * @visibility backend
+           */
+          maxRequestsPerSecond?: number;
+        };
+      };
 }
