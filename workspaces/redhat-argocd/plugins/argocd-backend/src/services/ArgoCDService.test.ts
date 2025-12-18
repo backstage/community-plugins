@@ -107,22 +107,22 @@ describe('ArgoCDService', () => {
         metadata: {
           resourceVersion: '12345',
         },
-        items: mockApplications[1],
+        items: [mockApplications[1]],
       };
       fetchMock.mockResolvedValue({
         ok: true,
         json: async () => expectedAppNamespaceResponse,
       });
 
-      const result = await service.listArgoApps('test-instance', {
+      const result = await service.listArgoApps('staging-instance', {
         appNamespace: 'staging',
       });
       expect(result).toEqual(expectedAppNamespaceResponse);
       expect(fetchMock).toHaveBeenCalledWith(
-        'https://argocd.example.com/api/v1/applications?appNamespace=staging',
+        'https://argocd.staging.example.com/api/v1/applications?appNamespace=staging',
         {
           headers: {
-            Authorization: 'Bearer test-token',
+            Authorization: 'Bearer test-staging-token',
             'Content-Type': 'application/json',
           },
           method: 'GET',
@@ -135,7 +135,7 @@ describe('ArgoCDService', () => {
         metadata: {
           resourceVersion: '12345',
         },
-        items: mockApplications[0],
+        items: [mockApplications[0]],
       };
       fetchMock.mockResolvedValue({
         ok: true,
