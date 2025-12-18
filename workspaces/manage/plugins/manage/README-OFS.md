@@ -6,7 +6,7 @@
 In `App.tsx`, add a route:
 
 ```tsx
-import { ManagePage } from '@backstage-community/plugin-manage';
+import { ManagePage } from '@backstage-community/plugin-manage/legacy';
 
 // ...
 <Route
@@ -22,7 +22,7 @@ import { ManagePage } from '@backstage-community/plugin-manage';
 Implement the `Manage` component somewhere, e.g. in `src/components/manage/Manage.tsx`:
 
 ```tsx
-import { ManageTabs } from '@backstage-community/plugin-manage';
+import { ManageTabs } from '@backstage-community/plugin-manage/legacy';
 
 export function Manage() {
   return <ManageTabs />;
@@ -33,7 +33,7 @@ Add it to the sidebar (`src/components/Root/Root.tsx`):
 
 ```tsx
 import ManageIcon from '@material-ui/icons/Ballot';
-import { managePlugin } from '@backstage-community/plugin-manage';
+import { managePlugin } from '@backstage-community/plugin-manage/legacy';
 
 export const Root = ({ children }: PropsWithChildren<{}>) => {
   const managePage = useRouteRef(managePlugin.routes.root);
@@ -67,7 +67,7 @@ The `Manage` component can render anything, but the `ManageTabs` are useful to s
 import {
   ManageTabs,
   OrganizationGraph,
-} from '@backstage-community/plugin-manage';
+} from '@backstage-community/plugin-manage/legacy';
 
 export function Manage() {
   return (
@@ -90,7 +90,7 @@ What to be displayed above and below the table, and the table columns, can be co
 - `commonColumns` are the extra columns to display in each table.
 - `combined`, `kinds` and `starred` are used to configure the header, footer and columns for each specific table.
 
-Example (using the tech-insights module `@backstage-community-plugin-manage-module-tech-insights`):
+Example (using the tech-insights module `@backstage-community/plugin-manage-module-tech-insights`):
 
 ```tsx
 <ManageTabs
