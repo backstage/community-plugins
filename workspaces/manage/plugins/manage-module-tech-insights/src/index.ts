@@ -18,6 +18,9 @@ import { createFrontendModule } from '@backstage/frontend-plugin-api';
 
 import extensions from './extensions';
 
+// Old frontend system support
+export * from './legacy';
+
 export * from './extensions';
 export * from './title';
 

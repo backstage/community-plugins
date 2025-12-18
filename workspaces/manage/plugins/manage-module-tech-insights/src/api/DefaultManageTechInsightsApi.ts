@@ -24,6 +24,7 @@ import { defaultGetPercentColor, defaultMapTitle } from './defaults';
 /**
  * Options for the {@link DefaultManageTechInsightsApi}.
  *
+ * @deprecated Use the new frontend system instead
  * @public
  */
 export interface DefaultManageApiOptions {

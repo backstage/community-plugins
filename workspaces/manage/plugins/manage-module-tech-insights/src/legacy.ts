@@ -26,10 +26,3 @@ export type {
 
 export type { ManageTechInsightsOptions } from './columns';
 export { manageTechInsightsColumns } from './columns';
-
-export type {
-  ManageTechInsightsTitleAsObject,
-  ManageTechInsightsTitleAsElement,
-  ManageTechInsightsTitle,
-  ManageTechInsightsMapTitle,
-} from './title';

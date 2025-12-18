@@ -72,7 +72,10 @@ const ctx = createContext<ManageTechInsightsContext>(undefined as any);
 
 const { Provider } = ctx;
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export function ManageProviderTechInsights(
   props: PropsWithChildren<Partial<ManageTechInsightsContextConfig>>,
 ) {

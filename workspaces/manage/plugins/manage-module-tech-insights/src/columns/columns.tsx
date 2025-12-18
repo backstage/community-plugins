@@ -39,6 +39,7 @@ export interface ManageTechInsightsOptions {
 /**
  * Create a column module for displaying tech insights checks.
  *
+ * @deprecated Use the new frontend system instead
  * @public
  */
 export function manageTechInsightsColumns(

@@ -14,48 +14,7 @@
  * limitations under the License.
  */
 
-export * from './plugin';
+// Old frontend system support
+export * from './legacy';
 
 export { managePlugin as default } from './plugin';
-
-export type {
-  TableRow,
-  ManageEntitiesTableProps,
-  TableColumn,
-  ManageColumnSimpleComponentProps,
-  ManageColumnSimpleComponent,
-  ManageColumnSimple,
-} from './components/ManageEntitiesList';
-
-export type {
-  ManagePageProps,
-  HeaderProps,
-  ManagePageImpl,
-} from './components/ManagePage';
-
-export type { SwitchColor } from './components/ManagePageFilters';
-export {
-  ManagePageFilters,
-  useManagePageCombined,
-} from './components/ManagePageFilters';
-
-export type {
-  SubRouteTab,
-  ManageTabsProps,
-  ManageKindOptions,
-  ManageTabsImpl,
-} from './components/ManageTabs';
-
-export type {
-  OrganizationGraphProps,
-  OrganizationGraphImpl,
-} from './components/OrganizationGraph';
-
-export { MANAGE_KIND_COMMON } from './components/ManageTabs';
-
-export type { Setting } from './components/Settings';
-export {
-  DefaultSettings,
-  KindOrderCard,
-  TabOrderCard,
-} from './components/Settings';

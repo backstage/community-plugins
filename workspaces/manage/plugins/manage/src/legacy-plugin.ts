@@ -23,7 +23,10 @@ import { createManageApiFactory } from '@backstage-community/plugin-manage-react
 
 import { rootRouteRef } from './routes';
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const managePlugin = createPlugin({
   id: 'manage',
   routes: {
@@ -32,7 +35,10 @@ export const managePlugin = createPlugin({
   apis: [createManageApiFactory()],
 });
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const ManagePage = managePlugin.provide(
   createRoutableExtension({
     name: 'ManagePage',
@@ -42,7 +48,10 @@ export const ManagePage = managePlugin.provide(
   }),
 );
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const ManageTabs = managePlugin.provide(
   createComponentExtension({
     name: 'ManageTabs',
@@ -52,7 +61,10 @@ export const ManageTabs = managePlugin.provide(
   }),
 );
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const OrganizationGraph = managePlugin.provide(
   createComponentExtension({
     name: 'OrganizationGraph',
@@ -65,7 +77,10 @@ export const OrganizationGraph = managePlugin.provide(
   }),
 );
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const DefaultSettings = managePlugin.provide(
   createComponentExtension({
     name: 'DefaultSettings',
@@ -75,7 +90,10 @@ export const DefaultSettings = managePlugin.provide(
   }),
 );
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const KindOrderCard = managePlugin.provide(
   createComponentExtension({
     name: 'KindOrderCard',
@@ -85,7 +103,10 @@ export const KindOrderCard = managePlugin.provide(
   }),
 );
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export const TabOrderCard = managePlugin.provide(
   createComponentExtension({
     name: 'TabOrderCard',

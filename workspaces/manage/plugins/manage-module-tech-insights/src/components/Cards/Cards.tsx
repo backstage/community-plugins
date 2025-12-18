@@ -105,6 +105,7 @@ function Title({
  * Display a set of cards for the tech insights checks given the current shown
  * entities.
  *
+ * @deprecated Use the new frontend system instead
  * @public
  */
 export function ManageTechInsightsCards(props: ManageTechInsightsCardsProps) {

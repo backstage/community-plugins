@@ -6,7 +6,7 @@
 In `App.tsx`, add a route:
 
 ```tsx
-import { ManagePage } from '@backstage-community/plugin-manage/legacy';
+import { ManagePage } from '@backstage-community/plugin-manage';
 
 // ...
 <Route
@@ -22,7 +22,7 @@ import { ManagePage } from '@backstage-community/plugin-manage/legacy';
 Implement the `Manage` component somewhere, e.g. in `src/components/manage/Manage.tsx`:
 
 ```tsx
-import { ManageTabs } from '@backstage-community/plugin-manage/legacy';
+import { ManageTabs } from '@backstage-community/plugin-manage';
 
 export function Manage() {
   return <ManageTabs />;
@@ -33,7 +33,7 @@ Add it to the sidebar (`src/components/Root/Root.tsx`):
 
 ```tsx
 import ManageIcon from '@material-ui/icons/Ballot';
-import { managePlugin } from '@backstage-community/plugin-manage/legacy';
+import { managePlugin } from '@backstage-community/plugin-manage';
 
 export const Root = ({ children }: PropsWithChildren<{}>) => {
   const managePage = useRouteRef(managePlugin.routes.root);
@@ -67,7 +67,7 @@ The `Manage` component can render anything, but the `ManageTabs` are useful to s
 import {
   ManageTabs,
   OrganizationGraph,
-} from '@backstage-community/plugin-manage/legacy';
+} from '@backstage-community/plugin-manage';
 
 export function Manage() {
   return (

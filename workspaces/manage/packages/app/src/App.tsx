@@ -55,7 +55,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { ManagePage } from '@backstage-community/plugin-manage/legacy';
+import { ManagePage } from '@backstage-community/plugin-manage';
 import { Manage } from './components/manage/Manage';
 
 const app = createApp({

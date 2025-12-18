@@ -8,7 +8,7 @@ First, ensure to install the tech-insight module by adding its API ref to `creat
 import {
   createManageTechInsightsApiFactory,
   manageTechInsightsApiRef,
-} from '@backstage-community/plugin-manage-module-tech-insights/legacy';
+} from '@backstage-community/plugin-manage-module-tech-insights';
 
 [
   // ...,
@@ -26,7 +26,7 @@ import {
   manageTechInsightsColumns,
   ManageTechInsightsCards,
   ManageTechInsightsGrid,
-} from '@backstage-community/plugin-manage-module-tech-insights/legacy';
+} from '@backstage-community/plugin-manage-module-tech-insights';
 
 export function Manage() {
   return (

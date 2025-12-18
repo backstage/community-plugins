@@ -21,14 +21,10 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./legacy": "./src/legacy.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "legacy": [
-        "src/legacy.ts"
-      ],
       "package.json": [
         "package.json"
       ]

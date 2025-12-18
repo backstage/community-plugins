@@ -45,7 +45,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import ManageIcon from '@material-ui/icons/Ballot';
-import { managePlugin } from '@backstage-community/plugin-manage/legacy';
+import { managePlugin } from '@backstage-community/plugin-manage';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
