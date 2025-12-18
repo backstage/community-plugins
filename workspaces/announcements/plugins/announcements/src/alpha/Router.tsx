@@ -22,11 +22,11 @@ import {
   TagsContent,
 } from './components';
 import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
+import { AnnouncementPage } from '../components/AnnouncementPage';
 import {
   AnnouncementsPage,
   AnnouncementsPageProps,
 } from '../components/AnnouncementsPage';
-import { AnnouncementPage } from '../components/AnnouncementPage';
 
 type RouterProps = {
   themeId?: string;

@@ -148,7 +148,7 @@ export type AnnouncementsPermissionsResult = {
 export const announcementsTranslationRef: TranslationRef<
   'announcements',
   {
-    readonly 'admin.adminPortal.title': 'Admin Portal for Announcements';
+    readonly 'admin.adminPortal.title': 'Admin Portal';
     readonly 'admin.adminPortal.subtitle': 'Manage announcements and categories';
     readonly 'admin.adminPortal.tagsLabel': 'Tags';
     readonly 'admin.adminPortal.announcementsLabels': 'Announcements';

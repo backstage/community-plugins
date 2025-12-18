@@ -18,12 +18,12 @@ import {
   CreateCategoryRequest,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import { CreateTitleDialog } from '../shared';
+import { TitleFormDialog } from '../shared';
 
 /**
  * @internal
  */
-type CreateCatagoryDialogProps = {
+type CreateCategoryDialogProps = {
   open: boolean;
   onConfirm: (request: CreateCategoryRequest) => Promise<void>;
   onCancel: () => void;
@@ -33,7 +33,7 @@ type CreateCatagoryDialogProps = {
 /**
  * @internal
  */
-export const CreateCatagoryDialog = (props: CreateCatagoryDialogProps) => {
+export const CreateCategoryDialog = (props: CreateCategoryDialogProps) => {
   const { open, onConfirm, onCancel, canSubmit } = props;
 
   const { t } = useAnnouncementsTranslation();
@@ -47,7 +47,7 @@ export const CreateCatagoryDialog = (props: CreateCatagoryDialogProps) => {
   };
 
   return (
-    <CreateTitleDialog<CreateCategoryRequest>
+    <TitleFormDialog<CreateCategoryRequest>
       open={open}
       onCancel={onCancel}
       translationKeys={translationKeys}

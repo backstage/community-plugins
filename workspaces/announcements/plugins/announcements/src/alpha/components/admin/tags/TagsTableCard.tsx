@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  Button,
-  TablePagination,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Text,
-  Flex,
-} from '@backstage/ui';
 
+import { SlugTitleTableCard } from '../shared';
 import { TagsTable } from './TagsTable';
 
 /**
@@ -46,47 +36,22 @@ type TagsTableCardProps = {
 export const TagsTableCard = (props: TagsTableCardProps) => {
   const { tags, onCreateClick, onDeleteClick, canCreate, canDelete } = props;
 
-  const [pageSize, setPageSize] = useState(5);
-  const [offset, setOffset] = useState(0);
   const { t } = useAnnouncementsTranslation();
 
-  const paginatedTags = useMemo(() => {
-    const start = offset;
-    const end = offset + pageSize;
-    return tags.slice(start, end);
-  }, [tags, offset, pageSize]);
-
-  const title = `${t('tagsPage.title')} (${tags.length})`;
-
   return (
-    <Card>
-      <CardHeader>
-        <Flex justify="between" align="center">
-          <Text variant="title-x-small">{title}</Text>
-          <Button isDisabled={!canCreate} onClick={onCreateClick}>
-            {t('admin.tagsContent.createButton')}
-          </Button>
-        </Flex>
-      </CardHeader>
-
-      <CardBody>
-        <TagsTable
-          data={paginatedTags}
-          onDeleteClick={canDelete ? onDeleteClick : undefined}
-        />
-      </CardBody>
-
-      {tags.length > 0 && (
-        <CardFooter>
-          <TablePagination
-            offset={offset}
-            pageSize={pageSize}
-            setOffset={setOffset}
-            setPageSize={setPageSize}
-            rowCount={tags.length}
-          />
-        </CardFooter>
+    <SlugTitleTableCard
+      items={tags}
+      onCreateClick={onCreateClick}
+      onDeleteClick={onDeleteClick}
+      canCreate={canCreate}
+      canDelete={canDelete}
+      translationKeys={{
+        pageTitle: t('tagsPage.title'),
+        createButton: t('admin.tagsContent.createButton'),
+      }}
+      renderTable={({ data, onDeleteClick: onDelete }) => (
+        <TagsTable data={data} onDeleteClick={onDelete} />
       )}
-    </Card>
+    />
   );
 };

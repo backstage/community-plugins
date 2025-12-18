@@ -22,6 +22,7 @@ import {
   adminTagsRouteRef,
   rootRouteRef,
 } from '../../../routes';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 
 export type AnnouncementsAdminPageProps = {
   title?: string;
@@ -36,25 +37,32 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
   const adminCategoriesRoute = useRouteRef(adminCategoriesRouteRef);
   const adminTagsRoute = useRouteRef(adminTagsRouteRef);
 
+  const { t } = useAnnouncementsTranslation();
+  const announcementsLabel = t('admin.adminPortal.announcementsLabels');
+  const categoriesLabel = t('admin.adminPortal.categoriesLabel');
+  const tagsLabel = t('admin.adminPortal.tagsLabel');
+
   return (
     <>
       <HeaderPage
-        title={title ?? 'Admin Portal'}
-        breadcrumbs={[{ label: 'Announcements', href: announcementsRoute() }]}
+        title={title ? title : t('admin.adminPortal.title')}
+        breadcrumbs={[
+          { label: announcementsLabel, href: announcementsRoute() },
+        ]}
         tabs={[
           {
             id: 'announcements',
-            label: 'Announcements',
+            label: announcementsLabel,
             href: adminRoute(),
           },
           {
             id: 'categories',
-            label: 'Categories',
+            label: categoriesLabel,
             href: adminCategoriesRoute(),
           },
           {
             id: 'tags',
-            label: 'Tags',
+            label: tagsLabel,
             href: adminTagsRoute(),
           },
         ]}

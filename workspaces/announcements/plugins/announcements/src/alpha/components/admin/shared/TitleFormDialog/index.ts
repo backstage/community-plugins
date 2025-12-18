@@ -13,6 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './DeleteConfirmationDialog';
-export * from './TitleFormDialog';
-export * from './SlugTitleTableCard';
+export { TitleFormDialog } from './TitleFormDialog';
