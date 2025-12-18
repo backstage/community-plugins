@@ -19,12 +19,12 @@ import { announcementsApiExtension } from './alpha/apis';
 import { entityAnnouncementsCard } from './alpha/entityCards';
 import { announcementsNavItem } from './alpha/navItems';
 import { announcementsPage } from './alpha/pages';
+import { announcementsBanner } from './alpha/banner';
 import {
   announcementsSearchFilterResultType,
   announcementsSearchResultListItem,
 } from './alpha/search';
 import { rootRouteRef } from './routes';
-import { announcementsBanner } from './alpha/banner';
 
 /**
  * @alpha

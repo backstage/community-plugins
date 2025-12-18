@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 2.1.5
+
+### Patch Changes
+
+- 15e62c5: Updated dependency `@types/nodemailer` to `7.0.4`.
+
 ## 2.1.4
 
 ### Patch Changes

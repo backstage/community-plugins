@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Apache-2.0",
   "name": "@backstage-community/plugin-search-backend-module-azure-devops",
   "description": "The azure-devops backend module for the search plugin.",
@@ -45,5 +45,6 @@
   "files": [
     "dist",
     "config.d.ts"
-  ]
+  ],
+  "configSchema": "config.d.ts"
 }
