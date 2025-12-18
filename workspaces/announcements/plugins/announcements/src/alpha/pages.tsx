@@ -28,6 +28,6 @@ export const announcementsPage = PageBlueprint.make({
     path: '/announcements',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () =>
-      import('../components/Router').then(m => compatWrapper(<m.Router />)),
+      import('./Router').then(m => compatWrapper(<m.Router />)),
   },
 });
