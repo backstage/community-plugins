@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api/';
+import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 import { rootRouteRef } from '../routes';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';

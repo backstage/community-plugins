@@ -26,6 +26,24 @@
       "gitTag": "@backstage-community/plugin-scaffolder-backend-module-odo@0.24.0",
       "reason": "No longer maintained",
       "archivedDate": "2025-09-18"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-matomo",
+      "version": "1.13.1",
+      "workspace": "matomo",
+      "plugin": "matomo",
+      "gitTag": "@backstage-community/plugin-matomo@1.13.1",
+      "reason": "No longer maintained",
+      "archivedDate": "2025-12-02"
+    },
+    {
+      "pluginName": "@backstage-community/plugin-matomo-backend",
+      "version": "1.14.0",
+      "workspace": "matomo",
+      "plugin": "matomo-backend",
+      "gitTag": "@backstage-community/plugin-matomo-backend@1.14.0",
+      "reason": "No longer maintained",
+      "archivedDate": "2025-12-02"
     }
   ]
 }

@@ -184,9 +184,6 @@ workspace/linkerd:
 workspace/manage:
   - "Workspace\\s*manage"
 
-workspace/matomo:
-  - "Workspace\\s*matomo"
-
 workspace/mcp-chat:
   - "Workspace\\s*mcp-chat"
 
