@@ -104,7 +104,16 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
         if (pathMatch) {
           repoPath = `/${pathMatch[1]}/${pathMatch[2]}/_git/${pathMatch[3]}`;
         }
+      } else if (hostname.includes('gitlab')) {
+        // GitLab can have nested subgroups: /group/subgroup1/subgroup2/.../project
+        // Remove /-/... suffix first (GitLab file/blob paths), then extract repo path
+        const cleanPath = url.pathname.replace(/\/-\/.*$/, '');
+        const pathMatch = cleanPath.match(/^(\/[^/]+\/[^/]+(?:\/[^/]+)*)$/);
+        if (pathMatch) {
+          repoPath = pathMatch[1];
+        }
       } else {
+        // GitHub and other providers: /org/repo
         const pathMatch = url.pathname.match(/^\/([^/]+)\/([^/]+)(?:\/.*)?$/);
         if (pathMatch) {
           repoPath = `/${pathMatch[1]}/${pathMatch[2]}`;
