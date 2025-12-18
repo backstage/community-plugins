@@ -23,6 +23,12 @@ import {
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import {
+  AuthenticationError,
+  isError,
+  NotAllowedError,
+  NotFoundError,
+} from '@backstage/errors';
+import {
   getInstanceByName,
   toInstance,
   processFetch,
@@ -392,10 +398,23 @@ export class ArgoCDService {
    * Handles and formats error messages
    *
    * @param {string} message - Base error message
-   * @param {Error} error - Error object
-   * @throws {Error}  Formatted error with message and details
+   * @param {unknown} error - Error object
+   * @throws {AuthenticationError | NotAllowedError | NotFoundError | Error} Formatted error with message and details
    */
-  private handleError(message: string, error: Error): never {
-    throw new Error(`${message} : ${error.message}`);
+  private handleError(message: string, error: unknown): never {
+    const errorMessage = isError(error) ? error.message : String(error);
+    const formattedMessage = `${message} : ${errorMessage}`;
+
+    if (error instanceof AuthenticationError) {
+      throw new AuthenticationError(formattedMessage);
+    }
+    if (error instanceof NotAllowedError) {
+      throw new NotAllowedError(formattedMessage);
+    }
+    if (error instanceof NotFoundError) {
+      throw new NotFoundError(formattedMessage);
+    }
+
+    throw new Error(formattedMessage);
   }
 }
