@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-adr",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "adr",
@@ -70,6 +70,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.34.5",
+    "@backstage/dev-utils": "^1.1.17",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

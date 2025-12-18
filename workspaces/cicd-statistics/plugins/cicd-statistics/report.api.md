@@ -8,6 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public
@@ -93,7 +94,7 @@ export const cicdStatisticsPlugin: BackstagePlugin<
 export const EntityCicdStatisticsContent: EntityPageCicdCharts;
 
 // @public (undocumented)
-export function EntityPageCicdCharts(): JSX.Element;
+export function EntityPageCicdCharts(): JSX_2.Element;
 
 // @public
 export interface FetchBuildsOptions {

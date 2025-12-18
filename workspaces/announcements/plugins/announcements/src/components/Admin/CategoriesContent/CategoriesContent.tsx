@@ -37,9 +37,7 @@ import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { CategoriesForm } from './CategoriesForm';
-import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
-import { DeleteCategoryDialog } from './DeleteCategoryDialog';
+import { useDeleteDialogState, DeleteDialog, TitleForm } from '../shared';
 
 export const CategoriesContent = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
@@ -52,10 +50,17 @@ export const CategoriesContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    category: categoryToDelete,
-  } = useDeleteCategoryDialogState();
+    item: categoryToDelete,
+  } = useDeleteDialogState<Category>();
 
   const permissions = useAnnouncementsPermissions();
+
+  const translationKeys = {
+    new: t('categoriesForm.newCategory'),
+    edit: t('categoriesForm.editCategory'),
+    titleLabel: t('categoriesForm.titleLabel'),
+    submit: t('categoriesForm.submit'),
+  };
 
   const onSubmit = async (request: CreateCategoryRequest) => {
     const { title } = request;
@@ -161,7 +166,10 @@ export const CategoriesContent = () => {
 
         {showNewCategoryForm && (
           <Grid item xs={12}>
-            <CategoriesForm initialData={{} as Category} onSubmit={onSubmit} />
+            <TitleForm<Category>
+              translationKeys={translationKeys}
+              onSubmit={onSubmit}
+            />
           </Grid>
         )}
 
@@ -179,8 +187,8 @@ export const CategoriesContent = () => {
           />
         </Grid>
 
-        <DeleteCategoryDialog
-          open={isDeleteDialogOpen}
+        <DeleteDialog
+          isOpen={isDeleteDialogOpen}
           onCancel={onCancelDelete}
           onConfirm={onConfirmDelete}
         />

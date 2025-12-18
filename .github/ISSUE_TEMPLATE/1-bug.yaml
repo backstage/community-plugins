@@ -75,7 +75,6 @@ body:
         - linguist
         - linkerd
         - manage
-        - matomo
         - mcp-chat
         - mend
         - microsoft-calendar

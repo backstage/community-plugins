@@ -1,1 +1,5 @@
 playwright.config.ts
+playwright.config.js
+playwright-report/
+test-results/
+plugins/*/tests/

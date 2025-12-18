@@ -1,5 +1,56 @@
 # @backstage-community/plugin-announcements
 
+## 1.2.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- 0768c4e: - New dedicated routes to the admin portal (`/announcements/admin`, `/announcements/admin/categories`, `/announcements/admin/tags`)
+
+  - The exported `AnnouncementsTimeline` and `AnnouncementsAdminPortal` components have been deprecated as they will not be migrated to the new frontend system. Please see each component's deprecation notice for more details.
+
+  ### New frontend system + @backstage/ui updates
+
+  We are rebuilding several major components of the announcements plugin from scratch leveraging the `@backstage/ui` library. To start, the admin portal now leverages the new header component from the `@backstage/ui` library. Users who have migrated to the new frontend system will gradually receive these until the plugin is fully migrated. Users on the existing frontend system will not see any changes.
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+  - @backstage-community/plugin-announcements-react@0.17.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 40b8d32: Internal refactor to consolidate delete dialog state management in the admin portal. Refactoring categories and tags to the shared component added support for translations which was previously missing.
+
+  The refactor includes a new set of translation keys for the generic delete dialog.
+
+  ### Translation Changes
+
+  Added new translation keys for the delete dialog:
+
+  - `confirmDeleteDialog.title`
+  - `confirmDeleteDialog.cancel`
+  - `confirmDeleteDialog.delete`
+
+  Deprecated the following translation keys:
+
+  - `deleteDialog.title`
+  - `deleteDialog.cancel`
+  - `deleteDialog.delete`
+
+### Patch Changes
+
+- e6b9dd8: Replaces global `JSX` namespace with `React.JSX` to resolve deprecation
+- 6b45ee7: Adds a new useAnnouncementsPermissions hook users can leverage when needing quick access to all permissions, something we commonly do throughout the admin portal. All components now leverage this hook instead of using the usePermission hook directly.
+- Updated dependencies [6b45ee7]
+- Updated dependencies [40b8d32]
+  - @backstage-community/plugin-announcements-react@0.16.0
+
 ## 1.0.0
 
 ### Major Changes

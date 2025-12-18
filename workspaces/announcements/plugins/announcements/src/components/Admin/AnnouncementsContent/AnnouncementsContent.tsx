@@ -36,8 +36,7 @@ import {
   Category,
 } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { useDeleteAnnouncementDialogState } from './useDeleteAnnouncementDialogState';
-import { DeleteAnnouncementDialog } from './DeleteAnnouncementDialog';
+import { useDeleteDialogState, DeleteDialog } from '../shared';
 import { useNavigate } from 'react-router-dom';
 import { AnnouncementForm } from './AnnouncementForm';
 import slugify from 'slugify';
@@ -79,8 +78,8 @@ export const AnnouncementsContent = ({
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    announcement: announcementToDelete,
-  } = useDeleteAnnouncementDialogState();
+    item: announcementToDelete,
+  } = useDeleteDialogState<Announcement>();
 
   const onCreateButtonClick = () => {
     setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
@@ -424,8 +423,8 @@ export const AnnouncementsContent = ({
             }
           />
 
-          <DeleteAnnouncementDialog
-            open={isDeleteDialogOpen}
+          <DeleteDialog
+            isOpen={isDeleteDialogOpen}
             onCancel={onCancelDelete}
             onConfirm={onConfirmDelete}
           />

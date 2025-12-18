@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-common [1.8.2](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-common@1.8.1...@backstage-community/plugin-rbac-common@1.8.2) (2024-08-06)
 
+## 1.22.0
+
+### Minor Changes
+
+- e2d17e1: Backstage version bump to v1.45.1
+
 ## 1.21.0
 
 ### Minor Changes

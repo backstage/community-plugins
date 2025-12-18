@@ -28,6 +28,7 @@ export class AzureSorageConfig {
           accountName: cfg.getString('accountName'),
           authType: cfg.getString('authType'),
           auth: cfg.getConfig('auth'),
+          allowedContainers: cfg.getOptionalStringArray('allowedContainers'),
         };
       });
     return new AzureSorageConfig(blobContainers);

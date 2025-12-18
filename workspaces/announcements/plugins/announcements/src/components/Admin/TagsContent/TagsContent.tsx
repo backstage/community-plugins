@@ -37,9 +37,7 @@ import { ResponseError } from '@backstage/errors';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { useDeleteTagDialogState } from './useDeleteTagDialogState';
-import { DeleteTagDialog } from './DeleteTagDialog';
-import { TagsForm } from './TagsForm';
+import { useDeleteDialogState, DeleteDialog, TitleForm } from '../shared';
 
 export const TagsContent = () => {
   const [showNewTagForm, setShowNewTagForm] = useState(false);
@@ -52,10 +50,17 @@ export const TagsContent = () => {
     isOpen: isDeleteDialogOpen,
     open: openDeleteDialog,
     close: closeDeleteDialog,
-    tag: tagToDelete,
-  } = useDeleteTagDialogState();
+    item: tagToDelete,
+  } = useDeleteDialogState<Tag>();
 
   const permissions = useAnnouncementsPermissions();
+
+  const translationKeys = {
+    new: t('tagsForm.newTag'),
+    edit: t('tagsForm.editTag'),
+    titleLabel: t('tagsForm.titleLabel'),
+    submit: t('tagsForm.submit'),
+  };
 
   const onSubmit = async (request: CreateTagRequest) => {
     const { title } = request;
@@ -167,7 +172,15 @@ export const TagsContent = () => {
 
         {showNewTagForm && (
           <Grid item xs={12}>
-            <TagsForm initialData={{} as Tag} onSubmit={onSubmit} />
+            <TitleForm<Tag>
+              translationKeys={translationKeys}
+              onSubmit={onSubmit}
+              testIds={{
+                form: 'tag-form',
+                input: 'tag-title-input',
+                button: 'tag-submit-button',
+              }}
+            />
           </Grid>
         )}
 
@@ -185,8 +198,8 @@ export const TagsContent = () => {
           />
         </Grid>
 
-        <DeleteTagDialog
-          open={isDeleteDialogOpen}
+        <DeleteDialog
+          isOpen={isDeleteDialogOpen}
           onCancel={onCancelDelete}
           onConfirm={onConfirmDelete}
         />

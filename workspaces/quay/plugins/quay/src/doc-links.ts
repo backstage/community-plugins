@@ -19,4 +19,6 @@ export const DOC_LINKS = {
     'https://docs.redhat.com/en/documentation/red_hat_quay/3/html-single/red_hat_quay_api_guide/index#creating-oauth-access-token',
   BACKEND_CONFIGURATION_GUIDE:
     'https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-backend#app-config',
+  BACKEND_ANNOTATIONS_GUIDE:
+    'https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-backend#catalog',
 } as const;

@@ -29,11 +29,21 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import * as helmRepository from '../../__fixtures__/helm_repository.json';
+import * as helmRepositoryV1beta2 from '../../__fixtures__/helm_repository_v1beta2.json';
+import * as helmRepositoryV1 from '../../__fixtures__/helm_repository_v1.json';
 import { EntityFluxHelmRepositoriesCard } from './EntityFluxHelmRepositoriesCard';
 
-const makeTestHelmRepository = (name: string, url: string) => {
-  const repo = JSON.parse(JSON.stringify(helmRepository));
+const makeTestHelmRepositoryV1beta2 = (name: string, url: string) => {
+  const repo = JSON.parse(JSON.stringify(helmRepositoryV1beta2));
+
+  repo.metadata.name = name;
+  repo.spec.url = url;
+
+  return repo;
+};
+
+const makeTestHelmRepositoryV1 = (name: string, url: string) => {
+  const repo = JSON.parse(JSON.stringify(helmRepositoryV1));
 
   repo.metadata.name = name;
   repo.spec.url = url;
@@ -67,11 +77,11 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestHelmRepository(
+                makeTestHelmRepositoryV1beta2(
                   'podinfo',
                   'https://stefanprodan.github.io/podinfo',
                 ),
-                makeTestHelmRepository(
+                makeTestHelmRepositoryV1(
                   'bitnami',
                   'https://repo.vmware.com/bitnami-files/index.yaml',
                 ),

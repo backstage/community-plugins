@@ -238,7 +238,7 @@ describe('syncResource', () => {
         },
         method: 'PATCH',
       },
-      path: '/apis/source.toolkit.fluxcd.io/v1beta2/namespaces/test-namespace/helmrepositories/test-source-name',
+      path: '/apis/source.toolkit.fluxcd.io/v1/namespaces/test-namespace/helmrepositories/test-source-name',
     });
 
     // ASSERT we tried to PATCH the resource
@@ -251,7 +251,7 @@ describe('syncResource', () => {
         },
         method: 'PATCH',
       },
-      path: '/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/test-namespace/helmreleases/test-name',
+      path: '/apis/helm.toolkit.fluxcd.io/v2/namespaces/test-namespace/helmreleases/test-name',
     });
 
     expect(alertApi.post).toHaveBeenCalledWith({

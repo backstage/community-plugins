@@ -58,8 +58,8 @@ export const announcementsTranslationRef = createTranslationRef({
         admin: 'Manage announcements',
       },
     },
-    deleteDialog: {
-      title: 'Are you sure you want to delete this announcement?',
+    confirmDeleteDialog: {
+      title: 'Are you sure you want to delete?',
       cancel: 'Cancel',
       delete: 'Delete',
     },

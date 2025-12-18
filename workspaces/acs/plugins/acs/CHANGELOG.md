@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acs
 
+## 0.1.1
+
+### Patch Changes
+
+- 9b77dac: Updated dependency `@patternfly/react-component-groups` to `^6.0.0`.
+
 ## 0.1.0
 
 ### Minor Changes

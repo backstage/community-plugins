@@ -24,7 +24,9 @@
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
     "new": "backstage-cli new --scope @backstage-community",
-    "postinstall": "cd ../../ && yarn install"
+    "postinstall": "cd ../../ && yarn install",
+    "playwright": "playwright test",
+    "playwright:ui": "playwright test --ui"
   },
   "workspaces": {
     "packages": [
@@ -38,13 +40,17 @@
     "directory": "workspaces/multi-source-security-viewer"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.4",
+    "@axe-core/playwright": "^4.11.0",
+    "@backstage/cli": "^0.34.5",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.15.3",
+    "@backstage/repo-tools": "^0.16.0",
     "@changesets/cli": "^2.27.1",
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^24.10.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
+    "start-server-and-test": "^2.1.3",
     "typescript": "~5.3.0"
   },
   "resolutions": {

@@ -6,7 +6,7 @@
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsFilters } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -15,7 +15,7 @@ import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { Tag } from '@backstage-community/plugin-announcements-common';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 
 // @public
 export interface AnnouncementsApi {
@@ -218,9 +218,9 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
-    readonly 'deleteDialog.cancel': 'Cancel';
-    readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
-    readonly 'deleteDialog.delete': 'Delete';
+    readonly 'confirmDeleteDialog.cancel': 'Cancel';
+    readonly 'confirmDeleteDialog.title': 'Are you sure you want to delete?';
+    readonly 'confirmDeleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr
 
+## 0.18.1
+
+### Patch Changes
+
+- 0b42b41: Switch for errors from `WarningPanel` to `ErrorPanel` to allow users to see error stacktraces
+
 ## 0.18.0
 
 ### Minor Changes

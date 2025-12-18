@@ -1,5 +1,43 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.17.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+
+## 0.16.0
+
+### Minor Changes
+
+- 40b8d32: Internal refactor to consolidate delete dialog state management in the admin portal. Refactoring categories and tags to the shared component added support for translations which was previously missing.
+
+  The refactor includes a new set of translation keys for the generic delete dialog.
+
+  ### Translation Changes
+
+  Added new translation keys for the delete dialog:
+
+  - `confirmDeleteDialog.title`
+  - `confirmDeleteDialog.cancel`
+  - `confirmDeleteDialog.delete`
+
+  Deprecated the following translation keys:
+
+  - `deleteDialog.title`
+  - `deleteDialog.cancel`
+  - `deleteDialog.delete`
+
+### Patch Changes
+
+- 6b45ee7: Adds a new useAnnouncementsPermissions hook users can leverage when needing quick access to all permissions, something we commonly do throughout the admin portal. All components now leverage this hook instead of using the usePermission hook directly.
+
 ## 0.15.0
 
 ### Minor Changes

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-import { UrlPatternDiscovery } from '@backstage/core-app-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { mockApis } from '@backstage/test-utils';
 
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
+import { QUAY_SINGLE_INSTANCE_NAME } from '@backstage-community/plugin-quay-common';
+
 import { QuayApiClient, QuayApiV1 } from './index';
 
-const LOCAL_PROXY_ADDR = 'https://localhost:5050/quay/api/';
+const LOCAL_PROXY_ADDR = 'https://localhost:5050/api/proxy/quay/api/';
+const LOCAL_CUSTOM_PROXY_ADDR =
+  'https://localhost:5050/api/proxy/custom-quay/api/';
 
 const proxyHandlers = [
   rest.get(
@@ -96,6 +100,16 @@ const proxyHandlers = [
       );
     },
   ),
+
+  rest.get(
+    `${LOCAL_CUSTOM_PROXY_ADDR}api/v1/repository/foo/bar/tag/`,
+    (_, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json(require(`${__dirname}/fixtures/tags/foo_page1.json`)),
+      );
+    },
+  ),
 ];
 
 const server = setupServer(...proxyHandlers);
@@ -106,26 +120,8 @@ afterAll(() => server.close());
 
 describe('QuayApiClient', () => {
   let quayApi: QuayApiV1;
+  let fetchSpy: jest.SpyInstance;
   const bearerToken = 'Bearer token';
-
-  const getConfigApi = (configValues: Record<string, string | undefined>) => ({
-    has: jest.fn(),
-    keys: jest.fn(),
-    get: jest.fn(),
-    getBoolean: jest.fn(),
-    getConfig: jest.fn(),
-    getConfigArray: jest.fn(),
-    getNumber: jest.fn(),
-    getString: jest.fn(),
-    getStringArray: jest.fn(),
-    getOptional: jest.fn(),
-    getOptionalStringArray: jest.fn(),
-    getOptionalBoolean: jest.fn(),
-    getOptionalConfig: jest.fn(),
-    getOptionalConfigArray: jest.fn(),
-    getOptionalNumber: jest.fn(),
-    getOptionalString: jest.fn((key: string) => configValues[key]),
-  });
 
   const identityApi = {
     async getCredentials() {
@@ -133,39 +129,136 @@ describe('QuayApiClient', () => {
     },
   } as IdentityApi;
 
-  beforeEach(() => {
-    quayApi = new QuayApiClient({
-      configApi: getConfigApi({
-        'quay.proxyPath': '/quay/api',
-      }),
-      discoveryApi: UrlPatternDiscovery.compile('https://localhost:5050'),
-      identityApi: identityApi,
-    });
+  const mockDiscoveryApi = mockApis.discovery.mock({
+    getBaseUrl: async (pluginId: string) =>
+      `https://localhost:5050/api/${pluginId}`,
   });
 
-  it('should use a correct default proxy path', async () => {
-    quayApi = new QuayApiClient({
-      configApi: getConfigApi({}),
-      discoveryApi: UrlPatternDiscovery.compile('https://localhost:5050'),
+  beforeEach(() => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            proxyPath: '/quay/api',
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+    fetchSpy = jest.spyOn(global, 'fetch');
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+  });
+
+  it('should use default proxy path when no config', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({ data: {} }),
+      discoveryApi: mockDiscoveryApi,
       identityApi: identityApi,
     });
 
-    const proxyResult = await quayApi.getTags('foo', 'bar');
+    const proxyResult = await quayApi.getTags(undefined, 'foo', 'bar');
 
     expect(proxyResult).toEqual(
       require(`${__dirname}/fixtures/tags/foo_page1.json`),
     );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(LOCAL_PROXY_ADDR),
+      expect.anything(),
+    );
+  });
+
+  it('should use custom proxy path when set in single-instance config', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            proxyPath: '/custom-quay/api',
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    const proxyResult = await quayApi.getTags(undefined, 'foo', 'bar');
+
+    expect(proxyResult).toEqual(
+      require(`${__dirname}/fixtures/tags/foo_page1.json`),
+    );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(LOCAL_CUSTOM_PROXY_ADDR),
+      expect.anything(),
+    );
+  });
+
+  it('should use default proxy path when multi-instance config', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [{ name: 'devel' }, { name: 'staging' }],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    const proxyResult = await quayApi.getTags(undefined, 'foo', 'bar');
+
+    expect(proxyResult).toEqual(
+      require(`${__dirname}/fixtures/tags/foo_page1.json`),
+    );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(LOCAL_PROXY_ADDR),
+      expect.anything(),
+    );
+  });
+
+  it('should use custom proxy path when set in multi-instance config', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [
+              { name: 'devel' },
+              { name: 'staging', proxyPath: '/custom-quay/api' },
+            ],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    const proxyResult = await quayApi.getTags('staging', 'foo', 'bar');
+
+    expect(proxyResult).toEqual(
+      require(`${__dirname}/fixtures/tags/foo_page1.json`),
+    );
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining(LOCAL_CUSTOM_PROXY_ADDR),
+      expect.anything(),
+    );
   });
 
   it('should throw an error when the response is not ok', async () => {
-    await expect(quayApi.getTags('not', 'found')).rejects.toEqual(
-      new Error('failed to fetch data, status 404: Not Found'),
-    );
+    await expect(
+      quayApi.getTags(QUAY_SINGLE_INSTANCE_NAME, 'not', 'found'),
+    ).rejects.toEqual(new Error('failed to fetch data, status 404: Not Found'));
   });
 
   describe('getTags', () => {
     it('should correctly get tags without optional arguments', async () => {
-      const result = await quayApi.getTags('foo', 'bar');
+      const result = await quayApi.getTags(
+        QUAY_SINGLE_INSTANCE_NAME,
+        'foo',
+        'bar',
+      );
 
       expect(result).toEqual(
         require(`${__dirname}/fixtures/tags/foo_page1.json`),
@@ -173,14 +266,26 @@ describe('QuayApiClient', () => {
     });
 
     it('should correctly get tags with a limit', async () => {
-      const result = await quayApi.getTags('foo', 'bar', undefined, 1);
+      const result = await quayApi.getTags(
+        QUAY_SINGLE_INSTANCE_NAME,
+        'foo',
+        'bar',
+        undefined,
+        1,
+      );
 
       expect(result).toEqual(
         require(`${__dirname}/fixtures/tags/foo_limit.json`),
       );
     });
+
     it('should correctly get tags with a page number', async () => {
-      const result = await quayApi.getTags('foo', 'bar', 2);
+      const result = await quayApi.getTags(
+        QUAY_SINGLE_INSTANCE_NAME,
+        'foo',
+        'bar',
+        2,
+      );
 
       expect(result).toEqual(
         require(`${__dirname}/fixtures/tags/foo_page2.json`),
@@ -192,6 +297,7 @@ describe('QuayApiClient', () => {
     it('should correctly get the manifest using its digest', async () => {
       const manifest = require(`${__dirname}/fixtures/manifests/foo.json`);
       const result = await quayApi.getManifestByDigest(
+        QUAY_SINGLE_INSTANCE_NAME,
         'foo',
         'bar',
         manifest.digest,
@@ -204,7 +310,12 @@ describe('QuayApiClient', () => {
   describe('getLabels', () => {
     it('should correctly get the labels using the manifest digest', async () => {
       const manifest = require(`${__dirname}/fixtures/manifests/bar.json`);
-      const result = await quayApi.getLabels('foo', 'bar', manifest.digest);
+      const result = await quayApi.getLabels(
+        QUAY_SINGLE_INSTANCE_NAME,
+        'foo',
+        'bar',
+        manifest.digest,
+      );
 
       expect(result).toEqual(require(`${__dirname}/fixtures/labels/foo.json`));
     });
@@ -214,6 +325,7 @@ describe('QuayApiClient', () => {
     it('should correctly get secuity details using the manifest digest', async () => {
       const manifest = require(`${__dirname}/fixtures/manifests/bar.json`);
       const result = await quayApi.getSecurityDetails(
+        QUAY_SINGLE_INSTANCE_NAME,
         'foo',
         'bar',
         manifest.digest,
@@ -221,6 +333,56 @@ describe('QuayApiClient', () => {
       expect(result).toEqual(
         require(`${__dirname}/fixtures/securityDetail/foo.json`),
       );
+    });
+  });
+
+  describe('getQuayInstance', () => {
+    const multiInstanceQuayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [
+              {
+                name: 'devel',
+                proxyPath: LOCAL_CUSTOM_PROXY_ADDR,
+                uiUrl: 'http://custom-quay.example.com',
+              },
+              { name: 'staging', apiUrl: 'https://quay-staging.example.com' },
+            ],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    it('should return default instance (first) when no instance name for single-instance config', () => {
+      const instance = quayApi.getQuayInstance(undefined);
+      expect(instance?.name).toBe(QUAY_SINGLE_INSTANCE_NAME);
+    });
+
+    it('should return instance by name for single-instance config', () => {
+      const instance = quayApi.getQuayInstance(QUAY_SINGLE_INSTANCE_NAME);
+      expect(instance?.name).toBe(QUAY_SINGLE_INSTANCE_NAME);
+    });
+
+    it('should return default instance (first) when no instance name for multi-instance config', () => {
+      const develInstance = multiInstanceQuayApi.getQuayInstance();
+      expect(develInstance).toEqual({
+        name: 'devel',
+        proxyPath: LOCAL_CUSTOM_PROXY_ADDR,
+        uiUrl: 'http://custom-quay.example.com',
+      });
+    });
+
+    it('should return instance by name for multi-instance config', () => {
+      const stagingInstance = multiInstanceQuayApi.getQuayInstance('staging');
+      expect(stagingInstance?.name).toEqual('staging');
+    });
+
+    it('should return undefined for non-existent instance', () => {
+      const instance = quayApi.getQuayInstance('non-existent');
+      expect(instance).toBeUndefined();
     });
   });
 });
