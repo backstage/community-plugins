@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { JSX } from 'react';
 import { EmptyState, InfoCard } from '@backstage/core-components';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
