@@ -182,7 +182,7 @@ export class ArgoCDService {
         );
         this.logger.warn(message);
 
-        return data;
+        return { ...data, items: [] };
       }
 
       // Add instance metadata

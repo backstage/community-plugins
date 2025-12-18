@@ -176,21 +176,21 @@ describe('ArgoCDService', () => {
     });
 
     it('should successfully handle zero items returned with the appNamespace param', async () => {
-      const expectedEmptyNamespaceResponse = {
+      const emptyNamespaceResponse = {
         metadata: {
           resourceVersion: '12345',
         },
-        items: [],
+        items: null,
       };
       fetchMock.mockResolvedValue({
         ok: true,
-        json: async () => expectedEmptyNamespaceResponse,
+        json: async () => emptyNamespaceResponse,
       });
 
       const result = await service.listArgoApps('test-instance', {
         appNamespace: 'fake',
       });
-      expect(result).toEqual(expectedEmptyNamespaceResponse);
+      expect(result).toEqual({ ...emptyNamespaceResponse, items: [] });
       expect(fetchMock).toHaveBeenCalledWith(
         'https://argocd.example.com/api/v1/applications?appNamespace=fake',
         {
