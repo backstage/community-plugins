@@ -44,24 +44,56 @@ export const searchModuleConfluenceCollator = createBackendModule({
           initialDelay: { seconds: 30 },
         };
 
-        const schedule = config.has('search.collators.confluence.schedule')
-          ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-              config.getConfig('search.collators.confluence.schedule'),
-            )
-          : defaultSchedule;
+        const confluenceConfigs = config.getConfig('confluence');
 
-        logger.info(
-          `Indexing Confluence instance: "${config.getString(
-            'confluence.baseUrl',
-          )}"`,
-        );
-        logger.info(`Confluence indexing schedule ${JSON.stringify(schedule)}`);
-        indexRegistry.addCollator({
-          schedule: scheduler.createScheduledTaskRunner(schedule),
-          factory: ConfluenceCollatorFactory.fromConfig(config, {
-            logger: logger,
-          }),
-        });
+        // Support either a single-instance shape:
+        // confluence:
+        //   baseUrl: ...
+        // or multi-instance:
+        // confluence:
+        //   default: { baseUrl: ... }
+        //   other: { baseUrl: ... }
+        const isSingleInstance = confluenceConfigs.has('baseUrl');
+        const instanceKeys = isSingleInstance
+          ? ['default']
+          : confluenceConfigs.keys();
+
+        for (const instanceKey of instanceKeys) {
+          const actualInstanceKey = isSingleInstance ? 'default' : instanceKey;
+          const collatorKey =
+            actualInstanceKey === 'default'
+              ? 'confluence'
+              : `confluence${actualInstanceKey
+                  .charAt(0)
+                  .toUpperCase()}${actualInstanceKey.slice(1)}`;
+          // (removed duplicate collatorKey declaration)
+
+          const schedulePath = `search.collators.${collatorKey}.schedule`;
+          const schedule = config.has(schedulePath)
+            ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+                config.getConfig(schedulePath),
+              )
+            : defaultSchedule;
+
+          logger.info(
+            `Indexing Confluence instance: "${confluenceConfigs
+              .getConfig(actualInstanceKey)
+              .getString('baseUrl')}"`,
+          );
+          logger.info(
+            `Confluence indexing schedule ${JSON.stringify(schedule)}`,
+          );
+
+          indexRegistry.addCollator({
+            schedule: scheduler.createScheduledTaskRunner(schedule),
+            factory: ConfluenceCollatorFactory.fromConfig(
+              config,
+              { logger },
+              actualInstanceKey,
+              collatorKey,
+            ),
+          });
+        }
       },
     });
   },
