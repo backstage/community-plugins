@@ -23,13 +23,14 @@ export type ManageProvider = ComponentType<{
 }>;
 
 /**
- * This type contains the owned groups and all owner entity refs.
+ * This type contains the owned groups, the user Entity, and all owner entity refs.
  *
  * @public
  */
 export interface Owners {
   groups: Entity[];
-  ownedEntityRefs: string[];
+  user: Entity | undefined;
+  ownerEntityRefs: string[];
 }
 
 /**
@@ -48,16 +49,22 @@ export interface ManageApi {
    * The order of kinds to show for e.g. tabs.
    *
    * Kinds not part of this list will appear afterwards.
+   *
+   * @deprecated This is an internal detail that will be removed when support for the old frontend system is removed.
    */
-  readonly kindOrder: string[];
+  readonly kindOrder: readonly string[];
 
   /**
    * Get the list of registered Providers for the manage page
+   *
+   * @deprecated This is an internal detail that will be removed when support for the old frontend system is removed.
    */
   getProviders(): Iterable<ManageProvider>;
 
   /**
    * Get owner entities and owned entities
+   *
+   * @deprecated This is an internal detail that will be removed when support for the old frontend system is removed.
    */
   getOwnersAndEntities(kinds?: readonly string[]): Promise<OwnersAndEntities>;
 }

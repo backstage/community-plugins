@@ -63,3 +63,25 @@ spec:
   lifecycle: experimental
   owner: sub-guests
   system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service-in-subgroup
+  title: Example service in subgroup
+spec:
+  type: service
+  lifecycle: experimental
+  owner: sub-sub-guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service-in-acme
+  title: Example service in acme
+spec:
+  type: service
+  lifecycle: experimental
+  owner: acme-corp
+  system: examples

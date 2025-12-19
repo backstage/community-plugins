@@ -1,5 +1,19 @@
 # @backstage-community/plugin-manage-react
 
+## 2.0.0
+
+### Major Changes
+
+- 073b5ec: This package now exposes blueprints for the new frontend system!
+
+  BREAKING CHANGE:
+  The DefaultApi now requires a `configApi` parameter. Note that when using the new frontend system, there is no need to manually register the API.
+
+### Patch Changes
+
+- Updated dependencies [073b5ec]
+  - @backstage-community/plugin-manage-common@1.4.1
+
 ## 1.4.0
 
 ### Minor Changes

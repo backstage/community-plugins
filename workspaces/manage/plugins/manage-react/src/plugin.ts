@@ -23,7 +23,7 @@ export const manageReactPlugin = createPlugin({
   id: 'manage-react',
 });
 
-/** @public */
+/** @internal */
 export const OwnedProvider = manageReactPlugin.provide(
   createComponentExtension({
     name: 'OwnedProvider',
@@ -34,7 +34,10 @@ export const OwnedProvider = manageReactPlugin.provide(
   }),
 );
 
-/** @public */
+/**
+ * @deprecated Use the new frontend system instead.
+ * @public
+ */
 export const TabContentFullHeight = manageReactPlugin.provide(
   createComponentExtension({
     name: 'TabContentFullHeight',
@@ -67,7 +70,7 @@ export const GaugeGrid = manageReactPlugin.provide(
   }),
 );
 
-/** @public */
+/** @internal */
 export const ReorderableTabs = manageReactPlugin.provide(
   createComponentExtension({
     name: 'ReorderableTabs',

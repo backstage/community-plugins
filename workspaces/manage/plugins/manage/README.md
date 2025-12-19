@@ -1,176 +1,177 @@
 # Manage
 
-This plugin offers a place for developers to manage things they and their team own.
+The Manage plugin provides a dedicated place for developers to manage things they and their team own.
 
-The Manage page is modular and customizable. It can be designed arbitrarily, but comes with a default implementation of a set of tabs for each view - entities (such as components and systems), starred entities and organization structure. Other tabs can be added as well. The entities tabs show a table of owned entities, and above and below these, custom React components can be rendered. The table can be extended with columns for additional information, such as tech-insight checks.
+The Manage page is modular and highly customizable. It ships with a default set of tabs for common views: entities (such as components and systems), starred entities, and organization structure. Additional tabs can be added as needed.
 
-The page is wrapped in a provider which has fetched all groups the user belongs to, and all entities owned by the user or any of these groups. Each built-in tab also wraps information about what kind of entity is shown, exposed as hooks. This is useful for extensions that provide gauges, statistics, etc.
+Entity tabs render a table of owned entities. Above and below this table, custom React components can be injected. The table itself can also be extended with additional columns, for example to display Tech Insights checks or other custom metadata.
+
+The page is wrapped in a React provider that fetches:
+
+- All groups the user belongs to
+- All entities owned by the user or any of those groups
+
+These are exposed as hooks for extensions to use, if needed. Each built-in tab also provides contextual information about which kind of entities are being displayed, also exposed through hooks. This makes it straightforward for extensions to add gauges, statistics, table columns, and other enhancements that depend on the current view.
 
 ![Components tab](./docs/components.png)
 
-## Installation
+## Installation (New frontend system)
 
-In `App.tsx`, add a route:
+If frontend feature discovery is enabled for all packages, simply installing the plugin is enough to register it at `/manage` and add a sidebar entry:
 
-```tsx
-import { ManagePage } from '@backstage-community/plugin-manage';
-
-// ...
-<Route
-  path="/manage"
-  element={
-    <ManagePage>
-      <Manage />
-    </ManagePage>
-  }
-/>;
+```sh
+yarn --cwd packages/app add @backstage-community/plugin-manage
 ```
 
-Implement the `Manage` component somewhere, e.g. in `src/components/manage/Manage.tsx`:
+Remember to also install the corresponding [backend plugin](../manage-backend).
 
-```tsx
-import { ManageTabs } from '@backstage-community/plugin-manage';
+### Enabling feature discovery explicitly
 
-export function Manage() {
-  return <ManageTabs />;
-}
+To enable feature discovery for this plugin specifically, add it to `app-config.yaml`:
+
+```yaml title="app-config.yaml"
+app:
+  packages:
+	include:
+	  - '@backstage-community/plugin-manage'
 ```
 
-Add it to the sidebar (`src/components/Root/Root.tsx`):
+Extensions can be installed in the same way, for example:
 
-```tsx
-import ManageIcon from '@material-ui/icons/Ballot';
-import { managePlugin } from '@backstage-community/plugin-manage';
-
-export const Root = ({ children }: PropsWithChildren<{}>) => {
-  const managePage = useRouteRef(managePlugin.routes.root);
-
-  // ...
-  <SidebarItem icon={ManageIcon} to={managePage()} text="Manage" />;
-  // ...
-};
-```
-
-Install the API (e.g. in `src/apis.ts`). The preferred order of the tabs to show for owned entities can be provided to the API factory function.
-
-```ts
-import { createManageApiFactory } from '@backstage-community/plugin-manage-react';
-
-export const apis = [
-  // ...,
-  createManageApiFactory({
-    kindOrder: ['component', 'api', 'system'],
-  }),
-];
+```sh
+yarn --cwd packages/app add @backstage-community/plugin-manage-module-tech-insights
 ```
 
 ## Configuration
 
-The `Manage` component can render anything, but the `ManageTabs` are useful to show as a minimum. It renders the user's owned entities in individual tabs per kind, and a tab for starred entities (by default, but can be turned off).
+The Manage plugin is configured via `app-config.yaml`. Below is an example taken from the `app-next` package in this plugin’s workspace:
 
-`ManageTabs` can show custom tabs before and after the built-in ones using the `tabsBefore` and `tabsAfter` props. The `@backstage-community/plugin-manage` package provides a view for the organization graph for the current user which can be added as a tab like this:
-
-```tsx
-import {
-  ManageTabs,
-  OrganizationGraph,
-} from '@backstage-community/plugin-manage';
-
-export function Manage() {
-  return (
-    <ManageTabs
-      tabsAfter={[
-        {
-          path: 'organization',
-          title: 'Organization',
-          children: <OrganizationGraph />,
-        },
-      ]}
-    />
-  );
-}
+```yaml title="app-config.yaml"
+manage:
+  title: Manage my things
+  subtitle: Things I own and work with
+  showStarred: true
+  enableWholeOrganization: true
+  order:
+	tabs:
+	  - entities
+	  - starred-entities
+	  - my-tab-1
+	  - organization
+	  - my-tab-2
+	cards: []
+	contentAbove:
+	  - app/foo-widget1
+	  - app/foo-widget2
+	  - tech-insights/cards
+	contentBelow:
+	columns:
+	  - app/foo-column
+	  - tech-insights/checks
 ```
 
-What to be displayed above and below the table, and the table columns, can be configured, either for any table or for certain kinds, for starred entities, and for the combined view (all entity kinds in one tab).
+Refer to `config.d.ts` for the full set of supported configuration options. For a more comprehensive example, see the [`app-config.yaml`](../../app-config.yaml) used by the `app-next` package in this workspace.
 
-- `commonHeader` and `commonFooter` are the components to show above and below each table.
-- `commonColumns` are the extra columns to display in each table.
-- `combined`, `kinds` and `starred` are used to configure the header, footer and columns for each specific table.
+### Extension configuration
 
-Example (using the tech-insights module `@backstage-community-plugin-manage-module-tech-insights`):
+Extensions are configured in the `app.extensions` section in `app-config.yaml`, and are named based on the plugin name and extension name.
 
-```tsx
-<ManageTabs
-  combined={{
-    header: <ManageTechInsightsCards inAccordion />,
-    columns: [manageTechInsightsColumns({ combined: true })],
-  }}
-  starred={{
-    header: <ManageTechInsightsGrid />,
-    columns: [manageTechInsightsColumns({ combined: true })],
-  }}
-  kinds={{
-    [MANAGE_KIND_COMMON]: {
-      header: <ManageTechInsightsCards inAccordion />,
-      columns: [manageTechInsightsColumns()],
-    },
-    component: {
-      columns: [manageTechInsightsColumns({ combined: true })],
-    },
-  }}
-/>
+Manage page modules should be expected to document their configuration options, as well as the names of their provided extensions, for example as done in the `@backstage-community/plugin-manage-module-tech-insights` package.
+
+| Node ID                                 | Extension                |
+| --------------------------------------- | ------------------------ |
+| `manage-tab:{plugin}/{name}`            | Tab extension            |
+| `manage-card-widget:{plugin}/{name}`    | Card widget extension    |
+| `manage-content-widget:{plugin}/{name}` | Content widget extension |
+| `manage-column:{plugin}/{name}`         | Tab extension            |
+
+The configuration options depend on the type of extension.
+
+Tab extensions:
+
+```ts
+// Title of the tab
+title?: string;
 ```
 
-### ManagePage configuration
+Card widgets:
 
-The top-level component `ManagePage` which is added to the flat routes can be configured to force entities to be showed combined (into one tab) or separate, by setting the `combined` prop. The `labels` prop can be used to completely override the right side of the header. It's possible to inject custom React Providers inside the manage page by adding them to the `providers` props.
-
-## Settings
-
-By default, a Settings tab will be added at the end of the tabs. This tab can be turned off or replaced by custom content. The default Settings page allows the user to reorder the tabs, e.g. to put a certain kind of entity first (or any other tab), so that it becomes the default when navigating to the Manage page.
-
-![Settings view](./docs/settings.png)
-
-To customize this view, set the `settings` prop for `ManagePage` to your custom component. The default settings are available as the components `TabOrderCard` and `KindOrderCard` exported from `@backstage-community/plugin-manage`.
-
-## Manage page extensions
-
-The manage page can be extended with functionality, e.g. columns to the owned entity tables, or other useful gauges, charts, statistics etc to display above or below the entity table, or in separate tabs. An example of an extension to the manage page is `@backstage-community/plugin-manage-module-tech-insights` which provides tech-insight checks as guages and columns to the entity tables, as well as aggregated gauges to render above or below the table.
-
-More information on how to build extensions, check out the README for `@backstage-community/plugin-manage-react`
-
-## Full-height custom tabs
-
-When adding a custom tab, it's sometimes useful to make its content full height (to the bottom of the window).
-
-Example of adding the `JiraUserIssuesTable` from `@axis-backstage/plugin-jira-dashboard` to a tab:
-
-```tsx
-import { TabContentFullHeight } from '@backstage-community/plugin-manage-react';
-import { JiraUserIssuesTable } from '@axis-backstage/plugin-jira-dashboard';
-
-// ...
-
-<ManageTabs
-  tabsAfter={[
-    {
-      path: 'jira',
-      title: 'Jira',
-      children: (
-        <TabContentFullHeight resizeChild>
-          <JiraUserIssuesTable
-            maxResults={40}
-            tableStyle={{ maxHeight: '100%', width: '100%' }}
-            style={{
-              maxHeight: '100%',
-              padding: '20px',
-              overflowY: 'auto',
-              width: '100%',
-            }}
-          />
-        </TabContentFullHeight>
-      ),
-    },
-  ]}
-/>;
+```ts
+// List of tabs on which to render the card widget
+attachTo?: string[];
 ```
+
+Content widgets:
+
+```ts
+// List of tabs on which to render the card widget
+attachTo?: string[];
+
+// Whether to wrap the component in an accordion which saves
+// the open/close state for each user, or an object:
+// {kind: boolean} to show accordions for certain entity kinds
+inAccordion?: boolean | Record<string, boolean>;
+
+// Whether the accordion is default expanded. Defaults to false.
+accordionDefaultExpanded?: boolean;
+
+// Whether to save the open/close state per-kind.
+// Defaults to false, meaning the state is global for all kinds.
+accordionPerKind?: boolean;
+```
+
+Column widgets:
+
+```ts
+// List of tabs on which to render the columns.
+// Tabs can be strings (the kind name) or an object where multi
+// can be set to false, to choose a single-column version, if
+// the extension provides such.
+attachTo?: (string | { tab: string; multi: boolean; })[];
+```
+
+The following is a real example taken from the `app-next` package in this workspace.
+
+```yaml title="app-config.yaml"
+app:
+  extensions:
+    - manage-tab:app/my-tab:
+        config:
+          title: Second tab
+    - manage-card-widget:app/foo-widget1:
+        config:
+          attachTo:
+            - component
+            - system
+            - $entities
+    - manage-content-widget:tech-insights/cards:
+        config:
+          attachTo:
+            - component
+            - $entities
+    - manage-content-widget:tech-insights/grid:
+        config:
+          attachTo:
+            - system
+    - manage-column:tech-insights/checks:
+        config:
+          attachTo:
+            - tab: '$entities'
+              multi: false
+            - tab: 'component'
+              multi: false
+            - system
+            - api
+```
+
+## Extension development
+
+The Manage page can be extended with custom tabs, columns and widgets using a set of provided blueprints.
+
+For detailed explanations and complete examples of all available blueprints, see the [README](../manage-react/README.md) for the `@backstage-community/plugin-manage-react` package.
+
+## Installation (Old frontend system)
+
+For the old frontend system, see [README-OFS.md](./README-OFS.md).
+
+Note that the old frontend system is deprecated, and support for it will be removed from this plugin in a future release.

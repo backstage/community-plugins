@@ -21,7 +21,7 @@ import {
 
 // Order the ownership entities by:
 //   1. Immediate group membership
-//   2. Groups higher up the group hierarchy
+//   2. Groups higher or lower in the group hierarchy
 //   3. User
 export function orderOwnership(entities: Entity[]): Entity[] {
   const decoratedEntities = entities.map(entity => ({

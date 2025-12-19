@@ -17,9 +17,6 @@ import { useCallback, useMemo } from 'react';
 
 import { capitalize } from '@mui/material/utils';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 
 import {
@@ -29,6 +26,7 @@ import {
   useOwnedKinds,
   useSetKindOrder,
 } from '@backstage-community/plugin-manage-react';
+import { SettingsCard } from '../SettingsCard/SettingsCard';
 
 /**
  * The KindOrder card that is displayed in the default settings page.
@@ -55,21 +53,21 @@ export function KindOrderCard() {
   );
 
   return (
-    <Card>
-      <CardHeader
-        title="Kind order"
-        subheader="Reorder the entity kinds to your liking by dragging them"
-        action={
+    <SettingsCard
+      setting={{
+        title: 'Kind order',
+        subtitle: 'Reorder the entity kinds to your liking by dragging them',
+        action: (
           <Button aria-label="reset" onClick={onReset}>
             Reset
           </Button>
-        }
-      />
-      <CardContent>
-        <Box>
-          <ReorderableTabs tabs={orderedTabs} onChange={setTabOrder} />
-        </Box>
-      </CardContent>
-    </Card>
+        ),
+        element: (
+          <Box>
+            <ReorderableTabs tabs={orderedTabs} onChange={setTabOrder} />
+          </Box>
+        ),
+      }}
+    />
   );
 }

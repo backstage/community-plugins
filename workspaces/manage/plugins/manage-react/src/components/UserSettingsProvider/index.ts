@@ -15,6 +15,9 @@
  */
 export type {
   CreateUserSettingsContextOptions,
+  UserSettingsDefaultValueGetter,
+  UserSettingsDefaultValue,
+  UserSettingsProviderProps,
   UserSettingsContextResult,
 } from './UserSettingsProvider';
 export { createUserSettingsContext } from './UserSettingsProvider';

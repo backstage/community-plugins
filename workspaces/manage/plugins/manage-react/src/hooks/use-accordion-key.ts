@@ -26,14 +26,15 @@ import { KindStarred, useCurrentKind } from '../components/CurrentKindProvider';
 export function useAccordionKey(key: string, uniquePerKind?: boolean): string {
   const kind = useCurrentKind();
 
+  if (!uniquePerKind) {
+    return `$manage-${key}-$kind`;
+  }
+
   if (kind === KindStarred) {
     return `$manage-${key}-$starred`;
   } else if (!kind) {
     return `$manage-${key}-$combined`;
   }
 
-  if (uniquePerKind) {
-    return `$manage-${key}-${kind}`;
-  }
-  return `$manage-${key}-$kind`;
+  return `$manage-${key}-${kind}`;
 }

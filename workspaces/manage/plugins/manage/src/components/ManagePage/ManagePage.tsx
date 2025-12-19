@@ -13,116 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ComponentType,
-  ReactNode,
-  ComponentProps,
-  PropsWithChildren,
-} from 'react';
 
-import { Content, Header, Page } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
-import {
-  KindOrderProvider,
-  manageApiRef,
-  OwnedProvider,
-} from '@backstage-community/plugin-manage-react';
+import { ComponentType, ReactNode, PropsWithChildren } from 'react';
 
-import { ManagePageFilters } from '../ManagePageFilters/ManagePageFilters';
+import { Content } from '@backstage/core-components';
+import { KindOrderProvider } from '@backstage-community/plugin-manage-react';
+
 import { useManagePageCombined } from '../ManagePageFilters';
 
-/**
- * Props for the {@link ManagePage} component.
- *
- * @public
- */
-export interface ManagePageProps<SupportedKinds extends string> {
-  /**
-   * Any set of `<Header>` components for the page header. Defaults to a switch
-   * of combined / not combined view unless
-   * {@link ManagePageProps.combined | combined} is specified.
-   */
-  labels?: JSX.Element;
-
-  /**
-   * Custom page header. Can be set to `<></>` to remove the header completely.
-   */
-  header?: JSX.Element;
-
-  /**
-   * Set combined view on or off. Leave empty for a toggle in the header labels
-   * section.
-   */
-  combined?: boolean;
-
-  /**
-   * Theme for the `<Page>` component.
-   */
-  themeId?: string;
-
-  /**
-   * Owner entity kinds to fetch
-   */
-  kinds?: SupportedKinds[];
-
-  /**
-   * Providers for custom manage page features
-   */
-  providers?: ComponentType<{ children?: ReactNode | undefined }>[];
+export interface ManagePageInnerProps {
+  combined: boolean | undefined;
+  headerComponent: ReactNode;
+  providers: (
+    | ComponentType<{ children?: ReactNode | undefined }>
+    | {
+        provider: ComponentType<{ children?: ReactNode | undefined }>;
+        props: Record<string, unknown>;
+      }
+  )[];
 }
 
-/** @public */
-export type HeaderProps = Partial<ComponentProps<typeof Header>>;
-
-/**
- * The main page for for Manage plugin.
- *
- * @public
- */
-export function ManagePageImpl<SupportedKinds extends string>(
-  props: PropsWithChildren<ManagePageProps<SupportedKinds> & HeaderProps>,
+export function ManagePageInner(
+  props: PropsWithChildren<ManagePageInnerProps>,
 ) {
-  const {
-    combined,
-    labels = typeof combined === 'undefined' ? <ManagePageFilters /> : <></>,
-    header,
-    themeId,
-    children,
-    kinds,
-    providers: propProviders = [],
-    ...headerProps
-  } = props;
+  const { combined, headerComponent, providers, children } = props;
 
   // Initialize the state, set default value
   useManagePageCombined(combined);
 
-  const manageApi = useApi(manageApiRef);
-  const providers = [...propProviders, ...manageApi.getProviders()];
-
-  const headerComponent = header ?? (
-    <Header
-      {...headerProps}
-      title={headerProps.title ?? 'Manage'}
-      subtitle={headerProps.subtitle ?? 'Things you own and work with'}
-      children={labels}
-    />
-  );
-
   return (
-    <Page themeId={themeId ?? 'home'}>
-      {headerComponent}
-      <Content noPadding>
-        <KindOrderProvider>
-          <OwnedProvider kinds={kinds}>
-            {providers.reduce(
-              (prev, Provider) => (
-                <Provider children={prev} />
-              ),
-              children,
-            )}
-          </OwnedProvider>
-        </KindOrderProvider>
-      </Content>
-    </Page>
+    <KindOrderProvider>
+      {providers.reduce(
+        (prev, Provider) =>
+          'provider' in Provider ? (
+            <Provider.provider {...Provider.props} children={prev} />
+          ) : (
+            <Provider children={prev} />
+          ),
+        <>
+          {headerComponent}
+          <Content noPadding>{children}</Content>
+        </>,
+      )}
+    </KindOrderProvider>
   );
 }

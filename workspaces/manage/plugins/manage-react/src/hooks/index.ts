@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 export { useAccordionKey } from './use-accordion-key';
-export type { UseUserSettingsOptions } from './use-user-settings';
+export type {
+  UseUserSettingsOptions,
+  UseUserSettingsResult,
+} from './use-user-settings';
 export { useUserSettings } from './use-user-settings';
 export type { ItemWithKey, UseOrderOptions } from './use-order';
 export { useOrder } from './use-order';

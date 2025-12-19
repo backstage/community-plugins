@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { useMemo } from 'react';
+
 import Grid from '@mui/material/Grid';
 
 import { TabOrderCard } from './TabOrderCard';
 import { KindOrderCard } from './KindOrderCard';
+import { SettingsCard } from './SettingsCard/SettingsCard';
+import { Setting } from './types';
 
 /**
  * A component that renders the default settings. These are the `TabOrderCard`
@@ -24,15 +29,30 @@ import { KindOrderCard } from './KindOrderCard';
  *
  * @public
  */
-export function DefaultSettings() {
+export function DefaultSettings({
+  customSettings,
+}: {
+  readonly customSettings: readonly Setting[];
+}) {
+  const settings = useMemo(
+    () =>
+      Array.from(customSettings).sort((a, b) => a.title.localeCompare(b.title)),
+    [customSettings],
+  );
+
   return (
-    <Grid container spacing={3} direction="column">
+    <Grid container spacing={0} sx={{ gap: 3 }} direction="column">
       <Grid item>
         <TabOrderCard />
       </Grid>
       <Grid item>
         <KindOrderCard />
       </Grid>
+      {settings.map(setting => (
+        <Grid item key={setting.node?.spec?.id ?? setting.title}>
+          <SettingsCard setting={setting} />
+        </Grid>
+      ))}
     </Grid>
   );
 }

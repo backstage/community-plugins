@@ -24,9 +24,10 @@ import {
 
 import { usePosition } from './usePosition';
 import { useMutationObserver } from './useMutationObserver';
+import { useTheme } from '@mui/styles';
 
 /**
- * Props for {@link TabContentFullHeight}
+ * Props for {@link ManageTabContentFullHeight}
  *
  * @public
  */
@@ -34,9 +35,9 @@ export interface TabContentFullHeightProps {
   /**
    * Bottom margin.
    *
-   * Defaults to 48px (24px for the page and 24px for the tabbed content)
+   * Defaults to spacing(3) (i.e. 24px)
    */
-  bottomMargin?: number;
+  bottomMargin?: number | string;
 
   /**
    * Set to true, to also resize the first child element (unless it's a progress
@@ -46,19 +47,29 @@ export interface TabContentFullHeightProps {
 }
 
 /** @public */
-export function ManageTabContentFullHeight({
-  children,
-  bottomMargin = 48,
-  resizeChild,
-}: PropsWithChildren<TabContentFullHeightProps>) {
+export function ManageTabContentFullHeight(
+  props: PropsWithChildren<TabContentFullHeightProps>,
+) {
+  const { children, resizeChild } = props;
+
+  const theme = useTheme();
+  const bottomMargin = props.bottomMargin ?? theme.spacing(3);
+
   const [element, setElement] = useState<Element | undefined>(undefined);
 
   const rect = usePosition(element);
 
   const childHeight = useMemo(() => {
-    return !rect
-      ? undefined
-      : rect.client.height - rect.element.top - bottomMargin;
+    if (!rect) {
+      return undefined;
+    }
+
+    const fullHeight = rect.client.height - rect.element.top;
+
+    const bottomMarginWithUnit =
+      typeof bottomMargin === 'number' ? `${bottomMargin}px` : bottomMargin;
+
+    return `calc(${fullHeight}px - ${bottomMarginWithUnit})`;
   }, [rect, bottomMargin]);
 
   const style = useMemo((): CSSProperties => {
@@ -75,8 +86,8 @@ export function ManageTabContentFullHeight({
   useEffect(() => {
     if (resizeChild && element && element.children.length === 1) {
       const child = element.children.item(0) as HTMLElement;
-      if (child.role !== 'progressbar') {
-        child.style.height = `${childHeight}px`;
+      if (child.role !== 'progressbar' && childHeight) {
+        child.style.height = childHeight;
       }
     }
   }, [resizeChild, mutation, element, childHeight]);

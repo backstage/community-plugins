@@ -16,13 +16,13 @@
 import { useContext, createContext, PropsWithChildren, useMemo } from 'react';
 
 export interface SettingsContext {
-  tabs: { path: string; title: string }[];
+  tabs: readonly { path: string; title: string }[];
 }
 
 const ctx = createContext<SettingsContext>(null as any);
 
 export interface SettingsProviderProps {
-  tabs: { path: string; title: string }[];
+  readonly tabs: readonly { path: string; title: string }[];
 }
 
 export function SettingsProvider({

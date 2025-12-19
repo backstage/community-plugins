@@ -32,13 +32,16 @@ import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
   KindStarred,
   ManageColumnModule,
-  simplifyColumns,
   useOwnedEntities,
   useCurrentKindTitle,
   pluralizeKind,
 } from '@backstage-community/plugin-manage-react';
 
-import { ManageColumnSimple, isManageColumnSimple } from './utils';
+import {
+  ManageColumnSimple,
+  isManageColumnSimple,
+  simplifyColumns,
+} from './utils';
 import { ReRender } from './ReRender';
 import {
   defaultPageSize,
@@ -214,9 +217,6 @@ function ManageEntitiesTableInner(
   );
 
   const pageSizeOptions = options?.pageSizeOptions ?? defaultPageSizeOptions;
-  // const [pageSize = defaultPageSize, setPageSize] = useEntitesTablePageSize(
-  //   options?.pageSize ?? pageSizeOptions[0] ?? defaultPageSize,
-  // );
   const pageSize = useEntitesTablePageSize() ?? defaultPageSize;
   const setPageSize = useSetEntitesTablePageSize();
   const paging = options?.paging ?? pageSizeOptions[0] < data.length;

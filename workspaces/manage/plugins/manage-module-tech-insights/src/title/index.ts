@@ -13,33 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactNode } from 'react';
 
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
-
-/** @public */
-export type ManageTechInsightsTitleAsObject = {
-  title: string;
-  tooltip?: ReactNode;
-};
-
-/** @public */
-export type ManageTechInsightsTitleAsElement = { content: ReactNode };
-
-/** @public */
-export type ManageTechInsightsTitle =
-  | ManageTechInsightsTitleAsObject
-  | ManageTechInsightsTitleAsElement;
-
-/** @public */
-export type ManageTechInsightsMapTitle = (
-  check: Check,
-) => ManageTechInsightsTitle;
-
-export function isTitleAsObject(
-  titleInfo: ManageTechInsightsTitle,
-): titleInfo is ManageTechInsightsTitleAsObject {
-  return (
-    typeof (titleInfo as ManageTechInsightsTitleAsObject).title !== 'undefined'
-  );
-}
+export type {
+  ManageTechInsightsTitleAsObject,
+  ManageTechInsightsTitleAsElement,
+  ManageTechInsightsTitle,
+  ManageTechInsightsMapTitle,
+} from './title';

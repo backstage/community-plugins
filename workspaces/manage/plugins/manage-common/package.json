@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-manage-common",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "license": "Apache-2.0",
   "description": "Common functionalities for the manage plugin",
   "main": "src/index.ts",
@@ -37,10 +37,10 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.6"
+    "@backstage/catalog-model": "backstage:^"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5"
+    "@backstage/cli": "backstage:^"
   },
   "files": [
     "dist"

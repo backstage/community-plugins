@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@mui/styles';
-import Tooltip from '@mui/material/Tooltip';
 
-const useStyles = makeStyles((theme: any) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-  },
-}));
+import { createExtensionDataRef } from '@backstage/frontend-plugin-api';
 
-export function NoData() {
-  const { root } = useStyles();
-
-  return (
-    <Tooltip title="No data">
-      <div className={root}>−</div>
-    </Tooltip>
-  );
+/** @public */
+export interface ManageConfig {
+  /**
+   * A list of user settings (as tuples of ["feature", "key"]) which should be
+   * pre-fetched when loading the manage page, for quicker lookup when they're
+   * needed.
+   */
+  primeUserSettings?: [string, string][];
 }
+
+/** @public */
+export const manageConfigDataRef = createExtensionDataRef<ManageConfig>().with({
+  id: 'manage.config.ref',
+});

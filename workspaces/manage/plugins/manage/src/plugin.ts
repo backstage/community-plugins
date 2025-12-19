@@ -13,84 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createComponentExtension,
-  createPlugin,
-  createRoutableExtension,
-} from '@backstage/core-plugin-api';
 
-import { createManageApiFactory } from '@backstage-community/plugin-manage-react';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 
+import { manageApiExtension } from '@backstage-community/plugin-manage-react';
+
+import extensions from './extensions';
 import { rootRouteRef } from './routes';
 
 /** @public */
-export const managePlugin = createPlugin({
-  id: 'manage',
+export const managePlugin = createFrontendPlugin({
+  pluginId: 'manage',
+  info: { packageJson: () => import('../package.json') },
   routes: {
-    root: rootRouteRef,
+    root: convertLegacyRouteRef(rootRouteRef),
   },
-  apis: [createManageApiFactory()],
+  extensions: [manageApiExtension, ...extensions],
 });
-
-/** @public */
-export const ManagePage = managePlugin.provide(
-  createRoutableExtension({
-    name: 'ManagePage',
-    component: () =>
-      import('./components/ManagePage').then(m => m.ManagePageImpl),
-    mountPoint: rootRouteRef,
-  }),
-);
-
-/** @public */
-export const ManageTabs = managePlugin.provide(
-  createComponentExtension({
-    name: 'ManageTabs',
-    component: {
-      lazy: () => import('./components/ManageTabs').then(m => m.ManageTabsImpl),
-    },
-  }),
-);
-
-/** @public */
-export const OrganizationGraph = managePlugin.provide(
-  createComponentExtension({
-    name: 'OrganizationGraph',
-    component: {
-      lazy: () =>
-        import('./components/OrganizationGraph').then(
-          m => m.OrganizationGraphImpl,
-        ),
-    },
-  }),
-);
-
-/** @public */
-export const DefaultSettings = managePlugin.provide(
-  createComponentExtension({
-    name: 'DefaultSettings',
-    component: {
-      lazy: () => import('./components/Settings').then(m => m.DefaultSettings),
-    },
-  }),
-);
-
-/** @public */
-export const KindOrderCard = managePlugin.provide(
-  createComponentExtension({
-    name: 'KindOrderCard',
-    component: {
-      lazy: () => import('./components/Settings').then(m => m.KindOrderCard),
-    },
-  }),
-);
-
-/** @public */
-export const TabOrderCard = managePlugin.provide(
-  createComponentExtension({
-    name: 'TabOrderCard',
-    component: {
-      lazy: () => import('./components/Settings').then(m => m.TabOrderCard),
-    },
-  }),
-);

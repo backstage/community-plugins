@@ -16,36 +16,39 @@
 import { useMemo } from 'react';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { TechInsightsCheckIcon } from '@backstage-community/plugin-tech-insights';
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { ResultCheckIcon } from '@backstage-community/plugin-tech-insights-react';
+import type { Check } from '@backstage-community/plugin-tech-insights-common';
 import {
   ColumnIconError,
   type ManageColumn,
   type GetColumnsFunc,
+  ColumnIconNoData,
 } from '@backstage-community/plugin-manage-react';
 
 import { eqCheck } from '../utils';
 
 import { useEntityInsights } from './hooks';
-import { NoData } from './NoData';
+import { useTableColumnTitle } from './title';
 
 export function makeGetColumns(
-  checkFilter: ((check: Check) => boolean) | undefined,
-  showEmpty: boolean,
+  customCheckFilter: ((check: Check) => boolean) | undefined,
+  customShowEmpty: boolean | undefined,
 ): GetColumnsFunc {
   return function useColumns(entities): ManageColumn[] {
     const { responses, checks } = useEntityInsights(
       entities,
-      checkFilter,
-      showEmpty,
+      customCheckFilter,
+      customShowEmpty,
     );
+
+    const mapTitle = useTableColumnTitle();
 
     return useMemo(
       () =>
         checks.map(
           (check): ManageColumn => ({
             id: `tech-insights-${check.id}`,
-            title: check.name,
+            title: mapTitle(check),
             render: ({ entity }) => {
               const entityRef = stringifyEntityRef(entity);
               const response = responses.get(entityRef);
@@ -58,11 +61,11 @@ export function makeGetColumns(
               );
 
               if (!foundCheck) {
-                return <NoData />;
+                return <ColumnIconNoData />;
               }
 
               return (
-                <TechInsightsCheckIcon
+                <ResultCheckIcon
                   result={foundCheck}
                   entity={entity}
                   missingRendererComponent={
@@ -73,7 +76,7 @@ export function makeGetColumns(
             },
           }),
         ),
-      [checks, responses],
+      [checks, responses, mapTitle],
     );
   };
 }
