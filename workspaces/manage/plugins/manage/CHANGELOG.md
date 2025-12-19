@@ -1,5 +1,20 @@
 # @backstage-community/plugin-manage
 
+## 1.0.0
+
+### Major Changes
+
+- 073b5ec: The plugin module now uses the new frontend system!
+
+  Support for the old frontend system is marked as deprecated.
+
+### Patch Changes
+
+- Updated dependencies [073b5ec]
+- Updated dependencies [073b5ec]
+  - @backstage-community/plugin-manage-common@1.4.1
+  - @backstage-community/plugin-manage-react@2.0.0
+
 ## 0.6.0
 
 ### Minor Changes
