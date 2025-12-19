@@ -3,6 +3,7 @@
 The backend for the Announcements plugin. This plugin provides:
 
 - REST APIs for managing announcements, categories, and tags
+- Database model for storing announcements, categories, and tags
 - Integration with the [`@backstage/plugin-search`](https://github.com/backstage/backstage/tree/master/plugins/search) plugin
 - Integration with the [`@backstage/plugin-permission-backend`](https://github.com/backstage/backstage/tree/master/plugins/permission-backend) plugin
 - Integration with the [`@backstage/plugin-events-backend`](https://github.com/backstage/backstage/tree/master/plugins/events-backend) plugin
@@ -63,6 +64,10 @@ return data;
 ## Integrations
 
 The announcements plugin integrates with the following Backstage plugins.
+
+### Permission
+
+View the [permission](../announcements-common/README.md#resources) documentation.
 
 ### Events
 
