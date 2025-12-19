@@ -2,13 +2,15 @@ backend:
   database:
     client: pg
     connection:
-      host: localhost
-      port: 5432
-      user: postgres
-      password: postgres
+      host: ${POSTGRES_HOST}
+      port: ${POSTGRES_PORT}
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
 
 auth:
   providers:
+    # allows you to select a user and group to be the owner of the announcement
+    # when creating announcements locally
     guest:
       userEntityRef: user:default/user-1
       ownershipEntityRefs: [group:default/team-a]
