@@ -46,7 +46,9 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@backstage/backend-plugin-api": "1.5.0",
+    "@backstage/backend-test-utils": "1.10.1"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
