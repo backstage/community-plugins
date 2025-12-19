@@ -1,0 +1,15 @@
+backend:
+  database:
+    client: pg
+    connection:
+      host: localhost
+      port: 5432
+      user: postgres
+      password: postgres
+
+auth:
+  providers:
+    guest:
+      userEntityRef: user:default/user-1
+      ownershipEntityRefs: [group:default/team-a]
+      dangerouslyAllowOutsideDevelopment: false

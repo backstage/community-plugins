@@ -10,6 +10,17 @@ The backend for the Announcements plugin. This plugin provides:
 - Integration with the [`@backstage/notifications-backend`](https://github.com/backstage/backstage/tree/master/plugins/notifications-backend) plugin
 - Integration with the [Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor). Audit logging helps to track announcements creation, updates, and deletion.
 
+## Table of contents
+
+- [Installation](#installation)
+- [API Examples](#api-examples)
+- [Integrations](#integrations)
+- [Local development](#local-development)
+  - [Setup](#setup)
+  - [Database](#database)
+    - [Postgres](#postgres)
+    - [Seeding the database](#seeding-the-database)
+
 ## Installation
 
 To install it to your backend package, run the following command:
@@ -27,64 +38,7 @@ const backend = createBackend();
 backend.add(import('@backstage-community/plugin-announcements-backend'));
 ```
 
-## Development
-
-This plugin backend can be started in a standalone mode from directly in this
-package with `yarn start`. It is a limited setup that is most convenient when
-developing the plugin backend itself.
-
-If you want to run the entire project, including the frontend, run `yarn start` from the root directory.
-
-### Setup
-
-```sh
-# install dependencies
-yarn install
-
-# set .env
-cp env.sample .env
-source .env
-
-# start the backend
-yarn start
-```
-
-### Database
-
-The plugin includes support for postgres and better-sqlite3 databases. By default, the plugin uses a postgres database via docker-compose. Update the `app-config.yaml` to use the `better-sqlite3` database.
-
-#### Postgres
-
-The postgres database can be started with docker-compose. Don't forget to copy the `env.sample`.
-
-```sh
-# start the postgres database
-docker-compose up -d
-
-# stop the postgres database
-docker-compose down -v
-```
-
-#### better-sqlite3
-
-The better-sqlite3 database can be seeded with categories, tags, and announcements.
-
-With the backend running,
-
-```sh
-# runs migrations and seeds the database
-yarn db:setup
-
-# or run them separately
-yarn db:migrations
-yarn db:seed
-```
-
-This will create a `local.sqlite` file under the `db/` directory.
-
-Visit [knexjs](https://knexjs.org/guide/migrations.html) to learn more about the database migrations and seeding.
-
-### API Examples
+## API examples
 
 ```sh
 # get all announcements
@@ -106,11 +60,86 @@ const data = await response.json();
 return data;
 ```
 
-### Notifications for Announcements
+## Integrations
 
-Backstage’s Notification System empowers plugins and services to deliver alerts to users and is directly visible in the UI or via external channels. Visit the [docs](https://backstage.io/docs/notifications/) on notifications for more information.
+The announcements plugin integrates with the following Backstage plugins.
 
-The Notification plugin delivers real-time alerting, with backend/frontend components to send and display notifications - including push signals.
-To trigger alerts when a new announcement appears, you can combine these systems: send a notification via the Notifications backend whenever an announcement is created.
+### Events
 
-Announcement notifications are disabled by-default. Notifications can be sent if "sendNotification" option in the UI is enabled.
+View the [events](../announcements-node/docs/events.md) documentation.
+
+### Signals
+
+View the [signals](../announcements-node/docs/signals.md) documentation.
+
+### Notifications
+
+Backstage's Notification System enables plugins and services to deliver real-time alerts to users, visible in the UI or via external channels. The announcements plugin can send a notification through the Notifications backend whenever an announcement is created. Announcement notifications are disabled by default and can be enabled via the `sendNotification` option when creating an announcement in the UI.
+
+See the notifications [docs](https://backstage.io/docs/notifications/).
+
+### Search
+
+View the search module's [README](../search-backend-module-announcements/README.md).
+
+## Local development
+
+This plugin backend can be started in a standalone mode from directly in this
+package with `yarn start`. It is a limited setup that is most convenient when
+developing the plugin backend itself.
+
+If you want to run the entire project, including the frontend, run `yarn start` from the root directory.
+
+### Setup
+
+```sh
+# install dependencies
+yarn install
+
+# start the backend with in-memory database
+yarn start
+```
+
+### Database
+
+The plugin defaults to better-sqlite3 in the main `app-config.yaml`. If you want to use postgres, you can via docker-compose. We recommend you copy the `app-config.local.yaml.sample` to `app-config.local.yaml` and update the database configuration.
+
+The postgres database can be seeded with categories, tags, and announcements.
+
+#### Postgres
+
+The postgres database can be started with docker-compose. You will need to copy the `env.sample` to `.env`, the `app-config.local.yaml.sample` to `app-config.local.yaml`.
+
+```sh
+# copy the env.sample to .env
+cp env.sample .env
+
+# copy the app-config.local.yaml.sample to app-config.local.yaml
+cp app-config.local.yaml.sample app-config.local.yaml
+
+# start the postgres database
+docker-compose up -d
+
+# stop the postgres database
+docker-compose down -v
+
+# start the backend with postgres database
+yarn start
+```
+
+#### Seeding the database
+
+The postgres database can be seeded with categories, tags, and announcements.
+
+```sh
+# initial or reset the database
+yarn db:setup
+```
+
+```sh
+# running migrations
+yarn db:migrations
+
+# seeding the database
+yarn db:seed
+```
