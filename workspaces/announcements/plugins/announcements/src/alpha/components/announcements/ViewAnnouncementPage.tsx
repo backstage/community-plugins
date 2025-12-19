@@ -67,24 +67,20 @@ const AnnouncementCategoryBadge = (props: {
     <Link
       href={`${announcementsLink()}?category=${category.slug}`}
       color="secondary"
-      variant="body-x-small"
+      variant="body-small"
     >
-      <Text variant="body-small">
-        <Flex align="center" gap="2">
-          <RiPriceTag3Line size={16} /> {category?.title}
-        </Flex>
-      </Text>
+      <Flex align="center" gap="2">
+        <RiPriceTag3Line size={16} /> {category?.title}
+      </Flex>
     </Link>
   );
 };
 
-const AnnouncementTagsBadges = (props: { tags: AnnouncementTag[] }) => {
-  const { tags } = props;
+const AnnouncementTagsTagGroup = (props: { tags: AnnouncementTag[] }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
-
   return (
     <TagGroup aria-label="Announcement Tags">
-      {tags.map(tag => (
+      {props.tags.map(tag => (
         <Tag
           key={tag.slug}
           size="small"
@@ -94,6 +90,18 @@ const AnnouncementTagsBadges = (props: { tags: AnnouncementTag[] }) => {
         </Tag>
       ))}
     </TagGroup>
+  );
+};
+
+const BackToAnnouncementsButton = () => {
+  const announcementsLink = useRouteRef(rootRouteRef);
+  return (
+    <Link href={announcementsLink()} color="secondary" variant="body-x-small">
+      <Flex align="center" gap="2">
+        <RiArrowLeftLine size={16} />
+        <Text variant="body-x-small"> Back to announcements</Text>
+      </Flex>
+    </Link>
   );
 };
 
@@ -158,7 +166,7 @@ const AnnouncementDetailsCard = (props: AnnouncementDetailsCardProps) => {
       </Box>
 
       <CardBody>
-        <AnnouncementTagsBadges tags={tags ?? []} />
+        <AnnouncementTagsTagGroup tags={tags ?? []} />
         <MarkdownRenderer content={body} rendererType={markdownRenderer} />
       </CardBody>
     </Card>
@@ -168,18 +176,6 @@ const AnnouncementDetailsCard = (props: AnnouncementDetailsCardProps) => {
 type ViewAnnouncementPageProps = {
   title: string;
   markdownRenderer?: MarkdownRendererTypeProps;
-};
-
-const BackToAnnouncementsButton = () => {
-  const announcementsLink = useRouteRef(rootRouteRef);
-  return (
-    <Link href={announcementsLink()} color="secondary" variant="body-x-small">
-      <Flex align="center" gap="2">
-        <RiArrowLeftLine size={16} />
-        <Text variant="body-x-small"> Back to announcements</Text>
-      </Flex>
-    </Link>
-  );
 };
 
 export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
@@ -213,7 +209,7 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
       />
 
       <Container mb="10">
-        <Grid.Root columns="1">
+        <Grid.Root columns="1" p="2">
           <Grid.Item>
             <BackToAnnouncementsButton />
           </Grid.Item>

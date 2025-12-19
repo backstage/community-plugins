@@ -17,7 +17,7 @@ import { useState, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
 import { Pagination } from '@material-ui/lab';
-import { Flex, Grid, Box, Skeleton, Text } from '@backstage/ui';
+import { Flex, Grid, Box, Skeleton, Text, Container } from '@backstage/ui';
 import { AnnouncementCard } from './AnnouncementCard';
 
 type AnnouncementsGridProps = {
@@ -76,7 +76,7 @@ export const AnnouncementsGrid = ({
   }
 
   return (
-    <>
+    <Container>
       <Grid.Root columns={{ xs: '12', md: '2', lg: '3' }}>
         {announcements.results.map(announcement => (
           <Grid.Item key={announcement.id}>
@@ -97,6 +97,6 @@ export const AnnouncementsGrid = ({
           />
         </Flex>
       )}
-    </>
+    </Container>
   );
 };

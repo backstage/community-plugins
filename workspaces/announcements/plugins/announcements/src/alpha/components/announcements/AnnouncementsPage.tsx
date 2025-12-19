@@ -16,9 +16,9 @@
 import { useLocation } from 'react-router-dom';
 import { useAnnouncementsPermissions } from '@backstage-community/plugin-announcements-react';
 import { Container, HeaderPage } from '@backstage/ui';
+
 import { AnnouncementsGrid } from './AnnouncementsGrid';
 import { ContextMenu } from './ContextMenu';
-
 import { MarkdownRendererTypeProps } from '../../../components';
 
 export type AnnouncementsPageProps = {
