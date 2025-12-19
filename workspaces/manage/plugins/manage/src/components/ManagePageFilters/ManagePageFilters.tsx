@@ -49,7 +49,7 @@ export function ManagePageFilters({
   switchColor?: SwitchColor;
 }) {
   const { label } = useStyles();
-  const [combined, setCombined] = useManagePageCombined();
+  const { value: combined, setValue: setCombined } = useManagePageCombined();
 
   const handleChange = useCallback(
     (_event: unknown, checked: boolean) => {

@@ -17,19 +17,26 @@ import { ReactNode } from 'react';
 
 import { SettingsProvider } from './SettingsProvider';
 import { DefaultSettings } from './DefaultSettings';
+import { Setting } from './types';
 
 export interface SettingsProps {
-  tabs: { path: string; title: string }[];
+  readonly tabs: readonly { path: string; title: string }[];
 
-  content?: ReactNode;
+  readonly content?: ReactNode;
+
+  readonly customSettings: readonly Setting[];
 }
 
 export function Settings(props: SettingsProps) {
-  const { tabs, content } = props;
+  const { tabs, content, customSettings } = props;
 
   return (
     <SettingsProvider tabs={tabs}>
-      {content === true ? <DefaultSettings /> : content}
+      {content === true ? (
+        <DefaultSettings customSettings={customSettings} />
+      ) : (
+        content
+      )}
     </SettingsProvider>
   );
 }

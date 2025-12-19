@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  configApiRef,
   createApiFactory,
   createApiRef,
   discoveryApiRef,
@@ -64,10 +65,16 @@ export function createManageApiFactory(options?: ApiFactoryOptions) {
 
   return createApiFactory({
     api: manageApiRef,
-    deps: { ...apiDeps, discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+    deps: {
+      ...apiDeps,
+      configApi: configApiRef,
+      discoveryApi: discoveryApiRef,
+      fetchApi: fetchApiRef,
+    },
     factory(deps) {
-      const { discoveryApi, fetchApi, ...providers } = deps;
+      const { configApi, discoveryApi, fetchApi, ...providers } = deps;
       return new DefaultManageApi({
+        configApi,
         discoveryApi,
         fetchApi,
         kindOrder,

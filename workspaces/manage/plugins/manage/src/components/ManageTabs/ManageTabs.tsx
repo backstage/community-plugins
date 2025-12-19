@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { Fragment, ComponentProps, ReactNode, useMemo } from 'react';
+import { ReactElement, ReactNode, useMemo } from 'react';
 
-import Alert from '@mui/material/Alert';
 import { capitalize } from '@mui/material/utils';
+import { makeStyles } from '@mui/styles';
+import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
 
 import { RoutedTabs, TableOptions } from '@backstage/core-components';
 
@@ -32,16 +34,23 @@ import {
 
 import {
   TableColumn,
-  ManageEntitiesTable,
   TableRow,
+  ManageEntitiesTable,
 } from '../ManageEntitiesList';
 import { useManagePageCombined } from '../ManagePageFilters';
-import { MANAGE_KIND_COMMON } from './types';
-import { Settings } from '../Settings';
+import { MANAGE_KIND_COMMON, SubRouteTab } from './types';
+import { Settings, Setting } from '../Settings';
 import { TabsOrderProvider, useTabsOrder } from '../TabsOrder';
+import { renderArray } from '../../utils/renderArray';
 
-/** @public */
-export type SubRouteTab = ComponentProps<typeof RoutedTabs>['routes'][number];
+const useStyles = makeStyles(theme => ({
+  cardsHolder: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+}));
 
 /**
  * Options for configuring how an entity kind is displayed.
@@ -49,6 +58,11 @@ export type SubRouteTab = ComponentProps<typeof RoutedTabs>['routes'][number];
  * @public
  */
 export interface ManageKindOptions {
+  /**
+   * Card widgets
+   */
+  cards?: ReactElement[];
+
   /**
    * A component header (or array of header components) to show above the entity
    * table.
@@ -72,11 +86,7 @@ export interface ManageKindOptions {
   tableOptions?: TableOptions<TableRow>;
 }
 
-/**
- * Props for {@link ManageTabs}.
- *
- * @public
- */
+/** @public */
 export interface ManageTabsProps {
   /**
    * A component header (or array of header components) to show above all entity
@@ -96,8 +106,8 @@ export interface ManageTabsProps {
   commonColumns?: TableColumn[];
 
   /**
-   * Show all entities (of different kinds) in the same table, instead of
-   * rendering tabs for each kind.
+   * When showing all entities (of different kinds) in the same table, instead of
+   * rendering tabs for each kind, this is the configuration of the view.
    */
   combined?: ManageKindOptions;
 
@@ -141,17 +151,16 @@ export interface ManageTabsProps {
    * This can also be a custom component to render as the settings tab.
    */
   settings?: boolean | ReactNode;
+
+  /** Custom settings widgets */
+  customSettings?: Setting[];
 }
 
 const defaultNothingOwned = (
   <Alert severity="info">You and your team(s) don't own any entities</Alert>
 );
 
-/**
- * The main component for displaying tabs for entities, and other custom tabs.
- *
- * @public
- */
+/** @public */
 export function ManageTabsImpl(props: ManageTabsProps) {
   return (
     <TabsOrderProvider>
@@ -160,7 +169,7 @@ export function ManageTabsImpl(props: ManageTabsProps) {
   );
 }
 
-function ManageTabsInner(props: ManageTabsProps) {
+export function ManageTabsInner(props: ManageTabsProps) {
   const {
     combined,
     commonColumns = [],
@@ -169,11 +178,12 @@ function ManageTabsInner(props: ManageTabsProps) {
     tabsBefore = [],
     tabsAfter = [],
     settings = true,
+    customSettings = [],
   } = props;
 
   const tabOrder = useTabsOrder() ?? [];
 
-  const [settingsCombined] = useManagePageCombined();
+  const { value: settingsCombined } = useManagePageCombined();
 
   const kindSetupMap = useMemo(
     (): Map<string, ManageKindOptions> =>
@@ -195,6 +205,7 @@ function ManageTabsInner(props: ManageTabsProps) {
   const onNothingOwned =
     kinds.length === 0 ? props.onNothingOwned ?? defaultNothingOwned : null;
 
+  const allKindsCards = kindSetupMap.get(MANAGE_KIND_COMMON)?.cards;
   const allKindsHeader = kindSetupMap.get(MANAGE_KIND_COMMON)?.header;
   const allKindsFooter = kindSetupMap.get(MANAGE_KIND_COMMON)?.footer;
   const allKindsColumns = kindSetupMap.get(MANAGE_KIND_COMMON)?.columns;
@@ -203,12 +214,14 @@ function ManageTabsInner(props: ManageTabsProps) {
 
   const makeTable = (kind: string) => {
     const {
+      cards,
       header: headers,
       footer: footers,
       columns,
       tableOptions: kindTableOptions,
     } = kindSetupMap.get(kind) ?? {};
 
+    const kindCards = arrayify([...(cards ?? []), ...(allKindsCards ?? [])]);
     const kindHeaders = [
       ...commonHeader,
       ...arrayify(headers ?? allKindsHeader),
@@ -223,6 +236,7 @@ function ManageTabsInner(props: ManageTabsProps) {
 
     return (
       <CurrentKindProvider kind={kind}>
+        <Cards>{kindCards}</Cards>
         {renderArray(kindHeaders?.length ? null : commonHeader)}
         {renderArray(kindHeaders)}
         <ManageEntitiesTable
@@ -241,6 +255,7 @@ function ManageTabsInner(props: ManageTabsProps) {
   ): JSX.Element => {
     const table = (
       <>
+        <Cards>{options.cards}</Cards>
         {renderArray(commonHeader)}
         {renderArray(options.header ?? null)}
         <ManageEntitiesTable
@@ -298,7 +313,7 @@ function ManageTabsInner(props: ManageTabsProps) {
   ];
 
   const orderedTabs = Array.from(
-    useOrder(tabs, tabOrder, { keyOf: tab => tab.path }),
+    useOrder(tabs, tabOrder, { keyOf: tab => stripLeadingSlash(tab.path) }),
   );
 
   if (settings) {
@@ -306,7 +321,13 @@ function ManageTabsInner(props: ManageTabsProps) {
     orderedTabs.push({
       path: 'settings',
       title: 'Settings',
-      children: <Settings tabs={tabsForSettings} content={settings} />,
+      children: (
+        <Settings
+          tabs={tabsForSettings}
+          content={settings}
+          customSettings={customSettings}
+        />
+      ),
     });
   }
 
@@ -349,17 +370,30 @@ function ManageTabsInner(props: ManageTabsProps) {
   );
 }
 
-function maybeArrayify<T>(v: T | T[] | null): T[] | null {
-  if (!v) {
+function Cards({ children }: { children?: ReactElement[] }) {
+  const { cardsHolder } = useStyles();
+
+  if (!children || (Array.isArray(children) && children.length === 0)) {
     return null;
   }
-  return arrayify(v);
+
+  return (
+    <Grid
+      container
+      spacing={0}
+      sx={{ gap: 2 }}
+      className={cardsHolder}
+      alignItems="stretch"
+    >
+      {children.map((card, i) => (
+        <Grid item key={card.key ?? `card-${i}`}>
+          {card}
+        </Grid>
+      ))}
+    </Grid>
+  );
 }
 
-function renderArray<T extends ReactNode>(v: T | T[] | null): ReactNode {
-  const arr = maybeArrayify(v);
-  if (!arr) {
-    return null;
-  }
-  return arr.map((item, index) => <Fragment key={index}>{item}</Fragment>);
+function stripLeadingSlash(path: string) {
+  return path.startsWith('/') ? path.substring(1) : path;
 }

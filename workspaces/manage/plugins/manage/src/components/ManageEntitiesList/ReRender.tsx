@@ -17,6 +17,11 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 
 import { Progress } from '@backstage/core-components';
 
+/**
+ * The ReRender component is a utility component that forces a complete
+ * re-render of its children. This allows e.g. the number of hooks in the
+ * children components to change, because they are unmounted and remounted.
+ */
 export function ReRender(props: PropsWithChildren<{ uniq: any }>) {
   const { children, uniq } = props;
 

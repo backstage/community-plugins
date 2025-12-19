@@ -15,11 +15,11 @@
  */
 import { stringifyEntityRef, type Entity } from '@backstage/catalog-model';
 
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import type {
   BulkCheckResponse,
   CheckResponse,
   CheckResult,
+  Check,
 } from '@backstage-community/plugin-tech-insights-common';
 import { useCurrentKindTitle } from '@backstage-community/plugin-manage-react';
 
@@ -48,9 +48,15 @@ export function eqCheck(a: Check | CheckResponse, b: Check | CheckResponse) {
 export function filterEmptyChecks(
   bulkCheckResponse: BulkCheckResponse | undefined,
   entities: Entity[],
+  checks: Check[],
   includeEmpty = false,
-): { responses: Map<string, CheckResult[]>; usedChecks: Set<string> } {
-  const responses = new Map<string, CheckResult[]>();
+): {
+  responsesMap: Map<string, CheckResult[]>;
+  responses: BulkCheckResponse;
+  usedChecks: Set<string>;
+  filteredChecks: Check[];
+} {
+  const responsesMap = new Map<string, CheckResult[]>();
 
   const usedChecks = new Set<string>();
 
@@ -58,18 +64,24 @@ export function filterEmptyChecks(
     entities.map(entity => stringifyEntityRef(entity)),
   );
 
-  bulkCheckResponse
-    ?.filter(resp => entitiesSet.has(resp.entity))
-    ?.forEach(resp => {
-      responses.set(resp.entity, resp.results);
+  const responses = (bulkCheckResponse ?? []).filter(resp =>
+    entitiesSet.has(resp.entity),
+  );
 
-      resp.results.forEach(res => {
-        if (includeEmpty || typeof res.result !== 'undefined')
-          usedChecks.add(stringifyCheck(res.check));
-      });
+  responses?.forEach(resp => {
+    responsesMap.set(resp.entity, resp.results);
+
+    resp.results.forEach(res => {
+      if (includeEmpty || typeof res.result !== 'undefined')
+        usedChecks.add(stringifyCheck(res.check));
     });
+  });
 
-  return { responses, usedChecks };
+  const filteredChecks = checks.filter(check =>
+    includeEmpty ? true : usedChecks.has(stringifyCheck(check)),
+  );
+
+  return { responsesMap, responses, usedChecks, filteredChecks };
 }
 
 export function useAccordionTitle() {

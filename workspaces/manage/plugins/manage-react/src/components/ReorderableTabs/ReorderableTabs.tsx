@@ -40,7 +40,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 /**
- * Props for {@link ReorderableTabs}
+ * Props for {@link ManageReorderableTabs}
  *
  * @public
  */

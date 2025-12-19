@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import type {
+  ConfigApi,
+  DiscoveryApi,
+  FetchApi,
+} from '@backstage/core-plugin-api';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 
 import type { OwnersAndOwnedEntities } from '@backstage-community/plugin-manage-common';
@@ -30,19 +34,24 @@ import { orderEntities } from './order-entities';
 
 /** @public */
 export interface DefaultManageApiOptions {
+  configApi: ConfigApi;
   discoveryApi: DiscoveryApi;
   fetchApi: FetchApi;
 
   /**
    * The kind order to use when rendering the owned entities.
+   *
+   * @deprecated Use configuration `manage.kindOrder` instead.
    */
   kindOrder?: string[];
 
   /**
    * Manage providers to include. These will be mounted top-level, so that any
    * component in the Manage page can access them
+   *
+   * @deprecated This will be replaced when support for the old frontend system is removed.
    */
-  providers: Iterable<ManageModuleApi>;
+  providers?: Iterable<ManageModuleApi>;
 }
 
 /**
@@ -51,13 +60,14 @@ export interface DefaultManageApiOptions {
  * @public
  */
 export class DefaultManageApi implements ManageApi {
-  public readonly kindOrder: string[];
+  public readonly kindOrder: readonly string[];
   readonly #discoveryApi: DiscoveryApi;
   readonly #fetchApi: FetchApi;
 
   readonly #providers: ManageProvider[] = [];
 
   public constructor({
+    configApi,
     discoveryApi,
     fetchApi,
     kindOrder,
@@ -66,9 +76,10 @@ export class DefaultManageApi implements ManageApi {
     this.#discoveryApi = discoveryApi;
     this.#fetchApi = fetchApi;
 
-    this.kindOrder = kindOrder ?? [];
+    this.kindOrder =
+      kindOrder ?? configApi.getOptionalStringArray('manage.order.kinds') ?? [];
 
-    this.#providers = Array.from(providers)
+    this.#providers = Array.from(providers ?? [])
       .map(provider => provider.getProvider?.())
       .filter((v): v is NonNullable<typeof v> => !!v);
   }
@@ -92,14 +103,15 @@ export class DefaultManageApi implements ManageApi {
 
     const owners: Owners = {
       groups: ancestry.filter(entity => entity.kind === 'Group'),
-      ownedEntityRefs: ancestry.map(entity => stringifyEntityRef(entity)),
+      user: ancestry.find(entity => entity.kind === 'User'),
+      ownerEntityRefs: ancestry.map(entity => stringifyEntityRef(entity)),
     };
 
     return {
       ownedEntities: orderEntities(
         data.ownedEntities,
         kinds,
-        owners.ownedEntityRefs,
+        owners.ownerEntityRefs,
       ),
       owners,
     };

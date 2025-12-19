@@ -32,14 +32,13 @@ export function useResizeObserver(
     [],
   );
 
-  useIsomorphicLayoutEffect(() => {
+  useIsomorphicLayoutEffect((): void | (() => void) => {
     if (!element) {
-      return;
+      return undefined;
     }
 
     observer.observe(element);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       observer.disconnect();
     };
