@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAnnouncementsPermissions } from '@backstage-community/plugin-announcements-react';
 import { Container, HeaderPage } from '@backstage/ui';
@@ -22,30 +21,11 @@ import { ContextMenu } from './ContextMenu';
 
 import { MarkdownRendererTypeProps } from '../../../components';
 
-/**
- * @deprecated
- */
-type AnnouncementCreateButtonProps = {
-  name?: string;
-};
-
 export type AnnouncementsPageProps = {
-  /** @deprecated */
-  themeId: string;
   title: string;
-  /** @deprecated */
-  subtitle?: ReactNode;
   maxPerPage?: number;
   category?: string;
   tags?: string[];
-  /** @deprecated */
-  buttonOptions?: AnnouncementCreateButtonProps;
-  /** @deprecated */
-  cardOptions?: {
-    titleLength?: number;
-  };
-  /** @deprecated */
-  hideContextMenu?: boolean;
   hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
@@ -59,15 +39,11 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const permissions = useAnnouncementsPermissions();
 
   const {
-    // hideContextMenu, // deprecate
     hideInactive,
     hideStartAt,
-    // themeId,
-    // subtitle,
     title,
     maxPerPage,
     category,
-    cardOptions,
     sortby,
     order,
   } = props;
@@ -88,7 +64,6 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           maxPerPage={maxPerPage ?? 10}
           category={category ?? queryParams.get('category') ?? undefined}
           tags={props.tags}
-          cardTitleLength={cardOptions?.titleLength}
           active={!!hideInactive}
           sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}

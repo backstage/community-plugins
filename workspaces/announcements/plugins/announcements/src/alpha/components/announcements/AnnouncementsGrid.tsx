@@ -24,7 +24,6 @@ type AnnouncementsGridProps = {
   maxPerPage: number;
   category?: string;
   tags?: string[];
-  cardTitleLength?: number;
   active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
@@ -35,7 +34,6 @@ export const AnnouncementsGrid = ({
   maxPerPage,
   category,
   tags,
-  cardTitleLength,
   active,
   sortBy,
   order,
@@ -84,7 +82,6 @@ export const AnnouncementsGrid = ({
           <Grid.Item key={announcement.id}>
             <AnnouncementCard
               announcement={announcement}
-              titleLength={cardTitleLength}
               hideStartAt={hideStartAt}
             />
           </Grid.Item>

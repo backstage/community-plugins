@@ -31,18 +31,15 @@ import {
   Flex,
 } from '@backstage/ui';
 import { formatAnnouncementStartTime } from '../../../components/utils/announcementDateUtils';
-import { truncate } from '../../../components/utils/truncateUtils';
 import { rootRouteRef, announcementViewRouteRef } from '../../../routes';
 
 type AnnouncementCardProps = {
   announcement: Announcement;
-  titleLength?: number;
   hideStartAt?: boolean;
 };
 
 export const AnnouncementCard = ({
   announcement,
-  titleLength = 50,
   hideStartAt,
 }: AnnouncementCardProps) => {
   const announcementsLink = useRouteRef(rootRouteRef);
