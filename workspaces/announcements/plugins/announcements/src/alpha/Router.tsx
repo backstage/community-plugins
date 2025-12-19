@@ -25,11 +25,10 @@ import {
   ViewAnnouncementPage,
 } from './components';
 
-// todo: pending rebuild for nfs with @backstage/ui
+// todo: pending rebuild for nfs with `@backstage/ui`
 import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
 
 type RouterProps = {
-  /** title for the announcements page. Defaults to 'Announcements' */
   title?: string;
   category?: string;
   hideInactive?: boolean;

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 export * from './AnnouncementsPage';
-export * from './AnnouncementPage';
+export * from './ViewAnnouncementPage';

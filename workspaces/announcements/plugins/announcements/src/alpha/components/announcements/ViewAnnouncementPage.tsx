@@ -38,16 +38,64 @@ import {
   useAnalytics,
 } from '@backstage/core-plugin-api';
 import { Alert } from '@material-ui/lab';
-import { RiArrowLeftLine } from '@remixicon/react';
+import { RiArrowLeftLine, RiHashtag, RiPriceTag3Line } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import {
+  Announcement,
+  Tag as AnnouncementTag,
+  Category,
+} from '@backstage-community/plugin-announcements-common';
 
 import { announcementViewRouteRef, rootRouteRef } from '../../../routes';
 import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,
 } from '../../../components';
+
+const AnnouncementCategoryBadge = (props: {
+  category: Category | undefined;
+}) => {
+  const { category } = props;
+  const announcementsLink = useRouteRef(rootRouteRef);
+
+  if (!category) {
+    return null;
+  }
+
+  return (
+    <Link
+      href={`${announcementsLink()}?category=${category.slug}`}
+      color="secondary"
+      variant="body-x-small"
+    >
+      <Text variant="body-small">
+        <Flex align="center" gap="2">
+          <RiPriceTag3Line size={16} /> {category?.title}
+        </Flex>
+      </Text>
+    </Link>
+  );
+};
+
+const AnnouncementTagsBadges = (props: { tags: AnnouncementTag[] }) => {
+  const { tags } = props;
+  const announcementsLink = useRouteRef(rootRouteRef);
+
+  return (
+    <TagGroup aria-label="Announcement Tags">
+      {tags.map(tag => (
+        <Tag
+          key={tag.slug}
+          size="small"
+          href={`${announcementsLink()}?tag=${tag.slug}`}
+        >
+          <RiHashtag size={10} /> {tag.title}
+        </Tag>
+      ))}
+    </TagGroup>
+  );
+};
 
 type AnnouncementDetailsCardProps = {
   announcement: Announcement;
@@ -92,43 +140,25 @@ const AnnouncementDetailsCard = (props: AnnouncementDetailsCardProps) => {
         }}
       >
         <CardHeader>
-          <Flex justify="between">
-            <Text variant="title-medium" as="h2">
-              {category?.title && (
-                <Text variant="body-small" as="p">
-                  {category?.title}
-                </Text>
-              )}
-              {title}
-            </Text>
+          <Flex justify="between" pb="3">
+            <AnnouncementCategoryBadge category={category} />
 
             <Text variant="body-small" as="p">
               {DateTime.fromISO(created_at).toRelative()}
             </Text>
           </Flex>
+          <Text variant="title-medium" as="h2">
+            {title}
+          </Text>
 
-          <Flex direction="column" gap="2">
-            <Text variant="body-small" as="p">
-              By{' '}
-              <EntityRefLink entityRef={on_behalf_of || publisher} hideIcon />
-            </Text>
-
-            {tags && tags.length > 0 && (
-              <Text variant="body-small" as="p">
-                <TagGroup aria-label="Announcement Tags">
-                  {tags.map(tag => (
-                    <Tag key={tag.slug} size="small">
-                      #{tag.title}
-                    </Tag>
-                  ))}
-                </TagGroup>
-              </Text>
-            )}
-          </Flex>
+          <Text variant="body-small" as="p">
+            By <EntityRefLink entityRef={on_behalf_of || publisher} hideIcon />
+          </Text>
         </CardHeader>
       </Box>
 
       <CardBody>
+        <AnnouncementTagsBadges tags={tags ?? []} />
         <MarkdownRenderer content={body} rendererType={markdownRenderer} />
       </CardBody>
     </Card>
@@ -182,13 +212,13 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
         ]}
       />
 
-      <Container>
+      <Container mb="10">
         <Grid.Root columns="1">
-          <Grid.Item colSpan="1">
+          <Grid.Item>
             <BackToAnnouncementsButton />
           </Grid.Item>
 
-          <Grid.Item colSpan="1">
+          <Grid.Item>
             <AnnouncementDetailsCard
               announcement={announcement}
               markdownRenderer={props.markdownRenderer}
