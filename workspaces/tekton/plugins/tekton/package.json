@@ -28,7 +28,8 @@
     "pluginPackage": "@backstage-community/plugin-tekton",
     "pluginPackages": [
       "@backstage-community/plugin-tekton",
-      "@backstage-community/plugin-tekton-common"
+      "@backstage-community/plugin-tekton-common",
+      "@backstage-community/plugin-tekton-react"
     ]
   },
   "sideEffects": [
@@ -48,6 +49,7 @@
   "dependencies": {
     "@aonic-ui/pipelines": "^3.1.0",
     "@backstage-community/plugin-tekton-common": "workspace:^",
+    "@backstage-community/plugin-tekton-react": "workspace:^",
     "@backstage/catalog-model": "^1.7.6",
     "@backstage/core-components": "^0.18.3",
     "@backstage/core-plugin-api": "^1.12.0",
@@ -58,7 +60,6 @@
     "@backstage/plugin-permission-react": "^0.4.38",
     "@backstage/theme": "^0.7.0",
     "@backstage/ui": "^0.9.1",
-    "@janus-idp/shared-react": "^2.16.0",
     "@kubernetes/client-node": "1.0.0-rc7",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.11.3",

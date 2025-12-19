@@ -33,7 +33,7 @@ import Check from '@material-ui/icons/Check';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import classNames from 'classnames';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@backstage-community/plugin-tekton-react';
 
 import { TaskStep } from '../../utils/taskRun-utils';
 import { calculateDuration } from '../../utils/tekton-utils';

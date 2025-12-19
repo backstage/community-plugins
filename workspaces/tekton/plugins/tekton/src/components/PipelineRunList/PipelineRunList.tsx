@@ -44,7 +44,7 @@ import {
   ComputedStatus,
   PipelineRunKind,
   pipelineRunStatus,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { ClusterErrors, Order } from '../../types/types';

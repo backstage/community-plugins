@@ -16,7 +16,7 @@
 import {
   pipelineRunFilterReducer,
   PipelineRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { Status } from '../common/Status';
 
