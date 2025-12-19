@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat
 
+## 0.1.2
+
+### Patch Changes
+
+- 0cd7a1d: Bump typescript compiler to 5.4
+
 ## 0.1.1
 
 ### Patch Changes
