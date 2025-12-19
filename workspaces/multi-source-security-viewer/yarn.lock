@@ -1880,27 +1880,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-jenkins-backend@npm:^0.20.0":
-  version: 0.20.0
-  resolution: "@backstage-community/plugin-jenkins-backend@npm:0.20.0"
+"@backstage-community/plugin-jenkins-backend@npm:^0.22.0":
+  version: 0.22.0
+  resolution: "@backstage-community/plugin-jenkins-backend@npm:0.22.0"
   dependencies:
-    "@backstage-community/plugin-jenkins-common": "npm:^0.12.0"
-    "@backstage/backend-defaults": "npm:^0.13.0"
-    "@backstage/backend-plugin-api": "npm:^1.4.4"
-    "@backstage/catalog-client": "npm:^1.12.0"
-    "@backstage/catalog-model": "npm:^1.7.5"
-    "@backstage/config": "npm:^1.3.5"
+    "@backstage-community/plugin-jenkins-common": "npm:^0.14.0"
+    "@backstage/backend-defaults": "npm:^0.13.1"
+    "@backstage/backend-plugin-api": "npm:^1.5.0"
+    "@backstage/catalog-client": "npm:^1.12.1"
+    "@backstage/catalog-model": "npm:^1.7.6"
+    "@backstage/config": "npm:^1.3.6"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-catalog-node": "npm:^1.19.1"
-    "@backstage/plugin-permission-common": "npm:^0.9.2"
-    "@backstage/plugin-permission-node": "npm:^0.10.5"
+    "@backstage/plugin-catalog-node": "npm:^1.20.0"
+    "@backstage/plugin-permission-common": "npm:^0.9.3"
+    "@backstage/plugin-permission-node": "npm:^0.10.6"
     "@types/express": "npm:^4.17.6"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
-    jenkins: "npm:^1.0.0"
     node-fetch: "npm:^2.6.7"
     yn: "npm:^4.0.0"
-  checksum: 10/adc0209bdf11d83d5ec49e618f09696274cb9035eb4aa562f321992731e62dfaefc360f64f96251b5772245e9666af9f9cd2fa55dcc5dfaf5c0439c3b22891ce
+  checksum: 10/227fbe3bead554a7208146abd277904803505f05391a0dbb6cd7ae1661a6aad658669c2c97e22289ec13ce3011cf8a487e7faccf4af30cdc30de2329719b81d2
   languageName: node
   linkType: hard
 
@@ -1911,6 +1910,18 @@ __metadata:
     "@backstage/plugin-catalog-common": "npm:^1.1.6"
     "@backstage/plugin-permission-common": "npm:^0.9.2"
   checksum: 10/60c9258c34490a01cafdd3bc2282aad66e8fa159b0a80f15f641b92306ddb54d54c4c761ed54525b65a7190ec1f7620eb1cb9da4fad802a20d59ed48fc3519ab
+  languageName: node
+  linkType: hard
+
+"@backstage-community/plugin-jenkins-common@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@backstage-community/plugin-jenkins-common@npm:0.14.0"
+  dependencies:
+    "@backstage/plugin-catalog-common": "npm:^1.1.7"
+    "@backstage/plugin-permission-common": "npm:^0.9.3"
+    form-data: "npm:^4.0.4"
+    node-fetch: "npm:^2.6.7"
+  checksum: 10/90b3feeba2021aa3e489d9e1858d1306aa21ac2e512fea0be1ddf424a6a4f314b4821ba6f76e9641d27b078d9c1806bfa35ab79e5b31131d64d2d14ce684a314
   languageName: node
   linkType: hard
 
@@ -2028,7 +2039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.13.0, @backstage/backend-defaults@npm:^0.13.1":
+"@backstage/backend-defaults@npm:^0.13.1":
   version: 0.13.1
   resolution: "@backstage/backend-defaults@npm:0.13.1"
   dependencies:
@@ -2143,7 +2154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-plugin-api@npm:^1.4.4, @backstage/backend-plugin-api@npm:^1.5.0":
+"@backstage/backend-plugin-api@npm:^1.5.0":
   version: 1.5.0
   resolution: "@backstage/backend-plugin-api@npm:1.5.0"
   dependencies:
@@ -2165,7 +2176,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@npm:^1.12.0, @backstage/catalog-client@npm:^1.12.1":
+"@backstage/catalog-client@npm:^1.12.1":
   version: 1.12.1
   resolution: "@backstage/catalog-client@npm:1.12.1"
   dependencies:
@@ -2376,7 +2387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config@npm:^1.3.2, @backstage/config@npm:^1.3.5, @backstage/config@npm:^1.3.6":
+"@backstage/config@npm:^1.3.2, @backstage/config@npm:^1.3.6":
   version: 1.3.6
   resolution: "@backstage/config@npm:1.3.6"
   dependencies:
@@ -3160,7 +3171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-node@npm:^1.19.1, @backstage/plugin-catalog-node@npm:^1.20.0":
+"@backstage/plugin-catalog-node@npm:^1.20.0":
   version: 1.20.0
   resolution: "@backstage/plugin-catalog-node@npm:1.20.0"
   dependencies:
@@ -3488,7 +3499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-node@npm:^0.10.5, @backstage/plugin-permission-node@npm:^0.10.6":
+"@backstage/plugin-permission-node@npm:^0.10.6":
   version: 0.10.6
   resolution: "@backstage/plugin-permission-node@npm:0.10.6"
   dependencies:
@@ -15684,7 +15695,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-azure-devops-backend": "npm:^0.23.0"
-    "@backstage-community/plugin-jenkins-backend": "npm:^0.20.0"
+    "@backstage-community/plugin-jenkins-backend": "npm:^0.22.0"
     "@backstage/backend-defaults": "npm:^0.13.1"
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/config": "npm:^1.3.6"
@@ -23063,15 +23074,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jenkins@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "jenkins@npm:1.1.0"
-  dependencies:
-    papi: "npm:^1.1.0"
-  checksum: 10/9d54fe44e4637a0a6eeaa84b902ad64790fa73cc030c4aa01348fd4b66fda0031001aa94191f9cd702b3e9d693da6fb64aa2e3e638d3fd3782e8df7d9d801966
-  languageName: node
-  linkType: hard
-
 "jest-changed-files@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-changed-files@npm:29.7.0"
@@ -27915,13 +27917,6 @@ __metadata:
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 10/1ad07210e894472685564c4d39a08717e84c2a68a70d3c1d9e657d32394ef1670e22972a433cbfe48976cb98b154ba06855dcd3fcfba77f60f1777634bec48c0
-  languageName: node
-  linkType: hard
-
-"papi@npm:^1.1.0":
-  version: 1.1.2
-  resolution: "papi@npm:1.1.2"
-  checksum: 10/1b2c10ae5b5338ce1335b93e27d2be7997715cf866c06e378acc4898d4e5a488f9d4eed707c00b8750f425ba6518fe575d6a340aaca9c9521a3478f7c228b50b
   languageName: node
   linkType: hard
 
