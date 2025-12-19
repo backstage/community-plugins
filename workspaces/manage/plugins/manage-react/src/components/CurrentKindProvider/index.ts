@@ -19,6 +19,7 @@ export {
   useCurrentKind,
   useCurrentKinds,
   useCurrentKindTitle,
+  useCurrentTab,
 } from './CurrentKindProvider';
 
 export type { KindStarredType } from './types';

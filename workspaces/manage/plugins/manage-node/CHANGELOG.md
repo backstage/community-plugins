@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-node
 
+## 1.5.1
+
+### Patch Changes
+
+- 073b5ec: Using the backstage yarn plugin for the workspace
+
 ## 1.5.0
 
 ### Minor Changes

@@ -87,9 +87,13 @@ export function ManageAccordion(
 
   const accordionKey = useAccordionKey('manage-accordion', perKind);
 
-  const [expanded, setExpanded] = useUserSettings(name, accordionKey, {
-    defaultValue: defaultExpanded ?? false,
-  });
+  const { value: expanded, setValue: setExpanded } = useUserSettings(
+    name,
+    accordionKey,
+    {
+      defaultValue: defaultExpanded ?? false,
+    },
+  );
 
   const onChange = useCallback<AccordionOnChange>(
     (_, value) => {

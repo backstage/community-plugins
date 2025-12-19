@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.32.1
+
+### Patch Changes
+
+- 14a5222: Tekton plugin support NFS
+
 ## 3.32.0
 
 ### Minor Changes

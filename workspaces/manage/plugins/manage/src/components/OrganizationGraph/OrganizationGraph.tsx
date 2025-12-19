@@ -55,10 +55,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-/**
- * Props for {@link OrganizationGraph}.
- * @public
- */
+/** @public */
 export interface OrganizationGraphProps {
   /**
    * Whether to enable the whole organization view. Defaults to true.
@@ -83,16 +80,16 @@ export function OrganizationGraphImpl({
   );
   const graphElementSize = usePosition(graphElement);
 
-  const { ownedEntityRefs } = useOwners();
+  const { ownerEntityRefs, user, groups } = useOwners();
 
   const userEntityRef = useMemo(() => {
-    return ownedEntityRefs
+    return ownerEntityRefs
       .map(entityRef => parseEntityRef(entityRef))
       .find(
         compoundEntityRef =>
           compoundEntityRef.kind.toLocaleLowerCase('en-US') === 'user',
       );
-  }, [ownedEntityRefs]);
+  }, [ownerEntityRefs]);
 
   const navigate = useNavigate();
   const analytics = useAnalytics();
@@ -126,12 +123,17 @@ export function OrganizationGraphImpl({
   const availHeight = useMemo(
     () =>
       !graphElementSize
-        ? 400
+        ? 0
         : graphElementSize.client.height - graphElementSize.element.top - 64,
     [graphElementSize],
   );
 
   const renderLabel = useCallback(() => null, []);
+
+  const entitySet = useMemo(
+    () => (wholeOrg ? undefined : [...(user ? [user] : []), ...groups]),
+    [wholeOrg, user, groups],
+  );
 
   if (!userEntityRef) {
     return <EmptyState title="Current user not found" missing="data" />;
@@ -156,15 +158,21 @@ export function OrganizationGraphImpl({
         mergeRelations
         maxDepth={Infinity}
         unidirectional
-        relations={
-          wholeOrg
-            ? ['parentOf', 'childOf', 'memberOf']
-            : ['childOf', 'memberOf']
-        }
+        relations={[
+          'parentOf',
+          // TODO: Include 'childOf' to get full hierarchy, when supported
+          //       as entitySet. This is added in PR:
+          //       https://github.com/backstage/backstage/pull/31267
+          // 'childOf',
+          'memberOf',
+        ]}
         onNodeClick={onNodeClick}
         showArrowHeads
         renderLabel={renderLabel}
         zoom="enabled"
+        // TODO: ts-ignore when this is supported, see TODO above
+        // @ts-ignore
+        entitySet={entitySet}
       />
       <Card className={controlsCard}>
         <CardContent className={controlsCardContent}>

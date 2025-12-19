@@ -1446,7 +1446,7 @@ __metadata:
     "@backstage/plugin-signals-react": "npm:^0.0.18"
     "@backstage/test-utils": "npm:^1.7.14"
     "@backstage/theme": "npm:^0.7.1"
-    "@backstage/ui": "npm:^0.9.1"
+    "@backstage/ui": "npm:^0.10.0"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -1460,7 +1460,7 @@ __metadata:
     "@types/react": "npm:^17.0.0 || ^18.0.0"
     "@uiw/react-md-editor": "npm:^4.0.8"
     add: "npm:^2.0.6"
-    cross-fetch: "npm:^3.1.8"
+    cross-fetch: "npm:^4.0.0"
     luxon: "npm:^3.2.0"
     msw: "npm:^1.3.2"
     react: "npm:^17.0.0 || ^18.0.0"
@@ -3590,26 +3590,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/f7189fdf792e034e3215cf6687f628cf6556037ebb5b9b78726820f9af791c5573c35b3f11000a46655ebe547c1412d0fa51ed595dcb902f739331d266677aee
-  languageName: node
-  linkType: hard
-
-"@backstage/ui@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "@backstage/ui@npm:0.9.1"
-  dependencies:
-    "@remixicon/react": "npm:^4.6.0"
-    "@tanstack/react-table": "npm:^8.21.3"
-    clsx: "npm:^2.1.1"
-    react-aria-components: "npm:^1.13.0"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/a600bf5df2955f5cf279a792a44196df4737f190a88b7d77fc88940a175ae5dd7ef6f388a4a075428e1da63e2db87711c55e70860f95037e429de85b88e667e5
   languageName: node
   linkType: hard
 
@@ -9262,12 +9242,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remixicon/react@npm:^4.6.0":
-  version: 4.6.0
-  resolution: "@remixicon/react@npm:4.6.0"
+"@remixicon/react@npm:^4.6.0, @remixicon/react@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "@remixicon/react@npm:4.7.0"
   peerDependencies:
     react: ">=18.2.0"
-  checksum: 10/d92c8131734062fca8d82d55dd8f3f4e28cb72c5eefda528c8aba5f3298f0c847342eecdbd7787d6da5af21b699d735f6cf27f151f0c982c1c9f06a78b235c94
+  checksum: 10/9ecee093dd4aec3744bcc7562eddb987bf9c7c059787dfecfbcc25a64c2f4833dc815dff715aa2a7f75011d65f877b3751a401d19cf2d725b5bcc685587d37f4
   languageName: node
   linkType: hard
 
@@ -15454,7 +15434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.1.5, cross-fetch@npm:^3.1.8":
+"cross-fetch@npm:^3.1.5":
   version: 3.2.0
   resolution: "cross-fetch@npm:3.2.0"
   dependencies:

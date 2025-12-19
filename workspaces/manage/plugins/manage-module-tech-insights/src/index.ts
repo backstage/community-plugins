@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type * from './api';
-export * from './api';
 
-export type * from './components';
-export * from './components';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
 
-export type { ManageProviderTechInsights } from './components/ManageProvider';
+import extensions from './extensions';
 
-export type { ManageTechInsightsOptions } from './columns';
-export { manageTechInsightsColumns } from './columns';
+// Old frontend system support
+export * from './legacy';
 
-export type {
-  ManageTechInsightsTitleAsObject,
-  ManageTechInsightsTitleAsElement,
-  ManageTechInsightsTitle,
-  ManageTechInsightsMapTitle,
-} from './title';
+export * from './extensions';
+export * from './title';
+
+export default createFrontendModule({
+  pluginId: 'tech-insights',
+  extensions: [...extensions],
+});

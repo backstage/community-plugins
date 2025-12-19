@@ -17,3 +17,4 @@ export { Settings } from './Settings';
 export { DefaultSettings } from './DefaultSettings';
 export { KindOrderCard } from './KindOrderCard';
 export { TabOrderCard } from './TabOrderCard';
+export type { Setting } from './types';

@@ -17,7 +17,10 @@ import type { ComponentType } from 'react';
 
 import type { Entity } from '@backstage/catalog-model';
 
-import type { ManageColumnModule } from '@backstage-community/plugin-manage-react';
+import type {
+  ManageColumnModule,
+  ManageColumnModuleMultiple,
+} from '@backstage-community/plugin-manage-react';
 
 /** @public */
 export interface ManageColumnSimpleComponentProps {
@@ -39,4 +42,21 @@ export function isManageColumnSimple(
   column: ManageColumnSimple | ManageColumnModule,
 ): column is ManageColumnSimple {
   return !!(column as ManageColumnSimple).component;
+}
+
+export function isManageColumnModuleMultiple(
+  column: ManageColumnModule,
+): column is ManageColumnModuleMultiple {
+  return !!(column as ManageColumnModuleMultiple).getColumns;
+}
+
+export function simplifyColumns(
+  column: ManageColumnModule,
+): ManageColumnModuleMultiple {
+  if (isManageColumnModuleMultiple(column)) {
+    return column;
+  }
+  return {
+    getColumns: (entities: Entity[]) => [column.getColumn(entities)],
+  };
 }

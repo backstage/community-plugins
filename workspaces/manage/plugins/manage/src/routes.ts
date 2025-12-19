@@ -16,5 +16,5 @@
 import { createRouteRef } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'Manage Page',
+  id: 'manage:index-page',
 });

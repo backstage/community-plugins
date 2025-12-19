@@ -17,11 +17,27 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import useObservable from 'react-use/lib/useObservable';
 
-import { storageApiRef, useApi } from '@backstage/core-plugin-api';
-import { JsonValue } from '@backstage/types';
+import {
+  configApiRef,
+  storageApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
+import type { JsonValue } from '@backstage/types';
 
-function useUserStorage() {
-  return useApi(storageApiRef).forBucket('manage-page');
+import { UserSettingsDefaultValue } from '../components/UserSettingsProvider';
+import { manageApiRef } from '../api';
+
+export const userSettingsBucket = 'manage-page';
+
+/**
+ * Constructs a user settings storage key based on a "feature" and "key"
+ */
+export function getUserSettingsStorageKey(feature: string, key: string) {
+  return `${feature}:${key}`;
+}
+
+export function useUserStorage() {
+  return useApi(storageApiRef).forBucket(userSettingsBucket);
 }
 
 /**
@@ -30,13 +46,28 @@ function useUserStorage() {
  * @public
  */
 export interface UseUserSettingsOptions<T extends JsonValue> {
-  defaultValue?: T | undefined;
+  defaultValue?: UserSettingsDefaultValue<T>;
 
   /**
    * If the value stored is an invalid shape, this function can coerce it
    * to the right type
    */
   coerce?: (value: JsonValue) => T;
+
+  /**
+   * Set the default value if such is defined instead on removing.
+   *
+   * Default: true
+   */
+  setDefaultOnRemove?: boolean;
+}
+
+/** @public */
+export interface UseUserSettingsResult<T extends JsonValue> {
+  value: T | undefined;
+  setValue: (value: T) => void;
+  removeValue: () => void;
+  isSettled: boolean;
 }
 
 /**
@@ -51,12 +82,15 @@ export function useUserSettings<T extends JsonValue>(
   feature: string,
   key: string,
   options?: UseUserSettingsOptions<T>,
-): [value: T | undefined, setValue: (value: T) => void, isSettled: boolean] {
-  const { defaultValue, coerce } = options ?? {};
+): UseUserSettingsResult<T> {
+  const { coerce, setDefaultOnRemove = true } = options ?? {};
+
+  const configApi = useApi(configApiRef);
+  const manageApi = useApi(manageApiRef);
+
+  const storageKey = getUserSettingsStorageKey(feature, key);
 
   const userStorage = useUserStorage();
-
-  const storageKey = useMemo(() => `${feature}:${key}`, [feature, key]);
 
   const observableStorage = useMemo(
     () => userStorage.observe$<T>(storageKey),
@@ -68,6 +102,11 @@ export function useUserSettings<T extends JsonValue>(
   const isNotSet = current.presence === 'absent';
   const isSettled = current.presence === 'present';
 
+  const defaultValue =
+    typeof options?.defaultValue === 'function'
+      ? options?.defaultValue({ config: configApi, manageApi })
+      : options?.defaultValue;
+
   const value = current?.value ?? defaultValue;
 
   const setValue = useCallback(
@@ -76,6 +115,14 @@ export function useUserSettings<T extends JsonValue>(
     },
     [userStorage, storageKey],
   );
+
+  const removeValue = useCallback(() => {
+    if (setDefaultOnRemove && typeof defaultValue !== 'undefined') {
+      userStorage.set(storageKey, defaultValue);
+    } else {
+      userStorage.remove(storageKey);
+    }
+  }, [userStorage, storageKey, defaultValue, setDefaultOnRemove]);
 
   useEffect(() => {
     if (isNotSet && defaultValue !== undefined) {
@@ -88,5 +135,5 @@ export function useUserSettings<T extends JsonValue>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  return [coercedValue, setValue, isSettled];
+  return { value: coercedValue, setValue, removeValue, isSettled };
 }

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createUserSettingsContext } from '@backstage-community/plugin-manage-react';
 
-const userSettingsFeature = '$manage-page-tabs';
-const userSettingsKey = 'order';
+import {
+  createUserSettingsContext,
+  userSettingsKeys,
+} from '@backstage-community/plugin-manage-react';
 
 const coerceStringArray = (arr: any): string[] => {
   if (!Array.isArray(arr)) {
@@ -25,11 +26,15 @@ const coerceStringArray = (arr: any): string[] => {
   return arr.map(value => (typeof value !== 'string' ? `${value}` : value));
 };
 
+const [feature, key] = userSettingsKeys['page-tab-order'];
+
 export const {
   Provider: TabsOrderProvider,
   useSetting: useTabsOrder,
   useSetSetting: useSetTabsOrder,
-} = createUserSettingsContext(userSettingsFeature, userSettingsKey, {
-  defaultValue: [],
+  useRemoveSetting: useRemoveTabsOrder,
+} = createUserSettingsContext(feature, key, {
+  defaultValue: ({ config }) =>
+    config.getOptionalStringArray('manage.order.tabs') ?? [],
   coerce: coerceStringArray,
 });

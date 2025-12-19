@@ -13,86 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type * from './api';
+
 export * from './api';
-
 export * from './plugin';
-
-export type { ManageAccordionProps } from './components/Accordion';
-export { ManageAccordion } from './components/Accordion';
-
-export type * from './components/CurrentKindProvider';
-export * from './components/CurrentKindProvider';
-
-export {
-  KindOrderProvider,
-  useSetKindOrder,
-  useKindOrder,
-} from './components/KindOrder';
-
-export {
-  useOwnedKinds,
-  useOwnedEntities,
-  useManagedEntities,
-  useOwners,
-} from './components/OwnedProvider';
-
-export type {
-  OwnedProviderProps,
-  ManageOwnedProvider,
-} from './components/OwnedProvider';
-
-export type {
-  ManageGaugeCardProps,
-  ManageGaugeCard,
-  GaugeCardProps,
-} from './components/GaugeCard';
-export type {
-  ManageGaugeGrid,
-  ManageGaugeGridProps,
-} from './components/GaugeGrid';
-
-export type * from './components/icons';
-export * from './components/icons';
-
-export type {
-  ReorderableTabsProps,
-  ManageReorderableTabs,
-} from './components/ReorderableTabs';
-
-export type {
-  ManageTabContentFullHeight,
-  TabContentFullHeightProps,
-  UsePositionClientSize,
-  UsePositionElementPosition,
-  UsePositionResult,
-} from './components/TabContentFullHeight';
-export { usePosition } from './components/TabContentFullHeight';
-
-export type {
-  CreateUserSettingsContextOptions,
-  UserSettingsContextResult,
-} from './components/UserSettingsProvider';
-export { createUserSettingsContext } from './components/UserSettingsProvider';
-
-export type {
-  ItemWithKey,
-  UseOrderOptions,
-  UseUserSettingsOptions,
-} from './hooks';
-export { useAccordionKey, useOrder, useUserSettings } from './hooks';
-
-export type {
-  ManageColumn,
-  ManageColumnModuleMultiple,
-  ManageColumnModuleSingle,
-  ManageColumnModule,
-  GetColumnsFunc,
-  GetColumnFunc,
-} from './components/column-providers/types';
-export {
-  isManageColumnModuleMultiple,
-  simplifyColumns,
-} from './components/column-providers/types';
+export * from './extensions';
+export * from './components';
+export * from './config';
+export * from './constants';
+export * from './hooks';
 
 export { arrayify, pluralizeKind } from './utils';
