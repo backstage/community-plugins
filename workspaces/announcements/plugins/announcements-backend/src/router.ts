@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 import Router from 'express-promise-router';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
@@ -44,6 +44,7 @@ import {
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
 import { sendAnnouncementNotification } from './service/announcementNotification';
+import { Settings } from './service/types';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -91,6 +92,7 @@ export async function createRouter(
     auditor,
     signals,
     notifications,
+    announcementsSettingsService: settings,
   } = context;
 
   const {
@@ -666,6 +668,31 @@ export async function createRouter(
 
       await auditorEvent.success();
       return res.status(204).end();
+    },
+  );
+
+  router.get(
+    '/settings',
+    async (_req, res: Response<{ settings: Settings }>) => {
+      const announcementsSettings = await settings.get();
+      return res.json({
+        settings: announcementsSettings,
+      });
+    },
+  );
+
+  router.put(
+    '/settings',
+    async (
+      req: Request<{}, {}, Settings, {}>,
+      res: Response<{ success: boolean }>,
+    ) => {
+      try {
+        await settings.update(req.body);
+        return res.status(201).json({ success: true });
+      } catch (err) {
+        return res.status(500).json({ success: false });
+      }
     },
   );
 

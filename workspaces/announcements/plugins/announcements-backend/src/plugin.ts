@@ -23,6 +23,7 @@ import { eventsServiceRef } from '@backstage/plugin-events-node';
 import { buildAnnouncementsContext } from './service';
 import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 import { notificationService } from '@backstage/plugin-notifications-node';
+import { AnnouncementsSettingsService } from './service/settings/AnnouncementsSettingsService';
 
 /**
  * A backend for the announcements plugin.

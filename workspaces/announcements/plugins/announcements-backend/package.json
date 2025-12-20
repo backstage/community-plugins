@@ -33,6 +33,7 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
+    "knex": "knex",
     "db:migrations": "knex migrate:latest",
     "db:seed": "knex seed:run",
     "db:setup": "knex migrate:latest && knex seed:run"
