@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Knex } from 'knex';
-import { Settings } from '../types';
+import { Settings, DEFAULT_SETTINGS } from '../types';
 
 /**
  * @internal
@@ -29,10 +29,7 @@ type DbSettings = Settings & { id: string };
 export class SettingsDatabase {
   constructor(private readonly db: Knex) {}
 
-  private defaultSettings: Settings = {
-    maxPerPage: 10,
-    showInactiveAnnouncements: false,
-  };
+  private defaultSettings: Settings = DEFAULT_SETTINGS;
 
   async get(): Promise<Settings> {
     const settings = await this.db<DbSettings>('settings').first();

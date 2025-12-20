@@ -44,7 +44,7 @@ import {
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
 import { sendAnnouncementNotification } from './service/announcementNotification';
-import { Settings } from './service/types';
+import { Settings, partialSettingsSchema } from './service/types';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -99,6 +99,7 @@ export async function createRouter(
     announcementCreatePermission,
     announcementDeletePermission,
     announcementUpdatePermission,
+    announcementSettingsPermission,
   } = announcementEntityPermissions;
 
   const isRequestAuthorized = async (
@@ -673,25 +674,78 @@ export async function createRouter(
 
   router.get(
     '/settings',
-    async (_req, res: Response<{ settings: Settings }>) => {
-      const announcementsSettings = await settings.get();
-      return res.json({
-        settings: announcementsSettings,
+    async (req, res: Response<{ settings: Settings }>) => {
+      const auditorEvent = await auditor.createEvent({
+        eventId: AUDITOR_FETCH_EVENT_ID,
+        request: req,
+        severityLevel: 'low',
+        meta: {
+          queryType: 'settings',
+        },
       });
+      try {
+        const announcementsSettings = await settings.get();
+        await auditorEvent.success();
+
+        return res.json({
+          settings: announcementsSettings,
+        });
+      } catch (err) {
+        await auditorEvent.fail({ error: err });
+        throw err;
+      }
     },
   );
 
   router.put(
     '/settings',
     async (
-      req: Request<{}, {}, Settings, {}>,
+      req: Request<{}, {}, Partial<Settings>, {}>,
       res: Response<{ success: boolean }>,
     ) => {
+      const auditorEvent = await auditor.createEvent({
+        eventId: AUDITOR_MUTATE_EVENT_ID,
+        request: req,
+        severityLevel: 'medium',
+        meta: {
+          actionType: AUDITOR_ACTION_UPDATE,
+        },
+      });
+
+      if (!(await isRequestAuthorized(req, announcementSettingsPermission))) {
+        const error = new NotAllowedError('Unauthorized');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+
       try {
-        await settings.update(req.body);
-        return res.status(201).json({ success: true });
+        // Validate input using Zod schema
+        const validationResult = partialSettingsSchema.safeParse(req.body);
+
+        if (!validationResult.success) {
+          const error = new InputError(
+            `Invalid settings: ${validationResult.error.errors
+              .map(e => `${e.path.join('.')}: ${e.message}`)
+              .join(', ')}`,
+          );
+
+          await auditorEvent.fail({ error });
+          throw error;
+        }
+
+        await settings.update(validationResult.data);
+        await auditorEvent.success();
+
+        return res.status(200).json({ success: true });
       } catch (err) {
-        return res.status(500).json({ success: false });
+        if (err instanceof InputError || err instanceof NotAllowedError) {
+          await auditorEvent.fail({ error: err });
+          throw err;
+        }
+        logger.error('Failed to update settings', err);
+        const error = new InputError('Failed to update settings');
+        await auditorEvent.fail({ error });
+        throw error;
       }
     },
   );

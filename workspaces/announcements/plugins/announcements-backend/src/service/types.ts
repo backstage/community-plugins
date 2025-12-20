@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { z } from 'zod';
+
 export interface Settings {
   maxPerPage: number;
   showInactiveAnnouncements: boolean;
@@ -23,3 +25,43 @@ export interface SettingsStore {
   update(settings: Partial<Settings>): Promise<void>;
   reset(): Promise<void>;
 }
+
+/**
+ * Default settings values
+ */
+export const DEFAULT_SETTINGS: Settings = {
+  maxPerPage: 10,
+  showInactiveAnnouncements: false,
+};
+
+/**
+ * Zod schema for Settings validation
+ * Validates maxPerPage as a positive integer between 1 and 100
+ * Validates showInactiveAnnouncements as a boolean
+ */
+export const settingsSchema = z.object({
+  maxPerPage: z
+    .number()
+    .int('maxPerPage must be an integer')
+    .positive('maxPerPage must be a positive number')
+    .min(1, 'maxPerPage must be at least 1')
+    .max(100, 'maxPerPage must not exceed 100')
+    .default(DEFAULT_SETTINGS.maxPerPage),
+  showInactiveAnnouncements: z
+    .boolean({
+      required_error: 'showInactiveAnnouncements is required',
+      invalid_type_error: 'showInactiveAnnouncements must be a boolean',
+    })
+    .default(DEFAULT_SETTINGS.showInactiveAnnouncements),
+});
+
+/**
+ * Zod schema for partial Settings updates
+ * Allows updating individual settings fields
+ */
+export const partialSettingsSchema = settingsSchema.partial();
+
+/**
+ * Type inferred from the settings schema
+ */
+export type SettingsInput = z.infer<typeof settingsSchema>;
