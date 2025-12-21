@@ -108,6 +108,12 @@ argocd:
 
 **Note**: When using multiple instances, specify the target instance in your entity using the `argocd/instance-name` annotation. If not specified, the first configured instance will be used.
 
+## Notifications Integration
+
+You can configure ArgoCD to send real-time notifications to Backstage when application sync events occur (sync succeeded, sync failed, health degraded, etc.). This allows your team to receive alerts directly in the Backstage UI when deployments happen or issues arise.
+
+For detailed setup instructions, see the [Notifications Integration Guide](../../docs/notifications-integration.md).
+
 ## Development
 
 ### Local Development
