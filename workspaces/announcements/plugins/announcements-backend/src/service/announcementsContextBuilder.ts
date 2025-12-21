@@ -29,7 +29,6 @@ import {
 import { EventsService } from '@backstage/plugin-events-node';
 import { SignalsService } from '@backstage/plugin-signals-node';
 import { NotificationService } from '@backstage/plugin-notifications-node';
-import { AnnouncementsSettingsService } from './settings/AnnouncementsSettingsService';
 
 /**
  * Context for the announcements plugin.
@@ -47,7 +46,6 @@ export type AnnouncementsContext = {
   auditor: AuditorService;
   signals?: SignalsService;
   notifications?: NotificationService;
-  announcementsSettingsService: AnnouncementsSettingsService;
 };
 
 /**
@@ -57,7 +55,7 @@ export type AnnouncementsContext = {
  */
 export type AnnouncementsContextOptions = Omit<
   AnnouncementsContext,
-  'persistenceContext' | 'announcementsSettingsService'
+  'persistenceContext'
 > & {
   database: DatabaseService;
 };
@@ -80,9 +78,6 @@ export const buildAnnouncementsContext = async ({
   auditor,
 }: AnnouncementsContextOptions): Promise<AnnouncementsContext> => {
   const persistenceContext = await initializePersistenceContext(database);
-  const announcementsSettingsService = new AnnouncementsSettingsService(
-    persistenceContext.settingsStore,
-  );
 
   return {
     config,
@@ -92,7 +87,6 @@ export const buildAnnouncementsContext = async ({
     permissions,
     permissionsRegistry,
     persistenceContext,
-    announcementsSettingsService,
     signals,
     notifications,
     auditor,

@@ -15,29 +15,8 @@
  */
 import { z } from 'zod';
 
-export interface Settings {
-  maxPerPage: number;
-  showInactiveAnnouncements: boolean;
-}
-
-export interface SettingsStore {
-  get(): Promise<Settings>;
-  update(settings: Partial<Settings>): Promise<void>;
-  reset(): Promise<void>;
-}
-
 /**
- * Default settings values
- */
-export const DEFAULT_SETTINGS: Settings = {
-  maxPerPage: 10,
-  showInactiveAnnouncements: false,
-};
-
-/**
- * Zod schema for Settings validation
- * Validates maxPerPage as a positive integer between 1 and 100
- * Validates showInactiveAnnouncements as a boolean
+ * Zod schema for announcements settings validation
  */
 export const settingsSchema = z.object({
   maxPerPage: z
@@ -46,22 +25,35 @@ export const settingsSchema = z.object({
     .positive('maxPerPage must be a positive number')
     .min(1, 'maxPerPage must be at least 1')
     .max(100, 'maxPerPage must not exceed 100')
-    .default(DEFAULT_SETTINGS.maxPerPage),
+    .default(10),
   showInactiveAnnouncements: z
     .boolean({
       required_error: 'showInactiveAnnouncements is required',
       invalid_type_error: 'showInactiveAnnouncements must be a boolean',
     })
-    .default(DEFAULT_SETTINGS.showInactiveAnnouncements),
+    .default(false),
 });
 
 /**
- * Zod schema for partial Settings updates
- * Allows updating individual settings fields
+ * Announcements settings
+ */
+export type Settings = z.infer<typeof settingsSchema>;
+
+/**
+ * Zod schema for partial announcements settings updates
+ *
+ * @remarks
+ * Allows updating individual announcements settings fields
  */
 export const partialSettingsSchema = settingsSchema.partial();
 
 /**
- * Type inferred from the settings schema
+ * Announcements settings store operations
  */
-export type SettingsInput = z.infer<typeof settingsSchema>;
+export interface SettingsStore {
+  get<K extends keyof Settings>(key: K): Settings[K];
+  getAll(): Settings;
+  set<K extends keyof Settings>(key: K, value: Settings[K]): Promise<void>;
+  update(settings: Partial<Settings>): Promise<void>;
+  reset(): Promise<void>;
+}

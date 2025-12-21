@@ -55,10 +55,13 @@ export const initializePersistenceContext = async (
     });
   }
 
+  const settingsStore = new SettingsDatabase(client);
+  await settingsStore.load();
+
   return {
     announcementsStore: new AnnouncementsDatabase(client),
     categoriesStore: new CategoriesDatabase(client),
     tagsStore: new TagsDatabase(client),
-    settingsStore: new SettingsDatabase(client),
+    settingsStore,
   };
 };

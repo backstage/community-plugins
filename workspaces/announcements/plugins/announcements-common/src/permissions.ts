@@ -51,7 +51,7 @@ export const announcementUpdatePermission = createPermission({
  * @public
  */
 export const announcementSettingsPermission = createPermission({
-  name: 'announcement.settings.update',
+  name: 'announcement.plugin-settings.update',
   attributes: { action: 'update' },
 });
 

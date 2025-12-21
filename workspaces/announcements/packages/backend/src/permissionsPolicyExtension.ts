@@ -44,7 +44,7 @@ class CustomPermissionPolicy implements PermissionPolicy {
       };
     }
 
-    if (request.permission.name === 'announcement.settings.update') {
+    if (request.permission.name === 'announcement.plugin-settings.update') {
       return {
         result: AuthorizeResult.ALLOW,
       };

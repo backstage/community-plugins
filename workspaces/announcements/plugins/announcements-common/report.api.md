@@ -34,7 +34,11 @@ export const announcementEntityPermissions: {
   announcementCreatePermission: BasicPermission;
   announcementDeletePermission: BasicPermission;
   announcementUpdatePermission: BasicPermission;
+  announcementSettingsPermission: BasicPermission;
 };
+
+// @public
+export const announcementSettingsPermission: BasicPermission;
 
 // @public
 export type AnnouncementsFilters = {

@@ -14,44 +14,104 @@
  * limitations under the License.
  */
 import { Knex } from 'knex';
-import { Settings, DEFAULT_SETTINGS } from '../types';
+import { Settings, SettingsStore, settingsSchema } from '../types';
 
 /**
- * @internal
- */
-type DbSettings = Settings & { id: string };
-
-/**
- * Database implementation for announcement settings
+ * Database implementation for announcements settings using key-value storage
  *
  * @internal
  */
-export class SettingsDatabase {
+export class SettingsDatabase implements SettingsStore {
+  private values: Settings | null = null;
+
   constructor(private readonly db: Knex) {}
 
-  private defaultSettings: Settings = DEFAULT_SETTINGS;
+  /**
+   * Load settings from the database into memory.
+   * Must be called before accessing settings.
+   */
+  async load(): Promise<void> {
+    const rows = await this.db('settings').select('key', 'value');
 
-  async get(): Promise<Settings> {
-    const settings = await this.db<DbSettings>('settings').first();
-    if (!settings) {
-      return this.defaultSettings;
+    const raw = rows.reduce((acc, row) => {
+      acc[row.key] = row.value;
+      return acc;
+    }, {} as Record<string, unknown>);
+
+    this.values = settingsSchema.parse(raw);
+
+    console.log('Settings loaded:', this.values);
+  }
+
+  /**
+   * Get a single setting value by key.
+   */
+  get<K extends keyof Settings>(key: K): Settings[K] {
+    if (!this.values) {
+      throw new Error('Settings not loaded. Call load() first.');
     }
-    // Exclude id from the returned Settings object
-    const { id, ...settingsWithoutId } = settings;
-    return settingsWithoutId;
+    return this.values[key];
   }
 
-  async update(settings: Settings): Promise<void> {
-    await this.db<DbSettings>('settings')
-      .where('id', 'default')
-      .update(settings);
+  /**
+   * Get all settings.
+   */
+  getAll(): Settings {
+    if (!this.values) {
+      throw new Error('Settings not loaded. Call load() first.');
+    }
+    return { ...this.values };
   }
 
+  /**
+   * Set a single setting value.
+   */
+  async set<K extends keyof Settings>(
+    key: K,
+    value: Settings[K],
+  ): Promise<void> {
+    if (!this.values) {
+      throw new Error('Settings not loaded. Call load() first.');
+    }
+
+    // Validate the individual setting
+    settingsSchema.shape[key].parse(value);
+
+    await this.db('settings')
+      .insert({ key, value, updated_at: this.db.fn.now() })
+      .onConflict('key')
+      .merge(['value', 'updated_at']);
+
+    this.values[key] = value;
+  }
+
+  /**
+   * Update multiple settings at once.
+   */
+  async update(settings: Partial<Settings>): Promise<void> {
+    if (!this.values) {
+      throw new Error('Settings not loaded. Call load() first.');
+    }
+
+    console.log('Updating settings:', settings);
+
+    const entries = Object.entries(settings) as [
+      keyof Settings,
+      Settings[keyof Settings],
+    ][];
+
+    console.log('Updating settings:', entries);
+
+    for (const [key, value] of entries) {
+      await this.set(key, value);
+    }
+  }
+
+  /**
+   * Reset all settings to defaults.
+   */
   async reset(): Promise<void> {
-    await this.db<DbSettings>('settings').truncate();
-    await this.db<DbSettings>('settings').insert({
-      id: 'default',
-      ...this.defaultSettings,
-    });
+    await this.db('settings').truncate();
+    this.values = settingsSchema.parse({});
   }
 }

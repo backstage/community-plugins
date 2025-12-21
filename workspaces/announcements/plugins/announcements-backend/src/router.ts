@@ -92,7 +92,6 @@ export async function createRouter(
     auditor,
     signals,
     notifications,
-    announcementsSettingsService: settings,
   } = context;
 
   const {
@@ -684,12 +683,9 @@ export async function createRouter(
         },
       });
       try {
-        const announcementsSettings = await settings.get();
+        const settings = persistenceContext.settingsStore.getAll();
         await auditorEvent.success();
-
-        return res.json({
-          settings: announcementsSettings,
-        });
+        return res.json({ settings });
       } catch (err) {
         await auditorEvent.fail({ error: err });
         throw err;
@@ -718,6 +714,8 @@ export async function createRouter(
         throw error;
       }
 
+      console.log('req.body:', req.body);
+
       try {
         // Validate input using Zod schema
         const validationResult = partialSettingsSchema.safeParse(req.body);
@@ -733,7 +731,7 @@ export async function createRouter(
           throw error;
         }
 
-        await settings.update(validationResult.data);
+        await persistenceContext.settingsStore.update(validationResult.data);
         await auditorEvent.success();
 
         return res.status(200).json({ success: true });
@@ -744,6 +742,38 @@ export async function createRouter(
         }
         logger.error('Failed to update settings', err);
         const error = new InputError('Failed to update settings');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+    },
+  );
+
+  router.delete(
+    '/settings',
+    async (req, res: Response<{ success: boolean }>) => {
+      const auditorEvent = await auditor.createEvent({
+        eventId: AUDITOR_MUTATE_EVENT_ID,
+        request: req,
+        severityLevel: 'medium',
+        meta: {
+          actionType: AUDITOR_ACTION_DELETE,
+        },
+      });
+
+      if (!(await isRequestAuthorized(req, announcementSettingsPermission))) {
+        const error = new NotAllowedError('Unauthorized');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+
+      try {
+        await persistenceContext.settingsStore.reset();
+        await auditorEvent.success();
+
+        return res.status(200).json({ success: true });
+      } catch (err) {
+        logger.error('Failed to reset settings', err);
+        const error = new InputError('Failed to reset settings');
         await auditorEvent.fail({ error });
         throw error;
       }

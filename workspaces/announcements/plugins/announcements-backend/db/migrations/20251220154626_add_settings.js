@@ -14,35 +14,15 @@
  * limitations under the License.
  */
 
-/**
- * @param {import('knex').Knex} knex
- */
 exports.up = async function up(knex) {
   await knex.schema.createTable('settings', table => {
-    table.comment('The table for announcement settings.');
+    table.comment('Key-value store for announcement settings.');
+    table.string('key').primary().comment('Setting key');
+    table.jsonb('value').notNullable().comment('Setting value');
     table
-      .string('id')
-      .notNullable()
-      .primary()
-      .defaultTo('default')
-      .comment('Settings ID');
-    table
-      .integer('maxPerPage')
-      .notNullable()
-      .defaultTo(10)
-      .comment('Maximum announcements per page');
-    table
-      .boolean('showInactiveAnnouncements')
-      .notNullable()
-      .defaultTo(false)
-      .comment('Whether to show inactive announcements');
-  });
-
-  // Insert default settings
-  await knex('settings').insert({
-    id: 'default',
-    maxPerPage: 10,
-    showInactiveAnnouncements: false,
+      .timestamp('updated_at')
+      .defaultTo(knex.fn.now())
+      .comment('Last update timestamp');
   });
 };
 
