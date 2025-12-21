@@ -37,14 +37,19 @@ It is dedicated to simplifying the process of gathering and managing user feedba
 - Make sure that [feedback-backend-plugin](../feedback-backend) is configured prior to this.
 
 ### Plugin Setup
-##  New Frontend / Hybrid Migration Notice
+
+## New Frontend / Hybrid Migration Notice
 
 The Feedback plugin currently has limited support for the new
 Backstage frontend and hybrid migration setups.
 
-Some setup steps in this documentation apply only to the legacy
-frontend and may not work as expected with the new frontend.
----
+The following steps are **legacy frontend only**:
+
+- Adding routes in `App.tsx` using `FlatRoutes`
+- Registering components directly in `AppRouter`
+
+## The backend configuration and catalog annotations remain the same for both legacy and new frontend setups.
+
 1. Install the plugin in your environment
 
    ```bash
