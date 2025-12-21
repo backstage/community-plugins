@@ -40,14 +40,6 @@ export const settingsSchema = z.object({
 export type Settings = z.infer<typeof settingsSchema>;
 
 /**
- * Zod schema for partial announcements settings updates
- *
- * @remarks
- * Allows updating individual announcements settings fields
- */
-export const partialSettingsSchema = settingsSchema.partial();
-
-/**
  * Announcements settings store operations
  */
 export interface SettingsStore {

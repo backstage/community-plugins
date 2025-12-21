@@ -44,7 +44,7 @@ import {
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
 import { sendAnnouncementNotification } from './service/announcementNotification';
-import { Settings, partialSettingsSchema } from './service/types';
+import { Settings, settingsSchema } from './service/types';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -718,7 +718,7 @@ export async function createRouter(
 
       try {
         // Validate input using Zod schema
-        const validationResult = partialSettingsSchema.safeParse(req.body);
+        const validationResult = settingsSchema.partial().safeParse(req.body);
 
         if (!validationResult.success) {
           const error = new InputError(
