@@ -25,7 +25,11 @@ import { TagsResponse } from '../types';
 const DEFAULT_PROXY_PATH = '/jfrog-artifactory/api';
 
 export interface JfrogArtifactoryApiV1 {
-  getTags(repo: string, target?: string): Promise<TagsResponse>;
+  getTags(
+    image: string,
+    target?: string,
+    repoFilter?: string,
+  ): Promise<TagsResponse>;
 }
 
 export const jfrogArtifactoryApiRef = createApiRef<JfrogArtifactoryApiV1>({
@@ -79,20 +83,54 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     return await response.json();
   }
 
-  async getTags(repo: string, target?: string) {
+  private getSortField(): string {
+    const sortField = this.configApi.getOptionalString(
+      'jfrogArtifactory.sortField',
+    );
+
+    // Only allow valid sort fields
+    if (sortField === 'MODIFIED' || sortField === 'NAME_SEMVER') {
+      return sortField;
+    }
+
+    // Default to NAME_SEMVER if not specified or invalid
+    return 'NAME_SEMVER';
+  }
+
+  private getRepoFilter(): string | undefined {
+    return this.configApi.getOptionalString('jfrogArtifactory.repoFilter');
+  }
+
+  private getPageLimit(): number {
+    return (
+      this.configApi.getOptionalNumber('jfrogArtifactory.pageLimit') || 100
+    );
+  }
+
+  async getTags(image: string, target?: string, repoFilter?: string) {
     const proxyUrl = await this.getBaseUrl(target);
+
+    const filter: any = {
+      packageId: `docker://${image}`,
+      name: '*',
+      ignorePreRelease: false,
+    };
+
+    const repositoryFilter = repoFilter || this.getRepoFilter();
+    if (repositoryFilter) {
+      filter.repositoriesIn = {
+        name: repositoryFilter,
+      };
+    }
+
     const tagQuery = {
       query:
         'query ($filter: VersionFilter!, $first: Int, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } } }',
       variables: {
-        filter: {
-          packageId: `docker://${repo}`,
-          name: '*',
-          ignorePreRelease: false,
-        },
-        first: 100,
+        filter,
+        first: this.getPageLimit(),
         orderBy: {
-          field: 'NAME_SEMVER',
+          field: this.getSortField(),
           direction: 'DESC',
         },
       },
