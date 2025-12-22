@@ -1365,10 +1365,12 @@ __metadata:
     "@backstage/plugin-notifications-node": "npm:^0.2.22"
     "@backstage/plugin-permission-common": "npm:^0.9.3"
     "@backstage/plugin-signals-node": "npm:^0.1.27"
+    "@types/lodash": "npm:^4"
     "@types/supertest": "npm:^2.0.15"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     knex: "npm:^3.0.1"
+    lodash: "npm:^4.17.21"
     luxon: "npm:^3.2.0"
     slugify: "npm:^1.6.6"
     supertest: "npm:^6.3.3"
@@ -1383,6 +1385,7 @@ __metadata:
   dependencies:
     "@backstage/cli": "npm:^0.35.0"
     "@backstage/plugin-permission-common": "npm:^0.9.3"
+    zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
 
@@ -12026,6 +12029,13 @@ __metadata:
   dependencies:
     keyv: "npm:*"
   checksum: 10/8713da9382b9346d664866a6cab2f91b0fd479f61379af891303a618e9a2abad6f347adc38a0850540e3f2dad278427de24e7555339264fddb04d1d17d3b50e0
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4":
+  version: 4.17.21
+  resolution: "@types/lodash@npm:4.17.21"
+  checksum: 10/34920830a3bc82ba619cda05e606fef00c148a69b4f19f770645d2587ccdb8e42ef3ddfc174b7884c0c709fc0a1aeb48f7326da969bad12a1464a03efbbe414c
   languageName: node
   linkType: hard
 

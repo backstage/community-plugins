@@ -1,5 +1,3 @@
-import { Settings } from '../types';
-
 /*
  * Copyright 2025 The Backstage Authors
  *
@@ -15,11 +13,4 @@ import { Settings } from '../types';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const ANNOUNCEMENTS_SETTINGS_DEFAULT: Required<Settings> = {
-  maxPerPage: 10,
-  showInactiveAnnouncements: false,
-  showStartAt: false,
-  createAnnouncementAsInactiveByDefault: false,
-  pluginTitle: 'Announcements',
-  announcementTitleLength: 30,
-};
+export { SettingsDatabase } from './SettingsDatabase';

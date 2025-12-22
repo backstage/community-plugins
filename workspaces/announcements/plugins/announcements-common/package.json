@@ -43,6 +43,7 @@
     "dist"
   ],
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.9.3"
+    "@backstage/plugin-permission-common": "^0.9.3",
+    "zod": "^3.23.8"
   }
 }

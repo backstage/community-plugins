@@ -15,7 +15,7 @@
  */
 import { AnnouncementsDatabase } from './AnnouncementsDatabase';
 import { CategoriesDatabase } from './CategoriesDatabase';
-import { SettingsDatabase } from './SettingsDatabase';
+import { SettingsDatabase } from './settings/SettingsDatabase';
 import { TagsDatabase } from './TagsDatabase';
 import {
   DatabaseService,
@@ -55,13 +55,10 @@ export const initializePersistenceContext = async (
     });
   }
 
-  const settingsStore = new SettingsDatabase(client);
-  await settingsStore.load();
-
   return {
     announcementsStore: new AnnouncementsDatabase(client),
     categoriesStore: new CategoriesDatabase(client),
     tagsStore: new TagsDatabase(client),
-    settingsStore,
+    settingsStore: await SettingsDatabase.withDefaults(client),
   };
 };

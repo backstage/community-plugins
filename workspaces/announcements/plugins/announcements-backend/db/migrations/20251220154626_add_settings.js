@@ -19,7 +19,7 @@
  */
 exports.up = async function up(knex) {
   await knex.schema.createTable('settings', table => {
-    table.comment('Key-value store for announcement settings.');
+    table.comment('Announcements plugin settings.');
     table.string('key').primary().comment('Setting key');
     table.jsonb('value').notNullable().comment('Setting value');
     table
@@ -27,12 +27,6 @@ exports.up = async function up(knex) {
       .defaultTo(knex.fn.now())
       .comment('Last update timestamp');
   });
-
-  // Seed default settings
-  await knex('settings').insert([
-    { key: 'maxPerPage', value: 10 },
-    { key: 'showInactiveAnnouncements', value: false },
-  ]);
 };
 
 /**

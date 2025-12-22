@@ -40,11 +40,15 @@ import {
   AUDITOR_ACTION_UPDATE,
   AUDITOR_ACTION_DELETE,
   AUDITOR_FETCH_EVENT_ID,
+  AUDITOR_SETTINGS_EVENT_ID,
+  AUDITOR_ACTION_SETTINGS_UPDATE,
+  AUDITOR_ACTION_SETTINGS_RESET,
+  Settings,
+  settingsSchema,
 } from '@backstage-community/plugin-announcements-common';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
 import { sendAnnouncementNotification } from './service/announcementNotification';
-import { Settings, settingsSchema } from './service/types';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -671,41 +675,34 @@ export async function createRouter(
     },
   );
 
-  router.get(
-    '/settings',
-    async (req, res: Response<{ settings: Settings }>) => {
-      const auditorEvent = await auditor.createEvent({
-        eventId: AUDITOR_FETCH_EVENT_ID,
-        request: req,
-        severityLevel: 'low',
-        meta: {
-          queryType: 'settings',
-        },
-      });
-      try {
-        // no permissions check necessary for retrieving settings
-        const settings = persistenceContext.settingsStore.getAll();
-        await auditorEvent.success();
-        return res.json({ settings });
-      } catch (err) {
-        await auditorEvent.fail({ error: err });
-        throw err;
-      }
-    },
-  );
+  /**
+   * Retrieves the current settings for the announcements plugin
+   */
+  router.get('/settings', async (_, res: Response<{ settings: Settings }>) => {
+    try {
+      // no permissions check or auditing necessary for retrieving settings
+      const settings = persistenceContext.settingsStore.getAll();
+      return res.json({ settings });
+    } catch (err) {
+      throw err;
+    }
+  });
 
-  router.put(
+  /**
+   * Updates the settings for the announcements plugin - only the settings that are provided in the request body are updated
+   */
+  router.patch(
     '/settings',
     async (
       req: Request<{}, {}, Partial<Settings>, {}>,
       res: Response<{ settings: Settings }>,
     ) => {
       const auditorEvent = await auditor.createEvent({
-        eventId: AUDITOR_MUTATE_EVENT_ID,
+        eventId: AUDITOR_SETTINGS_EVENT_ID,
         request: req,
         severityLevel: 'medium',
         meta: {
-          actionType: AUDITOR_ACTION_UPDATE,
+          actionType: AUDITOR_ACTION_SETTINGS_UPDATE,
         },
       });
 
@@ -716,7 +713,7 @@ export async function createRouter(
       }
 
       try {
-        // Validate input using Zod schema
+        // We do a partial parse to allow for only updating the settings that are provided in the request body
         const validationResult = settingsSchema.partial().safeParse(req.body);
 
         if (!validationResult.success) {
@@ -749,15 +746,18 @@ export async function createRouter(
     },
   );
 
+  /**
+   * Resets all settings for the announcements plugin to defaults
+   */
   router.delete(
     '/settings',
-    async (req, res: Response<{ success: boolean }>) => {
+    async (req, res: Response<{ settings: Settings }>) => {
       const auditorEvent = await auditor.createEvent({
-        eventId: AUDITOR_MUTATE_EVENT_ID,
+        eventId: AUDITOR_SETTINGS_EVENT_ID,
         request: req,
         severityLevel: 'medium',
         meta: {
-          actionType: AUDITOR_ACTION_DELETE,
+          actionType: AUDITOR_ACTION_SETTINGS_RESET,
         },
       });
 
@@ -771,7 +771,9 @@ export async function createRouter(
         await persistenceContext.settingsStore.reset();
         await auditorEvent.success();
 
-        return res.status(200).json({ success: true });
+        return res
+          .status(200)
+          .json({ settings: persistenceContext.settingsStore.getAll() });
       } catch (err) {
         logger.error('Failed to reset settings', err);
         const error = new InputError('Failed to reset settings');

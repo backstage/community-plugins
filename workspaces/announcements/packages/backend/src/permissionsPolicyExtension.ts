@@ -24,27 +24,36 @@ import {
 } from '@backstage/plugin-permission-node';
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 
+import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
+
 class CustomPermissionPolicy implements PermissionPolicy {
   async handle(request: PolicyQuery): Promise<PolicyDecision> {
-    if (request.permission.name === 'announcement.entity.create') {
+    const {
+      announcementCreatePermission,
+      announcementUpdatePermission,
+      announcementDeletePermission,
+      announcementSettingsPermission,
+    } = announcementEntityPermissions;
+
+    if (request.permission.name === announcementCreatePermission.name) {
       return {
         result: AuthorizeResult.ALLOW,
       };
     }
 
-    if (request.permission.name === 'announcement.entity.update') {
+    if (request.permission.name === announcementUpdatePermission.name) {
       return {
         result: AuthorizeResult.ALLOW,
       };
     }
 
-    if (request.permission.name === 'announcement.entity.delete') {
+    if (request.permission.name === announcementDeletePermission.name) {
       return {
         result: AuthorizeResult.ALLOW,
       };
     }
 
-    if (request.permission.name === 'announcement.plugin-settings.update') {
+    if (request.permission.name === announcementSettingsPermission.name) {
       return {
         result: AuthorizeResult.ALLOW,
       };

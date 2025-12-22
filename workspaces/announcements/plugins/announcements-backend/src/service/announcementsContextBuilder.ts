@@ -77,8 +77,6 @@ export const buildAnnouncementsContext = async ({
   notifications,
   auditor,
 }: AnnouncementsContextOptions): Promise<AnnouncementsContext> => {
-  const persistenceContext = await initializePersistenceContext(database);
-
   return {
     config,
     events,
@@ -86,7 +84,7 @@ export const buildAnnouncementsContext = async ({
     logger,
     permissions,
     permissionsRegistry,
-    persistenceContext,
+    persistenceContext: await initializePersistenceContext(database),
     signals,
     notifications,
     auditor,

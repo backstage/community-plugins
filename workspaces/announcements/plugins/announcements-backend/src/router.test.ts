@@ -28,7 +28,7 @@ import {
 import { mockServices } from '@backstage/backend-test-utils';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
 import { AUDITOR_FETCH_EVENT_ID } from '@backstage-community/plugin-announcements-common';
-import { SettingsDatabase } from './service/persistence/SettingsDatabase.ts';
+import { SettingsDatabase } from './service/persistence/settings/SettingsDatabase.ts';
 
 describe('createRouter', () => {
   let app: express.Express;
