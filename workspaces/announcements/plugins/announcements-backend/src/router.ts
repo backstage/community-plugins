@@ -683,6 +683,7 @@ export async function createRouter(
         },
       });
       try {
+        // no permissions check necessary for retrieving settings
         const settings = persistenceContext.settingsStore.getAll();
         await auditorEvent.success();
         return res.json({ settings });
@@ -697,7 +698,7 @@ export async function createRouter(
     '/settings',
     async (
       req: Request<{}, {}, Partial<Settings>, {}>,
-      res: Response<{ success: boolean }>,
+      res: Response<{ settings: Settings }>,
     ) => {
       const auditorEvent = await auditor.createEvent({
         eventId: AUDITOR_MUTATE_EVENT_ID,
@@ -713,8 +714,6 @@ export async function createRouter(
         await auditorEvent.fail({ error });
         throw error;
       }
-
-      console.log('req.body:', req.body);
 
       try {
         // Validate input using Zod schema
@@ -734,7 +733,9 @@ export async function createRouter(
         await persistenceContext.settingsStore.update(validationResult.data);
         await auditorEvent.success();
 
-        return res.status(200).json({ success: true });
+        return res
+          .status(200)
+          .json({ settings: persistenceContext.settingsStore.getAll() });
       } catch (err) {
         if (err instanceof InputError || err instanceof NotAllowedError) {
           await auditorEvent.fail({ error: err });

@@ -1,5 +1,7 @@
+import { Settings } from '../types';
+
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-module.exports = {
-  development: {
-    client: 'pg',
-    connection: {
-      host: 'localhost',
-      port: 5432,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'backstage_plugin_announcements',
-    },
-    seeds: {
-      directory: './db/seeds',
-    },
-    migrations: {
-      directory: './db/migrations',
-    },
-  },
+export const ANNOUNCEMENTS_SETTINGS_DEFAULT: Required<Settings> = {
+  maxPerPage: 10,
+  showInactiveAnnouncements: false,
+  showStartAt: false,
+  createAnnouncementAsInactiveByDefault: false,
+  pluginTitle: 'Announcements',
+  announcementTitleLength: 30,
 };

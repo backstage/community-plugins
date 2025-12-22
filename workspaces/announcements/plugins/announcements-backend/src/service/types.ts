@@ -32,6 +32,27 @@ export const settingsSchema = z.object({
       invalid_type_error: 'showInactiveAnnouncements must be a boolean',
     })
     .default(false),
+  showStartAt: z
+    .boolean({
+      required_error: 'showStartAt is required',
+      invalid_type_error: 'showStartAt must be a boolean',
+    })
+    .default(false),
+  createAnnouncementAsInactiveByDefault: z
+    .boolean({
+      required_error: 'createAnnouncementAsInactiveByDefault is required',
+      invalid_type_error:
+        'createAnnouncementAsInactiveByDefault must be a boolean',
+    })
+    .default(false),
+  pluginTitle: z.string().default('Announcements'),
+  announcementTitleLength: z
+    .number()
+    .int('announcementTitleLength must be an integer')
+    .positive('announcementTitleLength must be a positive number')
+    .min(1, 'announcementTitleLength must be at least 1')
+    .max(100, 'announcementTitleLength must not exceed 100')
+    .default(100),
 });
 
 /**
@@ -43,9 +64,7 @@ export type Settings = z.infer<typeof settingsSchema>;
  * Announcements settings store operations
  */
 export interface SettingsStore {
-  get<K extends keyof Settings>(key: K): Settings[K];
   getAll(): Settings;
-  set<K extends keyof Settings>(key: K, value: Settings[K]): Promise<void>;
   update(settings: Partial<Settings>): Promise<void>;
   reset(): Promise<void>;
 }

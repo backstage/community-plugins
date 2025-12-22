@@ -52,7 +52,7 @@ describe('createRouter', () => {
     categoriesStore: {} as unknown as CategoriesDatabase,
     tagsStore: {} as unknown as TagsDatabase,
     settingsStore: {
-      get: jest.fn(),
+      getAll: jest.fn(),
       update: jest.fn(),
       reset: jest.fn(),
     } as unknown as SettingsDatabase,

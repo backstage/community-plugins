@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * @param {import('knex').Knex} knex
+ */
 exports.up = async function up(knex) {
   await knex.schema.createTable('settings', table => {
     table.comment('Key-value store for announcement settings.');
@@ -24,6 +27,12 @@ exports.up = async function up(knex) {
       .defaultTo(knex.fn.now())
       .comment('Last update timestamp');
   });
+
+  // Seed default settings
+  await knex('settings').insert([
+    { key: 'maxPerPage', value: 10 },
+    { key: 'showInactiveAnnouncements', value: false },
+  ]);
 };
 
 /**

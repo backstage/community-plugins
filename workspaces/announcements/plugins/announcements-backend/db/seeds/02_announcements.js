@@ -21,7 +21,8 @@
 exports.seed = async function seed(knex) {
   // Deletes ALL existing entries
   await knex('announcements').del();
-  await knex('announcements').insert([
+
+  const announcements = [
     {
       id: '0',
       publisher: 'default:group/developer-enablement',
@@ -590,5 +591,13 @@ exports.seed = async function seed(knex) {
       active: 1,
       start_at: '2025-01-01T15:00:00.539+00:00',
     },
-  ]);
+  ];
+
+  // Add updated_at to each announcement (set to created_at for seed data)
+  const announcementsWithUpdatedAt = announcements.map(a => ({
+    ...a,
+    updated_at: a.created_at,
+  }));
+
+  await knex('announcements').insert(announcementsWithUpdatedAt);
 };

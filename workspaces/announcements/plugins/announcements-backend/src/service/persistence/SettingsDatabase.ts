@@ -15,6 +15,7 @@
  */
 import { Knex } from 'knex';
 import { Settings, SettingsStore, settingsSchema } from '../types';
+import { ANNOUNCEMENTS_SETTINGS_DEFAULT } from './constants';
 
 /**
  * Database implementation for announcements settings using key-value storage
@@ -39,18 +40,6 @@ export class SettingsDatabase implements SettingsStore {
     }, {} as Record<string, unknown>);
 
     this.values = settingsSchema.parse(raw);
-
-    console.log('Settings loaded:', this.values);
-  }
-
-  /**
-   * Get a single setting value by key.
-   */
-  get<K extends keyof Settings>(key: K): Settings[K] {
-    if (!this.values) {
-      throw new Error('Settings not loaded. Call load() first.');
-    }
-    return this.values[key];
   }
 
   /**
@@ -64,54 +53,51 @@ export class SettingsDatabase implements SettingsStore {
   }
 
   /**
-   * Set a single setting value.
-   */
-  async set<K extends keyof Settings>(
-    key: K,
-    value: Settings[K],
-  ): Promise<void> {
-    if (!this.values) {
-      throw new Error('Settings not loaded. Call load() first.');
-    }
-
-    // Validate the individual setting
-    settingsSchema.shape[key].parse(value);
-
-    await this.db('settings')
-      .insert({ key, value, updated_at: this.db.fn.now() })
-      .onConflict('key')
-      .merge(['value', 'updated_at']);
-
-    this.values[key] = value;
-  }
-
-  /**
-   * Update multiple settings at once.
+   * Update multiple settings at once within a transaction.
    */
   async update(settings: Partial<Settings>): Promise<void> {
     if (!this.values) {
       throw new Error('Settings not loaded. Call load() first.');
     }
 
-    console.log('Updating settings:', settings);
-
     const entries = Object.entries(settings) as [
       keyof Settings,
       Settings[keyof Settings],
     ][];
 
-    console.log('Updating settings:', entries);
-
+    // Validate all settings before starting the transaction
     for (const [key, value] of entries) {
-      await this.set(key, value);
+      settingsSchema.shape[key].parse(value);
     }
+
+    await this.db.transaction(async trx => {
+      for (const [key, value] of entries) {
+        await trx('settings')
+          .insert({ key, value, updated_at: trx.fn.now() })
+          .onConflict('key')
+          .merge(['value', 'updated_at']);
+      }
+    });
+
+    // Update in-memory cache only after transaction succeeds
+    this.values = { ...this.values, ...settings };
   }
 
   /**
-   * Reset all settings to defaults.
+   * Reset all settings to defaults within a transaction.
    */
   async reset(): Promise<void> {
-    await this.db('settings').truncate();
-    this.values = settingsSchema.parse({});
+    await this.db.transaction(async trx => {
+      await trx('settings').del();
+      await trx('settings').insert(
+        Object.entries(ANNOUNCEMENTS_SETTINGS_DEFAULT).map(([key, value]) => ({
+          key,
+          value,
+          updated_at: trx.fn.now(),
+        })),
+      );
+    });
+
+    this.values = ANNOUNCEMENTS_SETTINGS_DEFAULT;
   }
 }
