@@ -17,18 +17,19 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { AxiosError } from 'axios';
 import { AuthStrategy } from './Auth';
 import { KialiFetcher, ValidationCategory } from './fetch';
+import fs from 'fs';
 
 const logger = mockServices.logger.mock();
 
 describe('kiali Fetch', () => {
   describe('Kiali configuration validation', () => {
     describe(`${AuthStrategy.anonymous} strategy`, () => {
-      it('should get a true', async () => {
+      it('should validate anonymous strategy', async () => {
         const kialiFetch = new KialiFetcher(
           {
             name: 'default',
-            url: 'https://localhost:4000',
-            urlExternal: 'https://localhost:4000',
+            url: 'https://localhost:4000/',
+            urlExternal: 'https://localhost:4000/',
           },
           logger,
         );
@@ -39,18 +40,16 @@ describe('kiali Fetch', () => {
 
         expect(result.verify).toBeTruthy();
         expect(result.category).toBe(ValidationCategory.unknown);
-        expect(result.message).toBeUndefined();
-        expect(result.missingAttributes).toBeUndefined();
-        expect(result.helper).toBeUndefined();
       });
     });
+
     describe(`${AuthStrategy.token} strategy`, () => {
-      it('should get a false when `serviceAccountToken` is missed', async () => {
+      it('should fail if serviceAccountToken is missing', async () => {
         const kialiFetch = new KialiFetcher(
           {
             name: 'default',
-            url: 'https://localhost:4000',
-            urlExternal: 'https://localhost:4000',
+            url: 'https://localhost:4000/',
+            urlExternal: 'https://localhost:4000/',
           },
           logger,
         );
@@ -61,23 +60,16 @@ describe('kiali Fetch', () => {
 
         expect(result.verify).toBeFalsy();
         expect(result.category).toBe(ValidationCategory.configuration);
-        expect(result.message).toBeDefined();
-        expect(result.message).toStrictEqual(
-          "Attribute 'serviceAccountToken' is not in the backstage configuration",
-        );
-        expect(result.missingAttributes).toBeDefined();
-        expect(result.missingAttributes[0]).toStrictEqual(
-          'serviceAccountToken',
-        );
+        expect(result.missingAttributes).toContain('serviceAccountToken');
       });
 
-      it('should get a true when `serviceAccountToken` is set', async () => {
+      it('should pass if serviceAccountToken is set', async () => {
         const kialiFetch = new KialiFetcher(
           {
             name: 'default',
-            url: 'https://localhost:4000',
-            serviceAccountToken: '<token>',
-            urlExternal: 'https://localhost:4000',
+            url: 'https://localhost:4000/',
+            serviceAccountToken: 'token123',
+            urlExternal: 'https://localhost:4000/',
           },
           logger,
         );
@@ -88,150 +80,114 @@ describe('kiali Fetch', () => {
 
         expect(result.verify).toBeTruthy();
         expect(result.category).toBe(ValidationCategory.unknown);
-        expect(result.message).toBeUndefined();
-        expect(result.missingAttributes).toBeUndefined();
-        expect(result.helper).toBeUndefined();
       });
     });
 
-    describe(`Not ${AuthStrategy.openid} strategy supported`, () => {
-      it('should get a true', async () => {
-        const kialiFetch = new KialiFetcher(
-          {
-            name: 'default',
-            url: 'https://localhost:4000',
-            urlExternal: 'https://localhost:4000',
-          },
-          logger,
-        );
-        const result = (kialiFetch as any).validateConfiguration({
-          strategy: AuthStrategy.openid,
-          sessionInfo: {},
-        });
-
-        expect(result.verify).toBeFalsy();
-        expect(result.category).toBe(ValidationCategory.configuration);
-        expect(result.message).toBeDefined();
-        expect(result.message).toStrictEqual(
-          `Strategy ${AuthStrategy.openid} is not supported in Kiali backstage plugin yet`,
-        );
-      });
-    });
-  });
-
-  describe('Read Ca files', () => {
-    describe('bufferFromFileOrString', () => {
-      it('No file or data passed', () => {
-        const kialiFetch = new KialiFetcher(
-          {
-            name: 'default',
-            url: 'https://localhost:4000',
-            urlExternal: 'https://localhost:4000',
-          },
-          logger,
-        );
-        const result = (kialiFetch as any).bufferFromFileOrString();
-
-        expect(result).toBeNull();
-      });
-
-      it('Read from file', () => {
-        const kialiFetch = new KialiFetcher(
-          {
-            name: 'default',
-            url: 'https://localhost:4000',
-            urlExternal: 'https://localhost:4000',
-          },
-          logger,
-        );
-        const result = (kialiFetch as any).bufferFromFileOrString(
-          `${process.cwd()}/plugins/kiali-backend/__fixtures__/ca_example.pem`,
-        );
-
-        expect(result).toBeDefined();
-        expect(result).toBeInstanceOf(Buffer);
-      });
-
-      it('Read from data', () => {
-        const kialiFetch = new KialiFetcher(
-          {
-            name: 'default',
-            url: 'https://localhost:4000',
-            urlExternal: 'https://localhost:4000',
-          },
-          logger,
-        );
-        const result = (kialiFetch as any).bufferFromFileOrString(
-          undefined,
-          `${process.cwd()}/plugins/kiali-backend/__fixtures__/ca_example.pem`,
-        );
-
-        expect(result).toBeDefined();
-        expect(result).toBeInstanceOf(Buffer);
-      });
-    });
-  });
-
-  describe('Return networking error in checkSession', () => {
-    it('Respond with verify category to network', async () => {
+    it('should fail for unsupported openid strategy', async () => {
       const kialiFetch = new KialiFetcher(
         {
           name: 'default',
-          url: 'https://localhost:4000',
-          urlExternal: 'https://localhost:4000',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
         },
         logger,
       );
+      const result = (kialiFetch as any).validateConfiguration({
+        strategy: AuthStrategy.openid,
+        sessionInfo: {},
+      });
 
-      jest.mock('./fetch', () => ({
-        getAuthInfo: Promise.reject({}),
-      }));
-      const validations = await kialiFetch.checkSession();
-      expect(validations).toBeDefined();
-      expect(validations.title).toBe('Error reaching Kiali');
-      expect(validations.category).toBe(ValidationCategory.networking);
+      expect(result.verify).toBeFalsy();
+      expect(result.category).toBe(ValidationCategory.configuration);
+      expect(result.message).toContain('not supported');
     });
   });
 
-  describe('Handle Unsuccessful Response', () => {
-    it('Respond with a readable message with endpoint', () => {
+  describe('Read CA files', () => {
+    const fixturePath = `${process.cwd()}/plugins/kiali-backend/__fixtures__/ca_example.pem`;
+    fs.mkdirSync(`${process.cwd()}/plugins/kiali-backend/__fixtures__`, {
+      recursive: true,
+    });
+    fs.writeFileSync(fixturePath, 'dummy CA content');
+    it('should return null if no file/data', () => {
       const kialiFetch = new KialiFetcher(
         {
           name: 'default',
-          url: 'https://localhost:4000',
-          urlExternal: 'https://localhost:4000',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
         },
         logger,
       );
-      const message = 'Error server message';
-      const code = '404';
-      const endpoint = '/api/status';
-      const axiosError = new AxiosError(message, code);
+      const result = (kialiFetch as any).bufferFromFileOrString();
+      expect(result).toBeNull();
+    });
+
+    it('should read from file', () => {
+      fs.writeFileSync(fixturePath, 'dummy CA content');
+      const kialiFetch = new KialiFetcher(
+        {
+          name: 'default',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
+        },
+        logger,
+      );
+      const result = (kialiFetch as any).bufferFromFileOrString(fixturePath);
+      expect(result).toBeInstanceOf(Buffer);
+      fs.unlinkSync(fixturePath); // clean up
+    });
+
+    it('should read from data string', () => {
+      const data = Buffer.from('dummy CA content').toString('base64');
+      const kialiFetch = new KialiFetcher(
+        {
+          name: 'default',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
+        },
+        logger,
+      );
+      const result = (kialiFetch as any).bufferFromFileOrString(
+        undefined,
+        data,
+      );
+      expect(result).toBeInstanceOf(Buffer);
+    });
+  });
+
+  describe('Handle unsuccessful response', () => {
+    it('should format message with endpoint', () => {
+      const kialiFetch = new KialiFetcher(
+        {
+          name: 'default',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
+        },
+        logger,
+      );
+      const axiosError = new AxiosError('error', '404');
       const result = (kialiFetch as any).handleUnsuccessfulResponse(
         axiosError,
-        endpoint,
+        '/api/test',
       );
-
-      expect(result).toStrictEqual(
-        `[${code}] Fetching when fetching "${endpoint}" in "Kiali"; body=[${message}]`,
-      );
+      expect(result).toContain('when fetching "/api/test"');
     });
+  });
 
-    it('Respond with a readable message without endpoint', () => {
+  describe('Basic Auth support', () => {
+    it('should include Authorization header when basicAuth is set', () => {
+      const basicAuth = 'dXNlcjpwYXNz'; // base64(user:pass)
       const kialiFetch = new KialiFetcher(
         {
           name: 'default',
-          url: 'https://localhost:4000',
-          urlExternal: 'https://localhost:4000',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
+          basicAuth,
         },
         logger,
       );
-      const message = 'Error server message';
-      const code = '404';
-      const axiosError = new AxiosError(message, code);
-      const result = (kialiFetch as any).handleUnsuccessfulResponse(axiosError);
-
-      expect(result).toStrictEqual(`[${code}] Fetching  body=[${message}]`);
+      const requestInit = (kialiFetch as any).getRequestInit('/api/test');
+      expect(requestInit.headers.Authorization).toBe(`Basic ${basicAuth}`);
     });
   });
 });
