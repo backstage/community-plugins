@@ -1937,7 +1937,7 @@ __metadata:
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:^4.0.0-alpha.45"
     "@mui/icons-material": "npm:^5.15.8"
-    "@patternfly/patternfly": "npm:^5.1.0"
+    "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-charts": "npm:^7.1.1"
     "@patternfly/react-core": "npm:^5.1.1"
     "@patternfly/react-icons": "npm:^5.1.1"
@@ -8540,10 +8540,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/patternfly@npm:^5.1.0":
-  version: 5.4.2
-  resolution: "@patternfly/patternfly@npm:5.4.2"
-  checksum: 10/1d1921a97d4883e761eaa1de08fea6cd684ee74e3838936d0fca9fc012ab729f7ba42fe0dcd3211e72e2e446d963a71ac3315a36717378f9e15217459bc3f829
+"@patternfly/patternfly@npm:^6.0.0":
+  version: 6.4.0
+  resolution: "@patternfly/patternfly@npm:6.4.0"
+  checksum: 10/67fdc5998485e129721f595d9e1df6d3b778f15d030751eb9b7b6a09af66928871983722cc228c5f70e41a73074c832e3ab5f723091a17b4f6edecc6915a5894
   languageName: node
   linkType: hard
 
