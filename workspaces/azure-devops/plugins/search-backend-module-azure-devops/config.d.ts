@@ -39,27 +39,25 @@ export interface Config {
         /**
          * Array of one or more wikis to collate
          */
-        wikis?: [
-          {
-            /**
-             * The identifier of the wiki. This can be found by looking at the URL of the wiki in Azure DevOps.
-             * It is typically something like '{nameOfWiki}.wiki'; required
-             */
-            wikiIdentifier: string;
-            /**
-             * The name of the organization the wiki is contained in; required.
-             */
-            organization: string;
-            /**
-             * The name of the project the wiki is contained in; required.
-             */
-            project: string;
-            /**
-             * A string to append to the title of articles to make them easier to identify as search results from the wiki; optional
-             */
-            titleSuffix: string;
-          },
-        ];
+        wikis?: Array<{
+          /**
+           * The identifier of the wiki. This can be found by looking at the URL of the wiki in Azure DevOps.
+           * It is typically something like '{nameOfWiki}.wiki'; required
+           */
+          wikiIdentifier: string;
+          /**
+           * The name of the organization the wiki is contained in; required.
+           */
+          organization: string;
+          /**
+           * The name of the project the wiki is contained in; required.
+           */
+          project: string;
+          /**
+           * A string to append to the title of articles to make them easier to identify as search results from the wiki; optional
+           */
+          titleSuffix: string;
+        }>;
       };
     };
   };
