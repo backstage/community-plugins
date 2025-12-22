@@ -105,10 +105,6 @@ describe('kiali Fetch', () => {
 
   describe('Read CA files', () => {
     const fixturePath = `${process.cwd()}/plugins/kiali-backend/__fixtures__/ca_example.pem`;
-    fs.mkdirSync(`${process.cwd()}/plugins/kiali-backend/__fixtures__`, {
-      recursive: true,
-    });
-    fs.writeFileSync(fixturePath, 'dummy CA content');
     it('should return null if no file/data', () => {
       const kialiFetch = new KialiFetcher(
         {
