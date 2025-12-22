@@ -96,6 +96,26 @@ async function main() {
 
   // Get the current Backstage version from the backstage.json file
   const backstageVersion = await getBackstageVersion(workspace);
+
+  // Check if releaseLine is a custom version
+  const isCustomVersion = releaseLine !== 'main' && releaseLine !== 'next';
+
+  if (isCustomVersion) {
+    console.log(`Current Backstage version is: v${backstageVersion}`);
+    console.log(`Using custom version: ${releaseLine}`);
+    console.log();
+
+    await fs.appendFile(
+      process.env.GITHUB_OUTPUT,
+      `release_version=${releaseLine}${EOL}`,
+    );
+    await fs.appendFile(
+      process.env.GITHUB_OUTPUT,
+      `current_version=${backstageVersion}${EOL}`,
+    );
+    return;
+  }
+
   // Get the latest Backstage Release from the GitHub API
   const latestRelease = await getLatestRelease();
   // Get the latest Backstage Pre-release from the GitHub API
