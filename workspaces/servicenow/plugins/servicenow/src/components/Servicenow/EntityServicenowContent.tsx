@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
+import { useEffect, useState, MouseEvent, ChangeEvent, useMemo } from 'react';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 
 import {
@@ -33,7 +33,6 @@ import TablePagination from '@mui/material/TablePagination';
 import {
   Order,
   SortingOrderEnum,
-  ServiceAnnotationFieldName,
 } from '@backstage-community/plugin-servicenow-common';
 
 import { IncidentsFilter } from './IncidentsFilter';
@@ -80,7 +79,23 @@ export const EntityServicenowContent = () => {
   const [error, setError] = useState<string | null>(null);
   const updateQueryParams = useUpdateQueryParams();
 
-  const entityId = entity.metadata.annotations?.[ServiceAnnotationFieldName];
+  const servicenowAnnotations = useMemo(() => {
+    const annotations = entity.metadata.annotations;
+    const snAnnotations: Record<string, string> = {};
+    if (annotations) {
+      for (const [key, value] of Object.entries(annotations)) {
+        if (key.startsWith('servicenow.com/entity-id')) {
+          snAnnotations.entityId = value;
+          continue;
+        }
+        if (key.startsWith('servicenow.com/')) {
+          const field = key.substring('servicenow.com/'.length);
+          snAnnotations[field] = value;
+        }
+      }
+    }
+    return snAnnotations;
+  }, [entity.metadata.annotations]);
 
   const kind = entity.kind.toLocaleLowerCase('en-US');
   const userEmail = useUserEmail(kind);
@@ -107,7 +122,7 @@ export const EntityServicenowContent = () => {
       setLoading(true);
       setError(null);
 
-      if (!userEmail && !entityId) {
+      if (!userEmail && Object.keys(servicenowAnnotations).length === 0) {
         setIncidentsData([]);
         setLoading(false);
         return;
@@ -123,7 +138,7 @@ export const EntityServicenowContent = () => {
           priority: priority ?? undefined,
           state: state ?? undefined,
           userEmail,
-          entityId,
+          ...servicenowAnnotations,
         });
 
         const { incidents, totalCount } = await serviceNowApi.getIncidents(
@@ -147,7 +162,7 @@ export const EntityServicenowContent = () => {
     orderBy,
     search,
     serviceNowApi,
-    entityId,
+    servicenowAnnotations,
     priority,
     state,
     userEmail,
