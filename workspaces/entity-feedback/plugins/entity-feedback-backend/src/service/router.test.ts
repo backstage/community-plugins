@@ -88,18 +88,21 @@ const mockResponses = [
     response: 'asdf',
     comments: 'here is new feedback',
     consent: false,
+    link: '/catalog/default/component/foo',
   },
   {
     userRef: 'user:default/bar',
     response: 'noop',
     comments: 'here is different feedback',
     consent: true,
+    link: '/catalog/default/component/bar',
   },
   {
     userRef: 'user:default/test',
     response: 'err',
     comments: 'no comment',
     consent: false,
+    link: '/catalog/default/component/test',
   },
 ];
 
@@ -311,6 +314,7 @@ describe('createRouter', () => {
         response: 'blah',
         comments: '{ "additionalComments": "feedback" }',
         consent: true,
+        link: '/catalog/default/component/service',
       };
       const response = await request(app)
         .post('/responses/component%3Adefault%2Fservice')
@@ -340,6 +344,7 @@ describe('createRouter', () => {
         response: 'blah',
         comments: '{ "additionalComments": "feedback" }',
         consent: true,
+        link: '/catalog/default/component/service',
       };
       const response = await request(app)
         .post('/responses/component:default/service')

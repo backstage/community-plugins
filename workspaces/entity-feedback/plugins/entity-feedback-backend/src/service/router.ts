@@ -26,7 +26,6 @@ import {
   Entity,
   RELATION_OWNED_BY,
   stringifyEntityRef,
-  parseEntityRef,
 } from '@backstage/catalog-model';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import {
@@ -208,7 +207,7 @@ export async function createRouter(
   });
 
   router.post('/responses/:entityRef(*)', async (req, res) => {
-    const { response, comments, consent } = req.body;
+    const { response, comments, consent, link } = req.body;
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
     const { token } = await auth.getPluginRequestToken({
       onBehalfOf: credentials,
@@ -229,24 +228,10 @@ export async function createRouter(
         entityRef: entityOwner,
       };
 
-      // Construct entity URL from entityRef using configurable pattern
-      const { kind, namespace, name } = parseEntityRef(req.params.entityRef);
-
-      // Allow customization of the feedback URL pattern via config
-      // Default: /catalog/:namespace/:kind/:name
-      const feedbackUrlPattern =
-        config.getOptionalString('entityFeedback.feedbackUrlPattern') ||
-        '/catalog/:namespace/:kind/:name';
-
-      const entityUrl = feedbackUrlPattern
-        .replace(':kind', kind)
-        .replace(':namespace', namespace)
-        .replace(':name', name);
-
       const payload: NotificationPayload = {
         title: `New feedback for ${req.params.entityRef}`,
         description: `Comments: ${JSON.parse(comments).additionalComments}`,
-        link: entityUrl,
+        link: link,
       };
       await notificationService.send({
         recipients,
@@ -264,6 +249,7 @@ export async function createRouter(
       comments,
       consent,
       userRef: credentials.principal.userEntityRef,
+      link,
     });
 
     res.status(201).end();
