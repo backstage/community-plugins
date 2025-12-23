@@ -40,13 +40,13 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.6",
-    "@backstage/integration": "^1.18.2",
+    "@backstage/integration": "^1.19.0",
     "@backstage/plugin-search-common": "^1.2.21",
     "front-matter": "^4.0.2",
     "luxon": "^3.0.0",
     "marked": "^12.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5"
+    "@backstage/cli": "^0.35.1"
   }
 }
