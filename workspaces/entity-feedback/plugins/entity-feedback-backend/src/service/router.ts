@@ -26,6 +26,7 @@ import {
   Entity,
   RELATION_OWNED_BY,
   stringifyEntityRef,
+  parseEntityRef,
 } from '@backstage/catalog-model';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import {
@@ -228,10 +229,19 @@ export async function createRouter(
         entityRef: entityOwner,
       };
 
-      // Construct entity URL from entityRef (format: "kind:namespace/name")
-      const [kind, namespaceName] = req.params.entityRef.split(':');
-      const [namespace, name] = namespaceName.split('/');
-      const entityUrl = `/catalog/${namespace}/${kind}/${name}/feedback`;
+      // Construct entity URL from entityRef using configurable pattern
+      const { kind, namespace, name } = parseEntityRef(req.params.entityRef);
+
+      // Allow customization of the feedback URL pattern via config
+      // Default: /catalog/:namespace/:kind/:name
+      const feedbackUrlPattern =
+        config.getOptionalString('entityFeedback.feedbackUrlPattern') ||
+        '/catalog/:namespace/:kind/:name';
+
+      const entityUrl = feedbackUrlPattern
+        .replace(':kind', kind)
+        .replace(':namespace', namespace)
+        .replace(':name', name);
 
       const payload: NotificationPayload = {
         title: `New feedback for ${req.params.entityRef}`,

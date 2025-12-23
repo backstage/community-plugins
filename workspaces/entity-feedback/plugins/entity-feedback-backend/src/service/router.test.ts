@@ -329,7 +329,7 @@ describe('createRouter', () => {
         payload: {
           title: 'New feedback for component:default/service',
           description: 'Comments: feedback',
-          link: '/catalog/default/component/service/feedback',
+          link: '/catalog/default/component/service',
         },
       });
       expect(response.status).toEqual(201);
@@ -358,7 +358,7 @@ describe('createRouter', () => {
         payload: {
           title: 'New feedback for component:default/service',
           description: 'Comments: feedback',
-          link: '/catalog/default/component/service/feedback',
+          link: '/catalog/default/component/service',
         },
       });
       expect(response.status).toEqual(201);
