@@ -1,0 +1,55 @@
+{
+  "name": "@backstage-community/plugin-techdocs-backend-module-confluence",
+  "version": "0.1.0",
+  "description": "The confluence backend module for the techdocs plugin.",
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "techdocs",
+    "pluginPackage": "@backstage/plugin-techdocs-backend"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/confluence/plugins/techdocs-backend-module-confluence"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/integration": "backstage:^",
+    "@backstage/plugin-techdocs-common": "backstage:^",
+    "@backstage/plugin-techdocs-node": "backstage:^",
+    "fs-extra": "^11.2.0",
+    "node-fetch": "^2.7.0",
+    "node-html-markdown": "^1.3.0",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node-fetch": "^2.6.11"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}
