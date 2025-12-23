@@ -20,8 +20,10 @@ import {
   adminCategoriesRouteRef,
   announcementAdminRouteRef,
   adminTagsRouteRef,
+  adminSettingsRouteRef,
   rootRouteRef,
 } from '../../../routes';
+import { useSettings } from '@backstage-community/plugin-announcements-react';
 
 export type AnnouncementsAdminPageProps = {
   title?: string;
@@ -35,12 +37,20 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
   const adminRoute = useRouteRef(announcementAdminRouteRef);
   const adminCategoriesRoute = useRouteRef(adminCategoriesRouteRef);
   const adminTagsRoute = useRouteRef(adminTagsRouteRef);
+  const adminSettingsRoute = useRouteRef(adminSettingsRouteRef);
+
+  const { settings } = useSettings();
 
   return (
     <>
       <HeaderPage
         title={title ?? 'Admin Portal'}
-        breadcrumbs={[{ label: 'Announcements', href: announcementsRoute() }]}
+        breadcrumbs={[
+          {
+            label: settings?.pluginTitle ?? 'Announcements',
+            href: announcementsRoute(),
+          },
+        ]}
         tabs={[
           {
             id: 'announcements',
@@ -56,6 +66,11 @@ export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {
             id: 'tags',
             label: 'Tags',
             href: adminTagsRoute(),
+          },
+          {
+            id: 'settings',
+            label: 'Settings',
+            href: adminSettingsRoute(),
           },
         ]}
       />

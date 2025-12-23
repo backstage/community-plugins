@@ -4,6 +4,7 @@
 
 ```ts
 import { BasicPermission } from '@backstage/plugin-permission-common';
+import { z } from 'zod';
 
 // @public
 export type Announcement = {
@@ -75,6 +76,12 @@ export const AUDITOR_ACTION_CREATE = 'create';
 export const AUDITOR_ACTION_DELETE = 'delete';
 
 // @public
+export const AUDITOR_ACTION_SETTINGS_RESET = 'reset-settings';
+
+// @public
+export const AUDITOR_ACTION_SETTINGS_UPDATE = 'update-settings';
+
+// @public
 export const AUDITOR_ACTION_UPDATE = 'update';
 
 // @public
@@ -82,6 +89,9 @@ export const AUDITOR_FETCH_EVENT_ID = 'announcements-fetch';
 
 // @public
 export const AUDITOR_MUTATE_EVENT_ID = 'announcements-mutate';
+
+// @public
+export const AUDITOR_SETTINGS_EVENT_ID = 'announcements-settings';
 
 // @public
 export type Category = {
@@ -121,6 +131,51 @@ export const MAX_TITLE_LENGTH = 50;
 
 // @public
 export const MAX_TITLE_TAG_LENGTH = 100;
+
+// @public
+export type Settings = z.infer<typeof settingsSchema>;
+
+// @public
+export const settingsSchema: z.ZodObject<
+  {
+    pluginTitle: z.ZodDefault<z.ZodString>;
+    createAnnouncementAsInactive: z.ZodDefault<z.ZodBoolean>;
+    sendNotification: z.ZodDefault<z.ZodBoolean>;
+    createAnnouncementWithDefaultCategory: z.ZodNullable<z.ZodString>;
+    showInactiveAnnouncements: z.ZodDefault<z.ZodBoolean>;
+    showStartAt: z.ZodDefault<z.ZodBoolean>;
+    announcementTitleLength: z.ZodDefault<z.ZodNumber>;
+    tagTitleLength: z.ZodDefault<z.ZodNumber>;
+    excerptLength: z.ZodDefault<z.ZodNumber>;
+    maxPerPage: z.ZodDefault<z.ZodNumber>;
+  },
+  'strip',
+  z.ZodTypeAny,
+  {
+    pluginTitle: string;
+    createAnnouncementAsInactive: boolean;
+    sendNotification: boolean;
+    createAnnouncementWithDefaultCategory: string | null;
+    showInactiveAnnouncements: boolean;
+    showStartAt: boolean;
+    announcementTitleLength: number;
+    tagTitleLength: number;
+    excerptLength: number;
+    maxPerPage: number;
+  },
+  {
+    createAnnouncementWithDefaultCategory: string | null;
+    pluginTitle?: string | undefined;
+    createAnnouncementAsInactive?: boolean | undefined;
+    sendNotification?: boolean | undefined;
+    showInactiveAnnouncements?: boolean | undefined;
+    showStartAt?: boolean | undefined;
+    announcementTitleLength?: number | undefined;
+    tagTitleLength?: number | undefined;
+    excerptLength?: number | undefined;
+    maxPerPage?: number | undefined;
+  }
+>;
 
 // @public
 export const SIGNALS_CHANNEL_ANNOUNCEMENTS = 'announcements:new';

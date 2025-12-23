@@ -14,6 +14,7 @@ import { Entity } from '@backstage/catalog-model';
 import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { Settings } from '@backstage-community/plugin-announcements-common';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 
@@ -51,12 +52,18 @@ export interface AnnouncementsApi {
   // (undocumented)
   markLastSeenDate(date: DateTime): void;
   // (undocumented)
+  resetSettings(): Promise<Settings>;
+  // (undocumented)
+  settings(): Promise<Settings>;
+  // (undocumented)
   tags(): Promise<Tag[]>;
   // (undocumented)
   updateAnnouncement(
     id: string,
     request: CreateAnnouncementRequest,
   ): Promise<Announcement>;
+  // (undocumented)
+  updateSettings(settings: Partial<Settings>): Promise<Settings>;
 }
 
 // @public (undocumented)
@@ -106,12 +113,18 @@ export class AnnouncementsClient implements AnnouncementsApi {
   // (undocumented)
   markLastSeenDate(date: DateTime): void;
   // (undocumented)
+  resetSettings(): Promise<Settings>;
+  // (undocumented)
+  settings(): Promise<Settings>;
+  // (undocumented)
   tags(): Promise<Category[]>;
   // (undocumented)
   updateAnnouncement(
     id: string,
     request: CreateAnnouncementRequest,
   ): Promise<Announcement>;
+  // (undocumented)
+  updateSettings(settings: Partial<Settings>): Promise<Settings>;
 }
 
 // @public
@@ -138,6 +151,10 @@ export type AnnouncementsPermissionsResult = {
     allowed: boolean;
   };
   update: {
+    loading: boolean;
+    allowed: boolean;
+  };
+  settingsUpdate: {
     loading: boolean;
     allowed: boolean;
   };
@@ -193,6 +210,30 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.tagsContent.cancelButton': 'Cancel';
     readonly 'admin.tagsContent.createButton': 'Create tag';
     readonly 'admin.tagsContent.deletedMessage': 'Tag deleted.';
+    readonly 'admin.settingsContent.title': 'Settings';
+    readonly 'admin.settingsContent.pluginTitle': 'Plugin Title';
+    readonly 'admin.settingsContent.createAnnouncementAsInactive': 'Create announcements as inactive';
+    readonly 'admin.settingsContent.sendNotification': 'Send notification on new announcements';
+    readonly 'admin.settingsContent.showInactiveAnnouncements': 'Show inactive announcements';
+    readonly 'admin.settingsContent.showStartAt': 'Show start date';
+    readonly 'admin.settingsContent.announcementTitleLength': 'Announcement Title Length';
+    readonly 'admin.settingsContent.tagTitleLength': 'Tag Title Length';
+    readonly 'admin.settingsContent.excerptLength': 'Excerpt Length';
+    readonly 'admin.settingsContent.maxPerPage': 'Max Announcements Per Page';
+    readonly 'admin.settingsContent.savedMessage': 'Settings saved successfully.';
+    readonly 'admin.settingsContent.resetMessage': 'Settings reset to defaults.';
+    readonly 'admin.settingsContent.generalSection': 'General Settings';
+    readonly 'admin.settingsContent.generalSectionDescription': 'Configure the basic settings for the announcements plugin.';
+    readonly 'admin.settingsContent.pluginTitleHelp': 'The title of main announcements page.';
+    readonly 'admin.settingsContent.maxPerPageHelp': 'Number of announcements to display per page (1-100). Default is 10.';
+    readonly 'admin.settingsContent.displaySection': 'Display Settings';
+    readonly 'admin.settingsContent.displaySectionDescription': 'Control how announcements are displayed in the UI.';
+    readonly 'admin.settingsContent.defaultsSection': 'Default Behavior';
+    readonly 'admin.settingsContent.defaultsSectionDescription': 'Set default values for creating new announcements.';
+    readonly 'admin.settingsContent.defaultCategory': 'Default Category';
+    readonly 'admin.settingsContent.defaultCategoryHelp': 'Leave empty to not set a default category for new announcements.';
+    readonly 'admin.settingsContent.resetButton': 'Reset to Defaults';
+    readonly 'admin.settingsContent.saveButton': 'Save Settings';
     readonly 'announcementForm.active': 'Active';
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
@@ -337,6 +378,16 @@ export const useCategories: () => {
   loading: boolean;
   error: Error | undefined;
   retry: () => void;
+};
+
+// @public
+export const useSettings: () => {
+  settings: Settings | undefined;
+  loading: boolean;
+  error: Error | undefined;
+  retry: () => void;
+  updateSettings: (settings: Partial<Settings>) => Promise<void>;
+  resetSettings: () => Promise<void>;
 };
 
 // @public

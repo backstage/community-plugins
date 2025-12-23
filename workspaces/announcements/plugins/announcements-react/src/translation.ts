@@ -214,6 +214,37 @@ export const announcementsTranslationRef = createTranslationRef({
           alreadyExists: 'A tag with this name already exists.',
         },
       },
+      settingsContent: {
+        title: 'Settings',
+        savedMessage: 'Settings saved successfully.',
+        resetMessage: 'Settings reset to defaults.',
+        generalSection: 'General Settings',
+        generalSectionDescription:
+          'Configure the basic settings for the announcements plugin.',
+        pluginTitle: 'Plugin Title',
+        pluginTitleHelp: 'The title of main announcements page.',
+        maxPerPage: 'Max Announcements Per Page',
+        maxPerPageHelp:
+          'Number of announcements to display per page (1-100). Default is 10.',
+        displaySection: 'Display Settings',
+        displaySectionDescription:
+          'Control how announcements are displayed in the UI.',
+        announcementTitleLength: 'Announcement Title Length',
+        tagTitleLength: 'Tag Title Length',
+        excerptLength: 'Excerpt Length',
+        defaultsSection: 'Default Behavior',
+        defaultsSectionDescription:
+          'Set default values for creating new announcements.',
+        createAnnouncementAsInactive: 'Create announcements as inactive',
+        sendNotification: 'Send notification on new announcements',
+        showInactiveAnnouncements: 'Show inactive announcements',
+        showStartAt: 'Show start date',
+        defaultCategory: 'Default Category',
+        defaultCategoryHelp:
+          'Leave empty to not set a default category for new announcements.',
+        resetButton: 'Reset to Defaults',
+        saveButton: 'Save Settings',
+      },
     },
   },
 });

@@ -26,6 +26,7 @@ import {
   Announcement,
   AnnouncementsList,
   Category,
+  Settings,
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsApi } from './AnnouncementsApi';
@@ -221,6 +222,27 @@ export class AnnouncementsClient implements AnnouncementsApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
     });
+  }
+
+  async settings(): Promise<Settings> {
+    const response = await this.fetch<{ settings: Settings }>('/settings');
+    return response.settings;
+  }
+
+  async updateSettings(settings: Partial<Settings>): Promise<Settings> {
+    const response = await this.fetch<{ settings: Settings }>('/settings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    });
+    return response.settings;
+  }
+
+  async resetSettings(): Promise<Settings> {
+    const response = await this.fetch<{ settings: Settings }>('/settings', {
+      method: 'DELETE',
+    });
+    return response.settings;
   }
 
   lastSeenDate(): DateTime {
