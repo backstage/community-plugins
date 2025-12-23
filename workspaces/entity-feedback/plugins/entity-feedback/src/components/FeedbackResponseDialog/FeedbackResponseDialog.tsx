@@ -16,9 +16,16 @@
 
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Progress } from '@backstage/core-components';
-import { ErrorApiError, errorApiRef, useApi } from '@backstage/core-plugin-api';
-import { entityRouteRef, entityRouteParams } from '@backstage/plugin-catalog-react';
-import { useRouteRef } from '@backstage/core-plugin-api';
+import {
+  ErrorApiError,
+  errorApiRef,
+  useApi,
+  useRouteRef,
+} from '@backstage/core-plugin-api';
+import {
+  entityRouteParams,
+  entityRouteRef,
+} from '@backstage/plugin-catalog-react';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
@@ -117,7 +124,9 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   const [consent, setConsent] = useState(true);
 
   // Derive the entity URL using the same logic as EntityRefLink
-  const entityUrl = entityRoute(entityRouteParams(entity, { encodeParams: true }));
+  const entityUrl = entityRoute(
+    entityRouteParams(entity, { encodeParams: true }),
+  );
 
   const [{ loading: saving }, saveResponse] = useAsyncFn(async () => {
     // filter out responses that were not selected
@@ -147,7 +156,15 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
     } catch (e) {
       errorApi.post(e as ErrorApiError);
     }
-  }, [comments, consent, entity, entityUrl, feedbackApi, onClose, responseSelections]);
+  }, [
+    comments,
+    consent,
+    entity,
+    entityUrl,
+    feedbackApi,
+    onClose,
+    responseSelections,
+  ]);
 
   return (
     <Dialog open={open} onClose={() => !saving && onClose()}>
