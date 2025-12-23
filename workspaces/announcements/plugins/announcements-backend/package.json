@@ -55,7 +55,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.0",
+    "@backstage/cli": "^0.35.1",
     "@backstage/plugin-catalog-node": "^1.20.1",
     "@types/supertest": "^2.0.15",
     "supertest": "^6.3.3"
