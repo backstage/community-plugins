@@ -227,9 +227,16 @@ export async function createRouter(
         type: 'entity',
         entityRef: entityOwner,
       };
+
+      // Construct entity URL from entityRef (format: "kind:namespace/name")
+      const [kind, namespaceName] = req.params.entityRef.split(':');
+      const [namespace, name] = namespaceName.split('/');
+      const entityUrl = `/catalog/${namespace}/${kind}/${name}/feedback`;
+
       const payload: NotificationPayload = {
         title: `New feedback for ${req.params.entityRef}`,
         description: `Comments: ${JSON.parse(comments).additionalComments}`,
+        link: entityUrl,
       };
       await notificationService.send({
         recipients,
