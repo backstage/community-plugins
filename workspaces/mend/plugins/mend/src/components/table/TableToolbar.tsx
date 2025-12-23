@@ -1,6 +1,21 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { ReactNode } from 'react';
 import { MTableToolbar } from '@material-table/core';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 type TableToolbarProps = {
@@ -11,41 +26,39 @@ type TableToolbarProps = {
 };
 
 export const TableToolbar = ({
-  toolbar,
+  toolbar = {},
   ProjectFilterComponent,
   children,
   title,
 }: TableToolbarProps) => {
+  // Provide default values to avoid defaultProps warning from MTableToolbar
+  const toolbarProps = {
+    searchFieldStyle: {},
+    searchFieldVariant: 'standard' as const,
+    ...toolbar,
+  };
+
   return (
-    <Grid
-      container
-      alignItems="center"
-      alignContent="center"
-      sx={{ paddingLeft: 2 }}
-    >
-      <Grid item xs={12}>
-        {title && <Typography variant="h4">{title}</Typography>}
+    <Grid container alignItems="center" alignContent="center" gap={1}>
+      <Grid xs={12}>
+        {title && <Typography variant="h2">{title}</Typography>}
       </Grid>
-      <Grid
-        container
-        item
-        xs={12}
-        alignItems="center"
-        justifyContent="space-between"
-        margin={0}
-        paddingBottom={1}
-        paddingTop={1}
-      >
-        <Grid item xs={9}>
+      <Grid container xs={12} alignItems="center" width="100%">
+        <Grid xs={9}>
           <ProjectFilterComponent />
         </Grid>
-        <Grid item xs={3}>
-          <MTableToolbar {...toolbar} />
+        <Grid
+          xs={3}
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginLeft: 'auto',
+          }}
+        >
+          <MTableToolbar {...toolbarProps} />
         </Grid>
       </Grid>
-      <Grid item xs={12}>
-        {children}
-      </Grid>
+      <Grid xs={12}>{children}</Grid>
     </Grid>
   );
 };
