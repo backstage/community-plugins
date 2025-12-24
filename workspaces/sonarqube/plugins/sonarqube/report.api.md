@@ -12,7 +12,7 @@ import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ReactNode } from 'react';
 import { SonarQubeApi } from '@backstage-community/plugin-sonarqube-react';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 
 // @public (undocumented)
 export type DuplicationRating = {
