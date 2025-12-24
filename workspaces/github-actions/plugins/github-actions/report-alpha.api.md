@@ -5,15 +5,14 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -48,7 +47,6 @@ const _default: OverridableFrontendPlugin<
         props: {
           branch?: string | undefined;
         };
-      } & {
         filter: EntityPredicate | undefined;
         type: 'content' | 'summary' | 'info' | undefined;
       };
@@ -58,7 +56,6 @@ const _default: OverridableFrontendPlugin<
               branch?: string | undefined;
             }
           | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
@@ -85,21 +82,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            singleton: boolean;
-            optional: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-card';
       name: 'latest-branch-workflow-runs';
       params: {
@@ -113,7 +96,6 @@ const _default: OverridableFrontendPlugin<
         props: {
           branch?: string | undefined;
         };
-      } & {
         filter: EntityPredicate | undefined;
         type: 'content' | 'summary' | 'info' | undefined;
       };
@@ -123,7 +105,6 @@ const _default: OverridableFrontendPlugin<
               branch?: string | undefined;
             }
           | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
@@ -150,21 +131,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            singleton: boolean;
-            optional: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-card';
       name: 'latest-workflow-run';
       params: {
@@ -180,7 +147,6 @@ const _default: OverridableFrontendPlugin<
           limit?: number | undefined;
           branch?: string | undefined;
         };
-      } & {
         filter: EntityPredicate | undefined;
         type: 'content' | 'summary' | 'info' | undefined;
       };
@@ -192,7 +158,6 @@ const _default: OverridableFrontendPlugin<
               branch?: string | undefined;
             }
           | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
@@ -219,21 +184,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            singleton: boolean;
-            optional: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-card';
       name: 'recent-workflow-runs';
       params: {
@@ -245,7 +196,6 @@ const _default: OverridableFrontendPlugin<
     'entity-content:github-actions': OverridableExtensionDefinition<{
       config: {
         layout: 'table' | 'cards';
-      } & {
         path: string | undefined;
         title: string | undefined;
         filter: EntityPredicate | undefined;
@@ -253,7 +203,6 @@ const _default: OverridableFrontendPlugin<
       };
       configInput: {
         layout?: 'table' | 'cards' | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         title?: string | undefined;
         path?: string | undefined;
@@ -291,21 +240,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            singleton: boolean;
-            optional: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-content';
       name: undefined;
       params: {
