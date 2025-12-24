@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bazaar",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "bazaar",
