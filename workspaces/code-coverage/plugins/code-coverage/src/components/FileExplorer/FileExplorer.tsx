@@ -107,10 +107,7 @@ export const buildFileStructure = (row: CoverageTableRow) => {
 
     return buildFileStructure({
       path: pathGroup,
-      files: removeVisitedPathGroup(
-        dataGroupedByPath[pathGroup],
-        pathGroup,
-      ),
+      files: removeVisitedPathGroup(dataGroupedByPath[pathGroup], pathGroup),
       coverage:
         aggregatedTracked > 0
           ? ((aggregatedTracked - aggregatedMissing) / aggregatedTracked) * 100
