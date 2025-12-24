@@ -45,7 +45,7 @@ jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
 }));
 
-describe('DeploymentLifecylceCard', () => {
+describe('DeploymentLifecycleCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -53,7 +53,6 @@ describe('DeploymentLifecylceCard', () => {
       baseUrl: '',
       instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
   });
 
@@ -135,7 +134,6 @@ describe('DeploymentLifecylceCard', () => {
       baseUrl: 'https://baseUrl.com',
       instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
 
     global.open = jest.fn();
@@ -171,7 +169,6 @@ test('application card should not contain commit section for helm based applicat
     baseUrl: 'https://baseUrl.com',
     instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
     intervalMs: 10000,
-    instanceName: 'main',
   });
 
   const helmApplication = {

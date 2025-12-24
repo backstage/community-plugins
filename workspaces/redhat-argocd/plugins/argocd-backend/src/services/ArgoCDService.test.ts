@@ -16,13 +16,9 @@
 import { ArgoCDService } from './ArgoCDService';
 import { RevisionInfo } from '@backstage-community/plugin-redhat-argocd-common';
 import { mockApplications, mockConfig } from '../__data__/mockdata';
+import { mockServices } from '@backstage/backend-test-utils';
 
-const mockLogger = {
-  error: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn(),
-} as any;
+const mockLogger = mockServices.logger.mock();
 
 describe('ArgoCDService', () => {
   let service: ArgoCDService;
@@ -111,22 +107,22 @@ describe('ArgoCDService', () => {
         metadata: {
           resourceVersion: '12345',
         },
-        items: mockApplications[1],
+        items: [mockApplications[1]],
       };
       fetchMock.mockResolvedValue({
         ok: true,
         json: async () => expectedAppNamespaceResponse,
       });
 
-      const result = await service.listArgoApps('test-instance', {
+      const result = await service.listArgoApps('staging-instance', {
         appNamespace: 'staging',
       });
       expect(result).toEqual(expectedAppNamespaceResponse);
       expect(fetchMock).toHaveBeenCalledWith(
-        'https://argocd.example.com/api/v1/applications?appNamespace=staging',
+        'https://argocd.staging.example.com/api/v1/applications?appNamespace=staging',
         {
           headers: {
-            Authorization: 'Bearer test-token',
+            Authorization: 'Bearer test-staging-token',
             'Content-Type': 'application/json',
           },
           method: 'GET',
@@ -139,7 +135,7 @@ describe('ArgoCDService', () => {
         metadata: {
           resourceVersion: '12345',
         },
-        items: mockApplications[0],
+        items: [mockApplications[0]],
       };
       fetchMock.mockResolvedValue({
         ok: true,
@@ -180,21 +176,21 @@ describe('ArgoCDService', () => {
     });
 
     it('should successfully handle zero items returned with the appNamespace param', async () => {
-      const expectedEmptyNamespaceResponse = {
+      const emptyNamespaceResponse = {
         metadata: {
           resourceVersion: '12345',
         },
-        items: [],
+        items: null,
       };
       fetchMock.mockResolvedValue({
         ok: true,
-        json: async () => expectedEmptyNamespaceResponse,
+        json: async () => emptyNamespaceResponse,
       });
 
       const result = await service.listArgoApps('test-instance', {
         appNamespace: 'fake',
       });
-      expect(result).toEqual(expectedEmptyNamespaceResponse);
+      expect(result).toEqual({ ...emptyNamespaceResponse, items: [] });
       expect(fetchMock).toHaveBeenCalledWith(
         'https://argocd.example.com/api/v1/applications?appNamespace=fake',
         {
@@ -392,6 +388,284 @@ describe('ArgoCDService', () => {
         }),
       ).rejects.toThrow(
         "Failed to fetch Application from Instance 'staging-instance' with appName 'wrong-app' with appNamespace 'staging' : Request to https://argocd.staging.example.com/api/v1/applications/wrong-app?appNamespace=staging failed with 500 Internal Server Error",
+      );
+    });
+  });
+
+  describe('findApplications', () => {
+    it('should return instances with applications filtered by appName from single instance', async () => {
+      const expectedApplications = mockApplications.filter(
+        application => application.metadata.name === 'test-app',
+      );
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: expectedApplications,
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [],
+          }),
+        });
+
+      const result = await service.findApplications({ appName: 'test-app' });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+        },
+      ]);
+      expect(result[0].applications).toBeUndefined();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return instances with expanded applications filtered by appName from single instance when expand=applications', async () => {
+      const expectedApplications = mockApplications.filter(
+        application => application.metadata.name === 'test-app',
+      );
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: expectedApplications,
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+        expand: 'applications',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+          applications: expectedApplications,
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return instances with applications filtered by appName from multiple instances', async () => {
+      const expectedApplications = [
+        mockApplications[0],
+        {
+          ...mockApplications[2],
+          metadata: { ...mockApplications[2].metadata, name: 'test-app' },
+        },
+        {
+          ...mockApplications[1],
+          metadata: { ...mockApplications[1].metadata, name: 'test-app' },
+        },
+      ];
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[0], expectedApplications[1]],
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[2]],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+        },
+        {
+          name: 'staging-instance',
+          url: 'https://argocd.staging.example.com',
+          appName: ['test-app'],
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.staging.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-staging-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+    });
+
+    it('should return instances with expanded applications filtered by appName from multiple instances when expand=applications', async () => {
+      const expectedApplications = [
+        mockApplications[0],
+        {
+          ...mockApplications[2],
+          metadata: { ...mockApplications[2].metadata, name: 'test-app' },
+        },
+        {
+          ...mockApplications[1],
+          metadata: { ...mockApplications[1].metadata, name: 'test-app' },
+        },
+      ];
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[0], expectedApplications[1]],
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [expectedApplications[2]],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+        expand: 'applications',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+          applications: [expectedApplications[0], expectedApplications[1]],
+        },
+        {
+          name: 'staging-instance',
+          url: 'https://argocd.staging.example.com',
+          appName: ['test-app'],
+          applications: [expectedApplications[2]],
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.staging.example.com/api/v1/applications?name=test-app',
+        {
+          headers: {
+            Authorization: 'Bearer test-staging-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+    });
+
+    it('should handle no applications returned from an instance', async () => {
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          items: [],
+        }),
+      });
+
+      const result = await service.findApplications({ appName: 'test-app' });
+      expect(result).toEqual([]);
+    });
+
+    it('should return expanded instances with applications filtered by appName and project from single instance', async () => {
+      const expectedApplications = mockApplications.filter(
+        application =>
+          application.metadata.name === 'test-app' &&
+          application.metadata.namespace === 'test',
+      );
+      fetchMock
+        // test-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: expectedApplications,
+          }),
+        })
+        // staging-instance
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            items: [],
+          }),
+        });
+
+      const result = await service.findApplications({
+        appName: 'test-app',
+        appNamespace: 'test',
+        project: 'custom',
+        expand: 'applications',
+      });
+      expect(result).toEqual([
+        {
+          name: 'test-instance',
+          url: 'https://argocd.example.com',
+          appName: ['test-app'],
+          applications: expectedApplications,
+        },
+      ]);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.example.com/api/v1/applications?name=test-app&project=custom&appNamespace=test',
+        {
+          headers: {
+            Authorization: 'Bearer test-token',
+            'Content-Type': 'application/json',
+          },
+          method: 'GET',
+        },
+      );
+    });
+
+    it('should handle errors when fetching applications from an instance', async () => {
+      fetchMock.mockResolvedValue({
+        ok: false,
+        statusText: 'Internal Server Error',
+      });
+
+      await expect(
+        service.findApplications({ appName: 'nonexistent-app' }),
+      ).rejects.toThrow(
+        "Failed to retrieve ArgoCD Applications from Instance 'test-instance' with name 'nonexistent-app' : Request to https://argocd.example.com/api/v1/applications?name=nonexistent-app failed with 500 Internal Server Error",
       );
     });
   });

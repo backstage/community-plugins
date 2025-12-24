@@ -15,6 +15,9 @@
  */
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * @public
+ */
 export const argocdViewPermission = createPermission({
   name: 'argocd.view.read',
   attributes: {
@@ -24,5 +27,6 @@ export const argocdViewPermission = createPermission({
 
 /**
  * List of all permissions on permission polices.
+ * @public
  */
 export const argocdPermissions = [argocdViewPermission];

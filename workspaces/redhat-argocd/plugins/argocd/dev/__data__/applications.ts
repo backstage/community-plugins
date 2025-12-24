@@ -214,7 +214,7 @@ const preProdHelmParameters = {
     },
   ],
 };
-export const preProdApplication = {
+export const preProdApplication: Application = {
   metadata: {
     ...commonMetadata,
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
@@ -228,9 +228,7 @@ export const preProdApplication = {
     },
     source: {
       ...commonSpec.source,
-      helm: {
-        parameters: preProdHelmParameters,
-      },
+      helm: preProdHelmParameters,
     },
   },
   status: {
@@ -312,13 +310,13 @@ const prodHelmParameters = {
     },
   ],
 };
-export const prodApplication = {
+export const prodApplication: Application = {
   metadata: {
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     labels: {
       'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
     },
-    instance: { name: 'main' },
+    instance: { name: 'main', url: 'https://kubernetes.default.svc' },
     name: 'quarkus-app-prod',
   },
   spec: {

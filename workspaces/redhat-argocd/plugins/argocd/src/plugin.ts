@@ -23,8 +23,11 @@ import {
   identityApiRef,
 } from '@backstage/core-plugin-api';
 
-import { ArgoCDApiClient, argoCDApiRef } from './api';
+import { argoCDApiRef, argoCDInstanceApiRef } from './api';
 import { rootRouteRef } from './routes';
+import { ArgoCDApiClient } from './api/ArgoCDApiClient';
+import { ArgoCDInstanceApiClient } from './api/ArgoCDInstanceApiClient';
+import { getArgocdInstances } from './hooks/useArgocdConfig';
 
 export const argocdPlugin = createPlugin({
   id: 'rh-argocd',
@@ -45,6 +48,18 @@ export const argocdPlugin = createPlugin({
           useNamespacedApps: Boolean(
             configApi.getOptionalBoolean('argocd.namespacedApps'),
           ),
+        }),
+    }),
+    createApiFactory({
+      api: argoCDInstanceApiRef,
+      deps: {
+        configApi: configApiRef,
+        argoCDApi: argoCDApiRef,
+      },
+      factory: ({ configApi, argoCDApi }) =>
+        new ArgoCDInstanceApiClient({
+          argoCDApi,
+          instances: getArgocdInstances(configApi),
         }),
     }),
   ],

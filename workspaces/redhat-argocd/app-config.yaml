@@ -95,6 +95,9 @@ catalog:
     - type: file
       target: ../../examples/entities.yaml
 
+    - type: file
+      target: ../../examples/argocd-entities.yaml
+
     # Local example organizational data
     - type: file
       target: ../../examples/org.yaml

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { argoCDApiRef } from '../api';
+import { argoCDInstanceApiRef } from '../api';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
+import { useArgocdConfig } from './useArgocdConfig';
 
 interface AppOptions {
-  instanceName: string;
+  instanceNames: string[];
   appSelector: string;
-  intervalMs?: number;
   projectName?: string;
   appName?: string;
   appNamespace?: string;
@@ -33,10 +33,9 @@ interface AppOptions {
 export const useApplications = ({
   appName,
   appNamespace,
-  instanceName,
+  instanceNames,
   appSelector,
   projectName,
-  intervalMs = 10000,
 }: AppOptions): {
   apps: Application[];
   error: Error | undefined;
@@ -46,37 +45,19 @@ export const useApplications = ({
   const [, setAppSelector] = useState<string>(appSelector ?? '');
   const [, setAppName] = useState<string | undefined>(appName ?? '');
   const [apps, setApps] = useState<Application[]>([]);
+  const { intervalMs } = useArgocdConfig();
 
-  const api = useApi(argoCDApiRef);
-
-  const getApplications = useCallback(async () => {
-    return await api
-      .listApps({
-        url: `/argoInstance/${instanceName}`,
-        appSelector,
-        projectName,
-        appNamespace,
-      })
-      .then(applications => setApps(applications?.items ?? []));
-  }, [api, appSelector, instanceName, projectName, appNamespace]);
-
-  const getApplication = useCallback(async () => {
-    return await api
-      .getApplication({
-        url: `/argoInstance/${instanceName}`,
-        appName: appName as string,
-        appNamespace,
-        project: projectName,
-      })
-      .then(application => setApps([application]));
-  }, [api, appName, appNamespace, projectName, instanceName]);
+  const api = useApi(argoCDInstanceApiRef);
 
   const { error, loading, retry } = useAsyncRetry(async () => {
-    if (appName) {
-      return await getApplication();
-    }
-    return await getApplications();
-  }, [getApplications, getApplication]);
+    const applications = await api.searchApplications(instanceNames, {
+      appSelector,
+      appNamespace,
+      project: projectName,
+      appName,
+    });
+    setApps(applications);
+  }, [api, instanceNames, appSelector, appNamespace, projectName, appName]);
 
   useInterval(() => retry(), intervalMs);
 

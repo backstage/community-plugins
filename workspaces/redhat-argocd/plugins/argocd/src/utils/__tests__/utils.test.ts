@@ -32,6 +32,7 @@ import {
   getResourceCreateTimestamp,
   sortValues,
   removeDuplicateRevisions,
+  getInstanceNames,
 } from '../utils';
 
 describe('Utils', () => {
@@ -70,6 +71,24 @@ describe('Utils', () => {
 
     test('should return the instance name', () => {
       expect(getInstanceName(mockEntity)).toBe('instance-1');
+    });
+  });
+
+  describe('getInstanceNames', () => {
+    test('should return the instance name', () => {
+      expect(getInstanceName(mockEntity)).toEqual('instance-1');
+    });
+
+    test('should return multiple instance names', () => {
+      expect(
+        getInstanceNames({
+          ...mockEntity,
+          metadata: {
+            ...mockEntity.metadata,
+            annotations: { 'argocd/instance-name': 'instance-1,,instance-2' },
+          },
+        }),
+      ).toEqual(['instance-1', 'instance-2']);
     });
   });
 

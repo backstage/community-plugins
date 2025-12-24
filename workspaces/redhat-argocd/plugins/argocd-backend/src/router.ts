@@ -71,7 +71,23 @@ export async function createRouter(
   };
 
   router.use(permissionIntegrationRouter);
-  router.use('/argoInstance', checkPermission);
+  router.use(checkPermission);
+
+  router.get(
+    '/find/name/:appName',
+    async (req: express.Request, res: express.Response) => {
+      const { appName } = req.params;
+      const { project, appNamespace, expand } = req.query;
+      res.send(
+        await service.findApplications({
+          appName,
+          project: project as string,
+          appNamespace: appNamespace as string,
+          expand: expand as string,
+        }),
+      );
+    },
+  );
 
   router.get(
     '/argoInstance/:instanceName/applications/selector/:selector',

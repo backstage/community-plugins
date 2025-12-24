@@ -18,9 +18,16 @@ import {
   Instance,
   Application,
   RevisionInfo,
+  InstanceApplications,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
+import {
+  AuthenticationError,
+  isError,
+  NotAllowedError,
+  NotFoundError,
+} from '@backstage/errors';
 import {
   getInstanceByName,
   toInstance,
@@ -103,7 +110,7 @@ export class ArgoCDService {
    * @param {string} [instance.username] - Optional username override
    * @param {string} [instance.password] - Optional password override
    * @returns {Promise<string>} Authentication token
-   * @throws{Error} When token cannot be retrieved
+   * @throws {Error} When token cannot be retrieved
    */
   private async getToken(instance: {
     url: string;
@@ -143,18 +150,21 @@ export class ArgoCDService {
    * @param {string} instanceName - Name of the ArgoCD instance
    * @param {Object} options - Filter options
    * @param {string} [options.selector] - Label selector
+   * @param {string} [options.name] - ArgoCD Application name
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
    * @param {string} [options.project] - The project the ArgoCD Application lives in
-   * @returns {Promise<Application[] | void>} Array of applications or void if error occurs
+   * @returns {Promise<{ items: Application[] }>} Array of applications
+   * @throws {Error} - When error occurs
    */
   async listArgoApps(
     instanceName: string,
     options?: {
       selector?: string;
+      name?: string;
       appNamespace?: string;
       project?: string;
     },
-  ): Promise<Application[] | void> {
+  ): Promise<{ items: Application[] }> {
     try {
       const matchedInstance = this.validateInstance(instanceName);
       const url = buildArgoUrl(matchedInstance.url, 'applications', options);
@@ -178,7 +188,7 @@ export class ArgoCDService {
         );
         this.logger.warn(message);
 
-        return data;
+        return { ...data, items: [] };
       }
 
       // Add instance metadata
@@ -219,7 +229,8 @@ export class ArgoCDService {
    * @param {Object} options - Filter options
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
    * @param {string} [options.sourceIndex] - Source index (for multi source apps).
-   * @returns {Promise<Revision | void>} Revision details or void if error occurs
+   * @returns {Promise<Revision>} Revision details
+   * @throws {Error} - When error occurs
    */
   async getRevisionDetails(
     instanceName: string,
@@ -229,7 +240,7 @@ export class ArgoCDService {
       appNamespace?: string;
       sourceIndex?: string;
     },
-  ): Promise<RevisionInfo | void> {
+  ): Promise<RevisionInfo> {
     try {
       const matchedInstance = this.validateInstance(instanceName);
       const { appNamespace, sourceIndex } = options ?? {};
@@ -280,7 +291,8 @@ export class ArgoCDService {
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
    * @param {string} [options.appName] - Application name
    * @param {string} [options.project] - The project the ArgoCD Application lives in
-   * @returns {Promise<Application | void>} Application data or void if error occurs
+   * @returns {Promise<Application>} - Application data
+   * @throws {Error} - When error occurs
    */
   async getApplication(
     instanceName: string,
@@ -289,7 +301,7 @@ export class ArgoCDService {
       appName?: string;
       project?: string;
     },
-  ): Promise<Application | void> {
+  ): Promise<Application> {
     const { appName, appNamespace, project } = options ?? {};
     try {
       const matchedInstance = this.validateInstance(instanceName);
@@ -333,13 +345,76 @@ export class ArgoCDService {
   }
 
   /**
+   * Retrieves applications from all ArgoCD instances filtered by options
+   *
+   * @param {Object} [options] - Request options
+   * @param {string} [options.appName] - Application name
+   * @param {string} [options.project] - The project the ArgoCD Application lives in
+   * @param {string} [options.appNamespace] - ArgoCD Application namespace
+   * @param {string} [options.expand] - If set to applications, return expanded InstanceApplications with applications
+   * @returns {Promise<InstanceApplications[]>} - Instance application data
+   * @throws {Error} - When error occurs
+   */
+  async findApplications(options: {
+    appName: string;
+    project?: string;
+    appNamespace?: string;
+    expand?: string;
+  }): Promise<InstanceApplications[]> {
+    const { appName, appNamespace, project, expand } = options;
+    const includeApplications = expand === 'applications';
+
+    const applications = await Promise.all(
+      this.getArgoInstances().map(instance =>
+        this.listArgoApps(instance.name, {
+          name: appName,
+          project,
+          appNamespace,
+        }).then(applicationsResponse => applicationsResponse.items ?? []),
+      ),
+    );
+
+    const instanceMap: { [instanceName: string]: InstanceApplications } = {};
+    for (const app of applications.flat()) {
+      const instanceName = app.metadata.instance.name;
+
+      if (!instanceMap[instanceName]) {
+        instanceMap[instanceName] = {
+          name: instanceName,
+          url: app.metadata.instance.url,
+          appName: [appName],
+          ...(includeApplications && { applications: [app] }),
+        };
+      } else if (includeApplications) {
+        // don't duplicate appName in appName array - always the same as we search by it
+        instanceMap[instanceName].applications?.push(app);
+      }
+    }
+
+    return Object.values(instanceMap);
+  }
+
+  /**
    * Handles and formats error messages
    *
    * @param {string} message - Base error message
-   * @param {Error} error - Error object
-   * @throws {Error}  Formatted error with message and detais
+   * @param {unknown} error - Error object
+   * @throws {AuthenticationError | NotAllowedError | NotFoundError | Error} Formatted error with message and details
    */
-  private handleError(message: string, error: Error): void {
-    throw new Error(`${message} : ${error.message}`);
+  private handleError(message: string, error: unknown): never {
+    const errorMessage = isError(error) ? error.message : String(error);
+    const formattedMessage = `${message} : ${errorMessage}`;
+
+    if (error instanceof AuthenticationError) {
+      throw new AuthenticationError(formattedMessage);
+    }
+    if (error instanceof NotAllowedError) {
+      throw new NotAllowedError(formattedMessage);
+    }
+    if (error instanceof NotFoundError) {
+      throw new NotFoundError(formattedMessage);
+    }
+
+    throw new Error(formattedMessage);
   }
 }

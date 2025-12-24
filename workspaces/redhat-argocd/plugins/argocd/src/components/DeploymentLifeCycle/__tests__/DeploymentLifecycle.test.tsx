@@ -25,7 +25,7 @@ import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import DeploymentLifecycle from '../DeploymentLifecycle';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
-import { argoCDApiRef } from '../../../api';
+import { argoCDApiRef, argoCDInstanceApiRef } from '../../../api';
 import { mockUseTranslation } from '../../../test-utils/mockTranslations';
 
 jest.mock('../../../hooks/useArgocdConfig', () => ({
@@ -72,7 +72,6 @@ const mockConfigApi = {
 
 // Mock for ArgoCDApiRef
 const mockArgoCDAPI = {
-  listApps: jest.fn().mockResolvedValue({ items: [mockApplication] }),
   getRevisionDetailsList: jest.fn().mockResolvedValue({
     commit: 'commit message',
     author: 'test-user',
@@ -80,26 +79,38 @@ const mockArgoCDAPI = {
   }),
 };
 
+// Mock for ArgoCDInstanceApiRef
+const mockArgoCDInstanceApi = {
+  searchApplications: jest.fn().mockResolvedValue([mockApplication]),
+};
+
 /**
  * Replaces useApi's implementation with a version that:
  *   - returns mockConfigApi when called with configApiRef
  *   - returns an Argo API mock when called with argoCDApiRef
+ *   - returns an Argo Instance API mock when called with argoCDInstanceApiRef
  *   - returns {} for anything else
  *
  * You can override Argo methods per test by passing functions in `argoImpl`
  */
 function setUseApi(argoImpl: {
-  listApps?: jest.Mock | (() => Promise<any>);
+  searchApplications?: jest.Mock | (() => Promise<any>);
   getRevisionDetailsList?: jest.Mock | (() => Promise<any>);
 }) {
   (useApi as jest.Mock).mockImplementation((ref: any) => {
     if (ref === configApiRef) return mockConfigApi;
     if (ref === argoCDApiRef) {
       return {
-        listApps: argoImpl.listApps ?? mockArgoCDAPI.listApps,
         getRevisionDetailsList:
           argoImpl.getRevisionDetailsList ??
           mockArgoCDAPI.getRevisionDetailsList,
+      };
+    }
+    if (ref === argoCDInstanceApiRef) {
+      return {
+        searchApplications:
+          argoImpl.searchApplications ??
+          mockArgoCDInstanceApi.searchApplications,
       };
     }
     return {};
@@ -117,7 +128,6 @@ describe('DeploymentLifecycle', () => {
       baseUrl: 'https://baseurl.com',
       instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
 
     // Setup useAPI implementation mock with defaults
@@ -193,7 +203,7 @@ describe('DeploymentLifecycle', () => {
 
   test('should catch the error while fetching applications', async () => {
     setUseApi({
-      listApps: jest
+      searchApplications: jest
         .fn()
         .mockRejectedValue(new Error('500: Internal server error')),
     });
@@ -208,7 +218,7 @@ describe('DeploymentLifecycle', () => {
 
   test('should not render the component if there are no applications matching the selector', async () => {
     setUseApi({
-      listApps: jest.fn().mockResolvedValue({ items: [] }),
+      searchApplications: jest.fn().mockResolvedValue([]),
       getRevisionDetailsList: jest.fn().mockResolvedValue({}),
     });
 

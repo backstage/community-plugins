@@ -20,7 +20,7 @@ import {
   formatOperationMessage,
   buildArgoUrl,
 } from './serviceUtils';
-import { AuthenticationError } from '@backstage/errors';
+import { AuthenticationError, NotAllowedError } from '@backstage/errors';
 import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
 import { ConfigReader } from '@backstage/config';
 
@@ -74,10 +74,10 @@ describe('serviceUtils', () => {
         AuthenticationError,
       );
     });
-    it('should throw AuthenticationError for 403', async () => {
+    it('should throw NotAllowedError for 403', async () => {
       const response = new Response(null, { status: 403 });
       await expect(processFetch(response, 'http://test')).rejects.toThrow(
-        AuthenticationError,
+        NotAllowedError,
       );
     });
   });

@@ -33,10 +33,14 @@ import { Box } from '@material-ui/core';
 import {
   ArgoCDApi,
   argoCDApiRef,
+  ArgoCDInstanceApi,
+  argoCDInstanceApiRef,
+  FindApplicationsOptions,
   GetApplicationOptions,
-  listAppsOptions,
+  ListAppsOptions,
   RevisionDetailsListOptions,
   RevisionDetailsOptions,
+  SearchApplicationsOptions,
 } from '../src/api';
 import {
   ArgocdDeploymentLifecycle,
@@ -75,7 +79,7 @@ const mockEntity: Entity = {
 };
 
 export class MockArgoCDApiClient implements ArgoCDApi {
-  async listApps(_options: listAppsOptions): Promise<any> {
+  async listApps(_options: ListAppsOptions): Promise<any> {
     return {
       items: [
         mockApplication,
@@ -96,6 +100,31 @@ export class MockArgoCDApiClient implements ArgoCDApi {
   }
   async getApplication(_options: GetApplicationOptions): Promise<Application> {
     return mockApplication;
+  }
+
+  async findApplications(_options: FindApplicationsOptions): Promise<any> {
+    return {
+      items: [
+        mockApplication,
+        preProdApplication,
+        prodApplication,
+        mockQuarkusApplication,
+      ],
+    };
+  }
+}
+
+class MockArgoCDInstanceApiClient implements ArgoCDInstanceApi {
+  async searchApplications(
+    _instanceNames: string[],
+    _options: SearchApplicationsOptions,
+  ): Promise<Application[]> {
+    return [
+      mockApplication,
+      preProdApplication,
+      prodApplication,
+      mockQuarkusApplication,
+    ];
   }
 }
 
@@ -210,6 +239,7 @@ createDevApp()
           [kubernetesApiRef, new MockKubernetesClient(mockArgoResources)],
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
+          [argoCDInstanceApiRef, new MockArgoCDInstanceApiClient()],
           [permissionApiRef, mockApis.permission()],
           [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
@@ -231,6 +261,7 @@ createDevApp()
         apis={[
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
+          [argoCDInstanceApiRef, new MockArgoCDInstanceApiClient()],
         ]}
       >
         <EntityProvider entity={mockEntity}>
