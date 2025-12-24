@@ -1,5 +1,11 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.13.0
+
+### Minor Changes
+
+- 60f6252: Backstage version bump to v1.46.1
+
 ## 0.12.0
 
 ### Minor Changes
