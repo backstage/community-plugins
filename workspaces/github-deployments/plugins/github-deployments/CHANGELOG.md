@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.15.1
+
+### Patch Changes
+
+- 75ff365: Replaces global JSX reference with explicit React.JSX
+
 ## 0.15.0
 
 ### Minor Changes
