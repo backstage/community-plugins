@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.12.0
+
+### Minor Changes
+
+- 7872032: Use pagination for Grafana Dashboard search
+
 ## 0.11.0
 
 ### Minor Changes
