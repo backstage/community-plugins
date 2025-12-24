@@ -14,45 +14,22 @@
  * limitations under the License.
  */
 
-/**
- * Common functionalities for the entity-feedback plugin.
- *
- * @packageDocumentation
- */
+// @ts-check
 
 /**
- * @public
+ * @param { import("knex").Knex } knex
  */
-export interface Rating {
-  entityRef: string;
-  rating: string;
-  userRef: string;
-}
+exports.up = async function up(knex) {
+  await knex.schema.alterTable('responses', table => {
+    table.text('link').comment('The entity URL link');
+  });
+};
 
 /**
- * @public
+ * @param { import("knex").Knex } knex
  */
-export interface FeedbackResponse {
-  entityRef: string;
-  response?: string;
-  comments?: string;
-  consent?: boolean;
-  userRef: string;
-  link?: string;
-}
-
-/**
- * @public
- */
-export interface Ratings {
-  [ratingValue: string]: number;
-}
-
-/**
- * @public
- */
-export interface EntityRatingsData {
-  entityRef: string;
-  entityTitle?: string;
-  ratings: Ratings;
-}
+exports.down = async function down(knex) {
+  await knex.schema.alterTable('responses', table => {
+    table.dropColumn('link');
+  });
+};
