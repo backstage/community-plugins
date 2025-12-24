@@ -2564,12 +2564,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/highlight@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@lezer/highlight@npm:1.0.0"
+"@lezer/highlight@npm:1.1.4":
+  version: 1.1.4
+  resolution: "@lezer/highlight@npm:1.1.4"
   dependencies:
     "@lezer/common": "npm:^1.0.0"
-  checksum: 10/ed362dd4c27218bd941807f14ee691f1ad73613f96041538f5d2cc06521490a346a74044f32da573c1c6529bea2f5c190064c4bca92918732cb580c298880947
+  checksum: 10/6088d92abc8a043a30861c22c916ba1bf1fc3237939c0982b9cde5b9c42099eb05d3999164119da835efc68b3e8f41d814e5a532be724f601090ed37e5fc8036
   languageName: node
   linkType: hard
 
