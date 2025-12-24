@@ -24,7 +24,7 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 
-/** @public */
+/** @internal */
 export interface RouterOptions {
   logger: LoggerService;
   database: DatabaseService;
@@ -33,16 +33,7 @@ export interface RouterOptions {
 }
 
 /**
- * @public
- *
- * @deprecated
- * Migrate to the new backend system
- *
- * ```ts
- * backend.add(import('@backstage-community/plugin-bazaar-backend'));
- * ```
- *
- * createRouter will be removed in an upcoming release
+ * Creates a router for the Bazaar backend.
  */
 export async function createRouter(
   options: RouterOptions,
