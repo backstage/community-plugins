@@ -110,6 +110,7 @@ describe('FeedbackResponseDialog', () => {
           comments:
             '{"responseComments":{},"additionalComments":"test comments"}',
           consent: true,
+          link: '/catalog/default/component/test',
           response: 'incorrect,other',
         },
       );
