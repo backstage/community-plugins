@@ -15,7 +15,7 @@
  */
 
 /**
- * Report portal frontend plugin
+ * ReportPortal frontend plugin
  * @packageDocumentation
  */
 export {

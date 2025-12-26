@@ -36,7 +36,7 @@ const defaults: {
 };
 
 /**
- * Report portal collator
+ * ReportPortal collator
  * @public
  */
 export const searchModuleReportPortalCollator = createBackendModule({

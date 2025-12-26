@@ -28,7 +28,7 @@ It is only meant for local development, and the setup for it can be found inside
     const backend = createBackend();
     // All other plugins
     //...
-    // add report portal plugin
+    // add ReportPortal plugin
     backend.add(import('@backstage-community/plugin-report-portal-backend'));
     backend.start();
     ```
@@ -41,7 +41,7 @@ It is only meant for local development, and the setup for it can be found inside
     supportEmail: ${REPORT_PORTAL_SUPPORT_MAIL}
 
     # under integrations you can configure
-    # multiple instances of report portal
+    # multiple instances of ReportPortal
     integrations:
       # host address of your instance
       # for e.g: report-portal.mycorp.com

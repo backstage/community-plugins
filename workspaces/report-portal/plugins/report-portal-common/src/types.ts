@@ -38,7 +38,7 @@ export interface ReportPortalDocument extends IndexableDocument {
    */
   projectName?: string;
   /**
-   * Entity Ref of the entity that is linked with report portal
+   * Entity Ref of the entity that is linked with ReportPortal
    */
   entityRef?: string;
 }

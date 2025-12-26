@@ -40,7 +40,7 @@ export const ReportPortalGlobalPage = (props: ReportPortalGlobalPageProps) => {
     <PageWithHeader
       themeId={props.theme ?? 'app'}
       subtitle={props.subtitle}
-      title={props.title ?? 'Report Portal'}
+      title={props.title ?? 'ReportPortal'}
     >
       <Content>
         <Grid container>

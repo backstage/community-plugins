@@ -88,7 +88,7 @@ const SearchPage = () => {
                 },
                 {
                   value: 'report-portal',
-                  name: 'Report Portal Projects',
+                  name: 'ReportPortal Projects',
                   icon: <ReportPortalIcon />,
                 },
               ]}
