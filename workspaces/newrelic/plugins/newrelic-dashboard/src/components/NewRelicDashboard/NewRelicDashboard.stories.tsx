@@ -15,7 +15,7 @@
  */
 
 import { NewRelicDashboard } from './NewRelicDashboard';
-import { MockStorageApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { newRelicDashboardApiRef } from '../../api';
 import { NEWRELIC_GUID_ANNOTATION } from '../../constants';
@@ -115,7 +115,7 @@ export const NewRelicDashboardWithSnapshots = () => (
   <TestApiProvider
     apis={[
       [newRelicDashboardApiRef, newRelicApiMockFull],
-      [storageApiRef, MockStorageApi.create()],
+      [storageApiRef, mockApis.storage()],
     ]}
   >
     <EntityProvider entity={entity}>
