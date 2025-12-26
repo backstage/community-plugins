@@ -16,14 +16,9 @@
 
 module.exports = {
   development: {
-    client: 'pg',
-    connection: {
-      host: 'localhost',
-      port: 5432,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'backstage_plugin_announcements',
-    },
+    client: 'better-sqlite3',
+    connection: ':memory:',
+    useNullAsDefault: true,
     seeds: {
       directory: './db/seeds',
     },
@@ -32,3 +27,23 @@ module.exports = {
     },
   },
 };
+
+// uncomment for postgres
+// module.exports = {
+//   development: {
+//     client: 'pg',
+//     connection: {
+//       host: 'localhost',
+//       port: 5432,
+//       user: 'postgres',
+//       password: 'postgres',
+//       database: 'backstage_plugin_announcements',
+//     },
+//     seeds: {
+//       directory: './db/seeds',
+//     },
+//     migrations: {
+//       directory: './db/migrations',
+//     },
+//   },
+// };
