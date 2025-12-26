@@ -17,13 +17,6 @@
 import { Entity } from '@backstage/catalog-model';
 
 /**
- * Grafana tag selector annotation
- * @public
- * @deprecated Use GRAFANA_ANNOTATION_DASHBOARD_SELECTOR instead.
- */
-export const GRAFANA_ANNOTATION_TAG_SELECTOR = 'grafana/tag-selector';
-
-/**
  * Grafana dashboard selector annotation
  * @public
  */
@@ -49,8 +42,7 @@ export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
  * @public
  */
 export const isDashboardSelectorAvailable = (entity: Entity) =>
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ||
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_TAG_SELECTOR];
+  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ?? '';
 
 /**
  * Returns if the alert selector annotation for an entity is set
@@ -75,9 +67,7 @@ export const isOverviewDashboardAvailable = (entity: Entity) =>
  * @public
  */
 export const dashboardSelectorFromEntity = (entity: Entity) =>
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ??
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_TAG_SELECTOR] ??
-  '';
+  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ?? '';
 /**
  * Returns the alert selector annotation for an entity
  * @public
@@ -99,10 +89,3 @@ export const alertSelectorFromEntity = (entity: Entity) => {
  */
 export const overviewDashboardFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD] ?? '';
-
-/**
- * Returns the dashboard selector annotation for an entity
- * @public
- * @deprecated Use dashboardSelectorFromEntity instead
- */
-export const tagSelectorFromEntity = dashboardSelectorFromEntity;
