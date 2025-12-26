@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.11.1
+
+### Patch Changes
+
+- adfea13: Replaces global JSX reference with React.JSX
+
 ## 0.11.0
 
 ### Minor Changes
