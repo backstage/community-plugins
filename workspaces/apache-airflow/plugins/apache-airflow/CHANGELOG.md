@@ -1,5 +1,16 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.15.0
+
+### Minor Changes
+
+- 868bf61: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- 52a7d15: Replaces global JSX reference with import from react
+- 737e08f: Remove unused dependencies
+
 ## 0.14.0
 
 ### Minor Changes

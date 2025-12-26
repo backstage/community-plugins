@@ -5,14 +5,13 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -20,7 +19,7 @@ import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 export const adrApiExtension: OverridableExtensionDefinition<{
@@ -115,12 +114,10 @@ export const adrEntityContentExtension: OverridableExtensionDefinition<{
 export const adrSearchResultListItemExtension: OverridableExtensionDefinition<{
   config: {
     lineClamp: number;
-  } & {
     noTrack: boolean;
   };
   configInput: {
     lineClamp?: number | undefined;
-  } & {
     noTrack?: boolean | undefined;
   };
   output: ExtensionDataRef<
@@ -132,21 +129,7 @@ export const adrSearchResultListItemExtension: OverridableExtensionDefinition<{
     'search.search-result-list-item.item',
     {}
   >;
-  inputs: {
-    [x: string]: ExtensionInput<
-      ExtensionDataRef<
-        unknown,
-        string,
-        {
-          optional?: true | undefined;
-        }
-      >,
-      {
-        singleton: boolean;
-        optional: boolean;
-      }
-    >;
-  };
+  inputs: {};
   kind: 'search-result-list-item';
   name: undefined;
   params: SearchResultListItemBlueprintParams;
@@ -255,12 +238,10 @@ const _default: OverridableFrontendPlugin<
     'search-result-list-item:adr': OverridableExtensionDefinition<{
       config: {
         lineClamp: number;
-      } & {
         noTrack: boolean;
       };
       configInput: {
         lineClamp?: number | undefined;
-      } & {
         noTrack?: boolean | undefined;
       };
       output: ExtensionDataRef<
@@ -272,21 +253,7 @@ const _default: OverridableFrontendPlugin<
         'search.search-result-list-item.item',
         {}
       >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            singleton: boolean;
-            optional: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'search-result-list-item';
       name: undefined;
       params: SearchResultListItemBlueprintParams;

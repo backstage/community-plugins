@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { style } from 'typestyle';
-import { PFColors } from '../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 export const healthIndicatorStyle = style({
   $nest: {
@@ -24,7 +24,7 @@ export const healthIndicatorStyle = style({
     },
 
     '& .pf-v5-c-content ul': {
-      marginBottom: 'var(--pf-v5-c-content--ul--MarginTop)',
+      marginBottom: 'var(--pf-v6-c-content--ul--MarginTop)',
       marginTop: 0,
       color: PFColors.Color100,
     },

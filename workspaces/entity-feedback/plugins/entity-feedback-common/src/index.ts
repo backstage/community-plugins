@@ -38,6 +38,7 @@ export interface FeedbackResponse {
   comments?: string;
   consent?: boolean;
   userRef: string;
+  link?: string;
 }
 
 /**

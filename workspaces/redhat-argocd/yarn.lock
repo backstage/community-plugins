@@ -14165,12 +14165,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.15.29":
-  version: 22.15.29
-  resolution: "@types/node@npm:22.15.29"
+"@types/node@npm:22.19.3":
+  version: 22.19.3
+  resolution: "@types/node@npm:22.19.3"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/3426790c5aa22df445213d7f37e57ea261cf3013030fe9b3025d87c302097799a9db3b848e2a9bdb07cab8ec6c7e9947ac770cf11e12e420148296b63d63e7db
+  checksum: 10/ffee06ce6d741fde98a40bc65a57394ed2283c521f57f9143d2356513181162bd4108809be6902a861d098b35e35569f61f14c64d3032e48a0289b74f917669a
   languageName: node
   linkType: hard
 
@@ -15349,7 +15349,7 @@ __metadata:
     "@mui/styles": "npm:^5.15.16"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:14.3.1"
-    "@types/node": "npm:22.15.29"
+    "@types/node": "npm:22.19.3"
     "@types/react": "npm:18.3.27"
     "@types/react-dom": "npm:18.3.7"
     react: "npm:^18.0.0"

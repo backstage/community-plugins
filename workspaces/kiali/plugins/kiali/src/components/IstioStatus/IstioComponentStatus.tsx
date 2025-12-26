@@ -24,7 +24,7 @@ import {
 } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 import { default as React } from 'react';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 type Props = {
   componentStatus: ComponentStatus;

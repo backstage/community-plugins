@@ -5,16 +5,16 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -23,7 +23,7 @@ const plugin: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:linkerd': ExtensionDefinition<{
+    'api:linkerd': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -40,7 +40,7 @@ const plugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:linkerd/edges-table': ExtensionDefinition<{
+    'entity-card:linkerd/edges-table': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'edges-table';
       config: {
@@ -81,7 +81,7 @@ const plugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:linkerd/is-meshed': ExtensionDefinition<{
+    'entity-card:linkerd/is-meshed': OverridableExtensionDefinition<{
       kind: 'entity-card';
       name: 'is-meshed';
       config: {
@@ -122,7 +122,7 @@ const plugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:linkerd': ExtensionDefinition<{
+    'entity-content:linkerd': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: undefined;
       config: {

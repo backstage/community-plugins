@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.12.1
+
+### Patch Changes
+
+- c0cfbcb: Adjust import for getting started instructions
+
 ## 1.12.0
 
 ### Minor Changes

@@ -57,7 +57,7 @@ B. [Install the plugin](https://backstage.io/docs/frontend-system/building-apps/
 ```tsx
 // packages/app/src/App.tsx
 import { createApp } from '@backstage/frontend-app-api';
-import sentryPlugin from '@axis-backstage/plugin-sentry/alpha';
+import sentryPlugin from '@backstage-community/plugin-sentry/alpha';
 
 ...
 const app = createApp({

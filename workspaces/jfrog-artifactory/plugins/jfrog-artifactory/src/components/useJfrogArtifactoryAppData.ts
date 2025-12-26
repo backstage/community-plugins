@@ -21,6 +21,9 @@ export const JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME =
 export const JFROG_ARTIFACTORY_ANNOTATION_TARGET_PROXY =
   'jfrog-artifactory/target-proxy';
 
+export const JFROG_ARTIFACTORY_ANNOTATION_REPO_FILTER =
+  'jfrog-artifactory/repo-filter';
+
 export const useJfrogArtifactoryAppData = ({ entity }: { entity: Entity }) => {
   const imageName =
     entity?.metadata.annotations?.[JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME] ??
@@ -29,8 +32,11 @@ export const useJfrogArtifactoryAppData = ({ entity }: { entity: Entity }) => {
   const targetProxy =
     entity?.metadata.annotations?.[JFROG_ARTIFACTORY_ANNOTATION_TARGET_PROXY];
 
+  const repoFilter =
+    entity?.metadata.annotations?.[JFROG_ARTIFACTORY_ANNOTATION_REPO_FILTER];
+
   if (!imageName) {
     throw new Error("'Jfrog Artifactory' annotations are missing");
   }
-  return { imageName, targetProxy };
+  return { imageName, targetProxy, repoFilter };
 };

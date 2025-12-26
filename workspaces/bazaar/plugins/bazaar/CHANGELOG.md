@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bazaar
 
+## 0.18.1
+
+### Patch Changes
+
+- b10d4dc: Replaces global JSX references with `React.JSX` import.
+
+## 0.18.0
+
+### Minor Changes
+
+- a2d556f: Backstage version bump to v1.46.1
+
 ## 0.17.0
 
 ### Minor Changes
