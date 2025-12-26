@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { registerMswTestHooks } from '@backstage/test-utils';
 import { GoCdClientApi } from './gocdApi.client';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
@@ -22,7 +22,7 @@ import { PipelineHistory } from './gocdApi.model';
 
 describe('GoCdClientApi', () => {
   const server = setupServer();
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   it('makes requests through the proxy, using the provided fetch api', async () => {
     const response: PipelineHistory = {
