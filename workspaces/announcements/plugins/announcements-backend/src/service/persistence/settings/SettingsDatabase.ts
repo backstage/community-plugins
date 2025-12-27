@@ -70,8 +70,12 @@ export class SettingsDatabase implements SettingsStore {
       row = { value: ANNOUNCEMENTS_SETTINGS_DEFAULT };
     }
 
+    // Parse JSON string if needed (SQLite returns jsonb as string, PostgreSQL as object)
+    const rawValue =
+      typeof row.value === 'string' ? JSON.parse(row.value) : row.value;
+
     // Parse through Zod to apply defaults for any new fields
-    const values = settingsSchema.parse(row.value);
+    const values = settingsSchema.parse(rawValue);
     return new SettingsDatabase(db, values);
   }
 
