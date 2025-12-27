@@ -93,16 +93,6 @@ export const DashboardSnapshot = newRelicDashboardPlugin.provide(
 );
 
 /**
- * Render dashboard snapshots from Newrelic in backstage. Use dashboards which have the tag `isDashboardPage: true`
- *
- * @deprecated
- * Use DashboardSnapshot export name instead
- *
- * @public
- */
-export const DashboardSnapshotComponent = DashboardSnapshot;
-
-/**
  * Render a dashboard snapshots list from Newrelic in backstage. Use dashboards which have the tag `isDashboardPage: true`
  *
  * @remarks
