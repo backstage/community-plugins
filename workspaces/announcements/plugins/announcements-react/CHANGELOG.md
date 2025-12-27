@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.18.0
+
+### Minor Changes
+
+- b9c2943: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- Updated dependencies [b9c2943]
+  - @backstage-community/plugin-announcements-common@0.15.0
+
 ## 0.17.0
 
 ### Minor Changes
