@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * Copyright 2024 The Backstage Authors
  *
@@ -15,25 +14,27 @@
  * limitations under the License.
  */
 
-import fs from 'fs-extra';
+import { readdir } from 'fs/promises';
 import { resolve } from 'path';
-import * as url from 'url';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 
-/**
- * Retrieves a list of workspace directory names from the 'workspaces' folder.
- *
- * @returns {Promise<string[]>} A promise that resolves to an array of workspace directory names,
- *                             excluding directories listed in EXCLUDED_WORKSPACES.
- * @throws {Error} If there are filesystem errors reading the directory
- */
-export async function listWorkspaces() {
-  const rootPath = resolve(__dirname, '..');
-  const workspacePath = resolve(rootPath, 'workspaces');
+export default async function listWorkspacesCommand(options: {
+  json?: boolean;
+}) {
+  // Find workspaces directory from current working directory
+  const workspacesPath = resolve(process.cwd(), 'workspaces');
 
-  return (await fs.readdir(workspacePath, { withFileTypes: true }))
+  // Get all workspace directories
+  const workspaces = (await readdir(workspacesPath, { withFileTypes: true }))
     .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
     .map(w => w.name);
+
+  // Output results
+  if (options.json) {
+    console.log(JSON.stringify(workspaces, null, 2));
+  } else {
+    console.log(`Found ${workspaces.length} workspaces:\n`);
+    workspaces.forEach(workspace => console.log(`  ${workspace}`));
+  }
 }
