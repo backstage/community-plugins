@@ -962,18 +962,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/arm-appservice@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@azure/arm-appservice@npm:17.0.0"
+"@azure/arm-appservice@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@azure/arm-appservice@npm:18.0.0"
   dependencies:
     "@azure/abort-controller": "npm:^2.1.2"
     "@azure/core-auth": "npm:^1.9.0"
-    "@azure/core-client": "npm:^1.9.2"
+    "@azure/core-client": "npm:^1.9.3"
     "@azure/core-lro": "npm:^2.5.4"
     "@azure/core-paging": "npm:^1.6.2"
-    "@azure/core-rest-pipeline": "npm:^1.19.0"
+    "@azure/core-rest-pipeline": "npm:^1.19.1"
     tslib: "npm:^2.8.1"
-  checksum: 10/69261b9f5c6b16a485f4d61fc006898ec48854762aed008959efc7436bb5b60dd98a92f70eee33309db9b1aa7fa12406024cbeefb443aa6aa7733c1e6c447312
+  checksum: 10/11b270039347c4f83c0f9c595d6278eb6196f7a473cf0b470e1d37850bc8a47b4ba4c5e1bf0cbb6b8719f01c21134e1afb40a3d002570a6306b249d18c4c5264
   languageName: node
   linkType: hard
 
@@ -1000,18 +1000,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-client@npm:^1.3.0, @azure/core-client@npm:^1.6.2, @azure/core-client@npm:^1.9.2":
-  version: 1.9.2
-  resolution: "@azure/core-client@npm:1.9.2"
+"@azure/core-client@npm:^1.3.0, @azure/core-client@npm:^1.6.2, @azure/core-client@npm:^1.9.2, @azure/core-client@npm:^1.9.3":
+  version: 1.10.1
+  resolution: "@azure/core-client@npm:1.10.1"
   dependencies:
-    "@azure/abort-controller": "npm:^2.0.0"
-    "@azure/core-auth": "npm:^1.4.0"
-    "@azure/core-rest-pipeline": "npm:^1.9.1"
-    "@azure/core-tracing": "npm:^1.0.0"
-    "@azure/core-util": "npm:^1.6.1"
-    "@azure/logger": "npm:^1.0.0"
+    "@azure/abort-controller": "npm:^2.1.2"
+    "@azure/core-auth": "npm:^1.10.0"
+    "@azure/core-rest-pipeline": "npm:^1.22.0"
+    "@azure/core-tracing": "npm:^1.3.0"
+    "@azure/core-util": "npm:^1.13.0"
+    "@azure/logger": "npm:^1.3.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/0358b8245bf23943914eb77384955c994bf3ef84f862234cb3e261f9c602a9f4717beedafd48d1da902b15f3464a4211540976fabb4569039fac8e0d41e59ef1
+  checksum: 10/4a00ec0d11f92274bb79efdea2515a7947b8cfb34cff6570a0813ea2889ab57ddc1f22f232192dee8f918e04ba96de07b7584bf9cbcac03e17cb39e9e399c2e9
   languageName: node
   linkType: hard
 
@@ -1047,7 +1047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-rest-pipeline@npm:^1.1.0, @azure/core-rest-pipeline@npm:^1.10.1, @azure/core-rest-pipeline@npm:^1.19.0, @azure/core-rest-pipeline@npm:^1.3.0, @azure/core-rest-pipeline@npm:^1.9.1":
+"@azure/core-rest-pipeline@npm:^1.1.0, @azure/core-rest-pipeline@npm:^1.10.1, @azure/core-rest-pipeline@npm:^1.19.1, @azure/core-rest-pipeline@npm:^1.22.0, @azure/core-rest-pipeline@npm:^1.3.0":
   version: 1.22.2
   resolution: "@azure/core-rest-pipeline@npm:1.22.2"
   dependencies:
@@ -1613,7 +1613,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-azure-sites-backend@workspace:plugins/azure-sites-backend"
   dependencies:
-    "@azure/arm-appservice": "npm:^17.0.0"
+    "@azure/arm-appservice": "npm:^18.0.0"
     "@azure/arm-resourcegraph": "npm:^4.2.1"
     "@azure/identity": "npm:^4.0.0"
     "@backstage-community/plugin-azure-sites-common": "workspace:^"
