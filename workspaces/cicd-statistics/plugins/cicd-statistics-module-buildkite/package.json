@@ -44,7 +44,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@gitbeaker/browser": "^35.6.0",
-    "@gitbeaker/core": "^35.6.0",
+    "@gitbeaker/core": "^43.0.0",
     "@roadiehq/backstage-plugin-buildkite": "^2.3.1"
   },
   "devDependencies": {
