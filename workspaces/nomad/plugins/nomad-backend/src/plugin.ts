@@ -37,9 +37,6 @@ export const nomadPlugin = createBackendPlugin({
       async init({ logger, config, httpRouter }) {
         httpRouter.use(
           await createRouter({
-            /**
-             * Logger for logging purposes
-             */
             logger,
             config,
           }),

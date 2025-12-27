@@ -4,24 +4,10 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
-import express from 'express';
-import { LoggerService } from '@backstage/backend-plugin-api';
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 const nomadPlugin: BackendFeature;
 export default nomadPlugin;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  logger: LoggerService;
-}
 
 // (No @packageDocumentation comment for this package)
 ```
