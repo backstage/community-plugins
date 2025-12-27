@@ -7,6 +7,7 @@
     "node": "20 || 22"
   },
   "scripts": {
+    "changeset": "echo 'Error: Please run yarn changeset from a workspace directory, not the root.' && exit 1",
     "create-workspace": "community-cli workspace create",
     "postinstall": "husky",
     "prettier:check": "prettier --check .",
