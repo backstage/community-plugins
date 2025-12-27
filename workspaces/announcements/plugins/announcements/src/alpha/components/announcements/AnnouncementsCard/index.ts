@@ -13,19 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
-
-/**
- * @alpha
- */
-export const entityAnnouncementsCard = EntityCardBlueprint.make({
-  name: 'announcements',
-  disabled: true,
-  params: {
-    filter: 'kind:component,system',
-    loader: async () =>
-      import('./components/announcements/AnnouncementsCard').then(m => (
-        <m.AnnouncementsCard />
-      )),
-  },
-});
+export { AnnouncementsCard } from './AnnouncementsCard';
