@@ -22,17 +22,15 @@ exports.seed = async function seed(knex) {
   // Deletes ALL existing entries
   await knex('categories').del();
   await knex('categories').insert([
-    { slug: 'infrastructure', title: 'Infrastructure' },
-    { slug: 'internal-developer-portal', title: 'IDP' },
-    { slug: 'cost-savings', title: 'Cost Savings' },
-    { slug: 'javascript', title: 'Javascript' },
-    { slug: 'ruby-on-rails', title: 'Ruby on Rails' },
-    { slug: 'monolith', title: 'Monolith' },
-    { slug: 'micro-service', title: 'Micro Service' },
-    { slug: 'engineering-community', title: 'Engineering Community' },
-    { slug: 'product-updates', title: 'Product Updates' },
+    { slug: 'platform-updates', title: 'Platform Updates' },
     { slug: 'security', title: 'Security' },
-    { slug: 'documentation', title: 'Documenation' },
+    { slug: 'maintenance', title: 'Maintenance' },
+    { slug: 'new-features', title: 'New Features' },
+    { slug: 'deprecations', title: 'Deprecations' },
+    { slug: 'best-practices', title: 'Best Practices' },
+    { slug: 'incidents', title: 'Incidents' },
     { slug: 'events', title: 'Events' },
+    { slug: 'documentation', title: 'Documentation' },
+    { slug: 'community', title: 'Community' },
   ]);
 };

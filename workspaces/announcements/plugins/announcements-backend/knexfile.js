@@ -16,11 +16,14 @@
 
 module.exports = {
   development: {
-    client: 'better-sqlite3',
+    client: 'pg',
     connection: {
-      filename: './db/local.sqlite',
+      host: 'localhost',
+      port: 5432,
+      user: 'postgres',
+      password: 'postgres',
+      database: 'backstage_plugin_announcements',
     },
-    useNullAsDefault: true,
     seeds: {
       directory: './db/seeds',
     },
