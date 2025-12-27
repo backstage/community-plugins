@@ -1251,7 +1251,7 @@ __metadata:
     "@backstage/errors": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
-    "@date-io/luxon": "npm:1.x"
+    "@date-io/luxon": "npm:3.x"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -2934,6 +2934,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@date-io/core@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@date-io/core@npm:3.2.0"
+  checksum: 10/cd86785e3241d40fce12f80cd32cdd1a22b5f5e4d221285c4f5685d7fd3f2869c9dea508fe8b3acb671a85f53d70b8e2d86be489648f595a04f43dc5bb170bec
+  languageName: node
+  linkType: hard
+
 "@date-io/date-fns@npm:^1.3.13":
   version: 1.3.13
   resolution: "@date-io/date-fns@npm:1.3.13"
@@ -2945,14 +2952,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@date-io/luxon@npm:1.x":
-  version: 1.3.13
-  resolution: "@date-io/luxon@npm:1.3.13"
+"@date-io/luxon@npm:3.x":
+  version: 3.2.0
+  resolution: "@date-io/luxon@npm:3.2.0"
   dependencies:
-    "@date-io/core": "npm:^1.3.13"
+    "@date-io/core": "npm:^3.2.0"
   peerDependencies:
-    luxon: ^1.21.3
-  checksum: 10/6583ddf55d76aab1a9bdc7ef10ae30f67300d2617ae3969ac95def7bde87f2a680c5ceaf1b57308974f9b2cd83352903905c9cbbc5b66df1facfed4640f1e228
+    luxon: ^1.21.3 || ^2.x || ^3.x
+  peerDependenciesMeta:
+    luxon:
+      optional: true
+  checksum: 10/5a5cc1e4d434f41066fbe5a572b0c7a80a3996be6f841c945edf85179d09010244cb1dab20c91df38e727e7a304a755702151b6cdb04ce0c89f37c348fb50b33
   languageName: node
   linkType: hard
 
