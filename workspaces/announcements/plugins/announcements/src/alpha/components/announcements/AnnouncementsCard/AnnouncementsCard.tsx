@@ -19,6 +19,7 @@ import {
   Box,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Link,
   Skeleton,
@@ -43,27 +44,18 @@ import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
 
-type AnnouncementsCardOpts = {
-  title?: string;
+export type AnnouncementsCardOpts = {
   max?: number;
   category?: string;
-  active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
   current?: boolean;
   hideStartAt?: boolean;
 };
 
-export const AnnouncementsCard = ({
-  title,
-  max,
-  category,
-  active,
-  sortBy,
-  order,
-  current,
-  hideStartAt,
-}: AnnouncementsCardOpts) => {
+export const AnnouncementsCard = (props: AnnouncementsCardOpts) => {
+  const { max = 5, category, sortBy, order, current, hideStartAt } = props;
+
   const announcementsApi = useApi(announcementsApiRef);
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
@@ -73,9 +65,9 @@ export const AnnouncementsCard = ({
   const { t } = useAnnouncementsTranslation();
 
   const { announcements, loading, error } = useAnnouncements({
-    max: max || 5,
+    max,
     category,
-    active,
+    active: true,
     sortBy,
     order,
     current,
@@ -89,14 +81,9 @@ export const AnnouncementsCard = ({
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  // const deepLink = {
-  //   link: announcementsLink(),
-  //   title: t('announcementsCard.seeAll'),
-  // };
-
   return (
     <Card>
-      <CardHeader>{title || t('announcementsCard.announcements')}</CardHeader>
+      <CardHeader>{t('announcementsCard.announcements')}</CardHeader>
       <CardBody>
         <List dense>
           {announcements.results.map(announcement => (
@@ -195,6 +182,11 @@ export const AnnouncementsCard = ({
             )}
         </List>
       </CardBody>
+      <CardFooter>
+        <Link href={announcementAdminLink()}>
+          {t('announcementsCard.seeAll')}
+        </Link>
+      </CardFooter>
     </Card>
   );
 };
