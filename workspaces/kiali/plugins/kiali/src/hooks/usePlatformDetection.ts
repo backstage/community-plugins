@@ -41,10 +41,14 @@ export const usePlatformDetection = (): boolean => {
 
       // Check for OpenShift Console specific elements
       // OpenShift Console typically has elements with specific classes or IDs
+      // Support PF4 (pf-c-), PF5 (pf-v5-), and PF6 (pf-v6-) class prefixes
       const hasOpenShiftConsoleElements =
         document.querySelector('[data-test="user-dropdown"]') !== null ||
         document.querySelector('.pf-c-page__header') !== null ||
         document.querySelector('.pf-v5-c-page__header') !== null ||
+        document.querySelector('.pf-v5-c-masthead') !== null ||
+        document.querySelector('.pf-v6-c-page__header') !== null ||
+        document.querySelector('.pf-v6-c-masthead') !== null ||
         document.querySelector('[data-test="perspective-switcher"]') !== null ||
         (window as any).SERVER_FLAGS !== undefined;
 

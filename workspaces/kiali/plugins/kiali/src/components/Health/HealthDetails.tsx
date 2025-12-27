@@ -24,7 +24,7 @@ import {
 import { Typography } from '@material-ui/core';
 import { default as React } from 'react';
 import { KialiIcon, serverConfig } from '../../config';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { createIcon } from './Helper';
 
 interface HealthDetailsProps {

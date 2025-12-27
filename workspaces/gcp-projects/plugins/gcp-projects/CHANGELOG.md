@@ -1,5 +1,17 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.16.0
+
+### Minor Changes
+
+- 812ca51: Backstage version bump to v1.46.1
+
+## 0.15.1
+
+### Patch Changes
+
+- b6dd95f: Remove unused dependencies
+
 ## 0.15.0
 
 ### Minor Changes

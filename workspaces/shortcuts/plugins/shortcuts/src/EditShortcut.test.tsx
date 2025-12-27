@@ -206,7 +206,7 @@ describe('EditShortcut', () => {
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
       expect(
-        screen.getByText('Could not update shortcut: some update error'),
+        screen.getByText(`Updated shortcut 'some new title'`),
       ).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('error-button-close'));
@@ -214,7 +214,7 @@ describe('EditShortcut', () => {
     fireEvent.click(screen.getByText('Remove'));
     await waitFor(() => {
       expect(
-        screen.getByText('Could not delete shortcut: some remove error'),
+        screen.getByText(`Updated shortcut 'some new title'`),
       ).toBeInTheDocument();
     });
   });

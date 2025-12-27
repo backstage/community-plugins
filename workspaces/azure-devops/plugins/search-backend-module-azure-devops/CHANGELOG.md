@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-azure-devops
 
+## 0.1.2
+
+### Patch Changes
+
+- 4d58c3f: Corrected config syntax for array
+
 ## 0.1.1
 
 ### Patch Changes

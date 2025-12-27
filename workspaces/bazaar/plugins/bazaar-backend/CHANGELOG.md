@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.19.0
+
+### Minor Changes
+
+- b10d4dc: Drops support for the old backend system while cleaning up all existing deprecations
+
+## 0.18.0
+
+### Minor Changes
+
+- a2d556f: Backstage version bump to v1.46.1
+
 ## 0.17.0
 
 ### Minor Changes

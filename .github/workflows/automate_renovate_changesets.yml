@@ -7,7 +7,10 @@ on:
 jobs:
   generate-changeset:
     runs-on: ubuntu-latest
-    if: (github.actor == 'backstage-goalie[bot]' || github.actor == 'dependabot[bot]') && github.repository == 'backstage/community-plugins'
+    if: |
+      (github.actor == 'backstage-goalie[bot]' || github.actor == 'dependabot[bot]')
+      && github.repository == 'backstage/community-plugins'
+      && github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0

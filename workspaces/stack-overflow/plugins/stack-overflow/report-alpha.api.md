@@ -5,8 +5,8 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';

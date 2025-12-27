@@ -3,4 +3,4 @@
 '@backstage-community/plugin-analytics-provider-segment': patch
 ---
 
-Updated dependency `cross-fetch` to `4.1.0`.
+Updated dependency `@types/node` to `22.19.3`.

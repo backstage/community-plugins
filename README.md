@@ -28,7 +28,7 @@ Each plugin belongs to a workspace and workspaces are portable enough to be move
 
 Plugins depend on other plugins via regular npm dependencies, regardless of whether the other plugins are core plugins, other plugins within the repository, or external plugins.
 
-Although the community repository isn't technically a yarn workspace", it functions as a repository with multiple yarn workspaces, with each workspace possessing its unique `.changesets` directory.
+Although the community repository isn't technically a yarn workspace, it functions as a repository with multiple yarn workspaces, with each workspace possessing its unique `.changesets` directory.
 
 Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the `CHANGELOG` files.
 

@@ -16,7 +16,16 @@
 
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Progress } from '@backstage/core-components';
-import { ErrorApiError, errorApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  ErrorApiError,
+  errorApiRef,
+  useApi,
+  useRouteRef,
+} from '@backstage/core-plugin-api';
+import {
+  entityRouteParams,
+  entityRouteRef,
+} from '@backstage/plugin-catalog-react';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
@@ -104,6 +113,7 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   const classes = useStyles();
   const errorApi = useApi(errorApiRef);
   const feedbackApi = useApi(entityFeedbackApiRef);
+  const entityRoute = useRouteRef(entityRouteRef);
   const [responseSelections, setResponseSelections] = useState(
     Object.fromEntries(feedbackDialogResponses.map(r => [r.id, false])),
   );
@@ -112,6 +122,11 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
     additionalComments: '',
   });
   const [consent, setConsent] = useState(true);
+
+  // Derive the entity URL using the same logic as EntityRefLink
+  const entityUrl = entityRoute(
+    entityRouteParams(entity, { encodeParams: true }),
+  );
 
   const [{ loading: saving }, saveResponse] = useAsyncFn(async () => {
     // filter out responses that were not selected
@@ -135,12 +150,21 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
         response: Object.keys(responseSelections)
           .filter(id => responseSelections[id])
           .join(','),
+        link: entityUrl,
       });
       onClose();
     } catch (e) {
       errorApi.post(e as ErrorApiError);
     }
-  }, [comments, consent, entity, feedbackApi, onClose, responseSelections]);
+  }, [
+    comments,
+    consent,
+    entity,
+    entityUrl,
+    feedbackApi,
+    onClose,
+    responseSelections,
+  ]);
 
   return (
     <Dialog open={open} onClose={() => !saving && onClose()}>
