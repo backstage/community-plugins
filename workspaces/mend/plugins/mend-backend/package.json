@@ -58,7 +58,7 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.13",
     "@types/supertest": "^2.0.12",
     "msw": "^1.0.0",
-    "supertest": "^6.2.4"
+    "supertest": "^7.0.0"
   },
   "files": [
     "dist",
