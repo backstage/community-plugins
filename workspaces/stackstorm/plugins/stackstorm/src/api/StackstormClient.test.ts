@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ConfigReader, UrlPatternDiscovery } from '@backstage/core-app-api';
-import { MockFetchApi, setupRequestMockHandlers } from '@backstage/test-utils';
+import { MockFetchApi, registerMswTestHooks } from '@backstage/test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { StackstormClient } from './StackstormClient';
@@ -142,7 +142,7 @@ const actions: Action[] = [
 ];
 
 describe('StackstormClient', () => {
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   const mockBaseUrl = 'http://backstage:9191/api/proxy';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
