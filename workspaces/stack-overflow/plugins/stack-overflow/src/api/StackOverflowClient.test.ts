@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { registerMswTestHooks } from '@backstage/test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { StackOverflowClient } from './index';
@@ -56,7 +56,7 @@ const questionMap: Record<string, StackOverflowQuestion[]> = {
 };
 
 describe('StackOverflowClient', () => {
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   const mockBaseUrl = 'https://example.com:9191';
 
