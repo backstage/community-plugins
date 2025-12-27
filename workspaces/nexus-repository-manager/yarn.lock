@@ -714,7 +714,7 @@ __metadata:
     "@backstage/test-utils": "npm:^1.7.13"
     "@backstage/theme": "npm:^0.7.0"
     "@backstage/ui": "npm:^0.9.0"
-    "@hey-api/openapi-ts": "npm:0.89.0"
+    "@hey-api/openapi-ts": "npm:0.89.2"
     "@material-ui/core": "npm:^4.9.13"
     "@playwright/test": "npm:^1.57.0"
     "@testing-library/jest-dom": "npm:6.9.1"
@@ -2576,9 +2576,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.89.0":
-  version: 0.89.0
-  resolution: "@hey-api/openapi-ts@npm:0.89.0"
+"@hey-api/openapi-ts@npm:0.89.2":
+  version: 0.89.2
+  resolution: "@hey-api/openapi-ts@npm:0.89.2"
   dependencies:
     "@hey-api/codegen-core": "npm:^0.4.0"
     "@hey-api/json-schema-ref-parser": "npm:1.2.2"
@@ -2587,12 +2587,12 @@ __metadata:
     color-support: "npm:1.1.3"
     commander: "npm:14.0.2"
     open: "npm:11.0.0"
-    semver: "npm:7.7.2"
+    semver: "npm:7.7.3"
   peerDependencies:
     typescript: ">=5.5.3"
   bin:
     openapi-ts: bin/run.js
-  checksum: 10/cb376044e60b4a542bf9672dde7a0b071dcbe854583ad43dbb1982bd510a1c0bd022d9d580c426c4922d83fc61bf9212b2a0f96e6d1d4a11d325d7fe944ae486
+  checksum: 10/e68aaa6c6c7753136b9c571fa84218ed2872647b3257a7e302e27d66829251b85246b7bcfead68b2191e4e281124b2c77cebfdcce022f61c2b403592c3cd1cc7
   languageName: node
   linkType: hard
 
@@ -20161,12 +20161,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.2, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
-  version: 7.7.2
-  resolution: "semver@npm:7.7.2"
+"semver@npm:7.7.3, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
+  version: 7.7.3
+  resolution: "semver@npm:7.7.3"
   bin:
     semver: bin/semver.js
-  checksum: 10/7a24cffcaa13f53c09ce55e05efe25cd41328730b2308678624f8b9f5fc3093fc4d189f47950f0b811ff8f3c3039c24a2c36717ba7961615c682045bf03e1dda
+  checksum: 10/8dbc3168e057a38fc322af909c7f5617483c50caddba135439ff09a754b20bdd6482a5123ff543dad4affa488ecf46ec5fb56d61312ad20bb140199b88dfaea9
   languageName: node
   linkType: hard
 
