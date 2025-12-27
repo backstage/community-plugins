@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [5c67047]
+  - @backstage-community/plugin-search-backend-module-github-discussions@0.9.0
+
 ## 0.0.7
 
 ### Patch Changes

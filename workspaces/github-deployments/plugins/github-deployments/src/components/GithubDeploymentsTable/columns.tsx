@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { JSX } from 'react';
 import { GithubDeployment } from '../../api';
 import { DateTime } from 'luxon';
 import Box from '@material-ui/core/Box';

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
-
-import * as React from 'react';
+import { useEffect, useState, JSX } from 'react';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -87,7 +85,7 @@ export const transformRunStatus = (x: Status[]) => {
 
 const ProfileCatalog = () => {
   // TODO: get data from REST API
-  const [clusterTemplates] = React.useState([
+  const [clusterTemplates] = useState([
     {
       platformName: '15m',
       title: 'EKS 2 workers',
@@ -102,7 +100,7 @@ const ProfileCatalog = () => {
     },
   ]);
 
-  const [profileTemplates] = React.useState([
+  const [profileTemplates] = useState([
     {
       shortName: 'ml',
       title: 'MLOps',

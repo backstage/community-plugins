@@ -294,12 +294,14 @@ describe('DatabaseHandler', () => {
               response: 'asdf',
               comments: 'here is new feedback',
               consent: false,
+              link: null,
             },
             {
               userRef: 'user:default/bar',
               response: 'noop',
               comments: 'here is different feedback',
               consent: true,
+              link: null,
             },
           ]),
         );

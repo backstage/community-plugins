@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.22.1
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+
 ## 1.22.0
 
 ### Minor Changes

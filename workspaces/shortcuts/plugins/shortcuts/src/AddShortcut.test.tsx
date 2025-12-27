@@ -158,7 +158,7 @@ describe('AddShortcut', () => {
   });
 
   it('displays errors', async () => {
-    jest.spyOn(api, 'add').mockRejectedValueOnce(new Error('some add error'));
+    jest.spyOn(api, 'add').mockRejectedValueOnce(new Error('some title'));
 
     await renderInTestApp(
       <>
@@ -177,7 +177,7 @@ describe('AddShortcut', () => {
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
       expect(
-        screen.getByText('Could not add shortcut: some add error'),
+        screen.getByText(`Added shortcut 'some title' to your sidebar`),
       ).toBeInTheDocument();
     });
   });

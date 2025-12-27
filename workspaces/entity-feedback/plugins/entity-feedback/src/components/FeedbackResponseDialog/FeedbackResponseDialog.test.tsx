@@ -16,6 +16,7 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { ErrorApi, errorApiRef } from '@backstage/core-plugin-api';
+import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { getByRole, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -48,6 +49,9 @@ describe('FeedbackResponseDialog', () => {
           onClose={jest.fn()}
         />
       </TestApiProvider>,
+      {
+        mountedRoutes: { '/catalog/:namespace/:kind/:name': entityRouteRef },
+      },
     );
 
   beforeEach(() => {
@@ -106,6 +110,7 @@ describe('FeedbackResponseDialog', () => {
           comments:
             '{"responseComments":{},"additionalComments":"test comments"}',
           consent: true,
+          link: '/catalog/default/component/test',
           response: 'incorrect,other',
         },
       );

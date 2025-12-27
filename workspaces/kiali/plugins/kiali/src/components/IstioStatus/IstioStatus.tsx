@@ -19,7 +19,7 @@ import { Tooltip } from '@material-ui/core';
 import { ResourcesFullIcon } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/esm/createIcon';
 import { default as React } from 'react';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { IstioStatusList } from './IstioStatusList';
 
 type StatusIcons = {

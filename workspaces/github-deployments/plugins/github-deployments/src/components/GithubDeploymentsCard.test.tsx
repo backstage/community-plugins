@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { JSX } from 'react';
 import { fireEvent } from '@testing-library/react';
 import {
-  setupRequestMockHandlers,
+  registerMswTestHooks,
   renderInTestApp,
   TestApiRegistry,
 } from '@backstage/test-utils';
@@ -125,7 +126,7 @@ const assertFetchedData = async () => {
 
 describe('github-deployments', () => {
   const worker = setupServer();
-  setupRequestMockHandlers(worker);
+  registerMswTestHooks(worker);
 
   beforeEach(() => {
     jest.resetAllMocks();
