@@ -19,6 +19,7 @@ import { announcementCreatePermission } from '@backstage-community/plugin-announ
 import {
   AnnouncementsAdminPage,
   CategoriesContent,
+  SettingsContent,
   TagsContent,
 } from './components';
 import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
@@ -91,6 +92,7 @@ export const Router = (props: RouterProps) => {
         />
         <Route path="categories" element={<CategoriesContent />} />
         <Route path="tags" element={<TagsContent />} />
+        <Route path="settings" element={<SettingsContent />} />
       </Route>
     </Routes>
   );

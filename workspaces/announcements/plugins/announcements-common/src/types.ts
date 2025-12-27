@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { z } from 'zod';
+
+import { settingsSchema } from './schema';
 
 /**
  * Represents a category for organizing announcements
@@ -123,3 +126,10 @@ export type AnnouncementSignal = {
   /** The announcement data */
   data: Announcement;
 };
+
+/**
+ * Announcements settings
+ *
+ * @public
+ */
+export type Settings = z.infer<typeof settingsSchema>;
