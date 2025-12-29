@@ -23,9 +23,9 @@ yarn --cwd packages/backend add @backstage-community/plugin-apiiro-common
 
 The package re-exports everything from `src/constants.ts`:
 
-- **`APIRO_PROJECT_ANNOTATION`**
-- **`APIRO_METRICS_VIEW_ANNOTATION`**
-- **`APIRO_DEFAULT_BASE_URL`**
+- **`APIIRO_PROJECT_ANNOTATION`**
+- **`APIIRO_METRICS_VIEW_ANNOTATION`**
+- **`APIIRO_DEFAULT_BASE_URL`**
 
 ```ts
 import {
@@ -35,7 +35,7 @@ import {
 } from '@backstage-community/plugin-apiiro-common';
 ```
 
-### `APIRO_PROJECT_ANNOTATION`
+### `APIIRO_PROJECT_ANNOTATION`
 
 - Key: `apiiro.com/repo-id`
 - Type: `string`
@@ -49,7 +49,7 @@ metadata:
     apiiro.com/repo-id: my-org/my-repo
 ```
 
-### `APIRO_METRICS_VIEW_ANNOTATION`
+### `APIIRO_METRICS_VIEW_ANNOTATION`
 
 - Key: `apiiro.com/allow-metrics-view`
 - Type: `string` (usually interpreted as a boolean-like flag, e.g. `"true"`)
@@ -63,7 +63,7 @@ metadata:
     apiiro.com/allow-metrics-view: 'true'
 ```
 
-### `APIRO_DEFAULT_BASE_URL`
+### `APIIRO_DEFAULT_BASE_URL`
 
 - Default: `https://app.apiiro.com`
 - Purpose: Default base URL for the Apiiro SaaS application used by the plugins when constructing links or API calls.
@@ -73,7 +73,7 @@ Example usage in a frontend plugin:
 ```ts
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 
-const url = `${APIRO_DEFAULT_BASE_URL}/some/path`;
+const url = `${APIIRO_DEFAULT_BASE_URL}/some/path`;
 ```
 
 ## Dependencies
