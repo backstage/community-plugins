@@ -111,11 +111,7 @@ Where:
 
 - `accessToken` is your Apiiro Access Token
 - `defaultAllowMetricsView` is a boolean value that controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget by default. If annotation is not set, this value will be used. Default value is `true`.
-- `defaultRiskFilters` (optional) configures default filters for the Apiiro Risk Table. When configured, only the specified filter options will be available and applied by default:
-  - `RiskLevel`: Filter by risk severity (provide display names, e.g., "Critical", "High", "Medium", "Low")
-  - `RiskInsight`: Filter by risk insights (provide display names, e.g., "Internet exposed", "Deployed")
-  - `RiskCategory`: Filter by risk category (provide display names, e.g., "SAST findings", "Secrets")
-  - `Provider`: Filter by Sources (provide API supported values, e.g., "ApiiroSca", "AkamaiApiSecurity")
+- `defaultRiskFilters` (optional) configures default filters for the Apiiro Risk Table. Please refer to the [backend documentation](../apiiro-backend/README.md#configure-default-risk-filters-optional) for more details.
 
 **How to Retrieve an Access Token from Apiiro:**
 
