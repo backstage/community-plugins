@@ -28,7 +28,6 @@ export type KialiDetails = {
   tokenName?: string;
   url: string;
   urlExternal: string;
-  // new authentication
   basicAuth?: string;
 };
 
