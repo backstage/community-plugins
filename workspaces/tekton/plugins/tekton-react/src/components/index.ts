@@ -14,5 +14,12 @@
  * limitations under the License.
  */
 
-export { HorizontalStackedBars } from './pipeline/HorizontalStackedBars';
-export { TaskStatusTooltip } from './pipeline/TaskStatusTooltip';
+export {
+  HorizontalStackedBars,
+  type HorizontalStackedBarsProps,
+  type StackedValue,
+} from './pipeline/HorizontalStackedBars';
+export {
+  TaskStatusTooltip,
+  type TaskStatusToolTipProps,
+} from './pipeline/TaskStatusTooltip';

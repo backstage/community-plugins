@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * The parameters for the task.
+ *
+ * @public
+ */
 export type TektonParam = {
   default?: string | string[];
   description?: string;
@@ -21,12 +26,22 @@ export type TektonParam = {
   type?: string;
 };
 
+/**
+ * The resources for the task.
+ *
+ * @public
+ */
 export type TektonResource = {
   name: string;
   optional?: boolean;
   type: string;
 };
 
+/**
+ * The workspaces for the task.
+ *
+ * @public
+ */
 export type TektonWorkspace = {
   name: string;
   description?: string;
@@ -35,11 +50,21 @@ export type TektonWorkspace = {
   optional?: boolean;
 };
 
+/**
+ * The resource group for the task.
+ *
+ * @public
+ */
 export type TektonResourceGroup<ResourceType> = {
   inputs?: ResourceType[];
   outputs?: ResourceType[];
 };
 
+/**
+ * The steps for the task.
+ *
+ * @public
+ */
 export type TektonTaskSteps = {
   name: string;
   args?: string[];
@@ -52,11 +77,21 @@ export type TektonTaskSteps = {
   volumeMounts?: { name: string; mountPath: string }[];
 };
 
+/**
+ * The results for the task.
+ *
+ * @public
+ */
 export type TaskResult = {
   name: string;
   description?: string;
 };
 
+/**
+ * The specification for the task.
+ *
+ * @public
+ */
 export type TektonTaskSpec = {
   metadata?: {};
   description?: string;
@@ -67,46 +102,86 @@ export type TektonTaskSpec = {
   workspaces?: TektonWorkspace[];
 };
 
+/**
+ * The results for the task run.
+ *
+ * @public
+ */
 export type TektonResultsRun = {
   name: string;
   type?: string;
   value: string;
 };
 
+/**
+ * The reference for the task.
+ *
+ * @public
+ */
 export type PipelineTaskRef = {
   kind?: string;
   name: string;
 };
 
+/**
+ * The workspace for the task.
+ *
+ * @public
+ */
 export type PipelineTaskWorkspace = {
   name: string;
   workspace: string;
   optional?: boolean;
 };
 
+/**
+ * The resource for the task.
+ *
+ * @public
+ */
 export type PipelineTaskResource = {
   name: string;
   resource?: string;
   from?: string[];
 };
 
+/**
+ * The parameters for the task.
+ *
+ * @public
+ */
 export type PipelineTaskParam = {
   name: string;
   value: any;
 };
 
+/**
+ * The when expression for the task.
+ *
+ * @public
+ */
 export type WhenExpression = {
   input: string;
   operator: string;
   values: string[];
 };
 
+/**
+ * The result for the task.
+ *
+ * @public
+ */
 export type PipelineResult = {
   name: string;
   value: string;
   description?: string;
 };
 
+/**
+ * The task for the pipeline.
+ *
+ * @public
+ */
 export type PipelineTask = {
   name: string;
   params?: PipelineTaskParam[];
@@ -118,6 +193,11 @@ export type PipelineTask = {
   workspaces?: PipelineTaskWorkspace[];
 };
 
+/**
+ * The specification for the pipeline.
+ *
+ * @public
+ */
 export type PipelineSpec = {
   params?: TektonParam[];
   resources?: TektonResource[];
@@ -128,6 +208,11 @@ export type PipelineSpec = {
   results?: PipelineResult[];
 };
 
+/**
+ * The condition for the pipeline.
+ *
+ * @public
+ */
 export type Condition = {
   type: string;
   status: string;

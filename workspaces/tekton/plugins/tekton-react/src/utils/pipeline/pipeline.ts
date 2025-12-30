@@ -33,6 +33,11 @@ import {
 } from '../../types';
 import { getTaskRunsForPipelineRun } from './task-run';
 
+/**
+ * The function to get the status color for the run.
+ *
+ * @public
+ */
 export const getRunStatusColor = (status: string): StatusMessage => {
   switch (status) {
     case ComputedStatus.Succeeded:
@@ -74,6 +79,11 @@ const getSucceededStatus = (status: string): ComputedStatus => {
   return ComputedStatus.Running;
 };
 
+/**
+ * The function to get the status for the pipeline run.
+ *
+ * @public
+ */
 export const pipelineRunStatus = (
   pipelineRun: PipelineRunKind | TaskRunKind | PipelineTaskWithStatus | null,
 ) => {
@@ -129,6 +139,11 @@ export const pipelineRunStatus = (
   return status;
 };
 
+/**
+ * The function to filter the pipeline run.
+ *
+ * @public
+ */
 export const pipelineRunFilterReducer = (
   pipelineRun: PipelineRunKind | TaskRunKind,
 ): ComputedStatus => {
@@ -136,6 +151,11 @@ export const pipelineRunFilterReducer = (
   return status || ComputedStatus.Other;
 };
 
+/**
+ * The function to update the task status.
+ *
+ * @public
+ */
 export const updateTaskStatus = (
   pipelinerun: PipelineRunKind | null,
   taskRuns: TaskRunKind[],

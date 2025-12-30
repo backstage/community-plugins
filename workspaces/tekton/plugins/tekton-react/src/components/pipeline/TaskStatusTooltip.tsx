@@ -19,10 +19,22 @@ import { Fragment } from 'react';
 import { ComputedStatus, TaskStatusTypes } from '../../types';
 import { getRunStatusColor } from '../../utils';
 
-interface TaskStatusToolTipProps {
+/**
+ * Props for the TaskStatusTooltip component.
+ *
+ * @public
+ */
+export interface TaskStatusToolTipProps {
+  /** The task status. */
   taskStatus: TaskStatusTypes;
 }
 
+/**
+ * The TaskStatusTooltip component is used to display a tooltip with the status of a task.
+ *
+ * @param taskStatus - The task status.
+ * @public
+ */
 export const TaskStatusTooltip = ({ taskStatus }: TaskStatusToolTipProps) => {
   return (
     <div

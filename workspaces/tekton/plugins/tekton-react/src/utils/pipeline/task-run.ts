@@ -16,6 +16,11 @@
 
 import { PipelineRunKind, TaskRunKind } from '../../types';
 
+/**
+ * The function to get the task runs for the pipeline run.
+ *
+ * @public
+ */
 export const getTaskRunsForPipelineRun = (
   pipelinerun: PipelineRunKind | null,
   taskRuns: TaskRunKind[],

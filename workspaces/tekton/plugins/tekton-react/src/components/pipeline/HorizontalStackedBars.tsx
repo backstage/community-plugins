@@ -16,13 +16,23 @@
 
 import { CSSProperties } from 'react';
 
-type StackedValue = {
+/**
+ * The stacked value for the horizontal stacked bars.
+ *
+ * @public
+ */
+export type StackedValue = {
   color: string;
   name: string;
   size: number;
 };
 
-type HorizontalStackedBarsProps = {
+/**
+ * Props for the HorizontalStackedBars component.
+ *
+ * @public
+ */
+export type HorizontalStackedBarsProps = {
   id: string;
   barGap?: number;
   height?: number | string;
@@ -32,6 +42,11 @@ type HorizontalStackedBarsProps = {
   onClick?: () => void;
 };
 
+/**
+ * The HorizontalStackedBars component is used to display a horizontal stacked bar chart.
+ *
+ * @public
+ */
 export const HorizontalStackedBars = ({
   id,
   barGap,

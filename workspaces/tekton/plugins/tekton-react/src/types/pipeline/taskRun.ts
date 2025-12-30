@@ -31,10 +31,20 @@ import {
 } from './pipeline';
 import { PLRTaskRunStep } from './pipelineRun';
 
+/**
+ * The volume type for the task run.
+ *
+ * @public
+ */
 export type VolumeTypePVC = {
   claimName: string;
 };
 
+/**
+ * The workspace for the task run.
+ *
+ * @public
+ */
 export type TaskRunWorkspace = {
   name: string;
   volumeClaimTemplate?: V1PersistentVolumeClaimTemplate;
@@ -45,6 +55,11 @@ export type TaskRunWorkspace = {
   subPath?: string;
 };
 
+/**
+ * The status for the task run.
+ *
+ * @public
+ */
 export type TaskRunStatus = {
   completionTime?: string;
   conditions?: Condition[];
@@ -55,6 +70,11 @@ export type TaskRunStatus = {
   results?: TektonResultsRun[];
 };
 
+/**
+ * The kind for the task run.
+ *
+ * @public
+ */
 export type TaskRunKind = {
   apiVersion?: string;
   kind?: string;

@@ -24,6 +24,11 @@ import {
   TektonTaskSpec,
 } from './pipeline';
 
+/**
+ * The step for the task run.
+ *
+ * @public
+ */
 export type PLRTaskRunStep = {
   container: string;
   imageID?: string;
@@ -44,6 +49,11 @@ export type PLRTaskRunStep = {
   };
 };
 
+/**
+ * The parameters for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunParam = {
   name: string;
   value: string | string[];
@@ -52,13 +62,28 @@ export type PipelineRunParam = {
   resource?: object;
 };
 
+/**
+ * The workspace for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunWorkspace = {
   name: string;
   [volumeType: string]: {};
 };
 
+/**
+ * The embedded resource parameter for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunEmbeddedResourceParam = { name: string; value: string };
 
+/**
+ * The embedded resource for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunEmbeddedResource = {
   name: string;
   resourceSpec: {
@@ -67,6 +92,11 @@ export type PipelineRunEmbeddedResource = {
   };
 };
 
+/**
+ * The reference resource for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunReferenceResource = {
   name: string;
   resourceRef: {
@@ -74,10 +104,20 @@ export type PipelineRunReferenceResource = {
   };
 };
 
+/**
+ * The resource for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunResource =
   | PipelineRunReferenceResource
   | PipelineRunEmbeddedResource;
 
+/**
+ * The data for the task run.
+ *
+ * @public
+ */
 export type PLRTaskRunData = {
   pipelineTaskName: string;
   status?: {
@@ -91,10 +131,20 @@ export type PLRTaskRunData = {
   };
 };
 
+/**
+ * The task runs for the pipeline run.
+ *
+ * @public
+ */
 export type PLRTaskRuns = {
   [taskRunName: string]: PLRTaskRunData;
 };
 
+/**
+ * The status for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunStatus = {
   succeededCondition?: string;
   creationTimestamp?: string;
@@ -110,6 +160,11 @@ export type PipelineRunStatus = {
   results?: TektonResultsRun[];
 };
 
+/**
+ * The kind for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineRunKind = {
   apiVersion?: string;
   kind?: string;
@@ -127,6 +182,11 @@ export type PipelineRunKind = {
   status?: PipelineRunStatus;
 };
 
+/**
+ * The task with status for the pipeline run.
+ *
+ * @public
+ */
 export type PipelineTaskWithStatus = PipelineTask & {
   status: {
     reason: string;
