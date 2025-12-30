@@ -11,9 +11,19 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tekton/plugins/tekton-react"
+  },
   "backstage": {
     "role": "web-library",
-    "pluginId": "tekton"
+    "pluginId": "tekton",
+    "pluginPackages": [
+      "@backstage-community/plugin-tekton",
+      "@backstage-community/plugin-tekton-common",
+      "@backstage-community/plugin-tekton-react"
+    ]
   },
   "sideEffects": false,
   "scripts": {
