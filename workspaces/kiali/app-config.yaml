@@ -117,7 +117,7 @@ kiali:
       # caFile: ''
       # Optional. Time in seconds that session is enabled, defaults to 1 minute.
       #sessionTime: 60
-      basicAuth: ""
+      basicAuth: ''
       # Optional. Basic Authentication header for Kiali.
       #
       # This is intended for environments where Kiali is protected by an
