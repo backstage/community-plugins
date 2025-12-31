@@ -275,7 +275,7 @@ export class JsonRulesEngineFactChecker
       }
     }
 
-    const factRetrieversIds = techInsightChecks.flatMap(it => it.factIds);
+    const factRetrieversIds = filteredChecks.flatMap(it => it.factIds);
     const facts = await this.repository.getLatestFactsByIds(
       factRetrieversIds,
       entity,
@@ -291,7 +291,7 @@ export class JsonRulesEngineFactChecker
       {} as FlatTechInsightFact,
     );
 
-    techInsightChecks.forEach(techInsightCheck => {
+    filteredChecks.forEach(techInsightCheck => {
       const rule = techInsightCheck.rule;
       rule.name = techInsightCheck.id;
 
