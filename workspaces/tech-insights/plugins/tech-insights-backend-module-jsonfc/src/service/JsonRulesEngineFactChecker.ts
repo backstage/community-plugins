@@ -38,6 +38,9 @@ import { DefaultCheckRegistry } from './CheckRegistry';
 import { readChecksFromConfig } from './config';
 import * as validationSchema from './validation-schema.json';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { CatalogApi } from '@backstage/catalog-client';
+import { Entity } from '@backstage/catalog-model';
+import { get } from 'lodash';
 
 const noopEvent = {
   type: 'noop',
@@ -53,8 +56,9 @@ export type JsonRulesEngineFactCheckerOptions = {
   checks: TechInsightJsonRuleCheck[];
   repository: TechInsightsStore;
   logger: LoggerService;
-  checkRegistry?: TechInsightCheckRegistry<any>;
+  checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
+  catalogApi?: CatalogApi;
 };
 
 /**
@@ -71,13 +75,16 @@ export class JsonRulesEngineFactChecker
   private readonly logger: LoggerService;
   private readonly validationSchema: SchemaObject;
   private readonly operators: Operator[];
+  private readonly catalogApi?: CatalogApi;
 
   constructor(options: JsonRulesEngineFactCheckerOptions) {
-    const { checks, repository, logger, checkRegistry, operators } = options;
+    const { checks, repository, logger, checkRegistry, operators, catalogApi } =
+      options;
 
     this.repository = repository;
     this.logger = logger;
     this.operators = operators || [];
+    this.catalogApi = catalogApi;
     this.validationSchema = JSON.parse(JSON.stringify(validationSchema));
 
     this.operators.forEach(op => {
@@ -92,6 +99,125 @@ export class JsonRulesEngineFactChecker
       new DefaultCheckRegistry<TechInsightJsonRuleCheck>(checks);
   }
 
+  /**
+   * Evaluates whether an entity matches the given filter criteria.
+   * Supports both single filter objects and arrays of filter objects.
+   * When multiple filter objects are provided, uses OR logic (entity matches if ANY filter matches).
+   *
+   * @param entity - The catalog entity to evaluate
+   * @param filter - Single filter object or array of filter objects to match against
+   * @returns true if the entity matches the filter criteria, false otherwise
+   */
+  private matchesFilter(
+    entity: Entity,
+    filter:
+      | Record<string, string | symbol | (string | symbol)[]>
+      | Record<string, string | symbol | (string | symbol)[]>[],
+  ): boolean {
+    const filters = Array.isArray(filter) ? filter : [filter];
+
+    // Match if ANY of the filters match (OR logic between filter objects)
+    return filters.some(f => this.matchesSingleFilter(entity, f));
+  }
+
+  /**
+   * Evaluates whether an entity matches a single filter object.
+   * All key-value pairs in the filter must match (AND logic).
+   * Supports nested property access using lodash.get (e.g., "metadata.name").
+   *
+   * @param entity - The catalog entity to evaluate
+   * @param filter - Filter object with key-value pairs that must all match
+   * @returns true if all filter conditions match, false otherwise
+   */
+  private matchesSingleFilter(
+    entity: Entity,
+    filter: Record<string, string | symbol | (string | symbol)[]>,
+  ): boolean {
+    // All conditions in a single filter must match (AND logic within a filter)
+    return Object.entries(filter).every(([key, value]) => {
+      const entityValue = get(entity, key);
+
+      // Handle undefined/null entity values - if the property doesn't exist on the entity,
+      // the filter condition cannot be satisfied, so return false
+      if (entityValue === undefined || entityValue === null) {
+        this.logger.warn(`Entity property '${key}' is undefined or null`);
+        return false;
+      }
+
+      // Handle array values (OR logic within array)
+      // If the filter value is an array, the entity matches if ANY value in the array matches
+      if (Array.isArray(value)) {
+        return value.some(v => this.compareValues(entityValue, v));
+      }
+
+      // Single value comparison
+      return this.compareValues(entityValue, value);
+    });
+  }
+
+  /**
+   * Helper method to compare entity property values against filter values.
+   * Implements case-insensitive string comparison for better user experience,
+   * as entity kinds, types, and lifecycles are typically case-insensitive.
+   *
+   * @param entityValue - The actual value from the entity property
+   * @param filterValue - The expected value from the filter condition
+   * @returns true if values match according to the comparison rules, false otherwise
+   */
+  private compareValues(
+    entityValue: any,
+    filterValue: string | symbol,
+  ): boolean {
+    // Handle string comparison case-insensitively for kind, type, lifecycle, etc.
+    // This provides a better user experience as these values are typically case-insensitive
+    if (typeof entityValue === 'string' && typeof filterValue === 'string') {
+      return entityValue.toLowerCase() === filterValue.toLowerCase();
+    }
+
+    // Handle symbol comparison (less common but supported for completeness)
+    if (typeof filterValue === 'symbol') {
+      return entityValue === filterValue;
+    }
+
+    // Default to strict equality for all other types (numbers, booleans, etc.)
+    return entityValue === filterValue;
+  }
+
+  /**
+   * Fetches an entity from the catalog to enable filter evaluation.
+   * This is required to access entity metadata (kind, type, lifecycle, etc.) for filtering.
+   *
+   * @param entityRef - The entity reference string (e.g., "component:default/my-service")
+   * @returns The entity object if found and catalogApi is available, undefined otherwise
+   */
+  private async fetchEntityFromCatalog(
+    entityRef: string,
+  ): Promise<Entity | undefined> {
+    // If catalogApi wasn't provided in the constructor, filtering cannot be performed
+    if (!this.catalogApi) {
+      this.logger.debug(
+        'CatalogApi not available, skipping entity fetch for filtering',
+      );
+      return undefined;
+    }
+
+    try {
+      const entity = await this.catalogApi.getEntityByRef(entityRef);
+
+      if (!entity) {
+        this.logger.warn(`Entity '${entityRef}' not found in catalog`);
+      }
+
+      return entity;
+    } catch (e) {
+      // Log but don't throw - we'll fall back to running all checks without filtering
+      this.logger.warn(
+        `Failed to fetch entity ${entityRef} from catalog: ${e}`,
+      );
+      return undefined;
+    }
+  }
+
   async runChecks(
     entity: string,
     checks?: string[],
@@ -104,6 +230,51 @@ export class JsonRulesEngineFactChecker
     const techInsightChecks = checks
       ? await this.checkRegistry.getAll(checks)
       : await this.checkRegistry.list();
+
+    // Identify checks that have filter criteria defined
+    // Only these checks require entity fetching from the catalog
+    const checksWithFilters = techInsightChecks.filter(check => check.filter);
+
+    // Start with all checks; will be filtered down if entity filtering is applicable
+    let filteredChecks = techInsightChecks;
+
+    // Only fetch entity from catalog if there are checks with filter criteria
+    // This optimization avoids unnecessary catalog API calls
+    if (checksWithFilters.length > 0) {
+      const catalogEntity = await this.fetchEntityFromCatalog(entity);
+      if (catalogEntity) {
+        const initialCount = filteredChecks.length;
+
+        // Apply filter criteria to determine which checks should run for this entity
+        // Checks without filters always run; checks with filters only run if they match
+        filteredChecks = filteredChecks.filter(check => {
+          // Always include checks that don't have filter criteria
+          if (!check.filter) {
+            return true;
+          }
+
+          // Evaluate if the entity matches the check's filter criteria
+          const matches = this.matchesFilter(catalogEntity, check.filter);
+          return matches;
+        });
+
+        // Log how many checks were filtered out for observability
+        // This helps users understand why certain checks didn't run
+        const skippedCount = initialCount - filteredChecks.length;
+        if (skippedCount > 0) {
+          this.logger.info(
+            `Filtered out ${skippedCount} check(s) based on entity criteria`,
+          );
+        }
+      } else {
+        // If we couldn't fetch the entity, run all checks as a fallback
+        // This ensures checks still run even if catalog is unavailable
+        this.logger.warn(
+          'Could not fetch entity from catalog for filtering - running all checks',
+        );
+      }
+    }
+
     const factRetrieversIds = techInsightChecks.flatMap(it => it.factIds);
     const facts = await this.repository.getLatestFactsByIds(
       factRetrieversIds,
@@ -380,6 +551,7 @@ export type JsonRulesEngineFactCheckerFactoryOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
+  catalogApi?: CatalogApi;
 };
 
 /**
@@ -394,6 +566,7 @@ export class JsonRulesEngineFactCheckerFactory {
   private readonly logger: LoggerService;
   private readonly checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   private readonly operators?: Operator[];
+  private readonly catalogApi?: CatalogApi;
 
   static fromConfig(
     config: Config,
@@ -412,6 +585,7 @@ export class JsonRulesEngineFactCheckerFactory {
     this.checks = options.checks;
     this.checkRegistry = options.checkRegistry;
     this.operators = options.operators;
+    this.catalogApi = options.catalogApi;
   }
 
   /**
@@ -426,6 +600,7 @@ export class JsonRulesEngineFactCheckerFactory {
       checkRegistry: this.checkRegistry,
       repository,
       operators: this.operators,
+      catalogApi: this.catalogApi,
     });
   }
 }
