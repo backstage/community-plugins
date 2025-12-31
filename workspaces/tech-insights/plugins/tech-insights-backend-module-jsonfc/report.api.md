@@ -5,6 +5,7 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BooleanCheckResult } from '@backstage-community/plugin-tech-insights-common';
+import { CatalogApi } from '@backstage/catalog-client';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { CheckValidationResponse } from '@backstage-community/plugin-tech-insights-node';
@@ -78,6 +79,7 @@ export type JsonRulesEngineFactCheckerFactoryOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
+  catalogApi?: CatalogApi;
 };
 
 // @public
@@ -85,8 +87,9 @@ export type JsonRulesEngineFactCheckerOptions = {
   checks: TechInsightJsonRuleCheck[];
   repository: TechInsightsStore;
   logger: LoggerService;
-  checkRegistry?: TechInsightCheckRegistry<any>;
+  checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
+  catalogApi?: CatalogApi;
 };
 
 // @public (undocumented)
