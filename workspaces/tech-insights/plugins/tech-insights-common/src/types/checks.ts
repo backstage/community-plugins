@@ -90,8 +90,8 @@ export interface Check {
    * If omitted, the check will run against all entities.
    *
    * Filters can be defined to match entity properties, for example:
-   * - { kind: 'component' } - Only run check on components
-   * - { kind: 'component', 'spec.lifecycle': 'production' } - Only run on production components
+   * - \{ kind: 'component' \} - Only run check on components
+   * - \{ kind: 'component', 'spec.lifecycle': 'production' \} - Only run on production components
    *
    * Multiple filter objects can be provided as an array to match any of the filters.
    */
