@@ -87,7 +87,7 @@ To show information from Dynatrace for a catalog entity, add the following annot
 # [...]
 metadata:
   annotations:
-    dynatrace.com/dynatrace-entity-id: DYNATRACE_ENTITY_ID
+    dynatrace.com/dynatrace-entity-id: DYNATRACE_ENTITY_ID, DYNATRACE_ENTITY_ID_2, ...
 # [...]
 ```
 
