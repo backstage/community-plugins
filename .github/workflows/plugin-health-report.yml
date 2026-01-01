@@ -1,0 +1,31 @@
+name: Plugin Health Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1" # Every Monday
+
+jobs:
+  plugin-health:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # IMPORTANT for git log
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Generate plugin health report
+        run: |
+            node scripts/plugin-health/collect.cjs
+
+      - name: Upload health report
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-health-report
+          path: plugin-health/

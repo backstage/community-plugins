@@ -1,0 +1,858 @@
+[
+  {
+    "workspace": "3scale",
+    "lastCommit": "2025-10-23T09:36:19.000Z",
+    "daysSinceLastCommit": 70,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "acr",
+    "lastCommit": "2025-10-15T00:42:29.000Z",
+    "daysSinceLastCommit": 78,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "acs",
+    "lastCommit": "2025-10-13T12:18:56.000Z",
+    "daysSinceLastCommit": 79,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "adr",
+    "lastCommit": "2025-11-03T14:27:26.000Z",
+    "daysSinceLastCommit": 58,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "agent-forge",
+    "lastCommit": "2025-10-19T17:28:55.000Z",
+    "daysSinceLastCommit": 73,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "airbrake",
+    "lastCommit": "2025-10-17T13:57:09.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "allure",
+    "lastCommit": "2025-10-17T17:37:41.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "amplication",
+    "lastCommit": "2025-09-24T18:08:24.000Z",
+    "daysSinceLastCommit": 98,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "analytics",
+    "lastCommit": "2025-10-30T12:01:51.000Z",
+    "daysSinceLastCommit": 62,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "announcements",
+    "lastCommit": "2025-10-29T19:16:20.000Z",
+    "daysSinceLastCommit": 63,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "apache-airflow",
+    "lastCommit": "2025-10-17T17:37:49.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "apollo-explorer",
+    "lastCommit": "2025-10-17T17:54:55.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "azure-devops",
+    "lastCommit": "2025-10-23T20:54:59.000Z",
+    "daysSinceLastCommit": 69,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "azure-resources",
+    "lastCommit": "2025-11-04T22:15:34.000Z",
+    "daysSinceLastCommit": 57,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "azure-sites",
+    "lastCommit": "2025-10-31T13:58:41.000Z",
+    "daysSinceLastCommit": 61,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "azure-storage-explorer",
+    "lastCommit": "2025-10-31T13:57:24.000Z",
+    "daysSinceLastCommit": 61,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "badges",
+    "lastCommit": "2025-10-17T17:54:42.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "bazaar",
+    "lastCommit": "2025-10-17T17:37:57.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "bitbucket-pull-requests",
+    "lastCommit": "2025-09-30T16:05:23.000Z",
+    "daysSinceLastCommit": 92,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "bitrise",
+    "lastCommit": "2025-10-17T20:38:45.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "blackduck",
+    "lastCommit": "2025-10-06T15:21:16.000Z",
+    "daysSinceLastCommit": 86,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "bookmarks",
+    "lastCommit": "2025-11-03T21:24:34.000Z",
+    "daysSinceLastCommit": 58,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "cicd-statistics",
+    "lastCommit": "2025-10-17T17:54:49.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "cloudbuild",
+    "lastCommit": "2025-10-17T12:47:16.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "code-climate",
+    "lastCommit": "2025-10-17T17:23:28.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "code-coverage",
+    "lastCommit": "2025-10-17T20:38:16.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "codescene",
+    "lastCommit": "2025-10-17T17:23:19.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "confluence",
+    "lastCommit": "2025-10-20T13:25:26.000Z",
+    "daysSinceLastCommit": 72,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "copilot",
+    "lastCommit": "2025-10-17T12:46:47.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "cost-insights",
+    "lastCommit": "2025-10-17T20:38:34.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "dynatrace",
+    "lastCommit": "2025-10-15T18:20:53.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "entity-feedback",
+    "lastCommit": "2025-10-15T15:02:59.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "entity-validation",
+    "lastCommit": "2025-10-17T17:37:00.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "explore",
+    "lastCommit": "2025-11-04T16:50:58.000Z",
+    "daysSinceLastCommit": 57,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "feedback",
+    "lastCommit": "2025-10-31T15:09:20.000Z",
+    "daysSinceLastCommit": 61,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "firehydrant",
+    "lastCommit": "2025-10-17T17:37:33.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "flux",
+    "lastCommit": "2025-10-20T11:00:57.000Z",
+    "daysSinceLastCommit": 72,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "fossa",
+    "lastCommit": "2025-10-17T16:49:38.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "gcalendar",
+    "lastCommit": "2025-10-17T17:37:25.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "gcp-projects",
+    "lastCommit": "2025-10-17T17:37:16.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "git-release-manager",
+    "lastCommit": "2025-10-17T20:38:07.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "github-actions",
+    "lastCommit": "2025-10-17T17:55:10.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "github-deployments",
+    "lastCommit": "2025-10-17T17:23:11.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "github-discussions",
+    "lastCommit": "2025-10-17T20:37:33.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "github-issues",
+    "lastCommit": "2025-10-17T17:37:09.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "github-pull-requests-board",
+    "lastCommit": "2025-10-17T20:38:25.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "gitops-profiles",
+    "lastCommit": "2025-10-17T17:27:41.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "gocd",
+    "lastCommit": "2025-10-17T17:27:10.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "grafana",
+    "lastCommit": "2025-10-17T16:22:06.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "graphiql",
+    "lastCommit": "2025-10-17T16:23:11.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "graphql-voyager",
+    "lastCommit": "2025-10-17T16:37:23.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "ilert",
+    "lastCommit": "2025-10-17T17:27:29.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "jaeger",
+    "lastCommit": "2025-10-17T17:27:18.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "jenkins",
+    "lastCommit": "2025-11-03T20:22:33.000Z",
+    "daysSinceLastCommit": 58,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "jfrog-artifactory",
+    "lastCommit": "2025-10-17T16:47:12.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "kafka",
+    "lastCommit": "2025-10-03T07:29:13.000Z",
+    "daysSinceLastCommit": 90,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "keycloak",
+    "lastCommit": "2025-10-17T13:26:14.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "kiali",
+    "lastCommit": "2025-10-24T17:58:20.000Z",
+    "daysSinceLastCommit": 68,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "lighthouse",
+    "lastCommit": "2025-10-17T17:32:36.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "linguist",
+    "lastCommit": "2025-10-17T20:38:57.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "linkerd",
+    "lastCommit": "2025-10-17T17:32:47.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "manage",
+    "lastCommit": "2025-10-15T16:09:30.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "matomo",
+    "lastCommit": "2025-10-15T03:43:41.000Z",
+    "daysSinceLastCommit": 78,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "mcp-chat",
+    "lastCommit": "2025-10-31T13:40:43.000Z",
+    "daysSinceLastCommit": 61,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "mend",
+    "lastCommit": "2025-10-29T05:38:08.000Z",
+    "daysSinceLastCommit": 64,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "microsoft-calendar",
+    "lastCommit": "2025-10-17T16:23:51.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "mta",
+    "lastCommit": "2025-10-13T18:51:13.000Z",
+    "daysSinceLastCommit": 79,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "multi-source-security-viewer",
+    "lastCommit": "2025-11-03T20:43:20.000Z",
+    "daysSinceLastCommit": 58,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "newrelic",
+    "lastCommit": "2025-10-17T17:32:59.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "nexus-repository-manager",
+    "lastCommit": "2025-10-14T11:20:23.000Z",
+    "daysSinceLastCommit": 78,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "nomad",
+    "lastCommit": "2025-10-17T17:32:28.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "noop",
+    "lastCommit": "2025-09-24T18:08:24.000Z",
+    "daysSinceLastCommit": 98,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "npm",
+    "lastCommit": "2025-10-14T23:54:46.000Z",
+    "daysSinceLastCommit": 78,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "ocm",
+    "lastCommit": "2025-11-03T10:14:14.000Z",
+    "daysSinceLastCommit": 58,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "octopus-deploy",
+    "lastCommit": "2025-10-15T14:34:54.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "opencost",
+    "lastCommit": "2025-10-17T17:36:52.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "periskop",
+    "lastCommit": "2025-10-17T17:32:24.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "pingidentity",
+    "lastCommit": "2025-10-23T07:43:41.000Z",
+    "daysSinceLastCommit": 70,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "playlist",
+    "lastCommit": "2025-10-15T18:15:17.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "puppetdb",
+    "lastCommit": "2025-10-17T17:33:09.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "quay",
+    "lastCommit": "2025-10-29T11:26:27.000Z",
+    "daysSinceLastCommit": 63,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "rbac",
+    "lastCommit": "2025-10-23T16:15:58.000Z",
+    "daysSinceLastCommit": 69,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "redhat-argocd",
+    "lastCommit": "2025-11-04T14:17:59.000Z",
+    "daysSinceLastCommit": 57,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "repo-tools",
+    "lastCommit": "2025-09-24T18:08:24.000Z",
+    "daysSinceLastCommit": 98,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "report-portal",
+    "lastCommit": "2025-10-24T17:49:39.000Z",
+    "daysSinceLastCommit": 68,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "rollbar",
+    "lastCommit": "2025-10-21T18:08:41.000Z",
+    "daysSinceLastCommit": 71,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "scaffolder-backend-module-annotator",
+    "lastCommit": "2025-10-17T08:55:43.000Z",
+    "daysSinceLastCommit": 76,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "scaffolder-backend-module-kubernetes",
+    "lastCommit": "2025-10-17T16:01:06.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "scaffolder-backend-module-regex",
+    "lastCommit": "2025-10-17T12:03:15.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "scaffolder-backend-module-servicenow",
+    "lastCommit": "2025-10-16T12:05:39.000Z",
+    "daysSinceLastCommit": 76,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "scaffolder-backend-module-sonarqube",
+    "lastCommit": "2025-10-16T12:14:31.000Z",
+    "daysSinceLastCommit": 76,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "scaffolder-relation-processor",
+    "lastCommit": "2025-10-16T12:26:50.000Z",
+    "daysSinceLastCommit": 76,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "sentry",
+    "lastCommit": "2025-10-15T18:21:09.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "servicenow",
+    "lastCommit": "2025-10-15T19:14:02.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "shortcuts",
+    "lastCommit": "2025-10-17T16:20:56.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "sonarqube",
+    "lastCommit": "2025-10-20T19:20:27.000Z",
+    "daysSinceLastCommit": 72,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "splunk",
+    "lastCommit": "2025-10-17T17:33:36.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "stack-overflow",
+    "lastCommit": "2025-10-17T12:47:38.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "stackstorm",
+    "lastCommit": "2025-10-17T17:33:27.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "tech-insights",
+    "lastCommit": "2025-10-27T08:14:25.000Z",
+    "daysSinceLastCommit": 66,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "tech-radar",
+    "lastCommit": "2025-10-24T17:50:41.000Z",
+    "daysSinceLastCommit": 68,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "tekton",
+    "lastCommit": "2025-10-28T12:57:02.000Z",
+    "daysSinceLastCommit": 64,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "todo",
+    "lastCommit": "2025-10-17T16:20:37.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "topology",
+    "lastCommit": "2025-10-15T18:58:05.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "vault",
+    "lastCommit": "2025-10-17T17:33:18.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "wheel-of-names",
+    "lastCommit": "2025-10-17T16:35:47.000Z",
+    "daysSinceLastCommit": 75,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  },
+  {
+    "workspace": "xcmetrics",
+    "lastCommit": "2025-10-15T18:21:29.000Z",
+    "daysSinceLastCommit": 77,
+    "hasReadme": true,
+    "hasCodeowners": false,
+    "status": "active"
+  }
+]
