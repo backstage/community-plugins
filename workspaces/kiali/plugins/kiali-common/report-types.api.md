@@ -4219,7 +4219,7 @@ export interface Status {
     // (undocumented)
     color: string;
     // (undocumented)
-    icon: React.ComponentClass<SVGIconProps>;
+    icon: React.ComponentType<SvgIconProps>;
     // (undocumented)
     name: string;
     // (undocumented)
