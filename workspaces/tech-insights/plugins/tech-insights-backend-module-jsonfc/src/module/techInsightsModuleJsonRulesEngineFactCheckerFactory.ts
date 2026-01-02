@@ -37,7 +37,6 @@ export const techInsightsModuleJsonRulesEngineFactCheckerFactory =
         deps: {
           config: coreServices.rootConfig,
           logger: coreServices.logger,
-          discovery: coreServices.discovery,
           catalog: catalogServiceRef,
           auth: coreServices.auth,
           techInsights: techInsightsFactCheckerFactoryExtensionPoint,
