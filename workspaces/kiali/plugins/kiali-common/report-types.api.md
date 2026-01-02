@@ -12,7 +12,7 @@ import type { AxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
 import type { IMarker } from 'react-ace';
 import type { Namespace as Namespace_2 } from '@backstage-community/plugin-kiali-common/types';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
 
 // @public (undocumented)
 export interface Abort {

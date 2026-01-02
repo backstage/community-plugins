@@ -16,17 +16,17 @@
 import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
 import { StatusTypes as Status } from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
-import { ResourcesFullIcon } from '@patternfly/react-icons';
-import { SVGIconProps } from '@patternfly/react-icons/dist/esm/createIcon';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { default as React } from 'react';
 import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { IstioStatusList } from './IstioStatusList';
 
 type StatusIcons = {
-  ErrorIcon?: React.ComponentClass<SVGIconProps>;
-  WarningIcon?: React.ComponentClass<SVGIconProps>;
-  InfoIcon?: React.ComponentClass<SVGIconProps>;
-  HealthyIcon?: React.ComponentClass<SVGIconProps>;
+  ErrorIcon?: React.ComponentType<SvgIconProps>;
+  WarningIcon?: React.ComponentType<SvgIconProps>;
+  InfoIcon?: React.ComponentType<SvgIconProps>;
+  HealthyIcon?: React.ComponentType<SvgIconProps>;
 };
 
 type Props = {
@@ -47,10 +47,10 @@ const ValidToColor = {
 };
 
 const defaultIcons = {
-  ErrorIcon: ResourcesFullIcon,
-  WarningIcon: ResourcesFullIcon,
-  InfoIcon: ResourcesFullIcon,
-  HealthyIcon: ResourcesFullIcon,
+  ErrorIcon: InfoOutlinedIcon,
+  WarningIcon: InfoOutlinedIcon,
+  InfoIcon: InfoOutlinedIcon,
+  HealthyIcon: InfoOutlinedIcon,
 };
 
 export const IstioStatus = (props: Props): React.JSX.Element => {
@@ -96,7 +96,7 @@ export const IstioStatus = (props: Props): React.JSX.Element => {
     ? { ...defaultIcons, ...props.icons }
     : defaultIcons;
   const iconColor = tooltipColor();
-  let Icon: React.ComponentClass<SVGIconProps> = ResourcesFullIcon;
+  let Icon: React.ComponentType<SvgIconProps> = InfoOutlinedIcon;
   let dataTestID: string = 'istio-status';
 
   if (iconColor === PFColors.Danger) {
@@ -116,7 +116,7 @@ export const IstioStatus = (props: Props): React.JSX.Element => {
   return (
     <Tooltip placement="bottom" title={tooltipContent()}>
       <Icon
-        color={iconColor}
+        htmlColor={iconColor}
         style={{ verticalAlign: '-0.2em', marginRight: -8 }}
         data-test={dataTestID}
       />
