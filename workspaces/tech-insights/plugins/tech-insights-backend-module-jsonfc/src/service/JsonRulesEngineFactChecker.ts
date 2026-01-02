@@ -37,10 +37,10 @@ import { JsonRuleBooleanCheckResult, TechInsightJsonRuleCheck } from '../types';
 import { DefaultCheckRegistry } from './CheckRegistry';
 import { readChecksFromConfig } from './config';
 import * as validationSchema from './validation-schema.json';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
+import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { get } from 'lodash';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 
 const noopEvent = {
   type: 'noop',
@@ -58,7 +58,8 @@ export type JsonRulesEngineFactCheckerOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
-  catalogApi?: CatalogApi;
+  catalog?: CatalogService;
+  auth?: AuthService;
 };
 
 /**
@@ -75,16 +76,25 @@ export class JsonRulesEngineFactChecker
   private readonly logger: LoggerService;
   private readonly validationSchema: SchemaObject;
   private readonly operators: Operator[];
-  private readonly catalogApi?: CatalogApi;
+  private readonly catalog?: CatalogService;
+  private readonly auth?: AuthService;
 
   constructor(options: JsonRulesEngineFactCheckerOptions) {
-    const { checks, repository, logger, checkRegistry, operators, catalogApi } =
-      options;
+    const {
+      checks,
+      repository,
+      logger,
+      checkRegistry,
+      operators,
+      catalog,
+      auth,
+    } = options;
 
     this.repository = repository;
     this.logger = logger;
     this.operators = operators || [];
-    this.catalogApi = catalogApi;
+    this.catalog = catalog;
+    this.auth = auth;
     this.validationSchema = JSON.parse(JSON.stringify(validationSchema));
 
     this.operators.forEach(op => {
@@ -194,15 +204,29 @@ export class JsonRulesEngineFactChecker
     entityRef: string,
   ): Promise<Entity | undefined> {
     // If catalogApi wasn't provided in the constructor, filtering cannot be performed
-    if (!this.catalogApi) {
+    if (!this.catalog) {
       this.logger.debug(
         'CatalogApi not available, skipping entity fetch for filtering',
       );
       return undefined;
     }
 
+    if (!this.auth) {
+      this.logger.warn(
+        'AuthService not available, skipping entity fetch for filtering',
+      );
+      return undefined;
+    }
+
     try {
-      const entity = await this.catalogApi.getEntityByRef(entityRef);
+      const credentials = await this.auth.getOwnServiceCredentials();
+
+      const entity = await this.catalog.getEntityByRef(entityRef, {
+        credentials,
+      });
+      if (!entity) {
+        this.logger.warn(`Entity '${entityRef}' not found in catalog`);
+      }
 
       if (!entity) {
         this.logger.warn(`Entity '${entityRef}' not found in catalog`);
@@ -551,7 +575,8 @@ export type JsonRulesEngineFactCheckerFactoryOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
-  catalogApi?: CatalogApi;
+  catalog?: CatalogService;
+  auth?: AuthService;
 };
 
 /**
@@ -566,7 +591,8 @@ export class JsonRulesEngineFactCheckerFactory {
   private readonly logger: LoggerService;
   private readonly checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   private readonly operators?: Operator[];
-  private readonly catalogApi?: CatalogApi;
+  private readonly catalog?: CatalogService;
+  private readonly auth?: AuthService;
 
   static fromConfig(
     config: Config,
@@ -585,7 +611,8 @@ export class JsonRulesEngineFactCheckerFactory {
     this.checks = options.checks;
     this.checkRegistry = options.checkRegistry;
     this.operators = options.operators;
-    this.catalogApi = options.catalogApi;
+    this.catalog = options.catalog;
+    this.auth = options.auth;
   }
 
   /**
@@ -600,7 +627,8 @@ export class JsonRulesEngineFactCheckerFactory {
       checkRegistry: this.checkRegistry,
       repository,
       operators: this.operators,
-      catalogApi: this.catalogApi,
+      catalog: this.catalog,
+      auth: this.auth,
     });
   }
 }
