@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.12.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.12.0
 
 ### Minor Changes
