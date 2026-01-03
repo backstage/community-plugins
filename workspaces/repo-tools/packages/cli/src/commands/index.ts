@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { Command } from 'commander';
 import { exitWithError } from '../lib/errors';
 import { assertError } from '@backstage/errors';
@@ -54,6 +55,10 @@ export const registerCommands = (program: Command) => {
     .requiredOption(
       '--workspace-name [name]',
       'Name of the workspace that will be created, the plugins will be pulled automatically from the monorepo',
+    )
+    .option(
+      '--scope [scope]',
+      'The npm scope of the plugins (default: @backstage)',
     )
     .option('--branch [branch]', 'use a branch for deprecation commits')
     .option('--force', 'Overwrite existing workspace', false)
