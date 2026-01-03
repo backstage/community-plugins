@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 7.6.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+- 9714391: Updated dependency `qs` to `6.14.1`.
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
 ## 7.6.0
 
 ### Minor Changes
