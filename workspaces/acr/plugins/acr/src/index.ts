@@ -21,5 +21,15 @@
  * @packageDocumentation
  */
 
-export { acrPlugin, AcrImagesEntityContent, AcrPage } from './plugin';
+export { acrPlugin, AcrImagesEntityContent } from './plugin';
 export { isAcrAvailable } from './utils/isAcrAvailable';
+
+import { AcrImagesEntityContent } from './plugin';
+
+/**
+ * A catalog entity content (tab) that shows the ACR container images.
+ *
+ * @public
+ * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
+ */
+export const AcrPage = AcrImagesEntityContent;
