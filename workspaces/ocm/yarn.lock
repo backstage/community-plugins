@@ -1674,7 +1674,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.3"
     "@backstage/plugin-permission-node": "npm:^0.10.6"
     "@kubernetes/client-node": "npm:1.1.2"
-    "@openapitools/openapi-generator-cli": "npm:2.26.0"
+    "@openapitools/openapi-generator-cli": "npm:2.27.0"
     "@types/express": "npm:4.17.25"
     "@types/supertest": "npm:2.0.16"
     express: "npm:^4.18.2"
@@ -7267,11 +7267,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:11.1.10":
-  version: 11.1.10
-  resolution: "@nestjs/common@npm:11.1.10"
+"@nestjs/common@npm:11.1.11":
+  version: 11.1.11
+  resolution: "@nestjs/common@npm:11.1.11"
   dependencies:
-    file-type: "npm:21.1.1"
+    file-type: "npm:21.2.0"
     iterare: "npm:1.2.1"
     load-esm: "npm:1.0.3"
     tslib: "npm:2.8.1"
@@ -7286,13 +7286,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10/2f86ac11bccab6354ccc61ff6ab734b5702f84f0d7a5b42b945904531de8c5bfc11d16fa68aec57b3e74e248fb2e74cd6e1b50905ee32c5939628dff550bb182
+  checksum: 10/a0027d306e95549350395627f311689a1c75bc66cd458ccf81916ee6f574b4e726c0397b0af62664a6338b8523a99a5b4f4ef59c55a2d385ad645bfb22c11aaa
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:11.1.10":
-  version: 11.1.10
-  resolution: "@nestjs/core@npm:11.1.10"
+"@nestjs/core@npm:11.1.11":
+  version: 11.1.11
+  resolution: "@nestjs/core@npm:11.1.11"
   dependencies:
     "@nuxt/opencollective": "npm:0.4.1"
     fast-safe-stringify: "npm:2.1.1"
@@ -7314,7 +7314,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10/dc1a1cea7a7b219eb4bf0860bd0293119cba38a973cbd55d111f91d449ff6b92d6268e3d4c7a3cffb4bf12c6279c746337ac9206fb98c4b3700e09f2527d0e1b
+  checksum: 10/f94b8049741862d698b7079cdb70cd9eb91875f22c52a04707cc1e81bbd2db030c3992a3c454518bf507f29cd8f12ec18189b6d475f7e8c5f5fab827537f0cd3
   languageName: node
   linkType: hard
 
@@ -8036,13 +8036,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openapitools/openapi-generator-cli@npm:2.26.0, @openapitools/openapi-generator-cli@npm:^2.7.0":
-  version: 2.26.0
-  resolution: "@openapitools/openapi-generator-cli@npm:2.26.0"
+"@openapitools/openapi-generator-cli@npm:2.27.0, @openapitools/openapi-generator-cli@npm:^2.7.0":
+  version: 2.27.0
+  resolution: "@openapitools/openapi-generator-cli@npm:2.27.0"
   dependencies:
     "@nestjs/axios": "npm:4.0.1"
-    "@nestjs/common": "npm:11.1.10"
-    "@nestjs/core": "npm:11.1.10"
+    "@nestjs/common": "npm:11.1.11"
+    "@nestjs/core": "npm:11.1.11"
     "@nuxtjs/opencollective": "npm:0.3.2"
     axios: "npm:1.13.2"
     chalk: "npm:4.1.2"
@@ -8059,7 +8059,7 @@ __metadata:
     tslib: "npm:2.8.1"
   bin:
     openapi-generator-cli: main.js
-  checksum: 10/5c6d987efa44c949319675a04d0524b3e58896f570699b6f96dcb96833af9350383ed89e2ba0b3704ca75a9702f87faa78805ab6ac9ca86dbb8f9e27cacde2bc
+  checksum: 10/1dba0c95cbc1f93b4c20b16aadb592857b95c3c1b320ca175dd083ec9f1e0749daa1cc2ccce954fbdf5c6b843b58a1fc9da6b952cc17311d64eae176daa0e05a
   languageName: node
   linkType: hard
 
@@ -19860,15 +19860,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:21.1.1":
-  version: 21.1.1
-  resolution: "file-type@npm:21.1.1"
+"file-type@npm:21.2.0":
+  version: 21.2.0
+  resolution: "file-type@npm:21.2.0"
   dependencies:
     "@tokenizer/inflate": "npm:^0.4.1"
     strtok3: "npm:^10.3.4"
     token-types: "npm:^6.1.1"
     uint8array-extras: "npm:^1.4.0"
-  checksum: 10/64841dbd9180aad066ea6133ba775eaa0ce7c4b5956ea351cb83570accbf3e0d3bc51a3d10b0303e8988648302a1124bb9d2fb91e93697d9e47f5f200d47529c
+  checksum: 10/62262834abe03b5346a18a9a9e7c6dc0b53f07f79ae82157d2bf4ffd4061d643d03897b0e13c64fae32dd6466c8d62b96d2ff62c14584e987c4a240f8eba5425
   languageName: node
   linkType: hard
 
