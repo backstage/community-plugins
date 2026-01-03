@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.12.2
+
+### Patch Changes
+
+- ef80f32: Updated dependency `@openapitools/openapi-generator-cli` to `2.27.0`.
+
 ## 5.12.1
 
 ### Patch Changes
