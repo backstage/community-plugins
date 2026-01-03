@@ -22,14 +22,29 @@
 
 export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
-export {
-  npmPlugin,
+export * from './plugin';
+export { npmTranslationRef, npmTranslations } from './translations';
+
+import {
   EntityNpmInfoCard,
   EntityNpmReleaseOverviewCard,
   EntityNpmReleaseTableCard,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
 } from './plugin';
 
-export { npmTranslationRef, npmTranslations } from './translations';
+/**
+ * @deprecated please use `EntityNpmInfoCard` instead.
+ * @public
+ */
+export const NpmInfoCard = EntityNpmInfoCard;
+
+/**
+ * @deprecated please use `EntityNpmReleaseOverviewCard` instead.
+ * @public
+ */
+export const NpmReleaseOverviewCard = EntityNpmReleaseOverviewCard;
+
+/**
+ * @deprecated please use `EntityNpmReleaseTableCard` instead.
+ * @public
+ */
+export const NpmReleaseTableCard = EntityNpmReleaseTableCard;
