@@ -15,35 +15,20 @@
  */
 
 /**
- * Extension of the `spec` field of the entity model
- * Used to form relations between entities and the scaffolder templates that generated them
- *
- * @public
+ * Matches template variables in the format ${{ ... }}
+ * Example: ${{ values.name }}, ${{ values.description }}
  */
-export type ScaffoldedFromSpec = {
-  spec: {
-    scaffoldedFrom: string;
-  };
-};
+export const TEMPLATE_VARIABLE_REGEX = /\$\{\{[^}]+\}\}/;
 
 /**
- * Configuration interface for scaffolder relation processor notifications
- *
- * @public
+ * Extracts the key from a key: value pair line (everything before the colon)
+ * Example: "name: value" -> "name"
  */
-export interface ScaffolderRelationProcessorConfig {
-  notifications?: {
-    templateUpdate?: {
-      enabled: boolean;
-      message: {
-        title: string;
-        description: string;
-      };
-    };
-  };
-  pullRequests?: {
-    templateUpdate?: {
-      enabled: boolean;
-    };
-  };
-}
+export const KEY_VALUE_EXTRACTION_REGEX = /^([^:]+):/;
+
+/**
+ * Matches Jinja2 conditional statements
+ * Examples: {%- if ... %}, {% if ... %}, {%- endif %}, {% endif %}, etc.
+ */
+export const JINJA2_CONDITIONAL_REGEX =
+  /^{%-?\s*(if|endif|elif|else|endfor|for|endblock|block)\s+.*%}|^{%-?\s*(endif|endfor|endblock)\s*%}/;
