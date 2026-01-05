@@ -15,10 +15,17 @@
  */
 
 export { useAccordionKey } from './use-accordion-key';
+
+export type { ProgressColor } from './colors';
+export { useParseColor } from './colors';
+
 export type {
   UseUserSettingsOptions,
   UseUserSettingsResult,
 } from './use-user-settings';
 export { useUserSettings } from './use-user-settings';
+
 export type { ItemWithKey, UseOrderOptions } from './use-order';
 export { useOrder } from './use-order';
+
+export { useProgressStyle } from './use-progress-style';

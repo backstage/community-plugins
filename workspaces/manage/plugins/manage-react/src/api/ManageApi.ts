@@ -67,4 +67,9 @@ export interface ManageApi {
    * @deprecated This is an internal detail that will be removed when support for the old frontend system is removed.
    */
   getOwnersAndEntities(kinds?: readonly string[]): Promise<OwnersAndEntities>;
+
+  /**
+   * Get the progress style to use for loading states
+   */
+  readonly progressStyle: 'linear' | 'circular';
 }

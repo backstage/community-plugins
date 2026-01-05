@@ -16,6 +16,13 @@
 
 export { manageAttachToRef, manageAttachToMultiRef } from './attach-to';
 
+export type {
+  ManageCardRef,
+  ManageCardLoader,
+  ManageCardLoaderResult,
+} from './card';
+export { manageCardRef } from './card';
+
 export type { ManageConditionOptions, ManageCondition } from './condition';
 export { manageConditionRef } from './condition';
 

@@ -1751,6 +1751,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@mui/material": "npm:^5.15.16"
     "@mui/styles": "npm:^5"
     "@types/react": "npm:^18.3.27"
@@ -1784,9 +1785,11 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/types": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@dnd-kit/core": "npm:^6.3.1"
     "@dnd-kit/modifiers": "npm:^9.0.0"
     "@dnd-kit/sortable": "npm:^10.0.0"
+    "@material-ui/core": "npm:^4.12.4"
     "@mui/icons-material": "npm:^5.16.7"
     "@mui/material": "npm:^5.15.16"
     "@mui/styles": "npm:^5"
@@ -1819,11 +1822,12 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/types": "backstage:^"
-    "@material-ui/icons": "npm:^4.11.3"
+    "@backstage/ui": "backstage:^"
     "@mui/icons-material": "npm:^5.16.7"
     "@mui/material": "npm:^5.15.16"
-    "@mui/styles": "npm:^5"
+    "@types/lodash": "npm:^4.17.23"
     "@types/react": "npm:^18.3.27"
+    lodash: "npm:^4.17.21"
     react-use: "npm:^17.5.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -13476,6 +13480,13 @@ __metadata:
   dependencies:
     keyv: "npm:*"
   checksum: 10/8713da9382b9346d664866a6cab2f91b0fd479f61379af891303a618e9a2abad6f347adc38a0850540e3f2dad278427de24e7555339264fddb04d1d17d3b50e0
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.17.23":
+  version: 4.17.23
+  resolution: "@types/lodash@npm:4.17.23"
+  checksum: 10/05935534a44aadef67c2158b2fb4a042a226970088106a40ddc67e4f063783149fe5cf02279d7dd4a1e72c98d9189b9430face659645dbf77270f8c4c3e387f5
   languageName: node
   linkType: hard
 

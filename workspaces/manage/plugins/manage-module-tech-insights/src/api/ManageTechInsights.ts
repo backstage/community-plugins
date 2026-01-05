@@ -15,10 +15,8 @@
  */
 
 import type { Check } from '@backstage-community/plugin-tech-insights-common';
-import type {
-  ManageModuleApi,
-  ProgressColor,
-} from '@backstage-community/plugin-manage-react';
+import type { ManageModuleApi } from '@backstage-community/plugin-manage-react';
+
 import { ManageTechInsightsMapTitle } from '../title';
 
 /**
@@ -36,7 +34,7 @@ export interface ManageTechInsights extends ManageModuleApi {
   /**
    * Function to deduce what color to use of percentage gauges.
    */
-  getPercentColor: (percent: number) => ProgressColor;
+  getPercentColor: (percent: number) => string;
 
   /**
    * The mapping of checks to titles for the `ManageTechInsightsCards` and

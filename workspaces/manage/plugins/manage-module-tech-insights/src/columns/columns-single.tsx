@@ -15,14 +15,10 @@
  */
 import { useMemo } from 'react';
 
-import Tooltip from '@mui/material/Tooltip';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
+import { makeStyles } from '@mui/styles';
 import ListItemText from '@mui/material/ListItemText';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 
+import { Grid, Text } from '@backstage/ui';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { ResultCheckIcon } from '@backstage-community/plugin-tech-insights-react';
 import type { Check } from '@backstage-community/plugin-tech-insights-common';
@@ -31,19 +27,23 @@ import {
   ColumnIconPercent,
   type ManageColumn,
   type GetColumnFunc,
-  ProgressColor,
   ColumnIconNoData,
 } from '@backstage-community/plugin-manage-react';
 
 import { eqCheck } from '../utils';
-
 import { useEntityInsights, UseEntityInsightsResult } from './hooks';
 import { useTableColumnTitle } from './title';
+
+const useStyles = makeStyles(() => ({
+  tooltipTextPrimary: {
+    fontSize: 'var(--bui-font-size-3) !important',
+  },
+}));
 
 interface CombinedColumnProps {
   entity: Entity;
   useEntityInsightsResult: UseEntityInsightsResult;
-  getPercentColor: (percent: number) => ProgressColor;
+  getPercentColor: (percent: number) => string;
 }
 
 function CombinedColumn(props: CombinedColumnProps) {
@@ -54,6 +54,7 @@ function CombinedColumn(props: CombinedColumnProps) {
   } = props;
 
   const mapTitle = useTableColumnTitle();
+  const { tooltipTextPrimary } = useStyles();
 
   const entityRef = stringifyEntityRef(entity);
   const results = responses.get(entityRef);
@@ -73,11 +74,14 @@ function CombinedColumn(props: CombinedColumnProps) {
     )
     .filter((v): v is NonNullable<typeof v> => !!v);
 
-  const tooltipList = validResults
+  const tooltipGrid = validResults
     .map(({ result }) => {
       return (
-        <ListItem disablePadding key={Math.random()}>
-          <ListItemIcon>
+        <>
+          <Grid.Item
+            key={`${result.check.id}-icon`}
+            style={{ alignContent: 'center' }}
+          >
             <ResultCheckIcon
               result={result}
               entity={entity}
@@ -86,30 +90,33 @@ function CombinedColumn(props: CombinedColumnProps) {
                 <ColumnIconError title="No renderer found for this check" />
               }
             />
-          </ListItemIcon>
-          <ListItemText primary={mapTitle(result.check)} />
-        </ListItem>
+          </Grid.Item>
+          <Grid.Item
+            key={`${result.check.id}-title`}
+            style={{ alignContent: 'center' }}
+          >
+            <ListItemText
+              classes={{ primary: tooltipTextPrimary }}
+              primary={mapTitle(result.check)}
+            />
+          </Grid.Item>
+        </>
       );
     })
     .filter((v): v is NonNullable<typeof v> => !!v);
 
-  const wrapTooltip = (child: JSX.Element) =>
-    tooltipList.length === 0 ? (
-      child
-    ) : (
-      <Tooltip
-        title={
-          <List
-            disablePadding
-            component="nav"
-            aria-label="main mailbox folders"
-          >
-            {tooltipList}
-          </List>
-        }
-        children={child}
-      />
-    );
+  const tooltipContent = (
+    <Grid.Root
+      columns="2"
+      gap="2"
+      style={{
+        rowGap: 0,
+        gridTemplateColumns: 'max-content max-content',
+      }}
+    >
+      {tooltipGrid}
+    </Grid.Root>
+  );
 
   if (!validResults.length) {
     return <ColumnIconNoData />;
@@ -125,20 +132,17 @@ function CombinedColumn(props: CombinedColumnProps) {
   const color = getPercentColor(percent);
 
   return (
-    <Grid container spacing={0}>
-      {wrapTooltip(
-        <Grid item>
-          <div style={{ cursor: 'default' }}>
-            <ColumnIconPercent percent={percent} color={color} />
-          </div>
-        </Grid>,
-      )}
-      <Grid px={1} item alignContent="center">
-        <Typography variant="caption">
+    <ColumnIconPercent
+      percent={percent}
+      color={color}
+      showPercent
+      after={
+        <Text variant="body-small">
           {succeeded}/{validResults.length}
-        </Typography>
-      </Grid>
-    </Grid>
+        </Text>
+      }
+      title={tooltipGrid.length === 0 ? undefined : tooltipContent}
+    />
   );
 }
 

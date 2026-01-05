@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type { ManageEntitiesTableProps, TableRow, TableColumn } from './table';
+export type { ManageEntitiesTableProps, TableOptions } from './table';
 export { ManageEntitiesTable } from './table';
 export type {
   ManageColumnSimpleComponentProps,
   ManageColumnSimpleComponent,
   ManageColumnSimple,
 } from './utils';
+export type { TableColumn, TableRow } from './types';

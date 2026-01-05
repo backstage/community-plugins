@@ -20,8 +20,5 @@ export { ColumnIconError } from './ColumnIconError';
 export type { ColumnIconNoDataProps } from './ColumnIconNoData';
 export { ColumnIconNoData } from './ColumnIconNoData';
 
-export type {
-  ProgressColor,
-  ColumnIconPercentProps,
-} from './ColumnIconPercent';
+export type { ColumnIconPercentProps } from './ColumnIconPercent';
 export { ColumnIconPercent } from './ColumnIconPercent';
