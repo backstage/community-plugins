@@ -2808,7 +2808,7 @@ __metadata:
     "@patternfly/react-component-groups": "npm:^6.0.0"
     "@patternfly/react-core": "npm:5.4.14"
     "@patternfly/react-icons": "npm:5.4.2"
-    "@patternfly/react-styles": "npm:5.4.1"
+    "@patternfly/react-styles": "npm:6.4.0"
     "@patternfly/react-table": "npm:5.4.16"
     "@patternfly/react-topology": "npm:5.4.1"
     "@testing-library/jest-dom": "npm:^6.0.0"
@@ -9583,17 +9583,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:5.4.1, @patternfly/react-styles@npm:^5.1.1, @patternfly/react-styles@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@patternfly/react-styles@npm:5.4.1"
-  checksum: 10/414a55c31a90d4619f13085d043d90e93b3e563cde88ba72b485ed3e334e99f442cc43030b8de61712a5ace498e9e83acd5bd76ebe00098d0e0319fcc048fc8e
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-styles@npm:^6.0.0, @patternfly/react-styles@npm:^6.4.0":
+"@patternfly/react-styles@npm:6.4.0, @patternfly/react-styles@npm:^6.0.0, @patternfly/react-styles@npm:^6.4.0":
   version: 6.4.0
   resolution: "@patternfly/react-styles@npm:6.4.0"
   checksum: 10/fcd90c905ba749845efe8edb3dd35f05a151973ba4fe26847cf41863954b925a10b93a9a8821fc78a93d411ca1fae7b01d57b92b7fa690bbf1b98f13318f5d36
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-styles@npm:^5.1.1, @patternfly/react-styles@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "@patternfly/react-styles@npm:5.4.1"
+  checksum: 10/414a55c31a90d4619f13085d043d90e93b3e563cde88ba72b485ed3e334e99f442cc43030b8de61712a5ace498e9e83acd5bd76ebe00098d0e0319fcc048fc8e
   languageName: node
   linkType: hard
 
