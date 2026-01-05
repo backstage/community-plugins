@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 
 import { Table, TableColumn } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -33,7 +33,7 @@ import {
 import {
   getArgoCdAppConfig,
   getCommitUrl,
-  getInstanceName,
+  getInstanceNames,
   isAppHelmChartType,
 } from '../../utils/utils';
 import AppSyncStatus from '../AppStatus/AppSyncStatus';
@@ -43,15 +43,14 @@ import { useTranslation } from '../../hooks/useTranslation';
 const DeploymentSummary = () => {
   const { entity } = useEntity();
 
-  const { baseUrl, instances, intervalMs } = useArgocdConfig();
-  const instanceName = getInstanceName(entity) || instances?.[0]?.name;
+  const { baseUrl } = useArgocdConfig();
+  const instanceNames = useMemo(() => getInstanceNames(entity), [entity]);
 
   const { appSelector, appName, projectName, appNamespace } =
     getArgoCdAppConfig({ entity });
 
   const { apps, loading, error } = useApplications({
-    instanceName,
-    intervalMs,
+    instanceNames,
     appSelector,
     projectName,
     appName,
@@ -60,14 +59,8 @@ const DeploymentSummary = () => {
 
   const hasArgocdViewAccess = useArgocdViewPermission();
 
-  const supportsMultipleArgoInstances = !!instances.length;
   const getBaseUrl = (row: any): string | undefined => {
-    if (supportsMultipleArgoInstances && !baseUrl) {
-      return instances?.find(
-        value => value?.name === row.metadata?.instance?.name,
-      )?.url;
-    }
-    return baseUrl;
+    return row?.metadata?.instance?.url ?? baseUrl;
   };
 
   const buildAppUrl = (row: any): string | undefined => {
@@ -117,7 +110,7 @@ const DeploymentSummary = () => {
       title: `${columnTitles.instance}`,
       field: 'instance',
       render: (row: Application): ReactNode => {
-        return <>{row.metadata?.instance?.name || instanceName}</>;
+        return <>{row.metadata?.instance?.name}</>;
       },
     },
     {

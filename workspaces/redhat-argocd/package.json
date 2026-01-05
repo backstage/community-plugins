@@ -8,6 +8,7 @@
   "scripts": {
     "start": "backstage-cli repo start",
     "start:backstage": "backstage-cli repo start",
+    "start:argocd": "./scripts/start-argocd.sh",
     "start-app": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "start:dev": "yarn start",

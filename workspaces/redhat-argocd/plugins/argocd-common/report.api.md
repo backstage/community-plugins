@@ -6,8 +6,6 @@
 import { BasicPermission } from '@backstage/plugin-permission-common';
 import { V1ObjectMeta } from '@kubernetes/client-node';
 
-// Warning: (ae-missing-release-tag) "Application" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Application {
   // (undocumented)
@@ -28,18 +26,12 @@ export interface Application {
   status: Status;
 }
 
-// Warning: (ae-missing-release-tag) "argocdPermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const argocdPermissions: BasicPermission[];
 
-// Warning: (ae-missing-release-tag) "argocdViewPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const argocdViewPermission: BasicPermission;
 
-// Warning: (ae-missing-release-tag) "Destination" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Destination {
   // (undocumented)
@@ -48,16 +40,12 @@ export interface Destination {
   server: string;
 }
 
-// Warning: (ae-missing-release-tag) "Health" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Health {
   // (undocumented)
   status: string;
 }
 
-// Warning: (ae-missing-release-tag) "HealthStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum HealthStatus {
   // (undocumented)
@@ -74,13 +62,9 @@ export enum HealthStatus {
   Unknown = 'Unknown',
 }
 
-// Warning: (ae-missing-release-tag) "HealthStatusType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type HealthStatusType = keyof typeof HealthStatus;
 
-// Warning: (ae-missing-release-tag) "History" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 interface History_2 {
   // (undocumented)
@@ -102,16 +86,12 @@ interface History_2 {
 }
 export { History_2 as History };
 
-// Warning: (ae-missing-release-tag) "InitiatedBy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface InitiatedBy {
   // (undocumented)
   username: string;
 }
 
-// Warning: (ae-missing-release-tag) "Instance" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Instance {
   // (undocumented)
@@ -126,23 +106,29 @@ export interface Instance {
   username?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Instances" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
+// @public (undocumented)
+export interface InstanceApplications {
+  // (undocumented)
+  applications?: Application[];
+  // (undocumented)
+  appName: string[];
+  // (undocumented)
+  name: string;
+  // (undocumented)
+  url: string;
+}
+
 // @public (undocumented)
 export type Instances = {
   name: string;
   url: string;
 }[];
 
-// Warning: (ae-missing-release-tag) "OpenRowStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type OpenRowStatus = {
   [x: string]: boolean;
 };
 
-// Warning: (ae-missing-release-tag) "Operation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Operation {
   // (undocumented)
@@ -153,8 +139,6 @@ export interface Operation {
   sync: OperationSync;
 }
 
-// Warning: (ae-missing-release-tag) "OperationPhase" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type OperationPhase =
   | 'Running'
@@ -163,15 +147,11 @@ export type OperationPhase =
   | 'Succeeded'
   | 'Terminating';
 
-// Warning: (ae-missing-release-tag) "OperationPhases" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const OperationPhases: {
   [key: string]: OperationPhase;
 };
 
-// Warning: (ae-missing-release-tag) "OperationState" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface OperationState {
   // (undocumented)
@@ -188,8 +168,6 @@ export interface OperationState {
   syncResult?: SyncResult;
 }
 
-// Warning: (ae-missing-release-tag) "OperationSync" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface OperationSync {
   // (undocumented)
@@ -206,13 +184,9 @@ export interface OperationSync {
   syncStrategy?: SyncStrategy;
 }
 
-// Warning: (ae-missing-release-tag) "Order" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Order = 'asc' | 'desc';
 
-// Warning: (ae-missing-release-tag) "Resource" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Resource {
   // (undocumented)
@@ -233,8 +207,6 @@ export interface Resource {
   version: string;
 }
 
-// Warning: (ae-missing-release-tag) "RevisionInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RevisionInfo {
   // (undocumented)
@@ -247,8 +219,6 @@ export interface RevisionInfo {
   revisionID?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Source" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Source {
   // (undocumented)
@@ -268,8 +238,6 @@ export interface Source {
   targetRevision?: string;
 }
 
-// Warning: (ae-missing-release-tag) "Spec" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Spec {
   // (undocumented)
@@ -282,8 +250,6 @@ export interface Spec {
   sources?: Source[];
 }
 
-// Warning: (ae-missing-release-tag) "Status" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Status {
   // (undocumented)
@@ -308,8 +274,6 @@ export interface Status {
   sync: StatusSync;
 }
 
-// Warning: (ae-missing-release-tag) "StatusSync" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface StatusSync {
   // (undocumented)
@@ -326,16 +290,12 @@ export interface StatusSync {
   status: string;
 }
 
-// Warning: (ae-missing-release-tag) "Summary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface Summary {
   // (undocumented)
   images: string[];
 }
 
-// Warning: (ae-missing-release-tag) "SyncResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SyncResult {
   // (undocumented)
@@ -350,8 +310,6 @@ export interface SyncResult {
   sources?: Source[];
 }
 
-// Warning: (ae-missing-release-tag) "SyncResultResource" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SyncResultResource {
   // (undocumented)
@@ -374,20 +332,14 @@ export interface SyncResultResource {
   version: string;
 }
 
-// Warning: (ae-missing-release-tag) "SyncStatusCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type SyncStatusCode = 'Unknown' | 'Synced' | 'OutOfSync';
 
-// Warning: (ae-missing-release-tag) "SyncStatuses" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const SyncStatuses: {
   [key: string]: SyncStatusCode;
 };
 
-// Warning: (ae-missing-release-tag) "SyncStrategy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface SyncStrategy {
   // (undocumented)
