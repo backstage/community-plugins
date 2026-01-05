@@ -1887,7 +1887,7 @@ __metadata:
   dependencies:
     "@backstage/cli": "npm:^0.34.4"
     "@material-ui/core": "npm:^4.9.13"
-    "@patternfly/react-icons": "npm:^5.1.1"
+    "@patternfly/react-icons": "npm:^6.0.0"
     "@types/lodash": "npm:^4.14.151"
     axios: "npm:^1.7.4"
     deep-freeze: "npm:0.0.1"
@@ -8596,16 +8596,6 @@ __metadata:
     react: ^17 || ^18 || ^19
     react-dom: ^17 || ^18 || ^19
   checksum: 10/e35bf937e6c1f4d8dc8d95d4aaf02815a151332e298d7fdedd9fd6a644c023c7eb28e79636607b7043d8da5613db79a2704ef2356cbab5131e4662c37e81e0fb
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-icons@npm:^5.1.1":
-  version: 5.4.2
-  resolution: "@patternfly/react-icons@npm:5.4.2"
-  peerDependencies:
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
-  checksum: 10/4169ee0bf61a1b9deb9d501341d8031754c4e05ed0ea6811dd8a38a0c4ad5e15d231513413cb9ae5c77e404e9d2a7a2482160bf64dc462d045902a4a2907993f
   languageName: node
   linkType: hard
 
