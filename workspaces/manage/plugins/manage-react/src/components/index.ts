@@ -17,6 +17,9 @@
 export type { ManageAccordionProps } from './Accordion';
 export { ManageAccordion } from './Accordion';
 
+export type { CardWidgetProps } from './CardWidget';
+export { CardWidget } from './CardWidget';
+
 export type {
   ManageColumn,
   ManageColumnModuleMultiple,
@@ -25,6 +28,8 @@ export type {
   GetColumnsFunc,
   GetColumnFunc,
 } from './column-providers/types';
+
+export { ColumnSkeleton } from './ColumnSkeleton';
 
 export type { KindStarredType } from './CurrentKindProvider';
 export {

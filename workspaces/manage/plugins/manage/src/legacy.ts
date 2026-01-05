@@ -23,6 +23,7 @@ export type {
   ManageColumnSimpleComponentProps,
   ManageColumnSimpleComponent,
   ManageColumnSimple,
+  TableOptions,
 } from './components/ManageEntitiesList';
 
 export type {
