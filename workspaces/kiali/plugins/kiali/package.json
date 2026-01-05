@@ -41,7 +41,7 @@
     "@material-ui/lab": "^4.0.0-alpha.45",
     "@mui/icons-material": "^5.15.8",
     "@patternfly/patternfly": "^6.0.0",
-    "@patternfly/react-charts": "7.4.9",
+    "@patternfly/react-charts": "8.4.0",
     "@patternfly/react-core": "^6.0.0",
     "@patternfly/react-icons": "^6.0.0",
     "@patternfly/react-tokens": "^6.0.0",
