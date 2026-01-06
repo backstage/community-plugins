@@ -35,7 +35,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Find changed workspaces
@@ -51,7 +51,7 @@ jobs:
     strategy:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
-        node-version: [20.x, 22.x]
+        node-version: [22.x, 24.x]
       fail-fast: false
     defaults:
       run:
@@ -190,10 +190,10 @@ jobs:
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - name: Setup node
+      - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Install root dependencies
         run: yarn install --immutable
       - name: Verify lockfile duplicates
