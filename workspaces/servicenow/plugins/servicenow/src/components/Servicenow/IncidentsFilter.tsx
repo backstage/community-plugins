@@ -21,14 +21,18 @@ import { SelectItem } from '@backstage/core-components';
 import Box from '@mui/material/Box';
 
 import { IncidentEnumFilter } from '../shared-components/IncidentEnumFilter';
-import { INCIDENT_STATE_MAP, PRIORITY_MAP } from '../../utils/incidentUtils';
+import { useIncidentStateMap, usePriorityMap } from '../../utils/incidentUtils';
 import { useQueryArrayFilter } from '../../hooks/useQueryArrayFilter';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const IncidentsFilter = () => {
+  const { t } = useTranslation();
   const stateFilter = useQueryArrayFilter('state');
   const priorityFilter = useQueryArrayFilter('priority');
   const updateQueryParams = useUpdateQueryParams();
+  const incidentStateMap = useIncidentStateMap();
+  const priorityMap = usePriorityMap();
 
   const stateValue = useMemo(() => stateFilter.current, [stateFilter]);
   const priorityValue = useMemo(() => priorityFilter.current, [priorityFilter]);
@@ -63,16 +67,16 @@ export const IncidentsFilter = () => {
       }}
     >
       <IncidentEnumFilter
-        label="State"
+        label={t('filter.state')}
         filterKey="state"
-        dataMap={INCIDENT_STATE_MAP}
+        dataMap={incidentStateMap}
         value={stateValue}
         onChange={handleStateChange}
       />
       <IncidentEnumFilter
-        label="Priority"
+        label={t('filter.priority')}
         filterKey="priority"
-        dataMap={PRIORITY_MAP}
+        dataMap={priorityMap}
         value={priorityValue}
         onChange={handlePriorityChange}
       />
