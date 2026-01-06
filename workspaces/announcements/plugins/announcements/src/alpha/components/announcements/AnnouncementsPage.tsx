@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { useLocation } from 'react-router-dom';
-import { useAnnouncementsPermissions } from '@backstage-community/plugin-announcements-react';
+import {
+  useAnnouncementsPermissions,
+  useAnnouncementsTranslation,
+} from '@backstage-community/plugin-announcements-react';
 import { Container, HeaderPage } from '@backstage/ui';
 
 import { AnnouncementsGrid } from './AnnouncementsGrid';
@@ -37,6 +40,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const permissions = useAnnouncementsPermissions();
+  const { t } = useAnnouncementsTranslation();
 
   const {
     hideInactive,
@@ -54,9 +58,8 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   return (
     <>
       <HeaderPage
-        title={title ?? 'Announcements'}
+        title={title ?? t('announcementsPage.announcements')}
         customActions={canManageAnnouncements && <ContextMenu />}
-        breadcrumbs={[{ label: 'Home', href: '/' }]}
       />
 
       <Container>

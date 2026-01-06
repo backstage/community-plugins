@@ -146,7 +146,6 @@ export const announcementsTranslationRef = createTranslationRef({
       backToAnnouncements: 'Back to announcements',
       notFound: 'Announcement not found',
       tagsAriaLabel: 'Announcement Tags',
-      home: 'Home',
       by: 'By',
       announcements: 'Announcements',
     },

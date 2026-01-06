@@ -214,7 +214,6 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
       <HeaderPage
         title={`${announcement.title ?? ''}`}
         breadcrumbs={[
-          { label: t('viewAnnouncementPage.home'), href: '/' },
           {
             label: t('viewAnnouncementPage.announcements'),
             href: announcementsLink(),
@@ -222,17 +221,17 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
         ]}
       />
 
-      <Container mb="10">
-        <Grid.Root columns="1" p="2">
-          <Grid.Item>
-            <BackToAnnouncementsButton />
-          </Grid.Item>
-
+      <Container>
+        <Grid.Root columns="1">
           <Grid.Item>
             <AnnouncementDetailsCard
               announcement={announcement}
               markdownRenderer={props.markdownRenderer}
             />
+          </Grid.Item>
+
+          <Grid.Item>
+            <BackToAnnouncementsButton />
           </Grid.Item>
         </Grid.Root>
       </Container>

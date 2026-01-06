@@ -274,7 +274,6 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
     readonly 'editAnnouncementPage.updatedMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
-    readonly 'viewAnnouncementPage.home': 'Home';
     readonly 'viewAnnouncementPage.by': 'By';
     readonly 'viewAnnouncementPage.announcements': 'Announcements';
     readonly 'viewAnnouncementPage.backToAnnouncements': 'Back to announcements';
