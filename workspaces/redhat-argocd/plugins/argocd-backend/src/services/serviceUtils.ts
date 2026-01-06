@@ -15,7 +15,11 @@
  */
 import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
 import { Config } from '@backstage/config';
-import { AuthenticationError } from '@backstage/errors';
+import {
+  AuthenticationError,
+  NotAllowedError,
+  NotFoundError,
+} from '@backstage/errors';
 
 /**
  * Retrieves an instance by it's name from a list of instances
@@ -60,7 +64,7 @@ export const toInstance = (el: Config): Instance => {
  * @param {Response} response - The fetch response object.
  * @param {string} url - The request URL.
  * @returns {Promise<any>} The parsed JSON response
- * @throws {AuthenticationError | Error} If the response status indicates an error.
+ * @throws {AuthenticationError | NotAllowedError | Error} If the response status indicates an error.
  */
 export const processFetch = async (response: Response, url: string) => {
   if (response.status === 401) {
@@ -70,13 +74,13 @@ export const processFetch = async (response: Response, url: string) => {
   }
 
   if (response.status === 403) {
-    throw new AuthenticationError(
+    throw new NotAllowedError(
       `Insufficient permissions for ArgoCD server ${url}`,
     );
   }
 
   if (response.status === 404) {
-    throw new Error(`ArgoCD Resource not found at ${url}`);
+    throw new NotFoundError(`ArgoCD Resource not found at ${url}`);
   }
 
   if (!response.ok) {

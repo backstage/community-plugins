@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import type { Config } from '@backstage/config';
 
 import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
 
-export const useArgocdConfig = (): {
-  instances: Instance[];
-  intervalMs: number;
-  baseUrl: string | undefined;
-} => {
-  const configApi = useApi(configApiRef);
-
-  const instances = (
+export const getArgocdInstances = (configApi: Config) => {
+  return (
     configApi
       .getConfigArray('argocd.appLocatorMethods')
       .find(value => value.getOptionalString('type') === 'config')
@@ -33,6 +28,16 @@ export const useArgocdConfig = (): {
     name: config.getOptionalString('name') ?? '',
     url: config.getOptionalString('url') ?? '',
   }));
+};
+
+export const useArgocdConfig = (): {
+  instances: Instance[];
+  intervalMs: number;
+  baseUrl: string | undefined;
+} => {
+  const configApi = useApi(configApiRef);
+
+  const instances = getArgocdInstances(configApi);
   const intervalMs =
     configApi.getOptionalNumber('argocd.refreshInterval') ?? 10000;
   const baseUrl = configApi.getOptionalString('argocd.baseUrl');

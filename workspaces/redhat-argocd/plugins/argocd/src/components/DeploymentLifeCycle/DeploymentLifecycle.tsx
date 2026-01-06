@@ -22,7 +22,6 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
-import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
 import {
   Application,
@@ -30,7 +29,7 @@ import {
 } from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
-  getInstanceName,
+  getInstanceNames,
   getUniqueRevisions,
   removeDuplicateRevisions,
 } from '../../utils/utils';
@@ -68,14 +67,12 @@ const DeploymentLifecycle = () => {
   const api = useApi(argoCDApiRef);
   const configApi = useApi(configApiRef);
 
-  const { instances, intervalMs } = useArgocdConfig();
-  const instanceName = getInstanceName(entity) || instances?.[0]?.name;
+  const instanceNames = useMemo(() => getInstanceNames(entity), [entity]);
   const { appSelector, appName, projectName, appNamespace } =
     getArgoCdAppConfig({ entity });
 
   const { apps, loading, error } = useApplications({
-    instanceName,
-    intervalMs,
+    instanceNames,
     appSelector,
     appName,
     appNamespace,
@@ -107,7 +104,6 @@ const DeploymentLifecycle = () => {
       api
         .getRevisionDetailsList({
           apps: apps,
-          instanceName,
           revisionIDs: uniqRevisions,
         })
         .then(data => {
@@ -127,7 +123,6 @@ const DeploymentLifecycle = () => {
     api,
     apps,
     entity,
-    instanceName,
     uniqRevisions,
     keepDuplicateRevisions,
     uniqCachedRevisions,

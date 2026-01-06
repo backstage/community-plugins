@@ -16,11 +16,10 @@
 import { screen, waitFor } from '@testing-library/react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { useCatalogEntities } from './useCatalogEntities';
 
-const mockCatalogApi = {
-  queryEntities: jest.fn(),
-};
+const mockCatalogApi = catalogApiMock.mock();
 
 /**
  * A test component that uses the useCatalogEntities hook.
@@ -28,18 +27,15 @@ const mockCatalogApi = {
 const TestComponent = ({
   refs,
   searchTerm = '',
-  limit = 25,
   kind,
 }: {
   refs: string[] | undefined;
   searchTerm?: string;
-  limit?: number;
   kind?: string;
 }) => {
   const { entities, totalItems, loading, error } = useCatalogEntities(
     refs,
     searchTerm,
-    limit,
     kind,
   );
 
@@ -62,7 +58,6 @@ const TestComponent = ({
 const renderTestComponent = (props: {
   refs: string[] | undefined;
   searchTerm?: string;
-  limit?: number;
   kind?: string;
 }) => {
   return renderInTestApp(
@@ -82,7 +77,7 @@ describe('useCatalogEntities', () => {
         expect(screen.getByTestId('entities-count')).toHaveTextContent('0');
       });
 
-      expect(mockCatalogApi.queryEntities).not.toHaveBeenCalled();
+      expect(mockCatalogApi.getEntitiesByRefs).not.toHaveBeenCalled();
     });
   });
 
@@ -95,24 +90,26 @@ describe('useCatalogEntities', () => {
         expect(screen.getByTestId('entities-count')).toHaveTextContent('0');
       });
 
-      expect(mockCatalogApi.queryEntities).not.toHaveBeenCalled();
+      expect(mockCatalogApi.getEntitiesByRefs).not.toHaveBeenCalled();
     });
   });
 
   describe('when refs is an array of refs', () => {
     const mockEntity1 = {
+      apiVersion: 'backstage.io/v1alpha1',
       kind: 'Group',
       metadata: { name: 'team-one', namespace: 'default' },
     };
 
     const mockEntity2 = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Group',
       metadata: { name: 'team-two' },
     };
 
     it('should return the entities for the refs', async () => {
-      mockCatalogApi.queryEntities.mockResolvedValue({
+      mockCatalogApi.getEntitiesByRefs.mockResolvedValue({
         items: [mockEntity1, mockEntity2],
-        totalItems: 2,
       });
 
       await renderTestComponent({

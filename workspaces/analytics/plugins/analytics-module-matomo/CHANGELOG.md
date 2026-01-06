@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 1.22.0
+
+### Minor Changes
+
+- 009b7c5: Added enhanced identity-aware tracking so Matomo records page views only after a userId is available, fixing the issue where navigate events fired anonymously despite `identity` being enabled
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
 ## 1.21.1
 
 ### Patch Changes

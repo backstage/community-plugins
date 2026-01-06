@@ -51,6 +51,8 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
 
 describe('DeploymentSummary', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
     (useApplications as any).mockReturnValue({
       apps: [mockApplication],
       loading: false,
@@ -63,7 +65,6 @@ describe('DeploymentSummary', () => {
       baseUrl: '',
       instances: [{ name: 'main', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
   });
 
@@ -92,7 +93,6 @@ describe('DeploymentSummary', () => {
       baseUrl: 'https://baseurl.com',
       instances: [{ name: 'test', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'main',
     });
 
     await renderInTestApp(<DeploymentSummary />);
@@ -129,7 +129,6 @@ describe('DeploymentSummary', () => {
     (useArgocdConfig as any).mockReturnValue({
       instances: [{ name: 'test', url: 'https://main-instance-url.com' }],
       intervalMs: 10000,
-      instanceName: 'test',
     });
 
     await renderInTestApp(<DeploymentSummary />);
@@ -142,6 +141,20 @@ describe('DeploymentSummary', () => {
   });
 
   test('should link the application to instance url', async () => {
+    (useApplications as any).mockReturnValue({
+      apps: [
+        {
+          ...mockApplication,
+          metadata: {
+            ...mockApplication.metadata,
+            instance: { name: 'main', url: 'https://main-instance-url.com' },
+          },
+        },
+      ],
+      loading: false,
+      error: undefined,
+    });
+
     await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
@@ -154,12 +167,24 @@ describe('DeploymentSummary', () => {
     });
   });
 
-  test('should link the application to the base argocd url', async () => {
+  test('should link the application to the base argocd url if no instance url', async () => {
     (useArgocdConfig as any).mockReturnValue({
       baseUrl: 'https://baseurl.com',
-      instances: [],
+      instances: [{ name: 'main' }],
       intervalMs: 10000,
-      instanceName: 'main',
+    });
+    (useApplications as any).mockReturnValue({
+      apps: [
+        {
+          ...mockApplication,
+          metadata: {
+            ...mockApplication.metadata,
+            instance: { name: 'main' },
+          },
+        },
+      ],
+      loading: false,
+      error: undefined,
     });
     await renderInTestApp(<DeploymentSummary />);
 

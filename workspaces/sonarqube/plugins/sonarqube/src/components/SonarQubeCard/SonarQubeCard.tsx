@@ -85,7 +85,7 @@ export const SonarQubeCard = (props: {
     !loading && summaryFinding?.metrics
       ? {
           title: t('sonarQubeCard.deepLinkTitle'),
-          link: summaryFinding.projectUrl,
+          link: `${summaryFinding.projectUrl}&codeScope=overall`,
         }
       : undefined;
 

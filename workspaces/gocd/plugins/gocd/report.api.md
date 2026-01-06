@@ -7,9 +7,10 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { JSX as JSX_2 } from 'react';
 
 // @public
-export const EntityGoCdContent: () => JSX.Element;
+export const EntityGoCdContent: () => JSX_2.Element;
 
 // @public
 export const GOCD_PIPELINES_ANNOTATION = 'gocd.org/pipelines';
