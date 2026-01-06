@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.17.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.17.0
 
 ### Minor Changes

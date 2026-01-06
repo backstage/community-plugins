@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.22.2
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
 ## 1.22.1
 
 ### Patch Changes

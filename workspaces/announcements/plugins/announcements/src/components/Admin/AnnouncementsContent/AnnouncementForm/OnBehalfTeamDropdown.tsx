@@ -54,7 +54,6 @@ export default function OnBehalfTeamDropdown({
   const { entities: teams, loading: teamsLoading } = useCatalogEntities(
     userOwns, // refs
     '', // searchTerm
-    25, // limit
     'Group', // kind
   );
 
