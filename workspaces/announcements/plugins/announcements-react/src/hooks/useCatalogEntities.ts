@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { Entity, parseEntityRef } from '@backstage/catalog-model';
+import { useMemo } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
 /**
@@ -23,7 +24,6 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
  *
  * @param refs - An array of entity reference strings, or undefined if not yet loaded.
  * @param searchTerm - A string to filter entities by a search term.
- * @param limit - The maximum number of entities to fetch per page.
  * @param kind - The kind of entities to fetch.
  * @returns An object containing the fetched entities, total items count, loading state, error, and a retry function.
  *
@@ -32,12 +32,24 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 export const useCatalogEntities = (
   refs: string[] | undefined,
   searchTerm: string = '',
-  limit: number = 25,
   kind: string | undefined = undefined,
 ) => {
   const catalogApi = useApi(catalogApiRef);
 
-  const fetchEntities = async () => {
+  const uniqueSortedRefs = useMemo(
+    () =>
+      refs
+        ? JSON.stringify(refs.slice().sort((a, b) => a.localeCompare(b)))
+        : undefined,
+    [refs],
+  );
+
+  const {
+    value: entities,
+    loading,
+    error,
+    retry,
+  } = useAsyncRetry(async () => {
     if (!refs || refs.length === 0) {
       return {
         items: [],
@@ -45,69 +57,47 @@ export const useCatalogEntities = (
       };
     }
 
-    const filterArray = refs.map(refString => {
-      const { kind: refKind, namespace, name } = parseEntityRef(refString);
-      return {
-        kind: refKind,
-        'metadata.namespace': namespace,
-        'metadata.name': name,
-      };
+    const response = await catalogApi.getEntitiesByRefs({
+      entityRefs: refs,
     });
 
-    const queryOptions: any = {
-      filter: kind ? filterArray.map(f => ({ ...f, kind })) : filterArray,
-      limit,
-      orderFields: { field: 'metadata.name', order: 'asc' },
-    };
+    // Filter out undefined entries (entities not found)
+    let items: Entity[] = response.items.filter(
+      (item): item is Entity => item !== undefined,
+    );
 
+    // Filter by kind if specified
+    if (kind) {
+      const lowerKind = kind.toLowerCase();
+      items = items.filter(item => item.kind.toLowerCase() === lowerKind);
+    }
+
+    // Filter by search term if specified
     if (searchTerm.trim() !== '') {
-      queryOptions.fullTextFilter = {
-        term: searchTerm,
-        fields: [
-          'metadata.name',
-          'kind',
-          'spec.profile.displayName',
-          'metadata.title',
-        ],
-      };
-    }
+      const lowerTerm = searchTerm.toLowerCase();
+      items = items.filter(item => {
+        const name = item.metadata.name.toLowerCase();
+        const title = item.metadata.title?.toLowerCase();
+        const displayName = (
+          item.spec?.profile as any
+        )?.displayName?.toLowerCase();
 
-    const items: Entity[] = [];
-    let totalItems = 0;
-    let offset = 0;
-    let hasMoreEntities = true;
-
-    while (hasMoreEntities) {
-      const response = await catalogApi.queryEntities({
-        ...queryOptions,
-        offset,
+        return (
+          name.includes(lowerTerm) ||
+          title?.includes(lowerTerm) ||
+          displayName?.includes(lowerTerm)
+        );
       });
-
-      if (!totalItems) {
-        totalItems = response.totalItems;
-      }
-
-      items.push(...response.items);
-
-      if (items.length >= totalItems || response.items.length < limit) {
-        hasMoreEntities = false;
-      } else {
-        offset += limit;
-      }
     }
+
+    // Sort by name
+    items.sort((a, b) => a.metadata.name.localeCompare(b.metadata.name));
 
     return {
       items,
-      totalItems,
+      totalItems: items.length,
     };
-  };
-
-  const {
-    value: entities,
-    loading,
-    error,
-    retry,
-  } = useAsyncRetry(fetchEntities, [catalogApi, refs, searchTerm, limit, kind]);
+  }, [catalogApi, uniqueSortedRefs, searchTerm, kind]);
 
   return {
     entities: entities?.items ?? [],
