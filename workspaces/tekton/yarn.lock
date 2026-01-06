@@ -1832,7 +1832,6 @@ __metadata:
     "@material-ui/core": "npm:^4.9.13"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
-    classnames: "npm:^2.3.2"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -15455,7 +15454,6 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-tekton": "workspace:^"
-    "@backstage-community/plugin-tekton-react": "workspace:^"
     "@backstage/app-defaults": "npm:^1.7.2"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.34.5"

@@ -10,9 +10,6 @@ import { V1PersistentVolumeClaimTemplate } from '@kubernetes/client-node';
 import { V1Secret } from '@kubernetes/client-node';
 
 // @public
-export const cancelledColor = '#6a6e73';
-
-// @public
 export enum ComputedStatus {
   'In Progress' = 'In Progress',
   All = 'All',
@@ -37,9 +34,6 @@ export type Condition = {
   message?: string;
   lastTransitionTime?: string;
 };
-
-// @public
-export const failureColor = '#c9190b';
 
 // @public
 export const getRunStatusColor: (status: string) => StatusMessage;
@@ -71,12 +65,6 @@ export type HorizontalStackedBarsProps = {
   width?: number | string;
   onClick?: () => void;
 };
-
-// @public
-export const pendingColor = '#8bc1f7';
-
-// @public
-export const pipelineGroupColor = '#38812f';
 
 // @public
 export type PipelineResult = {
@@ -286,12 +274,6 @@ export type PLRTaskRunStep = {
 };
 
 // @public
-export const runningColor = '#06c';
-
-// @public
-export const skippedColor = '#8a8d90';
-
-// @public
 export type StackedValue = {
   color: string;
   name: string;
@@ -318,9 +300,6 @@ export enum SucceedConditionReason {
   TaskRunCancelled = 'TaskRunCancelled',
   TaskRunStopping = 'TaskRunStopping',
 }
-
-// @public
-export const successColor = '#38812f';
 
 // @public
 export type TaskResult = {

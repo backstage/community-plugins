@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  successColor,
-  failureColor,
-  runningColor,
-  skippedColor,
-  cancelledColor,
-  pendingColor,
-} from '../../constants';
+import { colors } from '../../constants';
 import {
   ComputedStatus,
   PipelineRunKind,
@@ -41,31 +34,31 @@ import { getTaskRunsForPipelineRun } from './task-run';
 export const getRunStatusColor = (status: string): StatusMessage => {
   switch (status) {
     case ComputedStatus.Succeeded:
-      return { message: 'Succeeded', color: successColor };
+      return { message: 'Succeeded', color: colors.success };
     case ComputedStatus.Failed:
-      return { message: 'Failed', color: failureColor };
+      return { message: 'Failed', color: colors.failure };
     case ComputedStatus.FailedToStart:
       return {
         message: 'PipelineRun failed to start',
-        color: failureColor,
+        color: colors.failure,
       };
     case ComputedStatus.Running:
     case ComputedStatus['In Progress']:
-      return { message: 'Running', color: runningColor };
+      return { message: 'Running', color: colors.running };
 
     case ComputedStatus.Skipped:
-      return { message: 'Skipped', color: skippedColor };
+      return { message: 'Skipped', color: colors.skipped };
     case ComputedStatus.Cancelled:
-      return { message: 'Cancelled', color: cancelledColor };
+      return { message: 'Cancelled', color: colors.cancelled };
     case ComputedStatus.Cancelling:
-      return { message: 'Cancelling', color: cancelledColor };
+      return { message: 'Cancelling', color: colors.cancelled };
     case ComputedStatus.Idle:
     case ComputedStatus.Pending:
-      return { message: 'Pending', color: pendingColor };
+      return { message: 'Pending', color: colors.pending };
     default:
       return {
         message: 'PipelineRun not started yet',
-        color: pendingColor,
+        color: colors.pending,
       };
   }
 };
