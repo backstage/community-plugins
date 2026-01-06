@@ -17,18 +17,18 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import * as url from 'url';
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
-import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const execAsync = promisify(exec);
 
-async function getMaintainerWorkspaces() {
+async function getMaintainerWorkspaces(rootPath) {
   try {
     const { stdout } = await execAsync(
       'node scripts/list-maintainer-workspaces.js --json',
+      { cwd: rootPath },
     );
     return JSON.parse(stdout.trim());
   } catch (error) {
@@ -41,8 +41,13 @@ async function main() {
   const rootPath = resolve(__dirname, '..');
   const githubIssueLabelerConfigPath = resolve(rootPath, '.github/labeler.yml');
   const githubPrLabelerConfigPath = resolve(rootPath, '.github/pr-labeler.yml');
-  const workspaces = await listWorkspaces();
-  const maintainerWorkspaces = await getMaintainerWorkspaces();
+  // Get workspaces using community-cli
+  const workspaces = JSON.parse(
+    execSync('yarn community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
+  );
+  const maintainerWorkspaces = await getMaintainerWorkspaces(rootPath);
 
   // Generate issue labeler configuration (based on issue template selection)
   const issueLabelMappings = [

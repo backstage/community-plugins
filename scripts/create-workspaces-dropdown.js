@@ -18,7 +18,7 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import * as url from 'url';
-import { listWorkspaces } from './list-workspaces.js';
+import { execSync } from 'child_process';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -29,8 +29,12 @@ async function main(_args) {
     '.github/ISSUE_TEMPLATE/snippets',
   );
 
-  // Get workspaces
-  const workspaces = await listWorkspaces();
+  // Get workspaces using community-cli
+  const workspaces = JSON.parse(
+    execSync('yarn community-cli workspace list --json', {
+      cwd: rootPath,
+    }).toString(),
+  );
 
   // Creates a dropdown issue template field for selecting a workspace
   const dropdown = `type: dropdown
