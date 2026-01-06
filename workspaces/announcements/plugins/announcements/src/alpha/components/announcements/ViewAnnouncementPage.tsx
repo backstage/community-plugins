@@ -40,7 +40,10 @@ import {
 import { Alert } from '@material-ui/lab';
 import { RiArrowLeftLine, RiHashtag, RiPriceTag3Line } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
+import {
+  announcementsApiRef,
+  useAnnouncementsTranslation,
+} from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
   Tag as AnnouncementTag,
@@ -78,8 +81,9 @@ const AnnouncementCategoryBadge = (props: {
 
 const AnnouncementTagsTagGroup = (props: { tags: AnnouncementTag[] }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
+  const { t } = useAnnouncementsTranslation();
   return (
-    <TagGroup aria-label="Announcement Tags">
+    <TagGroup aria-label={t('viewAnnouncementPage.tagsAriaLabel')}>
       {props.tags.map(tag => (
         <Tag
           key={tag.slug}
@@ -95,11 +99,15 @@ const AnnouncementTagsTagGroup = (props: { tags: AnnouncementTag[] }) => {
 
 const BackToAnnouncementsButton = () => {
   const announcementsLink = useRouteRef(rootRouteRef);
+  const { t } = useAnnouncementsTranslation();
   return (
     <Link href={announcementsLink()} color="secondary" variant="body-x-small">
       <Flex align="center" gap="2">
         <RiArrowLeftLine size={16} />
-        <Text variant="body-small"> Back to announcements</Text>
+        <Text variant="body-small">
+          {' '}
+          {t('viewAnnouncementPage.backToAnnouncements')}
+        </Text>
       </Flex>
     </Link>
   );
@@ -117,6 +125,7 @@ const AnnouncementDetailsCard = (props: AnnouncementDetailsCardProps) => {
 
   const announcementsApi = useApi(announcementsApiRef);
   const analytics = useAnalytics();
+  const { t } = useAnnouncementsTranslation();
 
   const lastSeen = announcementsApi.lastSeenDate();
   const announcementCreatedAt = DateTime.fromISO(created_at);
@@ -160,7 +169,8 @@ const AnnouncementDetailsCard = (props: AnnouncementDetailsCardProps) => {
           </Text>
 
           <Text variant="body-small" as="p">
-            By <EntityRefLink entityRef={on_behalf_of || publisher} hideIcon />
+            {t('announcementsPage.card.by')}{' '}
+            <EntityRefLink entityRef={on_behalf_of || publisher} hideIcon />
           </Text>
         </CardHeader>
       </Box>
@@ -181,6 +191,7 @@ type ViewAnnouncementPageProps = {
 export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
   const { id } = useRouteRefParams(announcementViewRouteRef);
   const announcementsApi = useApi(announcementsApiRef);
+  const { t } = useAnnouncementsTranslation();
 
   const announcementsLink = useRouteRef(rootRouteRef);
 
@@ -195,7 +206,7 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
   } else if (error) {
     return <Alert severity="error">{error.message}</Alert>;
   } else if (!announcement) {
-    return <Alert severity="error">Announcement not found</Alert>;
+    return <Alert severity="error">{t('viewAnnouncementPage.notFound')}</Alert>;
   }
 
   return (
@@ -203,8 +214,11 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
       <HeaderPage
         title={`${announcement.title ?? ''}`}
         breadcrumbs={[
-          { label: 'Home', href: '/' },
-          { label: 'Announcements', href: announcementsLink() },
+          { label: t('viewAnnouncementPage.home'), href: '/' },
+          {
+            label: t('announcementsCard.announcements'),
+            href: announcementsLink(),
+          },
         ]}
       />
 

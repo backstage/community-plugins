@@ -142,6 +142,12 @@ export const announcementsTranslationRef = createTranslationRef({
       notFoundMessage: 'Unable to find announcement',
       edit: 'Edit',
     },
+    viewAnnouncementPage: {
+      backToAnnouncements: 'Back to announcements',
+      notFound: 'Announcement not found',
+      tagsAriaLabel: 'Announcement Tags',
+      home: 'Home',
+    },
     newAnnouncementBanner: {
       markAsSeen: 'Mark as seen',
     },
