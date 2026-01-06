@@ -37,6 +37,10 @@ backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
 
+// permission plugin
+backend.add(import('@backstage/plugin-permission-backend'));
+backend.add(import('@backstage-community/plugin-rbac-backend'));
+
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
 
