@@ -188,6 +188,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.tagsContent.table.addTooltip': 'Add';
     readonly 'admin.tagsContent.table.tagDeleted': 'Tag deleted.';
     readonly 'admin.tagsContent.table.noTagsFound': 'No tags found.';
+    readonly 'admin.tagsContent.errors.by': 'By';
+    readonly 'admin.tagsContent.errors.announcements': 'Announcements';
     readonly 'admin.tagsContent.errors.alreadyExists': 'A tag with this name already exists.';
     readonly 'admin.tagsContent.createdMessage': 'created';
     readonly 'admin.tagsContent.cancelButton': 'Cancel';
@@ -272,6 +274,12 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
     readonly 'editAnnouncementPage.updatedMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
+    readonly 'viewAnnouncementPage.home': 'Home';
+    readonly 'viewAnnouncementPage.by': 'By';
+    readonly 'viewAnnouncementPage.announcements': 'Announcements';
+    readonly 'viewAnnouncementPage.backToAnnouncements': 'Back to announcements';
+    readonly 'viewAnnouncementPage.notFound': 'Announcement not found';
+    readonly 'viewAnnouncementPage.tagsAriaLabel': 'Announcement Tags';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';
     readonly 'newCategoryDialog.title': 'Title';
     readonly 'newCategoryDialog.newCategory': 'New category';

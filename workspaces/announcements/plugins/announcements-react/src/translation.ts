@@ -147,6 +147,8 @@ export const announcementsTranslationRef = createTranslationRef({
       notFound: 'Announcement not found',
       tagsAriaLabel: 'Announcement Tags',
       home: 'Home',
+      by: 'By',
+      announcements: 'Announcements',
     },
     newAnnouncementBanner: {
       markAsSeen: 'Mark as seen',
@@ -217,6 +219,10 @@ export const announcementsTranslationRef = createTranslationRef({
           noTagsFound: 'No tags found.',
         },
         errors: {
+          /** todo: could be deduped with announcementsPage.card.by */
+          by: 'By',
+          /** todo: could be deduped with announcementsCard.announcements, admin.adminPortal.announcementsLabels, admin.announcementsContent.announcements */
+          announcements: 'Announcements',
           alreadyExists: 'A tag with this name already exists.',
         },
       },

@@ -169,7 +169,7 @@ const AnnouncementDetailsCard = (props: AnnouncementDetailsCardProps) => {
           </Text>
 
           <Text variant="body-small" as="p">
-            {t('announcementsPage.card.by')}{' '}
+            {t('viewAnnouncementPage.by')}{' '}
             <EntityRefLink entityRef={on_behalf_of || publisher} hideIcon />
           </Text>
         </CardHeader>
@@ -216,7 +216,7 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
         breadcrumbs={[
           { label: t('viewAnnouncementPage.home'), href: '/' },
           {
-            label: t('announcementsCard.announcements'),
+            label: t('viewAnnouncementPage.announcements'),
             href: announcementsLink(),
           },
         ]}
