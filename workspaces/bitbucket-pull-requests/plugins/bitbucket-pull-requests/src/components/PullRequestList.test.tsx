@@ -20,6 +20,7 @@ import {
   errorApiRef,
   identityApiRef,
   IdentityApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rest } from 'msw';
@@ -52,8 +53,10 @@ const identityApi: IdentityApi = {
   signOut: jest.fn(),
 };
 
+const fetchApi: FetchApi = { fetch };
+
 const apis: [AnyApiRef, Partial<unknown>][] = [
-  [bitbucketApiRef, new BitbucketApi({ discoveryApi, identityApi })],
+  [bitbucketApiRef, new BitbucketApi({ discoveryApi, identityApi, fetchApi })],
   [errorApiRef, new MockErrorApi()],
   [identityApiRef, identityApi],
   [translationApiRef, mockApis.translation()],
