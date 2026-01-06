@@ -321,7 +321,6 @@ export const useAnnouncementsTranslation: () => any;
 export const useCatalogEntities: (
   refs: string[] | undefined,
   searchTerm?: string,
-  limit?: number,
   kind?: string | undefined,
 ) => {
   entities: Entity[];
