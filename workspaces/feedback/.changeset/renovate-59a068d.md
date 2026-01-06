@@ -1,5 +1,0 @@
----
-'@backstage-community/plugin-feedback-backend': patch
----
-
-Updated dependency `supertest` to `^7.0.0`.
