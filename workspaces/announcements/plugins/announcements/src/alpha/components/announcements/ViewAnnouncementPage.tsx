@@ -99,7 +99,7 @@ const BackToAnnouncementsButton = () => {
     <Link href={announcementsLink()} color="secondary" variant="body-x-small">
       <Flex align="center" gap="2">
         <RiArrowLeftLine size={16} />
-        <Text variant="body-x-small"> Back to announcements</Text>
+        <Text variant="body-small"> Back to announcements</Text>
       </Flex>
     </Link>
   );
