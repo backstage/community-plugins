@@ -1,5 +1,22 @@
 # @backstage-community/plugin-announcements
 
+## 1.3.0
+
+### Minor Changes
+
+- b9c2943: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- ce95092: The core announcements page end users visit has been rewritten with `@backstage/ui` for users on the new frontend system. Users on the existing frontend system will not see any changes.
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+- fb4ae44: The category and tag content tabs in the admin portal have been rewritten with `@backstage/ui` for users on the new frontend system. Users on the existing frontend system will not see any changes.
+- Updated dependencies [d5dc6b3]
+- Updated dependencies [ce95092]
+- Updated dependencies [b9c2943]
+  - @backstage-community/plugin-announcements-react@0.18.0
+  - @backstage-community/plugin-announcements-common@0.15.0
+
 ## 1.2.0
 
 ### Minor Changes
