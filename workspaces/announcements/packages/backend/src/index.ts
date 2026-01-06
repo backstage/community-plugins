@@ -52,4 +52,7 @@ backend.add(
   import('@backstage-community/plugin-search-backend-module-announcements'),
 );
 
+backend.add(
+  import('@backstage-community/plugin-announcements-backend-module-settings'),
+);
 backend.start();

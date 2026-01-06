@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements-backend": "workspace:^",
+    "@backstage-community/plugin-announcements-backend-module-settings": "workspace:^",
     "@backstage-community/plugin-search-backend-module-announcements": "workspace:^",
     "@backstage/backend-defaults": "^0.14.0",
     "@backstage/backend-plugin-api": "^1.6.0",

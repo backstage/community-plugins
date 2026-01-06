@@ -42,7 +42,7 @@ const ANNOUNCEMENTS_SETTINGS_DEFAULT: Settings = {
  *
  * @internal
  */
-interface SettingsStore {
+export interface SettingsStore {
   getAll(): Settings;
   update(settings: Partial<Settings>): Promise<void>;
   reset(): Promise<void>;

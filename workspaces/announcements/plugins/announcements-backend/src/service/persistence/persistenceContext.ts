@@ -15,7 +15,6 @@
  */
 import { AnnouncementsDatabase } from './AnnouncementsDatabase';
 import { CategoriesDatabase } from './CategoriesDatabase';
-import { SettingsDatabase } from './settings/SettingsDatabase';
 import { TagsDatabase } from './TagsDatabase';
 import {
   DatabaseService,
@@ -36,7 +35,6 @@ export type PersistenceContext = {
   announcementsStore: AnnouncementsDatabase;
   categoriesStore: CategoriesDatabase;
   tagsStore: TagsDatabase;
-  settingsStore: SettingsDatabase;
 };
 
 /**
@@ -59,6 +57,5 @@ export const initializePersistenceContext = async (
     announcementsStore: new AnnouncementsDatabase(client),
     categoriesStore: new CategoriesDatabase(client),
     tagsStore: new TagsDatabase(client),
-    settingsStore: await SettingsDatabase.withDefaults(client),
   };
 };
