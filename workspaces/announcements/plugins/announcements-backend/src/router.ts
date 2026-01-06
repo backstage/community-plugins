@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 import Router from 'express-promise-router';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
@@ -40,6 +40,11 @@ import {
   AUDITOR_ACTION_UPDATE,
   AUDITOR_ACTION_DELETE,
   AUDITOR_FETCH_EVENT_ID,
+  AUDITOR_SETTINGS_EVENT_ID,
+  AUDITOR_ACTION_SETTINGS_UPDATE,
+  AUDITOR_ACTION_SETTINGS_RESET,
+  Settings,
+  settingsSchema,
 } from '@backstage-community/plugin-announcements-common';
 import { signalAnnouncement } from './service/signal';
 import { AnnouncementsContext } from './service';
@@ -97,6 +102,7 @@ export async function createRouter(
     announcementCreatePermission,
     announcementDeletePermission,
     announcementUpdatePermission,
+    announcementSettingsPermission,
   } = announcementEntityPermissions;
 
   const isRequestAuthorized = async (
@@ -669,7 +675,113 @@ export async function createRouter(
     },
   );
 
-  // Settings routes are now provided by the optional settings module
+  /**
+   * Retrieves the current settings for the announcements plugin
+   */
+  router.get('/settings', async (_, res: Response<{ settings: Settings }>) => {
+    try {
+      // no permissions check or auditing necessary for retrieving settings
+      const settings = persistenceContext.settingsStore.getAll();
+      return res.json({ settings });
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  /**
+   * Updates the settings for the announcements plugin - only the settings that are provided in the request body are updated
+   */
+  router.patch(
+    '/settings',
+    async (
+      req: Request<{}, {}, Partial<Settings>, {}>,
+      res: Response<{ settings: Settings }>,
+    ) => {
+      const auditorEvent = await auditor.createEvent({
+        eventId: AUDITOR_SETTINGS_EVENT_ID,
+        request: req,
+        severityLevel: 'medium',
+        meta: {
+          actionType: AUDITOR_ACTION_SETTINGS_UPDATE,
+        },
+      });
+
+      if (!(await isRequestAuthorized(req, announcementSettingsPermission))) {
+        const error = new NotAllowedError('Unauthorized');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+
+      try {
+        // We do a partial parse to allow for only updating the settings that are provided in the request body
+        const validationResult = settingsSchema.partial().safeParse(req.body);
+
+        if (!validationResult.success) {
+          const error = new InputError(
+            `Invalid settings: ${validationResult.error.errors
+              .map(e => `${e.path.join('.')}: ${e.message}`)
+              .join(', ')}`,
+          );
+
+          await auditorEvent.fail({ error });
+          throw error;
+        }
+
+        await persistenceContext.settingsStore.update(validationResult.data);
+        await auditorEvent.success();
+
+        return res
+          .status(200)
+          .json({ settings: persistenceContext.settingsStore.getAll() });
+      } catch (err) {
+        if (err instanceof InputError || err instanceof NotAllowedError) {
+          await auditorEvent.fail({ error: err });
+          throw err;
+        }
+        logger.error('Failed to update settings', err);
+        const error = new InputError('Failed to update settings');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+    },
+  );
+
+  /**
+   * Resets all settings for the announcements plugin to defaults
+   */
+  router.delete(
+    '/settings',
+    async (req, res: Response<{ settings: Settings }>) => {
+      const auditorEvent = await auditor.createEvent({
+        eventId: AUDITOR_SETTINGS_EVENT_ID,
+        request: req,
+        severityLevel: 'medium',
+        meta: {
+          actionType: AUDITOR_ACTION_SETTINGS_RESET,
+        },
+      });
+
+      if (!(await isRequestAuthorized(req, announcementSettingsPermission))) {
+        const error = new NotAllowedError('Unauthorized');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+
+      try {
+        await persistenceContext.settingsStore.reset();
+        await auditorEvent.success();
+
+        return res
+          .status(200)
+          .json({ settings: persistenceContext.settingsStore.getAll() });
+      } catch (err) {
+        logger.error('Failed to reset settings', err);
+        const error = new InputError('Failed to reset settings');
+        await auditorEvent.fail({ error });
+        throw error;
+      }
+    },
+  );
 
   router.use(MiddlewareFactory.create({ config, logger }).error());
 

@@ -28,6 +28,7 @@ import {
 import { mockServices } from '@backstage/backend-test-utils';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
 import { AUDITOR_FETCH_EVENT_ID } from '@backstage-community/plugin-announcements-common';
+import { SettingsDatabase } from './service/persistence/settings/SettingsDatabase.ts';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -50,6 +51,11 @@ describe('createRouter', () => {
     } as unknown as AnnouncementsDatabase,
     categoriesStore: {} as unknown as CategoriesDatabase,
     tagsStore: {} as unknown as TagsDatabase,
+    settingsStore: {
+      getAll: jest.fn(),
+      update: jest.fn(),
+      reset: jest.fn(),
+    } as unknown as SettingsDatabase,
   };
 
   const mockPermissions: PermissionsService = {

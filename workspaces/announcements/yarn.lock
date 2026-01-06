@@ -1350,16 +1350,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-announcements-backend-module-settings@workspace:^, @backstage-community/plugin-announcements-backend-module-settings@workspace:plugins/announcements-backend-module-settings":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-announcements-backend-module-settings@workspace:plugins/announcements-backend-module-settings"
-  dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.6.0"
-    "@backstage/backend-test-utils": "npm:^1.10.2"
-    "@backstage/cli": "npm:^0.35.1"
-  languageName: unknown
-  linkType: soft
-
 "@backstage-community/plugin-announcements-backend@workspace:^, @backstage-community/plugin-announcements-backend@workspace:plugins/announcements-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-announcements-backend@workspace:plugins/announcements-backend"
@@ -13801,7 +13791,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-announcements-backend": "workspace:^"
-    "@backstage-community/plugin-announcements-backend-module-settings": "workspace:^"
     "@backstage-community/plugin-search-backend-module-announcements": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.14.0"
     "@backstage/backend-plugin-api": "npm:^1.6.0"
