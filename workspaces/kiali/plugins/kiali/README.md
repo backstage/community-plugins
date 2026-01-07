@@ -117,6 +117,8 @@ kiali:
       caFile: ''
       # Optional. Time in seconds that session is enabled, defaults to 1 minute.
       sessionTime: 60
+      # Optional. Base64-encoded Basic Auth credentials (username:password) for Kiali.
+      basicAuth: ${KIALI_BASIC_AUTH} # base64(username:password)
       # highlight-add-end
 ```
 
@@ -127,16 +129,17 @@ Authentication methods:
 
 The following table describes the parameters under `kiali.providers` in your `app-config.yaml`:
 
-| Name                  | Description                                             | Default                | Required                       |
-| --------------------- | ------------------------------------------------------- | ---------------------- | ------------------------------ |
-| `name`                | Provider name, e.g. `default`                           | "default"              | Yes, unique                    |
-| `url`                 | Kiali server URL, e.g. `https://localhost:4000`         | ""                     | Yes                            |
-| `serviceAccountToken` | Service account token used to query Kiali               | ""                     | Yes, if using token-based auth |
-| `skipTLSVerify`       | Skip TLS certificate verification                       | false                  | No                             |
-| `tokenName`           | Cookie name used by Kiali for the auth token            | kiali-token-Kubernetes | No                             |
-| `caData`              | Base64-encoded certificate authority bundle (PEM)       | ""                     | No                             |
-| `caFile`              | Filesystem path to a certificate authority bundle (PEM) | ""                     | No                             |
-| `sessionTime`         | Session duration in seconds                             | 60                     | No                             |
+| Name                  | Description                                                                 | Default                | Required                       |
+| --------------------- | --------------------------------------------------------------------------- | ---------------------- | ------------------------------ |
+| `name`                | Provider name, e.g. `default`                                               | "default"              | Yes, unique                    |
+| `url`                 | Kiali server URL, e.g. `https://localhost:4000`                             | ""                     | Yes                            |
+| `serviceAccountToken` | Service account token used to query Kiali                                   | ""                     | Yes, if using token-based auth |
+| `skipTLSVerify`       | Skip TLS certificate verification                                           | false                  | No                             |
+| `tokenName`           | Cookie name used by Kiali for the auth token                                | kiali-token-Kubernetes | No                             |
+| `caData`              | Base64-encoded certificate authority bundle (PEM)                           | ""                     | No                             |
+| `caFile`              | Filesystem path to a certificate authority bundle (PEM)                     | ""                     | No                             |
+| `sessionTime`         | Session duration in seconds                                                 | 60                     | No                             |
+| `basicAuth`           | Base64-encoded Basic Auth header (`username:password`) for external proxies | ""                     | No                             |
 
 ## For users
 

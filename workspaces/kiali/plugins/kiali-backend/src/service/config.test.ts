@@ -44,6 +44,7 @@ describe('Configuration', () => {
         sessionTime: undefined,
         caData: undefined,
         caFile: undefined,
+        basicAuth: undefined,
       },
     ]);
   });
@@ -73,6 +74,7 @@ describe('Configuration', () => {
         sessionTime: undefined,
         caData: undefined,
         caFile: undefined,
+        basicAuth: undefined,
       },
     ]);
   });
@@ -141,5 +143,35 @@ describe('Configuration', () => {
         `"kiali" is not a valid url in config at 'kiali.providers.[object Object].url'`,
       ),
     );
+  });
+
+  it('should read KialiDetails with basicAuth', async () => {
+    const configuration = new ConfigReader({
+      kiali: {
+        providers: [
+          {
+            name: 'default',
+            url: 'https://localhost:4000',
+            basicAuth: 'dXNlcjpwYXNzd29yZA==', // base64(username:password)
+          },
+        ],
+      },
+    });
+
+    const result = readKialiConfigs(configuration, logger);
+    expect(result).toStrictEqual([
+      {
+        name: 'default',
+        url: 'https://localhost:4000/',
+        urlExternal: undefined,
+        serviceAccountToken: undefined,
+        skipTLSVerify: false,
+        tokenName: 'kiali-token-Kubernetes',
+        sessionTime: undefined,
+        caData: undefined,
+        caFile: undefined,
+        basicAuth: 'dXNlcjpwYXNzd29yZA==',
+      },
+    ]);
   });
 });
