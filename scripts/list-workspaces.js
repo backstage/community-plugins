@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import fs from 'fs-extra';
-import { resolve } from 'path';
+import fs from 'node:fs/promises';
+import { join, resolve, sep } from 'path';
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -30,10 +30,15 @@ const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
  * @throws {Error} If there are filesystem errors reading the directory
  */
 export async function listWorkspaces() {
-  const rootPath = resolve(__dirname, '..');
-  const workspacePath = resolve(rootPath, 'workspaces');
+  const workspacePath = resolve(__dirname, '..', 'workspaces');
 
-  return (await fs.readdir(workspacePath, { withFileTypes: true }))
-    .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
-    .map(w => w.name);
+  return (
+    Array.fromAsync(
+      fs.glob(join(workspacePath, '*', sep), {
+        exclude: EXCLUDED_WORKSPACES.map(name => join(workspacePath, name)),
+      }),
+    )
+      // glob returns an unordered list of results (for perf reasons)
+      .then(workspaces => workspaces.sort())
+  );
 }
