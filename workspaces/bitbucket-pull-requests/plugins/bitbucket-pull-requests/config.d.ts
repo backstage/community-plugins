@@ -19,7 +19,6 @@ export interface Config {
      * Proxy path for BitBucket API requests
      * @visibility frontend
      */
-
     proxyPath?: string;
   };
 }
