@@ -31,7 +31,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import Tooltip from '@material-ui/core/Tooltip';
-import StatusFilter from '../components/StatusFilter';
+import StatusFilter, { PullRequestState } from '../components/StatusFilter';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 const GetElapsedTime = ({ start }: { start: number }) =>
@@ -79,9 +79,7 @@ const PullRequestDetailPanel = ({ rowData }: { rowData: PullRequest }) => (
 
 const PullRequestList: FC = () => {
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
-  const [stateFilter, setStateFilter] = useState<
-    'OPEN' | 'MERGED' | 'DECLINED' | 'ALL'
-  >('ALL');
+  const [stateFilter, setStateFilter] = useState<PullRequestState>('ALL');
   const [loading, setLoading] = useState(true);
   const { entity } = useEntity();
   const project = isBitbucketSlugSet(entity);
