@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ const ROLE_MAP = {
         .some(
           line =>
             line.includes(`from '@backstage/frontend-plugin-api'`) &&
-            line.includes('FrontendPlugin'),
+            (line.includes('FrontendModule') ||
+              line.includes('FrontendPlugin')),
         ),
     reportPath: resolve(
       __dirname,
@@ -43,7 +44,7 @@ const ROLE_MAP = {
       'compatibility',
       'new-frontend-system.md',
     ),
-    roles: ['frontend-plugin'],
+    roles: ['frontend-plugin', 'frontend-plugin-module'],
   },
 };
 
