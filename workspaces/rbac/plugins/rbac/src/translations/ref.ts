@@ -83,6 +83,7 @@ export const rbacMessages = {
       reviewAndCreate: 'Review and create',
       reviewAndSave: 'Review and save',
       nameDescriptionOwner: 'Name, description, and owner of role',
+      permissionPoliciesWithCount: 'Permission policies ({{count}})',
     },
     steps: {
       next: 'Next',

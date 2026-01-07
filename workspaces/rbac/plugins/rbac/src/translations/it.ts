@@ -77,6 +77,8 @@ const rbacTranslationIt = createTranslationMessages({
     'roleForm.review.reviewAndSave': 'Rivedi e salva',
     'roleForm.review.nameDescriptionOwner':
       'Nome, descrizione e proprietario del ruolo',
+    'roleForm.review.permissionPoliciesWithCount':
+      'Politiche di permessi ({{count}})',
     'roleForm.steps.next': 'Avanti',
     'roleForm.steps.back': 'Indietro',
     'roleForm.steps.cancel': 'Annulla',
