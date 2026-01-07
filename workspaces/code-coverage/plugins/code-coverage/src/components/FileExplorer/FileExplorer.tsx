@@ -93,27 +93,30 @@ const removeVisitedPathGroup = (
 
 export const buildFileStructure = (row: CoverageTableRow) => {
   const dataGroupedByPath: FileStructureObject = groupByPath(row.files);
+
   row.files = Object.keys(dataGroupedByPath).map(pathGroup => {
+    const aggregatedTracked = dataGroupedByPath[pathGroup].reduce(
+      (acc: number, cur: CoverageTableRow) => acc + cur.tracked,
+      0,
+    );
+
+    const aggregatedMissing = dataGroupedByPath[pathGroup].reduce(
+      (acc: number, cur: CoverageTableRow) => acc + cur.missing,
+      0,
+    );
+
     return buildFileStructure({
       path: pathGroup,
-      files: dataGroupedByPath.hasOwnProperty('files')
-        ? removeVisitedPathGroup(dataGroupedByPath.files, pathGroup)
-        : removeVisitedPathGroup(dataGroupedByPath[pathGroup], pathGroup),
+      files: removeVisitedPathGroup(dataGroupedByPath[pathGroup], pathGroup),
       coverage:
-        dataGroupedByPath[pathGroup].reduce(
-          (acc: number, cur: CoverageTableRow) => acc + cur.coverage,
-          0,
-        ) / dataGroupedByPath[pathGroup].length,
-      missing: dataGroupedByPath[pathGroup].reduce(
-        (acc: number, cur: CoverageTableRow) => acc + cur.missing,
-        0,
-      ),
-      tracked: dataGroupedByPath[pathGroup].reduce(
-        (acc: number, cur: CoverageTableRow) => acc + cur.tracked,
-        0,
-      ),
+        aggregatedTracked > 0
+          ? ((aggregatedTracked - aggregatedMissing) / aggregatedTracked) * 100
+          : 0,
+      missing: aggregatedMissing,
+      tracked: aggregatedTracked,
     });
   });
+
   return row;
 };
 
