@@ -28,9 +28,9 @@ import {
 } from '@backstage/plugin-catalog-node';
 import type { EventsService } from '@backstage/plugin-events-node';
 
-import { RELATION_SCAFFOLDED_FROM, RELATION_SCAFFOLDER_OF } from './relations';
 import type { ScaffoldedFromSpec } from './types';
 import { handleTemplateVersion } from './templateVersionUtils';
+import { RELATION_SCAFFOLDED_FROM, RELATION_SCAFFOLDER_OF } from './constants';
 
 /** @public */
 export class ScaffolderRelationEntityProcessor implements CatalogProcessor {

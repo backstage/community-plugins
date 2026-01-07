@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-/**
- * A relation from a scaffolder template entity to the entity it generated.
- * Reverse direction of {@link RELATION_SCAFFOLDED_FROM}
- *
- * @public
- */
-export const RELATION_SCAFFOLDER_OF = 'scaffolderOf';
+import type { Octokit } from '@octokit/core';
+import { createPullRequest } from 'octokit-plugin-create-pull-request';
 
 /**
- * A relation of an entity generated from a scaffolder template entity
- * Reverse direction of {@link RELATION_SCAFFOLDER_OF}
- *
- * @public
+ * Extract the return type from the createPullRequest plugin function
  */
-export const RELATION_SCAFFOLDED_FROM = 'scaffoldedFrom';
+export type CreatePullRequestReturnType = ReturnType<
+  ReturnType<typeof createPullRequest>['createPullRequest']
+>;
+
+/**
+ * Type representing Octokit instance with createPullRequest plugin
+ */
+export type OctokitWithCreatePullRequest = Octokit & {
+  createPullRequest: (
+    options: createPullRequest.Options,
+  ) => CreatePullRequestReturnType;
+};

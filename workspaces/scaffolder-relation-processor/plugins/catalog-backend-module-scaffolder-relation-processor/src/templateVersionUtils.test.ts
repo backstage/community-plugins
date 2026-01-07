@@ -25,9 +25,17 @@ import {
 } from './templateVersionUtils';
 import {
   DEFAULT_NOTIFICATION_DESCRIPTION,
+  DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR,
   DEFAULT_NOTIFICATION_ENABLED,
   DEFAULT_NOTIFICATION_TITLE,
+  DEFAULT_NOTIFICATION_TITLE_WITH_PR,
+  DEFAULT_PR_ENABLED,
 } from './constants';
+import { VcsProviderRegistry } from './pullRequests/vcs/VcsProviderRegistry';
+import * as pullRequestsModule from './pullRequests';
+
+// Mock the pullRequests module
+jest.mock('./pullRequests');
 
 // Mock external dependencies
 jest.mock('@backstage/catalog-client');
@@ -35,7 +43,11 @@ jest.mock('@backstage/catalog-client');
 describe('templateVersionUtils', () => {
   let mockCatalogClient: jest.Mocked<CatalogClient>;
   let mockNotificationService: jest.Mocked<NotificationService>;
+  let mockVcsRegistry: VcsProviderRegistry;
   const mockAuthService = mockServices.auth();
+  const mockLogger = mockServices.logger.mock();
+  const mockUrlReader = mockServices.urlReader.mock();
+  const mockConfig = mockServices.rootConfig();
   const mockProcessorConfig = {
     notifications: {
       templateUpdate: {
@@ -44,6 +56,45 @@ describe('templateVersionUtils', () => {
           title: DEFAULT_NOTIFICATION_TITLE,
           description: DEFAULT_NOTIFICATION_DESCRIPTION,
         },
+      },
+    },
+    pullRequests: {
+      templateUpdate: {
+        enabled: DEFAULT_PR_ENABLED,
+      },
+    },
+  };
+
+  const mockProcessorConfigWithNotificationsEnabled = {
+    notifications: {
+      templateUpdate: {
+        enabled: true,
+        message: {
+          title: DEFAULT_NOTIFICATION_TITLE,
+          description: DEFAULT_NOTIFICATION_DESCRIPTION,
+        },
+      },
+    },
+    pullRequests: {
+      templateUpdate: {
+        enabled: false,
+      },
+    },
+  };
+
+  const mockProcessorConfigWithPRsEnabled = {
+    notifications: {
+      templateUpdate: {
+        enabled: true,
+        message: {
+          title: DEFAULT_NOTIFICATION_TITLE_WITH_PR,
+          description: DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR,
+        },
+      },
+    },
+    pullRequests: {
+      templateUpdate: {
+        enabled: true,
       },
     },
   };
@@ -60,6 +111,13 @@ describe('templateVersionUtils', () => {
     mockNotificationService = {
       send: jest.fn().mockResolvedValue(undefined),
     };
+
+    mockVcsRegistry = new VcsProviderRegistry();
+
+    // Reset the mock for handleTemplateUpdatePullRequest
+    (
+      pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+    ).mockResolvedValue(new Map());
   });
 
   describe('handleTemplateUpdateNotifications', () => {
@@ -108,8 +166,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       expect(mockCatalogClient.getEntities).toHaveBeenCalledWith(
@@ -120,7 +182,9 @@ describe('templateVersionUtils', () => {
             'metadata.namespace',
             'metadata.name',
             'metadata.title',
+            'metadata.annotations',
             'relations',
+            'spec',
           ],
         },
         {
@@ -190,8 +254,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       // Should send 2 notifications (one to each owner)
@@ -224,8 +292,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       // Should not send any notifications
@@ -241,8 +313,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       expect(mockNotificationService.send).not.toHaveBeenCalled();
@@ -264,8 +340,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       expect(mockNotificationService.send).toHaveBeenCalledTimes(2);
@@ -318,8 +398,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       const calls = mockNotificationService.send.mock.calls;
@@ -357,8 +441,12 @@ describe('templateVersionUtils', () => {
         mockCatalogClient,
         mockNotificationService,
         mockAuthService,
-        mockProcessorConfig,
+        mockProcessorConfigWithNotificationsEnabled,
         payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
       );
 
       expect(mockNotificationService.send).toHaveBeenCalledWith({
@@ -372,6 +460,446 @@ describe('templateVersionUtils', () => {
             'The template used to create simple-service has been updated to a new version. Review and update your entity to stay in sync with the template.',
           link: '/catalog/default/component/simple-service',
         },
+      });
+    });
+
+    it('should not send notifications when notifications are disabled', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      const configWithNotificationsDisabled = {
+        notifications: {
+          templateUpdate: {
+            enabled: false,
+            message: {
+              title: DEFAULT_NOTIFICATION_TITLE,
+              description: DEFAULT_NOTIFICATION_DESCRIPTION,
+            },
+          },
+        },
+        pullRequests: {
+          templateUpdate: {
+            enabled: false,
+          },
+        },
+      };
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        configWithNotificationsDisabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      expect(mockNotificationService.send).not.toHaveBeenCalled();
+    });
+
+    it('should not call PR creation when PRs are disabled', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithNotificationsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      expect(
+        pullRequestsModule.handleTemplateUpdatePullRequest,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should call PR creation when PRs are enabled', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithPRsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      expect(
+        pullRequestsModule.handleTemplateUpdatePullRequest,
+      ).toHaveBeenCalled();
+    });
+
+    it('should include PR URL in notification when PR is created', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // Mock PR creation returning a success result
+      const prResults = new Map([
+        [
+          'service-a',
+          { success: true, url: 'https://github.com/org/repo/pull/123' },
+        ],
+      ]);
+      (
+        pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+      ).mockResolvedValue(prResults);
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithPRsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should use PR URL as the notification link
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'user:default/john',
+        },
+        payload: {
+          title: 'Service-a has a template update PR ready',
+          description: expect.stringContaining(
+            'https://github.com/org/repo/pull/123',
+          ),
+          link: 'https://github.com/org/repo/pull/123',
+        },
+      });
+    });
+
+    it('should not send notification when PR creation returns empty map (no changes)', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // Mock PR creation returning empty map (no PRs created - no changes for any entity)
+      (
+        pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+      ).mockResolvedValue(new Map());
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithPRsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should NOT send any notification since entity has no changes
+      expect(mockNotificationService.send).not.toHaveBeenCalled();
+    });
+
+    it('should use default message with error prefix when PR creation fails', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // Mock PR creation returning a failure result
+      const prResults = new Map([
+        [
+          'service-a',
+          { success: false, error: 'Repository permissions denied' },
+        ],
+      ]);
+      (
+        pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+      ).mockResolvedValue(prResults);
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithPRsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should use default message with error prefix
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'user:default/john',
+        },
+        payload: {
+          title: 'Service-a is out of sync with template',
+          description: expect.stringContaining(
+            'Failed to create template update PR: Repository permissions denied',
+          ),
+          link: '/catalog/default/component/service-a',
+        },
+      });
+
+      // Should also contain the default description
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'user:default/john',
+        },
+        payload: expect.objectContaining({
+          description: expect.stringContaining(
+            'Review and update your entity to stay in sync with the template',
+          ),
+        }),
+      });
+    });
+
+    it('should use default message even when custom message is configured if PR creation fails', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // Mock PR creation returning a failure result
+      const prResults = new Map([
+        ['service-a', { success: false, error: 'Authentication failed' }],
+      ]);
+      (
+        pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+      ).mockResolvedValue(prResults);
+
+      const customConfig = {
+        notifications: {
+          templateUpdate: {
+            enabled: true,
+            message: {
+              title: 'Custom title for $ENTITY_DISPLAY_NAME',
+              description: 'Custom description with PR link: $PR_LINK',
+            },
+          },
+        },
+        pullRequests: {
+          templateUpdate: {
+            enabled: true,
+          },
+        },
+      };
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        customConfig,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should use DEFAULT message (not custom) with error prefix
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'user:default/john',
+        },
+        payload: {
+          title: 'Service-a is out of sync with template',
+          description: expect.stringContaining(
+            'Failed to create template update PR: Authentication failed',
+          ),
+          link: '/catalog/default/component/service-a',
+        },
+      });
+    });
+
+    it('should skip notification for entities with no changes when PRs are enabled', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+        createMockEntity('service-b', 'Component', 'default', [
+          'user:default/jane',
+        ]),
+        createMockEntity('service-c', 'Component', 'default', [
+          'user:default/bob',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // Mock PR creation: only service-a has a PR, service-b and service-c have no changes
+      const prResults = new Map([
+        [
+          'service-a',
+          { success: true, url: 'https://github.com/org/repo/pull/123' },
+        ],
+      ]);
+      (
+        pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+      ).mockResolvedValue(prResults);
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithPRsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should only send notification for service-a (the one with a PR)
+      expect(mockNotificationService.send).toHaveBeenCalledTimes(1);
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'user:default/john',
+        },
+        payload: expect.objectContaining({
+          link: 'https://github.com/org/repo/pull/123',
+        }),
+      });
+    });
+
+    it('should send notifications to all entities when PRs are disabled', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+        createMockEntity('service-b', 'Component', 'default', [
+          'user:default/jane',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // PRs are disabled, so no prResults
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithNotificationsEnabled, // PRs disabled in this config
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should send notifications to all entities
+      expect(mockNotificationService.send).toHaveBeenCalledTimes(2);
+    });
+
+    it('should send notification for failed PR even if other entities have no changes', async () => {
+      const entities = [
+        createMockEntity('service-a', 'Component', 'default', [
+          'user:default/john',
+        ]),
+        createMockEntity('service-b', 'Component', 'default', [
+          'user:default/jane',
+        ]),
+      ];
+
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: entities,
+      });
+
+      // service-a had PR creation failure, service-b has no changes (not in map)
+      const prResults = new Map([
+        ['service-a', { success: false, error: 'Permission denied' }],
+      ]);
+      (
+        pullRequestsModule.handleTemplateUpdatePullRequest as jest.Mock
+      ).mockResolvedValue(prResults);
+
+      await handleTemplateUpdateNotifications(
+        mockCatalogClient,
+        mockNotificationService,
+        mockAuthService,
+        mockProcessorConfigWithPRsEnabled,
+        payload,
+        mockLogger,
+        mockUrlReader,
+        mockVcsRegistry,
+        mockConfig,
+      );
+
+      // Should only send notification for service-a (failed PR)
+      // service-b should be skipped (no changes)
+      expect(mockNotificationService.send).toHaveBeenCalledTimes(1);
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: 'user:default/john',
+        },
+        payload: expect.objectContaining({
+          description: expect.stringContaining('Permission denied'),
+        }),
       });
     });
   });
@@ -396,6 +924,11 @@ describe('templateVersionUtils', () => {
             },
           },
         },
+        pullRequests: {
+          templateUpdate: {
+            enabled: true,
+          },
+        },
       };
       const config = mockServices.rootConfig({
         data: {
@@ -406,6 +939,52 @@ describe('templateVersionUtils', () => {
       const result = readScaffolderRelationProcessorConfig(config);
 
       expect(result).toEqual(customProcessorConfig);
+    });
+
+    it('should use PR-specific defaults when PRs are enabled', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            pullRequests: {
+              templateUpdate: {
+                enabled: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result.notifications?.templateUpdate?.message.title).toBe(
+        DEFAULT_NOTIFICATION_TITLE_WITH_PR,
+      );
+      expect(result.notifications?.templateUpdate?.message.description).toBe(
+        DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR,
+      );
+    });
+
+    it('should use standard defaults when PRs are disabled', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            pullRequests: {
+              templateUpdate: {
+                enabled: false,
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result.notifications?.templateUpdate?.message.title).toBe(
+        DEFAULT_NOTIFICATION_TITLE,
+      );
+      expect(result.notifications?.templateUpdate?.message.description).toBe(
+        DEFAULT_NOTIFICATION_DESCRIPTION,
+      );
     });
 
     it('should handle missing scaffolder.notifications section', () => {
@@ -464,6 +1043,11 @@ describe('templateVersionUtils', () => {
             },
           },
         },
+        pullRequests: {
+          templateUpdate: {
+            enabled: DEFAULT_PR_ENABLED,
+          },
+        },
       });
     });
 
@@ -518,6 +1102,11 @@ describe('templateVersionUtils', () => {
             },
           },
         },
+        pullRequests: {
+          templateUpdate: {
+            enabled: DEFAULT_PR_ENABLED,
+          },
+        },
       });
     });
 
@@ -550,7 +1139,36 @@ describe('templateVersionUtils', () => {
             },
           },
         },
+        pullRequests: {
+          templateUpdate: {
+            enabled: DEFAULT_PR_ENABLED,
+          },
+        },
       });
+    });
+
+    it('should handle pullRequests config independently from notifications', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          scaffolder: {
+            notifications: {
+              templateUpdate: {
+                enabled: false,
+              },
+            },
+            pullRequests: {
+              templateUpdate: {
+                enabled: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = readScaffolderRelationProcessorConfig(config);
+
+      expect(result.notifications?.templateUpdate?.enabled).toBe(false);
+      expect(result.pullRequests?.templateUpdate?.enabled).toBe(true);
     });
   });
 });
