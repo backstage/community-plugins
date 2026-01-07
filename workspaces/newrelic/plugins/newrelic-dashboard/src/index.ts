@@ -20,6 +20,5 @@ export {
   EntityNewRelicDashboardContent,
   DashboardSnapshot,
   DashboardSnapshotList,
-  DashboardSnapshotComponent,
 } from './plugin';
 export { isNewRelicDashboardAvailable } from './Router';
