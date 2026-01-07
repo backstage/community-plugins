@@ -31,7 +31,11 @@ import path from 'path';
 import os from 'os';
 import YAML from 'yaml';
 
-interface ConfluenceConfig {
+/**
+ * Base configuration for a Confluence instance
+ * @public
+ */
+export interface ConfluenceConfig {
   baseUrl: string;
   authType: 'bearer' | 'basic' | 'userpass';
   token?: string;

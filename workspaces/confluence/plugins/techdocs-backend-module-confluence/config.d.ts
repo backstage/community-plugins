@@ -14,64 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * Configuration for a single Confluence instance
- */
-interface ConfluenceInstanceConfig {
-  /**
-   * The base URL for accessing the Confluence API
-   * Typically: https://{org-name}.atlassian.net/wiki
-   */
-  baseUrl: string;
-  /**
-   * Confluence API credentials
-   */
-  auth: {
-    /**
-     * Authentication method - basic, bearer, or userpass
-     */
-    type: 'basic' | 'bearer' | 'userpass';
-    /**
-     * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
-     * Reference the Confluence documentation to generate an API token:
-     * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
-     * @visibility secret
-     */
-    token?: string;
-    /**
-     * Email associated with the token, only required if type is set to 'basic'.
-     * @visibility secret
-     */
-    email?: string;
-    /**
-     * Confluence basic authentication username, only required if type is set to 'userpass'.
-     * While Confluence supports BASIC authentication, using an API token is preferred.
-     * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
-     */
-    username?: string;
-    /**
-     * Confluence basic authentication password, only required if type is set to 'userpass'.
-     * While Confluence supports BASIC authentication, using an API token is preferred.
-     * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
-     * @visibility secret
-     */
-    password?: string;
-  };
-  /**
-   * Options for page tree processing when fetching hierarchical documentation
-   */
-  pageTree?: {
-    /**
-     * Enable parallel fetching of child pages. Default: true
-     */
-    parallel?: boolean;
-    /**
-     * Maximum depth to traverse when fetching child pages. 0 = unlimited. Default: 0
-     */
-    maxDepth?: number;
-  };
-}
-
 export interface Config {
   /**
    * Configuration for Confluence instances.
@@ -103,8 +45,114 @@ export interface Config {
    * ```
    */
   confluence?:
-    | ConfluenceInstanceConfig
     | {
-        [instanceName: string]: ConfluenceInstanceConfig;
+        /**
+         * The base URL for accessing the Confluence API
+         * Typically: https://{org-name}.atlassian.net/wiki
+         */
+        baseUrl: string;
+        /**
+         * Confluence API credentials
+         */
+        auth: {
+          /**
+           * Authentication method - basic, bearer, or userpass
+           */
+          type: 'basic' | 'bearer' | 'userpass';
+          /**
+           * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
+           * Reference the Confluence documentation to generate an API token:
+           * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+           * @visibility secret
+           */
+          token?: string;
+          /**
+           * Email associated with the token, only required if type is set to 'basic'.
+           * @visibility secret
+           */
+          email?: string;
+          /**
+           * Confluence basic authentication username, only required if type is set to 'userpass'.
+           * While Confluence supports BASIC authentication, using an API token is preferred.
+           * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+           */
+          username?: string;
+          /**
+           * Confluence basic authentication password, only required if type is set to 'userpass'.
+           * While Confluence supports BASIC authentication, using an API token is preferred.
+           * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+           * @visibility secret
+           */
+          password?: string;
+        };
+        /**
+         * Options for page tree processing when fetching hierarchical documentation
+         */
+        pageTree?: {
+          /**
+           * Enable parallel fetching of child pages. Default: true
+           */
+          parallel?: boolean;
+          /**
+           * Maximum depth to traverse when fetching child pages. 0 = unlimited. Default: 0
+           */
+          maxDepth?: number;
+        };
+      }
+    | {
+        [instanceName: string]: {
+          /**
+           * The base URL for accessing the Confluence API
+           * Typically: https://{org-name}.atlassian.net/wiki
+           */
+          baseUrl: string;
+          /**
+           * Confluence API credentials
+           */
+          auth: {
+            /**
+             * Authentication method - basic, bearer, or userpass
+             */
+            type: 'basic' | 'bearer' | 'userpass';
+            /**
+             * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
+             * Reference the Confluence documentation to generate an API token:
+             * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+             * @visibility secret
+             */
+            token?: string;
+            /**
+             * Email associated with the token, only required if type is set to 'basic'.
+             * @visibility secret
+             */
+            email?: string;
+            /**
+             * Confluence basic authentication username, only required if type is set to 'userpass'.
+             * While Confluence supports BASIC authentication, using an API token is preferred.
+             * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+             */
+            username?: string;
+            /**
+             * Confluence basic authentication password, only required if type is set to 'userpass'.
+             * While Confluence supports BASIC authentication, using an API token is preferred.
+             * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+             * @visibility secret
+             */
+            password?: string;
+          };
+          /**
+           * Options for page tree processing when fetching hierarchical documentation
+           */
+          pageTree?: {
+            /**
+             * Enable parallel fetching of child pages. Default: true
+             */
+            parallel?: boolean;
+            /**
+             * Maximum depth to traverse when fetching child pages. 0 = unlimited. Default: 0
+             */
+            maxDepth?: number;
+          };
+        };
       };
 }

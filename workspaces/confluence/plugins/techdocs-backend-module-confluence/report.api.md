@@ -12,12 +12,40 @@ import { PreparerOptions } from '@backstage/plugin-techdocs-node';
 import { PreparerResponse } from '@backstage/plugin-techdocs-node';
 
 // @public
+export interface ConfluenceConfig {
+  // (undocumented)
+  authType: 'bearer' | 'basic' | 'userpass';
+  // (undocumented)
+  baseUrl: string;
+  // (undocumented)
+  email?: string;
+  // (undocumented)
+  pageTree: {
+    parallel: boolean;
+    maxDepth: number;
+  };
+  // (undocumented)
+  password?: string;
+  // (undocumented)
+  token?: string;
+  // (undocumented)
+  username?: string;
+}
+
+// @public
+export interface ConfluenceInstanceConfig extends ConfluenceConfig {
+  // (undocumented)
+  instanceKey: string;
+}
+
+// @public
 export class ConfluencePreparer implements PreparerBase {
-  constructor(logger: LoggerService, config: Config);
+  constructor(logger: LoggerService, instances: ConfluenceInstanceConfig[]);
   static fromConfig(options: {
     logger: LoggerService;
     config: Config;
   }): ConfluencePreparer;
+  getInstances(): ConfluenceInstanceConfig[];
   static isConfluenceUrl(url: string): boolean;
   // (undocumented)
   prepare(
