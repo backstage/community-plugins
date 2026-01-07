@@ -33,4 +33,3 @@ costInsights:
     dailyActiveUsers:
       name: Daily Active Users
       default: true
-
