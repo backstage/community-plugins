@@ -1,9 +1,8 @@
 # Knip report
 
-## Unused dependencies (3)
+## Unused dependencies (2)
 
-| Name                      | Location          | Severity |
-| :------------------------ | :---------------- | :------- |
-| @backstage/catalog-client | package.json:45:6 | error    |
-| @backstage/types          | package.json:50:6 | error    |
-| luxon                     | package.json:54:6 | error    |
+| Name             | Location          | Severity |
+| :--------------- | :---------------- | :------- |
+| @backstage/types | package.json:49:6 | error    |
+| luxon            | package.json:53:6 | error    |
