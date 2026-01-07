@@ -13,11 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
+import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { servicenowTranslationRef } from './ref';
 
-import { mockUseTranslation } from './test-utils/mockTranslations';
+/**
+ * Translation resources for the ServiceNow plugin.
+ * @alpha
+ */
+export const servicenowTranslations = createTranslationResource({
+  ref: servicenowTranslationRef,
+  translations: {
+    de: () => import('./de'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+    es: () => import('./es'),
+    ja: () => import('./ja'),
+  },
+});
 
-// Global mock for useTranslation hook
-jest.mock('./hooks/useTranslation', () => ({
-  useTranslation: mockUseTranslation,
-}));
+export { servicenowTranslationRef };
