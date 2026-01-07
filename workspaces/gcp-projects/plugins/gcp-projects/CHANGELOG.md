@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.16.1
+
+### Patch Changes
+
+- 7e8df11: Updated dependency `@react-hookz/web` to `^25.0.0`.
+
 ## 0.16.0
 
 ### Minor Changes
