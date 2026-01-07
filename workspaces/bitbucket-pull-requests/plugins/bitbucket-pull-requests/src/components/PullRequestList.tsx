@@ -79,7 +79,9 @@ const PullRequestDetailPanel = ({ rowData }: { rowData: PullRequest }) => (
 
 const PullRequestList: FC = () => {
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
-  const [stateFilter, setStateFilter] = useState<string>('All');
+  const [stateFilter, setStateFilter] = useState<
+    'OPEN' | 'MERGED' | 'DECLINED' | 'ALL'
+  >('ALL');
   const [loading, setLoading] = useState(true);
   const { entity } = useEntity();
   const project = isBitbucketSlugSet(entity);
@@ -90,11 +92,7 @@ const PullRequestList: FC = () => {
   useEffect(() => {
     setLoading(true);
     bitbucketApi
-      .fetchPullRequestListForRepo(
-        projectName,
-        repoName,
-        stateFilter !== 'All' ? stateFilter : undefined,
-      )
+      .fetchPullRequestListForRepo(projectName, repoName, stateFilter)
       .then(data => {
         setPullRequests(data);
         setLoading(false);
@@ -166,7 +164,7 @@ const PullRequestList: FC = () => {
           <Box mr={1} />
           Bitbucket Pull Requests
           <Box position="absolute" right={320} top={20}>
-            <StatusFilter onFilterChange={setStateFilter} />
+            <StatusFilter onFilterChange={value => setStateFilter(value)} />
           </Box>
         </Box>
       }
