@@ -29,7 +29,6 @@ export type AnnouncementsPageProps = {
   maxPerPage?: number;
   category?: string;
   tags?: string[];
-  hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
   sortby?: 'created_at' | 'start_at';
@@ -42,15 +41,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const permissions = useAnnouncementsPermissions();
   const { t } = useAnnouncementsTranslation();
 
-  const {
-    hideInactive,
-    hideStartAt,
-    title,
-    maxPerPage,
-    category,
-    sortby,
-    order,
-  } = props;
+  const { hideStartAt, title, maxPerPage, category, sortby, order } = props;
 
   const canManageAnnouncements =
     !permissions.create.loading && permissions.create.allowed;
@@ -67,7 +58,6 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           maxPerPage={maxPerPage ?? 10}
           category={category ?? queryParams.get('category') ?? undefined}
           tags={props.tags}
-          active={!!hideInactive}
           sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}
           hideStartAt={hideStartAt}
