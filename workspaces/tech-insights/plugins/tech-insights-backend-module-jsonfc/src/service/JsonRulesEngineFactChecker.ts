@@ -69,7 +69,8 @@ export type JsonRulesEngineFactCheckerOptions = {
  * FactChecker implementation using json-rules-engine
  */
 export class JsonRulesEngineFactChecker
-  implements FactChecker<TechInsightJsonRuleCheck, JsonRuleBooleanCheckResult> {
+  implements FactChecker<TechInsightJsonRuleCheck, JsonRuleBooleanCheckResult>
+{
   private readonly checkRegistry: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   private repository: TechInsightsStore;
   private readonly logger: LoggerService;
@@ -177,7 +178,6 @@ export class JsonRulesEngineFactChecker
     entityValue: any,
     filterValue: string | symbol,
   ): boolean {
-
     // If entityValue is an array, treat it as "contains" semantics
     if (Array.isArray(entityValue)) {
       return entityValue.some(ev => this.compareValues(ev, filterValue));
@@ -229,14 +229,10 @@ export class JsonRulesEngineFactChecker
       const entity = await this.catalog.getEntityByRef(entityRef, {
         credentials,
       });
-      if (!entity) {
-        this.logger.warn(`Entity '${entityRef}' not found in catalog`);
-      }
 
       if (!entity) {
         this.logger.warn(`Entity '${entityRef}' not found in catalog`);
       }
-
       return entity;
     } catch (e) {
       // Log but don't throw - we'll fall back to running all checks without filtering
@@ -350,7 +346,8 @@ export class JsonRulesEngineFactChecker
         engine.addRule({ ...techInsightCheck.rule, event: noopEvent });
       } else {
         this.logger.debug(
-          `Skipping ${rule.name
+          `Skipping ${
+            rule.name
           } due to missing facts: ${techInsightCheck.factIds
             .filter(factId => !facts[factId])
             .join(', ')}`,
@@ -415,7 +412,8 @@ export class JsonRulesEngineFactChecker
     const failedReferences = results.filter(it => !it.result);
     failedReferences.forEach(it => {
       this.logger.warn(
-        `Validation failed for check ${check.name}. Reference to value ${it.ref
+        `Validation failed for check ${check.name}. Reference to value ${
+          it.ref
         } does not exists in referred fact schemas: ${check.factIds.join(',')}`,
       );
     });
@@ -424,10 +422,10 @@ export class JsonRulesEngineFactChecker
       valid,
       ...(!valid
         ? {
-          message: `Check is referencing missing values from fact schemas: ${failedReferences
-            .map(it => it.ref)
-            .join(',')}`,
-        }
+            message: `Check is referencing missing values from fact schemas: ${failedReferences
+              .map(it => it.ref)
+              .join(',')}`,
+          }
         : {}),
     };
   }
