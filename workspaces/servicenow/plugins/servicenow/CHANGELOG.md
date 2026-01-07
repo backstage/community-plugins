@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.5.1
+
+### Patch Changes
+
+- 40b4d6c: - Added internationalization (i18n) support with translations for German, French, Spanish, Italian, and Japanese
+
 ## 1.5.0
 
 ### Minor Changes

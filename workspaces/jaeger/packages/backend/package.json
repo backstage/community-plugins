@@ -44,7 +44,7 @@
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
     "app": "link:../app",
-    "better-sqlite3": "^9.0.0",
+    "better-sqlite3": "^12.0.0",
     "node-gyp": "^10.0.0",
     "pg": "^8.11.3"
   },
