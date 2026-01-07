@@ -61,6 +61,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}
           hideStartAt={hideStartAt}
+          active
         />
       </Container>
     </>

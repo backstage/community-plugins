@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ type AnnouncementsGridProps = {
   maxPerPage: number;
   category?: string;
   tags?: string[];
+  active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
   hideStartAt?: boolean;
@@ -33,6 +34,7 @@ export const AnnouncementsGrid = ({
   maxPerPage,
   category,
   tags,
+  active,
   sortBy,
   order,
   hideStartAt,
@@ -53,11 +55,10 @@ export const AnnouncementsGrid = ({
   const { announcements, loading, error } = useAnnouncements(
     {
       max: maxPerPage,
-      page,
+      page: page,
       category,
       tags: tags || tagsFromUrl,
-      // filter out all inactive announcements by default
-      active: true,
+      active,
       sortBy,
       order,
     },
