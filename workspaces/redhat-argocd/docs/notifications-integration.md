@@ -302,7 +302,91 @@ data:
       - name: Authorization
         value: Bearer $backstage-token
 
-  # ... Templates - same as above
+  template.app-deployed-backstage: |
+    webhook:
+      backstage:
+        method: POST
+        body: |
+          {
+            "recipients": {
+              "type": "entity",
+              "entityRef": "{{ index .app.metadata.annotations `backstage.io/entity-ref` }}"
+            },
+            "payload": {
+              "title": "{{ .app.metadata.name }} - Deployed",
+              "description": "Application deployed successfully.",
+              "link": "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}",
+              "severity": "low",
+              "topic": "argocd.deployed"
+            }
+          }
+  template.app-health-degraded-backstage: |
+    webhook:
+      backstage:
+        method: POST
+        body: |
+          {
+            "recipients": {
+              "type": "entity",
+              "entityRef": "{{ index .app.metadata.annotations `backstage.io/entity-ref` }}"
+            },
+            "payload": {
+              "title": "{{ .app.metadata.name }} - Health Degraded",
+              "description": "Application health degraded.",
+              "link": "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}",
+              "severity": "high",
+              "topic": "argocd.health.degraded"
+            }
+          }
+  template.app-sync-failed-backstage: |
+    webhook:
+      backstage:
+        method: POST
+        body: |
+          {
+            "recipients": {
+              "type": "entity",
+              "entityRef": "{{ index .app.metadata.annotations `backstage.io/entity-ref` }}"
+            },
+            "payload": {
+              "title": "{{ .app.metadata.name }} - Sync Failed",
+              "description": "Application sync has failed.",
+              "link": "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}",
+              "severity": "high",
+              "topic": "argocd.sync.failed"
+            }
+          }
+  template.app-sync-succeeded-backstage: |
+    webhook:
+      backstage:
+        method: POST
+        body: |
+          {
+            "recipients": {
+              "type": "entity",
+              "entityRef": "{{ index .app.metadata.annotations `backstage.io/entity-ref` }}"
+            },
+            "payload": {
+              "title": "{{ .app.metadata.name }} - Sync Succeeded",
+              "description": "Application has been synced successfully.",
+              "link": "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}",
+              "severity": "low",
+              "topic": "argocd.sync.succeeded"
+            }
+          }
+  trigger.on-deployed-backstage: >
+    - when: app.status.operationState.phase == 'Succeeded' and
+    app.status.health.status == 'Healthy'
+      send: [app-deployed-backstage]
+  trigger.on-health-degraded-backstage: |
+    - when: app.status.health.status == 'Degraded'
+      send: [app-health-degraded-backstage]
+  trigger.on-sync-failed-backstage: |
+    - when: app.status.operationState.phase in ['Error', 'Failed']
+      send: [app-sync-failed-backstage]
+  trigger.on-sync-succeeded-backstage: |
+    - when: app.status.operationState.phase == 'Succeeded'
+      send: [app-sync-succeeded-backstage]
 ```
 
 Apply it:
