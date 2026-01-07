@@ -27,23 +27,6 @@ const DEFAULT_BRANCH = 'master';
 const REPORT_PATH = 'report.api.md';
 const REPORT_PATH_ALPHA = 'report-alpha.api.md';
 const ROLE_MAP = {
-  backend: {
-    check: report =>
-      report.includes(
-        "import { BackendFeature } from '@backstage/backend-plugin-api';",
-      ) ||
-      report.includes(
-        "import { BackendFeatureCompat } from '@backstage/backend-plugin-api';",
-      ),
-    reportPath: resolve(
-      __dirname,
-      '..',
-      'docs',
-      'compatibility',
-      'new-backend-system.md',
-    ),
-    roles: ['backend-plugin', 'backend-plugin-module'],
-  },
   frontend: {
     check: report =>
       report
