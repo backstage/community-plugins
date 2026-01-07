@@ -33,7 +33,7 @@
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.14",
     "@backstage/plugin-scaffolder-backend": "^3.0.1",
     "app": "link:../app",
-    "better-sqlite3": "^9.0.0",
+    "better-sqlite3": "^12.0.0",
     "node-gyp": "^10.0.0",
     "pg": "^8.11.3",
     "winston": "^3.2.1"
