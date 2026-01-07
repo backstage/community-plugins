@@ -18,6 +18,7 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
 import {
   AnnouncementsAdminPage,
+  AnnouncementsContent,
   CategoriesContent,
   TagsContent,
   AnnouncementsPage,
@@ -25,8 +26,7 @@ import {
   ViewAnnouncementPage,
 } from './components';
 
-// todo: pending rebuild for nfs with `@backstage/ui`
-import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
+import { MarkdownRendererTypeProps } from '../components';
 
 type RouterProps = {
   title?: string;
