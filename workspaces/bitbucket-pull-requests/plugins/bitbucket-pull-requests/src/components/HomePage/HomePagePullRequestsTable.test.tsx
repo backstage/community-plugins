@@ -101,6 +101,7 @@ describe('HomePagePullRequestsTable', () => {
   const bitbucketApiMapper = new BitbucketApi({
     discoveryApi: { getBaseUrl: jest.fn() } as any,
     identityApi: { getBackstageIdentity: jest.fn() } as any,
+    fetchApi: { getBackstageIdentity: jest.fn() } as any,
   });
 
   // Map the response stub data to PullRequest objects and add buildStatus
