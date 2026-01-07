@@ -69,8 +69,7 @@ export type JsonRulesEngineFactCheckerOptions = {
  * FactChecker implementation using json-rules-engine
  */
 export class JsonRulesEngineFactChecker
-  implements FactChecker<TechInsightJsonRuleCheck, JsonRuleBooleanCheckResult>
-{
+  implements FactChecker<TechInsightJsonRuleCheck, JsonRuleBooleanCheckResult> {
   private readonly checkRegistry: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   private repository: TechInsightsStore;
   private readonly logger: LoggerService;
@@ -178,6 +177,12 @@ export class JsonRulesEngineFactChecker
     entityValue: any,
     filterValue: string | symbol,
   ): boolean {
+
+    // If entityValue is an array, treat it as "contains" semantics
+    if (Array.isArray(entityValue)) {
+      return entityValue.some(ev => this.compareValues(ev, filterValue));
+    }
+
     // Handle string comparison case-insensitively for kind, type, lifecycle, etc.
     // This provides a better user experience as these values are typically case-insensitive
     if (typeof entityValue === 'string' && typeof filterValue === 'string') {
@@ -345,8 +350,7 @@ export class JsonRulesEngineFactChecker
         engine.addRule({ ...techInsightCheck.rule, event: noopEvent });
       } else {
         this.logger.debug(
-          `Skipping ${
-            rule.name
+          `Skipping ${rule.name
           } due to missing facts: ${techInsightCheck.factIds
             .filter(factId => !facts[factId])
             .join(', ')}`,
@@ -411,8 +415,7 @@ export class JsonRulesEngineFactChecker
     const failedReferences = results.filter(it => !it.result);
     failedReferences.forEach(it => {
       this.logger.warn(
-        `Validation failed for check ${check.name}. Reference to value ${
-          it.ref
+        `Validation failed for check ${check.name}. Reference to value ${it.ref
         } does not exists in referred fact schemas: ${check.factIds.join(',')}`,
       );
     });
@@ -421,10 +424,10 @@ export class JsonRulesEngineFactChecker
       valid,
       ...(!valid
         ? {
-            message: `Check is referencing missing values from fact schemas: ${failedReferences
-              .map(it => it.ref)
-              .join(',')}`,
-          }
+          message: `Check is referencing missing values from fact schemas: ${failedReferences
+            .map(it => it.ref)
+            .join(',')}`,
+        }
         : {}),
     };
   }
