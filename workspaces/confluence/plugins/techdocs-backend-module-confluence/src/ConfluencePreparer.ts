@@ -44,6 +44,14 @@ interface ConfluenceConfig {
   };
 }
 
+/**
+ * Named instance configuration with instance key
+ * @public
+ */
+export interface ConfluenceInstanceConfig extends ConfluenceConfig {
+  instanceKey: string;
+}
+
 interface ConfluencePage {
   id: string;
   title: string;
@@ -94,64 +102,71 @@ interface ConfluenceAttachment {
  */
 export class ConfluencePreparer implements PreparerBase {
   private readonly logger: LoggerService;
-  private readonly config: ConfluenceConfig;
+  private readonly instances: ConfluenceInstanceConfig[];
 
-  constructor(logger: LoggerService, config: Config) {
+  constructor(logger: LoggerService, instances: ConfluenceInstanceConfig[]) {
     this.logger = logger;
+    this.instances = instances;
 
-    const confluenceConfig = config.getOptionalConfig('confluence');
-    if (!confluenceConfig) {
+    if (instances.length === 0) {
       throw new Error(
-        'Confluence configuration is missing. Please add confluence section to app-config.yaml',
+        'No Confluence instances configured. Please add confluence section to app-config.yaml',
       );
     }
 
-    const authType =
-      (confluenceConfig.getOptionalString('auth.type') as
-        | 'bearer'
-        | 'basic'
-        | 'userpass') || 'bearer';
-
-    this.config = {
-      baseUrl: confluenceConfig.getString('baseUrl'),
-      authType,
-      token: confluenceConfig.getOptionalString('auth.token'),
-      email: confluenceConfig.getOptionalString('auth.email'),
-      username: confluenceConfig.getOptionalString('auth.username'),
-      password: confluenceConfig.getOptionalString('auth.password'),
-      pageTree: {
-        parallel:
-          confluenceConfig.getOptionalBoolean('pageTree.parallel') ?? true,
-        maxDepth: confluenceConfig.getOptionalNumber('pageTree.maxDepth') ?? 0,
-      },
-    };
-
-    // Ensure baseUrl doesn't end with a slash
-    this.config.baseUrl = this.config.baseUrl.replace(/\/$/, '');
+    this.logger.info(
+      `Configured ${instances.length} Confluence instance(s): ${instances
+        .map(i => i.instanceKey)
+        .join(', ')}`,
+    );
   }
 
   /**
-   * Get the Authorization header value based on auth type
+   * Get the matching instance configuration for a given URL
    */
-  private getAuthorizationHeader(): string | undefined {
-    switch (this.config.authType) {
+  private getInstanceForUrl(url: string): ConfluenceInstanceConfig | undefined {
+    try {
+      const urlObj = new URL(url);
+      const urlHost = urlObj.hostname.toLowerCase();
+
+      // Find instance where baseUrl hostname matches the URL hostname
+      return this.instances.find(instance => {
+        try {
+          const baseUrlObj = new URL(instance.baseUrl);
+          return urlHost === baseUrlObj.hostname.toLowerCase();
+        } catch {
+          return false;
+        }
+      });
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Get the Authorization header value based on auth type for a specific instance
+   */
+  private getAuthorizationHeader(
+    instanceConfig: ConfluenceConfig,
+  ): string | undefined {
+    switch (instanceConfig.authType) {
       case 'bearer':
-        if (this.config.token) {
-          return `Bearer ${this.config.token}`;
+        if (instanceConfig.token) {
+          return `Bearer ${instanceConfig.token}`;
         }
         break;
       case 'basic':
-        if (this.config.email && this.config.token) {
+        if (instanceConfig.email && instanceConfig.token) {
           const auth = Buffer.from(
-            `${this.config.email}:${this.config.token}`,
+            `${instanceConfig.email}:${instanceConfig.token}`,
           ).toString('base64');
           return `Basic ${auth}`;
         }
         break;
       case 'userpass':
-        if (this.config.username && this.config.password) {
+        if (instanceConfig.username && instanceConfig.password) {
           const auth = Buffer.from(
-            `${this.config.username}:${this.config.password}`,
+            `${instanceConfig.username}:${instanceConfig.password}`,
           ).toString('base64');
           return `Basic ${auth}`;
         }
@@ -163,13 +178,101 @@ export class ConfluencePreparer implements PreparerBase {
   }
 
   /**
+   * Get all configured Confluence instances
+   */
+  getInstances(): ConfluenceInstanceConfig[] {
+    return this.instances;
+  }
+
+  /**
    * Factory method to create a ConfluencePreparer
    */
   static fromConfig(options: {
     logger: LoggerService;
     config: Config;
   }): ConfluencePreparer {
-    return new ConfluencePreparer(options.logger, options.config);
+    const instances = ConfluencePreparer.parseConfluenceConfig(options.config);
+    return new ConfluencePreparer(options.logger, instances);
+  }
+
+  /**
+   * Parse Confluence configuration, supporting both single instance and multi-instance formats
+   */
+  private static parseConfluenceConfig(
+    config: Config,
+  ): ConfluenceInstanceConfig[] {
+    const confluenceConfig = config.getOptionalConfig('confluence');
+    if (!confluenceConfig) {
+      throw new Error(
+        'Confluence configuration is missing. Please add confluence section to app-config.yaml',
+      );
+    }
+
+    // Check if this is single instance format (has baseUrl at top level)
+    const hasBaseUrl = confluenceConfig.has('baseUrl');
+
+    if (hasBaseUrl) {
+      // Single instance format
+      const instance = ConfluencePreparer.parseInstanceConfig(
+        confluenceConfig,
+        'default',
+      );
+      return [instance];
+    }
+
+    // Multi-instance format: each key is an instance name
+    const instances: ConfluenceInstanceConfig[] = [];
+    const instanceKeys = confluenceConfig.keys();
+
+    for (const instanceKey of instanceKeys) {
+      const instanceConfig = confluenceConfig.getConfig(instanceKey);
+      const instance = ConfluencePreparer.parseInstanceConfig(
+        instanceConfig,
+        instanceKey,
+      );
+      instances.push(instance);
+    }
+
+    if (instances.length === 0) {
+      throw new Error(
+        'No Confluence instances found in configuration. Please add at least one instance.',
+      );
+    }
+
+    return instances;
+  }
+
+  /**
+   * Parse a single Confluence instance configuration
+   */
+  private static parseInstanceConfig(
+    instanceConfig: Config,
+    instanceKey: string,
+  ): ConfluenceInstanceConfig {
+    const authType =
+      (instanceConfig.getOptionalString('auth.type') as
+        | 'bearer'
+        | 'basic'
+        | 'userpass') || 'bearer';
+
+    let baseUrl = instanceConfig.getString('baseUrl');
+    // Ensure baseUrl doesn't end with a slash
+    baseUrl = baseUrl.replace(/\/$/, '');
+
+    return {
+      instanceKey,
+      baseUrl,
+      authType,
+      token: instanceConfig.getOptionalString('auth.token'),
+      email: instanceConfig.getOptionalString('auth.email'),
+      username: instanceConfig.getOptionalString('auth.username'),
+      password: instanceConfig.getOptionalString('auth.password'),
+      pageTree: {
+        parallel:
+          instanceConfig.getOptionalBoolean('pageTree.parallel') ?? true,
+        maxDepth: instanceConfig.getOptionalNumber('pageTree.maxDepth') ?? 0,
+      },
+    };
   }
 
   shouldCleanPreparedDirectory(): boolean {
@@ -190,7 +293,20 @@ export class ConfluencePreparer implements PreparerBase {
     // Parse the annotation: confluence-url:https://...
     const confluenceUrl = this.parseConfluenceAnnotation(annotation);
 
-    this.logger.info(`Fetching Confluence page from: ${confluenceUrl}`);
+    // Find the matching Confluence instance for this URL
+    const instanceConfig = this.getInstanceForUrl(confluenceUrl);
+    if (!instanceConfig) {
+      throw new InputError(
+        `No Confluence instance configured for URL: ${confluenceUrl}. ` +
+          `Configured instances: ${this.instances
+            .map(i => `${i.instanceKey} (${i.baseUrl})`)
+            .join(', ')}`,
+      );
+    }
+
+    this.logger.info(
+      `Fetching Confluence page from: ${confluenceUrl} (instance: ${instanceConfig.instanceKey})`,
+    );
 
     // Extract space key and page title/id from URL
     const { spaceKey, pageTitle, pageId } =
@@ -198,6 +314,7 @@ export class ConfluencePreparer implements PreparerBase {
 
     // Fetch the Confluence page with children
     const page = await this.fetchConfluencePageWithChildren(
+      instanceConfig,
       spaceKey,
       pageTitle,
       pageId,
@@ -214,7 +331,12 @@ export class ConfluencePreparer implements PreparerBase {
       await fs.mkdir(docsDir);
 
       // Process the page tree
-      const navItems = await this.processPageTree(page, docsDir, '');
+      const navItems = await this.processPageTree(
+        instanceConfig,
+        page,
+        docsDir,
+        '',
+      );
 
       // Create mkdocs.yml with full navigation
       const mkdocsConfig = {
@@ -246,6 +368,7 @@ export class ConfluencePreparer implements PreparerBase {
    * Process a Confluence page tree recursively
    */
   private async processPageTree(
+    instanceConfig: ConfluenceInstanceConfig,
     page: ConfluencePageWithChildren,
     docsDir: string,
     pathPrefix: string,
@@ -260,8 +383,9 @@ export class ConfluencePreparer implements PreparerBase {
     );
 
     // Fetch and process attachments for this page
-    const attachments = await this.fetchAttachments(page.id);
+    const attachments = await this.fetchAttachments(instanceConfig, page.id);
     const markdownWithAttachments = await this.processAttachments(
+      instanceConfig,
       markdown,
       attachments,
       docsDir,
@@ -291,7 +415,7 @@ export class ConfluencePreparer implements PreparerBase {
     const childPages = page.children?.page?.results || [];
 
     // Check if we should process children (respect maxDepth if set)
-    const { maxDepth, parallel } = this.config.pageTree;
+    const { maxDepth, parallel } = instanceConfig.pageTree;
     const shouldProcessChildren =
       childPages.length > 0 && (maxDepth === 0 || depth < maxDepth);
 
@@ -317,7 +441,10 @@ export class ConfluencePreparer implements PreparerBase {
         this.logger.debug(`Fetching child page: ${childSummary.title}`);
 
         // Fetch the full child page with its children
-        const childPage = await this.fetchConfluencePageById(childSummary.id);
+        const childPage = await this.fetchConfluencePageById(
+          instanceConfig,
+          childSummary.id,
+        );
 
         // Create subdirectory path for child pages
         const childPrefix = pathPrefix
@@ -325,7 +452,13 @@ export class ConfluencePreparer implements PreparerBase {
           : this.sanitizeFileName(page.title);
 
         // Recursively process child pages (pass depth + 1)
-        return this.processPageTree(childPage, docsDir, childPrefix, depth + 1);
+        return this.processPageTree(
+          instanceConfig,
+          childPage,
+          docsDir,
+          childPrefix,
+          depth + 1,
+        );
       };
 
       let childNavResults: any[][];
@@ -360,15 +493,16 @@ export class ConfluencePreparer implements PreparerBase {
    * Fetch a Confluence page by ID with children
    */
   private async fetchConfluencePageById(
+    instanceConfig: ConfluenceInstanceConfig,
     pageId: string,
   ): Promise<ConfluencePageWithChildren> {
-    const apiUrl = `${this.config.baseUrl}/rest/api/content/${pageId}?expand=body.export_view,children.page`;
+    const apiUrl = `${instanceConfig.baseUrl}/rest/api/content/${pageId}?expand=body.export_view,children.page`;
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    const authHeader = this.getAuthorizationHeader();
+    const authHeader = this.getAuthorizationHeader(instanceConfig);
     if (authHeader) {
       headers.Authorization = authHeader;
     }
@@ -469,6 +603,7 @@ export class ConfluencePreparer implements PreparerBase {
   }
 
   private async fetchConfluencePageWithChildren(
+    instanceConfig: ConfluenceInstanceConfig,
     spaceKey?: string,
     pageTitle?: string,
     pageId?: string,
@@ -477,11 +612,11 @@ export class ConfluencePreparer implements PreparerBase {
 
     if (pageId) {
       // Fetch by page ID with children
-      apiUrl = `${this.config.baseUrl}/rest/api/content/${pageId}?expand=body.export_view,children.page`;
+      apiUrl = `${instanceConfig.baseUrl}/rest/api/content/${pageId}?expand=body.export_view,children.page`;
     } else if (spaceKey && pageTitle) {
       // Fetch by space key and title with children
       apiUrl = `${
-        this.config.baseUrl
+        instanceConfig.baseUrl
       }/rest/api/content?title=${encodeURIComponent(
         pageTitle,
       )}&spaceKey=${spaceKey}&expand=body.export_view,children.page`;
@@ -495,7 +630,7 @@ export class ConfluencePreparer implements PreparerBase {
       'Content-Type': 'application/json',
     };
 
-    const authHeader = this.getAuthorizationHeader();
+    const authHeader = this.getAuthorizationHeader(instanceConfig);
     if (authHeader) {
       headers.Authorization = authHeader;
     }
@@ -533,15 +668,16 @@ export class ConfluencePreparer implements PreparerBase {
   }
 
   private async fetchAttachments(
+    instanceConfig: ConfluenceInstanceConfig,
     pageId: string,
   ): Promise<ConfluenceAttachment[]> {
-    const apiUrl = `${this.config.baseUrl}/rest/api/content/${pageId}/child/attachment`;
+    const apiUrl = `${instanceConfig.baseUrl}/rest/api/content/${pageId}/child/attachment`;
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    const authHeader = this.getAuthorizationHeader();
+    const authHeader = this.getAuthorizationHeader(instanceConfig);
     if (authHeader) {
       headers.Authorization = authHeader;
     }
@@ -586,6 +722,7 @@ export class ConfluencePreparer implements PreparerBase {
   }
 
   private async processAttachments(
+    instanceConfig: ConfluenceInstanceConfig,
     markdown: string,
     attachments: ConfluenceAttachment[],
     docsDir: string,
@@ -651,10 +788,10 @@ export class ConfluencePreparer implements PreparerBase {
           continue;
         }
 
-        const downloadUrl = `${this.config.baseUrl}${attachment._links.download}`;
+        const downloadUrl = `${instanceConfig.baseUrl}${attachment._links.download}`;
 
         const headers: Record<string, string> = {};
-        const authHeader = this.getAuthorizationHeader();
+        const authHeader = this.getAuthorizationHeader(instanceConfig);
         if (authHeader) {
           headers.Authorization = authHeader;
         }

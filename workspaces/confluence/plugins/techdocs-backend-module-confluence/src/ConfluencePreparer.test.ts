@@ -205,6 +205,96 @@ describe('ConfluencePreparer', () => {
       const preparer = ConfluencePreparer.fromConfig({ logger, config });
       expect(preparer).toBeInstanceOf(ConfluencePreparer);
     });
+
+    it('should create preparer with multiple instances config', () => {
+      const config = new ConfigReader({
+        confluence: {
+          default: {
+            baseUrl: 'https://company.atlassian.net/wiki',
+            auth: {
+              type: 'bearer',
+              token: 'test-token',
+            },
+          },
+          secondary: {
+            baseUrl: 'https://other-company.atlassian.net/wiki',
+            auth: {
+              type: 'basic',
+              token: 'other-token',
+              email: 'user@other.com',
+            },
+          },
+        },
+      });
+      const logger = mockLogger;
+
+      const preparer = ConfluencePreparer.fromConfig({ logger, config });
+      expect(preparer).toBeInstanceOf(ConfluencePreparer);
+      expect(preparer.getInstances()).toHaveLength(2);
+      expect(preparer.getInstances().map(i => i.instanceKey)).toEqual([
+        'default',
+        'secondary',
+      ]);
+    });
+
+    it('should return single instance with default key for single instance config', () => {
+      const config = new ConfigReader({
+        confluence: {
+          baseUrl: 'https://company.atlassian.net/wiki',
+          auth: {
+            type: 'bearer',
+            token: 'test-token',
+          },
+        },
+      });
+      const logger = mockLogger;
+
+      const preparer = ConfluencePreparer.fromConfig({ logger, config });
+      expect(preparer.getInstances()).toHaveLength(1);
+      expect(preparer.getInstances()[0].instanceKey).toBe('default');
+    });
+
+    it('should correctly parse multiple instances with different auth types', () => {
+      const config = new ConfigReader({
+        confluence: {
+          cloud: {
+            baseUrl: 'https://company.atlassian.net/wiki',
+            auth: {
+              type: 'bearer',
+              token: 'cloud-token',
+            },
+          },
+          onprem: {
+            baseUrl: 'https://confluence.internal.com',
+            auth: {
+              type: 'userpass',
+              username: 'admin',
+              password: 'secret',
+            },
+            pageTree: {
+              parallel: false,
+              maxDepth: 3,
+            },
+          },
+        },
+      });
+      const logger = mockLogger;
+
+      const preparer = ConfluencePreparer.fromConfig({ logger, config });
+      const instances = preparer.getInstances();
+
+      expect(instances).toHaveLength(2);
+
+      const cloudInstance = instances.find(i => i.instanceKey === 'cloud');
+      expect(cloudInstance?.baseUrl).toBe('https://company.atlassian.net/wiki');
+      expect(cloudInstance?.authType).toBe('bearer');
+
+      const onpremInstance = instances.find(i => i.instanceKey === 'onprem');
+      expect(onpremInstance?.baseUrl).toBe('https://confluence.internal.com');
+      expect(onpremInstance?.authType).toBe('userpass');
+      expect(onpremInstance?.pageTree.parallel).toBe(false);
+      expect(onpremInstance?.pageTree.maxDepth).toBe(3);
+    });
   });
 
   describe('shouldCleanPreparedDirectory', () => {

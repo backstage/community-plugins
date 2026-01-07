@@ -22,3 +22,4 @@
 
 export { techdocsModuleConfluence as default } from './module';
 export { ConfluencePreparer } from './ConfluencePreparer';
+export type { ConfluenceInstanceConfig } from './ConfluencePreparer';

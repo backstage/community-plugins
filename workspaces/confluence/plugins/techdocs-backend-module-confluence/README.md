@@ -8,6 +8,7 @@ This plugin provides a TechDocs preparer that fetches documentation from Conflue
 - **Page tree support** - Recursively fetches child pages to build a complete documentation hierarchy
 - **Attachment handling** - Downloads and embeds images and draw.io diagrams
 - **Multiple URL formats** - Supports Confluence Cloud and Server/Data Center URL patterns
+- **Multiple Confluence instances** - Connect to multiple Confluence instances and automatically route URLs to the correct one
 - **Hybrid preparer** - Transparently handles both Confluence URLs and standard TechDocs URLs
 
 ## Installation
@@ -108,6 +109,48 @@ confluence:
     # Useful for limiting very deep page hierarchies
     maxDepth: 5
 ```
+
+### Multiple Confluence Instances
+
+If your organization uses multiple Confluence instances (e.g., different teams or acquired companies), you can configure them all under named keys. The module will automatically route TechDocs requests to the correct instance based on the URL hostname.
+
+```yaml
+confluence:
+  # Primary instance
+  default:
+    baseUrl: 'https://company.atlassian.net/wiki'
+    auth:
+      type: 'bearer'
+      token: '${CONFLUENCE_TOKEN}'
+    pageTree:
+      parallel: true
+      maxDepth: 0
+
+  # Secondary instance (e.g., acquired company)
+  secondary:
+    baseUrl: 'https://other-company.atlassian.net/wiki'
+    auth:
+      type: 'basic'
+      token: '${CONFLUENCE_SECONDARY_TOKEN}'
+      email: 'user@other-company.com'
+
+  # On-premise instance
+  onprem:
+    baseUrl: 'https://confluence.internal.company.com'
+    auth:
+      type: 'userpass'
+      username: '${CONFLUENCE_ONPREM_USERNAME}'
+      password: '${CONFLUENCE_ONPREM_PASSWORD}'
+```
+
+**How URL routing works:**
+
+- When an entity has a `backstage.io/techdocs-ref` annotation pointing to a Confluence URL
+- The module extracts the hostname from the URL (e.g., `company.atlassian.net`)
+- It finds the configured instance whose `baseUrl` matches that hostname
+- The request is authenticated and processed using that instance's credentials
+
+This means you can have entities from different Confluence instances without any additional configuration on the entity side - just use the correct Confluence URL in the annotation.
 
 ## Usage
 

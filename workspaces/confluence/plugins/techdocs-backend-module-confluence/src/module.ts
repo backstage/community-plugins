@@ -50,6 +50,14 @@ export const techdocsModuleConfluence = createBackendModule({
           config,
         });
 
+        // Log configured instances
+        const instances = confluencePreparer.getInstances();
+        logger.info(
+          `Configured ${instances.length} Confluence instance(s): ${instances
+            .map(i => `${i.instanceKey} (${i.baseUrl})`)
+            .join(', ')}`,
+        );
+
         // Create standard URL preparer as fallback
         const standardUrlPreparer = UrlPreparer.fromConfig({
           reader: urlReader,
@@ -96,7 +104,7 @@ export const techdocsModuleConfluence = createBackendModule({
         techdocs.registerPreparer('url', hybridPreparer);
 
         logger.info(
-          'TechDocs Confluence preparer registered (handles Confluence URLs within standard url: protocol)',
+          `TechDocs Confluence preparer registered for ${instances.length} instance(s)`,
         );
       },
     });
