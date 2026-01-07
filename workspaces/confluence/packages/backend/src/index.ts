@@ -47,6 +47,7 @@ backend.add(
 );
 
 // confluence techdocs plugin
+backend.add(import('@backstage/plugin-techdocs-backend'));
 backend.add(
   import('@backstage-community/plugin-techdocs-backend-module-confluence'),
 );
