@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.11.1
+
+### Patch Changes
+
+- b2c4feb: Updated dependency `@hey-api/openapi-ts` to `0.90.1`.
+
 ## 2.11.0
 
 ### Minor Changes
