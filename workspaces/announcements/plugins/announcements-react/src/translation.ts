@@ -51,6 +51,7 @@ export const announcementsTranslationRef = createTranslationRef({
         scheduled: 'Scheduled ',
         today: 'Today',
       },
+      /** @deprecated - use admin.announcementsContent.deletedMessage instead */
       grid: {
         announcementDeleted: 'Announcement deleted.',
       },
@@ -172,6 +173,7 @@ export const announcementsTranslationRef = createTranslationRef({
         alertMessageWithNewCategory: 'with new category',
         cancelButton: 'Cancel',
         createButton: 'Create Announcement',
+        deletedMessage: 'Announcement deleted.',
         announcements: 'Announcements',
         noAnnouncementsFound: 'No announcements found',
         table: {

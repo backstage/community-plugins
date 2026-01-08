@@ -200,7 +200,7 @@ export const AnnouncementsContent = ({
       await announcementsApi.deleteAnnouncementByID(announcementToDelete!.id);
 
       alertApi.post({
-        message: t('admin.announcementsContent.table.announcementDeleted'),
+        message: t('admin.announcementsContent.deletedMessage'),
         severity: 'success',
       });
     } catch (err) {
