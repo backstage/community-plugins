@@ -138,10 +138,15 @@ export const AppListPage = (props: {
           namespacesResponse,
           namespaces,
         );
-        const namespaceInfos = allNamespaces.filter(ns =>
-          activeNs.includes(ns.name),
-        );
+        const namespaceInfos =
+          activeNs.length > 0
+            ? allNamespaces.filter(ns => activeNs.includes(ns.name))
+            : [];
         setNamespaces(namespaceInfos);
+        if (namespaceInfos.length === 0) {
+          setApps([]);
+          return;
+        }
         fetchApps(Array.from(uniqueClusters), duration);
       })
       .catch(err =>

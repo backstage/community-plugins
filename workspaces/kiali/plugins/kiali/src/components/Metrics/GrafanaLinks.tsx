@@ -18,7 +18,7 @@ import {
   MetricsObjectTypes,
 } from '@backstage-community/plugin-kiali-common/types';
 import { ToolbarItem } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { default as React } from 'react';
 
 type Props = {
@@ -82,7 +82,8 @@ export class GrafanaLinks extends React.PureComponent<Props, {}> {
               target="_blank"
               rel="noopener noreferrer"
             >
-              View in Grafana <ExternalLinkAltIcon />
+              View in Grafana{' '}
+              <OpenInNewIcon style={{ verticalAlign: '-0.2em' }} />
             </a>
           </ToolbarItem>
         )}
@@ -98,7 +99,8 @@ export class GrafanaLinks extends React.PureComponent<Props, {}> {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {link[0]} <ExternalLinkAltIcon />
+                  {link[0]}{' '}
+                  <OpenInNewIcon style={{ verticalAlign: '-0.2em' }} />
                 </a>
               ))
               .reduce((prev, curr) => [prev, ', ', curr] as any)}

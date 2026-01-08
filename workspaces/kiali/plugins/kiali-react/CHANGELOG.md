@@ -1,5 +1,16 @@
 # @backstage-community/plugin-kiali-react
 
+## 0.6.0
+
+### Minor Changes
+
+- 6de187e: Dependency upgrade: react-icons, supertest, monorepo
+
+### Patch Changes
+
+- Updated dependencies [6de187e]
+  - @backstage-community/plugin-kiali-common@0.9.0
+
 ## 0.5.2
 
 ### Patch Changes

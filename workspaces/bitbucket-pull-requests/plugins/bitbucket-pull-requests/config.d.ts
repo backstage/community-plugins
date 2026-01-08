@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { kialiStyle } from '../../styles/StyleUtils';
-import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
-
-export const healthIndicatorStyle = kialiStyle({
-  $nest: {
-    '& .pf-v6-c-tooltip__content': {
-      borderWidth: '1px',
-      textAlign: 'left',
-      fontSize: '14px',
-      lineHeight: 1.35,
-    },
-
-    '& .pf-v6-c-content ul': {
-      marginBottom: 'var(--pf-v6-c-content--ul--MarginTop)',
-      marginTop: 0,
-      color: PFColors.Color100,
-    },
-  },
-});
+export interface Config {
+  bitbucket?: {
+    /**
+     * Proxy path for BitBucket API requests
+     * @visibility frontend
+     */
+    proxyPath?: string;
+  };
+}

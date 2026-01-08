@@ -163,6 +163,8 @@ jobs:
               echo "Creating new branch"
               git checkout -b "$BRANCH_NAME"
           fi
+
+      # Run the version bump
       - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }} command
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }}
@@ -171,6 +173,13 @@ jobs:
       - name: Run dedupe
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn dedupe
+
+      # Update report-api as well
+      - name: Update api reports
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn tsc && yarn build:all && yarn build:api-reports
+        continue-on-error: true
+
       - name: 'Check for changes'
         id: check_for_changes
         run: |
