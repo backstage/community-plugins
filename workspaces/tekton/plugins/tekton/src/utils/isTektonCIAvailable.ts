@@ -17,20 +17,15 @@ import { Entity } from '@backstage/catalog-model';
 
 import { TektonAnnotations } from '@backstage-community/plugin-tekton-common';
 
-/** @deprecated */
-const DEPRECATED_JANUS_IDP_ANNOTATION = 'janus-idp.io/tekton';
-
 /**
  * Returns true if the entity supports the Tekton CI/CD feature and
  * the Tekton CI/CD card should be shown on the CI/CD tab.
  *
  * This means that the catalog entity has one of this annotations set:
  *
- * 1. `tekton.dev/ci-cd: "true"` or
- * 2. `janus-idp.io/tekton` is defined (any value is accepted).
+ * `tekton.dev/ci-cd: "true"`
  *
  * @public
  */
 export const isTektonCIAvailable = (entity: Entity): boolean =>
-  entity.metadata.annotations?.[TektonAnnotations.CICD] === 'true' ||
-  Boolean(entity.metadata.annotations?.[DEPRECATED_JANUS_IDP_ANNOTATION]);
+  entity.metadata.annotations?.[TektonAnnotations.CICD] === 'true';
