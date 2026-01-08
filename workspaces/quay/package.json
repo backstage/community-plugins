@@ -51,7 +51,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "refractor@npm:3.6.0/prismjs": "^1.30.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
