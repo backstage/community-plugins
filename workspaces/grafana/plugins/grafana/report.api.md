@@ -102,7 +102,9 @@ export const grafanaPlugin: BackstagePlugin<{}, {}, {}>;
 export const isAlertSelectorAvailable: (entity: Entity) => boolean;
 
 // @public
-export const isDashboardSelectorAvailable: (entity: Entity) => string;
+export const isDashboardSelectorAvailable: (
+  entity: Entity,
+) => string | undefined;
 
 // @public
 export const isOverviewDashboardAvailable: (entity: Entity) => boolean;
