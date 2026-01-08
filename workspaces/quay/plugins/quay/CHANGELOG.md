@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.28.1
+
+### Patch Changes
+
+- 6fbecf3: fix inconsistent date rendering in quay repository table
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+
 ## 1.28.0
 
 ### Minor Changes
