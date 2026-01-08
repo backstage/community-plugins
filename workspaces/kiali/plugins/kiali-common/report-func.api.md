@@ -9,7 +9,7 @@
 import type { Annotation } from 'react-ace/types';
 import type { IMarker } from 'react-ace';
 import { isAxiosError } from 'axios';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
 
 // @public
 export const aggregate: (request: RequestType, tolerances?: ToleranceConfig[]) => RequestTolerance[];

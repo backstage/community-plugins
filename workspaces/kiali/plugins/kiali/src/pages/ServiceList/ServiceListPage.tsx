@@ -203,8 +203,15 @@ export const ServiceListPage = (props: {
           namespacesResponse,
           namespaces,
         );
-        const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
+        const nsl =
+          activeNs.length > 0
+            ? allNamespaces.filter(ns => activeNs.includes(ns.name))
+            : [];
         setNamespaces(nsl);
+        if (nsl.length === 0) {
+          setServices([]);
+          return;
+        }
         fetchServices(Array.from(uniqueClusters), duration);
       })
       .catch(err =>

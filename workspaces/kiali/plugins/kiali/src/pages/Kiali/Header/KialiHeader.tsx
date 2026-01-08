@@ -15,7 +15,7 @@
  */
 import { Header } from '@backstage/core-components';
 import { Chip, Tooltip, Typography } from '@material-ui/core';
-import { ClusterIcon } from '@patternfly/react-icons';
+import HubIcon from '@mui/icons-material/Hub';
 import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import {
@@ -62,7 +62,9 @@ const KialiHeaderContent = () => {
       >
         <Chip
           variant="outlined"
-          icon={<ClusterIcon style={{ color: iconColor }} />}
+          icon={
+            <HubIcon style={iconColor ? { color: iconColor } : undefined} />
+          }
           label={homeCluster?.name || 'Home Cluster'}
           data-test="home-cluster"
           style={{ color: textColor, borderColor: textColor }}

@@ -173,13 +173,18 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
         namespacesResponse,
         namespaces,
       );
-      // If activeNs is empty, use all namespaces, otherwise filter by activeNs
+      // If no namespaces are selected, don't fetch anything.
       const nsl =
         activeNs.length > 0
           ? allNamespaces.filter(ns => activeNs.includes(ns.name))
-          : allNamespaces;
+          : [];
 
       setNamespaces(nsl);
+      if (nsl.length === 0) {
+        setWorkloads([]);
+        setLoadingData(false);
+        return;
+      }
       await fetchWorkloads(Array.from(uniqueClusters), duration);
     } catch (err) {
       setErrorProvider(

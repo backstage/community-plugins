@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ErrorCircleOIcon } from '@patternfly/react-icons';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export const canRender = (value: any): boolean => {
   return typeof value !== 'object';
@@ -22,7 +22,7 @@ export const canRender = (value: any): boolean => {
 export const renderErrorMessage = (message: string): any => {
   return (
     <>
-      <ErrorCircleOIcon /> {`${message} `}
+      <ErrorOutlineIcon /> {`${message} `}
     </>
   );
 };

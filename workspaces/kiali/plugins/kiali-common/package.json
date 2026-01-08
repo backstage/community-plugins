@@ -65,7 +65,9 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.9.13",
-    "@patternfly/react-icons": "^5.1.1",
+    "@mui/icons-material": "^5.17.1",
+    "@mui/material": "^5.17.1",
+    "@mui/system": "^5.17.1",
     "axios": "^1.7.4",
     "deep-freeze": "0.0.1",
     "js-yaml": "^3.13.1",
