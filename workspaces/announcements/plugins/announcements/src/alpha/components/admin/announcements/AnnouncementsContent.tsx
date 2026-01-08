@@ -235,9 +235,7 @@ export const AnnouncementsContent = ({
       <Grid.Root columns="1">
         <Grid.Item>
           <Button
-            isDisabled={
-              permissions.create.loading || !permissions.create.allowed
-            }
+            isDisabled={!canCreate}
             variant="primary"
             onClick={() => onCreateButtonClick()}
           >
@@ -268,13 +266,12 @@ export const AnnouncementsContent = ({
         <Grid.Item>
           <AnnouncementsTableCard
             announcements={announcements?.results ?? []}
-            onCreateClick={onCreateButtonClick}
             onPreviewClick={onPreviewClick}
             onEditClick={onEditClick}
             onDeleteClick={onDeleteClick}
-            canCreate={canCreate}
             canEdit={canEdit}
             canDelete={canDelete}
+            editingAnnouncementId={editingAnnouncementId}
           />
 
           <DeleteConfirmationDialog

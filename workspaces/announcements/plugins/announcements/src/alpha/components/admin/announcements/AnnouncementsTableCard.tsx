@@ -29,6 +29,7 @@ type AnnouncementsTableCardProps = {
   onDeleteClick: (announcement: Announcement) => void;
   canEdit: boolean;
   canDelete: boolean;
+  editingAnnouncementId?: string | null;
 };
 
 /**
@@ -42,6 +43,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     onDeleteClick,
     canEdit,
     canDelete,
+    editingAnnouncementId,
   } = props;
 
   const [pageSize, setPageSize] = useState(20);
@@ -63,6 +65,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
           onDeleteClick={onDeleteClick}
           canEdit={canEdit}
           canDelete={canDelete}
+          editingAnnouncementId={editingAnnouncementId}
         />
       </CardBody>
 

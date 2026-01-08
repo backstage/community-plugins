@@ -49,6 +49,7 @@ type AnnouncementTableRowProps = {
   onDeleteClick?: (announcement: Announcement) => void;
   canEdit?: boolean;
   canDelete?: boolean;
+  editingAnnouncementId?: string | null;
 };
 
 const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
@@ -59,8 +60,12 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
     onDeleteClick,
     canEdit,
     canDelete,
+    editingAnnouncementId,
   } = props;
   const { t } = useAnnouncementsTranslation();
+
+  const isCurrentlyEditing = editingAnnouncementId === announcement.id;
+  const isEditDisabled = editingAnnouncementId !== null && !isCurrentlyEditing;
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -112,7 +117,7 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
             onClick={() => onEditClick?.(announcement)}
             aria-label="edit"
             data-testid="edit-icon"
-            isDisabled={!canEdit}
+            isDisabled={!canEdit || isEditDisabled}
           />
           <ButtonIcon
             icon={<RiDeleteBinLine />}
@@ -138,6 +143,7 @@ type AnnouncementsTableProps = {
   onDeleteClick?: (announcement: Announcement) => void;
   canEdit?: boolean;
   canDelete?: boolean;
+  editingAnnouncementId?: string | null;
 };
 
 /**
@@ -151,6 +157,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
     onDeleteClick,
     canEdit,
     canDelete,
+    editingAnnouncementId,
   } = props;
   const { t } = useAnnouncementsTranslation();
 
@@ -198,6 +205,7 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
               onDeleteClick={onDeleteClick}
               canEdit={canEdit}
               canDelete={canDelete}
+              editingAnnouncementId={editingAnnouncementId}
             />
           ))
         ) : (
