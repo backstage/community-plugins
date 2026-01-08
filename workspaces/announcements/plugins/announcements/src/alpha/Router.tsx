@@ -31,7 +31,6 @@ import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
 type RouterProps = {
   title?: string;
   category?: string;
-  hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
   defaultInactive?: boolean;
@@ -40,7 +39,6 @@ type RouterProps = {
 export const Router = (props: RouterProps) => {
   const propsWithDefaults: AnnouncementsPageProps = {
     title: 'Announcements',
-    hideInactive: false,
     hideStartAt: false,
     markdownRenderer: 'backstage',
     ...props,
