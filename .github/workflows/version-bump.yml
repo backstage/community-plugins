@@ -177,7 +177,7 @@ jobs:
       # Update report-api as well
       - name: Update api reports
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: yarn tsc && yarn build:all && yarn build:api-reports
+        run: yarn tsc:full && yarn build:api-reports:only
         continue-on-error: true
 
       - name: 'Check for changes'
