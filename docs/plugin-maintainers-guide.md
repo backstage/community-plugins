@@ -19,6 +19,14 @@
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
   - [FAQ](#faq)
+    - [The bot says I'm missing a changeset. How do I add one?](#the-bot-says-im-missing-a-changeset-how-do-i-add-one)
+    - [My PR is full of unrelated files ("Knip" changes, yarn.lock conflicts)!](#my-pr-is-full-of-unrelated-files-knip-changes-yarnlock-conflicts)
+    - [A GitHub check is stuck "waiting for status to be reported".](#a-github-check-is-stuck-waiting-for-status-to-be-reported)
+    - [The "API Report" check is failing.](#the-api-report-check-is-failing)
+    - [My build is failing with errors about package.json metadata.](#my-build-is-failing-with-errors-about-packagejson-metadata)
+    - [My CI workflow is failing with some Node versions.](#my-ci-workflow-is-failing-with-some-node-versions)
+    - [My CI workflow is failing due to linting errors.](#my-ci-workflow-is-failing-due-to-linting-errors)
+    - [How do I create a new plugin?](#my-ci-workflow-is-failing-due-to-linting-errors)
 
 ## Plugin Owner Expectations
 
@@ -278,6 +286,26 @@ The `package.json` for your plugin might be missing required fields or have inco
 1.  Go to your plugin's workspace directory (e.g., `workspaces/my-plugin/`).
 2.  Run `yarn backstage-cli repo fix --publish`
 3.  This will check for and automatically fix common `package.json` issues. Commit any changes.
+
+### My CI workflow is failing with some Node versions.
+
+The CI workflow runs your tests automatically with all versions configured in your workspace root `package.json`, configured under `engines.node`.
+
+We recommend this configurations for workspaces up to Backstage 1.45:
+
+```json
+  "engines": {
+    "node": "20 || 22"
+  },
+```
+
+And starting with Backstage 1.46:
+
+```json
+  "engines": {
+    "node": "22 || 24"
+  },
+```
 
 ### My CI workflow is failing due to linting errors.
 

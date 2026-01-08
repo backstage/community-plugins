@@ -49,7 +49,6 @@ async function main() {
   if (!process.env.GITHUB_OUTPUT) {
     throw new Error('GITHUB_OUTPUT environment variable not set');
   }
-
   const repoRoot = resolvePath(__dirname, '..', '..');
   process.chdir(repoRoot);
 
@@ -81,9 +80,45 @@ async function main() {
 
   console.log('workspaces that exist:', Array.from(workspaces));
 
+  // Automatically detect the supported Node versions from package.json
+  const workspaceNodeMatrix = [];
+  for (const workspace of workspaces) {
+    const packageJson = JSON.parse(
+      await fs.readFile(`workspaces/${workspace}/package.json`),
+    );
+    const nodeString = packageJson.engines.node;
+    if (!nodeString) {
+      throw new Error(
+        `No node engine specified in workspaces/${workspace}/package.json`,
+      );
+    }
+    const nodeVersions = nodeString.split('||').map(v => v.trim());
+    console.log(
+      `Detected node versions for workspace ${workspace}:`,
+      nodeVersions,
+    );
+    // Convert versions like "18" to "18.x" for GitHub matrix usage
+    nodeVersions.forEach(nodeVersion => {
+      if (nodeVersion.match(/^\d\d$/)) {
+        workspaceNodeMatrix.push({
+          workspace,
+          nodeVersion: `${nodeVersion}.x`,
+        });
+      } else {
+        workspaceNodeMatrix.push({ workspace, nodeVersion });
+      }
+    });
+  }
+
   await fs.appendFile(
     process.env.GITHUB_OUTPUT,
     `workspaces=${JSON.stringify(Array.from(workspaces))}${EOL}`,
+  );
+  await fs.appendFile(
+    process.env.GITHUB_OUTPUT,
+    `workspace_node_matrix=${JSON.stringify(
+      Array.from(workspaceNodeMatrix),
+    )}${EOL}`,
   );
 }
 
