@@ -34,6 +34,9 @@ workspace/apache-airflow:
 workspace/apollo-explorer:
   - "Workspace\\s*apollo-explorer"
 
+workspace/argocd:
+  - "Workspace\\s*argocd"
+
 workspace/azure-devops:
   - "Workspace\\s*azure-devops"
 
@@ -237,9 +240,6 @@ workspace/quay:
 
 workspace/rbac:
   - "Workspace\\s*rbac"
-
-workspace/redhat-argocd:
-  - "Workspace\\s*redhat-argocd"
 
 workspace/report-portal:
   - "Workspace\\s*report-portal"
