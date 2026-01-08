@@ -54,7 +54,7 @@ export const LaunchesPage = (props: { themeId?: string }) => {
         title={
           <>
             <Breadcrumbs style={{ marginBottom: '8px' }}>
-              <Link to={rootPage()}>Report Portal</Link>
+              <Link to={rootPage()}>ReportPortal</Link>
               <Link to={projectsPage().concat(`?host=${hostName}`)}>
                 {hostName}
               </Link>

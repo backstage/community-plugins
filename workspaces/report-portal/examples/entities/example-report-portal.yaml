@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: report-portal-plugin
-  description: An example report portal component.
+  description: An example ReportPortal component.
   annotations:
     reportportal.io/launch-name: Demo Api Tests
     reportportal.io/project-name: dxp_qe

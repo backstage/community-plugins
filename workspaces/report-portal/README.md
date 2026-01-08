@@ -1,11 +1,11 @@
-# [Report Portal Plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/report-portal)
+# [ReportPortal Plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/report-portal)
 
-This conatins Backstage App for report portal workspace and Report portal plugins, Good Luck!
+This conatins Backstage App for ReportPortal workspace and ReportPortal plugins, Good Luck!
 
 Plugins:
 
-- [Report Portal Plugin](./plugins/report-portal/)
-- [Report Portal Backend Plugin](./plugins/report-portal-backend/)
+- [ReportPortal Plugin](./plugins/report-portal/)
+- [ReportPortal Backend Plugin](./plugins/report-portal-backend/)
 
 To start the app, run:
 

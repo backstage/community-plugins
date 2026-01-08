@@ -147,7 +147,7 @@ const ReportPortalStatisticsCard = (props: { variant: InfoCardVariants }) => {
       divider
       deepLink={{
         link: `https://${hostName}/ui/#${projectId}/launches/latest/${launchDetails?.id}`,
-        title: 'View on Report Portal',
+        title: 'View on ReportPortal',
       }}
     >
       <Grid container spacing={3}>

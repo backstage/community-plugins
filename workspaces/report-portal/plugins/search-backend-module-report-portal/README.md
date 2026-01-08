@@ -6,7 +6,7 @@ _This plugin was created through the Backstage CLI_
 
 ## Installation
 
-1. Run the following command to install report portal search collator module:
+1. Run the following command to install ReportPortal search collator module:
 
    ```sh
    yarn workspace backend add @backstage-community/plugin-search-backend-module-report-portal
