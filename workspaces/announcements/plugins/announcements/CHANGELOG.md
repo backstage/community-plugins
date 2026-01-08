@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 1.3.1
+
+### Patch Changes
+
+- cd38562: The announcements page in the new frontend system now shows only active announcements by default. For the existing frontend system, the `hideInactive` prop must still be passed to the `AnnouncementsPage` component to hide inactive announcements.
+
 ## 1.3.0
 
 ### Minor Changes
