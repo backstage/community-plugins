@@ -23,14 +23,16 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 
 /**
- * Retrieves a list of workspace directory names from the 'workspaces' folder.
+ * Retrieves a list of workspace names from the 'workspaces' folder.
  *
- * @returns {Promise<string[]>} A promise that resolves to an array of workspace directory names,
- *                             excluding directories listed in EXCLUDED_WORKSPACES.
+ * @returns {Promise<string[]>} A promise that resolves to an array of workspace names,
+ *                             excluding workspaces listed in EXCLUDED_WORKSPACES.
  * @throws {Error} If there are filesystem errors reading the directory
  */
 export async function listWorkspaces() {
   const workspacePath = resolve(__dirname, '..', 'workspaces');
+
+  console.log(workspacePath);
 
   return (
     Array.fromAsync(
@@ -38,6 +40,10 @@ export async function listWorkspaces() {
         exclude: EXCLUDED_WORKSPACES.map(name => join(workspacePath, name)),
       }),
     )
+      // remove the path as we want only the workspace name, this is what scripts using this currently expect
+      .then(workspaces =>
+        workspaces.map(w => w.replace(`${workspacePath}/`, '')),
+      )
       // glob returns an unordered list of results (for perf reasons)
       .then(workspaces => workspaces.sort())
   );
