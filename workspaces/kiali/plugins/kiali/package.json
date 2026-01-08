@@ -47,7 +47,7 @@
     "@patternfly/react-core": "^6.0.0",
     "@patternfly/react-icons": "^6.0.0",
     "@patternfly/react-tokens": "^6.0.0",
-    "@patternfly/react-topology": "6.0.0",
+    "@patternfly/react-topology": "6.4.0",
     "ace-builds": "^1.32.7",
     "axios": "^1.7.4",
     "cytoscape": "3.33.1",
