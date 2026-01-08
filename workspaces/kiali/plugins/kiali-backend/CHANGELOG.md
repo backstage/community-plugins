@@ -1,5 +1,12 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.28.0
+
+### Minor Changes
+
+- 0a2dc47: Added support for basicAuth in Kiali plugin configuration and fetch. KialiFetcher now includes Authorization header if basicAuth is present.
+- 6de187e: Dependency upgrade: react-icons, supertest, monorepo
+
 ## 1.27.2
 
 ### Patch Changes
