@@ -2230,31 +2230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-openapi-utils@npm:^0.6.3":
-  version: 0.6.3
-  resolution: "@backstage/backend-openapi-utils@npm:0.6.3"
-  dependencies:
-    "@apidevtools/swagger-parser": "npm:^10.1.0"
-    "@backstage/backend-plugin-api": "npm:^1.5.0"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.2"
-    "@types/express": "npm:^4.17.6"
-    "@types/express-serve-static-core": "npm:^4.17.5"
-    ajv: "npm:^8.16.0"
-    express: "npm:^4.17.1"
-    express-openapi-validator: "npm:^5.5.8"
-    express-promise-router: "npm:^4.1.0"
-    get-port: "npm:^5.1.1"
-    json-schema-to-ts: "npm:^3.0.0"
-    lodash: "npm:^4.17.21"
-    mockttp: "npm:^3.13.0"
-    openapi-merge: "npm:^1.3.2"
-    openapi3-ts: "npm:^3.1.2"
-  checksum: 10/8347855611b4f53c8f9470dbdf0586a39d185fbe1cbfea2aadf3886d2376aca3a018539370bba578390dad205c72a1583098ef1718dea1912aebdd51ea627399
-  languageName: node
-  linkType: hard
-
-"@backstage/backend-openapi-utils@npm:^0.6.4":
+"@backstage/backend-openapi-utils@npm:^0.6.3, @backstage/backend-openapi-utils@npm:^0.6.4":
   version: 0.6.4
   resolution: "@backstage/backend-openapi-utils@npm:0.6.4"
   dependencies:
@@ -3328,20 +3304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:^0.2.14":
-  version: 0.2.14
-  resolution: "@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:0.2.14"
-  dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.5.0"
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/plugin-catalog-common": "npm:^1.1.7"
-    "@backstage/plugin-catalog-node": "npm:^1.20.0"
-    "@backstage/plugin-scaffolder-common": "npm:^1.7.3"
-  checksum: 10/7a5576296d937350925456f3bbe0afa39439c52a2c562361f27ecb18171c4eb77189dbbbcd21fed5b1a4f96830095ee8bcd5a980590d8b60c74bd4fd2936aa9b
-  languageName: node
-  linkType: hard
-
-"@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:^0.2.15":
+"@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:^0.2.14, @backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:^0.2.15":
   version: 0.2.15
   resolution: "@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:0.2.15"
   dependencies:
@@ -4056,26 +4019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-common@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "@backstage/plugin-scaffolder-common@npm:1.7.3"
-  dependencies:
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/integration": "npm:^1.18.2"
-    "@backstage/plugin-permission-common": "npm:^0.9.3"
-    "@backstage/types": "npm:^1.2.2"
-    "@microsoft/fetch-event-source": "npm:^2.0.1"
-    "@types/json-schema": "npm:^7.0.9"
-    cross-fetch: "npm:^4.0.0"
-    json-schema: "npm:^0.4.0"
-    uri-template: "npm:^2.0.0"
-    zen-observable: "npm:^0.10.0"
-  checksum: 10/efe186614ce945148161ae199fe9486fdc9ce6a1ac444e89b9542ee8722ceef483f2ac59e44b2cb33132a231e0c7449bdf8f6f7a29b4170d5362782199fdaa8a
-  languageName: node
-  linkType: hard
-
-"@backstage/plugin-scaffolder-common@npm:^1.7.4":
+"@backstage/plugin-scaffolder-common@npm:^1.7.3, @backstage/plugin-scaffolder-common@npm:^1.7.4":
   version: 1.7.4
   resolution: "@backstage/plugin-scaffolder-common@npm:1.7.4"
   dependencies:
@@ -27682,13 +27626,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"napi-build-utils@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "napi-build-utils@npm:1.0.2"
-  checksum: 10/276feb8e30189fe18718e85b6f82e4f952822baa2e7696f771cc42571a235b789dc5907a14d9ffb6838c3e4ff4c25717c2575e5ce1cf6e02e496e204c11e57f6
-  languageName: node
-  linkType: hard
-
 "napi-build-utils@npm:^2.0.0":
   version: 2.0.0
   resolution: "napi-build-utils@npm:2.0.0"
@@ -29814,29 +29751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prebuild-install@npm:^7.1.1":
-  version: 7.1.2
-  resolution: "prebuild-install@npm:7.1.2"
-  dependencies:
-    detect-libc: "npm:^2.0.0"
-    expand-template: "npm:^2.0.3"
-    github-from-package: "npm:0.0.0"
-    minimist: "npm:^1.2.3"
-    mkdirp-classic: "npm:^0.5.3"
-    napi-build-utils: "npm:^1.0.1"
-    node-abi: "npm:^3.3.0"
-    pump: "npm:^3.0.0"
-    rc: "npm:^1.2.7"
-    simple-get: "npm:^4.0.0"
-    tar-fs: "npm:^2.0.0"
-    tunnel-agent: "npm:^0.6.0"
-  bin:
-    prebuild-install: bin.js
-  checksum: 10/32d5c026cc978dd02762b9ad3c765178aee8383aeac4303fed3cd226eff53100db038d4791b03ae1ebc7d213a7af392d26e32095579cedb8dba1d00ad08ecd46
-  languageName: node
-  linkType: hard
-
-"prebuild-install@npm:^7.1.3":
+"prebuild-install@npm:^7.1.1, prebuild-install@npm:^7.1.3":
   version: 7.1.3
   resolution: "prebuild-install@npm:7.1.3"
   dependencies:
