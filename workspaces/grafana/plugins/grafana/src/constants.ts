@@ -42,7 +42,7 @@ export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
  * @public
  */
 export const isDashboardSelectorAvailable = (entity: Entity) =>
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ?? '';
+  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR];
 
 /**
  * Returns if the alert selector annotation for an entity is set
