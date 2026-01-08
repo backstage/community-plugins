@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Button } from '@material-ui/core';
-import { QuestionCircleIcon } from '@patternfly/react-icons';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { default as React } from 'react';
 import { AboutUIModal } from '../../../components/About/AboutUIModal';
 import { useHeaderBackground } from '../../../contexts/HeaderBackgroundContext';
@@ -38,7 +38,7 @@ export const HelpKiali = () => {
         style={{ marginTop: '-5px' }}
         data-test="help-button"
       >
-        <QuestionCircleIcon color={iconColor} />
+        <HelpOutlineIcon style={iconColor ? { color: iconColor } : undefined} />
       </Button>
       <AboutUIModal
         showModal={showAbout}

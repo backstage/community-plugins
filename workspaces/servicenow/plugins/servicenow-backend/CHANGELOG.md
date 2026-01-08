@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.5.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+
 ## 1.5.0
 
 ### Minor Changes

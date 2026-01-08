@@ -67,3 +67,9 @@ export default createFrontendPlugin({
   pluginId: 'servicenow',
   extensions: [servicenowApi, entityServicenowContent],
 });
+
+/**
+ * @alpha
+ * Translation resources for the ServiceNow plugin
+ */
+export * from '../translations';

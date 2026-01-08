@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * A relation from a scaffolder template entity to the entity it generated.
- * Reverse direction of {@link RELATION_SCAFFOLDED_FROM}
- *
- * @public
- */
-export const RELATION_SCAFFOLDER_OF = 'scaffolderOf';
-
-/**
- * A relation of an entity generated from a scaffolder template entity
- * Reverse direction of {@link RELATION_SCAFFOLDER_OF}
- *
- * @public
- */
-export const RELATION_SCAFFOLDED_FROM = 'scaffoldedFrom';
+export interface Config {
+  bitbucket?: {
+    /**
+     * Proxy path for BitBucket API requests
+     * @visibility frontend
+     */
+    proxyPath?: string;
+  };
+}

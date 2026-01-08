@@ -19,7 +19,7 @@ import {
   NotificationMessage,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Badge, Button, Drawer } from '@material-ui/core';
-import { BellIcon } from '@patternfly/react-icons';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { default as React } from 'react';
 import { useHeaderBackground } from '../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../store';
@@ -121,7 +121,10 @@ export const MessageCenter = () => {
           }
           color={messageCenterStatus.badgeDanger ? 'error' : 'primary'}
         >
-          <BellIcon className={bell} color={iconColor} />
+          <NotificationsNoneIcon
+            className={bell}
+            style={iconColor ? { color: iconColor } : undefined}
+          />
         </Badge>
       </Button>
       <Drawer anchor="right" open={isOpen} onClose={() => toggleDrawer(false)}>

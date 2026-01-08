@@ -361,7 +361,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
-    "@react-hookz/web": "npm:^24.0.0"
+    "@react-hookz/web": "npm:^25.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0"
     "@types/react-dom": "npm:^18.2.19"
@@ -4659,6 +4659,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-hookz/web@npm:^25.0.0":
+  version: 25.2.0
+  resolution: "@react-hookz/web@npm:25.2.0"
+  dependencies:
+    "@ver0/deep-equal": "npm:^1.0.0"
+  peerDependencies:
+    js-cookie: ^3.0.5
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    js-cookie:
+      optional: true
+  checksum: 10/c23a10a1028760951318df440d1c314b0a1d848fc4a80968f5c31a1c832b388cb300e4a7f9f4edf0b80e81274f53ca2adfe5fe0ea97cac92bd8fb1b94a15bae0
+  languageName: node
+  linkType: hard
+
 "@react-stately/autocomplete@npm:3.0.0-beta.3":
   version: 3.0.0-beta.3
   resolution: "@react-stately/autocomplete@npm:3.0.0-beta.3"
@@ -7231,6 +7247,13 @@ __metadata:
     url-join: "npm:^4.0.1"
     yaml-ast-parser: "npm:^0.0.43"
   checksum: 10/c8580f4201cf643eef702e1e161bfa8e5655d81e9c3ca776470db0d68af44d4f3b6bcfb44ac52f9b4bf85ced3d1c6a80462c89e8b602872adb0532695202d8cd
+  languageName: node
+  linkType: hard
+
+"@ver0/deep-equal@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@ver0/deep-equal@npm:1.0.1"
+  checksum: 10/7ab3679eaecdee998335e7873ac06b1d2121b8587f75bb4b25a0ece7c525754146ee9d3ef490705b00858990c9e369909e73bdfc858d1095113de637e3d03526
   languageName: node
   linkType: hard
 

@@ -20,27 +20,17 @@ import {
   AnnouncementsAdminPage,
   CategoriesContent,
   TagsContent,
-} from './components';
-import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
-import {
   AnnouncementsPage,
   AnnouncementsPageProps,
-} from '../components/AnnouncementsPage';
-import { AnnouncementPage } from '../components/AnnouncementPage';
+  ViewAnnouncementPage,
+} from './components';
+
+// todo: pending rebuild for nfs with `@backstage/ui`
+import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
 
 type RouterProps = {
-  themeId?: string;
   title?: string;
-  subtitle?: string;
   category?: string;
-  hideContextMenu?: boolean;
-  cardOptions?: {
-    titleLength: number | undefined;
-  };
-  buttonOptions?: {
-    name: string | undefined;
-  };
-  hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
   defaultInactive?: boolean;
@@ -48,21 +38,10 @@ type RouterProps = {
 
 export const Router = (props: RouterProps) => {
   const propsWithDefaults: AnnouncementsPageProps = {
-    themeId: 'home',
     title: 'Announcements',
-    hideInactive: false,
     hideStartAt: false,
     markdownRenderer: 'backstage',
     ...props,
-  };
-
-  // Extract props for AnnouncementPage
-  const announcementPageProps = {
-    themeId: propsWithDefaults.themeId,
-    title: propsWithDefaults.title,
-    subtitle: propsWithDefaults.subtitle,
-    markdownRenderer: propsWithDefaults.markdownRenderer,
-    titleLength: props.cardOptions?.titleLength,
   };
 
   return (
@@ -70,7 +49,12 @@ export const Router = (props: RouterProps) => {
       <Route path="/" element={<AnnouncementsPage {...propsWithDefaults} />} />
       <Route
         path="/view/:id"
-        element={<AnnouncementPage {...announcementPageProps} />}
+        element={
+          <ViewAnnouncementPage
+            markdownRenderer={propsWithDefaults.markdownRenderer}
+            title={propsWithDefaults.title}
+          />
+        }
       />
       <Route
         path="/admin"
