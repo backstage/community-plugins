@@ -217,11 +217,13 @@ See [example](https://github.com/redhat-appstudio/tssc-dev-multi-ci/blob/main/rh
 
 ## Additional configuration
 
-### For adminstrators
+### For administrators
 
 #### Permission Framework Support
 
 The Multi Source Security Viewer (MSSV) plugin has support for the permission framework.
+
+##### Standalone
 
 1. When [RBAC permission](https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac-backend#installation) framework is enabled, for non-admin users to access MSSV UI, the role associated with your user should have the following permission policies associated with it.
    Add the following in your permission policies configuration file named `rbac-policy.csv`:
@@ -285,3 +287,7 @@ export default createBackendModule({
 ```
 
 ![mssv-rbac](./docs/images/mssv-rbac.png)
+
+##### MSSV Backend
+
+The [multi-source-security-viewer-backend](../multi-source-security-viewer-backend/README.md) plugin allows you to configure RBAC permissions using the RBAC plugin UI.

@@ -1,6 +1,11 @@
 # Multi Source Security Viewer Backend plugin for Backstage
 
-At this time this plugin enables the ability to set RBAC permissions in the RBAC UI
+At this time this plugin is used to enable the ability to set RBAC permissions in the RBAC UI.
+
+## Prerequisites
+
+- Ensure that you're using the [MSSV Frontend plugin](../multi-source-security-viewer/README.md)
+- Ensure that you have the [RBAC plugin fully configured](../../../rbac/plugins/rbac/README.md).
 
 ## Installation
 
@@ -21,10 +26,24 @@ backend.add(
 );
 ```
 
-## Development
+## Configuration
 
-This plugin backend can be started in a standalone mode from directly in this
-package with `yarn start`. It is a limited setup that is most convenient when
-developing the plugin backend itself.
+Once installed you can enable RBAC permissions for this plugin.
 
-If you want to run the entire project, including the frontend, run `yarn start` from the root directory.
+```yaml
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - multi-source-security-viewer
+```
+
+You should now be able to see the permissions for this plugin show up in the RBAC UI:
+
+**Selecting MSSV permission**:
+
+![selecting-mssv-permission](./docs/images/selecting-mssv-permission.png)
+
+\*\*Configuring MSSV permission:
+
+![selecting-mssv-permission](./docs/images/configuring-mssv-permission.png)
