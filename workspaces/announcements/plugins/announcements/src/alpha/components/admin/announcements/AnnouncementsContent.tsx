@@ -32,7 +32,7 @@ import {
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Button, Grid } from '@backstage/ui';
+import { Box, Button, Grid } from '@backstage/ui';
 import slugify from 'slugify';
 
 import {
@@ -264,15 +264,17 @@ export const AnnouncementsContent = ({
         )}
 
         <Grid.Item>
-          <AnnouncementsTableCard
-            announcements={announcements?.results ?? []}
-            onPreviewClick={onPreviewClick}
-            onEditClick={onEditClick}
-            onDeleteClick={onDeleteClick}
-            canEdit={canEdit}
-            canDelete={canDelete}
-            editingAnnouncementId={editingAnnouncementId}
-          />
+          <Box mb="12">
+            <AnnouncementsTableCard
+              announcements={announcements?.results ?? []}
+              onPreviewClick={onPreviewClick}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick}
+              canEdit={canEdit}
+              canDelete={canDelete}
+              editingAnnouncementId={editingAnnouncementId}
+            />
+          </Box>
 
           <DeleteConfirmationDialog
             type="announcement"

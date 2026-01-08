@@ -46,7 +46,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     editingAnnouncementId,
   } = props;
 
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
 
   const paginatedAnnouncements = useMemo(() => {
