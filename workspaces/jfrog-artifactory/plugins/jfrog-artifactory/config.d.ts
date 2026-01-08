@@ -21,5 +21,20 @@ export interface Config {
      * @visibility frontend
      */
     proxyPath?: string;
+    /**
+     * The sort field for the Jfrog Artifactory instance.
+     * @visibility frontend
+     */
+    sortField?: string;
+    /**
+     * The repository filter of the Jfrog Artifactory instance.
+     * @visibility frontend
+     */
+    repoFilter?: string;
+    /**
+     * The page limit of the Jfrog Artifactory instance.
+     * @visibility frontend
+     */
+    pageLimit?: number;
   };
 }

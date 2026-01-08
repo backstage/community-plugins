@@ -1,5 +1,17 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.9.0
+
+### Minor Changes
+
+- 2d08d32: Backstage version bump to v1.46.1
+
+## 0.8.0
+
+### Minor Changes
+
+- aa95fa8: Backstage version bump to v1.45.1
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,0 +1,65 @@
+{
+  "apiVersion": "source.toolkit.fluxcd.io/v1",
+  "kind": "OCIRepository",
+  "metadata": {
+    "creationTimestamp": "2025-11-09T16:20:15Z",
+    "finalizers": ["finalizers.fluxcd.io"],
+    "generation": 1,
+    "name": "backstage",
+    "namespace": "default",
+    "resourceVersion": "7294851",
+    "uid": "8a9b2c3d-4e5f-6789-0123-456789abcdef"
+  },
+  "spec": {
+    "interval": "5m",
+    "provider": "generic",
+    "timeout": "60s",
+    "url": "oci://ghcr.io/default/charts/backstage",
+    "verify": {
+      "provider": "cosign"
+    }
+  },
+  "status": {
+    "artifact": {
+      "digest": "sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456",
+      "lastUpdateTime": "2025-11-09T16:20:20Z",
+      "metadata": {
+        "org.opencontainers.image.created": "2025-11-09T16:00:00Z",
+        "org.opencontainers.image.revision": "2.6.3/f1e2d3c4b5a6978012345678901234567890abcd",
+        "org.opencontainers.image.source": "https://github.com/backstage/backstage"
+      },
+      "path": "ocirepository/default/backstage/sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456.tar.gz",
+      "revision": "2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456",
+      "size": 21845,
+      "url": "http://source-controller.flux-system.svc.cluster.local./ocirepository/default/backstage/sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456.tar.gz"
+    },
+    "conditions": [
+      {
+        "lastTransitionTime": "2025-11-09T16:20:20Z",
+        "message": "stored artifact for digest '2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastTransitionTime": "2025-11-09T16:20:20Z",
+        "message": "stored artifact for digest '2.6.3@sha256:f1e2d3c4b5a6978012345678901234567890abcdef1234567890abcdef123456'",
+        "observedGeneration": 1,
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "ArtifactInStorage"
+      },
+      {
+        "lastTransitionTime": "2025-11-09T16:20:22Z",
+        "message": "failed to verify the signature using provider 'cosign': test error",
+        "observedGeneration": 1,
+        "reason": "VerificationError",
+        "status": "False",
+        "type": "SourceVerified"
+      }
+    ],
+    "observedGeneration": 1,
+    "url": "http://source-controller.flux-system.svc.cluster.local./ocirepository/default/backstage/2.6.3.tar.gz"
+  }
+}

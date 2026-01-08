@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
+
+import type { Check } from '@backstage-community/plugin-tech-insights-common';
 import type {
   ManageModuleApi,
   ProgressColor,

@@ -1,5 +1,22 @@
 ### Dependencies
 
+## 5.11.1
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+
+## 5.11.0
+
+### Minor Changes
+
+- fd1b8e7: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [fd1b8e7]
+  - @backstage-community/plugin-ocm-common@3.15.0
+
 ## 5.10.0
 
 ### Minor Changes

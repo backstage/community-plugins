@@ -35,7 +35,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Find changed workspaces
@@ -51,7 +51,7 @@ jobs:
     strategy:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
-        node-version: [20.x, 22.x]
+        node-version: [22.x, 24.x]
       fail-fast: false
     defaults:
       run:
@@ -144,6 +144,26 @@ jobs:
       - name: test changed packages
         run: yarn test:all --maxWorkers=3
 
+      - name: read playwrightTests flag from bcp.json
+        id: bcpPlaywrightTests
+        run: |
+          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
+          if [ -f bcp.json ]; then
+            echo "Reading playwrightTests flag..."
+            PLAYWRIGHT_TESTS=$(jq -r '.["playwrightTests"]' bcp.json)
+            echo "playwrightTests value: $PLAYWRIGHT_TESTS"
+            echo "playwright_tests=$PLAYWRIGHT_TESTS" >> $GITHUB_OUTPUT
+          else
+            echo "bcp.json not found. Defaulting list_deprecations to false."
+            echo "playwright_tests=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: playwright tests
+        if: ${{ steps.bcpPlaywrightTests.outputs.playwright_tests == 'true' }}
+        run: |
+          yarn playwright install --with-deps chromium chrome
+          yarn playwright test
+
       - name: ensure clean working directory
         run: |
           if files=$(git ls-files --exclude-standard --others --modified) && [[ -z "$files" ]]; then
@@ -170,10 +190,10 @@ jobs:
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - name: Setup node
+      - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Install root dependencies
         run: yarn install --immutable
       - name: Verify lockfile duplicates

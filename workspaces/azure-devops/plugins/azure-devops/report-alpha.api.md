@@ -5,9 +5,9 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
@@ -17,6 +17,10 @@ import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { SearchFilterResultTypeBlueprintParams } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
+import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
@@ -311,6 +315,44 @@ const _default: OverridableFrontendPlugin<
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
+    }>;
+    'search-filter-result-type:azure-devops/azure-devops-wiki-article-results-type': OverridableExtensionDefinition<{
+      kind: 'search-filter-result-type';
+      name: 'azure-devops-wiki-article-results-type';
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<
+        {
+          value: string;
+          name: string;
+          icon: JSX_2.Element;
+        },
+        'search.filters.result-types.type',
+        {}
+      >;
+      inputs: {};
+      params: SearchFilterResultTypeBlueprintParams;
+    }>;
+    'search-result-list-item:azure-devops': OverridableExtensionDefinition<{
+      kind: 'search-result-list-item';
+      name: undefined;
+      config: {
+        noTrack: boolean;
+      };
+      configInput: {
+        noTrack?: boolean | undefined;
+      };
+      output: ExtensionDataRef<
+        {
+          predicate?: SearchResultItemExtensionPredicate | undefined;
+          component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
+        },
+        'search.search-result-list-item.item',
+        {}
+      >;
+      inputs: {};
+      params: SearchResultListItemBlueprintParams;
     }>;
   }
 >;

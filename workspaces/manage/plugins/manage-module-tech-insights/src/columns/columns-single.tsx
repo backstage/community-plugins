@@ -23,23 +23,22 @@ import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import { useApi } from '@backstage/core-plugin-api';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import { TechInsightsCheckIcon } from '@backstage-community/plugin-tech-insights';
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { ResultCheckIcon } from '@backstage-community/plugin-tech-insights-react';
+import type { Check } from '@backstage-community/plugin-tech-insights-common';
 import {
   ColumnIconError,
   ColumnIconPercent,
   type ManageColumn,
   type GetColumnFunc,
   ProgressColor,
+  ColumnIconNoData,
 } from '@backstage-community/plugin-manage-react';
 
 import { eqCheck } from '../utils';
-import { manageTechInsightsApiRef } from '../api';
 
 import { useEntityInsights, UseEntityInsightsResult } from './hooks';
-import { NoData } from './NoData';
+import { useTableColumnTitle } from './title';
 
 interface CombinedColumnProps {
   entity: Entity;
@@ -54,10 +53,12 @@ function CombinedColumn(props: CombinedColumnProps) {
     getPercentColor,
   } = props;
 
+  const mapTitle = useTableColumnTitle();
+
   const entityRef = stringifyEntityRef(entity);
   const results = responses.get(entityRef);
   if (!results) {
-    return <NoData />;
+    return <ColumnIconNoData />;
   }
 
   // Order the results the same way all the time
@@ -77,7 +78,7 @@ function CombinedColumn(props: CombinedColumnProps) {
       return (
         <ListItem disablePadding key={Math.random()}>
           <ListItemIcon>
-            <TechInsightsCheckIcon
+            <ResultCheckIcon
               result={result}
               entity={entity}
               disableLinksMenu
@@ -86,7 +87,7 @@ function CombinedColumn(props: CombinedColumnProps) {
               }
             />
           </ListItemIcon>
-          <ListItemText primary={result.check.name} />
+          <ListItemText primary={mapTitle(result.check)} />
         </ListItem>
       );
     })
@@ -111,7 +112,7 @@ function CombinedColumn(props: CombinedColumnProps) {
     );
 
   if (!validResults.length) {
-    return <NoData />;
+    return <ColumnIconNoData />;
   }
 
   const succeeded = validResults.filter(
@@ -142,17 +143,17 @@ function CombinedColumn(props: CombinedColumnProps) {
 }
 
 export function makeGetColumn(
-  checkFilter: ((check: Check) => boolean) | undefined,
-  showEmpty: boolean,
+  customCheckFilter: ((check: Check) => boolean) | undefined,
+  customShowEmpty: boolean | undefined,
 ): GetColumnFunc {
   return function useColumn(entities): ManageColumn {
-    const { getPercentColor } = useApi(manageTechInsightsApiRef);
-
     const useEntityInsightsResult = useEntityInsights(
       entities,
-      checkFilter,
-      showEmpty,
+      customCheckFilter,
+      customShowEmpty,
     );
+
+    const { getPercentColor } = useEntityInsightsResult;
 
     // We need unique id's for the columns if their render function has changed,
     // or there's gonna be a UI warning from material-table

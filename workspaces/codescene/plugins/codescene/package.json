@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-codescene",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "codescene",
@@ -56,7 +56,6 @@
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",

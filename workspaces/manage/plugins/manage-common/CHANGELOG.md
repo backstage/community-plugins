@@ -1,5 +1,17 @@
 # @backstage-community/plugin-manage-common
 
+## 1.4.1
+
+### Patch Changes
+
+- 073b5ec: Using the backstage yarn plugin for the workspace
+
+## 1.4.0
+
+### Minor Changes
+
+- 483cbdb: Backstage version bump to v1.45.1
+
 ## 1.3.0
 
 ### Minor Changes

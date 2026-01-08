@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, MouseEvent } from 'react';
+import { useCallback, MouseEvent, JSX } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';

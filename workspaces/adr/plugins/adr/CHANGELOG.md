@@ -1,5 +1,22 @@
 # @backstage-community/plugin-adr
 
+## 0.19.0
+
+### Minor Changes
+
+- c16049d: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- Updated dependencies [c16049d]
+  - @backstage-community/plugin-adr-common@0.15.0
+
+## 0.18.1
+
+### Patch Changes
+
+- 0b42b41: Switch for errors from `WarningPanel` to `ErrorPanel` to allow users to see error stacktraces
+
 ## 0.18.0
 
 ### Minor Changes

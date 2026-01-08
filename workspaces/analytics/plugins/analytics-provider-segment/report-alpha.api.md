@@ -6,7 +6,7 @@
 import { AnalyticsImplementationFactory } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 
 // @public (undocumented)
@@ -14,7 +14,7 @@ const analyticsProviderSegmentPlugin: OverridableFrontendPlugin<
   {},
   {},
   {
-    'analytics:analytics-provider-segment': ExtensionDefinition<{
+    'analytics:analytics-provider-segment': OverridableExtensionDefinition<{
       kind: 'analytics';
       name: undefined;
       config: {};

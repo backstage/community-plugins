@@ -5,15 +5,15 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -24,7 +24,7 @@ const kafkaPlugin: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:kafka': ExtensionDefinition<{
+    'api:kafka': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -41,7 +41,7 @@ const kafkaPlugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'api:kafka/dashboard': ExtensionDefinition<{
+    'api:kafka/dashboard': OverridableExtensionDefinition<{
       kind: 'api';
       name: 'dashboard';
       config: {};
@@ -58,7 +58,7 @@ const kafkaPlugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-content:kafka': ExtensionDefinition<{
+    'entity-content:kafka': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: undefined;
       config: {

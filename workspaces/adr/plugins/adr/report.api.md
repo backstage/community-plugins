@@ -7,7 +7,7 @@
 
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { AdrFilePathFilterFn } from '@backstage-community/plugin-adr-common';
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';

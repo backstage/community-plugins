@@ -22,9 +22,7 @@ import { createUserSettingsContext } from '../UserSettingsProvider';
 import { manageApiRef } from '../../api';
 import { joinKinds, kindToOpaqueString } from '../../utils';
 import { useOrder } from '../../hooks/use-order';
-
-const userSettingsFeature = '$manage-page-kind';
-const userSettingsKey = 'order';
+import { userSettingsKeys } from '../../constants';
 
 const coerceStringArray = (arr: any): string[] => {
   if (!Array.isArray(arr)) {
@@ -33,9 +31,11 @@ const coerceStringArray = (arr: any): string[] => {
   return arr.map(value => (typeof value !== 'string' ? `${value}` : value));
 };
 
+const [userStorageFeature, userStorageKey] = userSettingsKeys['kind-order'];
+
 const userSettingsContext = createUserSettingsContext(
-  userSettingsFeature,
-  userSettingsKey,
+  userStorageFeature,
+  userStorageKey,
   {
     defaultValue: [],
     coerce: coerceStringArray,

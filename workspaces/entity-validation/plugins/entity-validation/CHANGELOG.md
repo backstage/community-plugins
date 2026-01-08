@@ -1,5 +1,17 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.15.1
+
+### Patch Changes
+
+- 7e8df11: Updated dependency `@react-hookz/web` to `^25.0.0`.
+
+## 0.15.0
+
+### Minor Changes
+
+- 8d13c4f: Backstage version bump to v1.46.1
+
 ## 0.14.0
 
 ### Minor Changes

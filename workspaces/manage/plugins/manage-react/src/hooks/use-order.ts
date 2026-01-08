@@ -125,6 +125,8 @@ export function useOrder<T, U>(
   return useMemo(() => {
     const casedKeys = keys.map(key => ensureCase(stringifyKey(key)));
 
+    const orderMap = new Map(casedKeys.map((value, index) => [value, index]));
+
     const itemsWithKeys: ItemWithKey<T>[] = items.map(value => ({
       value,
       key: ensureCase(keyOf(value)),
@@ -138,7 +140,7 @@ export function useOrder<T, U>(
       const key = item.key;
       if (typeof key === 'string') {
         const casedKey = ensureCase(key);
-        if (casedKeys.includes(casedKey)) {
+        if (orderMap.has(casedKey)) {
           orderableItems.push(item);
         } else {
           unorderableItems.push(item);
@@ -152,11 +154,11 @@ export function useOrder<T, U>(
       const aKey = a.key as string;
       const bKey = b.key as string;
 
-      const indexA = casedKeys.indexOf(aKey);
-      const indexB = casedKeys.indexOf(bKey);
+      // Since we know that each item exist in the keys array, hence orderMap,
+      // we can safely assume that the indexes are not undefined.
+      const indexA = orderMap.get(aKey)!;
+      const indexB = orderMap.get(bKey)!;
 
-      // Since we know that each item exist in the keys array,
-      // we can safely assume that the indexes are not -1.
       return indexA < indexB ? -1 : 1;
     });
 

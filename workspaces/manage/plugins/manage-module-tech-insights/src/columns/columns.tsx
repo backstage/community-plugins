@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Check } from '@backstage-community/plugin-tech-insights-common/client';
+
+import type { Check } from '@backstage-community/plugin-tech-insights-common';
 import type { ManageColumnModule } from '@backstage-community/plugin-manage-react';
 
 import { makeGetColumn } from './columns-single';
@@ -38,12 +39,13 @@ export interface ManageTechInsightsOptions {
 /**
  * Create a column module for displaying tech insights checks.
  *
+ * @deprecated Use the new frontend system instead
  * @public
  */
 export function manageTechInsightsColumns(
   options?: ManageTechInsightsOptions,
 ): ManageColumnModule {
-  const { combined = false, checkFilter, showEmpty = false } = options ?? {};
+  const { combined = false, checkFilter, showEmpty } = options ?? {};
 
   if (combined) {
     return {

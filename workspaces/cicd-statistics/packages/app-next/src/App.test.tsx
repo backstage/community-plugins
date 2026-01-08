@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { renderWithEffects } from '@backstage/test-utils';
+import { render, waitFor } from '@testing-library/react';
+import App from './App';
 
 // Rarely, and only in windows CI, do these tests take slightly more than the
 // default five seconds
@@ -37,8 +38,10 @@ describe('App', () => {
       ] as any,
     };
 
-    const { default: app } = await import('./App');
-    const rendered = await renderWithEffects(app);
-    expect(rendered.baseElement).toBeInTheDocument();
+    const rendered = render(App.createRoot());
+
+    await waitFor(() => {
+      expect(rendered.baseElement).toBeInTheDocument();
+    });
   });
 });

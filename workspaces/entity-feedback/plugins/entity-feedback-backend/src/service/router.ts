@@ -207,7 +207,7 @@ export async function createRouter(
   });
 
   router.post('/responses/:entityRef(*)', async (req, res) => {
-    const { response, comments, consent } = req.body;
+    const { response, comments, consent, link } = req.body;
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
     const { token } = await auth.getPluginRequestToken({
       onBehalfOf: credentials,
@@ -227,9 +227,11 @@ export async function createRouter(
         type: 'entity',
         entityRef: entityOwner,
       };
+
       const payload: NotificationPayload = {
         title: `New feedback for ${req.params.entityRef}`,
         description: `Comments: ${JSON.parse(comments).additionalComments}`,
+        link: link,
       };
       await notificationService.send({
         recipients,
@@ -247,6 +249,7 @@ export async function createRouter(
       comments,
       consent,
       userRef: credentials.principal.userEntityRef,
+      link,
     });
 
     res.status(201).end();

@@ -1,5 +1,30 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.18.0
+
+### Minor Changes
+
+- b9c2943: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- d5dc6b3: Remove limit and improve performance when fetching teams from catalog by using `getEntitiesByRefs`. This also resolves issues where teams beyond the default page size limit were not being retrieved.
+- ce95092: Added translations support for the nfs view announcement page
+- Updated dependencies [b9c2943]
+  - @backstage-community/plugin-announcements-common@0.15.0
+
+## 0.17.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+
 ## 0.16.0
 
 ### Minor Changes

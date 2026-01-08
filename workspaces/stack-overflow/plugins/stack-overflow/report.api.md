@@ -5,10 +5,11 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { CardExtensionProps } from '@backstage/plugin-home-react';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_3 } from 'react/jsx-runtime';
 import type { ReactNode } from 'react';
 import type { ResultHighlight } from '@backstage/plugin-search-common';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
@@ -16,7 +17,7 @@ import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-rea
 // @public
 export const HomePageStackOverflowQuestions: (
   props: CardExtensionProps<StackOverflowQuestionsContentProps>,
-) => JSX_2.Element;
+) => JSX_3.Element;
 
 // @public (undocumented)
 export type StackOverflowApi = {
@@ -29,7 +30,7 @@ export type StackOverflowApi = {
 export const stackOverflowApiRef: ApiRef<StackOverflowApi>;
 
 // @public (undocumented)
-export const StackOverflowIcon: () => JSX_2.Element;
+export const StackOverflowIcon: () => JSX_3.Element;
 
 // @public
 export const stackOverflowPlugin: BackstagePlugin<{}, {}, {}>;
@@ -57,7 +58,7 @@ export type StackOverflowQuestionsRequestParams = {
 // @public
 export const StackOverflowSearchResultListItem: (
   props: SearchResultListItemExtensionProps<StackOverflowSearchResultListItemProps>,
-) => JSX.Element | null;
+) => JSX_2.Element | null;
 
 // @public
 export type StackOverflowSearchResultListItemProps = {

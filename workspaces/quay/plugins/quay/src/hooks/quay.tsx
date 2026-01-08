@@ -37,7 +37,11 @@ const useLocalStyles = makeStyles({
   },
 });
 
-export const useTags = (organization: string, repository: string) => {
+export const useTags = (
+  instanceName: string | undefined,
+  organization: string,
+  repository: string,
+) => {
   const quayClient = useApi(quayApiRef);
   const [tags, setTags] = useState<Tag[]>([]);
   const [tagManifestLayers, setTagManifestLayers] = useState<
@@ -50,6 +54,7 @@ export const useTags = (organization: string, repository: string) => {
 
   const fetchSecurityDetails = async (tag: Tag) => {
     const securityDetails = await quayClient.getSecurityDetails(
+      instanceName,
       organization,
       repository,
       tag.manifest_digest,
@@ -58,7 +63,13 @@ export const useTags = (organization: string, repository: string) => {
   };
 
   const { loading } = useAsync(async () => {
-    const tagsResponse = await quayClient.getTags(organization, repository);
+    const tagsResponse = await quayClient.getTags(
+      instanceName,
+      organization,
+      repository,
+      undefined,
+      undefined,
+    );
     Promise.all(
       tagsResponse.tags.map(async tag => {
         const securityDetails = await fetchSecurityDetails(tag);
@@ -98,7 +109,9 @@ export const useTags = (organization: string, repository: string) => {
             {shortHash}
           </Box>
         ),
-        expiration: tag.expiration,
+        expiration: tag.expiration
+          ? formatDate(tag.expiration)
+          : tag.expiration,
         securityDetails: tagManifestLayers[tag.manifest_digest],
         securityStatus: tagManifestStatuses[tag.manifest_digest],
         manifest_digest_raw: tag.manifest_digest,
@@ -115,34 +128,45 @@ export const useTags = (organization: string, repository: string) => {
 };
 
 export const QUAY_ANNOTATION_REPOSITORY = 'quay.io/repository-slug';
+export const QUAY_ANNOTATION_INSTANCE = 'quay.io/instance-name';
 
 export const useQuayAppData = ({ entity }: { entity: Entity }) => {
+  const instanceSlug = entity?.metadata.annotations?.[QUAY_ANNOTATION_INSTANCE];
   const repositorySlug =
     entity?.metadata.annotations?.[QUAY_ANNOTATION_REPOSITORY] ?? '';
 
   if (!repositorySlug) {
     throw new Error("'Quay' annotations are missing");
   }
-  return { repositorySlug };
+  return { instanceSlug, repositorySlug };
 };
 
 export const useRepository = () => {
   const { entity } = useEntity();
-  const { repositorySlug } = useQuayAppData({ entity });
+  const { instanceSlug: instanceName, repositorySlug } = useQuayAppData({
+    entity,
+  });
   const info = repositorySlug.split('/');
 
   const organization = info.shift() as 'string';
   const repository = info.join('/');
   return {
+    instanceName,
     organization,
     repository,
   };
 };
 
-export const useTagDetails = (org: string, repo: string, digest: string) => {
+export const useTagDetails = (
+  instanceName: string | undefined,
+  org: string,
+  repo: string,
+  digest: string,
+) => {
   const quayClient = useApi(quayApiRef);
   const result = useAsync(async () => {
     const manifestLayer = await quayClient.getSecurityDetails(
+      instanceName,
       org,
       repo,
       digest,

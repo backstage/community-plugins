@@ -136,7 +136,7 @@ export const ValidationSummary = (props: Props) => {
     return props.objectCount === undefined || props.objectCount > 0 ? (
       <Validation iconStyle={props.style} severity={severity()} />
     ) : (
-      <div style={{ display: 'inline-block', marginLeft: '5px' }}>N/A</div>
+      <span style={{ display: 'inline-block', marginLeft: '5px' }}>N/A</span>
     );
   };
 

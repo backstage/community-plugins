@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 import { expect, Page, test } from '@playwright/test';
+import { runAccessibilityTests } from './utils/accessibility';
 
 import {
   mockApplication,
   preProdApplication,
   prodApplication,
 } from '../dev/__data__';
-import { Common } from './argocdHelper';
-import { verifyAppCard, verifyAppSidebar } from './utils';
+import { Common } from './utils/argocdHelper';
+import { verifyAppCard, verifyAppSidebar } from './utils/utils';
 
 test.describe('ArgoCD plugin', () => {
   let argocdPage: Page;
@@ -36,6 +37,7 @@ test.describe('ArgoCD plugin', () => {
     await expect(
       argocdPage.getByRole('heading', { name: 'Deployment lifecycle' }),
     ).toBeVisible({ timeout: 20000 });
+    await runAccessibilityTests(argocdPage);
   });
 
   test.afterAll(async ({ browser }) => {
@@ -79,9 +81,9 @@ test.describe('ArgoCD plugin', () => {
 
     test.beforeAll(async () => {
       await argocdPage.getByRole('link', { name: 'Summary' }).click();
-      await expect(argocdPage.getByRole('heading')).toHaveText(
-        'Deployment summary',
-      );
+      await expect(
+        argocdPage.getByRole('heading', { name: 'Deployment Summary' }),
+      ).toBeVisible();
     });
 
     test('Verify column names', async () => {
@@ -90,6 +92,7 @@ test.describe('ArgoCD plugin', () => {
           argocdPage.getByRole('columnheader', { name: col }),
         ).toBeVisible();
       }
+      await runAccessibilityTests(argocdPage);
     });
 
     for (const app of apps) {
@@ -97,25 +100,26 @@ test.describe('ArgoCD plugin', () => {
 
       /* eslint-disable-next-line  no-loop-func */
       test(`Verify ${appName} row`, async () => {
-        const row = argocdPage.locator('.MuiTableRow-root', {
-          hasText: appName,
-        });
-        const revision = app.status.history
+        const revision = app.status?.history
           ?.slice(-1)[0]
-          .revision.substring(0, 7);
+          ?.revision?.substring(0, 7);
+
+        const row = argocdPage.getByRole('row').filter({ hasText: appName });
 
         await expect(
-          row.locator('td', { hasText: app.metadata.instance.name }),
+          row.getByRole('cell', { name: appName }).first(),
         ).toBeVisible();
         await expect(
-          row.locator('td', { hasText: app.spec.destination.server }),
-        ).toBeVisible();
-        await expect(row.locator('td', { hasText: revision })).toBeVisible();
-        await expect(
-          row.locator('td', { hasText: app.status.health.status }),
+          row.getByRole('cell', { name: app.spec.destination.server }).first(),
         ).toBeVisible();
         await expect(
-          row.locator('td', { hasText: app.status.sync.status }),
+          row.getByRole('cell', { name: revision }).first(),
+        ).toBeVisible();
+        await expect(
+          row.getByRole('cell', { name: app.status.health.status }).first(),
+        ).toBeVisible();
+        await expect(
+          row.getByRole('cell', { name: app.status.sync.status }).first(),
         ).toBeVisible();
       });
     }

@@ -4,3 +4,5 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
+test-results
+playwright-report

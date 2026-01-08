@@ -72,8 +72,63 @@ If you require more functionality like being able to set permissions, please see
    ```yaml title="catalog-info.yaml"
    metadata:
      annotations:
-       'quay.io/repository-slug': `<ORGANIZATION>/<REPOSITORY>',
+       'quay.io/repository-slug': '<ORGANIZATION>/<REPOSITORY>'
    ```
+
+#### Multiple Quay Instances Configuration
+
+You can connect to multiple Quay instances by following configuration:
+
+```yaml title="app-config.yaml"
+proxy:
+  endpoints:
+    '/quay/api':
+      target: 'https://quay.io'
+      credentials: require
+      headers:
+        X-Requested-With: 'XMLHttpRequest'
+        # Uncomment and use the Authorization header below to access a private Quay
+        # Repository using a token. Refer to the "Applications and Tokens" section
+        # at https://docs.quay.io/api/ to find the instructions to generate a token
+        # Authorization: 'Bearer <YOUR TOKEN>'
+      changeOrigin: true
+      # Change to "false" in case of using self hosted quay instance with a self-signed certificate
+      secure: true
+    '/quay-staging/api':
+      target: 'https://quay-staging.example.com'
+      credentials: require
+      headers:
+        X-Requested-With: 'XMLHttpRequest'
+        # Uncomment and use the Authorization header below to access a private Quay
+        # Repository using a token. Refer to the "Applications and Tokens" section
+        # at https://docs.quay.io/api/ to find the instructions to generate a token
+        # Authorization: 'Bearer <YOUR TOKEN>'
+      changeOrigin: true
+      # Change to "false" in case of using self hosted quay instance with a self-signed certificate
+      secure: true
+
+quay:
+  instances:
+    - name: production
+      proxyPath: '/quay/api'
+      uiUrl: 'https://quay.io'
+    - name: staging
+      proxyPath: '/quay-staging/api'
+      uiUrl: 'https://quay-staging.example.com'
+```
+
+When using multiple instances, specify the target instance in your entity using the `quay.io/instance-name` annotation, the instance name must match a name defined in your instances configuration:
+
+```yaml title="catalog-info.yaml"
+metadata:
+  annotations:
+    'quay.io/repository-slug': '<ORGANIZATION>/<REPOSITORY>'
+    'quay.io/instance-name': 'production'
+```
+
+**Note:** If the `quay.io/instance-name` annotation is not specified, the plugin will automatically use the first configured instance as the default.
+
+When using the Quay backend plugin, refer to the [Quay backend plugin documentation](../quay-backend/README.md#multiple-quay-instances-configuration) for multi-instance configuration.
 
 ## For users
 

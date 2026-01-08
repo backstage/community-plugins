@@ -15,14 +15,28 @@
  */
 import { PropsWithChildren, createContext, useContext, useMemo } from 'react';
 
+import { ConfigApi } from '@backstage/core-plugin-api';
 import { Progress } from '@backstage/core-components';
-import { JsonValue } from '@backstage/types';
+import type { JsonValue } from '@backstage/types';
 
 import { useUserSettings } from '../../hooks/use-user-settings';
+import { ManageApi } from '../../api';
+
+/** @public */
+export type UserSettingsDefaultValueGetter<T extends JsonValue> = (options: {
+  config: ConfigApi;
+  manageApi: ManageApi;
+}) => T | undefined;
+
+/** @public */
+export type UserSettingsDefaultValue<T extends JsonValue> =
+  | T
+  | undefined
+  | UserSettingsDefaultValueGetter<T>;
 
 /** @public */
 export interface CreateUserSettingsContextOptions<T extends JsonValue> {
-  defaultValue?: T | undefined;
+  defaultValue?: UserSettingsDefaultValue<T>;
 
   /**
    * If the value stored is an invalid shape, this function can coerce it
@@ -37,14 +51,18 @@ interface InternalContext<T extends JsonValue> {
 }
 
 /** @public */
+export interface UserSettingsProviderProps extends PropsWithChildren<{}> {}
+
+/** @public */
 export interface UserSettingsContextResult<T extends JsonValue> {
-  Provider: (props: PropsWithChildren<{}>) => JSX.Element;
+  Provider: (props: UserSettingsProviderProps) => JSX.Element;
   useSetting: () => T | undefined;
   useSetSetting: () => (value: T) => void;
+  useRemoveSetting: () => () => void;
 }
 
 /**
- * Create a Provider and hooks for a user settings, one for getting and one for
+ * Create a Provider and hooks for a user setting, one for getting and one for
  * setting.
 
  * @public
@@ -67,13 +85,19 @@ export function createUserSettingsContext<T extends JsonValue>(
   };
 
   const useSetSetting = (): ((value: T) => void) => {
-    const [_, setSetting] = useUserSettings(feature, settingsKey, options);
+    const { setValue } = useUserSettings(feature, settingsKey, options);
 
-    return setSetting;
+    return setValue;
   };
 
-  const Provider = ({ children }: PropsWithChildren<{}>) => {
-    const [settingsValue, _, isSettled] = useUserSettings(
+  const useRemoveSetting = (): (() => void) => {
+    const { removeValue } = useUserSettings(feature, settingsKey, options);
+
+    return removeValue;
+  };
+
+  const Provider = ({ children }: UserSettingsProviderProps) => {
+    const { value: settingsValue, isSettled } = useUserSettings(
       feature,
       settingsKey,
       options,
@@ -98,5 +122,6 @@ export function createUserSettingsContext<T extends JsonValue>(
     Provider,
     useSetting,
     useSetSetting,
+    useRemoveSetting,
   };
 }

@@ -5,12 +5,13 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX as JSX_3 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
@@ -220,7 +221,7 @@ export class SplunkOnCallClient implements SplunkOnCallApi {
 
 // @public (undocumented)
 export const SplunkOnCallPage: {
-  (props: SplunkOnCallPageProps): JSX.Element;
+  (props: SplunkOnCallPageProps): JSX_3.Element;
   defaultProps: {
     title: string;
     subtitle: string;

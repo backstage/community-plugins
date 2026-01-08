@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useResizeObserver } from './useResizeObserver';
 
@@ -40,6 +40,8 @@ export interface UsePositionResult {
  * @public
  */
 export function usePosition(element: Element | undefined) {
+  const mountedRef = useRef(false);
+
   const [clientSize, setClientSize] = useState<
     UsePositionClientSize | undefined
   >(undefined);
@@ -48,19 +50,52 @@ export function usePosition(element: Element | undefined) {
   >(undefined);
 
   useResizeObserver(entry => {
-    const divRect = entry.target.getBoundingClientRect();
-    setElementPos({
-      left: divRect.left,
-      top: divRect.top,
+    requestAnimationFrame(() => {
+      if (!mountedRef.current) {
+        return;
+      }
+
+      const divRect = entry.target.getBoundingClientRect();
+      setElementPos({
+        left: divRect.left,
+        top: divRect.top,
+      });
     });
   }, element);
 
   useResizeObserver(entry => {
-    setClientSize({
-      height: entry.contentRect.height,
-      width: entry.contentRect.width,
+    requestAnimationFrame(() => {
+      if (!mountedRef.current) {
+        return;
+      }
+
+      setClientSize({
+        height: entry.contentRect.height,
+        width: entry.contentRect.width,
+      });
     });
   }, window.document.documentElement);
+
+  useEffect(() => {
+    // Set initial sizes
+    const divRect = element?.getBoundingClientRect();
+    if (divRect) {
+      setElementPos({
+        left: divRect.left,
+        top: divRect.top,
+      });
+    }
+    const windowRect = window.document.documentElement.getBoundingClientRect();
+    setClientSize({
+      height: windowRect.height,
+      width: windowRect.width,
+    });
+
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [element]);
 
   const result = useMemo((): UsePositionResult | undefined => {
     if (!clientSize || !elementPos) {

@@ -5,17 +5,16 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -26,7 +25,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:entity-feedback': ExtensionDefinition<{
+    'api:entity-feedback': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -43,7 +42,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:entity-feedback/ratings-buttons': ExtensionDefinition<{
+    'entity-card:entity-feedback/ratings-buttons': OverridableExtensionDefinition<{
       config: {
         title: string;
         variant: 'starred' | 'like-dislike';
@@ -55,7 +54,6 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
               label: string;
             }[]
           | undefined;
-      } & {
         filter: EntityPredicate | undefined;
         type: 'content' | 'summary' | 'info' | undefined;
       };
@@ -70,7 +68,6 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
               label: string;
             }[]
           | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
@@ -97,21 +94,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            optional: boolean;
-            singleton: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-card';
       name: 'ratings-buttons';
       params: {
@@ -120,12 +103,11 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-card:entity-feedback/ratings-table': ExtensionDefinition<{
+    'entity-card:entity-feedback/ratings-table': OverridableExtensionDefinition<{
       config: {
         title: string | undefined;
         allEntities: boolean | undefined;
         variant: 'starred' | 'like-dislike';
-      } & {
         filter: EntityPredicate | undefined;
         type: 'content' | 'summary' | 'info' | undefined;
       };
@@ -133,7 +115,6 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         title?: string | undefined;
         allEntities?: boolean | undefined;
         variant?: 'starred' | 'like-dislike' | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
@@ -160,21 +141,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            optional: boolean;
-            singleton: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-card';
       name: 'ratings-table';
       params: {
@@ -183,7 +150,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:entity-feedback': ExtensionDefinition<{
+    'entity-content:entity-feedback': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: undefined;
       config: {

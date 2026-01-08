@@ -15,16 +15,14 @@
  */
 import { ValidationTypes } from '@backstage-community/plugin-kiali-common/types';
 import { Typography } from '@material-ui/core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  InfoCircleIcon,
-} from '@patternfly/react-icons';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { ComponentClass, CSSProperties } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 const validationStyle = kialiStyle({
   textAlign: 'left',
@@ -50,31 +48,31 @@ export type ValidationDescription = {
 export type ValidationType = {
   name: string;
   color: string;
-  icon: ComponentClass<SVGIconProps>;
+  icon: ComponentClass<SvgIconProps>;
 };
 
 const ErrorValidation: ValidationType = {
   name: 'Not Valid',
   color: PFColors.Danger,
-  icon: ExclamationCircleIcon,
+  icon: ErrorOutlineIcon as any,
 };
 
 const WarningValidation: ValidationType = {
   name: 'Warning',
   color: PFColors.Warning,
-  icon: ExclamationTriangleIcon,
+  icon: WarningAmberIcon as any,
 };
 
 const InfoValidation: ValidationType = {
   name: 'Info',
   color: PFColors.Info,
-  icon: InfoCircleIcon,
+  icon: InfoOutlinedIcon as any,
 };
 
 const CorrectValidation: ValidationType = {
   name: 'Valid',
   color: PFColors.Success,
-  icon: CheckCircleIcon,
+  icon: CheckCircleOutlineIcon as any,
 };
 
 export const severityToValidation: { [severity: string]: ValidationType } = {

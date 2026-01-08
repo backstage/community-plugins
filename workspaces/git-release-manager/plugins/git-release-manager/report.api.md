@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PropsWithChildren } from 'react';

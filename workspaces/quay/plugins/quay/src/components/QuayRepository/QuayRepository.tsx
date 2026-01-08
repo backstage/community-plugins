@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 import { Link, Progress, Table } from '@backstage/core-components';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 
 import { Box, Typography } from '@material-ui/core';
 
+import { quayApiRef } from '../../api';
 import { DOC_LINKS } from '../../doc-links';
 import { useRepository, useTags } from '../../hooks';
 import { useQuayViewPermission } from '../../hooks/useQuayViewPermission';
@@ -27,11 +28,11 @@ import { columns } from './tableHeading';
 type QuayRepositoryProps = Record<never, any>;
 
 export function QuayRepository(_props: QuayRepositoryProps) {
-  const { repository, organization } = useRepository();
-  const configApi = useApi(configApiRef);
-  const quayUiUrl =
-    configApi.getOptionalString('quay.apiUrl') ??
-    configApi.getOptionalString('quay.uiUrl');
+  const { instanceName, repository, organization } = useRepository();
+  const quayApi = useApi(quayApiRef);
+
+  const instanceConfig = quayApi.getQuayInstance(instanceName);
+  const quayUiUrl = instanceConfig?.apiUrl ?? instanceConfig?.uiUrl;
 
   const hasViewPermission = useQuayViewPermission();
 
@@ -45,7 +46,7 @@ export function QuayRepository(_props: QuayRepositoryProps) {
   ) : (
     `Quay repository: ${organization}/${repository}`
   );
-  const { loading, data } = useTags(organization, repository);
+  const { loading, data } = useTags(instanceName, organization, repository);
 
   if (!hasViewPermission) {
     return <PermissionAlert />;
@@ -106,8 +107,19 @@ export function QuayRepository(_props: QuayRepositoryProps) {
               >
                 2. Review the application logs in your Backstage instance
               </Typography>
+              <Typography
+                component="p"
+                align="center"
+                variant="body2"
+                gutterBottom
+              >
+                3. Verify your entity annotations are{' '}
+                <Link to={DOC_LINKS.BACKEND_ANNOTATIONS_GUIDE}>
+                  configured correctly
+                </Link>
+              </Typography>
               <Typography component="p" align="center" variant="body2">
-                3. Verify your{' '}
+                4. Verify your{' '}
                 <Link to={DOC_LINKS.AUTH_TOKEN_GUIDE}>Quay access tokens</Link>{' '}
                 are{' '}
                 <Link to={DOC_LINKS.BACKEND_CONFIGURATION_GUIDE}>

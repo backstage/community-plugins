@@ -1,5 +1,34 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.19.0
+
+### Minor Changes
+
+- b9c2943: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- 82a81d9: A few README file updates
+
+  - added integrations section with links to supported integrations (search, permission, events, signals, notifications)
+  - improved local development instructions on postgres with added isntructions on seeding the database
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+- Updated dependencies [b9c2943]
+  - @backstage-community/plugin-announcements-common@0.15.0
+
+## 0.18.0
+
+### Minor Changes
+
+- 411e4c6: Backstage version bump to v1.46.0.
+  This release includes fix for frontend error `Package subpath './' is not defined by "exports"`.
+
+### Patch Changes
+
+- Updated dependencies [411e4c6]
+  - @backstage-community/plugin-announcements-common@0.14.0
+
 ## 0.17.0
 
 ### Minor Changes

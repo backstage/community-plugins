@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 2.9.1
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+- 78a144f: Updated dependency `glob` to `^13.0.0`.
+
+## 2.9.0
+
+### Minor Changes
+
+- 291a51f: Backstage version bump to v1.45.3
+
 ## 2.8.0
 
 ### Minor Changes

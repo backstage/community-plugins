@@ -15,7 +15,7 @@
  */
 
 import {
-  MockAnalyticsApi,
+  mockApis,
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/test-utils';
@@ -47,7 +47,7 @@ describe('<StackOverflowSearchResultListItem/>', () => {
   });
 
   it('should capture analytics for rank', async () => {
-    const analyticsSpy = new MockAnalyticsApi();
+    const analyticsSpy = mockApis.analytics();
 
     await renderInTestApp(
       <TestApiProvider apis={[[analyticsApiRef, analyticsSpy]]}>
@@ -69,7 +69,7 @@ describe('<StackOverflowSearchResultListItem/>', () => {
       screen.getByText(/Customizing Spotify backstage UI/i),
     );
 
-    expect(analyticsSpy.getEvents()[0]).toMatchObject({
+    expect(analyticsSpy.captureEvent).toHaveBeenCalledWith({
       action: 'discover',
       attributes: { to: 'https://stackoverflow.com/questions/7' },
       context: { extension: 'App', pluginId: 'root', routeRef: 'unknown' },

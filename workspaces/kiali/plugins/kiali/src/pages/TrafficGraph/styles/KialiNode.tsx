@@ -26,7 +26,7 @@ import {
 } from '@patternfly/react-topology';
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
 import { default as React } from 'react';
-import { PFColors } from '../../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { kialiStyle } from '../../../styles/StyleUtils';
 
 // This is the registered Node component override that utilizes our customized Node.tsx component.
@@ -36,7 +36,7 @@ type StyleNodeProps = {
 } & WithSelectionProps;
 
 const renderIcon = (element: Node): React.ReactNode => {
-  let Component: React.ComponentClass<React.ComponentProps<any>> | undefined;
+  let Component: React.ComponentType<any> | undefined;
   const data = element.getData();
   const isInaccessible = data.isInaccessible;
   const isServiceEntry = data.isServiceEntry;

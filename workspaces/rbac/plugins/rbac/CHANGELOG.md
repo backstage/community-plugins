@@ -1,5 +1,22 @@
 ### Dependencies
 
+## 1.47.1
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
+## 1.47.0
+
+### Minor Changes
+
+- e2d17e1: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- Updated dependencies [e2d17e1]
+  - @backstage-community/plugin-rbac-common@1.22.0
+
 ## 1.46.0
 
 ### Minor Changes

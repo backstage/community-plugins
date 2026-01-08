@@ -1,5 +1,27 @@
 ### Dependencies
 
+## 1.22.2
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
+## 1.22.1
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+
+## 1.22.0
+
+### Minor Changes
+
+- 9a1ce4e: Backstage version bump to v1.45.1
+
+### Patch Changes
+
+- a7d24b9: Updated dependency `@types/react` to `18.3.27`.
+
 ## 1.21.0
 
 ### Minor Changes

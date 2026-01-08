@@ -13,68 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Icon } from '@patternfly/react-core';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
 import {
-  AngleDoubleDownIcon,
-  AngleDoubleLeftIcon,
-  AngleDoubleRightIcon,
-  AngleDoubleUpIcon,
-  AngleDownIcon,
-  AngleLeftIcon,
-  AngleRightIcon,
-  ApplicationsIcon,
-  ArrowLeftIcon,
-  AsteriskIcon,
-  BanIcon,
-  BellIcon,
-  BlueprintIcon,
-  BoltIcon,
-  BundleIcon,
-  CloseIcon,
-  CodeBranchIcon,
-  CompressIcon,
-  CopyIcon,
-  EllipsisHIcon,
-  ErrorCircleOIcon,
-  ExpandIcon,
-  FileDownloadIcon,
-  FilterIcon,
-  GlobeAmericasIcon,
-  GlobeRouteIcon,
-  HelpIcon,
-  HistoryIcon,
-  HomeIcon,
-  InfoAltIcon,
-  InProgressIcon,
-  LockIcon,
-  LockOpenIcon,
-  MigrationIcon,
-  MinusCircleIcon,
-  OkIcon,
-  OnRunningIcon,
-  OutlinedClockIcon,
-  PauseCircleIcon,
-  PauseIcon,
-  PficonTemplateIcon,
-  PlayCircleIcon,
-  PlayIcon,
-  PlusCircleIcon,
-  ProcessAutomationIcon,
-  RepositoryIcon,
-  SaveIcon,
-  ServiceIcon,
-  ShareAltIcon,
-  SortAmountDownAltIcon,
-  StopIcon,
-  TopologyIcon,
-  UnknownIcon,
-  UserClockIcon,
-  WarningTriangleIcon,
-} from '@patternfly/react-icons';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
+  AccessTime as AccessTimeIcon,
+  AddCircleOutline as AddCircleOutlineIcon,
+  AltRoute as AltRouteIcon,
+  Apps as AppsIcon,
+  ArrowBack as ArrowBackIcon,
+  Block as BlockIcon,
+  CallSplit as CallSplitIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  Close as CloseIcon,
+  ContentCopy as ContentCopyIcon,
+  ErrorOutline as ErrorOutlineIcon,
+  FileDownload as FileDownloadIcon,
+  FilterList as FilterListIcon,
+  FlashOn as FlashOnIcon,
+  FullscreenExit as FullscreenExitIcon,
+  GitHub as GitHubIcon,
+  HelpOutline as HelpOutlineIcon,
+  History as HistoryIcon,
+  HourglassEmpty as HourglassEmptyIcon,
+  InfoOutlined as InfoOutlinedIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  KeyboardArrowRight as KeyboardArrowRightIcon,
+  KeyboardDoubleArrowDown as KeyboardDoubleArrowDownIcon,
+  KeyboardDoubleArrowLeft as KeyboardDoubleArrowLeftIcon,
+  KeyboardDoubleArrowRight as KeyboardDoubleArrowRightIcon,
+  KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon,
+  Language as LanguageIcon,
+  Lock as LockIcon,
+  LockOpen as LockOpenIcon,
+  MoreHoriz as MoreHorizIcon,
+  OpenInFull as OpenInFullIcon,
+  Pause as PauseIcon,
+  PauseCircleOutline as PauseCircleOutlineIcon,
+  PlayArrow as PlayArrowIcon,
+  PlayCircleOutline as PlayCircleOutlineIcon,
+  Public as PublicIcon,
+  RemoveCircleOutline as RemoveCircleOutlineIcon,
+  RoomService as RoomServiceIcon,
+  Save as SaveIcon,
+  Schedule as ScheduleIcon,
+  SettingsBackupRestore as SettingsBackupRestoreIcon,
+  Share as ShareIcon,
+  Sort as SortIcon,
+  Stop as StopIcon,
+  SwapHoriz as SwapHorizIcon,
+  TextFields as TextFieldsIcon,
+  Timer as TimerIcon,
+  ViewInAr as ViewInArIcon,
+  ViewModule as ViewModuleIcon,
+  WarningAmber as WarningAmberIcon,
+  Hub as HubIcon,
+  VpnKey as VpnKeyIcon,
+  AccountTree as AccountTreeIcon,
+} from '@mui/icons-material';
 import { default as React } from 'react';
 import { classes } from 'typestyle';
-import { PFColors } from '../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
+import type { Status as HealthStatus } from '@backstage-community/plugin-kiali-common/types';
 import { kialiStyle } from '../styles/StyleUtils';
 
 export const defaultIconStyle = kialiStyle({
@@ -82,161 +82,153 @@ export const defaultIconStyle = kialiStyle({
 });
 
 const iconStyle = kialiStyle({
-  width: '10px',
+  // Keep icons aligned with surrounding text; size is controlled via the `size` prop (defaulted below)
+  verticalAlign: 'middle',
 });
+
+export type MUIIconComponent = React.ComponentType<SvgIconProps>;
 
 export interface IconProps {
   className?: string;
   color?: string;
   dataTest?: string;
-  icon?: React.ComponentClass<SVGIconProps>;
+  // Intentionally loose: some call sites pass icons coming from common types (historically PatternFly).
+  icon?: React.ComponentType<any>;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-const conversorIconProps = (
-  props: IconProps,
-  icon: JSX.Element,
-  colorIcon?: string,
-) => {
-  const colorI = props.color || colorIcon;
-  const classNameIcon = colorI
-    ? kialiStyle({
-        color: colorI,
-      })
-    : undefined;
-  return <Icon className={`${props.className} ${classNameIcon}`}>{icon}</Icon>;
+const sizeToFontSize = (
+  size?: IconProps['size'],
+): SvgIconProps['fontSize'] | undefined => {
+  if (!size) {
+    return undefined;
+  }
+  switch (size) {
+    case 'sm':
+      return 'small';
+    case 'md':
+      return 'medium';
+    case 'lg':
+    case 'xl':
+      return 'large';
+    default:
+      return undefined;
+  }
 };
 
-// keep alphabetized
-export const KialiIcon: { [name: string]: React.FunctionComponent<IconProps> } =
-  {
-    AddMore: (props: IconProps) =>
-      conversorIconProps(props, <PlusCircleIcon />),
-    AngleDoubleDown: (props: IconProps) =>
-      conversorIconProps(props, <AngleDoubleDownIcon />),
-    AngleDoubleLeft: (props: IconProps) =>
-      conversorIconProps(props, <AngleDoubleLeftIcon />),
-    AngleDoubleRight: (props: IconProps) =>
-      conversorIconProps(props, <AngleDoubleRightIcon />),
-    AngleDoubleUp: (props: IconProps) =>
-      conversorIconProps(props, <AngleDoubleUpIcon />),
-    AngleDown: (props: IconProps) =>
-      conversorIconProps(props, <AngleDownIcon />),
-    AngleLeft: (props: IconProps) =>
-      conversorIconProps(props, <AngleLeftIcon />),
-    AngleRight: (props: IconProps) =>
-      conversorIconProps(props, <AngleRightIcon />),
-    Applications: (props: IconProps) =>
-      conversorIconProps(props, <ApplicationsIcon />),
-    Back: (props: IconProps) => conversorIconProps(props, <ArrowLeftIcon />),
-    Bell: (props: IconProps) => conversorIconProps(props, <BellIcon />),
-    CircuitBreaker: (props: IconProps) =>
-      conversorIconProps(props, <BoltIcon />),
-    Clock: (props: IconProps) =>
-      conversorIconProps(props, <OutlinedClockIcon />),
-    Close: (props: IconProps) => conversorIconProps(props, <CloseIcon />),
-    Compress: (props: IconProps) => conversorIconProps(props, <CompressIcon />),
-    Copy: (props: IconProps) => conversorIconProps(props, <CopyIcon />),
-    Delete: (props: IconProps) =>
-      conversorIconProps(props, <MinusCircleIcon />),
-    Download: (props: IconProps) =>
-      conversorIconProps(props, <FileDownloadIcon />),
-    Error: (props: IconProps) =>
-      conversorIconProps(props, <ErrorCircleOIcon />, PFColors.Danger),
-    Expand: (props: IconProps) => conversorIconProps(props, <ExpandIcon />),
-    FaultInjection: (props: IconProps) =>
-      conversorIconProps(props, <BanIcon />),
-    Filter: (props: IconProps) => conversorIconProps(props, <FilterIcon />),
-    Gateway: (props: IconProps) =>
-      conversorIconProps(props, <GlobeRouteIcon />),
-    Help: (props: IconProps) => conversorIconProps(props, <HelpIcon />),
-    History: (props: IconProps) => conversorIconProps(props, <HistoryIcon />),
-    Info: (props: IconProps) =>
-      conversorIconProps(props, <InfoAltIcon />, PFColors.Info),
-    IstioConfig: (props: IconProps) =>
-      conversorIconProps(props, <PficonTemplateIcon />),
-    InProgressIcon: (props: IconProps) =>
-      conversorIconProps(props, <InProgressIcon />),
-    LocalTime: (props: IconProps) =>
-      conversorIconProps(props, <GlobeAmericasIcon />),
-    Mirroring: (props: IconProps) =>
-      conversorIconProps(props, <MigrationIcon />),
-    MoreLegend: (props: IconProps) =>
-      conversorIconProps(props, <EllipsisHIcon />),
-    MtlsLock: (props: IconProps) => conversorIconProps(props, <LockIcon />),
-    MtlsUnlock: (props: IconProps) =>
-      conversorIconProps(props, <LockOpenIcon />),
-    Ok: (props: IconProps) =>
-      conversorIconProps(props, <OkIcon />, PFColors.Success),
-    OnRunningIcon: (props: IconProps) =>
-      conversorIconProps(props, <OnRunningIcon />),
-    OutOfMesh: (props: IconProps) =>
-      conversorIconProps(props, <BlueprintIcon />),
-    Pause: (props: IconProps) => conversorIconProps(props, <PauseIcon />),
-    PauseCircle: (props: IconProps) =>
-      conversorIconProps(props, <PauseCircleIcon />),
-    Play: (props: IconProps) => conversorIconProps(props, <PlayIcon />),
-    PlayCircle: (props: IconProps) =>
-      conversorIconProps(props, <PlayCircleIcon />),
-    Rank: (props: IconProps) =>
-      conversorIconProps(props, <SortAmountDownAltIcon />),
-    Regex: (props: IconProps) => conversorIconProps(props, <AsteriskIcon />),
-    Repository: (props: IconProps) =>
-      conversorIconProps(props, <RepositoryIcon />),
-    RequestRouting: (props: IconProps) =>
-      conversorIconProps(props, <CodeBranchIcon />),
-    ResetSettings: (props: IconProps) =>
-      conversorIconProps(props, <ProcessAutomationIcon />),
-    RequestTimeout: (props: IconProps) =>
-      conversorIconProps(props, <OutlinedClockIcon />),
-    Save: (props: IconProps) => conversorIconProps(props, <SaveIcon />),
-    Services: (props: IconProps) => conversorIconProps(props, <ServiceIcon />),
-    Stop: (props: IconProps) => conversorIconProps(props, <StopIcon />),
-    Topology: (props: IconProps) => conversorIconProps(props, <TopologyIcon />),
-    TrafficShifting: (props: IconProps) =>
-      conversorIconProps(props, <ShareAltIcon />),
-    Unknown: (props: IconProps) => conversorIconProps(props, <UnknownIcon />),
-    UserClock: (props: IconProps) =>
-      conversorIconProps(props, <UserClockIcon />),
-    VirtualService: (props: IconProps) =>
-      conversorIconProps(props, <CodeBranchIcon />),
-    Warning: (props: IconProps) =>
-      conversorIconProps(props, <WarningTriangleIcon />, PFColors.Warning),
-    Website: (props: IconProps) => conversorIconProps(props, <HomeIcon />),
-    Workloads: (props: IconProps) => conversorIconProps(props, <BundleIcon />),
-  };
+export const createIcon = (
+  props: IconProps | HealthStatus,
+  icon?: MUIIconComponent,
+  colorIcon?: string,
+): React.ReactElement => {
+  // Support legacy calls like `createIcon(Status)` where Status has { icon, color }.
+  const p: IconProps =
+    (props as HealthStatus).icon && (props as any).priority !== undefined
+      ? {
+          icon: (props as HealthStatus).icon as any,
+          color: (props as HealthStatus).color,
+        }
+      : (props as IconProps);
 
-Object.keys(KialiIcon).forEach(key => {
-  KialiIcon[key].defaultProps = {
-    className: iconStyle,
-  };
-});
+  const IconComponent = p.icon ?? icon ?? React.Fragment;
+  const iconColor = p.color ?? colorIcon;
+  const fontSize = sizeToFontSize(p.size);
+
+  return React.createElement(IconComponent as any, {
+    className: classes(p.className, iconStyle),
+    fontSize,
+    ...(iconColor ? { htmlColor: iconColor } : null),
+    ...(p.dataTest ? { 'data-test': p.dataTest } : null),
+  });
+};
 
 // createTooltipIcon wraps the icon in a span element. Tooltip child elements that are
 // SVGs (icons) need to be wrapped in something to avoid the tooltip from disappearing on refresh.
 // See: https://github.com/kiali/kiali/issues/3583 for more details.
 export function createTooltipIcon(icon: any, dataTest?: string) {
-  return <span data-test={dataTest}>{icon}</span>;
+  return (
+    <span
+      data-test={dataTest}
+      style={{ display: 'inline-flex', alignItems: 'center', lineHeight: 0 }}
+    >
+      {icon}
+    </span>
+  );
 }
 
-export const createIcon = (
-  props: IconProps,
-  icon?: React.ComponentClass<SVGIconProps>,
-  colorIcon?: string,
-): React.ReactElement => {
-  const iconComponent = props.icon ?? icon ?? React.Fragment;
+const make =
+  (icon: MUIIconComponent, defaultColor?: string) => (props: IconProps) =>
+    createIcon(props, icon, defaultColor);
 
-  const iconColor = props.color ?? colorIcon;
+// keep alphabetized (keys preserved for compatibility, icons are approximate)
+export const KialiIcon: { [name: string]: React.FunctionComponent<IconProps> } =
+  {
+    AddMore: make(AddCircleOutlineIcon),
+    AngleDoubleDown: make(KeyboardDoubleArrowDownIcon),
+    AngleDoubleLeft: make(KeyboardDoubleArrowLeftIcon),
+    AngleDoubleRight: make(KeyboardDoubleArrowRightIcon),
+    AngleDoubleUp: make(KeyboardDoubleArrowUpIcon),
+    AngleDown: make(KeyboardArrowDownIcon),
+    AngleLeft: make(KeyboardArrowLeftIcon),
+    AngleRight: make(KeyboardArrowRightIcon),
+    AngleUp: make(KeyboardArrowUpIcon),
+    Applications: make(AppsIcon),
+    Back: make(ArrowBackIcon),
+    Bell: make(PublicIcon),
+    CircuitBreaker: make(FlashOnIcon),
+    Clock: make(AccessTimeIcon),
+    Close: make(CloseIcon),
+    Compress: make(FullscreenExitIcon),
+    Copy: make(ContentCopyIcon),
+    Delete: make(RemoveCircleOutlineIcon),
+    Download: make(FileDownloadIcon),
+    Error: make(ErrorOutlineIcon, PFColors.Danger),
+    Expand: make(OpenInFullIcon),
+    FaultInjection: make(BlockIcon),
+    Filter: make(FilterListIcon),
+    Gateway: make(AltRouteIcon),
+    Help: make(HelpOutlineIcon),
+    History: make(HistoryIcon),
+    Info: make(InfoOutlinedIcon, PFColors.Info),
+    IstioConfig: make(TextFieldsIcon),
+    InProgressIcon: make(HourglassEmptyIcon),
+    LocalTime: make(PublicIcon),
+    Mirroring: make(SwapHorizIcon),
+    MoreLegend: make(MoreHorizIcon),
+    MtlsLock: make(LockIcon),
+    MtlsUnlock: make(LockOpenIcon),
+    Ok: make(CheckCircleOutlineIcon, PFColors.Success),
+    OnRunningIcon: make(PlayArrowIcon),
+    OutOfMesh: make(ViewModuleIcon),
+    Pause: make(PauseIcon),
+    PauseCircle: make(PauseCircleOutlineIcon),
+    Play: make(PlayArrowIcon),
+    PlayCircle: make(PlayCircleOutlineIcon),
+    Rank: make(SortIcon),
+    Regex: make(TextFieldsIcon),
+    Repository: make(GitHubIcon),
+    RequestRouting: make(CallSplitIcon),
+    ResetSettings: make(SettingsBackupRestoreIcon),
+    RequestTimeout: make(TimerIcon),
+    Save: make(SaveIcon),
+    Services: make(RoomServiceIcon),
+    Stop: make(StopIcon),
+    Topology: make(AccountTreeIcon),
+    TrafficShifting: make(ShareIcon),
+    Unknown: make(HelpOutlineIcon),
+    UserClock: make(ScheduleIcon),
+    VirtualService: make(CallSplitIcon),
+    Warning: make(WarningAmberIcon, PFColors.Warning),
+    Website: make(LanguageIcon),
+    Workloads: make(ViewInArIcon),
+    Cluster: make(HubIcon),
+    Key: make(VpnKeyIcon),
+    Cubes: make(ViewInArIcon),
+  };
 
-  const iconStyles = iconColor ? kialiStyle({ color: iconColor }) : undefined;
-
-  return (
-    <Icon
-      className={classes(props.className, iconStyles)}
-      size={props.size}
-      data-test={props.dataTest}
-    >
-      {React.createElement(iconComponent)}
-    </Icon>
-  );
-};
+Object.keys(KialiIcon).forEach(key => {
+  KialiIcon[key].defaultProps = {
+    className: iconStyle,
+    size: 'sm',
+  };
+});

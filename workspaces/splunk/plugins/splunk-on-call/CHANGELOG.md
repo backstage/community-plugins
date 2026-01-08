@@ -1,5 +1,17 @@
 # @backstage-community/plugin-splunk-on-call
 
+## 0.17.1
+
+### Patch Changes
+
+- c3dc262: Replaces global JSX with React.JSX
+
+## 0.17.0
+
+### Minor Changes
+
+- f8d80bc: Backstage version bump to v1.46.1
+
 ## 0.16.0
 
 ### Minor Changes

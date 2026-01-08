@@ -10,6 +10,8 @@ The `community-plugins` repository is a place where members of the community can
 
 This repository is designed to provide plugin maintainers with tools and workflows to efficiently manage and publish Backstage plugins.
 
+👉 Check out the [Community Plugins documentation](./docs/README.md) for a full list of all plugins in this repository, including ownership and package details.
+
 ## Contributing a plugin
 
 Plugins created by the wider Backstage community are welcome to be published in the `community-plugins` repository. When you contribute a plugin to this repository, you agree to follow specific guidelines, including a standardized release process. This allows plugin owners to leverage established processes and the collective knowledge of the Backstage `community-plugins` community.
@@ -28,7 +30,7 @@ Each plugin belongs to a workspace and workspaces are portable enough to be move
 
 Plugins depend on other plugins via regular npm dependencies, regardless of whether the other plugins are core plugins, other plugins within the repository, or external plugins.
 
-Although the community repository isn't technically a yarn workspace", it functions as a repository with multiple yarn workspaces, with each workspace possessing its unique `.changesets` directory.
+Although the community repository isn't technically a yarn workspace, it functions as a repository with multiple yarn workspaces, with each workspace possessing its unique `.changesets` directory.
 
 Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the `CHANGELOG` files.
 

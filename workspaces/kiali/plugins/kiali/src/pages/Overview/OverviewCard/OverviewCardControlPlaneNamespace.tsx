@@ -19,12 +19,13 @@ import {
   IstiodResourceThresholds,
   Metric,
   RichDataPoint,
+  VCDataPoint,
   VCLine,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Card, CardContent, Grid, Tooltip } from '@material-ui/core';
 import { default as React } from 'react';
 import { SparklineChart } from '../../../components/Charts/SparklineChart';
-import { PFColors } from '../../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { KialiIcon } from '../../../config/KialiIcon';
 import { kialiStyle } from '../../../styles/StyleUtils';
 import { toLocaleStringWithConditionalDate } from '../../../utils/Date';
@@ -188,22 +189,33 @@ export class OverviewCardControlPlaneNamespace extends React.Component<
                         <b>Memory</b>
                       </Grid>
                       <Grid item>
-                        {getName(this.props.duration).toLocaleLowerCase(
-                          'en-US',
-                        )}
-                        <Tooltip
-                          placement="right"
-                          title={
-                            <div style={{ textAlign: 'left' }}>
-                              This values represents the memory of the istiod{' '}
-                              {memoryMetricSource}
-                            </div>
-                          }
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            whiteSpace: 'nowrap',
+                          }}
                         >
-                          <div style={{ display: 'inline' }}>
-                            <KialiIcon.Info className={infoStyle} />
-                          </div>
-                        </Tooltip>
+                          <span>
+                            {getName(this.props.duration).toLocaleLowerCase(
+                              'en-US',
+                            )}
+                          </span>
+                          <Tooltip
+                            placement="right"
+                            title={
+                              <div style={{ textAlign: 'left' }}>
+                                This values represents the memory of the istiod{' '}
+                                {memoryMetricSource}
+                              </div>
+                            }
+                          >
+                            <span style={{ display: 'inline-flex' }}>
+                              <KialiIcon.Info className={infoStyle} />
+                            </span>
+                          </Tooltip>
+                        </span>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -215,7 +227,7 @@ export class OverviewCardControlPlaneNamespace extends React.Component<
                       showLegend={false}
                       showYAxis
                       padding={{ top: 50, left: 70, right: 70, bottom: 0 }}
-                      tooltipFormat={dp =>
+                      tooltipFormat={(dp: VCDataPoint) =>
                         `${toLocaleStringWithConditionalDate(
                           dp.x as Date,
                         )}\n${dp.y.toFixed(2)} ${dp.name}`
@@ -240,22 +252,33 @@ export class OverviewCardControlPlaneNamespace extends React.Component<
                         <b>CPU</b>
                       </Grid>
                       <Grid item>
-                        {getName(this.props.duration).toLocaleLowerCase(
-                          'en-US',
-                        )}
-                        <Tooltip
-                          placement="right"
-                          title={
-                            <div style={{ textAlign: 'left' }}>
-                              This values represents cpu of the istiod{' '}
-                              {cpuMetricSource}
-                            </div>
-                          }
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            whiteSpace: 'nowrap',
+                          }}
                         >
-                          <div style={{ display: 'inline' }}>
-                            <KialiIcon.Info className={infoStyle} />
-                          </div>
-                        </Tooltip>
+                          <span>
+                            {getName(this.props.duration).toLocaleLowerCase(
+                              'en-US',
+                            )}
+                          </span>
+                          <Tooltip
+                            placement="right"
+                            title={
+                              <div style={{ textAlign: 'left' }}>
+                                This values represents cpu of the istiod{' '}
+                                {cpuMetricSource}
+                              </div>
+                            }
+                          >
+                            <span style={{ display: 'inline-flex' }}>
+                              <KialiIcon.Info className={infoStyle} />
+                            </span>
+                          </Tooltip>
+                        </span>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -267,7 +290,7 @@ export class OverviewCardControlPlaneNamespace extends React.Component<
                       showYAxis
                       showXAxisValues
                       padding={{ top: 50, left: 70, right: 70, bottom: 0 }}
-                      tooltipFormat={dp =>
+                      tooltipFormat={(dp: VCDataPoint) =>
                         `${toLocaleStringWithConditionalDate(
                           dp.x as Date,
                         )}\n${dp.y.toFixed(2)} ${dp.name}`

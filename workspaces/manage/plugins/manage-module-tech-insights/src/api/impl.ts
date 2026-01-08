@@ -22,6 +22,7 @@ import { manageTechInsightsApiRef } from './api';
 /**
  * Factory for creating the manage tech insights API.
  *
+ * @deprecated Use the new frontend system instead
  * @public
  */
 export function createManageTechInsightsApiFactory(

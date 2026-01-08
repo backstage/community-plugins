@@ -22,6 +22,8 @@ export interface FeedbackResponse {
   // (undocumented)
   entityRef: string;
   // (undocumented)
+  link?: string;
+  // (undocumented)
   response?: string;
   // (undocumented)
   userRef: string;

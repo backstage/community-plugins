@@ -47,6 +47,20 @@ export const getInstanceName = (entity: Entity): string => {
   return entity?.metadata?.annotations?.[ArgoCdLabels.instanceName] ?? '';
 };
 
+/**
+ * Gets the instance names from entity annotations.
+ *
+ * @param entity - The entity to extract instance annotations from
+ * @returns ArgoCD instance names to use for the entity
+ */
+export const getInstanceNames = (entity: Entity): string[] => {
+  const instanceAnnotation = getInstanceName(entity);
+  return instanceAnnotation
+    .split(',')
+    .map(name => name.trim())
+    .filter(name => name.length > 0);
+};
+
 export const getProjectName = (entity: Entity): string | undefined => {
   return entity?.metadata?.annotations?.[ArgoCdLabels.projectName];
 };

@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { default as default_2 } from 'react';
 import { DependencyGraphTypes } from '@backstage/core-components';

@@ -1,5 +1,18 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.17.0
+
+### Minor Changes
+
+- 9317560: Backstage version bump to v1.46.1
+
+## 0.16.0
+
+### Minor Changes
+
+- 6dfcd18: Add support for indexing and searching multiple Confluence instances by allowing dynamic collator registration and configurable types.
+- 6dfcd18: implementation to support both single-instance and multi-instance configurations using the same structure
+
 ## 0.15.0
 
 ### Minor Changes

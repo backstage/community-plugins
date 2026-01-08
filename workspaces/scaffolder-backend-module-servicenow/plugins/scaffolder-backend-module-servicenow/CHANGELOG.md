@@ -1,5 +1,21 @@
 ### Dependencies
 
+## 2.11.0
+
+### Minor Changes
+
+- 2b493f2: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- 140bfbb: Updated dependency `@hey-api/openapi-ts` to `0.89.2`.
+
+## 2.10.2
+
+### Patch Changes
+
+- 110e8f3: Updated dependency `@hey-api/openapi-ts` to `0.89.0`.
+
 ## 2.10.1
 
 ### Patch Changes

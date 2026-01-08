@@ -1,5 +1,39 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.17.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+
+## 0.17.0
+
+### Minor Changes
+
+- d2133ca: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- Updated dependencies [d2133ca]
+  - @backstage-community/plugin-copilot-common@0.16.0
+
+## 0.16.0
+
+### Minor Changes
+
+- ac31365: Backstage version bump to v1.45.3
+
+### Patch Changes
+
+- Updated dependencies [ac31365]
+  - @backstage-community/plugin-copilot-common@0.15.0
+
+## 0.15.5
+
+### Patch Changes
+
+- 0a904fd: Normalized date format in task logs. Dates now display in ISO 8601 UTC format (`2025-11-03T00:00:00.000Z`) instead of locale-specific format (`Mon Nov 03 2025 01:00:00 GMT+0100 (Central European Standard Time)`).
+
 ## 0.15.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-servicenow",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -69,11 +69,13 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "^0.34.5",
     "@backstage/core-app-api": "^1.19.2",
     "@backstage/dev-utils": "^1.1.17",
     "@backstage/test-utils": "^1.7.13",
     "@material-ui/core": "^4.12.4",
+    "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",

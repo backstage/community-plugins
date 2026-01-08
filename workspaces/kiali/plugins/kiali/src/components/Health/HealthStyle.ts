@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PFColors } from '../Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 export const healthIndicatorStyle = kialiStyle({
   $nest: {
-    '& .pf-v5-c-tooltip__content': {
+    '& .pf-v6-c-tooltip__content': {
       borderWidth: '1px',
       textAlign: 'left',
+      fontSize: '14px',
+      lineHeight: 1.35,
     },
 
-    '& .pf-v5-c-content ul': {
-      marginBottom: 'var(--pf-v5-c-content--ul--MarginTop)',
+    '& .pf-v6-c-content ul': {
+      marginBottom: 'var(--pf-v6-c-content--ul--MarginTop)',
       marginTop: 0,
       color: PFColors.Color100,
     },

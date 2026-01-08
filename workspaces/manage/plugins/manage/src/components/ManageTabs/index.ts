@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type {
-  SubRouteTab,
-  ManageTabsProps,
-  ManageKindOptions,
-} from './ManageTabs';
+
+export type { ManageTabsProps, ManageKindOptions } from './ManageTabs';
+
 export { ManageTabsImpl } from './ManageTabs';
+
+export type { SubRouteTab } from './types';
 export { MANAGE_KIND_COMMON } from './types';

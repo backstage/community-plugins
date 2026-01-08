@@ -41,4 +41,9 @@ export interface ScaffolderRelationProcessorConfig {
       };
     };
   };
+  pullRequests?: {
+    templateUpdate?: {
+      enabled: boolean;
+    };
+  };
 }

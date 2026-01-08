@@ -5,14 +5,14 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { IconComponent } from '@backstage/core-plugin-api';
+import { IconComponent } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
@@ -26,7 +26,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:explore': ExtensionDefinition<{
+    'api:explore': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -43,7 +43,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'nav-item:explore': ExtensionDefinition<{
+    'nav-item:explore': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -64,7 +64,7 @@ const _default: OverridableFrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:explore': ExtensionDefinition<{
+    'page:explore': OverridableExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
@@ -91,7 +91,7 @@ const _default: OverridableFrontendPlugin<
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
     }>;
-    'search-result-list-item:explore': ExtensionDefinition<{
+    'search-result-list-item:explore': OverridableExtensionDefinition<{
       kind: 'search-result-list-item';
       name: undefined;
       config: {
@@ -104,6 +104,7 @@ const _default: OverridableFrontendPlugin<
         {
           predicate?: SearchResultItemExtensionPredicate | undefined;
           component: SearchResultItemExtensionComponent;
+          icon?: JSX_2.Element | undefined;
         },
         'search.search-result-list-item.item',
         {}
@@ -116,7 +117,7 @@ const _default: OverridableFrontendPlugin<
 export default _default;
 
 // @alpha (undocumented)
-export const exploreSearchResultListItem: ExtensionDefinition<{
+export const exploreSearchResultListItem: OverridableExtensionDefinition<{
   kind: 'search-result-list-item';
   name: undefined;
   config: {
@@ -129,6 +130,7 @@ export const exploreSearchResultListItem: ExtensionDefinition<{
     {
       predicate?: SearchResultItemExtensionPredicate | undefined;
       component: SearchResultItemExtensionComponent;
+      icon?: JSX_2.Element | undefined;
     },
     'search.search-result-list-item.item',
     {}

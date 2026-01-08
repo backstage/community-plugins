@@ -21,23 +21,18 @@ import type {
   RichDataPoint,
   VCLines,
 } from '@backstage-community/plugin-kiali-common/types';
-import {
-  ChartArea,
-  ChartBar,
-  ChartLine,
-  ChartScatter,
-} from '@patternfly/react-charts';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import {
   Button,
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
+  Icon,
 } from '@patternfly/react-core';
-import { CubesIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
-import { PFColors } from '../../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 import {
@@ -87,40 +82,22 @@ type State = {
 };
 
 type ChartTypeData = {
-  fill: boolean;
-  stroke: boolean;
-  groupOffset: number;
-  seriesComponent: React.ReactElement;
-  sizeRatio: number;
+  // Previously used to tune Victory/PatternFly rendering. Kept for compatibility but no longer used.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  seriesComponent: React.ReactElement<any>;
 };
 
 const lineInfo: ChartTypeData = {
-  fill: false,
-  stroke: true,
-  groupOffset: 0,
-  seriesComponent: <ChartLine />,
-  sizeRatio: 1.0,
+  seriesComponent: <></>,
 };
 const areaInfo: ChartTypeData = {
-  fill: true,
-  stroke: false,
-  groupOffset: 0,
-  seriesComponent: <ChartArea />,
-  sizeRatio: 1.0,
+  seriesComponent: <></>,
 };
 const barInfo: ChartTypeData = {
-  fill: true,
-  stroke: false,
-  groupOffset: 7,
-  seriesComponent: <ChartBar />,
-  sizeRatio: 1 / 6,
+  seriesComponent: <></>,
 };
 const scatterInfo: ChartTypeData = {
-  fill: true,
-  stroke: false,
-  groupOffset: 0,
-  seriesComponent: <ChartScatter />,
-  sizeRatio: 1 / 30,
+  seriesComponent: <></>,
 };
 
 export class KChart<T extends LineInfo> extends React.Component<
@@ -201,18 +178,10 @@ export class KChart<T extends LineInfo> extends React.Component<
         chartHeight={this.getInnerChartHeight()}
         data={this.props.data}
         seriesComponent={typeData.seriesComponent}
-        fill={typeData.fill}
-        stroke={typeData.stroke}
-        showSpans={this.props.showSpans}
-        showTrendline={this.props.showTrendline}
-        groupOffset={typeData.groupOffset}
-        sizeRatio={typeData.sizeRatio}
-        overlay={this.props.overlay}
         unit={this.props.chart.unit}
         isMaximized={this.props.isMaximized}
         moreChartProps={{ minDomain: minDomain, maxDomain: maxDomain }}
         onClick={this.props.onClick}
-        brushHandlers={this.props.brushHandlers}
         timeWindow={this.props.timeWindow}
         xAxis={this.props.chart.xAxis}
       />
@@ -238,7 +207,11 @@ export class KChart<T extends LineInfo> extends React.Component<
         }}
       >
         <EmptyState variant={EmptyStateVariant.sm} className={emptyStyle}>
-          {this.props.isMaximized && <EmptyStateIcon icon={CubesIcon} />}
+          {this.props.isMaximized && (
+            <Icon>
+              <ViewInArIcon />
+            </Icon>
+          )}
           <EmptyStateBody className={emptyStyle}>
             No data available
           </EmptyStateBody>
@@ -261,15 +234,11 @@ export class KChart<T extends LineInfo> extends React.Component<
       >
         <EmptyState variant={EmptyStateVariant.sm} className={emptyStyle}>
           {this.props.isMaximized && (
-            <EmptyStateIcon
-              icon={() => (
-                <ErrorCircleOIcon
-                  style={{ color: PFColors.Danger }}
-                  width={32}
-                  height={32}
-                />
-              )}
-            />
+            <Icon>
+              <ErrorOutlineIcon
+                style={{ color: PFColors.Danger, width: 32, height: 32 }}
+              />
+            </Icon>
           )}
           <EmptyStateBody className={emptyStyle}>
             An error occured while fetching this metric:

@@ -1,14 +1,16 @@
-name: Automate Renovate changeset
+name: Automate Renovate and Dependabot changeset
 on:
   pull_request_target:
     paths:
-      - '.github/workflows/automate_renovate_changesets.yml'
-      - '**/yarn.lock'
+      - '**/package.json'
 
 jobs:
   generate-changeset:
     runs-on: ubuntu-latest
-    if: github.actor == 'backstage-goalie[bot]' && github.repository == 'backstage/community-plugins'
+    if: |
+      (github.actor == 'backstage-goalie[bot]' || github.actor == 'dependabot[bot]')
+      && github.repository == 'backstage/community-plugins'
+      && github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
@@ -25,7 +27,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 22
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Configure Git

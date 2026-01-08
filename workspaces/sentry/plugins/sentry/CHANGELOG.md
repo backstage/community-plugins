@@ -1,5 +1,17 @@
 # @backstage-community/plugin-sentry
 
+## 1.13.0
+
+### Minor Changes
+
+- bedef38: Backstage version bump to v1.46.2
+
+## 1.12.1
+
+### Patch Changes
+
+- c0cfbcb: Adjust import for getting started instructions
+
 ## 1.12.0
 
 ### Minor Changes

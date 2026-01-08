@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 export type { ColumnIconErrorProps } from './ColumnIconError';
 export { ColumnIconError } from './ColumnIconError';
+
+export type { ColumnIconNoDataProps } from './ColumnIconNoData';
+export { ColumnIconNoData } from './ColumnIconNoData';
 
 export type {
   ProgressColor,

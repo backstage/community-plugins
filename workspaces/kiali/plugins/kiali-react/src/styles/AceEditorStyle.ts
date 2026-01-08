@@ -15,7 +15,7 @@
  */
 import { style } from 'typestyle';
 import { NestedCSSProperties } from 'typestyle/lib/types';
-import { PFColors } from '../components/Pf/PfColors';
+import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
 /*
  * 70px is the height of the bottom toolbar (save, reload and cancel buttons)

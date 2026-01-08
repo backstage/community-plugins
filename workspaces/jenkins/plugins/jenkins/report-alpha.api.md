@@ -5,17 +5,16 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
@@ -26,7 +25,7 @@ const _default: OverridableFrontendPlugin<
   },
   {},
   {
-    'api:jenkins/jenkins': ExtensionDefinition<{
+    'api:jenkins/jenkins': OverridableExtensionDefinition<{
       kind: 'api';
       name: 'jenkins';
       config: {};
@@ -43,18 +42,16 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:jenkins/latest-run': ExtensionDefinition<{
+    'entity-card:jenkins/latest-run': OverridableExtensionDefinition<{
       config: {
         branch: string;
         variant: 'flex' | 'fullHeight' | 'gridItem' | undefined;
-      } & {
         filter: EntityPredicate | undefined;
         type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
         variant?: 'flex' | 'fullHeight' | 'gridItem' | undefined;
         branch?: string | undefined;
-      } & {
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
@@ -81,21 +78,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            optional: boolean;
-            singleton: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'entity-card';
       name: 'latest-run';
       params: {
@@ -104,7 +87,7 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:jenkins/projects': ExtensionDefinition<{
+    'entity-content:jenkins/projects': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: 'projects';
       config: {

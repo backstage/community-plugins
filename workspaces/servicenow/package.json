@@ -39,6 +39,7 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.16.0",
     "@changesets/cli": "^2.27.1",
+    "@playwright/test": "^1.57.0",
     "@types/simple-oauth2": "^5",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",

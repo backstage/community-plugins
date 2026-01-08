@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-manage-backend",
-  "version": "1.3.0",
+  "version": "1.5.1",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -37,22 +37,22 @@
   "dependencies": {
     "@backstage-community/plugin-manage-common": "workspace:^",
     "@backstage-community/plugin-manage-node": "workspace:^",
-    "@backstage/backend-defaults": "^0.13.0",
-    "@backstage/backend-plugin-api": "^1.4.4",
-    "@backstage/catalog-client": "^1.12.0",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-node": "^1.19.1",
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-client": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
-    "zod": "^3.22.4"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.9.1",
-    "@backstage/cli": "^0.34.4",
-    "@types/express": "^4.17.6",
-    "@types/supertest": "^2.0.12",
-    "supertest": "^6.2.4"
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@types/express": "^4.17.25",
+    "@types/supertest": "^2.0.16",
+    "supertest": "^7.0.0"
   },
   "files": [
     "dist"

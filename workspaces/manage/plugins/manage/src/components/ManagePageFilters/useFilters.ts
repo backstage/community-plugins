@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useUserSettings } from '@backstage-community/plugin-manage-react';
+
+import {
+  userSettingsKeys,
+  useUserSettings,
+} from '@backstage-community/plugin-manage-react';
+
+const [feature, key] = userSettingsKeys['entities-combined'];
 
 /**
  * Hook to return whether the entity tabs are combined or not.
@@ -21,7 +27,5 @@ import { useUserSettings } from '@backstage-community/plugin-manage-react';
  * @public
  */
 export function useManagePageCombined(defaultValue?: boolean) {
-  return useUserSettings<boolean>('$manage-page-filter', 'combined', {
-    defaultValue,
-  });
+  return useUserSettings<boolean>(feature, key, { defaultValue });
 }

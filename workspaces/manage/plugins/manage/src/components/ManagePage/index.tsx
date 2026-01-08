@@ -13,5 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type { ManagePageProps, HeaderProps } from './ManagePage';
-export { ManagePageImpl } from './ManagePage';
+
+export type { ManagePageProps, HeaderProps } from './ManagePageOld';
+export { ManagePageImpl } from './ManagePageOld';
+
+export type { ManagePagePropsNew } from './ManagePageNew';
+export { ManagePageNew } from './ManagePageNew';

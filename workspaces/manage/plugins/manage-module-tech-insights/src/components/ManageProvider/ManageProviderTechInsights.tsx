@@ -27,20 +27,42 @@ import {
   CheckResultRenderer,
   techInsightsApiRef,
 } from '@backstage-community/plugin-tech-insights';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import {
   BulkCheckResponse,
   CheckResult,
 } from '@backstage-community/plugin-tech-insights-common';
-import { useManagedEntities } from '@backstage-community/plugin-manage-react';
+import {
+  ProgressColor,
+  useCurrentTab,
+  useManagedEntities,
+} from '@backstage-community/plugin-manage-react';
 
-import { stringifyCheck } from '../../utils';
+import { filterEmptyChecks, stringifyCheck } from '../../utils';
 import { manageTechInsightsApiRef } from '../../api/api';
+import { defaultGetPercentColor, defaultMapTitle } from '../../api/defaults';
+import { ManageTechInsightsMapTitle } from '../../title';
+
+/**
+ * Configuration options for Manage Tech Insights provider.
+ *
+ * @public
+ */
+export interface ManageTechInsightsContextConfig {
+  checkFilter?: (check: Check) => boolean;
+  columnsCheckFilter?:
+    | ((check: Check) => boolean)
+    | Record<string, (check: Check) => boolean>;
+  getPercentColor?: (percent: number) => ProgressColor;
+  mapTitle?: ManageTechInsightsMapTitle;
+  showEmpty: boolean | Record<string, boolean>;
+}
 
 /**
  * @internal
  */
-export interface ManageTechInsightsContext {
+export interface ManageTechInsightsContext
+  extends ManageTechInsightsContextConfig {
   allChecks: Check[];
   bulkCheckResponse: BulkCheckResponse | undefined;
   renderers: Map<string, CheckResultRenderer>;
@@ -50,8 +72,13 @@ const ctx = createContext<ManageTechInsightsContext>(undefined as any);
 
 const { Provider } = ctx;
 
-/** @public */
-export function ManageProviderTechInsights(props: PropsWithChildren<{}>) {
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
+export function ManageProviderTechInsights(
+  props: PropsWithChildren<Partial<ManageTechInsightsContextConfig>>,
+) {
   const techInsightsApi = useApi(techInsightsApiRef);
   const ownedEntities = useManagedEntities();
 
@@ -79,12 +106,16 @@ export function ManageProviderTechInsights(props: PropsWithChildren<{}>) {
       allRenderers.map(renderer => [renderer.type, renderer]),
     );
 
+    const showEmpty = props.showEmpty ?? false;
+
     return {
+      ...props,
+      showEmpty,
       allChecks,
       bulkCheckResponse,
       renderers,
     };
-  }, [asyncState.value, techInsightsApi]);
+  }, [asyncState.value, techInsightsApi, props]);
 
   return <Provider value={state} children={props.children} />;
 }
@@ -92,22 +123,73 @@ export function ManageProviderTechInsights(props: PropsWithChildren<{}>) {
 /**
  * @internal
  */
-export function useManageTechInsights(checkFilter?: (check: Check) => boolean) {
+export interface UseManageTechInsightsOptions {
+  checkFilter?: (check: Check) => boolean;
+  showEmpty?: boolean;
+  mode?: 'columns' | undefined;
+}
+
+/**
+ * @internal
+ */
+export function useManageTechInsights({
+  checkFilter,
+  mode,
+  showEmpty: customShowEmpty,
+}: UseManageTechInsightsOptions = {}) {
   const manageTechInsightsApi = useApi(manageTechInsightsApiRef);
   const context = useContext(ctx);
 
-  const filter = checkFilter ?? manageTechInsightsApi.checkFilter;
+  const currentTab = useCurrentTab();
 
   return useMemo(() => {
+    const filter =
+      checkFilter ??
+      context.checkFilter ??
+      manageTechInsightsApi.checkFilter ??
+      (() => true);
+    const getPercentColor =
+      context.getPercentColor ??
+      manageTechInsightsApi.getPercentColor ??
+      defaultGetPercentColor;
+    const mapTitle =
+      context.mapTitle ?? manageTechInsightsApi.mapTitle ?? defaultMapTitle;
+
+    const curColumnsCheckFilter = context.columnsCheckFilter ?? filter;
+    const columnsCheckFilter =
+      typeof curColumnsCheckFilter === 'function'
+        ? curColumnsCheckFilter
+        : curColumnsCheckFilter[currentTab] ?? filter;
+
+    const curFilter = mode === 'columns' ? columnsCheckFilter : filter;
+
+    const showEmpty =
+      customShowEmpty ??
+      (typeof context.showEmpty === 'boolean'
+        ? context.showEmpty
+        : context.showEmpty?.[currentTab] ?? false);
+
     return {
       ...context,
-      allChecks: context.allChecks.filter(filter),
+      showEmpty,
+      checkFilter: filter,
+      columnsCheckFilter,
+      getPercentColor,
+      mapTitle,
+      allChecks: context.allChecks.filter(curFilter),
       bulkCheckResponse: (context.bulkCheckResponse ?? []).map(response => ({
         ...response,
-        results: response.results.filter(res => filter(res.check)),
+        results: response.results.filter(res => curFilter(res.check)),
       })),
     };
-  }, [context, filter]);
+  }, [
+    context,
+    manageTechInsightsApi,
+    checkFilter,
+    customShowEmpty,
+    currentTab,
+    mode,
+  ]);
 }
 
 /**
@@ -145,18 +227,17 @@ export function useManageTechInsightsForEntities(
   entities: Entity[],
   checkFilter?: (check: Check) => boolean,
 ): UseManageTechInsightsForEntitiesResult {
-  const { allChecks, bulkCheckResponse, renderers } =
-    useManageTechInsights(checkFilter);
+  const { allChecks, bulkCheckResponse, renderers, showEmpty } =
+    useManageTechInsights({
+      checkFilter,
+    });
 
   return useMemo((): UseManageTechInsightsForEntitiesResult => {
-    const entitySet = new Set(
-      entities.map(entity =>
-        stringifyEntityRef(entity).toLocaleLowerCase('en-US'),
-      ),
-    );
-
-    const responses = (bulkCheckResponse ?? []).filter(resp =>
-      entitySet.has(resp.entity.toLocaleLowerCase('en-US')),
+    const { responses, filteredChecks } = filterEmptyChecks(
+      bulkCheckResponse,
+      entities,
+      allChecks,
+      showEmpty,
     );
 
     const responsesForCheck = new Map<string, ResponsesForCheck>();
@@ -182,7 +263,7 @@ export function useManageTechInsightsForEntities(
       ),
     );
 
-    const checks = allChecks
+    const checks = filteredChecks
       .filter(check => uniqueChecks.has(stringifyCheck(check)))
       .map(
         (check): DecoratedCheck => ({
@@ -193,5 +274,5 @@ export function useManageTechInsightsForEntities(
       );
 
     return { checks, responses, responsesForCheck };
-  }, [allChecks, bulkCheckResponse, renderers, entities]);
+  }, [allChecks, bulkCheckResponse, renderers, entities, showEmpty]);
 }

@@ -1,5 +1,18 @@
 # @backstage-community/plugin-codescene
 
+## 0.13.0
+
+### Minor Changes
+
+- b6d7ecc: Backstage version bump to v1.46.1
+
+## 0.12.1
+
+### Patch Changes
+
+- 671c0c5: Remove unused dependencies
+- 3d66647: Replaces global JSX reference with `React.JSX` import
+
 ## 0.12.0
 
 ### Minor Changes

@@ -109,33 +109,29 @@ test('Overview card content', async ({ page }) => {
   const inboundSparkline = page.locator(
     '[data-test="sparkline-inbound-duration-10m"]',
   );
-  await expect(inboundSparkline).toBeAttached({ timeout: 30000 });
+  await expect(inboundSparkline).toBeVisible();
 
-  // Wait for React to finish rendering the chart
-  // Use waitForFunction to wait until the SVG and paths are in the DOM
-  // This handles React's asynchronous rendering better than expect().toBeAttached()
+  const overviewcard = page.locator('[data-test="overview-card-bookinfo"]');
+
+  // Verify the sparkline contains a chart (SVG element)
+  const sparklineChart = overviewcard.locator('svg').first();
+  await expect(sparklineChart).toBeVisible();
+
+  // Verify the chart has data points (paths with a 'd' attribute).
+  // MUI X Charts doesn't use role="presentation" here.
   await page.waitForFunction(
-    () => {
-      const container = document.querySelector(
-        '[data-test="sparkline-inbound-duration-10m"]',
-      );
-      if (!container) return false;
-      const svg = container.querySelector('svg');
+    svgSelector => {
+      const svg = document.querySelector(svgSelector);
       if (!svg) return false;
-      const paths = svg.querySelectorAll('path');
-      return paths.length > 0;
+      return svg.querySelectorAll('path[d]').length > 0;
     },
-    { timeout: 30000 },
+    `[data-test="overview-card-bookinfo"] svg`,
+    { timeout: 15000 },
   );
 
-  // TODO
-  // Verify the sparkline contains a chart (SVG element)
-  // const sparklineChart = inboundSparkline.locator('svg').first();
-  // await expect(sparklineChart).toBeAttached();
-
-  // Verify the chart has data points (path elements)
-  // const chartPaths = sparklineChart.locator('path');
-  // await expect(chartPaths.first()).toBeAttached();
+  const chartPaths = sparklineChart.locator('path[d]');
+  const pathCount = await chartPaths.count();
+  expect(pathCount).toBeGreaterThan(0);
 });
 
 test('Traffic card content', async ({ page }) => {

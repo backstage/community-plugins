@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 1.24.0
+
+### Minor Changes
+
+- 908af36: Added configuration fields to sort, filter and pagination for artifacts.
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+
 ## 1.23.0
 
 ### Minor Changes

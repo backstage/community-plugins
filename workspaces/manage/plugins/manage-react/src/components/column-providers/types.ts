@@ -45,30 +45,3 @@ export interface ManageColumnModuleSingle {
 export type ManageColumnModule =
   | ManageColumnModuleMultiple
   | ManageColumnModuleSingle;
-
-/**
- * Check if a column is a set of columns, or a single one
- *
- * @public
- */
-export function isManageColumnModuleMultiple(
-  column: ManageColumnModule,
-): column is ManageColumnModuleMultiple {
-  return !!(column as ManageColumnModuleMultiple).getColumns;
-}
-
-/**
- * Ensure a column (or multiple columns) are multiple columns, for simplicity
- *
- * @public
- */
-export function simplifyColumns(
-  column: ManageColumnModule,
-): ManageColumnModuleMultiple {
-  if (isManageColumnModuleMultiple(column)) {
-    return column;
-  }
-  return {
-    getColumns: (entities: Entity[]) => [column.getColumn(entities)],
-  };
-}

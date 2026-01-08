@@ -54,5 +54,6 @@ export const useLinkStyle = () => {
 export const getChipStyle = (theme: Theme) => {
   return {
     backgroundColor: theme.palette.type === 'dark' ? '#3d5061' : '#e7f1fa',
+    marginLeft: '5px',
   };
 };

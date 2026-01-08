@@ -129,6 +129,7 @@ export class DatabaseHandler {
       comments: response.comments,
       consent: response.consent,
       user_ref: response.userRef,
+      link: response.link,
     });
   }
 
@@ -153,12 +154,13 @@ export class DatabaseHandler {
             ).andOn('responses.timestamp', '=', 'latest_responses.timestamp');
           },
         )
-        .select('responses.user_ref', 'response', 'comments', 'consent')
+        .select('responses.user_ref', 'response', 'comments', 'consent', 'link')
     ).map(response => ({
       userRef: response.user_ref,
       response: response.response,
       comments: response.comments,
       consent: Boolean(response.consent),
+      link: response.link,
     }));
   }
 }

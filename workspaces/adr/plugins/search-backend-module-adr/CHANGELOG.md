@@ -1,5 +1,22 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.14.0
+
+### Minor Changes
+
+- c16049d: Backstage version bump to v1.46.1
+
+### Patch Changes
+
+- Updated dependencies [c16049d]
+  - @backstage-community/plugin-adr-common@0.15.0
+
+## 0.13.1
+
+### Patch Changes
+
+- 0b42b41: Remove unused dependencies luxon and marked
+
 ## 0.13.0
 
 ### Minor Changes

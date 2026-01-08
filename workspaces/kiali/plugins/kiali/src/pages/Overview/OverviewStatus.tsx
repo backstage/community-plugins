@@ -88,10 +88,18 @@ export class OverviewStatus extends React.Component<Props, {}> {
           title={tooltipContent}
           className={healthIndicatorStyle}
         >
-          <div style={{ display: 'inline-block', marginRight: '5px' }}>
-            {createIcon(this.props.status)}
-            {` ${length}`}
-          </div>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              whiteSpace: 'nowrap',
+              marginLeft: 6,
+            }}
+          >
+            {createIcon(this.props.status, 'sm')}
+            <span>{length}</span>
+          </span>
         </Tooltip>
       </>
     );

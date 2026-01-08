@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { configApiRef } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
-import { renderInTestApp } from '@backstage/test-utils';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 
+import { quayApiRef, QuayApiV1 } from '../../api';
 import { useTags } from '../../hooks';
+import { formatDate } from '../../utils';
 import { QuayRepository } from './QuayRepository';
 
 jest.mock('react-use', () => ({
@@ -25,24 +26,9 @@ jest.mock('react-use', () => ({
   useAsync: jest.fn().mockReturnValue({ loading: true }),
 }));
 
-jest.mock('@backstage/core-plugin-api', () => {
-  const actual = jest.requireActual('@backstage/core-plugin-api');
-  return {
-    ...actual,
-    useApi: jest.fn(ref => {
-      if (ref === configApiRef) {
-        return {
-          getOptionalString: (param: any) => param,
-        };
-      }
-      // Fallback to original for other refs like appThemeApi
-      return actual.useApi(ref);
-    }),
-  };
-});
-
 jest.mock('../../hooks/', () => ({
   useRepository: () => ({
+    instanceName: undefined,
     repository: 'redhat-backstage-build',
     organization: 'backstage-community',
   }),
@@ -57,7 +43,21 @@ const mockUsePermission = usePermission as jest.MockedFunction<
   typeof usePermission
 >;
 
+const mockQuayApi: Partial<QuayApiV1> = {
+  getQuayInstance: jest.fn().mockReturnValue({
+    name: 'default',
+    apiUrl: 'https://quay.example.com',
+  }),
+};
+
 describe('QuayRepository', () => {
+  const renderComponent = async () =>
+    renderInTestApp(
+      <TestApiProvider apis={[[quayApiRef, mockQuayApi]]}>
+        <QuayRepository />
+      </TestApiProvider>,
+    );
+
   beforeEach(() => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
   });
@@ -68,7 +68,7 @@ describe('QuayRepository', () => {
 
   it('should render permission alert when user does not have view permission', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
-    const { queryByTestId } = await renderInTestApp(<QuayRepository />);
+    const { queryByTestId } = await renderComponent();
 
     expect(queryByTestId('no-permission-alert')).toBeInTheDocument();
 
@@ -78,15 +78,13 @@ describe('QuayRepository', () => {
 
   it('should show loading if loading is true', async () => {
     (useTags as jest.Mock).mockReturnValue({ loading: true, data: [] });
-    const { getByTestId } = await renderInTestApp(<QuayRepository />);
+    const { getByTestId } = await renderComponent();
     expect(getByTestId('quay-repo-progress')).not.toBeNull();
   });
 
   it('should show empty table if loaded and data is not present', async () => {
     (useTags as jest.Mock).mockReturnValue({ loading: false, data: [] });
-    const { getByTestId, queryByText } = await renderInTestApp(
-      <QuayRepository />,
-    );
+    const { getByTestId, queryByText } = await renderComponent();
     expect(getByTestId('quay-repo-table')).not.toBeNull();
     expect(getByTestId('quay-repo-table-empty')).not.toBeNull();
     expect(queryByText(/Quay repository/i)).toBeInTheDocument();
@@ -111,9 +109,7 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = await renderInTestApp(
-      <QuayRepository />,
-    );
+    const { queryByTestId, queryByText } = await renderComponent();
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
     expect(queryByText(/Quay repository/i)).toBeInTheDocument();
@@ -134,9 +130,7 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = await renderInTestApp(
-      <QuayRepository />,
-    );
+    const { queryByTestId, queryByText } = await renderComponent();
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
     expect(queryByText(/Quay repository/i)).toBeInTheDocument();
@@ -156,9 +150,7 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = await renderInTestApp(
-      <QuayRepository />,
-    );
+    const { queryByTestId, queryByText } = await renderComponent();
 
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
@@ -179,12 +171,49 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = await renderInTestApp(
-      <QuayRepository />,
-    );
+    const { queryByTestId, queryByText } = await renderComponent();
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
     expect(queryByText(/Quay repository/i)).toBeInTheDocument();
     expect(queryByTestId('quay-repo-security-scan-unsupported')).not.toBeNull();
+  });
+
+  it('should display formatted expiration date when present', async () => {
+    const expirationDate = 'Sat, 10 Feb 2024 09:39:24 -0000';
+    const formattedExpiration = formatDate(expirationDate);
+    (useTags as jest.Mock).mockReturnValue({
+      loading: false,
+      data: [
+        {
+          name: 'latest',
+          manifest_digest:
+            'sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54',
+          size: '100 MB',
+          last_modified: 'Mar 15, 2023, 6:22 PM',
+          expiration: formattedExpiration,
+        },
+      ],
+    });
+    const { queryByTestId, queryByText } = await renderComponent();
+    expect(queryByTestId('quay-repo-table')).not.toBeNull();
+    expect(queryByText(formattedExpiration)).toBeInTheDocument();
+  });
+
+  it('should handle null expiration date correctly', async () => {
+    (useTags as jest.Mock).mockReturnValue({
+      loading: false,
+      data: [
+        {
+          name: 'latest',
+          manifest_digest:
+            'sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54',
+          size: '100 MB',
+          last_modified: 'Mar 15, 2023, 6:22 PM',
+          expiration: null,
+        },
+      ],
+    });
+    const { queryByTestId } = await renderComponent();
+    expect(queryByTestId('quay-repo-table')).not.toBeNull();
   });
 });
