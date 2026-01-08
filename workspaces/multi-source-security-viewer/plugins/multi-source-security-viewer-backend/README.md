@@ -1,11 +1,11 @@
 # Multi Source Security Viewer Backend plugin for Backstage
 
-At this time this plugin is used to enable the ability to set RBAC permissions in the RBAC UI.
+This plugin is used to enable the ability to set RBAC permissions for the multi-source-security-viewer plugin in the RBAC UI.
 
 ## Prerequisites
 
-- Ensure that you're using the [MSSV Frontend plugin](../multi-source-security-viewer/README.md)
-- Ensure that you have the [RBAC plugin fully configured](../../../rbac/plugins/rbac/README.md).
+- Ensure that you have the [MSSV Frontend plugin configured](../multi-source-security-viewer/README.md).
+- Ensure that you have the [RBAC plugin configured](../../../rbac/plugins/rbac/README.md).
 
 ## Installation
 
@@ -44,6 +44,6 @@ You should now be able to see the permissions for this plugin show up in the RBA
 
 ![selecting-mssv-permission](./docs/images/selecting-mssv-permission.png)
 
-\*\*Configuring MSSV permission:
+**Configuring MSSV permission:**
 
 ![selecting-mssv-permission](./docs/images/configuring-mssv-permission.png)
