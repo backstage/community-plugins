@@ -20,7 +20,8 @@
     "pluginPackage": "@backstage-community/plugin-multi-source-security-viewer-backend",
     "pluginPackages": [
       "@backstage-community/plugin-multi-source-security-viewer",
-      "@backstage-community/plugin-multi-source-security-viewer-backend"
+      "@backstage-community/plugin-multi-source-security-viewer-backend",
+      "@backstage-community/plugin-multi-source-security-viewer-common"
     ]
   },
   "scripts": {
