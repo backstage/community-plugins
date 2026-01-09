@@ -104,7 +104,6 @@ async function main(args) {
       resolve(__dirname, '..', 'workspaces'),
       workspace,
     );
-    console.log(workspacePath);
     const {
       default: { version },
     } = await import(join(workspacePath, 'backstage.json'), {
