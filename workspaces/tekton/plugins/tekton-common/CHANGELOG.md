@@ -1,5 +1,11 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.16.0
+
+### Minor Changes
+
+- 477b7e1: Migrate shared-react usage to tekton-react
+
 ## 1.15.0
 
 ### Minor Changes

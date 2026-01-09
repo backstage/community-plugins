@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 3.33.0
+
+### Minor Changes
+
+- 477b7e1: Migrate shared-react usage to tekton-react
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+- Updated dependencies [477b7e1]
+  - @backstage-community/plugin-tekton-common@1.16.0
+  - @backstage-community/plugin-tekton-react@0.1.0
+
 ## 3.32.1
 
 ### Patch Changes
