@@ -28,10 +28,20 @@ import { ServiceNowConfig } from '../../config';
 import { createRouter } from './router';
 
 const mockFetchIncidents = jest.fn();
+const mockFieldExists = jest.fn();
+
 jest.mock('../service-now-rest/client', () => {
   return {
     DefaultServiceNowClient: jest.fn().mockImplementation(() => ({
       fetchIncidents: mockFetchIncidents,
+    })),
+  };
+});
+
+jest.mock('../service-now-rest/schema-checker', () => {
+  return {
+    ServiceNowSchemaChecker: jest.fn().mockImplementation(() => ({
+      fieldExists: mockFieldExists,
     })),
   };
 });
@@ -45,10 +55,15 @@ describe('createRouter', () => {
     jest.clearAllMocks();
 
     mockHttpAuthService = mockServices.httpAuth.mock();
+    mockFieldExists.mockResolvedValue(true);
 
     mockServiceNowConfig = {
       servicenow: {
         instanceUrl: 'https://mock-instance.service-now.com',
+        basicAuth: {
+          username: 'testuser',
+          password: 'testpassword',
+        },
       },
     };
 
@@ -84,15 +99,18 @@ describe('createRouter', () => {
 
     it('should successfully retrieve incidents', async () => {
       mockHttpAuthService.credentials.mockResolvedValue(mockCredentials);
-      mockFetchIncidents.mockResolvedValue(mockIncidentsData);
+      mockFetchIncidents.mockResolvedValue({
+        items: mockIncidentsData,
+        totalCount: mockIncidentsData.length,
+      });
 
       const response = await request(app)
         .get('/incidents?entityId=user:default/test.user')
         .set('Authorization', mockAuthHeader);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(
-        expect.arrayContaining(
+      expect(response.body).toEqual({
+        items: expect.arrayContaining(
           mockIncidentsData.map(_incident =>
             expect.objectContaining({
               sys_id: expect.any(String),
@@ -106,25 +124,36 @@ describe('createRouter', () => {
             }),
           ),
         ),
-      );
+        totalCount: mockIncidentsData.length,
+      });
       expect(mockHttpAuthService.credentials).toHaveBeenCalledWith(
         expect.anything(),
         { allow: ['user'] },
       );
-      expect(mockFetchIncidents).toHaveBeenCalledWith({
-        entityId: 'user:default/test.user',
-      });
+      expect(mockFetchIncidents).toHaveBeenCalledWith(
+        expect.objectContaining({
+          u_backstage_entity_id: 'user:default/test.user',
+        }),
+      );
     });
 
-    it('should return 400 if entityId is missing', async () => {
+    it('should successfully retrieve incidents when no entityId or userEmail is provided', async () => {
       mockHttpAuthService.credentials.mockResolvedValue(mockCredentials);
+      mockFetchIncidents.mockResolvedValue({
+        items: [],
+        totalCount: 0,
+      });
 
-      const response = await request(app).get('/incidents');
+      const response = await request(app)
+        .get('/incidents')
+        .set('Authorization', mockAuthHeader);
 
-      expect(response.status).toBe(400);
-      expect(response.body.error.message).toEqual(
-        'entityId is required if userEmail is not present.',
-      );
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        items: [],
+        totalCount: 0,
+      });
+      expect(mockFetchIncidents).toHaveBeenCalledWith(expect.any(Object));
     });
 
     it('should return 401 if authorization is missing', async () => {
@@ -156,7 +185,10 @@ describe('createRouter', () => {
 
     it('should successfully retrieve incidents when both userEmail and entityId are provided', async () => {
       mockHttpAuthService.credentials.mockResolvedValue(mockCredentials);
-      mockFetchIncidents.mockResolvedValue(mockIncidentsData);
+      mockFetchIncidents.mockResolvedValue({
+        items: mockIncidentsData,
+        totalCount: mockIncidentsData.length,
+      });
 
       const response = await request(app)
         .get(
@@ -165,11 +197,16 @@ describe('createRouter', () => {
         .set('Authorization', mockAuthHeader);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockIncidentsData);
-      expect(mockFetchIncidents).toHaveBeenCalledWith({
-        userEmail: 'test.user@example.com',
-        entityId: 'user:default/test.user',
+      expect(response.body).toEqual({
+        items: mockIncidentsData,
+        totalCount: mockIncidentsData.length,
       });
+      expect(mockFetchIncidents).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userEmail: 'test.user@example.com',
+          u_backstage_entity_id: 'user:default/test.user',
+        }),
+      );
     });
   });
 });
