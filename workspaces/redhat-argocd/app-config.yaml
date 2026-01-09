@@ -103,3 +103,15 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+permission:
+  # setting this to `false` will disable permissions
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - argocd
+      - permission
+    policies-csv-file: ../../examples/rbac-policies.csv
+    admin:
+      users:
+        - name: user:development/guest

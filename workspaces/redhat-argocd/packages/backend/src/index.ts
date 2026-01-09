@@ -38,7 +38,8 @@ backend.add(
 );
 
 // permission plugin
-backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
+backend.add(import('@backstage/plugin-permission-backend'));
+backend.add(import('@backstage-community/plugin-rbac-backend'));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));

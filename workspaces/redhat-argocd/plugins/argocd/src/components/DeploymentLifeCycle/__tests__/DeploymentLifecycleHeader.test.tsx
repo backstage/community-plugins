@@ -16,7 +16,7 @@
 import type { ReactNode } from 'react';
 
 import { configApiRef } from '@backstage/core-plugin-api';
-import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 
@@ -30,19 +30,21 @@ describe('DeploymentLifecycleCardHeader', () => {
         apis={[
           [
             configApiRef,
-            new MockConfigApi({
-              argocd: {
-                appLocatorMethods: [
-                  {
-                    instances: [
-                      {
-                        name: 'main',
-                        url: 'https://test.com',
-                      },
-                    ],
-                    type: 'config',
-                  },
-                ],
+            mockApis.config({
+              data: {
+                argocd: {
+                  appLocatorMethods: [
+                    {
+                      instances: [
+                        {
+                          name: 'main',
+                          url: 'https://test.com',
+                        },
+                      ],
+                      type: 'config',
+                    },
+                  ],
+                },
               },
             }),
           ],
@@ -81,10 +83,12 @@ describe('DeploymentLifecycleCardHeader', () => {
           apis={[
             [
               configApiRef,
-              new MockConfigApi({
-                argocd: {
-                  baseUrl: 'https://baseurl.com',
-                  appLocatorMethods: [],
+              mockApis.config({
+                data: {
+                  argocd: {
+                    baseUrl: 'https://baseurl.com',
+                    appLocatorMethods: [],
+                  },
                 },
               }),
             ],

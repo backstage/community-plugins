@@ -21,8 +21,7 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { kubernetesApiRef } from '@backstage/plugin-kubernetes-react';
 import {
-  MockConfigApi,
-  MockPermissionApi,
+  mockApis,
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/test-utils';
@@ -66,17 +65,19 @@ describe('argocd', () => {
     },
   };
 
-  const mockPermissionApi = new MockPermissionApi();
+  const mockPermissionApi = mockApis.permission();
 
-  const mockConfiguration = new MockConfigApi({
-    backend: {
-      baseUrl: 'http://localhost:7007',
-      listen: {
-        port: 7007,
+  const mockConfiguration = mockApis.config({
+    data: {
+      backend: {
+        baseUrl: 'http://localhost:7007',
+        listen: {
+          port: 7007,
+        },
       },
-    },
-    argocd: {
-      appLocatorMethods: [],
+      argocd: {
+        appLocatorMethods: [],
+      },
     },
   });
   const Wrapper = ({ children }: { children: ReactNode }) => {

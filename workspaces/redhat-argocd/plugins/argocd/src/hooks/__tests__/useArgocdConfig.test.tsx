@@ -16,7 +16,7 @@
 import type { ReactNode } from 'react';
 
 import { configApiRef } from '@backstage/core-plugin-api';
-import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { renderHook } from '@testing-library/react';
 
@@ -30,9 +30,11 @@ describe('useArgocdConfig', () => {
           apis={[
             [
               configApiRef,
-              new MockConfigApi({
-                argocd: {
-                  appLocatorMethods: [],
+              mockApis.config({
+                data: {
+                  argocd: {
+                    appLocatorMethods: [],
+                  },
                 },
               }),
             ],
@@ -57,14 +59,16 @@ describe('useArgocdConfig', () => {
           apis={[
             [
               configApiRef,
-              new MockConfigApi({
-                argocd: {
-                  appLocatorMethods: [
-                    {
-                      instances: [{}],
-                      type: 'config',
-                    },
-                  ],
+              mockApis.config({
+                data: {
+                  argocd: {
+                    appLocatorMethods: [
+                      {
+                        instances: [{}],
+                        type: 'config',
+                      },
+                    ],
+                  },
                 },
               }),
             ],
@@ -89,15 +93,17 @@ describe('useArgocdConfig', () => {
           apis={[
             [
               configApiRef,
-              new MockConfigApi({
-                argocd: {
-                  baseUrl: 'https://argo-base-url.com',
-                  appLocatorMethods: [
-                    {
-                      instances: [{}],
-                      type: 'config',
-                    },
-                  ],
+              mockApis.config({
+                data: {
+                  argocd: {
+                    baseUrl: 'https://argo-base-url.com',
+                    appLocatorMethods: [
+                      {
+                        instances: [{}],
+                        type: 'config',
+                      },
+                    ],
+                  },
                 },
               }),
             ],
@@ -114,20 +120,22 @@ describe('useArgocdConfig', () => {
   });
 
   it('should return configured instance and refreshInterval', () => {
-    const mockConfig = new MockConfigApi({
-      argocd: {
-        refreshInterval: 50000,
-        appLocatorMethods: [
-          {
-            instances: [
-              {
-                name: 'test',
-                url: 'https://test.com',
-              },
-            ],
-            type: 'config',
-          },
-        ],
+    const mockConfig = mockApis.config({
+      data: {
+        argocd: {
+          refreshInterval: 50000,
+          appLocatorMethods: [
+            {
+              instances: [
+                {
+                  name: 'test',
+                  url: 'https://test.com',
+                },
+              ],
+              type: 'config',
+            },
+          ],
+        },
       },
     });
 

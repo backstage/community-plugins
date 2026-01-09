@@ -23,6 +23,7 @@
     "lint": "backstage-cli package lint"
   },
   "dependencies": {
+    "@backstage-community/plugin-rbac": "^1.47.1",
     "@backstage-community/plugin-redhat-argocd": "workspace:^",
     "@backstage/app-defaults": "^1.7.2",
     "@backstage/catalog-model": "^1.7.6",
