@@ -18,13 +18,7 @@ import '@testing-library/jest-dom';
 import { LinkProps } from '@backstage/core-components';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 
 import {
   ComputedStatus,
@@ -138,9 +132,7 @@ describe('PipelineRunRowActions', () => {
 
     expect(screen.queryByTestId('internal-sbom-link')).toBeInTheDocument();
 
-    act(() => {
-      fireEvent.click(screen.queryByTestId('view-sbom-icon') as HTMLElement);
-    });
+    fireEvent.click(screen.queryByTestId('view-sbom-icon') as HTMLElement);
 
     await waitFor(() => {
       within(
@@ -183,9 +175,7 @@ describe('PipelineRunRowActions', () => {
 
     expect(screen.queryByTestId('external-sbom-link')).toBeInTheDocument();
 
-    act(() => {
-      fireEvent.click(screen.queryByTestId('view-sbom-icon') as HTMLElement);
-    });
+    fireEvent.click(screen.queryByTestId('view-sbom-icon') as HTMLElement);
 
     await waitFor(() => {
       expect(
