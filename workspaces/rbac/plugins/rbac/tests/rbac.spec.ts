@@ -290,9 +290,12 @@ test.describe('RBAC plugin', () => {
 
     await common.clickButton(translations.roleForm.steps.next);
     await expect(
-      // Following line is commented due to the translation of the permission policies is not happenning in UI and the bug RHDHBUGS-2417 has been reported
-      // page.getByRole('cell', { name: `${translations.permissionPolicies.permissionPolicies} (7)` }),
-      page.getByRole('cell', { name: 'Permission policies (7)' }),
+      page.getByRole('cell', {
+        name: replaceTemplate(
+          translations.roleForm.review.permissionPoliciesWithCount,
+          { count: '7' },
+        ),
+      }),
     ).toBeVisible();
     await page
       .getByText(translations.permissionPolicies.helperText)

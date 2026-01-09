@@ -58,6 +58,7 @@ readonly "roleForm.titles.permissionPolicies": string;
 readonly "roleForm.review.reviewAndCreate": string;
 readonly "roleForm.review.reviewAndSave": string;
 readonly "roleForm.review.nameDescriptionOwner": string;
+readonly "roleForm.review.permissionPoliciesWithCount": string;
 readonly "roleForm.steps.create": string;
 readonly "roleForm.steps.next": string;
 readonly "roleForm.steps.back": string;
