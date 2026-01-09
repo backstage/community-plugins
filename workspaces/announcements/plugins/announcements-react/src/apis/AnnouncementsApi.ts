@@ -24,6 +24,7 @@ import {
   Announcement,
   AnnouncementsList,
   Category,
+  Settings,
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 
@@ -66,6 +67,10 @@ export interface AnnouncementsApi {
   tags(): Promise<Tag[]>;
   createTag(request: CreateTagRequest): Promise<void>;
   deleteTag(slug: string): Promise<void>;
+
+  settings(): Promise<Settings>;
+  updateSettings(settings: Partial<Settings>): Promise<Settings>;
+  resetSettings(): Promise<Settings>;
 
   lastSeenDate(): DateTime;
   markLastSeenDate(date: DateTime): void;
