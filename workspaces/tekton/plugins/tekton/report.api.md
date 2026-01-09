@@ -48,10 +48,10 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.high': 'High';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.low': 'Low';
     readonly 'pipelineRunList.tableHeaderTitle.name': 'NAME';
+    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
     readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';
     readonly 'pipelineRunList.tableHeaderTitle.taskStatus': 'TASK STATUS';
     readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
-    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
     readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
     readonly 'pipelineRunList.tableHeaderTitle.actions': 'ACTIONS';
     readonly 'pipelineRunList.tablePagination.rowsPerPageOptionLabel': '{{num}} rows';

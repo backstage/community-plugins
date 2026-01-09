@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { V1ObjectMeta } from '@kubernetes/client-node';
+
 /**
  * The parameters for the task.
  *
@@ -219,4 +221,16 @@ export type Condition = {
   reason?: string;
   message?: string;
   lastTransitionTime?: string;
+};
+
+/**
+ * The kind for the pipeline.
+ *
+ * @public
+ */
+export type PipelineKind = {
+  apiVersion?: string;
+  kind?: string;
+  metadata?: V1ObjectMeta;
+  spec: PipelineSpec;
 };

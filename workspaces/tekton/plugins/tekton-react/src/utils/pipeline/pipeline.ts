@@ -63,6 +63,58 @@ export const getRunStatusColor = (status: string): StatusMessage => {
   }
 };
 
+const getDate = (
+  run: PipelineRunKind,
+  field: 'completionTime' | 'startTime' | 'creationTimestamp',
+) => {
+  if (field === 'creationTimestamp') {
+    return run?.metadata?.creationTimestamp ?? '';
+  }
+  if (field === 'startTime' || field === 'completionTime') {
+    return run?.status?.[field] ?? '';
+  }
+  return '';
+};
+
+const getLatestRun = (
+  runs: PipelineRunKind[],
+  field: 'completionTime' | 'startTime' | 'creationTimestamp',
+) => {
+  let latestRun = runs[0];
+  for (let i = 1; i < runs.length; i++) {
+    latestRun =
+      new Date(getDate(runs?.[i], field)) > new Date(getDate(latestRun, field))
+        ? runs[i]
+        : latestRun;
+  }
+  return latestRun;
+};
+
+/**
+ * The function to get the latest pipeline run.
+ *
+ * @public
+ */
+export const getLatestPipelineRun = (
+  runs: PipelineRunKind[],
+  field: string,
+): PipelineRunKind | null => {
+  if (runs?.length > 0 && field) {
+    let latestRun;
+    if (
+      field === 'completionTime' ||
+      field === 'startTime' ||
+      field === 'creationTimestamp'
+    ) {
+      latestRun = getLatestRun(runs, field);
+    } else {
+      latestRun = runs[runs.length - 1];
+    }
+    return latestRun;
+  }
+  return null;
+};
+
 const getSucceededStatus = (status: string): ComputedStatus => {
   if (status === 'True') {
     return ComputedStatus.Succeeded;
@@ -187,4 +239,65 @@ export const updateTaskStatus = (
   return {
     ...taskStatus,
   };
+};
+
+/**
+ * The function to get the total number of tasks in the pipeline run.
+ *
+ * @public
+ */
+export const totalPipelineRunTasks = (
+  pipelinerun: PipelineRunKind | null,
+): number => {
+  if (!pipelinerun?.status?.pipelineSpec) {
+    return 0;
+  }
+  const totalTasks = (pipelinerun.status.pipelineSpec?.tasks || []).length;
+  const finallyTasks =
+    (pipelinerun.status.pipelineSpec?.finally || []).length ?? 0;
+  return totalTasks + finallyTasks;
+};
+
+/**
+ * The function to get the task status.
+ *
+ * @public
+ */
+export const getTaskStatus = (
+  pipelinerun: PipelineRunKind,
+  taskRuns: TaskRunKind[],
+) => {
+  const totalTasks = totalPipelineRunTasks(pipelinerun);
+  const plrTaskLength = taskRuns.length;
+  const skippedTaskLength = pipelinerun?.status?.skippedTasks?.length || 0;
+
+  const taskStatus: TaskStatusTypes = updateTaskStatus(pipelinerun, taskRuns);
+
+  if (taskRuns?.length > 0) {
+    const pipelineRunHasFailure = taskStatus[ComputedStatus.Failed] > 0;
+    const pipelineRunIsCancelled =
+      pipelineRunFilterReducer(pipelinerun) === ComputedStatus.Cancelled;
+    const unhandledTasks =
+      totalTasks >= plrTaskLength
+        ? totalTasks - plrTaskLength - skippedTaskLength
+        : totalTasks;
+
+    if (pipelineRunHasFailure || pipelineRunIsCancelled) {
+      taskStatus[ComputedStatus.Cancelled] += unhandledTasks;
+    } else {
+      taskStatus[ComputedStatus.Pending] += unhandledTasks;
+    }
+  } else if (
+    pipelinerun?.status?.conditions?.[0]?.status === 'False' ||
+    pipelinerun?.spec.status === SucceedConditionReason.PipelineRunCancelled
+  ) {
+    taskStatus[ComputedStatus.Cancelled] = totalTasks;
+  } else if (
+    pipelinerun?.spec.status === SucceedConditionReason.PipelineRunPending
+  ) {
+    taskStatus[ComputedStatus.Pending] += totalTasks;
+  } else {
+    taskStatus[ComputedStatus.PipelineNotStarted]++;
+  }
+  return taskStatus;
 };
