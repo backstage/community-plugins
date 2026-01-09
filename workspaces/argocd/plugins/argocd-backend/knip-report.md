@@ -9,8 +9,3 @@
 | @kubernetes/client-node        | package.json:41:6 | error    |
 | zod                            | package.json:45:6 | error    |
 
-## Unused devDependencies (1)
-
-| Name                          | Location          | Severity |
-| :---------------------------- | :---------------- | :------- |
-| @backstage/backend-test-utils | package.json:48:6 | error    |
