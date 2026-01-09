@@ -36,6 +36,12 @@ export type Condition = {
 };
 
 // @public
+export const getLatestPipelineRun: (
+  runs: PipelineRunKind[],
+  field: string,
+) => PipelineRunKind | null;
+
+// @public
 export const getRunStatusColor: (status: string) => StatusMessage;
 
 // @public
@@ -43,6 +49,12 @@ export const getTaskRunsForPipelineRun: (
   pipelinerun: PipelineRunKind | null,
   taskRuns: TaskRunKind[],
 ) => TaskRunKind[];
+
+// @public
+export const getTaskStatus: (
+  pipelinerun: PipelineRunKind,
+  taskRuns: TaskRunKind[],
+) => TaskStatusTypes;
 
 // @public
 export const HorizontalStackedBars: ({
@@ -64,6 +76,14 @@ export type HorizontalStackedBarsProps = {
   values: StackedValue[];
   width?: number | string;
   onClick?: () => void;
+};
+
+// @public
+export type PipelineKind = {
+  apiVersion?: string;
+  kind?: string;
+  metadata?: V1ObjectMeta;
+  spec: PipelineSpec;
 };
 
 // @public
@@ -438,6 +458,11 @@ export type TektonWorkspace = {
 export enum TerminatedReasons {
   Completed = 'Completed',
 }
+
+// @public
+export const totalPipelineRunTasks: (
+  pipelinerun: PipelineRunKind | null,
+) => number;
 
 // @public
 export const updateTaskStatus: (
