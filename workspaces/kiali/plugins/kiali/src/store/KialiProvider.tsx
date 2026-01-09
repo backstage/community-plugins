@@ -49,6 +49,10 @@ import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
 import { ServerConfigStateReducer } from '../reducers/ServerConfigState';
 import { INITIAL_TRACING_STATE } from '../reducers/Tracing';
+import {
+  getServerConfig as getComputedServerConfig,
+  setServerConfig,
+} from '../config/ServerConfig';
 import { kialiApiRef } from '../services/Api';
 import { AlertUtils } from '../utils/Alertutils';
 import { PromisesRegistry } from '../utils/CancelablePromises';
@@ -178,14 +182,13 @@ export const KialiProvider: React.FC<Props> = ({
         .then(response =>
           meshTLSStatusDispatch(MeshTlsActions.setinfo(response)),
         );
-      const getServerConfig = promises
+      const getServerConfigPromise = promises
         .register('getServerConfig', kialiClient.getServerConfig())
         .then(resp => {
-          // Convert ServerConfig to ComputedServerConfig by adding durations
-          const computedConfig = {
-            ...resp,
-            durations: {}, // Will be computed by the reducer
-          };
+          // Keep the global serverConfig (used by graph/health funcs) in sync with the backend config.
+          // This also parses healthConfig regexes and computes valid durations.
+          setServerConfig(resp);
+          const computedConfig = getComputedServerConfig();
           serverConfigDispatch(
             ServerConfigActions.setServerConfig(computedConfig),
           );
@@ -209,7 +212,7 @@ export const KialiProvider: React.FC<Props> = ({
       await Promise.all([
         getAuthpromise,
         getStatusPromise,
-        getServerConfig,
+        getServerConfigPromise,
         getMeshTLS,
         getIstioCerts,
         getIstioStatus,
@@ -246,7 +249,8 @@ export const KialiProvider: React.FC<Props> = ({
           );
           kialiClient.setAnnotation(KIALI_PROVIDER, status.providers[0]);
         }
-        fetchPostLogin();
+        // Ensure post-login data (server config, namespaces, etc) is loaded before rendering children.
+        await fetchPostLogin();
       }
     } catch (err) {
       let errDetails: string | undefined = undefined;
