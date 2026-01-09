@@ -109,6 +109,12 @@ argocd:
 > [!Note]
 > When using multiple instances, specify the target instances (comma separated) in your entity using the `argocd/instance-name` annotation. If not specified, the plugin will search all available Argo CD instances. It is advised to add this annotation for better performance. To display multiple ArgoCD applications per entity, use `argocd/app-selector` annotation. More information about available Argo CD annotations can be found in this [documentation](../argocd/README.md#how-to-add-argo-cd-frontend-plugin-to-backstage-app).
 
+## Notifications Integration
+
+You can configure ArgoCD to send real-time notifications to Backstage when application sync events occur (sync succeeded, sync failed, health degraded, etc.). This allows your team to receive alerts directly in the Backstage UI when deployments happen or issues arise.
+
+For detailed setup instructions, see the [Notifications Integration Guide](../../docs/notifications-integration.md).
+
 ## Development
 
 ### Local Development
