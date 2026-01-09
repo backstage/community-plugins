@@ -1,5 +1,16 @@
 # @backstage-community/plugin-argocd
 
+## 2.4.0
+
+### Minor Changes
+
+- 6d47b9f: Renamed @backstage-community/plugin-redhat-argocd to @backstage-community/plugin-argocd
+
+### Patch Changes
+
+- Updated dependencies [6d47b9f]
+  - @backstage-community/plugin-argocd-common@1.12.0
+
 # @backstage-community/plugin-redhat-argocd
 
 ## 2.3.0

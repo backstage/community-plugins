@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd-common
 
+## 1.12.0
+
+### Minor Changes
+
+- 6d47b9f: Renamed @backstage-community/plugin-redhat-argocd-common to @backstage-community/plugin-argocd-common
+
 # @backstage-community/plugin-redhat-argocd-common
 
 ## 1.11.0
