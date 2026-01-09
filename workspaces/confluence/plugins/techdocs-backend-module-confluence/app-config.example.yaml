@@ -1,0 +1,91 @@
+# Example configuration for the Confluence TechDocs module
+# Add this to your app-config.yaml or app-config.local.yaml
+
+# =============================================================================
+# Option 1: Single Confluence Instance (Simple Configuration)
+# =============================================================================
+# Use this format when you have only one Confluence instance.
+
+confluence:
+  # Base URL for your Confluence instance
+  # For Confluence Cloud (Atlassian):
+  baseUrl: https://your-company.atlassian.net/wiki
+
+  # For Confluence Server/Data Center:
+  # baseUrl: https://confluence.company.com
+
+  auth:
+    # Option 1: Bearer Token (Recommended for Confluence Cloud)
+    # Create a token at: https://id.atlassian.com/manage-profile/security/api-tokens
+    type: bearer
+    token: ${CONFLUENCE_TOKEN}
+
+    # Option 2: Basic Authentication (Email + Token for Confluence Cloud)
+    # type: basic
+    # token: ${CONFLUENCE_TOKEN}
+    # email: example@company.org
+
+    # Option 3: Username/Password (For Confluence Server/Data Center)
+    # type: userpass
+    # username: ${CONFLUENCE_USERNAME}
+    # password: ${CONFLUENCE_PASSWORD}
+
+  # Optional: Page tree processing options
+  # pageTree:
+  #   # Enable parallel fetching of child pages (default: true)
+  #   # Set to false if your Confluence API has rate limiting issues
+  #   parallel: true
+  #
+  #   # Maximum depth to traverse when fetching child pages (default: 0 = unlimited)
+  #   # Useful for limiting very deep page hierarchies
+  #   maxDepth: 0
+# =============================================================================
+# Option 2: Multiple Confluence Instances
+# =============================================================================
+# Use this format when you need to connect to multiple Confluence instances.
+# The module will automatically route requests to the correct instance
+# based on the URL hostname in the entity's techdocs-ref annotation.
+
+# confluence:
+#   # Primary Confluence Cloud instance
+#   default:
+#     baseUrl: https://company.atlassian.net/wiki
+#     auth:
+#       type: bearer
+#       token: ${CONFLUENCE_TOKEN}
+#     pageTree:
+#       parallel: true
+#       maxDepth: 0
+#
+#   # Secondary instance (e.g., acquired company)
+#   secondary:
+#     baseUrl: https://other-company.atlassian.net/wiki
+#     auth:
+#       type: basic
+#       token: ${CONFLUENCE_SECONDARY_TOKEN}
+#       email: user@other-company.com
+#
+#   # On-premise Confluence Server instance
+#   onprem:
+#     baseUrl: https://confluence.internal.company.com
+#     auth:
+#       type: userpass
+#       username: ${CONFLUENCE_ONPREM_USERNAME}
+#       password: ${CONFLUENCE_ONPREM_PASSWORD}
+#     pageTree:
+#       parallel: false  # Disable parallel for rate-limited servers
+#       maxDepth: 5
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+# Set these environment variables based on your configuration:
+#
+# For single instance or primary instance:
+# CONFLUENCE_TOKEN=your-api-token
+#
+# For multiple instances:
+# CONFLUENCE_TOKEN=your-primary-api-token
+# CONFLUENCE_SECONDARY_TOKEN=your-secondary-api-token
+# CONFLUENCE_ONPREM_USERNAME=your-username
+# CONFLUENCE_ONPREM_PASSWORD=your-password
