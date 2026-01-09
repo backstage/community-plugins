@@ -17,17 +17,26 @@ import { DateTime } from 'luxon';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
+  Cell,
   CellText,
   Column,
   Row,
   Table,
   TableBody,
   TableHeader,
-  Cell,
   ButtonIcon,
   Flex,
+  Tag,
+  TagGroup,
+  Text,
 } from '@backstage/ui';
-import { RiEyeLine, RiEditLine, RiDeleteBinLine } from '@remixicon/react';
+import {
+  RiEyeLine,
+  RiEditLine,
+  RiDeleteBinLine,
+  RiCircleFill,
+} from '@remixicon/react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 
 const AnnouncementsTableEmptyState = () => {
   const { t } = useAnnouncementsTranslation();
@@ -35,7 +44,7 @@ const AnnouncementsTableEmptyState = () => {
   return (
     <Row>
       <CellText
-        colSpan={11}
+        colSpan={9}
         title={t('admin.announcementsContent.noAnnouncementsFound')}
       />
     </Row>
@@ -50,6 +59,10 @@ type AnnouncementTableRowProps = {
   canEdit?: boolean;
   canDelete?: boolean;
   editingAnnouncementId?: string | null;
+};
+
+const EmptyPlaceholder = () => {
+  return <CellText title="-" />;
 };
 
 const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
@@ -74,31 +87,56 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
 
   return (
     <Row key={announcement.id}>
-      <CellText title={announcement.title} />
-      <CellText title={truncateText(announcement.body)} />
-      <CellText title={announcement.publisher} />
-      <CellText title={announcement.on_behalf_of || '-'} />
-      <CellText title={announcement.category?.title ?? '-'} />
+      <Cell>
+        <Flex>
+          <RiCircleFill
+            color={announcement.active ? '#4caf50' : '#f44336'}
+            aria-label={
+              announcement.active
+                ? t('admin.announcementsContent.table.active')
+                : t('admin.announcementsContent.table.inactive')
+            }
+          />
+          <Text variant="body-small">{announcement.title}</Text>
+        </Flex>
+      </Cell>
+      <Cell>
+        <Text variant="body-small">{truncateText(announcement.body)}</Text>
+      </Cell>
+      <Cell>
+        <EntityRefLink entityRef={announcement.publisher} />
+      </Cell>
+      {announcement.category ? (
+        <Cell>
+          <Text variant="body-small">{announcement.category.title}</Text>
+        </Cell>
+      ) : (
+        <EmptyPlaceholder />
+      )}
+      {announcement.tags && announcement.tags.length > 0 ? (
+        <Cell>
+          <TagGroup>
+            {announcement.tags.map(tag => (
+              <Tag key={tag.slug} size="small">
+                {tag.title}
+              </Tag>
+            ))}
+          </TagGroup>
+        </Cell>
+      ) : (
+        <EmptyPlaceholder />
+      )}
+
       <CellText
-        title={announcement.tags?.map(tag => tag.title).join(', ') || '-'}
+        title={DateTime.fromISO(announcement.created_at).toFormat('M/d/yy')}
       />
       <CellText
-        title={
-          announcement.active
-            ? t('admin.announcementsContent.table.active')
-            : t('admin.announcementsContent.table.inactive')
-        }
-      />
-      <CellText
-        title={DateTime.fromISO(announcement.created_at).toFormat('M/d/yyyy')}
-      />
-      <CellText
-        title={DateTime.fromISO(announcement.start_at).toFormat('M/d/yyyy')}
+        title={DateTime.fromISO(announcement.start_at).toFormat('M/d/yy')}
       />
       <CellText
         title={
           announcement.until_date
-            ? DateTime.fromISO(announcement.until_date).toFormat('M/d/yyyy')
+            ? DateTime.fromISO(announcement.until_date).toFormat('M/d/yy')
             : '-'
         }
       />
@@ -164,38 +202,20 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
   return (
     <Table>
       <TableHeader>
-        <Column id="title" isRowHeader>
+        <Column isRowHeader>
           {t('admin.announcementsContent.table.title')}
         </Column>
-        <Column id="body">{t('admin.announcementsContent.table.body')}</Column>
-        <Column id="publisher">
-          {t('admin.announcementsContent.table.publisher')}
-        </Column>
-        <Column id="on_behalf_of">
-          {t('admin.announcementsContent.table.onBehalfOf')}
-        </Column>
-        <Column id="category">
-          {t('admin.announcementsContent.table.category')}
-        </Column>
-        <Column id="tags">{t('admin.announcementsContent.table.tags')}</Column>
-        <Column id="status">
-          {t('admin.announcementsContent.table.status')}
-        </Column>
-        <Column id="created_at">
-          {t('admin.announcementsContent.table.created_at')}
-        </Column>
-        <Column id="start_at">
-          {t('admin.announcementsContent.table.start_at')}
-        </Column>
-        <Column id="until_date">
-          {t('admin.announcementsContent.table.until_date')}
-        </Column>
-        <Column id="actions">
-          {t('admin.announcementsContent.table.actions')}
-        </Column>
+        <Column>{t('admin.announcementsContent.table.body')}</Column>
+        <Column>{t('admin.announcementsContent.table.publisher')}</Column>
+        <Column>{t('admin.announcementsContent.table.category')}</Column>
+        <Column>{t('admin.announcementsContent.table.tags')}</Column>
+        <Column>{t('admin.announcementsContent.table.created_at')}</Column>
+        <Column>{t('admin.announcementsContent.table.start_at')}</Column>
+        <Column>{t('admin.announcementsContent.table.until_date')}</Column>
+        <Column>{t('admin.announcementsContent.table.actions')}</Column>
       </TableHeader>
       <TableBody>
-        {data.length > 0 ? (
+        {data?.length > 0 ? (
           data.map(announcement => (
             <AnnouncementTableRow
               key={announcement.id}

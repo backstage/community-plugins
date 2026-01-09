@@ -29,7 +29,7 @@ import {
   Category,
   announcementCreatePermission,
 } from '@backstage-community/plugin-announcements-common';
-import { useRouteRef } from '@backstage/core-plugin-api';
+import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { Box, Button, Grid } from '@backstage/ui';
@@ -47,15 +47,18 @@ import { announcementViewRouteRef } from '../../../../routes';
  * @internal
  */
 export type AnnouncementsContentProps = {
-  /** always sets the inactive switch form input to false by default */
-  defaultInactive?: boolean;
+  /** default form values when creating a new announcement */
+  formDefaults: {
+    /** sets active switch form input to false by default when creating a new announcement */
+    defaultInactive?: boolean;
+  };
 };
 
 /**
  * @internal
  */
 export const AnnouncementsContent = ({
-  defaultInactive,
+  formDefaults: { defaultInactive },
 }: AnnouncementsContentProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
@@ -69,12 +72,7 @@ export const AnnouncementsContent = ({
     string | null
   >(null);
 
-  const {
-    announcements,
-    loading,
-    error,
-    retry: refresh,
-  } = useAnnouncements({});
+  const { announcements, retry: refresh } = useAnnouncements({});
 
   const {
     isOpen: isDeleteDialogOpen,
@@ -98,7 +96,7 @@ export const AnnouncementsContent = ({
   };
 
   const onPreviewClick = (announcement: Announcement) => {
-    navigate(viewAnnouncementLink({ id: announcement.id }));
+    navigate(viewAnnouncementLink?.({ id: announcement.id }) ?? '');
   };
 
   const onEditClick = (announcement: Announcement) => {
@@ -117,6 +115,7 @@ export const AnnouncementsContent = ({
         const categorySlug = slugify(category, {
           lower: true,
         });
+
         if (slugs.indexOf(categorySlug) === -1) {
           alertMsg = alertMsg.replace('.', '');
           alertMsg = `${alertMsg} ${t(
@@ -133,6 +132,7 @@ export const AnnouncementsContent = ({
         ...request,
         category: request.category?.toLocaleLowerCase('en-US'),
       });
+
       alertApi.post({ message: alertMsg, severity: 'success' });
 
       setShowCreateAnnouncementForm(false);
@@ -221,14 +221,6 @@ export const AnnouncementsContent = ({
   const canCreate = !permissions.create.loading && permissions.create.allowed;
   const canEdit = !permissions.update.loading && permissions.update.allowed;
   const canDelete = !permissions.delete.loading && permissions.delete.allowed;
-
-  if (loading) {
-    return null; // Loading state handled by parent or can add spinner
-  }
-
-  if (error) {
-    return null; // Error state handled by parent or can add error panel
-  }
 
   return (
     <RequirePermission permission={announcementCreatePermission}>

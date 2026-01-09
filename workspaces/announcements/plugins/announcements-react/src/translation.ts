@@ -51,10 +51,6 @@ export const announcementsTranslationRef = createTranslationRef({
         scheduled: 'Scheduled ',
         today: 'Today',
       },
-      /** @deprecated - use admin.announcementsContent.deletedMessage instead */
-      grid: {
-        announcementDeleted: 'Announcement deleted.',
-      },
       contextMenu: {
         admin: 'Manage announcements',
       },

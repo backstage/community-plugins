@@ -15,9 +15,18 @@
  */
 import { useState, useMemo } from 'react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { TablePagination, Card, CardBody, CardFooter } from '@backstage/ui';
+import {
+  TablePagination,
+  Card,
+  CardBody,
+  CardFooter,
+  Flex,
+  Text,
+} from '@backstage/ui';
+import { RiCircleFill } from '@remixicon/react';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 
 /**
  * @internal
@@ -30,6 +39,35 @@ type AnnouncementsTableCardProps = {
   canEdit: boolean;
   canDelete: boolean;
   editingAnnouncementId?: string | null;
+};
+
+const ActiveInactiveIndicator = () => {
+  const { t } = useAnnouncementsTranslation();
+
+  return (
+    <Flex justify="end" gap="6" mb="3">
+      <Flex align="center" gap="1">
+        <RiCircleFill
+          size="12"
+          color="#4caf50"
+          aria-label={t('admin.announcementsContent.table.active')}
+        />
+        <Text variant="body-small">
+          {t('admin.announcementsContent.table.active')}
+        </Text>
+      </Flex>
+      <Flex align="center" gap="1">
+        <RiCircleFill
+          size="12"
+          color="#f44336"
+          aria-label={t('admin.announcementsContent.table.inactive')}
+        />
+        <Text variant="body-small">
+          {t('admin.announcementsContent.table.inactive')}
+        </Text>
+      </Flex>
+    </Flex>
+  );
 };
 
 /**
@@ -58,6 +96,8 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
   return (
     <Card>
       <CardBody>
+        <ActiveInactiveIndicator />
+
         <AnnouncementsTable
           data={paginatedAnnouncements}
           onPreviewClick={onPreviewClick}

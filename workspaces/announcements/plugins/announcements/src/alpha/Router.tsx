@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import {
   ViewAnnouncementPage,
 } from './components';
 
+// todo: pending rebuild for nfs with `@backstage/ui`
 import { MarkdownRendererTypeProps } from '../components';
 
 type RouterProps = {
@@ -70,7 +71,9 @@ export const Router = (props: RouterProps) => {
         <Route
           path=""
           element={
-            <AnnouncementsContent defaultInactive={props.defaultInactive} />
+            <AnnouncementsContent
+              formDefaults={{ defaultInactive: props.defaultInactive }}
+            />
           }
         />
         <Route path="categories" element={<CategoriesContent />} />
