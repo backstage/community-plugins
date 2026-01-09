@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.14.0
+
+### Minor Changes
+
+- 06368eb: Added local development setup documentation for ArgoCD plugin with Backstage Notifications integration
+
 ## 0.13.0
 
 ### Minor Changes
