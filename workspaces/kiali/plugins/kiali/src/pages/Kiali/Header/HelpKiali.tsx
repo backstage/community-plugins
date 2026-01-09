@@ -17,19 +17,17 @@ import { Button } from '@material-ui/core';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { default as React } from 'react';
 import { AboutUIModal } from '../../../components/About/AboutUIModal';
-import { useHeaderBackground } from '../../../contexts/HeaderBackgroundContext';
+import { useHeaderIconColor } from '../../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../../store';
 
 export const HelpKiali = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [showAbout, setShowAbout] = React.useState<boolean>(false);
-  const hasBackgroundImage = useHeaderBackground();
+  const iconColor = useHeaderIconColor();
 
   const openAbout = () => {
     setShowAbout(true);
   };
-
-  const iconColor = hasBackgroundImage ? 'white' : undefined;
 
   return (
     <>

@@ -20,7 +20,8 @@ import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import {
   HeaderBackgroundProvider,
-  useHeaderBackground,
+  useHeaderIconColor,
+  useHeaderTextColor,
 } from '../../../contexts/HeaderBackgroundContext';
 import { useServerConfig } from '../../../hooks/useServerConfig';
 import { KialiAppState, KialiContext } from '../../../store';
@@ -31,7 +32,8 @@ import { ProviderSelector } from './ProviderSelector';
 const KialiHeaderContent = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const { serverConfig } = useServerConfig();
-  const hasBackgroundImage = useHeaderBackground();
+  const textColor = useHeaderTextColor();
+  const iconColor = useHeaderIconColor();
 
   // Get home cluster from server config
   const homeCluster = React.useMemo(() => {
@@ -40,9 +42,6 @@ const KialiHeaderContent = () => {
       cluster => cluster.isKialiHome,
     );
   }, [serverConfig]);
-
-  const textColor = hasBackgroundImage ? 'white' : undefined;
-  const iconColor = hasBackgroundImage ? 'white' : undefined;
 
   return (
     <Header

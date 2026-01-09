@@ -52,6 +52,7 @@ const graphStyle = kialiStyle({
 const graphConfig = {
   id: 'g1',
   type: 'graph',
+  // Use Dagre for the initial layout (clean/structured). Nodes are still draggable after render.
   layout: 'Dagre',
 };
 
@@ -123,6 +124,8 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
       appenders: 'health,deadNode,istio,serviceEntry,meshCheck,workloadEntry',
       activeNamespaces: activeNamespaces.join(','),
       namespaces: activeNamespaces.join(','),
+      // Kiali graph API expects duration (e.g. "600s"). This makes the "From: 10m" dropdown actually affect the graph.
+      duration: `${duration}s`,
       graphType: GraphType.VERSIONED_APP,
       injectServiceNodes: true,
       boxByNamespace: true,
@@ -167,7 +170,14 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
         `Could not fetch services: ${getErrorString(error)}`,
       );
     }
-  }, [activeNamespaces, activeProvider, props.entity, kialiClient, kialiState]);
+  }, [
+    activeNamespaces,
+    activeProvider,
+    duration,
+    props.entity,
+    kialiClient,
+    kialiState,
+  ]);
 
   // Fetch graph when dependencies change
   useEffect(() => {
