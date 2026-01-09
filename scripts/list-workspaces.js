@@ -32,18 +32,13 @@ const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 export async function listWorkspaces() {
   const workspacePath = resolve(__dirname, '..', 'workspaces');
 
-  console.log(workspacePath);
-
   return (
     Array.fromAsync(
       fs.glob(join(workspacePath, '*', sep), {
         exclude: EXCLUDED_WORKSPACES.map(name => join(workspacePath, name)),
       }),
+      workspace => workspace.replace(`${workspacePath}/`, ''),
     )
-      // remove the path as we want only the workspace name, this is what scripts using this currently expect
-      .then(workspaces =>
-        workspaces.map(w => w.replace(`${workspacePath}/`, '')),
-      )
       // glob returns an unordered list of results (for perf reasons)
       .then(workspaces => workspaces.sort())
   );
