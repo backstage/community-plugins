@@ -4,5 +4,5 @@
 
 | Name                                       | Location          | Severity |
 | :----------------------------------------- | :---------------- | :------- |
-| @backstage/backend-dynamic-feature-service | package.json:62:6 | error    |
-| @openapitools/openapi-generator-cli        | package.json:67:6 | error    |
+| @backstage/backend-dynamic-feature-service | package.json:61:6 | error    |
+| @openapitools/openapi-generator-cli        | package.json:66:6 | error    |
