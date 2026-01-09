@@ -1,5 +1,17 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.0.0
+
+### Major Changes
+
+- 6d47b9f: Renamed @backstage-community/plugin-redhat-argocd-backend to @backstage-community/plugin-argocd-backend
+- 6d47b9f: Release the major version of argocd backend plugin
+
+### Patch Changes
+
+- Updated dependencies [6d47b9f]
+  - @backstage-community/plugin-argocd-common@1.12.0
+
 # @backstage-community/plugin-redhat-argocd-backend
 
 ## 0.13.0
