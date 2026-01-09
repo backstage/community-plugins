@@ -100,13 +100,17 @@ async function main(args) {
   const reports = await (
     await listWorkspaces()
   ).reduce(async (result, workspace) => {
+    const workspacePath = join(
+      resolve(__dirname, '..', 'workspaces'),
+      workspace,
+    );
     const {
       default: { version },
-    } = await import(join(workspace, 'backstage.json'), {
+    } = await import(join(workspacePath, 'backstage.json'), {
       with: { type: 'json' },
     });
 
-    const { packages } = await getPackages(workspace);
+    const { packages } = await getPackages(workspacePath);
 
     return packages.reduce(async (promise, pkg) => {
       if (config.roles.includes(pkg.packageJson.backstage?.role)) {
