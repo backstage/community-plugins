@@ -12,7 +12,7 @@
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
-    "build:api-reports": "yarn build:api-reports:only --tsc",
+    "build:api-reports": "yarn tsc --skipLibCheck && yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "clean": "backstage-cli repo clean",
@@ -51,7 +51,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "isolated-vm": "^6.0.1"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

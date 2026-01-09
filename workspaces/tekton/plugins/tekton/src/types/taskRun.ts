@@ -15,7 +15,10 @@
  */
 import { RunStatus } from '@patternfly/react-topology';
 
-import { ComputedStatus, TerminatedReasons } from '@janus-idp/shared-react';
+import {
+  ComputedStatus,
+  TerminatedReasons,
+} from '@backstage-community/plugin-tekton-react';
 
 export type StepStatus = {
   duration: string | null | undefined;
