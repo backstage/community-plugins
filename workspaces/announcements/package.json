@@ -27,7 +27,7 @@
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
     "new": "backstage-cli new --scope @backstage-community",
-    "validate": "yarn && yarn tsc && yarn lint && yarn prettier:fix && yarn build:list-deprecations && yarn build:api-reports"
+    "validate": "yarn dedupe && yarn tsc && yarn lint && yarn prettier:fix && yarn build:list-deprecations && yarn build:api-reports"
   },
   "repository": {
     "type": "git",
