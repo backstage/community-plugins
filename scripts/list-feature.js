@@ -98,7 +98,7 @@ async function main(args) {
   const config = ROLE_MAP[role];
 
   const reports = await (
-    await listWorkspaces()
+    await listWorkspaces({ fullPath: true })
   ).reduce(async (result, workspace) => {
     const {
       default: { version },
