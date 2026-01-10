@@ -51,9 +51,6 @@ export const announcementsTranslationRef = createTranslationRef({
         scheduled: 'Scheduled ',
         today: 'Today',
       },
-      grid: {
-        announcementDeleted: 'Announcement deleted.',
-      },
       contextMenu: {
         admin: 'Manage announcements',
       },
@@ -172,6 +169,7 @@ export const announcementsTranslationRef = createTranslationRef({
         alertMessageWithNewCategory: 'with new category',
         cancelButton: 'Cancel',
         createButton: 'Create Announcement',
+        deletedMessage: 'Announcement deleted.',
         announcements: 'Announcements',
         noAnnouncementsFound: 'No announcements found',
         table: {
