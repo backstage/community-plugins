@@ -143,7 +143,7 @@ describe('AddShortcut', () => {
         <AddShortcut {...props} />,
       </TestApiProvider>,
       {
-        routeEntries: ['/some-initial-url'],
+        routeEntries: ['/some-initial-url?filter=owned&kind=component'],
       },
     );
 
@@ -152,7 +152,7 @@ describe('AddShortcut', () => {
     await waitFor(() => {
       expect(spy).toHaveBeenCalledWith({
         title: 'some document title',
-        url: '/some-initial-url',
+        url: '/some-initial-url?filter=owned&kind=component',
       });
     });
   });
