@@ -18,6 +18,7 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { techInsightsFactCheckerFactoryExtensionPoint } from '@backstage-community/plugin-tech-insights-node';
 import { JsonRulesEngineFactCheckerFactory } from '../service';
 
@@ -36,11 +37,15 @@ export const techInsightsModuleJsonRulesEngineFactCheckerFactory =
         deps: {
           config: coreServices.rootConfig,
           logger: coreServices.logger,
+          catalog: catalogServiceRef,
+          auth: coreServices.auth,
           techInsights: techInsightsFactCheckerFactoryExtensionPoint,
         },
-        async init({ config, logger, techInsights }) {
+        async init({ config, logger, techInsights, catalog, auth }) {
           const factory = JsonRulesEngineFactCheckerFactory.fromConfig(config, {
             logger,
+            catalog,
+            auth,
           });
           techInsights.setFactCheckerFactory(factory);
         },
