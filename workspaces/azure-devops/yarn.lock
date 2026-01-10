@@ -1513,7 +1513,7 @@ __metadata:
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-search-common": "backstage:^"
     axios: "npm:^1.4.0"
-    axios-retry: "npm:^3.5.0"
+    axios-retry: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -14162,13 +14162,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-retry@npm:^3.5.0":
-  version: 3.9.1
-  resolution: "axios-retry@npm:3.9.1"
+"axios-retry@npm:^4.0.0":
+  version: 4.5.0
+  resolution: "axios-retry@npm:4.5.0"
   dependencies:
-    "@babel/runtime": "npm:^7.15.4"
     is-retry-allowed: "npm:^2.2.0"
-  checksum: 10/9a28dd8aa4640c2af30789059a1a84549178b2a415bf765a35fe6bba9cd3d78b2ee2da07e448e823303c05f3a83bf98709f4aa64a43c0f6c2812e1665126b97e
+  peerDependencies:
+    axios: 0.x || 1.x
+  checksum: 10/39ed05248757387a44dde94255df8ad54088aece50574c6ce9a1cd02b9e40252f7390285cea54ded04e33a3a549e462d5bdacc8d3178221b7cd40e8aff09ba46
   languageName: node
   linkType: hard
 
