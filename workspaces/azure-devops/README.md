@@ -1,10 +1,11 @@
-# [Backstage](https://backstage.io)
+# Azure DevOps
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins that integrate Azure DevOps services with Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [azure-devops](./plugins/azure-devops/README.md): Shows repos, pipelines, and builds from Azure DevOps.
+
+## About this workspace
+
+Use these plugins to connect Backstage with Azure DevOps workflows.
