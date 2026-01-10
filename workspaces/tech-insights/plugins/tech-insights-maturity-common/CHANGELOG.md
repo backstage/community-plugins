@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-maturity-common
 
+## 0.4.0
+
+### Minor Changes
+
+- e8743d9: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [e8743d9]
+  - @backstage-community/plugin-tech-insights-common@0.8.0
+
 ## 0.3.1
 
 ### Patch Changes
