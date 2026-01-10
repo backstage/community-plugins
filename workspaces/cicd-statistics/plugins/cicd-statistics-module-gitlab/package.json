@@ -57,7 +57,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@gitbeaker/browser": "^35.6.0",
-    "@gitbeaker/core": "^35.6.0",
+    "@gitbeaker/core": "^43.0.0",
     "p-limit": "^3.1.0"
   },
   "devDependencies": {
