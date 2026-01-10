@@ -1,10 +1,11 @@
-# [Backstage](https://backstage.io)
+# Azure Storage Explorer
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins related to Azure Storage services.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [azure-storage-explorer](./plugins/azure-storage-explorer/README.md): Explore Azure Storage accounts and containers from Backstage.
+
+## About this workspace
+
+These plugins help teams inspect and manage cloud storage resources.
