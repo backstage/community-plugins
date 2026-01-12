@@ -13,7 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { AnnouncementsAdminPage } from './AnnouncementsAdminPage';
-export { CategoriesContent } from './categories';
-export { TagsContent } from './tags';
-export { SettingsContent } from './settings';
+export { SettingsContent } from './SettingsContent';

@@ -57,3 +57,12 @@ export const adminTagsRouteRef = createSubRouteRef({
   path: '/admin/tags',
   parent: rootRouteRef,
 });
+
+/**
+ * The route for the settings tab in the admin portal
+ */
+export const adminSettingsRouteRef = createSubRouteRef({
+  id: 'announcements-admin-settings',
+  path: '/admin/settings',
+  parent: rootRouteRef,
+});

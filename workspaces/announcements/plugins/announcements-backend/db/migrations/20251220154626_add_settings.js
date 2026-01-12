@@ -15,12 +15,23 @@
  */
 
 /**
- * Common functionalities for the announcements plugin.
- *
- * @packageDocumentation
+ * @param {import('knex').Knex} knex
  */
+exports.up = async function up(knex) {
+  await knex.schema.createTable('settings', table => {
+    table.comment('Announcements plugin settings.');
+    table.string('key').primary().comment('Setting key');
+    table.jsonb('value').notNullable().comment('Setting value');
+    table
+      .timestamp('updated_at')
+      .defaultTo(knex.fn.now())
+      .comment('Last update timestamp');
+  });
+};
 
-export * from './constants';
-export * from './permissions';
-export * from './types';
-export * from './schema';
+/**
+ * @param {import('knex').Knex} knex
+ */
+exports.down = async function down(knex) {
+  await knex.schema.dropTable('settings');
+};

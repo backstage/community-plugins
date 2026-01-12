@@ -25,3 +25,4 @@ export {
   useAnnouncementsPermissions,
   type AnnouncementsPermissionsResult,
 } from './useAnnouncementsPermissions';
+export { useSettings } from './useSettings';
