@@ -68,15 +68,20 @@ export const ActiveInactiveAnnouncementIndicatorIcon = (props: {
   const { t } = useAnnouncementsTranslation();
 
   return (
-    <RiCircleFill
-      color={
-        announcement.active ? ACTIVE_INDICATOR_COLOR : INACTIVE_INDICATOR_COLOR
-      }
-      aria-label={
-        announcement.active
-          ? t('admin.announcementsContent.table.active')
-          : t('admin.announcementsContent.table.inactive')
-      }
-    />
+    <Flex style={{ flexShrink: 0 }}>
+      <RiCircleFill
+        size="12"
+        color={
+          announcement.active
+            ? ACTIVE_INDICATOR_COLOR
+            : INACTIVE_INDICATOR_COLOR
+        }
+        aria-label={
+          announcement.active
+            ? t('admin.announcementsContent.table.active')
+            : t('admin.announcementsContent.table.inactive')
+        }
+      />
+    </Flex>
   );
 };

@@ -83,7 +83,7 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
   return (
     <Row key={announcement.id}>
       <Cell>
-        <Flex>
+        <Flex gap="3" align="center">
           <ActiveInactiveAnnouncementIndicatorIcon
             announcement={announcement}
           />
@@ -95,9 +95,15 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
       <Cell>
         <Text variant="body-small">{truncateText(announcement.body)}</Text>
       </Cell>
-      <Cell>
-        <EntityRefLink entityRef={announcement.publisher} />
-      </Cell>
+
+      {announcement.publisher ? (
+        <Cell>
+          <EntityRefLink entityRef={announcement.publisher} />
+        </Cell>
+      ) : (
+        <EmptyPlaceholder />
+      )}
+
       {announcement.category ? (
         <Cell>
           <Text variant="body-small">{announcement.category.title}</Text>
