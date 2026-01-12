@@ -17,7 +17,7 @@ import {
   DatabaseService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
-import { NotFoundError } from '@backstage/errors';
+import { NotFoundError, ForwardedError, InputError } from '@backstage/errors';
 import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 import { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
@@ -43,6 +43,10 @@ const migrationsDir = resolvePackagePath(
   'migrations',
 );
 
+/**
+ * Stores and retrieves code coverage snapshots for catalog entities.
+ * Each insert represents a point-in-time coverage report.
+ */
 export class CodeCoverageDatabase implements CodeCoverageStore {
   static async create(database: DatabaseService): Promise<CodeCoverageStore> {
     const knex = await database.getClient();
@@ -58,6 +62,25 @@ export class CodeCoverageDatabase implements CodeCoverageStore {
 
   constructor(private readonly db: Knex) {}
 
+  private async getCoverageRows(
+    entity: string,
+    limit: number,
+  ): Promise<RawDbCoverageRow[]> {
+    return this.db<RawDbCoverageRow>('code_coverage')
+      .where({ entity })
+      .orderBy('index', 'desc')
+      .limit(limit)
+      .select();
+  }
+
+  private parseCoverageJson(json: string): JsonCodeCoverage {
+    try {
+      return JSON.parse(json);
+    } catch (error) {
+      throw new ForwardedError('Failed to parse coverage JSON', error);
+    }
+  }
+
   async insertCodeCoverage(
     coverage: JsonCodeCoverage,
   ): Promise<{ codeCoverageId: string }> {
@@ -68,21 +91,25 @@ export class CodeCoverageDatabase implements CodeCoverageStore {
       name: coverage.entity.name,
     });
 
-    await this.db<RawDbCoverageRow>('code_coverage').insert({
-      id: codeCoverageId,
-      entity: entity,
-      coverage: JSON.stringify(coverage),
+    await this.db.transaction(async trx => {
+      await trx<RawDbCoverageRow>('code_coverage').insert({
+        id: codeCoverageId,
+        entity,
+        coverage: JSON.stringify(coverage),
+      });
     });
 
     return { codeCoverageId };
   }
 
   async getCodeCoverage(entity: string): Promise<JsonCodeCoverage> {
-    const [result] = await this.db<RawDbCoverageRow>('code_coverage')
-      .where({ entity: entity })
-      .orderBy('index', 'desc')
-      .limit(1)
-      .select();
+    try {
+      parseEntityRef(entity);
+    } catch (error) {
+      throw new InputError(`Invalid entity reference '${entity}'`);
+    }
+
+    const [result] = await this.getCoverageRows(entity, 1);
 
     if (!result) {
       throw new NotFoundError(
@@ -90,25 +117,23 @@ export class CodeCoverageDatabase implements CodeCoverageStore {
       );
     }
 
-    try {
-      return JSON.parse(result.coverage);
-    } catch (error) {
-      throw new Error(`Failed to parse coverage for '${entity}', ${error}`);
-    }
+    return this.parseCoverageJson(result.coverage);
   }
 
   async getHistory(
     entity: string,
     limit: number,
   ): Promise<JsonCoverageHistory> {
-    const res = await this.db<RawDbCoverageRow>('code_coverage')
-      .where({ entity: entity })
-      .orderBy('index', 'desc')
-      .limit(limit)
-      .select();
+    try {
+      parseEntityRef(entity);
+    } catch (error) {
+      throw new InputError(`Invalid entity reference '${entity}'`);
+    }
+
+    const res = await this.getCoverageRows(entity, limit);
 
     const history = res
-      .map(r => JSON.parse(r.coverage))
+      .map(r => this.parseCoverageJson(r.coverage))
       .map(c => aggregateCoverage(c));
 
     const entityName = parseEntityRef(entity);
@@ -119,7 +144,7 @@ export class CodeCoverageDatabase implements CodeCoverageStore {
         kind: entityName.kind,
         namespace: entityName.namespace,
       },
-      history: history,
+      history,
     };
   }
 }
