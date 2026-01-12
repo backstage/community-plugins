@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
 import {
   AnnouncementsAdminPage,
+  AnnouncementsContent,
   CategoriesContent,
   TagsContent,
   AnnouncementsPage,
@@ -26,10 +27,7 @@ import {
 } from './components';
 
 // todo: pending rebuild for nfs with `@backstage/ui`
-import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
-import { CategorySelectInput } from './components/admin/announcements/form/CategorySelectInput';
-import { Container } from '@backstage/ui';
-import { AnnouncementForm } from './components/admin/announcements/form/AnnouncementForm';
+import { MarkdownRendererTypeProps } from '../components';
 
 type RouterProps = {
   title?: string;
@@ -70,18 +68,12 @@ export const Router = (props: RouterProps) => {
           </RequirePermission>
         }
       >
-        {/* <Route
-          path=""
-          element={
-            <AnnouncementsContent defaultInactive={props.defaultInactive} />
-          }
-        /> */}
         <Route
           path=""
           element={
-            <Container>
-              <AnnouncementForm />
-            </Container>
+            <AnnouncementsContent
+              formDefaults={{ defaultInactive: props.defaultInactive }}
+            />
           }
         />
         <Route path="categories" element={<CategoriesContent />} />
