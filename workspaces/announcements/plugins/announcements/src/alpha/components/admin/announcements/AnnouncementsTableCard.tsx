@@ -18,7 +18,7 @@ import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { TablePagination, Card, CardBody, CardFooter } from '@backstage/ui';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
-import { ActiveInactiveIndicator } from './ActiveInactiveIndicator';
+import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncementIndicator';
 
 /**
  * @internal
@@ -59,7 +59,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
   return (
     <Card>
       <CardBody>
-        <ActiveInactiveIndicator />
+        <ActiveInactiveAnnouncementIndicator />
 
         <AnnouncementsTable
           data={paginatedAnnouncements}

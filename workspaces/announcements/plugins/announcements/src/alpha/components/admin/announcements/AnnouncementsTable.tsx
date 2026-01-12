@@ -32,7 +32,8 @@ import {
 } from '@backstage/ui';
 import { RiEyeLine, RiEditLine, RiDeleteBinLine } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { ActiveInactiveAnnouncementIcon } from './ActiveInactiveIndicator';
+
+import { ActiveInactiveAnnouncementIndicatorIcon } from './ActiveInactiveAnnouncementIndicator';
 
 const AnnouncementsTableEmptyState = () => {
   const { t } = useAnnouncementsTranslation();
@@ -83,7 +84,9 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
     <Row key={announcement.id}>
       <Cell>
         <Flex>
-          <ActiveInactiveAnnouncementIcon announcement={announcement} />
+          <ActiveInactiveAnnouncementIndicatorIcon
+            announcement={announcement}
+          />
           <Text variant="body-small" title={announcement.title}>
             {announcement.title}
           </Text>

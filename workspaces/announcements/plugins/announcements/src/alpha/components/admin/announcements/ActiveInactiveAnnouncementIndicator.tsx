@@ -22,7 +22,12 @@ import { RiCircleFill } from '@remixicon/react';
 export const ACTIVE_INDICATOR_COLOR = '#4caf50';
 export const INACTIVE_INDICATOR_COLOR = '#f44336';
 
-export const ActiveInactiveIndicator = () => {
+/**
+ * A toolbar style component that displays the active and inactive announcement indicators with labels.
+ *
+ * @returns
+ */
+export const ActiveInactiveAnnouncementIndicator = () => {
   const { t } = useAnnouncementsTranslation();
 
   return (
@@ -51,7 +56,12 @@ export const ActiveInactiveIndicator = () => {
   );
 };
 
-export const ActiveInactiveAnnouncementIcon = (props: {
+/**
+ * An icon component that displays the active or inactive announcement indicator.
+ *
+ * @returns a green or red circle icon indicating the status of the announcement.
+ */
+export const ActiveInactiveAnnouncementIndicatorIcon = (props: {
   announcement: Announcement;
 }) => {
   const { announcement } = props;
