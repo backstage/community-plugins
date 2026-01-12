@@ -22,12 +22,13 @@ export const announcementsTranslationRef = createTranslationRef({
     announcementForm: {
       title: 'Title',
       excerpt: 'Excerpt',
+      body: 'Details',
       active: 'Active',
       submit: 'Submit',
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
-      startAt: 'Announcement start date',
-      untilDate: 'Announcement end date',
+      startAt: 'Start date',
+      untilDate: 'End date',
       onBehalfOf: 'On behalf of',
       categoryInput: {
         create: 'Create',
@@ -38,6 +39,7 @@ export const announcementsTranslationRef = createTranslationRef({
         label: 'Tags',
       },
       tagsLabel: 'Tags',
+      sendNotification: 'Send notification',
     },
     announcementsPage: {
       newAnnouncement: 'New announcement',

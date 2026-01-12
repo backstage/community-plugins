@@ -15,16 +15,31 @@
  */
 import { useState, useMemo } from 'react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { TablePagination, Card, CardBody, CardFooter } from '@backstage/ui';
+import {
+  TablePagination,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Flex,
+  Button,
+  Text,
+  Box,
+} from '@backstage/ui';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncementIndicator';
+import {
+  useAnnouncementsPermissions,
+  useAnnouncementsTranslation,
+} from '@backstage-community/plugin-announcements-react';
 
 /**
  * @internal
  */
 type AnnouncementsTableCardProps = {
   announcements: Announcement[];
+  onCreateClick: () => void;
   onPreviewClick: (announcement: Announcement) => void;
   onEditClick: (announcement: Announcement) => void;
   onDeleteClick: (announcement: Announcement) => void;
@@ -37,9 +52,15 @@ type AnnouncementsTableCardProps = {
  * @internal
  */
 export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
+  const { t } = useAnnouncementsTranslation();
+  const {
+    create: { allowed: canCreate },
+  } = useAnnouncementsPermissions();
+
   const {
     announcements,
     onPreviewClick,
+    onCreateClick,
     onEditClick,
     onDeleteClick,
     canEdit,
@@ -58,9 +79,21 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
 
   return (
     <Card>
-      <CardBody>
-        <ActiveInactiveAnnouncementIndicator />
+      <CardHeader>
+        <Flex justify="between" align="center">
+          <Text variant="title-x-small">
+            {t('admin.announcementsContent.announcements')}
+          </Text>
+          <Button isDisabled={!canCreate} onClick={onCreateClick}>
+            {t('admin.announcementsContent.createButton')}
+          </Button>
+        </Flex>
+      </CardHeader>
 
+      <CardBody>
+        <Box m="3">
+          <ActiveInactiveAnnouncementIndicator />
+        </Box>
         <AnnouncementsTable
           data={paginatedAnnouncements}
           onPreviewClick={onPreviewClick}

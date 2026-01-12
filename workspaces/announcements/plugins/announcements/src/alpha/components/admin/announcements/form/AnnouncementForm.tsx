@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Grid,
-  Text,
-  TextField,
-} from '@backstage/ui';
+import { FieldLabel, Flex, Grid, Switch, TextField } from '@backstage/ui';
+import MuiTextField from '@mui/material/TextField';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 
 import { CategorySelectInput } from './CategorySelectInput';
 import { TagsSelectInput } from './TagsSelectInput';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
+import { DateTime } from 'luxon';
 
 type AnnouncementFormState = Omit<
   Announcement,
   'id' | 'created_at' | 'updated_at'
 >;
 
-export const AnnouncementForm = () => {
+type AnnouncementFormProps = {
+  initialData?: Announcement;
+  onFormChange: (data: AnnouncementFormState) => void;
+};
+
+export const AnnouncementForm = ({
+  initialData,
+  onFormChange,
+}: AnnouncementFormProps) => {
   const { t } = useAnnouncementsTranslation();
 
   const [form, setForm] = useState<AnnouncementFormState>({
@@ -48,97 +51,139 @@ export const AnnouncementForm = () => {
     until_date: undefined,
     on_behalf_of: undefined,
     tags: undefined,
-    sendNotification: undefined,
+    sendNotification: true,
     category: undefined,
     publisher: '',
   });
 
+  useEffect(() => {
+    if (initialData) {
+      setForm(initialData);
+    }
+  }, [initialData]);
+
+  useEffect(() => {
+    onFormChange(form);
+  }, [form, onFormChange]);
+
   return (
-    <>
-      <Grid.Root>
-        <Grid.Item>
-          <Card>
-            <CardBody>
-              <Text as="p" variant="title-x-small">
-                Form state:
-              </Text>
-              <Text as="p">Title: {form.title ?? 'None'}</Text>
-              <Text as="p">Excerpt: {form.excerpt ?? 'None'}</Text>
-              <Text as="p">
-                Selected Category: {form.category?.title ?? 'None'}
-              </Text>
-              <Text as="p">Publisher: {form.publisher ?? 'None'}</Text>
-              <Text as="p">
-                Selected On Behalf Of: {form.on_behalf_of ?? 'None'}
-              </Text>
-              <Text as="p">
-                Selected Tags:{' '}
-                {form.tags?.map(tag => tag.title).join(', ') ?? 'None'}
-              </Text>
-            </CardBody>
-          </Card>
-        </Grid.Item>
-      </Grid.Root>
+    <Grid.Root columns="3">
+      <Grid.Item colSpan="3">
+        <TextField
+          label={t('announcementForm.title')}
+          value={form.title}
+          onChange={v => setForm({ ...form, title: v })}
+          isRequired
+        />
+      </Grid.Item>
 
-      <Card style={{ marginTop: '100px' }}>
-        <CardHeader>
-          <Text variant="title-small">Announcement Form</Text>
-        </CardHeader>
-        <CardBody>
-          <Grid.Root columns="3">
-            <Grid.Item colSpan="3">
-              <TextField
-                label={t('announcementForm.title')}
-                value={form.title}
-                onChange={v => setForm({ ...form, title: v })}
-                isRequired
-              />
-            </Grid.Item>
+      <Grid.Item colSpan="3">
+        <TextField
+          label={t('announcementForm.excerpt')}
+          value={form.excerpt}
+          onChange={v => setForm({ ...form, excerpt: v })}
+        />
+      </Grid.Item>
 
-            <Grid.Item colSpan="3">
-              <TextField
-                label={t('announcementForm.excerpt')}
-                value={form.excerpt}
-                onChange={v => setForm({ ...form, excerpt: v })}
-                isRequired
-              />
-            </Grid.Item>
+      <Grid.Item colSpan="3">
+        <Flex direction="column" mb="8">
+          <FieldLabel label={t('announcementForm.body')} />
 
-            <Grid.Item colSpan="3">
-              <MDEditor
-                value={form.body}
-                style={{ minHeight: '30rem' }}
-                onChange={value =>
-                  setForm({ ...form, ...{ body: value || '' } })
-                }
-              />
-            </Grid.Item>
+          <MDEditor
+            value={form.body}
+            style={{ minHeight: '30rem' }}
+            onChange={value => setForm({ ...form, ...{ body: value || '' } })}
+          />
+        </Flex>
+      </Grid.Item>
 
-            <Grid.Item colSpan={{ xs: '3', md: '1' }}>
-              <CategorySelectInput
-                initialCategory={form.category}
-                setCategory={category => setForm({ ...form, category })}
-              />
-            </Grid.Item>
+      <Grid.Item colSpan={{ xs: '3', md: '1' }}>
+        <Flex direction="column" gap="4">
+          <CategorySelectInput
+            initialCategory={form.category}
+            setCategory={category => setForm({ ...form, category })}
+          />
 
-            <Grid.Item colSpan={{ xs: '3', md: '1' }}>
-              <TagsSelectInput
-                initialTags={form.tags}
-                setTags={tags => setForm({ ...form, tags })}
-              />
-            </Grid.Item>
+          <OnBehalfTeamDropdown
+            selectedTeam={form.on_behalf_of || ''}
+            onChange={(team: string) =>
+              setForm({ ...form, on_behalf_of: team })
+            }
+          />
+        </Flex>
+      </Grid.Item>
 
-            <Grid.Item colSpan={{ xs: '3', md: '1' }}>
-              <OnBehalfTeamDropdown
-                selectedTeam={form.on_behalf_of || ''}
-                onChange={(team: string) =>
-                  setForm({ ...form, on_behalf_of: team })
-                }
-              />
-            </Grid.Item>
-          </Grid.Root>
-        </CardBody>
-      </Card>
-    </>
+      <Grid.Item colSpan={{ xs: '3', md: '1' }}>
+        <TagsSelectInput
+          initialTags={form.tags}
+          setTags={tags => setForm({ ...form, tags })}
+        />
+      </Grid.Item>
+
+      <Grid.Item colSpan="2">
+        <Flex direction="column" my="4" gap="4">
+          <MuiTextField
+            label={t('announcementForm.startAt')}
+            id="start-at-date"
+            type="date"
+            value={form.start_at}
+            InputLabelProps={{ shrink: true }}
+            required
+            fullWidth
+            onChange={e =>
+              setForm({
+                ...form,
+                start_at: e.target.value,
+              })
+            }
+          />
+          <MuiTextField
+            label={t('announcementForm.untilDate')}
+            id="until-date"
+            type="date"
+            value={form.until_date}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            onChange={e =>
+              setForm({
+                ...form,
+                until_date: e.target.value,
+              })
+            }
+            inputProps={{
+              min: DateTime.fromISO(form.start_at)
+                .endOf('day')
+                .plus({ days: 1 })
+                .toISODate(),
+            }}
+          />
+        </Flex>
+      </Grid.Item>
+
+      <Grid.Item colSpan="3">
+        <Flex direction="column">
+          <Switch
+            label={t('announcementForm.active')}
+            isSelected={form.active}
+            onChange={() => setForm({ ...form, active: !form.active })}
+          />
+
+          <Switch
+            label={t('announcementForm.sendNotification')}
+            isSelected={form.sendNotification}
+            onChange={() =>
+              setForm({
+                ...form,
+                sendNotification: !form.sendNotification,
+              })
+            }
+          />
+        </Flex>
+
+        {/* <Button variant="primary" onClick={() => onSubmit(form)}>
+          {t('announcementForm.submit')}
+          </Button> */}
+      </Grid.Item>
+    </Grid.Root>
   );
 };

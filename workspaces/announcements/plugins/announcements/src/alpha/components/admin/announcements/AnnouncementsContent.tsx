@@ -32,15 +32,15 @@ import {
 import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Box, Button, Grid } from '@backstage/ui';
 import slugify from 'slugify';
 
 import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { AnnouncementForm } from '../../../../components/Admin/AnnouncementsContent/AnnouncementForm';
+import { AnnouncementForm as OldAnnouncementForm } from '../../../../components/Admin/AnnouncementsContent/AnnouncementForm';
 import { AnnouncementsTableCard } from './AnnouncementsTableCard';
+import { CreateAnnouncementDialog } from './CreateAnnouncementDialog';
 import { announcementViewRouteRef } from '../../../../routes';
 
 /**
@@ -57,16 +57,14 @@ export type AnnouncementsContentProps = {
 /**
  * @internal
  */
-export const AnnouncementsContent = ({
-  formDefaults: { defaultInactive },
-}: AnnouncementsContentProps) => {
+export const AnnouncementsContent = (_props: AnnouncementsContentProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
   const { categories } = useCategories();
 
-  const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
+  const [showCreateAnnouncementDialog, setShowCreateAnnouncementDialog] =
     useState(false);
   const [editingAnnouncementId, setEditingAnnouncementId] = useState<
     string | null
@@ -84,15 +82,12 @@ export const AnnouncementsContent = ({
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const navigate = useNavigate();
 
-  const onCreateButtonClick = () => {
-    if (editingAnnouncementId) {
-      // If editing, cancel the edit
-      setEditingAnnouncementId(null);
-      setShowCreateAnnouncementForm(false);
-    } else {
-      // If not editing, toggle create form
-      setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
-    }
+  const onCreateClick = () => {
+    setShowCreateAnnouncementDialog(true);
+  };
+
+  const onCancelCreate = () => {
+    setShowCreateAnnouncementDialog(false);
   };
 
   const onPreviewClick = (announcement: Announcement) => {
@@ -101,7 +96,7 @@ export const AnnouncementsContent = ({
 
   const onEditClick = (announcement: Announcement) => {
     setEditingAnnouncementId(announcement.id);
-    setShowCreateAnnouncementForm(false);
+    setShowCreateAnnouncementDialog(false);
   };
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
@@ -135,7 +130,7 @@ export const AnnouncementsContent = ({
 
       alertApi.post({ message: alertMsg, severity: 'success' });
 
-      setShowCreateAnnouncementForm(false);
+      setShowCreateAnnouncementDialog(false);
       refresh();
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
@@ -224,60 +219,39 @@ export const AnnouncementsContent = ({
 
   return (
     <RequirePermission permission={announcementCreatePermission}>
-      <Grid.Root columns="1">
-        <Grid.Item>
-          <Button
-            isDisabled={!canCreate}
-            variant="primary"
-            onClick={() => onCreateButtonClick()}
-          >
-            {showCreateAnnouncementForm || editingAnnouncementId
-              ? t('admin.announcementsContent.cancelButton')
-              : t('admin.announcementsContent.createButton')}
-          </Button>
-        </Grid.Item>
+      {editingAnnouncementId && announcementToEdit && (
+        <OldAnnouncementForm
+          initialData={announcementToEdit}
+          onSubmit={onUpdate}
+        />
+      )}
 
-        {showCreateAnnouncementForm && (
-          <Grid.Item>
-            <AnnouncementForm
-              initialData={{ active: !defaultInactive } as Announcement}
-              onSubmit={onSubmit}
-            />
-          </Grid.Item>
-        )}
+      <AnnouncementsTableCard
+        announcements={announcements?.results ?? []}
+        onPreviewClick={onPreviewClick}
+        onEditClick={onEditClick}
+        onDeleteClick={onDeleteClick}
+        onCreateClick={onCreateClick}
+        canEdit={canEdit}
+        canDelete={canDelete}
+        editingAnnouncementId={editingAnnouncementId}
+      />
 
-        {editingAnnouncementId && announcementToEdit && (
-          <Grid.Item>
-            <AnnouncementForm
-              initialData={announcementToEdit}
-              onSubmit={onUpdate}
-            />
-          </Grid.Item>
-        )}
+      <CreateAnnouncementDialog
+        open={showCreateAnnouncementDialog}
+        onSubmit={onSubmit}
+        onCancel={onCancelCreate}
+        canSubmit={canCreate}
+      />
 
-        <Grid.Item>
-          <Box mb="12">
-            <AnnouncementsTableCard
-              announcements={announcements?.results ?? []}
-              onPreviewClick={onPreviewClick}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-              canEdit={canEdit}
-              canDelete={canDelete}
-              editingAnnouncementId={editingAnnouncementId}
-            />
-          </Box>
-
-          <DeleteConfirmationDialog
-            type="announcement"
-            itemTitle={announcementToDelete?.title}
-            open={isDeleteDialogOpen}
-            onCancel={onCancelDelete}
-            onConfirm={onConfirmDelete}
-            canDelete={canDelete}
-          />
-        </Grid.Item>
-      </Grid.Root>
+      <DeleteConfirmationDialog
+        type="announcement"
+        itemTitle={announcementToDelete?.title}
+        open={isDeleteDialogOpen}
+        onCancel={onCancelDelete}
+        onConfirm={onConfirmDelete}
+        canDelete={canDelete}
+      />
     </RequirePermission>
   );
 };
