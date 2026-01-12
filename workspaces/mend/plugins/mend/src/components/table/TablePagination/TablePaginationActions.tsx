@@ -137,9 +137,9 @@ export const TablePaginationActions = ({
       >
         {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
       </IconButton>
-      <span style={{ whiteSpace: 'nowrap' }}>{`Page ${page + 1} of ${Math.ceil(
-        count / rowsPerPage,
-      )}`}</span>
+      <span style={{ whiteSpace: 'nowrap' }}>{`Page ${
+        count > 0 ? page + 1 : 0
+      } of ${Math.ceil(count / rowsPerPage)}`}</span>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}

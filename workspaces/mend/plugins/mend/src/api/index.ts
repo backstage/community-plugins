@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { QueryClient } from '@tanstack/react-query';
-import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
+import { createApiRef, DiscoveryApi, ApiRef } from '@backstage/core-plugin-api';
 
 /**
  * Plugin API
@@ -23,7 +23,7 @@ export type MendApi = {
   discoveryApi: DiscoveryApi;
 };
 
-export const mendApiRef = createApiRef<MendApi>({
+export const mendApiRef: ApiRef<MendApi> = createApiRef<MendApi>({
   id: 'plugin.mend.service',
 });
 
@@ -38,7 +38,13 @@ export class MendClient {
 /**
  * React Query Client
  */
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+  },
+});
 
 /**
  * Fetch: GET, POST, PUT, REMOVE
@@ -117,7 +123,15 @@ function toJson(response: Response): Promise<any> {
   }
 
   return response.json().then(json => {
-    return response.ok ? json : Promise.reject(json);
+    if (response.ok) {
+      return json;
+    }
+
+    // Include status code in the error object
+    const error = new Error(json.error || json.message || 'Request failed');
+    (error as any).status = response.status;
+    (error as any).response = { status: response.status, ...json };
+    return Promise.reject(error);
   });
 }
 
