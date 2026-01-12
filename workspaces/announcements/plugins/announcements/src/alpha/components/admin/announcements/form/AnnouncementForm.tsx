@@ -15,6 +15,7 @@
  */
 
 import { useState } from 'react';
+import MDEditor from '@uiw/react-md-editor';
 import {
   Card,
   CardBody,
@@ -23,11 +24,12 @@ import {
   Text,
   TextField,
 } from '@backstage/ui';
-
-import { CategorySelectInput } from './CategorySelectInput';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import MDEditor from '@uiw/react-md-editor';
+
+import { CategorySelectInput } from './CategorySelectInput';
+import { TagsSelectInput } from './TagsSelectInput';
+import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 
 type AnnouncementFormState = Omit<
   Announcement,
@@ -43,10 +45,10 @@ export const AnnouncementForm = () => {
     body: '',
     active: true,
     start_at: '',
-    until_date: '',
-    on_behalf_of: '',
-    tags: [],
-    sendNotification: false,
+    until_date: undefined,
+    on_behalf_of: undefined,
+    tags: undefined,
+    sendNotification: undefined,
     category: undefined,
     publisher: '',
   });
@@ -64,6 +66,14 @@ export const AnnouncementForm = () => {
               <Text as="p">Excerpt: {form.excerpt ?? 'None'}</Text>
               <Text as="p">
                 Selected Category: {form.category?.title ?? 'None'}
+              </Text>
+              <Text as="p">Publisher: {form.publisher ?? 'None'}</Text>
+              <Text as="p">
+                Selected On Behalf Of: {form.on_behalf_of ?? 'None'}
+              </Text>
+              <Text as="p">
+                Selected Tags:{' '}
+                {form.tags?.map(tag => tag.title).join(', ') ?? 'None'}
               </Text>
             </CardBody>
           </Card>
@@ -108,6 +118,22 @@ export const AnnouncementForm = () => {
               <CategorySelectInput
                 initialCategory={form.category}
                 setCategory={category => setForm({ ...form, category })}
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '3', md: '1' }}>
+              <TagsSelectInput
+                initialTags={form.tags}
+                setTags={tags => setForm({ ...form, tags })}
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '3', md: '1' }}>
+              <OnBehalfTeamDropdown
+                selectedTeam={form.on_behalf_of || ''}
+                onChange={(team: string) =>
+                  setForm({ ...form, on_behalf_of: team })
+                }
               />
             </Grid.Item>
           </Grid.Root>
