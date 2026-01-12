@@ -27,6 +27,7 @@ import {
 import { CategorySelectInput } from './CategorySelectInput';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import MDEditor from '@uiw/react-md-editor';
 
 type AnnouncementFormState = Omit<
   Announcement,
@@ -74,8 +75,8 @@ export const AnnouncementForm = () => {
           <Text variant="title-small">Announcement Form</Text>
         </CardHeader>
         <CardBody>
-          <Grid.Root>
-            <Grid.Item>
+          <Grid.Root columns="3">
+            <Grid.Item colSpan="3">
               <TextField
                 label={t('announcementForm.title')}
                 value={form.title}
@@ -84,7 +85,7 @@ export const AnnouncementForm = () => {
               />
             </Grid.Item>
 
-            <Grid.Item>
+            <Grid.Item colSpan="3">
               <TextField
                 label={t('announcementForm.excerpt')}
                 value={form.excerpt}
@@ -93,7 +94,17 @@ export const AnnouncementForm = () => {
               />
             </Grid.Item>
 
-            <Grid.Item>
+            <Grid.Item colSpan="3">
+              <MDEditor
+                value={form.body}
+                style={{ minHeight: '30rem' }}
+                onChange={value =>
+                  setForm({ ...form, ...{ body: value || '' } })
+                }
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '3', md: '1' }}>
               <CategorySelectInput
                 initialCategory={form.category}
                 setCategory={category => setForm({ ...form, category })}
