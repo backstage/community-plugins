@@ -132,7 +132,7 @@ export const Total = ({
             gap: '0.4rem',
           }}
         >
-          {!dataLoading && (
+          {!dataLoading && clientName && (
             <>
               <SvgIcon
                 viewBox="0 0 16 16"

@@ -34,9 +34,14 @@ type FindingSuccessResponseData = {
   projectSourceUrl: string;
 };
 
+type FindingError = Error & {
+  response?: any;
+  status?: number;
+};
+
 export type FindingData = {
   findingData?: FindingSuccessResponseData;
-  findingDataError: Error | null;
+  findingDataError: FindingError | null;
   findingDataLoading: boolean;
 };
 

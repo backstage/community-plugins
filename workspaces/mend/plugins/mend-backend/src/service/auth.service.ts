@@ -76,7 +76,7 @@ export class MendAuthSevice {
       const decoded = jwt.decode(licenseKey);
       if (!decoded || typeof decoded !== 'object') {
         MendAuthSevice.configurationError =
-          'Invalid activation key. Please provide the valid Activation Key';
+          'Invalid activation key. Please provide the valid Activation Key.';
         MendAuthSevice.logger.error(MendAuthSevice.configurationError);
         return;
       }
@@ -95,7 +95,7 @@ export class MendAuthSevice {
         typeof userKey !== 'string'
       ) {
         MendAuthSevice.configurationError =
-          'Invalid activation key. Please provide the valid Activation Key';
+          'Invalid activation key. Please provide the valid Activation Key.';
         MendAuthSevice.logger.error(
           'Invalid activation key: missing required fields (wsEnvUrl, integratorEmail, userKey).',
         );
@@ -108,7 +108,7 @@ export class MendAuthSevice {
         baseUrl = new URL(wsEnvUrl);
       } catch {
         MendAuthSevice.configurationError =
-          'Invalid activation key. Please provide the valid Activation Key';
+          'Invalid activation key. Please provide the valid Activation Key.';
         MendAuthSevice.logger.error(
           'Invalid activation key: wsEnvUrl is not a valid URL.',
         );
@@ -124,7 +124,7 @@ export class MendAuthSevice {
       MendAuthSevice.configured = true;
     } catch (err) {
       MendAuthSevice.configurationError =
-        'Something went wrong while configuring Mend. Please check the Activation Key';
+        'Something went wrong while configuring Mend. Please check the Activation Key.';
       MendAuthSevice.logger?.error(
         `Unexpected error while configuring Mend: ${
           err instanceof Error ? err.message : String(err)

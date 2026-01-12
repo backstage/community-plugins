@@ -207,7 +207,11 @@ export async function createRouter(
       const uid = request.body.uid;
 
       if (!uid) {
-        response.status(401).json({ error: 'Oops! No UUID provided' });
+        response.status(400).json({
+          message: 'Oops! No UUID provided',
+          clientUrl: MendAuthSevice.getClientUrl(),
+          clientName: MendAuthSevice.getClientName(),
+        });
         return;
       }
 
@@ -240,10 +244,9 @@ export async function createRouter(
         : '';
 
       if (!data.length) {
-        response.json({
-          findingList: [],
-          projectList: [],
-          projectSourceUrl,
+        response.status(404).json({
+          message:
+            'Results for this repository are either unavailable on Mend or cannot be accessed.',
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });

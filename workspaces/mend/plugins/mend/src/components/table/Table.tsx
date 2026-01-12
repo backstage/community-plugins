@@ -139,20 +139,38 @@ export const Table = ({
       localization={{
         body: {
           emptyDataSourceMessage: tableDataError ? (
-            <TableMessage
-              icon={TableIcon.ERROR}
-              title="Oops! Something Went Wrong"
-              message={
-                tableDataError.message ||
-                'An unexpected error occurred when loading this table. Please try refreshing the page.'
+            (() => {
+              const errorStatus = (tableDataError as any).status;
+              let icon = TableIcon.ERROR;
+              let title = 'Oops! Something Went Wrong';
+
+              if (errorStatus === 401) {
+                title = 'Configuration Error';
+              } else if (errorStatus === 404) {
+                title = 'No Results Found';
+                icon = TableIcon.EMPTY;
               }
-            />
+
+              return (
+                <TableMessage
+                  icon={icon}
+                  title={title}
+                  message={
+                    tableDataError.message ||
+                    'An unexpected error occurred. Please try refreshing the page.'
+                  }
+                />
+              );
+            })()
           ) : (
             <TableMessage
               icon={TableIcon.EMPTY}
               title="No Results Found"
-              message="No results were found for your filter. Please check your spelling and
-        try again."
+              message={
+                tableData.length > 0
+                  ? 'Please review your filter text and search again.'
+                  : 'No data available on the Mend platform.'
+              }
             />
           ),
         },

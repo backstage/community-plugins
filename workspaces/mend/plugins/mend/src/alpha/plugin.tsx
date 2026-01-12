@@ -36,7 +36,7 @@ import { MendIcon } from '../components/Sidebar';
  *
  * @alpha
  */
-export const mendApi = ApiBlueprint.make({
+export const mendApi: any = ApiBlueprint.make({
   name: 'mendApi',
   params: defineParams =>
     defineParams({
@@ -75,7 +75,7 @@ export const mendPage = PageBlueprint.make({
  *
  * @alpha
  */
-export const mendNavItem = NavItemBlueprint.make({
+export const mendNavItem: any = NavItemBlueprint.make({
   params: {
     title: 'Mend.io',
     routeRef: convertLegacyRouteRef(rootRouteRef),
