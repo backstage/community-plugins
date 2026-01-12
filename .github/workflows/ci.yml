@@ -60,6 +60,30 @@ jobs:
     env:
       CI: true
       NODE_OPTIONS: --max-old-space-size=8192
+    
+    services:
+      postgres18:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432/tcp
+      postgres14:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432/tcp
 
     steps:
       - name: Checkout main branch for tests purposes
@@ -143,6 +167,10 @@ jobs:
 
       - name: test changed packages
         run: yarn test:all --maxWorkers=3
+        env:
+          BACKSTAGE_TEST_DISABLE_DOCKER: 1
+          BACKSTAGE_TEST_DATABASE_POSTGRES18_CONNECTION_STRING: postgresql://postgres:postgres@localhost:${{ job.services.postgres18.ports[5432] }}
+          BACKSTAGE_TEST_DATABASE_POSTGRES14_CONNECTION_STRING: postgresql://postgres:postgres@localhost:${{ job.services.postgres14.ports[5432] }}
 
       - name: read playwrightTests flag from bcp.json
         id: bcpPlaywrightTests
