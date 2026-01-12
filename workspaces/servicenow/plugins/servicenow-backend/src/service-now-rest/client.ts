@@ -16,199 +16,77 @@
 
 import { LoggerService } from '@backstage/backend-plugin-api';
 import {
-  ClientCredentials,
-  ResourceOwnerPassword,
-  ModuleOptions,
-  AccessToken,
-} from 'simple-oauth2';
-import axios from 'axios';
-import {
   IncidentPick,
   PaginatedIncidents,
 } from '@backstage-community/plugin-servicenow-common';
-import { OAuthConfig, ServiceNowConfig } from '../../config';
+import { ServiceNowConnection } from './connection';
 
-export type IncidentQueryParams = {
-  userEmail?: string;
-  entityId?: string;
-  state?: string;
-  priority?: string;
-  search?: string;
-  limit?: number;
-  offset?: number;
-  order?: 'asc' | 'desc';
-  orderBy?: string;
+const INCIDENT_QUERY_KEYS_ARRAY = [
+  'userEmail',
+  'u_backstage_entity_id',
+  'state',
+  'priority',
+  'search',
+  'limit',
+  'offset',
+  'order',
+  'orderBy',
+] as const;
+
+export type IncidentQueryKeyString = (typeof INCIDENT_QUERY_KEYS_ARRAY)[number];
+
+// Plugin UI specific query parameters (pagination, search, ordering, tickets filter)
+export type PredefinedIncidentQueryParams = {
+  [K in IncidentQueryKeyString]?: K extends 'order'
+    ? 'asc' | 'desc'
+    : K extends 'limit' | 'offset'
+    ? number
+    : string;
 };
+
+// UI-specific query parameters joined with user's custom incident table fields query parameters
+export type IncidentQueryParams = PredefinedIncidentQueryParams & {
+  [key: string]: any;
+};
+
+export type IncidentQueryKeys = keyof IncidentQueryParams;
+
+export function isPredefinedIncidentQueryKey(keyName: string): boolean {
+  return INCIDENT_QUERY_KEYS_ARRAY.includes(keyName as IncidentQueryKeyString);
+}
 
 export interface ServiceNowClient {
   fetchIncidents(options: IncidentQueryParams): Promise<PaginatedIncidents>;
 }
 
 export class DefaultServiceNowClient implements ServiceNowClient {
-  private readonly instanceUrl: string;
-  private readonly config: ServiceNowConfig;
-  private readonly logger: LoggerService;
-  private oauthClient?: ClientCredentials | ResourceOwnerPassword;
-
-  constructor(config: ServiceNowConfig, logger: LoggerService) {
-    this.config = config;
-    this.logger = logger;
-
-    if (!config.servicenow?.instanceUrl) {
-      logger.error('ServiceNow instance url is missing. Please configure it.');
-      throw new Error(
-        'ServiceNow instance url is missing. Please configure it.',
-      );
-    }
-    this.instanceUrl = config.servicenow?.instanceUrl.replace(/\/$/, '');
-
-    if (!config.servicenow?.oauth && !config.servicenow?.basicAuth) {
-      logger.error(
-        'ServiceNow authentication configuration is missing. Please configure either OAuth or Basic Auth.',
-      );
-      throw new Error(
-        'ServiceNow authentication configuration is missing. Please configure either OAuth or Basic Auth.',
-      );
-    }
-
-    if (config.servicenow?.oauth) {
-      this.setupOAuthClient(config.servicenow.oauth);
-    }
-
-    if (config.servicenow?.basicAuth) {
-      logger.warn(
-        'Basic authentication is configured for ServiceNow. This is not recommended for production environments.',
-      );
-    }
-  }
-
-  private setupOAuthClient(oauth: OAuthConfig) {
-    const determinedTokenUrl = `${this.instanceUrl}/oauth_token.do`;
-
-    let tokenHost: string;
-    let tokenPath: string;
-    try {
-      const parsedTokenUrl = new URL(determinedTokenUrl);
-      tokenHost = parsedTokenUrl.origin;
-      tokenPath = parsedTokenUrl.pathname;
-    } catch (e: any) {
-      this.logger.error(
-        `Invalid tokenUrl constructed or provided: ${determinedTokenUrl}. Error: ${e.message}`,
-      );
-      throw new Error(`Invalid tokenUrl: ${determinedTokenUrl}`);
-    }
-
-    const oauthModuleOptions: ModuleOptions = {
-      client: {
-        id: oauth.clientId,
-        secret: oauth.clientSecret,
-      },
-      auth: {
-        tokenHost: tokenHost,
-        tokenPath: tokenPath,
-      },
-      options: {
-        authorizationMethod: 'body',
-      },
-    };
-
-    if (oauth.grantType === 'client_credentials') {
-      this.oauthClient = new ClientCredentials(oauthModuleOptions);
-    } else if (oauth.grantType === 'password') {
-      if (!oauth.username || !oauth.password) {
-        this.logger.error(
-          "Username and/or password missing for 'password' grant type in ServiceNow OAuth config.",
-        );
-        throw new Error(
-          "Username and/or password missing for 'password' grant type.",
-        );
-      }
-      this.oauthClient = new ResourceOwnerPassword(oauthModuleOptions);
-    } else {
-      const grantType = (oauth as any).grantType;
-      this.logger.error(`Unsupported OAuth grantType: ${grantType}`);
-      throw new Error(`Unsupported OAuth grantType: ${grantType}`);
-    }
-  }
-
-  private async getAuthHeaders(): Promise<{ Authorization: string }> {
-    if (this.config.servicenow?.basicAuth) {
-      const { username, password } = this.config.servicenow.basicAuth;
-      const encodedCredentials = Buffer.from(
-        `${username}:${password}`,
-      ).toString('base64');
-      return { Authorization: `Basic ${encodedCredentials}` };
-    }
-
-    if (this.config.servicenow?.oauth && this.oauthClient) {
-      let accessToken: AccessToken;
-      try {
-        if (this.config.servicenow.oauth.grantType === 'client_credentials') {
-          accessToken = await (this.oauthClient as ClientCredentials).getToken(
-            {},
-          );
-        } else if (this.config.servicenow.oauth.grantType === 'password') {
-          if (
-            !this.config.servicenow.oauth.username ||
-            !this.config.servicenow.oauth.password
-          ) {
-            throw new Error(
-              "Username or password missing for 'password' grant type during token acquisition.",
-            );
-          }
-          accessToken = await (
-            this.oauthClient as ResourceOwnerPassword
-          ).getToken({
-            username: this.config.servicenow.oauth.username,
-            password: this.config.servicenow.oauth.password,
-          });
-        } else {
-          throw new Error(
-            `Unsupported grantType in getAuthHeaders: ${
-              (this.config.servicenow.oauth as any).grantType
-            }`,
-          );
-        }
-
-        const tokenData = accessToken.token;
-        if (
-          !tokenData ||
-          typeof tokenData.access_token !== 'string' ||
-          !tokenData.access_token
-        ) {
-          throw new Error(
-            'Failed to obtain access_token string (token data is invalid or missing).',
-          );
-        }
-        return { Authorization: `Bearer ${tokenData.access_token}` };
-      } catch (error: any) {
-        this.logger.error(`Error fetching ServiceNow token: ${error.message}`, {
-          error: error.stack || error,
-        });
-        if (error.isAxiosError && error.response) {
-          this.logger.error(
-            `OAuth2 token error details: Status ${
-              error.response.status
-            }, Data: ${JSON.stringify(error.response.data)}`,
-          );
-        } else if (error.data && error.data.payload) {
-          this.logger.error(
-            `OAuth2 token error payload: ${JSON.stringify(error.data.payload)}`,
-          );
-        }
-        throw new Error(`Failed to obtain access token: ${error.message}`);
-      }
-    }
-
-    throw new Error('No authentication method configured.');
-  }
+  constructor(
+    private readonly conn: ServiceNowConnection,
+    private readonly logger: LoggerService,
+  ) {}
 
   async fetchIncidents(options: IncidentQueryParams): Promise<{
     items: IncidentPick[];
     totalCount: number;
   }> {
-    const authHeaders = await this.getAuthHeaders();
+    const authHeaders = await this.conn.getAuthHeaders();
     const queryParts: string[] = [];
+
+    const responseFields = [
+      'sys_id',
+      'number',
+      'short_description',
+      'description',
+      'sys_created_on',
+      'priority',
+      'incident_state',
+    ];
+    for (const [key, value] of Object.entries(options)) {
+      if (!isPredefinedIncidentQueryKey(key)) {
+        queryParts.push(`${key}=${value}`);
+        responseFields.push(key);
+      }
+    }
 
     if (options.userEmail) {
       const id = await this.getUserSysIdByEmail(options.userEmail);
@@ -223,10 +101,6 @@ export class DefaultServiceNowClient implements ServiceNowClient {
       queryParts.push(
         `numberLIKE${searchTerm}^ORshort_descriptionLIKE${searchTerm}^ORdescriptionLIKE${searchTerm}`,
       );
-    }
-
-    if (options.entityId) {
-      queryParts.push(`u_backstage_entity_id=${options.entityId}`);
     }
 
     if (options.orderBy) {
@@ -245,20 +119,15 @@ export class DefaultServiceNowClient implements ServiceNowClient {
       params.append('sysparm_limit', String(options.limit));
     if (options.offset !== undefined)
       params.append('sysparm_offset', String(options.offset));
-    params.append(
-      'sysparm_fields',
-      'sys_id,number,short_description,description,sys_created_on,priority,incident_state',
-    );
 
+    params.append('sysparm_fields', responseFields.join(','));
     params.append('sysparm_count', 'true');
 
-    const requestUrl = `${
-      this.instanceUrl
-    }/api/now/table/incident?${params.toString()}`;
+    const requestUrl = `api/now/table/incident?${params.toString()}`;
     this.logger.info(`Fetching incidents from ServiceNow: ${requestUrl}`);
 
     try {
-      const response = await axios.get(requestUrl, {
+      const response = await this.conn.getAxiosInstance().get(requestUrl, {
         headers: {
           ...authHeaders,
           Accept: 'application/json',
@@ -273,7 +142,7 @@ export class DefaultServiceNowClient implements ServiceNowClient {
       const items =
         response.data?.result?.map((incident: any) => ({
           ...incident,
-          url: `${this.instanceUrl}/nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`,
+          url: `nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`,
         })) ?? [];
 
       return { items, totalCount };
@@ -286,13 +155,11 @@ export class DefaultServiceNowClient implements ServiceNowClient {
   }
 
   private async getUserSysIdByEmail(email: string): Promise<string | null> {
-    const authHeaders = await this.getAuthHeaders();
-    const url = `${
-      this.instanceUrl
-    }/api/now/table/sys_user?sysparm_query=email=${encodeURIComponent(
+    const authHeaders = await this.conn.getAuthHeaders();
+    const url = `api/now/table/sys_user?sysparm_query=email=${encodeURIComponent(
       email,
     )}&sysparm_fields=sys_id`;
-    const response = await axios.get(url, {
+    const response = await this.conn.getAxiosInstance().get(url, {
       headers: {
         ...authHeaders,
         Accept: 'application/json',

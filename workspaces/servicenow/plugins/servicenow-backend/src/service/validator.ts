@@ -18,6 +18,7 @@ import type { ParsedQs } from 'qs';
 import type { Order } from '@backstage-community/plugin-servicenow-common';
 import { IncidentFieldEnum } from '@backstage-community/plugin-servicenow-common';
 import { IncidentQueryParams } from '../service-now-rest';
+import { ServiceNowSchemaChecker } from '../service-now-rest/schema-checker';
 
 const ALLOWED_STATES: readonly string[] = ['1', '2', '3', '6', '7', '8'];
 const ALLOWED_PRIORITIES: readonly string[] = ['1', '2', '3', '4', '5'];
@@ -82,11 +83,11 @@ function parseAndValidateMultiValueQueryParam(
   return valueAsString;
 }
 
-export function validateIncidentQueryParams(
+export async function validateIncidentQueryParams(
   query: ParsedQs,
-): IncidentQueryParams {
+  schemaChecker: ServiceNowSchemaChecker,
+): Promise<IncidentQueryParams> {
   const {
-    entityId: entityIdQuery,
     state: stateQuery,
     priority: priorityQuery,
     search: searchQuery,
@@ -95,8 +96,29 @@ export function validateIncidentQueryParams(
     order: orderQuery,
     orderBy: orderByQuery,
     userEmail: userEmailQuery,
+    entityId: entityIdQuery,
+    ...rest
   } = query;
-  const validatedParams: IncidentQueryParams = {};
+  const validatedParams: IncidentQueryParams = { ...rest };
+  if (entityIdQuery !== undefined) {
+    if (typeof entityIdQuery !== 'string' || !entityIdQuery.trim()) {
+      throw new InputError('entityId must be a non-empty string.');
+    }
+    validatedParams.u_backstage_entity_id = entityIdQuery.trim();
+  }
+
+  const annotationFields = Object.keys(rest);
+  if (validatedParams.u_backstage_entity_id) {
+    annotationFields.push('u_backstage_entity_id');
+  }
+  const allFieldsExist = await schemaChecker.fieldExists(...annotationFields);
+  if (!allFieldsExist) {
+    throw new InputError(
+      `One or more annotation fields do not exist in the ServiceNow incidents schema: ${annotationFields.join(
+        ', ',
+      )}`,
+    );
+  }
 
   // userEmail validation
   if (userEmailQuery !== undefined) {
@@ -108,17 +130,6 @@ export function validateIncidentQueryParams(
       throw new InputError('userEmail must be a valid email address.');
     }
     validatedParams.userEmail = userEmailQuery.trim();
-  }
-
-  if (entityIdQuery !== undefined) {
-    if (typeof entityIdQuery !== 'string' || !entityIdQuery.trim()) {
-      throw new InputError('entityId must be a non-empty string.');
-    }
-    validatedParams.entityId = entityIdQuery.trim();
-  }
-
-  if (!validatedParams.userEmail && !validatedParams.entityId) {
-    throw new InputError('entityId is required if userEmail is not present.');
   }
 
   // limit validation
