@@ -27,6 +27,9 @@ import {
 
 // todo: pending rebuild for nfs with `@backstage/ui`
 import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
+import { CategorySelectInput } from './components/admin/announcements/form/CategorySelectInput';
+import { Container } from '@backstage/ui';
+import { AnnouncementForm } from './components/admin/announcements/form/AnnouncementForm';
 
 type RouterProps = {
   title?: string;
@@ -67,10 +70,18 @@ export const Router = (props: RouterProps) => {
           </RequirePermission>
         }
       >
-        <Route
+        {/* <Route
           path=""
           element={
             <AnnouncementsContent defaultInactive={props.defaultInactive} />
+          }
+        /> */}
+        <Route
+          path=""
+          element={
+            <Container>
+              <AnnouncementForm />
+            </Container>
           }
         />
         <Route path="categories" element={<CategoriesContent />} />

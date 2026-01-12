@@ -15,28 +15,93 @@
  */
 
 import { useState } from 'react';
-import { Container, Grid, Text } from '@backstage/ui';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Grid,
+  Text,
+  TextField,
+} from '@backstage/ui';
 
 import { CategorySelectInput } from './CategorySelectInput';
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+
+type AnnouncementFormState = Omit<
+  Announcement,
+  'id' | 'created_at' | 'updated_at'
+>;
 
 export const AnnouncementForm = () => {
-  const [category, setCategory] = useState<Category | undefined>(undefined);
+  const { t } = useAnnouncementsTranslation();
+
+  const [form, setForm] = useState<AnnouncementFormState>({
+    title: '',
+    excerpt: '',
+    body: '',
+    active: true,
+    start_at: '',
+    until_date: '',
+    on_behalf_of: '',
+    tags: [],
+    sendNotification: false,
+    category: undefined,
+    publisher: '',
+  });
 
   return (
-    <Container>
-      <Text variant="title-small">Announcement Form</Text>
-
+    <>
       <Grid.Root>
         <Grid.Item>
-          <Text>Selected Category: {category?.title ?? 'None'}</Text>
+          <Card>
+            <CardBody>
+              <Text as="p" variant="title-x-small">
+                Form state:
+              </Text>
+              <Text as="p">Title: {form.title ?? 'None'}</Text>
+              <Text as="p">Excerpt: {form.excerpt ?? 'None'}</Text>
+              <Text as="p">
+                Selected Category: {form.category?.title ?? 'None'}
+              </Text>
+            </CardBody>
+          </Card>
         </Grid.Item>
       </Grid.Root>
 
-      <CategorySelectInput
-        initialCategory={category}
-        setCategory={setCategory}
-      />
-    </Container>
+      <Card style={{ marginTop: '100px' }}>
+        <CardHeader>
+          <Text variant="title-small">Announcement Form</Text>
+        </CardHeader>
+        <CardBody>
+          <Grid.Root>
+            <Grid.Item>
+              <TextField
+                label={t('announcementForm.title')}
+                value={form.title}
+                onChange={v => setForm({ ...form, title: v })}
+                isRequired
+              />
+            </Grid.Item>
+
+            <Grid.Item>
+              <TextField
+                label={t('announcementForm.excerpt')}
+                value={form.excerpt}
+                onChange={v => setForm({ ...form, excerpt: v })}
+                isRequired
+              />
+            </Grid.Item>
+
+            <Grid.Item>
+              <CategorySelectInput
+                initialCategory={form.category}
+                setCategory={category => setForm({ ...form, category })}
+              />
+            </Grid.Item>
+          </Grid.Root>
+        </CardBody>
+      </Card>
+    </>
   );
 };
