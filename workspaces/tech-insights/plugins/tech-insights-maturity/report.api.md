@@ -4,31 +4,36 @@
 
 ```ts
 import { ApiRef } from '@backstage/frontend-plugin-api';
+import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { BulkMaturityCheckResponse } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { BulkMaturitySummary } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { EntityMaturityRankWidget } from './plugin';
-import { EntityMaturityScorecardContent } from './plugin';
-import { EntityMaturitySummaryCard } from './plugin';
-import { EntityMaturitySummaryContent } from './plugin';
 import { IdentityApi } from '@backstage/core-plugin-api';
-import { MaturityPage } from './plugin';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { MaturityRank } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturityScore } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturitySummary } from '@backstage-community/plugin-tech-insights-maturity-common';
+import { RouteRef } from '@backstage/core-plugin-api';
 import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react';
 import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
-import { techInsightsMaturityPlugin } from './plugin';
 
-export { EntityMaturityRankWidget };
+// @public (undocumented)
+export const EntityMaturityRankWidget: ({
+  entity,
+}: {
+  entity: Entity;
+}) => JSX_2.Element;
 
-export { EntityMaturityScorecardContent };
+// @public (undocumented)
+export const EntityMaturityScorecardContent: () => JSX_2.Element;
 
-export { EntityMaturitySummaryCard };
+// @public (undocumented)
+export const EntityMaturitySummaryCard: () => JSX_2.Element;
 
-export { EntityMaturitySummaryContent };
+// @public (undocumented)
+export const EntityMaturitySummaryContent: () => JSX_2.Element;
 
 // @public
 export type MaturityApi = TechInsightsApi & {
@@ -74,9 +79,17 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   getMaturitySummary(entity: Entity): Promise<MaturitySummary>;
 }
 
-export { MaturityPage };
+// @public (undocumented)
+export const MaturityPage: () => JSX_2.Element;
 
-export { techInsightsMaturityPlugin };
+// @public (undocumented)
+export const techInsightsMaturityPlugin: BackstagePlugin<
+  {
+    root: RouteRef<undefined>;
+  },
+  {},
+  {}
+>;
 
 // (No @packageDocumentation comment for this package)
 ```

@@ -1457,7 +1457,6 @@ __metadata:
     "@backstage-community/plugin-tech-insights-node": "workspace:^"
     "@backstage/backend-plugin-api": "npm:^1.6.0"
     "@backstage/backend-test-utils": "npm:^1.10.2"
-    "@backstage/catalog-client": "npm:^1.10.0"
     "@backstage/catalog-model": "npm:^1.7.4"
     "@backstage/cli": "npm:^0.35.1"
     "@backstage/config": "npm:^1.3.6"
@@ -1859,7 +1858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@npm:^1.10.0, @backstage/catalog-client@npm:^1.12.1":
+"@backstage/catalog-client@npm:^1.12.1":
   version: 1.12.1
   resolution: "@backstage/catalog-client@npm:1.12.1"
   dependencies:
@@ -3898,9 +3897,9 @@ __metadata:
   linkType: hard
 
 "@csstools/css-syntax-patches-for-csstree@npm:^1.0.21":
-  version: 1.0.24
-  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.0.24"
-  checksum: 10/c50576bf11a79238aeebdbd4444c59bd94d233bca40b7e6d0d5acb3c540af0c1c6225b1c1da47376a9044fc8bba00e12ffac1f3bf7012bb2c6aba9fdec3845d4
+  version: 1.0.25
+  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.0.25"
+  checksum: 10/42dfcd164ed6a66eee8dd3fcdbdaa58d032ab8c3bb5ead2453915429367766879b25332e09379a67357fd33742b856160e7c0182c7d90be00f57571b916c18e7
   languageName: node
   linkType: hard
 
@@ -12441,11 +12440,11 @@ __metadata:
   linkType: hard
 
 "@types/d3-shape@npm:^3.1.7":
-  version: 3.1.7
-  resolution: "@types/d3-shape@npm:3.1.7"
+  version: 3.1.8
+  resolution: "@types/d3-shape@npm:3.1.8"
   dependencies:
     "@types/d3-path": "npm:*"
-  checksum: 10/b7ddda2a9c916ba438308bfa6e53fa2bb11c2ce13537ba2a7816c16f9432287b57901921c7231d2924f2d7d360535c3795f017865ab05abe5057c6ca06ca81df
+  checksum: 10/ebc161d49101d84409829fea516ba7ec71ad51a1e97438ca0fafc1c30b56b3feae802d220375323632723a338dda7237c652e831e0b53527a6222ab0d1bb7809
   languageName: node
   linkType: hard
 
@@ -15229,9 +15228,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001759":
-  version: 1.0.30001763
-  resolution: "caniuse-lite@npm:1.0.30001763"
-  checksum: 10/66efb73a641fe2612f561d0f32e5b55415b742dfa3b585f69891b2306cddd8f79bc1a1b0eaac42512686ba9cff59c049aaf1a50192eb5bd27d6f6890c934a5ae
+  version: 1.0.30001764
+  resolution: "caniuse-lite@npm:1.0.30001764"
+  checksum: 10/24c6f402902181faa997a6da1cb63410f9376e9e8a33d733121862e7665d200a54d70e551c5626748f78078401c0744496a58d0451fceb8f7fa12498ae12ff20
   languageName: node
   linkType: hard
 
@@ -27137,11 +27136,11 @@ __metadata:
   linkType: hard
 
 "react-hook-form@npm:^7.12.2":
-  version: 7.70.0
-  resolution: "react-hook-form@npm:7.70.0"
+  version: 7.71.0
+  resolution: "react-hook-form@npm:7.71.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/9d861a7a6406006655fae0cf52f2595857c207b2d49a877a976fa0df5f14dc5b7aa46c80ac7cd13e0931a0af8dc7bfb669e72df5c6a3b6bb0036d72383eafa00
+  checksum: 10/7d7bab4e372cb9c6d8177e3b4c6ab1a48c57f5f4b8848044f555dc7582b38a197cf29accb5ead074fe99792bd139f51643d505a4404c0b4540c25e3fa26e98a6
   languageName: node
   linkType: hard
 
