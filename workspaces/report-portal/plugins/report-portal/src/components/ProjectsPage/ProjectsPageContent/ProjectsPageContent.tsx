@@ -178,7 +178,7 @@ export const ProjectsPageContent = (props: { host: string }) => {
       align: 'center',
       width: '5%',
       render: row => (
-        <Tooltip title="View on report portal" disableInteractive>
+        <Tooltip title="View on ReportPortal" disableInteractive>
           <IconButton
             style={{ padding: 0 }}
             href={`https://${host}/ui/#${row.projectName}`}
