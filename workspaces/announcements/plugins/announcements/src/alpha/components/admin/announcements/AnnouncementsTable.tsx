@@ -30,13 +30,9 @@ import {
   TagGroup,
   Text,
 } from '@backstage/ui';
-import {
-  RiEyeLine,
-  RiEditLine,
-  RiDeleteBinLine,
-  RiCircleFill,
-} from '@remixicon/react';
+import { RiEyeLine, RiEditLine, RiDeleteBinLine } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { ActiveInactiveAnnouncementIcon } from './ActiveInactiveIndicator';
 
 const AnnouncementsTableEmptyState = () => {
   const { t } = useAnnouncementsTranslation();
@@ -75,8 +71,6 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
     canDelete,
     editingAnnouncementId,
   } = props;
-  const { t } = useAnnouncementsTranslation();
-
   const isCurrentlyEditing = editingAnnouncementId === announcement.id;
   const isEditDisabled = editingAnnouncementId !== null && !isCurrentlyEditing;
 
@@ -89,15 +83,10 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
     <Row key={announcement.id}>
       <Cell>
         <Flex>
-          <RiCircleFill
-            color={announcement.active ? '#4caf50' : '#f44336'}
-            aria-label={
-              announcement.active
-                ? t('admin.announcementsContent.table.active')
-                : t('admin.announcementsContent.table.inactive')
-            }
-          />
-          <Text variant="body-small">{announcement.title}</Text>
+          <ActiveInactiveAnnouncementIcon announcement={announcement} />
+          <Text variant="body-small" title={announcement.title}>
+            {announcement.title}
+          </Text>
         </Flex>
       </Cell>
       <Cell>
