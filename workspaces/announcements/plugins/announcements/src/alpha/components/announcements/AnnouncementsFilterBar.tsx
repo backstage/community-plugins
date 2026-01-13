@@ -16,7 +16,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { TextField, Grid, Button, Flex, Card, CardBody } from '@backstage/ui';
+import { Grid, Button, Flex, Card, CardBody } from '@backstage/ui';
 import {
   useCategories,
   useTags,
@@ -27,7 +27,11 @@ import {
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 
-import { CategorySelectInput, TagsSelectInput } from '../shared';
+import {
+  AnnouncementsSearchField,
+  CategorySelectInput,
+  TagsSelectInput,
+} from '../shared';
 
 export const AnnouncementsFilters = () => {
   const location = useLocation();
@@ -48,7 +52,12 @@ export const AnnouncementsFilters = () => {
   );
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
-  // Initialize from URL params
+  // Always initialize from URL params
+  useEffect(() => {
+    const searchParam = queryParams.get('search');
+    setSearchQuery(searchParam || '');
+  }, [queryParams]);
+
   useEffect(() => {
     const categorySlug = queryParams.get('category');
     if (categorySlug && categories.length > 0) {
@@ -103,17 +112,10 @@ export const AnnouncementsFilters = () => {
   return (
     <Grid.Root columns={{ xs: '6', md: '6' }}>
       <Grid.Item colSpan={{ xs: '6', md: '2', lg: '3' }}>
-        <TextField
-          label={t('announcementsPage.filter.search')}
-          placeholder={t('announcementsPage.filter.searchPlaceholder')}
-          value={searchQuery}
-          onChange={v => setSearchQuery(v)}
-          size="small"
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              handleApplyFilters();
-            }
-          }}
+        <AnnouncementsSearchField
+          initialSearchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          hideLabel
         />
       </Grid.Item>
 
@@ -121,6 +123,7 @@ export const AnnouncementsFilters = () => {
         <CategorySelectInput
           initialCategory={selectedCategory ?? undefined}
           setCategory={setSelectedCategory}
+          hideLabel
         />
       </Grid.Item>
 
@@ -128,6 +131,7 @@ export const AnnouncementsFilters = () => {
         <TagsSelectInput
           initialTags={selectedTags ?? undefined}
           setTags={setSelectedTags}
+          hideLabel
         />
       </Grid.Item>
 

@@ -24,11 +24,13 @@ import { Tag } from '@backstage-community/plugin-announcements-common';
 type TagsSelectInputProps = {
   initialTags?: Tag[];
   setTags: (tags: Tag[]) => void;
+  hideLabel?: boolean;
 };
 
 export const TagsSelectInput = ({
   setTags,
   initialTags,
+  hideLabel = false,
 }: TagsSelectInputProps) => {
   const { t } = useAnnouncementsTranslation();
 
@@ -86,9 +88,10 @@ export const TagsSelectInput = ({
   return (
     <Select
       name="tags"
-      label={t('announcementForm.tagsInput.label')}
+      label={hideLabel ? null : t('announcementsPage.filter.tags')}
+      placeholder={t('announcementsPage.filter.tagsPlaceholder')}
+      searchPlaceholder={t('announcementsPage.filter.tagsSearchPlaceholder')}
       searchable
-      searchPlaceholder={t('announcementForm.tagsInput.label')}
       selectionMode="multiple"
       value={selectedTagSlugs}
       onChange={handleChange}

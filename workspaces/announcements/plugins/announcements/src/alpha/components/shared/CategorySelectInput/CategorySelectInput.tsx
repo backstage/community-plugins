@@ -24,11 +24,13 @@ import { Category } from '@backstage-community/plugin-announcements-common';
 type CategorySelectInputProps = {
   initialCategory?: Category;
   setCategory: (category: Category) => void;
+  hideLabel?: boolean;
 };
 
 export const CategorySelectInput = ({
   setCategory,
   initialCategory,
+  hideLabel = false,
 }: CategorySelectInputProps) => {
   const { t } = useAnnouncementsTranslation();
 
@@ -73,9 +75,12 @@ export const CategorySelectInput = ({
   return (
     <Select
       name="category"
-      label={t('announcementForm.categoryInput.label')}
+      label={hideLabel ? null : t('announcementsPage.filter.category')}
       searchable
-      searchPlaceholder={t('announcementForm.categoryInput.label')}
+      placeholder={t('announcementsPage.filter.categoryPlaceholder')}
+      searchPlaceholder={t(
+        'announcementsPage.filter.categorySearchPlaceholder',
+      )}
       value={selectedCategory?.slug}
       onChange={handleChange}
       options={selectOptions}
