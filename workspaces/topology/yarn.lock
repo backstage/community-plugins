@@ -23029,13 +23029,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isolated-vm@npm:^6.0.1":
-  version: 6.0.2
-  resolution: "isolated-vm@npm:6.0.2"
+"isolated-vm@npm:^5.0.1":
+  version: 5.0.4
+  resolution: "isolated-vm@npm:5.0.4"
   dependencies:
     node-gyp: "npm:latest"
-    prebuild-install: "npm:^7.1.3"
-  checksum: 10/74e97f13678023bf81141a6fb5c91bc179073a024e7f0a568af60d876b781b15b11e02d4012558e7d583e38a553ccccff70fd02645ed5d7bed2150dc3921fa64
+    prebuild-install: "npm:^7.1.2"
+  checksum: 10/f48e69ecf907645711d0a372cb6adb28cf72499e34b6e008ed597994bfd90d41dd11dc478a41fc21a25aaef424ab5a95a372286e4daf7f61e231d028c0fd64ec
   languageName: node
   linkType: hard
 
@@ -28620,7 +28620,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prebuild-install@npm:^7.1.1, prebuild-install@npm:^7.1.3":
+"prebuild-install@npm:^7.1.1, prebuild-install@npm:^7.1.2":
   version: 7.1.3
   resolution: "prebuild-install@npm:7.1.3"
   dependencies:

@@ -24,6 +24,7 @@
     - [A GitHub check is stuck "waiting for status to be reported".](#a-github-check-is-stuck-waiting-for-status-to-be-reported)
     - [The "API Report" check is failing.](#the-api-report-check-is-failing)
     - [My build is failing with errors about `package.json` metadata.](#my-build-is-failing-with-errors-about-packagejson-metadata)
+    - [My CI workflow is failing with some Node.js versions.](#my-ci-workflow-is-failing-with-some-nodejs-versions)
     - [My CI workflow is failing due to linting errors.](#my-ci-workflow-is-failing-due-to-linting-errors)
     - [How do I create a new plugin?](#how-do-i-create-a-new-plugin)
 
@@ -288,6 +289,18 @@ The `package.json` for your plugin might be missing required fields or have inco
 1.  Go to your plugin's workspace directory (e.g., `workspaces/my-plugin/`).
 2.  Run `yarn backstage-cli repo fix --publish`
 3.  This will check for and automatically fix common `package.json` issues. Commit any changes.
+
+### My CI workflow is failing with some Node.js versions.
+
+The CI workflow runs your tests automatically with all versions configured in your workspace root `package.json`, configured under `engines.node`, like:
+
+```json
+  "engines": {
+    "node": "22 || 24"
+  },
+```
+
+This versions should match the [Node.js versions supported by Backstage](https://backstage.io/docs/overview/versioning-policy/#nodejs-releases).
 
 ### My CI workflow is failing due to linting errors.
 
