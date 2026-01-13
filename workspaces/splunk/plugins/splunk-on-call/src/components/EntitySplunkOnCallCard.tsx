@@ -190,7 +190,7 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
     return <MissingAnnotation />;
   }
 
-  if (!eventsRestEndpoint) {
+  if (!readOnly && !eventsRestEndpoint) {
     return <MissingEventsRestEndpoint />;
   }
 

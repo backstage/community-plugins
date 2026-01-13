@@ -359,9 +359,11 @@ __metadata:
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
+    "@backstage/core-compat-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
@@ -690,7 +692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-compat-api@npm:^0.5.5":
+"@backstage/core-compat-api@backstage:^::backstage=1.46.1&npm=0.5.5, @backstage/core-compat-api@npm:^0.5.5":
   version: 0.5.5
   resolution: "@backstage/core-compat-api@npm:0.5.5"
   dependencies:
@@ -903,7 +905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.13.2":
+"@backstage/frontend-plugin-api@backstage:^::backstage=1.46.1&npm=0.13.2, @backstage/frontend-plugin-api@npm:^0.13.2":
   version: 0.13.2
   resolution: "@backstage/frontend-plugin-api@npm:0.13.2"
   dependencies:

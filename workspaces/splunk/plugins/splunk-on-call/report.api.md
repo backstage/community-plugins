@@ -7,9 +7,10 @@
 
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { ConfigApi } from '@backstage/core-plugin-api';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { ConfigApi } from '@backstage/frontend-plugin-api';
+import { DiscoveryApi } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FetchApi } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { JSX as JSX_3 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
@@ -18,6 +19,7 @@ import { RouteRef } from '@backstage/core-plugin-api';
 export type ClientApiConfig = {
   eventsRestEndpoint: string | null;
   discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
 };
 
 // @public (undocumented)
@@ -122,6 +124,9 @@ export type MessageType =
   | 'RECOVERY';
 
 // @public (undocumented)
+export class MissingEventsRestEndpointError extends Error {}
+
+// @public (undocumented)
 export type OnCall = {
   team?: OnCallTeamResource;
   oncallNow?: OnCallNowResource[];
@@ -202,6 +207,7 @@ export class SplunkOnCallClient implements SplunkOnCallApi {
   static fromConfig(
     configApi: ConfigApi,
     discoveryApi: DiscoveryApi,
+    fetchApi: FetchApi,
   ): SplunkOnCallClient;
   // (undocumented)
   getEscalationPolicies(): Promise<EscalationPolicyInfo[]>;
