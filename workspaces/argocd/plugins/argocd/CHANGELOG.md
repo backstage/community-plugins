@@ -1,5 +1,13 @@
 # @backstage-community/plugin-argocd
 
+## 2.4.1
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+- Updated dependencies [536b783]
+  - @backstage-community/plugin-argocd-common@1.12.1
+
 ## 2.4.0
 
 ### Minor Changes
