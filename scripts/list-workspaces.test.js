@@ -23,6 +23,7 @@ import { listWorkspaces } from './list-workspaces.js';
 describe('list-workspaces', () => {
   const isDirectory = async filename =>
     fs.stat(filename).then(stat => stat.isDirectory());
+
   it('should return only workspace names by default', async () => {
     const result = await listWorkspaces();
 

@@ -164,6 +164,9 @@ jobs:
           yarn playwright install --with-deps chromium chrome
           yarn playwright test
 
+      - name: test scripts
+        run: yarn test:scripts
+
       - name: ensure clean working directory
         run: |
           if files=$(git ls-files --exclude-standard --others --modified) && [[ -z "$files" ]]; then

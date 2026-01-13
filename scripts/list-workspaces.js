@@ -19,7 +19,6 @@ import fs from 'node:fs/promises';
 import { basename, join, resolve, sep } from 'path';
 import * as url from 'url';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 
 /**
@@ -30,7 +29,11 @@ const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
  * @throws {Error} If there are filesystem errors reading the directory
  */
 export async function listWorkspaces(settings = { fullPath: false }) {
-  const workspacePath = resolve(__dirname, '..', 'workspaces');
+  const workspacePath = resolve(
+    url.fileURLToPath(import.meta.url),
+    '..',
+    'workspaces',
+  );
 
   return (
     Array.fromAsync(
