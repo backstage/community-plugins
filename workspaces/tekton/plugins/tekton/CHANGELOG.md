@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.33.1
+
+### Patch Changes
+
+- 6cfc39f: Resolved deprecation warnings
+
 ## 3.33.0
 
 ### Minor Changes
