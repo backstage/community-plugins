@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
 import { Pagination } from '@material-ui/lab';
@@ -28,6 +28,7 @@ type AnnouncementsGridProps = {
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
   hideStartAt?: boolean;
+  searchQuery?: string;
 };
 
 export const AnnouncementsGrid = ({
@@ -38,6 +39,7 @@ export const AnnouncementsGrid = ({
   sortBy,
   order,
   hideStartAt,
+  searchQuery,
 }: AnnouncementsGridProps) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -52,6 +54,11 @@ export const AnnouncementsGrid = ({
     return tagsParam ? tagsParam.split(',') : undefined;
   }, [tagsParam]);
 
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [category, tags, tagsFromUrl, searchQuery]);
+
   const { announcements, loading, error } = useAnnouncements(
     {
       max: maxPerPage,
@@ -64,6 +71,21 @@ export const AnnouncementsGrid = ({
     },
     { dependencies: [maxPerPage, page, category, tagsFromUrl] },
   );
+
+  // Filter announcements by search query (client-side filtering)
+  const filteredAnnouncements = useMemo(() => {
+    if (!searchQuery || searchQuery.trim() === '') {
+      return announcements.results;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    return announcements.results.filter(
+      announcement =>
+        announcement.title.toLowerCase().includes(query) ||
+        announcement.excerpt.toLowerCase().includes(query) ||
+        (announcement.body && announcement.body.toLowerCase().includes(query)),
+    );
+  }, [announcements.results, searchQuery]);
 
   if (loading) {
     return <Skeleton />;
@@ -78,7 +100,7 @@ export const AnnouncementsGrid = ({
   return (
     <>
       <Grid.Root columns={{ xs: '12', md: '2', lg: '3' }}>
-        {announcements.results.map(announcement => (
+        {filteredAnnouncements.map(announcement => (
           <Grid.Item key={announcement.id}>
             <AnnouncementCard
               announcement={announcement}
@@ -87,6 +109,12 @@ export const AnnouncementsGrid = ({
           </Grid.Item>
         ))}
       </Grid.Root>
+
+      {filteredAnnouncements.length === 0 && searchQuery && (
+        <Box>
+          <Text>No announcements found matching your search.</Text>
+        </Box>
+      )}
 
       {announcements.count > 0 && (
         <Flex justify="center" my="10">

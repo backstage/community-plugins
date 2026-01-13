@@ -18,9 +18,10 @@ import {
   useAnnouncementsPermissions,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import { Container, HeaderPage } from '@backstage/ui';
+import { Container, Flex, HeaderPage } from '@backstage/ui';
 
 import { AnnouncementsGrid } from './AnnouncementsGrid';
+import { AnnouncementsFilterBar } from './AnnouncementsFilterBar';
 import { ContextMenu } from './ContextMenu';
 import { MarkdownRendererTypeProps } from '../../../components';
 
@@ -54,15 +55,24 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
       />
 
       <Container>
-        <AnnouncementsGrid
-          maxPerPage={maxPerPage ?? 10}
-          category={category ?? queryParams.get('category') ?? undefined}
-          tags={props.tags}
-          sortBy={sortby ?? 'created_at'}
-          order={order ?? 'desc'}
-          hideStartAt={hideStartAt}
-          active
-        />
+        <Flex direction="column" gap="3">
+          <AnnouncementsFilterBar />
+          <AnnouncementsGrid
+            maxPerPage={maxPerPage ?? 10}
+            category={category ?? queryParams.get('category') ?? undefined}
+            tags={
+              props.tags ??
+              (queryParams.get('tags')
+                ? queryParams.get('tags')!.split(',').filter(Boolean)
+                : undefined)
+            }
+            sortBy={sortby ?? 'created_at'}
+            order={order ?? 'desc'}
+            hideStartAt={hideStartAt}
+            active
+            searchQuery={queryParams.get('search') || undefined}
+          />
+        </Flex>
       </Container>
     </>
   );
