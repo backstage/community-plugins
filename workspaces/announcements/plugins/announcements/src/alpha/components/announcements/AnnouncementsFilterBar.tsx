@@ -111,7 +111,7 @@ export const AnnouncementsFilters = () => {
 
   return (
     <Grid.Root columns={{ xs: '6', md: '6' }}>
-      <Grid.Item colSpan={{ xs: '6', md: '2', lg: '3' }}>
+      <Grid.Item colSpan={{ xs: '6', md: '2' }}>
         <AnnouncementsSearchField
           initialSearchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -135,8 +135,8 @@ export const AnnouncementsFilters = () => {
         />
       </Grid.Item>
 
-      <Grid.Item colSpan={{ xs: '6', md: '6', lg: '1' }}>
-        <Flex align="end" style={{ height: '100%' }}>
+      <Grid.Item colSpan={{ xs: '6', md: '6', lg: '2' }}>
+        <Flex align="end" justify="end">
           <Button
             variant="secondary"
             onClick={handleClearFilters}

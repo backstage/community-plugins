@@ -99,9 +99,9 @@ export const AnnouncementsGrid = ({
 
   return (
     <>
-      <Grid.Root columns={{ xs: '12', md: '2', lg: '3' }}>
+      <Grid.Root columns={{ xs: '1', md: '3' }}>
         {filteredAnnouncements.map(announcement => (
-          <Grid.Item key={announcement.id}>
+          <Grid.Item key={announcement.id} colSpan={{ xs: '1', md: '1' }}>
             <AnnouncementCard
               announcement={announcement}
               hideStartAt={hideStartAt}
@@ -116,15 +116,19 @@ export const AnnouncementsGrid = ({
         </Box>
       )}
 
-      {announcements.count > 0 && (
-        <Flex justify="center" my="10">
-          <Pagination
-            count={Math.ceil(announcements.count / maxPerPage)}
-            page={page}
-            onChange={handleChange}
-          />
-        </Flex>
-      )}
+      {(() => {
+        // When there's a search query, use filtered count; otherwise use API count
+        const totalCount = searchQuery
+          ? filteredAnnouncements.length
+          : announcements.count;
+        const pageCount = Math.ceil(totalCount / maxPerPage);
+
+        return totalCount > 0 && pageCount > 1 ? (
+          <Flex justify="center" my="10">
+            <Pagination count={pageCount} page={page} onChange={handleChange} />
+          </Flex>
+        ) : null;
+      })()}
     </>
   );
 };
