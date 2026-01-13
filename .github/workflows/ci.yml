@@ -93,6 +93,11 @@ jobs:
       - name: prettier
         run: yarn prettier:check
 
+      - name: test scripts
+        # only run for modern versions of Node
+        if: matrix.node-version != '22.x'
+        run: yarn test:scripts
+
       - name: read knipReports flag from bcp.json
         id: bcpKnipReports
         run: |
@@ -163,13 +168,6 @@ jobs:
         run: |
           yarn playwright install --with-deps chromium chrome
           yarn playwright test
-
-      - name: test scripts
-        # only run for modern versions of Node
-        if: matrix.node-version == '24.x'
-        run: |
-          yarn --version
-          yarn test:scripts
 
       - name: ensure clean working directory
         run: |
