@@ -55,7 +55,7 @@
     "@backstage/plugin-permission-common": "^0.9.3",
     "@backstage/plugin-permission-react": "^0.4.38",
     "@backstage/theme": "^0.7.0",
-    "@kubernetes/client-node": "1.1.2",
+    "@kubernetes/client-node": "1.4.0",
     "@mui/icons-material": "5.18.0",
     "@mui/lab": "5.0.0-alpha.177",
     "@mui/material": "^5.15.17",
