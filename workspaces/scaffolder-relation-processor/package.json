@@ -53,9 +53,10 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@backstage/backend-plugin-api": "1.5.0",
-    "@backstage/backend-defaults": "0.13.1",
-    "@backstage/plugin-notifications-node": "0.2.21"
+    "@backstage/plugin-events-node": "0.4.17",
+    "@backstage/plugin-signals-node": "0.1.26",
+    "@backstage/plugin-notifications-node": "0.2.21",
+    "@backstage/plugin-notifications-common": "0.2.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

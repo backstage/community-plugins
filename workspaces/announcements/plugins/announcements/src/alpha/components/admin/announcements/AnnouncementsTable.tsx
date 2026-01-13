@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { DateTime } from 'luxon';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
@@ -62,6 +63,18 @@ const EmptyPlaceholder = () => {
   return <CellText title="-" />;
 };
 
+const isValidEntityRef = (entityRef: string): boolean => {
+  if (!entityRef) {
+    return false;
+  }
+  try {
+    parseEntityRef(entityRef);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
   const {
     announcement,
@@ -80,6 +93,9 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
     return `${text.substring(0, maxLength)}...`;
   };
 
+  const hasValidPublisher =
+    announcement.publisher && isValidEntityRef(announcement.publisher);
+
   return (
     <Row key={announcement.id}>
       <Cell>
@@ -96,9 +112,9 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
         <Text variant="body-small">{truncateText(announcement.body)}</Text>
       </Cell>
 
-      {announcement.publisher ? (
+      {hasValidPublisher ? (
         <Cell>
-          <EntityRefLink entityRef={announcement.publisher} />
+          <EntityRefLink entityRef={parseEntityRef(announcement.publisher)} />
         </Cell>
       ) : (
         <EmptyPlaceholder />

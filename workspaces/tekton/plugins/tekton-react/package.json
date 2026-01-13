@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tekton-react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "Apache-2.0",
   "description": "Web library for the tekton plugin",
   "main": "src/index.ts",
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@backstage/core-plugin-api": "^1.12.0",
-    "@kubernetes/client-node": "1.0.0-rc7",
+    "@kubernetes/client-node": "1.4.0",
     "@material-ui/core": "^4.9.13"
   },
   "peerDependencies": {
