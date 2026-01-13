@@ -165,7 +165,11 @@ jobs:
           yarn playwright test
 
       - name: test scripts
-        run: yarn test:scripts
+        # only run for modern versions of Node
+        if: matrix.node-version == '24.x'
+        run: |
+          yarn --version
+          yarn test:scripts
 
       - name: ensure clean working directory
         run: |
