@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.9.2
+
+### Patch Changes
+
+- 8f77952: Removed shared-react dependency and adopt tekton-react
+
 ## 2.9.1
 
 ### Patch Changes
