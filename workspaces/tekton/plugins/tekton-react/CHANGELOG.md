@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton-react
 
+## 0.1.2
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+
 ## 0.1.1
 
 ### Patch Changes
