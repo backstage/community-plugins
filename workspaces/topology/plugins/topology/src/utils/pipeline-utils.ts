@@ -17,7 +17,7 @@ import {
   PipelineKind,
   PipelineRunKind,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { INSTANCE_LABEL } from '../const';
 import { PipelinesData } from '../types/pipeline';
