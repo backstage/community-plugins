@@ -1,5 +1,12 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.18.1
+
+### Patch Changes
+
+- a6d55dd: Add translation for "Back to admin" button text
+- a065bb2: Add translation support for the message shown when deleting an announcement
+
 ## 0.18.0
 
 ### Minor Changes

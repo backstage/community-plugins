@@ -1,5 +1,21 @@
 # @backstage-community/plugin-announcements
 
+## 1.3.1
+
+### Patch Changes
+
+- c107e8f: For users on the new frontend system:
+
+  - Prevents announcements table from erroring on invalid publisher ref
+  - Fixes the size of the active status indicator and prevents it from stretching next to a smaller announcement title
+
+- a065bb2: The announcements table in the admin portal has been rewritten with `@backstage/ui` for users on the new frontend system. Users on the existing frontend system will not see any changes.
+- a6d55dd: Update the back to announcements button to recognize whether to take you back to list of announcements or admin portal depending on where you came from.
+- cd38562: The announcements page in the new frontend system now shows only active announcements by default. For the existing frontend system, the `hideInactive` prop must still be passed to the `AnnouncementsPage` component to hide inactive announcements.
+- Updated dependencies [a6d55dd]
+- Updated dependencies [a065bb2]
+  - @backstage-community/plugin-announcements-react@0.18.1
+
 ## 1.3.0
 
 ### Minor Changes
