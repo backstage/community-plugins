@@ -17,7 +17,7 @@ import {
   PipelineKind,
   PipelineRunKind,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 export type PipelinesData = {
   pipelines: PipelineKind[];
