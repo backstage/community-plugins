@@ -96,7 +96,8 @@ export const AnnouncementsContent = ({
   };
 
   const onPreviewClick = (announcement: Announcement) => {
-    navigate(viewAnnouncementLink?.({ id: announcement.id }) ?? '');
+    const link = viewAnnouncementLink?.({ id: announcement.id }) ?? '';
+    navigate(`${link}?from=admin`);
   };
 
   const onEditClick = (announcement: Announcement) => {
