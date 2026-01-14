@@ -21,7 +21,6 @@
   "dependencies": {
     "@backstage-community/plugin-announcements": "workspace:^",
     "@backstage/app-defaults": "^1.7.3",
-    "@backstage/catalog-model": "^1.7.6",
     "@backstage/cli": "^0.35.1",
     "@backstage/core-app-api": "^1.19.3",
     "@backstage/core-components": "^0.18.4",
@@ -29,14 +28,8 @@
     "@backstage/integration-react": "^1.2.13",
     "@backstage/plugin-api-docs": "^0.13.2",
     "@backstage/plugin-catalog": "^1.32.1",
-    "@backstage/plugin-catalog-common": "^1.1.7",
     "@backstage/plugin-catalog-graph": "^0.5.4",
-    "@backstage/plugin-catalog-import": "^0.13.8",
-    "@backstage/plugin-catalog-react": "^1.21.4",
-    "@backstage/plugin-home": "^0.8.15",
     "@backstage/plugin-notifications": "^0.5.12",
-    "@backstage/plugin-org": "^0.6.47",
-    "@backstage/plugin-permission-react": "^0.4.39",
     "@backstage/plugin-search": "^1.5.1",
     "@backstage/plugin-search-react": "^1.10.1",
     "@backstage/plugin-signals": "^0.0.26",
@@ -47,18 +40,12 @@
     "@material-ui/icons": "^4.9.1",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
-    "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@backstage/test-utils": "^1.7.14",
-    "@playwright/test": "^1.32.3",
-    "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.0.0",
-    "@types/react-dom": "*",
-    "cross-env": "^10.0.0"
+    "@types/react-dom": "*"
   },
   "browserslist": {
     "production": [
