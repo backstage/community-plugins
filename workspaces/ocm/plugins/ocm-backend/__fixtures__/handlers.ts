@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rest } from 'msw';
+import { RequestHandler, rest } from 'msw';
 
 const LOCAL_ADDR = 'https://example.com';
 
-export const handlers = [
+export const handlers: Array<RequestHandler> = [
   rest.get(
     `${LOCAL_ADDR}/apis/cluster.open-cluster-management.io/v1/managedclusters`,
     (_, res, ctx) => {
