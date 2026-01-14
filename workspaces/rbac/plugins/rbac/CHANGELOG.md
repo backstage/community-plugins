@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.47.2
+
+### Patch Changes
+
+- 64d31dd: Add translation for "Permission policies ({{count}})" in ReviewStep and all locale files (en, de, es, fr, it).
+
+## 1.47.1
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
 ## 1.47.0
 
 ### Minor Changes

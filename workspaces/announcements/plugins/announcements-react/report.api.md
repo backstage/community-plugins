@@ -171,6 +171,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.createButton': 'Create Announcement';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
+    readonly 'admin.announcementsContent.deletedMessage': 'Announcement deleted.';
     readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.categoriesContent.table.title': 'Title';
     readonly 'admin.categoriesContent.table.actions': 'Actions';
@@ -188,6 +189,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.tagsContent.table.addTooltip': 'Add';
     readonly 'admin.tagsContent.table.tagDeleted': 'Tag deleted.';
     readonly 'admin.tagsContent.table.noTagsFound': 'No tags found.';
+    readonly 'admin.tagsContent.errors.by': 'By';
+    readonly 'admin.tagsContent.errors.announcements': 'Announcements';
     readonly 'admin.tagsContent.errors.alreadyExists': 'A tag with this name already exists.';
     readonly 'admin.tagsContent.createdMessage': 'created';
     readonly 'admin.tagsContent.cancelButton': 'Cancel';
@@ -207,7 +210,6 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
-    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
     readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
@@ -272,6 +274,12 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
     readonly 'editAnnouncementPage.updatedMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
+    readonly 'viewAnnouncementPage.by': 'By';
+    readonly 'viewAnnouncementPage.announcements': 'Announcements';
+    readonly 'viewAnnouncementPage.backToAnnouncements': 'Back to announcements';
+    readonly 'viewAnnouncementPage.backToAdmin': 'Back to admin';
+    readonly 'viewAnnouncementPage.notFound': 'Announcement not found';
+    readonly 'viewAnnouncementPage.tagsAriaLabel': 'Announcement Tags';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';
     readonly 'newCategoryDialog.title': 'Title';
     readonly 'newCategoryDialog.newCategory': 'New category';
@@ -321,7 +329,6 @@ export const useAnnouncementsTranslation: () => any;
 export const useCatalogEntities: (
   refs: string[] | undefined,
   searchTerm?: string,
-  limit?: number,
   kind?: string | undefined,
 ) => {
   entities: Entity[];

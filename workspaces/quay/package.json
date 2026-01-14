@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -38,9 +38,9 @@
     "directory": "workspaces/quay"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
+    "@backstage/cli": "^0.35.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.0",
+    "@backstage/repo-tools": "^0.16.1",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
     "@playwright/test": "^1.56.1",
@@ -51,7 +51,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "refractor@npm:3.6.0/prismjs": "^1.30.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

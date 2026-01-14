@@ -51,9 +51,6 @@ export const announcementsTranslationRef = createTranslationRef({
         scheduled: 'Scheduled ',
         today: 'Today',
       },
-      grid: {
-        announcementDeleted: 'Announcement deleted.',
-      },
       contextMenu: {
         admin: 'Manage announcements',
       },
@@ -142,6 +139,14 @@ export const announcementsTranslationRef = createTranslationRef({
       notFoundMessage: 'Unable to find announcement',
       edit: 'Edit',
     },
+    viewAnnouncementPage: {
+      backToAnnouncements: 'Back to announcements',
+      backToAdmin: 'Back to admin',
+      notFound: 'Announcement not found',
+      tagsAriaLabel: 'Announcement Tags',
+      by: 'By',
+      announcements: 'Announcements',
+    },
     newAnnouncementBanner: {
       markAsSeen: 'Mark as seen',
     },
@@ -165,6 +170,7 @@ export const announcementsTranslationRef = createTranslationRef({
         alertMessageWithNewCategory: 'with new category',
         cancelButton: 'Cancel',
         createButton: 'Create Announcement',
+        deletedMessage: 'Announcement deleted.',
         announcements: 'Announcements',
         noAnnouncementsFound: 'No announcements found',
         table: {
@@ -211,6 +217,10 @@ export const announcementsTranslationRef = createTranslationRef({
           noTagsFound: 'No tags found.',
         },
         errors: {
+          /** todo: could be deduped with announcementsPage.card.by */
+          by: 'By',
+          /** todo: could be deduped with announcementsCard.announcements, admin.adminPortal.announcementsLabels, admin.announcementsContent.announcements */
+          announcements: 'Announcements',
           alreadyExists: 'A tag with this name already exists.',
         },
       },

@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 2.9.3
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+
+## 2.9.2
+
+### Patch Changes
+
+- 8f77952: Removed shared-react dependency and adopt tekton-react
+
 ## 2.9.1
 
 ### Patch Changes

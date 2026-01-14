@@ -51,7 +51,7 @@ export const ProjectsPage = (props: { themeId?: string }) => {
         title={
           <>
             <Breadcrumbs style={{ marginBottom: '8px' }}>
-              <Link to={rootPage()}>Report Portal</Link>
+              <Link to={rootPage()}>ReportPortal</Link>
               {hostName}
             </Breadcrumbs>
             <div>{hostName}</div>
@@ -64,7 +64,7 @@ export const ProjectsPage = (props: { themeId?: string }) => {
           style={{ marginRight: '16px' }}
           to={`https://${hostName}`}
         >
-          Report Portal
+          ReportPortal
         </StyledButton>
       </Header>
       <Content>

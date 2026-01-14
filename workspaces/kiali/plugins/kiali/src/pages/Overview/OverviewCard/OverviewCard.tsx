@@ -38,6 +38,37 @@ import { NamespaceLabels } from './NamespaceLabels';
 import { NamespaceStatus } from './NamespaceStatus';
 import { OverviewCardSparklineCharts } from './OverviewCardSparklineCharts';
 
+const compactCardContentStyle: React.CSSProperties = {
+  paddingTop: 8,
+  paddingBottom: 8,
+};
+const leftColumnStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 6,
+};
+const inlineRowStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 6,
+  flexWrap: 'nowrap',
+  whiteSpace: 'nowrap',
+  minWidth: 0,
+  textAlign: 'left',
+};
+const inlineLabelStyle: React.CSSProperties = {
+  flex: '0 0 125px',
+  whiteSpace: 'nowrap',
+};
+const inlineLabelWithIconStyle: React.CSSProperties = {
+  ...inlineLabelStyle,
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 6,
+  minWidth: 0,
+};
+
 type OverviewCardProps = {
   namespace: NamespaceInfo;
   entity?: boolean;
@@ -123,9 +154,12 @@ export const OverviewCard = (props: OverviewCardProps) => {
   };
 
   return (
-    <Card data-test={`overview-card-${props.namespace.name}`}>
+    <Card
+      data-test={`overview-card-${props.namespace.name}`}
+      style={{ height: '100%' }}
+    >
       {!props.entity && <NamespaceHeader {...props} />}
-      <CardContent>
+      <CardContent style={compactCardContentStyle}>
         {!props.entity && isMultiCluster && props.namespace.cluster && (
           <>
             <PFBadge badge={PFBadges.Cluster} position="right" />
@@ -135,24 +169,36 @@ export const OverviewCard = (props: OverviewCardProps) => {
         <Grid container>
           <Grid item xs={3}>
             {!props.entity && (
-              <>
-                <NamespaceLabels labels={props.namespace.labels} />
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ display: 'inline-block', width: '125px' }}>
-                    Istio config
-                  </div>
-                  {props.namespace.tlsStatus && (
-                    <span>
-                      <NamespaceMTLSStatus
-                        status={props.namespace.tlsStatus!.status}
-                      />
-                    </span>
-                  )}
-                  {props.istioAPIEnabled
-                    ? renderIstioConfigStatus(props.namespace)
-                    : 'N/A'}
+              <div style={leftColumnStyle}>
+                <div style={inlineRowStyle}>
+                  <NamespaceLabels labels={props.namespace.labels} />
                 </div>
-              </>
+                <div style={inlineRowStyle}>
+                  <span style={inlineLabelWithIconStyle}>
+                    <span
+                      style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      Istio config
+                    </span>
+                    {props.namespace.tlsStatus && (
+                      <span
+                        style={{ display: 'inline-flex', alignItems: 'center' }}
+                      >
+                        <NamespaceMTLSStatus
+                          status={props.namespace.tlsStatus!.status}
+                        />
+                      </span>
+                    )}
+                  </span>
+                  <span
+                    style={{ display: 'inline-flex', alignItems: 'center' }}
+                  >
+                    {props.istioAPIEnabled
+                      ? renderIstioConfigStatus(props.namespace)
+                      : 'N/A'}
+                  </span>
+                </div>
+              </div>
             )}
             {!props.entity && <NamespaceStatus {...props} />}
             {isIstioSystem && (
@@ -162,7 +208,7 @@ export const OverviewCard = (props: OverviewCardProps) => {
               </>
             )}
           </Grid>
-          <Grid item xs={isIstioSystem ? 9 : 12}>
+          <Grid item xs={12}>
             {renderCharts()}
           </Grid>
         </Grid>

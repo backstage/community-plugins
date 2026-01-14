@@ -37,11 +37,25 @@ export interface Config {
         identity?: 'disabled' | 'optional' | 'required';
 
         /**
-         * Controls if the hashing of userId should be disabled
+         * Sends the identity as plain userId instead of hashing it
          *
          * @visibility frontend
          */
         sendPlainUserId?: boolean;
+
+        /**
+         * Enables extended tracking capabilities (navigate events, buffering,…)
+         *
+         * @visibility frontend
+         */
+        enhancedTracking?: boolean;
+
+        /**
+         * Defers the initial page view until identity is available
+         *
+         * @visibility frontend
+         */
+        deferInitialPageView?: boolean;
       };
     };
   };

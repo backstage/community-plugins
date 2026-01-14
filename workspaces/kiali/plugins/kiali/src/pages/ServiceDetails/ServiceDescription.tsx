@@ -66,7 +66,7 @@ const infoStyle = kialiStyle({
 
 const healthIconStyle = kialiStyle({
   marginLeft: '0.5rem',
-  verticalAlign: '-0.075rem',
+  verticalAlign: '+0.275rem',
 });
 
 const additionalItemStyle = kialiStyle({

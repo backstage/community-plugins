@@ -4,18 +4,13 @@
 
 | Name         | Location          | Severity |
 | :----------- | :---------------- | :------- |
-| style-inject | package.json:60:6 | error    |
-| victory      | package.json:61:6 | error    |
+| style-inject | package.json:73:6 | error    |
+| victory      | package.json:74:6 | error    |
 
-## Unused devDependencies (2)
+## Unlisted dependencies (3)
 
-| Name                         | Location          | Severity |
-| :--------------------------- | :---------------- | :------- |
-| @testing-library/react-hooks | package.json:76:6 | error    |
-| @backstage/core-app-api      | package.json:70:6 | error    |
-
-## Unlisted dependencies (1)
-
-| Name       | Location                             | Severity |
-| :--------- | :----------------------------------- | :------- |
-| mobx-react | src/components/Graph/EdgeConnect.tsx | error    |
+| Name              | Location                                    | Severity |
+| :---------------- | :------------------------------------------ | :------- |
+| @material-ui/core | src/components/common/StatusIconAndText.tsx | error    |
+| mobx-react        | src/components/Graph/EdgeConnect.tsx        | error    |
+| @material-ui/core | src/components/common/Status.tsx            | error    |

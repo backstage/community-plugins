@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 5.12.2
+
+### Patch Changes
+
+- ef80f32: Updated dependency `@openapitools/openapi-generator-cli` to `2.27.0`.
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+
+## 5.12.1
+
+### Patch Changes
+
+- f52d810: Updated dependency `@openapitools/openapi-generator-cli` to `2.26.0`.
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+
 ## 5.12.0
 
 ### Minor Changes

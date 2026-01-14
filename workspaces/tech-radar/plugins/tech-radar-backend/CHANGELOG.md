@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-radar-backend
 
+## 1.13.0
+
+### Minor Changes
+
+- 2962999: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+- Updated dependencies [2962999]
+  - @backstage-community/plugin-tech-radar-common@1.13.0
+
 ## 1.12.0
 
 ### Minor Changes

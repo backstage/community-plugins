@@ -49,3 +49,62 @@ export const DEFAULT_NOTIFICATION_DESCRIPTION = `The template used to create ${E
  * @public
  */
 export const DEFAULT_NOTIFICATION_ENABLED = false;
+
+/**
+ * Default pull request creation enabled
+ *
+ * @public
+ */
+export const DEFAULT_PR_ENABLED = false;
+
+/**
+ * Template variable name for PR link in notification messages
+ *
+ * @public
+ */
+export const PR_LINK_TEMPLATE_VAR = '$PR_LINK';
+
+/**
+ * Default template update notification title when PR is created
+ *
+ * @public
+ */
+export const DEFAULT_NOTIFICATION_TITLE_WITH_PR = `${ENTITY_DISPLAY_NAME_TEMPLATE_VAR} has a template update PR ready`;
+
+/**
+ * Default template update notification description when PR is created
+ *
+ * @public
+ */
+export const DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR = `The template used to create ${ENTITY_DISPLAY_NAME_TEMPLATE_VAR} has been updated to a new version. A pull request has been created to sync the changes: ${PR_LINK_TEMPLATE_VAR}`;
+
+/**
+ * Prefix for notification description when PR creation fails
+ *
+ * @public
+ */
+export const PR_CREATION_FAILED_PREFIX = 'Failed to create template update PR';
+
+/**
+ * Documentation URL for the Template Update PRs feature
+ *
+ * @public
+ */
+export const TEMPLATE_UPDATE_PRS_DOCS_URL =
+  'https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-relation-processor/plugins/catalog-backend-module-scaffolder-relation-processor/docs/templateUpdatePRs.md';
+
+/**
+ * A relation from a scaffolder template entity to the entity it generated.
+ * Reverse direction of {@link RELATION_SCAFFOLDED_FROM}
+ *
+ * @public
+ */
+export const RELATION_SCAFFOLDER_OF = 'scaffolderOf';
+
+/**
+ * A relation of an entity generated from a scaffolder template entity
+ * Reverse direction of {@link RELATION_SCAFFOLDER_OF}
+ *
+ * @public
+ */
+export const RELATION_SCAFFOLDED_FROM = 'scaffoldedFrom';

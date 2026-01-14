@@ -1,5 +1,22 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.24.1
+
+### Patch Changes
+
+- 2d46e09: Added an icon to the `azureDevOpsWikiArticleSearchResultListItem` used by the New Frontend System so that the results look better and easier to identify where they come from.
+
+## 0.24.0
+
+### Minor Changes
+
+- f9618c9: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [f9618c9]
+  - @backstage-community/plugin-azure-devops-common@0.18.0
+
 ## 0.23.0
 
 ### Minor Changes

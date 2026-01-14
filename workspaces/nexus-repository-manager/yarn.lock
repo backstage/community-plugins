@@ -714,7 +714,7 @@ __metadata:
     "@backstage/test-utils": "npm:^1.7.13"
     "@backstage/theme": "npm:^0.7.0"
     "@backstage/ui": "npm:^0.9.0"
-    "@hey-api/openapi-ts": "npm:0.89.0"
+    "@hey-api/openapi-ts": "npm:0.90.2"
     "@material-ui/core": "npm:^4.9.13"
     "@playwright/test": "npm:^1.57.0"
     "@testing-library/jest-dom": "npm:6.9.1"
@@ -2552,15 +2552,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/codegen-core@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@hey-api/codegen-core@npm:0.4.0"
+"@hey-api/codegen-core@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@hey-api/codegen-core@npm:0.5.2"
   dependencies:
     ansi-colors: "npm:4.1.3"
     color-support: "npm:1.1.3"
   peerDependencies:
     typescript: ">=5.5.3"
-  checksum: 10/f94bf27cc4181347b96e562289d1e291bd900b5de02a368f400acadb1a42d2cf891574fb95d1fbdd53f913c33d2e16a7ae3059a94a704f966432dbf1820d56ef
+  checksum: 10/3843a58b3c533bdbd17107c0467055d85f69094d54a194bef2044ef62e41b67f6dd819683db884093da74db77f2a39e6ec6723a250fc06c5e651b6b70c036d37
   languageName: node
   linkType: hard
 
@@ -2576,23 +2576,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.89.0":
-  version: 0.89.0
-  resolution: "@hey-api/openapi-ts@npm:0.89.0"
+"@hey-api/openapi-ts@npm:0.90.2":
+  version: 0.90.2
+  resolution: "@hey-api/openapi-ts@npm:0.90.2"
   dependencies:
-    "@hey-api/codegen-core": "npm:^0.4.0"
+    "@hey-api/codegen-core": "npm:^0.5.2"
     "@hey-api/json-schema-ref-parser": "npm:1.2.2"
     ansi-colors: "npm:4.1.3"
-    c12: "npm:3.3.2"
+    c12: "npm:3.3.3"
     color-support: "npm:1.1.3"
     commander: "npm:14.0.2"
     open: "npm:11.0.0"
-    semver: "npm:7.7.2"
+    semver: "npm:7.7.3"
   peerDependencies:
     typescript: ">=5.5.3"
   bin:
     openapi-ts: bin/run.js
-  checksum: 10/cb376044e60b4a542bf9672dde7a0b071dcbe854583ad43dbb1982bd510a1c0bd022d9d580c426c4922d83fc61bf9212b2a0f96e6d1d4a11d325d7fe944ae486
+  checksum: 10/41e74327886d5ab9d6822ca996f4b66d3a686f7918e24b694a7191f3b748a6ff8b508225e3b2ec98a0379e9c9d700f3093d8762007c7423273a9565217c02210
   languageName: node
   linkType: hard
 
@@ -9106,11 +9106,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c12@npm:3.3.2":
-  version: 3.3.2
-  resolution: "c12@npm:3.3.2"
+"c12@npm:3.3.3":
+  version: 3.3.3
+  resolution: "c12@npm:3.3.3"
   dependencies:
-    chokidar: "npm:^4.0.3"
+    chokidar: "npm:^5.0.0"
     confbox: "npm:^0.2.2"
     defu: "npm:^6.1.4"
     dotenv: "npm:^17.2.3"
@@ -9127,7 +9127,7 @@ __metadata:
   peerDependenciesMeta:
     magicast:
       optional: true
-  checksum: 10/bcc428b0dfd7a0605681b613158408460875820492a2277cfda98c9cc9d4510de1dd273c12ff4b6a36ed1a0e1900b7bd6a11d72c06d61f0ec400735f61871553
+  checksum: 10/058026b87656fba996ab9f05d2f5c037f057a314df2ea7410bd812a6eb5881faa585485a337cbbc291a4c0e90c1ecbe5ae704104db72005e9c41c6373414b990
   languageName: node
   linkType: hard
 
@@ -9382,12 +9382,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "chokidar@npm:4.0.3"
+"chokidar@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "chokidar@npm:5.0.0"
   dependencies:
-    readdirp: "npm:^4.0.1"
-  checksum: 10/bf2a575ea5596000e88f5db95461a9d59ad2047e939d5a4aac59dd472d126be8f1c1ff3c7654b477cf532d18f42a97279ef80ee847972fd2a25410bf00b80b59
+    readdirp: "npm:^5.0.0"
+  checksum: 10/a1c2a4ee6ee81ba6409712c295a47be055fb9de1186dfbab33c1e82f28619de962ba02fc5f9d433daaedc96c35747460d8b2079ac2907de2c95e3f7cce913113
   languageName: node
   linkType: hard
 
@@ -19393,10 +19393,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readdirp@npm:^4.0.1":
-  version: 4.0.2
-  resolution: "readdirp@npm:4.0.2"
-  checksum: 10/4ef93103307c7d5e42e78ecf201db58c984c4d66882a27c956250478b49c2444b1ff6aea8ce0f5e4157b2c07ce2fe870ad16c92ebd7c6ff30391ded6e42b9873
+"readdirp@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "readdirp@npm:5.0.0"
+  checksum: 10/a17a591b51d8b912083660df159e8bd17305dc1a9ef27c869c818bd95ff59e3a6496f97e91e724ef433e789d559d24e39496ea1698822eb5719606dc9c1a923d
   languageName: node
   linkType: hard
 
@@ -20161,12 +20161,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.2, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
-  version: 7.7.2
-  resolution: "semver@npm:7.7.2"
+"semver@npm:7.7.3, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
+  version: 7.7.3
+  resolution: "semver@npm:7.7.3"
   bin:
     semver: bin/semver.js
-  checksum: 10/7a24cffcaa13f53c09ce55e05efe25cd41328730b2308678624f8b9f5fc3093fc4d189f47950f0b811ff8f3c3039c24a2c36717ba7961615c682045bf03e1dda
+  checksum: 10/8dbc3168e057a38fc322af909c7f5617483c50caddba135439ff09a754b20bdd6482a5123ff543dad4affa488ecf46ec5fb56d61312ad20bb140199b88dfaea9
   languageName: node
   linkType: hard
 

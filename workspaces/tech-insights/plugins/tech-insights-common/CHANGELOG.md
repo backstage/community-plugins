@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.8.0
+
+### Minor Changes
+
+- e8743d9: Backstage version bump to v1.46.2
+
 ## 0.7.1
 
 ### Patch Changes

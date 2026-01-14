@@ -17,4 +17,7 @@ export * from './AnnouncementsTimeline';
 export { AdminPortal, AnnouncementsContent } from './Admin';
 export type { AnnouncementsTimelineProps } from './AnnouncementsTimeline';
 export type { AnnouncementSearchResultProps } from './AnnouncementSearchResultListItem';
-export type { MarkdownRendererTypeProps } from './MarkdownRenderer';
+export {
+  MarkdownRenderer,
+  type MarkdownRendererTypeProps,
+} from './MarkdownRenderer';

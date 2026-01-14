@@ -105,7 +105,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           <SidebarItem
             icon={ReportPortalIcon as IconComponent}
             to="report-portal"
-            text="Report Portal"
+            text="ReportPortal"
           />
         </SidebarScrollWrapper>
       </SidebarGroup>
