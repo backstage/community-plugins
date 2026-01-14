@@ -40,6 +40,7 @@ export const announcementsTranslationRef = createTranslationRef({
       tagsLabel: 'Tags',
     },
     announcementsPage: {
+      announcements: 'Announcements',
       newAnnouncement: 'New announcement',
       genericNew: 'New',
       card: {
@@ -53,6 +54,15 @@ export const announcementsTranslationRef = createTranslationRef({
       },
       contextMenu: {
         admin: 'Manage announcements',
+      },
+      filter: {
+        category: 'Category',
+        categoryPlaceholder: 'Select a category',
+        categorySearchPlaceholder: 'Search categories...',
+        tags: 'Tags',
+        tagsPlaceholder: 'Select tags',
+        tagsSearchPlaceholder: 'Search tags...',
+        clear: 'Clear Filters',
       },
     },
     confirmDeleteDialog: {
