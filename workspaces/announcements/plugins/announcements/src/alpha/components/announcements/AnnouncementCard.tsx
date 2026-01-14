@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { DateTime } from 'luxon';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   Box,
@@ -26,12 +24,11 @@ import {
   CardHeader,
   CardBody,
   Link,
-  Tag,
-  TagGroup,
   Flex,
 } from '@backstage/ui';
 import { formatAnnouncementStartTime } from '../../../components/utils/announcementDateUtils';
-import { rootRouteRef, announcementViewRouteRef } from '../../../routes';
+import { announcementViewRouteRef } from '../../../routes';
+import { AnnouncementPublishedBy, AnnouncementTags } from '../shared';
 
 type AnnouncementCardProps = {
   announcement: Announcement;
@@ -42,33 +39,12 @@ export const AnnouncementCard = ({
   announcement,
   hideStartAt,
 }: AnnouncementCardProps) => {
-  const announcementsLink = useRouteRef(rootRouteRef);
-  const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const { t } = useAnnouncementsTranslation();
+  const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
 
   const subTitle = (
     <Box mt="1">
-      <Text variant="body-small" as="span">
-        {t('announcementsPage.card.by')}{' '}
-        <EntityRefLink
-          entityRef={announcement.on_behalf_of || announcement.publisher}
-          hideIcon
-        />
-        {announcement.category && (
-          <>
-            {' '}
-            {t('announcementsPage.card.in')}{' '}
-            <Link
-              href={`${announcementsLink()}?category=${
-                announcement.category.slug
-              }`}
-            >
-              {announcement.category.title}
-            </Link>
-          </>
-        )}
-        , {DateTime.fromISO(announcement.created_at).toRelative()}
-      </Text>
+      <AnnouncementPublishedBy announcement={announcement} />
 
       {!hideStartAt && (
         <Text variant="body-x-small" as="p">
@@ -104,19 +80,7 @@ export const AnnouncementCard = ({
       </CardBody>
 
       <CardFooter>
-        {announcement.tags && announcement.tags.length > 0 && (
-          <TagGroup aria-label="Announcement Tags">
-            {announcement.tags.map(tag => (
-              <Tag
-                key={tag.slug}
-                size="small"
-                href={`${announcementsLink()}?tags=${tag.slug}`}
-              >
-                {tag.title}
-              </Tag>
-            ))}
-          </TagGroup>
-        )}
+        <AnnouncementTags tags={announcement.tags} />
       </CardFooter>
     </Card>
   );
