@@ -120,7 +120,7 @@ describe('CategorySelectInput', () => {
     await waitFor(() => {
       const select = screen.getByRole('button', { name: /Select a category/i });
       expect(select).toBeInTheDocument();
-      expect(select).not.toBeDisabled();
+      expect(select).toBeDisabled();
     });
   });
 
@@ -256,7 +256,7 @@ describe('CategorySelectInput', () => {
     await waitFor(() => {
       const select = screen.getByRole('button', { name: /Select a category/i });
       expect(select).toBeInTheDocument();
-      expect(select).not.toBeDisabled();
+      expect(select).toBeDisabled();
     });
   });
 });

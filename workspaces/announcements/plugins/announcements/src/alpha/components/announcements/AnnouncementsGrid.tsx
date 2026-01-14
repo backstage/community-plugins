@@ -47,6 +47,7 @@ export const AnnouncementsGrid = ({
     setPage(value);
   };
 
+  const categoryParam = queryParams.get('category');
   const tagsParam = queryParams.get('tags');
   const tagsFromUrl = useMemo(() => {
     return tagsParam ? tagsParam.split(',') : undefined;
@@ -93,7 +94,13 @@ export const AnnouncementsGrid = ({
             <Grid.Item colSpan="12">
               <Card>
                 <CardBody>
-                  <Text>No announcements found with the selected filters.</Text>
+                  {categoryParam || tagsParam ? (
+                    <Text>
+                      No announcements found with the selected filters.
+                    </Text>
+                  ) : (
+                    <Text>No announcements found.</Text>
+                  )}
                 </CardBody>
               </Card>
             </Grid.Item>

@@ -119,7 +119,7 @@ describe('TagsSelectInput', () => {
     await waitFor(() => {
       const select = screen.getByRole('button', { name: /Select tags/i });
       expect(select).toBeInTheDocument();
-      expect(select).not.toBeDisabled();
+      expect(select).toBeDisabled();
     });
   });
 
@@ -210,7 +210,7 @@ describe('TagsSelectInput', () => {
     await waitFor(() => {
       const select = screen.getByRole('button', { name: /Select tags/i });
       expect(select).toBeInTheDocument();
-      expect(select).not.toBeDisabled();
+      expect(select).toBeDisabled();
     });
   });
 

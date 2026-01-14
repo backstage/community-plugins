@@ -97,7 +97,7 @@ export const TagsSelectInput = ({
       value={selectedTagSlugs}
       onChange={handleChange}
       options={selectOptions}
-      isDisabled={tagsLoading}
+      isDisabled={tagsLoading || selectOptions.length === 0}
     />
   );
 };

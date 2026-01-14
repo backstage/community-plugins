@@ -94,7 +94,7 @@ export const CategorySelectInput = ({
       value={selectedCategory?.slug ?? null}
       onChange={handleChange}
       options={selectOptions}
-      isDisabled={categoriesLoading}
+      isDisabled={categoriesLoading || selectOptions.length === 0}
     />
   );
 };
