@@ -28,7 +28,7 @@ export type RequireKubernetesPermissionProps = {
 
 export function RequireKubernetesReadPermissions(
   props: RequireKubernetesPermissionProps,
-): JSX.Element | null {
+) {
   const kubernetesClustersReadPermissionResult = usePermission({
     permission: kubernetesClustersReadPermission,
   });
