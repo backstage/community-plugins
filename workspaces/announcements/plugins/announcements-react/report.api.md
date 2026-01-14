@@ -288,6 +288,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'viewAnnouncementPage.by': 'By';
     readonly 'viewAnnouncementPage.announcements': 'Announcements';
     readonly 'viewAnnouncementPage.backToAnnouncements': 'Back to announcements';
+    readonly 'viewAnnouncementPage.backToAdmin': 'Back to admin';
     readonly 'viewAnnouncementPage.notFound': 'Announcement not found';
     readonly 'viewAnnouncementPage.tagsAriaLabel': 'Announcement Tags';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';

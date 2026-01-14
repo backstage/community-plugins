@@ -1,5 +1,16 @@
 # @backstage-community/plugin-npm
 
+## 1.16.0
+
+### Minor Changes
+
+- d4dad74: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [d4dad74]
+  - @backstage-community/plugin-npm-common@1.16.0
+
 ## 1.15.0
 
 ### Minor Changes
