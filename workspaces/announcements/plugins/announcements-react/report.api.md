@@ -210,7 +210,18 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
+    readonly 'announcementsPage.filter.clear': 'Clear Filters';
+    readonly 'announcementsPage.filter.apply': 'Apply Filters';
+    readonly 'announcementsPage.filter.tags': 'Tags';
+    readonly 'announcementsPage.filter.announcements': 'Announcements';
+    readonly 'announcementsPage.filter.category': 'Category';
+    readonly 'announcementsPage.filter.announcementsSearchPlaceholder': 'Search announcements...';
+    readonly 'announcementsPage.filter.categoryPlaceholder': 'Select a category';
+    readonly 'announcementsPage.filter.categorySearchPlaceholder': 'Search categories...';
+    readonly 'announcementsPage.filter.tagsPlaceholder': 'Select tags';
+    readonly 'announcementsPage.filter.tagsSearchPlaceholder': 'Search tags...';
     readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
+    readonly 'announcementsPage.announcements': 'Announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';

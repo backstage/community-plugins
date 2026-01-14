@@ -70,7 +70,6 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
             order={order ?? 'desc'}
             hideStartAt={hideStartAt}
             active
-            searchQuery={queryParams.get('search') || undefined}
           />
         </Flex>
       </Container>

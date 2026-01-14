@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Grid, Button, Flex, Card, CardBody } from '@backstage/ui';
+import { useMemo } from 'react';
+import { Button, Flex, Text } from '@backstage/ui';
 import {
   useCategories,
   useTags,
@@ -27,116 +26,87 @@ import {
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 
-import {
-  AnnouncementsSearchField,
-  CategorySelectInput,
-  TagsSelectInput,
-} from '../shared';
+import { CategorySelectInput, TagsSelectInput } from '../shared';
+import { useSearchParams } from 'react-router-dom';
 
 export const AnnouncementsFilters = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const queryParams = useMemo(
-    () => new URLSearchParams(location.search),
-    [location.search],
-  );
   const { t } = useAnnouncementsTranslation();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { categories } = useCategories();
   const { tags } = useTags();
 
-  const [searchQuery, setSearchQuery] = useState(
-    queryParams.get('search') || '',
-  );
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-
-  // Always initialize from URL params
-  useEffect(() => {
-    const searchParam = queryParams.get('search');
-    setSearchQuery(searchParam || '');
-  }, [queryParams]);
-
-  useEffect(() => {
-    const categorySlug = queryParams.get('category');
-    if (categorySlug && categories.length > 0) {
-      const category = categories.find(c => c.slug === categorySlug);
-      setSelectedCategory(category || null);
+  const handleCategoryChange = (category: Category | null) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (category) {
+      newParams.set('category', category.slug);
     } else {
-      setSelectedCategory(null);
+      newParams.delete('category');
     }
-  }, [categories, queryParams]);
+    setSearchParams(newParams, { replace: true });
+  };
 
-  useEffect(() => {
-    const tagsParam = queryParams.get('tags');
-    if (tagsParam && tags.length > 0) {
-      const tagSlugs = tagsParam.split(',').filter(Boolean);
-      const foundTags = tags.filter(tag => tagSlugs.includes(tag.slug));
-      setSelectedTags(foundTags);
-    } else {
-      setSelectedTags([]);
-    }
-  }, [queryParams, tags]);
-
-  const handleApplyFilters = () => {
-    const newParams = new URLSearchParams();
-    if (searchQuery.trim()) {
-      newParams.set('search', searchQuery.trim());
-    }
-    if (selectedCategory) {
-      newParams.set('category', selectedCategory.slug);
-    }
-    if (selectedTags.length > 0) {
+  const handleTagsChange = (selectedTags: Tag[] | null) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (selectedTags && selectedTags.length > 0) {
       newParams.set('tags', selectedTags.map(tag => tag.slug).join(','));
+    } else {
+      newParams.delete('tags');
     }
-
-    navigate({ search: newParams.toString() }, { replace: true });
+    setSearchParams(newParams, { replace: true });
   };
 
   const handleClearFilters = () => {
-    setSearchQuery('');
-    setSelectedCategory(null);
-    setSelectedTags([]);
-    navigate({ search: '' }, { replace: true });
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('category');
+    newParams.delete('tags');
+    setSearchParams(newParams, { replace: true });
   };
+
+  const selectedTagsFromUrl = useMemo(() => {
+    const tagsParam = searchParams.get('tags');
+    if (!tagsParam || !tags) return [];
+
+    const tagSlugs = tagsParam.split(',').filter(Boolean);
+    return tagSlugs
+      .map(slug => tags.find(tag => tag.slug === slug))
+      .filter((tag): tag is Tag => tag !== undefined);
+  }, [searchParams, tags]);
 
   const hasActiveFilters = useMemo(() => {
     return (
-      searchQuery.trim() !== '' ||
-      selectedCategory !== null ||
-      selectedTags.length > 0
+      searchParams.get('category') !== null || searchParams.get('tags') !== null
     );
-  }, [searchQuery, selectedCategory, selectedTags]);
+  }, [searchParams]);
 
   return (
-    <Grid.Root columns={{ xs: '6', md: '6' }}>
-      <Grid.Item colSpan={{ xs: '6', md: '2' }}>
-        <AnnouncementsSearchField
-          initialSearchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          hideLabel
-        />
-      </Grid.Item>
+    <Flex>
+      <Flex align="center">
+        <Text variant="body-medium" weight="bold">
+          Filters:
+        </Text>
+      </Flex>
 
-      <Grid.Item colSpan={{ xs: '6', md: '2', lg: '1' }}>
-        <CategorySelectInput
-          initialCategory={selectedCategory ?? undefined}
-          setCategory={setSelectedCategory}
-          hideLabel
-        />
-      </Grid.Item>
+      <CategorySelectInput
+        initialCategory={
+          categories?.find(c => c.slug === searchParams.get('category')) ??
+          undefined
+        }
+        setCategory={handleCategoryChange}
+        hideLabel
+      />
 
-      <Grid.Item colSpan={{ xs: '6', md: '2', lg: '1' }}>
-        <TagsSelectInput
-          initialTags={selectedTags ?? undefined}
-          setTags={setSelectedTags}
-          hideLabel
-        />
-      </Grid.Item>
+      <TagsSelectInput
+        initialTags={
+          selectedTagsFromUrl.length > 0 ? selectedTagsFromUrl : undefined
+        }
+        setTags={handleTagsChange}
+        hideLabel
+      />
 
-      <Grid.Item colSpan={{ xs: '6', md: '6', lg: '2' }}>
-        <Flex align="end" justify="end">
+      {hasActiveFilters && (
+        <Flex align="end">
           <Button
             variant="secondary"
             onClick={handleClearFilters}
@@ -144,22 +114,18 @@ export const AnnouncementsFilters = () => {
           >
             {t('announcementsPage.filter.clear')}
           </Button>
-
-          <Button variant="primary" onClick={handleApplyFilters}>
-            {t('announcementsPage.filter.apply')}
-          </Button>
         </Flex>
-      </Grid.Item>
-    </Grid.Root>
+      )}
+    </Flex>
   );
 };
 
 export const AnnouncementsFilterBar = () => {
   return (
-    <Card>
-      <CardBody>
-        <AnnouncementsFilters />
-      </CardBody>
-    </Card>
+    // <Card>
+    // <CardBody>
+    <AnnouncementsFilters />
+    // </CardBody>
+    // </Card>
   );
 };

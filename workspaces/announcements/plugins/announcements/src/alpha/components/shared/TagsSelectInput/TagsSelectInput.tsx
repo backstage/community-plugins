@@ -23,7 +23,7 @@ import { Tag } from '@backstage-community/plugin-announcements-common';
 
 type TagsSelectInputProps = {
   initialTags?: Tag[];
-  setTags: (tags: Tag[]) => void;
+  setTags: (tags: Tag[] | null) => void;
   hideLabel?: boolean;
 };
 
@@ -61,7 +61,7 @@ export const TagsSelectInput = ({
 
   const handleChange = (value: Key[] | Key | null) => {
     if (!value) {
-      setTags([]);
+      setTags(null);
       return;
     }
 
@@ -74,7 +74,7 @@ export const TagsSelectInput = ({
     }
 
     if (stringValues.length === 0) {
-      setTags([]);
+      setTags(null);
       return;
     }
 
@@ -82,11 +82,12 @@ export const TagsSelectInput = ({
       .map(slug => tags?.find(tag => tag.slug === slug))
       .filter((tag): tag is Tag => tag !== undefined);
 
-    setTags(selectedTagsList);
+    setTags(selectedTagsList.length > 0 ? selectedTagsList : null);
   };
 
   return (
     <Select
+      key={selectedTagSlugs.join(',') || 'none'}
       name="tags"
       label={hideLabel ? null : t('announcementsPage.filter.tags')}
       placeholder={t('announcementsPage.filter.tagsPlaceholder')}

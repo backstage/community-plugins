@@ -23,7 +23,7 @@ import { Category } from '@backstage-community/plugin-announcements-common';
 
 type CategorySelectInputProps = {
   initialCategory?: Category;
-  setCategory: (category: Category) => void;
+  setCategory: (category: Category | null) => void;
   hideLabel?: boolean;
 };
 
@@ -53,7 +53,10 @@ export const CategorySelectInput = ({
   }, [initialCategory, categories]);
 
   const handleChange = (value: Key[] | Key | null) => {
-    if (!value) return;
+    if (!value) {
+      setCategory(null);
+      return;
+    }
 
     let stringValue: string | null = null;
 
@@ -63,17 +66,24 @@ export const CategorySelectInput = ({
       stringValue = String(value);
     }
 
-    if (!stringValue) return;
+    if (!stringValue) {
+      setCategory(null);
+      return;
+    }
 
     const category = categories?.find(cat => cat.slug === stringValue);
 
-    if (!category) return;
+    if (!category) {
+      setCategory(null);
+      return;
+    }
 
     setCategory(category);
   };
 
   return (
     <Select
+      key={selectedCategory?.slug ?? 'none'}
       name="category"
       label={hideLabel ? null : t('announcementsPage.filter.category')}
       searchable
@@ -81,7 +91,7 @@ export const CategorySelectInput = ({
       searchPlaceholder={t(
         'announcementsPage.filter.categorySearchPlaceholder',
       )}
-      value={selectedCategory?.slug}
+      value={selectedCategory?.slug ?? null}
       onChange={handleChange}
       options={selectOptions}
       isDisabled={categoriesLoading}

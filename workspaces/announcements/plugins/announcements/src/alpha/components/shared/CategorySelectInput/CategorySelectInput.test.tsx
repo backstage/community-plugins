@@ -17,6 +17,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
 import { Category } from '@backstage-community/plugin-announcements-common';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { CategorySelectInput } from './CategorySelectInput';
 
 const mockCategories: Category[] = [
@@ -25,26 +26,40 @@ const mockCategories: Category[] = [
   { slug: 'maintenance', title: 'Maintenance' },
 ];
 
-const mockUseCategories = jest.fn();
-const mockUseAnnouncementsTranslation = jest.fn();
-
-jest.mock('@backstage-community/plugin-announcements-react', () => ({
-  ...jest.requireActual('@backstage-community/plugin-announcements-react'),
-  useCategories: () => mockUseCategories(),
-  useAnnouncementsTranslation: () => mockUseAnnouncementsTranslation(),
-}));
+const createMockAnnouncementsApi = (
+  categories: Category[] = mockCategories,
+) => ({
+  categories: jest.fn().mockResolvedValue(categories),
+  announcements: jest.fn(),
+  tags: jest.fn(),
+});
 
 const renderCategorySelectInput = async (
   props: {
     initialCategory?: Category;
-    setCategory?: (category: Category) => void;
+    setCategory?: (category: Category | null) => void;
     hideLabel?: boolean;
+    categories?: Category[];
+    loading?: boolean;
   } = {},
 ) => {
-  const { initialCategory, setCategory = jest.fn(), hideLabel = false } = props;
+  const {
+    initialCategory,
+    setCategory = jest.fn(),
+    hideLabel = false,
+    categories = mockCategories,
+    loading = false,
+  } = props;
+
+  const mockApi = createMockAnnouncementsApi(categories);
+  if (loading) {
+    mockApi.categories = jest.fn().mockImplementation(
+      () => new Promise(() => {}), // Never resolves to simulate loading
+    );
+  }
 
   await renderInTestApp(
-    <TestApiProvider apis={[]}>
+    <TestApiProvider apis={[[announcementsApiRef, mockApi]]}>
       <CategorySelectInput
         initialCategory={initialCategory}
         setCategory={setCategory}
@@ -52,80 +67,61 @@ const renderCategorySelectInput = async (
       />
     </TestApiProvider>,
   );
+
+  return mockApi;
 };
 
 describe('CategorySelectInput', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseAnnouncementsTranslation.mockReturnValue({
-      t: (key: string) => {
-        const translations: Record<string, string> = {
-          'announcementsPage.filter.category': 'Category',
-          'announcementsPage.filter.categoryPlaceholder': 'Select a category',
-          'announcementsPage.filter.categorySearchPlaceholder':
-            'Search categories...',
-        };
-        return translations[key] || key;
-      },
-    });
-    mockUseCategories.mockReturnValue({
-      categories: mockCategories,
-      loading: false,
-      error: undefined,
-      retry: jest.fn(),
-    });
   });
 
   it('renders category select input with label', async () => {
     await renderCategorySelectInput();
 
-    expect(screen.getByLabelText('Category')).toBeInTheDocument();
-    expect(screen.getByText('Select a category')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByLabelText('Category')).toBeInTheDocument();
+      expect(screen.getByText('Select a category')).toBeInTheDocument();
+    });
   });
 
   it('renders category select input without label when hideLabel is true', async () => {
     await renderCategorySelectInput({ hideLabel: true });
 
-    expect(screen.queryByLabelText('Category')).not.toBeInTheDocument();
-    expect(screen.getByText('Select a category')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Category')).not.toBeInTheDocument();
+      expect(screen.getByText('Select a category')).toBeInTheDocument();
+    });
   });
 
   it('renders with categories loaded', async () => {
     await renderCategorySelectInput();
 
-    const select = screen.getByRole('button', { name: /Select a category/i });
-    expect(select).toBeInTheDocument();
-    expect(select).not.toBeDisabled();
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).toBeInTheDocument();
+      expect(select).not.toBeDisabled();
+    });
   });
 
   it('renders disabled when categories are loading', async () => {
-    mockUseCategories.mockReturnValue({
-      categories: [],
-      loading: true,
-      error: undefined,
-      retry: jest.fn(),
+    await renderCategorySelectInput({ loading: true });
+
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).toBeInTheDocument();
+      expect(select).toBeDisabled();
     });
-
-    await renderCategorySelectInput();
-
-    const select = screen.getByRole('button', { name: /Select a category/i });
-    expect(select).toBeInTheDocument();
-    expect(select).toBeDisabled();
   });
 
   it('renders with empty categories gracefully', async () => {
-    mockUseCategories.mockReturnValue({
-      categories: [],
-      loading: false,
-      error: undefined,
-      retry: jest.fn(),
+    await renderCategorySelectInput({ categories: [] });
+
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).toBeInTheDocument();
+      expect(select).not.toBeDisabled();
     });
-
-    await renderCategorySelectInput();
-
-    const select = screen.getByRole('button', { name: /Select a category/i });
-    expect(select).toBeInTheDocument();
-    expect(select).not.toBeDisabled();
   });
 
   it('renders with initial category selected', async () => {
@@ -136,9 +132,11 @@ describe('CategorySelectInput', () => {
 
     await renderCategorySelectInput({ initialCategory });
 
-    const select = screen.getByRole('button', { name: /Platform Updates/i });
-    expect(select).toBeInTheDocument();
-    expect(select).not.toBeDisabled();
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Platform Updates/i });
+      expect(select).toBeInTheDocument();
+      expect(select).not.toBeDisabled();
+    });
   });
 
   it('calls setCategory when a category is selected', async () => {
@@ -146,8 +144,12 @@ describe('CategorySelectInput', () => {
 
     await renderCategorySelectInput({ setCategory: mockSetCategory });
 
-    const select = screen.getByRole('button', { name: /Select a category/i });
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).not.toBeDisabled();
+    });
 
+    const select = screen.getByRole('button', { name: /Select a category/i });
     await userEvent.click(select);
 
     await waitFor(() => {
@@ -171,8 +173,12 @@ describe('CategorySelectInput', () => {
 
     await renderCategorySelectInput({ setCategory: mockSetCategory });
 
-    const select = screen.getByRole('button', { name: /Select a category/i });
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).not.toBeDisabled();
+    });
 
+    const select = screen.getByRole('button', { name: /Select a category/i });
     await userEvent.click(select);
 
     await waitFor(() => {
@@ -195,10 +201,12 @@ describe('CategorySelectInput', () => {
 
     await renderCategorySelectInput({ setCategory: mockSetCategory });
 
-    // This test verifies that if somehow an invalid value gets through,
-    // the component handles it gracefully without calling setCategory
-    const select = screen.getByRole('button', { name: /Select a category/i });
-    expect(select).toBeInTheDocument();
+    await waitFor(() => {
+      // This test verifies that if somehow an invalid value gets through,
+      // the component handles it gracefully without calling setCategory
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).toBeInTheDocument();
+    });
 
     // The component should handle invalid selections gracefully
     expect(mockSetCategory).not.toHaveBeenCalled();
@@ -209,8 +217,10 @@ describe('CategorySelectInput', () => {
 
     await renderCategorySelectInput({ setCategory: mockSetCategory });
 
-    const select = screen.getByRole('button', { name: /Select a category/i });
-    expect(select).toBeInTheDocument();
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).toBeInTheDocument();
+    });
 
     // The component should handle null values without crashing
     expect(mockSetCategory).not.toHaveBeenCalled();
@@ -218,6 +228,11 @@ describe('CategorySelectInput', () => {
 
   it('renders multiple categories correctly', async () => {
     await renderCategorySelectInput();
+
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).not.toBeDisabled();
+    });
 
     const select = screen.getByRole('button', { name: /Select a category/i });
     await userEvent.click(select);
@@ -236,17 +251,12 @@ describe('CategorySelectInput', () => {
   });
 
   it('handles undefined categories gracefully', async () => {
-    mockUseCategories.mockReturnValue({
-      categories: undefined,
-      loading: false,
-      error: undefined,
-      retry: jest.fn(),
+    await renderCategorySelectInput({ categories: [] });
+
+    await waitFor(() => {
+      const select = screen.getByRole('button', { name: /Select a category/i });
+      expect(select).toBeInTheDocument();
+      expect(select).not.toBeDisabled();
     });
-
-    await renderCategorySelectInput();
-
-    const select = screen.getByRole('button', { name: /Select a category/i });
-    expect(select).toBeInTheDocument();
-    expect(select).not.toBeDisabled();
   });
 });
