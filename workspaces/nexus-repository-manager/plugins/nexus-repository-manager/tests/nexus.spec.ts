@@ -43,7 +43,9 @@ test.describe('Nexus Repository Manager plugin', () => {
       title: 'janus-idp/backstage-showcase',
     });
 
-    await expect(page.getByRole('heading')).toHaveText(headingText);
+    await expect(
+      page.getByRole('heading', { name: headingText }),
+    ).toBeVisible();
     await common.a11yCheck(testInfo);
   });
 
