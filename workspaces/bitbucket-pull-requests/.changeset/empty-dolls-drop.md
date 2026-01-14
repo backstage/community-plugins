@@ -2,4 +2,4 @@
 '@backstage-community/plugin-bitbucket-pull-requests': patch
 ---
 
-Fix a bug with default filter on initial page load
+Fixed an issue where the default filter displayed all pull requests but showed only open pull requests 
