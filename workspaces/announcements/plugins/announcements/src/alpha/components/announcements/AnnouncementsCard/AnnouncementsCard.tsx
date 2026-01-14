@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { DateTime } from 'luxon';
 import {
   Box,
   ButtonLink,
@@ -85,26 +86,17 @@ export const AnnouncementsCard = (props: AnnouncementsCardOpts) => {
 
   return (
     <Card>
-      <CardHeader>
-        <Flex align="center" gap="2">
-          <RecordVoiceOverIcon />
+      <CardHeader
+        style={{
+          borderBottom: '1px solid var(--bui-border)',
+        }}
+      >
+        <Box pb="3">
           <Text variant="title-small">
             {t('announcementsCard.announcements')}
           </Text>
-        </Flex>
+        </Box>
       </CardHeader>
-
-      {/* <Box
-          style={{
-            visibility:
-              lastSeen < DateTime.fromISO(announcement.created_at)
-                ? 'visible'
-                : 'hidden',
-          }}
-        >
-          <Text variant="body-small">{t('announcementsCard.new')}</Text>
-          <RecordVoiceOverIcon />
-        </Box> */}
 
       <CardBody>
         <Flex direction="column" gap="4">
@@ -132,7 +124,12 @@ export const AnnouncementsCard = (props: AnnouncementsCardOpts) => {
                     })
                   }
                 >
-                  {announcement.title}
+                  <Flex align="center" gap="2">
+                    {lastSeen < DateTime.fromISO(announcement.created_at) && (
+                      <RecordVoiceOverIcon fontSize="inherit" />
+                    )}
+                    {announcement.title}
+                  </Flex>
                 </Link>
 
                 <AnnouncementPublishedBy announcement={announcement} />

@@ -108,19 +108,9 @@ export const HomePage = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Announcements Card</Typography>
-                <Typography variant="body2" paragraph>
-                  A compact overview suitable for dashboards or entity pages.
-                  You can tweak size and filtering in the future roadmap.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
 
           <Grid item>
+            <Typography variant="h6">Announcements Card</Typography>
             <AnnouncementsCard max={3} />
           </Grid>
         </Grid>
