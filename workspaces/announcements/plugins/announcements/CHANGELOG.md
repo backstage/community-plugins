@@ -1,5 +1,13 @@
 # @backstage-community/plugin-announcements
 
+## 1.3.2
+
+### Patch Changes
+
+- d901927: Removed unused dependencies from the package
+- Updated dependencies [d901927]
+  - @backstage-community/plugin-announcements-react@0.18.2
+
 ## 1.3.1
 
 ### Patch Changes
