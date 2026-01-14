@@ -17,16 +17,7 @@ import { useState, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
 import { Pagination } from '@material-ui/lab';
-import {
-  Flex,
-  Grid,
-  Box,
-  Skeleton,
-  Text,
-  Link,
-  Card,
-  CardBody,
-} from '@backstage/ui';
+import { Flex, Grid, Skeleton, Text, Card, CardBody } from '@backstage/ui';
 import { AnnouncementCard } from './AnnouncementCard';
 
 type AnnouncementsGridProps = {
