@@ -2,6 +2,7 @@ dist
 dist-dynamic
 dist-types
 coverage
+knip-report.md
 .vscode
 .eslintrc.js
 test-results
