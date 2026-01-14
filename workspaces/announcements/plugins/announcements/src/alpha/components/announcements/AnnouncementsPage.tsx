@@ -55,7 +55,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
       />
 
       <Container>
-        <Flex direction="column" gap="3">
+        <Flex direction="column">
           <AnnouncementsFilterBar />
           <AnnouncementsGrid
             maxPerPage={maxPerPage ?? 10}

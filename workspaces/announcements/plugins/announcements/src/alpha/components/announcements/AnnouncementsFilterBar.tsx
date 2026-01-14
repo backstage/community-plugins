@@ -15,7 +15,7 @@
  */
 
 import { useMemo } from 'react';
-import { Button, Flex, Text } from '@backstage/ui';
+import { Button, Card, CardBody, Flex, Text } from '@backstage/ui';
 import {
   useCategories,
   useTags,
@@ -81,51 +81,51 @@ export const AnnouncementsFilters = () => {
   }, [searchParams]);
 
   return (
-    <Flex>
-      <Flex align="center">
-        <Text variant="body-medium" weight="bold">
-          Filters:
-        </Text>
+    <Flex justify="between">
+      <Flex>
+        <Flex align="center">
+          <Text variant="body-medium" weight="bold">
+            Filters:
+          </Text>
+        </Flex>
+
+        <CategorySelectInput
+          initialCategory={
+            categories?.find(c => c.slug === searchParams.get('category')) ??
+            undefined
+          }
+          setCategory={handleCategoryChange}
+          hideLabel
+        />
+
+        <TagsSelectInput
+          initialTags={
+            selectedTagsFromUrl.length > 0 ? selectedTagsFromUrl : undefined
+          }
+          setTags={handleTagsChange}
+          hideLabel
+        />
       </Flex>
 
-      <CategorySelectInput
-        initialCategory={
-          categories?.find(c => c.slug === searchParams.get('category')) ??
-          undefined
-        }
-        setCategory={handleCategoryChange}
-        hideLabel
-      />
-
-      <TagsSelectInput
-        initialTags={
-          selectedTagsFromUrl.length > 0 ? selectedTagsFromUrl : undefined
-        }
-        setTags={handleTagsChange}
-        hideLabel
-      />
-
-      {hasActiveFilters && (
-        <Flex align="end">
-          <Button
-            variant="secondary"
-            onClick={handleClearFilters}
-            isDisabled={!hasActiveFilters}
-          >
-            {t('announcementsPage.filter.clear')}
-          </Button>
-        </Flex>
-      )}
+      <Flex justify="end">
+        <Button
+          variant="secondary"
+          onClick={handleClearFilters}
+          isDisabled={!hasActiveFilters}
+        >
+          {t('announcementsPage.filter.clear')}
+        </Button>
+      </Flex>
     </Flex>
   );
 };
 
 export const AnnouncementsFilterBar = () => {
   return (
-    // <Card>
-    // <CardBody>
-    <AnnouncementsFilters />
-    // </CardBody>
-    // </Card>
+    <Card>
+      <CardBody>
+        <AnnouncementsFilters />
+      </CardBody>
+    </Card>
   );
 };
