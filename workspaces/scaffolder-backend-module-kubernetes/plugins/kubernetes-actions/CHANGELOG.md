@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 2.14.0
+
+### Minor Changes
+
+- 65b2acf: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+
 ## 2.13.0
 
 ### Minor Changes
