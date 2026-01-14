@@ -99,8 +99,12 @@ export const AnnouncementsGrid = ({
             ))}
 
           {announcements.results.length === 0 && (
-            <Grid.Item>
-              <Text>No announcements found with the selected filters.</Text>
+            <Grid.Item colSpan="12">
+              <Card>
+                <CardBody>
+                  <Text>No announcements found with the selected filters.</Text>
+                </CardBody>
+              </Card>
             </Grid.Item>
           )}
         </Grid.Root>
