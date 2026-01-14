@@ -21,16 +21,47 @@ import {
   useState,
 } from 'react';
 
+const isOpenShiftConsole = (): boolean => {
+  if (typeof document === 'undefined' || typeof window === 'undefined') {
+    return false;
+  }
+
+  // Strong signal: OpenShift Console exposes SERVER_FLAGS globally.
+  if ((window as any).SERVER_FLAGS !== undefined) {
+    return true;
+  }
+
+  // Secondary signals: specific OpenShift Console UI test ids.
+  // Avoid PatternFly masthead/header class detection here, since RHDH/Backstage
+  // can also render PatternFly-based headers (false positives).
+  return (
+    document.querySelector('[data-test="user-dropdown"]') !== null ||
+    document.querySelector('[data-test="perspective-switcher"]') !== null
+  );
+};
+
 interface HeaderBackgroundContextType {
   hasBackgroundImage: boolean;
+  textColor?: string;
+  iconColor?: string;
 }
 
 const HeaderBackgroundContext = createContext<HeaderBackgroundContextType>({
   hasBackgroundImage: false,
+  textColor: undefined,
+  iconColor: undefined,
 });
 
 export const useHeaderBackground = () => {
   return useContext(HeaderBackgroundContext).hasBackgroundImage;
+};
+
+export const useHeaderTextColor = () => {
+  return useContext(HeaderBackgroundContext).textColor;
+};
+
+export const useHeaderIconColor = () => {
+  return useContext(HeaderBackgroundContext).iconColor;
 };
 
 interface HeaderBackgroundProviderProps {
@@ -41,6 +72,8 @@ export const HeaderBackgroundProvider = ({
   children,
 }: HeaderBackgroundProviderProps) => {
   const [hasBackgroundImage, setHasBackgroundImage] = useState(false);
+  const [textColor, setTextColor] = useState<string | undefined>(undefined);
+  const [iconColor, setIconColor] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (typeof document === 'undefined' || typeof window === 'undefined') {
@@ -57,20 +90,9 @@ export const HeaderBackgroundProvider = ({
       }
       attempts++;
 
-      // Detect platform first
-      // Support PF4 (pf-c-), PF5 (pf-v5-), and PF6 (pf-v6-) class prefixes
-      const isOpenShiftConsole =
-        document.querySelector('[data-test="user-dropdown"]') !== null ||
-        document.querySelector('.pf-c-page__header') !== null ||
-        document.querySelector('.pf-v5-c-page__header') !== null ||
-        document.querySelector('.pf-v5-c-masthead') !== null ||
-        document.querySelector('.pf-v6-c-page__header') !== null ||
-        document.querySelector('.pf-v6-c-masthead') !== null ||
-        document.querySelector('[data-test="perspective-switcher"]') !== null ||
-        (window as any).SERVER_FLAGS !== undefined;
-
       // Try all possible selectors based on detected platform
-      const selectors = isOpenShiftConsole
+      const openShiftConsole = isOpenShiftConsole();
+      const selectors = openShiftConsole
         ? [
             '.pf-c-page__header',
             '.pf-v5-c-page__header',
@@ -128,7 +150,33 @@ export const HeaderBackgroundProvider = ({
           backgroundImage.includes('url'),
       );
 
+      // Detect host theme (OpenShift/RHDH tends to expose it via DOM).
+      const html = document.documentElement;
+      const body = document.body;
+      const bodyMode =
+        body?.getAttribute?.('data-theme-mode') ??
+        (body as any)?.dataset?.themeMode;
+      const isDark =
+        html?.classList?.contains('pf-v5-theme-dark') ||
+        html?.classList?.contains('pf-v6-theme-dark') ||
+        bodyMode === 'dark';
+
+      // Always report whether there is a background image.
       setHasBackgroundImage(hasImage);
+
+      if (openShiftConsole) {
+        // In OpenShift Console, header foreground should follow the host theme.
+        const fg = isDark
+          ? 'var(--pf-v5-global--Color--light-100, #fff)'
+          : 'var(--pf-v5-global--Color--100, #151515)';
+        setTextColor(fg);
+        setIconColor(fg);
+      } else {
+        // In Backstage/RHDH, if there's a header background image we force white content.
+        const fg = hasImage ? 'white' : undefined;
+        setTextColor(fg);
+        setIconColor(fg);
+      }
       found = true;
     };
 
@@ -151,7 +199,9 @@ export const HeaderBackgroundProvider = ({
   }, []);
 
   return (
-    <HeaderBackgroundContext.Provider value={{ hasBackgroundImage }}>
+    <HeaderBackgroundContext.Provider
+      value={{ hasBackgroundImage, textColor, iconColor }}
+    >
       {children}
     </HeaderBackgroundContext.Provider>
   );

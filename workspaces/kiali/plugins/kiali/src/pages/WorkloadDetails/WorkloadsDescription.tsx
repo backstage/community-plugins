@@ -95,8 +95,16 @@ export const WorkloadDescription: React.FC<WorkloadDescriptionProps> = (
   const apps: string[] = [];
   const services: string[] = [];
 
-  if (workload.labels[serverConfig.istioLabels.appLabelName]) {
-    apps.push(workload.labels[serverConfig.istioLabels.appLabelName]);
+  // The server may configure a custom app label key (e.g. 'app.kubernetes.io/name').
+  // In many environments workloads still use the conventional 'app' label, so fallback
+  // to keep the Apps list populated in the drawer.
+  const configuredAppLabel = serverConfig.istioLabels.appLabelName;
+  const appLabelValue =
+    workload.labels?.[configuredAppLabel] ??
+    workload.labels?.app ??
+    workload.appLabel;
+  if (appLabelValue) {
+    apps.push(appLabelValue);
   }
 
   workload.services?.forEach(s => services.push(s.name));
