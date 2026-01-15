@@ -55,7 +55,7 @@ export async function createRouter(
         })
       )[0];
       if (decision.result === AuthorizeResult.DENY) {
-        res.status(403).json({
+        return res.status(403).json({
           error: 'Unauthorized, please ensure you have the correct permissions',
         });
       }
