@@ -28,6 +28,7 @@ import {
 } from '@backstage/core-components';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { MyGroupsSidebarItem } from '@backstage/plugin-org';
+import { Administration } from '@backstage-community/plugin-rbac';
 import { SidebarSearchModal } from '@backstage/plugin-search';
 import {
   Settings as SidebarSettings,
@@ -109,6 +110,7 @@ export const Root = ({ children }: PropsWithChildren): JSX.Element => (
           to="create"
           text="Create..."
         />
+        <Administration />
         {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>
