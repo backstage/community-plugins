@@ -53,9 +53,7 @@ export function loadServerConfigs(
     const typeString = serverConfig.getOptionalString('type');
     let type: MCPServerType;
 
-    if (typeString === 'sse') {
-      type = MCPServerType.SSE;
-    } else if (typeString === 'streamable-http' || serverConfig.has('url')) {
+    if (typeString === 'streamable-http' || serverConfig.has('url')) {
       type = MCPServerType.STREAMABLE_HTTP;
     } else {
       type = MCPServerType.STDIO;

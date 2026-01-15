@@ -20,7 +20,6 @@ import {
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import * as path from 'path';
 import {
   ProviderFactory,
@@ -139,62 +138,50 @@ export class MCPClientServiceImpl implements MCPClientService {
             version: '1.0.0',
           });
 
-          // Create transport based on server type
-          let transport;
-
-          if (serverConfig.type === MCPServerType.STREAMABLE_HTTP) {
-            const transportOptions: any = {};
-            if (serverConfig.headers) {
-              transportOptions.requestInit = {
-                headers: serverConfig.headers,
-              };
-            }
-            transport = new StreamableHTTPClientTransport(
-              new URL(serverConfig.url!),
-              transportOptions,
-            );
-          } else if (serverConfig.type === MCPServerType.SSE) {
-            const transportOptions: any = { url: new URL(serverConfig.url!) };
-            if (serverConfig.headers) {
-              transportOptions.headers = serverConfig.headers;
-            }
-            transport = new SSEClientTransport(transportOptions);
+          // Create transport for Streamable HTTP
+          const transportOptions: any = {};
+          if (serverConfig.headers) {
+            transportOptions.requestInit = {
+              headers: serverConfig.headers,
+            };
           }
+          const transport = new StreamableHTTPClientTransport(
+            new URL(serverConfig.url!),
+            transportOptions,
+          );
 
-          if (transport) {
-            await client.connect(transport);
-            this.mcpClients.set(serverConfig.id, client);
+          await client.connect(transport);
+          this.mcpClients.set(serverConfig.id, client);
 
-            // List tools from this server
-            const { tools } = await client.listTools();
+          // List tools from this server
+          const { tools } = await client.listTools();
 
-            const serverTools: ServerTool[] = tools.map(tool => ({
-              type: 'function',
-              function: {
-                name: tool.name,
-                description: tool.description || '',
-                parameters: tool.inputSchema,
-              },
-              serverId: serverConfig.id,
-            }));
+          const serverTools: ServerTool[] = tools.map(tool => ({
+            type: 'function',
+            function: {
+              name: tool.name,
+              description: tool.description || '',
+              parameters: tool.inputSchema,
+            },
+            serverId: serverConfig.id,
+          }));
 
-            allTools.push(...serverTools);
+          allTools.push(...serverTools);
 
-            serverResults.push({
-              id: serverConfig.id,
-              name: serverConfig.name,
-              type: serverConfig.type,
-              url: serverConfig.url,
-              status: {
-                valid: true,
-                connected: true,
-              },
-            });
+          serverResults.push({
+            id: serverConfig.id,
+            name: serverConfig.name,
+            type: serverConfig.type,
+            url: serverConfig.url,
+            status: {
+              valid: true,
+              connected: true,
+            },
+          });
 
-            this.logger.info(
-              `Connected to ${serverConfig.name}: ${serverTools.length} tools`,
-            );
-          }
+          this.logger.info(
+            `Connected to ${serverConfig.name}: ${serverTools.length} tools`,
+          );
         } catch (error) {
           this.logger.warn(
             `Failed to connect to ${serverConfig.name}: ${
@@ -291,22 +278,6 @@ export class MCPClientServiceImpl implements MCPClientService {
             new URL(serverConfig.url),
             transportOptions,
           );
-        } else if (serverConfig.type === MCPServerType.SSE) {
-          // SSE connection
-          if (!serverConfig.url) {
-            throw new Error(
-              `Server config for '${serverConfig.name}' with SSE type must have a url`,
-            );
-          }
-
-          const transportOptions: any = { url: new URL(serverConfig.url) };
-
-          // Add headers if provided
-          if (serverConfig.headers) {
-            transportOptions.headers = serverConfig.headers;
-          }
-
-          transport = new SSEClientTransport(transportOptions);
         } else {
           // STDIO connection (default)
           let command: string;
