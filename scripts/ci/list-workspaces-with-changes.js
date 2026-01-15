@@ -45,7 +45,7 @@ async function runPlain(cmd, ...args) {
   }
 }
 
-async function main() {
+export async function main() {
   if (!process.env.GITHUB_OUTPUT) {
     throw new Error('GITHUB_OUTPUT environment variable not set');
   }
@@ -122,7 +122,9 @@ async function main() {
   );
 }
 
-main().catch(error => {
-  console.error(error.stack);
-  process.exit(1);
-});
+if (import.meta.main) {
+  main().catch(error => {
+    console.error(error.stack);
+    process.exit(1);
+  });
+}
