@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { compatWrapper } from '@backstage/core-compat-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 /**
@@ -25,8 +24,8 @@ export const entityAnnouncementsCard = EntityCardBlueprint.make({
   params: {
     filter: 'kind:component,system',
     loader: async () =>
-      import('../components/AnnouncementsCard').then(m =>
-        compatWrapper(<m.AnnouncementsCard />),
-      ),
+      import('./components/announcements/AnnouncementsCard').then(m => (
+        <m.AnnouncementsCard />
+      )),
   },
 });
