@@ -36,7 +36,16 @@ export const azureResourcesServiceRef =
           rootConfig: coreServices.rootConfig,
         },
         factory({ logger, rootConfig }) {
-          const config = rootConfig.getOptionalConfig('azure-resources');
+          // Try new camelCase key first, fall back to deprecated kebab-case
+          let config = rootConfig.getOptionalConfig('azureResources');
+          if (!config) {
+            config = rootConfig.getOptionalConfig('azure-resources');
+            if (config) {
+              logger.warn(
+                "Configuration key 'azure-resources' is deprecated. Please use 'azureResources' instead.",
+              );
+            }
+          }
           return AzureResourceGraphClient.fromConfig(logger, config);
         },
       }),
