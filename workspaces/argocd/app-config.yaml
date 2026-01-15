@@ -110,7 +110,9 @@ permission:
   rbac:
     pluginsWithPermission:
       - argocd
+      - catalog
       - permission
+      - scaffolder
     policies-csv-file: ../../examples/rbac-policies.csv
     admin:
       users:
