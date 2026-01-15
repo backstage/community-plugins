@@ -73,6 +73,10 @@ export class ServiceNowConnection {
     return this.axiosInstance;
   }
 
+  getInstanceUrl(): string {
+    return this.instanceUrl;
+  }
+
   private setupOAuthClient(oauth: OAuthConfig) {
     const determinedTokenUrl = `${this.instanceUrl}/oauth_token.do`;
 
