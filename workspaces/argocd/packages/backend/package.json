@@ -24,7 +24,6 @@
     "@backstage-community/plugin-argocd-backend": "workspace:^",
     "@backstage-community/plugin-rbac-backend": "^7.6.1",
     "@backstage/backend-defaults": "^0.13.1",
-    "@backstage/backend-dynamic-feature-service": "^0.7.6",
     "@backstage/cli-node": "^0.2.15",
     "@backstage/plugin-app-backend": "^0.5.8",
     "@backstage/plugin-auth-backend": "^0.25.6",
