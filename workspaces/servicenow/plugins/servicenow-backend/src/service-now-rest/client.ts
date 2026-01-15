@@ -139,10 +139,11 @@ export class DefaultServiceNowClient implements ServiceNowClient {
         response.headers['x-total-count'] ?? response.headers['X-Total-Count'];
       const totalCount = Number(countHeader ?? 0);
 
+      const instanceUrl = this.conn.getInstanceUrl();
       const items =
         response.data?.result?.map((incident: any) => ({
           ...incident,
-          url: `nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`,
+          url: `${instanceUrl}/nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`,
         })) ?? [];
 
       return { items, totalCount };
