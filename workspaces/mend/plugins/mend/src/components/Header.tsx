@@ -18,9 +18,9 @@ import Typography from '@mui/material/Typography';
 
 export const Header = () => (
   <CoreHeader
+    pageTitleOverride="Mend.io"
     title={
       <Typography component="span" variant="h2" color="white">
-        {' '}
         Mend.io
       </Typography>
     }
