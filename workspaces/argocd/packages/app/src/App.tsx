@@ -117,7 +117,7 @@ const routes = (
         <ReportIssue />
       </TechDocsAddons>
     </Route>
-    <Route path="/rbac" element={<RbacPage />} />;
+    <Route path="/rbac" element={<RbacPage />} />
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
     <Route
