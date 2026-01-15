@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.0.2
+
+### Patch Changes
+
+- 9ed8237: Removed deprecations, switched to using `permissionsRegistry` instead of `permissionIntegrationRouter`. Fixed ERR_HTTP_HEADERS_SENT error when permissions are missing.
+
 ## 1.0.1
 
 ### Patch Changes
