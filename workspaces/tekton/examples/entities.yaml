@@ -35,3 +35,20 @@ spec:
   lifecycle: experimental
   owner: guests
   system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tekton-demo
+  namespace: development
+  annotations:
+    tekton.dev/cicd: 'true'
+    # It's important that your Tekton CRs have this annotation. If not they wont appear.
+    backstage.io/kubernetes-id: 'rhtap'
+    backstage.io/kubernetes-namespace: 'tekton-pipelines'
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: examples
+---
