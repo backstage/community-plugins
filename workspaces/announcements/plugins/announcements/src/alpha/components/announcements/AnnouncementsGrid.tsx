@@ -17,7 +17,7 @@ import { useState, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
 import { Pagination } from '@material-ui/lab';
-import { Flex, Grid, Box, Skeleton, Text } from '@backstage/ui';
+import { Flex, Grid, Skeleton, Text, Card, CardBody } from '@backstage/ui';
 import { AnnouncementCard } from './AnnouncementCard';
 
 type AnnouncementsGridProps = {
@@ -47,6 +47,7 @@ export const AnnouncementsGrid = ({
     setPage(value);
   };
 
+  const categoryParam = queryParams.get('category');
   const tagsParam = queryParams.get('tags');
   const tagsFromUrl = useMemo(() => {
     return tagsParam ? tagsParam.split(',') : undefined;
@@ -65,28 +66,49 @@ export const AnnouncementsGrid = ({
     { dependencies: [maxPerPage, page, category, tagsFromUrl] },
   );
 
-  if (loading) {
-    return <Skeleton />;
-  } else if (error) {
+  if (error) {
     return (
-      <Box>
-        <Text>Error loading announcements</Text>
-      </Box>
+      <Card>
+        <CardBody>
+          <Text color="danger">Error loading announcements</Text>
+        </CardBody>
+      </Card>
     );
   }
 
   return (
     <>
-      <Grid.Root columns={{ xs: '12', md: '2', lg: '3' }}>
-        {announcements.results.map(announcement => (
-          <Grid.Item key={announcement.id}>
-            <AnnouncementCard
-              announcement={announcement}
-              hideStartAt={hideStartAt}
-            />
-          </Grid.Item>
-        ))}
-      </Grid.Root>
+      {!loading ? (
+        <Grid.Root columns={{ xs: '12', md: '2', lg: '3' }}>
+          {announcements.results.length > 0 &&
+            announcements.results.map(announcement => (
+              <Grid.Item key={announcement.id}>
+                <AnnouncementCard
+                  announcement={announcement}
+                  hideStartAt={hideStartAt}
+                />
+              </Grid.Item>
+            ))}
+
+          {announcements.results.length === 0 && (
+            <Grid.Item colSpan="12">
+              <Card>
+                <CardBody>
+                  {categoryParam || tagsParam ? (
+                    <Text>
+                      No announcements found with the selected filters.
+                    </Text>
+                  ) : (
+                    <Text>No announcements found.</Text>
+                  )}
+                </CardBody>
+              </Card>
+            </Grid.Item>
+          )}
+        </Grid.Root>
+      ) : (
+        <Skeleton />
+      )}
 
       {announcements.count > 0 && (
         <Flex justify="center" my="10">
