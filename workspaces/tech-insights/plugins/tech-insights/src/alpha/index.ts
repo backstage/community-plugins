@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 
-export { techInsightsApi } from './apis';
-export { entityTechInsightsScorecardContent } from './entityContent';
-export { entityTechInsightsScorecardCard } from './entityCards';
-export { techInsightsScorecardPage } from './pages';
 export { default } from './plugin';
