@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acs
 
+## 0.1.2
+
+### Patch Changes
+
+- f99931a: Updated dependency `@apollo/client` to `^4.0.0`.
+
 ## 0.1.1
 
 ### Patch Changes
