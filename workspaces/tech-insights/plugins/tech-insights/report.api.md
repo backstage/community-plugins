@@ -6,29 +6,12 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { BooleanCheck } from '@backstage-community/plugin-tech-insights-react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { CheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
 import { Entity } from '@backstage/catalog-model';
-import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
-import { jsonRulesEngineCheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { PropsWithChildren } from 'react';
 import { ReactNode } from 'react';
-import { ResultCheckIconBaseComponentProps } from '@backstage-community/plugin-tech-insights-react';
-import { ResultCheckIconProps } from '@backstage-community/plugin-tech-insights-react';
-import { ResultLinksMenuInfo } from '@backstage-community/plugin-tech-insights-react';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react';
-import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
-import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
-
-export { BooleanCheck };
-
-export { Check };
-
-export { CheckResultRenderer };
 
 // @public (undocumented)
 export const EntityTechInsightsScorecardCard: (props: {
@@ -51,16 +34,6 @@ export const EntityTechInsightsScorecardContent: (props: {
   dense?: boolean | undefined;
 }) => JSX_2.Element;
 
-export { InsightFacts };
-
-export { jsonRulesEngineCheckResultRenderer };
-
-export { ResultCheckIconBaseComponentProps };
-
-export { ResultCheckIconProps };
-
-export { ResultLinksMenuInfo };
-
 // @public (undocumented)
 export const ScorecardInfo: (props: {
   checkResults: CheckResult[];
@@ -80,28 +53,6 @@ export const ScorecardsList: (props: {
   dense?: boolean | undefined;
   hideDescription?: boolean | undefined;
 }) => JSX_2.Element;
-
-export { TechInsightsApi };
-
-export { techInsightsApiRef };
-
-// @public @deprecated (undocumented)
-export const TechInsightsCheckIcon: <
-  P extends ResultCheckIconBaseComponentProps,
->(
-  props: ResultCheckIconProps<P>,
-) => JSX_2.Element;
-
-export { TechInsightsClient };
-
-// @public @deprecated (undocumented)
-export const TechInsightsLinksMenu: (
-  props: PropsWithChildren<{
-    result: CheckResult;
-    entity?: Entity | undefined;
-    setMenu(opener: ResultLinksMenuInfo | undefined): void;
-  }>,
-) => JSX_2.Element | null;
 
 // @public (undocumented)
 export const techInsightsPlugin: BackstagePlugin<
