@@ -106,8 +106,7 @@ export const CostOverviewCard = ({
   };
 
   // Metrics can only be selected on the total cost graph
-  const showMetricSelect =
-    metricData && config.metrics.length && safeTabIndex === 0;
+  const showMetricSelect = config.metrics.length && safeTabIndex === 0;
 
   return (
     <Card style={{ position: 'relative', overflow: 'visible' }}>
