@@ -25,7 +25,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@apollo/client": "^3.12.5",
+    "@apollo/client": "^4.0.0",
     "@backstage/core-components": "^0.17.3",
     "@backstage/core-plugin-api": "^1.10.8",
     "@backstage/plugin-catalog-react": "^1.19.0",
