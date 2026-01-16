@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-dynatrace': minor
+'@backstage-community/plugin-dynatrace': patch
 ---
 
-Added test scripts
+Fixed a minor React warning
