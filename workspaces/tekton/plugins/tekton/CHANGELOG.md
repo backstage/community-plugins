@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.34.1
+
+### Patch Changes
+
+- 39d5c9a: Added data test ids to pipeline run list for better plugin testability
+
 ## 3.34.0
 
 ### Minor Changes
