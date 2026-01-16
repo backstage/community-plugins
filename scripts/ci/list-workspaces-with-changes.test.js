@@ -15,25 +15,29 @@
  */
 import assert from 'node:assert/strict';
 import { afterEach, before, describe, it, mock } from 'node:test';
-
-import fs from 'node:fs/promises';
+import path from 'node:path';
 
 describe('list-workspaces-with-changes', () => {
   const expectedWorkspaces = ['noop', 'foobar', 'catpants', 'baz'];
   const GITHUB_OUTPUT = '/dev/null';
+  const stdoutArray = [
+    ...expectedWorkspaces.map(name => `workspaces/${name}/`),
+    'workspaces/no-package.json/',
+    'trash/here',
+    'workspaces/another-one/',
+    'other/junk',
+    'things',
+    'stuff',
+  ];
   const mockExecFile = mock.fn((_, __, ___, fn) => {
     fn(null, {
-      stdout: [
-        ...expectedWorkspaces.map(name => `workspaces/${name}/`),
-        'workspaces/no-package.json/',
-        'trash/here',
-        'workspaces/another-one/',
-        'other/junk',
-        'things',
-        'stuff',
-      ].join('\n'),
+      stdout: stdoutArray.join('\n'),
     });
   });
+  const mockAppendFile = mock.fn();
+  const mockStat = mock.fn(filename =>
+    Promise.resolve(expectedWorkspaces.includes(filename.split('/')[1])),
+  );
   let listWorkspacesWithChanges;
 
   before(() => {
@@ -46,26 +50,28 @@ describe('list-workspaces-with-changes', () => {
       },
     });
 
-    mock.method(fs, 'appendFile', () => {});
-    mock.method(fs, 'stat', path =>
-      Promise.resolve(expectedWorkspaces.includes(path.split('/')[1])),
-    );
+    mock.module('fs', {
+      namedExports: {
+        promises: {
+          appendFile: mockAppendFile,
+          stat: mockStat,
+        },
+      },
+    });
   });
 
   afterEach(() => {
-    [fs.appendFile, fs.stat, mockExecFile].forEach(mockFn => {
+    [mockAppendFile, mockExecFile, mockStat].forEach(mockFn => {
       mockFn.mock.resetCalls();
     });
   });
 
   [
-    ['BASE_REF', { BASE_REF: 'most-based-of-refs' }, 'most-based-of-refs...'],
-    [
-      'COMMIT_SHA_BEFORE',
-      { COMMIT_SHA_BEFORE: 'real-commit-sha' },
-      'real-commit-sha',
-    ],
-  ].forEach(([label, env, expected], index) => {
+    [{ BASE_REF: 'most-based-of-refs' }, 'most-based-of-refs...'],
+    [{ COMMIT_SHA_BEFORE: 'real-commit-sha' }, 'real-commit-sha'],
+  ].forEach(([env, expected], index) => {
+    const label = Object.keys(env)[0];
+
     describe(`with ${label}`, () => {
       before(async () => {
         mock.property(process, 'env', {
@@ -93,11 +99,25 @@ describe('list-workspaces-with-changes', () => {
         ]);
       });
 
+      it('should check if workspaces contain a package.json file', async () => {
+        await listWorkspacesWithChanges();
+        const matchingWorkspaces = stdoutArray.filter(x =>
+          x.startsWith('workspaces/'),
+        );
+
+        assert.equal(mockStat.mock.callCount(), matchingWorkspaces.length);
+        matchingWorkspaces.forEach((workspace, i) => {
+          assert.deepEqual(mockStat.mock.calls[i].arguments, [
+            path.join(workspace, 'package.json'),
+          ]);
+        });
+      });
+
       it('should append changed workspaces to GITHUB_OUTPUT', async () => {
         await listWorkspacesWithChanges();
 
-        assert.equal(fs.appendFile.mock.callCount(), 1);
-        assert.deepEqual(fs.appendFile.mock.calls[0].arguments, [
+        assert.equal(mockAppendFile.mock.callCount(), 1);
+        assert.deepEqual(mockAppendFile.mock.calls[0].arguments, [
           GITHUB_OUTPUT,
           `workspaces=${JSON.stringify(expectedWorkspaces)}\n`,
         ]);
