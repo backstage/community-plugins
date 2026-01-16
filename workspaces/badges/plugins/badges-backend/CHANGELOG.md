@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.19.1
+
+### Patch Changes
+
+- 54efeac: Updated dependency `badge-maker` to `^5.0.0`.
+
 ## 0.19.0
 
 ### Minor Changes
