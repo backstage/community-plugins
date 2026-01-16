@@ -166,8 +166,3 @@ export const renderStatusLabel = (data?: StatusData) => {
     </Typography>
   );
 };
-
-export const getPriorityValue = (priority: number) =>
-  renderStatusLabel(PRIORITY_MAP[priority]);
-export const getIncidentStateValue = (state: number) =>
-  renderStatusLabel(INCIDENT_STATE_MAP[state]);
