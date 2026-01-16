@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface Config {
-  /**
-   * Splunk On Call Plugin specific configs
-   */
-  splunkOnCall?: {
-    /**
-     * Base REST endpoint used for incident actions. Can be an absolute URL or
-     * a proxy path (for example, `/splunk-on-call-events`).
-     *
-     * @visibility frontend
-     */
-    eventsRestEndpoint?: string;
-  };
-}
+import { compatWrapper } from '@backstage/core-compat-api';
+import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isSplunkOnCallAvailable } from '../components';
+
+/**
+ * @alpha
+ */
+export const entitySplunkOnCallCard = EntityCardBlueprint.make({
+  name: 'splunk-on-call',
+  params: {
+    filter: isSplunkOnCallAvailable,
+    loader: () =>
+      import('../components/EntitySplunkOnCallCard').then(m =>
+        compatWrapper(<m.EntitySplunkOnCallCard />),
+      ),
+  },
+});

@@ -22,7 +22,7 @@ import {
   Team,
   User,
 } from '../components/types';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/frontend-plugin-api';
 
 /** @public */
 export type MessageType =
@@ -111,6 +111,7 @@ export type OnCallsResponse = {
 export type ClientApiConfig = {
   eventsRestEndpoint: string | null;
   discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
 };
 
 /** @public */

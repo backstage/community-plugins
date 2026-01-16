@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface Config {
-  /**
-   * Splunk On Call Plugin specific configs
-   */
-  splunkOnCall?: {
-    /**
-     * Base REST endpoint used for incident actions. Can be an absolute URL or
-     * a proxy path (for example, `/splunk-on-call-events`).
-     *
-     * @visibility frontend
-     */
-    eventsRestEndpoint?: string;
-  };
-}
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
+import { PageBlueprint } from '@backstage/frontend-plugin-api';
+import { rootRouteRef } from '../plugin';
+
+/**
+ * @alpha
+ */
+export const splunkOnCallPage = PageBlueprint.make({
+  params: {
+    path: '/splunk-on-call',
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: () =>
+      import('../components/SplunkOnCallPage').then(m =>
+        compatWrapper(<m.SplunkOnCallPage />),
+      ),
+  },
+});
