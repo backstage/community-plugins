@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { CatalogApi } from '@backstage/catalog-client';
 import { Entity, CompoundEntityRef } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
 import {
@@ -23,6 +22,7 @@ import {
   JenkinsInfo,
 } from './jenkinsInfoProvider';
 import { mockServices } from '@backstage/backend-test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 describe('JenkinsConfig', () => {
   it('Reads empty config', async () => {
@@ -171,9 +171,7 @@ describe('JenkinsConfig', () => {
 });
 
 describe('DefaultJenkinsInfoProvider', () => {
-  const mockCatalog: jest.Mocked<CatalogApi> = {
-    getEntityByRef: jest.fn(),
-  } as any as jest.Mocked<CatalogApi>;
+  const mockCatalog = catalogServiceMock.mock();
 
   const entityRef: CompoundEntityRef = {
     kind: 'Component',
@@ -202,7 +200,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
   });
 
@@ -230,7 +230,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toStrictEqual({
       baseUrl: 'https://jenkins.example.com',
@@ -271,7 +273,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -311,7 +315,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -351,7 +357,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins-other.example.com',
@@ -380,7 +388,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -409,7 +419,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -439,7 +451,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -473,7 +487,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins-other.example.com',
@@ -508,7 +524,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins-other.example.com',
@@ -545,7 +563,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkinsOverriden.example.com',
@@ -581,7 +601,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -616,7 +638,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
@@ -652,7 +676,9 @@ describe('DefaultJenkinsInfoProvider', () => {
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
       entityRef,
-      undefined,
+      expect.objectContaining({
+        credentials: expect.anything(),
+      }),
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',

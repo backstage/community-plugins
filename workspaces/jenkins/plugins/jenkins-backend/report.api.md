@@ -6,7 +6,7 @@
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BackstageCredentials } from '@backstage/backend-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -20,7 +20,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   // (undocumented)
   static fromConfig(options: {
     config: Config;
-    catalog: CatalogApi;
+    catalog: CatalogService;
     discovery: DiscoveryService;
     auth: AuthService;
     httpAuth?: HttpAuthService;

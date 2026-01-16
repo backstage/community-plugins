@@ -21,7 +21,7 @@ import {
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 import {
   Entity,
   CompoundEntityRef,
@@ -203,14 +203,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
 
   private constructor(
     private readonly config: JenkinsConfig,
-    private readonly catalog: CatalogApi,
+    private readonly catalog: CatalogService,
     private readonly auth: AuthService,
     private logger: LoggerService,
   ) {}
 
   static fromConfig(options: {
     config: Config;
-    catalog: CatalogApi;
+    catalog: CatalogService;
     discovery: DiscoveryService;
     auth: AuthService;
     httpAuth?: HttpAuthService;
@@ -229,18 +229,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     fullJobNames?: string[];
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo> {
-    // default limitation of projects
     const DEFAULT_LIMITATION_OF_PROJECTS = 50;
 
-    // load entity
-    const entity = await this.catalog.getEntityByRef(
-      opt.entityRef,
-      opt.credentials &&
-        (await this.auth.getPluginRequestToken({
-          onBehalfOf: opt.credentials,
-          targetPluginId: 'catalog',
-        })),
-    );
+    const credentials =
+      opt.credentials ?? (await this.auth.getOwnServiceCredentials());
+
+    const entity = await this.catalog.getEntityByRef(opt.entityRef, {
+      credentials,
+    });
     if (!entity) {
       throw new Error(
         `Couldn't find entity with name: ${stringifyEntityRef(opt.entityRef)}`,
