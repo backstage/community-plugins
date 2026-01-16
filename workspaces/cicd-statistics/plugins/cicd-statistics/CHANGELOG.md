@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cicd-statistics
 
+## 0.14.1
+
+### Patch Changes
+
+- 4e95de7: Remove unused dependencies
+
 ## 0.14.0
 
 ### Minor Changes
