@@ -90,7 +90,7 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
     "@types/dagre": "^0.7.52",
-    "@types/lodash": "4.17.21",
+    "@types/lodash": "4.17.23",
     "cross-fetch": "4.1.0"
   },
   "files": [
