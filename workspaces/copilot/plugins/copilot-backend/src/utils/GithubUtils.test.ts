@@ -365,7 +365,7 @@ describe('getGithubCredentials', () => {
     );
   });
 
-  it('should use app with empty allowedInstallationOwners for any organization', async () => {
+  it('should require allowedInstallationOwners to be configured for organization', async () => {
     const mockConfig = mockServices.rootConfig({
       data: {
         integrations: {
@@ -379,7 +379,7 @@ describe('getGithubCredentials', () => {
                   clientSecret: 'test1',
                   privateKey: `test1`,
                   webhookSecret: 'shhh1',
-                  // No allowedInstallationOwners means it works for any org
+                  // No allowedInstallationOwners - should not be selected
                 },
               ],
             },
@@ -388,16 +388,15 @@ describe('getGithubCredentials', () => {
       },
     });
 
-    const result = await getGithubCredentials(mockConfig, {
-      host: 'github.com',
-      organization: 'any-org',
-      apiBaseUrl: '',
-    });
-
-    expect(result.enterprise).toBeUndefined();
-    expect(typeof result.organization).toBe('object');
-    expect(result.organization).toHaveProperty('appId', 1111);
-    expect(result.organization).toHaveProperty('privateKey');
+    await expect(
+      getGithubCredentials(mockConfig, {
+        host: 'github.com',
+        organization: 'any-org',
+        apiBaseUrl: '',
+      }),
+    ).rejects.toThrow(
+      'No GitHub App configured for organization "any-org". Check allowedInstallationOwners in your GitHub integration config.',
+    );
   });
 
   it('should match organization case-insensitively', async () => {
