@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bitrise
 
+## 0.11.1
+
+### Patch Changes
+
+- 9a6edd2: Updated dependency `@types/recharts` to `^2.0.0`.
+
 ## 0.11.0
 
 ### Minor Changes
