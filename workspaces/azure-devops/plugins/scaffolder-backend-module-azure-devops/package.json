@@ -44,7 +44,7 @@
     "@backstage/errors": "backstage:^",
     "@backstage/integration": "backstage:^",
     "@backstage/plugin-scaffolder-node": "backstage:^",
-    "azure-devops-node-api": "^14.1.0",
+    "azure-devops-node-api": "^15.0.0",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
