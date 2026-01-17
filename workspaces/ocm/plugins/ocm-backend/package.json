@@ -52,7 +52,6 @@
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-node": "^1.20.1",
     "@backstage/plugin-permission-common": "^0.9.3",
-    "@backstage/plugin-permission-node": "^0.10.7",
     "@kubernetes/client-node": "1.4.0",
     "express": "^4.18.2",
     "semver": "^7.5.4"
