@@ -36,7 +36,7 @@ export async function createRouter({
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
-  ): Promise<void> => {
+  ) => {
     try {
       const credentials = await httpAuth.credentials(req);
       const decision = (
@@ -49,10 +49,11 @@ export async function createRouter({
         res.status(403).json({
           error: 'UNAUTHORIZED, please ensure you have the correct permissions',
         });
+        return;
       }
-      return next();
+      next();
     } catch (error) {
-      return next(error);
+      next(error);
     }
   };
   router.use(checkPermissions);
