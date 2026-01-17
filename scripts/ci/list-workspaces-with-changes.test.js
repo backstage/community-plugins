@@ -35,6 +35,9 @@ describe('list-workspaces-with-changes', () => {
     });
   });
   const mockAppendFile = mock.fn();
+  const mockReadFile = mock.fn(() =>
+    Promise.resolve(JSON.stringify({ engines: { node: '20 || 22' } })),
+  );
   const mockStat = mock.fn(filename =>
     Promise.resolve(expectedWorkspaces.includes(filename.split('/')[1])),
   );
@@ -54,6 +57,7 @@ describe('list-workspaces-with-changes', () => {
       namedExports: {
         promises: {
           appendFile: mockAppendFile,
+          readFile: mockReadFile,
           stat: mockStat,
         },
       },
@@ -61,7 +65,7 @@ describe('list-workspaces-with-changes', () => {
   });
 
   afterEach(() => {
-    [mockAppendFile, mockExecFile, mockStat].forEach(mockFn => {
+    [mockAppendFile, mockExecFile, mockReadFile, mockStat].forEach(mockFn => {
       mockFn.mock.resetCalls();
     });
   });
@@ -113,13 +117,38 @@ describe('list-workspaces-with-changes', () => {
         });
       });
 
+      it('should read package.json from each workspace', async () => {
+        await listWorkspacesWithChanges();
+
+        assert.equal(mockReadFile.mock.callCount(), expectedWorkspaces.length);
+        expectedWorkspaces.forEach((workspace, i) => {
+          assert.deepEqual(mockReadFile.mock.calls[i].arguments, [
+            path.join('workspaces', workspace, 'package.json'),
+          ]);
+        });
+      });
+
       it('should append changed workspaces to GITHUB_OUTPUT', async () => {
         await listWorkspacesWithChanges();
 
-        assert.equal(mockAppendFile.mock.callCount(), 1);
+        assert.equal(mockAppendFile.mock.callCount(), 2);
         assert.deepEqual(mockAppendFile.mock.calls[0].arguments, [
           GITHUB_OUTPUT,
           `workspaces=${JSON.stringify(expectedWorkspaces)}\n`,
+        ]);
+      });
+
+      it('should append changed workspace node versions to GITHUB_OUTPUT', async () => {
+        await listWorkspacesWithChanges();
+        const expectedOutput = expectedWorkspaces.flatMap(workspace => [
+          { workspace, nodeVersion: '20.x' },
+          { workspace, nodeVersion: '22.x' },
+        ]);
+
+        assert.equal(mockAppendFile.mock.callCount(), 2);
+        assert.deepEqual(mockAppendFile.mock.calls[1].arguments, [
+          GITHUB_OUTPUT,
+          `workspace_node_matrix=${JSON.stringify(expectedOutput)}\n`,
         ]);
       });
     });
