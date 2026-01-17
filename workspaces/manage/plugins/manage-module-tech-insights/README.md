@@ -4,7 +4,7 @@ This Manage page module integrates Backstage Tech Insights into the Manage page.
 
 It provides:
 
-- Aggregated check results rendered as a content widget above or below the entity table
+- Aggregated check results rendered as a card or content widget above or below the entity table
 - Tech Insights checks rendered as columns in the entity table, either as individual columns per check or as a single aggregated column per entity
 
 ## Installation
@@ -26,14 +26,16 @@ Most configuration is done through extension configuration in `app-config.yaml`.
 This module exposes three extension node IDs:
 | Node ID | Extension |
 | ------------------------------------------- | ----------------------------------------------------------------------------- |
-| `manage-content-widget:tech-insights/cards` | Content widget with card gauges, showing aggregated checks |
-| `manage-content-widget:tech-insights/grid` | Content widget with grid gauges, showing smaller cards with aggregated checks |
+| `manage-card-widget:tech-insights/grid` | Card widget with grid gauges, showing small [tags](https://ui.backstage.io/components/tag-group) with aggregated checks |
+| `manage-content-widget:tech-insights/cards` | Content widget with card gauges, showing aggregated checks<br>These are shown by default, but can be turned off with `attachTo: []` |
+| `manage-content-widget:tech-insights/grid` | Content widget with grid gauges, showing small [tags](https://ui.backstage.io/components/tag-group) with aggregated checks |
 | `manage-column:tech-insights/checks` | Entity table columns |
 
 The example below configures:
 
 - Cards for the Components tab and for the Entities tab (i.e. if all kinds of entities are combined into one tab)
 - Grids for Systems
+- Card widget with grid gauges for starred entities
 - One single column with aggregated checks for the combined Entities tab and for Components, and \
   Multiple columns (one per check) for Systems and Apis
 
@@ -49,6 +51,10 @@ app:
         config:
           attachTo:
             - system
+    - manage-card-widget:tech-insights/grid:
+        config:
+          attachTo:
+            - $starred
     - manage-column:tech-insights/checks:
         config:
           attachTo:

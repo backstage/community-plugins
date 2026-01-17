@@ -107,5 +107,12 @@ export interface Config {
       /** Column order of extensions in the entities tables */
       columns?: string[];
     };
+
+    /**
+     * Progress bar style to use for percentage indicators
+     *
+     * @defaultValue 'circular'
+     */
+    progressStyle?: 'circular' | 'linear';
   };
 }

@@ -44,6 +44,7 @@ export type ManageContentWidgetAccordionTitle =
 export interface ManageContentWidgetAccordion {
   title: ManageContentWidgetAccordionTitle;
   show: boolean | Record<string, boolean>;
+  showTitle: boolean;
   defaultExpanded: boolean;
   perKind: boolean;
   key: string;
@@ -90,6 +91,7 @@ export const ManageEntityContentWidgetBlueprint = createExtensionBlueprint({
         z.union([z.boolean(), z.record(z.string(), z.boolean())]).optional(),
       accordionDefaultExpanded: z => z.boolean().optional(),
       accordionPerKind: z => z.boolean().optional(),
+      showTitle: z => z.boolean().optional(),
     },
   },
   *factory(
@@ -140,6 +142,9 @@ export const ManageEntityContentWidgetBlueprint = createExtensionBlueprint({
         key?: string;
       };
 
+      /** Show the accordion title even when not in an accordion */
+      showTitle?: boolean;
+
       /** Attach the widgets to tabs of these kinds by default */
       attachTo?: string[];
       /**
@@ -163,6 +168,7 @@ export const ManageEntityContentWidgetBlueprint = createExtensionBlueprint({
       key: params.accordion.key ?? node.spec.id,
       title: params.accordion.accordionTitle,
       show: config.inAccordion ?? params.accordion.show ?? true,
+      showTitle: config.showTitle ?? params.showTitle ?? false,
       defaultExpanded:
         config.accordionDefaultExpanded ??
         params.accordion.defaultExpanded ??

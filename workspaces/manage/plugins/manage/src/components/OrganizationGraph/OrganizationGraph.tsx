@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useCallback, useMemo, useState } from 'react';
+
+import { useCallback, useMemo, useState, type CSSProperties } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
-import { makeStyles } from '@mui/styles';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Switch from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
-
+import { Box, Card, CardBody, Grid, Switch } from '@backstage/ui';
 import {
   Direction,
   EntityNode,
@@ -42,18 +36,15 @@ import {
   usePosition,
 } from '@backstage-community/plugin-manage-react';
 
-const useStyles = makeStyles(theme => ({
-  controlsCard: {
-    position: 'absolute',
-    backgroundColor: `rgba(from ${theme.palette.background.paper} r g b / 0.8)`,
-  },
-  controlsCardContent: {
-    padding: `${theme.spacing(2)} !important`,
-  },
-  label: {
-    userSelect: 'none',
-  },
-}));
+const styleControlsCard: CSSProperties = {
+  position: 'absolute',
+  backgroundColor: `rgba(from var(--bui-bg-surface-1) r g b / 0.8)`,
+  width: 'fit-content',
+  userSelect: 'none',
+};
+const styleControlsCardContent: CSSProperties = {
+  paddingInline: `var(--bui-space-3) !important`,
+};
 
 /** @public */
 export interface OrganizationGraphProps {
@@ -71,7 +62,6 @@ export interface OrganizationGraphProps {
 export function OrganizationGraphImpl({
   enableWholeOrganization = true,
 }: OrganizationGraphProps) {
-  const { label, controlsCard, controlsCardContent } = useStyles();
   const [wholeOrg, setWholeOrg] = useState(false);
   const [leftRight, setLeftRight] = useState(false);
 
@@ -174,35 +164,27 @@ export function OrganizationGraphImpl({
         // @ts-ignore
         entitySet={entitySet}
       />
-      <Card className={controlsCard}>
-        <CardContent className={controlsCardContent}>
-          <FormGroup row={false}>
+      <Card style={styleControlsCard}>
+        <CardBody style={styleControlsCardContent}>
+          <Grid.Root columns="1">
             {enableWholeOrganization && (
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={wholeOrg}
-                    onChange={(_, checked) => setWholeOrg(checked)}
-                    color="primary"
-                  />
-                }
-                label={
-                  <Typography className={label}>Whole organization</Typography>
-                }
-              />
-            )}
-            <FormControlLabel
-              control={
+              <Box>
                 <Switch
-                  checked={leftRight}
-                  onChange={(_, checked) => setLeftRight(checked)}
-                  color="primary"
+                  isSelected={wholeOrg}
+                  onChange={setWholeOrg}
+                  label="Whole organization"
                 />
-              }
-              label={<Typography className={label}>Left to right</Typography>}
-            />
-          </FormGroup>
-        </CardContent>
+              </Box>
+            )}
+            <Box>
+              <Switch
+                isSelected={leftRight}
+                onChange={setLeftRight}
+                label="Left to right"
+              />
+            </Box>
+          </Grid.Root>
+        </CardBody>
       </Card>
     </div>
   );

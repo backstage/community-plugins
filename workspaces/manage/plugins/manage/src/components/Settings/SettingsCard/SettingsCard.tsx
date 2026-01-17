@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
+import { Card, CardHeader, CardBody, Box, Flex, Text } from '@backstage/ui';
 
 import { Setting } from '../types';
 
@@ -26,12 +24,19 @@ import { Setting } from '../types';
 export function SettingsCard({ setting }: { setting: Setting }) {
   return (
     <Card>
-      <CardHeader
-        title={setting.title}
-        subheader={setting.subtitle}
-        action={setting.action}
-      />
-      <CardContent>{setting.element}</CardContent>
+      <CardHeader>
+        <Flex>
+          <Box style={{ width: '100%' }}>
+            <Text variant="title-small">{setting.title}</Text>
+            <br />
+            {setting.subtitle && (
+              <Text variant="body-small">{setting.subtitle}</Text>
+            )}
+          </Box>
+          <Box>{setting.action}</Box>
+        </Flex>
+      </CardHeader>
+      <CardBody>{setting.element}</CardBody>
     </Card>
   );
 }
