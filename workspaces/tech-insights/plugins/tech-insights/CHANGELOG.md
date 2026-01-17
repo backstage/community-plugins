@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.8.0
+
+### Minor Changes
+
+- b5f45fd: The plugin now supports the new frontend system by importing from `@backstage-community/plugin-tech-insights/alpha`.
+
 ## 0.7.0
 
 ### Minor Changes
