@@ -21,6 +21,7 @@
     "pluginId": "multi-source-security-viewer",
     "pluginPackages": [
       "@backstage-community/plugin-multi-source-security-viewer",
+      "@backstage-community/plugin-multi-source-security-viewer-backend",
       "@backstage-community/plugin-multi-source-security-viewer-common"
     ]
   },
