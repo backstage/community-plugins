@@ -281,7 +281,6 @@ import {
 // MCPServerType enum - Connection types
 enum MCPServerType {
   STDIO = 'stdio', // Local process via stdin/stdout
-  SSE = 'sse', // Server-Sent Events
   STREAMABLE_HTTP = 'streamable-http', // HTTP streaming
 }
 
@@ -293,7 +292,7 @@ interface MCPServerConfig {
   scriptPath?: string; // For STDIO: path to script
   npxCommand?: string; // For STDIO: npx package
   args?: string[]; // Command-line arguments
-  url?: string; // For HTTP/SSE: endpoint URL
+  url?: string; // For HTTP: endpoint URL
 }
 
 // MCPServerSecrets - Sensitive configuration
@@ -390,12 +389,6 @@ mcpChat:
       url: http://localhost:3000/mcp
       headers:
         Authorization: Bearer ${MCP_TOKEN}
-
-    # SSE server
-    - id: sse-server
-      name: SSE MCP Server
-      type: sse
-      url: http://localhost:3001/sse
 
   # Optional: Custom system prompt
   systemPrompt: 'You are a helpful Kubernetes assistant.'

@@ -250,8 +250,6 @@ export interface MCPServerStatusData {
 // @public
 export enum MCPServerType {
   // (undocumented)
-  SSE = 'sse',
-  // (undocumented)
   STDIO = 'stdio',
   // (undocumented)
   STREAMABLE_HTTP = 'streamable-http',
