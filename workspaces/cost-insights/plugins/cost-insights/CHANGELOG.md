@@ -1,5 +1,12 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.24.1
+
+### Patch Changes
+
+- efd0824: The cost breakdown tab for the cost insights page will have a horizontal scroll when adding multiple cost breakdowns
+- 9a6edd2: Updated dependency `@types/recharts` to `^2.0.0`.
+
 ## 0.24.0
 
 ### Minor Changes
