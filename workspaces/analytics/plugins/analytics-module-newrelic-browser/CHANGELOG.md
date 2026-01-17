@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.14.0
+
+### Minor Changes
+
+- 5778064: Backstage version bump to v1.46.1
+
 ## 0.13.0
 
 ### Minor Changes

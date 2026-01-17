@@ -35,9 +35,10 @@ const tableMetadata = (
     values.selectedMembers.length > 0
       ? `${t('table.headers.usersAndGroups')} (${getMembers(values.selectedMembers, t)})`
       : t('table.headers.usersAndGroups');
-  const permissionPoliciesKey = `Permission policies (${getPermissionsNumber(
-    values,
-  )})`;
+  const permissionPoliciesKey = t(
+    'roleForm.review.permissionPoliciesWithCount' as any,
+    { count: String(getPermissionsNumber(values)) },
+  );
   return {
     [t('roleForm.review.nameDescriptionOwner')]: (
       <>

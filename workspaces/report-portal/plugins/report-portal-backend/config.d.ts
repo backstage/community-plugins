@@ -15,7 +15,7 @@
  */
 export interface Config {
   /**
-   * Configuration values for Report Portal plugin
+   * Configuration values for ReportPortal plugin
    * @visibility frontend
    */
   reportPortal?: {
@@ -34,12 +34,12 @@ export interface Config {
      */
     integrations?: Array<{
       /**
-       * Host of report portal url
+       * Host of ReportPortal url
        * @visibility frontend
        */
       host: string;
       /**
-       * Base api url for report portal instance, add trailing '/' in url
+       * Base api url for ReportPortal instance, add trailing '/' in url
        * @visibility backend
        */
       baseUrl: string;

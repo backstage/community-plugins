@@ -1,5 +1,17 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.6.1
+
+### Patch Changes
+
+- 4df0e5f: Fix broken servicenow incident link.
+
+## 1.6.0
+
+### Minor Changes
+
+- 8472540: Support custom ServiceNow incident table fields in entity annotations
+
 ## 1.5.1
 
 ### Patch Changes

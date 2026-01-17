@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-kiali-common",
   "description": "Common functionalities for the kiali plugin",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -65,7 +65,9 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.9.13",
-    "@patternfly/react-icons": "^5.1.1",
+    "@mui/icons-material": "^5.17.1",
+    "@mui/material": "^5.17.1",
+    "@mui/system": "^5.17.1",
     "axios": "^1.7.4",
     "deep-freeze": "0.0.1",
     "js-yaml": "^3.13.1",

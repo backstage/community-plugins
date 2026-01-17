@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apollo-explorer
 
+## 0.15.1
+
+### Patch Changes
+
+- f57ce68: Remove unused dependencies
+
 ## 0.15.0
 
 ### Minor Changes

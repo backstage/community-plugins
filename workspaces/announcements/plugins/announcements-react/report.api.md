@@ -171,6 +171,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.createButton': 'Create Announcement';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
+    readonly 'admin.announcementsContent.deletedMessage': 'Announcement deleted.';
     readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.categoriesContent.table.title': 'Title';
     readonly 'admin.categoriesContent.table.actions': 'Actions';
@@ -209,7 +210,6 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
-    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
     readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
@@ -277,6 +277,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'viewAnnouncementPage.by': 'By';
     readonly 'viewAnnouncementPage.announcements': 'Announcements';
     readonly 'viewAnnouncementPage.backToAnnouncements': 'Back to announcements';
+    readonly 'viewAnnouncementPage.backToAdmin': 'Back to admin';
     readonly 'viewAnnouncementPage.notFound': 'Announcement not found';
     readonly 'viewAnnouncementPage.tagsAriaLabel': 'Announcement Tags';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';

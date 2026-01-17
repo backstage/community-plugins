@@ -1,9 +1,9 @@
 app:
-  title: Report Portal Example App
+  title: ReportPortal Example App
   baseUrl: http://localhost:3000
 
 organization:
-  name: Report Portal Example
+  name: ReportPortal Example
 
 backend:
   baseUrl: http://localhost:7007

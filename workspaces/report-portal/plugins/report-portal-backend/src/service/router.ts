@@ -49,7 +49,7 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { config, logger } = options;
 
-  logger.info('Report portal backend plugin initialized');
+  logger.info('ReportPortal backend plugin initialized');
   const hostsConfig = config.getConfigArray('reportPortal.integrations');
 
   const router = Router();

@@ -38,7 +38,7 @@ import {
   useAnalytics,
 } from '@backstage/core-plugin-api';
 import { Alert } from '@material-ui/lab';
-import { RiArrowLeftLine, RiHashtag, RiPriceTag3Line } from '@remixicon/react';
+import { RiHashtag, RiPriceTag3Line } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {
   announcementsApiRef,
@@ -55,6 +55,7 @@ import {
   MarkdownRenderer,
   MarkdownRendererTypeProps,
 } from '../../../components';
+import { BackToAnnouncementsButton } from '../shared';
 
 const AnnouncementCategoryBadge = (props: {
   category: Category | undefined;
@@ -94,22 +95,6 @@ const AnnouncementTagsTagGroup = (props: { tags: AnnouncementTag[] }) => {
         </Tag>
       ))}
     </TagGroup>
-  );
-};
-
-const BackToAnnouncementsButton = () => {
-  const announcementsLink = useRouteRef(rootRouteRef);
-  const { t } = useAnnouncementsTranslation();
-  return (
-    <Link href={announcementsLink()} color="secondary" variant="body-x-small">
-      <Flex align="center" gap="2">
-        <RiArrowLeftLine size={16} />
-        <Text variant="body-small">
-          {' '}
-          {t('viewAnnouncementPage.backToAnnouncements')}
-        </Text>
-      </Flex>
-    </Link>
   );
 };
 
@@ -231,7 +216,9 @@ export const ViewAnnouncementPage = (props: ViewAnnouncementPageProps) => {
           </Grid.Item>
 
           <Grid.Item>
-            <BackToAnnouncementsButton />
+            <Box mb="8">
+              <BackToAnnouncementsButton />
+            </Box>
           </Grid.Item>
         </Grid.Root>
       </Container>

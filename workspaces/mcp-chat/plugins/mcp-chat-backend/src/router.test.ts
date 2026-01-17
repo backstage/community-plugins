@@ -119,7 +119,7 @@ describe('createRouter', () => {
           {
             id: 'backstage-server',
             name: 'Backstage Server',
-            type: MCPServerType.SSE,
+            type: MCPServerType.STREAMABLE_HTTP,
             status: {
               valid: true,
               connected: true,

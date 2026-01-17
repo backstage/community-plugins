@@ -117,12 +117,19 @@ test('Overview card content', async ({ page }) => {
   const sparklineChart = overviewcard.locator('svg').first();
   await expect(sparklineChart).toBeVisible();
 
-  // Verify the chart has data points (path elements)
-  // Use a more specific selector that waits for paths with data (those with 'd' attribute)
-  const chartPaths = sparklineChart.locator('path[role="presentation"]');
-  await expect(chartPaths.first()).toBeVisible();
+  // Verify the chart has data points (paths with a 'd' attribute).
+  // MUI X Charts doesn't use role="presentation" here.
+  await page.waitForFunction(
+    svgSelector => {
+      const svg = document.querySelector(svgSelector);
+      if (!svg) return false;
+      return svg.querySelectorAll('path[d]').length > 0;
+    },
+    `[data-test="overview-card-bookinfo"] svg`,
+    { timeout: 15000 },
+  );
 
-  // Additional verification: ensure there are path elements (data points) in the chart
+  const chartPaths = sparklineChart.locator('path[d]');
   const pathCount = await chartPaths.count();
   expect(pathCount).toBeGreaterThan(0);
 });

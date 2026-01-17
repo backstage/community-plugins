@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.19.0
+
+### Minor Changes
+
+- 5711f69: Removes all existing deprecation notices. If you are still using `DashboardSnapshotComponent`, this will be a breaking change.
+
 ## 0.18.0
 
 ### Minor Changes

@@ -21,6 +21,8 @@ export const healthIndicatorStyle = kialiStyle({
     '& .pf-v6-c-tooltip__content': {
       borderWidth: '1px',
       textAlign: 'left',
+      fontSize: '14px',
+      lineHeight: 1.35,
     },
 
     '& .pf-v6-c-content ul': {

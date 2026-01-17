@@ -16,7 +16,7 @@
 
 import { Dispatch, SetStateAction } from 'react';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@backstage-community/plugin-tekton-react';
 
 export const tektonGroupColor = '#38812f';
 

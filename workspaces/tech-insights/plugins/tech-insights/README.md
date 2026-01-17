@@ -16,7 +16,20 @@ Main areas covered by this plugin currently are:
 yarn --cwd packages/app add @backstage-community/plugin-tech-insights
 ```
 
-### Add boolean checks overview (Scorecards) page to the EntityPage
+### Integrating with the New Frontend System
+
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), the plugin will be auto-discovered and automatically register:
+
+- The Tech Insights API
+- The Scorecards page at `/tech-insights`
+- Entity content for displaying scorecards on entity pages
+- Entity cards for displaying scorecards in entity overview
+
+### Integrating with the Legacy Frontend System
+
+The following sections describe how to integrate the plugin with the legacy frontend system.
+
+#### Add boolean checks overview (Scorecards) page to the EntityPage
 
 ```tsx
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -119,7 +132,7 @@ If you follow the [Backend Example](../tech-insights-backend#backend-example), o
 
 ![Boolean Scorecard Example](./docs/boolean-scorecard-example.png)
 
-### Add overview (Scorecards) page
+#### Add overview (Scorecards) page
 
 ![Scorecard Overview](./docs/scorecard-overview.png)
 
