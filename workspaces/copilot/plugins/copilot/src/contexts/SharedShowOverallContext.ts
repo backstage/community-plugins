@@ -13,5 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { SelectTeamFilter } from './SelectTeamFilter';
-export { OverallToggle } from './OverallToggle';
+import createStateContext from 'react-use/lib/factory/createStateContext';
+
+export const [useSharedShowOverall, SharedShowOverallProvider] =
+  createStateContext<boolean>(true);
