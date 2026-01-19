@@ -255,6 +255,7 @@ export const mockTeamEngagementMetrics: Record<string, EngagementMetrics[]> = {
 export const mockOverallSeatAnalysis: SeatAnalysis[] = dates.map(day => ({
   day,
   type: 'enterprise' as const,
+  team_name: '',
   total_seats: 800,
   seats_never_used: 100 + Math.floor(Math.random() * 20),
   seats_inactive_7_days: 80 + Math.floor(Math.random() * 15),
