@@ -50,6 +50,33 @@ techInsights:
 When more than one is supplied, the requested fact **MUST** be present in at least one of the fact retrievers.
 The order of the fact retrievers defined in the `factIds` array has no bearing on the checks, the check will merge all facts from the various retrievers, and then check against latest fact .
 
+### Adding filter in check
+
+Filters allow you to selectively run checks only on entities that match specific criteria. This is useful when you want different checks to apply to different types of entities.
+
+Filters are defined using the `filter` property in your check configuration. The filter can match entity properties using dot notation to access nested fields:
+
+```yaml title="app-config.yaml"
+techInsights:
+  factChecker:
+    checks:
+      groupOwnerCheck:
+        type: json-rules-engine
+        name: Group Owner Check
+        description: Verifies that a group has been set as the spec.owner for this entity
+        factIds:
+          - entityOwnershipFactRetriever
+        filter:
+          kind: component
+          spec.lifecycle: production
+        rule:
+          conditions:
+            all:
+              - fact: hasGroupOwner
+                operator: equal
+                value: true
+```
+
 ## Custom operators
 
 json-rules-engine supports a limited [number of built-in operators](https://github.com/CacheControl/json-rules-engine/blob/master/docs/rules.md#operators) that can be used in conditions. You can add your own operators by adding them to the `operators` array in the `JsonRulesEngineFactCheckerFactory` constructor. For example:
