@@ -218,11 +218,13 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.filter.categorySearchPlaceholder': 'Search categories...';
     readonly 'announcementsPage.filter.tagsPlaceholder': 'Select tags';
     readonly 'announcementsPage.filter.tagsSearchPlaceholder': 'Search tags...';
-    readonly 'announcementsPage.filter.noAnnouncementsFound': 'No announcements found with the selected filters.';
+    readonly 'announcementsPage.filter.noFilteredAnnouncementsFound': 'No announcements found with the selected filters.';
     readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
     readonly 'announcementsPage.announcements': 'Announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
+    readonly 'announcementsPage.errorLoadingAnnouncements': 'Error loading announcements.';
+    readonly 'announcementsPage.noAnnouncementsFound': 'No announcements found.';
     readonly 'announcementsPage.card.by': 'By';
     readonly 'announcementsPage.card.in': 'in';
     readonly 'announcementsPage.card.delete': 'Delete';

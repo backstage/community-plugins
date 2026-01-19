@@ -64,9 +64,11 @@ export const announcementsTranslationRef = createTranslationRef({
         tagsPlaceholder: 'Select tags',
         tagsSearchPlaceholder: 'Search tags...',
         clear: 'Clear Filters',
-        noAnnouncementsFound:
+        noFilteredAnnouncementsFound:
           'No announcements found with the selected filters.',
       },
+      errorLoadingAnnouncements: 'Error loading announcements.',
+      noAnnouncementsFound: 'No announcements found.',
     },
     confirmDeleteDialog: {
       title: 'Are you sure you want to delete?',

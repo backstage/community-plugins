@@ -65,7 +65,9 @@ export const AnnouncementsGrid = ({
     return (
       <Card>
         <CardBody>
-          <Text color="danger">Error loading announcements</Text>
+          <Text color="danger">
+            {t('announcementsPage.errorLoadingAnnouncements')}
+          </Text>
         </CardBody>
       </Card>
     );
@@ -91,12 +93,12 @@ export const AnnouncementsGrid = ({
                 <CardBody>
                   {category || tags ? (
                     <Text>
-                      {t('announcementsPage.filter.noAnnouncementsFound')}
+                      {t(
+                        'announcementsPage.filter.noFilteredAnnouncementsFound',
+                      )}
                     </Text>
                   ) : (
-                    <Text>
-                      {t('admin.announcementsContent.noAnnouncementsFound')}
-                    </Text>
+                    <Text>{t('announcementsPage.noAnnouncementsFound')}</Text>
                   )}
                 </CardBody>
               </Card>
