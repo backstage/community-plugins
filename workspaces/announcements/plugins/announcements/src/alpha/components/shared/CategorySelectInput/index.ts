@@ -13,8 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './AnnouncementTags';
-export * from './AnnouncementPublishedBy';
-export * from './BackToAnnouncementsButton';
-export * from './CategorySelectInput';
-export * from './TagsSelectInput';
+export { CategorySelectInput } from './CategorySelectInput';

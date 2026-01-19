@@ -40,6 +40,7 @@ export const announcementsTranslationRef = createTranslationRef({
       tagsLabel: 'Tags',
     },
     announcementsPage: {
+      announcements: 'Announcements',
       newAnnouncement: 'New announcement',
       genericNew: 'New',
       card: {
@@ -54,6 +55,20 @@ export const announcementsTranslationRef = createTranslationRef({
       contextMenu: {
         admin: 'Manage announcements',
       },
+      filter: {
+        label: 'Filters:',
+        category: 'Category',
+        categoryPlaceholder: 'Select a category',
+        categorySearchPlaceholder: 'Search categories...',
+        tags: 'Tags',
+        tagsPlaceholder: 'Select tags',
+        tagsSearchPlaceholder: 'Search tags...',
+        clear: 'Clear Filters',
+        noFilteredAnnouncementsFound:
+          'No announcements found with the selected filters.',
+      },
+      errorLoadingAnnouncements: 'Error loading announcements.',
+      noAnnouncementsFound: 'No announcements found.',
     },
     confirmDeleteDialog: {
       title: 'Are you sure you want to delete?',
