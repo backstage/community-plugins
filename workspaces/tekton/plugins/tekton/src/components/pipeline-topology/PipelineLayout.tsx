@@ -195,7 +195,7 @@ export const PipelineLayout = ({ model }: PipelineLayoutProps) => {
     >
       <VisualizationProvider controller={vis}>
         <TopologyView controlBar={controlBar(vis)}>
-          <VisualizationSurface />
+          <VisualizationSurface data-testid="pipeline-visualization-surface" />
         </TopologyView>
       </VisualizationProvider>
     </div>

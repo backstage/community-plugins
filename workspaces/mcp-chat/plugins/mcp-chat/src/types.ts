@@ -20,7 +20,6 @@
  */
 export enum MCPServerType {
   STDIO = 'stdio',
-  SSE = 'sse',
   STREAMABLE_HTTP = 'streamable-http',
 }
 
@@ -77,7 +76,7 @@ export interface MCPServer {
   scriptPath?: string;
   npxCommand?: string;
   args?: string[];
-  // For SSE connections
+  // For HTTP connections
   url?: string;
   // Connection type
   type: MCPServerType;

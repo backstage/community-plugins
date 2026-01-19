@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar
 
+## 0.18.2
+
+### Patch Changes
+
+- 178524c: Remove unused dependencies
+
 ## 0.18.1
 
 ### Patch Changes

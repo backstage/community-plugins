@@ -90,6 +90,8 @@ export const CostOverviewCard = ({
           indicatorColor="primary"
           onChange={(_, index) => setTabIndex(index)}
           value={safeTabIndex}
+          variant="scrollable"
+          scrollButtons="auto"
         >
           {tabs.map((tab, index) => (
             <Tab

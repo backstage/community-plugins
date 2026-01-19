@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bazaar",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "bazaar",
@@ -37,7 +37,6 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
@@ -60,9 +59,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
     "@types/react-window": "^1.8.8",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.19.1
+
+### Patch Changes
+
+- 178524c: Remove unused dependencies
+
 ## 0.19.0
 
 ### Minor Changes

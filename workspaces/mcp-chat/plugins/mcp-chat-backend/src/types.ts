@@ -30,14 +30,12 @@ export const VALID_ROLES = ['user', 'assistant', 'system', 'tool'] as const;
  * MCP server connection types.
  *
  * - `STDIO`: Local process communication via stdin/stdout
- * - `SSE`: Server-Sent Events over HTTP
  * - `STREAMABLE_HTTP`: Streamable HTTP transport
  *
  * @public
  */
 export enum MCPServerType {
   STDIO = 'stdio',
-  SSE = 'sse',
   STREAMABLE_HTTP = 'streamable-http',
 }
 
@@ -61,7 +59,7 @@ export type LLMProviderType =
 
 /**
  * Configuration for an MCP server.
- * Supports multiple connection types: STDIO, SSE, and Streamable HTTP.
+ * Supports multiple connection types: STDIO and Streamable HTTP.
  *
  * @example
  * ```typescript
@@ -90,7 +88,7 @@ export interface MCPServerConfig {
   id: string;
   /** Human-readable name for display */
   name: string;
-  /** Connection type: stdio, sse, or streamable-http */
+  /** Connection type: stdio or streamable-http */
   type: MCPServerType;
   /** Path to a local script (for STDIO servers) */
   scriptPath?: string;
@@ -98,7 +96,7 @@ export interface MCPServerConfig {
   npxCommand?: string;
   /** Command-line arguments to pass to the server */
   args?: string[];
-  /** URL endpoint (for SSE and HTTP servers) */
+  /** URL endpoint (for HTTP servers) */
   url?: string;
 }
 

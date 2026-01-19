@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "tech-insights",
@@ -15,9 +15,22 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "homepage": "https://backstage.io",
   "repository": {
@@ -45,9 +58,11 @@
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage-community/plugin-tech-insights-react": "workspace:^",
     "@backstage/catalog-model": "^1.7.6",
+    "@backstage/core-compat-api": "^0.5.5",
     "@backstage/core-components": "^0.18.4",
     "@backstage/core-plugin-api": "^1.12.1",
     "@backstage/errors": "^1.2.7",
+    "@backstage/frontend-plugin-api": "^0.13.2",
     "@backstage/plugin-catalog-react": "^1.21.4",
     "@backstage/types": "^1.2.2",
     "@material-table/exporters": "^1.2.19",
