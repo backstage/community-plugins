@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ApiiroDataService } from '../data.service';
 import {
@@ -34,7 +34,7 @@ export interface RisksHandlerDependencies {
  * Fetches all risks for a specific repository with optional filters
  */
 export function createRisksHandler(deps: RisksHandlerDependencies) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: Request, res: Response) => {
     const { dataService, logger } = deps;
 
     try {

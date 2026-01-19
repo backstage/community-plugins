@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 export interface HealthHandlerDependencies {
@@ -25,7 +25,7 @@ export interface HealthHandlerDependencies {
  * Returns a simple status response to verify service is running
  */
 export function createHealthHandler(deps: HealthHandlerDependencies) {
-  return (_req: express.Request, res: express.Response) => {
+  return (_req: Request, res: Response) => {
     const { logger } = deps;
     logger.debug('Health check - PONG from Apiiro service');
     res.json({ status: 'ok' });

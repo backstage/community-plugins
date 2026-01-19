@@ -44,7 +44,7 @@ import {
 } from '../constants';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 import { fetchWithErrorHandling, fetchAllPages } from './utils';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import { LoggerService, CacheService } from '@backstage/backend-plugin-api';
 import { ApiiroNotConfiguredError } from './utils/errors';
 
 export type DefaultRiskFilters = {
@@ -60,16 +60,11 @@ export type ApiiroConfigOptions = {
   fetchFn?: typeof fetch;
   timeoutMs?: number;
   defaultRiskFilters?: DefaultRiskFilters;
+  cache: CacheService;
 };
 
 // Type for the displayName to name mapping
 type FilterDisplayNameToNameMap = Record<string, Record<string, string>>;
-
-// Cache structure for filter options
-type FilterOptionsCache = {
-  data: ApiiroFilterOptionsResponse;
-  timestamp: number;
-};
 
 export class ApiiroConfig {
   private readonly baseUrl: string;
@@ -77,11 +72,13 @@ export class ApiiroConfig {
   private readonly fetchFn: typeof fetch;
   private readonly timeoutMs: number;
   private readonly defaultRiskFilters: DefaultRiskFilters;
+  private readonly cache: CacheService;
+  private readonly FILTER_OPTIONS_CACHE_KEY = 'filter_options';
   private filterDisplayNameToNameMap: FilterDisplayNameToNameMap = {};
-  private filterOptionsCache: FilterOptionsCache | null = null;
 
   static fromConfig(
     config: Config,
+    cache: CacheService,
     logger: LoggerService,
   ): ApiiroConfig | undefined {
     const baseUrl = APIIRO_DEFAULT_BASE_URL;
@@ -97,7 +94,12 @@ export class ApiiroConfig {
           | DefaultRiskFilters
           | undefined) ?? {};
 
-      return new ApiiroConfig({ baseUrl, accessToken, defaultRiskFilters });
+      return new ApiiroConfig({
+        baseUrl,
+        accessToken,
+        defaultRiskFilters,
+        cache,
+      });
     } catch (error) {
       logger.error(
         `Failed to load Apiiro configuration: ${
@@ -114,6 +116,7 @@ export class ApiiroConfig {
     this.fetchFn = options.fetchFn ?? fetch;
     this.timeoutMs = options.timeoutMs ?? APIIRO_DEFAULT_TIMEOUT_MS;
     this.defaultRiskFilters = options.defaultRiskFilters ?? {};
+    this.cache = options.cache;
   }
 
   private buildUrl(pageCursor?: string, repositoryName?: string) {
@@ -476,30 +479,20 @@ export class ApiiroConfig {
   }
 
   /**
-   * Checks if the filter options cache is valid (exists and not expired).
-   */
-  private isCacheValid(): boolean {
-    if (!this.filterOptionsCache) {
-      return false;
-    }
-    const now = Date.now();
-    return (
-      now - this.filterOptionsCache.timestamp < FILTER_OPTIONS_CACHE_TTL_MS
-    );
-  }
-
-  /**
    * Fetches filter options from Apiiro API with caching.
-   * Returns cached data if available and not expired (60 minutes TTL).
+   * Uses Backstage's CacheService with built-in TTL (60 minutes).
    * Also builds the displayName to name mapping for filter conversion.
    * If defaultRiskFilters are configured, filters the options to only include matching displayNames.
    *
    * @returns Promise resolving to the filter options response
    */
   async fetchFilterOptions(): Promise<ApiiroFilterOptionsResponse> {
-    // Return cached data if valid
-    if (this.isCacheValid()) {
-      return this.filterOptionsCache!.data;
+    // Try to get from cache first
+    const cached = (await this.cache.get(this.FILTER_OPTIONS_CACHE_KEY)) as
+      | { data: ApiiroFilterOptionsResponse }
+      | undefined;
+    if (cached) {
+      return cached.data;
     }
 
     // Fetch fresh data from API
@@ -516,11 +509,16 @@ export class ApiiroConfig {
     // Apply default filters if configured
     const filteredOptions = this.applyDefaultFilters(rawFilterOptions);
 
-    // Update cache with filtered data
-    this.filterOptionsCache = {
-      data: filteredOptions,
-      timestamp: Date.now(),
-    };
+    // Update cache with filtered data using TTL
+    await this.cache.set(
+      this.FILTER_OPTIONS_CACHE_KEY,
+      {
+        data: filteredOptions,
+      } as any,
+      {
+        ttl: { milliseconds: FILTER_OPTIONS_CACHE_TTL_MS },
+      },
+    );
 
     return filteredOptions;
   }
@@ -610,8 +608,12 @@ export class ApiiroDataService {
     this.client = client;
   }
 
-  static fromConfig(config: Config, logger: LoggerService): ApiiroDataService {
-    const client = ApiiroConfig.fromConfig(config, logger);
+  static fromConfig(
+    config: Config,
+    cache: CacheService,
+    logger: LoggerService,
+  ): ApiiroDataService {
+    const client = ApiiroConfig.fromConfig(config, cache, logger);
     return new ApiiroDataService(client);
   }
 

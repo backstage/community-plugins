@@ -47,12 +47,6 @@ catalog:
     - type: file
       target: ../../examples/apiiro-repos.yaml
 
-    # Local example template
-    - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
     # Local example organizational data
     - type: file
       target: ../../examples/org.yaml

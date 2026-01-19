@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-apiiro-entity-processor",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "description": "The apiiro-entity-processor backend module for the catalog plugin.",
   "main": "src/index.ts",

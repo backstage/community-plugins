@@ -49,18 +49,26 @@ Offers a high-level overview of the repository, including programming languages 
 ### 1. Configure Apiiro Plugin for Backstage
 
 Add the following annotation into your catalog.
-
-- `apiiro.com/repo-id`: `<repo-key>`
-- `apiiro.com/allow-metrics-view`: `"true"` or `"false"` (controls whether the Metrics view appears in the Apiiro Tab and Apiiro Widget)
+To be able to use the Apiiro plugin you need to add the following annotation to any entities you want to use it with:
 
 ```yaml
+apiiro.com/repo-id: <apiiro-repo-key>
+apiiro.com/allow-metrics-view: "true" or "false" (controls whether the Metrics view appears in the Apiiro tab and Apiiro widget)
+```
+
+Let's break this down a little: `<apiiro-repo-key>` will be the key of your repository in Apiiro.
+
+Here's what that will look like in action:
+
+```yaml
+# Example catalog-info.yaml entity definition file
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage
+  name: my-component
   annotations:
-    - apiiro.com/repo-id: <APIIRO_REPO_KEY>
-    - apiiro.com/allow-metrics-view: 'true'
+    apiiro.com/repo-id: my-repo-key
+    apiiro.com/allow-metrics-view: 'true'
 ```
 
 Please find the steps to add the annotation automatically [here](../apiiro-backend/README.md#automatically-adding-apiiro-annotations-optional).
@@ -71,17 +79,9 @@ From your Backstage root directory, run:
 
 ```bash
 yarn --cwd packages/app add @backstage-community/plugin-apiiro
-yarn --cwd packages/backend add @backstage-community/plugin-apiiro-backend
 ```
 
-Add the Apiiro backend plugin:
-In your `packages/backend/src/index.ts` file:
-
-```ts
-backend.add(import('@backstage-community/plugin-apiiro-backend');
-```
-
-**Note:** The Backstage frontend plugin will not function without the backend plugin.
+**Note:** The Backstage frontend plugin will not function without the backend plugin. Please find the steps to add the backend plugin [here](../apiiro-backend/README.md#installation).
 
 ### 3. Configuration
 

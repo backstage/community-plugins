@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { createUnifiedErrorResponse } from '../utils';
 import { ApiiroNotConfiguredError } from '../utils/errors';
@@ -22,12 +22,7 @@ import { ApiiroNotConfiguredError } from '../utils/errors';
  * Middleware to handle JSON parsing errors and Apiiro-specific errors
  */
 export function createJsonErrorHandlerMiddleware(logger: LoggerService) {
-  return (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ): void => {
+  return (err: any, req: Request, res: Response, next: NextFunction): void => {
     // Check if Apiiro is not configured - return 401
     if (err instanceof ApiiroNotConfiguredError) {
       logger.warn('Apiiro not configured:', {

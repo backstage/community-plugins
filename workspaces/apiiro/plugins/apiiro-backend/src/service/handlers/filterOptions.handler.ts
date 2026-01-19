@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ApiiroDataService } from '../data.service';
 import { handleApiError } from '../utils';
@@ -32,7 +32,7 @@ export interface FilterOptionsHandlerDependencies {
 export function createFilterOptionsHandler(
   deps: FilterOptionsHandlerDependencies,
 ) {
-  return async (_req: express.Request, res: express.Response) => {
+  return async (_req: Request, res: Response) => {
     const { dataService, logger } = deps;
 
     try {

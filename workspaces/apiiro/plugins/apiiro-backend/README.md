@@ -5,11 +5,10 @@ The Apiiro backend plugin provides the server-side functionality for the Apiiro 
 ## Features
 
 - **API Integration**: Communicates with Apiiro platform to retrieve security metrics and risk data
-- **Permission Management**: Supports conditional permissions for entity-level access control
+- **Metrics View Management**: Supports conditional access control for displaying the metrics view for specific entities
 
 ## Prerequisites
 
-- Backstage instance (v1.40.x or higher)
 - Apiiro Access Token with at least read permissions
 - Frontend plugin `@backstage-community/plugin-apiiro` installed
 
@@ -27,12 +26,31 @@ Then register the Apiiro backend plugin in `packages/backend/src/index.ts`:
 backend.add(import('@backstage-community/plugin-apiiro-backend'));
 ```
 
-## Automatically Adding Apiiro Annotations (Optional)
-
 ### Apiiro annotations
 
-- `apiiro.com/repo-id`: `<repo-key>`
-- `apiiro.com/allow-metrics-view`: "true" or "false" (controls whether the Metrics view appears in the Apiiro tab and Apiiro widget)
+To be able to use the Apiiro plugin you need to add the following annotation to any entities you want to use it with:
+
+```yaml
+apiiro.com/repo-id: <apiiro-repo-key>
+apiiro.com/allow-metrics-view: "true" or "false" (controls whether the Metrics view appears in the Apiiro tab and Apiiro widget)
+```
+
+Let's break this down a little: `<apiiro-repo-key>` will be the key of your repository in Apiiro.
+
+Here's what that will look like in action:
+
+```yaml
+# Example catalog-info.yaml entity definition file
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-component
+  annotations:
+    apiiro.com/repo-id: my-repo-key
+    apiiro.com/allow-metrics-view: 'true'
+```
+
+## Automatically Adding Apiiro Annotations (Optional)
 
 ### Notes
 

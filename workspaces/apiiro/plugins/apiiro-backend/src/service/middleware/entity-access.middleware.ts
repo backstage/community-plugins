@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { EntityService } from '../entity.service';
 import { handleApiError, createUnifiedErrorResponse } from '../utils';
@@ -32,11 +32,7 @@ export function createEntityAccessMiddleware(
   entityService: EntityService,
   logger: LoggerService,
 ) {
-  return async (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const endpoint = req.path;
 
     // Support both query params (GET) and body params (POST)

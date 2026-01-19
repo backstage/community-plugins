@@ -48,6 +48,7 @@ export const apiiroBackendPlugin = createBackendPlugin({
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         scheduler: coreServices.scheduler,
+        cache: coreServices.cache,
       },
       async init({
         httpAuth,
@@ -57,10 +58,15 @@ export const apiiroBackendPlugin = createBackendPlugin({
         config,
         logger,
         scheduler,
+        cache,
       }) {
         // Initialize cache service
-        const dataService = ApiiroDataService.fromConfig(config, logger);
-        const cacheService = new RepositoryCacheService(dataService, logger);
+        const dataService = ApiiroDataService.fromConfig(config, cache, logger);
+        const repoService = new RepositoryCacheService(
+          dataService,
+          cache,
+          logger,
+        );
 
         // Schedule periodic cache refresh
         // Runs every 60 minutes to keep repository data fresh
@@ -71,7 +77,7 @@ export const apiiroBackendPlugin = createBackendPlugin({
           fn: async () => {
             logger.info('Running scheduled repository cache refresh...');
             try {
-              await cacheService.refreshAllRepositoriesCache();
+              await repoService.refreshAllRepositoriesCache();
               logger.info(
                 'Scheduled repository cache refresh completed successfully',
               );
@@ -95,7 +101,8 @@ export const apiiroBackendPlugin = createBackendPlugin({
             httpAuth,
             logger,
             config,
-            cacheService,
+            cache,
+            repoService,
           }),
         );
       },

@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import {
+  Request,
+  Response,
+  NextFunction,
+  Router as ExpressRouter,
+  json,
+} from 'express';
 import Router from 'express-promise-router';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { Config } from '@backstage/config';
@@ -22,6 +28,7 @@ import {
   AuthService,
   LoggerService,
   DiscoveryService,
+  CacheService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import { ApiiroDataService } from './data.service';
@@ -56,40 +63,28 @@ import {
 } from '../constants';
 
 export type RouterOptions = {
-  logger?: LoggerService;
+  logger: LoggerService;
   config: Config;
   auth: AuthService;
   discovery: DiscoveryService;
   httpAuth: HttpAuthService;
-  cacheService?: RepositoryCacheService;
+  cache: CacheService;
+  repoService: RepositoryCacheService;
 };
-
-/**
- * Helper function to create a LoggerService from Console
- */
-function toLoggerService(c: Console): LoggerService {
-  return {
-    info: (...args: any[]) => c.info(...args),
-    warn: (...args: any[]) => c.warn(...args),
-    error: (...args: any[]) => c.error(...args),
-    debug: (...args: any[]) => c.debug(...args),
-    child: () => toLoggerService(c),
-  };
-}
 
 /**
  * Creates and configures the Express router for the Apiiro backend plugin
  */
 export async function createRouter(
   options: RouterOptions,
-): Promise<express.Router> {
-  const { config, discovery, auth, httpAuth } = options;
-  const logger = options.logger ?? toLoggerService(console);
+): Promise<ExpressRouter> {
+  const { config, discovery, auth, httpAuth, cache, repoService } = options;
+  const logger = options.logger;
 
   const router = Router();
 
   // Initialize services
-  const dataService = ApiiroDataService.fromConfig(config, logger);
+  const dataService = ApiiroDataService.fromConfig(config, cache, logger);
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
   const entityService = new EntityService({
     httpAuth,
@@ -97,10 +92,6 @@ export async function createRouter(
     catalogClient,
     logger,
   });
-
-  // Initialize cache service (either provided or create new)
-  const cacheService =
-    options.cacheService || new RepositoryCacheService(dataService, logger);
 
   // Initialize middleware
   const checkForAuth = createAuthMiddleware(config, logger);
@@ -110,14 +101,14 @@ export async function createRouter(
 
   // Apply global middleware
   // Add request size limit to prevent memory exhaustion attacks
-  router.use(express.json({ limit: '1mb' }));
+  router.use(json({ limit: '1mb' }));
   router.use(createContentTypeValidationMiddleware);
 
   // Initialize handlers with dependencies
   const repositoriesHandler = createRepositoriesHandler({
     dataService,
     entityService,
-    cacheService,
+    cacheService: repoService as any,
     logger,
   });
 
@@ -200,33 +191,27 @@ export async function createRouter(
 
   // Handle 404 for undefined routes
   // This must be defined after all route handlers
-  router.use(
-    (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
-      // Only handle if response hasn't been sent yet
-      if (res.headersSent) {
-        return next();
-      }
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    // Only handle if response hasn't been sent yet
+    if (res.headersSent) {
+      return next();
+    }
 
-      logger.warn('Route not found:', {
-        method: req.method,
-        path: req.path,
-        url: req.url,
-      });
+    logger.warn('Route not found:', {
+      method: req.method,
+      path: req.path,
+      url: req.url,
+    });
 
-      const response = {
-        error: 'Not Found',
-        details: {
-          status: 404,
-          error: `Route ${req.method} ${req.path} not found`,
-        },
-      };
-      return res.status(404).json(response);
-    },
-  );
+    const response = {
+      error: 'Not Found',
+      details: {
+        status: 404,
+        error: `Route ${req.method} ${req.path} not found`,
+      },
+    };
+    return res.status(404).json(response);
+  });
 
   // Apply custom error handling middleware
   // This catches ApiiroNotConfiguredError and JSON parsing errors

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Response as ExpressResponse } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ApiiroNotConfiguredError } from './utils/errors';
 
@@ -52,7 +52,7 @@ export function createUnifiedErrorResponse(
  */
 export function handleApiError(
   err: any,
-  res: express.Response,
+  res: ExpressResponse,
   logger: LoggerService,
   endpoint: string,
 ): void {
@@ -278,7 +278,7 @@ export function buildFilterParams(
  */
 export function validateRepositoryParams(
   params: { repositoryKey?: unknown; entityRef?: unknown },
-  res: express.Response,
+  res: ExpressResponse,
   logger: LoggerService,
   endpoint: string,
 ): params is { repositoryKey: string; entityRef: string } {

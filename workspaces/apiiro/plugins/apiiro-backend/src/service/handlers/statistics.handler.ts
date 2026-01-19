@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ApiiroDataService } from '../data.service';
 import { EntityService } from '../entity.service';
@@ -41,7 +41,7 @@ export interface StatisticsHandlerDependencies {
 export function createMttrStatisticsHandler(
   deps: StatisticsHandlerDependencies,
 ) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: Request, res: Response) => {
     const { dataService, entityService, logger } = deps;
 
     try {
@@ -98,7 +98,7 @@ export function createMttrStatisticsHandler(
 export function createRiskScoreOverTimeHandler(
   deps: StatisticsHandlerDependencies,
 ) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: Request, res: Response) => {
     const { dataService, entityService, logger } = deps;
 
     try {
@@ -153,7 +153,7 @@ export function createRiskScoreOverTimeHandler(
  * Handler for SLA breach statistics endpoint
  */
 export function createSlaBreachHandler(deps: StatisticsHandlerDependencies) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: Request, res: Response) => {
     const { dataService, entityService, logger } = deps;
 
     try {
@@ -208,7 +208,7 @@ export function createSlaBreachHandler(deps: StatisticsHandlerDependencies) {
  * Handler for top risks statistics endpoint
  */
 export function createTopRisksHandler(deps: StatisticsHandlerDependencies) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: Request, res: Response) => {
     const { dataService, entityService, logger } = deps;
 
     try {

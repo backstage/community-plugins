@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerService } from '@backstage/backend-plugin-api';
+import { LoggerService, CacheService } from '@backstage/backend-plugin-api';
 import { ApiiroDataService } from './data.service';
 import {
   matchRepositoriesWithEntitiesAndAddUrl,
@@ -23,10 +23,10 @@ import {
 /**
  * Cached repository data structure
  */
-export interface CachedRepositoryData {
+export interface CachedRepositoryData extends Record<string, unknown> {
   repositories: any[];
   totalCount: number;
-  lastUpdated: Date;
+  lastUpdated: string; // ISO string for JSON serialization
 }
 
 /**
@@ -35,12 +35,12 @@ export interface CachedRepositoryData {
  * when dealing with hundreds of thousands of repositories
  */
 export class RepositoryCacheService {
-  private cache: Map<string, CachedRepositoryData> = new Map();
   private readonly CACHE_KEY_ALL = '__ALL_REPOSITORIES__';
   private isRefreshing = false;
 
   constructor(
     private readonly dataService: ApiiroDataService,
+    private readonly cache: CacheService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -69,16 +69,16 @@ export class RepositoryCacheService {
       const cachedData: CachedRepositoryData = {
         repositories: result.repositories,
         totalCount: result.totalCount,
-        lastUpdated: new Date(),
+        lastUpdated: new Date().toISOString(),
       };
 
-      this.cache.set(this.CACHE_KEY_ALL, cachedData);
+      await this.cache.set(this.CACHE_KEY_ALL, cachedData as any);
 
       const duration = Date.now() - startTime;
       this.logger.info('Repository cache refresh completed', {
         totalRepositories: result.totalCount,
         durationMs: duration,
-        lastUpdated: cachedData.lastUpdated.toISOString(),
+        lastUpdated: cachedData.lastUpdated,
       });
     } catch (error) {
       this.logger.error('Failed to refresh repository cache', {
@@ -97,13 +97,15 @@ export class RepositoryCacheService {
     repositories: any[];
     totalCount: number;
   }> {
-    const cached = this.cache.get(this.CACHE_KEY_ALL);
+    const cached = (await this.cache.get(this.CACHE_KEY_ALL)) as
+      | CachedRepositoryData
+      | undefined;
 
     if (cached) {
       this.logger.debug('Serving repositories from cache', {
         totalCount: cached.totalCount,
-        cacheAge: Date.now() - cached.lastUpdated.getTime(),
-        lastUpdated: cached.lastUpdated.toISOString(),
+        cacheAge: Date.now() - new Date(cached.lastUpdated).getTime(),
+        lastUpdated: cached.lastUpdated,
       });
 
       return {
@@ -116,7 +118,9 @@ export class RepositoryCacheService {
     this.logger.debug('Cache miss - fetching repositories from API');
     await this.refreshAllRepositoriesCache();
 
-    const refreshedCache = this.cache.get(this.CACHE_KEY_ALL);
+    const refreshedCache = (await this.cache.get(this.CACHE_KEY_ALL)) as
+      | CachedRepositoryData
+      | undefined;
     if (!refreshedCache) {
       throw new Error('Failed to populate cache after fetch');
     }
@@ -139,7 +143,9 @@ export class RepositoryCacheService {
     });
 
     // Try to get from cache first
-    const cached = this.cache.get(this.CACHE_KEY_ALL);
+    const cached = (await this.cache.get(this.CACHE_KEY_ALL)) as
+      | CachedRepositoryData
+      | undefined;
 
     let allRepositories: any[];
 
@@ -222,13 +228,15 @@ export class RepositoryCacheService {
   /**
    * Get cache statistics for monitoring
    */
-  getCacheStats(): {
+  async getCacheStats(): Promise<{
     isCached: boolean;
     totalCount: number;
-    lastUpdated: Date | null;
+    lastUpdated: string | null;
     cacheAgeMs: number | null;
-  } {
-    const cached = this.cache.get(this.CACHE_KEY_ALL);
+  }> {
+    const cached = (await this.cache.get(this.CACHE_KEY_ALL)) as
+      | CachedRepositoryData
+      | undefined;
 
     if (!cached) {
       return {
@@ -243,15 +251,15 @@ export class RepositoryCacheService {
       isCached: true,
       totalCount: cached.totalCount,
       lastUpdated: cached.lastUpdated,
-      cacheAgeMs: Date.now() - cached.lastUpdated.getTime(),
+      cacheAgeMs: Date.now() - new Date(cached.lastUpdated).getTime(),
     };
   }
 
   /**
    * Clear the cache manually if needed
    */
-  clearCache(): void {
-    this.cache.clear();
+  async clearCache(): Promise<void> {
+    await this.cache.delete(this.CACHE_KEY_ALL);
     this.logger.info('Repository cache cleared');
   }
 }

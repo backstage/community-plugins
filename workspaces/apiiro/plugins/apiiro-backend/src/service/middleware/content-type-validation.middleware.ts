@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { createUnifiedErrorResponse } from '../utils';
 
 /**
@@ -21,9 +21,9 @@ import { createUnifiedErrorResponse } from '../utils';
  * Ensures that requests with body data have proper Content-Type header
  */
 export function createContentTypeValidationMiddleware(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): void {
   // Only check POST, PUT, PATCH requests with body
   if (['POST', 'PUT', 'PATCH'].includes(req.method)) {

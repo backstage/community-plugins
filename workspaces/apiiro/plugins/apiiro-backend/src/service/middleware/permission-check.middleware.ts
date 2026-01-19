@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { Entity } from '@backstage/catalog-model';
@@ -33,11 +33,7 @@ export function createPermissionCheckMiddleware(
   config: Config,
   logger: LoggerService,
 ) {
-  return (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const endpoint = req.path;
     const entity = (req as any).entity as Entity | undefined;
 

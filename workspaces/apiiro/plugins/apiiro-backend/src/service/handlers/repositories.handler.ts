@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response } from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ApiiroDataService } from '../data.service';
 import { EntityService } from '../entity.service';
@@ -36,7 +36,7 @@ export interface RepositoriesHandlerDependencies {
 export function createRepositoriesHandler(
   deps: RepositoriesHandlerDependencies,
 ) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: Request, res: Response) => {
     const { cacheService, entityService, logger } = deps;
 
     try {
@@ -122,13 +122,14 @@ export function createRepositoriesHandler(
         return;
       }
 
+      const cacheStats = await cacheService.getCacheStats();
+
       logger.debug(`${ROUTER_PATH_REPOSITORIES} - Fetched data:`, {
         entitiesCount: entities.length,
         repositoriesCount: repositoriesResult.totalCount,
         cacheStats: {
-          ...cacheService.getCacheStats(),
-          lastUpdated:
-            cacheService.getCacheStats().lastUpdated?.toISOString() || null,
+          ...cacheStats,
+          lastUpdated: cacheStats.lastUpdated || null,
         },
       });
 

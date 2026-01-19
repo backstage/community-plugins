@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ApiiroAuthService } from '../auth.service';
@@ -24,11 +24,7 @@ import { createUnifiedErrorResponse } from '../utils';
  * Ensures that the Apiiro bearer token is available, connecting if necessary
  */
 export function createAuthMiddleware(config: Config, logger: LoggerService) {
-  return (
-    _req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
     if (ApiiroAuthService.getBearerToken()) {
       next();
       return;
