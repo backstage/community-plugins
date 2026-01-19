@@ -24,6 +24,7 @@ yarn.lock                                                               @backsta
 /workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking @gaelgoth
 /workspaces/apache-airflow                                              @backstage/community-plugins-maintainers
 /workspaces/apollo-explorer                                             @backstage/community-plugins-maintainers
+/workspaces/argocd                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03
 /workspaces/azure-devops                                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/azure-resources                                             @backstage/community-plugins-maintainers  @sarabadu
 /workspaces/azure-sites                                                 @backstage/community-plugins-maintainers  @deepan10 @sarabadu
@@ -94,7 +95,6 @@ yarn.lock                                                               @backsta
 /workspaces/puppetdb                                                    @backstage/community-plugins-maintainers
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03
 /workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov
-/workspaces/redhat-argocd                                               @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03
 /workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
@@ -111,7 +111,7 @@ yarn.lock                                                               @backsta
 /workspaces/splunk                                                      @backstage/community-plugins-maintainers
 /workspaces/stack-overflow                                              @backstage/community-plugins-maintainers
 /workspaces/stackstorm                                                  @backstage/community-plugins-maintainers
-/workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle
+/workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle @kurtaking
 /workspaces/tech-insights/plugins/tech-insights-maturity                @backstage/community-plugins-maintainers  @xantier @punkle @maicaballangan
 /workspaces/tech-radar                                                  @backstage/community-plugins-maintainers
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03

@@ -16,7 +16,7 @@
 import type { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
-import { TaskRunKind } from '@janus-idp/shared-react';
+import { TaskRunKind } from '@backstage-community/plugin-tekton-react';
 
 import {
   getSbomLink,

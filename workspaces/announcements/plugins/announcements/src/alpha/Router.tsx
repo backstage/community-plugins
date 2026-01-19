@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
 import {
   AnnouncementsAdminPage,
+  AnnouncementsContent,
   CategoriesContent,
   TagsContent,
   AnnouncementsPage,
@@ -26,12 +27,11 @@ import {
 } from './components';
 
 // todo: pending rebuild for nfs with `@backstage/ui`
-import { AnnouncementsContent, MarkdownRendererTypeProps } from '../components';
+import { MarkdownRendererTypeProps } from '../components';
 
 type RouterProps = {
   title?: string;
   category?: string;
-  hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
   defaultInactive?: boolean;
@@ -40,7 +40,6 @@ type RouterProps = {
 export const Router = (props: RouterProps) => {
   const propsWithDefaults: AnnouncementsPageProps = {
     title: 'Announcements',
-    hideInactive: false,
     hideStartAt: false,
     markdownRenderer: 'backstage',
     ...props,
@@ -72,7 +71,9 @@ export const Router = (props: RouterProps) => {
         <Route
           path=""
           element={
-            <AnnouncementsContent defaultInactive={props.defaultInactive} />
+            <AnnouncementsContent
+              formDefaults={{ defaultInactive: props.defaultInactive }}
+            />
           }
         />
         <Route path="categories" element={<CategoriesContent />} />

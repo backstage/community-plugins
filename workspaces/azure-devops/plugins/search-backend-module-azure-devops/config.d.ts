@@ -56,7 +56,7 @@ export interface Config {
           /**
            * A string to append to the title of articles to make them easier to identify as search results from the wiki; optional
            */
-          titleSuffix: string;
+          titleSuffix?: string;
         }>;
       };
     };

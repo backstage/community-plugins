@@ -20,6 +20,8 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { DefaultServiceNowClient } from '../service-now-rest/client';
 import { ServiceNowConfig } from '../../config';
+import { ServiceNowSchemaChecker } from '../service-now-rest/schema-checker';
+import { ServiceNowConnection } from '../service-now-rest/connection';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -36,10 +38,15 @@ export async function createRouter(
     `Creating router for ServiceNow with instance URL: ${servicenowConfig.servicenow?.instanceUrl}`,
   );
 
-  const client = new DefaultServiceNowClient(
+  const conn = new ServiceNowConnection(
     servicenowConfig,
+    logger.child({ service: 'servicenow-connection' }),
+  );
+  const client = new DefaultServiceNowClient(
+    conn,
     logger.child({ service: 'servicenow-client' }),
   );
+  const schemaChecker = new ServiceNowSchemaChecker(conn);
   const router = Router();
   router.use(express.json());
 
@@ -53,7 +60,11 @@ export async function createRouter(
       allow: ['user'],
     });
 
-    const validatedParams = validateIncidentQueryParams(req.query);
+    const validatedParams = await validateIncidentQueryParams(
+      req.query,
+      schemaChecker,
+    );
+
     try {
       const incidents = await client.fetchIncidents(validatedParams);
       res.json(incidents);

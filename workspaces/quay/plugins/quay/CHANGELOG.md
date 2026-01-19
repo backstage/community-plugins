@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 1.29.0
+
+### Minor Changes
+
+- c89d117: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [c89d117]
+  - @backstage-community/plugin-quay-common@1.16.0
+
+## 1.28.1
+
+### Patch Changes
+
+- 6fbecf3: fix inconsistent date rendering in quay repository table
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+
 ## 1.28.0
 
 ### Minor Changes

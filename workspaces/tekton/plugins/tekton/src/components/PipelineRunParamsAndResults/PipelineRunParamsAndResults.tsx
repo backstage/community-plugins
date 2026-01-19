@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations';
 import { Typography } from '@material-ui/core';

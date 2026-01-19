@@ -234,4 +234,20 @@ describe('kiali Fetch', () => {
       expect(result).toStrictEqual(`[${code}] Fetching  body=[${message}]`);
     });
   });
+  describe('Basic Auth support', () => {
+    it('should include Authorization header when basicAuth is set', () => {
+      const basicAuth = 'dXNlcjpwYXNz'; // base64(user:pass)
+      const kialiFetch = new KialiFetcher(
+        {
+          name: 'default',
+          url: 'https://localhost:4000/',
+          urlExternal: 'https://localhost:4000/',
+          basicAuth,
+        },
+        logger,
+      );
+      const requestInit = (kialiFetch as any).getRequestInit('/api/test');
+      expect(requestInit.headers.Authorization).toBe(`Basic ${basicAuth}`);
+    });
+  });
 });

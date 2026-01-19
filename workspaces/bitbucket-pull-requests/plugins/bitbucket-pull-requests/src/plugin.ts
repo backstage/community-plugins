@@ -21,6 +21,7 @@ import {
   createRoutableExtension,
   identityApiRef,
   configApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
 import { bitbucketApiRef, BitbucketApi } from './api/BitbucketApi';
@@ -38,9 +39,10 @@ export const bitbucketPlugin = createPlugin({
         discoveryApi: discoveryApiRef,
         identityApi: identityApiRef,
         configApi: configApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, identityApi, configApi }) =>
-        new BitbucketApi({ discoveryApi, identityApi, configApi }),
+      factory: ({ discoveryApi, identityApi, configApi, fetchApi }) =>
+        new BitbucketApi({ discoveryApi, identityApi, configApi, fetchApi }),
     }),
   ],
   routes: {

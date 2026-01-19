@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20 || 22"
+    "node": "20 || 22"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -53,7 +53,10 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@backstage/plugin-notifications-node": "0.2.18"
+    "@backstage/plugin-events-node": "0.4.17",
+    "@backstage/plugin-signals-node": "0.1.26",
+    "@backstage/plugin-notifications-node": "0.2.21",
+    "@backstage/plugin-notifications-common": "0.2.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

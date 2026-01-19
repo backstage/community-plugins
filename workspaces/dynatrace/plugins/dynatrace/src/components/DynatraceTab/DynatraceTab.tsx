@@ -56,7 +56,7 @@ export const DynatraceTab = () => {
             .filter(Boolean)
             .map(id => {
               return (
-                <Grid item xs={12} lg={12}>
+                <Grid key={id} item xs={12} lg={12}>
                   <SyntheticsCard syntheticsId={id} />
                 </Grid>
               );

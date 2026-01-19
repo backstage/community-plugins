@@ -46,6 +46,10 @@ workspace/apollo-explorer:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/apollo-explorer/**']
 
+workspace/argocd:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/argocd/**']
+
 workspace/azure-devops:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/azure-devops/**']
@@ -321,10 +325,6 @@ workspace/quay:
 workspace/rbac:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/rbac/**']
-
-workspace/redhat-argocd:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/redhat-argocd/**']
 
 workspace/report-portal:
 - changed-files:

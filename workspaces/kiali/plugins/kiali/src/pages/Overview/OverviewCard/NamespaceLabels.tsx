@@ -15,7 +15,11 @@
  */
 import { Tooltip } from '@material-ui/core';
 import { KialiIcon } from '../../../config';
-import { infoStyle } from './CanaryUpgradeProgress';
+import { kialiStyle } from '../../../styles/StyleUtils';
+
+const infoIconStyle = kialiStyle({
+  margin: '0px 0px -1px 4px',
+});
 
 type NamespaceLabelsprops = {
   labels?: { [key: string]: string };
@@ -34,16 +38,24 @@ export const NamespaceLabels = (props: NamespaceLabelsprops) => {
     </ul>
   );
   return props.labels ? (
-    <>
-      <div id="labels_info" style={{ display: 'inline' }}>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        flexWrap: 'nowrap',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <span id="labels_info">
         {labelsLength} label{labelsLength !== '1' ? 's' : ''}
-      </div>
+      </span>
       <Tooltip title={tooltipTitle} placement="right">
-        <span data-test="labels-info-icon">
-          <KialiIcon.Info className={infoStyle} />
+        <span data-test="labels-info-icon" style={{ display: 'inline-flex' }}>
+          <KialiIcon.Info className={infoIconStyle} />
         </span>
       </Tooltip>
-    </>
+    </span>
   ) : (
     <div style={{ textAlign: 'left' }}>No labels</div>
   );
