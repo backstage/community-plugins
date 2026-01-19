@@ -1,5 +1,15 @@
 # @backstage-community/plugin-announcements
 
+## 1.3.2
+
+### Patch Changes
+
+- ee5069b: Adds filtering components for categories and tags to the announcements page in the new frontend system.
+- d901927: Removed unused dependencies from the package
+- Updated dependencies [d901927]
+- Updated dependencies [ee5069b]
+  - @backstage-community/plugin-announcements-react@0.18.2
+
 ## 1.3.1
 
 ### Patch Changes
