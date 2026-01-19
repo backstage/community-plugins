@@ -41,7 +41,8 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const permissions = useAnnouncementsPermissions();
   const { t } = useAnnouncementsTranslation();
 
-  const { hideStartAt, title, maxPerPage, category, sortby, order } = props;
+  const { hideStartAt, title, maxPerPage, category, sortby, order, tags } =
+    props;
 
   const canManageAnnouncements =
     !permissions.create.loading && permissions.create.allowed;
@@ -60,9 +61,9 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
             maxPerPage={maxPerPage ?? 10}
             category={category ?? searchParams.get('category') ?? undefined}
             tags={
-              props.tags ??
+              tags ??
               (searchParams.get('tags')
-                ? searchParams.get('tags')!.split(',').filter(Boolean)
+                ? searchParams.get('tags')?.split(',')
                 : undefined)
             }
             sortBy={sortby ?? 'created_at'}

@@ -47,12 +47,10 @@ export const TagsSelectInput = ({
   const selectedTags = useMemo(() => {
     if (!initialTags || initialTags.length === 0) return [];
 
-    return initialTags
-      .map(initialTag => {
-        const tag = tags?.find(tagItem => tagItem.slug === initialTag.slug);
-        return tag ?? initialTag;
-      })
-      .filter(Boolean);
+    return initialTags.map(initialTag => {
+      const tag = tags?.find(tagItem => tagItem.slug === initialTag.slug);
+      return tag ?? initialTag;
+    });
   }, [initialTags, tags]);
 
   const selectedTagSlugs = useMemo(() => {
