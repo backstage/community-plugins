@@ -85,7 +85,7 @@ export const AnnouncementsFilters = () => {
       <Flex>
         <Flex align="center">
           <Text variant="body-medium" weight="bold">
-            Filters:
+            {t('announcementsPage.filter.label')}
           </Text>
         </Flex>
 

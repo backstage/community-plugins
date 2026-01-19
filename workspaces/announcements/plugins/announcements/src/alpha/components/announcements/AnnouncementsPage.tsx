@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   useAnnouncementsPermissions,
   useAnnouncementsTranslation,
@@ -37,8 +37,7 @@ export type AnnouncementsPageProps = {
 };
 
 export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const [searchParams] = useSearchParams();
   const permissions = useAnnouncementsPermissions();
   const { t } = useAnnouncementsTranslation();
 
@@ -59,11 +58,11 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           <AnnouncementsFilterBar />
           <AnnouncementsGrid
             maxPerPage={maxPerPage ?? 10}
-            category={category ?? queryParams.get('category') ?? undefined}
+            category={category ?? searchParams.get('category') ?? undefined}
             tags={
               props.tags ??
-              (queryParams.get('tags')
-                ? queryParams.get('tags')!.split(',').filter(Boolean)
+              (searchParams.get('tags')
+                ? searchParams.get('tags')!.split(',').filter(Boolean)
                 : undefined)
             }
             sortBy={sortby ?? 'created_at'}

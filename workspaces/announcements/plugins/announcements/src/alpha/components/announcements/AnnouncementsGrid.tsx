@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
+import { useState } from 'react';
+import {
+  useAnnouncements,
+  useAnnouncementsTranslation,
+} from '@backstage-community/plugin-announcements-react';
 import { Pagination } from '@material-ui/lab';
 import { Flex, Grid, Skeleton, Text, Card, CardBody } from '@backstage/ui';
 import { AnnouncementCard } from './AnnouncementCard';
@@ -39,31 +41,24 @@ export const AnnouncementsGrid = ({
   order,
   hideStartAt,
 }: AnnouncementsGridProps) => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const { t } = useAnnouncementsTranslation();
 
   const [page, setPage] = useState(1);
   const handleChange = (_event: any, value: number) => {
     setPage(value);
   };
 
-  const categoryParam = queryParams.get('category');
-  const tagsParam = queryParams.get('tags');
-  const tagsFromUrl = useMemo(() => {
-    return tagsParam ? tagsParam.split(',') : undefined;
-  }, [tagsParam]);
-
   const { announcements, loading, error } = useAnnouncements(
     {
       max: maxPerPage,
-      page: page,
+      page,
       category,
-      tags: tags || tagsFromUrl,
+      tags,
       active,
       sortBy,
       order,
     },
-    { dependencies: [maxPerPage, page, category, tagsFromUrl] },
+    { dependencies: [maxPerPage, page, category, tags] },
   );
 
   if (error) {
@@ -94,12 +89,14 @@ export const AnnouncementsGrid = ({
             <Grid.Item colSpan="12">
               <Card>
                 <CardBody>
-                  {categoryParam || tagsParam ? (
+                  {category || tags ? (
                     <Text>
-                      No announcements found with the selected filters.
+                      {t('announcementsPage.filter.noAnnouncementsFound')}
                     </Text>
                   ) : (
-                    <Text>No announcements found.</Text>
+                    <Text>
+                      {t('admin.announcementsContent.noAnnouncementsFound')}
+                    </Text>
                   )}
                 </CardBody>
               </Card>

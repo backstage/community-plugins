@@ -167,12 +167,12 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.until_date': 'Until';
     readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
+    readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.announcementsContent.cancelButton': 'Cancel';
     readonly 'admin.announcementsContent.createButton': 'Create Announcement';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
     readonly 'admin.announcementsContent.deletedMessage': 'Announcement deleted.';
-    readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.categoriesContent.table.title': 'Title';
     readonly 'admin.categoriesContent.table.actions': 'Actions';
     readonly 'admin.categoriesContent.table.categoryDeleted': 'Category deleted.';
@@ -211,12 +211,14 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
     readonly 'announcementsPage.filter.clear': 'Clear Filters';
+    readonly 'announcementsPage.filter.label': 'Filters:';
     readonly 'announcementsPage.filter.tags': 'Tags';
     readonly 'announcementsPage.filter.category': 'Category';
     readonly 'announcementsPage.filter.categoryPlaceholder': 'Select a category';
     readonly 'announcementsPage.filter.categorySearchPlaceholder': 'Search categories...';
     readonly 'announcementsPage.filter.tagsPlaceholder': 'Select tags';
     readonly 'announcementsPage.filter.tagsSearchPlaceholder': 'Search tags...';
+    readonly 'announcementsPage.filter.noAnnouncementsFound': 'No announcements found with the selected filters.';
     readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
     readonly 'announcementsPage.announcements': 'Announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';

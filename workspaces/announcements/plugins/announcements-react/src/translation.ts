@@ -56,6 +56,7 @@ export const announcementsTranslationRef = createTranslationRef({
         admin: 'Manage announcements',
       },
       filter: {
+        label: 'Filters:',
         category: 'Category',
         categoryPlaceholder: 'Select a category',
         categorySearchPlaceholder: 'Search categories...',
@@ -63,6 +64,8 @@ export const announcementsTranslationRef = createTranslationRef({
         tagsPlaceholder: 'Select tags',
         tagsSearchPlaceholder: 'Search tags...',
         clear: 'Clear Filters',
+        noAnnouncementsFound:
+          'No announcements found with the selected filters.',
       },
     },
     confirmDeleteDialog: {
