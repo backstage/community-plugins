@@ -4,7 +4,12 @@ This workspace contains plugins that integrate Azure DevOps features within Back
 
 ## Plugins
 
-- [azure-devops](./plugins/azure-devops/README.md): Shows repos, pipelines, and builds from Azure DevOps.
+[azure-devops](plugins/azure-devops)
+[azure-devops-backend](plugins/azure-devops-backend)
+[azure-devops-common](plugins/azure-devops-common)
+[catalog-backend-module-azure-devops-annotator-processor](plugins/catalog-backend-module-azure-devops-annotator-processor)
+[scaffolder-backend-module-azure-devops](plugins/scaffolder-backend-module-azure-devops)
+[scaffolder-backend-module-dotnet](plugins/scaffolder-backend-module-dotnet)
 
 ## About this workspace
 

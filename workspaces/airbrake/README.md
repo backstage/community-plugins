@@ -4,7 +4,8 @@ This workspace contains plugins that integrate Airbrake error monitoring with Ba
 
 ## Plugins
 
-- [airbrake](./plugins/airbrake/README.md): Displays error and exception data from Airbrake inside Backstage.
+[airbrake](plugins/airbrake)
+[airbrake-backend](plugins/airbrake-backend)
 
 ## About this workspace
 

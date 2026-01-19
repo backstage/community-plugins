@@ -4,7 +4,10 @@ This workspace contains plugins related to Architecture Decision Records (ADR).
 
 ## Plugins
 
-- [adr](./plugins/adr/README.md): Plugin for browsing and managing Architecture Decision Records inside Backstage.
+[adr](plugins/adr)
+[adr-backend](plugins/adr-backend)
+[adr-common](plugins/adr-common)
+[search-backend-module-adr](plugins/search-backend-module-adr)
 
 ## About this workspace
 
