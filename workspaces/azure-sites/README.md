@@ -4,7 +4,9 @@ This workspace contains plugins related to Azure App Services and web hosting.
 
 ## Plugins
 
-- [azure-sites](./plugins/azure-sites/README.md): Displays Azure App Service information in Backstage.
+[azure-sites](plugins/azure-sites)
+[azure-sites-backend](plugins/azure-sites-backend)
+[azure-sites-common](plugins/azure-sites-common)
 
 ## About this workspace
 
