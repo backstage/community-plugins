@@ -359,7 +359,7 @@ export class JsonRulesEngineFactChecker
       const results = await engine.run(factValues);
       return await this.ruleEngineResultsToCheckResponse(
         results,
-        techInsightChecks,
+        filteredChecks,
         Object.values(facts),
       );
     } catch (e) {
