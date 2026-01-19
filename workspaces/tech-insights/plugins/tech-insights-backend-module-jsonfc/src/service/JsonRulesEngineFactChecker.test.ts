@@ -26,6 +26,7 @@ import { TechInsightJsonRuleCheck } from '../types';
 import { Operator } from 'json-rules-engine';
 import { mockServices } from '@backstage/backend-test-utils';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
   broken: [
@@ -405,6 +406,8 @@ describe('JsonRulesEngineFactChecker', () => {
       new Operator<number, number>('isDivisibleBy', (a, b) => a % b === 0),
     ],
     logger: mockServices.logger.mock(),
+    catalog: catalogServiceMock.mock(),
+    auth: mockServices.auth(),
   }).construct(mockRepository);
 
   describe('when running checks', () => {
