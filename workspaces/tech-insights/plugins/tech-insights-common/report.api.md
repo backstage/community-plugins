@@ -24,6 +24,9 @@ export interface Check {
   description: string;
   factIds: string[];
   failureMetadata?: Record<string, unknown>;
+  filter?:
+    | Record<string, string | symbol | (string | symbol)[]>[]
+    | Record<string, string | symbol | (string | symbol)[]>;
   id: string;
   links?: CheckLink[];
   metadata?: Record<string, any>;
