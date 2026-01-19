@@ -80,8 +80,8 @@ export type JsonRulesEngineFactCheckerFactoryOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
-  catalog?: CatalogService;
-  auth?: AuthService;
+  catalog: CatalogService;
+  auth: AuthService;
 };
 
 // @public
@@ -91,8 +91,8 @@ export type JsonRulesEngineFactCheckerOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
-  catalog?: CatalogService;
-  auth?: AuthService;
+  catalog: CatalogService;
+  auth: AuthService;
 };
 
 // @public (undocumented)
