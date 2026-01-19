@@ -1,6 +1,6 @@
 # Azure DevOps
 
-This workspace contains plugins that integrate Azure DevOps services with Backstage.
+This workspace contains plugins that integrate Azure DevOps features within Backstage.
 
 ## Plugins
 
