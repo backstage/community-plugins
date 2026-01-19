@@ -1,0 +1,68 @@
+app:
+  title: Splunk-oncall Example App
+  baseUrl: http://localhost:3000
+  experimental:
+    packages: 'all'
+  extensions:
+    - entity-card:catalog/about
+    - entity-card:catalog/labels
+    - entity-card:catalog/links:
+        config:
+          filter: kind:component has:links
+
+organization:
+  name: Splunk-oncall Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'local'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest: {}
+
+proxy:
+  '/splunk-on-call':
+    headers:
+      X-VO-Api-Id: ${SPLUNK_ON_CALL_API_ID}
+      X-VO-Api-Key: ${SPLUNK_ON_CALL_API_KEY}
+    target: https://api.victorops.com/api-public
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]

@@ -7,8 +7,8 @@
 
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { ConfigApi } from '@backstage/core-plugin-api';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { ConfigApi } from '@backstage/frontend-plugin-api';
+import { DiscoveryApi } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { JSX as JSX_3 } from 'react';
