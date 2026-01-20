@@ -94,6 +94,7 @@ const PipelineRunName = ({ row }: PipelineRunNameProps) => {
             signed ? (
               <Tooltip content="Signed">
                 <div
+                  data-testid="pipelinerun-signed"
                   className={classNames(
                     classes.signedIndicator,
                     'signed-indicator',
@@ -145,31 +146,34 @@ export const PipelineRunRow = ({
 
   return (
     <Fragment key={uid}>
-      <TableRow className={classes.plrRow}>
-        <TableCell>
+      <TableRow className={classes.plrRow} data-testid="pipelinerun-row">
+        <TableCell data-testid="pipelinerun-expand-cell">
           <IconButton
             aria-label="expand row"
             size="small"
             onClick={expandCollapseClickHandler}
+            role="button"
+            data-testid="pipelinerun-expand-btn"
           >
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">
+        <TableCell align="left" data-testid="pipelinerun-name-cell">
           <PipelineRunName row={row} />
         </TableCell>
-        <TableCell align="left">
+        <TableCell align="left" data-testid="pipelinerun-vulnerabilities-cell">
           <PipelineRunVulnerabilities pipelineRun={row} condensed />
         </TableCell>
-        <TableCell align="left">
+        <TableCell align="left" data-testid="pipelinerun-status-cell">
           <PlrStatus obj={row} />
         </TableCell>
-        <TableCell align="left">
-          <PipelineRunTaskStatus pipelineRun={row} />
+        <TableCell align="left" data-testid="pipelinerun-task-status-cell">
+          <PipelineRunTaskStatus pipelineRun={row} /> {/* Missed here */}
         </TableCell>
-        <TableCell align="left">
+        <TableCell align="left" data-testid="pipelinerun-start-time-cell">
           {startTime ? (
             <Timestamp
+              data-testid="pipelinerun-start-time"
               className="bs-tkn-timestamp"
               date={new Date(startTime)}
             />
@@ -177,12 +181,17 @@ export const PipelineRunRow = ({
             '-'
           )}
         </TableCell>
-        <TableCell align="left">{pipelineRunDuration(row, t)}</TableCell>
-        <TableCell align="left">
+        <TableCell align="left" data-testid="pipelinerun-duration-cell">
+          {pipelineRunDuration(row, t)}
+        </TableCell>
+        <TableCell align="left" data-testid="pipelinerun-actions-cell">
           <PipelineRunRowActions pipelineRun={row} />
         </TableCell>
       </TableRow>
-      <TableRow className={classes.plrVisRow}>
+      <TableRow
+        className={classes.plrVisRow}
+        data-testid="pipelinerun-visualisation-row"
+      >
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box marginTop={1} marginBottom={1}>

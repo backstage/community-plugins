@@ -16,3 +16,5 @@
 export * from './AnnouncementTags';
 export * from './AnnouncementPublishedBy';
 export * from './BackToAnnouncementsButton';
+export * from './CategorySelectInput';
+export * from './TagsSelectInput';

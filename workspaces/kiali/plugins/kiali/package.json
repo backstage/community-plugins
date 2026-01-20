@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-kiali",
-  "version": "1.48.0",
+  "version": "1.49.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -47,7 +47,7 @@
     "@patternfly/react-core": "^6.0.0",
     "@patternfly/react-icons": "^6.0.0",
     "@patternfly/react-tokens": "^6.0.0",
-    "@patternfly/react-topology": "6.0.0",
+    "@patternfly/react-topology": "6.4.0",
     "ace-builds": "^1.32.7",
     "axios": "^1.7.4",
     "cytoscape": "3.33.1",

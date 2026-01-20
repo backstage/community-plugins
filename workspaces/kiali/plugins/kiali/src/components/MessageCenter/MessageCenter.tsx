@@ -21,7 +21,10 @@ import {
 import { Badge, Button, Drawer } from '@material-ui/core';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { default as React } from 'react';
-import { useHeaderBackground } from '../../contexts/HeaderBackgroundContext';
+import {
+  useHeaderIconColor,
+  useHeaderTextColor,
+} from '../../contexts/HeaderBackgroundContext';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { AlertDrawer } from './AlertDrawer';
@@ -92,7 +95,8 @@ export const MessageCenter = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [isOpen, toggleDrawer] = React.useState(false);
   const messageCenterStatus = calculateMessageStatus(kialiState);
-  const hasBackgroundImage = useHeaderBackground();
+  const iconColor = useHeaderIconColor();
+  const textColor = useHeaderTextColor();
   /*
   const onDismiss = (message: NotificationMessage, userDismissed: boolean) => {
     if (userDismissed) {
@@ -102,9 +106,6 @@ export const MessageCenter = () => {
     }  
   }
   */
-  const iconColor = hasBackgroundImage ? 'white' : undefined;
-  const textColor = hasBackgroundImage ? 'white' : undefined;
-
   return (
     <>
       <Button

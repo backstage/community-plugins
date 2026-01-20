@@ -18,6 +18,7 @@ import {
   DefaultGroup,
   GraphComponent,
   ModelKind,
+  withDragNode,
   withPanZoom,
   withSelection,
 } from '@patternfly/react-topology';
@@ -36,7 +37,9 @@ export const KialiComponentFactory: ComponentFactory = (
         case ModelKind.graph:
           return withPanZoom()(GraphComponent);
         case ModelKind.node:
-          return KialiNode as any;
+          return withSelection({ multiSelect: false, controlled: false })(
+            withDragNode()(KialiNode as any),
+          );
         case ModelKind.edge:
           return withSelection({ multiSelect: false, controlled: false })(
             KialiEdge as any,

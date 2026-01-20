@@ -107,7 +107,10 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.critical')
                 : null}
             </span>
-            <span className={classes.severityCount}>
+            <span
+              className={classes.severityCount}
+              data-testid="pipelinerun-critical-vulnerabilities-count"
+            >
               {scanResults.vulnerabilities.critical || 0}
             </span>
           </div>
@@ -127,7 +130,10 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.high')
                 : null}
             </span>
-            <span className={classes.severityCount}>
+            <span
+              className={classes.severityCount}
+              data-testid="pipelinerun-high-vulnerabilities-count"
+            >
               {scanResults.vulnerabilities.high || 0}
             </span>
           </div>
@@ -145,7 +151,10 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.medium')
                 : null}
             </span>
-            <span className={classes.severityCount}>
+            <span
+              className={classes.severityCount}
+              data-testid="pipelinerun-medium-vulnerabilities-count"
+            >
               {scanResults.vulnerabilities.medium || 0}
             </span>
           </div>
@@ -165,7 +174,10 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.low')
                 : null}
             </span>
-            <span className={classes.severityCount}>
+            <span
+              className={classes.severityCount}
+              data-testid="pipelinerun-low-vulnerabilities-count"
+            >
               {scanResults.vulnerabilities.low || 0}
             </span>
           </div>

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-allure
 
+## 0.14.1
+
+### Patch Changes
+
+- ff88f33: Remove unused dependencies
+
 ## 0.14.0
 
 ### Minor Changes

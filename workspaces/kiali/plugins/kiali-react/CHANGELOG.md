@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-react
 
+## 0.7.0
+
+### Minor Changes
+
+- 29027aa: Fix health issue. Update backstage version. Update styles for OpenShift version.React-topology update.
+
 ## 0.6.0
 
 ### Minor Changes

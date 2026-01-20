@@ -42,8 +42,8 @@ export const AnnouncementCard = ({
   announcement,
   hideStartAt,
 }: AnnouncementCardProps) => {
-  const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const { t } = useAnnouncementsTranslation();
+  const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
 
   const subTitle = (
     <Box mt="1">

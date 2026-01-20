@@ -250,10 +250,6 @@ workspace/manage:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/manage/**']
 
-workspace/matomo:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/matomo/**']
-
 workspace/mcp-chat:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/mcp-chat/**']

@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 3.11.0
+
+### Minor Changes
+
+- 4d7ab2b: Backstage version bump to v1.46.2
+
 ## 3.10.0
 
 ### Minor Changes

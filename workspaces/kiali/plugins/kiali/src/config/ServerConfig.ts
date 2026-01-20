@@ -18,6 +18,7 @@ import {
   MeshCluster,
   ServerConfig,
 } from '@backstage-community/plugin-kiali-common/types';
+import { configCache } from '@backstage-community/plugin-kiali-common/func';
 import _ from 'lodash';
 import { parseHealthConfig } from './HealthConfig';
 
@@ -184,6 +185,11 @@ export const toValidDuration = (duration: number): number => {
 };
 
 export const setServerConfig = (cfg: ServerConfig) => {
+  // Server config impacts health tolerances; clear any cached matches so new config is respected.
+  for (const key of Object.keys(configCache)) {
+    delete configCache[key];
+  }
+
   serverConfig = {
     ...defaultServerConfig,
     ...cfg,
