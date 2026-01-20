@@ -3,4 +3,4 @@
 '@backstage-community/plugin-tech-insights-common': patch
 ---
 
-tech-insights: ability to add filters on the checks
+Adds support for defining entity filters on a Check.
