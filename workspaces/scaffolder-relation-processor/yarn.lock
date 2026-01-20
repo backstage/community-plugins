@@ -1321,7 +1321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-plugin-api@npm:^1.5.0, @backstage/backend-plugin-api@npm:^1.6.0":
+"@backstage/backend-plugin-api@npm:^1.6.0":
   version: 1.6.0
   resolution: "@backstage/backend-plugin-api@npm:1.6.0"
   dependencies:
@@ -1683,7 +1683,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-auth-node@npm:^0.6.10, @backstage/plugin-auth-node@npm:^0.6.9":
+"@backstage/plugin-auth-node@npm:^0.6.10":
   version: 0.6.10
   resolution: "@backstage/plugin-auth-node@npm:0.6.10"
   dependencies:
@@ -1735,24 +1735,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-events-node@npm:0.4.17":
-  version: 0.4.17
-  resolution: "@backstage/plugin-events-node@npm:0.4.17"
+"@backstage/plugin-events-node@npm:^0.4.18":
+  version: 0.4.18
+  resolution: "@backstage/plugin-events-node@npm:0.4.18"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.5.0"
+    "@backstage/backend-plugin-api": "npm:^1.6.0"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/types": "npm:^1.2.2"
     "@types/content-type": "npm:^1.1.8"
     "@types/express": "npm:^4.17.6"
     content-type: "npm:^1.0.5"
     cross-fetch: "npm:^4.0.0"
-    express: "npm:^4.17.1"
+    express: "npm:^4.22.0"
     uri-template: "npm:^2.0.0"
-  checksum: 10/6c1e7eb990f7554d2fa49787a9f0126c6fa275fa1a951024da2b54212ad041aa85b9ebb225fa921db401b9fdef35247422ce1d96313c63ed660a2becbc10c0c2
+  checksum: 10/214f62c4d49fba4303bd391874cc784d30a4e198bd193a121445cd937a33f287cbdc477239d28624310c897d3a30ed405ab478089171d43eb71bd1181b202058
   languageName: node
   linkType: hard
 
-"@backstage/plugin-notifications-common@npm:0.2.0":
+"@backstage/plugin-notifications-common@npm:^0.2.0":
   version: 0.2.0
   resolution: "@backstage/plugin-notifications-common@npm:0.2.0"
   dependencies:
@@ -1763,18 +1763,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-notifications-node@npm:0.2.21":
-  version: 0.2.21
-  resolution: "@backstage/plugin-notifications-node@npm:0.2.21"
+"@backstage/plugin-notifications-node@npm:^0.2.22":
+  version: 0.2.22
+  resolution: "@backstage/plugin-notifications-node@npm:0.2.22"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.5.0"
+    "@backstage/backend-plugin-api": "npm:^1.6.0"
     "@backstage/catalog-client": "npm:^1.12.1"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/plugin-notifications-common": "npm:^0.2.0"
-    "@backstage/plugin-signals-node": "npm:^0.1.26"
+    "@backstage/plugin-signals-node": "npm:^0.1.27"
     knex: "npm:^3.0.0"
     uuid: "npm:^11.0.0"
-  checksum: 10/c6c3d264e558de74f29f70a5f5b4ae4c803f6136898dbb630563832c789298991f5d7ee82fa3f41177d0a5e8800e0309f449836127299552fb4ce83dd441901b
+  checksum: 10/d35296921417d5996b14056b53908a97ffd9b7732d8d985b8ff69aa19b5f4c4824b353c2fcbca398a8c98dc03fa11da460ae96fd32b9f486bd086815d6a17342
   languageName: node
   linkType: hard
 
@@ -1821,19 +1821,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-signals-node@npm:0.1.26":
-  version: 0.1.26
-  resolution: "@backstage/plugin-signals-node@npm:0.1.26"
+"@backstage/plugin-signals-node@npm:^0.1.27":
+  version: 0.1.27
+  resolution: "@backstage/plugin-signals-node@npm:0.1.27"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.5.0"
+    "@backstage/backend-plugin-api": "npm:^1.6.0"
     "@backstage/config": "npm:^1.3.6"
-    "@backstage/plugin-auth-node": "npm:^0.6.9"
-    "@backstage/plugin-events-node": "npm:^0.4.17"
+    "@backstage/plugin-auth-node": "npm:^0.6.10"
+    "@backstage/plugin-events-node": "npm:^0.4.18"
     "@backstage/types": "npm:^1.2.2"
-    express: "npm:^4.17.1"
+    express: "npm:^4.22.0"
     uuid: "npm:^11.0.0"
     ws: "npm:^8.18.0"
-  checksum: 10/25e9c651b645eb42d395fbd23cbb9930dc4dcd87a3b6c0fc689faaac88a02c1c998a5561d42423f6c9a37e523a6749180eba1027ae3ec2208877df5016427022
+  checksum: 10/853069253755be707942c5231461951f5a551fb10be544dc5e1f771d8c62cc593ec0ae1d83c57f985fcba4aacf7e759bbf74f1c9d480bcb1b46b55153ab49a6d
   languageName: node
   linkType: hard
 
@@ -10316,7 +10316,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.1, express@npm:^4.21.2, express@npm:^4.22.0":
+"express@npm:^4.21.2, express@npm:^4.22.0":
   version: 4.22.1
   resolution: "express@npm:4.22.1"
   dependencies:
