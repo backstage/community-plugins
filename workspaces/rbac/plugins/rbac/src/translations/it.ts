@@ -204,6 +204,8 @@ const rbacTranslationIt = createTranslationMessages({
       'tipo di risorsa: {{resourceType}}',
     'permissionPolicies.advancedPermissionsTooltip':
       "Usa permessi personalizzati avanzati per consentire l'accesso a parti specifiche del tipo di risorsa selezionato.",
+    'permissionPolicies.noAdvancedPermissionsTooltip':
+      'La personalizzazione avanzata non è supportata per questo tipo di risorsa.',
     'permissionPolicies.pluginsSelected': '{{count}} plugin',
     'permissionPolicies.noPluginsSelected': 'Nessun plugin selezionato',
     'permissionPolicies.search': 'Cerca',
