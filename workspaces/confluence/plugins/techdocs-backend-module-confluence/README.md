@@ -43,8 +43,9 @@ The module uses the shared `confluence` configuration section. Add the following
 confluence:
   baseUrl: 'https://your-company.atlassian.net/wiki'
   auth:
-    type: 'bearer'
+    type: 'basic'
     token: '${CONFLUENCE_TOKEN}'
+    email: 'your-email@company.org'
 ```
 
 ### Base URL
@@ -55,19 +56,11 @@ If you are using a self-hosted Confluence instance, your `baseUrl` would look so
 
 ### Auth Methods
 
-The module supports three authentication methods: `bearer`, `basic`, and `userpass`.
+The module supports three authentication methods: `basic`, `bearer`, and `userpass`.
 
-#### Bearer (Recommended for Confluence Cloud)
+#### Basic (Recommended for Confluence Cloud)
 
-```yaml
-confluence:
-  baseUrl: 'https://your-company.atlassian.net/wiki'
-  auth:
-    type: 'bearer'
-    token: '${CONFLUENCE_TOKEN}'
-```
-
-#### Basic (Email + Token)
+Confluence Cloud requires Basic authentication using your email address and an API token. API tokens for Confluence Cloud are unscoped (no specific permissions need to be selected when creating the token).
 
 ```yaml
 confluence:
@@ -78,7 +71,25 @@ confluence:
     email: 'example@company.org'
 ```
 
+You can create an API token for Confluence Cloud at [Atlassian Account API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens).
+
+#### Bearer (For Confluence Server/Data Center)
+
+Confluence Server and Data Center support Bearer authentication using a Personal Access Token (PAT). The PAT should have `Read` permissions.
+
+```yaml
+confluence:
+  baseUrl: 'https://confluence.example.com'
+  auth:
+    type: 'bearer'
+    token: '${CONFLUENCE_TOKEN}'
+```
+
+You can create a Personal Access Token in your Confluence Server/Data Center user settings.
+
 #### Userpass (Username + Password)
+
+For Confluence Server/Data Center, you can also use username and password authentication:
 
 ```yaml
 confluence:
@@ -89,8 +100,6 @@ confluence:
     password: '${CONFLUENCE_PASSWORD}'
 ```
 
-**Note:** For `basic` and `bearer` authentication methods you will need an access token with `Read` permissions. You can create a Personal Access Token (PAT) [in Confluence](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).
-
 ### Page Tree Options
 
 You can customize how the module fetches hierarchical page structures:
@@ -99,8 +108,9 @@ You can customize how the module fetches hierarchical page structures:
 confluence:
   baseUrl: 'https://your-company.atlassian.net/wiki'
   auth:
-    type: 'bearer'
+    type: 'basic'
     token: '${CONFLUENCE_TOKEN}'
+    email: 'your-email@company.org'
   pageTree:
     # Enable parallel fetching of child pages (default: true)
     # Set to false if your Confluence API has rate limiting issues
@@ -116,12 +126,13 @@ If your organization uses multiple Confluence instances (e.g., different teams o
 
 ```yaml
 confluence:
-  # Primary instance
+  # Primary instance (Confluence Cloud)
   default:
     baseUrl: 'https://company.atlassian.net/wiki'
     auth:
-      type: 'bearer'
+      type: 'basic'
       token: '${CONFLUENCE_TOKEN}'
+      email: 'user@company.com'
     pageTree:
       parallel: true
       maxDepth: 0
