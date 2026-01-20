@@ -58,8 +58,8 @@ export type JsonRulesEngineFactCheckerOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
-  catalog: CatalogService;
-  auth: AuthService;
+  catalog?: CatalogService;
+  auth?: AuthService;
 };
 
 /**
@@ -76,8 +76,8 @@ export class JsonRulesEngineFactChecker
   private readonly logger: LoggerService;
   private readonly validationSchema: SchemaObject;
   private readonly operators: Operator[];
-  private readonly catalog: CatalogService;
-  private readonly auth: AuthService;
+  private readonly catalog?: CatalogService;
+  private readonly auth?: AuthService;
 
   constructor(options: JsonRulesEngineFactCheckerOptions) {
     const {
@@ -208,6 +208,20 @@ export class JsonRulesEngineFactChecker
   private async fetchEntityFromCatalog(
     entityRef: string,
   ): Promise<Entity | undefined> {
+    // If catalogApi wasn't provided in the constructor, filtering cannot be performed
+    if (!this.catalog) {
+      this.logger.debug(
+        'CatalogApi not available, skipping entity fetch for filtering',
+      );
+      return undefined;
+    }
+
+    if (!this.auth) {
+      this.logger.warn(
+        'AuthService not available, skipping entity fetch for filtering',
+      );
+      return undefined;
+    }
     try {
       const credentials = await this.auth.getOwnServiceCredentials();
 
@@ -561,8 +575,8 @@ export type JsonRulesEngineFactCheckerFactoryOptions = {
   logger: LoggerService;
   checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   operators?: Operator[];
-  catalog: CatalogService;
-  auth: AuthService;
+  catalog?: CatalogService;
+  auth?: AuthService;
 };
 
 /**
@@ -577,8 +591,8 @@ export class JsonRulesEngineFactCheckerFactory {
   private readonly logger: LoggerService;
   private readonly checkRegistry?: TechInsightCheckRegistry<TechInsightJsonRuleCheck>;
   private readonly operators?: Operator[];
-  private readonly catalog: CatalogService;
-  private readonly auth: AuthService;
+  private readonly catalog?: CatalogService;
+  private readonly auth?: AuthService;
   static fromConfig(
     config: Config,
     options: Omit<JsonRulesEngineFactCheckerFactoryOptions, 'checks'>,
