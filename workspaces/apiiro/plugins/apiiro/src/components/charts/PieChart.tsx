@@ -16,7 +16,6 @@
 import { PieChart as MuiPieChart } from '@mui/x-charts/PieChart';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { languageIconMap, LanguageKey } from '../common/languageIcons';
 import { getBlueColorVariants } from '../../theme/themeUtils';
 
@@ -69,22 +68,19 @@ const CenterLabelContainer = styled('div')(() => ({
 const PrimaryLabel = styled('div')(({ theme }) => ({
   fontSize: '24px',
   fontWeight: 600,
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.primary,
   lineHeight: '1.2',
 }));
 
 const SecondaryLabel = styled('div')(({ theme }) => ({
   fontSize: '12px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.secondary,
   marginTop: '4px',
 }));
 
 const TertiaryLabel = styled('div')(({ theme }) => ({
   fontSize: '14px',
-  fontWeight: 500,
-  fontFamily: FONT_FAMILY,
+  fontWeight: 400,
   color: theme.palette.text.primary,
   marginTop: '2px',
   display: 'flex',

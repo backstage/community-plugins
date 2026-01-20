@@ -23,7 +23,6 @@ import { LineChart, LineChartSeries } from '../charts/LineChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { useRiskScoreOverTimeData } from '../../queries/risk-score-over-time.queries';
 import { apiiroApiRef } from '../../api';
 import { RiskScoreOverTimeDataPoint } from '../../queries/queries.type';
@@ -63,7 +62,6 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.primary,
 }));
 

@@ -1590,8 +1590,6 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.21.2"
     "@backstage/test-utils": "npm:^1.7.12"
     "@backstage/theme": "npm:^0.7.0"
-    "@emotion/react": "npm:^11.14.0"
-    "@emotion/styled": "npm:^11.14.1"
     "@mui/icons-material": "npm:^6.5.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/x-charts": "npm:^7.29.1"
@@ -1607,6 +1605,7 @@ __metadata:
     react: "npm:^17.0.0 || ^18.0.0"
     react-calendar: "npm:^4.8.0"
     react-dom: "npm:^17.0.0 || ^18.0.0"
+    react-icons: "npm:^5.5.0"
     react-router-dom: "npm:^6.30.1"
     react-use: "npm:^17.2.4"
   peerDependencies:
@@ -3382,7 +3381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.10.5, @emotion/react@npm:^11.14.0":
+"@emotion/react@npm:^11.10.5":
   version: 11.14.0
   resolution: "@emotion/react@npm:11.14.0"
   dependencies:
@@ -3423,7 +3422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.10.5, @emotion/styled@npm:^11.14.1":
+"@emotion/styled@npm:^11.10.5":
   version: 11.14.1
   resolution: "@emotion/styled@npm:11.14.1"
   dependencies:
@@ -23782,6 +23781,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
   checksum: 10/7342e7148419f0ab455ee1018c8f9ad39f1adda6be45122f885c2b26e237bde846a35724800a3be5cb96f264446474795c1b4c8f807ebf779640ccfcb9f4a1b4
+  languageName: node
+  linkType: hard
+
+"react-icons@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "react-icons@npm:5.5.0"
+  peerDependencies:
+    react: "*"
+  checksum: 10/67d5b311c23f74829cb90d58b78ddc87959d2087eda7f29b78d1ab6e337b04b0358a00724d73ab60652469d9a2c66ba3c034b8b7d4f32caae942592f92f59a84
   languageName: node
   linkType: hard
 

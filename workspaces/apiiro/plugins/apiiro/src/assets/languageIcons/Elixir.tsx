@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 import type { FC } from 'react';
+import { SiElixir } from 'react-icons/si';
 
 interface IconProps {
   color?: string;
 }
 
 export const Elixir: FC<IconProps> = ({ color = 'currentColor' }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    style={{ color }}
-  >
-    <path d="M12.4034 3.27271C4.92063 9.56878 4.834 16.8156 7.88785 19.3509C10.9417 21.8863 17.136 21.02 17.9374 15.9071C18.7387 10.7942 11.5691 9.8857 12.4034 3.27271Z" />
-  </svg>
+  <SiElixir size={24} color={color} />
 );

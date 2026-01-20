@@ -16,7 +16,6 @@
 import { useGaugeState, Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { getGaugeColors } from '../../theme/themeUtils';
 import CustomTooltip from '../common/CustomTooltip';
 import Typography from '@mui/material/Typography';
@@ -51,7 +50,6 @@ function GaugeCenterLabel({
         y={height / 2 / 2 + 20}
         fontSize="24px"
         fontWeight="bold"
-        fontFamily={FONT_FAMILY}
         fill={theme.palette.text.primary}
         textAnchor="middle"
         dominantBaseline="middle"
@@ -63,7 +61,6 @@ function GaugeCenterLabel({
         y={height / 2 / 2 + 40}
         fontSize="12px"
         fontWeight="100"
-        fontFamily={FONT_FAMILY}
         fill={theme.palette.text.secondary}
         textAnchor="middle"
         dominantBaseline="middle"
@@ -104,8 +101,7 @@ function GaugeBottomLabels({
       <Typography
         style={{
           fontSize: '14px',
-          fontWeight: 500,
-          fontFamily: FONT_FAMILY,
+          fontWeight: 400,
           color: theme.palette.text.primary,
         }}
       >
@@ -183,9 +179,6 @@ function GaugePointer({
         textAnchor="middle"
         dominantBaseline="middle"
         fill={theme.palette.text.primary}
-        style={{
-          fontFamily: FONT_FAMILY,
-        }}
       >
         {displayMarkerValue || markerValue}*
       </text>

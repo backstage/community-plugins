@@ -16,7 +16,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { styled, useTheme } from '@mui/material/styles';
-import { FONT_FAMILY } from '../../theme/fonts';
 import CustomTooltip from './CustomTooltip';
 
 export interface ChartBoxProps {
@@ -65,7 +64,6 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.primary,
 }));
 

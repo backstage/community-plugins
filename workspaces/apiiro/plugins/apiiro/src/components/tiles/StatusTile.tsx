@@ -16,7 +16,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import { FONT_FAMILY } from '../../theme/fonts';
 import {
   getActivityStatusColors,
   getLogoContainerColors,
@@ -102,16 +101,14 @@ const StatusRow = styled(Box)(() => ({
 }));
 
 const StatusLabel = styled(Typography)(({ theme }) => ({
-  fontFamily: FONT_FAMILY,
   fontSize: '16px',
   fontWeight: 400,
   color: theme.palette.text.secondary,
 }));
 
 const StatusValue = styled(Typography)(({ theme }) => ({
-  fontFamily: FONT_FAMILY,
   fontSize: '16px',
-  fontWeight: 500,
+  fontWeight: 400,
   color: theme.palette.text.primary,
 }));
 
@@ -119,9 +116,8 @@ const BranchLink = styled(Link)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: '8px',
-  fontFamily: FONT_FAMILY,
   fontSize: '16px',
-  fontWeight: 500,
+  fontWeight: 400,
   color: theme.palette.info.main,
   textDecoration: 'underline',
   cursor: 'pointer',
@@ -134,9 +130,8 @@ const ActionLinks = styled(Box)(() => ({
 }));
 
 const ActionLink = styled(Link)(({ theme }) => ({
-  fontFamily: FONT_FAMILY,
   fontSize: '16px',
-  fontWeight: 500,
+  fontWeight: 400,
   color: theme.palette.info.main,
   textDecoration: 'none',
   cursor: 'pointer',
@@ -161,7 +156,6 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.primary,
 }));
 

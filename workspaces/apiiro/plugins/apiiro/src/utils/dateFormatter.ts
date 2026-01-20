@@ -99,3 +99,20 @@ export const getStatusText = (
   const duration = getDevelopmentDuration(lastActivity);
   return `In development for ${duration}`;
 };
+
+/**
+ * Formats a date string to a locale-specific date format.
+ * @param {string} dateString - The date string to format.
+ * @returns {string} The formatted date string.
+ */
+export const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const userLocale =
+    window.navigator.language || window.navigator.languages?.[0] || 'en-US';
+  return date.toLocaleDateString(userLocale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};

@@ -202,7 +202,7 @@ const darkPalette = {
   },
   spinner: '#2eefd9',
   other: '#616161', // grey[700]
-  header: '#424242', // background.paper in dark mode
+  header: '#21263F', // background.paper in dark mode
   // Grey palette indices for dark mode
   grey: {
     riskAutoIgnored: 400 as GreyKey,

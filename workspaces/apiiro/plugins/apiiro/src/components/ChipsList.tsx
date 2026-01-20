@@ -216,7 +216,7 @@ export const ChipsList = ({
         href={item.href}
         target={item.target}
         rel={item.rel}
-        sx={{
+        chipSx={{
           marginBottom: '0px',
           height: '20px',
           fontSize: '11px',
@@ -228,6 +228,7 @@ export const ChipsList = ({
             padding: '0 6px',
             fontSize: '11px',
             lineHeight: '18px',
+            fontWeight: 100,
           },
           ...chipSx,
           ...(item.chipProps?.sx as any),
@@ -281,7 +282,7 @@ export const ChipsList = ({
               href={item.href}
               target={item.target}
               rel={item.rel}
-              sx={{
+              chipSx={{
                 marginRight: '0px',
                 height: '20px',
                 fontSize: '11px',
@@ -340,7 +341,7 @@ export const ChipsList = ({
           defaultColor="default"
           size={size}
           variant="outlined"
-          sx={{
+          chipSx={{
             marginBottom: '0px',
             cursor: 'pointer',
             height: '20px',

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useTheme } from '@mui/material/styles';
-import { FONT_FAMILY } from '../theme/fonts';
 import { SimpleTooltip } from './SimpleTooltip';
 
 interface ComponentDisplayProps {
@@ -60,9 +59,7 @@ export const ComponentDisplay = ({
         >
           {filePath}
         </div>
-        <div style={{ fontSize: '0.875rem', fontFamily: FONT_FAMILY }}>
-          {component}
-        </div>
+        <div style={{ fontSize: '0.875rem' }}>{component}</div>
       </div>
     </SimpleTooltip>
   );

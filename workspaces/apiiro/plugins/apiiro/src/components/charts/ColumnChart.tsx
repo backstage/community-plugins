@@ -18,7 +18,6 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import Box from '@mui/material/Box';
 import { styled, useTheme } from '@mui/material/styles';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { formatNumberWithSuffix } from '../../utils/numberFormatter';
 
 export interface ColumnData {
@@ -458,7 +457,6 @@ export const ColumnChart = ({
                   padding: '12px 16px',
                   minWidth: '140px',
                   fontSize: '12px',
-                  fontFamily: FONT_FAMILY,
                 },
                 '& .MuiChartsTooltip-table': {
                   margin: 0,
@@ -473,7 +471,6 @@ export const ColumnChart = ({
                       color: theme.palette.text.secondary,
                       paddingBottom: '16px',
                       borderBottom: 'none',
-                      fontFamily: FONT_FAMILY,
                     },
                   },
                   '&:not(:first-of-type)': {
@@ -488,7 +485,6 @@ export const ColumnChart = ({
                       paddingBottom: '8px',
                       fontSize: '14px',
                       color: theme.palette.text.secondary,
-                      fontFamily: FONT_FAMILY,
                       verticalAlign: 'middle',
                       '&::before': {
                         content: '""',
@@ -508,7 +504,6 @@ export const ColumnChart = ({
                       textAlign: 'right',
                       paddingLeft: '4px',
                       paddingBottom: '8px',
-                      fontFamily: FONT_FAMILY,
                       verticalAlign: 'middle',
                     },
                   },

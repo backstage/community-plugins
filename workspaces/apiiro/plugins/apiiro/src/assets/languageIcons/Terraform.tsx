@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 import type { FC } from 'react';
+import { SiTerraform } from 'react-icons/si';
 
 interface IconProps {
   color?: string;
 }
 
 export const Terraform: FC<IconProps> = ({ color = 'currentColor' }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    style={{ color }}
-  >
-    <g>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M9.06641 11.8413L14.5334 14.9985V8.68404L9.06641 5.52682V11.8413ZM14.5334 15.6882V22L9.06641 18.8428V12.531L14.5334 15.6882Z"
-      />
-      <path d="M20.605 11.8387V5.52429L15.1354 8.68151V14.9959L20.605 11.8387Z" />
-      <path d="M8.46699 11.4719V5.15749L3 2.00027V8.3147L8.46699 11.4719Z" />
-    </g>
-  </svg>
+  <SiTerraform size={24} color={color} />
 );

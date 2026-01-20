@@ -29,7 +29,7 @@ import {
   TagsList,
   TeamsDisplay,
 } from '../../components';
-import { formatDate } from '../../utils/utils';
+import { formatDate } from '../../utils/dateFormatter';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 
 export const risksColumns: GridColDef[] = [

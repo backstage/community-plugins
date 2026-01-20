@@ -24,7 +24,6 @@ import { CustomTooltip } from '../common';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChartBox } from '../common/ChartBox';
 import PieChart, { PieChartData } from '../charts/PieChart';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { ApiiroSmall } from '../../assets/apiiroLogo';
 import { NotFound } from '../common';
 import Divider from '@mui/material/Divider';
@@ -49,7 +48,6 @@ const LegendItem = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: '6px',
   fontSize: '12px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.secondary,
 }));
 
@@ -78,7 +76,6 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.primary,
 }));
 

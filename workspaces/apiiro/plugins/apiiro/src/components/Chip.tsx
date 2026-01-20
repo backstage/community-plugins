@@ -16,7 +16,6 @@
 import MuiChip, { ChipProps as MuiChipProps } from '@mui/material/Chip';
 import Link from '@mui/material/Link';
 import { SxProps, Theme } from '@mui/material/styles';
-import { FONT_FAMILY } from '../theme/fonts';
 
 export type ChipColor =
   | 'default'
@@ -64,7 +63,7 @@ export interface ChipProps extends Omit<MuiChipProps, 'color'> {
   /**
    * Custom styles
    */
-  sx?: SxProps<Theme>;
+  chipSx?: SxProps<Theme>;
 
   /**
    * Size of the chip
@@ -128,7 +127,7 @@ export interface ChipProps extends Omit<MuiChipProps, 'color'> {
  *   defaultColor="primary"
  *   variant="outlined"
  *   size="small"
- *   sx={{ fontWeight: 'bold' }}
+ *   chipSx={{ fontWeight: 'bold' }}
  * />
  *
  * @example
@@ -148,7 +147,7 @@ export const Chip = ({
   defaultColor = 'default' as ChipColor,
   variant = 'filled',
   size = 'medium',
-  sx,
+  chipSx,
   clickable = false,
   onClick,
   onDelete,
@@ -185,13 +184,12 @@ export const Chip = ({
       onDelete={onDelete}
       sx={{
         // Default styles that can be overridden
-        fontWeight: 500,
-        fontFamily: FONT_FAMILY,
+        fontWeight: 400,
         // Add cursor pointer for links
         ...(href && {
           cursor: 'pointer',
         }),
-        ...sx,
+        ...chipSx,
       }}
       {...rest}
     />

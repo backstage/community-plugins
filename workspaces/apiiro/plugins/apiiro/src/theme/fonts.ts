@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-export const FONT_FAMILY = `'Mulish', HelveticaNeue, 'Helvetica Neue', Helvetica, 'Courier Prime', Arial, sans-serif`;
-
 // Font weights
 export const FONT_WEIGHTS = {
   thin: 100,
@@ -29,19 +27,15 @@ export const FONT_WEIGHTS = {
 // Common font styles
 export const fontStyles = {
   body: {
-    fontFamily: FONT_FAMILY,
     fontWeight: FONT_WEIGHTS.normal,
   },
   heading: {
-    fontFamily: FONT_FAMILY,
     fontWeight: FONT_WEIGHTS.semiBold,
   },
   label: {
-    fontFamily: FONT_FAMILY,
     fontWeight: FONT_WEIGHTS.medium,
   },
   caption: {
-    fontFamily: FONT_FAMILY,
     fontWeight: FONT_WEIGHTS.light,
   },
 } as const;

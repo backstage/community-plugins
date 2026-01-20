@@ -15,7 +15,7 @@
  */
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import { formatDate } from '../utils/utils';
+import { formatDate } from '../utils/dateFormatter';
 import SimpleTooltip from './SimpleTooltip';
 
 export const DueDateDisplay = ({ dateString }: { dateString: string }) => {

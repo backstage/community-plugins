@@ -14,14 +14,6 @@ When enabled, this module:
 
 This helps you avoid manually managing Apiiro annotations on every entity in your catalog.
 
-## Related Plugins
-
-- **Frontend:** `@backstage-community/plugin-apiiro`
-- **Backend:** `@backstage-community/plugin-apiiro-backend`
-- **Common:** `@backstage-community/plugin-apiiro-common`
-
-The entity processor is optional but recommended when you want Apiiro annotations to be populated automatically from source metadata.
-
 ## Installation
 
 From your Backstage root directory, install the module in the backend:

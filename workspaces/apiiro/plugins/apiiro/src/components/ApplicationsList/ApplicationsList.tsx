@@ -19,7 +19,6 @@ import Link from '@mui/material/Link';
 import { useTheme, Theme } from '@mui/material/styles';
 import { SimpleTooltip } from '../SimpleTooltip';
 import { CustomTooltip } from '../common/CustomTooltip';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { getBusinessImpactColors } from '../../theme/themeUtils';
 
 interface Application {
@@ -77,7 +76,6 @@ export const ApplicationsList = ({
           style={{
             color: 'inherit',
             fontSize: '0.875rem',
-            fontFamily: FONT_FAMILY,
             cursor: 'pointer',
             textDecoration: 'underline',
           }}

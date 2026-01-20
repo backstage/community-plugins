@@ -18,7 +18,6 @@ import { LineChart as MuiLineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { formatNumberWithSuffix } from '../../utils/numberFormatter';
 
 export interface LineChartDataPoint {
@@ -385,7 +384,6 @@ export const LineChart = ({
                   padding: '12px 16px',
                   minWidth: '140px',
                   fontSize: '12px',
-                  fontFamily: FONT_FAMILY,
                 },
                 '& .MuiChartsTooltip-table': {
                   margin: 0,
@@ -400,7 +398,6 @@ export const LineChart = ({
                       color: theme.palette.text.secondary,
                       paddingBottom: '16px',
                       borderBottom: 'none',
-                      fontFamily: FONT_FAMILY,
                     },
                   },
                   '&:not(:first-of-type)': {
@@ -415,7 +412,6 @@ export const LineChart = ({
                       paddingBottom: '8px',
                       fontSize: '14px',
                       color: theme.palette.text.secondary,
-                      fontFamily: FONT_FAMILY,
                       '&::before': {
                         content: '""',
                         position: 'absolute',
@@ -434,7 +430,6 @@ export const LineChart = ({
                       textAlign: 'right',
                       paddingLeft: '4px',
                       paddingBottom: '8px',
-                      fontFamily: FONT_FAMILY,
                       verticalAlign: 'middle',
                     },
                   },

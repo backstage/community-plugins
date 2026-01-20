@@ -23,7 +23,6 @@ import { apiiroApiRef } from '../../api';
 import { TopRiskDataPoint } from '../../queries/queries.type';
 import { CustomTooltip, NotFound, SomethingWentWrong } from '../common';
 import { LogoSpinner } from '../common/logoSpinner';
-import { FONT_FAMILY } from '../../theme/fonts';
 import { RiskLevel } from '../RiskLevel';
 import { ApiiroSmall } from '../../assets/apiiroLogo';
 
@@ -86,7 +85,6 @@ const TooltipWrapper = styled(Box)(() => ({
 }));
 
 const RiskName = styled(Typography)(({ theme }) => ({
-  fontFamily: FONT_FAMILY,
   fontSize: '14px',
   fontWeight: 400,
   color: theme.palette.text.primary,
@@ -98,7 +96,6 @@ const RiskName = styled(Typography)(({ theme }) => ({
 }));
 
 const RiskCount = styled(Typography)(({ theme }) => ({
-  fontFamily: FONT_FAMILY,
   fontSize: '16px',
   fontWeight: 500,
   color: theme.palette.text.primary,
@@ -122,7 +119,6 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
-  fontFamily: FONT_FAMILY,
   color: theme.palette.text.primary,
 }));
 

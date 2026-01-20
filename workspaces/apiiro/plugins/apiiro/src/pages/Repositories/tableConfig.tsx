@@ -17,8 +17,9 @@ import { GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { Chip, ChipsList, RiskLevel, SimpleTooltip } from '../../components';
 import { scmProviderIcons } from '../../components/common/scmProviders';
-import { formatDate } from '../../utils/utils';
+import { formatDate } from '../../utils/dateFormatter';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 // Color mapping for business impact
 export const businessImpactColorMapping = {
@@ -102,7 +103,7 @@ export const repositoryColumns: GridColDef[] = [
           colorMapping={businessImpactColorMapping}
           size="small"
           variant="outlined"
-          sx={{ marginBottom: '0' }}
+          chipSx={{ marginBottom: '0' }}
         />
       </SimpleTooltip>
     ),
@@ -135,12 +136,20 @@ export const repositoryColumns: GridColDef[] = [
     field: 'languages',
     headerName: 'Languages',
     flex: 1.5,
-    minWidth: 180,
+    minWidth: 200,
     valueGetter: (_, row) => row.languages,
     renderCell: (params: any) => {
-      const languagesList = params.value?.join(', ') || '';
       return (
-        <SimpleTooltip title={languagesList}>
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            width: '100%',
+          }}
+        >
           <ChipsList
             items={params.value.map((item: any) => ({
               id: item,
@@ -150,7 +159,7 @@ export const repositoryColumns: GridColDef[] = [
             gap={0}
             variant="outlined"
           />
-        </SimpleTooltip>
+        </Box>
       );
     },
   },
@@ -241,7 +250,7 @@ export const repositoryColumns: GridColDef[] = [
         title={params.value?.toLocaleDateString() || 'N/A'}
         centered
       >
-        {params.value ? formatDate(params.value.toLocaleDateString()) : 'N/A'}
+        {params.value ? formatDate(params.value) : 'N/A'}
       </SimpleTooltip>
     ),
   },
@@ -259,7 +268,7 @@ export const repositoryColumns: GridColDef[] = [
         title={params.value?.toLocaleDateString() || 'N/A'}
         centered
       >
-        {params.value ? formatDate(params.value.toLocaleDateString()) : 'N/A'}
+        {params.value ? formatDate(params.value) : 'N/A'}
       </SimpleTooltip>
     ),
   },
