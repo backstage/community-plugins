@@ -150,7 +150,7 @@ export class JsonRulesEngineFactChecker
       // Handle undefined/null entity values - if the property doesn't exist on the entity,
       // the filter condition cannot be satisfied, so return false
       if (entityValue === undefined || entityValue === null) {
-        this.logger.warn(`Entity property '${key}' is undefined or null`);
+        this.logger.debug(`Entity property '${key}' is undefined or null`);
         return false;
       }
 
@@ -208,21 +208,6 @@ export class JsonRulesEngineFactChecker
   private async fetchEntityFromCatalog(
     entityRef: string,
   ): Promise<Entity | undefined> {
-    // If catalogApi wasn't provided in the constructor, filtering cannot be performed
-    if (!this.catalog) {
-      this.logger.debug(
-        'CatalogApi not available, skipping entity fetch for filtering',
-      );
-      return undefined;
-    }
-
-    if (!this.auth) {
-      this.logger.warn(
-        'AuthService not available, skipping entity fetch for filtering',
-      );
-      return undefined;
-    }
-
     try {
       const credentials = await this.auth.getOwnServiceCredentials();
 

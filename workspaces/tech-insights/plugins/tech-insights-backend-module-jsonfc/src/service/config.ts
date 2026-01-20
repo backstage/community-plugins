@@ -167,7 +167,10 @@ function readCheckFromCheckConfig(
 
   const filter = config
     .getOptionalConfig('filter')
-    ?.get<Record<string, string | symbol | (string | symbol)[]>>();
+    ?.get<
+      | Record<string, string | symbol | (string | symbol)[]>[]
+      | Record<string, string | symbol | (string | symbol)[]>
+    >();
 
   return {
     description,
