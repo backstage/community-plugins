@@ -1,0 +1,63 @@
+{
+  "name": "@backstage-community/plugin-scaffolder-backend-module-argocd",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "The argocd actions module for @backstage-community/plugin-scaffolder-backend-module-argocd",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder",
+    "pluginPackage": "@backstage/plugin-scaffolder-backend"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-argocd-backend": "workspace:^",
+    "@backstage-community/plugin-argocd-common": "workspace:^",
+    "@backstage/backend-plugin-api": "^1.5.0",
+    "@backstage/plugin-scaffolder-node": "^0.12.1"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^1.10.0",
+    "@backstage/cli": "^0.34.5",
+    "@backstage/config": "^1.3.6",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.5"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/argocd/plugins/argocd-actions"
+  },
+  "maintainers": [
+    "CryptoRodeo"
+  ],
+  "author": "Red Hat",
+  "bugs": "https://github.com/backstage/community-plugins/issues"
+}
