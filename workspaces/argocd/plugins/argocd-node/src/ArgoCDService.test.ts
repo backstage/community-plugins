@@ -15,7 +15,7 @@
  */
 import { ArgoCDService } from './ArgoCDService';
 import { RevisionInfo } from '@backstage-community/plugin-argocd-common';
-import { mockApplications, mockConfig } from '../__data__/mockdata';
+import { mockApplications, mockConfig } from './__data__/mockdata';
 import { mockServices } from '@backstage/backend-test-utils';
 
 const mockLogger = mockServices.logger.mock();
