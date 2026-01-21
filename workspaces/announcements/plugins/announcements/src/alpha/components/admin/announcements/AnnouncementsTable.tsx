@@ -99,7 +99,7 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
   return (
     <Row key={announcement.id}>
       <Cell>
-        <Flex gap="3" align="center">
+        <Flex>
           <ActiveInactiveAnnouncementIndicatorIcon
             announcement={announcement}
           />

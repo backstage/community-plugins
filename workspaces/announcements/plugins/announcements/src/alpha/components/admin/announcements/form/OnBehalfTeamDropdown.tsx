@@ -35,7 +35,7 @@ function getTeamDisplayName(team: any): string {
   return '';
 }
 
-export default function OnBehalfTeamDropdown({
+export function OnBehalfTeamDropdown({
   selectedTeam,
   onChange,
 }: OnBehalfTeamDropdownProps) {

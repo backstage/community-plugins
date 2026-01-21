@@ -68,7 +68,7 @@ export const ActiveInactiveAnnouncementIndicatorIcon = (props: {
   const { t } = useAnnouncementsTranslation();
 
   return (
-    <Flex style={{ flexShrink: 0 }}>
+    <Flex style={{ flexShrink: 0 }} align="center">
       <RiCircleFill
         size="12"
         color={

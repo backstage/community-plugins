@@ -20,11 +20,10 @@ import { FieldLabel, Flex, Grid, Switch, TextField } from '@backstage/ui';
 import MuiTextField from '@mui/material/TextField';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-
-import { CategorySelectInput } from './CategorySelectInput';
-import { TagsSelectInput } from './TagsSelectInput';
-import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import { DateTime } from 'luxon';
+
+import { CategorySelectInput, TagsSelectInput } from '../../../shared';
+import { OnBehalfTeamDropdown } from './OnBehalfTeamDropdown';
 
 type AnnouncementFormState = Omit<
   Announcement,
@@ -101,7 +100,9 @@ export const AnnouncementForm = ({
         <Flex direction="column" gap="4">
           <CategorySelectInput
             initialCategory={form.category}
-            setCategory={category => setForm({ ...form, category })}
+            setCategory={category =>
+              setForm({ ...form, category: category ?? undefined })
+            }
           />
 
           <OnBehalfTeamDropdown
@@ -116,7 +117,7 @@ export const AnnouncementForm = ({
       <Grid.Item colSpan={{ xs: '3', md: '1' }}>
         <TagsSelectInput
           initialTags={form.tags}
-          setTags={tags => setForm({ ...form, tags })}
+          setTags={tags => setForm({ ...form, tags: tags ?? undefined })}
         />
       </Grid.Item>
 
