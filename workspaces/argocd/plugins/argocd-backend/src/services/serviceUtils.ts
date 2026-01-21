@@ -148,12 +148,14 @@ export const buildArgoUrl = (
  * @param {URL} url - The request URL.
  * @param {string} token - The authentication token.
  * @param {string} [method='GET'] The HTTP method to use.
+ * @param {Record<string, any>} body - The body of the request (optional)
  * @returns  {Promise<any>} The JSON response of the API.
  */
 export const makeArgoRequest = async (
   url: string,
   token: string,
   method: string = 'GET',
+  body?: Record<string, any>,
 ) => {
   const response = await fetch(url, {
     method,
@@ -161,6 +163,7 @@ export const makeArgoRequest = async (
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
     },
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   } as RequestInit);
 
   return processFetch(response, url);
