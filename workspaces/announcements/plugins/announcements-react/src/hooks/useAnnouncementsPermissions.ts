@@ -37,6 +37,11 @@ export type AnnouncementsPermissionsResult = {
     loading: boolean;
     allowed: boolean;
   };
+  /** Whether the user can update settings */
+  settingsUpdate: {
+    loading: boolean;
+    allowed: boolean;
+  };
   /** Whether any of the permissions are still loading */
   isLoading: boolean;
 };
@@ -54,6 +59,7 @@ export const useAnnouncementsPermissions =
       announcementCreatePermission,
       announcementDeletePermission,
       announcementUpdatePermission,
+      announcementSettingsPermission,
     } = announcementEntityPermissions;
 
     const { loading: loadingCreate, allowed: canCreate } = usePermission({
@@ -68,6 +74,11 @@ export const useAnnouncementsPermissions =
       permission: announcementUpdatePermission,
     });
 
+    const { loading: loadingSettingsUpdate, allowed: canSettingsUpdate } =
+      usePermission({
+        permission: announcementSettingsPermission,
+      });
+
     return {
       create: {
         loading: loadingCreate,
@@ -81,6 +92,14 @@ export const useAnnouncementsPermissions =
         loading: loadingUpdate,
         allowed: canUpdate,
       },
-      isLoading: loadingCreate || loadingDelete || loadingUpdate,
+      settingsUpdate: {
+        loading: loadingSettingsUpdate,
+        allowed: canSettingsUpdate,
+      },
+      isLoading:
+        loadingCreate ||
+        loadingDelete ||
+        loadingUpdate ||
+        loadingSettingsUpdate,
     };
   };

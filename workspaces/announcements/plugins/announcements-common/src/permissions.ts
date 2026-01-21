@@ -46,6 +46,16 @@ export const announcementUpdatePermission = createPermission({
 });
 
 /**
+ * Permission to manage announcement settings
+ *
+ * @public
+ */
+export const announcementSettingsPermission = createPermission({
+  name: 'announcement.entity.settings.update',
+  attributes: { action: 'update' },
+});
+
+/**
  * Collection of all announcement-related permissions
  *
  * @public
@@ -54,4 +64,5 @@ export const announcementEntityPermissions = {
   announcementCreatePermission,
   announcementDeletePermission,
   announcementUpdatePermission,
+  announcementSettingsPermission,
 };

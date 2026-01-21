@@ -17,3 +17,4 @@ export { AnnouncementsAdminPage } from './AnnouncementsAdminPage';
 export { AnnouncementsContent } from './announcements';
 export { CategoriesContent } from './categories';
 export { TagsContent } from './tags';
+export { SettingsContent } from './settings';

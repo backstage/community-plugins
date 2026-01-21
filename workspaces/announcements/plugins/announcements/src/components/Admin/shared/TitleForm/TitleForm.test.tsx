@@ -52,6 +52,10 @@ describe('TitleForm', () => {
         loading: false,
         allowed: false,
       },
+      settingsUpdate: {
+        loading: false,
+        allowed: false,
+      },
       isLoading: false,
     });
   });
@@ -285,6 +289,10 @@ describe('TitleForm', () => {
           loading: false,
           allowed: false,
         },
+        settingsUpdate: {
+          loading: false,
+          allowed: false,
+        },
         isLoading: true,
       });
 
@@ -311,6 +319,10 @@ describe('TitleForm', () => {
           allowed: false,
         },
         update: {
+          loading: false,
+          allowed: false,
+        },
+        settingsUpdate: {
           loading: false,
           allowed: false,
         },
@@ -367,6 +379,10 @@ describe('TitleForm', () => {
           allowed: false,
         },
         update: {
+          loading: false,
+          allowed: false,
+        },
+        settingsUpdate: {
           loading: false,
           allowed: false,
         },

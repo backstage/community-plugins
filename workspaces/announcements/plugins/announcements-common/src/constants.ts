@@ -132,3 +132,24 @@ export const AUDITOR_ACTION_DELETE = 'delete';
  * @public
  */
 export const AUDITOR_FETCH_EVENT_ID = 'announcements-fetch';
+
+/**
+ * Settings mutate event ID for auditor mutations
+ *
+ * @public
+ */
+export const AUDITOR_SETTINGS_EVENT_ID = 'announcements-settings';
+
+/**
+ * Event action for updating settings
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_SETTINGS_UPDATE = 'update-settings';
+
+/**
+ * Event action for resetting settings
+ *
+ * @public
+ */
+export const AUDITOR_ACTION_SETTINGS_RESET = 'reset-settings';

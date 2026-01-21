@@ -57,6 +57,10 @@ describe('DeleteDialog', () => {
         loading: false,
         allowed: false,
       },
+      settingsUpdate: {
+        loading: false,
+        allowed: false,
+      },
       isLoading: false,
     });
   });
@@ -121,6 +125,10 @@ describe('DeleteDialog', () => {
         loading: false,
         allowed: false,
       },
+      settingsUpdate: {
+        loading: false,
+        allowed: false,
+      },
       isLoading: true,
     });
 
@@ -146,6 +154,10 @@ describe('DeleteDialog', () => {
         loading: false,
         allowed: false,
       },
+      settingsUpdate: {
+        loading: false,
+        allowed: false,
+      },
       isLoading: false,
     });
 
@@ -168,6 +180,10 @@ describe('DeleteDialog', () => {
         allowed: false,
       },
       update: {
+        loading: false,
+        allowed: false,
+      },
+      settingsUpdate: {
         loading: false,
         allowed: false,
       },
