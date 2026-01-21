@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+
+import { useRouteRef } from '@backstage/frontend-plugin-api';
 import {
   Box,
   CardFooter,
@@ -26,6 +25,10 @@ import {
   Link,
   Flex,
 } from '@backstage/ui';
+
+import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+
 import { formatAnnouncementStartTime } from '../../../components/utils/announcementDateUtils';
 import { announcementViewRouteRef } from '../../../routes';
 import { AnnouncementPublishedBy, AnnouncementTags } from '../shared';
@@ -65,7 +68,7 @@ export const AnnouncementCard = ({
         <Flex direction="column" gap="2">
           <Link
             variant="title-x-small"
-            href={viewAnnouncementLink({ id: announcement.id })}
+            href={viewAnnouncementLink?.({ id: announcement.id })}
             truncate
           >
             {announcement.title}
