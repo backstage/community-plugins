@@ -1,5 +1,12 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.18.2
+
+### Patch Changes
+
+- d901927: Removed unused dependencies from the package
+- ee5069b: Added translation support for announcements filter bar
+
 ## 0.18.1
 
 ### Patch Changes
