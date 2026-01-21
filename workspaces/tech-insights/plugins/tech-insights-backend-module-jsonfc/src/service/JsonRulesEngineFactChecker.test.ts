@@ -303,6 +303,183 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
       },
     },
   ],
+
+  // Filter test cases
+  filterMatchingSingleField: [
+    {
+      id: 'filterMatchingSingleFieldCheck',
+      name: 'filterMatchingSingleFieldCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with filter matching single field',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'Component' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterNotMatching: [
+    {
+      id: 'filterNotMatchingCheck',
+      name: 'filterNotMatchingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with filter not matching',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'API' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterMultipleObjects: [
+    {
+      id: 'filterMultipleObjectsCheck',
+      name: 'filterMultipleObjectsCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with multiple filter objects (OR logic)',
+      factIds: ['test-factretriever'],
+      filter: [{ kind: 'API' }, { kind: 'Component' }],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterArrayValues: [
+    {
+      id: 'filterArrayValuesCheck',
+      name: 'filterArrayValuesCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with array values in filter',
+      factIds: ['test-factretriever'],
+      filter: { kind: ['Component', 'Service'] },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterNestedProperty: [
+    {
+      id: 'filterNestedPropertyCheck',
+      name: 'filterNestedPropertyCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with nested property access',
+      factIds: ['test-factretriever'],
+      filter: { 'spec.lifecycle': 'production' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterCaseInsensitive: [
+    {
+      id: 'filterCaseInsensitiveCheck',
+      name: 'filterCaseInsensitiveCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with case-insensitive matching',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'component' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterMultipleFields: [
+    {
+      id: 'filterMultipleFieldsCheck',
+      name: 'filterMultipleFieldsCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with multiple fields in filter (AND logic)',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'Component', 'spec.type': 'service' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterEntityArrayProperty: [
+    {
+      id: 'filterEntityArrayPropertyCheck',
+      name: 'filterEntityArrayPropertyCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check matching against entity array property',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.tags': 'backend' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
 };
 
 const latestSchemasMock = jest.fn().mockImplementation((...args) => {
@@ -398,6 +575,59 @@ const mockRepository: TechInsightsStore = {
   getLatestSchemas: latestSchemasMock,
 } as unknown as TechInsightsStore;
 
+// Mock catalog entities for filter testing
+const mockCatalogEntities: Record<string, any> = {
+  'component:default/test-service': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'test-service',
+      namespace: 'default',
+      tags: ['backend', 'typescript'],
+    },
+    spec: {
+      type: 'service',
+      lifecycle: 'production',
+      owner: 'team-a',
+    },
+  },
+  'api:default/test-api': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'API',
+    metadata: {
+      name: 'test-api',
+      namespace: 'default',
+      tags: ['rest', 'public'],
+    },
+    spec: {
+      type: 'openapi',
+      lifecycle: 'experimental',
+      owner: 'team-b',
+    },
+  },
+  'component:default/test-library': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'test-library',
+      namespace: 'default',
+      tags: ['frontend', 'react'],
+    },
+    spec: {
+      type: 'library',
+      lifecycle: 'production',
+      owner: 'team-a',
+    },
+  },
+};
+
+const mockCatalogService = {
+  ...catalogServiceMock.mock(),
+  getEntityByRef: jest.fn((entityRef: string) => {
+    return Promise.resolve(mockCatalogEntities[entityRef] || null);
+  }),
+};
+
 describe('JsonRulesEngineFactChecker', () => {
   const factChecker = new JsonRulesEngineFactCheckerFactory({
     checkRegistry: mockCheckRegistry,
@@ -406,8 +636,8 @@ describe('JsonRulesEngineFactChecker', () => {
       new Operator<number, number>('isDivisibleBy', (a, b) => a % b === 0),
     ],
     logger: mockServices.logger.mock(),
-    catalog: catalogServiceMock.mock(),
-    auth: mockServices.auth(),
+    catalog: mockCatalogService as any,
+    auth: mockServices.auth.mock(),
   }).construct(mockRepository);
 
   describe('when running checks', () => {
@@ -801,5 +1031,201 @@ describe('JsonRulesEngineFactChecker', () => {
         });
       },
     );
+  });
+
+  describe('when filtering checks by entity criteria', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should run check when filter matches entity kind', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterMatchingSingleField'],
+      );
+
+      expect(mockCatalogService.getEntityByRef).toHaveBeenCalledWith(
+        'component:default/test-service',
+        expect.any(Object),
+      );
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterMatchingSingleFieldCheck');
+      expect(results[0].result).toBe(true);
+    });
+
+    it('should not run check when filter does not match entity kind', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterNotMatching'],
+      );
+
+      expect(mockCatalogService.getEntityByRef).toHaveBeenCalledWith(
+        'component:default/test-service',
+        expect.any(Object),
+      );
+      expect(results).toHaveLength(0);
+    });
+
+    it('should run check when any filter object matches (OR logic)', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterMultipleObjects'],
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterMultipleObjectsCheck');
+    });
+
+    it('should run check when entity matches one value in filter array', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterArrayValues'],
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterArrayValuesCheck');
+    });
+
+    it('should support nested property access in filters', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterNestedProperty'],
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterNestedPropertyCheck');
+    });
+
+    it('should not run check when nested property does not match', async () => {
+      const results = await factChecker.runChecks('api:default/test-api', [
+        'filterNestedProperty',
+      ]);
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should perform case-insensitive matching for string values', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterCaseInsensitive'],
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterCaseInsensitiveCheck');
+    });
+
+    it('should match when all fields in filter match (AND logic within filter)', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterMultipleFields'],
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterMultipleFieldsCheck');
+    });
+
+    it('should not match when one field in filter does not match', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-library',
+        ['filterMultipleFields'],
+      );
+
+      // test-library has type 'library', not 'service'
+      expect(results).toHaveLength(0);
+    });
+
+    it('should match filter value against entity array property', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterEntityArrayProperty'],
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('filterEntityArrayPropertyCheck');
+    });
+
+    it('should not match when filter value not in entity array property', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-library',
+        ['filterEntityArrayProperty'],
+      );
+
+      // test-library has tags ['frontend', 'react'], not 'backend'
+      expect(results).toHaveLength(0);
+    });
+
+    it('should run all checks when entity cannot be fetched from catalog', async () => {
+      mockCatalogService.getEntityByRef.mockResolvedValueOnce(null);
+
+      const results = await factChecker.runChecks(
+        'component:default/non-existent',
+        ['filterMatchingSingleField', 'simple'],
+      );
+
+      // Should run all checks as fallback when entity not found
+      expect(results).toHaveLength(2);
+    });
+
+    it('should run checks without filter regardless of entity', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['simple', 'filterNotMatching'],
+      );
+
+      // 'simple' has no filter so should always run
+      // 'filterNotMatching' should not run for Component
+      expect(results).toHaveLength(1);
+      expect(results[0].check.id).toBe('simpleTestCheck');
+    });
+
+    it('should handle catalog service error gracefully and run all checks', async () => {
+      mockCatalogService.getEntityByRef.mockRejectedValueOnce(
+        new Error('Catalog unavailable'),
+      );
+
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        ['filterMatchingSingleField', 'simple'],
+      );
+
+      // Should run all checks as fallback when catalog throws error
+      expect(results).toHaveLength(2);
+    });
+
+    it('should handle multiple checks with different filter results', async () => {
+      const results = await factChecker.runChecks(
+        'component:default/test-service',
+        [
+          'filterMatchingSingleField', // matches Component
+          'filterNotMatching', // does not match (expects API)
+          'simple', // no filter, always runs
+        ],
+      );
+
+      expect(results).toHaveLength(2);
+      expect(results.map(r => r.check.id)).toEqual([
+        'filterMatchingSingleFieldCheck',
+        'simpleTestCheck',
+      ]);
+    });
+
+    it('should only fetch entity once even with multiple filtered checks', async () => {
+      await factChecker.runChecks('component:default/test-service', [
+        'filterMatchingSingleField',
+        'filterArrayValues',
+        'filterNestedProperty',
+      ]);
+
+      expect(mockCatalogService.getEntityByRef).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not fetch entity when no checks have filters', async () => {
+      await factChecker.runChecks('component:default/test-service', [
+        'simple',
+        'simple2',
+      ]);
+
+      expect(mockCatalogService.getEntityByRef).not.toHaveBeenCalled();
+    });
   });
 });
