@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-allure",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "A Backstage plugin that integrates with Allure",
   "backstage": {
     "role": "frontend-plugin",
@@ -48,7 +48,6 @@
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",

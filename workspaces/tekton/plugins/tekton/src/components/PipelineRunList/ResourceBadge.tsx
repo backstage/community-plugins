@@ -33,12 +33,16 @@ const ResourceBadge = ({
   return (
     <Split className="bs-tkn-pipeline-visualization__label">
       <SplitItem style={{ marginRight: 'var(--pf-t--global--spacer--sm)' }}>
-        <span className="badge" style={{ backgroundColor: color }}>
+        <span
+          data-testid="pipelinerun-abbr-badge"
+          className="badge"
+          style={{ backgroundColor: color }}
+        >
           {abbr}
         </span>
       </SplitItem>
       <SplitItem>
-        <span>{name}</span>
+        <span data-testid="pipelinerun-name">{name}</span>
       </SplitItem>
       {suffix ? (
         <SplitItem style={{ marginLeft: 'var(--pf-t--global--spacer--sm)' }}>

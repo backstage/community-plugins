@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 3.34.1
+
+### Patch Changes
+
+- 39d5c9a: Added data test ids to pipeline run list for better plugin testability
+
+## 3.34.0
+
+### Minor Changes
+
+- 5ac7a59: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [5ac7a59]
+  - @backstage-community/plugin-tekton-common@1.17.0
+  - @backstage-community/plugin-tekton-react@0.2.0
+
 ## 3.33.2
 
 ### Patch Changes

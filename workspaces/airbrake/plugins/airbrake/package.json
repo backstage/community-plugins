@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-airbrake",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "airbrake",
@@ -49,11 +49,9 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/app-defaults": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",

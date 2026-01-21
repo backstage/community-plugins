@@ -18,6 +18,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
+import { argocdPermissions } from '@backstage-community/plugin-argocd-common';
 
 /**
  * ArgoCD backend plugin
@@ -34,8 +35,18 @@ export const argoCDPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
         permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
       },
-      async init({ config, httpAuth, httpRouter, logger, permissions }) {
+      async init({
+        config,
+        httpAuth,
+        httpRouter,
+        logger,
+        permissions,
+        permissionsRegistry,
+      }) {
+        permissionsRegistry.addPermissions(argocdPermissions);
+
         httpRouter.use(
           await createRouter({
             config,

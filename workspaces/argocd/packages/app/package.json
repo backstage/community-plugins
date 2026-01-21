@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-argocd": "workspace:^",
+    "@backstage-community/plugin-rbac": "^1.47.1",
     "@backstage/app-defaults": "^1.7.2",
     "@backstage/catalog-model": "^1.7.6",
     "@backstage/core-app-api": "^1.19.2",

@@ -22,7 +22,6 @@
     "@backstage-community/plugin-cicd-statistics": "workspace:^",
     "@backstage-community/plugin-cicd-statistics-module-gitlab": "workspace:^",
     "@backstage/app-defaults": "backstage:^",
-    "@backstage/catalog-model": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
@@ -33,7 +32,6 @@
     "@backstage/plugin-catalog-common": "backstage:^",
     "@backstage/plugin-catalog-graph": "backstage:^",
     "@backstage/plugin-catalog-import": "backstage:^",
-    "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-org": "backstage:^",
     "@backstage/plugin-permission-react": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
@@ -42,17 +40,11 @@
     "@material-ui/icons": "^4.9.1",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
-    "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0",
-    "react-use": "^17.2.4"
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@backstage/test-utils": "backstage:^",
-    "@playwright/test": "^1.32.3",
-    "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.0.0",
     "@types/react-dom": "*"
   },
   "browserslist": {

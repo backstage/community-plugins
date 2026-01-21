@@ -1,5 +1,11 @@
 # @backstage-community/plugin-airbrake-backend
 
+## 0.17.1
+
+### Patch Changes
+
+- e38ca9b: Remove unused dependencies
+
 ## 0.17.0
 
 ### Minor Changes

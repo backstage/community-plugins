@@ -48,6 +48,7 @@ import {
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
+import { RbacPage } from '@backstage-community/plugin-rbac';
 
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
@@ -116,6 +117,7 @@ const routes = (
         <ReportIssue />
       </TechDocsAddons>
     </Route>
+    <Route path="/rbac" element={<RbacPage />} />
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
     <Route

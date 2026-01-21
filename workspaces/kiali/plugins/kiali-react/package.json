@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-kiali-react",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "Apache-2.0",
   "description": "Web library for the kiali plugin",
   "main": "src/index.ts",
@@ -45,7 +45,7 @@
     "@patternfly/react-core": "^6.0.0",
     "@patternfly/react-icons": "^6.0.0",
     "@patternfly/react-tokens": "^6.0.0",
-    "@patternfly/react-topology": "6.0.0",
+    "@patternfly/react-topology": "6.4.0",
     "typestyle": "^2.4.0"
   },
   "peerDependencies": {

@@ -226,7 +226,7 @@ annotations:
 
 ```
 
-results.name: `LINK_T0_SBOM`
+results.name: `LINK_TO_SBOM`
 
 results.value: `<sbom-viewer-url>`
 

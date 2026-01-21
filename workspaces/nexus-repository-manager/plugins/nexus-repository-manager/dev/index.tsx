@@ -1,3 +1,4 @@
+import { Content, Header, Page } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
@@ -29,9 +30,14 @@ createDevApp()
           ],
         ]}
       >
-        <EntityProvider entity={entityMock}>
-          <NexusRepositoryManagerPage />
-        </EntityProvider>
+        <Page themeId="tool">
+          <Header title={entityMock.metadata.name} />
+          <Content>
+            <EntityProvider entity={entityMock}>
+              <NexusRepositoryManagerPage />
+            </EntityProvider>
+          </Content>
+        </Page>
       </TestApiProvider>
     ),
     title: 'Root Page',

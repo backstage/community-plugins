@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.49.0
+
+### Minor Changes
+
+- 29027aa: Fix health issue. Update backstage version. Update styles for OpenShift version.React-topology update.
+
+### Patch Changes
+
+- Updated dependencies [29027aa]
+  - @backstage-community/plugin-kiali-react@0.7.0
+
 ## 1.48.0
 
 ### Minor Changes

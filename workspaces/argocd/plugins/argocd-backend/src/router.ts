@@ -21,7 +21,6 @@ import {
 } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import Router from 'express-promise-router';
 import { ArgoCDService } from './services/ArgoCDService';
 import { argocdViewPermission } from '@backstage-community/plugin-argocd-common';
@@ -43,10 +42,6 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  const permissionIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: [argocdViewPermission],
-  });
-
   const checkPermission = async (
     req: express.Request,
     res: express.Response,
@@ -60,7 +55,7 @@ export async function createRouter(
         })
       )[0];
       if (decision.result === AuthorizeResult.DENY) {
-        res.status(403).json({
+        return res.status(403).json({
           error: 'Unauthorized, please ensure you have the correct permissions',
         });
       }
@@ -70,7 +65,6 @@ export async function createRouter(
     }
   };
 
-  router.use(permissionIntegrationRouter);
   router.use(checkPermission);
 
   router.get(

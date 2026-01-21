@@ -19,12 +19,23 @@
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
   - [FAQ](#faq)
+    - [The bot says I'm missing a changeset. How do I add one?](#the-bot-says-im-missing-a-changeset-how-do-i-add-one)
+    - [My PR is full of unrelated files ("Knip" changes, `yarn.lock` conflicts)!](#my-pr-is-full-of-unrelated-files-knip-changes-yarnlock-conflicts)
+    - [A GitHub check is stuck "waiting for status to be reported".](#a-github-check-is-stuck-waiting-for-status-to-be-reported)
+    - [The "API Report" check is failing.](#the-api-report-check-is-failing)
+    - [My build is failing with errors about `package.json` metadata.](#my-build-is-failing-with-errors-about-packagejson-metadata)
+    - [My CI workflow is failing with some Node.js versions.](#my-ci-workflow-is-failing-with-some-nodejs-versions)
+    - [My CI workflow is failing due to linting errors.](#my-ci-workflow-is-failing-due-to-linting-errors)
+    - [How do I create a new plugin?](#how-do-i-create-a-new-plugin)
 
 ## Plugin Owner Expectations
 
 Plugin ownership is codified by the [CODEOWNERS](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file.
 
 Plugin ownership is a responsibility often taken on voluntarily and/or in addition to primary job roles. While there are expectations outlined here, this is **not a support commitment**. Timely responses are appreciated, but replies may not be immediate and will depend on availability.
+
+> [!IMPORTANT]
+> It is an explicit expectation that Plugin owners will [version bump](https://backstage.io/docs/getting-started/keeping-backstage-updated#updating-backstage-versions-with-backstage-cli) their plugins on a Monthly basis to keep them in line with Backstage versions. There is automation for [generating the version bump PR](#version-bumping) and the [optional ability to have the version bump PR automatically created](#opt-in-to-automatic-version-bump-prs) for you each month. We expect that this will mean you have roughly an hour or two commitment each month for this task. The Community Plugin Maintainers are happy to help with any issues you have with this process!
 
 ### PR Reviews & Merging
 
@@ -278,6 +289,18 @@ The `package.json` for your plugin might be missing required fields or have inco
 1.  Go to your plugin's workspace directory (e.g., `workspaces/my-plugin/`).
 2.  Run `yarn backstage-cli repo fix --publish`
 3.  This will check for and automatically fix common `package.json` issues. Commit any changes.
+
+### My CI workflow is failing with some Node.js versions.
+
+The CI workflow runs your tests automatically with all versions configured in your workspace root `package.json`, configured under `engines.node`, like:
+
+```json
+  "engines": {
+    "node": "22 || 24"
+  },
+```
+
+This versions should match the [Node.js versions supported by Backstage](https://backstage.io/docs/overview/versioning-policy/#nodejs-releases).
 
 ### My CI workflow is failing due to linting errors.
 
