@@ -43,7 +43,7 @@
   },
   "configSchema": "config.d.ts",
   "dependencies": {
-    "@backstage/backend-defaults": "^0.13.0",
+    "@backstage/backend-defaults": "^0.13.2",
     "@backstage/backend-plugin-api": "^1.4.4",
     "@backstage/catalog-client": "^1.12.0",
     "@backstage/catalog-model": "^1.7.5",
