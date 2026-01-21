@@ -18,7 +18,7 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
-import { ArgoCDService } from '@backstage-community/plugin-argocd-backend';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 /**
  * @public
  */

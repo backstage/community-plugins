@@ -17,9 +17,9 @@ import { createArgoCDResource } from './createArgoCDResource';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 import { ConfigReader } from '@backstage/config';
 import { mockServices } from '@backstage/backend-test-utils';
-import { ArgoCDService } from '@backstage-community/plugin-argocd-backend';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
-jest.mock('@backstage-community/plugin-argocd-backend');
+jest.mock('@backstage-community/plugin-argocd-node');
 
 const mockLogger = mockServices.logger.mock();
 

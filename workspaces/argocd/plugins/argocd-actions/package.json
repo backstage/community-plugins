@@ -34,8 +34,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-argocd-backend": "workspace:^",
     "@backstage-community/plugin-argocd-common": "workspace:^",
+    "@backstage-community/plugin-argocd-node": "workspace:^",
     "@backstage/backend-plugin-api": "^1.5.0",
     "@backstage/plugin-scaffolder-node": "^0.12.1"
   },

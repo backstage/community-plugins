@@ -1935,8 +1935,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-argocd@workspace:plugins/argocd-actions"
   dependencies:
-    "@backstage-community/plugin-argocd-backend": "workspace:^"
     "@backstage-community/plugin-argocd-common": "workspace:^"
+    "@backstage-community/plugin-argocd-node": "workspace:^"
     "@backstage/backend-plugin-api": "npm:^1.5.0"
     "@backstage/backend-test-utils": "npm:^1.10.0"
     "@backstage/cli": "npm:^0.34.5"
@@ -15946,7 +15946,7 @@ __metadata:
     "@backstage-community/plugin-argocd-backend": "workspace:^"
     "@backstage-community/plugin-rbac-backend": "npm:^7.6.1"
     "@backstage-community/plugin-scaffolder-backend-module-argocd": "workspace:^"
-    "@backstage/backend-defaults": "npm:^0.13.1"
+    "@backstage/backend-defaults": "npm:^0.14.0"
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/cli-node": "npm:^0.2.15"
     "@backstage/plugin-app-backend": "npm:^0.5.8"
