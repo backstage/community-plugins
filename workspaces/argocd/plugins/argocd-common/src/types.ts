@@ -31,6 +31,13 @@ export interface Application {
 /**
  * @public
  */
+export type ApplicationPayload = Omit<Application, 'status' | 'metadata'> & {
+  metadata: V1ObjectMeta & Omit<Application['metadata'], 'instance'>;
+};
+
+/**
+ * @public
+ */
 export interface Instance {
   name: string;
   url: string;
@@ -57,6 +64,8 @@ export interface Spec {
   sources?: Source[];
   destination: Destination;
   project: string;
+  revisionHistoryLimit?: number;
+  syncPolicy?: SyncPolicy;
 }
 
 /**
@@ -309,3 +318,24 @@ export interface Resource {
  * @public
  */
 export type HealthStatusType = keyof typeof HealthStatus;
+
+/**
+ * @public
+ */
+export interface SyncPolicy {
+  automated?: {
+    enabled?: boolean;
+    allowEmpty?: boolean;
+    prune?: boolean;
+    selfHeal?: boolean;
+  };
+  retry?: {
+    backoff: {
+      duration: string;
+      factor: number;
+      maxDuration: string;
+    };
+    limit: number;
+  };
+  syncOptions?: string[];
+}
