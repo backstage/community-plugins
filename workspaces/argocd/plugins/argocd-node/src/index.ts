@@ -13,4 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { argoCDPlugin as default } from './plugin';
+export { ArgoCDService } from './ArgoCDService';
+export * from './types';
+export * from './serviceUtils';
