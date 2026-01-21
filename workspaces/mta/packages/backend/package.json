@@ -39,7 +39,7 @@
     "@backstage/plugin-permission-common": "^0.9.1",
     "@backstage/plugin-permission-node": "^0.10.3",
     "@backstage/plugin-proxy-backend": "^0.6.5",
-    "@backstage/plugin-scaffolder-backend": "^2.2.0",
+    "@backstage/plugin-scaffolder-backend": "^2.2.2",
     "@backstage/plugin-search-backend": "^2.0.5",
     "@backstage/plugin-search-backend-module-catalog": "^0.3.7",
     "@backstage/plugin-search-backend-module-techdocs": "^0.4.5",
