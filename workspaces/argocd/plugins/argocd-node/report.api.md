@@ -143,15 +143,6 @@ export class ArgoCDService {
   }>;
 }
 
-// Warning: (ae-missing-release-tag) "ArgoErrorBody" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export type ArgoErrorBody = {
-  error?: string;
-  message?: string;
-  code?: string;
-} & Record<string, unknown>;
-
 // Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
 // Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
 // Warning: (tsdoc-param-tag-with-invalid-optional-name) The @param should not include a JSDoc-style optional name; it must not be enclosed in '[ ]' brackets.

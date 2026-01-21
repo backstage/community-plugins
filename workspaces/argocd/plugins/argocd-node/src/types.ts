@@ -55,9 +55,3 @@ export type CreateAppPayloadOpts = {
   resourceVersion?: string;
   destinationServer?: string;
 };
-
-export type ArgoErrorBody = {
-  error?: string;
-  message?: string;
-  code?: string;
-} & Record<string, unknown>;
