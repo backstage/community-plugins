@@ -59,4 +59,7 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // argoCD backend
 backend.add(import('@backstage-community/plugin-argocd-backend'));
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-argocd'),
+);
 backend.start();

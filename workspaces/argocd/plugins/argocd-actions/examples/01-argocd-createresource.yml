@@ -1,0 +1,60 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-argocd-resources
+  title: Creates ArgoCD Resources
+  description: Create ArgoCD Resources
+
+spec:
+  type: service
+  parameters:
+    - title: ArgoCD Resource information
+      required:
+        ['appName', 'argoInstance', 'namespace', 'repoUrl', 'path', 'label']
+      properties:
+        appName:
+          title: AppName
+          type: string
+          description: Name of the ArgoCD application to be created
+        argoInstance:
+          title: ArgoInstance
+          type: string
+          description: The name of the Argo CD Instance
+        namespace:
+          title: Namespace
+          type: string
+          description: The namespace Argo CD will use for resource deployment
+        repoUrl:
+          title: Repository URL
+          type: string
+          description: The Repo URL that will be used in the Argo CD project and application
+        path:
+          title: Path
+          type: string
+          description: The path of the resources in the repository that Argo CD will watch
+        label:
+          title: Label
+          type: string
+          description: The label used by Backstage to find applications
+        projectName:
+          title: Project Name
+          type: string
+          description: The name of the project. By default the application name is used.
+
+  steps:
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.appName }}
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: ${{ parameters.namespace }}
+        repoUrl: ${{ parameters.repoUrl }}
+        path: ${{ parameters.path }}
+        label: ${{ parameters.label }}
+        projectName: ${{ parameters.projectName }}
+
+  output:
+    links:
+      - title: ArgoCD Resources link
+        url: ${{ steps['create-argocd-resources'].output.applicationUrl }}

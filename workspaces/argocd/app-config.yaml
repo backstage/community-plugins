@@ -89,7 +89,7 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location]
+    - allow: [Component, System, API, Resource, Location, Template]
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
@@ -103,6 +103,12 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    # ArgoCD template
+    - type: file
+      target: ../../plugins/argocd-actions/examples/01-argocd-createresource.yml
+      rules:
+        - allow: [Template]
 
 permission:
   # setting this to `false` will disable permissions
