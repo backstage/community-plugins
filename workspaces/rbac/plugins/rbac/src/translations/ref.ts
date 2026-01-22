@@ -153,6 +153,8 @@ export const rbacMessages = {
     resourceTypeTooltip: 'resource type: {{resourceType}}',
     advancedPermissionsTooltip:
       'Use advanced customized permissions to allow access to specific parts of the selected resource type.',
+    noAdvancedPermissionsTooltip:
+      'Advanced customization is not supported for this resource type.',
     pluginsSelected: '{{count}} plugins',
     noPluginsSelected: 'No plugins selected',
     search: 'Search',
