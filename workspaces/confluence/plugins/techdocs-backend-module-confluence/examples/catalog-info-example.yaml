@@ -1,0 +1,57 @@
+# Example entity that uses Confluence as TechDocs source
+# This file demonstrates how to configure your components to fetch documentation from Confluence
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service-with-confluence-docs
+  description: Example service using Confluence for documentation
+  annotations:
+    # This annotation tells TechDocs to fetch docs from Confluence
+    # Use standard url: protocol - Confluence URLs are auto-detected
+    backstage.io/techdocs-ref: url:https://your-company.atlassian.net/wiki/spaces/DOCS/pages/123456789/Example+Service+Documentation
+
+    # Alternative formats that are also supported:
+    # Explicit confluence-url: prefix:
+    # backstage.io/techdocs-ref: confluence-url:https://your-company.atlassian.net/wiki/spaces/DOCS/pages/123456789/Example+Service+Documentation
+
+    # For Confluence Server/Data Center:
+    # backstage.io/techdocs-ref: url:https://confluence.company.com/display/DOCS/Example+Service+Documentation
+
+    # Using page ID directly:
+    # backstage.io/techdocs-ref: url:https://confluence.company.com/pages/viewpage.action?pageId=123456789
+
+spec:
+  type: service
+  lifecycle: production
+  owner: team-platform
+  system: example-system
+
+---
+# Another example for API documentation
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: example-api
+  description: Example API with docs from Confluence
+  annotations:
+    backstage.io/techdocs-ref: url:https://your-company.atlassian.net/wiki/spaces/API/pages/987654321/Example+API+Specification
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-api
+  definition:
+    $text: https://api.example.com/openapi.yaml
+
+---
+# Example for a system overview page
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: payment-system
+  description: Payment processing system
+  annotations:
+    backstage.io/techdocs-ref: url:https://confluence.company.com/display/ARCH/Payment+System+Architecture
+spec:
+  owner: team-payments
+  domain: finance
