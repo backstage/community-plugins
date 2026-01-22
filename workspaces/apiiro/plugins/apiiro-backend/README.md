@@ -126,6 +126,9 @@ apiiro:
     Provider:
       - ApiiroSca
       - AkamaiApiSecurity
+    PolicyTags:
+      - Security Code Review
+      - Compliance Review (PCI)
 ```
 
 **Configuration options:**
@@ -134,6 +137,7 @@ apiiro:
 - **RiskInsight**: Filter by risk insights. Provide display names (e.g., "Internet exposed", "Deployed", "Fixable").
 - **RiskCategory**: Filter by risk category. Provide display names (e.g., "SAST findings", "Secrets", "OSS security").
 - **Provider**: Filter by source provider. Provide API supported values (e.g., "ApiiroSca", "AkamaiApiSecurity").
+- **PolicyTags**: Filter by policy tags. Provide display names (e.g., "Security Code Review").
 
 ## Development
 

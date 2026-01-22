@@ -6,3 +6,22 @@ apiiro:
     entityNames:
       - component:default/example-website
     exclude: true
+  # Optional Configuration for default risk filters
+  defaultRiskFilters:
+    RiskLevel:
+      - Critical
+      - High
+    RiskInsight:
+      - Public repository
+      - Deployed
+      - Valid
+    RiskCategory:
+      - SAST findings
+      - Secrets
+      - Entry point changes
+      - API Runtime
+    Provider:
+      - ApiiroSca
+    PolicyTags:
+      - Security Code Review
+      - Compliance Review (OSS)

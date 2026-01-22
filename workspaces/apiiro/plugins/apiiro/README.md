@@ -105,6 +105,9 @@ apiiro:
     Provider:
       - ApiiroSca
       - AkamaiApiSecurity
+    PolicyTags:
+      - Security Code Review
+      - Compliance Review (PCI)
 ```
 
 Where:

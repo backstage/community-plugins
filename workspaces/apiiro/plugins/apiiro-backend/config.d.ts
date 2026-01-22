@@ -64,6 +64,13 @@ export interface Config {
        * @visibility frontend
        */
       Provider?: string[];
+
+      /**
+       * Default Policy Tags filter values.
+       * Provide display name of the filter option.
+       * @visibility frontend
+       */
+      PolicyTags?: string[];
     };
 
     /**

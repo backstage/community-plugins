@@ -52,6 +52,7 @@ export type DefaultRiskFilters = {
   RiskInsight?: string[];
   RiskCategory?: string[];
   Provider?: string[];
+  PolicyTags?: string[];
 };
 
 export type ApiiroConfigOptions = {
@@ -188,6 +189,12 @@ export class ApiiroConfig {
     const providerValues = getDefaultFilterValues('Provider');
     if (providerValues.length > 0) {
       appendIndexed('Provider', providerValues);
+    }
+
+    // Policy Tags filter from defaults (if configured and no user override)
+    const policyTags = getDefaultFilterValues('PolicyTags');
+    if (policyTags.length > 0) {
+      appendIndexed('GovernanceRuleTags', policyTags);
     }
 
     // DiscoveredOn requires exactly 2 indexed parameters (start and end)
