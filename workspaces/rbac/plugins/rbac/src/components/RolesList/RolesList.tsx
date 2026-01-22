@@ -113,7 +113,12 @@ export const RolesList = () => {
               })
             : t('table.title')
         }
-        options={{ padding: 'default', search: true, paging: true }}
+        options={{
+          padding: 'dense',
+          search: true,
+          paging: true,
+          emptyRowsWhenPaging: false,
+        }}
         data={data}
         isLoading={loading}
         columns={columns}
