@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.17.1
+
+### Patch Changes
+
+- 0d18c87: Check configuration to determine whether to show enterprise or organization page.
+
 ## 0.17.0
 
 ### Minor Changes
