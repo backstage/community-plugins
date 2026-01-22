@@ -13,58 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { renderInTestApp } from '@backstage/test-utils';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
+import { configApiRef } from '@backstage/core-plugin-api';
+import { ConfigReader } from '@backstage/config';
 import { MaturityRankInfoCard } from './MaturityRankInfoCard';
 
 describe('<MaturityRankInfoCard />', () => {
   afterEach(() => jest.resetAllMocks());
-  it('shows maturity rank infocard with rank and area', async () => {
-    const summary: MaturitySummary = {
-      rank: Rank.Bronze,
-      maxRank: Rank.Silver,
-      isMaxRank: true,
-      points: 100,
-      progress: {
-        percentage: 100,
-        totalChecks: 1,
-        passedChecks: 1,
-      },
-      rankProgress: {
-        percentage: 100,
-        totalChecks: 1,
-        passedChecks: 1,
-      },
-      areaSummaries: [
-        {
-          area: 'Ownership',
-          progress: {
-            percentage: 100,
-            totalChecks: 1,
-            passedChecks: 1,
-          },
-          rankProgress: {
-            percentage: 0,
-            totalChecks: 0,
-            passedChecks: 0,
-          },
-          rank: Rank.Bronze,
-          maxRank: Rank.Bronze,
-          isMaxRank: true,
-        },
-      ],
-    };
 
+  const summary: MaturitySummary = {
+    rank: Rank.Bronze,
+    maxRank: Rank.Silver,
+    isMaxRank: true,
+    points: 100,
+    progress: {
+      percentage: 100,
+      totalChecks: 1,
+      passedChecks: 1,
+    },
+    rankProgress: {
+      percentage: 100,
+      totalChecks: 1,
+      passedChecks: 1,
+    },
+    areaSummaries: [
+      {
+        area: 'Ownership',
+        progress: {
+          percentage: 100,
+          totalChecks: 1,
+          passedChecks: 1,
+        },
+        rankProgress: {
+          percentage: 0,
+          totalChecks: 0,
+          passedChecks: 0,
+        },
+        rank: Rank.Bronze,
+        maxRank: Rank.Bronze,
+        isMaxRank: true,
+      },
+    ],
+  };
+
+  it('shows maturity rank infocard with rank and area', async () => {
     const { getByText, getByAltText, getAllByAltText } = await renderInTestApp(
-      <MaturityRankInfoCard summary={summary} />,
+      <TestApiProvider apis={[[configApiRef, new ConfigReader({})]]}>
+        <MaturityRankInfoCard summary={summary} />
+      </TestApiProvider>,
     );
 
     expect(getByText('Maturity Rank')).toBeInTheDocument(); // Title
-    expect(getByText('Bronze')).toBeInTheDocument(); // current rank label
-
+    expect(getByText('Foundational')).toBeInTheDocument(); // current rank label (default)
     expect(getByAltText('Stone')).toBeInTheDocument(); // rank progress avatars
     expect(getAllByAltText('Bronze')).toHaveLength(3); // rank progress avatars, Current Bronze Rank, Ownership area rank avatar
     expect(getByAltText('Silver')).toBeInTheDocument(); // rank progress
@@ -75,5 +79,29 @@ describe('<MaturityRankInfoCard />', () => {
       ),
     ).toBeInTheDocument();
     expect(getByText('Ownership')).toBeInTheDocument(); // Area progress
+  });
+
+  it('uses config values for rank title and description', async () => {
+    const configReader = new ConfigReader({
+      techInsights: {
+        maturity: {
+          rank: {
+            bronze: {
+              title: 'Custom Bronze Title',
+              description: 'Custom Bronze Description',
+            },
+          },
+        },
+      },
+    });
+
+    const { getByText } = await renderInTestApp(
+      <TestApiProvider apis={[[configApiRef, configReader]]}>
+        <MaturityRankInfoCard summary={summary} />
+      </TestApiProvider>,
+    );
+
+    expect(getByText('Custom Bronze Title')).toBeInTheDocument();
+    expect(getByText('Custom Bronze Description')).toBeInTheDocument();
   });
 });
