@@ -86,14 +86,20 @@ const withResultsOptions = [
   { label: 'No', value: false },
 ];
 
+const failedOnlyOptions = [
+  { label: 'Yes', value: true },
+  { label: 'No', value: false },
+];
+
 /** public **/
 export type FiltersProps = {
   checksChanged: (checks: Check[]) => void;
   withResultsChanged: (withResults: boolean) => void;
+  failedOnlyChanged: (failedOnlyOptions: boolean) => void;
 };
 
 export const Filters = (props: FiltersProps) => {
-  const { checksChanged, withResultsChanged } = props;
+  const { checksChanged, withResultsChanged, failedOnlyChanged } = props;
   const api = useApi(techInsightsApiRef);
 
   const { value, loading, error } = useAsync(async () => {
@@ -138,6 +144,25 @@ export const Filters = (props: FiltersProps) => {
             onChange={(_: object, selectedItem) => {
               if (selectedItem) {
                 withResultsChanged(selectedItem.value);
+              }
+            }}
+            disableClearable
+            size="small"
+            popupIcon={<ExpandMoreIcon />}
+            renderInput={params => <TextField {...params} variant="outlined" />}
+          />
+        </Typography>
+      </Box>
+      <Box pb={1} pt={1}>
+        <Typography variant="button" component="label">
+          Show failed only
+          <Autocomplete
+            defaultValue={failedOnlyOptions[1]}
+            options={failedOnlyOptions}
+            getOptionLabel={o => o.label}
+            onChange={(_: object, selectedItem) => {
+              if (selectedItem) {
+                failedOnlyChanged(selectedItem.value);
               }
             }}
             disableClearable

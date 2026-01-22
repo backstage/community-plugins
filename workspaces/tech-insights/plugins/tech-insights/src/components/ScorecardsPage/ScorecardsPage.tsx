@@ -39,10 +39,27 @@ import { ExportCsv as exportCsv } from '@material-table/exporters';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import { ScorecardsBadge } from '../ScorecardsBadge';
 
+const sortByCheckResults = (
+  a: BulkCheckResponse[0],
+  b: BulkCheckResponse[0],
+) => {
+  const aFailed = a.results.filter(r => r.result === false).length;
+  const bFailed = b.results.filter(r => r.result === false).length;
+  const aTotal = a.results.length;
+  const bTotal = b.results.length;
+
+  // Sort by number of failed checks first, then by total checks
+  if (aFailed !== bFailed) {
+    return bFailed - aFailed; // More failures first (descending)
+  }
+  return bTotal - aTotal; // More total checks first
+};
+
 export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
   const api = useApi(techInsightsApiRef);
   const [filterSelectedChecks, setFilterSelectedChecks] = useState<Check[]>([]);
   const [filterWithResults, setFilterWithResults] = useState<boolean>(true);
+  const [filterFailedChecks, setFilterFailedChecks] = useState<boolean>(false);
   const tableOptions: TableOptions = {
     exportAllData: true,
     exportMenu: [
@@ -54,23 +71,38 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
     pageSize: props.badge ? 15 : 5,
     pageSizeOptions: props.badge ? [15, 30, 100] : [5, 10, 20],
     padding: `${props.dense ? 'dense' : 'default'}`,
+    thirdSortClick: false,
   };
 
   const { value, loading, error } = useAsync(async () => {
     const checks = await api.getAllChecks();
     const result = await api.runBulkChecks([], filterSelectedChecks);
 
+    let filteredResult = result;
+
+    if (filterWithResults) {
+      filteredResult = filteredResult.filter(
+        response => response.results.length > 0,
+      );
+    } else {
+      filteredResult = filteredResult.filter(
+        response =>
+          (response.results?.length ?? 0) === 0 ||
+          response.results.every(r => r.result === false),
+      );
+    }
+
+    if (filterFailedChecks) {
+      filteredResult = filteredResult.filter(response =>
+        response.results.some(r => r.result === false),
+      );
+    }
+
     return {
       checks,
-      result: filterWithResults
-        ? result.filter(response => response.results.length > 0)
-        : result.filter(
-            response =>
-              (response.results?.length ?? 0) === 0 ||
-              response.results.every(r => r.result === false),
-          ),
+      result: filteredResult,
     };
-  }, [api, filterSelectedChecks, filterWithResults]);
+  }, [api, filterSelectedChecks, filterWithResults, filterFailedChecks]);
 
   const tableColumns = useMemo(() => {
     const columns: TableColumn<BulkCheckResponse[0]>[] = [
@@ -88,6 +120,8 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
           ) : (
             <ScorecardsList checkResults={row.results} dense={props.dense} />
           ),
+        defaultSort: 'desc',
+        customSort: sortByCheckResults,
         export: false,
       },
     ];
@@ -130,6 +164,9 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
               checksChanged={checks => setFilterSelectedChecks(checks)}
               withResultsChanged={withResults =>
                 setFilterWithResults(withResults)
+              }
+              failedOnlyChanged={failedOnly =>
+                setFilterFailedChecks(failedOnly)
               }
             />
           </Grid>
