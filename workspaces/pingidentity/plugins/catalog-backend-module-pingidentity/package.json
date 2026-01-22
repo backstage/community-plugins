@@ -37,7 +37,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.13.1",
+    "@backstage/backend-defaults": "^0.13.2",
     "@backstage/backend-test-utils": "^1.10.1",
     "@backstage/cli": "^0.34.5",
     "@backstage/plugin-catalog-backend": "^3.2.0",

@@ -37,7 +37,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/backend-defaults": "^0.11.1",
+    "@backstage/backend-defaults": "^0.12.0",
     "@backstage/backend-dynamic-feature-service": "^0.7.2",
     "@backstage/backend-plugin-api": "^1.4.1",
     "@backstage/backend-test-utils": "^1.7.0",
