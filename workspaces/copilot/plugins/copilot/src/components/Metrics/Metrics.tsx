@@ -21,7 +21,12 @@ import { Calendar } from 'simple-date-range-calendar';
 import { useMetrics, useMetricsByTeam, useTeams } from '../../hooks';
 import { CardsProps, ChartsProps, FilterProps } from '../../types';
 import { InfoCard, Progress } from '@backstage/core-components';
-import { useSharedDateRange, useSharedTeam } from '../../contexts';
+import {
+  useSharedDateRange,
+  useSharedTeam,
+  useSharedShowOverall,
+} from '../../contexts';
+import { OverallToggle } from '../Filters';
 
 type MetricsProps = {
   Cards: ElementType<CardsProps>;
@@ -60,6 +65,7 @@ export const RenderCharts = ({
 }: Omit<Omit<MetricsProps, 'Cards'>, 'Filters'>) => {
   const [state] = useSharedDateRange();
   const [team] = useSharedTeam();
+  const [showOverall] = useSharedShowOverall();
   const data = useMetrics(state.startDate, state.endDate);
   const dataPerTeam = useMetricsByTeam(state.startDate, state.endDate);
 
@@ -72,6 +78,7 @@ export const RenderCharts = ({
       team={team}
       metrics={data.items ?? []}
       metricsByTeam={dataPerTeam.items ?? []}
+      showOverall={showOverall}
     />
   );
 };
@@ -120,8 +127,11 @@ export const Metrics = ({ Cards, Charts, Filters }: MetricsProps) => {
           </InfoCard>
         </Box>
         <Box flex={1}>
-          <Stack pb={1.5}>
-            <RenderFilters Filters={Filters} />
+          <Stack direction="row" spacing={2} pb={1.5} alignItems="center">
+            <Box flex={1}>
+              <RenderFilters Filters={Filters} />
+            </Box>
+            <OverallToggle />
           </Stack>
           <RenderCards Cards={Cards} />
         </Box>
