@@ -95,7 +95,7 @@ const failedOnlyOptions = [
 export type FiltersProps = {
   checksChanged: (checks: Check[]) => void;
   withResultsChanged: (withResults: boolean) => void;
-  failedOnlyChanged: (failedOnlyOptions: boolean) => void;
+  failedOnlyChanged: (failedOnly: boolean) => void;
 };
 
 export const Filters = (props: FiltersProps) => {

@@ -2,4 +2,5 @@
 '@backstage-community/plugin-tech-insights': patch
 ---
 
-Added filter option to the ScorecardsPage to filter on failed checks only. Also fixed the sort on 'Results' collumn based on checkResults
+Added filter component to the ScorecardsPage to filter on failed checks only (only show entities with at least one failed check).
+Also added desc/asc order based on check results in the 'Results' column. Sort by number of failed checks first, then by total checks.
