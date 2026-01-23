@@ -169,7 +169,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.announcementsContent.cancelButton': 'Cancel';
-    readonly 'admin.announcementsContent.createButton': 'Create Announcement';
+    readonly 'admin.announcementsContent.createButton': 'Create announcement';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
     readonly 'admin.announcementsContent.deletedMessage': 'Announcement deleted.';
