@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import {
+  mockApis,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
 import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { configApiRef } from '@backstage/core-plugin-api';
-import { ConfigReader } from '@backstage/config';
 import { MaturityRankInfoCard } from './MaturityRankInfoCard';
 
 describe('<MaturityRankInfoCard />', () => {
@@ -62,7 +65,7 @@ describe('<MaturityRankInfoCard />', () => {
 
   it('shows maturity rank infocard with rank and area', async () => {
     const { getByText, getByAltText, getAllByAltText } = await renderInTestApp(
-      <TestApiProvider apis={[[configApiRef, new ConfigReader({})]]}>
+      <TestApiProvider apis={[[configApiRef, mockApis.config.mock()]]}>
         <MaturityRankInfoCard summary={summary} />
       </TestApiProvider>,
     );
@@ -82,13 +85,15 @@ describe('<MaturityRankInfoCard />', () => {
   });
 
   it('uses config values for rank title and description', async () => {
-    const configReader = new ConfigReader({
-      techInsights: {
-        maturity: {
-          rank: {
-            bronze: {
-              title: 'Custom Bronze Title',
-              description: 'Custom Bronze Description',
+    const mockConfig = mockApis.config({
+      data: {
+        techInsights: {
+          maturity: {
+            rank: {
+              bronze: {
+                title: 'Custom Bronze Title',
+                description: 'Custom Bronze Description',
+              },
             },
           },
         },
@@ -96,7 +101,7 @@ describe('<MaturityRankInfoCard />', () => {
     });
 
     const { getByText } = await renderInTestApp(
-      <TestApiProvider apis={[[configApiRef, configReader]]}>
+      <TestApiProvider apis={[[configApiRef, mockConfig]]}>
         <MaturityRankInfoCard summary={summary} />
       </TestApiProvider>,
     );
