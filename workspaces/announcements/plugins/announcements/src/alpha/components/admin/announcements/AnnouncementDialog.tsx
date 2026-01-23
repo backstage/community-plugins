@@ -112,7 +112,7 @@ export const AnnouncementDialog = (props: AnnouncementDialogProps) => {
           {t('announcementForm.submit')}
         </Button>
 
-        <Button onClick={onCancel} variant="secondary" slot="close">
+        <Button variant="secondary" slot="close">
           {t('confirmDeleteDialog.cancel')}
         </Button>
       </DialogFooter>
