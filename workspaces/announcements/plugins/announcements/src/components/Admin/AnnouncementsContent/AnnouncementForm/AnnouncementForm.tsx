@@ -281,7 +281,7 @@ export const AnnouncementForm = ({
                       color="primary"
                     />
                   }
-                  label="Send Notification"
+                  label={t('announcementForm.sendNotification')}
                 />
                 <Button
                   variant="contained"

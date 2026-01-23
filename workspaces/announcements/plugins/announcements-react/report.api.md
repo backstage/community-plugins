@@ -197,9 +197,11 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.tagsContent.createButton': 'Create tag';
     readonly 'admin.tagsContent.deletedMessage': 'Tag deleted.';
     readonly 'announcementForm.active': 'Active';
+    readonly 'announcementForm.body': 'Details';
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
     readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.sendNotification': 'Send notification';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';

@@ -22,9 +22,10 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Text,
   Flex,
   Button,
+  Text,
+  Box,
 } from '@backstage/ui';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
@@ -35,10 +36,10 @@ import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncemen
  */
 type AnnouncementsTableCardProps = {
   announcements: Announcement[];
+  onCreateClick: () => void;
   onPreviewClick: (announcement: Announcement) => void;
   onEditClick: (announcement: Announcement) => void;
   onDeleteClick: (announcement: Announcement) => void;
-  onCreateClick: () => void;
   canEdit: boolean;
   canDelete: boolean;
   canCreate: boolean;
@@ -49,12 +50,14 @@ type AnnouncementsTableCardProps = {
  * @internal
  */
 export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
+  const { t } = useAnnouncementsTranslation();
+
   const {
     announcements,
     onPreviewClick,
+    onCreateClick,
     onEditClick,
     onDeleteClick,
-    onCreateClick,
     canEdit,
     canDelete,
     canCreate,
@@ -63,7 +66,6 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
 
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
-  const { t } = useAnnouncementsTranslation();
 
   const paginatedAnnouncements = useMemo(() => {
     const start = offset;
@@ -87,8 +89,9 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
       </CardHeader>
 
       <CardBody>
-        <ActiveInactiveAnnouncementIndicator />
-
+        <Box m="3">
+          <ActiveInactiveAnnouncementIndicator />
+        </Box>
         <AnnouncementsTable
           data={paginatedAnnouncements}
           onPreviewClick={onPreviewClick}

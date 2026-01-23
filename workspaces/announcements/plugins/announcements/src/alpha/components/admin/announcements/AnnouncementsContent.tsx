@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
@@ -32,16 +32,16 @@ import {
 import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Box, Grid, Flex, Button } from '@backstage/ui';
+import { Box, Grid } from '@backstage/ui';
 import slugify from 'slugify';
 
 import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { AnnouncementForm } from '../../../../components/Admin/AnnouncementsContent/AnnouncementForm';
 import { AnnouncementsTableCard } from './AnnouncementsTableCard';
 import { announcementViewRouteRef } from '../../../../routes';
+import { AnnouncementDialog } from './AnnouncementDialog';
 
 /**
  * @internal
@@ -54,45 +54,26 @@ export type AnnouncementsContentProps = {
   };
 };
 
-const AnnouncementFormContent = (props: {
-  onCancel: () => void;
-  onSubmit: (request: CreateAnnouncementRequest) => Promise<void>;
-  initialData: Announcement;
-}) => {
-  const { t } = useAnnouncementsTranslation();
-
-  const { onCancel, onSubmit, initialData } = props;
-
-  return (
-    <Box mb="2">
-      <Flex justify="end" align="center">
-        <Button variant="secondary" onClick={onCancel}>
-          {t('admin.announcementsContent.cancelButton')}
-        </Button>
-      </Flex>
-
-      <AnnouncementForm initialData={initialData} onSubmit={onSubmit} />
-    </Box>
-  );
+type DialogState = {
+  open: boolean;
+  mode: 'create' | 'edit';
+  announcement?: Announcement;
 };
 
 /**
  * @internal
  */
-export const AnnouncementsContent = ({
-  formDefaults: { defaultInactive },
-}: AnnouncementsContentProps) => {
+export const AnnouncementsContent = (_props: AnnouncementsContentProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
   const { categories } = useCategories();
 
-  const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
-    useState(false);
-  const [editingAnnouncementId, setEditingAnnouncementId] = useState<
-    string | null
-  >(null);
+  const [dialogState, setDialogState] = useState<DialogState>({
+    open: false,
+    mode: 'create',
+  });
 
   const { announcements, retry: refresh } = useAnnouncements({});
 
@@ -107,7 +88,7 @@ export const AnnouncementsContent = ({
   const navigate = useNavigate();
 
   const onCreateButtonClick = () => {
-    setShowCreateAnnouncementForm(true);
+    setDialogState({ open: true, mode: 'create' });
   };
 
   const onPreviewClick = (announcement: Announcement) => {
@@ -116,8 +97,7 @@ export const AnnouncementsContent = ({
   };
 
   const onEditClick = (announcement: Announcement) => {
-    setEditingAnnouncementId(announcement.id);
-    setShowCreateAnnouncementForm(false);
+    setDialogState({ open: true, mode: 'edit', announcement });
   };
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
@@ -151,7 +131,7 @@ export const AnnouncementsContent = ({
 
       alertApi.post({ message: alertMsg, severity: 'success' });
 
-      setShowCreateAnnouncementForm(false);
+      setDialogState({ open: false, mode: 'create' });
       refresh();
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
@@ -159,7 +139,8 @@ export const AnnouncementsContent = ({
   };
 
   const onUpdate = async (request: CreateAnnouncementRequest) => {
-    if (!editingAnnouncementId) {
+    const announcementId = dialogState.announcement?.id;
+    if (!announcementId) {
       return;
     }
 
@@ -186,32 +167,19 @@ export const AnnouncementsContent = ({
         }
       }
 
-      await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
+      await announcementsApi.updateAnnouncement(announcementId, request);
       alertApi.post({ message: updateMsg, severity: 'success' });
 
-      setEditingAnnouncementId(null);
+      setDialogState({ open: false, mode: 'create' });
       refresh();
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }
   };
 
-  const onCancelCreate = () => {
-    setShowCreateAnnouncementForm(false);
+  const onDialogCancel = () => {
+    setDialogState({ open: false, mode: 'create' });
   };
-
-  const onCancelEdit = () => {
-    setEditingAnnouncementId(null);
-  };
-
-  const announcementToEdit = useMemo(() => {
-    if (!editingAnnouncementId || !announcements?.results) {
-      return null;
-    }
-    return (
-      announcements.results.find(a => a.id === editingAnnouncementId) ?? null
-    );
-  }, [editingAnnouncementId, announcements?.results]);
 
   const onCancelDelete = () => {
     closeDeleteDialog();
@@ -249,26 +217,6 @@ export const AnnouncementsContent = ({
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Grid.Root columns="1">
-        {showCreateAnnouncementForm && (
-          <Grid.Item>
-            <AnnouncementFormContent
-              onCancel={onCancelCreate}
-              onSubmit={onSubmit}
-              initialData={{ active: !defaultInactive } as Announcement}
-            />
-          </Grid.Item>
-        )}
-
-        {editingAnnouncementId && announcementToEdit && (
-          <Grid.Item>
-            <AnnouncementFormContent
-              onCancel={onCancelEdit}
-              onSubmit={onUpdate}
-              initialData={announcementToEdit}
-            />
-          </Grid.Item>
-        )}
-
         <Grid.Item>
           <Box mb="12">
             <AnnouncementsTableCard
@@ -280,9 +228,16 @@ export const AnnouncementsContent = ({
               canEdit={canEdit}
               canDelete={canDelete}
               canCreate={canCreate}
-              editingAnnouncementId={editingAnnouncementId}
             />
           </Box>
+
+          <AnnouncementDialog
+            open={dialogState.open}
+            initialData={dialogState.announcement}
+            onSubmit={dialogState.mode === 'edit' ? onUpdate : onSubmit}
+            onCancel={onDialogCancel}
+            canSubmit={dialogState.mode === 'edit' ? canEdit : canCreate}
+          />
 
           <DeleteConfirmationDialog
             type="announcement"

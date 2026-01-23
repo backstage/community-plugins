@@ -22,6 +22,7 @@ export const announcementsTranslationRef = createTranslationRef({
     announcementForm: {
       title: 'Title',
       excerpt: 'Excerpt',
+      body: 'Details',
       active: 'Active',
       submit: 'Submit',
       editAnnouncement: 'Edit announcement',
@@ -38,6 +39,7 @@ export const announcementsTranslationRef = createTranslationRef({
         label: 'Tags',
       },
       tagsLabel: 'Tags',
+      sendNotification: 'Send notification',
     },
     announcementsPage: {
       announcements: 'Announcements',

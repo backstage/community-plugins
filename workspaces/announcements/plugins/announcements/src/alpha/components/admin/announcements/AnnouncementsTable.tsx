@@ -86,7 +86,8 @@ const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
     editingAnnouncementId,
   } = props;
   const isCurrentlyEditing = editingAnnouncementId === announcement.id;
-  const isEditDisabled = editingAnnouncementId !== null && !isCurrentlyEditing;
+  const isEditDisabled =
+    editingAnnouncementId !== undefined && !isCurrentlyEditing;
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
