@@ -20,29 +20,38 @@ import {
   defaultControlButtonsOptions,
   TopologyControlBar as PfTopologyControlBar,
 } from '@patternfly/react-topology';
+import { useTranslation } from '../../hooks/useTranslation';
 
 type TopologyControlBarProps = {
   controller: Controller;
 };
 
-export const TopologyControlBar = ({ controller }: TopologyControlBarProps) => (
-  <PfTopologyControlBar
-    controlButtons={createTopologyControlButtons({
-      ...defaultControlButtonsOptions,
-      zoomInCallback: action(() => {
-        controller.getGraph().scaleBy(4 / 3);
-      }),
-      zoomOutCallback: action(() => {
-        controller.getGraph().scaleBy(0.75);
-      }),
-      fitToScreenCallback: action(() => {
-        controller.getGraph().fit(80);
-      }),
-      resetViewCallback: action(() => {
-        controller.getGraph().reset();
-        controller.getGraph().layout();
-      }),
-      legend: false,
-    })}
-  />
-);
+export const TopologyControlBar = ({ controller }: TopologyControlBarProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <PfTopologyControlBar
+      controlButtons={createTopologyControlButtons({
+        ...defaultControlButtonsOptions,
+        zoomInCallback: action(() => {
+          controller.getGraph().scaleBy(4 / 3);
+        }),
+        zoomOutCallback: action(() => {
+          controller.getGraph().scaleBy(0.75);
+        }),
+        fitToScreenCallback: action(() => {
+          controller.getGraph().fit(80);
+        }),
+        resetViewCallback: action(() => {
+          controller.getGraph().reset();
+          controller.getGraph().layout();
+        }),
+        legend: false,
+        zoomInTip: t('controlBar.zoomIn'),
+        zoomOutTip: t('controlBar.zoomOut'),
+        fitToScreenTip: t('controlBar.fitToScreen'),
+        resetViewTip: t('controlBar.resetView'),
+      })}
+    />
+  );
+};

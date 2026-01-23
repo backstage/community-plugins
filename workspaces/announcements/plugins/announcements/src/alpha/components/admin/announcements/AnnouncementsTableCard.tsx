@@ -15,6 +15,7 @@
  */
 import { useState, useMemo } from 'react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   TablePagination,
   Card,
@@ -29,10 +30,6 @@ import {
 
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncementIndicator';
-import {
-  useAnnouncementsPermissions,
-  useAnnouncementsTranslation,
-} from '@backstage-community/plugin-announcements-react';
 
 /**
  * @internal
@@ -45,6 +42,7 @@ type AnnouncementsTableCardProps = {
   onDeleteClick: (announcement: Announcement) => void;
   canEdit: boolean;
   canDelete: boolean;
+  canCreate: boolean;
   editingAnnouncementId?: string | null;
 };
 
@@ -53,9 +51,6 @@ type AnnouncementsTableCardProps = {
  */
 export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
   const { t } = useAnnouncementsTranslation();
-  const {
-    create: { allowed: canCreate },
-  } = useAnnouncementsPermissions();
 
   const {
     announcements,
@@ -65,6 +60,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     onDeleteClick,
     canEdit,
     canDelete,
+    canCreate,
     editingAnnouncementId,
   } = props;
 
@@ -77,13 +73,15 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     return announcements.slice(start, end);
   }, [announcements, offset, pageSize]);
 
+  const title = `${t('admin.announcementsContent.announcements')} (${
+    announcements.length
+  })`;
+
   return (
     <Card>
       <CardHeader>
         <Flex justify="between" align="center">
-          <Text variant="title-x-small">
-            {t('admin.announcementsContent.announcements')}
-          </Text>
+          <Text variant="title-x-small">{title}</Text>
           <Button isDisabled={!canCreate} onClick={onCreateClick}>
             {t('admin.announcementsContent.createButton')}
           </Button>

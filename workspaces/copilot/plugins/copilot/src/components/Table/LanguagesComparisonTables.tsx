@@ -172,10 +172,12 @@ export function LanguagesComparisonTables({
   team,
   overallRows,
   teamRows,
+  showOverall = true,
 }: {
   team?: string;
   overallRows: LanguageStats[];
   teamRows: LanguageStats[];
+  showOverall?: boolean;
 }) {
   return (
     <Box display="flex" flexDirection="row" gap={4} height="100%">
@@ -184,12 +186,14 @@ export function LanguagesComparisonTables({
           <EnhancedTable title={team} rows={teamRows} />
         </Box>
       )}
-      <Box flex={1}>
-        <EnhancedTable
-          title={team ? 'Overall' : undefined}
-          rows={overallRows}
-        />
-      </Box>
+      {(showOverall || !team) && (
+        <Box flex={1}>
+          <EnhancedTable
+            title={team ? 'Overall' : undefined}
+            rows={overallRows}
+          />
+        </Box>
+      )}
     </Box>
   );
 }
