@@ -54,7 +54,11 @@ The order of the fact retrievers defined in the `factIds` array has no bearing o
 
 Filters allow you to selectively run checks only on entities that match specific criteria. This is useful when you want different checks to apply to different types of entities.
 
-Filters are defined using the `filter` property in your check configuration. The filter can match entity properties using dot notation to access nested fields:
+Filters are defined using the `filter` property in your check configuration. The filter can match entity properties using dot notation to access nested fields.
+
+#### Basic Filter (AND logic within filter)
+
+When multiple fields are specified in a single filter object, ALL conditions must match (AND logic):
 
 ```yaml title="app-config.yaml"
 techInsights:
@@ -76,6 +80,95 @@ techInsights:
                 operator: equal
                 value: true
 ```
+
+This check will only run on entities where `kind` is "component" **AND** `spec.lifecycle` is "production".
+
+#### Multiple Filter Objects (OR logic)
+
+You can provide an array of filter objects. The check will run if the entity matches **ANY** of the filter objects:
+
+```yaml title="app-config.yaml"
+techInsights:
+  factChecker:
+    checks:
+      criticalEntitiesCheck:
+        type: json-rules-engine
+        name: Critical Entities Check
+        description: Checks that apply to both APIs and production components
+        factIds:
+          - entityOwnershipFactRetriever
+        filter:
+          - kind: api
+          - kind: component
+            spec.lifecycle: production
+        rule:
+          conditions:
+            all:
+              - fact: hasGroupOwner
+                operator: equal
+                value: true
+```
+
+This check will run on entities that are either:
+
+- APIs (any lifecycle), OR
+- Components with production lifecycle
+
+#### Array Values in Filter (OR logic for single field)
+
+You can specify an array of values for a single field. The check will run if the entity's field matches **ANY** of the values:
+
+```yaml title="app-config.yaml"
+techInsights:
+  factChecker:
+    checks:
+      multiKindCheck:
+        type: json-rules-engine
+        name: Multi-Kind Check
+        description: Checks that apply to multiple entity kinds
+        factIds:
+          - entityOwnershipFactRetriever
+        filter:
+          kind: [component, api, system]
+          spec.lifecycle: production
+        rule:
+          conditions:
+            all:
+              - fact: hasGroupOwner
+                operator: equal
+                value: true
+```
+
+This check will run on entities where `kind` is "component" **OR** "api" **OR** "system", **AND** `spec.lifecycle` is "production".
+
+#### Matching Against Entity Arrays
+
+Filters can also match values within entity array properties (e.g., tags):
+
+```yaml title="app-config.yaml"
+techInsights:
+  factChecker:
+    checks:
+      backendServicesCheck:
+        type: json-rules-engine
+        name: Backend Services Check
+        description: Checks for entities tagged as backend services
+        factIds:
+          - entityOwnershipFactRetriever
+        filter:
+          metadata.tags: backend
+          spec.type: service
+        rule:
+          conditions:
+            all:
+              - fact: hasGroupOwner
+                operator: equal
+                value: true
+```
+
+This check will run on entities that have "backend" in their `metadata.tags` array **AND** `spec.type` is "service".
+
+> **Note**: If the catalog (or auth) service is unavailable, or if entity fetching fails, checks that are configured with filters will run against all entities as a fallback to ensure checks continue to function. In this scenario, no filtering is applied.
 
 ## Custom operators
 
