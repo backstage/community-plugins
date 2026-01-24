@@ -21,6 +21,7 @@ import {
   DialogBody,
   DialogFooter,
 } from '@backstage/ui';
+import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import {
   CreateAnnouncementRequest,
@@ -44,6 +45,7 @@ export type AnnouncementDialogProps = {
 export const AnnouncementDialog = (props: AnnouncementDialogProps) => {
   const { initialData, onSubmit, open, onCancel, canSubmit } = props;
   const { t } = useAnnouncementsTranslation();
+  const identityApi = useApi(identityApiRef);
   const [currentFormData, setCurrentFormData] =
     useState<AnnouncementFormState | null>(null);
   const [loading, setLoading] = useState(false);
@@ -59,7 +61,17 @@ export const AnnouncementDialog = (props: AnnouncementDialogProps) => {
     setLoading(true);
 
     try {
-      await onSubmit(data as CreateAnnouncementRequest);
+      const userIdentity = await identityApi.getBackstageIdentity();
+
+      const request: CreateAnnouncementRequest = {
+        ...data,
+        category: data.category?.slug,
+        tags: data.tags?.map(tag => tag.slug),
+        publisher: data.on_behalf_of ?? userIdentity.userEntityRef,
+        updated_at: '',
+      };
+
+      await onSubmit(request);
       onCancel();
     } finally {
       setLoading(false);
@@ -77,7 +89,11 @@ export const AnnouncementDialog = (props: AnnouncementDialogProps) => {
   };
 
   const isEditing = Boolean(initialData?.id);
-  const isDisabled = loading || !currentFormData?.title || canSubmit === false;
+  const isDisabled =
+    loading ||
+    !currentFormData?.title ||
+    !currentFormData?.start_at ||
+    canSubmit === false;
 
   return (
     <Dialog

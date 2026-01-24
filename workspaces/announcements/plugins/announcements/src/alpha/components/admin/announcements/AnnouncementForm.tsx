@@ -41,23 +41,62 @@ export const AnnouncementForm = ({
 }: AnnouncementFormProps) => {
   const { t } = useAnnouncementsTranslation();
 
-  const [form, setForm] = useState<AnnouncementFormState>({
-    title: '',
-    excerpt: '',
-    body: '',
-    active: true,
-    start_at: '',
-    until_date: undefined,
-    on_behalf_of: undefined,
-    tags: undefined,
-    sendNotification: true,
-    category: undefined,
-    publisher: '',
+  const [form, setForm] = useState<AnnouncementFormState>(() => {
+    const defaultStartAt = DateTime.now().toISODate() || '';
+    const defaultUntilDate =
+      DateTime.now().endOf('day').plus({ days: 7 }).toISODate() || '';
+
+    if (initialData) {
+      // Format dates for the date input fields
+      const formattedStartAt = initialData.start_at
+        ? DateTime.fromISO(initialData.start_at).toISODate() || defaultStartAt
+        : defaultStartAt;
+      const formattedUntilDate = initialData.until_date
+        ? DateTime.fromISO(initialData.until_date).toISODate() ||
+          defaultUntilDate
+        : defaultUntilDate;
+
+      return {
+        ...initialData,
+        start_at: formattedStartAt,
+        until_date: formattedUntilDate,
+      };
+    }
+
+    return {
+      title: '',
+      excerpt: '',
+      body: '',
+      active: true,
+      start_at: defaultStartAt,
+      until_date: defaultUntilDate,
+      on_behalf_of: undefined,
+      tags: undefined,
+      sendNotification: true,
+      category: undefined,
+      publisher: '',
+    };
   });
 
   useEffect(() => {
     if (initialData) {
-      setForm(initialData);
+      // Format dates for the date input fields
+      const formattedStartAt = initialData.start_at
+        ? DateTime.fromISO(initialData.start_at).toISODate() ||
+          DateTime.now().toISODate() ||
+          ''
+        : DateTime.now().toISODate() || '';
+      const formattedUntilDate = initialData.until_date
+        ? DateTime.fromISO(initialData.until_date).toISODate() ||
+          DateTime.now().endOf('day').plus({ days: 7 }).toISODate() ||
+          ''
+        : DateTime.now().endOf('day').plus({ days: 7 }).toISODate() || '';
+
+      setForm({
+        ...initialData,
+        start_at: formattedStartAt,
+        until_date: formattedUntilDate,
+      });
     }
   }, [initialData]);
 
@@ -129,7 +168,6 @@ export const AnnouncementForm = ({
             type="date"
             value={form.start_at}
             InputLabelProps={{ shrink: true }}
-            required
             fullWidth
             onChange={e =>
               setForm({
