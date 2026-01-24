@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { mcpChatPlugin, McpChatPage, MCPChatIcon } from './plugin';
-export { mcpChatApiRef } from './api';
-export type { McpChatApi } from './api/McpChatApi';
-export type {
-  ChatMessage,
-  ChatResponse,
-  ToolsResponse,
-  Tool,
-  MCPServerStatusData,
-  ProviderStatusData,
-  MCPServer,
-  MCPServerType,
-  Provider,
-  ProviderConnectionStatus,
-  ConversationRecord,
-  ConversationsResponse,
-} from './types';
+
+export {
+  createAuthMiddleware,
+  requireNonGuest,
+  validateUuidParam,
+} from './auth';
+export type { AuthenticatedRequest } from './auth';

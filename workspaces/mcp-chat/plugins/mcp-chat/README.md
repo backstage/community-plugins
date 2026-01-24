@@ -15,6 +15,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
+- 📜 **Conversation History**: View, search, star, and manage your chat sessions
 
 ## Supported AI Providers
 
@@ -226,8 +227,16 @@ export KUBECONFIG="/path/to/your/kubeconfig.yaml"
    - Tool management controls for enabling/disabling specific servers
 
 3. **Start Chatting**: Begin a conversation by:
+
    - Selecting from the provided quick prompts, or
    - Typing your own queries directly into the chat input field
+
+4. **Manage Conversation History**: Access your chat history from the right sidebar:
+   - View past conversations ordered by recent activity
+   - Star important conversations for quick access
+   - Search through conversation titles
+   - Delete conversations you no longer need
+   - Click any conversation to restore and continue it
 
 ### Example Queries
 
