@@ -961,11 +961,24 @@ class CommunityPluginsMigrationAnalyzer {
           ).toFixed(1)
         : '0.0';
 
+    // Calculate overall migration progress (across all files)
+    const totalMuiAndBuiFiles =
+      this.results.summary.filesWithMUI +
+      this.results.summary.filesWithBackstageUI;
+    const overallProgress =
+      totalMuiAndBuiFiles > 0
+        ? (
+            (this.results.summary.filesWithBackstageUI / totalMuiAndBuiFiles) *
+            100
+          ).toFixed(1)
+        : '0.0';
+
     // Progress Bar
     const barLength = 50;
-    const fullyCount = Math.round((fullyPct / 100) * barLength);
-    const mixedCount = Math.round((mixedPct / 100) * barLength);
-    const notStartedCount = barLength - fullyCount - mixedCount;
+    const progressCount = Math.round(
+      (parseFloat(overallProgress) / 100) * barLength,
+    );
+    const remainingCount = barLength - progressCount;
 
     // Migration Status Overview
     md.push(`## 🚀 Migration Status Overview`);
@@ -976,11 +989,9 @@ class CommunityPluginsMigrationAnalyzer {
     md.push('');
     md.push('```');
     md.push(
-      `${
-        '█'.repeat(fullyCount) +
-        '▓'.repeat(mixedCount) +
-        '░'.repeat(notStartedCount)
-      } ${fullyPct}% Complete`,
+      `${'█'.repeat(progressCount)}${'░'.repeat(
+        remainingCount,
+      )} ${overallProgress}% Complete`,
     );
     md.push('```');
     md.push('');
