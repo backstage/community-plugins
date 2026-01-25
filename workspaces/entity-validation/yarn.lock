@@ -377,7 +377,6 @@ __metadata:
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@react-hookz/web": "npm:^25.0.0"
-    "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/lodash": "npm:^4.14.151"
