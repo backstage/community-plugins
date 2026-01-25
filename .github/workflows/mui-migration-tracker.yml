@@ -1,0 +1,63 @@
+name: MUI to BUI Migration Tracker
+
+permissions:
+  contents: read
+  issues: write
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # allow manual triggers
+
+jobs:
+  update-migration-progress:
+    name: Update Migration Progress Issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 22.x
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run migration analysis
+        id: analysis
+        run: |
+          # Run the migration script and save markdown output
+          node scripts/mui-to-bui/community-plugins-migration-analytics.cjs --markdown > migration-report.md
+
+          # Read the report into an environment variable (escape for GitHub Actions)
+          echo "REPORT<<EOF" >> $GITHUB_ENV
+          cat migration-report.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Update GitHub Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const reportBody = process.env.REPORT;
+
+            try {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 7023,
+                body: reportBody
+              });
+
+              console.log('✅ Successfully updated issue #7023');
+            } catch (error) {
+              console.error(`❌ Error updating issue: ${error.message}`);
+              throw error;
+            }
