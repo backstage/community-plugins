@@ -536,21 +536,27 @@ class CommunityPluginsMigrationAnalyzer {
       if (count > 0) {
         fileAnalysis.components[originalName] = count;
 
-        if (!this.results.componentUsage[originalName]) {
-          this.results.componentUsage[originalName] = {
+        // Track components by name AND library to avoid mixing MUI and BUI components
+        const componentKey = componentInfo.isMUI
+          ? `${originalName} (MUI)`
+          : `${originalName} (BUI)`;
+
+        if (!this.results.componentUsage[componentKey]) {
+          this.results.componentUsage[componentKey] = {
             total: 0,
             files: [],
             isMUI: componentInfo.isMUI,
+            originalName: originalName,
           };
         }
-        this.results.componentUsage[originalName].total += count;
-        this.results.componentUsage[originalName].files.push({
+        this.results.componentUsage[componentKey].total += count;
+        this.results.componentUsage[componentKey].files.push({
           path: `${fileAnalysis.workspace}/${fileAnalysis.path}`,
           count: count,
           workspace: fileAnalysis.workspace,
         });
 
-        this.results.discoveredComponents.add(originalName);
+        this.results.discoveredComponents.add(componentKey);
       }
     });
   }
