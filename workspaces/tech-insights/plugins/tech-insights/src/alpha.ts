@@ -14,4 +14,27 @@
  * limitations under the License.
  */
 
-export { default } from './alpha/index';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { techInsightsApi } from './alpha/apis';
+import { entityTechInsightsScorecardCard } from './alpha/entityCards';
+import { entityTechInsightsScorecardContent } from './alpha/entityContent';
+import { techInsightsNavItem } from './alpha/navItems';
+import { techInsightsScorecardPage } from './alpha/pages';
+
+/**
+ * The Tech Insights frontend plugin for the new Backstage frontend system.
+ *
+ * @alpha
+ */
+const techInsightsPlugin = createFrontendPlugin({
+  pluginId: 'tech-insights',
+  extensions: [
+    techInsightsApi,
+    techInsightsScorecardPage,
+    entityTechInsightsScorecardContent,
+    entityTechInsightsScorecardCard,
+    techInsightsNavItem,
+  ],
+});
+
+export default techInsightsPlugin;
