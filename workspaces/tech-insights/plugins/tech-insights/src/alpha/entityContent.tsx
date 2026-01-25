@@ -16,50 +16,26 @@
 import { compatWrapper } from '@backstage/core-compat-api';
 import {
   coreExtensionData,
-  createExtensionBlueprint,
-  createExtensionDataRef,
   createExtensionInput,
 } from '@backstage/frontend-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   EntityContentBlueprint,
-  EntityPredicate,
   entityPredicateToFilterFunction,
 } from '@backstage/plugin-catalog-react/alpha';
-import { ScorecardsContent } from '../components/ScorecardsContent';
-import { Check } from '@backstage-community/plugin-tech-insights-common';
+import {
+  techInsightsScorecardFilterDataRef,
+  TechInsightsScorecardBlueprint,
+} from '@backstage-community/plugin-tech-insights-react/alpha';
 
 /**
- * Entity content extension that displays Tech Insights scorecards for an entity.
+ * Entity content extension for displaying Tech Insights scorecards.
+ *
+ * Accepts scorecard child extensions created with TechInsightsScorecardBlueprint.
  *
  * @alpha
  */
-export const entityTechInsightsScorecardContent = EntityContentBlueprint.make({
-  name: 'scorecards',
-  params: {
-    path: '/tech-insights',
-    title: 'Scorecards',
-    loader: () =>
-      import('../components/ScorecardsContent').then(m =>
-        compatWrapper(<m.ScorecardsContent title="Scorecards" />),
-      ),
-  },
-});
-
-/**
- * @alpha
- * Data ref for tech insights scorecard entity predicate filter
- */
-export const techInsightsScorecardFilterDataRef =
-  createExtensionDataRef<EntityPredicate>().with({
-    id: 'tech-insights.scorecard-filter',
-  });
-
-/**
- * @alpha
- * Entity content extension that displays tech insights for an entity
- */
-export const techInsightsScorecardContent =
+export const entityTechInsightsScorecardContent =
   EntityContentBlueprint.makeWithOverrides({
     name: 'scorecard',
     inputs: {
@@ -72,78 +48,86 @@ export const techInsightsScorecardContent =
       return originalFactory({
         path: '/tech-insights',
         title: 'Scorecards',
+        // Default filter excludes User entities (they typically don't have scorecards)
+        // Can be overridden via app-config.yaml:
+        // - entity-content:tech-insights/scorecard:
+        //     config:
+        //       filter:
+        //         $not:
+        //           kind:
+        //             $in: [User, Group]
+        filter: { $not: { kind: 'User' } },
         loader: async () => {
-          const scorecards = inputs.scorecards.map(scorecard => ({
-            element: scorecard.get(coreExtensionData.reactElement),
-            filter: entityPredicateToFilterFunction(
-              scorecard.get(techInsightsScorecardFilterDataRef) ?? {},
-            ),
-          }));
+          // Separate scorecards into those with filters (specific) and without (default)
+          const scorecards = inputs.scorecards.map(scorecard => {
+            const predicate = scorecard.get(techInsightsScorecardFilterDataRef);
+            const hasFilter =
+              predicate !== undefined && Object.keys(predicate).length > 0;
+            return {
+              element: scorecard.get(coreExtensionData.reactElement),
+              filter: entityPredicateToFilterFunction(predicate ?? {}),
+              hasFilter,
+            };
+          });
 
           const Component = () => {
             const { entity } = useEntity();
 
-            const applicableScorecards = scorecards.filter(s =>
-              s.filter(entity),
+            // Find scorecards with specific filters that match this entity
+            const specificMatches = scorecards.filter(
+              s => s.hasFilter && s.filter(entity),
             );
 
+            // If specific scorecards match, show only those (they override default)
+            const applicableScorecards =
+              specificMatches.length > 0
+                ? specificMatches
+                : scorecards.filter(s => !s.hasFilter && s.filter(entity));
+
+            if (applicableScorecards.length === 0) {
+              return null;
+            }
+
             return (
-              <div>
-                {applicableScorecards.length > 0
-                  ? applicableScorecards.map((s, idx) => (
-                      <div key={idx}>{s.element}</div>
-                    ))
-                  : null}
-              </div>
+              <>
+                {applicableScorecards.map((s, idx) => (
+                  <div key={idx}>{s.element}</div>
+                ))}
+              </>
             );
           };
 
-          return <Component />;
+          return compatWrapper(<Component />);
         },
       });
     },
   });
 
-export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
-  kind: 'tech-insights-scorecard',
-  attachTo: {
-    id: 'entity-content:tech-insights/scorecard',
-    input: 'scorecards',
-  },
-  config: {
-    schema: {
-      title: z => z.string().optional(),
-      description: z => z.string().optional(),
-      checkIds: z => z.array(z.string()),
-      dense: z => z.boolean().optional(),
-    },
-  },
-  output: [
-    coreExtensionData.reactElement,
-    techInsightsScorecardFilterDataRef.optional(),
-  ],
-  *factory(
+/**
+ * Default scorecard extension that displays all Tech Insights checks.
+ * Enabled by default with no entity filter (matches all entities).
+ *
+ * @alpha
+ */
+export const defaultTechInsightsScorecard = TechInsightsScorecardBlueprint.make(
+  {
+    name: 'default',
     params: {
-      title?: string;
-      description?: string;
-      checkIds?: string[];
-      dense?: boolean;
-      filter?: EntityPredicate;
-      checkFilter?: (check: Check) => boolean;
+      title: 'Scorecards',
+      loader: async options => {
+        const { ScorecardsContent } = await import(
+          '../components/ScorecardsContent'
+        );
+        return compatWrapper(
+          <ScorecardsContent
+            title={options.title}
+            description={options.description}
+            checksId={options.checksId}
+            dense={options.dense}
+            filter={options.checkFilter}
+          />,
+        );
+      },
     },
-    { config },
-  ) {
-    yield coreExtensionData.reactElement(
-      <ScorecardsContent
-        checksId={config.checkIds ?? params.checkIds}
-        title={config.title ?? params.title ?? 'Scorecards'}
-        dense={config.dense ?? params.dense}
-        filter={params.checkFilter}
-      />,
-    );
-
-    if (params.filter) {
-      yield techInsightsScorecardFilterDataRef(params.filter);
-    }
   },
-});
+);
