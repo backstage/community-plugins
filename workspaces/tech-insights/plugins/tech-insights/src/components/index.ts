@@ -14,5 +14,10 @@
  * limitations under the License.
  */
 
-export { default } from './plugin';
-export * from '../components';
+export * from './ScorecardsBadge';
+export * from './ScorecardsCard';
+export * from './ScorecardsContent';
+export * from './ScorecardsGauge';
+export * from './ScorecardsInfo';
+export * from './ScorecardsList';
+export * from './ScorecardsPage';
