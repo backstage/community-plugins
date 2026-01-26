@@ -20,11 +20,9 @@ import { useAnnouncementsTranslation } from '@backstage-community/plugin-announc
 import {
   Cell,
   CellText,
-  Column,
-  Row,
   Table,
-  TableBody,
-  TableHeader,
+  useTable,
+  type ColumnConfig,
   ButtonIcon,
   Flex,
   Tag,
@@ -35,33 +33,6 @@ import { RiEyeLine, RiEditLine, RiDeleteBinLine } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 
 import { ActiveInactiveAnnouncementIndicatorIcon } from './ActiveInactiveAnnouncementIndicator';
-
-const AnnouncementsTableEmptyState = () => {
-  const { t } = useAnnouncementsTranslation();
-
-  return (
-    <Row>
-      <CellText
-        colSpan={9}
-        title={t('admin.announcementsContent.noAnnouncementsFound')}
-      />
-    </Row>
-  );
-};
-
-type AnnouncementTableRowProps = {
-  announcement: Announcement;
-  onPreviewClick?: (announcement: Announcement) => void;
-  onEditClick?: (announcement: Announcement) => void;
-  onDeleteClick?: (announcement: Announcement) => void;
-  canEdit?: boolean;
-  canDelete?: boolean;
-  editingAnnouncementId?: string | null;
-};
-
-const EmptyPlaceholder = () => {
-  return <CellText title="-" />;
-};
 
 const isValidEntityRef = (entityRef: string): boolean => {
   if (!entityRef) {
@@ -75,114 +46,9 @@ const isValidEntityRef = (entityRef: string): boolean => {
   }
 };
 
-const AnnouncementTableRow = (props: AnnouncementTableRowProps) => {
-  const {
-    announcement,
-    onPreviewClick,
-    onEditClick,
-    onDeleteClick,
-    canEdit,
-    canDelete,
-    editingAnnouncementId,
-  } = props;
-  const isCurrentlyEditing = editingAnnouncementId === announcement.id;
-  const isEditDisabled = editingAnnouncementId !== null && !isCurrentlyEditing;
-
-  const truncateText = (text: string, maxLength: number = 50) => {
-    if (text.length <= maxLength) return text;
-    return `${text.substring(0, maxLength)}...`;
-  };
-
-  const hasValidPublisher =
-    announcement.publisher && isValidEntityRef(announcement.publisher);
-
-  return (
-    <Row key={announcement.id}>
-      <Cell>
-        <Flex>
-          <ActiveInactiveAnnouncementIndicatorIcon
-            announcement={announcement}
-          />
-          <Text variant="body-small" title={announcement.title}>
-            {announcement.title}
-          </Text>
-        </Flex>
-      </Cell>
-      <Cell>
-        <Text variant="body-small">{truncateText(announcement.body)}</Text>
-      </Cell>
-
-      {hasValidPublisher ? (
-        <Cell>
-          <EntityRefLink entityRef={parseEntityRef(announcement.publisher)} />
-        </Cell>
-      ) : (
-        <EmptyPlaceholder />
-      )}
-
-      {announcement.category ? (
-        <Cell>
-          <Text variant="body-small">{announcement.category.title}</Text>
-        </Cell>
-      ) : (
-        <EmptyPlaceholder />
-      )}
-      {announcement.tags && announcement.tags.length > 0 ? (
-        <Cell>
-          <TagGroup>
-            {announcement.tags.map(tag => (
-              <Tag key={tag.slug} size="small">
-                {tag.title}
-              </Tag>
-            ))}
-          </TagGroup>
-        </Cell>
-      ) : (
-        <EmptyPlaceholder />
-      )}
-
-      <CellText
-        title={DateTime.fromISO(announcement.created_at).toFormat('M/d/yy')}
-      />
-      <CellText
-        title={DateTime.fromISO(announcement.start_at).toFormat('M/d/yy')}
-      />
-      <CellText
-        title={
-          announcement.until_date
-            ? DateTime.fromISO(announcement.until_date).toFormat('M/d/yy')
-            : '-'
-        }
-      />
-      <Cell>
-        <Flex gap="small">
-          <ButtonIcon
-            icon={<RiEyeLine />}
-            variant="tertiary"
-            onClick={() => onPreviewClick?.(announcement)}
-            aria-label="preview"
-            data-testid="preview"
-          />
-          <ButtonIcon
-            icon={<RiEditLine />}
-            variant="tertiary"
-            onClick={() => onEditClick?.(announcement)}
-            aria-label="edit"
-            data-testid="edit-icon"
-            isDisabled={!canEdit || isEditDisabled}
-          />
-          <ButtonIcon
-            icon={<RiDeleteBinLine />}
-            variant="tertiary"
-            onClick={() => onDeleteClick?.(announcement)}
-            aria-label="delete"
-            data-testid="delete-icon"
-            isDisabled={!canDelete}
-          />
-        </Flex>
-      </Cell>
-    </Row>
-  );
+const truncateText = (text: string, maxLength: number = 50) => {
+  if (text.length <= maxLength) return text;
+  return `${text.substring(0, maxLength)}...`;
 };
 
 /**
@@ -213,39 +79,154 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
   } = props;
   const { t } = useAnnouncementsTranslation();
 
-  return (
-    <Table>
-      <TableHeader>
-        <Column isRowHeader>
-          {t('admin.announcementsContent.table.title')}
-        </Column>
-        <Column>{t('admin.announcementsContent.table.body')}</Column>
-        <Column>{t('admin.announcementsContent.table.publisher')}</Column>
-        <Column>{t('admin.announcementsContent.table.category')}</Column>
-        <Column>{t('admin.announcementsContent.table.tags')}</Column>
-        <Column>{t('admin.announcementsContent.table.created_at')}</Column>
-        <Column>{t('admin.announcementsContent.table.start_at')}</Column>
-        <Column>{t('admin.announcementsContent.table.until_date')}</Column>
-        <Column>{t('admin.announcementsContent.table.actions')}</Column>
-      </TableHeader>
-      <TableBody>
-        {data?.length > 0 ? (
-          data.map(announcement => (
-            <AnnouncementTableRow
-              key={announcement.id}
+  const columns: ColumnConfig<Announcement>[] = [
+    {
+      id: 'title',
+      label: t('admin.announcementsContent.table.title'),
+      isRowHeader: true,
+      cell: announcement => (
+        <Cell>
+          <Flex>
+            <ActiveInactiveAnnouncementIndicatorIcon
               announcement={announcement}
-              onPreviewClick={onPreviewClick}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-              canEdit={canEdit}
-              canDelete={canDelete}
-              editingAnnouncementId={editingAnnouncementId}
             />
-          ))
+            <Text variant="body-small" title={announcement.title}>
+              {announcement.title}
+            </Text>
+          </Flex>
+        </Cell>
+      ),
+    },
+    {
+      id: 'body',
+      label: t('admin.announcementsContent.table.body'),
+      cell: announcement => (
+        <Cell>
+          <Text variant="body-small">{truncateText(announcement.body)}</Text>
+        </Cell>
+      ),
+    },
+    {
+      id: 'publisher',
+      label: t('admin.announcementsContent.table.publisher'),
+      cell: announcement => {
+        const hasValidPublisher =
+          announcement.publisher && isValidEntityRef(announcement.publisher);
+        return hasValidPublisher ? (
+          <Cell>
+            <EntityRefLink entityRef={parseEntityRef(announcement.publisher)} />
+          </Cell>
         ) : (
-          <AnnouncementsTableEmptyState />
-        )}
-      </TableBody>
-    </Table>
-  );
+          <CellText title="-" />
+        );
+      },
+    },
+    {
+      id: 'category',
+      label: t('admin.announcementsContent.table.category'),
+      cell: announcement =>
+        announcement.category ? (
+          <Cell>
+            <Text variant="body-small">{announcement.category.title}</Text>
+          </Cell>
+        ) : (
+          <CellText title="-" />
+        ),
+    },
+    {
+      id: 'tags',
+      label: t('admin.announcementsContent.table.tags'),
+      cell: announcement =>
+        announcement.tags && announcement.tags.length > 0 ? (
+          <Cell>
+            <TagGroup>
+              {announcement.tags.map(tag => (
+                <Tag key={tag.slug} size="small">
+                  {tag.title}
+                </Tag>
+              ))}
+            </TagGroup>
+          </Cell>
+        ) : (
+          <CellText title="-" />
+        ),
+    },
+    {
+      id: 'created_at',
+      label: t('admin.announcementsContent.table.created_at'),
+      cell: announcement => (
+        <CellText
+          title={DateTime.fromISO(announcement.created_at).toFormat('M/d/yy')}
+        />
+      ),
+    },
+    {
+      id: 'start_at',
+      label: t('admin.announcementsContent.table.start_at'),
+      cell: announcement => (
+        <CellText
+          title={DateTime.fromISO(announcement.start_at).toFormat('M/d/yy')}
+        />
+      ),
+    },
+    {
+      id: 'until_date',
+      label: t('admin.announcementsContent.table.until_date'),
+      cell: announcement => (
+        <CellText
+          title={
+            announcement.until_date
+              ? DateTime.fromISO(announcement.until_date).toFormat('M/d/yy')
+              : '-'
+          }
+        />
+      ),
+    },
+    {
+      id: 'actions',
+      label: t('admin.announcementsContent.table.actions'),
+      cell: announcement => {
+        const isCurrentlyEditing = editingAnnouncementId === announcement.id;
+        const isEditDisabled =
+          editingAnnouncementId !== null && !isCurrentlyEditing;
+
+        return (
+          <Cell>
+            <Flex gap="small">
+              <ButtonIcon
+                icon={<RiEyeLine />}
+                variant="tertiary"
+                onClick={() => onPreviewClick?.(announcement)}
+                aria-label="preview"
+                data-testid="preview"
+              />
+              <ButtonIcon
+                icon={<RiEditLine />}
+                variant="tertiary"
+                onClick={() => onEditClick?.(announcement)}
+                aria-label="edit"
+                data-testid="edit-icon"
+                isDisabled={!canEdit || isEditDisabled}
+              />
+              <ButtonIcon
+                icon={<RiDeleteBinLine />}
+                variant="tertiary"
+                onClick={() => onDeleteClick?.(announcement)}
+                aria-label="delete"
+                data-testid="delete-icon"
+                isDisabled={!canDelete}
+              />
+            </Flex>
+          </Cell>
+        );
+      },
+    },
+  ];
+
+  const { tableProps } = useTable({
+    mode: 'complete',
+    getData: () => data,
+  });
+
+  return <Table columnConfig={columns} {...tableProps} />;
 };

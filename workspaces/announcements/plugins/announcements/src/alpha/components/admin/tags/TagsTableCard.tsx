@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  Button,
-  TablePagination,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Text,
-  Flex,
-} from '@backstage/ui';
+import { Button, Card, CardBody, CardHeader, Text, Flex } from '@backstage/ui';
 
 import { TagsTable } from './TagsTable';
 
@@ -46,15 +36,7 @@ type TagsTableCardProps = {
 export const TagsTableCard = (props: TagsTableCardProps) => {
   const { tags, onCreateClick, onDeleteClick, canCreate, canDelete } = props;
 
-  const [pageSize, setPageSize] = useState(5);
-  const [offset, setOffset] = useState(0);
   const { t } = useAnnouncementsTranslation();
-
-  const paginatedTags = useMemo(() => {
-    const start = offset;
-    const end = offset + pageSize;
-    return tags.slice(start, end);
-  }, [tags, offset, pageSize]);
 
   const title = `${t('tagsPage.title')} (${tags.length})`;
 
@@ -71,22 +53,10 @@ export const TagsTableCard = (props: TagsTableCardProps) => {
 
       <CardBody>
         <TagsTable
-          data={paginatedTags}
+          data={tags}
           onDeleteClick={canDelete ? onDeleteClick : undefined}
         />
       </CardBody>
-
-      {tags.length > 0 && (
-        <CardFooter>
-          <TablePagination
-            offset={offset}
-            pageSize={pageSize}
-            setOffset={setOffset}
-            setPageSize={setPageSize}
-            rowCount={tags.length}
-          />
-        </CardFooter>
-      )}
     </Card>
   );
 };
