@@ -24,10 +24,10 @@ import {
   AnnouncementsPage,
   AnnouncementsPageProps,
   ViewAnnouncementPage,
-} from './components';
+} from './alpha/components';
+import { MarkdownRendererTypeProps } from './components';
 
-// todo: pending rebuild for nfs with `@backstage/ui`
-import { MarkdownRendererTypeProps } from '../components';
+import { compatWrapper } from '@backstage/core-compat-api';
 
 type RouterProps = {
   title?: string;
@@ -81,4 +81,8 @@ export const Router = (props: RouterProps) => {
       </Route>
     </Routes>
   );
+};
+
+export const OldFrontendSystemCompatibleRouter = (props: RouterProps) => {
+  return compatWrapper(<Router {...props} />);
 };

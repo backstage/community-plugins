@@ -70,7 +70,8 @@ export const announcementsPlugin = createPlugin({
 export const AnnouncementsPage = announcementsPlugin.provide(
   createRoutableExtension({
     name: 'AnnouncementsPage',
-    component: () => import('./components/Router').then(m => m.Router),
+    component: () =>
+      import('./Router').then(m => m.OldFrontendSystemCompatibleRouter),
     mountPoint: rootRouteRef,
   }),
 );
