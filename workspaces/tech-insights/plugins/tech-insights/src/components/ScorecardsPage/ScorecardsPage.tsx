@@ -96,6 +96,12 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
       filteredResult = filteredResult.filter(response =>
         response.results.some(r => r.result === false),
       );
+    } else {
+      filteredResult = filteredResult.filter(
+        response =>
+          response.results.length > 0 &&
+          response.results.every(r => r.result === true),
+      );
     }
 
     return {
@@ -165,8 +171,8 @@ export const ScorecardsPage = (props: { badge?: boolean; dense?: boolean }) => {
               withResultsChanged={withResults =>
                 setFilterWithResults(withResults)
               }
-              failedOnlyChanged={failedOnly =>
-                setFilterFailedChecks(failedOnly)
+              hasFailedChecksChanged={hasFailedChecks =>
+                setFilterFailedChecks(hasFailedChecks)
               }
             />
           </Grid>

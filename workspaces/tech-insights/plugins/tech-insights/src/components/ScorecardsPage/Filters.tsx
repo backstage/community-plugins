@@ -95,11 +95,15 @@ const failedOnlyOptions = [
 export type FiltersProps = {
   checksChanged: (checks: Check[]) => void;
   withResultsChanged: (withResults: boolean) => void;
-  failedOnlyChanged: (failedOnly: boolean) => void;
+  hasFailedChecksChanged: (hasFailedChecks: boolean) => void;
 };
 
 export const Filters = (props: FiltersProps) => {
-  const { checksChanged, withResultsChanged, failedOnlyChanged } = props;
+  const {
+    checksChanged,
+    withResultsChanged,
+    hasFailedChecksChanged: hasFailedChecksChanged,
+  } = props;
   const api = useApi(techInsightsApiRef);
 
   const { value, loading, error } = useAsync(async () => {
@@ -155,14 +159,14 @@ export const Filters = (props: FiltersProps) => {
       </Box>
       <Box pb={1} pt={1}>
         <Typography variant="button" component="label">
-          Show failed only
+          Has failed checks
           <Autocomplete
             defaultValue={failedOnlyOptions[1]}
             options={failedOnlyOptions}
             getOptionLabel={o => o.label}
             onChange={(_: object, selectedItem) => {
               if (selectedItem) {
-                failedOnlyChanged(selectedItem.value);
+                hasFailedChecksChanged(selectedItem.value);
               }
             }}
             disableClearable
