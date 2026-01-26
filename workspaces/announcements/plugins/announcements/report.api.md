@@ -64,22 +64,8 @@ export interface AnnouncementSearchResultProps {
 
 // @public (undocumented)
 export const AnnouncementsPage: (props: {
-  themeId?: string | undefined;
   title?: string | undefined;
-  subtitle?: string | undefined;
   category?: string | undefined;
-  hideContextMenu?: boolean | undefined;
-  cardOptions?:
-    | {
-        titleLength: number | undefined;
-      }
-    | undefined;
-  buttonOptions?:
-    | {
-        name: string | undefined;
-      }
-    | undefined;
-  hideInactive?: boolean | undefined;
   hideStartAt?: boolean | undefined;
   markdownRenderer?: MarkdownRendererTypeProps | undefined;
   defaultInactive?: boolean | undefined;

@@ -70,14 +70,7 @@ createDevApp()
   .registerPlugin(announcementsPlugin)
   .registerPlugin(signalsPlugin)
   .addPage({
-    element: (
-      <AnnouncementsPage
-        cardOptions={{ titleLength: 50 }}
-        themeId="home"
-        title="Announcements"
-        hideInactive
-      />
-    ),
+    element: <AnnouncementsPage title="Announcements" />,
     title: 'Announcements',
     path: '/announcements',
   })

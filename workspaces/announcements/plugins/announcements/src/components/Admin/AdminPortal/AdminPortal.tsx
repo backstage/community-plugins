@@ -15,14 +15,15 @@
  */
 import { ChangeEvent, useState } from 'react';
 import { Page, Header, Content } from '@backstage/core-components';
-import { AnnouncementsContent } from '../AnnouncementsContent';
-import { CategoriesContent } from '../CategoriesContent';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import { makeStyles, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
-import { TagsContent } from '../TagsContent';
+import { compatWrapper } from '@backstage/core-compat-api';
+import { AnnouncementsContent } from '../../../alpha/components/admin/announcements';
+import { CategoriesContent } from '../../../alpha/components/admin/categories';
+import { TagsContent } from '../../../alpha/components/admin/tags';
 
 const useStyles = makeStyles(() => ({
   tabPanel: {
@@ -64,19 +65,25 @@ const AdminPortalContent = ({ defaultInactive }: AdminPortalContentProps) => {
         <Tab label={t('admin.adminPortal.tagsLabel')} value="tags" />
       </TabList>
       <TabPanel value="announcements" className={classes.tabPanel}>
-        <AnnouncementsContent defaultInactive={defaultInactive} />
+        {compatWrapper(
+          <AnnouncementsContent
+            formDefaults={{ defaultInactive: defaultInactive }}
+          />,
+        )}
       </TabPanel>
       <TabPanel value="categories" className={classes.tabPanel}>
-        <CategoriesContent />
+        {compatWrapper(<CategoriesContent />)}
       </TabPanel>
       <TabPanel value="tags" className={classes.tabPanel}>
-        <TagsContent />
+        {compatWrapper(<TagsContent />)}
       </TabPanel>
     </TabContext>
   );
 };
 
-/** @public */
+/**
+ * @public
+ */
 export const AdminPortal = (props?: AdminPortalProps) => {
   const { title, subtitle, themeId } = props ?? {};
   const { t } = useAnnouncementsTranslation();

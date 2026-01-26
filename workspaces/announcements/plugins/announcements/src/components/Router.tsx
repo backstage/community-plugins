@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,23 @@
 import { Routes, Route } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';
-import { announcementAdminRouteRef, announcementViewRouteRef } from '../routes';
-import { AnnouncementsPage, AnnouncementsPageProps } from './AnnouncementsPage';
-import { AnnouncementPage } from './AnnouncementPage';
-import { AdminPortal } from './Admin';
-import { MarkdownRendererTypeProps } from './MarkdownRenderer';
+import {
+  AnnouncementsAdminPage,
+  AnnouncementsContent,
+  CategoriesContent,
+  TagsContent,
+  AnnouncementsPage,
+  AnnouncementsPageProps,
+  ViewAnnouncementPage,
+} from '../alpha/components';
+
+// todo: pending rebuild for nfs with `@backstage/ui`
+import { MarkdownRendererTypeProps } from '../components';
+import { compatWrapper } from '@backstage/core-compat-api';
 
 type RouterProps = {
-  themeId?: string;
   title?: string;
-  subtitle?: string;
   category?: string;
-  hideContextMenu?: boolean;
-  cardOptions?: {
-    titleLength: number | undefined;
-  };
-  buttonOptions?: {
-    name: string | undefined;
-  };
-  hideInactive?: boolean;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
   defaultInactive?: boolean;
@@ -42,9 +40,7 @@ type RouterProps = {
 
 export const Router = (props: RouterProps) => {
   const propsWithDefaults: AnnouncementsPageProps = {
-    themeId: 'home',
     title: 'Announcements',
-    hideInactive: false,
     hideStartAt: false,
     markdownRenderer: 'backstage',
     ...props,
@@ -52,27 +48,46 @@ export const Router = (props: RouterProps) => {
 
   return (
     <Routes>
-      <Route path="/" element={<AnnouncementsPage {...propsWithDefaults} />} />
       <Route
-        path={`${announcementViewRouteRef.path}`}
-        element={<AnnouncementPage {...propsWithDefaults} />}
+        path="/"
+        element={compatWrapper(<AnnouncementsPage {...propsWithDefaults} />)}
       />
       <Route
-        path={`${announcementAdminRouteRef.path}`}
+        path="/view/:id"
+        element={compatWrapper(
+          <ViewAnnouncementPage
+            markdownRenderer={propsWithDefaults.markdownRenderer}
+            title={propsWithDefaults.title}
+          />,
+        )}
+      />
+      <Route
+        path="/admin"
         element={
           <RequirePermission permission={announcementCreatePermission}>
-            <AdminPortal />
+            {compatWrapper(
+              <AnnouncementsAdminPage
+                title={props.title}
+                defaultInactive={props.defaultInactive}
+              />,
+            )}
           </RequirePermission>
         }
-      />
-      <Route
-        path={`${announcementAdminRouteRef.path}`}
-        element={
-          <RequirePermission permission={announcementCreatePermission}>
-            <AdminPortal />
-          </RequirePermission>
-        }
-      />
+      >
+        <Route
+          path=""
+          element={compatWrapper(
+            <AnnouncementsContent
+              formDefaults={{ defaultInactive: props.defaultInactive }}
+            />,
+          )}
+        />
+        <Route
+          path="categories"
+          element={compatWrapper(<CategoriesContent />)}
+        />
+        <Route path="tags" element={compatWrapper(<TagsContent />)} />
+      </Route>
     </Routes>
   );
 };

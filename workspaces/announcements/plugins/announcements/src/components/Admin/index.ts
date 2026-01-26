@@ -14,4 +14,3 @@
  * limitations under the License.
  */
 export { AdminPortal } from './AdminPortal';
-export { AnnouncementsContent } from './AnnouncementsContent';
