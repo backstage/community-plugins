@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cloudbuild",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "A Backstage plugin that integrates towards Google Cloud Build",
   "backstage": {
     "role": "frontend-plugin",
@@ -56,7 +56,6 @@
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",

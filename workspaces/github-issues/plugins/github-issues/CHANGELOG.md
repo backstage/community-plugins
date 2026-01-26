@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.17.1
+
+### Patch Changes
+
+- 1698da3: Remove unused dependencies
+
 ## 0.17.0
 
 ### Minor Changes

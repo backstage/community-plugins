@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  TablePagination,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Text,
-  Flex,
-  Button,
-} from '@backstage/ui';
+import { Card, CardBody, CardHeader, Text, Flex, Button } from '@backstage/ui';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncementIndicator';
@@ -61,15 +51,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     editingAnnouncementId,
   } = props;
 
-  const [pageSize, setPageSize] = useState(10);
-  const [offset, setOffset] = useState(0);
   const { t } = useAnnouncementsTranslation();
-
-  const paginatedAnnouncements = useMemo(() => {
-    const start = offset;
-    const end = offset + pageSize;
-    return announcements.slice(start, end);
-  }, [announcements, offset, pageSize]);
 
   const title = `${t('admin.announcementsContent.announcements')} (${
     announcements.length
@@ -90,7 +72,7 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
         <ActiveInactiveAnnouncementIndicator />
 
         <AnnouncementsTable
-          data={paginatedAnnouncements}
+          data={announcements}
           onPreviewClick={onPreviewClick}
           onEditClick={onEditClick}
           onDeleteClick={onDeleteClick}
@@ -99,18 +81,6 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
           editingAnnouncementId={editingAnnouncementId}
         />
       </CardBody>
-
-      {announcements.length > 0 && (
-        <CardFooter>
-          <TablePagination
-            offset={offset}
-            pageSize={pageSize}
-            setOffset={setOffset}
-            setPageSize={setPageSize}
-            rowCount={announcements.length}
-          />
-        </CardFooter>
-      )}
     </Card>
   );
 };

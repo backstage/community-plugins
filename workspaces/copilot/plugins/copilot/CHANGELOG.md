@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.18.0
+
+### Minor Changes
+
+- 0990dc2: Add overall data toggle and enhance metrics visualization
+
 ## 0.17.1
 
 ### Patch Changes
