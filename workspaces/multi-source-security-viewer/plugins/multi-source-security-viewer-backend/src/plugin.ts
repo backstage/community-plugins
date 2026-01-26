@@ -17,7 +17,6 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { createRouter } from './router';
 import { mssvViewPermission } from '@backstage-community/plugin-multi-source-security-viewer-common';
 
 /**
@@ -30,19 +29,10 @@ export const multiSourceSecurityViewerPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        httpAuth: coreServices.httpAuth,
-        httpRouter: coreServices.httpRouter,
-        permissions: coreServices.permissions,
         permissionsRegistry: coreServices.permissionsRegistry,
       },
-      async init({ httpAuth, httpRouter, permissions, permissionsRegistry }) {
+      async init({ permissionsRegistry }) {
         permissionsRegistry.addPermissions([mssvViewPermission]);
-        httpRouter.use(
-          await createRouter({
-            httpAuth,
-            permissions,
-          }),
-        );
       },
     });
   },
