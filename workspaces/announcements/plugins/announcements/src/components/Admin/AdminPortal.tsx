@@ -13,4 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { AdminPortal } from './AdminPortal';
+import { compatWrapper } from '@backstage/core-compat-api';
+import { AnnouncementsAdminPage } from '../../alpha/components';
+
+/**
+ * @public
+ */
+export const AdminPortal = compatWrapper(<AnnouncementsAdminPage />);
