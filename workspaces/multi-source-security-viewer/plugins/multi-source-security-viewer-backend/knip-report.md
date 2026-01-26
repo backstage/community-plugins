@@ -1,18 +1,22 @@
 # Knip report
 
-## Unused dependencies (5)
+## Unused dependencies (8)
 
-| Name                              | Location          | Severity |
-| :-------------------------------- | :---------------- | :------- |
-| @backstage/plugin-permission-node | package.json:38:6 | error    |
-| @backstage/catalog-client         | package.json:34:6 | error    |
-| @backstage/errors                 | package.json:35:6 | error    |
-| @backstage/types                  | package.json:39:6 | error    |
-| zod                               | package.json:42:6 | error    |
+| Name                                | Location          | Severity |
+| :---------------------------------- | :---------------- | :------- |
+| @backstage/plugin-permission-common | package.json:43:6 | error    |
+| @backstage/plugin-permission-node   | package.json:44:6 | error    |
+| @backstage/catalog-client           | package.json:40:6 | error    |
+| express-promise-router              | package.json:47:6 | error    |
+| @backstage/errors                   | package.json:41:6 | error    |
+| @backstage/types                    | package.json:45:6 | error    |
+| express                             | package.json:46:6 | error    |
+| zod                                 | package.json:48:6 | error    |
 
-## Unused devDependencies (2)
+## Unused devDependencies (3)
 
 | Name             | Location          | Severity |
 | :--------------- | :---------------- | :------- |
-| @types/supertest | package.json:48:6 | error    |
-| supertest        | package.json:49:6 | error    |
+| @types/supertest | package.json:54:6 | error    |
+| @types/express   | package.json:53:6 | error    |
+| supertest        | package.json:55:6 | error    |
