@@ -26,6 +26,7 @@ import { RiDeleteBinLine } from '@remixicon/react';
 
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import { useEffect } from 'react';
 
 /**
  * @internal
@@ -71,10 +72,14 @@ export const CategoriesTable = (props: CategoriesTableProps) => {
     },
   ];
 
-  const { tableProps } = useTable({
+  const { tableProps, reload } = useTable({
     mode: 'complete',
     getData: () => data.map(category => ({ ...category, id: category.slug })),
   });
+
+  useEffect(() => {
+    reload();
+  }, [data, reload]);
 
   return <Table columnConfig={columns} {...tableProps} />;
 };

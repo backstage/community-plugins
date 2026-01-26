@@ -26,6 +26,7 @@ import {
   TableItem,
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
+import { useEffect } from 'react';
 
 /**
  * @internal
@@ -71,10 +72,14 @@ export const TagsTable = (props: TagsTableProps) => {
     },
   ];
 
-  const { tableProps } = useTable({
+  const { tableProps, reload } = useTable({
     mode: 'complete',
     getData: () => data.map(tag => ({ ...tag, id: tag.slug })),
   });
+
+  useEffect(() => {
+    reload();
+  }, [data, reload]);
 
   return <Table columnConfig={columns} {...tableProps} />;
 };

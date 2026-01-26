@@ -33,6 +33,7 @@ import { RiEyeLine, RiEditLine, RiDeleteBinLine } from '@remixicon/react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 
 import { ActiveInactiveAnnouncementIndicatorIcon } from './ActiveInactiveAnnouncementIndicator';
+import { useEffect } from 'react';
 
 const isValidEntityRef = (entityRef: string): boolean => {
   if (!entityRef) {
@@ -223,10 +224,14 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
     },
   ];
 
-  const { tableProps } = useTable({
+  const { tableProps, reload } = useTable({
     mode: 'complete',
     getData: () => data,
   });
+
+  useEffect(() => {
+    reload();
+  }, [data, reload]);
 
   return <Table columnConfig={columns} {...tableProps} />;
 };
