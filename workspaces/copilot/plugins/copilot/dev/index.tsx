@@ -23,6 +23,8 @@ import {
 import DarkIcon from '@mui/icons-material/Brightness2';
 import LightIcon from '@mui/icons-material/WbSunny';
 import { AppTheme } from '@backstage/core-plugin-api';
+import { copilotApiRef } from '../src/api';
+import { MockCopilotApi } from './MockCopilotApi';
 
 const customThemes: AppTheme[] = [
   {
@@ -48,6 +50,11 @@ const customThemes: AppTheme[] = [
 createDevApp()
   .addThemes(customThemes)
   .registerPlugin(copilotPlugin)
+  .registerApi({
+    api: copilotApiRef,
+    deps: {},
+    factory: () => new MockCopilotApi(),
+  })
   .addSidebarItem(<CopilotSidebar />)
   .addPage({
     element: <CopilotIndexPage />,

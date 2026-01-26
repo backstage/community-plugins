@@ -50,7 +50,6 @@
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/humanize-duration": "^3.27.1",

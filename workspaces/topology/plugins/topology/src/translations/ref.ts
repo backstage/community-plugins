@@ -27,6 +27,12 @@ export const topologyMessages = {
     displayOptions: 'Display options',
     currentDisplayOptions: 'Current display options',
   },
+  controlBar: {
+    zoomIn: 'Zoom In',
+    zoomOut: 'Zoom Out',
+    fitToScreen: 'Fit to Screen',
+    resetView: 'Reset View',
+  },
   emptyState: {
     noResourcesFound: 'No resources found',
     noResourcesDescription:

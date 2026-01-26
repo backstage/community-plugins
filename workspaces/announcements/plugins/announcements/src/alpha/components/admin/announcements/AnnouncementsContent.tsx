@@ -32,7 +32,7 @@ import {
 import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Box, Button, Grid } from '@backstage/ui';
+import { Box, Grid, Flex, Button } from '@backstage/ui';
 import slugify from 'slugify';
 
 import {
@@ -52,6 +52,28 @@ export type AnnouncementsContentProps = {
     /** sets active switch form input to false by default when creating a new announcement */
     defaultInactive?: boolean;
   };
+};
+
+const AnnouncementFormContent = (props: {
+  onCancel: () => void;
+  onSubmit: (request: CreateAnnouncementRequest) => Promise<void>;
+  initialData: Announcement;
+}) => {
+  const { t } = useAnnouncementsTranslation();
+
+  const { onCancel, onSubmit, initialData } = props;
+
+  return (
+    <Box mb="2">
+      <Flex justify="end" align="center">
+        <Button variant="secondary" onClick={onCancel}>
+          {t('admin.announcementsContent.cancelButton')}
+        </Button>
+      </Flex>
+
+      <AnnouncementForm initialData={initialData} onSubmit={onSubmit} />
+    </Box>
+  );
 };
 
 /**
@@ -85,14 +107,7 @@ export const AnnouncementsContent = ({
   const navigate = useNavigate();
 
   const onCreateButtonClick = () => {
-    if (editingAnnouncementId) {
-      // If editing, cancel the edit
-      setEditingAnnouncementId(null);
-      setShowCreateAnnouncementForm(false);
-    } else {
-      // If not editing, toggle create form
-      setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
-    }
+    setShowCreateAnnouncementForm(true);
   };
 
   const onPreviewClick = (announcement: Announcement) => {
@@ -181,6 +196,14 @@ export const AnnouncementsContent = ({
     }
   };
 
+  const onCancelCreate = () => {
+    setShowCreateAnnouncementForm(false);
+  };
+
+  const onCancelEdit = () => {
+    setEditingAnnouncementId(null);
+  };
+
   const announcementToEdit = useMemo(() => {
     if (!editingAnnouncementId || !announcements?.results) {
       return null;
@@ -226,32 +249,22 @@ export const AnnouncementsContent = ({
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Grid.Root columns="1">
-        <Grid.Item>
-          <Button
-            isDisabled={!canCreate}
-            variant="primary"
-            onClick={() => onCreateButtonClick()}
-          >
-            {showCreateAnnouncementForm || editingAnnouncementId
-              ? t('admin.announcementsContent.cancelButton')
-              : t('admin.announcementsContent.createButton')}
-          </Button>
-        </Grid.Item>
-
         {showCreateAnnouncementForm && (
           <Grid.Item>
-            <AnnouncementForm
-              initialData={{ active: !defaultInactive } as Announcement}
+            <AnnouncementFormContent
+              onCancel={onCancelCreate}
               onSubmit={onSubmit}
+              initialData={{ active: !defaultInactive } as Announcement}
             />
           </Grid.Item>
         )}
 
         {editingAnnouncementId && announcementToEdit && (
           <Grid.Item>
-            <AnnouncementForm
-              initialData={announcementToEdit}
+            <AnnouncementFormContent
+              onCancel={onCancelEdit}
               onSubmit={onUpdate}
+              initialData={announcementToEdit}
             />
           </Grid.Item>
         )}
@@ -263,8 +276,10 @@ export const AnnouncementsContent = ({
               onPreviewClick={onPreviewClick}
               onEditClick={onEditClick}
               onDeleteClick={onDeleteClick}
+              onCreateClick={onCreateButtonClick}
               canEdit={canEdit}
               canDelete={canDelete}
+              canCreate={canCreate}
               editingAnnouncementId={editingAnnouncementId}
             />
           </Box>

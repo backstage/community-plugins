@@ -15,7 +15,17 @@
  */
 import { useState, useMemo } from 'react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { TablePagination, Card, CardBody, CardFooter } from '@backstage/ui';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import {
+  TablePagination,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Text,
+  Flex,
+  Button,
+} from '@backstage/ui';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncementIndicator';
@@ -28,8 +38,10 @@ type AnnouncementsTableCardProps = {
   onPreviewClick: (announcement: Announcement) => void;
   onEditClick: (announcement: Announcement) => void;
   onDeleteClick: (announcement: Announcement) => void;
+  onCreateClick: () => void;
   canEdit: boolean;
   canDelete: boolean;
+  canCreate: boolean;
   editingAnnouncementId?: string | null;
 };
 
@@ -42,13 +54,16 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     onPreviewClick,
     onEditClick,
     onDeleteClick,
+    onCreateClick,
     canEdit,
     canDelete,
+    canCreate,
     editingAnnouncementId,
   } = props;
 
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
+  const { t } = useAnnouncementsTranslation();
 
   const paginatedAnnouncements = useMemo(() => {
     const start = offset;
@@ -56,8 +71,21 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     return announcements.slice(start, end);
   }, [announcements, offset, pageSize]);
 
+  const title = `${t('admin.announcementsContent.announcements')} (${
+    announcements.length
+  })`;
+
   return (
     <Card>
+      <CardHeader>
+        <Flex justify="between" align="center">
+          <Text variant="title-x-small">{title}</Text>
+          <Button isDisabled={!canCreate} onClick={onCreateClick}>
+            {t('admin.announcementsContent.createButton')}
+          </Button>
+        </Flex>
+      </CardHeader>
+
       <CardBody>
         <ActiveInactiveAnnouncementIndicator />
 
