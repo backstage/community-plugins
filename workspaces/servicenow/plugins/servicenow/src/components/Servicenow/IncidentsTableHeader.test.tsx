@@ -17,7 +17,6 @@
 import type { Order } from '@backstage-community/plugin-servicenow-common';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IncidentsTableHeader } from './IncidentsTableHeader';
-import { IncidentsListColumns } from './IncidentsListColumns';
 import { IncidentTableFieldEnum, IncidentTableField } from '../../types';
 
 describe('IncidentsTableHeader', () => {
@@ -46,9 +45,12 @@ describe('IncidentsTableHeader', () => {
 
   it('renders all column headers with titles', () => {
     renderComponent('asc', undefined);
-    IncidentsListColumns.filter(c => c.title).forEach(column => {
-      expect(screen.getByText(column.title as string)).toBeInTheDocument();
-    });
+    expect(screen.getByText('Incident Number')).toBeInTheDocument();
+    expect(screen.getByText('Description')).toBeInTheDocument();
+    expect(screen.getByText('Created')).toBeInTheDocument();
+    expect(screen.getByText('Priority')).toBeInTheDocument();
+    expect(screen.getByText('State')).toBeInTheDocument();
+    expect(screen.getByText('Actions')).toBeInTheDocument();
   });
 
   it('activates sort only for the selected column', () => {
