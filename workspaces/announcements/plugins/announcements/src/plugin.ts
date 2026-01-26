@@ -77,41 +77,6 @@ export const AnnouncementsPage = announcementsPlugin.provide(
 );
 
 /**
- * @public @deprecated
- *
- * This exported component will not be migrated to new frontend system.
- *
- * Access will be via the context menu on the root announcements page and dedicated routes
- * (`/announcements/admin`, `/announcements/admin/categories`, `/announcements/admin/tags`)
- *
- * Please open an issue if you have concerns about this.
- */
-export const AnnouncementsAdminPortal = announcementsPlugin.provide(
-  createComponentExtension({
-    name: 'AnnouncementsAdminPortal',
-    component: {
-      lazy: () => import('./components/Admin').then(m => m.AdminPortal),
-    },
-  }),
-);
-
-/**
- * @public @deprecated
- *
- * This exported component will not be migrated to new frontend system.
- *
- * Please open an issue if you have concerns about this.
- */
-export const AnnouncementsTimeline = announcementsPlugin.provide(
-  createComponentExtension({
-    name: 'AnnouncementsTimeline',
-    component: {
-      lazy: () => import('./components').then(m => m.AnnouncementsTimeline),
-    },
-  }),
-);
-
-/**
  * @public
  */
 export const AnnouncementsCard = announcementsPlugin.provide(

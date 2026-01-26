@@ -28,7 +28,6 @@ import {
   catalogApiRef,
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
-import { AnnouncementsTimeline, AdminPortal } from '../src/components';
 import { signalsPlugin } from '@backstage/plugin-signals';
 import { Grid, Typography } from '@material-ui/core';
 
@@ -75,11 +74,6 @@ createDevApp()
     path: '/announcements',
   })
   .addPage({
-    element: <AdminPortal />,
-    title: 'Admin Portal',
-    path: '/admin',
-  })
-  .addPage({
     element: (
       <Page themeId="home">
         <Header title="Announcement components" />
@@ -93,10 +87,6 @@ createDevApp()
             <Grid item md={12}>
               <Typography variant="h4">Homepage component</Typography>
               <AnnouncementsCard max={2} />
-            </Grid>
-            <Grid item md={12}>
-              <Typography variant="h4">Timeline</Typography>
-              <AnnouncementsTimeline />
             </Grid>
           </Grid>
         </Content>

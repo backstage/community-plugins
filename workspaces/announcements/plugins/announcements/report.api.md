@@ -12,18 +12,6 @@ import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
 
-// @public @deprecated (undocumented)
-export const AnnouncementsAdminPortal: (
-  props?:
-    | {
-        themeId?: string | undefined;
-        title?: string | undefined;
-        subtitle?: string | undefined;
-        defaultInactive?: boolean | undefined;
-      }
-    | undefined,
-) => JSX_2.Element;
-
 // @public (undocumented)
 export const AnnouncementsCard: ({
   title,
@@ -79,28 +67,6 @@ export const announcementsPlugin: BackstagePlugin<
   {},
   {}
 >;
-
-// @public @deprecated (undocumented)
-export const AnnouncementsTimeline: ({
-  maxResults,
-  timelineAlignment,
-  timelineMinWidth,
-  hideInactive,
-  sortBy,
-  order,
-  current,
-}: AnnouncementsTimelineProps) => JSX_2.Element;
-
-// @public
-export type AnnouncementsTimelineProps = {
-  maxResults?: number;
-  timelineAlignment?: 'left' | 'right' | 'alternate';
-  timelineMinWidth?: string;
-  hideInactive?: boolean;
-  sortBy?: 'created_at' | 'start_at';
-  order?: 'asc' | 'desc';
-  current?: boolean;
-};
 
 // @public
 export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
