@@ -233,5 +233,13 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
     reload();
   }, [data, reload]);
 
-  return <Table columnConfig={columns} {...tableProps} />;
+  return (
+    <Table
+      columnConfig={columns}
+      emptyState={
+        <Text>{t('admin.announcementsContent.noAnnouncementsFound')}</Text>
+      }
+      {...tableProps}
+    />
+  );
 };

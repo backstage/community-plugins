@@ -24,6 +24,7 @@ import {
   useTable,
   type ColumnConfig,
   TableItem,
+  Text,
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 import { useEffect } from 'react';
@@ -81,5 +82,11 @@ export const TagsTable = (props: TagsTableProps) => {
     reload();
   }, [data, reload]);
 
-  return <Table columnConfig={columns} {...tableProps} />;
+  return (
+    <Table
+      columnConfig={columns}
+      emptyState={<Text>{t('admin.tagsContent.table.noTagsFound')}</Text>}
+      {...tableProps}
+    />
+  );
 };

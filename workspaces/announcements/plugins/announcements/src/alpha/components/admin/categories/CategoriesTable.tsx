@@ -21,6 +21,7 @@ import {
   useTable,
   type ColumnConfig,
   TableItem,
+  Text,
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 
@@ -81,5 +82,13 @@ export const CategoriesTable = (props: CategoriesTableProps) => {
     reload();
   }, [data, reload]);
 
-  return <Table columnConfig={columns} {...tableProps} />;
+  return (
+    <Table
+      columnConfig={columns}
+      emptyState={
+        <Text>{t('admin.categoriesContent.table.noCategoriesFound')}</Text>
+      }
+      {...tableProps}
+    />
+  );
 };
