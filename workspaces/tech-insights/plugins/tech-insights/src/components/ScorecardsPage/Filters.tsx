@@ -99,11 +99,7 @@ export type FiltersProps = {
 };
 
 export const Filters = (props: FiltersProps) => {
-  const {
-    checksChanged,
-    withResultsChanged,
-    hasFailedChecksChanged,
-  } = props;
+  const { checksChanged, withResultsChanged, hasFailedChecksChanged } = props;
   const api = useApi(techInsightsApiRef);
 
   const { value, loading, error } = useAsync(async () => {
