@@ -16,10 +16,8 @@
 import { createApp } from '@backstage/frontend-defaults';
 import { navModule } from './modules/nav';
 import { SignInPage } from '@backstage/core-components';
-import {
-  createFrontendModule,
-  SignInPageBlueprint,
-} from '@backstage/frontend-plugin-api';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { homeModule } from './modules/home';
 import SignalsDisplay from '@backstage/plugin-signals/alpha';
 import announcementsPlugin from '@backstage-community/plugin-announcements/alpha';
