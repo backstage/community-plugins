@@ -102,7 +102,7 @@ export const Filters = (props: FiltersProps) => {
   const {
     checksChanged,
     withResultsChanged,
-    hasFailedChecksChanged: hasFailedChecksChanged,
+    hasFailedChecksChanged,
   } = props;
   const api = useApi(techInsightsApiRef);
 
