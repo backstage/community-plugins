@@ -26,6 +26,11 @@ export interface Application {
   status: Status;
 }
 
+// @public (undocumented)
+export type ApplicationPayload = Omit<Application, 'status' | 'metadata'> & {
+  metadata: V1ObjectMeta & Omit<Application['metadata'], 'instance'>;
+};
+
 // @public
 export const argocdPermissions: BasicPermission[];
 
@@ -245,9 +250,13 @@ export interface Spec {
   // (undocumented)
   project: string;
   // (undocumented)
+  revisionHistoryLimit?: number;
+  // (undocumented)
   source: Source;
   // (undocumented)
   sources?: Source[];
+  // (undocumented)
+  syncPolicy?: SyncPolicy;
 }
 
 // @public (undocumented)
@@ -294,6 +303,28 @@ export interface StatusSync {
 export interface Summary {
   // (undocumented)
   images: string[];
+}
+
+// @public (undocumented)
+export interface SyncPolicy {
+  // (undocumented)
+  automated?: {
+    enabled?: boolean;
+    allowEmpty?: boolean;
+    prune?: boolean;
+    selfHeal?: boolean;
+  };
+  // (undocumented)
+  retry?: {
+    backoff: {
+      duration: string;
+      factor: number;
+      maxDuration: string;
+    };
+    limit: number;
+  };
+  // (undocumented)
+  syncOptions?: string[];
 }
 
 // @public (undocumented)
