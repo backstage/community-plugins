@@ -39,16 +39,16 @@
     "prettier:fix": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.6.0",
-    "@backstage/plugin-scaffolder-node": "^0.12.2",
+    "@backstage/backend-plugin-api": "^1.6.1",
+    "@backstage/plugin-scaffolder-node": "^0.12.3",
     "fs-extra": "^11.2.0",
     "lodash": "^4.17.21",
     "yaml": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.10.2",
-    "@backstage/cli": "^0.35.1",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.6",
+    "@backstage/backend-test-utils": "^1.10.3",
+    "@backstage/cli": "^0.35.2",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.7",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.13"
   },
