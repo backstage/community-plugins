@@ -13564,6 +13564,7 @@ __metadata:
     "@backstage/frontend-defaults": "npm:^0.3.6"
     "@backstage/frontend-plugin-api": "npm:^0.13.4"
     "@backstage/integration-react": "npm:^1.2.14"
+    "@backstage/plugin-app-react": "npm:^0.1.0"
     "@backstage/plugin-catalog": "npm:^1.32.2"
     "@backstage/plugin-catalog-import": "npm:^0.13.9"
     "@backstage/plugin-notifications": "npm:^0.5.13"
