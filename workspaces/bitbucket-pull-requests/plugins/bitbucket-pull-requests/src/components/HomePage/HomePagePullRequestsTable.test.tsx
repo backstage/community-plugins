@@ -23,7 +23,10 @@ import {
   PullRequest,
   BitbucketApi,
 } from '../../api/BitbucketApi';
-import { pullRequestsResponseStub } from '../../responseStubs';
+import {
+  pullRequestsResponseStub,
+  pullRequestsCloudResponseStub,
+} from '../../responseStubs';
 
 // Mock the EntityPeekAheadPopover to avoid catalog API dependencies
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -106,7 +109,14 @@ describe('HomePagePullRequestsTable', () => {
 
   // Map the response stub data to PullRequest objects and add buildStatus
   const mockPullRequests: PullRequest[] = bitbucketApiMapper
-    .mapPullRequests(pullRequestsResponseStub)
+    .mapServerPullRequests(pullRequestsResponseStub)
+    .map(pr => ({
+      ...pr,
+      buildStatus: 'SUCCESSFUL' as const,
+    }));
+
+  const mockCloudPullRequests: PullRequest[] = bitbucketApiMapper
+    .mapCloudPullRequests(pullRequestsCloudResponseStub)
     .map(pr => ({
       ...pr,
       buildStatus: 'SUCCESSFUL' as const,
