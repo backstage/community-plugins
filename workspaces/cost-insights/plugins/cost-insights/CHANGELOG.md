@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.25.0
+
+### Minor Changes
+
+- ae08883: The compare to dropdown in the cost insights page will not disappear anymore after selecting "none" instead of a business metric
+
 ## 0.24.1
 
 ### Patch Changes
