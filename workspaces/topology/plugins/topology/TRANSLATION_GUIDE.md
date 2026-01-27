@@ -9,6 +9,7 @@ The Topology plugin supports internationalization (i18n) with translations for:
 - **German (de)** - Deutsch
 - **French (fr)** - Français
 - **Italian (it)** - Italiano
+- **Japanese (ja)** - 日本語
 - **Spanish (es)** - Español
 - **English (en)** - Default/fallback language
 
@@ -21,6 +22,7 @@ src/
 │   ├── de.ts           # German (flat keys)
 │   ├── fr.ts           # French (flat keys)
 │   ├── it.ts           # Italian (flat keys)
+│   ├── ja.ts           # Japanese (flat keys)
 │   ├── es.ts           # Spanish (flat keys)
 │   └── index.ts        # Translation resource
 ├── hooks/
@@ -169,6 +171,7 @@ export const topologyTranslations = createTranslationResource({
     de: () => import('./de'),
     fr: () => import('./fr'),
     it: () => import('./it'),
+    ja: () => import('./ja'),
     es: () => import('./es'),
     pt: () => import('./pt'), // Add new language
   },
@@ -180,7 +183,7 @@ export const topologyTranslations = createTranslationResource({
 Add to `dev/index.tsx`:
 
 ```typescript
-.setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'pt'])
+.setAvailableLanguages(['en', 'de', 'fr', 'it', 'ja', 'es', 'pt'])
 ```
 
 ## Translation Keys Structure
@@ -261,6 +264,13 @@ Add to `dev/index.tsx`:
 - ✅ Adjective agreement: `utenti attivi`, `nuovi utenti`
 - ✅ Formal address: Use "Lei" form
 
+### Japanese (ja)
+
+- ✅ Proper kanji usage: Use appropriate kanji for technical terms
+- ✅ Honorific language: Use polite form (です/ます) for user-facing text
+- ✅ Character spacing: No spaces between Japanese characters
+- ✅ Technical terms: Use katakana for foreign technical terms when appropriate
+
 ### Spanish (es)
 
 - ✅ Gender agreement: `Usuarios activos` (masculine)
@@ -289,7 +299,7 @@ import { topologyTranslations } from '../src/translations';
 createDevApp()
   .registerPlugin(topologyPlugin)
   .addTranslationResource(topologyTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'ja', 'es'])
   .setDefaultLanguage('en');
 ```
 
@@ -302,7 +312,7 @@ import { topologyTranslations } from '@backstage-community/plugin-topology';
 const app = createApp({
   apis,
   __experimentalTranslations: {
-    availableLanguages: ['en', 'de', 'fr', 'it', 'es'],
+    availableLanguages: ['en', 'de', 'fr', 'it', 'ja', 'es'],
     resources: [topologyTranslations],
   },
 });
