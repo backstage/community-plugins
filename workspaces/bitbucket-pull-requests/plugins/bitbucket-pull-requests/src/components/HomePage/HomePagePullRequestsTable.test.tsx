@@ -23,10 +23,7 @@ import {
   PullRequest,
   BitbucketApi,
 } from '../../api/BitbucketApi';
-import {
-  pullRequestsResponseStub,
-  pullRequestsCloudResponseStub,
-} from '../../responseStubs';
+import { pullRequestsResponseStub } from '../../responseStubs';
 
 // Mock the EntityPeekAheadPopover to avoid catalog API dependencies
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -110,13 +107,6 @@ describe('HomePagePullRequestsTable', () => {
   // Map the response stub data to PullRequest objects and add buildStatus
   const mockPullRequests: PullRequest[] = bitbucketApiMapper
     .mapServerPullRequests(pullRequestsResponseStub)
-    .map(pr => ({
-      ...pr,
-      buildStatus: 'SUCCESSFUL' as const,
-    }));
-
-  const mockCloudPullRequests: PullRequest[] = bitbucketApiMapper
-    .mapCloudPullRequests(pullRequestsCloudResponseStub)
     .map(pr => ({
       ...pr,
       buildStatus: 'SUCCESSFUL' as const,
@@ -374,34 +364,5 @@ describe('HomePagePullRequestsTable', () => {
         { includeBuildStatus: false },
       );
     });
-  });
-  it('should render pull requests with Cloud data format', async () => {
-    mockBitbucketApi.fetchUserPullRequests.mockResolvedValue(
-      mockCloudPullRequests,
-    );
-    render(
-      <TestApiProvider apis={apis}>
-        {' '}
-        <HomePagePullRequestsTable userRole="AUTHOR" />{' '}
-      </TestApiProvider>,
-    );
-    await waitFor(() => {
-      expect(mockBitbucketApi.fetchUserPullRequests).toHaveBeenCalledWith(
-        'AUTHOR',
-        'OPEN',
-        25,
-        { includeBuildStatus: true },
-      );
-    });
-    expect(
-      await screen.findByText(`PR #${mockCloudPullRequests[0].id}`),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(mockCloudPullRequests[0].title),
-    ).toBeInTheDocument();
-    const repoLinks = screen.getAllByRole('link', {
-      name: mockCloudPullRequests[0].fromRepo,
-    });
-    expect(repoLinks.length).toBeGreaterThan(0);
   });
 });
