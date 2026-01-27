@@ -78,6 +78,7 @@ const rbacTranslationJa = createTranslationMessages({
     'roleForm.review.reviewAndCreate': '確認および作成',
     'roleForm.review.reviewAndSave': '確認および保存',
     'roleForm.review.nameDescriptionOwner': 'ロールの名前、説明、および所有者',
+    'roleForm.review.permissionPoliciesWithCount': '権限ポリシー ({{count}})',
     'roleForm.steps.next': '次へ',
     'roleForm.steps.back': '戻る',
     'roleForm.steps.cancel': 'キャンセル',
