@@ -1,5 +1,11 @@
 # @backstage-community/plugin-code-climate
 
+## 0.14.1
+
+### Patch Changes
+
+- a29c88c: Remove unused dependencies
+
 ## 0.14.0
 
 ### Minor Changes

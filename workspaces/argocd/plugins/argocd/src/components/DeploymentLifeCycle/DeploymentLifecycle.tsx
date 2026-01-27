@@ -82,7 +82,7 @@ const DeploymentLifecycle = () => {
   const hasArgocdViewAccess = useArgocdViewPermission();
 
   const [open, setOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState<string>();
+  const [activeItem, setActiveItem] = useState<string | undefined>();
   const [, setRevisions] = useState<RevisionInfo[]>();
   const revisionCache = useRef<RevisionInfo[]>([]);
   const keepDuplicateRevisions = configApi.getOptionalBoolean(
@@ -130,7 +130,7 @@ const DeploymentLifecycle = () => {
 
   const toggleDrawer = () => setOpen(e => !e);
 
-  const activeApp = apps.find(a => a.metadata.name === activeItem);
+  const activeApp = apps.find(a => a.metadata.uid === activeItem);
 
   if (!hasArgocdViewAccess) {
     return <PermissionAlert />;
@@ -168,7 +168,7 @@ const DeploymentLifecycle = () => {
             revisions={revisionCache.current}
             onclick={() => {
               toggleDrawer();
-              setActiveItem(app.metadata.name);
+              setActiveItem(app.metadata.uid);
             }}
           />
         ))}

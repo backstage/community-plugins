@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.15.2
+
+### Patch Changes
+
+- 918491e: Remove unused dependencies
+
 ## 0.15.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cloudbuild
 
+## 0.18.1
+
+### Patch Changes
+
+- 8500653: Remove unused dependencies
+
 ## 0.18.0
 
 ### Minor Changes
