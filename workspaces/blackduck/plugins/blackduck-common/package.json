@@ -37,10 +37,10 @@
   },
   "dependencies": {
     "@backstage/plugin-catalog-common": "^1.1.7",
-    "@backstage/plugin-permission-common": "^0.9.3"
+    "@backstage/plugin-permission-common": "^0.9.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.1"
+    "@backstage/cli": "^0.35.2"
   },
   "files": [
     "dist"

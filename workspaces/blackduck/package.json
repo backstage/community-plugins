@@ -37,9 +37,9 @@
     "directory": "workspaces/blackduck"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.1",
+    "@backstage/cli": "^0.35.2",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.1",
+    "@backstage/repo-tools": "^0.16.2",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
