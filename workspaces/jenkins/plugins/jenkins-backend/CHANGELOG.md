@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.23.1
+
+### Patch Changes
+
+- 4e67490: Migrates the backend to leverage the new CatalogService
+
 ## 0.23.0
 
 ### Minor Changes
