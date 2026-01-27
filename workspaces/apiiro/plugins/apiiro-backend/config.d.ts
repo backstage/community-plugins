@@ -34,51 +34,46 @@ export interface Config {
 
     /**
      * Default risk filters configuration.
-     * @visibility frontend
+     * @visibility backend
      */
     defaultRiskFilters?: {
       /**
        * Default risk insights filter values.
        * Provide display name of the filter option.
-       * @visibility frontend
        */
       RiskInsight?: string[];
 
       /**
        * Default risk level filter values.
        * Provide display name of the filter option.
-       * @visibility frontend
        */
       RiskLevel?: string[];
 
       /**
        * Default risk category filter values.
        * Provide display name of the filter option.
-       * @visibility frontend
        */
       RiskCategory?: string[];
 
       /**
        * Default Sources filter values.
        * Provide API supported value of the filter option.
-       * @visibility frontend
        */
       Provider?: string[];
 
       /**
        * Default Policy Tags filter values.
        * Provide display name of the filter option.
-       * @visibility frontend
        */
       PolicyTags?: string[];
     };
 
     /**
-     * Permission control configuration for metric view access.
+     * Annotation control configuration for metric view access using catalog entity processor
      * Controls which entities users can view metrics for.
-     * @visibility frontend
+     * @visibility backend
      */
-    permissionControl?: {
+    annotationControl?: {
       /**
        * List of entity references to control access for.
        * Supports entity references (e.g., 'component:default/my-service')

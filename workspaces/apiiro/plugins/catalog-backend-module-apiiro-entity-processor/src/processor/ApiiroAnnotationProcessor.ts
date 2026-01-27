@@ -344,11 +344,11 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
    */
   private shouldAllowMetricsView(entity: Entity): boolean {
     const exclude =
-      this.config.getOptionalBoolean('apiiro.permissionControl.exclude') ??
+      this.config.getOptionalBoolean('apiiro.annotationControl.exclude') ??
       true;
     const entityNames =
       this.config.getOptionalStringArray(
-        'apiiro.permissionControl.entityNames',
+        'apiiro.annotationControl.entityNames',
       ) ?? [];
 
     if (entityNames.length === 0) {

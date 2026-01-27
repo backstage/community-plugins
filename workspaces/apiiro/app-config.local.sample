@@ -2,7 +2,7 @@ apiiro:
   accessToken:
   defaultAllowMetricsView: true
   # Optional Configuration for allow and disallow the component
-  permissionControl:
+  annotationControl:
     entityNames:
       - component:default/example-website
     exclude: true

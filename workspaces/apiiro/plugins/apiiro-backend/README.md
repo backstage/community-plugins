@@ -87,7 +87,8 @@ apiiro:
   accessToken: ${APIIRO_TOKEN}
   defaultAllowMetricsView: true
   # Optional configuration to allow or disallow metric views for specific entities
-  permissionControl:
+  # Only applicable for adding the annotation automatically using the catalog entity processor
+  annotationControl:
     entityNames:
       - component:<namespace>/<entity-name>
     exclude: true

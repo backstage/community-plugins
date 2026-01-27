@@ -62,13 +62,13 @@ apiiro:
   accessToken: ${APIIRO_TOKEN}
   defaultAllowMetricsView: true
   # Optional configuration to allow or disallow metric views for specific entities
-  permissionControl:
+  annotationControl:
     entityNames:
       - component:<namespace>/<entity-name>
     exclude: true
 ```
 
-Where the parameters in the `permissionControl`:
+Where the parameters in the `annotationControl`:
 
 - `entityNames` is a list of entity references to control the metrics view access.
 - `exclude: true` → **blocklist mode** (allow all entities except those listed).

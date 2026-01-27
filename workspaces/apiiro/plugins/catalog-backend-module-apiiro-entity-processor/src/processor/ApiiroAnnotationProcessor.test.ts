@@ -48,7 +48,7 @@ describe('ApiiroAnnotationProcessor', () => {
     const config = new ConfigReader({
       apiiro: {
         accessToken: 'test-token',
-        permissionControl: {
+        annotationControl: {
           exclude: true,
           entityNames: [],
         },
@@ -186,7 +186,7 @@ describe('ApiiroAnnotationProcessor', () => {
 
     it('respects exclude list in permission control (metrics not added)', async () => {
       const processor = buildProcessor({
-        permissionControl: {
+        annotationControl: {
           exclude: true,
           entityNames: ['component:default/test-component'],
         },
@@ -223,7 +223,7 @@ describe('ApiiroAnnotationProcessor', () => {
 
     it('respects include list in permission control (metrics added)', async () => {
       const processor = buildProcessor({
-        permissionControl: {
+        annotationControl: {
           exclude: false,
           entityNames: ['component:default/test-component'],
         },
