@@ -1,10 +1,7 @@
-# [Backstage](https://backstage.io)
+# Allure Workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for viewing Allure test reports within Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [allure](./plugins/allure): Frontend plugin to display Allure test reports.
