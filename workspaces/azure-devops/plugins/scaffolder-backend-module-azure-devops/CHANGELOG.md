@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.19.1
+
+### Patch Changes
+
+- 7c297d4: Updated dependency `azure-devops-node-api` to `^15.0.0`.
+
 ## 0.19.0
 
 ### Minor Changes
