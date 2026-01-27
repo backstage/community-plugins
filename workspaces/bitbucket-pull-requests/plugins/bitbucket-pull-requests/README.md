@@ -68,6 +68,8 @@ For token generation refer [link](https://support.atlassian.com/bitbucket-cloud/
 metadata:
   annotations:
     bitbucket.com/project-slug: <example-bitbucket-project-name>/<example-bitbucket-repo-name>
+    # For Bitbucket cloud use
+    bitbucket.org/repo-slug: my-workspace/my-repo
 ```
 
 ## Adding Bitbucket Pull Requests to your Homepage
