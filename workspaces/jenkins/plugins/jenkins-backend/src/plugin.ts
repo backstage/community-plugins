@@ -22,6 +22,7 @@ import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
 import { JenkinsBuilder } from './service/JenkinsBuilder';
+import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 
 /**
  * Jenkins backend plugin
@@ -35,6 +36,7 @@ export const jenkinsPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
         httpRouter: coreServices.httpRouter,
         config: coreServices.rootConfig,
         catalog: catalogServiceRef,
@@ -45,6 +47,7 @@ export const jenkinsPlugin = createBackendPlugin({
       async init({
         logger,
         permissions,
+        permissionsRegistry,
         httpRouter,
         config,
         catalog,
@@ -52,6 +55,8 @@ export const jenkinsPlugin = createBackendPlugin({
         auth,
         httpAuth,
       }) {
+        permissionsRegistry.addPermissions(jenkinsPermissions);
+
         const jenkinsInfoProvider = DefaultJenkinsInfoProvider.fromConfig({
           auth,
           httpAuth,
