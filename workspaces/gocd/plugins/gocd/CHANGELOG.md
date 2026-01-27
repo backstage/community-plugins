@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.14.2
+
+### Patch Changes
+
+- db2dd2b: remove unused dependencies
+
 ## 0.14.1
 
 ### Patch Changes
