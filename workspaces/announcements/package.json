@@ -41,9 +41,9 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.1",
+    "@backstage/cli": "^0.35.2",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.1",
+    "@backstage/repo-tools": "^0.16.2",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
     "knip": "^5.27.4",
