@@ -28,7 +28,6 @@ import {
   AuthorizeResult,
   BasicPermission,
 } from '@backstage/plugin-permission-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 
 import express, { Request } from 'express';
 
@@ -69,12 +68,7 @@ async function createRouter(deps: {
   const { config, logger, httpAuth, permissions } = deps;
   const router = await createOpenApiRouter();
 
-  const permissionsIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: ocmEntityPermissions,
-  });
-
   router.use(express.json());
-  router.use(permissionsIntegrationRouter);
 
   const providerConfigs = readOcmConfigs(config);
 
@@ -201,8 +195,18 @@ export const ocmPlugin = createBackendPlugin({
         http: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
         permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
       },
-      async init({ config, logger, http, httpAuth, permissions }) {
+      async init({
+        config,
+        logger,
+        http,
+        httpAuth,
+        permissions,
+        permissionsRegistry,
+      }) {
+        permissionsRegistry.addPermissions(ocmEntityPermissions);
+
         http.use(await createRouter({ config, logger, httpAuth, permissions }));
       },
     });
