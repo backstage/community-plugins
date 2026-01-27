@@ -36,12 +36,12 @@
   },
   "peerDependencies": {
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-permission-common": "^0.9.3"
+    "@backstage/plugin-permission-common": "^0.9.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
+    "@backstage/cli": "^0.35.2",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-permission-common": "^0.9.3",
+    "@backstage/plugin-permission-common": "^0.9.4",
     "prettier": "^3.3.3"
   },
   "files": [
