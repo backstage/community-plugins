@@ -8,7 +8,7 @@
   "scripts": {
     "start": "backstage-cli repo start",
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck true --incremental false",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
