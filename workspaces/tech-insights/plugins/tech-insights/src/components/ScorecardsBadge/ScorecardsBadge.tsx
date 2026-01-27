@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity } from '@backstage/catalog-model';
-import Chip from '@material-ui/core/Chip';
 import { useApi } from '@backstage/core-plugin-api';
+import { Tooltip, Tag, TagGroup, TooltipTrigger } from '@backstage/ui';
+
+import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
-import Tooltip from '@material-ui/core/Tooltip';
+
 import { ScorecardsList } from '../ScorecardsList';
 
 export const ScorecardsBadge = (props: {
@@ -43,25 +44,34 @@ export const ScorecardsBadge = (props: {
     ({ result, renderer }) => !renderer?.isFailed?.(result),
   ).length;
 
+  const isAllPassing = succeeded === checkResults.length;
+
   return (
-    <Tooltip
-      title={
-        <ScorecardsList
-          checkResults={checkResults}
-          entity={entity}
-          dense
-          hideDescription
-        />
-      }
-    >
-      <Chip
-        label={`${succeeded}/${checkResults.length}`}
-        size="small"
-        style={{
-          backgroundColor:
-            succeeded === checkResults.length ? 'mediumseagreen' : 'orangered',
-        }}
-      />
-    </Tooltip>
+    <TooltipTrigger>
+      <TagGroup>
+        <Tag
+          size="medium"
+          style={{
+            borderRadius: 16,
+            paddingTop: 8,
+            paddingBottom: 8,
+            paddingLeft: 16,
+            paddingRight: 16,
+            backgroundColor: isAllPassing ? 'mediumseagreen' : 'orangered',
+          }}
+        >
+          {`${succeeded}/${checkResults.length}`}
+        </Tag>
+
+        <Tooltip>
+          <ScorecardsList
+            checkResults={checkResults}
+            entity={entity}
+            dense
+            hideDescription
+          />
+        </Tooltip>
+      </TagGroup>
+    </TooltipTrigger>
   );
 };
