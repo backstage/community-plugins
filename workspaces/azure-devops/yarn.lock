@@ -1394,7 +1394,7 @@ __metadata:
     "@types/lodash": "npm:^4.14.151"
     "@types/mime-types": "npm:^2.1.0"
     "@types/supertest": "npm:^6.0.0"
-    azure-devops-node-api: "npm:^13.0.0"
+    azure-devops-node-api: "npm:^15.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     mime-types: "npm:^2.1.27"
@@ -1481,7 +1481,7 @@ __metadata:
     "@backstage/integration": "backstage:^"
     "@backstage/plugin-scaffolder-node": "backstage:^"
     "@backstage/plugin-scaffolder-node-test-utils": "backstage:^"
-    azure-devops-node-api: "npm:^14.1.0"
+    azure-devops-node-api: "npm:^15.0.0"
     yaml: "npm:^2.6.0"
   languageName: unknown
   linkType: soft
@@ -1513,7 +1513,7 @@ __metadata:
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-search-common": "backstage:^"
     axios: "npm:^1.4.0"
-    axios-retry: "npm:^3.5.0"
+    axios-retry: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -14162,13 +14162,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-retry@npm:^3.5.0":
-  version: 3.9.1
-  resolution: "axios-retry@npm:3.9.1"
+"axios-retry@npm:^4.0.0":
+  version: 4.5.0
+  resolution: "axios-retry@npm:4.5.0"
   dependencies:
-    "@babel/runtime": "npm:^7.15.4"
     is-retry-allowed: "npm:^2.2.0"
-  checksum: 10/9a28dd8aa4640c2af30789059a1a84549178b2a415bf765a35fe6bba9cd3d78b2ee2da07e448e823303c05f3a83bf98709f4aa64a43c0f6c2812e1665126b97e
+  peerDependencies:
+    axios: 0.x || 1.x
+  checksum: 10/39ed05248757387a44dde94255df8ad54088aece50574c6ce9a1cd02b9e40252f7390285cea54ded04e33a3a549e462d5bdacc8d3178221b7cd40e8aff09ba46
   languageName: node
   linkType: hard
 
@@ -14201,23 +14202,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"azure-devops-node-api@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "azure-devops-node-api@npm:13.0.0"
-  dependencies:
-    tunnel: "npm:0.0.6"
-    typed-rest-client: "npm:^1.8.4"
-  checksum: 10/f365e0a8438a39737611af6d56982de0682395ea4bf831698105414aba9a519cc70d6b374c0423a502c7f7d4938662a7e2f88c134c23cd51e4ba6b769f732183
-  languageName: node
-  linkType: hard
-
-"azure-devops-node-api@npm:^14.0.0, azure-devops-node-api@npm:^14.1.0":
+"azure-devops-node-api@npm:^14.0.0":
   version: 14.1.0
   resolution: "azure-devops-node-api@npm:14.1.0"
   dependencies:
     tunnel: "npm:0.0.6"
     typed-rest-client: "npm:2.1.0"
   checksum: 10/e974af8863dba1108e4755891f3209423dd4981d2c73a30c12a33e70e4739af7e875106c296b3c3afed31971d781500c905220d2dc6a98b53d3cd5bddcf826d6
+  languageName: node
+  linkType: hard
+
+"azure-devops-node-api@npm:^15.0.0":
+  version: 15.1.3
+  resolution: "azure-devops-node-api@npm:15.1.3"
+  dependencies:
+    tunnel: "npm:0.0.6"
+    typed-rest-client: "npm:2.1.0"
+  checksum: 10/4e5f10ce6306beccebcfe616ce30e99edbcb8a1675c4644f4f2f0763eb250cb1c2b68718a838af78d0ee272b5fd0e30506b68be721d25e1078eeb62d073b770a
   languageName: node
   linkType: hard
 
@@ -26130,7 +26131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.1, qs@npm:^6.10.3, qs@npm:^6.11.0, qs@npm:^6.11.2, qs@npm:^6.12.2, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.9.1, qs@npm:^6.9.4, qs@npm:~6.14.0":
+"qs@npm:^6.10.1, qs@npm:^6.10.3, qs@npm:^6.11.0, qs@npm:^6.11.2, qs@npm:^6.12.2, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.9.4, qs@npm:~6.14.0":
   version: 6.14.1
   resolution: "qs@npm:6.14.1"
   dependencies:
@@ -30066,17 +30067,6 @@ __metadata:
     tunnel: "npm:0.0.6"
     underscore: "npm:^1.12.1"
   checksum: 10/601da14aea1ede39c80067445e3e675ed86fb68d434aa4986767a64dfa14a0d9829ff93042246a134407d2e85f6d0c5fb7b675dc3a9b83425b5c7f3c4c4a8209
-  languageName: node
-  linkType: hard
-
-"typed-rest-client@npm:^1.8.4":
-  version: 1.8.11
-  resolution: "typed-rest-client@npm:1.8.11"
-  dependencies:
-    qs: "npm:^6.9.1"
-    tunnel: "npm:0.0.6"
-    underscore: "npm:^1.12.1"
-  checksum: 10/9c160780f476aa03ad1ce6e7961894d06c17d9b67d94da9fbbcd0c5a5ff741e4a6d85c3b938964b13826d3f20ea36febcd6186b43e361cc62a9960241e0f5a4f
   languageName: node
   linkType: hard
 

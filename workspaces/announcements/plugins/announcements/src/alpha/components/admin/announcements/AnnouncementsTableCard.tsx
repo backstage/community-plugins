@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { TablePagination, Card, CardBody, CardFooter } from '@backstage/ui';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import { Card, CardBody, CardHeader, Text, Flex, Button } from '@backstage/ui';
 
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { ActiveInactiveAnnouncementIndicator } from './ActiveInactiveAnnouncementIndicator';
@@ -28,8 +28,10 @@ type AnnouncementsTableCardProps = {
   onPreviewClick: (announcement: Announcement) => void;
   onEditClick: (announcement: Announcement) => void;
   onDeleteClick: (announcement: Announcement) => void;
+  onCreateClick: () => void;
   canEdit: boolean;
   canDelete: boolean;
+  canCreate: boolean;
   editingAnnouncementId?: string | null;
 };
 
@@ -42,27 +44,35 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
     onPreviewClick,
     onEditClick,
     onDeleteClick,
+    onCreateClick,
     canEdit,
     canDelete,
+    canCreate,
     editingAnnouncementId,
   } = props;
 
-  const [pageSize, setPageSize] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const { t } = useAnnouncementsTranslation();
 
-  const paginatedAnnouncements = useMemo(() => {
-    const start = offset;
-    const end = offset + pageSize;
-    return announcements.slice(start, end);
-  }, [announcements, offset, pageSize]);
+  const title = `${t('admin.announcementsContent.announcements')} (${
+    announcements.length
+  })`;
 
   return (
     <Card>
+      <CardHeader>
+        <Flex justify="between" align="center">
+          <Text variant="title-x-small">{title}</Text>
+          <Button isDisabled={!canCreate} onClick={onCreateClick}>
+            {t('admin.announcementsContent.createButton')}
+          </Button>
+        </Flex>
+      </CardHeader>
+
       <CardBody>
         <ActiveInactiveAnnouncementIndicator />
 
         <AnnouncementsTable
-          data={paginatedAnnouncements}
+          data={announcements}
           onPreviewClick={onPreviewClick}
           onEditClick={onEditClick}
           onDeleteClick={onDeleteClick}
@@ -71,18 +81,6 @@ export const AnnouncementsTableCard = (props: AnnouncementsTableCardProps) => {
           editingAnnouncementId={editingAnnouncementId}
         />
       </CardBody>
-
-      {announcements.length > 0 && (
-        <CardFooter>
-          <TablePagination
-            offset={offset}
-            pageSize={pageSize}
-            setOffset={setOffset}
-            setPageSize={setPageSize}
-            rowCount={announcements.length}
-          />
-        </CardFooter>
-      )}
     </Card>
   );
 };

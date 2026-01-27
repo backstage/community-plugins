@@ -81,6 +81,7 @@ readonly "permissionPolicies.allPlugins": string;
 readonly "permissionPolicies.errorFetchingPolicies": string;
 readonly "permissionPolicies.resourceTypeTooltip": string;
 readonly "permissionPolicies.advancedPermissionsTooltip": string;
+readonly "permissionPolicies.noAdvancedPermissionsTooltip": string;
 readonly "permissionPolicies.pluginsSelected": string;
 readonly "permissionPolicies.noPluginsSelected": string;
 readonly "permissionPolicies.noRecordsToDisplay": string;

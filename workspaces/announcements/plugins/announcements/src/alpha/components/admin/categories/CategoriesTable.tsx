@@ -15,54 +15,19 @@
  */
 import {
   CellText,
-  Column,
-  Row,
-  Table,
-  TableBody,
-  TableHeader,
   Cell,
   ButtonIcon,
+  Table,
+  useTable,
+  type ColumnConfig,
+  TableItem,
+  Text,
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-
-const CategoriesTableEmptyState = () => {
-  const { t } = useAnnouncementsTranslation();
-
-  return (
-    <Row>
-      <CellText
-        colSpan={3}
-        title={t('admin.categoriesContent.table.noCategoriesFound')}
-      />
-    </Row>
-  );
-};
-
-type CategoryTableRowProps = {
-  category: Category;
-  onDeleteClick?: (category: Category) => void;
-};
-
-const CategoryTableRow = (props: CategoryTableRowProps) => {
-  const { category, onDeleteClick } = props;
-
-  return (
-    <Row key={category.slug}>
-      <CellText title={category.title} />
-      <CellText title={category.slug} />
-      <Cell>
-        <ButtonIcon
-          icon={<RiDeleteBinLine />}
-          variant="tertiary"
-          onClick={() => onDeleteClick!(category)}
-        />
-      </Cell>
-    </Row>
-  );
-};
+import { useEffect } from 'react';
 
 /**
  * @internal
@@ -72,6 +37,8 @@ type CategoriesTableProps = {
   onDeleteClick?: (category: Category) => void;
 };
 
+type CategoryTableItem = TableItem & Category;
+
 /**
  * @internal
  */
@@ -79,30 +46,49 @@ export const CategoriesTable = (props: CategoriesTableProps) => {
   const { data, onDeleteClick } = props;
   const { t } = useAnnouncementsTranslation();
 
+  const columns: ColumnConfig<CategoryTableItem>[] = [
+    {
+      id: 'title',
+      label: t('admin.categoriesContent.table.title'),
+      isRowHeader: true,
+      cell: category => <CellText title={category.title} />,
+    },
+    {
+      id: 'slug',
+      label: t('admin.categoriesContent.table.slug'),
+      cell: category => <CellText title={category.slug} />,
+    },
+    {
+      id: 'actions',
+      label: t('admin.categoriesContent.table.actions'),
+      cell: category => (
+        <Cell>
+          <ButtonIcon
+            icon={<RiDeleteBinLine />}
+            variant="tertiary"
+            onClick={() => onDeleteClick?.(category)}
+          />
+        </Cell>
+      ),
+    },
+  ];
+
+  const { tableProps, reload } = useTable({
+    mode: 'complete',
+    getData: () => data.map(category => ({ ...category, id: category.slug })),
+  });
+
+  useEffect(() => {
+    reload();
+  }, [data, reload]);
+
   return (
-    <Table>
-      <TableHeader>
-        <Column id="title" isRowHeader>
-          {t('admin.categoriesContent.table.title')}
-        </Column>
-        <Column id="slug">{t('admin.categoriesContent.table.slug')}</Column>
-        <Column id="actions">
-          {t('admin.categoriesContent.table.actions')}
-        </Column>
-      </TableHeader>
-      <TableBody>
-        {data.length > 0 ? (
-          data.map(category => (
-            <CategoryTableRow
-              key={category.slug}
-              category={category}
-              onDeleteClick={onDeleteClick}
-            />
-          ))
-        ) : (
-          <CategoriesTableEmptyState />
-        )}
-      </TableBody>
-    </Table>
+    <Table
+      columnConfig={columns}
+      emptyState={
+        <Text>{t('admin.categoriesContent.table.noCategoriesFound')}</Text>
+      }
+      {...tableProps}
+    />
   );
 };

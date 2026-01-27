@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   useAnnouncementsPermissions,
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
-import { Container, HeaderPage } from '@backstage/ui';
+import { Container, Flex, HeaderPage } from '@backstage/ui';
 
 import { AnnouncementsGrid } from './AnnouncementsGrid';
+import { AnnouncementsFilterBar } from './AnnouncementsFilterBar';
 import { ContextMenu } from './ContextMenu';
 import { MarkdownRendererTypeProps } from '../../../components';
 
@@ -36,12 +37,12 @@ export type AnnouncementsPageProps = {
 };
 
 export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const [searchParams] = useSearchParams();
   const permissions = useAnnouncementsPermissions();
   const { t } = useAnnouncementsTranslation();
 
-  const { hideStartAt, title, maxPerPage, category, sortby, order } = props;
+  const { hideStartAt, title, maxPerPage, category, sortby, order, tags } =
+    props;
 
   const canManageAnnouncements =
     !permissions.create.loading && permissions.create.allowed;
@@ -54,15 +55,23 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
       />
 
       <Container>
-        <AnnouncementsGrid
-          maxPerPage={maxPerPage ?? 10}
-          category={category ?? queryParams.get('category') ?? undefined}
-          tags={props.tags}
-          sortBy={sortby ?? 'created_at'}
-          order={order ?? 'desc'}
-          hideStartAt={hideStartAt}
-          active
-        />
+        <Flex direction="column">
+          <AnnouncementsFilterBar />
+          <AnnouncementsGrid
+            maxPerPage={maxPerPage ?? 10}
+            category={category ?? searchParams.get('category') ?? undefined}
+            tags={
+              tags ??
+              (searchParams.get('tags')
+                ? searchParams.get('tags')?.split(',')
+                : undefined)
+            }
+            sortBy={sortby ?? 'created_at'}
+            order={order ?? 'desc'}
+            hideStartAt={hideStartAt}
+            active
+          />
+        </Flex>
       </Container>
     </>
   );

@@ -93,6 +93,21 @@ metadata:
 
 The `DYNATRACE_ENTITY_ID` can be found in Dynatrace by browsing to the entity (a service, synthetic, frontend, workload, etc.). It will be located in the browser address bar in the `id` parameter and has the format `ENTITY_TYPE-ENTITY_ID`, where `ENTITY_TYPE` will be one of `SERVICE`, `SYNTHETIC_TEST`, or other, and `ENTITY_ID` will be a string of characters containing uppercase letters and numbers.
 
+###### Multiple Entity IDs
+
+To monitor multiple entities, you can specify multiple entity IDs separated by commas:
+
+```yaml
+# catalog-info.yaml
+# [...]
+metadata:
+  annotations:
+    dynatrace.com/dynatrace-entity-id: DYNATRACE_ENTITY_ID_1, DYNATRACE_ENTITY_ID_2
+# [...]
+```
+
+This allows you to aggregate problems from multiple Dynatrace entities into a single view. For more information on how entity IDs are handled, see the [Dynatrace Problems API documentation](https://docs.dynatrace.com/docs/discover-dynatrace/references/dynatrace-api/environment-api/problems-v2/problems/get-problems-list#parameters).
+
 ##### Viewing Recent Synthetics Results
 
 To show recent results from a Synthetic Monitor, add the following annotation to `catalog-info.yaml`:

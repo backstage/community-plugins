@@ -26,6 +26,10 @@ const topologyTranslationDe = createTranslationMessages({
     'toolbar.selectCluster': 'Cluster auswählen',
     'toolbar.displayOptions': 'Anzeige-Optionen',
     'toolbar.currentDisplayOptions': 'Aktuelle Anzeige-Optionen',
+    'controlBar.zoomIn': 'Hineinzoomen',
+    'controlBar.zoomOut': 'Herauszoomen',
+    'controlBar.fitToScreen': 'An Bildschirm anpassen',
+    'controlBar.resetView': 'Ansicht zurücksetzen',
     'emptyState.noResourcesFound': 'Keine Ressourcen gefunden',
     'emptyState.noResourcesDescription':
       'Es wurden keine Kubernetes-Ressourcen im ausgewählten Cluster gefunden.',

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-github-deployments",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "A Backstage plugin that integrates towards GitHub Deployments",
   "backstage": {
     "role": "frontend-plugin",
@@ -72,7 +72,6 @@
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",

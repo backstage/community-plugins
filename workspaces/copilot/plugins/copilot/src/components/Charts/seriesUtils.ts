@@ -30,21 +30,33 @@ const addSeriesIfTeam = (
   return series;
 };
 
+const addSeriesIfOverall = (
+  series: any[],
+  showOverall: boolean,
+  seriesConfig: any,
+) => {
+  if (showOverall) {
+    return series.push(seriesConfig);
+  }
+  return series;
+};
+
 export const createAcceptanceRateSeries = (
   metrics: Metric[],
   metricsByTeam: Metric[],
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      id: 'total_lines_suggested',
-      label: 'Acceptance Rate (Overall)',
-      valueFormatter: (v: number | null) => v?.toFixed(2).concat('%') ?? 'N/A',
-      data: metrics.map(
-        x => (x.total_lines_accepted / x.total_lines_suggested) * 100,
-      ),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'total_lines_suggested',
+    label: 'Acceptance Rate (Overall)',
+    valueFormatter: (v: number | null) => v?.toFixed(2).concat('%') ?? 'N/A',
+    data: metrics.map(
+      x => (x.total_lines_accepted / x.total_lines_suggested) * 100,
+    ),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'total_lines_suggested_by_team',
@@ -72,21 +84,23 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
   metrics: Metric[],
   metricsByTeam: Metric[],
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      id: 'total_suggestions_count_general',
-      label: 'Total Suggestions (Overall)',
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(metric => metric.total_suggestions_count),
-    },
-    {
-      id: 'total_acceptances_count_general',
-      label: 'Total Acceptances (Overall)',
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(metric => metric.total_acceptances_count),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'total_suggestions_count_general',
+    label: 'Total Suggestions (Overall)',
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(metric => metric.total_suggestions_count),
+  });
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'total_acceptances_count_general',
+    label: 'Total Acceptances (Overall)',
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(metric => metric.total_acceptances_count),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'total_suggestions_count_by_team',
@@ -117,21 +131,23 @@ export const createTotalLinesSuggestedAndAcceptedSeries = (
   metrics: Metric[],
   metricsByTeam: Metric[],
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      id: 'total_lines_suggested',
-      label: 'Total Lines Suggested (Overall)',
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.total_lines_suggested),
-    },
-    {
-      id: 'total_lines_accepted',
-      label: 'Total Lines Accepted (Overall)',
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.total_lines_accepted),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'total_lines_suggested',
+    label: 'Total Lines Suggested (Overall)',
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.total_lines_suggested),
+  });
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'total_lines_accepted',
+    label: 'Total Lines Accepted (Overall)',
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.total_lines_accepted),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'total_lines_suggested_by_team',
@@ -162,14 +178,15 @@ export const createTotalActiveUsersSeries = (
   metrics: Metric[],
   metricsByTeam: Metric[],
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      label: 'Total Active Users (Overall)',
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.total_active_users),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    label: 'Total Active Users (Overall)',
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.total_active_users),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'total_active_users_by_team',
@@ -191,16 +208,17 @@ export const createEngagementSeries = (
   label: string,
   property: keyof EngagementMetrics,
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      label: `${label} (Overall)`,
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x =>
-        x[property] !== undefined ? Number(x[property]) : null,
-      ),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    label: `${label} (Overall)`,
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x =>
+      x[property] !== undefined ? Number(x[property]) : null,
+    ),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team',
@@ -222,14 +240,15 @@ export const createAssignedSeatSeries = (
   metricsByTeam: SeatAnalysis[],
   label: string,
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      label: `${label} (Overall)`,
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.total_seats),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    label: `${label} (Overall)`,
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.total_seats),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team',
@@ -249,33 +268,37 @@ export const createUnusedSeatSeries = (
   metrics: SeatAnalysis[],
   metricsByTeam: SeatAnalysis[],
   team?: string,
+  showOverall: boolean = true,
 ) => {
-  const series = [
-    {
-      id: 'series_never_used',
-      label: `Never used (Overall)`,
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.seats_never_used),
-    },
-    {
-      id: 'series_not_used_7',
-      label: `Not used last 7 days (Overall)`,
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.seats_inactive_7_days),
-    },
-    {
-      id: 'series_not_used_14',
-      label: `Not used last 14 days (Overall)`,
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.seats_inactive_14_days),
-    },
-    {
-      id: 'series_not_used_28',
-      label: `Not used last 28 days (Overall)`,
-      valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
-      data: metrics.map(x => x.seats_inactive_28_days),
-    },
-  ];
+  const series: any[] = [];
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'series_never_used',
+    label: `Never used (Overall)`,
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.seats_never_used),
+  });
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'series_not_used_7',
+    label: `Not used last 7 days (Overall)`,
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.seats_inactive_7_days),
+  });
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'series_not_used_14',
+    label: `Not used last 14 days (Overall)`,
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.seats_inactive_14_days),
+  });
+
+  addSeriesIfOverall(series, showOverall || !team, {
+    id: 'series_not_used_28',
+    label: `Not used last 28 days (Overall)`,
+    valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
+    data: metrics.map(x => x.seats_inactive_28_days),
+  });
 
   addSeriesIfTeam(series, !!team, {
     id: 'series_by_team_never_used',

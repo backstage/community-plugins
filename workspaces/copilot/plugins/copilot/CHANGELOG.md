@@ -1,5 +1,17 @@
 # @backstage-community/plugin-copilot
 
+## 0.18.0
+
+### Minor Changes
+
+- 0990dc2: Add overall data toggle and enhance metrics visualization
+
+## 0.17.1
+
+### Patch Changes
+
+- 0d18c87: Check configuration to determine whether to show enterprise or organization page.
+
 ## 0.17.0
 
 ### Minor Changes
