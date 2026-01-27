@@ -1,5 +1,17 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.14.0
+
+### Minor Changes
+
+- 6a80272: Updated documentation to reflect support for multiple Dynatrace entity IDs in the annotation
+
+## 10.13.1
+
+### Patch Changes
+
+- c1b506f: Fixed a minor React warning
+
 ## 10.13.0
 
 ### Minor Changes

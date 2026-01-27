@@ -25,6 +25,7 @@ body:
         - announcements
         - apache-airflow
         - apollo-explorer
+        - argocd
         - azure-devops
         - azure-resources
         - azure-sites
@@ -93,7 +94,6 @@ body:
         - puppetdb
         - quay
         - rbac
-        - redhat-argocd
         - report-portal
         - rollbar
         - scaffolder-backend-module-annotator

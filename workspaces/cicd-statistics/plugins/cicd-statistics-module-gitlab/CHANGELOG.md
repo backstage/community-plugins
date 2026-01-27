@@ -1,5 +1,13 @@
 # @backstage-community/plugin-cicd-statistics-module-gitlab
 
+## 0.14.1
+
+### Patch Changes
+
+- 4e95de7: Remove unused dependencies
+- Updated dependencies [4e95de7]
+  - @backstage-community/plugin-cicd-statistics@0.14.1
+
 ## 0.14.0
 
 ### Minor Changes

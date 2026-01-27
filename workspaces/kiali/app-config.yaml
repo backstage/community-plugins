@@ -117,7 +117,18 @@ kiali:
       # caFile: ''
       # Optional. Time in seconds that session is enabled, defaults to 1 minute.
       #sessionTime: 60
-
+      #basicAuth: ''
+      # Optional. Basic Authentication header for Kiali.
+      #
+      # This is intended for environments where Kiali is protected by an
+      # external reverse proxy or gateway (for example: nginx, oauth2-proxy).
+      # It is NOT a native Kiali authentication mechanism.
+      #
+      # The value must be base64 encoded in the format:
+      #   base64(username:password)
+      #
+      # Example:
+      # basicAuth: ZHVtbXk6ZHVtbXk=
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
   # setting this to `false` will disable permissions

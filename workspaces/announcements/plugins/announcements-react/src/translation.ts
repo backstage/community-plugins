@@ -40,6 +40,7 @@ export const announcementsTranslationRef = createTranslationRef({
       tagsLabel: 'Tags',
     },
     announcementsPage: {
+      announcements: 'Announcements',
       newAnnouncement: 'New announcement',
       genericNew: 'New',
       card: {
@@ -51,12 +52,23 @@ export const announcementsTranslationRef = createTranslationRef({
         scheduled: 'Scheduled ',
         today: 'Today',
       },
-      grid: {
-        announcementDeleted: 'Announcement deleted.',
-      },
       contextMenu: {
         admin: 'Manage announcements',
       },
+      filter: {
+        label: 'Filters:',
+        category: 'Category',
+        categoryPlaceholder: 'Select a category',
+        categorySearchPlaceholder: 'Search categories...',
+        tags: 'Tags',
+        tagsPlaceholder: 'Select tags',
+        tagsSearchPlaceholder: 'Search tags...',
+        clear: 'Clear Filters',
+        noFilteredAnnouncementsFound:
+          'No announcements found with the selected filters.',
+      },
+      errorLoadingAnnouncements: 'Error loading announcements.',
+      noAnnouncementsFound: 'No announcements found.',
     },
     confirmDeleteDialog: {
       title: 'Are you sure you want to delete?',
@@ -142,6 +154,14 @@ export const announcementsTranslationRef = createTranslationRef({
       notFoundMessage: 'Unable to find announcement',
       edit: 'Edit',
     },
+    viewAnnouncementPage: {
+      backToAnnouncements: 'Back to announcements',
+      backToAdmin: 'Back to admin',
+      notFound: 'Announcement not found',
+      tagsAriaLabel: 'Announcement Tags',
+      by: 'By',
+      announcements: 'Announcements',
+    },
     newAnnouncementBanner: {
       markAsSeen: 'Mark as seen',
     },
@@ -164,7 +184,8 @@ export const announcementsTranslationRef = createTranslationRef({
         alertMessage: 'Announcement created.',
         alertMessageWithNewCategory: 'with new category',
         cancelButton: 'Cancel',
-        createButton: 'Create Announcement',
+        createButton: 'Create announcement',
+        deletedMessage: 'Announcement deleted.',
         announcements: 'Announcements',
         noAnnouncementsFound: 'No announcements found',
         table: {
@@ -211,6 +232,10 @@ export const announcementsTranslationRef = createTranslationRef({
           noTagsFound: 'No tags found.',
         },
         errors: {
+          /** todo: could be deduped with announcementsPage.card.by */
+          by: 'By',
+          /** todo: could be deduped with announcementsCard.announcements, admin.adminPortal.announcementsLabels, admin.announcementsContent.announcements */
+          announcements: 'Announcements',
           alreadyExists: 'A tag with this name already exists.',
         },
       },

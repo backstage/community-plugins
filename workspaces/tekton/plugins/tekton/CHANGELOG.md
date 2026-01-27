@@ -1,5 +1,50 @@
 ### Dependencies
 
+## 3.34.1
+
+### Patch Changes
+
+- 39d5c9a: Added data test ids to pipeline run list for better plugin testability
+
+## 3.34.0
+
+### Minor Changes
+
+- 5ac7a59: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [5ac7a59]
+  - @backstage-community/plugin-tekton-common@1.17.0
+  - @backstage-community/plugin-tekton-react@0.2.0
+
+## 3.33.2
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+- Updated dependencies [536b783]
+  - @backstage-community/plugin-tekton-react@0.1.2
+
+## 3.33.1
+
+### Patch Changes
+
+- 6cfc39f: Resolved deprecation warnings
+
+## 3.33.0
+
+### Minor Changes
+
+- 477b7e1: Migrate shared-react usage to tekton-react
+
+### Patch Changes
+
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+- Updated dependencies [477b7e1]
+  - @backstage-community/plugin-tekton-common@1.16.0
+  - @backstage-community/plugin-tekton-react@0.1.0
+
 ## 3.32.1
 
 ### Patch Changes

@@ -80,6 +80,8 @@ const rbacTranslationFr = createTranslationMessages({
     'roleForm.review.reviewAndSave': 'Examiner et sauvegarder',
     'roleForm.review.nameDescriptionOwner':
       'Nom, description et propriétaire du rôle',
+    'roleForm.review.permissionPoliciesWithCount':
+      'Politiques de permissions ({{count}})',
     'roleForm.steps.next': 'Suivant',
     'roleForm.steps.back': 'Retour',
     'roleForm.steps.cancel': 'Annuler',
@@ -207,6 +209,8 @@ const rbacTranslationFr = createTranslationMessages({
       'type de ressource : {{resourceType}}',
     'permissionPolicies.advancedPermissionsTooltip':
       "Utilisez des permissions personnalisées avancées pour autoriser l'accès à des parties spécifiques du type de ressource sélectionné.",
+    'permissionPolicies.noAdvancedPermissionsTooltip':
+      'La personnalisation avancée n’est pas prise en charge pour ce type de ressource.',
     'permissionPolicies.pluginsSelected': '{{count}} plugins',
     'permissionPolicies.noPluginsSelected': 'Aucun plugin sélectionné',
     'permissionPolicies.search': 'Rechercher',

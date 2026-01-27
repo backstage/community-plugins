@@ -37,6 +37,7 @@ export const DashboardCharts = ({
   team,
   metrics,
   metricsByTeam,
+  showOverall = true,
 }: PropsWithChildren<ChartsProps>) => (
   <MainBox>
     <Chart title="Acceptance Rate %">
@@ -56,7 +57,12 @@ export const DashboardCharts = ({
             textAnchor: 'start',
           },
         }}
-        series={createAcceptanceRateSeries(metrics, metricsByTeam, team)}
+        series={createAcceptanceRateSeries(
+          metrics,
+          metricsByTeam,
+          team,
+          showOverall,
+        )}
         height={300}
       />
     </Chart>
@@ -81,6 +87,7 @@ export const DashboardCharts = ({
           metrics,
           metricsByTeam,
           team,
+          showOverall,
         )}
         height={300}
       />
@@ -106,6 +113,7 @@ export const DashboardCharts = ({
           metrics,
           metricsByTeam,
           team,
+          showOverall,
         )}
         height={300}
       />
@@ -126,7 +134,12 @@ export const DashboardCharts = ({
             textAnchor: 'start',
           },
         }}
-        series={createTotalActiveUsersSeries(metrics, metricsByTeam, team)}
+        series={createTotalActiveUsersSeries(
+          metrics,
+          metricsByTeam,
+          team,
+          showOverall,
+        )}
         height={300}
       />
     </Chart>

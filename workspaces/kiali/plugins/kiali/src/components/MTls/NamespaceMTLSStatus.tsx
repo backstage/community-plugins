@@ -55,9 +55,9 @@ const statusDescriptors = new Map<string, StatusDescriptor>([
 
 // Magic style to align Istio Config icons on top of status overview
 const iconStyle = kialiStyle({
-  marginTop: -3,
-  marginRight: 18,
-  marginLeft: 2,
+  marginTop: -2,
+  marginRight: 4,
+  marginLeft: 6,
   width: 10,
 });
 

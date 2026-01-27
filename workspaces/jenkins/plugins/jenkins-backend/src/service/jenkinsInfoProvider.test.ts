@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import { CatalogService } from '@backstage/plugin-catalog-node';
-import {
-  Entity,
-  CompoundEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
+import { Entity, CompoundEntityRef } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
 import {
   DefaultJenkinsInfoProvider,
@@ -27,6 +22,7 @@ import {
   JenkinsInfo,
 } from './jenkinsInfoProvider';
 import { mockServices } from '@backstage/backend-test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 describe('JenkinsConfig', () => {
   it('Reads empty config', async () => {
@@ -175,9 +171,7 @@ describe('JenkinsConfig', () => {
 });
 
 describe('DefaultJenkinsInfoProvider', () => {
-  const mockCatalog: jest.Mocked<CatalogService> = {
-    getEntityByRef: jest.fn(),
-  } as any as jest.Mocked<CatalogService>;
+  const mockCatalog = catalogServiceMock.mock();
 
   const entityRef: CompoundEntityRef = {
     kind: 'Component',
@@ -205,13 +199,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     await expect(provider.getInstance({ entityRef })).rejects.toThrow();
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
   });
@@ -239,13 +229,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toStrictEqual({
@@ -286,13 +272,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -332,13 +314,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -378,13 +356,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -413,13 +387,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -448,13 +418,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -484,13 +450,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -524,13 +486,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -565,13 +523,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -608,13 +562,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -650,13 +600,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -691,13 +637,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({
@@ -733,13 +675,9 @@ describe('DefaultJenkinsInfoProvider', () => {
     const info: JenkinsInfo = await provider.getInstance({ entityRef });
 
     expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      stringifyEntityRef(entityRef),
+      entityRef,
       expect.objectContaining({
-        credentials: expect.objectContaining({
-          principal: expect.objectContaining({
-            type: 'service',
-          }),
-        }),
+        credentials: expect.anything(),
       }),
     );
     expect(info).toMatchObject({

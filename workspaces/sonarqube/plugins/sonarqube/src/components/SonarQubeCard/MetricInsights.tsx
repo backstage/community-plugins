@@ -82,6 +82,8 @@ export const QualityBadge = (props: MetricInsightsProps) => {
     clickableAttrs = {
       component: 'a',
       href: value.projectUrl,
+      target: '_blank',
+      rel: 'noopener noreferrer',
       clickable: true,
     };
   }

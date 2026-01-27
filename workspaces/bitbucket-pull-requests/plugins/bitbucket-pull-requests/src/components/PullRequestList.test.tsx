@@ -20,6 +20,7 @@ import {
   errorApiRef,
   identityApiRef,
   IdentityApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rest } from 'msw';
@@ -34,6 +35,7 @@ import { bitbucketApiRef, BitbucketApi } from '../api/BitbucketApi';
 import PullRequestList from '../components/PullRequestList';
 import { pullRequestsResponseStub, entityStub } from '../responseStubs';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 
 const discoveryApi = UrlPatternDiscovery.compile('http://exampleapi.com');
@@ -52,8 +54,10 @@ const identityApi: IdentityApi = {
   signOut: jest.fn(),
 };
 
+const fetchApi: FetchApi = { fetch };
+
 const apis: [AnyApiRef, Partial<unknown>][] = [
-  [bitbucketApiRef, new BitbucketApi({ discoveryApi, identityApi })],
+  [bitbucketApiRef, new BitbucketApi({ discoveryApi, identityApi, fetchApi })],
   [errorApiRef, new MockErrorApi()],
   [identityApiRef, identityApi],
   [translationApiRef, mockApis.translation()],
@@ -70,7 +74,11 @@ describe('PullRequestList', () => {
     worker.use(
       rest.get(
         'http://exampleapi.com/bitbucket/api/projects/testproject/repos/testrepo/pull-requests',
-        (_, res, ctx) => res(ctx.json(pullRequestsResponseStub)),
+        (req, res, ctx) => {
+          // By default the list should request ALL states
+          expect(req.url.searchParams.get('state')).toBe('ALL');
+          return res(ctx.json(pullRequestsResponseStub));
+        },
       ),
     );
 
@@ -142,6 +150,42 @@ describe('PullRequestList', () => {
     const renderedIds = screen.getAllByText(/^#\d+$/);
 
     expect(renderedIds).toHaveLength(prIds.length);
+  });
+
+  it('should update the request state when a filter button is clicked', async () => {
+    let lastStateParam: string | null = null;
+
+    worker.use(
+      rest.get(
+        'http://exampleapi.com/bitbucket/api/projects/testproject/repos/testrepo/pull-requests',
+        (req, res, ctx) => {
+          lastStateParam = req.url.searchParams.get('state');
+          return res(ctx.json(pullRequestsResponseStub));
+        },
+      ),
+    );
+
+    render(
+      <TestApiProvider apis={apis}>
+        <EntityProvider entity={entityStub}>
+          <PullRequestList />
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+
+    // Wait for initial load and confirm default state is ALL
+    await waitFor(() => {
+      expect(screen.getByText('Bitbucket Pull Requests')).toBeInTheDocument();
+      expect(lastStateParam).toBe('ALL');
+    });
+
+    // Click on the Merged filter button and ensure subsequent call uses MERGED
+    const mergedButton = screen.getByRole('button', { name: /Merged/i });
+    await userEvent.click(mergedButton);
+
+    await waitFor(() => {
+      expect(lastStateParam).toBe('MERGED');
+    });
   });
 
   it('should handle empty PR list', async () => {

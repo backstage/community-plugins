@@ -18,10 +18,11 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { JenkinsBuilder } from './service/JenkinsBuilder';
 import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
+
+import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
+import { JenkinsBuilder } from './service/JenkinsBuilder';
 
 /**
  * Jenkins backend plugin
@@ -37,7 +38,7 @@ export const jenkinsPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         httpRouter: coreServices.httpRouter,
         config: coreServices.rootConfig,
-        catalogClient: catalogServiceRef,
+        catalog: catalogServiceRef,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
@@ -48,7 +49,7 @@ export const jenkinsPlugin = createBackendPlugin({
         permissions,
         httpRouter,
         config,
-        catalogClient,
+        catalog,
         discovery,
         auth,
         httpAuth,
@@ -58,18 +59,13 @@ export const jenkinsPlugin = createBackendPlugin({
           auth,
           httpAuth,
           config,
-          catalog: catalogClient,
+          catalog,
           discovery,
           logger,
         });
+
         const builder = JenkinsBuilder.createBuilder({
-          /**
-           * Logger for logging purposes
-           */
           logger,
-          /**
-           * Info provider to be able to get all necessary information for the APIs
-           */
           jenkinsInfoProvider,
           config,
           permissions,
@@ -77,6 +73,7 @@ export const jenkinsPlugin = createBackendPlugin({
           auth,
           httpAuth,
         });
+
         const { router } = await builder.build();
         httpRouter.use(router);
         permissionsRegistry.addPermissions(jenkinsPermissions);

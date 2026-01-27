@@ -1,5 +1,17 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- 12af0ed: Backstage version bump to v1.46.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.9.0
 
 ### Minor Changes

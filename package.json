@@ -7,6 +7,7 @@
     "node": "20 || 22"
   },
   "scripts": {
+    "changeset": "echo 'Error: Please run yarn changeset from a workspace directory, not the root.' && exit 1",
     "create-workspace": "community-cli workspace create",
     "postinstall": "husky",
     "prettier:check": "prettier --check .",
@@ -31,7 +32,7 @@
     "eslint-plugin-notice": "^0.9.10",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-testing-library": "^6.0.0",
-    "fs-extra": "11.3.2",
+    "fs-extra": "11.3.3",
     "husky": "^9.0.11",
     "js-yaml": "^4.1.0",
     "lint-staged": "^16.0.0",

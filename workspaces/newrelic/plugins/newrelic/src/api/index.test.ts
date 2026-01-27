@@ -18,7 +18,7 @@ import { NewRelicApplication, NewRelicClient } from '.';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { MockFetchApi, setupRequestMockHandlers } from '@backstage/test-utils';
+import { MockFetchApi, registerMswTestHooks } from '@backstage/test-utils';
 
 const mockedDiscoveryApi: DiscoveryApi = {
   getBaseUrl: async () => 'https://test.test',
@@ -30,7 +30,7 @@ beforeEach(() => {
 
 describe('NewRelicClient', () => {
   const server = setupServer();
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   beforeEach(() => {
     server.resetHandlers();

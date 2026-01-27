@@ -50,10 +50,10 @@ jobs:
           fetch-depth: 1
 
       # Beginning of yarn setup
-      - name: use node.js 20.x
+      - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
       - name: cache all node_modules
         id: cache-modules
@@ -163,6 +163,8 @@ jobs:
               echo "Creating new branch"
               git checkout -b "$BRANCH_NAME"
           fi
+
+      # Run the version bump
       - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }} command
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }}
@@ -171,6 +173,13 @@ jobs:
       - name: Run dedupe
         working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn dedupe
+
+      # Update report-api as well
+      - name: Update api reports
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn tsc:full && yarn build:api-reports:only
+        continue-on-error: true
+
       - name: 'Check for changes'
         id: check_for_changes
         run: |

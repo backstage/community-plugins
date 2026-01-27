@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
+      workspaceNodeMatrix: ${{ steps.find-changed-workspaces.outputs.workspace_node_matrix }}
     steps:
       - name: Calculate number of commits in PR
         id: calculate-commits
@@ -35,7 +36,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Find changed workspaces
@@ -45,17 +46,16 @@ jobs:
           BASE_REF: origin/${{ github.event.pull_request.base.ref }}
 
   ci:
-    name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
+    name: Workspace ${{ matrix.workspaceNodeMatrix.workspace }}, CI step for node ${{ matrix.workspaceNodeMatrix.nodeVersion }}
     runs-on: ubuntu-latest
     needs: find-changed-workspaces
     strategy:
       matrix:
-        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
-        node-version: [20.x, 22.x]
+        workspaceNodeMatrix: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaceNodeMatrix) }}
       fail-fast: false
     defaults:
       run:
-        working-directory: ./workspaces/${{ matrix.workspace }}
+        working-directory: ./workspaces/${{ matrix.workspaceNodeMatrix.workspace }}
 
     env:
       CI: true
@@ -71,10 +71,10 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
 
-      - name: Set up Node ${{ matrix.node-version }}
+      - name: Set up Node ${{ matrix.workspaceNodeMatrix.nodeVersion }}
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.workspaceNodeMatrix.nodeVersion }}
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: yarn install
@@ -84,7 +84,7 @@ jobs:
         run: yarn fix --check
 
       - name: validate config
-        if: ${{ hashFiles(format('workspaces/{0}/app-config.yaml', matrix.workspace)) != '' }}
+        if: ${{ hashFiles(format('workspaces/{0}/app-config.yaml', matrix.workspaceNodeMatrix.workspace)) != '' }}
         run: yarn backstage-cli config:check --lax
 
       - name: type checking and declarations
@@ -96,7 +96,7 @@ jobs:
       - name: read knipReports flag from bcp.json
         id: bcpKnipReports
         run: |
-          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
+          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspaceNodeMatrix.workspace }}"
           if [ -f bcp.json ]; then
             echo "Reading knipReports flag..."
             KNIP_REPORTS=$(jq -r '.["knipReports"]' bcp.json)
@@ -114,7 +114,7 @@ jobs:
       - name: read listDeprecations flag from bcp.json
         id: bcpListDeprecations
         run: |
-          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
+          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspaceNodeMatrix.workspace }}"
           if [ -f bcp.json ]; then
             echo "Reading listDeprecations flag..."
             LIST_DEPRECATIONS=$(jq -r '.["listDeprecations"]' bcp.json)
@@ -147,7 +147,7 @@ jobs:
       - name: read playwrightTests flag from bcp.json
         id: bcpPlaywrightTests
         run: |
-          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspace }}"
+          echo "Checking for bcp.json in workspace: workspaces/${{ matrix.workspaceNodeMatrix.workspace }}"
           if [ -f bcp.json ]; then
             echo "Reading playwrightTests flag..."
             PLAYWRIGHT_TESTS=$(jq -r '.["playwrightTests"]' bcp.json)
@@ -190,10 +190,10 @@ jobs:
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - name: Setup node
+      - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Install root dependencies
         run: yarn install --immutable
       - name: Verify lockfile duplicates

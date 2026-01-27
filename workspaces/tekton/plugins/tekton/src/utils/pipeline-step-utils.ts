@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ComputedStatus, TerminatedReasons } from '@janus-idp/shared-react';
+import {
+  ComputedStatus,
+  TerminatedReasons,
+} from '@backstage-community/plugin-tekton-react';
 
 import { StepStatus, TaskStatus, TaskStatusStep } from '../types/taskRun';
 import { calculateDuration } from './tekton-utils';

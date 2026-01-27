@@ -90,6 +90,8 @@ export const CostOverviewCard = ({
           indicatorColor="primary"
           onChange={(_, index) => setTabIndex(index)}
           value={safeTabIndex}
+          variant="scrollable"
+          scrollButtons="auto"
         >
           {tabs.map((tab, index) => (
             <Tab
@@ -106,8 +108,7 @@ export const CostOverviewCard = ({
   };
 
   // Metrics can only be selected on the total cost graph
-  const showMetricSelect =
-    metricData && config.metrics.length && safeTabIndex === 0;
+  const showMetricSelect = config.metrics.length && safeTabIndex === 0;
 
   return (
     <Card style={{ position: 'relative', overflow: 'visible' }}>

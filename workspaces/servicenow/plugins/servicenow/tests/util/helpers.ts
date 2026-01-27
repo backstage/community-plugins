@@ -29,7 +29,6 @@ export class Common {
 
   async loginAsGuest() {
     await this.page.goto('/');
-    // TODO - Remove it after https://issues.redhat.com/browse/RHIDP-2043. A Dynamic plugin for Guest Authentication Provider needs to be created
     this.page.on('dialog', async dialog => {
       await dialog.accept();
     });
@@ -40,8 +39,9 @@ export class Common {
 
   async switchToLocale(locale: string) {
     if (locale !== 'en') {
+      const localeString = locale === 'ja' ? '日本語' : locale;
       await this.page.getByRole('button', { name: 'Language' }).click();
-      await this.page.getByRole('menuitem', { name: locale }).click();
+      await this.page.getByRole('menuitem', { name: localeString }).click();
     }
   }
 

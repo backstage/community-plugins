@@ -15,12 +15,16 @@
  */
 import { Entity } from '@backstage/catalog-model';
 
-import { ServiceAnnotationFieldName } from './types';
-
 /**
  * Check if the current entity has a ServiceNow annotation.
  * @public
  */
 export const isServicenowAvailable = (entity: Entity): boolean => {
-  return Boolean(entity.metadata.annotations?.[ServiceAnnotationFieldName]);
+  if (!entity.metadata.annotations) {
+    return false;
+  }
+
+  return Object.keys(entity.metadata.annotations).some(key =>
+    key.startsWith('servicenow.com/'),
+  );
 };

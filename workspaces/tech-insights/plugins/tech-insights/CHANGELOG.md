@@ -1,5 +1,27 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.8.0
+
+### Minor Changes
+
+- b5f45fd: The plugin now supports the new frontend system by importing from `@backstage-community/plugin-tech-insights/alpha`.
+
+### Patch Changes
+
+- 450c5aa: The new frontend system plugin now includes a tech insights navigation extension by default
+
+## 0.7.0
+
+### Minor Changes
+
+- e8743d9: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [e8743d9]
+  - @backstage-community/plugin-tech-insights-common@0.8.0
+  - @backstage-community/plugin-tech-insights-react@1.3.0
+
 ## 0.6.2
 
 ### Patch Changes

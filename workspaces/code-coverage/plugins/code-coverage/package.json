@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-code-coverage",
   "description": "A Backstage plugin that helps you keep track of your code coverage",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -64,7 +64,7 @@
     "@types/lodash": "^4.14.151",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "@types/react-dom": "^18.2.19",
-    "@types/recharts": "^1.8.15",
+    "@types/recharts": "^2.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"

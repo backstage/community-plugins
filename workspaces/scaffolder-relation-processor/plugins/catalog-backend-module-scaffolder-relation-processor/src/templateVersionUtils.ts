@@ -25,13 +25,23 @@ import { NotificationPayload } from '@backstage/plugin-notifications-common';
 import type { Entity } from '@backstage/catalog-model';
 import {
   DEFAULT_NOTIFICATION_DESCRIPTION,
+  DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR,
   DEFAULT_NOTIFICATION_ENABLED,
   DEFAULT_NOTIFICATION_TITLE,
+  DEFAULT_NOTIFICATION_TITLE_WITH_PR,
+  DEFAULT_PR_ENABLED,
   ENTITY_DISPLAY_NAME_TEMPLATE_VAR,
+  PR_CREATION_FAILED_PREFIX,
+  PR_LINK_TEMPLATE_VAR,
+  TEMPLATE_UPDATE_PRS_DOCS_URL,
   TEMPLATE_VERSION_UPDATED_TOPIC,
 } from './constants';
 import { ScaffolderRelationProcessorConfig } from './types';
 import type { Config } from '@backstage/config';
+import { LoggerService, UrlReaderService } from '@backstage/backend-plugin-api';
+import { handleTemplateUpdatePullRequest } from './pullRequests';
+import type { VcsProviderRegistry } from './pullRequests/vcs/VcsProviderRegistry';
+import type { PullRequestResult } from './pullRequests/vcs/VcsProvider';
 
 /**
  * Cache structure for storing template version information
@@ -99,11 +109,78 @@ function createEntityCatalogUrl(entity: Entity): string {
 }
 
 /**
+ * Builds a notification payload based on entity, config, and PR result
+ *
+ * @param entityName - Display name of the entity
+ * @param catalogUrl - URL to the entity in the catalog
+ * @param config - Configuration for notification title and description
+ * @param prResult - Optional PR creation result for this entity
+ * @returns NotificationPayload with title, description, and link
+ *
+ * @internal
+ */
+function buildNotificationPayload(
+  entityName: string,
+  catalogUrl: string,
+  config: ScaffolderRelationProcessorConfig,
+  prResult?: PullRequestResult,
+): NotificationPayload {
+  const entityNameRegex = new RegExp(
+    ENTITY_DISPLAY_NAME_TEMPLATE_VAR.replace(/\$/g, '\\$'),
+    'g',
+  );
+  const prLinkRegex = new RegExp(
+    PR_LINK_TEMPLATE_VAR.replace(/\$/g, '\\$'),
+    'g',
+  );
+
+  // Check if PR creation failed - use default message with error prefix
+  if (prResult && !prResult.success) {
+    const titleReplaced = DEFAULT_NOTIFICATION_TITLE.replace(
+      entityNameRegex,
+      entityName,
+    );
+    const title =
+      titleReplaced.charAt(0).toUpperCase() + titleReplaced.slice(1);
+
+    const baseDescription = DEFAULT_NOTIFICATION_DESCRIPTION.replace(
+      entityNameRegex,
+      entityName,
+    );
+    const description = `${PR_CREATION_FAILED_PREFIX}: ${prResult.error}. ${baseDescription} For more information, see the documentation: ${TEMPLATE_UPDATE_PRS_DOCS_URL}`;
+
+    return { title, description, link: catalogUrl };
+  }
+
+  // Normal flow: use configured message
+  const messageConfig = config.notifications?.templateUpdate?.message;
+
+  const titleReplaced =
+    messageConfig?.title.replace(entityNameRegex, entityName) || '';
+  const title = titleReplaced.charAt(0).toUpperCase() + titleReplaced.slice(1);
+
+  let description =
+    messageConfig?.description.replace(entityNameRegex, entityName) || '';
+
+  // Replace PR link placeholder with PR URL if available, otherwise remove it
+  if (prResult?.success) {
+    description = description.replace(prLinkRegex, prResult.url);
+    return { title, description, link: prResult.url };
+  }
+
+  description = description.replace(prLinkRegex, '').trim();
+  return { title, description, link: catalogUrl };
+}
+
+/**
  * Sends notifications to owners for each entity that should be updated
  *
  * @param notifications - Notification service to send notifications
  * @param entities - Array of entities that need update notifications sent to their owners
  * @param config - Configuration for notification title and description
+ * @param prResults - Optional map of entity names to their PR creation results.
+ *                    If defined (PRs enabled), only entities in this map get notifications.
+ *                    If undefined (PRs disabled), all entities get notifications.
  *
  * @internal
  */
@@ -111,8 +188,17 @@ async function sendNotificationsToOwners(
   notifications: NotificationService,
   entities: Entity[],
   config: ScaffolderRelationProcessorConfig,
+  prResults?: Map<string, PullRequestResult>,
 ): Promise<void> {
   for (const entity of entities) {
+    const prResult = prResults?.get(entity.metadata.name);
+
+    // If PRs are enabled (prResults is defined) but entity is not in the map,
+    // it means there were no changes for this entity - skip notification
+    if (prResults !== undefined && prResult === undefined) {
+      continue;
+    }
+
     const ownedByRelations =
       entity.relations?.filter(rel => rel.type === 'ownedBy') || [];
 
@@ -123,51 +209,35 @@ async function sendNotificationsToOwners(
       };
 
       const catalogUrl = createEntityCatalogUrl(entity);
-
       const entityName = entity.metadata.title ?? entity.metadata.name;
-      const entityNameRegex = new RegExp(
-        ENTITY_DISPLAY_NAME_TEMPLATE_VAR.replace(/\$/g, '\\$'),
-        'g',
+
+      const payload = buildNotificationPayload(
+        entityName,
+        catalogUrl,
+        config,
+        prResult,
       );
-
-      const titleReplaced =
-        config.notifications?.templateUpdate?.message.title.replace(
-          entityNameRegex,
-          entityName,
-        ) || '';
-
-      // Capitalize the first word of the title
-      const title =
-        titleReplaced.charAt(0).toUpperCase() + titleReplaced.slice(1);
-
-      const description =
-        config.notifications?.templateUpdate?.message.description.replace(
-          entityNameRegex,
-          entityName,
-        ) || '';
-
-      const notificationPayload: NotificationPayload = {
-        title,
-        description,
-        link: catalogUrl,
-      };
 
       await notifications.send({
         recipients,
-        payload: notificationPayload,
+        payload,
       });
     }
   }
 }
 
 /**
- * Handles template update notifications by finding scaffolded entities and notifying their owners
+ * Handles template update events by optionally creating PRs and sending notifications
  *
  * @param catalogClient - Catalog client to query for entities
  * @param notifications - Notification service to send notifications
  * @param auth - Auth service to get authentication token
  * @param processorConfig - Parsed scaffolder relation processor config
  * @param payload - Template update payload containing entity ref and version info
+ * @param logger - Logger service for logging diffs
+ * @param urlReader - UrlReaderService for fetching repository files
+ * @param vcsRegistry - VCS provider registry
+ * @param config - Backstage config for SCM integrations
  *
  * @internal
  */
@@ -181,6 +251,10 @@ export async function handleTemplateUpdateNotifications(
     previousVersion: string;
     currentVersion: string;
   },
+  logger: LoggerService,
+  urlReader: UrlReaderService,
+  vcsRegistry: VcsProviderRegistry,
+  config: Config,
 ): Promise<void> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
@@ -195,17 +269,41 @@ export async function handleTemplateUpdateNotifications(
         'metadata.namespace',
         'metadata.name',
         'metadata.title',
+        'metadata.annotations',
         'relations',
+        'spec',
       ],
     },
     { token },
   );
 
-  await sendNotificationsToOwners(
-    notifications,
-    scaffoldedEntities.items,
-    processorConfig,
-  );
+  let prResults: Map<string, PullRequestResult> | undefined;
+
+  // Only create PRs if enabled
+  if (processorConfig.pullRequests?.templateUpdate?.enabled) {
+    prResults = await handleTemplateUpdatePullRequest(
+      catalogClient,
+      token,
+      payload.entityRef,
+      logger,
+      urlReader,
+      vcsRegistry,
+      config,
+      scaffoldedEntities.items,
+      payload.previousVersion,
+      payload.currentVersion,
+    );
+  }
+
+  // Only send notifications if enabled
+  if (processorConfig.notifications?.templateUpdate?.enabled) {
+    await sendNotificationsToOwners(
+      notifications,
+      scaffoldedEntities.items,
+      processorConfig,
+      prResults,
+    );
+  }
 }
 
 /**
@@ -219,6 +317,19 @@ export async function handleTemplateUpdateNotifications(
 export function readScaffolderRelationProcessorConfig(
   config: Config,
 ): ScaffolderRelationProcessorConfig {
+  const prEnabled =
+    config.getOptionalBoolean(
+      'scaffolder.pullRequests.templateUpdate.enabled',
+    ) ?? DEFAULT_PR_ENABLED;
+
+  // Use PR-specific defaults when PRs are enabled
+  const defaultTitle = prEnabled
+    ? DEFAULT_NOTIFICATION_TITLE_WITH_PR
+    : DEFAULT_NOTIFICATION_TITLE;
+  const defaultDescription = prEnabled
+    ? DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR
+    : DEFAULT_NOTIFICATION_DESCRIPTION;
+
   return {
     notifications: {
       templateUpdate: {
@@ -230,12 +341,17 @@ export function readScaffolderRelationProcessorConfig(
           title:
             config.getOptionalString(
               'scaffolder.notifications.templateUpdate.message.title',
-            ) ?? DEFAULT_NOTIFICATION_TITLE,
+            ) ?? defaultTitle,
           description:
             config.getOptionalString(
               'scaffolder.notifications.templateUpdate.message.description',
-            ) ?? DEFAULT_NOTIFICATION_DESCRIPTION,
+            ) ?? defaultDescription,
         },
+      },
+    },
+    pullRequests: {
+      templateUpdate: {
+        enabled: prEnabled,
       },
     },
   };

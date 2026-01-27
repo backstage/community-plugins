@@ -167,11 +167,12 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.until_date': 'Until';
     readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
+    readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.announcementsContent.cancelButton': 'Cancel';
-    readonly 'admin.announcementsContent.createButton': 'Create Announcement';
+    readonly 'admin.announcementsContent.createButton': 'Create announcement';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
-    readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
+    readonly 'admin.announcementsContent.deletedMessage': 'Announcement deleted.';
     readonly 'admin.categoriesContent.table.title': 'Title';
     readonly 'admin.categoriesContent.table.actions': 'Actions';
     readonly 'admin.categoriesContent.table.categoryDeleted': 'Category deleted.';
@@ -188,6 +189,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.tagsContent.table.addTooltip': 'Add';
     readonly 'admin.tagsContent.table.tagDeleted': 'Tag deleted.';
     readonly 'admin.tagsContent.table.noTagsFound': 'No tags found.';
+    readonly 'admin.tagsContent.errors.by': 'By';
+    readonly 'admin.tagsContent.errors.announcements': 'Announcements';
     readonly 'admin.tagsContent.errors.alreadyExists': 'A tag with this name already exists.';
     readonly 'admin.tagsContent.createdMessage': 'created';
     readonly 'admin.tagsContent.cancelButton': 'Cancel';
@@ -207,10 +210,21 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementForm.tagsInput.label': 'Tags';
     readonly 'announcementForm.tagsInput.create': 'Create';
-    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
+    readonly 'announcementsPage.filter.clear': 'Clear Filters';
+    readonly 'announcementsPage.filter.label': 'Filters:';
+    readonly 'announcementsPage.filter.tags': 'Tags';
+    readonly 'announcementsPage.filter.category': 'Category';
+    readonly 'announcementsPage.filter.categoryPlaceholder': 'Select a category';
+    readonly 'announcementsPage.filter.categorySearchPlaceholder': 'Search categories...';
+    readonly 'announcementsPage.filter.tagsPlaceholder': 'Select tags';
+    readonly 'announcementsPage.filter.tagsSearchPlaceholder': 'Search tags...';
+    readonly 'announcementsPage.filter.noFilteredAnnouncementsFound': 'No announcements found with the selected filters.';
     readonly 'announcementsPage.contextMenu.admin': 'Manage announcements';
+    readonly 'announcementsPage.announcements': 'Announcements';
     readonly 'announcementsPage.newAnnouncement': 'New announcement';
     readonly 'announcementsPage.genericNew': 'New';
+    readonly 'announcementsPage.errorLoadingAnnouncements': 'Error loading announcements.';
+    readonly 'announcementsPage.noAnnouncementsFound': 'No announcements found.';
     readonly 'announcementsPage.card.by': 'By';
     readonly 'announcementsPage.card.in': 'in';
     readonly 'announcementsPage.card.delete': 'Delete';
@@ -272,6 +286,12 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
     readonly 'editAnnouncementPage.updatedMessageWithNewCategory': 'with new category';
     readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
+    readonly 'viewAnnouncementPage.by': 'By';
+    readonly 'viewAnnouncementPage.announcements': 'Announcements';
+    readonly 'viewAnnouncementPage.backToAnnouncements': 'Back to announcements';
+    readonly 'viewAnnouncementPage.backToAdmin': 'Back to admin';
+    readonly 'viewAnnouncementPage.notFound': 'Announcement not found';
+    readonly 'viewAnnouncementPage.tagsAriaLabel': 'Announcement Tags';
     readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';
     readonly 'newCategoryDialog.title': 'Title';
     readonly 'newCategoryDialog.newCategory': 'New category';
@@ -321,7 +341,6 @@ export const useAnnouncementsTranslation: () => any;
 export const useCatalogEntities: (
   refs: string[] | undefined,
   searchTerm?: string,
-  limit?: number,
   kind?: string | undefined,
 ) => {
   entities: Entity[];

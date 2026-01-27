@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.23.0
+
+### Minor Changes
+
+- 5778064: Backstage version bump to v1.46.1
+
+## 1.22.2
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+
 ## 1.22.1
 
 ### Patch Changes

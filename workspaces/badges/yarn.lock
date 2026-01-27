@@ -1222,16 +1222,13 @@ __metadata:
     "@types/express": "npm:^4.17.6"
     "@types/lodash": "npm:^4.14.151"
     "@types/supertest": "npm:^6.0.0"
-    badge-maker: "npm:^3.3.0"
-    cors: "npm:^2.8.5"
+    badge-maker: "npm:^5.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     knex: "npm:^3.0.0"
     lodash: "npm:^4.17.21"
     supertest: "npm:^7.0.0"
     uuid: "npm:^13.0.0"
-    winston: "npm:^3.2.1"
-    yn: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -1248,7 +1245,6 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
-    "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -10065,15 +10061,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"badge-maker@npm:^3.3.0":
-  version: 3.3.1
-  resolution: "badge-maker@npm:3.3.1"
+"badge-maker@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "badge-maker@npm:5.0.2"
   dependencies:
     anafanafo: "npm:2.0.0"
     css-color-converter: "npm:^2.0.0"
   bin:
     badge: lib/badge-cli.js
-  checksum: 10/b159b99ead4652161b3a71196956ad455fff2db7844809fabd008ca7d791cac921beef1b52399db4ca743c4f7f4c49d323c796935ab853e869da5d1a2f3b1048
+  checksum: 10/0c50ed57638be0c46cddb2595bd95a53e911cc9dc7621536f8eabc7cfbe63050155b9414d0606b16edf66c6ef345e18ee0b5a4913935753a76c90e77c6d316fd
   languageName: node
   linkType: hard
 

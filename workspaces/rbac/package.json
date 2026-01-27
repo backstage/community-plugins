@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20 || 22"
+    "node": "20 || 22"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -51,7 +51,8 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "prettier": "3.x.x"
+    "prettier": "3.x.x",
+    "prismjs": "^1.30.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

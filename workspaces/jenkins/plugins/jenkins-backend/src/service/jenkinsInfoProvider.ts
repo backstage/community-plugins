@@ -229,16 +229,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     fullJobNames?: string[];
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo> {
-    // default limitation of projects
     const DEFAULT_LIMITATION_OF_PROJECTS = 50;
 
-    // load entity
     const credentials =
       opt.credentials ?? (await this.auth.getOwnServiceCredentials());
-    const entity = await this.catalog.getEntityByRef(
-      stringifyEntityRef(opt.entityRef),
-      { credentials },
-    );
+
+    const entity = await this.catalog.getEntityByRef(opt.entityRef, {
+      credentials,
+    });
     if (!entity) {
       throw new Error(
         `Couldn't find entity with name: ${stringifyEntityRef(opt.entityRef)}`,

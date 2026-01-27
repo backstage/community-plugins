@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import {
-  Button,
-  TablePagination,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Text,
-  Flex,
-} from '@backstage/ui';
+import { Button, Card, CardBody, CardHeader, Text, Flex } from '@backstage/ui';
 
 import { CategoriesTable } from './CategoriesTable';
 
@@ -47,15 +37,7 @@ export const CategoriesTableCard = (props: CategoriesTableCardProps) => {
   const { categories, onCreateClick, onDeleteClick, canCreate, canDelete } =
     props;
 
-  const [pageSize, setPageSize] = useState(5);
-  const [offset, setOffset] = useState(0);
   const { t } = useAnnouncementsTranslation();
-
-  const paginatedCategories = useMemo(() => {
-    const start = offset;
-    const end = offset + pageSize;
-    return categories.slice(start, end);
-  }, [categories, offset, pageSize]);
 
   const title = `${t('categoriesPage.title')} (${categories.length})`;
 
@@ -72,22 +54,10 @@ export const CategoriesTableCard = (props: CategoriesTableCardProps) => {
 
       <CardBody>
         <CategoriesTable
-          data={paginatedCategories}
+          data={categories}
           onDeleteClick={canDelete ? onDeleteClick : undefined}
         />
       </CardBody>
-
-      {categories.length > 0 && (
-        <CardFooter>
-          <TablePagination
-            offset={offset}
-            pageSize={pageSize}
-            setOffset={setOffset}
-            setPageSize={setPageSize}
-            rowCount={categories.length}
-          />
-        </CardFooter>
-      )}
     </Card>
   );
 };

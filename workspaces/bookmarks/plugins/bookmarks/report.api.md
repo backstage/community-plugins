@@ -16,9 +16,8 @@ import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
 import { TranslationMessages } from '@backstage/frontend-plugin-api';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
-import { TranslationResource as TranslationResource_2 } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const AVAILABLE_LANGUAGES: string[];
@@ -97,7 +96,7 @@ readonly "entityBookmarksContent.notFound.description": "Add bookmarks to your e
 }>;
 
 // @public
-export const bookmarksTranslations: TranslationResource_2<"bookmarks">;
+export const bookmarksTranslations: TranslationResource<"bookmarks">;
 
 // @public
 export const EntityBookmarksContent: () => JSX_3.Element;

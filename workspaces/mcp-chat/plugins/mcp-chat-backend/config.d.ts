@@ -70,7 +70,7 @@ export interface Config {
        */
       scriptPath?: string;
       /**
-       * URL endpoint for the MCP server (for streamable HTTP connections or SSE)
+       * URL endpoint for the MCP server (for streamable HTTP connections)
        * @visibility backend
        */
       url?: string;
@@ -92,9 +92,9 @@ export interface Config {
       /**
        * Type of MCP server connection
        * @visibility backend
-       * @enum { 'stdio' | 'sse' | 'streamable-http' }
+       * @enum { 'stdio' | 'streamable-http' }
        */
-      type?: 'stdio' | 'sse' | 'streamable-http'; // Note: Use MCPServerType enum in code
+      type?: 'stdio' | 'streamable-http'; // Note: Use MCPServerType enum in code
     }>;
     /**
      * Custom system prompt for the AI assistant

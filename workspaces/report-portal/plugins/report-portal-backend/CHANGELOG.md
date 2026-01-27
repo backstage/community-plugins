@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal-backend
 
+## 1.1.2
+
+### Patch Changes
+
+- 68ca4ab: Fixed branding to use 'ReportPortal' (one word) instead of 'Report Portal' (two words) to align with official product branding from reportportal.io
+
 ## 1.1.1
 
 ### Patch Changes

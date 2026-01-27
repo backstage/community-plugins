@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "tsc": "tsc",
@@ -36,9 +36,9 @@
     "directory": "workspaces/topology"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
+    "@backstage/cli": "^0.35.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.0",
+    "@backstage/repo-tools": "^0.16.1",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.56.1",
     "knip": "^5.27.4",
@@ -48,7 +48,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "prismjs": "^1.30.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
