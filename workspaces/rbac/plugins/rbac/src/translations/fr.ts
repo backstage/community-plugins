@@ -229,7 +229,6 @@ const rbacTranslationFr = createTranslationMessages({
     'common.configureAccessFor': "Configurer l'accès pour le",
     'common.defaultResourceTypeVisible':
       'Par défaut, le type de ressource sélectionné est visible par tous les utilisateurs ajoutés. Si vous souhaitez restreindre ou accorder une autorisation à des règles de plugin spécifiques, sélectionnez-les et ajoutez les paramètres.',
-    'roleForm.steps.update': 'Mise à jour',
   },
 });
 
