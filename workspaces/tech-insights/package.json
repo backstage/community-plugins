@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
     "start": "backstage-cli repo start",
+    "start:next": "yarn start app-next backend",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
@@ -51,7 +52,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "zod": "^3.24.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

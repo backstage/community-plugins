@@ -2,6 +2,20 @@ app:
   title: Tech insights Example App
   baseUrl: http://localhost:3000
 
+  extensions:
+    - entity-content:tech-insights/scorecard:
+        config:
+          variants:
+            - filter:
+                kind: group
+              checkIds:
+                - groupOwnerCheck
+            - filter:
+                kind: API
+              checkIds:
+                - groupOwnerCheck
+                - apiDefinitionCheck
+
 permission:
   enabled: true
 

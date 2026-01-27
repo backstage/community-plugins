@@ -17,10 +17,7 @@
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { techInsightsApi } from './alpha/apis';
 import { entityTechInsightsScorecardCard } from './alpha/entityCards';
-import {
-  defaultTechInsightsScorecard,
-  entityTechInsightsScorecardContent,
-} from './alpha/entityContent';
+import { entityTechInsightsScorecardContent } from './alpha/entityContent';
 import { techInsightsNavItem } from './alpha/navItems';
 import { techInsightsScorecardPage } from './alpha/pages';
 
@@ -34,10 +31,9 @@ const techInsightsPlugin = createFrontendPlugin({
   extensions: [
     techInsightsApi,
     techInsightsScorecardPage,
-    entityTechInsightsScorecardContent,
     entityTechInsightsScorecardCard,
+    entityTechInsightsScorecardContent,
     techInsightsNavItem,
-    defaultTechInsightsScorecard,
   ],
 });
 
