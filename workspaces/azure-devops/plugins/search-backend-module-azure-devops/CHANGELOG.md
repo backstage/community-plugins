@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-azure-devops
 
+## 0.2.2
+
+### Patch Changes
+
+- 568c68b: Updated dependency `axios-retry` to `^4.0.0`.
+
 ## 0.2.1
 
 ### Patch Changes
