@@ -401,7 +401,22 @@ export class BitbucketApi {
     }
 
     const data = await response.json();
-    const pullRequests = this.mapCloudPullRequests(data);
+    let pullRequests = this.mapCloudPullRequests(data);
+
+    if (role === 'AUTHOR') {
+      pullRequests = pullRequests.filter(pr => pr.author.slug === name);
+    } else if (role === 'REVIEWER') {
+      pullRequests = pullRequests.filter(pr =>
+        pr.reviewers.some(reviewer => reviewer.slug === name),
+      );
+    }
+
+    // Note: Cloud doesn't have the same build status API as Server
+    // Build status would need to be fetched from Bitbucket Pipelines API
+    if (options.includeBuildStatus) {
+      // TODO: Implement Cloud build status fetching
+      // // For now, just return without build status
+    }
     return pullRequests;
   }
 }

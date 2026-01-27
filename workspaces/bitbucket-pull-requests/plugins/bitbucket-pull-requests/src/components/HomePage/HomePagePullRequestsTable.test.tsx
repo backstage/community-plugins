@@ -375,4 +375,33 @@ describe('HomePagePullRequestsTable', () => {
       );
     });
   });
+  it('should render pull requests with Cloud data format', async () => {
+    mockBitbucketApi.fetchUserPullRequests.mockResolvedValue(
+      mockCloudPullRequests,
+    );
+    render(
+      <TestApiProvider apis={apis}>
+        {' '}
+        <HomePagePullRequestsTable userRole="AUTHOR" />{' '}
+      </TestApiProvider>,
+    );
+    await waitFor(() => {
+      expect(mockBitbucketApi.fetchUserPullRequests).toHaveBeenCalledWith(
+        'AUTHOR',
+        'OPEN',
+        25,
+        { includeBuildStatus: true },
+      );
+    });
+    expect(
+      await screen.findByText(`PR #${mockCloudPullRequests[0].id}`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(mockCloudPullRequests[0].title),
+    ).toBeInTheDocument();
+    const repoLinks = screen.getAllByRole('link', {
+      name: mockCloudPullRequests[0].fromRepo,
+    });
+    expect(repoLinks.length).toBeGreaterThan(0);
+  });
 });
