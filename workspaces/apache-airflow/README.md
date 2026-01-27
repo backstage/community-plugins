@@ -1,7 +1,10 @@
-# Apache Airflow Workspace
+# [Backstage](https://backstage.io)
 
-This workspace contains plugins for integrating Apache Airflow into Backstage.
+This is your newly scaffolded Backstage App, Good Luck!
 
-## Plugins
+To start the app, run:
 
-- [apache-airflow](./plugins/apache-airflow): Frontend plugin to view your Apache Airflow DAGs.
+```sh
+yarn install
+yarn start
+```

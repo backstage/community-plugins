@@ -1,7 +1,10 @@
-# Apollo Explorer Workspace
+# [Backstage](https://backstage.io)
 
-This workspace contains plugins for integrating Apollo Explorer into Backstage.
+This is your newly scaffolded Backstage App, Good Luck!
 
-## Plugins
+To start the app, run:
 
-- [apollo-explorer](./plugins/apollo-explorer): Frontend plugin to embed Apollo Explorer graph into Backstage.
+```sh
+yarn install
+yarn start
+```
