@@ -1,10 +1,12 @@
-# [Backstage](https://backstage.io)
+# Airbrake
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins that integrate Airbrake error monitoring with Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+[airbrake](plugins/airbrake)
+[airbrake-backend](plugins/airbrake-backend)
+
+## About this workspace
+
+Use these plugins to monitor application errors and improve reliability.
