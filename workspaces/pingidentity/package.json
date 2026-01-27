@@ -36,9 +36,9 @@
     "directory": "workspaces/pingidentity"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
+    "@backstage/cli": "^0.35.2",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.0",
+    "@backstage/repo-tools": "^0.16.2",
     "@changesets/cli": "^2.27.1",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
