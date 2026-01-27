@@ -36,7 +36,7 @@
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-search-common": "backstage:^",
     "axios": "^1.4.0",
-    "axios-retry": "^3.5.0"
+    "axios-retry": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",

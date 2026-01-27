@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 2.10.1
+
+### Patch Changes
+
+- 7fb55e3: Added internationalization support for topology control bar tooltips. The zoom in, zoom out, fit to screen, and reset view buttons now display translated tooltips in supported languages (German, Spanish, French, Italian).
+- 82886b5: Fix VM node icon styling in dark mode by using theme-aware colors
+
 ## 2.10.0
 
 ### Minor Changes

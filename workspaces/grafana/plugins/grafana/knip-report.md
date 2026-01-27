@@ -1,11 +1,9 @@
 # Knip report
 
-## Unused devDependencies (5)
+## Unused devDependencies (2)
 
-| Name                        | Location     | Severity |
-| :-------------------------- | :----------- | :------- |
-| @testing-library/user-event | package.json | error    |
-| @backstage/core-app-api     | package.json | error    |
-| @backstage/test-utils       | package.json | error    |
-| @testing-library/dom        | package.json | error    |
-| msw                         | package.json | error    |
+| Name                        | Location          | Severity |
+| :-------------------------- | :---------------- | :------- |
+| @testing-library/user-event | package.json:77:6 | error    |
+| @backstage/core-app-api     | package.json:71:6 | error    |
+
