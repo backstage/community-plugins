@@ -15,4 +15,9 @@
  */
 
 export { default } from './plugin';
+export * from './apis';
+export * from './entityCards';
+export * from './entityContent';
+export * from './navItems';
+export * from './pages';
 export * from '../components';
