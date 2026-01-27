@@ -266,6 +266,13 @@ test.describe('RBAC plugin', () => {
         })
         .getByRole('checkbox'),
     ).toBeChecked();
+    await expect(
+      page
+        .getByRole('option', {
+          name: translations.permissionPolicies.permission,
+        })
+        .getByRole('checkbox'),
+    ).toBeVisible();
     await page
       .getByRole('option', { name: translations.permissionPolicies.permission })
       .getByRole('checkbox')
