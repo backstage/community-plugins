@@ -57,6 +57,8 @@ interface ChatContainerProps {
   mcpServers: MCPServer[];
   messages: Message[];
   onMessagesChange: (messages: Message[]) => void;
+  conversationId?: string;
+  onConversationUpdated?: (conversationId: string) => void;
 }
 
 export interface ChatContainerRef {
@@ -64,7 +66,17 @@ export interface ChatContainerRef {
 }
 
 export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
-  ({ sidebarCollapsed, mcpServers, messages, onMessagesChange }, ref) => {
+  (
+    {
+      sidebarCollapsed,
+      mcpServers,
+      messages,
+      onMessagesChange,
+      conversationId,
+      onConversationUpdated,
+    },
+    ref,
+  ) => {
     const theme = useTheme();
     const mcpChatApi = useApi(mcpChatApiRef);
     const [inputValue, setInputValue] = useState('');
@@ -149,6 +161,7 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
           apiMessages,
           enabledTools,
           abortControllerRef.current.signal,
+          conversationId,
         );
 
         // Check if request was aborted
@@ -158,6 +171,11 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
 
         setIsTyping(false);
         abortControllerRef.current = null;
+
+        // Notify parent if conversation was saved
+        if (response.conversationId && onConversationUpdated) {
+          onConversationUpdated(response.conversationId);
+        }
 
         const botResponse: Message = {
           id: (Date.now() + 1).toString(),

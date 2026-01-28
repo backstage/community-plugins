@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { mcpChatPlugin, McpChatPage, MCPChatIcon } from './plugin';
-export { mcpChatApiRef } from './api';
-export type { McpChatApi } from './api/McpChatApi';
-export type {
-  ChatMessage,
-  ChatResponse,
-  ToolsResponse,
-  Tool,
-  MCPServerStatusData,
-  ProviderStatusData,
-  MCPServer,
-  MCPServerType,
-  Provider,
-  ProviderConnectionStatus,
-  ConversationRecord,
-  ConversationsResponse,
-} from './types';
+
+export { createStatusRoutes } from './statusRoutes';
+export type { StatusRoutesDeps } from './statusRoutes';
+
+export { createChatRoutes } from './chatRoutes';
+export type { ChatRoutesDeps } from './chatRoutes';
+
+export { createConversationRoutes } from './conversationRoutes';
+export type { ConversationRoutesDeps } from './conversationRoutes';

@@ -18,7 +18,11 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { MCPClientServiceImpl } from './services';
+import {
+  MCPClientServiceImpl,
+  ChatConversationStore,
+  SummarizationService,
+} from './services';
 import { validateConfig } from './utils';
 
 /**
@@ -34,17 +38,39 @@ export const mcpChatPlugin = createBackendPlugin({
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         httpRouter: coreServices.httpRouter,
+        database: coreServices.database,
+        httpAuth: coreServices.httpAuth,
       },
-      async init({ logger, httpRouter, config }) {
+      async init({ logger, httpRouter, config, database, httpAuth }) {
         validateConfig(config);
+
+        // Initialize core services
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
         });
+
+        const conversationStore = await ChatConversationStore.create({
+          database,
+          logger,
+          config,
+        });
+
+        // Initialize enhancement services
+        const summarizationService = new SummarizationService({
+          mcpClientService,
+          logger,
+          config,
+        });
+
+        // Mount router (includes conversation management routes)
         httpRouter.use(
           await createRouter({
             logger,
             mcpClientService,
+            conversationStore,
+            httpAuth,
+            summarizationService,
           }),
         );
       },

@@ -5,10 +5,48 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { GenerateContentResult } from '@google/generative-ai';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
+
+// @public
+export class ChatConversationStore {
+  static create(
+    options: ChatConversationStoreOptions,
+  ): Promise<ChatConversationStore>;
+  deleteConversation(userId: string, id: string): Promise<boolean>;
+  deleteUserConversations(userId: string): Promise<void>;
+  getConversationById(
+    userId: string,
+    id: string,
+  ): Promise<ConversationRecord | null>;
+  getConversations(
+    userId: string,
+    limit?: number,
+  ): Promise<ConversationRecord[]>;
+  saveConversation(
+    userId: string,
+    messages: ChatMessage[],
+    toolsUsed?: string[],
+    conversationId?: string,
+  ): Promise<ConversationRecord>;
+  toggleStarred(userId: string, id: string): Promise<boolean>;
+  updateTitle(userId: string, id: string, title: string): Promise<void>;
+}
+
+// @public
+export interface ChatConversationStoreOptions {
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  database: DatabaseService;
+  // (undocumented)
+  logger: LoggerService;
+}
 
 // @public
 export interface ChatMessage {
@@ -55,13 +93,19 @@ export class ClaudeProvider extends LLMProvider {
 }
 
 // @public
-export function createRouter({
-  logger,
-  mcpClientService,
-}: {
-  logger: LoggerService;
-  mcpClientService: MCPClientService;
-}): Promise<express.Router>;
+export interface ConversationRecord {
+  createdAt: Date;
+  id: string;
+  isStarred: boolean;
+  messages: ChatMessage[];
+  title?: string;
+  toolsUsed?: string[];
+  updatedAt: Date;
+  userId: string;
+}
+
+// @public
+export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 export function executeToolCall(
@@ -451,8 +495,38 @@ export interface ResponsesApiResponse {
 }
 
 // @public
+export interface RouterOptions {
+  // (undocumented)
+  conversationStore: ChatConversationStore;
+  // (undocumented)
+  httpAuth: HttpAuthService;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
+  mcpClientService: MCPClientService;
+  // (undocumented)
+  summarizationService: SummarizationService;
+}
+
+// @public
 export interface ServerTool extends Tool {
   serverId: string;
+}
+
+// @public
+export class SummarizationService {
+  constructor(options: SummarizationServiceOptions);
+  summarizeConversation(messages: ChatMessage[]): Promise<string>;
+}
+
+// @public
+export interface SummarizationServiceOptions {
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
+  mcpClientService: MCPClientService;
 }
 
 // @public

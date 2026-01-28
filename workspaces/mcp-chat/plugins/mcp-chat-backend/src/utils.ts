@@ -450,3 +450,26 @@ export const validateMessages = (
 
   return { isValid: true };
 };
+
+/**
+ * Check if a user is a guest user based on their userEntityRef.
+ * Guest users have userEntityRef like 'user:development/guest'.
+ *
+ * Guest users are excluded from conversation storage to provide
+ * a stateless, high-performance experience for demo/development.
+ *
+ * @param userEntityRef - The user's entity reference string
+ * @returns true if the user is a guest user
+ *
+ * @example
+ * ```typescript
+ * isGuestUser('user:development/guest'); // true
+ * isGuestUser('user:default/john.doe'); // false
+ * ```
+ *
+ * @public
+ */
+export function isGuestUser(userEntityRef: string): boolean {
+  const guestPattern = /^user:development\/guest$/i;
+  return guestPattern.test(userEntityRef);
+}
