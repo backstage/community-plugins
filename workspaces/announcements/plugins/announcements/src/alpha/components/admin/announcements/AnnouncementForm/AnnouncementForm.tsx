@@ -68,7 +68,11 @@ export const AnnouncementForm = ({
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
-  const { retry: refreshCategories } = useCategories();
+  const {
+    categories,
+    loading: categoriesLoading,
+    retry: refreshCategories,
+  } = useCategories();
 
   const formattedStartAt = initialData.start_at
     ? DateTime.fromISO(initialData.start_at).toISODate()
@@ -110,6 +114,16 @@ export const AnnouncementForm = ({
   };
 
   const handleCreateCategory = async (request: CreateCategoryRequest) => {
+    const slugifiedTitle = slugify(request.title.trim(), { lower: true });
+    const existingCategory = categories.find(
+      cat => cat.slug === slugifiedTitle,
+    );
+
+    if (existingCategory) {
+      setForm({ ...form, category: existingCategory });
+      return;
+    }
+
     try {
       await announcementsApi.createCategory(request);
 
@@ -242,6 +256,8 @@ export const AnnouncementForm = ({
                     <CategorySelectInput
                       key={`category-select-${categoryRefreshKey}`}
                       initialCategory={form.category ?? undefined}
+                      categories={categories}
+                      isLoading={categoriesLoading}
                       setCategory={(category: Category | null) =>
                         setForm({ ...form, category })
                       }

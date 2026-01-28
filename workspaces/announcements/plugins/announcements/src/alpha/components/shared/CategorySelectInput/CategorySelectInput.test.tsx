@@ -62,6 +62,7 @@ const renderCategorySelectInput = async (
     <TestApiProvider apis={[[announcementsApiRef, mockApi]]}>
       <CategorySelectInput
         initialCategory={initialCategory}
+        categories={categories}
         setCategory={setCategory}
         hideLabel={hideLabel}
       />
