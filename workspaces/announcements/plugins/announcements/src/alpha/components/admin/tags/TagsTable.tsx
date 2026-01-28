@@ -18,48 +18,16 @@ import { Tag } from '@backstage-community/plugin-announcements-common';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   CellText,
-  Column,
-  Row,
-  Table,
-  TableBody,
-  TableHeader,
   Cell,
   ButtonIcon,
+  Table,
+  useTable,
+  type ColumnConfig,
+  TableItem,
+  Text,
 } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
-
-const TagsTableEmptyState = () => {
-  const { t } = useAnnouncementsTranslation();
-
-  return (
-    <Row>
-      <CellText colSpan={3} title={t('admin.tagsContent.table.noTagsFound')} />
-    </Row>
-  );
-};
-
-type TagTableRowProps = {
-  tag: Tag;
-  onDeleteClick?: (tag: Tag) => void;
-};
-
-const TagTableRow = (props: TagTableRowProps) => {
-  const { tag, onDeleteClick } = props;
-
-  return (
-    <Row key={tag.slug}>
-      <CellText title={tag.title} />
-      <CellText title={tag.slug} />
-      <Cell>
-        <ButtonIcon
-          icon={<RiDeleteBinLine />}
-          variant="tertiary"
-          onClick={() => onDeleteClick!(tag)}
-        />
-      </Cell>
-    </Row>
-  );
-};
+import { useEffect } from 'react';
 
 /**
  * @internal
@@ -69,6 +37,8 @@ type TagsTableProps = {
   onDeleteClick?: (tag: Tag) => void;
 };
 
+type TagTableItem = TableItem & Tag;
+
 /**
  * @internal
  */
@@ -76,28 +46,47 @@ export const TagsTable = (props: TagsTableProps) => {
   const { data, onDeleteClick } = props;
   const { t } = useAnnouncementsTranslation();
 
+  const columns: ColumnConfig<TagTableItem>[] = [
+    {
+      id: 'title',
+      label: t('admin.tagsContent.table.title'),
+      isRowHeader: true,
+      cell: tag => <CellText title={tag.title} />,
+    },
+    {
+      id: 'slug',
+      label: t('admin.tagsContent.table.slug'),
+      cell: tag => <CellText title={tag.slug} />,
+    },
+    {
+      id: 'actions',
+      label: t('admin.tagsContent.table.actions'),
+      cell: tag => (
+        <Cell>
+          <ButtonIcon
+            icon={<RiDeleteBinLine />}
+            variant="tertiary"
+            onClick={() => onDeleteClick?.(tag)}
+          />
+        </Cell>
+      ),
+    },
+  ];
+
+  const { tableProps, reload } = useTable({
+    mode: 'complete',
+    getData: () => data.map(tag => ({ ...tag, id: tag.slug })),
+  });
+
+  useEffect(() => {
+    reload();
+  }, [data, reload]);
+
   return (
-    <Table>
-      <TableHeader>
-        <Column id="title" isRowHeader>
-          {t('admin.tagsContent.table.title')}
-        </Column>
-        <Column id="slug">{t('admin.tagsContent.table.slug')}</Column>
-        <Column id="actions">{t('admin.tagsContent.table.actions')}</Column>
-      </TableHeader>
-      <TableBody>
-        {data.length > 0 ? (
-          data.map(tag => (
-            <TagTableRow
-              key={tag.slug}
-              tag={tag}
-              onDeleteClick={onDeleteClick}
-            />
-          ))
-        ) : (
-          <TagsTableEmptyState />
-        )}
-      </TableBody>
-    </Table>
+    <Table
+      columnConfig={columns}
+      emptyState={<Text>{t('admin.tagsContent.table.noTagsFound')}</Text>}
+      {...tableProps}
+    />
   );
 };
