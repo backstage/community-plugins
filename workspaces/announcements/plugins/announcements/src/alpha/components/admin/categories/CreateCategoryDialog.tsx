@@ -23,7 +23,7 @@ import { CreateTitleDialog } from '../shared';
 /**
  * @internal
  */
-type CreateCatagoryDialogProps = {
+type CreateCategoryDialogProps = {
   open: boolean;
   onConfirm: (request: CreateCategoryRequest) => Promise<void>;
   onCancel: () => void;
@@ -33,7 +33,7 @@ type CreateCatagoryDialogProps = {
 /**
  * @internal
  */
-export const CreateCatagoryDialog = (props: CreateCatagoryDialogProps) => {
+export const CreateCategoryDialog = (props: CreateCategoryDialogProps) => {
   const { open, onConfirm, onCancel, canSubmit } = props;
 
   const { t } = useAnnouncementsTranslation();

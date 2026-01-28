@@ -46,7 +46,7 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 
 import { CategorySelectInput } from '../../../shared';
-import { CreateCatagoryDialog } from '../../categories';
+import { CreateCategoryDialog } from '../../categories';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
 
@@ -97,7 +97,6 @@ export const AnnouncementForm = ({
   );
   const [showCreateCategoryDialog, setShowCreateCategoryDialog] =
     useState(false);
-  const [categoryRefreshKey, setCategoryRefreshKey] = useState(0);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -120,33 +119,26 @@ export const AnnouncementForm = ({
     );
 
     if (existingCategory) {
-      setForm({ ...form, category: existingCategory });
-      return;
-    }
-
-    try {
-      await announcementsApi.createCategory(request);
-
-      refreshCategories();
-      setCategoryRefreshKey(prev => prev + 1);
-
-      const updatedCategories = await announcementsApi.categories();
-      const newCategory = updatedCategories.find(
-        cat => cat.title.toLowerCase() === request.title.toLowerCase(),
-      );
-
-      if (newCategory) {
-        setForm({ ...form, category: newCategory });
-      }
-
       alertApi.post({
-        message: t('newCategoryDialog.createdMessage'),
-        severity: 'success',
+        message: t('admin.categoriesContent.errors.alreadyExists'),
+        severity: 'warning',
       });
 
       setShowCreateCategoryDialog(false);
-    } catch (err) {
-      alertApi.post({ message: (err as Error).message, severity: 'error' });
+    } else {
+      try {
+        await announcementsApi.createCategory(request);
+
+        alertApi.post({
+          message: t('newCategoryDialog.createdMessage'),
+          severity: 'success',
+        });
+
+        setShowCreateCategoryDialog(false);
+        refreshCategories();
+      } catch (err) {
+        alertApi.post({ message: (err as Error).message, severity: 'error' });
+      }
     }
   };
 
@@ -254,7 +246,7 @@ export const AnnouncementForm = ({
                 <Flex gap="2" align="end">
                   <Box style={{ flex: 1 }}>
                     <CategorySelectInput
-                      key={`category-select-${categoryRefreshKey}`}
+                      // key="category-select"
                       initialCategory={form.category ?? undefined}
                       categories={categories}
                       isLoading={categoriesLoading}
@@ -367,7 +359,7 @@ export const AnnouncementForm = ({
         </Box>
       </CardBody>
 
-      <CreateCatagoryDialog
+      <CreateCategoryDialog
         open={showCreateCategoryDialog}
         onConfirm={handleCreateCategory}
         onCancel={() => setShowCreateCategoryDialog(false)}
