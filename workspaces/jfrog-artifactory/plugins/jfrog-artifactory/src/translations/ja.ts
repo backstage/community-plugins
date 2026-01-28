@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,27 @@
  */
 
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
-import { nexusRepositoryManagerTranslationRef } from './ref';
+import { jfrogArtifactoryTranslationRef } from './ref';
 
 /**
- * Japanese translation for plugin.nexus-repository-manager.
+ * Japanese translation for plugin.jfrog-artifactory.
  * @public
  */
-const nexusRepositoryManagerTranslationJa = createTranslationMessages({
-  ref: nexusRepositoryManagerTranslationRef,
+const jfrogArtifactoryTranslationJa = createTranslationMessages({
+  ref: jfrogArtifactoryTranslationRef,
   messages: {
-    'table.title': 'Nexus Repository Manager: {{title}}',
+    'page.title': 'JFrog Artifactory リポジトリー: {{image}}',
     'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
     'table.columns.version': 'バージョン',
-    'table.columns.artifact': 'アーティファクト',
-    'table.columns.repositoryType': 'リポジトリータイプ',
-    'table.columns.checksum': 'チェックサム',
+    'table.columns.repositories': 'リポジトリー',
+    'table.columns.manifest': 'マニフェスト',
     'table.columns.modified': '更新済み',
     'table.columns.size': 'サイズ',
-    'table.emptyValue': '該当なし',
     'table.emptyContent.message': 'まだデータが追加されていません。',
-    'table.emptyContent.linkText': 'データの追加方法をご覧ください',
-    'entityContent.title': 'ビルドアーティファクト',
+    'table.emptyContent.learnMore': 'データの追加方法をご覧ください。',
+    'manifest.sha256': 'sha256',
   },
 });
 
-export default nexusRepositoryManagerTranslationJa;
+export default jfrogArtifactoryTranslationJa;
