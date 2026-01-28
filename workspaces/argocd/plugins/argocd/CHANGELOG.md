@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd
 
+## 2.4.4
+
+### Patch Changes
+
+- c074f91: Added and updated fr, it and ja translation files.
+
 ## 2.4.3
 
 ### Patch Changes
