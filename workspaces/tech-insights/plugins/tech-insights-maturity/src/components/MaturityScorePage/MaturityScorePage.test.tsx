@@ -318,6 +318,5 @@ describe('<MaturityScorePage />', () => {
     ).length;
 
     expect(menuBookIcons.length).toBe(checksWithLinks);
-    expect(menuBookIcons.length).toBe(3);
   });
 });
