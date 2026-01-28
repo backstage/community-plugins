@@ -140,6 +140,30 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 );
 ```
 
+## Maturity Rank Description
+
+Additionally, you can configure the title and description for the maturity ranks. As default, these values are already set so there is no need to configure unless you want to customize it.
+
+Sample check written in app-config:
+
+```yaml title="app-config.yaml"
+techInsights:
+  maturity:
+    rank:
+      stone:
+        title: 'Unmanaged'
+        description: 'Entity does not utilize standard infrastructure or tools to ensure effective operations'
+      bronze:
+        title: 'Foundational'
+        description: 'Has full Ownership, but Maintainability, Security, and Reliability are not ensured'
+      silver:
+        title: 'Standard'
+        description: 'Ownership, Maintainability, and Security are ensured, but Reliability is not guaranteed'
+      gold:
+        title: 'Excellent'
+        description: 'Conforms with the Golden Path standards. Ownership, Maintainability, Security, and Reliability are all ensured'
+```
+
 ## Compatibility!!
 
 This module is based on the existing Tech Insights Plugin and should be compatible with any existing implementations of [tech-insights-backend](../../../tech-insights/plugins/tech-insights-backend/README.md) or [tech-insights-backend-module-jsonfc](../../../tech-insights/plugins/tech-insights-backend-module-jsonfc/README.md).
