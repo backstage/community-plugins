@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.24.1
+
+### Patch Changes
+
+- 35c20d3: Migration from createPermissionIntegrationRouter to the Permissions Registry Service
+
 ## 0.24.0
 
 ### Minor Changes
