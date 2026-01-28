@@ -2259,7 +2259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-app-react@npm:^0.1.0":
+"@backstage/plugin-app-react@backstage:^::backstage=1.47.2&npm=0.1.0, @backstage/plugin-app-react@npm:^0.1.0":
   version: 0.1.0
   resolution: "@backstage/plugin-app-react@npm:0.1.0"
   dependencies:
@@ -12130,6 +12130,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/integration-react": "backstage:^"
     "@backstage/plugin-api-docs": "backstage:^"
+    "@backstage/plugin-app-react": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-catalog-graph": "backstage:^"
