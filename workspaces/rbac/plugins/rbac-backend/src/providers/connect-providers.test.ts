@@ -40,7 +40,11 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
-import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
+import {
+  catalogMock,
+  mockAuditorService,
+  createEventMock,
+} from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLog,
@@ -359,21 +363,19 @@ describe('Connection', () => {
 
       const failingRoleToAdd = `user:default/test,role:default/`;
       const roleToAdd = [['user:default/test', 'role:default/test-provider']];
-      const roleMeta = {
-        createdAt: new Date().toUTCString(),
-        lastModified: new Date().toUTCString(),
-        modifiedBy: 'test',
-        source: 'test',
-        roleEntityRef: roleToAdd[0][1],
-      };
 
       await provider.applyRoles(roles);
       expect(mockLoggerService.warn).toHaveBeenCalledWith(
         `Failed to validate group policy ${failingRoleToAdd}. Cause: Entity reference "role:default/" was not on the form [<kind>:][<namespace>/]<name>`,
       );
+      // Verify the call was made with the correct role, but ignore timestamp fields
       expect(enfAddGroupingPolicySpy).toHaveBeenCalledWith(
         ...roleToAdd,
-        roleMeta,
+        expect.objectContaining({
+          modifiedBy: 'test',
+          source: 'test',
+          roleEntityRef: roleToAdd[0][1],
+        }),
       );
     });
   });
@@ -492,8 +494,41 @@ describe('Connection', () => {
       ]);
     });
 
-    it('should still add new permission, even if there is an invalid permission in array', () => {
-      expect('').toEqual('');
+    it('should still add new permission, even if there is an invalid permission in array', async () => {
+      enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
+
+      const policies = [
+        ...existingPolicy, // Keep existing policy to avoid removal event
+        ['role:default/provider-role', 'catalog-entity', 'read', 'temp'], // invalid
+        ['role:default/provider-role', 'catalog-entity', 'create', 'allow'], // valid
+      ];
+
+      const invalidPolicy = policies[1];
+      const validPolicyToAdd = [policies[2]];
+
+      await provider.applyPermissions(policies);
+
+      // Verify that the invalid permission triggered a fail event
+      const failedEvents = createEventMock.fail.mock.calls;
+      const invalidPolicyFailed = failedEvents.some(
+        call =>
+          call[0].error?.message ===
+            `'effect' has invalid value: 'temp'. It should be: 'allow' or 'deny'` &&
+          call[0].meta?.policies?.[0] === invalidPolicy,
+      );
+      expect(invalidPolicyFailed).toBe(true);
+
+      // Verify that the valid permission was still added despite the invalid one
+      expect(enfAddPolicySpy).toHaveBeenCalledWith(...validPolicyToAdd);
+      // Verify that only the valid policy was added (not the invalid one)
+      expect(enfAddPolicySpy).toHaveBeenCalledTimes(1);
+
+      // Verify that a success event was also logged for the valid permission
+      const succeededEvents = createEventMock.success.mock.calls;
+      const validPolicySucceeded = succeededEvents.some(
+        call => call[0].meta?.policies?.[0] === validPolicyToAdd[0],
+      );
+      expect(validPolicySucceeded).toBe(true);
     });
   });
 });
