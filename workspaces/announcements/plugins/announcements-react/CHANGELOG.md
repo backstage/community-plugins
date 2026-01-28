@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.19.0
+
+### Minor Changes
+
+- c299df2: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- 14ea727: Lowercases announcement in the "Create Announcement" button label translation. This now matches category and tag buttons.
+- Updated dependencies [c299df2]
+  - @backstage-community/plugin-announcements-common@0.16.0
+
 ## 0.18.2
 
 ### Patch Changes

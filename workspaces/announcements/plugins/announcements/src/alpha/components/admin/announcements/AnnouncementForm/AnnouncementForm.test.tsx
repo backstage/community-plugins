@@ -19,8 +19,9 @@ import { announcementsApiRef } from '@backstage-community/plugin-announcements-r
 import { alertApiRef } from '@backstage/core-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { screen } from '@testing-library/react';
-import { AnnouncementForm } from './AnnouncementForm';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+
+import { AnnouncementForm } from './AnnouncementForm';
 
 const mockAnnouncementsApi = {
   announcements: jest.fn().mockResolvedValue({

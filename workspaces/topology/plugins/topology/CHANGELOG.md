@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-topology
 
 ## 2.10.1
 

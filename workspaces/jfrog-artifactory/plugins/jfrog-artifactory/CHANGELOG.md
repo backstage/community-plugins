@@ -1,4 +1,10 @@
-### Dependencies
+# @backstage-community/plugin-jfrog-artifactory
+
+## 1.25.1
+
+### Patch Changes
+
+- 425b5ae: remove unused dependencies
 
 ## 1.25.0
 

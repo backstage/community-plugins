@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-acr
 
 ## 1.21.0
 
