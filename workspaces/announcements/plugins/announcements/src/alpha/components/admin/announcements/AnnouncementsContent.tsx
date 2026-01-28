@@ -65,7 +65,7 @@ const AnnouncementFormContent = (props: {
 
   return (
     <Box mb="2">
-      <Flex justify="end" align="center">
+      <Flex justify="end" align="center" pb="3">
         <Button variant="secondary" onClick={onCancel}>
           {t('admin.announcementsContent.cancelButton')}
         </Button>
