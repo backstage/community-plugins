@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.0.0
+
+### Major Changes
+
+- 12c1773: All existing deprecation notices have been removed from the plugin
+
+### Patch Changes
+
+- ecd421a: Added filter component to the ScorecardsPage to filter on entities with at least one failed check.
+  Also added desc/asc order based on check results in the 'Results' column. Sort by number of failed checks first, then by total checks.
+
 ## 0.8.0
 
 ### Minor Changes

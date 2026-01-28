@@ -1478,7 +1478,6 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^3.3.0"
     "@backstage/plugin-catalog-node": "npm:^1.20.1"
     "@backstage/plugin-permission-common": "npm:^0.9.3"
-    "@backstage/plugin-permission-node": "npm:^0.10.7"
     "@kubernetes/client-node": "npm:1.4.0"
     "@openapitools/openapi-generator-cli": "npm:2.27.0"
     "@types/express": "npm:4.17.25"

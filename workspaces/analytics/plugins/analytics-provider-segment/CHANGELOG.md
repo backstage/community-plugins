@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-analytics-provider-segment
 
 ## 1.23.0
 

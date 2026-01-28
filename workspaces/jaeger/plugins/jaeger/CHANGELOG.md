@@ -1,5 +1,16 @@
 # @backstage-community/plugin-jaeger
 
+## 0.13.0
+
+### Minor Changes
+
+- f459fc3: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [f459fc3]
+  - @backstage-community/plugin-jaeger-common@0.13.0
+
 ## 0.12.0
 
 ### Minor Changes

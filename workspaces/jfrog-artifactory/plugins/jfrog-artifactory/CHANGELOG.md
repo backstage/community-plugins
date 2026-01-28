@@ -1,4 +1,16 @@
-### Dependencies
+# @backstage-community/plugin-jfrog-artifactory
+
+## 1.25.2
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
+
+## 1.25.1
+
+### Patch Changes
+
+- 425b5ae: remove unused dependencies
 
 ## 1.25.0
 

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-argocd
 
+## 2.4.4
+
+### Patch Changes
+
+- c074f91: Added and updated fr, it and ja translation files.
+
+## 2.4.3
+
+### Patch Changes
+
+- ca6aa13: Fixed a bug in DeploymentLifecycle where invalid active item could be displayed when multiple applications shared the same name.
+
 ## 2.4.2
 
 ### Patch Changes

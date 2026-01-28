@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-quay
 
 ## 1.29.0
 
