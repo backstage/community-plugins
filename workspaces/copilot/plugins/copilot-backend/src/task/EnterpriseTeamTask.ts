@@ -184,11 +184,17 @@ export async function discoverEnterpriseTeamMetrics({
             `[discoverEnterpriseTeamMetrics] No new metrics found to insert for team: ${team.slug}`,
           );
         }
-      } catch (error) {
-        logger.error(
-          `[discoverEnterpriseTeamMetrics] Failed to process metrics for team ${team.slug}.`,
-          error,
-        );
+      } catch (error: any) {
+        if (error?.name === 'HttpError' && error?.status === 404) {
+          logger.info(
+            `[discoverEnterpriseTeamMetrics] Team ${team.slug} does not exist.`,
+          );
+        } else {
+          logger.error(
+            `[discoverEnterpriseTeamMetrics] Failed to process metrics for team ${team.slug}.`,
+            error,
+          );
+        }
       }
     }
   } catch (error) {
