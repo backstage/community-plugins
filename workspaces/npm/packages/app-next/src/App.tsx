@@ -20,13 +20,16 @@ import {
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { createApp } from '@backstage/frontend-defaults';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import searchPlugin from '@backstage/plugin-search/alpha';
 import signalsPlugin from '@backstage/plugin-signals/alpha';
 
-import npmPlugin from '@backstage-community/plugin-npm/alpha';
+import npmPlugin, {
+  npmTranslations,
+} from '@backstage-community/plugin-npm/alpha';
 
 import { navModule } from './modules/nav';
 
@@ -38,11 +41,20 @@ const homePageExtension = PageBlueprint.make({
   },
 });
 
+const npmTranslation = TranslationBlueprint.make({
+  name: 'npmTranslation',
+  params: {
+    resource: npmTranslations,
+  },
+});
+
+const translations = [npmTranslation];
+
 export default createApp({
   features: [
     createFrontendModule({
       pluginId: 'app',
-      extensions: [homePageExtension],
+      extensions: [homePageExtension, ...translations],
     }),
     catalogPlugin,
     catalogImportPlugin,
