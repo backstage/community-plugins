@@ -120,7 +120,7 @@ export const AnnouncementForm = ({
 
     if (existingCategory) {
       alertApi.post({
-        message: t('admin.categoriesContent.errors.alreadyExists'),
+        message: t('categoriesForm.errors.alreadyExists'),
         severity: 'warning',
       });
 
