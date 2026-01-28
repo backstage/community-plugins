@@ -22,7 +22,7 @@ import {
 } from '@backstage/core-components';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { Sidebar } from '@backstage/core-components';
-import { NavContentBlueprint } from '@backstage/frontend-plugin-api';
+import { NavContentBlueprint } from '@backstage/plugin-app-react';
 import { SidebarLogo } from './SidebarLogo';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';

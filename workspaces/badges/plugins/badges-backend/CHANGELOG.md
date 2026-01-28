@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.19.2
+
+### Patch Changes
+
+- 810d09d: Remove unused dependencies
+
 ## 0.19.1
 
 ### Patch Changes

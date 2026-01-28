@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.15.2
+
+### Patch Changes
+
+- 7a5e59d: Remove unused dependencies
+
 ## 0.15.1
 
 ### Patch Changes

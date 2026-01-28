@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.14.0
+
+### Minor Changes
+
+- c299df2: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- Updated dependencies [c299df2]
+  - @backstage-community/plugin-announcements-common@0.16.0
+
 ## 0.13.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bitbucket-pull-requests
 
+## 3.0.2
+
+### Patch Changes
+
+- c7ab4c7: Fixed an issue where the default filter displayed all pull requests but showed only open pull requests
+
 ## 3.0.1
 
 ### Patch Changes

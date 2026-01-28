@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.24.1
+
+### Patch Changes
+
+- 7c297d4: Updated dependency `azure-devops-node-api` to `^15.0.0`.
+
 ## 0.24.0
 
 ### Minor Changes
