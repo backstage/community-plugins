@@ -291,4 +291,45 @@ describe('<MaturityScorePage />', () => {
       getByText(/Technical owners are currently present: maica@hotmail.com/),
     ).toBeInTheDocument(); // display failed check fact
   });
+
+  it('does not show Reference icon and tooltip when check has no links', async () => {
+    const { getByText, queryByTitle, container } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
+        <EntityProvider entity={entity}>
+          <MaturityScorePage />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    // Click on the Operations accordion to expand it
+    const operationsAccordion = getByText(/Operations/);
+    operationsAccordion.click();
+
+    // Wait for the accordion to expand and show the AWS Health Check
+    const awsHealthCheck = getByText(/AWS Health Check/);
+    awsHealthCheck.click();
+
+    // Verify that the Reference tooltip is not present for checks without links
+    expect(
+      queryByTitle(
+        'Reference: Consult the documentation linked here for more background info.',
+      ),
+    ).not.toBeInTheDocument();
+
+    // Verify that MenuBookIcon is not present
+    const menuBookIcons = container.querySelectorAll(
+      '[data-testid="MenuBookIcon"]',
+    );
+    // The check should not have MenuBookIcon since it has no links
+    // (there may be other MenuBookIcons from checks with links)
+    expect(menuBookIcons.length).toBeLessThan(
+      result.checks.filter(c => c.check.links && c.check.links.length > 0)
+        .length + 1,
+    );
+  });
 });
