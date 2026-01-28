@@ -23,15 +23,10 @@
     "@backstage/cli": "^0.35.1",
     "@backstage/core-compat-api": "^0.5.5",
     "@backstage/core-components": "^0.18.4",
-    "@backstage/core-plugin-api": "^1.12.1",
     "@backstage/frontend-defaults": "^0.3.4",
     "@backstage/frontend-plugin-api": "^0.13.2",
-    "@backstage/integration-react": "^1.2.13",
     "@backstage/plugin-catalog": "^1.32.1",
     "@backstage/plugin-catalog-import": "^0.13.8",
-    "@backstage/plugin-notifications": "^0.5.12",
-    "@backstage/plugin-org": "^0.6.47",
-    "@backstage/plugin-scaffolder": "^1.35.0",
     "@backstage/plugin-search": "^1.5.1",
     "@backstage/plugin-signals": "^0.0.26",
     "@backstage/plugin-user-settings": "^0.8.30",
@@ -44,12 +39,8 @@
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@backstage/test-utils": "^1.7.14",
-    "@playwright/test": "^1.32.3",
-    "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.0.0",
     "@types/react-dom": "*"
   },
   "browserslist": {
