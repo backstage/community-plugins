@@ -27,6 +27,7 @@ import {
   Grid,
   Text,
 } from '@backstage/ui';
+import { RiSave2Line } from '@remixicon/react';
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
@@ -40,7 +41,6 @@ import TagsInput from './TagsInput';
 
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 
@@ -280,8 +280,9 @@ export const AnnouncementForm = ({
                   />
                   <Button
                     type="submit"
+                    size="medium"
                     isDisabled={loading || !form.body}
-                    iconStart={<SaveAltIcon />}
+                    iconStart={<RiSave2Line />}
                   >
                     {t('announcementForm.submit')}
                   </Button>
