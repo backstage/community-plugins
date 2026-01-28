@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.20.0
+
+### Minor Changes
+
+- c4c93ce: Backstage version bump to v1.47.2
+
 ## 0.19.0
 
 ### Minor Changes
