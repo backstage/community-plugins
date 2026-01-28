@@ -1,5 +1,29 @@
 # @backstage-community/plugin-announcements
 
+## 2.1.0
+
+### Minor Changes
+
+- 99b4b52: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 41f738e: Updates the announcements form to use `@backstage/ui` for the following components:
+
+  - Box
+  - Button
+  - InfoCard -> Card, CardBody, CardHeader
+  - Grid
+  - Typography -> Text
+  - Paper -> _removed_
+  - Divider -> _removed_
+
+  These are minor changes that do not affect the functionality of the announcements form.
+
+- Updated dependencies [99b4b52]
+  - @backstage-community/plugin-announcements-common@0.17.0
+  - @backstage-community/plugin-announcements-react@0.20.0
+
 ## 2.0.0
 
 ### Major Changes
