@@ -426,7 +426,7 @@ __metadata:
     "@backstage/test-utils": "npm:^1.7.14"
     "@backstage/theme": "npm:^0.7.1"
     "@backstage/ui": "npm:^0.10.0"
-    "@hey-api/openapi-ts": "npm:0.90.9"
+    "@hey-api/openapi-ts": "npm:0.90.10"
     "@material-ui/core": "npm:^4.9.13"
     "@playwright/test": "npm:^1.57.0"
     "@testing-library/jest-dom": "npm:6.9.1"
@@ -2298,9 +2298,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.90.9":
-  version: 0.90.9
-  resolution: "@hey-api/openapi-ts@npm:0.90.9"
+"@hey-api/openapi-ts@npm:0.90.10":
+  version: 0.90.10
+  resolution: "@hey-api/openapi-ts@npm:0.90.10"
   dependencies:
     "@hey-api/codegen-core": "npm:^0.5.5"
     "@hey-api/json-schema-ref-parser": "npm:1.2.2"
@@ -2314,7 +2314,7 @@ __metadata:
     typescript: ">=5.5.3"
   bin:
     openapi-ts: bin/run.js
-  checksum: 10/abe84253f74b36255a2ace85c3b9b6a2e843df2d9ee3f66a64f3bb87d26cacc164dfd29defc0799d61bfb79a7347322beeb06e1a98f9a7f6eec048755e8f006f
+  checksum: 10/e50f875b55318b6fb0211d48fc79dfaeb90c8571a865e8ce0fb919b115c61a2daeb026a4aad7087ad4d5f12bc9de4b570e66dcb26a6fc6d79678f4aa608479de
   languageName: node
   linkType: hard
 
