@@ -22,7 +22,7 @@ import {
   Team,
   User,
 } from '../components/types';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi } from '@backstage/frontend-plugin-api';
 
 /** @public */
 export type MessageType =

@@ -34,10 +34,10 @@ import {
   ListRoutingKeyResponse,
 } from './types';
 import {
-  createApiRef,
-  DiscoveryApi,
   ConfigApi,
-} from '@backstage/core-plugin-api';
+  DiscoveryApi,
+  createApiRef,
+} from '@backstage/frontend-plugin-api';
 
 /** @public */
 export class UnauthorizedError extends Error {}
