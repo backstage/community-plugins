@@ -17,6 +17,7 @@
 import {
   Instance,
   Application,
+  ApplicationPayload,
   RevisionInfo,
   InstanceApplications,
 } from '@backstage-community/plugin-argocd-common';
@@ -37,12 +38,20 @@ import {
   makeArgoRequest,
 } from './serviceUtils';
 import { Agent, setGlobalDispatcher } from 'undici';
+import {
+  CreateResourcesOpts,
+  CreateProjectOpts,
+  CreateApplicationProps,
+  CreateAppPayloadOpts,
+} from './types';
 
 const CONFIG = {
   APP_LOCATOR: 'argocd.appLocatorMethods',
   TYPE: 'config',
   INSTANCES: 'instances',
 };
+const DEFAULT_DESTINATION_SERVER = 'https://kubernetes.default.svc';
+
 export class ArgoCDService {
   private readonly config: Config;
   private readonly logger: LoggerService;
@@ -392,6 +401,237 @@ export class ArgoCDService {
     }
 
     return Object.values(instanceMap);
+  }
+
+  private buildProjectPayload({
+    name,
+    namespace,
+    destinationServer,
+    resourceVersion,
+    sourceRepository,
+  }: {
+    name: string;
+    namespace: string;
+    destinationServer?: string;
+    resourceVersion?: string;
+    sourceRepository: string | string[];
+  }) {
+    const sourceRepos = Array.isArray(sourceRepository)
+      ? sourceRepository
+      : [sourceRepository];
+    const project = {
+      project: {
+        metadata: {
+          name,
+          resourceVersion,
+          finalizers: ['resources-finalizer.argocd.argoproj.io'],
+        },
+        spec: {
+          destinations: [
+            {
+              namespace,
+              server: destinationServer ?? DEFAULT_DESTINATION_SERVER,
+            },
+          ],
+          sourceRepos,
+        },
+      },
+    };
+
+    return project;
+  }
+
+  private async createProject(opts: CreateProjectOpts) {
+    const {
+      instanceUrl,
+      token,
+      projectName,
+      namespace,
+      sourceRepository,
+      destinationServer,
+    } = opts;
+    try {
+      const payload = this.buildProjectPayload({
+        name: projectName,
+        namespace,
+        sourceRepository,
+        destinationServer,
+      });
+
+      const url = buildArgoUrl(instanceUrl, 'projects');
+      const response = await makeArgoRequest(url, token, 'POST', payload);
+      return response;
+    } catch (error) {
+      const baseMessage = formatOperationMessage(
+        'Failed to create an ArgoCD Project',
+        instanceUrl,
+        {
+          projectName,
+          namespace,
+          sourceRepository,
+          destinationServer: destinationServer ?? DEFAULT_DESTINATION_SERVER,
+        },
+      );
+      return this.handleError(baseMessage, error);
+    }
+  }
+
+  private buildApplicationPayload(
+    opts: CreateAppPayloadOpts,
+  ): ApplicationPayload {
+    const {
+      appName,
+      projectName,
+      namespace,
+      sourceRepository,
+      sourcePath,
+      label,
+      resourceVersion,
+      destinationServer,
+    } = opts;
+    return {
+      metadata: {
+        name: appName,
+        labels: { backstage: label },
+        // Default finalizer, foreground cascading deletion
+        // Docs: https://argo-cd.readthedocs.io/en/latest/user-guide/app_deletion/#about-the-deletion-finalizer
+        finalizers: ['resources-finalizers.argocd.argoproj.io'],
+        resourceVersion,
+      },
+      spec: {
+        destination: {
+          namespace,
+          server: destinationServer ?? DEFAULT_DESTINATION_SERVER,
+        },
+        project: projectName,
+        revisionHistoryLimit: 10,
+        source: {
+          path: sourcePath,
+          repoURL: sourceRepository,
+        },
+        syncPolicy: {
+          automated: {
+            enabled: true,
+            // Enabling all these by default.
+            prune: true,
+            selfHeal: true,
+            allowEmpty: true,
+          },
+          retry: {
+            backoff: {
+              duration: '5s',
+              factor: 2,
+              maxDuration: '5m',
+            },
+            limit: 10,
+          },
+          syncOptions: ['CreateNamespace=false', 'FailOnSharedResource=true'],
+        },
+      },
+    };
+  }
+
+  private async createApplication(opts: CreateApplicationProps) {
+    const {
+      instanceUrl,
+      token,
+      appName,
+      projectName,
+      namespace,
+      sourceRepository,
+      sourcePath,
+      label,
+      destinationServer,
+    } = opts;
+
+    try {
+      const payload = this.buildApplicationPayload({
+        appName,
+        projectName,
+        namespace,
+        sourceRepository,
+        sourcePath,
+        label,
+        destinationServer,
+      });
+
+      const url = buildArgoUrl(instanceUrl, `applications`);
+      const response = await makeArgoRequest(url, token, 'POST', payload);
+      return response;
+    } catch (error) {
+      const baseMessage = formatOperationMessage(
+        'Failed to create an ArgoCD Application',
+        instanceUrl,
+        {
+          appName,
+          projectName,
+          namespace,
+          sourceRepository,
+          sourcePath,
+          label,
+          destinationServer: destinationServer ?? DEFAULT_DESTINATION_SERVER,
+        },
+      );
+      return this.handleError(baseMessage, error);
+    }
+  }
+
+  public async createArgoResources(
+    opts: CreateResourcesOpts,
+  ): Promise<{ applicationUrl: string }> {
+    const {
+      appName,
+      instanceName,
+      namespace,
+      repoUrl,
+      path,
+      label,
+      projectName,
+    } = opts;
+
+    try {
+      const matchedInstance = this.validateInstance(instanceName);
+      const token =
+        matchedInstance.token ?? (await this.getToken(matchedInstance));
+
+      // Create Project first
+      await this.createProject({
+        instanceUrl: matchedInstance.url,
+        token,
+        projectName: projectName ? projectName : appName,
+        namespace,
+        sourceRepository: repoUrl,
+      });
+
+      // Create Application
+      await this.createApplication({
+        instanceUrl: matchedInstance.url,
+        token,
+        appName,
+        projectName: projectName ? projectName : appName,
+        namespace,
+        sourceRepository: repoUrl,
+        sourcePath: path,
+        label: label ?? appName,
+      });
+
+      const applicationUrl = `${matchedInstance.url}/applications/argocd/${appName}?view=tree&resource=`;
+      return { applicationUrl };
+    } catch (error) {
+      const baseMessage = formatOperationMessage(
+        'Failed to create ArgoCD Resource',
+        instanceName,
+        {
+          appName,
+          namespace,
+          repoUrl,
+          path,
+          label,
+          projectName,
+        },
+      );
+      return this.handleError(baseMessage, error);
+    }
   }
 
   /**

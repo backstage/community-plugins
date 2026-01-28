@@ -18,9 +18,9 @@ import request from 'supertest';
 import { createRouter } from './router';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockApplications, mockConfig } from './__data__/mockdata';
-import { ArgoCDService } from './services/ArgoCDService';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
-jest.mock('./services/ArgoCDService');
+jest.mock('@backstage-community/plugin-argocd-node');
 
 describe('router', () => {
   let app: express.Express;
