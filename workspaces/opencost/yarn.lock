@@ -367,7 +367,7 @@ __metadata:
     "@material-ui/styles": "npm:^4.11.5"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^15.0.0"
+    "@testing-library/react": "npm:^16.0.0"
     "@types/lodash": "npm:^4.14.151"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     date-fns: "npm:^3.0.0"
@@ -6508,20 +6508,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^15.0.0":
-  version: 15.0.2
-  resolution: "@testing-library/react@npm:15.0.2"
-  dependencies:
-    "@babel/runtime": "npm:^7.12.5"
-    "@testing-library/dom": "npm:^10.0.0"
-    "@types/react-dom": "npm:^18.0.0"
-  peerDependencies:
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  checksum: 10/6327e465733cec9455792acee7781d1437f7494ddbb976ca72e07446daaf8e7fe5dadd27d05690f09e8d4adce651984ed9aeca4ede9b87bf69b172f450085ede
-  languageName: node
-  linkType: hard
-
 "@testing-library/react@npm:^16.0.0":
   version: 16.1.0
   resolution: "@testing-library/react@npm:16.1.0"
@@ -7021,15 +7007,6 @@ __metadata:
   version: 1.2.3
   resolution: "@types/range-parser@npm:1.2.3"
   checksum: 10/f1cef586e01e511c47870e9773f12f2192bde33dad276031026d633dbace976fe150a245077dd54710d2867fbb83ba95fe2d94ef9739f2705690e2c5fe878634
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18":
-  version: 18.2.19
-  resolution: "@types/react-dom@npm:18.2.19"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/98eb760ce78f1016d97c70f605f0b1a53873a548d3c2192b40c897f694fd9c8bb12baeada16581a9c7b26f5022c1d2613547be98284d8f1b82d1611b1e3e7df0
   languageName: node
   linkType: hard
 
