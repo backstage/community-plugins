@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphql-voyager
 
+## 0.15.1
+
+### Patch Changes
+
+- c74b798: remove unused dependencies
+
 ## 0.15.0
 
 ### Minor Changes
