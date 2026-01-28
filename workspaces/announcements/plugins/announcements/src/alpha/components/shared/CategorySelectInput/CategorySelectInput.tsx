@@ -15,26 +15,25 @@
  */
 import { Key, useMemo } from 'react';
 import { Select } from '@backstage/ui';
-import {
-  useAnnouncementsTranslation,
-  useCategories,
-} from '@backstage-community/plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import { Category } from '@backstage-community/plugin-announcements-common';
 
 type CategorySelectInputProps = {
   initialCategory?: Category;
   setCategory: (category: Category | null) => void;
+  categories: Category[];
+  isLoading?: boolean;
   hideLabel?: boolean;
 };
 
 export const CategorySelectInput = ({
   setCategory,
   initialCategory,
+  categories,
+  isLoading = false,
   hideLabel = false,
 }: CategorySelectInputProps) => {
   const { t } = useAnnouncementsTranslation();
-
-  const { categories, loading: categoriesLoading } = useCategories();
 
   const selectOptions = useMemo(() => {
     if (!categories) return [];
@@ -94,7 +93,7 @@ export const CategorySelectInput = ({
       value={selectedCategory?.slug ?? null}
       onChange={handleChange}
       options={selectOptions}
-      isDisabled={categoriesLoading || selectOptions.length === 0}
+      isDisabled={isLoading || selectOptions.length === 0}
     />
   );
 };
