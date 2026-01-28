@@ -91,6 +91,70 @@ you must install also the backend plugin and [configure it](./registries.md).
 
 ### Frontend plugin
 
+### Load plugin via the new frontend system (alpha)
+
+For early adaopters of the new frontend system.
+
+Your Backstage frontend app must use that new frontend system which isn't the default at the moment.
+
+1. Install the frontend dependency:
+
+   ```sh
+   yarn workspace app-next add @backstage-community/plugin-npm
+   ```
+
+2. Add the package to your `packages/app-next/src/App.tsx`.
+
+   ```tsx
+   import npmPlugin from '@backstage-community/plugin-npm/alpha';
+   ```
+
+   And extend your createApp:
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       // ...other plugins
+       npmPlugin,
+     ],
+   });
+   ```
+
+3. Optional enable translation via the `TranslationBlueprint` extension:
+
+   ```tsx
+   import { TranslationBlueprint } from '@backstage/plugin-app-react';
+
+   import npmPlugin, {
+     npmTranslations,
+   } from '@backstage-community/plugin-npm/alpha';
+   ```
+
+   ```tsx
+   const npmTranslation = TranslationBlueprint.make({
+     name: 'npmTranslation',
+     params: {
+       resource: npmTranslations,
+     },
+   });
+
+   export default createApp({
+     features: [
+       createFrontendModule({
+         pluginId: 'app',
+         extensions: [
+           // ...other extensions
+           npmTranslation,
+         ],
+       }),
+       // ...other plugins
+       npmPlugin,
+     ],
+   });
+   ```
+
+### Manual wiring the frontend plugin ("Old Frontend System")
+
 1. Install the frontend dependency:
 
    ```sh
@@ -138,38 +202,6 @@ you must install also the backend plugin and [configure it](./registries.md).
    >
      <EntityNpmReleaseTableCard />
    </EntityLayout.Route>
-   ```
-
-### Alternative: Use the new frontend system (alpha)
-
-For early adaopters of the new frontend system.
-
-Your Backstage frontend app must use that new frontend system which isn't the default at the moment.
-
-1. Install the frontend dependency:
-
-   ```sh
-   yarn workspace app-next add @backstage-community/plugin-npm
-   ```
-
-2. Add the package to your `packages/app[-next]/src/App.tsx`.
-
-   ```tsx
-   import npmPlugin from '@backstage-community/plugin-npm/alpha';
-   ```
-
-   And extend your createApp:
-
-   ```tsx
-   export const app = createApp({
-     features: [
-       catalogPlugin,
-       catalogImportPlugin,
-       userSettingsPlugin,
-       npmPlugin,
-       // ...
-     ],
-   });
    ```
 
 ### Optional: Backend plugin (req. for private packages or alternative registries)
