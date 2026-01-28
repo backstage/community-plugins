@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.10.2
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
+
 ## 2.10.1
 
 ### Patch Changes
