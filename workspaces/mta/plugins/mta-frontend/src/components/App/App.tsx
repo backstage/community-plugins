@@ -26,7 +26,8 @@ export const App = () => (
       <Content>
         <ContentHeader title="MTA Quick Overview">
           <SupportButton>
-            A comprehensive view of the MTA workflow integrated within RHDH.
+            A comprehensive view of the MTA workflow integrated within
+            Backstage.
           </SupportButton>
         </ContentHeader>
         <Divider style={{ margin: '20px 0' }} />

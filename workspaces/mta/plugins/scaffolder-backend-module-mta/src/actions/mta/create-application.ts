@@ -3,10 +3,13 @@ import { Issuer } from 'openid-client';
 
 /**
  * Creates an action that creates an application in MTA.
+ *
+ * Uses service account authentication (client_credentials grant) to access MTA Hub.
+ * Requires mta.providerAuth.clientID and mta.providerAuth.secret to be configured.
  */
 
 /** @public */
-export function createMTAApplicationAction(opts: any) {
+export function createMTAApplicationAction(opts: { config: any; logger: any }) {
   const { config, logger } = opts;
 
   return createTemplateAction({
@@ -23,12 +26,14 @@ export function createMTAApplicationAction(opts: any) {
 
       const baseUrl = config.getString('mta.url');
       const baseURLHub = `${baseUrl}/hub`;
-      const realm = config.getString('mta.providerAuth.realm');
+      const realm = config.getOptionalString('mta.providerAuth.realm') ?? 'mta';
       const clientID = config.getString('mta.providerAuth.clientID');
       const secret = config.getString('mta.providerAuth.secret');
       const baseURLAuth = `${baseUrl}/auth/realms/${realm}`;
 
       try {
+        // Authenticate using service account (client_credentials grant)
+        logger.info('Authenticating with MTA using service account');
         const mtaAuthIssuer = await Issuer.discover(baseURLAuth);
         const authClient = new mtaAuthIssuer.Client({
           client_id: clientID,
@@ -43,7 +48,7 @@ export function createMTAApplicationAction(opts: any) {
         if (!tokenSet.access_token) {
           logger.error('Failed to obtain access token from auth server.');
           throw new Error(
-            'Unable to access hub due to authentication failure.',
+            'Unable to access MTA Hub due to authentication failure.',
           );
         }
 
@@ -54,6 +59,8 @@ export function createMTAApplicationAction(opts: any) {
           path: String(rootPath).trim(),
         };
         const body = JSON.stringify({ name, repository });
+
+        logger.info(`Creating MTA application: ${name}`);
 
         const response = await fetch(`${baseURLHub}/applications`, {
           method: 'POST',

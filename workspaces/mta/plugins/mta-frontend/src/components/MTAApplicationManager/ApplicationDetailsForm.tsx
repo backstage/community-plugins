@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   Grid,
@@ -11,6 +11,9 @@ import {
   Select,
   MenuItem,
   CircularProgress,
+  Paper,
+  Snackbar,
+  SnackbarContent,
 } from '@material-ui/core';
 import { Application, Identity, Ref } from '../../api/api';
 import { LinkButton } from '@backstage/core-components';
@@ -35,6 +38,8 @@ export const ApplicationDetailsForm = ({
   isWaiting,
 }: ApplicationDetailsFormProps) => {
   const { entity } = useEntity();
+  const [authError, setAuthError] = useState(false);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
 
   const catalogApi = useApi(catalogApiRef);
 
@@ -112,11 +117,22 @@ export const ApplicationDetailsForm = ({
           });
         }, 10000);
       })
-      .catch(() => {
+      .catch((error: any) => {
+        // Handle authentication errors
+        if (error?.response?.status === 401) {
+          setAuthError(true);
+          setShowErrorSnackbar(true);
+        }
         setIsWaiting(false);
       });
   };
+
   const { mutate: updateApplication } = useUpdateApplication(onSuccessCallback);
+
+  // Close error snackbar
+  const handleCloseSnackbar = () => {
+    setShowErrorSnackbar(false);
+  };
 
   const onSubmit = (formData: any, event: any) => {
     // preventDefault();V
@@ -155,6 +171,37 @@ export const ApplicationDetailsForm = ({
   const isProcessing = isSubmitting || isWaiting;
   const isFormValid = sourceCredentials && mavenCredentials && repositoryUrl;
   const canUpdate = isDirty && isFormValid && !Object.keys(errors).length;
+
+  // Show authentication error message if there's an auth error
+  if (authError) {
+    return (
+      <Paper style={{ padding: '16px', backgroundColor: '#fff3f3' }}>
+        <Typography variant="h6" color="error">
+          Authentication Error (401 Unauthorized)
+        </Typography>
+        <Typography variant="body1">
+          Unable to update application details. This is likely because your
+          Backstage client in Keycloak is missing the required scopes.
+        </Typography>
+        <Typography variant="body2" style={{ marginTop: '8px' }}>
+          Please ensure a Backstage client is added to your Keycloak realm with
+          the necessary scopes (applications:get, applications:put,
+          identities:get, etc.) to make requests against MTAt pu.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: '16px' }}
+          onClick={() => {
+            setAuthError(false);
+            window.location.reload();
+          }}
+        >
+          Retry
+        </Button>
+      </Paper>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -274,6 +321,29 @@ export const ApplicationDetailsForm = ({
           </Grid>
         )}
       </Grid>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={showErrorSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <SnackbarContent
+          style={{ backgroundColor: '#f44336' }}
+          message={
+            <span>
+              Authentication error (401). Your Backstage client in Keycloak may
+              be missing the required scopes (applications:get,
+              applications:put, identities:get, etc.).
+            </span>
+          }
+          action={
+            <Button color="inherit" size="small" onClick={handleCloseSnackbar}>
+              Close
+            </Button>
+          }
+        />
+      </Snackbar>
     </form>
   );
 };

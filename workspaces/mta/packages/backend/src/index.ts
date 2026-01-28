@@ -19,6 +19,10 @@ backend.add(import('@backstage/plugin-techdocs-backend'));
 backend.add(import('@backstage/plugin-auth-backend'));
 // See https://backstage.io/docs/backend-system/building-backends/migrating#the-auth-plugin
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+// Custom OIDC sign-in resolver for MTA Keycloak (allows sign-in without email)
+import { authModuleOidcSignIn } from './authModuleOidcSignIn';
+
+backend.add(authModuleOidcSignIn);
 // See https://backstage.io/docs/auth/guest/provider
 
 // catalog plugin
@@ -38,8 +42,8 @@ backend.add(import('@backstage/plugin-search-backend'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
-// new plugin
-
+// MTA plugins
+// Entity provider syncs MTA applications to Backstage catalog (uses service account)
 backend.add(
   import(
     '@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider'

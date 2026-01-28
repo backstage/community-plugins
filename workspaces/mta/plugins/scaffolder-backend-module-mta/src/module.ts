@@ -4,8 +4,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
 import { createMTAApplicationAction } from './actions/mta/create-application';
-/*
+
+/**
  * A backend module that integrates with the scaffolder to provide MTA application creation.
+ * Requires mta.providerAuth.clientID and mta.providerAuth.secret to be configured.
  */
 /** @public */
 export const mtaScaffolderModule = createBackendModule({
@@ -17,13 +19,11 @@ export const mtaScaffolderModule = createBackendModule({
         scaffolder: scaffolderActionsExtensionPoint,
         config: coreServices.rootConfig,
         logger: coreServices.logger,
-        discovery: coreServices.discovery,
       },
-      async init({ scaffolder, config, logger, discovery }) {
+      async init({ scaffolder, config, logger }) {
         const createAction = createMTAApplicationAction({
-          config: config,
-          logger: logger,
-          discovery,
+          config,
+          logger,
         });
         scaffolder.addActions(createAction);
       },

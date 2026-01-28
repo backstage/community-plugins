@@ -21,7 +21,8 @@ export const useUpdateApplication = (onSuccess?: () => void) => {
   const mutation = useMutation<any, Error, any>({
     mutationFn: updateApplication,
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      // Only invalidate specific queries that need refreshing after app update
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       if (onSuccess) {
         onSuccess();
       }
@@ -39,6 +40,7 @@ export const useFetchTargets = () => {
   const { isLoading, error, data, isError } = useQuery<Target[]>({
     queryKey: ['targets'],
     queryFn: () => api.getTargets(),
+    staleTime: 5 * 60 * 1000, // 5 minutes - targets don't change often
   });
 
   return {
@@ -79,7 +81,8 @@ export const useAnalyzeApplication = (
     onSuccess: () => {
       if (options?.onSuccess) {
         options.onSuccess();
-        queryClient.invalidateQueries();
+        // Only invalidate tasks since a new analysis may create new tasks
+        queryClient.invalidateQueries({ queryKey: ['tasks'] });
       }
     },
   });
@@ -91,11 +94,20 @@ export const useFetchIdentities = () => {
   const { isLoading, error, data, isError, refetch } = useQuery<Identity[]>({
     queryKey: ['credentials'],
     queryFn: () => api.getIdentities(),
-    select: identityData => [
-      { id: 999999, name: 'None', kind: 'source' },
-      { id: 9999999, name: 'None', kind: 'maven' },
-      ...identityData,
-    ],
+    staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
+    select: identityData => {
+      if (!identityData || !Array.isArray(identityData)) {
+        return [
+          { id: 999999, name: 'None', kind: 'source' as const },
+          { id: 9999999, name: 'None', kind: 'maven' as const },
+        ];
+      }
+      return [
+        { id: 999999, name: 'None', kind: 'source' as const },
+        { id: 9999999, name: 'None', kind: 'maven' as const },
+        ...identityData,
+      ];
+    },
   });
 
   return {
@@ -109,8 +121,10 @@ export const useFetchIdentities = () => {
 
 export const useFetchAppTasks = (id: number) => {
   const api = useApi(mtaApiRef);
-  const { error, data, isError, isFetching } = useQuery<TaskDashboard[]>({
-    queryKey: ['tasks'],
+  const { error, data, isError, isFetching, refetch } = useQuery<
+    TaskDashboard[]
+  >({
+    queryKey: ['tasks', id],
     queryFn: () => api.getTasks(),
     select: tasks =>
       tasks
@@ -118,12 +132,14 @@ export const useFetchAppTasks = (id: number) => {
           return task.application.id === id && task.kind === 'analyzer';
         })
         .reverse(),
-    refetchInterval: 10000,
+    staleTime: 10 * 1000, // 10 seconds
+    refetchInterval: 30 * 1000, // 30 seconds instead of 10
   });
   return {
     tasks: data || [],
-    isFetching: isFetching,
+    isFetching,
     fetchError: error,
-    isError: isError,
+    isError,
+    refetch,
   };
 };

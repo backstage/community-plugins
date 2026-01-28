@@ -37,10 +37,11 @@ backend:
 
 mta:
   url: <MTA_URL>
+  # providerAuth is configured in app-config.local.yaml for local dev
+  # For production, configure realm, clientID, and optionally secret
   providerAuth:
     realm: mta
-    secret: backstage-provider-secret
-    clientID: backstage-provider
+    clientID: mta-ui
 
 techdocs:
   builder: 'local' # Alternatives - 'external'

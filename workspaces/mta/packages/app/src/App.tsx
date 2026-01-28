@@ -37,6 +37,7 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { EntityMTAContent } from '@backstage-community/backstage-plugin-mta-frontend';
+import { oidcAuthApiRef } from './apis';
 
 const app = createApp({
   apis,
@@ -58,7 +59,20 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+    SignInPage: props => (
+      <SignInPage
+        {...props}
+        providers={[
+          {
+            id: 'oidc',
+            title: 'MTA Keycloak (OIDC)',
+            message: 'Sign in with MTA Keycloak',
+            apiRef: oidcAuthApiRef,
+          },
+          'guest',
+        ]}
+      />
+    ),
   },
 });
 
