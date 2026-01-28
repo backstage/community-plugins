@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.16.1
+
+### Patch Changes
+
+- fc2a6fc: Updated dependency `@types/lodash` to `4.17.23`.
+
 ## 3.16.0
 
 ### Minor Changes
