@@ -25,6 +25,7 @@ body:
         - analytics
         - announcements
         - apache-airflow
+        - apiiro
         - apollo-explorer
         - argocd
         - azure-devops
