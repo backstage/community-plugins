@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-jfrog-artifactory
 
 ## 1.25.0
 

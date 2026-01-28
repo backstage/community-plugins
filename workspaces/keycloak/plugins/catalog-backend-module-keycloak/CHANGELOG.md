@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-catalog-backend-module-keycloak
 
 ## 3.16.0
 

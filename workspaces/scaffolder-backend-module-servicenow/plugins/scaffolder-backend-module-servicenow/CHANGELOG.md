@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-servicenow
 
 ## 2.12.0
 

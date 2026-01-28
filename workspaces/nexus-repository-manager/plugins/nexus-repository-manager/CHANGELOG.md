@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-nexus-repository-manager
 
 ## 1.20.0
 

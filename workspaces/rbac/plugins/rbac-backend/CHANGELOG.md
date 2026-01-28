@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-rbac-backend
 
 ## 7.6.1
 

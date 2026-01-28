@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-analytics-module-matomo
 
 ## 1.23.0
 

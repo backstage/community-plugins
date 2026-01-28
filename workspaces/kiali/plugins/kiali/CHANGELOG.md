@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-kiali
 
 ## 1.49.0
 
