@@ -1787,7 +1787,7 @@ __metadata:
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:^6.0.0"
     react-use: "npm:^17.4.0"
-    start-server-and-test: "npm:2.1.2"
+    start-server-and-test: "npm:2.1.3"
     yup: "npm:^1.3.2"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -15107,14 +15107,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.0.0, axios@npm:^1.12.1, axios@npm:^1.12.2, axios@npm:^1.7.4":
-  version: 1.13.2
-  resolution: "axios@npm:1.13.2"
+"axios@npm:^1.0.0, axios@npm:^1.12.2, axios@npm:^1.13.2, axios@npm:^1.7.4":
+  version: 1.13.4
+  resolution: "axios@npm:1.13.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/ae4e06dcd18289f2fd18179256d550d27f9a53ecb2f9c59f2ccc4efd1d7151839ba8c3e0fb533dac793e4a59a576ca8689a19244dce5c396680837674a47a867
+  checksum: 10/54b7ef71c64837f9d52475832337f520cf6fa85c94612e03a3a2aad7082804a2544741267122696662147e90e6d2746601346984cf531ae715ecdb56d586a04c
   languageName: node
   linkType: hard
 
@@ -30996,9 +30996,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"start-server-and-test@npm:2.1.2":
-  version: 2.1.2
-  resolution: "start-server-and-test@npm:2.1.2"
+"start-server-and-test@npm:2.1.3":
+  version: 2.1.3
+  resolution: "start-server-and-test@npm:2.1.3"
   dependencies:
     arg: "npm:^5.0.2"
     bluebird: "npm:3.7.2"
@@ -31007,12 +31007,12 @@ __metadata:
     execa: "npm:5.1.1"
     lazy-ass: "npm:1.6.0"
     ps-tree: "npm:1.2.0"
-    wait-on: "npm:8.0.5"
+    wait-on: "npm:9.0.3"
   bin:
     server-test: src/bin/start.js
     start-server-and-test: src/bin/start.js
     start-test: src/bin/start.js
-  checksum: 10/bf4010fed2f1bc9db99ff3939a6327cce9af89782e44d0ce71a4a68a65babdc3b620dc8fc157c2e442b6970def4a57cd8d25ca3e13d8a75e91976ad248e99268
+  checksum: 10/3d957cac081e828dfeba3e1dccda4a694a61bb61012007e34480e2480f009056508072e2175697ab8e6a18513866b1064fe0bab2738717592053747a6fd1e61f
   languageName: node
   linkType: hard
 
@@ -33444,18 +33444,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:8.0.5":
-  version: 8.0.5
-  resolution: "wait-on@npm:8.0.5"
+"wait-on@npm:9.0.3":
+  version: 9.0.3
+  resolution: "wait-on@npm:9.0.3"
   dependencies:
-    axios: "npm:^1.12.1"
+    axios: "npm:^1.13.2"
     joi: "npm:^18.0.1"
     lodash: "npm:^4.17.21"
     minimist: "npm:^1.2.8"
     rxjs: "npm:^7.8.2"
   bin:
     wait-on: bin/wait-on
-  checksum: 10/edfee086741a8630d583cb7799c7ef701d27c162cf3fea5aa7670f53a05cac572951a7070b624cff7d123f15c975e0ceceee37fc230fa68fb0b9e7a0b71ae467
+  checksum: 10/f5d9e708f9398fed22d3ef312799c33c3064a4c40ee4c03ea6e40a221f9cbcca11509c8db5923c332cee841903b1fc115eb72235cfa12f33bd8898d8d15c39a7
   languageName: node
   linkType: hard
 
