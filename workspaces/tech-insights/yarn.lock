@@ -1431,9 +1431,11 @@ __metadata:
     "@backstage-community/plugin-tech-insights-node": "workspace:^"
     "@backstage/backend-plugin-api": "npm:^1.6.0"
     "@backstage/backend-test-utils": "npm:^1.10.2"
+    "@backstage/catalog-model": "npm:^1.7.4"
     "@backstage/cli": "npm:^0.35.1"
     "@backstage/config": "npm:^1.3.6"
     "@backstage/errors": "npm:^1.2.7"
+    "@backstage/plugin-catalog-node": "npm:^1.20.1"
     "@backstage/types": "npm:^1.2.2"
     "@types/lodash": "npm:^4.14.151"
     ajv: "npm:^8.10.0"
@@ -1844,7 +1846,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-model@npm:^1.7.6":
+"@backstage/catalog-model@npm:^1.7.4, @backstage/catalog-model@npm:^1.7.6":
   version: 1.7.6
   resolution: "@backstage/catalog-model@npm:1.7.6"
   dependencies:
@@ -13813,6 +13815,7 @@ __metadata:
     "@backstage/plugin-auth-backend-module-guest-provider": "npm:^0.2.15"
     "@backstage/plugin-auth-node": "npm:^0.6.10"
     "@backstage/plugin-catalog-backend": "npm:^3.3.0"
+    "@backstage/plugin-catalog-node": "npm:^1.20.1"
     "@backstage/plugin-permission-backend": "npm:^0.7.7"
     "@backstage/plugin-permission-backend-module-allow-all-policy": "npm:^0.2.15"
     "@backstage/plugin-permission-common": "npm:^0.9.3"
