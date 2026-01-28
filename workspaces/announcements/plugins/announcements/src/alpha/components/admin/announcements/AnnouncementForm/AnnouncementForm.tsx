@@ -124,6 +124,12 @@ export const AnnouncementForm = ({
         severity: 'warning',
       });
 
+      // Select the existing category in the form
+      setForm(prevForm => ({
+        ...prevForm,
+        category: existingCategory,
+      }));
+
       setShowCreateCategoryDialog(false);
     } else {
       try {
@@ -136,6 +142,15 @@ export const AnnouncementForm = ({
 
         setShowCreateCategoryDialog(false);
         refreshCategories();
+
+        // Select the new category in the form
+        setForm(prevForm => ({
+          ...prevForm,
+          category: {
+            title: request.title,
+            slug: slugifiedTitle,
+          },
+        }));
       } catch (err) {
         alertApi.post({ message: (err as Error).message, severity: 'error' });
       }

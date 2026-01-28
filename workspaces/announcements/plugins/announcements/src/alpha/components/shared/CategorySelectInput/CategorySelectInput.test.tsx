@@ -65,6 +65,7 @@ const renderCategorySelectInput = async (
         categories={categories}
         setCategory={setCategory}
         hideLabel={hideLabel}
+        isLoading={loading}
       />
     </TestApiProvider>,
   );
