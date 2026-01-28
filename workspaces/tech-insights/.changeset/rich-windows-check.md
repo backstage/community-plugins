@@ -9,4 +9,4 @@
 '@backstage-community/plugin-tech-insights': patch
 ---
 
-Upgrades to Backstage v1.47.1
+Upgrades to Backstage v1.47.2
