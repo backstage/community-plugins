@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import jwt from 'jsonwebtoken';
 import { post } from '../api';
 import { caesarCipherDecrypt } from './auth.service.helpers';
@@ -8,6 +23,7 @@ import {
   MendConfig,
   RefreshAccessTokenSuccessResponseData,
 } from './auth.services.types';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 enum AuthRoutes {
   LOGIN = '/login',
@@ -23,21 +39,46 @@ export class MendAuthSevice {
   private static clientUrl = '';
   private static clientName = '';
   private static clientUuid = '';
+  private static configured = false;
+  private static configurationError = '';
+  private static logger: LoggerService;
 
   constructor(config: MendConfig) {
-    this.getConfig(config.apiVersion, config.activationKey);
+    MendAuthSevice.init(config);
   }
 
-  private getConfig(apiVersion: string, activationKey: string) {
+  static init(config: MendConfig) {
+    MendAuthSevice.logger = config.logger;
+    MendAuthSevice.configure(config.apiVersion, config.activationKey);
+  }
+
+  private static configure(apiVersion: string, activationKey: string) {
+    // Reset configuration state
+    MendAuthSevice.configured = false;
+    MendAuthSevice.configurationError = '';
+    MendAuthSevice.baseUrl = '';
+    MendAuthSevice.clientEmail = '';
+    MendAuthSevice.clientKey = '';
+    MendAuthSevice.clientUrl = '';
+
+    // If no activation key provided, leave unconfigured but don't throw
+    if (!activationKey) {
+      MendAuthSevice.configurationError =
+        'Mend activation key is not configured. Please set the Activation Key in the configuration file.';
+      MendAuthSevice.logger?.warn(MendAuthSevice.configurationError);
+      return;
+    }
+
     try {
       const licenseKey = caesarCipherDecrypt(activationKey);
 
       // Decode the license key and validate payload shape
       const decoded = jwt.decode(licenseKey);
       if (!decoded || typeof decoded !== 'object') {
-        throw new Error(
-          'Invalid activation key: could not decode license payload',
-        );
+        MendAuthSevice.configurationError =
+          'Invalid activation key. Please provide the valid Activation Key.';
+        MendAuthSevice.logger.error(MendAuthSevice.configurationError);
+        return;
       }
       const jwtPayload = decoded as JwtLicenceKeyPayload;
 
@@ -53,9 +94,12 @@ export class MendAuthSevice {
         !userKey ||
         typeof userKey !== 'string'
       ) {
-        throw new Error(
-          'Invalid activation key: missing required fields (wsEnvUrl, integratorEmail, userKey)',
+        MendAuthSevice.configurationError =
+          'Invalid activation key. Please provide the valid Activation Key.';
+        MendAuthSevice.logger.error(
+          'Invalid activation key: missing required fields (wsEnvUrl, integratorEmail, userKey).',
         );
+        return;
       }
 
       // Create a baseUrl from the environment url with safety checks
@@ -63,7 +107,12 @@ export class MendAuthSevice {
       try {
         baseUrl = new URL(wsEnvUrl);
       } catch {
-        throw new Error('Invalid activation key: wsEnvUrl is not a valid URL');
+        MendAuthSevice.configurationError =
+          'Invalid activation key. Please provide the valid Activation Key.';
+        MendAuthSevice.logger.error(
+          'Invalid activation key: wsEnvUrl is not a valid URL.',
+        );
+        return;
       }
       baseUrl.hostname = `api-${baseUrl.hostname}`;
       baseUrl.pathname = `/api/${apiVersion}`;
@@ -72,13 +121,20 @@ export class MendAuthSevice {
       MendAuthSevice.clientEmail = integratorEmail;
       MendAuthSevice.clientKey = userKey;
       MendAuthSevice.clientUrl = wsEnvUrl;
+      MendAuthSevice.configured = true;
     } catch (err) {
-      // Log and reset to safe defaults, then rethrow so callers can decide how to handle it
+      MendAuthSevice.configurationError =
+        'Something went wrong while configuring Mend. Please check the Activation Key.';
+      MendAuthSevice.logger?.error(
+        `Unexpected error while configuring Mend: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
       MendAuthSevice.baseUrl = '';
       MendAuthSevice.clientEmail = '';
       MendAuthSevice.clientKey = '';
       MendAuthSevice.clientUrl = '';
-      throw err instanceof Error ? err : new Error(String(err));
+      MendAuthSevice.configured = false;
     }
   }
 
@@ -179,5 +235,13 @@ export class MendAuthSevice {
 
   static getClientName(): string {
     return MendAuthSevice.clientName;
+  }
+
+  static isConfigured(): boolean {
+    return MendAuthSevice.configured;
+  }
+
+  static getConfigurationError(): string {
+    return MendAuthSevice.configurationError;
   }
 }

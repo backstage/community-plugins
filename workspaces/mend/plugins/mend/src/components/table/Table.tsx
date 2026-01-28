@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { ReactElement, ReactNode, Ref } from 'react';
 import { useRef, forwardRef, useState, useMemo } from 'react';
 import {
@@ -5,9 +20,8 @@ import {
   SelectItem,
 } from '@backstage/core-components';
 import SvgIcon from '@mui/material/SvgIcon';
+import { useTheme } from '@mui/material/styles';
 import { ProjectFilterComponent } from './ProjectFilterComponent';
-import type { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 import { Project, Finding, Statistics } from '../../models';
 import { TableMessage } from './TableMessage';
 import { TableHeader } from './TableHeader';
@@ -46,12 +60,6 @@ export type TableColumnProps<T> = {
   render: (row: T) => ReactNode;
 };
 
-const useStyles = makeStyles<Theme>(theme => ({
-  funnelIcon: {
-    color: theme.palette.mode === 'light' ? '#232F3E' : 'white',
-  },
-}));
-
 type TableProps = {
   clientName?: string;
   clientUrl: string;
@@ -83,7 +91,7 @@ export const Table = ({
   projectList = null,
   selectedProject = null,
 }: TableProps) => {
-  const classes = useStyles();
+  const theme = useTheme();
   const tableRef = useRef<MaterialTable>(null);
 
   const ALL_OPTION = useMemo(() => ({ label: 'All', value: '__ALL__' }), []);
@@ -99,24 +107,31 @@ export const Table = ({
   ]);
 
   const filteredData = useMemo(() => {
-    if (
-      projectNameFilter.length === 0 ||
-      projectNameFilter.includes(ALL_OPTION.value)
-    ) {
-      return tableData;
-    }
-    return tableData.filter(row => {
-      // Filter by Project Name multi-select
-      const projectName = (row as any).projectName;
-      if (
-        projectNameFilter.length > 0 &&
-        !projectNameFilter.includes(projectName)
-      ) {
-        return false;
-      }
+    let data = tableData;
 
-      return true;
-    });
+    if (
+      projectNameFilter.length > 0 &&
+      !projectNameFilter.includes(ALL_OPTION.value)
+    ) {
+      data = tableData.filter(row => {
+        // Filter by Project Name multi-select
+        const projectName = (row as any).projectName;
+        if (
+          projectNameFilter.length > 0 &&
+          !projectNameFilter.includes(projectName)
+        ) {
+          return false;
+        }
+
+        return true;
+      });
+    }
+
+    // Ensure each row has a unique id for Material Table
+    return data.map((row, index) => ({
+      ...row,
+      id: (row as any).uuid || `row-${index}`,
+    }));
   }, [tableData, ALL_OPTION, projectNameFilter]);
 
   return (
@@ -124,18 +139,38 @@ export const Table = ({
       localization={{
         body: {
           emptyDataSourceMessage: tableDataError ? (
-            <TableMessage
-              icon={TableIcon.ERROR}
-              title="Oops! Something Went Wrong"
-              message="An unexpected error occurred when loading this table. Please try
-        refreshing the page."
-            />
+            (() => {
+              const errorStatus = (tableDataError as any).status;
+              let icon = TableIcon.ERROR;
+              let title = 'Oops! Something Went Wrong';
+
+              if (errorStatus === 401) {
+                title = 'Configuration Error';
+              } else if (errorStatus === 404) {
+                title = 'No Results Found';
+                icon = TableIcon.EMPTY;
+              }
+
+              return (
+                <TableMessage
+                  icon={icon}
+                  title={title}
+                  message={
+                    tableDataError.message ||
+                    'An unexpected error occurred. Please try refreshing the page.'
+                  }
+                />
+              );
+            })()
           ) : (
             <TableMessage
               icon={TableIcon.EMPTY}
               title="No Results Found"
-              message="No results were found for your filter. Please check your spelling and
-        try again."
+              message={
+                tableData.length > 0
+                  ? 'Please review your filter text and search again.'
+                  : 'No data available on the Mend platform.'
+              }
             />
           ),
         },
@@ -157,7 +192,7 @@ export const Table = ({
       }}
       isLoading={tableDataLoading}
       columns={tableColumns}
-      data={filteredData as (Project & Finding)[]} // Accept both types
+      data={filteredData as any} // Accept both types with id property
       icons={{
         ...tableBackstageIcons,
         Search: forwardRef((_, ref: Ref<SVGSVGElement>) => (
@@ -168,7 +203,7 @@ export const Table = ({
             viewBox="-2 0 23 14"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={classes.funnelIcon}
+            sx={{ color: theme.palette.text.primary }}
           >
             <path d="M0 1.23438C0 0.553125 0.553125 0 1.23438 0H14.7656C15.4469 0 16 0.553125 16 1.23438C16 1.52188 15.9 1.8 15.7156 2.02187L10 8.93125V12.9406C10 13.525 9.525 14 8.94063 14C8.70625 14 8.47812 13.9219 8.29062 13.7781L6.38438 12.2969C6.14062 12.1062 5.99687 11.8156 5.99687 11.5063V8.93125L0.284375 2.02187C0.1 1.8 0 1.52188 0 1.23438ZM1.23438 1C1.10312 1 1 1.10625 1 1.23438C1 1.29062 1.01875 1.34063 1.05313 1.38438L6.88438 8.43125C6.95937 8.52187 7 8.63437 7 8.75V11.5063L8.90625 12.9875C8.91562 12.9969 8.92813 13 8.94063 13C8.97188 13 9 12.975 9 12.9406V8.75C9 8.63437 9.04063 8.52187 9.11563 8.43125L14.9469 1.38438C14.9812 1.34375 15 1.29062 15 1.23438C15 1.10312 14.8938 1 14.7656 1H1.23438Z" />
           </SvgIcon>
