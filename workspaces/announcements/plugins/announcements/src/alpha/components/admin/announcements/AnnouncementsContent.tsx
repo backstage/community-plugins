@@ -39,7 +39,7 @@ import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { AnnouncementForm } from '../../../../components/Admin/AnnouncementsContent/AnnouncementForm';
+import { AnnouncementForm } from './AnnouncementForm';
 import { AnnouncementsTableCard } from './AnnouncementsTableCard';
 import { announcementViewRouteRef } from '../../../../routes';
 

@@ -19,4 +19,4 @@ export * from './navItems';
 export * from './pages';
 export * from './search';
 export * from './banner';
-export * from './Router';
+export * from '../Router';
