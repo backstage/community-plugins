@@ -13,22 +13,89 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { compatWrapper } from '@backstage/core-compat-api';
-import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
-/**
- * Entity content extension that displays Tech Insights scorecards for an entity.
- *
- * @alpha
- */
-export const entityTechInsightsScorecardContent = EntityContentBlueprint.make({
-  name: 'scorecards',
-  params: {
-    path: '/tech-insights',
-    title: 'Scorecards',
-    loader: () =>
-      import('../components/ScorecardsContent').then(m =>
-        compatWrapper(<m.ScorecardsContent title="Scorecards" />),
-      ),
-  },
-});
+import {
+  techInsightsScorecardFilterDataRef,
+  techInsightsScorecardFilterExpressionDataRef,
+  techInsightsScorecardPropsDataRef,
+} from '@backstage-community/plugin-tech-insights-react/alpha';
+import { Entity } from '@backstage/catalog-model';
+import { compatWrapper } from '@backstage/core-compat-api';
+import { createExtensionInput } from '@backstage/frontend-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import {
+  EntityPredicate,
+  entityPredicateToFilterFunction,
+  EntityContentBlueprint,
+} from '@backstage/plugin-catalog-react/alpha';
+
+function buildFilterFn(
+  filterFn?: (entity: Entity) => boolean,
+  filterExpr?: EntityPredicate,
+): (entity: Entity) => boolean {
+  if (filterFn) return filterFn;
+  if (filterExpr) return entityPredicateToFilterFunction(filterExpr);
+  return () => true;
+}
+
+export const entityTechInsightsScorecardContent =
+  EntityContentBlueprint.makeWithOverrides({
+    name: 'scorecards',
+    inputs: {
+      scorecards: createExtensionInput([
+        techInsightsScorecardPropsDataRef,
+        techInsightsScorecardFilterDataRef.optional(),
+        techInsightsScorecardFilterExpressionDataRef.optional(),
+      ]),
+    },
+    factory(originalFactory, { inputs }) {
+      return originalFactory(defineParams =>
+        defineParams({
+          path: '/tech-insights',
+          title: 'Scorecards',
+          loader: async () => {
+            const { ScorecardsContent } = await import(
+              '../components/ScorecardsContent'
+            );
+
+            const scorecards = inputs.scorecards.map(scorecard => ({
+              props: scorecard.get(techInsightsScorecardPropsDataRef),
+              filter: buildFilterFn(
+                scorecard.get(techInsightsScorecardFilterDataRef),
+                scorecard.get(techInsightsScorecardFilterExpressionDataRef),
+              ),
+            }));
+
+            const Component = () => {
+              const { entity } = useEntity();
+
+              const scorecard = scorecards.find(s => s.filter(entity));
+              const matchingScorecards = scorecards.filter(s =>
+                s.filter(entity),
+              );
+              const aggregatedCheckIds = matchingScorecards.flatMap(
+                s => s.props.checkIds ?? [],
+              );
+              const props = scorecard?.props ?? {};
+
+              return (
+                <ScorecardsContent
+                  title={props.title ?? 'Scorecards'}
+                  description={props.description}
+                  checksId={
+                    aggregatedCheckIds.length > 0
+                      ? aggregatedCheckIds
+                      : undefined
+                  }
+                  dense={props.dense}
+                  filter={props.checkFilter}
+                />
+              );
+            };
+
+            return compatWrapper(<Component />);
+          },
+        }),
+      );
+    },
+  });
