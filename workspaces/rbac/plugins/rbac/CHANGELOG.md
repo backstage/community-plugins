@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.47.4
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
+
 ## 1.47.3
 
 ### Patch Changes
