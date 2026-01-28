@@ -17,25 +17,36 @@ import { useState, type ChangeEvent, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  identityApiRef,
+  useApi,
+  alertApiRef,
+} from '@backstage/core-plugin-api';
 import {
   Box,
   Button,
   Card,
   CardBody,
   CardHeader,
+  Flex,
   Grid,
   Text,
 } from '@backstage/ui';
-import { RiSave2Line } from '@remixicon/react';
+import { RiSave2Line, RiAddLine } from '@remixicon/react';
 import {
   CreateAnnouncementRequest,
+  CreateCategoryRequest,
   useAnnouncementsTranslation,
   announcementsApiRef,
+  useCategories,
 } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import {
+  Announcement,
+  Category,
+} from '@backstage-community/plugin-announcements-common';
 
-import CategoryInput from './CategoryInput';
+import { CategorySelectInput } from '../../../shared';
+import { CreateCatagoryDialog } from '../../categories';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
 
@@ -55,7 +66,9 @@ export const AnnouncementForm = ({
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
   const announcementsApi = useApi(announcementsApiRef);
+  const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
+  const { retry: refreshCategories } = useCategories();
 
   const formattedStartAt = initialData.start_at
     ? DateTime.fromISO(initialData.start_at).toISODate()
@@ -68,7 +81,7 @@ export const AnnouncementForm = ({
   const [form, setForm] = useState({
     ...initialData,
     active: initialData.active ?? true,
-    category: initialData.category?.slug,
+    category: initialData.category ?? null,
     start_at: formattedStartAt || '',
     until_date: formattedUntilDate || '',
     tags: initialData.tags?.map(tag => tag.slug) || undefined,
@@ -78,6 +91,9 @@ export const AnnouncementForm = ({
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
     initialData.on_behalf_of || '',
   );
+  const [showCreateCategoryDialog, setShowCreateCategoryDialog] =
+    useState(false);
+  const [categoryRefreshKey, setCategoryRefreshKey] = useState(0);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -91,6 +107,33 @@ export const AnnouncementForm = ({
       ...form,
       [event.target.name]: event.target.checked,
     });
+  };
+
+  const handleCreateCategory = async (request: CreateCategoryRequest) => {
+    try {
+      await announcementsApi.createCategory(request);
+
+      refreshCategories();
+      setCategoryRefreshKey(prev => prev + 1);
+
+      const updatedCategories = await announcementsApi.categories();
+      const newCategory = updatedCategories.find(
+        cat => cat.title.toLowerCase() === request.title.toLowerCase(),
+      );
+
+      if (newCategory) {
+        setForm({ ...form, category: newCategory });
+      }
+
+      alertApi.post({
+        message: t('newCategoryDialog.createdMessage'),
+        severity: 'success',
+      });
+
+      setShowCreateCategoryDialog(false);
+    } catch (err) {
+      alertApi.post({ message: (err as Error).message, severity: 'error' });
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -126,10 +169,11 @@ export const AnnouncementForm = ({
       form.tags = processedTags;
     }
 
-    const { id, created_at, ...announcementData } = form;
+    const { id, created_at, category, ...announcementData } = form;
 
     const createRequest: CreateAnnouncementRequest = {
       ...announcementData,
+      category: category?.slug,
       publisher: userIdentity.userEntityRef,
       on_behalf_of: onBehalfOfSelectedTeam,
     };
@@ -193,11 +237,25 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <CategoryInput
-                  setForm={setForm}
-                  form={form}
-                  initialValue={initialData.category?.title ?? ''}
-                />
+                <Flex gap="2" align="end">
+                  <Box style={{ flex: 1 }}>
+                    <CategorySelectInput
+                      key={`category-select-${categoryRefreshKey}`}
+                      initialCategory={form.category ?? undefined}
+                      setCategory={(category: Category | null) =>
+                        setForm({ ...form, category })
+                      }
+                    />
+                  </Box>
+
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    iconStart={<RiAddLine />}
+                    onClick={() => setShowCreateCategoryDialog(true)}
+                    aria-label={t('admin.categoriesContent.createButton')}
+                  />
+                </Flex>
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
@@ -292,6 +350,12 @@ export const AnnouncementForm = ({
           </form>
         </Box>
       </CardBody>
+
+      <CreateCatagoryDialog
+        open={showCreateCategoryDialog}
+        onConfirm={handleCreateCategory}
+        onCancel={() => setShowCreateCategoryDialog(false)}
+      />
     </Card>
   );
 };
