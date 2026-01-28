@@ -1,4 +1,4 @@
-# @janus-idp/backstage-plugin-tekton-common
+# @backstage-community/plugin-tekton-common
 
 ## 1.17.0
 

@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-tekton
 
 ## 3.34.1
 
