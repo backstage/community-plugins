@@ -8,11 +8,14 @@
 import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
+import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -83,8 +86,6 @@ const techInsightsPlugin: OverridableFrontendPlugin<
       };
     }>;
     'entity-content:tech-insights/scorecards': OverridableExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'scorecards';
       config: {
         path: string | undefined;
         title: string | undefined;
@@ -129,7 +130,41 @@ const techInsightsPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {};
+      inputs: {
+        scorecards: ExtensionInput<
+          | ConfigurableExtensionDataRef<
+              {
+                title?: string | undefined;
+                description?: string | undefined;
+                checkIds?: string[] | undefined;
+                dense?: boolean | undefined;
+                checkFilter?: ((check: Check) => boolean) | undefined;
+              },
+              'tech-insights.scorecard.props',
+              {}
+            >
+          | ConfigurableExtensionDataRef<
+              (entity: Entity) => boolean,
+              'tech-insights.scorecard.filter-function',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              EntityPredicate,
+              'tech-insights.scorecard.filter-expression',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+          }
+        >;
+      };
+      kind: 'entity-content';
+      name: 'scorecards';
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;

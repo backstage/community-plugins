@@ -51,7 +51,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "zod": "^3.24.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
