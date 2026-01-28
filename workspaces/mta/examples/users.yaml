@@ -1,0 +1,24 @@
+---
+# Example user entities for Keycloak authentication
+# Update these to match your Keycloak users
+
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: admin # Must match Keycloak username (lowercase)
+spec:
+  profile:
+    displayName: Admin User
+    email: admin@example.com
+  memberOf: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: developer # Must match Keycloak username (lowercase)
+spec:
+  profile:
+    displayName: Developer
+    email: developer@example.com
+  memberOf: []

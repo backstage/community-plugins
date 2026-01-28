@@ -17,7 +17,20 @@ export const ApplicationDetailsHeader = ({
   isWaiting,
   setIsWaiting,
 }: ApplicationDetailsHeaderProps) => {
-  const { identities, isFetching } = useFetchIdentities();
+  const { identities, isFetching, isError, fetchError } = useFetchIdentities();
+
+  if (isError && fetchError) {
+    return (
+      <Grid item xs={12} md={6}>
+        <InfoCard title="MTA Application" subheader={`${application.name}`}>
+          <Box p={2}>
+            <strong>Error loading identities:</strong> {fetchError.message}
+          </Box>
+        </InfoCard>
+      </Grid>
+    );
+  }
+
   if (isFetching || isWaiting) {
     return (
       <Grid item xs={12} md={6}>

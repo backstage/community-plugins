@@ -8,7 +8,10 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
-export function createMTAApplicationAction(opts: any): TemplateAction<    {
+export function createMTAApplicationAction(opts: {
+    config: any;
+    logger: any;
+}): TemplateAction<    {
 [x: string]: any;
 }, {
 [x: string]: any;
