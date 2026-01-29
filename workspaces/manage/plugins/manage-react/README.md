@@ -6,6 +6,8 @@ The APIs in this package are intended for extension authors. Unless otherwise st
 
 This documentation applies to the new frontend system.
 
+<img alt="Extension overview" src="./docs/extension-overview.png" width="1288" />
+
 ## Table of contents
 
 - [Blueprints](#blueprints)
@@ -27,11 +29,13 @@ This documentation applies to the new frontend system.
   - [useCurrentKinds](#usecurrentkinds)
   - [useCurrentKindTitle](#usecurrentkindtitle)
   - [useUserSettings](#useusersettings)
+  - [useProgressStyle](#useprogressstyle)
 - [Components](#components)
   - [Accordion](#accordion)
   - [GaugeCard](#gaugecard)
   - [GaugeGrid](#gaugegrid)
   - [Icons](#icons)
+  - [ColumnSkeleton](#columnskeleton)
   - [ReorderableTabs](#reorderabletabs)
 
 ### ManageTabBlueprint
@@ -364,6 +368,10 @@ The hook returns:
 
 The hook listens for changes and updates live when values are modified.
 
+### useProgressStyle
+
+The Manage page can be globally configured to prefer circular or linear progress indicators. The `useProgressStyle` hook can be used to detect which style is configured, to adapt visual elements accordingly.
+
 ## Components
 
 ### Accordion
@@ -372,7 +380,7 @@ An accordion component with its expanded state persisted in user settings.
 
 ### GaugeCard
 
-A wrapper around the `@backstage/core-components` GaugeCard with predefined styling to ensure consistent appearance when multiple plugins render gauges.
+A circular gauge indicator with predefined styling to ensure consistent appearance when multiple plugins render gauges.
 
 ### GaugeGrid
 
@@ -384,7 +392,11 @@ The following helper components are provided for use primarily in entity table c
 
 - `ColumnIconError` for error states
 - `ColumnIconNoData` for missing data
-- `ColumnIconPercent` for circular percentage gauges
+- `ColumnIconPercent` for circular or linear percentage gauges. Their styles are [configured](../manage/README.md#progress-style) in the app-config.yaml.
+
+### ColumnSkeleton
+
+For columns waiting for data to load, the `<ColumnSkeleton/>` component can be used to display a skeleton component before the content is ready.
 
 ### ReorderableTabs
 

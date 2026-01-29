@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 import HideSourceIcon from '@mui/icons-material/HideSource';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    opacity: 0.5,
-  },
-  noIcon: {
-    opacity: 0,
-  },
-}));
+import { useColumnIconStyles } from './styles';
 
 /**
  * Props for {@link ColumnIconError}
@@ -50,12 +42,12 @@ export interface ColumnIconNoDataProps {
  * @public
  */
 export function ColumnIconNoData(props: ColumnIconNoDataProps) {
-  const { root, noIcon } = useStyles();
+  const { icon, noData, noIcon } = useColumnIconStyles();
 
   return (
     <Tooltip title={props.title ?? 'No data available'}>
       <HideSourceIcon
-        className={props.noIcon ? noIcon : root}
+        className={`${icon} ${props.noIcon ? noIcon : noData}`}
         color="disabled"
       />
     </Tooltip>

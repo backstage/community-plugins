@@ -7,6 +7,14 @@ metadata:
 spec:
   owner: guests
 ---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: services
+  title: Services System
+spec:
+  owner: guests
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -67,8 +75,52 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: example-service-for-sub-guests-2
+  title: Example service for sub guests 2
+spec:
+  type: service
+  lifecycle: experimental
+  owner: sub-guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service-for-sub-guests-3
+  title: Example service for sub guests 3
+spec:
+  type: service
+  lifecycle: experimental
+  owner: sub-guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
   name: example-service-in-subgroup
   title: Example service in subgroup
+spec:
+  type: service
+  lifecycle: experimental
+  owner: sub-sub-guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service-in-subgroup-2
+  title: Example service in subgroup 2
+spec:
+  type: service
+  lifecycle: experimental
+  owner: sub-sub-guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service-in-subgroup-3
+  title: Example service in subgroup 3
 spec:
   type: service
   lifecycle: experimental
@@ -85,3 +137,73 @@ spec:
   lifecycle: experimental
   owner: acme-corp
   system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: production-website
+  title: Production website
+  description: An example of a production website
+spec:
+  type: website
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: production-website-2
+  title: Production website 2
+spec:
+  type: website
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: production-website-3
+  title: Production website 3
+spec:
+  type: website
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: production-service
+  title: Production service
+  description: An example of a production service
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: production-service-2
+  title: Production service 2
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: production-service-3
+  title: Production service 4
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+
