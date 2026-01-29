@@ -261,12 +261,11 @@ export const AnnouncementForm = ({
                 <Flex gap="2" align="end">
                   <Box style={{ flex: 1 }}>
                     <CategorySelectInput
-                      // key="category-select"
                       initialCategory={form.category ?? undefined}
                       categories={categories}
                       isLoading={categoriesLoading}
                       setCategory={(category: Category | null) =>
-                        setForm({ ...form, category })
+                        setForm(prev => ({ ...prev, category }))
                       }
                     />
                   </Box>
