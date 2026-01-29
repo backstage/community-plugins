@@ -90,7 +90,23 @@ export class BitbucketApi {
     );
   }
 
+  private isCloud(): boolean {
+    const type = this.configApi?.getOptionalString('bitbucket.type');
+    return type === 'cloud';
+  }
+
   async fetchPullRequestListForRepo(
+    project: string,
+    repo: string,
+    state?: string,
+    limit: number = DEFAULT_LIMIT,
+  ): Promise<PullRequest[]> {
+    if (this.isCloud()) {
+      return this.fetchCloudPullRequestListForRepo(project, repo, state, limit);
+    }
+    return this.fetchServerPullRequestListForRepo(project, repo, state, limit);
+  }
+  async fetchServerPullRequestListForRepo(
     project: string,
     repo: string,
     state?: string,
@@ -117,9 +133,38 @@ export class BitbucketApi {
     }
 
     const data = await response.json();
-    return this.mapPullRequests(data);
+    return this.mapServerPullRequests(data);
   }
 
+  async fetchCloudPullRequestListForRepo(
+    workspace: string,
+    repo: string,
+    state?: string,
+    limit: number = DEFAULT_LIMIT,
+  ): Promise<PullRequest[]> {
+    const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
+    const url = new URL(
+      `${proxyUrl}${this.getProxyPath()}/2.0/repositories/${workspace}/repos/${repo}/pull-requests`,
+    );
+
+    const params = new URLSearchParams();
+    if (state) {
+      params.append('state', state);
+    }
+    params.append('limit', limit.toString());
+
+    const response = await this.fetchApi.fetch(`${url}?${params}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch pull requests');
+    }
+
+    const data = await response.json();
+    return this.mapCloudPullRequests(data);
+  }
   private async fetchBuildStatus(commitId: string): Promise<BuildStatus> {
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
     const response = await this.fetchApi.fetch(
@@ -161,7 +206,7 @@ export class BitbucketApi {
     return pr;
   }
 
-  public mapPullRequests(data: any): PullRequest[] {
+  public mapServerPullRequests(data: any): PullRequest[] {
     return (
       data.values?.map((pr: any) => ({
         id: pr.id,
@@ -190,7 +235,50 @@ export class BitbucketApi {
     );
   }
 
+  public mapCloudPullRequests(data: any): PullRequest[] {
+    return (
+      data.values?.map((pr: any) => ({
+        id: pr.id,
+        title: pr.title,
+        author: {
+          displayName: pr.author.displayName,
+          slug: pr.author.nickname || pr.author.username,
+        },
+        createdDate: new Date(pr.created_on).getTime(),
+        updatedDate: new Date(pr.updated_on).getTime(),
+        state: pr.state,
+        url: pr.links.html.href,
+        repoUrl: pr.source.repository.links.html.href,
+        description: pr.description || '',
+        fromRepo: pr.source.repository.name,
+        fromProject: pr.source.repository.workspace?.slug || '',
+        sourceBranch: pr.source.branch.name,
+        targetBranch: pr.destination.branch.name,
+        latestCommit: pr.source.commit?.hash,
+        reviewers:
+          pr.participants
+            ?.filter((p: any) => p.role === 'REVIEWER')
+            .map((r: any) => ({
+              displayName: r.user.display_name,
+              slug: r.user.nickname || r.user.username,
+            })) || [],
+      })) || []
+    );
+  }
+
   async fetchUserPullRequests(
+    role: 'REVIEWER' | 'AUTHOR' = 'REVIEWER',
+    state: 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL' = 'OPEN',
+    limit: number = DEFAULT_LIMIT,
+    options: { includeBuildStatus?: boolean } = { includeBuildStatus: true },
+  ): Promise<PullRequest[]> {
+    if (this.isCloud()) {
+      return this.fetchServerUserPullRequests(role, state, limit, options);
+    }
+    return this.fetchCloudUserPullRequests(role, state, limit, options);
+  }
+
+  async fetchServerUserPullRequests(
     role: 'REVIEWER' | 'AUTHOR' = 'REVIEWER',
     state: 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL' = 'OPEN',
     limit: number = DEFAULT_LIMIT,
@@ -248,12 +336,86 @@ export class BitbucketApi {
     }
 
     const data = await response.json();
-    const pullRequests = this.mapPullRequests(data);
+    const pullRequests = this.mapServerPullRequests(data);
     if (options.includeBuildStatus) {
       const enhancedPullRequests = await Promise.all(
         pullRequests.map(pr => this.enhancePrWithBuildStatus(pr)),
       );
       return enhancedPullRequests;
+    }
+    return pullRequests;
+  }
+
+  async fetchCloudUserPullRequests(
+    role: 'REVIEWER' | 'AUTHOR' = 'REVIEWER',
+    state: 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL' = 'OPEN',
+    limit: number = DEFAULT_LIMIT,
+    options: { includeBuildStatus?: boolean } = { includeBuildStatus: true },
+  ): Promise<PullRequest[]> {
+    if (!this.identityApi) {
+      throw new Error('Identity API is not available');
+    }
+
+    const { userEntityRef } = await this.identityApi.getBackstageIdentity();
+
+    const { name } = parseEntityRef(userEntityRef);
+
+    if (!name) {
+      throw new Error('User not found');
+    }
+
+    const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
+    const url = new URL(
+      `${proxyUrl}${this.getProxyPath()}/2.0/pullrequests/${name}`,
+    );
+
+    const params = new URLSearchParams({
+      pagelen: limit.toString(),
+      state: state === 'ALL' ? 'OPEN,MERGED,DECLINED,SUPERSEDED' : state,
+    });
+
+    const response = await this.fetchApi.fetch(`${url}?${params}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      let errorMessage = 'Failed to fetch pull requests from Bitbucket';
+
+      try {
+        const errorText = await response.text();
+        const errorJson = JSON.parse(errorText);
+
+        if (
+          response.status === 404 &&
+          errorJson.errors?.[0]?.message?.includes('does not exist')
+        ) {
+          errorMessage = `User '${name}' not found in Bitbucket. Please ensure your Bitbucket account exists.`;
+        }
+      } catch (e) {
+        errorMessage = e instanceof Error ? e.message : String(e);
+      }
+
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    let pullRequests = this.mapCloudPullRequests(data);
+
+    if (role === 'AUTHOR') {
+      pullRequests = pullRequests.filter(pr => pr.author.slug === name);
+    } else if (role === 'REVIEWER') {
+      pullRequests = pullRequests.filter(pr =>
+        pr.reviewers.some(reviewer => reviewer.slug === name),
+      );
+    }
+
+    // Note: Cloud doesn't have the same build status API as Server
+    // Build status would need to be fetched from Bitbucket Pipelines API
+    if (options.includeBuildStatus) {
+      // TODO: Implement Cloud build status fetching
+      // // For now, just return without build status
     }
     return pullRequests;
   }
