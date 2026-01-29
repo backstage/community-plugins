@@ -138,10 +138,10 @@ const techInsightsPlugin: OverridableFrontendPlugin<
         defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
         group?:
           | (string & {})
-          | 'development'
-          | 'deployment'
           | 'overview'
           | 'documentation'
+          | 'development'
+          | 'deployment'
           | 'operation'
           | 'observability'
           | undefined;
