@@ -59,17 +59,17 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.6.0",
-    "@backstage/catalog-model": "^1.7.6",
-    "@backstage/core-plugin-api": "^1.12.1",
-    "@backstage/errors": "^1.2.7",
-    "@backstage/types": "^1.2.2",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/types": "backstage:^",
     "@types/luxon": "^3.0.0",
     "fast-json-stable-stringify": "^2.1.0",
     "luxon": "^3.0.0",
     "qs": "^6.12.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.1"
+    "@backstage/cli": "backstage:^"
   }
 }

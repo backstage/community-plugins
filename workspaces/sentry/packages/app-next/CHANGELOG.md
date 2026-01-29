@@ -1,5 +1,12 @@
 # app-next
 
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [4dbcf3e]
+  - @backstage-community/plugin-sentry@1.14.0
+
 ## 0.0.20
 
 ### Patch Changes

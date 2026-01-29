@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton
 
+## 3.34.3
+
+### Patch Changes
+
+- c074f91: Added and updated fr, it and ja translation files.
+
 ## 3.34.2
 
 ### Patch Changes
