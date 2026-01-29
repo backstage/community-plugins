@@ -54,10 +54,13 @@ export default function OnBehalfTeamDropdown({
   );
 
   const selectOptions = useMemo(() => {
-    return teams.map(team => ({
-      value: stringifyEntityRef(team),
-      label: getTeamDisplayName(team),
-    }));
+    return teams.map(team => {
+      const entityRef = stringifyEntityRef(team);
+      return {
+        value: entityRef,
+        label: getTeamDisplayName(team) ?? entityRef,
+      };
+    });
   }, [teams]);
 
   const handleChange = (value: Key[] | Key | null) => {

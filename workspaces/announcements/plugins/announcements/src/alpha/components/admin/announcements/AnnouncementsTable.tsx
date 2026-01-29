@@ -122,11 +122,9 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
             <EntityRefLink entityRef={parseEntityRef(announcement.publisher)} />{' '}
             {hasValidOnBehalfOf && (
               <Text variant="body-small">
-                {t(
-                  'admin.announcementsContent.table.onBehalfOf',
-                ).toLocaleLowerCase()}{' '}
+                {t('admin.announcementsContent.table.onBehalfOf').toLowerCase()}{' '}
                 <EntityRefLink
-                  entityRef={parseEntityRef(announcement.on_behalf_of ?? '')}
+                  entityRef={parseEntityRef(announcement.on_behalf_of!)}
                 />
               </Text>
             )}
