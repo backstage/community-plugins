@@ -1,5 +1,13 @@
 # @backstage-community/plugin-tech-insights-react
 
+## 1.3.1
+
+### Patch Changes
+
+- 3ca2b56: Upgrades to Backstage v1.47.2
+- Updated dependencies [3ca2b56]
+  - @backstage-community/plugin-tech-insights-common@0.8.1
+
 ## 1.3.0
 
 ### Minor Changes
