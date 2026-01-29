@@ -26,6 +26,7 @@ import {
   CardHeader,
   Grid,
   Text,
+  TextField,
 } from '@backstage/ui';
 import { RiSave2Line } from '@remixicon/react';
 import {
@@ -42,7 +43,7 @@ import TagsInput from './TagsInput';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
+import MuiTextField from '@mui/material/TextField';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -78,13 +79,6 @@ export const AnnouncementForm = ({
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
     initialData.on_behalf_of || '',
   );
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.id]: event.target.value,
-    });
-  };
 
   const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -159,26 +153,19 @@ export const AnnouncementForm = ({
             <Grid.Root columns="12">
               <Grid.Item colSpan="12">
                 <TextField
-                  id="title"
                   label={t('announcementForm.title')}
                   value={form.title}
-                  onChange={handleChange}
-                  variant="outlined"
-                  fullWidth
-                  required
+                  onChange={title => setForm({ ...form, title })}
+                  isRequired
                 />
               </Grid.Item>
 
               <Grid.Item colSpan="12">
                 <TextField
-                  id="excerpt"
                   label={t('announcementForm.excerpt')}
                   value={form.excerpt}
-                  onChange={handleChange}
-                  variant="outlined"
-                  fullWidth
-                  required
-                  multiline
+                  onChange={excerpt => setForm({ ...form, excerpt })}
+                  isRequired
                 />
               </Grid.Item>
 
@@ -212,7 +199,7 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <TextField
+                <MuiTextField
                   variant="outlined"
                   label={t('announcementForm.startAt')}
                   id="start-at-date"
@@ -231,7 +218,7 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <TextField
+                <MuiTextField
                   variant="outlined"
                   label={t('announcementForm.untilDate')}
                   id="until-date"
