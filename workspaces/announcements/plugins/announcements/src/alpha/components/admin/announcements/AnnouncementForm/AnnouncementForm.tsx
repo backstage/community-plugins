@@ -258,6 +258,7 @@ export const AnnouncementForm = ({
                   </Box>
 
                   <Button
+                    data-testid="create-category-icon-button"
                     variant="secondary"
                     size="small"
                     iconStart={<RiAddLine />}
