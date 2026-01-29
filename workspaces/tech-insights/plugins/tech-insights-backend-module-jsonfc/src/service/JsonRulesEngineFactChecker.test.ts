@@ -522,6 +522,69 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
       },
     },
   ],
+  filterAnnotationValue: [
+    {
+      id: 'filterAnnotationValueCheck',
+      name: 'filterAnnotationValueCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check matching specific annotation value',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.annotations.deployment-env': 'production' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterAnnotationValueNotMatching: [
+    {
+      id: 'filterAnnotationValueNotMatchingCheck',
+      name: 'filterAnnotationValueNotMatchingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with annotation value that does not match',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.annotations.deployment-env': 'staging' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterAnnotationMissing: [
+    {
+      id: 'filterAnnotationMissingCheck',
+      name: 'filterAnnotationMissingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check for annotation on entity with no annotations',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.annotations.some-key': 'some-value' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
 };
 
 const latestSchemasMock = jest.fn().mockImplementation((...args) => {
@@ -673,6 +736,25 @@ const mockCatalogEntities: Record<string, any> = {
     spec: {
       // No type, lifecycle
       owner: 'team-c',
+    },
+  },
+  // Add entity with annotations for annotation filter testing
+  'component:default/annotated-service': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'annotated-service',
+      namespace: 'default',
+      annotations: {
+        'backstage.io/techdocs-ref': 'dir:.',
+        'github.com/project-slug': 'my-org/my-repo',
+        'deployment-env': 'production',
+      },
+    },
+    spec: {
+      type: 'service',
+      lifecycle: 'production',
+      owner: 'team-a',
     },
   },
 };
@@ -1224,6 +1306,36 @@ describe('JsonRulesEngineFactChecker', () => {
         const results = await factChecker.runChecks(
           'component:default/test-library',
           ['filterEntityArrayProperty'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('annotation filtering', () => {
+      it('should run check when annotation value matches', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/annotated-service',
+          ['filterAnnotationValue'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterAnnotationValueCheck');
+      });
+
+      it('should not run check when annotation value does not match', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/annotated-service',
+          ['filterAnnotationValueNotMatching'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+
+      it('should not run check when entity has no annotations', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterAnnotationMissing'],
         );
 
         expect(results).toHaveLength(0);
