@@ -1,5 +1,45 @@
 # @backstage-community/plugin-announcements
 
+## 2.0.0
+
+### Major Changes
+
+- ad6eb1b: Refactor legacy announcements frontend to use the new (NFS) components built with `@backstage/ui`.
+
+  ## Breaking Changes
+
+  - `AnnouncementsPage` **no longer supports** the following props:
+
+    - `themeId`
+    - `subtitle`
+    - `hideContextMenu`
+    - `cardOptions`
+    - `buttonOptions`
+    - `hideInactive`
+
+    If your app passed any of these props, you must remove them (or migrate to new equivalents if/when they are reintroduced by the NFS implementation).
+
+  - `AdminPortal` is now implemented via the new announcements admin page and no longer supports customization via props such as `themeId`, `title`, `subtitle`, or `defaultInactive`.
+
+### Patch Changes
+
+- 89bf3ae: Updated the Search components for the New Frontend System to use the `RecordVoiceOverIcon` to match the existing experince
+
+## 1.4.0
+
+### Minor Changes
+
+- c299df2: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- 9c5efc7: Tables built with `@backstage/ui` now incorporate the new `useTable` hook.
+- 14ea727: The create announcements button in the admin portal now matches same style as category and tags for users of the new frontend system. This release does not affect users on the existing frontend system.
+- Updated dependencies [c299df2]
+- Updated dependencies [14ea727]
+  - @backstage-community/plugin-announcements-common@0.16.0
+  - @backstage-community/plugin-announcements-react@0.19.0
+
 ## 1.3.2
 
 ### Patch Changes

@@ -17,7 +17,7 @@ import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
-import NewReleasesIcon from '@material-ui/icons/NewReleases';
+import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 
 export const announcementsSearchResultListItem =
   SearchResultListItemBlueprint.make({
@@ -27,14 +27,16 @@ export const announcementsSearchResultListItem =
           m => m.AnnouncementSearchResultListItem,
         ),
       predicate: result => result.type === 'announcements',
+      icon: <RecordVoiceOverIcon />,
     },
   });
 
 export const announcementsSearchFilterResultType =
   SearchFilterResultTypeBlueprint.make({
+    name: 'announcements-results-type',
     params: {
       name: 'Announcements',
       value: 'announcements',
-      icon: <NewReleasesIcon />,
+      icon: <RecordVoiceOverIcon />,
     },
   });

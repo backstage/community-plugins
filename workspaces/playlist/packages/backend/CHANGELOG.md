@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies [f019cee]
+  - @backstage-community/plugin-playlist-backend@0.17.0
+
 ## 0.0.21
 
 ### Patch Changes

@@ -22,12 +22,22 @@
   },
   "dependencies": {
     "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/config": "backstage:^",
     "@backstage/plugin-app-backend": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-gitlab-provider": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-auth-node": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
-    "@backstage/plugin-proxy-backend": "backstage:^"
+    "@backstage/plugin-proxy-backend": "backstage:^",
+    "app": "link:../app",
+    "better-sqlite3": "^12.0.0",
+    "dockerode": "^3.3.1",
+    "node-gyp": "^9.0.0",
+    "pg": "^8.11.3",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"

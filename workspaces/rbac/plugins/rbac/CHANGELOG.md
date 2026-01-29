@@ -1,4 +1,17 @@
-### Dependencies
+# @backstage-community/plugin-rbac
+
+## 1.47.4
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
+
+## 1.47.3
+
+### Patch Changes
+
+- 5af1aa9: Fixed excessive vertical padding between table rows and pagination controls in RolesList component.
+- b3dda0c: Fix RBAC conditional access tooltips for disabled buttons
 
 ## 1.47.2
 

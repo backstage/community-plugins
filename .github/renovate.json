@@ -26,7 +26,10 @@
     {
       "matchManagers": ["npm"],
       "enabled": false,
-      "matchPackageNames": ["@backstage/**"]
+      "matchPackageNames": ["@backstage/**"],
+      "vulnerabilityAlerts": {
+        "enabled": false
+      }
     },
     {
       "matchPackageNames": ["node-fetch"],

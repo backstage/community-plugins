@@ -21,6 +21,7 @@ import rbacTranslationDe from '../../src/translations/de.js';
 import rbacTranslationFr from '../../src/translations/fr.js';
 import rbacTranslationEs from '../../src/translations/es.js';
 import rbacTranslationIt from '../../src/translations/it.js';
+import rbacTranslationJa from '../../src/translations/ja.js';
 /* eslint-enable @backstage/no-relative-monorepo-imports */
 
 export type RbacMessages = typeof rbacMessages;
@@ -57,6 +58,8 @@ export function getTranslations(locale: string): RbacMessages {
       return transform(rbacTranslationEs.messages as unknown as FlatMessages);
     case 'it':
       return transform(rbacTranslationIt.messages as unknown as FlatMessages);
+    case 'ja':
+      return transform(rbacTranslationJa.messages as unknown as FlatMessages);
     default:
       return rbacMessages;
   }

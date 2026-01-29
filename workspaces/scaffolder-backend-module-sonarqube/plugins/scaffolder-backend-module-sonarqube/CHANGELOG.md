@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-sonarqube
 
 ## 2.12.0
 

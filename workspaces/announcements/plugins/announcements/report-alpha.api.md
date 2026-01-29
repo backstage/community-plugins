@@ -161,9 +161,9 @@ const _default: OverridableFrontendPlugin<
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
     }>;
-    'search-filter-result-type:announcements': OverridableExtensionDefinition<{
+    'search-filter-result-type:announcements/announcements-results-type': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
-      name: undefined;
+      name: 'announcements-results-type';
       config: {};
       configInput: {};
       output: ExtensionDataRef<
