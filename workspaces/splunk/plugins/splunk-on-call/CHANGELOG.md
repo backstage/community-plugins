@@ -1,5 +1,11 @@
 # @backstage-community/plugin-splunk-on-call
 
+## 0.18.0
+
+### Minor Changes
+
+- 3567d4e: Backstage version bump to v1.47.2
+
 ## 0.17.1
 
 ### Patch Changes

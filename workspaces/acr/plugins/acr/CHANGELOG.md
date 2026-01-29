@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acr
 
+## 1.21.1
+
+### Patch Changes
+
+- c074f91: Updated fr, it and ja translation files.
+
 ## 1.21.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.13.1
+
+### Patch Changes
+
+- 4f1b075: Replace deprecated `createPermissionIntegrationRouter` API call with `permissionsRegistry` to resolve deprecation warnings
+
 ## 5.13.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-ilert
 
+## 0.17.1
+
+### Patch Changes
+
+- 429c7b8: remove unused dependencies
+
+## 0.17.0
+
+### Minor Changes
+
+- d79e46d: Backstage version bump to v1.47.2
+
 ## 0.16.0
 
 ### Minor Changes
