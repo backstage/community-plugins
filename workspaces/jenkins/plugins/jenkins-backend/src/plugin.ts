@@ -19,10 +19,10 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 
 import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
 import { JenkinsBuilder } from './service/JenkinsBuilder';
+import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 
 /**
  * Jenkins backend plugin
