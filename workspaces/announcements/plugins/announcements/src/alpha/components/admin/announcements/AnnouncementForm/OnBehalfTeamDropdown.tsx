@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Key, useMemo } from 'react';
+import { Select } from '@backstage/ui';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   useAnnouncementsTranslation,
   useCatalogEntities,
 } from '@backstage-community/plugin-announcements-react';
 import useAsync from 'react-use/esm/useAsync';
-import { useMemo } from 'react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
 type OnBehalfTeamDropdownProps = {
   selectedTeam: string;
@@ -57,57 +53,41 @@ export default function OnBehalfTeamDropdown({
     'Group', // kind
   );
 
-  const teamOptions = useMemo(() => {
+  const selectOptions = useMemo(() => {
     return teams.map(team => ({
-      entityRef: stringifyEntityRef(team),
-      displayName: getTeamDisplayName(team),
+      value: stringifyEntityRef(team),
+      label: getTeamDisplayName(team),
     }));
   }, [teams]);
 
-  const selectedTeamOption = useMemo(() => {
-    return teamOptions.find(team => team.entityRef === selectedTeam) || null;
-  }, [teamOptions, selectedTeam]);
+  const handleChange = (value: Key[] | Key | null) => {
+    if (!value) {
+      onChange('');
+      return;
+    }
+
+    let stringValue: string | null = null;
+
+    if (Array.isArray(value)) {
+      stringValue = String(value[0] ?? '');
+    } else {
+      stringValue = String(value);
+    }
+
+    onChange(stringValue || '');
+  };
 
   return (
-    <Autocomplete
-      value={selectedTeamOption}
-      onChange={(_, newValue) => {
-        onChange(newValue?.entityRef || '');
-      }}
-      options={teamOptions}
-      getOptionLabel={team => team.entityRef}
-      loading={teamsLoading}
-      id="team-dropdown-field"
-      renderOption={(props, team) => (
-        <Box component="li" {...props}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="body1">{team.entityRef}</Typography>
-            {team.displayName && (
-              <Typography variant="caption" color="text.secondary">
-                {team.displayName}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      )}
-      renderInput={params => (
-        <TextField
-          {...params}
-          id="team"
-          label={t('announcementForm.onBehalfOf')}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {teamsLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
+    <Select
+      key={selectedTeam || 'none'}
+      name="team"
+      label={t('announcementForm.onBehalfOf')}
+      searchable
+      placeholder={t('announcementForm.onBehalfOf')}
+      value={selectedTeam || null}
+      onChange={handleChange}
+      options={selectOptions}
+      isDisabled={teamsLoading || selectOptions.length === 0}
     />
   );
 }
