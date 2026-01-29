@@ -65,6 +65,7 @@
     "@backstage/frontend-plugin-api": "^0.13.2",
     "@backstage/plugin-catalog-react": "^1.21.4",
     "@backstage/types": "^1.2.2",
+    "@backstage/ui": "^0.11.1",
     "@material-table/exporters": "^1.2.19",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
