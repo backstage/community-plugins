@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.24.1
+
+### Patch Changes
+
+- dfda774: Added ja and updated fr, it translation files.
+
 ## 1.24.0
 
 ### Minor Changes
