@@ -644,3 +644,57 @@ export interface ResponsesApiResponse {
   /** Truncation settings */
   truncation?: unknown;
 }
+
+// =============================================================================
+// Conversation Storage Types
+// =============================================================================
+
+/**
+ * A stored conversation record.
+ * Used for API responses and internal representation.
+ *
+ * @public
+ */
+export interface ConversationRecord {
+  /** Unique identifier for the conversation */
+  id: string;
+  /** User entity ref who owns this conversation */
+  userId: string;
+  /** Array of chat messages in the conversation */
+  messages: ChatMessage[];
+  /** Optional array of tool names used in the conversation */
+  toolsUsed?: string[];
+  /** AI-generated or user-edited conversation title */
+  title?: string;
+  /** Whether the conversation is starred/favorited */
+  isStarred: boolean;
+  /** Timestamp when the conversation was created */
+  createdAt: Date;
+  /** Timestamp when the conversation was last updated */
+  updatedAt: Date;
+}
+
+/**
+ * Database row representation of a conversation.
+ * Used internally for database operations.
+ *
+ * @internal
+ */
+export interface ConversationRow {
+  /** UUID primary key */
+  id: string;
+  /** User entity ref (snake_case for DB) */
+  user_id: string;
+  /** JSON-serialized messages array */
+  messages: string;
+  /** JSON-serialized tools array or null */
+  tools_used: string | null;
+  /** AI-generated or user-edited conversation title */
+  title: string | null;
+  /** Whether the conversation is starred/favorited */
+  is_starred: boolean;
+  /** Creation timestamp */
+  created_at: Date;
+  /** Last update timestamp */
+  updated_at: Date;
+}

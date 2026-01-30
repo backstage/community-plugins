@@ -167,7 +167,7 @@ const mockConfigApi = mockApis.config({
 createDevApp()
   .registerPlugin(rbacPlugin)
   .addTranslationResource(rbacTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .setDefaultLanguage('en')
   .addPage({
     element: (

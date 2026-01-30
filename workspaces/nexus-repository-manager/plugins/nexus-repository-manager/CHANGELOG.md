@@ -18,6 +18,12 @@
 - fb94653: Updated dependency `@hey-api/openapi-ts` to `0.90.2`.
 - b2c4feb: Updated dependency `@hey-api/openapi-ts` to `0.90.1`.
 
+## 1.19.4
+
+### Patch Changes
+
+- 5cbde4b: Updated fr, it and ja translation files
+
 ## 1.19.3
 
 ### Patch Changes

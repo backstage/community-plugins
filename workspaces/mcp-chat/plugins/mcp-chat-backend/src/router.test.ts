@@ -19,11 +19,15 @@ import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
 import { MCPClientService } from './services/MCPClientService';
+import { ChatConversationStore } from './services/ChatConversationStore';
+import { SummarizationService } from './services/SummarizationService';
 import { MCPServerType } from './types';
 
 describe('createRouter', () => {
   let app: express.Express;
   let mcpClientService: jest.Mocked<MCPClientService>;
+  let conversationStore: jest.Mocked<ChatConversationStore>;
+  let summarizationService: jest.Mocked<SummarizationService>;
 
   beforeEach(async () => {
     mcpClientService = {
@@ -34,9 +38,26 @@ describe('createRouter', () => {
       getMCPServerStatus: jest.fn(),
     };
 
+    conversationStore = {
+      saveConversation: jest.fn(),
+      getConversations: jest.fn(),
+      getConversationById: jest.fn(),
+      deleteUserConversations: jest.fn(),
+      deleteConversation: jest.fn(),
+      toggleStarred: jest.fn(),
+      updateTitle: jest.fn(),
+    } as unknown as jest.Mocked<ChatConversationStore>;
+
+    summarizationService = {
+      summarizeConversation: jest.fn().mockResolvedValue('Test Title'),
+    } as unknown as jest.Mocked<SummarizationService>;
+
     const router = await createRouter({
       logger: mockServices.logger.mock(),
       mcpClientService,
+      conversationStore,
+      httpAuth: mockServices.httpAuth.mock(),
+      summarizationService,
     });
 
     app = express();
