@@ -51,6 +51,7 @@ const renderAnnouncementForm = async ({ active }: { active?: boolean }) => {
       <AnnouncementForm
         initialData={{ active } as Announcement}
         onSubmit={jest.fn()}
+        onCancel={jest.fn()}
       />
     </TestApiProvider>,
   );

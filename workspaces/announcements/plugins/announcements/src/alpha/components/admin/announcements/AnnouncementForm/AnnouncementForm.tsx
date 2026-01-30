@@ -21,14 +21,11 @@ import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Grid,
-  Text,
   TextField,
   Switch,
   Flex,
+  DialogFooter,
 } from '@backstage/ui';
 import { RiSave2Line } from '@remixicon/react';
 import {
@@ -47,11 +44,15 @@ import MuiTextField from '@mui/material/TextField';
 type AnnouncementFormProps = {
   initialData: Announcement;
   onSubmit: (data: CreateAnnouncementRequest) => Promise<void>;
+  onCancel: () => void;
+  canSubmit?: boolean;
 };
 
 export const AnnouncementForm = ({
   initialData,
   onSubmit,
+  onCancel,
+  canSubmit,
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
   const announcementsApi = useApi(announcementsApiRef);
@@ -129,141 +130,142 @@ export const AnnouncementForm = ({
     }
   };
 
+  const isDisabled = loading || !form.body || canSubmit === false;
+
   return (
-    <Card>
-      <CardHeader>
-        <Text variant="title-small">
-          {initialData.title
-            ? t('announcementForm.editAnnouncement')
-            : t('announcementForm.newAnnouncement')}
-        </Text>
-      </CardHeader>
+    <>
+      <Box p="3">
+        <form onSubmit={handleSubmit} id="announcement-form">
+          <Grid.Root columns="12">
+            <Grid.Item colSpan="12">
+              <TextField
+                label={t('announcementForm.title')}
+                value={form.title}
+                onChange={title => setForm({ ...form, title })}
+                isRequired
+              />
+            </Grid.Item>
 
-      <CardBody>
-        <Box p="3">
-          <form onSubmit={handleSubmit}>
-            <Grid.Root columns="12">
-              <Grid.Item colSpan="12">
-                <TextField
-                  label={t('announcementForm.title')}
-                  value={form.title}
-                  onChange={title => setForm({ ...form, title })}
-                  isRequired
-                />
-              </Grid.Item>
+            <Grid.Item colSpan="12">
+              <TextField
+                label={t('announcementForm.excerpt')}
+                value={form.excerpt}
+                onChange={excerpt => setForm({ ...form, excerpt })}
+                isRequired
+              />
+            </Grid.Item>
 
-              <Grid.Item colSpan="12">
-                <TextField
-                  label={t('announcementForm.excerpt')}
-                  value={form.excerpt}
-                  onChange={excerpt => setForm({ ...form, excerpt })}
-                  isRequired
-                />
-              </Grid.Item>
+            <Grid.Item colSpan="12">
+              <MDEditor
+                value={form.body}
+                style={{ minHeight: '30rem' }}
+                onChange={value =>
+                  setForm({ ...form, ...{ body: value || '' } })
+                }
+              />
+            </Grid.Item>
 
-              <Grid.Item colSpan="12">
-                <MDEditor
-                  value={form.body}
-                  style={{ minHeight: '30rem' }}
-                  onChange={value =>
-                    setForm({ ...form, ...{ body: value || '' } })
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+              <CategoryInput
+                setForm={setForm}
+                form={form}
+                initialValue={initialData.category?.title ?? ''}
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+              <OnBehalfTeamDropdown
+                selectedTeam={onBehalfOfSelectedTeam}
+                onChange={setOnBehalfOfSelectedTeam}
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+              <TagsInput setForm={setForm} form={form} />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+              <MuiTextField
+                variant="outlined"
+                label={t('announcementForm.startAt')}
+                id="start-at-date"
+                type="date"
+                value={form.start_at}
+                InputLabelProps={{ shrink: true }}
+                required
+                fullWidth
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    start_at: e.target.value,
+                  })
+                }
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+              <MuiTextField
+                variant="outlined"
+                label={t('announcementForm.untilDate')}
+                id="until-date"
+                type="date"
+                value={form.until_date}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    until_date: e.target.value,
+                  })
+                }
+                inputProps={{
+                  min: DateTime.fromISO(form.start_at)
+                    .endOf('day')
+                    .plus({ days: 1 })
+                    .toISODate(),
+                }}
+              />
+            </Grid.Item>
+
+            <Grid.Item colSpan="12">
+              <Flex justify="end">
+                <Switch
+                  name="active"
+                  label={t('announcementForm.active')}
+                  isSelected={form.active}
+                  onChange={isSelected =>
+                    setForm({ ...form, active: isSelected })
                   }
                 />
-              </Grid.Item>
-
-              <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <CategoryInput
-                  setForm={setForm}
-                  form={form}
-                  initialValue={initialData.category?.title ?? ''}
-                />
-              </Grid.Item>
-
-              <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <OnBehalfTeamDropdown
-                  selectedTeam={onBehalfOfSelectedTeam}
-                  onChange={setOnBehalfOfSelectedTeam}
-                />
-              </Grid.Item>
-
-              <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <TagsInput setForm={setForm} form={form} />
-              </Grid.Item>
-
-              <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <MuiTextField
-                  variant="outlined"
-                  label={t('announcementForm.startAt')}
-                  id="start-at-date"
-                  type="date"
-                  value={form.start_at}
-                  InputLabelProps={{ shrink: true }}
-                  required
-                  fullWidth
-                  onChange={e =>
-                    setForm({
-                      ...form,
-                      start_at: e.target.value,
-                    })
+                <Switch
+                  name="sendNotification"
+                  label={t('announcementForm.sendNotification')}
+                  isSelected={form.sendNotification}
+                  onChange={isSelected =>
+                    setForm({ ...form, sendNotification: isSelected })
                   }
                 />
-              </Grid.Item>
+              </Flex>
+            </Grid.Item>
+          </Grid.Root>
+        </form>
+      </Box>
 
-              <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <MuiTextField
-                  variant="outlined"
-                  label={t('announcementForm.untilDate')}
-                  id="until-date"
-                  type="date"
-                  value={form.until_date}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                  onChange={e =>
-                    setForm({
-                      ...form,
-                      until_date: e.target.value,
-                    })
-                  }
-                  inputProps={{
-                    min: DateTime.fromISO(form.start_at)
-                      .endOf('day')
-                      .plus({ days: 1 })
-                      .toISODate(),
-                  }}
-                />
-              </Grid.Item>
+      <DialogFooter>
+        <Button
+          variant="primary"
+          type="submit"
+          form="announcement-form"
+          isDisabled={isDisabled}
+          iconStart={<RiSave2Line />}
+        >
+          {t('announcementForm.submit')}
+        </Button>
 
-              <Grid.Item colSpan="12">
-                <Flex justify="end">
-                  <Switch
-                    name="active"
-                    label={t('announcementForm.active')}
-                    isSelected={form.active}
-                    onChange={isSelected =>
-                      setForm({ ...form, active: isSelected })
-                    }
-                  />
-                  <Switch
-                    name="sendNotification"
-                    label={t('announcementForm.sendNotification')}
-                    isSelected={form.sendNotification}
-                    onChange={isSelected =>
-                      setForm({ ...form, sendNotification: isSelected })
-                    }
-                  />
-                  <Button
-                    type="submit"
-                    isDisabled={loading || !form.body}
-                    iconStart={<RiSave2Line />}
-                  >
-                    {t('announcementForm.submit')}
-                  </Button>
-                </Flex>
-              </Grid.Item>
-            </Grid.Root>
-          </form>
-        </Box>
-      </CardBody>
-    </Card>
+        <Button onClick={onCancel} variant="secondary" slot="close">
+          {t('admin.announcementsContent.cancelButton')}
+        </Button>
+      </DialogFooter>
+    </>
   );
 };

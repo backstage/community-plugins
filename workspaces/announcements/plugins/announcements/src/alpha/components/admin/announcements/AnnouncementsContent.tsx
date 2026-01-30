@@ -32,14 +32,14 @@ import {
 import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Box, Grid, Flex, Button } from '@backstage/ui';
+import { Box } from '@backstage/ui';
 import slugify from 'slugify';
 
 import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { AnnouncementForm } from './AnnouncementForm';
+import { CreateAnnouncementDialog } from './CreateAnnouncementDialog';
 import { AnnouncementsTableCard } from './AnnouncementsTableCard';
 import { announcementViewRouteRef } from '../../../../routes';
 
@@ -52,28 +52,6 @@ export type AnnouncementsContentProps = {
     /** sets active switch form input to false by default when creating a new announcement */
     defaultInactive?: boolean;
   };
-};
-
-const AnnouncementFormContent = (props: {
-  onCancel: () => void;
-  onSubmit: (request: CreateAnnouncementRequest) => Promise<void>;
-  initialData: Announcement;
-}) => {
-  const { t } = useAnnouncementsTranslation();
-
-  const { onCancel, onSubmit, initialData } = props;
-
-  return (
-    <Box mb="2">
-      <Flex justify="end" align="center" pb="3">
-        <Button variant="secondary" onClick={onCancel}>
-          {t('admin.announcementsContent.cancelButton')}
-        </Button>
-      </Flex>
-
-      <AnnouncementForm initialData={initialData} onSubmit={onSubmit} />
-    </Box>
-  );
 };
 
 /**
@@ -248,52 +226,44 @@ export const AnnouncementsContent = ({
 
   return (
     <RequirePermission permission={announcementCreatePermission}>
-      <Grid.Root columns="1">
-        {showCreateAnnouncementForm && (
-          <Grid.Item>
-            <AnnouncementFormContent
-              onCancel={onCancelCreate}
-              onSubmit={onSubmit}
-              initialData={{ active: !defaultInactive } as Announcement}
-            />
-          </Grid.Item>
-        )}
+      <Box mb="12">
+        <AnnouncementsTableCard
+          announcements={announcements?.results ?? []}
+          onPreviewClick={onPreviewClick}
+          onEditClick={onEditClick}
+          onDeleteClick={onDeleteClick}
+          onCreateClick={onCreateButtonClick}
+          canEdit={canEdit}
+          canDelete={canDelete}
+          canCreate={canCreate}
+          editingAnnouncementId={editingAnnouncementId}
+        />
+      </Box>
 
-        {editingAnnouncementId && announcementToEdit && (
-          <Grid.Item>
-            <AnnouncementFormContent
-              onCancel={onCancelEdit}
-              onSubmit={onUpdate}
-              initialData={announcementToEdit}
-            />
-          </Grid.Item>
-        )}
+      <CreateAnnouncementDialog
+        open={showCreateAnnouncementForm}
+        onConfirm={onSubmit}
+        onCancel={onCancelCreate}
+        initialData={{ active: !defaultInactive } as Announcement}
+        canSubmit={canCreate}
+      />
 
-        <Grid.Item>
-          <Box mb="12">
-            <AnnouncementsTableCard
-              announcements={announcements?.results ?? []}
-              onPreviewClick={onPreviewClick}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-              onCreateClick={onCreateButtonClick}
-              canEdit={canEdit}
-              canDelete={canDelete}
-              canCreate={canCreate}
-              editingAnnouncementId={editingAnnouncementId}
-            />
-          </Box>
+      <CreateAnnouncementDialog
+        open={!!editingAnnouncementId && !!announcementToEdit}
+        onConfirm={onUpdate}
+        onCancel={onCancelEdit}
+        initialData={announcementToEdit ?? undefined}
+        canSubmit={canEdit}
+      />
 
-          <DeleteConfirmationDialog
-            type="announcement"
-            itemTitle={announcementToDelete?.title}
-            open={isDeleteDialogOpen}
-            onCancel={onCancelDelete}
-            onConfirm={onConfirmDelete}
-            canDelete={canDelete}
-          />
-        </Grid.Item>
-      </Grid.Root>
+      <DeleteConfirmationDialog
+        type="announcement"
+        itemTitle={announcementToDelete?.title}
+        open={isDeleteDialogOpen}
+        onCancel={onCancelDelete}
+        onConfirm={onConfirmDelete}
+        canDelete={canDelete}
+      />
     </RequirePermission>
   );
 };
