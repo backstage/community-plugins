@@ -15,7 +15,6 @@ import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
-import { TranslationMessages } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
@@ -64,19 +63,6 @@ group?: ("overview" | "documentation" | "development" | "deployment" | "operatio
 loader: () => Promise<JSX.Element>;
 routeRef?: RouteRef;
 filter?: string | EntityPredicate | ((entity: Entity) => boolean);
-};
-}>;
-"translation:bookmarks/bookmarksTranslations": OverridableExtensionDefinition<    {
-kind: "translation";
-name: "bookmarksTranslations";
-config: {};
-configInput: {};
-output: ExtensionDataRef<TranslationResource<string> | TranslationMessages<string, {
-[x: string]: string;
-}, boolean>, "core.translation.translation", {}>;
-inputs: {};
-params: {
-resource: TranslationResource | TranslationMessages;
 };
 }>;
 }>;

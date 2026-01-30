@@ -66,4 +66,9 @@ backend.add(import('@backstage-community/plugin-jenkins-backend'));
 // azure
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 
+// mssv
+backend.add(
+  import('@backstage-community/plugin-multi-source-security-viewer-backend'),
+);
+
 backend.start();

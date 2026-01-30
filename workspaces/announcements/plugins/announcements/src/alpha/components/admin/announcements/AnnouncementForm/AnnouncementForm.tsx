@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
@@ -32,6 +32,7 @@ import {
   Grid,
   Text,
   TextField,
+  Switch,
 } from '@backstage/ui';
 import { RiSave2Line, RiAddLine } from '@remixicon/react';
 import {
@@ -51,9 +52,6 @@ import { CreateCategoryDialog } from '../../categories';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import TagsInput from './TagsInput';
 
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Switch from '@mui/material/Switch';
 import MuiTextField from '@mui/material/TextField';
 
 type AnnouncementFormProps = {
@@ -98,13 +96,6 @@ export const AnnouncementForm = ({
   );
   const [showCreateCategoryDialog, setShowCreateCategoryDialog] =
     useState(false);
-
-  const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.checked,
-    });
-  };
 
   const handleCreateCategory = async (request: CreateCategoryRequest) => {
     const slugifiedTitle = slugify(request.title.trim(), { lower: true });
@@ -323,38 +314,31 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan="12">
-                <FormGroup row style={{ justifyContent: 'flex-end' }}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        name="active"
-                        checked={form.active}
-                        onChange={handleChangeActive}
-                        color="primary"
-                      />
-                    }
+                <Flex justify="end">
+                  <Switch
+                    name="active"
                     label={t('announcementForm.active')}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        name="sendNotification"
-                        checked={form.sendNotification}
-                        onChange={handleChangeActive}
-                        color="primary"
-                      />
+                    isSelected={form.active}
+                    onChange={isSelected =>
+                      setForm({ ...form, active: isSelected })
                     }
-                    label="Send Notification"
+                  />
+                  <Switch
+                    name="sendNotification"
+                    label={t('announcementForm.sendNotification')}
+                    isSelected={form.sendNotification}
+                    onChange={isSelected =>
+                      setForm({ ...form, sendNotification: isSelected })
+                    }
                   />
                   <Button
                     type="submit"
-                    size="medium"
                     isDisabled={loading || !form.body}
                     iconStart={<RiSave2Line />}
                   >
                     {t('announcementForm.submit')}
                   </Button>
-                </FormGroup>
+                </Flex>
               </Grid.Item>
             </Grid.Root>
           </form>

@@ -134,6 +134,19 @@ const defaultProps = {
     error: null,
     refetch: jest.fn(),
   },
+  // Conversation history props
+  starredConversations: [],
+  recentConversations: [],
+  conversationsLoading: false,
+  conversationsError: undefined,
+  searchQuery: '',
+  isSearching: false,
+  onSearchChange: jest.fn(),
+  onSearchClear: jest.fn(),
+  onSelectConversation: jest.fn(),
+  onToggleStar: jest.fn(),
+  onDeleteConversation: jest.fn(),
+  selectedConversationId: undefined,
 };
 
 const renderRightPane = (props = {}) => {

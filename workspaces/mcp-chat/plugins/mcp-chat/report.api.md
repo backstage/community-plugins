@@ -22,6 +22,8 @@ export interface ChatResponse {
   // (undocumented)
   content: string;
   // (undocumented)
+  conversationId?: string;
+  // (undocumented)
   role: 'assistant';
   // (undocumented)
   toolResponses?: any[];
@@ -29,10 +31,34 @@ export interface ChatResponse {
   toolsUsed?: string[];
 }
 
+// @public
+export interface ConversationRecord {
+  createdAt: string;
+  id: string;
+  isStarred: boolean;
+  messages: ChatMessage[];
+  title?: string;
+  toolsUsed?: string[];
+  updatedAt: string;
+  userId: string;
+}
+
+// @public
+export interface ConversationsResponse {
+  conversations: ConversationRecord[];
+  count: number;
+}
+
 // @public (undocumented)
 export interface McpChatApi {
   // (undocumented)
+  deleteConversation(id: string): Promise<void>;
+  // (undocumented)
   getAvailableTools(): Promise<ToolsResponse>;
+  // (undocumented)
+  getConversationById(id: string): Promise<ConversationRecord>;
+  // (undocumented)
+  getConversations(): Promise<ConversationsResponse>;
   // (undocumented)
   getMCPServerStatus(): Promise<MCPServerStatusData>;
   // (undocumented)
@@ -42,7 +68,12 @@ export interface McpChatApi {
     messages: ChatMessage[],
     enabledTools?: string[],
     signal?: AbortSignal,
+    conversationId?: string,
   ): Promise<ChatResponse>;
+  // (undocumented)
+  toggleConversationStar(id: string): Promise<{
+    isStarred: boolean;
+  }>;
 }
 
 // @public (undocumented)

@@ -1,5 +1,22 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.0.2
+
+### Patch Changes
+
+- 0b21938: Upgrades Typescript to 5.7.0
+- Updated dependencies [0b21938]
+  - @backstage-community/plugin-tech-insights-react@1.3.2
+
+## 1.0.1
+
+### Patch Changes
+
+- 3ca2b56: Upgrades to Backstage v1.47.2
+- Updated dependencies [3ca2b56]
+  - @backstage-community/plugin-tech-insights-common@0.8.1
+  - @backstage-community/plugin-tech-insights-react@1.3.1
+
 ## 1.0.0
 
 ### Major Changes
