@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@backstage/ui/css/styles.css';
 import { Entity } from '@backstage/catalog-model';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
@@ -27,6 +26,7 @@ import {
 } from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
+import { tektonTranslations } from '@backstage-community/plugin-tekton';
 
 import { mockKubernetesPlrResponse } from '../src/__fixtures__/1-pipelinesData';
 import {
@@ -201,6 +201,8 @@ const mockKubernetesAuthProviderApiRef = {
 };
 
 createDevApp()
+  .addTranslationResource(tektonTranslations)
+  .setAvailableLanguages(['en', 'fr', 'it', 'ja'])
   .addPage({
     element: (
       <TestApiProvider
