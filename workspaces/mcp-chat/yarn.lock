@@ -2513,16 +2513,20 @@ __metadata:
     "@backstage/backend-plugin-api": "npm:^1.4.0"
     "@backstage/backend-test-utils": "npm:^1.6.0"
     "@backstage/cli": "npm:^0.33.0"
+    "@backstage/config": "npm:^1.3.0"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/plugin-catalog-node": "npm:^1.17.1"
     "@google/generative-ai": "npm:^0.24.1"
     "@modelcontextprotocol/sdk": "npm:^1.25.2"
     "@types/express": "npm:^4.17.6"
     "@types/supertest": "npm:^6.0.0"
+    "@types/uuid": "npm:^9.0.0"
     express: "npm:^4.22.0"
     express-promise-router: "npm:^4.1.0"
+    knex: "npm:^3.1.0"
     ollama: "npm:^0.6.0"
     supertest: "npm:^7.0.0"
+    uuid: "npm:^9.0.0"
   languageName: unknown
   linkType: soft
 
@@ -2948,14 +2952,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config@npm:^1.3.2":
-  version: 1.3.2
-  resolution: "@backstage/config@npm:1.3.2"
+"@backstage/config@npm:^1.3.0, @backstage/config@npm:^1.3.2":
+  version: 1.3.6
+  resolution: "@backstage/config@npm:1.3.6"
   dependencies:
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.1"
+    "@backstage/types": "npm:^1.2.2"
     ms: "npm:^2.1.3"
-  checksum: 10/cc2e4ff7cd0db7542ed258fb273826057aff1455f745c1f9379303c3407ea6ca4f9f908a73f29470b9ca3155ef4603263e9d1dda5bd4d6930c42e794c70885e4
+  checksum: 10/668245a7eb20681ec0864540b8db1a99df40e17181c561b70ef8a3a644e8ceae31b4defe2bf696d31af17ea14d7cf1927459bf3ce91a530cb7b505647430c58a
   languageName: node
   linkType: hard
 
@@ -3618,10 +3622,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/types@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@backstage/types@npm:1.2.1"
-  checksum: 10/e3e65835b9db31d3f697e2d62fbcf52a3a6373e9f75fa8429e61f0a455880d4c32cdf996b22e85165e1a5b108604267281624befebcf9ae692c8844675925f14
+"@backstage/types@npm:^1.2.1, @backstage/types@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@backstage/types@npm:1.2.2"
+  checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
   languageName: node
   linkType: hard
 
@@ -8925,7 +8929,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^9.0.1":
+"@types/uuid@npm:^9.0.0, @types/uuid@npm:^9.0.1":
   version: 9.0.8
   resolution: "@types/uuid@npm:9.0.8"
   checksum: 10/b8c60b7ba8250356b5088302583d1704a4e1a13558d143c549c408bf8920535602ffc12394ede77f8a8083511b023704bc66d1345792714002bfa261b17c5275
@@ -17654,7 +17658,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knex@npm:3.1.0, knex@npm:^3.0.0":
+"knex@npm:3.1.0, knex@npm:^3.0.0, knex@npm:^3.1.0":
   version: 3.1.0
   resolution: "knex@npm:3.1.0"
   dependencies:

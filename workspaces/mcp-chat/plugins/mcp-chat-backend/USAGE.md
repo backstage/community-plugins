@@ -7,6 +7,7 @@ This document describes how to use `@backstage-community/plugin-mcp-chat-backend
 - [Quick Start](#quick-start)
 - [Provider System](#provider-system)
 - [MCPClientService](#mcpclientservice)
+- [Conversation Storage](#conversation-storage)
 - [Types Reference](#types-reference)
 - [Configuration](#configuration)
 - [Examples](#examples)
@@ -192,6 +193,104 @@ tools.forEach(tool => {
 
 ---
 
+## Conversation Storage
+
+The `ChatConversationStore` provides database-backed conversation persistence for authenticated users.
+
+### Using ChatConversationStore
+
+```typescript
+import {
+  ChatConversationStore,
+  type ChatConversationStoreOptions,
+  type ConversationRecord,
+} from '@backstage-community/plugin-mcp-chat-backend';
+
+// Create store (requires DatabaseService from Backstage)
+const store = await ChatConversationStore.create({
+  database, // DatabaseService from coreServices.database
+  logger, // LoggerService
+  config, // Config
+});
+
+// Save a new conversation
+const conversation = await store.saveConversation(
+  'user:default/john', // userId (entity ref)
+  messages, // ChatMessage[]
+  ['kubernetes-server'], // toolsUsed (optional)
+);
+
+// Update an existing conversation (pass conversationId)
+const updated = await store.saveConversation(
+  'user:default/john',
+  updatedMessages,
+  ['kubernetes-server'],
+  conversation.id, // existing conversation ID
+);
+
+// Get user's conversations (most recent first)
+const conversations = await store.getConversations('user:default/john');
+
+// Get with custom limit
+const recent5 = await store.getConversations('user:default/john', 5);
+
+// Get a specific conversation
+const conv = await store.getConversationById(
+  'user:default/john',
+  conversationId,
+);
+
+// Toggle star status
+const isNowStarred = await store.toggleStarred(
+  'user:default/john',
+  conversationId,
+);
+
+// Update title
+await store.updateTitle('user:default/john', conversationId, 'New Title');
+
+// Delete a conversation
+const deleted = await store.deleteConversation(
+  'user:default/john',
+  conversationId,
+);
+
+// Delete all conversations for a user
+await store.deleteUserConversations('user:default/john');
+```
+
+### SummarizationService
+
+The `SummarizationService` generates AI-powered titles for conversations:
+
+```typescript
+import {
+  SummarizationService,
+  type SummarizationServiceOptions,
+} from '@backstage-community/plugin-mcp-chat-backend';
+
+const summarizer = new SummarizationService({
+  mcpClientService, // MCPClientService instance
+  logger,
+  config,
+});
+
+// Generate a title for a conversation
+const title = await summarizer.summarizeConversation(messages);
+// Returns: "Kubernetes Pod Troubleshooting" or falls back to first user message
+```
+
+**Configuration options** (in `app-config.yaml`):
+
+```yaml
+mcpChat:
+  conversationHistory:
+    autoSummarize: true # Enable AI title generation (default: true)
+    summarizeTimeout: 3000 # Timeout in ms (default: 3000)
+```
+
+---
+
 ## Types Reference
 
 ### Provider Types
@@ -263,6 +362,24 @@ interface ToolExecutionResult {
   arguments: Record<string, unknown>; // Parsed arguments
   result: string; // Tool output
   serverId: string; // MCP server that handled it
+}
+```
+
+### Conversation Types
+
+```typescript
+import type { ConversationRecord } from '@backstage-community/plugin-mcp-chat-backend';
+
+// ConversationRecord - A stored conversation
+interface ConversationRecord {
+  id: string; // UUID
+  userId: string; // User entity ref (e.g., 'user:default/john')
+  messages: ChatMessage[]; // Conversation messages
+  toolsUsed?: string[]; // Tool names used in the conversation
+  title?: string; // AI-generated or user-edited title
+  isStarred: boolean; // Whether the conversation is starred
+  createdAt: Date; // When the conversation was created
+  updatedAt: Date; // When the conversation was last updated
 }
 ```
 
