@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.9.4
+
+### Patch Changes
+
+- a9477e3: Added ja and updated fr, it translation files.
+
 ## 2.9.3
 
 ### Patch Changes
