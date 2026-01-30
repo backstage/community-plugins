@@ -16,13 +16,17 @@
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { acrTranslationRef } from './ref';
 
+/**
+ * fr translation for plugin.acr.
+ * @public
+ */
 const acrTranslationFr = createTranslationMessages({
   ref: acrTranslationRef,
   messages: {
-    'page.title': 'Dépôt Azure Container Registry : {{image}}',
-    'table.searchPlaceholder': 'Filtrer',
+    'page.title': 'Azure Container Registry Repository: {{image}}',
+    'table.searchPlaceholder': 'Filtre',
     'table.labelRowsSelect': 'Lignes',
-    'table.columns.tag': 'Étiquette',
+    'table.columns.tag': 'Balise',
     'table.columns.created': 'Créé',
     'table.columns.lastModified': 'Dernière modification',
     'table.columns.manifest': 'Manifeste',
