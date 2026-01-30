@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 1.25.3
+
+### Patch Changes
+
+- f1bece1: Added ja and updated fr, it translation files.
+
 ## 1.25.2
 
 ### Patch Changes
