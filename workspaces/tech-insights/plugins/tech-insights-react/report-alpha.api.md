@@ -14,21 +14,21 @@ import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
   kind: 'tech-insights-scorecard';
   params: {
-    title?: string | undefined;
-    description?: string | undefined;
-    checkIds?: string[] | undefined;
-    dense?: boolean | undefined;
-    filter?: EntityPredicate | undefined;
-    checkFilter?: ((check: Check) => boolean) | undefined;
+    title?: string;
+    description?: string;
+    checkIds?: string[];
+    dense?: boolean;
+    filter?: EntityPredicate;
+    checkFilter?: (check: Check) => boolean;
   };
   output:
     | ExtensionDataRef<
         {
-          title?: string | undefined;
-          description?: string | undefined;
-          checkIds?: string[] | undefined;
-          dense?: boolean | undefined;
-          checkFilter?: ((check: Check) => boolean) | undefined;
+          title?: string;
+          description?: string;
+          checkIds?: string[];
+          dense?: boolean;
+          checkFilter?: (check: Check) => boolean;
         },
         'tech-insights.scorecard.props',
         {}
@@ -65,11 +65,11 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
   dataRefs: {
     props: ConfigurableExtensionDataRef<
       {
-        title?: string | undefined;
-        description?: string | undefined;
-        checkIds?: string[] | undefined;
-        dense?: boolean | undefined;
-        checkFilter?: ((check: Check) => boolean) | undefined;
+        title?: string;
+        description?: string;
+        checkIds?: string[];
+        dense?: boolean;
+        checkFilter?: (check: Check) => boolean;
       },
       'tech-insights.scorecard.props',
       {}
@@ -104,11 +104,11 @@ export const techInsightsScorecardFilterExpressionDataRef: ConfigurableExtension
 // @alpha (undocumented)
 export const techInsightsScorecardPropsDataRef: ConfigurableExtensionDataRef<
   {
-    title?: string | undefined;
-    description?: string | undefined;
-    checkIds?: string[] | undefined;
-    dense?: boolean | undefined;
-    checkFilter?: ((check: Check) => boolean) | undefined;
+    title?: string;
+    description?: string;
+    checkIds?: string[];
+    dense?: boolean;
+    checkFilter?: (check: Check) => boolean;
   },
   'tech-insights.scorecard.props',
   {}

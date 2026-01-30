@@ -1,4 +1,11 @@
-### Dependencies
+# @backstage-community/plugin-nexus-repository-manager
+
+## 1.20.1
+
+### Patch Changes
+
+- c074f91: Updated fr, it and ja translation files.
+- d567697: Updated dependency `@hey-api/openapi-ts` to `0.90.9`.
 
 ## 1.20.0
 
@@ -10,6 +17,12 @@
 
 - fb94653: Updated dependency `@hey-api/openapi-ts` to `0.90.2`.
 - b2c4feb: Updated dependency `@hey-api/openapi-ts` to `0.90.1`.
+
+## 1.19.4
+
+### Patch Changes
+
+- 5cbde4b: Updated fr, it and ja translation files
 
 ## 1.19.3
 

@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-quay
 
 ## 2.15.0
 

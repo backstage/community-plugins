@@ -56,7 +56,7 @@ import { tektonTranslations } from '@backstage-community/plugin-tekton';
 const app = createApp({
   apis,
   __experimentalTranslations: {
-    availableLanguages: ['en'],
+    availableLanguages: ['en', 'ja', 'fr', 'it'],
     resources: [tektonTranslations],
   },
   bindRoutes({ bind }) {

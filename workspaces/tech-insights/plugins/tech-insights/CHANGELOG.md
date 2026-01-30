@@ -1,5 +1,25 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.0.1
+
+### Patch Changes
+
+- 3ca2b56: Upgrades to Backstage v1.47.2
+- Updated dependencies [3ca2b56]
+  - @backstage-community/plugin-tech-insights-common@0.8.1
+  - @backstage-community/plugin-tech-insights-react@1.3.1
+
+## 1.0.0
+
+### Major Changes
+
+- 12c1773: All existing deprecation notices have been removed from the plugin
+
+### Patch Changes
+
+- ecd421a: Added filter component to the ScorecardsPage to filter on entities with at least one failed check.
+  Also added desc/asc order based on check results in the 'Results' column. Sort by number of failed checks first, then by total checks.
+
 ## 0.8.0
 
 ### Minor Changes

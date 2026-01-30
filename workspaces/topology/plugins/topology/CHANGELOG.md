@@ -1,4 +1,10 @@
-### Dependencies
+# @backstage-community/plugin-topology
+
+## 2.10.2
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
 
 ## 2.10.1
 
@@ -12,6 +18,12 @@
 ### Minor Changes
 
 - f738017: Backstage version bump to v1.46.2
+
+## 2.9.4
+
+### Patch Changes
+
+- a9477e3: Added ja and updated fr, it translation files.
 
 ## 2.9.3
 

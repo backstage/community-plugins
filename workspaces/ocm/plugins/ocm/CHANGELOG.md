@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-ocm
 
 ## 5.12.0
 

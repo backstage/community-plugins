@@ -30,6 +30,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/integration-react": "backstage:^",
     "@backstage/plugin-api-docs": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-catalog-import": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",

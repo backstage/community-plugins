@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { jfrogArtifactoryTranslationRef } from './ref';
 
+/**
+ * Italian translation for plugin.jfrog-artifactory.
+ * @public
+ */
 const jfrogArtifactoryTranslationIt = createTranslationMessages({
   ref: jfrogArtifactoryTranslationRef,
   messages: {
@@ -24,7 +29,7 @@ const jfrogArtifactoryTranslationIt = createTranslationMessages({
     'table.labelRowsSelect': 'Righe',
     'table.columns.version': 'Versione',
     'table.columns.repositories': 'Repository',
-    'table.columns.manifest': 'Manifesto',
+    'table.columns.manifest': 'Manifest',
     'table.columns.modified': 'Modificato',
     'table.columns.size': 'Dimensione',
     'table.emptyContent.message': 'Nessun dato è stato ancora aggiunto,',

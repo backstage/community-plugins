@@ -1,4 +1,4 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-kubernetes
 
 ## 2.14.0
 
