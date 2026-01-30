@@ -200,6 +200,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
     readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.sendNotification': 'Send Notification';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
