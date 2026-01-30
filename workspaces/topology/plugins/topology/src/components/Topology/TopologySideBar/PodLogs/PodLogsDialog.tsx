@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useState } from 'react';
-
+// eslint-disable-next-line
 import * as React from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
