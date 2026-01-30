@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.33.3
+
+### Patch Changes
+
+- 782b46b: Added and updated fr, it and ja translation files
+
 ## 3.33.2
 
 ### Patch Changes
