@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { acrTranslationRef } from './ref';
 
+/**
+ * Italian translation for plugin.acr.
+ * @public
+ */
 const acrTranslationIt = createTranslationMessages({
   ref: acrTranslationRef,
   messages: {
-    'page.title': 'Repository Azure Container Registry: {{image}}',
+    'page.title': 'Repository del Registro Azure Container: {{image}}',
     'table.searchPlaceholder': 'Filtra',
     'table.labelRowsSelect': 'Righe',
     'table.columns.tag': 'Tag',
     'table.columns.created': 'Creato',
     'table.columns.lastModified': 'Ultima modifica',
-    'table.columns.manifest': 'Manifesto',
+    'table.columns.manifest': 'Manifest',
   },
 });
 
