@@ -18,6 +18,12 @@
 
 - 3543cc8: Backstage version bump to v1.46.1
 
+## 1.24.1
+
+### Patch Changes
+
+- dfda774: Added ja and updated fr, it translation files.
+
 ## 1.24.0
 
 ### Minor Changes
