@@ -113,9 +113,21 @@ export const AnnouncementsTable = (props: AnnouncementsTableProps) => {
       cell: announcement => {
         const hasValidPublisher =
           announcement.publisher && isValidEntityRef(announcement.publisher);
+        const hasValidOnBehalfOf =
+          announcement.on_behalf_of &&
+          isValidEntityRef(announcement.on_behalf_of);
+
         return hasValidPublisher ? (
           <Cell>
-            <EntityRefLink entityRef={parseEntityRef(announcement.publisher)} />
+            <EntityRefLink entityRef={parseEntityRef(announcement.publisher)} />{' '}
+            {hasValidOnBehalfOf && (
+              <Text variant="body-small">
+                {t('admin.announcementsContent.table.onBehalfOf').toLowerCase()}{' '}
+                <EntityRefLink
+                  entityRef={parseEntityRef(announcement.on_behalf_of!)}
+                />
+              </Text>
+            )}
           </Cell>
         ) : (
           <CellText title="-" />
