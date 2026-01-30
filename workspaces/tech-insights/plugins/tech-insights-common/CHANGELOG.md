@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.8.2
+
+### Patch Changes
+
+- 2d9ce90: Adds support for defining entity filters on a Check.
+
 ## 0.8.1
 
 ### Patch Changes
