@@ -206,19 +206,17 @@ describe('AnnouncementForm', () => {
   describe('active switch', () => {
     it('renders "active" switch checked by default', async () => {
       await renderAnnouncementForm({});
-      expect(screen.getByRole('checkbox', { name: 'Active' })).toBeChecked();
+      expect(screen.getByRole('switch', { name: 'Active' })).toBeChecked();
     });
 
     it('renders "active" switch checked when initial value is true', async () => {
       await renderAnnouncementForm({ active: true });
-      expect(screen.getByRole('checkbox', { name: 'Active' })).toBeChecked();
+      expect(screen.getByRole('switch', { name: 'Active' })).toBeChecked();
     });
 
     it('renders "active" switch unchecked when initial value is false', async () => {
       await renderAnnouncementForm({ active: false });
-      expect(
-        screen.getByRole('checkbox', { name: 'Active' }),
-      ).not.toBeChecked();
+      expect(screen.getByRole('switch', { name: 'Active' })).not.toBeChecked();
     });
   });
 });
