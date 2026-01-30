@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- a4dddac: enable knip report
+
 ## 0.6.0
 
 ### Minor Changes
