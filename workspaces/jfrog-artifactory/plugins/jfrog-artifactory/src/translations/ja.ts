@@ -18,25 +18,24 @@ import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { jfrogArtifactoryTranslationRef } from './ref';
 
 /**
- * fr translation for plugin.jfrog-artifactory.
+ * Japanese translation for plugin.jfrog-artifactory.
  * @public
  */
-const jfrogArtifactoryTranslationFr = createTranslationMessages({
+const jfrogArtifactoryTranslationJa = createTranslationMessages({
   ref: jfrogArtifactoryTranslationRef,
   messages: {
-    'page.title': 'JFrog Artifactory repository: {{image}}',
-    'table.searchPlaceholder': 'Filtre',
-    'table.labelRowsSelect': 'Lignes',
-    'table.columns.version': 'Version',
-    'table.columns.repositories': 'Dépôts',
-    'table.columns.manifest': 'Manifeste',
-    'table.columns.modified': 'Modifié',
-    'table.columns.size': 'Taille',
-    'table.emptyContent.message':
-      'Aucune donnée n’a été ajouté pour l’instant,',
-    'table.emptyContent.learnMore': 'apprenez comment ajouter des données.',
+    'page.title': 'JFrog Artifactory リポジトリー: {{image}}',
+    'table.searchPlaceholder': 'フィルター',
+    'table.labelRowsSelect': '行',
+    'table.columns.version': 'バージョン',
+    'table.columns.repositories': 'リポジトリー',
+    'table.columns.manifest': 'マニフェスト',
+    'table.columns.modified': '更新済み',
+    'table.columns.size': 'サイズ',
+    'table.emptyContent.message': 'まだデータが追加されていません。',
+    'table.emptyContent.learnMore': 'データの追加方法をご覧ください。',
     'manifest.sha256': 'sha256',
   },
 });
 
-export default jfrogArtifactoryTranslationFr;
+export default jfrogArtifactoryTranslationJa;
