@@ -27,7 +27,7 @@ export type ClusterContextType = {
 };
 
 // @public (undocumented)
-export const ClusterInfoCard: () => JSX_2.Element | null;
+export const ClusterInfoCard: () => JSX_2.Element;
 
 // @public (undocumented)
 export const OcmIcon: IconComponent;
