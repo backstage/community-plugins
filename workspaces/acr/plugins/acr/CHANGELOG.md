@@ -1,5 +1,12 @@
 # @backstage-community/plugin-acr
 
+## 1.21.2
+
+### Patch Changes
+
+- 67b71c9: Updated fr, it and ja translation files.
+- dd77090: Updated fr, it and ja translation files.
+
 ## 1.21.1
 
 ### Patch Changes
