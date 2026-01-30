@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OcmPage } from '@backstage-community/plugin-ocm';
+import { OcmIcon, OcmPage } from '@backstage-community/plugin-ocm';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import {
@@ -124,7 +124,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/ocm" element={<OcmPage />} />
+    <Route path="/ocm" element={<OcmPage logo={<OcmIcon />} />} />
   </FlatRoutes>
 );
 
