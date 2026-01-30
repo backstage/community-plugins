@@ -174,7 +174,12 @@ jobs:
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private npm publish --access public --provenance --tolerate-republish --tag "maintenance"
+          YARN_VERSION="$(yarn --version)"
+          if [[ "$YARN_VERSION" == 4.* ]]; then
+            yarn workspaces foreach -A -v --no-private npm publish --access public --tolerate-republish --tag "maintenance"
+          else
+            yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish --tag "maintenance"
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
