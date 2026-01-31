@@ -38,6 +38,7 @@ export const announcementsTranslationRef = createTranslationRef({
         label: 'Tags',
       },
       tagsLabel: 'Tags',
+      sendNotification: 'Send Notification',
     },
     announcementsPage: {
       announcements: 'Announcements',
