@@ -1466,7 +1466,6 @@ __metadata:
     "@backstage/plugin-permission-react": "npm:^0.4.39"
     "@backstage/test-utils": "npm:^1.7.14"
     "@backstage/theme": "npm:^0.7.1"
-    "@backstage/ui": "npm:^0.10.0"
     "@kubernetes/client-node": "npm:1.4.0"
     "@material-ui/core": "npm:^4.9.13"
     "@material-ui/icons": "npm:^4.11.3"

@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-maturity-common
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [2d9ce90]
+  - @backstage-community/plugin-tech-insights-common@0.8.2
+
 ## 0.4.1
 
 ### Patch Changes

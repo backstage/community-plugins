@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-backend-module-jsonfc",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "backstage": {
     "role": "backend-plugin-module",
     "pluginId": "tech-insights",
@@ -42,8 +42,10 @@
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage-community/plugin-tech-insights-node": "workspace:^",
     "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
     "@backstage/types": "backstage:^",
     "ajv": "^8.10.0",
     "json-rules-engine": "^7.0.0",

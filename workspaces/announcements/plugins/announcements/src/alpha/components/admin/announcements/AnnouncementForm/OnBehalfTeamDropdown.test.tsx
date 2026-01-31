@@ -53,7 +53,11 @@ describe('OnBehalfTeamDropdown', () => {
     const dropdown = screen.getByLabelText('announcementForm.onBehalfOf');
     await userEvent.click(dropdown);
 
-    expect(await screen.findByText('group:default/team-a')).toBeInTheDocument();
-    expect(await screen.findByText('group:default/team-b')).toBeInTheDocument();
+    // Use getAllByText since the text appears in both the option and the visible label
+    const teamAOptions = await screen.findAllByText('Team A');
+    expect(teamAOptions.length).toBe(2);
+
+    const teamBOptions = await screen.findAllByText('Team B');
+    expect(teamBOptions.length).toBe(2);
   });
 });
