@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.7.2
+
+### Patch Changes
+
+- 2d9ce90: Adds support for defining entity filters on a Check.
+- Updated dependencies [2d9ce90]
+  - @backstage-community/plugin-tech-insights-common@0.8.2
+  - @backstage-community/plugin-tech-insights-node@2.6.2
+
 ## 0.7.1
 
 ### Patch Changes
