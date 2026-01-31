@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.14.1
+
+### Patch Changes
+
+- 95dd04e: Updated dependency `@openapitools/openapi-generator-cli` to `2.28.0`.
+
 ## 5.14.0
 
 ### Minor Changes
