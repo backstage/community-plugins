@@ -1,5 +1,15 @@
 # @backstage-community/plugin-analytics-module-matomo
 
+## 1.24.0
+
+### Minor Changes
+
+- b41b95d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+
 ## 1.23.0
 
 ### Minor Changes
