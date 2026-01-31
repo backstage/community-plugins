@@ -29,6 +29,8 @@ import {
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 
+// Inspired by https://github.com/backstage/backstage/blob/0fd688a452a54451ca3014b0da17e071e8bfebee/plugins/catalog/src/alpha/filter/FilterWrapper.tsx#L30-L33. This could be removed once the framework provides
+// predicate filter functions.
 function buildFilterFn(
   filterFn?: (entity: Entity) => boolean,
   filterExpr?: EntityPredicate,

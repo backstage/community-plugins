@@ -3,10 +3,9 @@
 '@backstage-community/plugin-tech-insights': patch
 ---
 
-Provides a new TechInsightsScorecardBlueprint for providing custom entity scorecard content. The following example shows how
-to use the blueprint to create two scorecards filtered to specific entities.
+Provides a new `TechInsightsScorecardBlueprint` for creating custom entity scorecard content.
 
-All check ids for an entity will be aggregated and displayed in the scorecard.
+The following example shows how to use the blueprint to create scorecards for specific entities. All API entities would get the first scorecard, but only the production APIs would get the second scorecard.
 
 ```ts
 const techInsightsModule = createFrontendModule({
