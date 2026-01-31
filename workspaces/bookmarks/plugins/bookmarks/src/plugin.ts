@@ -45,9 +45,9 @@ export const EntityBookmarksContent = bookmarksPlugin.provide(
     component:
       /* istanbul ignore next: very difficult to test this in Jest */
       () =>
-        import(
-          './components/EntityBookmarksContent/EntityBookmarksContent'
-        ).then(m => m.EntityBookmarksContent),
+        import('./components/EntityBookmarksContent/EntityBookmarksContent').then(
+          m => m.EntityBookmarksContent,
+        ),
     mountPoint: entityContentRouteRef,
   }),
 );
