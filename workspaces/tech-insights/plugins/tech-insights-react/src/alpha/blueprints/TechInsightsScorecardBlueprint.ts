@@ -23,34 +23,47 @@ import {
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 
 /**
+ * @internal
+ * @remarks accessible via `TechInsightsScorecardBlueprint`
+ */
+export const techInsightsScorecardExtensionData = {
+  /**
+   * Props to configure a scorecard, such as title, description, and check filters.
+   */
+  props: createExtensionDataRef<{
+    title?: string;
+    description?: string;
+    checkIds?: string[];
+    dense?: boolean;
+    checkFilter?: (check: Check) => boolean;
+  }>().with({
+    id: 'tech-insights-scorecard.props',
+  }),
+  /**
+   * A function filter to determine if a scorecard should be shown for an entity.
+   */
+  filterFunction: createExtensionDataRef<(entity: Entity) => boolean>().with({
+    id: 'tech-insights-scorecard.filter-function',
+  }),
+  /**
+   * An expression-based filter to determine if a scorecard should be shown for an entity.
+   */
+  filterExpression: createExtensionDataRef<EntityPredicate>().with({
+    id: 'tech-insights-scorecard.filter-expression',
+  }),
+};
+
+/**
  * @alpha
  */
-export const techInsightsScorecardPropsDataRef = createExtensionDataRef<{
+export type TechInsightsScorecardBlueprintParams = {
   title?: string;
   description?: string;
   checkIds?: string[];
   dense?: boolean;
+  filter?: EntityPredicate;
   checkFilter?: (check: Check) => boolean;
-}>().with({
-  id: 'tech-insights.scorecard.props',
-});
-
-/**
- * @alpha
- */
-export const techInsightsScorecardFilterDataRef = createExtensionDataRef<
-  (entity: Entity) => boolean
->().with({
-  id: 'tech-insights.scorecard.filter-function',
-});
-
-/**
- * @alpha
- */
-export const techInsightsScorecardFilterExpressionDataRef =
-  createExtensionDataRef<EntityPredicate>().with({
-    id: 'tech-insights.scorecard.filter-expression',
-  });
+};
 
 /**
  * @alpha
@@ -58,13 +71,13 @@ export const techInsightsScorecardFilterExpressionDataRef =
 export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
   kind: 'tech-insights-scorecard',
   attachTo: {
-    id: 'entity-content:tech-insights/scorecards',
+    id: 'entity-content:tech-insights/scorecards-content',
     input: 'scorecards',
   },
   dataRefs: {
-    props: techInsightsScorecardPropsDataRef,
-    filterFunction: techInsightsScorecardFilterDataRef,
-    filterExpression: techInsightsScorecardFilterExpressionDataRef,
+    props: techInsightsScorecardExtensionData.props,
+    filterFunction: techInsightsScorecardExtensionData.filterFunction,
+    filterExpression: techInsightsScorecardExtensionData.filterExpression,
   },
   config: {
     schema: {
@@ -76,22 +89,12 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
     },
   },
   output: [
-    techInsightsScorecardPropsDataRef,
-    techInsightsScorecardFilterDataRef.optional(),
-    techInsightsScorecardFilterExpressionDataRef.optional(),
+    techInsightsScorecardExtensionData.props,
+    techInsightsScorecardExtensionData.filterFunction.optional(),
+    techInsightsScorecardExtensionData.filterExpression.optional(),
   ],
-  *factory(
-    params: {
-      title?: string;
-      description?: string;
-      checkIds?: string[];
-      dense?: boolean;
-      filter?: EntityPredicate;
-      checkFilter?: (check: Check) => boolean;
-    },
-    { config },
-  ) {
-    yield techInsightsScorecardPropsDataRef({
+  *factory(params: TechInsightsScorecardBlueprintParams, { config }) {
+    yield techInsightsScorecardExtensionData.props({
       title: config.title ?? params.title,
       description: config.description ?? params.description,
       checkIds: config.checkIds ?? params.checkIds,
@@ -102,7 +105,7 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
     const filterExpr =
       (config.filter as EntityPredicate | undefined) ?? params.filter;
     if (filterExpr) {
-      yield techInsightsScorecardFilterExpressionDataRef(filterExpr);
+      yield techInsightsScorecardExtensionData.filterExpression(filterExpr);
     }
   },
 });

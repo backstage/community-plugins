@@ -81,7 +81,7 @@ const techInsightsPlugin: OverridableFrontendPlugin<
         type?: EntityCardType;
       };
     }>;
-    'entity-content:tech-insights/scorecards': OverridableExtensionDefinition<{
+    'entity-content:tech-insights/scorecards-content': OverridableExtensionDefinition<{
       config: {
         path: string | undefined;
         title: string | undefined;
@@ -136,19 +136,19 @@ const techInsightsPlugin: OverridableFrontendPlugin<
                 dense?: boolean;
                 checkFilter?: (check: Check) => boolean;
               },
-              'tech-insights.scorecard.props',
+              'tech-insights-scorecard.props',
               {}
             >
           | ConfigurableExtensionDataRef<
               (entity: Entity) => boolean,
-              'tech-insights.scorecard.filter-function',
+              'tech-insights-scorecard.filter-function',
               {
                 optional: true;
               }
             >
           | ConfigurableExtensionDataRef<
               EntityPredicate,
-              'tech-insights.scorecard.filter-expression',
+              'tech-insights-scorecard.filter-expression',
               {
                 optional: true;
               }
@@ -160,7 +160,7 @@ const techInsightsPlugin: OverridableFrontendPlugin<
         >;
       };
       kind: 'entity-content';
-      name: 'scorecards';
+      name: 'scorecards-content';
       params: {
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;

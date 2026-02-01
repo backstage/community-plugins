@@ -15,22 +15,14 @@
  */
 
 import useAsync from 'react-use/esm/useAsync';
-import { Content, Page, Progress } from '@backstage/core-components';
+import { Content, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ScorecardInfo } from '../ScorecardsInfo';
 import Alert from '@material-ui/lab/Alert';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
-import { makeStyles } from '@material-ui/core/styles';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
-
-const useStyles = makeStyles(() => ({
-  contentScorecards: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-}));
 
 export const ScorecardsContent = (props: {
   title: string;
@@ -40,7 +32,6 @@ export const ScorecardsContent = (props: {
   dense?: boolean;
 }) => {
   const { title, description, checksId, filter, dense } = props;
-  const classes = useStyles();
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
   const { namespace, kind, name } = getCompoundEntityRef(entity);
@@ -58,16 +49,14 @@ export const ScorecardsContent = (props: {
   }
 
   return (
-    <Page themeId="home">
-      <Content className={classes.contentScorecards}>
-        <ScorecardInfo
-          title={title}
-          description={description}
-          entity={entity}
-          checkResults={filteredValues || []}
-          dense={dense}
-        />
-      </Content>
-    </Page>
+    <Content>
+      <ScorecardInfo
+        title={title}
+        description={description}
+        entity={entity}
+        checkResults={filteredValues || []}
+        dense={dense}
+      />
+    </Content>
   );
 };

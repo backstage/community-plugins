@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  techInsightsScorecardFilterDataRef,
-  techInsightsScorecardFilterExpressionDataRef,
-  techInsightsScorecardPropsDataRef,
-} from '@backstage-community/plugin-tech-insights-react/alpha';
 import { Entity } from '@backstage/catalog-model';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { createExtensionInput } from '@backstage/frontend-plugin-api';
@@ -28,9 +23,10 @@ import {
   entityPredicateToFilterFunction,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
+import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech-insights-react/alpha';
 
-// Inspired by https://github.com/backstage/backstage/blob/0fd688a452a54451ca3014b0da17e071e8bfebee/plugins/catalog/src/alpha/filter/FilterWrapper.tsx#L30-L33. This could be removed once the framework provides
-// predicate filter functions.
+// Inspired by https://github.com/backstage/backstage/blob/0fd688a452a54451ca3014b0da17e071e8bfebee/plugins/catalog/src/alpha/filter/FilterWrapper.tsx#L30-L33.
+// The goal is to remove this once the framework provides something similar.
 function buildFilterFn(
   filterFn?: (entity: Entity) => boolean,
   filterExpr?: EntityPredicate,
@@ -40,58 +36,70 @@ function buildFilterFn(
   return () => true;
 }
 
-export const entityTechInsightsScorecardContent =
+export const entityTechInsightsContent =
   EntityContentBlueprint.makeWithOverrides({
-    name: 'scorecards',
+    name: 'scorecards-content',
     inputs: {
       scorecards: createExtensionInput([
-        techInsightsScorecardPropsDataRef,
-        techInsightsScorecardFilterDataRef.optional(),
-        techInsightsScorecardFilterExpressionDataRef.optional(),
+        TechInsightsScorecardBlueprint.dataRefs.props,
+        TechInsightsScorecardBlueprint.dataRefs.filterFunction.optional(),
+        TechInsightsScorecardBlueprint.dataRefs.filterExpression.optional(),
       ]),
     },
-    factory(originalFactory, { inputs }) {
+    factory(originalFactory, { inputs, config }) {
       return originalFactory(defineParams =>
         defineParams({
-          path: '/tech-insights',
-          title: 'Scorecards',
+          path: config.path ?? '/tech-insights',
+          title: config.title ?? 'Tech Insights',
           loader: async () => {
             const { ScorecardsContent } = await import(
               '../components/ScorecardsContent'
             );
 
             const scorecards = inputs.scorecards.map(scorecard => ({
-              props: scorecard.get(techInsightsScorecardPropsDataRef),
+              props: scorecard.get(
+                TechInsightsScorecardBlueprint.dataRefs.props,
+              ),
               filter: buildFilterFn(
-                scorecard.get(techInsightsScorecardFilterDataRef),
-                scorecard.get(techInsightsScorecardFilterExpressionDataRef),
+                scorecard.get(
+                  TechInsightsScorecardBlueprint.dataRefs.filterFunction,
+                ),
+                scorecard.get(
+                  TechInsightsScorecardBlueprint.dataRefs.filterExpression,
+                ),
               ),
             }));
+
+            if (scorecards.length === 0) {
+              return (
+                <ScorecardsContent
+                  title={config.title ?? 'Scorecards'}
+                  description={config.description}
+                  checksId={config.checkIds ?? []}
+                  dense={config.dense}
+                />
+              );
+            }
 
             const Component = () => {
               const { entity } = useEntity();
 
-              const scorecard = scorecards.find(s => s.filter(entity));
               const matchingScorecards = scorecards.filter(s =>
                 s.filter(entity),
               );
-              const aggregatedCheckIds = matchingScorecards.flatMap(
-                s => s.props.checkIds ?? [],
-              );
-              const props = scorecard?.props ?? {};
 
               return (
-                <ScorecardsContent
-                  title={props.title ?? 'Scorecards'}
-                  description={props.description}
-                  checksId={
-                    aggregatedCheckIds.length > 0
-                      ? aggregatedCheckIds
-                      : undefined
-                  }
-                  dense={props.dense}
-                  filter={props.checkFilter}
-                />
+                <>
+                  {matchingScorecards.map(s => (
+                    <ScorecardsContent
+                      title={s.props.title ?? 'Scorecards'}
+                      description={s.props.description}
+                      checksId={s.props.checkIds ?? []}
+                      dense={s.props.dense}
+                      filter={s.props.checkFilter}
+                    />
+                  ))}
+                </>
               );
             };
 

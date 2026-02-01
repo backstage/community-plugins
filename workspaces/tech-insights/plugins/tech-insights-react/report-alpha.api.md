@@ -13,14 +13,7 @@ import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 // @alpha (undocumented)
 export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
   kind: 'tech-insights-scorecard';
-  params: {
-    title?: string;
-    description?: string;
-    checkIds?: string[];
-    dense?: boolean;
-    filter?: EntityPredicate;
-    checkFilter?: (check: Check) => boolean;
-  };
+  params: TechInsightsScorecardBlueprintParams;
   output:
     | ExtensionDataRef<
         {
@@ -30,19 +23,19 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
           dense?: boolean;
           checkFilter?: (check: Check) => boolean;
         },
-        'tech-insights.scorecard.props',
+        'tech-insights-scorecard.props',
         {}
       >
     | ExtensionDataRef<
         (entity: Entity) => boolean,
-        'tech-insights.scorecard.filter-function',
+        'tech-insights-scorecard.filter-function',
         {
           optional: true;
         }
       >
     | ExtensionDataRef<
         EntityPredicate,
-        'tech-insights.scorecard.filter-expression',
+        'tech-insights-scorecard.filter-expression',
         {
           optional: true;
         }
@@ -71,48 +64,31 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
         dense?: boolean;
         checkFilter?: (check: Check) => boolean;
       },
-      'tech-insights.scorecard.props',
+      'tech-insights-scorecard.props',
       {}
     >;
     filterFunction: ConfigurableExtensionDataRef<
       (entity: Entity) => boolean,
-      'tech-insights.scorecard.filter-function',
+      'tech-insights-scorecard.filter-function',
       {}
     >;
     filterExpression: ConfigurableExtensionDataRef<
       EntityPredicate,
-      'tech-insights.scorecard.filter-expression',
+      'tech-insights-scorecard.filter-expression',
       {}
     >;
   };
 }>;
 
 // @alpha (undocumented)
-export const techInsightsScorecardFilterDataRef: ConfigurableExtensionDataRef<
-  (entity: Entity) => boolean,
-  'tech-insights.scorecard.filter-function',
-  {}
->;
-
-// @alpha (undocumented)
-export const techInsightsScorecardFilterExpressionDataRef: ConfigurableExtensionDataRef<
-  EntityPredicate,
-  'tech-insights.scorecard.filter-expression',
-  {}
->;
-
-// @alpha (undocumented)
-export const techInsightsScorecardPropsDataRef: ConfigurableExtensionDataRef<
-  {
-    title?: string;
-    description?: string;
-    checkIds?: string[];
-    dense?: boolean;
-    checkFilter?: (check: Check) => boolean;
-  },
-  'tech-insights.scorecard.props',
-  {}
->;
+export type TechInsightsScorecardBlueprintParams = {
+  title?: string;
+  description?: string;
+  checkIds?: string[];
+  dense?: boolean;
+  filter?: EntityPredicate;
+  checkFilter?: (check: Check) => boolean;
+};
 
 // (No @packageDocumentation comment for this package)
 ```

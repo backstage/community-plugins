@@ -13,9 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  TechInsightsScorecardBlueprint,
-  techInsightsScorecardPropsDataRef,
-  techInsightsScorecardFilterDataRef,
-  techInsightsScorecardFilterExpressionDataRef,
-} from './alpha/blueprints';
+export { TechInsightsScorecardBlueprint } from './alpha/blueprints';
+export type { TechInsightsScorecardBlueprintParams } from './alpha/blueprints';
