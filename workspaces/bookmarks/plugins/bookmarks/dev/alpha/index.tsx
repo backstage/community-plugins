@@ -22,6 +22,8 @@ import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import bookmarksPlugin from '../../src/alpha';
 import { testEntities } from '../testData';
 
+// This is a dev Backstage instance and not part of the plugin
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
 export const catalogApi = catalogApiMock({
