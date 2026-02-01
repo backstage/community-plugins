@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.7.1
+
+### Patch Changes
+
+- 3525795: Add `aria-label` and `tabindex=0` to the Bookmarks viewer iframe for accessibility
+
 ## 0.7.0
 
 ### Minor Changes
