@@ -16,14 +16,16 @@
 
 import { useMemo, useCallback } from 'react';
 import { useQueryState } from './useQueryState';
-import { INCIDENT_STATE_MAP, PRIORITY_MAP } from '../utils/incidentUtils';
+import { useIncidentStateMap, usePriorityMap } from '../utils/incidentUtils';
 import { SelectItem } from '@backstage/core-components';
 
 export const useQueryArrayFilter = (filterName: 'state' | 'priority') => {
   const [raw, setRaw] = useQueryState<string>(filterName, '');
   const [, setOffset] = useQueryState<number>('offset', 0);
 
-  const map = filterName === 'state' ? INCIDENT_STATE_MAP : PRIORITY_MAP;
+  const incidentStateMap = useIncidentStateMap();
+  const priorityMap = usePriorityMap();
+  const map = filterName === 'state' ? incidentStateMap : priorityMap;
 
   const current: SelectItem[] = useMemo(() => {
     return raw
