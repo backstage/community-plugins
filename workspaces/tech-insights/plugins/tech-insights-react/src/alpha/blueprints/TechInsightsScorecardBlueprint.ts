@@ -15,7 +15,6 @@
  */
 
 import { Check } from '@backstage-community/plugin-tech-insights-common';
-import { Entity } from '@backstage/catalog-model';
 import {
   createExtensionDataRef,
   createExtensionBlueprint,
@@ -38,12 +37,6 @@ export const techInsightsScorecardExtensionData = {
     checkFilter?: (check: Check) => boolean;
   }>().with({
     id: 'tech-insights-scorecard.props',
-  }),
-  /**
-   * A function filter to determine if a scorecard should be shown for an entity.
-   */
-  filterFunction: createExtensionDataRef<(entity: Entity) => boolean>().with({
-    id: 'tech-insights-scorecard.filter-function',
   }),
   /**
    * An expression-based filter to determine if a scorecard should be shown for an entity.
@@ -76,7 +69,6 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
   },
   dataRefs: {
     props: techInsightsScorecardExtensionData.props,
-    filterFunction: techInsightsScorecardExtensionData.filterFunction,
     filterExpression: techInsightsScorecardExtensionData.filterExpression,
   },
   config: {
@@ -90,7 +82,6 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
   },
   output: [
     techInsightsScorecardExtensionData.props,
-    techInsightsScorecardExtensionData.filterFunction.optional(),
     techInsightsScorecardExtensionData.filterExpression.optional(),
   ],
   *factory(params: TechInsightsScorecardBlueprintParams, { config }) {

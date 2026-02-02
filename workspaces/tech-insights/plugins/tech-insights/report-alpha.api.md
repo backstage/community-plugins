@@ -140,13 +140,6 @@ const techInsightsPlugin: OverridableFrontendPlugin<
               {}
             >
           | ConfigurableExtensionDataRef<
-              (entity: Entity) => boolean,
-              'tech-insights-scorecard.filter-function',
-              {
-                optional: true;
-              }
-            >
-          | ConfigurableExtensionDataRef<
               EntityPredicate,
               'tech-insights-scorecard.filter-expression',
               {

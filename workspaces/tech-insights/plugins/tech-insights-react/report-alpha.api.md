@@ -5,7 +5,6 @@
 ```ts
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprint } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
@@ -25,13 +24,6 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
         },
         'tech-insights-scorecard.props',
         {}
-      >
-    | ExtensionDataRef<
-        (entity: Entity) => boolean,
-        'tech-insights-scorecard.filter-function',
-        {
-          optional: true;
-        }
       >
     | ExtensionDataRef<
         EntityPredicate,
@@ -65,11 +57,6 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
         checkFilter?: (check: Check) => boolean;
       },
       'tech-insights-scorecard.props',
-      {}
-    >;
-    filterFunction: ConfigurableExtensionDataRef<
-      (entity: Entity) => boolean,
-      'tech-insights-scorecard.filter-function',
       {}
     >;
     filterExpression: ConfigurableExtensionDataRef<

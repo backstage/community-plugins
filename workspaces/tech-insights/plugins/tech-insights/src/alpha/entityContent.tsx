@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { createExtensionInput } from '@backstage/frontend-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
-  EntityPredicate,
   entityPredicateToFilterFunction,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech-insights-react/alpha';
-
-// Inspired by https://github.com/backstage/backstage/blob/0fd688a452a54451ca3014b0da17e071e8bfebee/plugins/catalog/src/alpha/filter/FilterWrapper.tsx#L30-L33.
-// The goal is to remove this once the framework provides something similar.
-function buildFilterFn(
-  filterFn?: (entity: Entity) => boolean,
-  filterExpr?: EntityPredicate,
-): (entity: Entity) => boolean {
-  if (filterFn) return filterFn;
-  if (filterExpr) return entityPredicateToFilterFunction(filterExpr);
-  return () => true;
-}
 
 export const entityTechInsightsContent =
   EntityContentBlueprint.makeWithOverrides({
@@ -42,7 +29,6 @@ export const entityTechInsightsContent =
     inputs: {
       scorecards: createExtensionInput([
         TechInsightsScorecardBlueprint.dataRefs.props,
-        TechInsightsScorecardBlueprint.dataRefs.filterFunction.optional(),
         TechInsightsScorecardBlueprint.dataRefs.filterExpression.optional(),
       ]),
     },
@@ -56,19 +42,20 @@ export const entityTechInsightsContent =
               '../components/ScorecardsContent'
             );
 
-            const scorecards = inputs.scorecards.map(scorecard => ({
-              props: scorecard.get(
-                TechInsightsScorecardBlueprint.dataRefs.props,
-              ),
-              filter: buildFilterFn(
-                scorecard.get(
-                  TechInsightsScorecardBlueprint.dataRefs.filterFunction,
+            const scorecards = inputs.scorecards.map(scorecard => {
+              const filterExpr = scorecard.get(
+                TechInsightsScorecardBlueprint.dataRefs.filterExpression,
+              );
+
+              return {
+                props: scorecard.get(
+                  TechInsightsScorecardBlueprint.dataRefs.props,
                 ),
-                scorecard.get(
-                  TechInsightsScorecardBlueprint.dataRefs.filterExpression,
-                ),
-              ),
-            }));
+                filter: filterExpr
+                  ? entityPredicateToFilterFunction(filterExpr)
+                  : () => true,
+              };
+            });
 
             if (scorecards.length === 0) {
               return (
