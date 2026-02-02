@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.20.1
+
+### Patch Changes
+
+- 09a0a9b: Add support for alternative merge strategies, when using azure:pr:create
+
 ## 0.20.0
 
 ### Minor Changes
