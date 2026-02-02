@@ -250,6 +250,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsTimeline.error': 'Error';
     readonly 'announcementsTimeline.noAnnouncements': 'No announcements';
     readonly 'categoriesForm.submit': 'Submit';
+    readonly 'categoriesForm.errors.alreadyExists': 'A category with this name already exists.';
     readonly 'categoriesForm.newCategory': 'New category';
     readonly 'categoriesForm.editCategory': 'Edit category';
     readonly 'categoriesForm.titleLabel': 'Title';
