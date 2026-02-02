@@ -35,7 +35,7 @@ export const AnnouncementsFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { categories, loading: categoriesLoading } = useCategories();
-  const { tags } = useTags();
+  const { tags, loading: tagsLoading } = useTags();
 
   const handleCategoryChange = (category: Category | null) => {
     const newParams = new URLSearchParams(searchParams);
@@ -105,6 +105,8 @@ export const AnnouncementsFilters = () => {
             selectedTagsFromUrl.length > 0 ? selectedTagsFromUrl : undefined
           }
           setTags={handleTagsChange}
+          tags={tags}
+          isLoading={tagsLoading}
           hideLabel
         />
       </Flex>

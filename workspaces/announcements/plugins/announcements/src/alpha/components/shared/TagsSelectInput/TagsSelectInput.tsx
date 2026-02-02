@@ -15,26 +15,25 @@
  */
 import { Key, useMemo } from 'react';
 import { Select } from '@backstage/ui';
-import {
-  useAnnouncementsTranslation,
-  useTags,
-} from '@backstage-community/plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 
 type TagsSelectInputProps = {
   initialTags?: Tag[];
   setTags: (tags: Tag[] | null) => void;
+  tags: Tag[];
+  isLoading?: boolean;
   hideLabel?: boolean;
 };
 
 export const TagsSelectInput = ({
   setTags,
   initialTags,
+  tags,
+  isLoading = false,
   hideLabel = false,
 }: TagsSelectInputProps) => {
   const { t } = useAnnouncementsTranslation();
-
-  const { tags, loading: tagsLoading } = useTags();
 
   const selectOptions = useMemo(() => {
     if (!tags) return [];
@@ -95,7 +94,7 @@ export const TagsSelectInput = ({
       value={selectedTagSlugs}
       onChange={handleChange}
       options={selectOptions}
-      isDisabled={tagsLoading || selectOptions.length === 0}
+      isDisabled={isLoading || selectOptions.length === 0}
     />
   );
 };
