@@ -27,18 +27,18 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
       >
     | ExtensionDataRef<
         EntityPredicate,
-        'tech-insights-scorecard.filter-expression',
+        'tech-insights-scorecard.filter',
         {
           optional: true;
         }
       >;
   inputs: {};
   config: {
-    filter: Record<string, unknown> | undefined;
     title: string | undefined;
     description: string | undefined;
     checkIds: string[] | undefined;
     dense: boolean | undefined;
+    filter: Record<string, unknown> | undefined;
   };
   configInput: {
     filter?: Record<string, unknown> | undefined;
@@ -59,9 +59,9 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
       'tech-insights-scorecard.props',
       {}
     >;
-    filterExpression: ConfigurableExtensionDataRef<
+    filter: ConfigurableExtensionDataRef<
       EntityPredicate,
-      'tech-insights-scorecard.filter-expression',
+      'tech-insights-scorecard.filter',
       {}
     >;
   };

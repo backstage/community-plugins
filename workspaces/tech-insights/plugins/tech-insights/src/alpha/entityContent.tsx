@@ -29,7 +29,7 @@ export const entityTechInsightsContent =
     inputs: {
       scorecards: createExtensionInput([
         TechInsightsScorecardBlueprint.dataRefs.props,
-        TechInsightsScorecardBlueprint.dataRefs.filterExpression.optional(),
+        TechInsightsScorecardBlueprint.dataRefs.filter.optional(),
       ]),
     },
     factory(originalFactory, { inputs, config }) {
@@ -43,16 +43,16 @@ export const entityTechInsightsContent =
             );
 
             const scorecards = inputs.scorecards.map(scorecard => {
-              const filterExpr = scorecard.get(
-                TechInsightsScorecardBlueprint.dataRefs.filterExpression,
+              const filter = scorecard.get(
+                TechInsightsScorecardBlueprint.dataRefs.filter,
               );
 
               return {
                 props: scorecard.get(
                   TechInsightsScorecardBlueprint.dataRefs.props,
                 ),
-                filter: filterExpr
-                  ? entityPredicateToFilterFunction(filterExpr)
+                filter: filter
+                  ? entityPredicateToFilterFunction(filter)
                   : () => true,
               };
             });

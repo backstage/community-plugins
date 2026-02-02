@@ -39,10 +39,10 @@ export const techInsightsScorecardExtensionData = {
     id: 'tech-insights-scorecard.props',
   }),
   /**
-   * An expression-based filter to determine if a scorecard should be shown for an entity.
+   * A filter to determine if a scorecard should be shown for an entity.
    */
-  filterExpression: createExtensionDataRef<EntityPredicate>().with({
-    id: 'tech-insights-scorecard.filter-expression',
+  filter: createExtensionDataRef<EntityPredicate>().with({
+    id: 'tech-insights-scorecard.filter',
   }),
 };
 
@@ -69,20 +69,20 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
   },
   dataRefs: {
     props: techInsightsScorecardExtensionData.props,
-    filterExpression: techInsightsScorecardExtensionData.filterExpression,
+    filter: techInsightsScorecardExtensionData.filter,
   },
   config: {
     schema: {
-      filter: z => z.record(z.unknown()).optional(),
       title: z => z.string().optional(),
       description: z => z.string().optional(),
       checkIds: z => z.array(z.string()).optional(),
       dense: z => z.boolean().optional(),
+      filter: z => z.record(z.unknown()).optional(),
     },
   },
   output: [
     techInsightsScorecardExtensionData.props,
-    techInsightsScorecardExtensionData.filterExpression.optional(),
+    techInsightsScorecardExtensionData.filter.optional(),
   ],
   *factory(params: TechInsightsScorecardBlueprintParams, { config }) {
     yield techInsightsScorecardExtensionData.props({
@@ -93,10 +93,10 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
       checkFilter: params.checkFilter,
     });
 
-    const filterExpr =
+    const filter =
       (config.filter as EntityPredicate | undefined) ?? params.filter;
-    if (filterExpr) {
-      yield techInsightsScorecardExtensionData.filterExpression(filterExpr);
+    if (filter) {
+      yield techInsightsScorecardExtensionData.filter(filter);
     }
   },
 });
