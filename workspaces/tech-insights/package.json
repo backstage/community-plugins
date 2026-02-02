@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
     "start": "backstage-cli repo start",
-    "start:next": "yarn start app-next backend",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
     "tsc": "tsc",

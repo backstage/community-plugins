@@ -83,12 +83,18 @@ const techInsightsPlugin: OverridableFrontendPlugin<
     }>;
     'entity-content:tech-insights/scorecards-content': OverridableExtensionDefinition<{
       config: {
+        description: string | undefined;
+        checkIds: string[] | undefined;
+        dense: boolean | undefined;
         path: string | undefined;
         title: string | undefined;
         filter: EntityPredicate | undefined;
         group: string | false | undefined;
       };
       configInput: {
+        description?: string | undefined;
+        dense?: boolean | undefined;
+        checkIds?: string[] | undefined;
         filter?: EntityPredicate | undefined;
         title?: string | undefined | undefined;
         path?: string | undefined | undefined;
