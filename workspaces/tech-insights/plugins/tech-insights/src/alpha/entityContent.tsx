@@ -28,8 +28,9 @@ export const entityTechInsightsContent =
     name: 'scorecards-content',
     config: {
       schema: {
-        checkIds: z => z.array(z.string()).optional(),
         description: z => z.string().optional(),
+        checkIds: z => z.array(z.string()).optional(),
+        dense: z => z.boolean().optional(),
       },
     },
     inputs: {
@@ -69,6 +70,7 @@ export const entityTechInsightsContent =
                   title={config.title ?? 'Scorecards'}
                   description={config.description}
                   checksId={config.checkIds ?? undefined}
+                  dense={config.dense}
                 />
               );
             }

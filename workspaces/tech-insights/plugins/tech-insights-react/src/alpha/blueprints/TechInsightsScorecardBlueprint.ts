@@ -27,7 +27,7 @@ import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
  */
 export const techInsightsScorecardExtensionData = {
   /**
-   * Props to configure a scorecard, such as title, description, and check filters.
+   * Props to configure a scorecard
    */
   props: createExtensionDataRef<{
     title?: string;
