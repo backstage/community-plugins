@@ -34,7 +34,7 @@ export const AnnouncementsFilters = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { categories } = useCategories();
+  const { categories, loading: categoriesLoading } = useCategories();
   const { tags } = useTags();
 
   const handleCategoryChange = (category: Category | null) => {
@@ -94,7 +94,9 @@ export const AnnouncementsFilters = () => {
             categories?.find(c => c.slug === searchParams.get('category')) ??
             undefined
           }
+          categories={categories}
           setCategory={handleCategoryChange}
+          isLoading={categoriesLoading}
           hideLabel
         />
 
