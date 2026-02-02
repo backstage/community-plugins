@@ -26,6 +26,12 @@ import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech
 export const entityTechInsightsContent =
   EntityContentBlueprint.makeWithOverrides({
     name: 'scorecards-content',
+    config: {
+      schema: {
+        checkIds: z => z.array(z.string()).optional(),
+        description: z => z.string().optional(),
+      },
+    },
     inputs: {
       scorecards: createExtensionInput([
         TechInsightsScorecardBlueprint.dataRefs.props,
@@ -62,8 +68,7 @@ export const entityTechInsightsContent =
                 <ScorecardsContent
                   title={config.title ?? 'Scorecards'}
                   description={config.description}
-                  checksId={config.checkIds ?? []}
-                  dense={config.dense}
+                  checksId={config.checkIds ?? undefined}
                 />
               );
             }

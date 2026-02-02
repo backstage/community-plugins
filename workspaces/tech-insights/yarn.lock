@@ -3554,7 +3554,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.11.0, @backstage/ui@npm:^0.11.1":
+"@backstage/ui@npm:^0.11.0":
+  version: 0.11.1
+  resolution: "@backstage/ui@npm:0.11.1"
+  dependencies:
+    "@backstage/version-bridge": "npm:^1.0.11"
+    "@remixicon/react": "npm:^4.6.0"
+    "@tanstack/react-table": "npm:^8.21.3"
+    clsx: "npm:^2.1.1"
+    react-aria-components: "npm:^1.13.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/7343621ebcef22ead8b4fed717afaee567a17eed01a3de3e57db210b30031a75375faa5486f275a004064f42341de4f847fbcbca03e9360e747e3efd8c95a722
+  languageName: node
+  linkType: hard
+
+"@backstage/ui@npm:^0.11.1":
   version: 0.11.2
   resolution: "@backstage/ui@npm:0.11.2"
   dependencies:
