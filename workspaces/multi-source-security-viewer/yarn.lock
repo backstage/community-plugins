@@ -1598,7 +1598,7 @@ __metadata:
   dependencies:
     "@aonic-ui/pipelines": "npm:^3.1.1"
     "@backstage-community/plugin-azure-devops": "npm:^0.25.0"
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.17.0"
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.19.0"
     "@backstage-community/plugin-github-actions": "npm:^0.19.0"
     "@backstage-community/plugin-jenkins": "npm:^0.26.0"
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^"
