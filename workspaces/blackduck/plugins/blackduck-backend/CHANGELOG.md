@@ -1,5 +1,17 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.12.0
+
+### Minor Changes
+
+- 213aa21: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [213aa21]
+  - @backstage-community/plugin-blackduck-common@0.11.0
+  - @backstage-community/plugin-blackduck-node@0.9.0
+
 ## 0.11.0
 
 ### Minor Changes
