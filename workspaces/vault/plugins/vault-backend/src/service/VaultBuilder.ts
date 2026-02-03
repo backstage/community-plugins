@@ -192,7 +192,9 @@ export class VaultBuilder {
       const secrets = await vaultApi.listSecrets(path, {
         secretEngine: engine,
       });
-      res.json({ items: secrets });
+      const vaultUrl = vaultApi.getFrontendSecretsUrl();
+      const createUrl = vaultApi.getCreateSecretUrl(path, engine);
+      res.json({ items: secrets, vaultUrl, createUrl });
     });
 
     router.use(MiddlewareFactory.create(this.env).error());

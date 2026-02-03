@@ -36,6 +36,13 @@ export interface VaultApi {
   getFrontendSecretsUrl(): string;
 
   /**
+   * Returns the URL to create a new secret in the Vault UI.
+   * @param secretPath - The path where the secret will be created
+   * @param secretEngine - The secret engine to use
+   */
+  getCreateSecretUrl(secretPath: string, secretEngine?: string): string;
+
+  /**
    * Returns a list of secrets used to show in a table.
    * @param secretPath - The path where the secrets are stored in Vault
    * @param options - Additional options to be passed to the Vault API, allows to override vault default settings in app config file

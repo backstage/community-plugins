@@ -75,9 +75,8 @@ describe('api', () => {
   });
 
   it('should return secrets', async () => {
-    expect(await api.listSecrets('test/success')).toEqual(
-      mockSecretsResult.items,
-    );
+    const result = await api.listSecrets('test/success');
+    expect(result.secrets).toEqual(mockSecretsResult.items);
     expect(fetchApiSpy).toHaveBeenCalledWith(
       `${mockBaseUrl}/v1/secrets/test%2Fsuccess?`,
       expect.anything(),
@@ -85,9 +84,10 @@ describe('api', () => {
   });
 
   it('should return secrets with custom engine', async () => {
-    expect(
-      await api.listSecrets('test/success', { secretEngine: 'kv' }),
-    ).toEqual(mockSecretsResult.items);
+    const result = await api.listSecrets('test/success', {
+      secretEngine: 'kv',
+    });
+    expect(result.secrets).toEqual(mockSecretsResult.items);
     expect(fetchApiSpy).toHaveBeenCalledWith(
       `${mockBaseUrl}/v1/secrets/test%2Fsuccess?engine=kv`,
       expect.anything(),
@@ -95,11 +95,13 @@ describe('api', () => {
   });
 
   it('should return empty secret list', async () => {
-    expect(await api.listSecrets('test/empty')).toEqual([]);
+    const result = await api.listSecrets('test/empty');
+    expect(result.secrets).toEqual([]);
   });
 
   it('should return all the secrets if no path defined', async () => {
-    expect(await api.listSecrets('')).toEqual(mockSecretsResult.items);
+    const result = await api.listSecrets('');
+    expect(result.secrets).toEqual(mockSecretsResult.items);
   });
 
   it('should throw an error if the Vault API responds with an HTTP 404', async () => {

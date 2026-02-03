@@ -26,6 +26,7 @@ export interface RouterOptions {
 
 // @public @deprecated
 export interface VaultApi {
+  getCreateSecretUrl(secretPath: string, secretEngine?: string): string;
   getFrontendSecretsUrl(): string;
   listSecrets(
     secretPath: string,
@@ -53,6 +54,8 @@ export type VaultBuilderReturn = {
 // @public
 export class VaultClient implements VaultApi {
   constructor(options: { config: Config });
+  // (undocumented)
+  getCreateSecretUrl(secretPath: string, secretEngine?: string): string;
   // (undocumented)
   getFrontendSecretsUrl(): string;
   // (undocumented)
