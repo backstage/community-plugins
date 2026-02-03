@@ -23,11 +23,31 @@ import { rootRouteRef } from '../routes';
 /**
  * @alpha
  */
-export const announcementsPage = PageBlueprint.make({
-  params: {
-    path: '/announcements',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    loader: async () =>
-      import('../Router').then(m => compatWrapper(<m.Router />)),
+export const announcementsPage = PageBlueprint.makeWithOverrides({
+  config: {
+    schema: {
+      title: z => z.string().optional(),
+      category: z => z.string().optional(),
+      hideStartAt: z => z.boolean().optional(),
+      markdownRenderer: z => z.enum(['backstage', 'md-editor']).optional(),
+      defaultInactive: z => z.boolean().optional(),
+    },
   },
+  factory: (originalFactory, { config }) =>
+    originalFactory({
+      path: '/announcements',
+      routeRef: convertLegacyRouteRef(rootRouteRef),
+      loader: async () =>
+        import('../Router').then(m =>
+          compatWrapper(
+            <m.Router
+              title={config.title}
+              category={config.category}
+              hideStartAt={config.hideStartAt}
+              markdownRenderer={config.markdownRenderer}
+              defaultInactive={config.defaultInactive}
+            />,
+          ),
+        ),
+    }),
 });

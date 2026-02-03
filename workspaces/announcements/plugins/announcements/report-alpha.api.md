@@ -135,12 +135,20 @@ const _default: OverridableFrontendPlugin<
       };
     }>;
     'page:announcements': OverridableExtensionDefinition<{
-      kind: 'page';
-      name: undefined;
       config: {
+        title: string | undefined;
+        category: string | undefined;
+        hideStartAt: boolean | undefined;
+        markdownRenderer: 'backstage' | 'md-editor' | undefined;
+        defaultInactive: boolean | undefined;
         path: string | undefined;
       };
       configInput: {
+        title?: string | undefined;
+        category?: string | undefined;
+        defaultInactive?: boolean | undefined;
+        hideStartAt?: boolean | undefined;
+        markdownRenderer?: 'backstage' | 'md-editor' | undefined;
         path?: string | undefined;
       };
       output:
@@ -154,6 +162,8 @@ const _default: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'page';
+      name: undefined;
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;

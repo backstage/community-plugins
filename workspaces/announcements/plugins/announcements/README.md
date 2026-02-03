@@ -73,6 +73,39 @@ app:
     - nav-item:announcements
 ```
 
+### Configure extension params (New Frontend System)
+
+You can pass params for the new frontend system by adding a `config` block to the relevant extension in `app-config.yaml`.
+
+Announcements page params:
+
+```yaml
+app:
+  extensions:
+    - page:announcements:
+        config:
+          title: Company announcements
+          category: conferences
+          hideStartAt: true
+          markdownRenderer: md-editor
+          defaultInactive: true
+```
+
+Banner params:
+
+```yaml
+app:
+  extensions:
+    - announcements/banner:
+        config:
+          variant: floating
+          max: 2
+          category: updates
+          active: true
+          current: true
+          tags: ['security', 'platform']
+```
+
 The entity card will only appear on components & systems by default, but you can override that
 behavior by passing a filter into the card extension like so:
 
